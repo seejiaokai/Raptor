@@ -69,13 +69,29 @@ describe('WH13 — the marks guard bites', () => {
     const fake = {
       byDay: [{ di: 0, warns: [{ di: 0, code: 'DNIF_FLY', who: ['bane'], msg: 'm' }] }],
       marks: [{ k: 'sev', di: 0, id: 'bane', v: 'hard', code: 'INPUT_FLY' }, { k: 'chip', di: 0, id: 'bane', v: 'C' }, { k: 'chip', di: 0, id: 'bane', v: 'C', code: 'DNIF_FLY' }],
-      traces: [{ pdi: 0, id: 'bane', t: {}, w: { di: 0, code: 'CREW_REST', who: ['bane'], msg: 'x' } }, { pdi: 6, id: 'bane', t: {}, w: { di: null, code: 'CREW_REST', who: ['bane'], msg: 'x' } }],
+      traces: [{ pdi: 0, id: 'bane', t: { msg: 'x' }, w: { di: 0, code: 'CREW_REST', who: ['bane'], msg: 'x' } }, { pdi: 6, id: 'bane', t: { msg: 'x' }, w: { di: null, code: 'CREW_REST', who: ['bane'], msg: 'x' } }],
     }
     const bad = markOrphans(fake)
     expect(bad.length).toBe(3)
     expect(bad[0]).toMatch(/filed under INPUT_FLY/)
     expect(bad[1]).toMatch(/names no warning code/)
     expect(bad[2]).toMatch(/points at a CREW_REST warning on day 0 that is not there/)
+  })
+
+  /* Astra's final read 3 (1 Oct 26): a mark pointing ACROSS the week's edge was waved through whole — its warning is in a
+     week that is not loaded, so it cannot be looked up; but it can still be checked against ITSELF. Mis-filed (the wrong
+     man, the wrong rule, another sentence) it would never match next Monday's hide key, and Sunday's dotted mark would
+     stay when that warning is hidden — the same silent miss the guard exists for. */
+  it('a mark that crosses the week\'s edge is checked against itself: the man, the rule and the words', () => {
+    const base = { byDay: [], marks: [] as any[] }
+    const one = (t: any) => markOrphans({ ...base, traces: [t] })
+    expect(one({ pdi: 6, id: 'bane', t: { msg: 'x' }, w: { di: null, code: 'CREW_REST', who: ['bane'], msg: 'x' } }), 'a sound crew-rest mark').toEqual([])
+    expect(one({ pdi: 6, id: 'bane', t: { run: { di: null, n: 7 } }, w: { di: null, code: 'DAYS_RUN', who: ['bane'], msg: 'seven' } }), 'a sound run mark').toEqual([])
+    expect(one({ pdi: 6, id: 'bane', t: { msg: 'x' }, w: { di: null, code: 'CREW_REST', who: ['wolf'], msg: 'x' } })[0], 'the wrong man').toMatch(/does not name him/)
+    expect(one({ pdi: 6, id: 'bane', t: { msg: 'x' }, w: { di: null, code: 'CREW_TIGHT', who: ['bane'], msg: 'x' } })[0], 'the wrong rule').toMatch(/filed under CREW_TIGHT/)
+    expect(one({ pdi: 6, id: 'bane', t: { run: { di: null, n: 7 } }, w: { di: null, code: 'CREW_REST', who: ['bane'], msg: 'seven' } })[0], 'a run mark under another rule').toMatch(/filed under CREW_REST/)
+    expect(one({ pdi: 6, id: 'bane', t: { msg: 'x' }, w: { di: null, code: 'CREW_REST', who: ['bane'], msg: 'y' } })[0], 'another sentence').toMatch(/words differ/)
+    expect(one({ pdi: 6, id: 'bane', t: { msg: 'x' }, w: { di: null, code: '', who: ['bane'], msg: 'x' } })[0], 'no rule at all').toMatch(/names no warning code/)
   })
 })
 

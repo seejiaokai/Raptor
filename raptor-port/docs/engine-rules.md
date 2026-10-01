@@ -2609,6 +2609,13 @@ stay LIVE (below), which the face draws from today and which never make the day 
   pass stay as the rules raised them. A hide of a warning only the working copy has goes out with the edit that raised
   it; a stale hide (its warning no longer raised) pends nothing. Unpublish falls back to the version before; "Load onto
   working copy" sets the day's hides to the loaded version's (`HOOKS.setDayHides`).
+  **A LIVE warning's hide keys on the WORKING copy's wording** (Fable's final read, 1 Oct 26 — inherent in "tied to that
+  exact warning"): where the issued face words the same live warning differently because a published NEIGHBOUR day has
+  an unpublished change (Tuesday's crew-rest breach quoting Monday's new end time on the working copy, the issued one
+  on the face), the line is struck on Edit Schedule, nothing reads pending for it, and the face keeps the flag until
+  that neighbour's amendment is out and the two wordings meet. The face is right: it is a different sentence.
+  **The cross-week reads are once per saved copy** (`weekctx.ts dayHidesIn`, remembered against the saved week's own
+  string — Fable's final read F1): the face is asked on every repaint and must not parse next week's saved copy each time.
 - **What stays LIVE on the face — drawn from today's judgement, never stored, never compared, so it alone never makes the
   day pending (`validate.ts LIVE_ON_FACE`, and the next-day mark):**
   - the dotted "breaks tomorrow's crew rest" mark and its run twin (`trace` — owner D183, "should be live to see the

@@ -16,29 +16,42 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/warn-hide-kept -->
-### `claude/warn-hide-kept` — `[WARN-HIDE-KEPT]` the hidden-warnings change (D469, D471, D472): the picture APPROVED (D475), the plan being written — written 1 Oct 26 — verify before use
+### `claude/warn-hide-kept` — `[WARN-HIDE-KEPT]` BUILT and FULL-checked; waiting for HIS LOOK and "merge live" — written 1 Oct 26 — verify before use
 - **Where it started:** his opening line — tidy the merged phase 7 block away (PR #477, live), then build `[WARN-HIDE-KEPT]`
-  on a new branch cut from `main`: a picture to him first, then the build, with its own FULL bug check. No new ruling in it.
-- **Done so far:** the phase 7 block removed (its residue was all filed — checked item by item); the mock-up
-  `raptor-port/docs/mock/warn-hide.html` (pictures `raptor-port/docs/mock/img/warn-hide/`, made by
-  `raptor-port/scripts/handpass/wh-mock.mjs` from the real built app at 2x) published to him as an Artifact page
-  (https://claude.ai/artifact/5cBtGP2gHysgB5VbvuTGUZ — private to him). It shows the struck-out line on Edit Schedule and the
-  Scheduler Board, desktop and phone, the puck without its flag, View-only Sched, and a day with every issue hidden.
-- **Three calls put to him on that page — all approved as drawn (D475, "The mock up looks good. Proceed"):** (1) View-only Sched shows the struck-out line too,
-  without the ↺; (2) a day with every issue hidden keeps a quiet "✓ No issues" bar that opens the list; (3) the look of
-  the hidden line (struck out, grey, dashed outline on Edit Schedule, the ↺ at full strength).
-- **Unfinished:** the plan (`raptor-port/docs/superpowers/plans/2026-10-01-warn-hide-kept-plan.md`) and its red team (both reviewers — saved data and the published
-  record); the build; the FULL check; his look; "merge live".
-- **Parallel (D302):** rulings: D475 used here (D474 was the last on `main`) — a next chat takes D476 on; observations #408 on. No other
-  open branch known when written.
-- **Pick up here:** `OUTSTANDING.md` `[WARN-HIDE-KEPT]`; the three rulings' full rows in `.claude/decisions-full/scheduler.md`.
+  (D469, D471, D472) on a new branch cut from `main`: a picture to him first, then the build, with its own FULL bug check.
+- **Done:** the picture approved as drawn (D475); the plan, red-teamed by both (v2); the build; the FULL check — Astra's 44
+  scenarios walked by three walkers at desktop and phone, what they found fixed red first (the board's stand-by seat, the
+  load's count, the To go out line's tap, a gap in the changes window), the re-walk, both final reads (Astra REVISE, Fable
+  APPROVE — every finding fixed but one question left to him), the gates twice. One pull request is open for the branch
+  (`gh pr view claude/warn-hide-kept`); its `vercel[bot]` comment carries the preview link he looks at.
+- **The evidence and his look card:** `raptor-port/docs/handpass/2026-10-01-warn-hide-check.md` (§11 is the card — five things to
+  see, three to answer). What the app now does: `raptor-port/docs/ui-contracts.md` §Muting a check.
+- **Waiting on him:** (1) his look on the preview; (2) his answers to two questions, neither blocks the merge —
+  `[INSIGHTS-WHICH-COPY]` (on View-only Sched, should Insights count the published schedule? Astra would change it) and
+  `[WARN-HIDE-DROP-NOTE]` (the amber "already on …" note after a drop that recreates a hidden clash); (3) "merge live".
+  **Never merge without those two words** — then carry it to live on Vercel (D143) and tell him once.
+- **After the merge:** `[WARN-HIDE-KEPT]` leaves `OUTSTANDING.md` by the script (its lasting facts are in the docs named in its
+  item); this block is removed at the next handoff.
+- **A ruling this chat also recorded — D476 ("Trial"):** on the NEXT walk, one extra walker runs on Sonnet 5.5 beside the Opus
+  ones, on the same scenarios, and the comparison goes to him (`OUTSTANDING.md` `[SONNET-WALKER-TRIAL]`;
+  `raptor-port/docs/bug-check-order.md` §4). Nothing else goes to a cheaper model until he rules on it. He was at 88% of his
+  weekly allowance when this was written (resets about 5 Oct) — keep heavy work for after it unless he says otherwise, and
+  start new chats on HIGH thinking (this one ran on extra-high; changing it mid-chat would have re-read the whole chat).
+- **Traps met:** (1) code or text with backslashes passed through a shell heredoc arrives mangled, and exits 0 — hit five
+  times here, a helper's script included (observations 411, 415): write the script with the Write tool and run the file.
+  (2) The browser tests rebuild `raptor-port/dist` themselves when nothing serves port 4173; a walk is served from its own
+  frozen copy (`raptor-port/dist-wh`, ports 4211–4214 in `.claude/launch.json`), re-frozen only between walks. (3) A browser
+  test of where a view LANDS must wait until the page has stopped moving, then look once (observation 416).
+- **Parallel (D302):** rulings D475 and D476 used here (D474 was the last on `main`) — a next chat takes D477 on; observations
+  #408–#416 used, #417 on. No other open branch known when written.
+- **Pick up here:** `OUTSTANDING.md` `[WARN-HIDE-KEPT]`; the evidence sheet above.
 <!-- /now -->
 
 ## Next, in order
 
 0. **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now"):** the app's features are built first; after
    phase 7 no more database-readiness work until then; the table list (`raptor-port/docs/data-model.md`) is kept up to date as
-   each feature is added, and he — with his AI — writes the table format for the IT side to enter. Next job: `[WARN-HIDE-KEPT]`.
+   each feature is added, and he — with his AI — writes the table format for the IT side to enter. `[WARN-HIDE-KEPT]` is BUILT and FULL-checked (1 Oct 26, `claude/warn-hide-kept`) — waiting for his look and "merge live"; the next job after it is his to name from `OUTSTANDING.md`'s priority list.
    *Done while the step was "starting now" (29 Sep – 1 Oct 26):* `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
    `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7, the small OIL follow-ups, BUILT and FULL-checked 1 Oct 26 (`…/2026-10-01-dbr-phase7-check.md`) and MERGED the same day on his "merge live" (PR #477) — group A is closed (D453); `[WARN-HIDE-KEPT]` (D469, D471, D472) under way on `claude/warn-hide-kept`, its picture approved 1 Oct 26 (D475). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
@@ -62,8 +75,8 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 1 Oct 26, `claude/db-readiness-p7-oil-followups` (merged, PR #477 — phase 7 with every fix of its FULL check and
-both final reads), under the PC lock: unit **7487 / 7487** (469 files) · build clean · tfin **728 / 0** · e2e **510 passed,
+The latest counts watched — 1 Oct 26, `claude/warn-hide-kept` (`[WARN-HIDE-KEPT]` with every fix of its FULL check and both final
+reads; not yet merged), under the PC lock: unit **7553 / 7553** (473 files) · build clean · tfin **728 / 0** · e2e **518 passed,
 0 failed**, 49 skipped · smoke **445 / 0** · rulecheck OK (notes `AM39d` now covered — older, left) · docsize OK (OVER, deferred
 — D29) · perf **4 / 0** (board DOM 1024 ≤ 1150, week 5134 ≤ 5450). Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:

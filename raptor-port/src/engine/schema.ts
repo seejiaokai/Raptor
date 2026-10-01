@@ -532,7 +532,7 @@ export type WarnSlice = {
 export type DayDraft = { id: string; name: string; d: Day; sign?: SignSet; signBind?: Partial<Record<keyof SignSet, SignBinding>> }
 
 /** One canonical delta entry in an AL's frozen `diff` — engine (canonical.ts `DeltaEntry`). */
-export type AlDiffEntry = { addr: string; kind: 'add' | 'delete' | 'change' | 'move' | 'input' | 'oil' | 'warn'; from?: any; to?: any }
+export type AlDiffEntry = { addr: string; kind: 'add' | 'delete' | 'change' | 'move' | 'input' | 'oil' | 'warn' | 'hide'; from?: any; to?: any }   // hide: a warning hidden or flagged again (D471) — addr `hide:<di>.<fingerprint of its key>`, from / to `shown` / `hidden`
 
 /** One published amendment (SCHED.als[i]) — engine (`alIssue`). Phase 2: SINGLE-DAY,
  *  identified by its immutable verId; `diff` replaces the old `keys` list. */

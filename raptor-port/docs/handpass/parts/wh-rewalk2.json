@@ -1,0 +1,366 @@
+{
+ "parts": {
+  "s40-dk": {
+   "at": "2026-10-01T11:35:29.523Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "40.0",
+     "did": "Tuesday signed and published (Original), nothing hidden — the counts before",
+     "saw": "✓ published [[{\"pressed\":true,\"label\":\"Publish day\"},\"ORIG\"]] · ✓ the chip does not say pending [5 changes] · ✓ no marker [] · ✓ no Publish AL button [null] · ✓ Amendments names no day [{\"line\":\"No pending changes\",\"days\":[],\"list\":\"No amendments published yet — publish a day, edit it, then publish an AL.\",\"shown\":true}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s40-0-published.png"
+     ]
+    },
+    {
+     "id": "40.1",
+     "did": "✕ on Static's long work day; then the day's chip, the marker, the sign-offs, the button, the Amendments panel, the changes window (\"To go out\")",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":true}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 6\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/1] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:34 flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:34 flagged → hidden\"]] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the four sign-offs are empty [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ Publish AL1 is locked until the four sign (day head and Amendments) [[{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"},[{\"text\":\"Tue · 1 change\",\"btn\":\"Publis]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s40-1-one-hide-head.png",
+      "dk-04-s40-pend-togoout.png",
+      "dk-06-s40-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "40.1g",
+     "did": "the changes window, \"All changes\": where the hide is listed",
+     "saw": "✓ a line says who hid the warning [[\"▾ The day · 6 19:34 Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief\"]] · ✓ it sits under the group \"The day\" [[\"The day · 6\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s40-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "40.1t",
+     "did": "a tap on the \"Warning · … flagged → hidden\" line in \"To go out\" (Astra: it lands on the struck line)",
+     "saw": "✓ the line can be tapped (it is a button) [Go to this change] · ✓ the tap lights something on the schedule [{\"flash\":\"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:0\",\"flashIsLine\":true,\"listOpen\":true,\"y\":247,\"wfoc\":1,\"befor]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s40-pend-tapped.png"
+     ]
+    },
+    {
+     "id": "40.2",
+     "did": "the four sign-off selects over the pending hide",
+     "saw": "✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 10\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/1] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:34 flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:34 flagged → hidden\"]] · ✓ the marker now reads Not yet published [Not yet published] · ✓ the four are signed [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ Publish AL1 is unlocked (day head and Amendments) [[{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"},[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s40-2-signed.png",
+      "dk-08-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.3",
+     "did": "✕ on a second warning (Saint's clash) while the four are signed",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day's chip reads 2 pending [2 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 2 changes [[\"1 day with changes to publish\",[{\"text\":\"Tue · 2 changes\",\"btn\":\"Publish AL1\",\"locked\":true}]]] · ✓ the window's heading says 2 changes waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 2 changes waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 2 [[\"New to you 0\",\"All changes 11\",\"To go out · AL1 2 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 2 changes\" and holds 2 lines [[\"Waiting to go out as AL1 · 2 changes\",[\"Warning · Saint — VL SAT & APPOINTMENT clash Saber 1/10 19:35 flagged → hidden\",\"Warning · Static — Static has a long ] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Saint — VL SAT & APPOINTMENT clash Saber 1/10 19:35 flagged → hidden\",\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last lan] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Saint — VL SAT & APPOINTMENT clash Saber 1/10 19:35 flagged → hidden\",\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last lan] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ the marker is back to Not yet signed [Not yet signed]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s40-3-two-hides.png",
+      "dk-11-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.3t",
+     "did": "the changes window, \"To go out\": a tap on each \"Warning · … flagged → hidden\" line (the plan: \"a tap takes the view to the line of the warning\"; Astra 40: \"tapping it lands on the struck line\")",
+     "saw": "✓ the clash line (it names a seat) can be tapped [{\"text\":\"Warning · Saint — VL SAT & APPOINTMENT clash Saber 1/10 19:35 flagged → hidden\",\"button\":true,\"title\":\"Go to this change\"}] · ✓ the tap lights something on Tuesday [{\"lit\":{\"tag\":\"DIV\",\"cls\":\"witem hard on hid chgflash\",\"text\":\"Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ↺\",\"day\":1,\"isWarnLine\":true,\"is] · ✓ what it lights is the struck warning line in the day list (Astra 40) [it lit DIV \"Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ↺\"; the day list opened] · ✓ the long-work-day line (it names no seat) can be tapped [{\"text\":\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:34 flagged → hidden\",\"butto] · ✓ that tap lights something on Tuesday [{\"lit\":{\"tag\":\"DIV\",\"cls\":\"witem note on hid chgflash\",\"text\":\"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-s40-3t-tap-clash-line.png",
+      "dk-15-s40-3t-tap-longday-line.png"
+     ]
+    },
+    {
+     "id": "40.3r",
+     "did": "RECORDED — where each tap landed, and the hint the window shows under the list",
+     "saw": "clash line: a button → lit the warning line \"Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ↺\", the day's list opened · long-work-day line: a button → lit \"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h deb\", the day's list opened · hint: \"Tap a change to go to it.\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-14-s40-3t-tap-clash-line.png",
+      "dk-15-s40-3t-tap-longday-line.png"
+     ]
+    },
+    {
+     "id": "40.4",
+     "did": "↺ on Saint's clash — back to one hidden warning",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 12\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/1] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:34 flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:34 flagged → hidden\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-s40-4-back-to-one.png",
+      "dk-16-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.4s",
+     "did": "RECORDED — the sign-offs after the second hide was taken back (the day is again exactly what the four signed)",
+     "saw": "marker \"Not yet published\" · sign-offs [Ace | Anvil | Anvil | Anvil]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-18-s40-4-back-to-one.png"
+     ]
+    },
+    {
+     "id": "40.5",
+     "did": "the four sign-off selects, Publish AL1; then the Amendments panel's list and the ⓘ panel's \"AL versions covering Tuesday\"",
+     "saw": "✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1, nothing pending, no marker [[\"AL1\",\"17 changes\",\"\"]] · ✓ Amendments lists AL1 with ONE item [AL1 Tue · 1 item · appr Anvil] · ✓ the ⓘ panel lists AL1 with ONE item [AL1 1 item]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-s40-5-after-AL1.png",
+      "dk-21-s40-5-dayinfo-AL1.png"
+     ]
+    },
+    {
+     "id": "40.6",
+     "did": "↺ on the long work day after AL1 went out with it hidden",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the chip reads 1 pending [1 pending] · ✓ the button reads Publish AL2 [{\"label\":\"Publish AL2\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL2\"}] · ✓ \"To go out\" holds ONE line [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:35 hidden → flagged again\"]] · ✓ it reads \"Warning · … hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:35 hidden → flagged again\"]] · ✓ the marker reads Not yet signed [Not yet signed]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-s40-6-flag-again-pending.png",
+      "dk-23-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.7",
+     "did": "✕ on it again — the day is back to what AL1 went out with",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ nothing pending [19 changes] · ✓ no marker [] · ✓ no Publish AL button [] · ✓ the line is struck again [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-26-s40-7-back-to-nothing.png"
+     ]
+    },
+    {
+     "id": "40.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s40-ph": {
+   "at": "2026-10-01T11:36:11.963Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "40.0",
+     "did": "Tuesday signed and published (Original), nothing hidden — the counts before",
+     "saw": "✓ published [[{\"pressed\":true,\"label\":\"Publish day\"},\"ORIG\"]] · ✓ the chip does not say pending [5 changes] · ✓ no marker [] · ✓ no Publish AL button [null] · ✓ Amendments names no day [{\"line\":\"No pending changes\",\"days\":[],\"list\":\"No amendments published yet — publish a day, edit it, then publish an AL.\",\"shown\":false}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-s40-0-published.png"
+     ]
+    },
+    {
+     "id": "40.1",
+     "did": "✕ on Static's long work day; then the day's chip, the marker, the sign-offs, the button, the Amendments panel, the changes window (\"To go out\")",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":true}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 6\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/1] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:35 flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:35 flagged → hidden\"]] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the four sign-offs are empty [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ Publish AL1 is locked until the four sign (day head and Amendments) [[{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"},[{\"text\":\"Tue · 1 change\",\"btn\":\"Publis]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-s40-1-one-hide-head.png",
+      "ph-04-s40-pend-togoout.png",
+      "ph-06-s40-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "40.1g",
+     "did": "the changes window, \"All changes\": where the hide is listed",
+     "saw": "✗ a line says who hid the warning [[]] · ✗ it sits under the group \"The day\" [[]]",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-06-s40-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "40.1t",
+     "did": "a tap on the \"Warning · … flagged → hidden\" line in \"To go out\" (Astra: it lands on the struck line)",
+     "saw": "✓ the line can be tapped (it is a button) [Go to this change] · ✓ the tap lights something on the schedule [{\"flash\":\"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:0\",\"flashIsLine\":true,\"listOpen\":true,\"y\":240,\"wfoc\":1,\"befor]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-s40-pend-tapped.png"
+     ]
+    },
+    {
+     "id": "40.2",
+     "did": "the four sign-off selects over the pending hide",
+     "saw": "✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 10\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/1] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:35 flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:35 flagged → hidden\"]] · ✓ the marker now reads Not yet published [Not yet published] · ✓ the four are signed [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ Publish AL1 is unlocked (day head and Amendments) [[{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"},[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-s40-2-signed.png",
+      "ph-08-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.3",
+     "did": "✕ on a second warning (Saint's clash) while the four are signed",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day's chip reads 2 pending [2 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 2 changes [[\"1 day with changes to publish\",[{\"text\":\"Tue · 2 changes\",\"btn\":\"Publish AL1\",\"locked\":true}]]] · ✓ the window's heading says 2 changes waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 2 changes waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 2 [[\"New to you 0\",\"All changes 11\",\"To go out · AL1 2 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 2 changes\" and holds 2 lines [[\"Waiting to go out as AL1 · 2 changes\",[\"Warning · Saint — VL SAT & APPOINTMENT clash Saber 1/10 19:35 flagged → hidden\",\"Warning · Static — Static has a long ] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Saint — VL SAT & APPOINTMENT clash Saber 1/10 19:35 flagged → hidden\",\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last lan] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Saint — VL SAT & APPOINTMENT clash Saber 1/10 19:35 flagged → hidden\",\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last lan] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ the marker is back to Not yet signed [Not yet signed]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-13-s40-3-two-hides.png",
+      "ph-11-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.3t",
+     "did": "the changes window, \"To go out\": a tap on each \"Warning · … flagged → hidden\" line (the plan: \"a tap takes the view to the line of the warning\"; Astra 40: \"tapping it lands on the struck line\")",
+     "saw": "✓ the clash line (it names a seat) can be tapped [{\"text\":\"Warning · Saint — VL SAT & APPOINTMENT clash Saber 1/10 19:35 flagged → hidden\",\"button\":true,\"title\":\"Go to this change\"}] · ✓ the tap lights something on Tuesday [{\"lit\":{\"tag\":\"DIV\",\"cls\":\"witem hard on hid chgflash\",\"text\":\"Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ↺\",\"day\":1,\"isWarnLine\":true,\"is] · ✓ what it lights is the struck warning line in the day list (Astra 40) [it lit DIV \"Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ↺\"; the day list opened] · ✓ the long-work-day line (it names no seat) can be tapped [{\"text\":\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:35 flagged → hidden\",\"butto] · ✓ that tap lights something on Tuesday [{\"lit\":{\"tag\":\"DIV\",\"cls\":\"witem note on hid chgflash\",\"text\":\"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h ]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-s40-3t-tap-clash-line.png",
+      "ph-15-s40-3t-tap-longday-line.png"
+     ]
+    },
+    {
+     "id": "40.3r",
+     "did": "RECORDED — where each tap landed, and the hint the window shows under the list",
+     "saw": "clash line: a button → lit the warning line \"Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ↺\", the day's list opened · long-work-day line: a button → lit \"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h deb\", the day's list opened · hint: \"Tap a change to go to it.\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-14-s40-3t-tap-clash-line.png",
+      "ph-15-s40-3t-tap-longday-line.png"
+     ]
+    },
+    {
+     "id": "40.4",
+     "did": "↺ on Saint's clash — back to one hidden warning",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 12\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/1] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:35 flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:35 flagged → hidden\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-18-s40-4-back-to-one.png",
+      "ph-16-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.4s",
+     "did": "RECORDED — the sign-offs after the second hide was taken back (the day is again exactly what the four signed)",
+     "saw": "marker \"Not yet published\" · sign-offs [Ace | Anvil | Anvil | Anvil]",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-18-s40-4-back-to-one.png"
+     ]
+    },
+    {
+     "id": "40.5",
+     "did": "the four sign-off selects, Publish AL1; then the Amendments panel's list and the ⓘ panel's \"AL versions covering Tuesday\"",
+     "saw": "✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1, nothing pending, no marker [[\"AL1\",\"17 changes\",\"\"]] · ✓ Amendments lists AL1 with ONE item [AL1 Tue · 1 item · appr Anvil] · ✓ the ⓘ panel lists AL1 with ONE item [AL1 1 item]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-22-s40-5-after-AL1.png",
+      "ph-21-s40-5-dayinfo-AL1.png"
+     ]
+    },
+    {
+     "id": "40.6",
+     "did": "↺ on the long work day after AL1 went out with it hidden",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the chip reads 1 pending [1 pending] · ✓ the button reads Publish AL2 [{\"label\":\"Publish AL2\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL2\"}] · ✓ \"To go out\" holds ONE line [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:36 hidden → flagged again\"]] · ✓ it reads \"Warning · … hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Saber 1/10 19:36 hidden → flagged again\"]] · ✓ the marker reads Not yet signed [Not yet signed]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-25-s40-6-flag-again-pending.png",
+      "ph-23-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.7",
+     "did": "✕ on it again — the day is back to what AL1 went out with",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ nothing pending [19 changes] · ✓ no marker [] · ✓ no Publish AL button [] · ✓ the line is struck again [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-26-s40-7-back-to-nothing.png"
+     ]
+    },
+    {
+     "id": "40.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "06-dk": {
+   "at": "2026-10-01T11:36:57.069Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "6.1",
+     "did": "the board on Sunday 19 Jul: duty block → \"+ Row\", Ranger from the crew list onto it, role and times typed (15:00–23:00); ✓ Done; Edit Schedule, Sunday",
+     "saw": "✓ before the duty his Sunday puck carried no mark and the Sunday list no \"Breaks Monday\" line [puck sm] · ✓ the row took him and its times [{\"role\":\"LATE DUTY\",\"str\":\"15:00\",\"end\":\"23:00\",\"who\":[\"bane\"]}] · ✓ his Sunday puck now wears the dotted mark [puck sm boxdot oilbar oilbar-fo] · ✓ with the crew-rest chip (R) [R] · ✓ and the Sunday list has the \"Breaks Monday\" line for Ranger [⚠ 1 issue · tap to collapse ▲ Breaks Monday Ranger — had to leave by 18:20. Crew rest breach — Sunday ended 23:00 → crew]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-06-1-sunday-duty-added.png"
+     ]
+    },
+    {
+     "id": "6.2",
+     "did": "week chip \"Jul 20\": Monday 20 Jul's list",
+     "saw": "✓ Monday raises a Crew rest line for Ranger [Conflict — two events at once Outlaw — R / Conflict — two events at once Vapor — AP / Crew rest (<12h) Ranger — Crew rest brea / Tight turn Ranger — Tight turn ] · ✓ it is plain, with ✕ · ✓ Monday reads 11 issues [⚠ 11 issues · 3 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-06-2-monday-crew-rest-line.png"
+     ]
+    },
+    {
+     "id": "6.3",
+     "did": "✕ on Monday 20 Jul's Crew rest line (a draft Monday); week chip back to \"Jul 13\"; Sunday on Edit Schedule and on View-only Sched",
+     "saw": "✓ Monday: struck, ↺, 10 issues [⚠ 10 issues · 2 warning · tap to collapse ▲] · ✓ Sunday (Edit Schedule): the dotted mark is gone [puck sm oilbar oilbar-fo] · ✓ and the crew-rest chip is gone [] · ✓ and the Sunday list no longer has the \"Breaks Monday\" line [⚠ 1 issue · tap to collapse ▲ OIL waiting — this day is not published This day is not published yet,] · ✓ Ranger is still on the duty row [1] · ✓ Sunday (View-only Sched): no dotted mark, no CR chip [puck sm oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-06-3-monday-hidden.png",
+      "dk-04-06-4-sunday-after-monday-hide.png",
+      "dk-05-06-5-sunday-viewonly.png"
+     ]
+    },
+    {
+     "id": "6.3n",
+     "did": "Sunday's own list after the hide (recorded)",
+     "saw": "Ranger's Sunday puck: no dotted mark, chip \"\" · Sunday's list has no \"Breaks Monday\" line · before the hide: Ranger's Sunday puck: DOTTED, chip \"R\" · Sunday's list has a \"Breaks Monday\" line",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "6.4",
+     "did": "reloaded (the app opens on the week of 13 Jul — the week of 20 Jul not opened in this sitting); Sunday",
+     "saw": "✓ the app opened on 13 Jul [13/07/2026] · ✓ no dotted mark [puck sm oilbar oilbar-fo] · ✓ no crew-rest chip [] · ✓ no \"Breaks Monday\" line [⚠ 1 issue · tap to collapse ▲ OIL waiting — this day is not published This day is not published yet,]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-06-6-sunday-after-reload.png"
+     ]
+    },
+    {
+     "id": "6.5",
+     "did": "week of 20 Jul: ↺ on the struck Crew rest line; back to 13 Jul; Sunday",
+     "saw": "✓ Monday: plain again, 11 issues [⚠ 11 issues · 3 warning · tap to collapse ▲] · ✓ Sunday: the dotted mark is back [puck sm boxdot oilbar oilbar-fo] · ✓ with the crew-rest chip [R] · ✓ and the \"Breaks Monday\" line",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-06-7-sunday-after-flag-again.png"
+     ]
+    },
+    {
+     "id": "6.6",
+     "did": "reloaded again; Sunday",
+     "saw": "✓ the dotted mark, the chip and the \"Breaks Monday\" line are still there [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-06-8-sunday-flagged-reload.png"
+     ]
+    },
+    {
+     "id": "6.7",
+     "did": "unrelated hides: ✕ on Monday 20 Jul's \"CO approval required\" line; then ✕ on Sunday 19 Jul's own OIL reminder; Sunday",
+     "saw": "✓ Monday's Crew rest line still plain (10 issues: 11 less the unrelated one) [⚠ 10 issues · 3 warning · tap to collapse ▲] · ✓ Sunday keeps the dotted mark and CR chip after the unrelated Monday hide [puck sm boxdot oilbar oilbar-fo] · ✓ and after the hide of Sunday's own OIL reminder [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-06-9-sunday-after-unrelated-hides.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

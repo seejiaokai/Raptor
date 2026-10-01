@@ -18,7 +18,15 @@ export function markOrphans(raw:any):string[]{
   });
   ((raw.traces||[]) as any[]).forEach((t:any)=>{ const w=t.w;
     if(!w){ out.push(`next-day mark on day ${t.pdi} for ${t.id} names no warning`); return; }
-    if(w.di==null)return;   // it points across the week's edge: its warning is in a week that is not loaded
+    /* …and it must agree with ITSELF, whichever week it points into (Astra's final read 3): the rule it is filed under,
+       the man, and — for a crew-rest mark — the sentence it carries are exactly what next Monday's hide key is built
+       from (validate.ts shownOf `xHid`), so a mark mis-filed here would outlive that warning's hide, silently */
+    if(!w.code){ out.push(`next-day mark on day ${t.pdi} for ${t.id} names no warning code`); return; }
+    if(!(w.who||[]).includes(t.id)){ out.push(`next-day mark on day ${t.pdi} for ${t.id}: its ${w.code} warning does not name him`); return; }
+    const run=!!(t.t&&t.t.run), want=run?'DAYS_RUN':'CREW_REST';
+    if(w.code!==want){ out.push(`next-day mark on day ${t.pdi} for ${t.id} is filed under ${w.code}, but it is a ${want} mark`); return; }
+    if(!w.msg||(!run&&t.t&&w.msg!==t.t.msg)){ out.push(`next-day mark on day ${t.pdi} for ${t.id}: its words differ from its ${w.code} warning's`); return; }
+    if(w.di==null)return;   // it points across the week's edge: its warning is in a week that is not loaded — nothing to look up
     if(!warns(w.di).some((x:any)=>x.code===w.code&&(x.who||[]).includes(t.id)&&x.msg===w.msg))
       out.push(`next-day mark on day ${t.pdi} for ${t.id} points at a ${w.code} warning on day ${w.di} that is not there, word for word`);
   });

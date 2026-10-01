@@ -12,7 +12,7 @@ import { CURWEEK } from '../engine/waves'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
 import { SCHED } from '../engine/publish'
-import { workingWarn } from '../engine/validate'
+import { workingWarn, sevOf } from '../engine/validate'
 import { PLANPUCKS, DAYRMK } from './plan'
 import { initStore, writeText, weekStashSnap, weekDirty, loadWeek, resetSession } from './store'
 import { schedWriteValue, SCHED_TYPES } from './sched-commit'
@@ -152,8 +152,15 @@ describe('WH2 (D469) — hidden for everyone: a sign-in does not bring it back',
     tapHide(longDay())
     expect(globalUndo().ok, 'Undo ran').toBe(true)
     expect(view.warnShown(longDay()), 'flagged again by Undo').toBe(true)
+    /* …and on what every surface reads — the bundle as shown, not only the set (Fable's final read F4) */
+    await vi.advanceTimersByTimeAsync(0)
+    expect(!!longDay().off, 'the line is plain').toBe(false)
+    expect(sevOf(TUE, 'wolf'), 'his puck is flagged again').toBe('note')
     expect(globalRedo().ok, 'Redo ran').toBe(true)
     expect(view.warnShown(longDay()), 'hidden again by Redo').toBe(false)
+    await vi.advanceTimersByTimeAsync(0)
+    expect(longDay().off, 'the line is struck').toBe(true)
+    expect(sevOf(TUE, 'wolf'), 'his puck is plain').toBeFalsy()
     await reload(be)
     expect(view.warnShown(longDay()), 'the redone hide is what was saved').toBe(false)
   })

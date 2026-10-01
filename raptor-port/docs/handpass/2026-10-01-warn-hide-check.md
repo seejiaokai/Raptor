@@ -62,6 +62,11 @@ now reads "every warning, the hidden ones struck out" (D469 is the later ruling)
 | **After the walk** — the To go out line's tap lands on the warning's own line | `engine/publish.ts dayPendingItemsIn` (`warnline:<key>`), `ui/interactions.ts jumpToChange` → `jumpToWarnLine` | `state/warnhide-published.test.ts` "a tap on the pending line …" — red before the fix; `e2e/warnhide.spec.ts` "lands on the struck line" (both widths; break B31) |
 | **After the walk** — a history line's own words and its from → to keep a gap | `ui/ChangesWindow.tsx EntryLine` | `ui/histlist.test.tsx` — red before the fix |
 | **After the walk** — Undo of a hide refuses, naming who, after another person changed that day's hides; another day never blocks (D148) — the machinery was already right, now pinned for a hide | `undo/timeline.ts` (unchanged) | `state/sched-dayrecords.test.ts` "Undo of a hide, after another person changed that day's hides" |
+| **After the final reads** — a stored amendment's entry may be a `hide`: the declared shape says so | `engine/schema.ts AlDiffEntry`; `docs/data-schema.md` | `engine/schema.test.ts` "an amendment that carries a hidden warning …" — red before the fix |
+| **After the final reads** — a next-day mark is checked against itself (the man, the rule, the words), across the week's edge too | `engine/markcheck.ts` | `engine/warnhide.test.ts` "a mark that crosses the week's edge is checked against itself" — red before the fix |
+| **After the final reads** — next Monday's hides are worked out once per saved copy, not on every ask | `engine/weekctx.ts dayHidesIn` | `state/warnhide-published.test.ts` "next Monday's hides are read once per saved copy" — red before the fix |
+| **After the final reads** — the To go out line says who hid it and when | `ui/pendlist.ts pendItemWords` | `state/warnhide-published.test.ts` WH8's first test — red before the fix |
+| **After the final reads** — the run's forward mark follows next Monday's hide (already true; now tested); Undo / Redo judged on the bundle | — | `state/warnhide-published.test.ts` "the 7-day run's forward dotted mark …", both WH11 tests |
 
 ## 4. The roll-call — every place a warning is drawn, counted or flagged
 The thing this feature attaches to is A WARNING. This is a feature that takes marks AWAY, so the three columns are:
@@ -95,7 +100,7 @@ does the place **follow the hide** (seen in the running build), is it **named by
 | 23 | The Inputs calendar, the Medical view, OIL Earn mode, the Leave War, the Tracker | MUST NOT change, because none draws a warning flag — C 44, 44b (Leave War page, every OIL tracker figure, the saved rows: identical) | — | — |
 | 24 | The top-bar counters | MUST NOT exist (20 Aug 26) — A: no count of issues anywhere but the day's bar, the board's heading, the ⓘ popup, Insights and the ALL AVAIL footer | `ui/app.test.tsx` | — |
 | 25 | The ✕ / ↺ itself; a tap on a row | YES — A 21, 22, 25; C 31 (Undo / Redo from the top bar and the board) | `ui/warnmute-week.test.ts`, `state/warnmute.test.ts`, `e2e/warnhide.spec.ts` (the ↺ on top) | B29 |
-| 26 | **(added by the walk)** The To go out line "Warning · … flagged → hidden" and its tap | the line YES — B 40. **The tap: MISSING → FIXED** (finding 4); re-walked §5.3 | `state/warnhide-published.test.ts` ("a tap on the pending line …", red before the fix) | B10; the tap's by red-first |
+| 26 | **(added by the walk)** The To go out line "Warning · … flagged → hidden" and its tap | the line YES — B 40. **The tap: MISSING → FIXED** (finding 4); re-walked §5.3. **Who hid it and when: MISSING → FIXED** (Fable's final read F2, §10) | `state/warnhide-published.test.ts` ("a tap on the pending line …", red before the fix) | B10; the tap's by red-first |
 | 27 | **(added by the walk)** The change history's line for a hide | YES — C 30 (who and when, under "Tue · The day"). Its words ran into "hidden → flagged again" with no gap → FIXED (finding 6) | `state/warnhide-published.test.ts` (WH11), `ui/histlist.test.tsx` (red before the fix) | B25 |
 
 **The door check.** Hide: ✕ on a shown line — Edit Schedule's list and the board's panel, a scheduler, the working copy
@@ -228,10 +233,47 @@ None — no console error, page error, failed request or native dialog in any ru
 - **Hides stored by an older build** — not a finding, by ruling (D56): they stop matching, and the data is cleared.
 
 ## 9. The gates
-GATES_BLOCK
+Watched, 1 Oct 26, under the PC lock — TWICE: on the code after the walk's fixes (commit 293eaa1f), and again on the FINAL code, after the two final reads' fixes. The final run:
 
-## 10. The two final reads
-READS_BLOCK
+| Gate | Result |
+|---|---|
+| Unit tests | **7553 / 7553** (473 files) — 7549 on the first run, before the reads' four new tests |
+| Build (typecheck + build) | clean |
+| The original's assertions (`tfin`) | **728 / 0** |
+| Browser tests (e2e) | **518 passed**, 0 failed, 49 skipped |
+| The Tracker's browser suite | **445 / 0** |
+| Rule check | OK (WH1–WH13 each named by a test) |
+| Document check | OK — every record accounted for; over its size tripwire by 903, deferred (D29: a code change never trims a document; `[DOCS-SIZE-PASS]`) |
+| Speed check | **4 / 0** — board 1024 nodes ≤ 1150, week 5134 ≤ 5450 |
+
+The first run read the same on every other line (tfin 728 / 0, e2e 518, smoke 445 / 0, perf 4 / 0).
+
+## 10. The two final reads — both providers, blind to each other (D353: the published record and saved data)
+Each was handed the finished code (commit 293eaa1f), this sheet and the brief
+`docs/superpowers/briefs/2026-10-01-warn-hide-kept-final-read-brief.md`; neither saw the other's report.
+
+| Reader | Verdict | Report |
+|---|---|---|
+| ASTRA | **REVISE** — 2 medium, 1 low; nothing wrong found in the engine, the published record, saved state or the other readers | `docs/superpowers/briefs/2026-10-01-warn-hide-kept-final-read-astra.md` |
+| FABLE | **APPROVE** — 1 medium (a cost, not a wrong answer), 5 low; "no wrong flag, wrong count, wrong face, or lost / doubled hide found" | `docs/superpowers/briefs/2026-10-01-warn-hide-kept-final-read-fable.md` |
+
+**Every finding, and its disposition** (each reproduced against the code before acting; new with this branch unless said):
+
+| Finding | Who | Disposition |
+|---|---|---|
+| View-only Sched's Insights counts the WORKING copy, so a hide still waiting to go out already lowers it beside a published day that still shows the flag (MEDIUM) | Astra 1 | **CONFIRMED — LEFT FOR HIM.** Insights has always read the working copy on every page (a seat change waiting on a published day moves it the same way); what is new is that a hide now moves it too. Which copy Insights should count there is a product question — `[INSIGHTS-WHICH-COPY]`, first on his look card. Astra would make it follow the published day |
+| The declared shape of a stored amendment's entries omitted the new kind `hide`, though the app saves it (MEDIUM / LOW) | Astra 2, Fable F5 — both | **FIXED, red first** — `engine/schema.ts AlDiffEntry`, the spec in `engine/schema.test.ts`, and a test that publishes, hides, issues the amendment and conforms it (it failed on the missing kind); `docs/data-schema.md` says so (D473) |
+| The marks guard waved through any mark pointing across the week's edge (LOW) | Astra 3 | **FIXED, red first** — every next-day mark is now checked against itself (the man, the rule, the words) before the cross-week skip (`engine/markcheck.ts`); `engine/warnhide.test.ts` "a mark that crosses the week's edge is checked against itself" |
+| Next week's whole saved copy was parsed again on every ask for the face once a mark crossed the week's edge — a cost on every repaint, nothing wrong on screen (MEDIUM) | Fable F1 | **FIXED, red first** — the answer is remembered against the saved copy itself (`engine/weekctx.ts dayHidesIn`); `state/warnhide-published.test.ts` "next Monday's hides are read once per saved copy" |
+| The To go out line of a hide named nobody and no time, though the change history knew (LOW) | Fable F2 | **FIXED, red first** — `ui/pendlist.ts pendItemWords` reads the history's own line; asserted in WH8's first test; re-walked (below) |
+| The 7-day run's forward dotted mark following next Monday's hide was promised and neither tested nor walked (LOW, a test gap) | Fable F3 | **TESTED — it holds.** `state/warnhide-published.test.ts` "the 7-day run's forward dotted mark follows next Monday's hide as well": Saint on six days running and next Monday; the mark carries Monday's own sentence, goes with its hide and returns. WH12's wording names it |
+| The Undo / Redo tests judged the set of hides, not the bundle every surface reads (LOW, tests) | Fable F4 | **STRENGTHENED** — both WH11 tests now also assert the line's `off` and the puck's flag after Undo and after Redo |
+| A LIVE warning worded differently on the working copy and on the issued face (a published neighbour with an unpublished change) is struck on Edit Schedule while the face keeps the flag until the neighbour's amendment is out (LOW, an observation — inherent in "tied to that exact warning") | Fable F6 | **RECORDED** — one paragraph in `docs/engine-rules.md` beside the hides axis. No code |
+
+**Re-walked after these fixes** (the build rebuilt and re-frozen; pictures `docs/img/handpass/2026-10-01-warn-hide/rewalk2/`,
+results `docs/handpass/parts/wh-rewalk2.json`): scenario 40 at both widths — the To go out line now carries who hid it
+and when; scenario 6 on the desktop — Sunday's "Breaks Monday" mark still follows next Monday's hide with the answer
+remembered. **30 steps PASS, 61 pictures, no error on screen** (`rewalk2/dk-04-s40-pend-togoout.png`: "Warning · Static — … flagged → hidden · Saber · 1/10 19:34"); the one line left reading FAIL is the phone script's order again (§5.3).
 
 ## 11. His look — the "look here" card (five minutes, on the preview link)
 Written as what he should expect to see, in the app's own words. The demo Tuesday (14 Jul) has four issues.
@@ -247,9 +289,10 @@ Written as what he should expect to see, in the app's own words. The demo Tuesda
 5. **On his own iPhone:** the struck line and its ↺ — is the ↺ easy to hit, is the grey readable?
 
 **Three things for him to answer, none blocks the merge:**
+- On View-only Sched, Insights counts the working copy, so while a hide waits to go out it reads one issue fewer than
+  the published day beside it. Should it count the published schedule there? Astra's final read rates this the one
+  thing it would change (medium); it has always worked this way for every other waiting change. (`[INSIGHTS-WHICH-COPY]`)
 - A drop that recreates a clash he already hid shows a small amber note ("Saint — already on APPOINTMENT 14:00–16:00"),
   though the warning itself stays hidden and silent. Keep the note, or silence it too? (`[WARN-HIDE-DROP-NOTE]`)
-- On View-only Sched, Insights counts the working copy, so while a hide waits to go out it reads one issue fewer than
-  the published day beside it. Should it count the published schedule there? (`[INSIGHTS-WHICH-COPY]`)
 - Known limit until the database: two browser tabs open at once overwrite each other's saves, a hide included; and
   Undo's "someone else changed this" refusal can only be seen for real once there is a shared database (it is tested).

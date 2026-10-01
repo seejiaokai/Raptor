@@ -49,6 +49,9 @@ import { pendListHTML } from '../ui/pendlist'
 import { dayWarnHTML } from '../ui/html'
 import { peekWeekHTML } from '../ui/peek'
 import { jumpToChange } from '../ui/interactions'
+import { pendItemWords } from '../ui/pendlist'
+import { nextMondayHides } from '../engine/weekctx'
+import { elogWho } from '../engine/editlog'
 import { ensureRowIds } from '../engine/rowids'
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -125,6 +128,13 @@ describe('WH8 (D471) — a hide on a published day is ONE pending change, on eve
     expect(list).toContain('1 change')
     expect(list).toContain('Warning · Static')
     expect(list).toMatch(/<s>flagged<\/s> → <b>hidden<\/b>/)
+    /* …and it says who hid it, and when — the change history knows (D99; D469 "until another person unhides it";
+       Fable's final read F2: the line was blank where the All changes tab beside it named him) */
+    const words = pendItemWords(TUE, dayPendingItems(TUE)[0] as any)
+    const hist = [...ELOG.rows].reverse().find((r: any) => r.sect === 'day' && String(r.lbl).indexOf('Warning · Static') === 0)!
+    expect(words.who, 'the To go out line names who hid it').toBe(elogWho(hist))
+    expect(words.who).not.toBe('')
+    expect(words.when, 'and when').not.toBe('')
     /* …and back (D98) */
     tap(byCode(TUE, 'LONGDAY'))
     expect(dayDelta(TUE)).toEqual([])
@@ -383,6 +393,14 @@ describe('WH11 — the change history says who hid what (D469 — "until another
     expect(undoState().undoLabel).toBe('flagging a warning again')
     expect(globalUndo().ok).toBe(true)
     expect(view.warnShown(byCode(TUE, 'LONGDAY')), 'Undo of the flag-again hides it again').toBe(false)
+    /* judged on what every surface READS, not only on the set (Fable's final read F4): the bundle as shown */
+    await vi.advanceTimersByTimeAsync(0)
+    expect(byCode(TUE, 'LONGDAY').off, 'the line is struck').toBe(true)
+    expect(sevOf(TUE, 'wolf'), 'and his puck plain').toBeFalsy()
+    expect(globalUndo().ok, 'Undo of the hide itself').toBe(true)
+    await vi.advanceTimersByTimeAsync(0)
+    expect(!!byCode(TUE, 'LONGDAY').off, 'flagged: the line plain').toBe(false)
+    expect(sevOf(TUE, 'wolf'), 'and his puck flagged').toBe('note')
   })
 })
 
@@ -407,6 +425,47 @@ describe("the marks that cross the week's edge follow next Monday's own hide (As
     /* flag it again there: the mark returns */
     loadWeek(W2); tap(byCode(MON, 'CREW_REST', 'bane')); loadWeek(W1)
     expect(traceOf(SUN, 'bane')).toBeTruthy()
+  })
+
+  /* Fable's final read F1 (1 Oct 26): the answer was worked out again — next week's whole saved copy parsed from text — on
+     every ask for the face (per published day drawn, per ALL AVAIL chip, per open list), where main read that copy once a
+     validate. It is remembered against the saved copy itself: the same copy gives the same answer object. */
+  it("next Monday's hides are read once per saved copy, not once per ask (Fable's final read F1)", async () => {
+    await boot(new MemoryBackend())
+    schedWrite(SCHED_TYPES.mutate, () => { (DAYS[SUN] as any).dutywaves[0].rows.push({ role: 'Duty', id: 'bane', str: '1300', end: '2300' }); view.afterSchedMutate() })
+    loadWeek(W2); tap(byCode(MON, 'CREW_REST', 'bane')); loadWeek(W1)
+    const a = nextMondayHides(W1), b = nextMondayHides(W1)
+    expect(a.size, 'one hide in force on next Monday').toBe(1)
+    expect(b, 'asked again of the same saved copy: the same answer, not a second parse').toBe(a)
+    loadWeek(W2); tap(byCode(MON, 'CREW_REST', 'bane')); loadWeek(W1)
+    const c = nextMondayHides(W1)
+    expect(c, 'the saved copy changed: a new answer').not.toBe(a)
+    expect(c.size).toBe(0)
+  })
+
+  /* Fable's final read F3: the run's forward mark was promised (plan §3.2) and neither tested nor walked. Saint works the
+     demo Tuesday and Thursday; put on Wednesday and Friday to Sunday he has six days running (the limit), and next
+     Monday is the seventh — every day of this week's run wears the dotted run mark pointing across the edge. */
+  it("WH12 — the 7-day run's forward dotted mark follows next Monday's hide as well (Fable's final read F3)", async () => {
+    await boot(new MemoryBackend())
+    const WHO = 'salsa'
+    schedWrite(SCHED_TYPES.mutate, () => { for (const di of [2, 4, 5, 6]) (DAYS[di] as any).dutywaves[0].rows.push({ role: 'Duty', id: WHO, str: '0900', end: '1000' }); view.afterSchedMutate() })
+    loadWeek(W2)
+    schedWrite(SCHED_TYPES.mutate, () => { (DAYS[MON] as any).dutywaves[0].rows.push({ role: 'Duty', id: WHO, str: '0900', end: '1000' }); view.afterSchedMutate() })
+    const said = byCode(MON, 'DAYS_RUN', WHO)
+    expect(said, 'next Monday is his seventh day running').toBeTruthy()
+    const words = String(said.msg)
+    loadWeek(W1)
+    expect(traceOf(SUN, WHO) && traceOf(SUN, WHO).run, 'this week wears the forward run mark').toBeTruthy()
+    expect(traceOf(SUN, WHO).run.di).toBeNull()
+    const tr = (rawWarn().traces as any[]).find((x: any) => x.id === WHO && x.w.di == null && x.w.code === 'DAYS_RUN')
+    expect(tr.w.msg, "the mark carries next Monday's own sentence, word for word — the key the two must share").toBe(words)
+    loadWeek(W2); tap(byCode(MON, 'DAYS_RUN', WHO)); loadWeek(W1)
+    expect((traceOf(SUN, WHO) || {}).run, 'hidden on Monday → the run mark goes').toBeUndefined()
+    expect((traceOf(TUE, WHO) || {}).run, 'on every day of the run').toBeUndefined()
+    expect(rawWarn().trace[SUN][WHO].run, 'the raw pass keeps it').toBeTruthy()
+    loadWeek(W2); tap(byCode(MON, 'DAYS_RUN', WHO)); loadWeek(W1)
+    expect(traceOf(SUN, WHO).run, 'flagged again → back').toBeTruthy()
   })
 
   it('WH12 — when next Monday is PUBLISHED, a hide made there since waits for its amendment here too (D471)', async () => {

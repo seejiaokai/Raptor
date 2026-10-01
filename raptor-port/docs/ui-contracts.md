@@ -4113,7 +4113,8 @@ header keeps its true count" — and the D469 / D471 / D472 / D475 note that sto
     published face keeps the flag until that amendment is out; then it strikes the line and drops the flag. Each
     version keeps the hides it went out with, and a look at an older version shows ITS hides. "Load onto working copy"
     puts the day's hides back to the loaded version's.
-    **A tap on its To go out line opens the day's list on that warning's line** (D99; the item carries `warnline:<the
+    **Its To go out line says who hid it and when** (D99 — read from the change history's own line for it,
+    `pendlist.ts pendItemWords`; Fable's final read). **A tap on its To go out line opens the day's list on that warning's line** (D99; the item carries `warnline:<the
     hide key>`, `interactions.ts jumpToChange` → `jumpToWarnLine`): the list opened (the board's fold too, on a phone),
     the line focused and its crew lit, the LINE brought on screen and marked for a moment in the amendment's colour — it
     does not go on to the man's puck as a tap on the line itself does (that pan carried the struck line off the

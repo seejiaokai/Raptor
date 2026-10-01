@@ -99,7 +99,7 @@ award fix are due before the tables are settled. What to finish before the hand-
 (answered D470 — a man in the name box of another man's request earns), [OIL-WORDS], [OIL-PERSONAL-PLACEHOLDER], [CROWD-SIM-BRIEF];
 evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`. MERGED 1 Oct 26 (PR #477). ([OIL-RELINK-XWEEK] closed 1 Oct 26 by `[DB-READINESS]` phase 6 (c).)
 
-**Ruled, to build next (D469, 1 Oct 26):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, and its line stays in the list struck out; the three readings answered (D471, D472); on its own branch `claude/warn-hide-kept` (phase 7 merged, PR #477) — the mock-up approved 1 Oct 26 (D475, `raptor-port/docs/mock/warn-hide.html`); now the plan, the build and its FULL check.
+**BUILT and FULL-checked, waiting for his look and "merge live" (1 Oct 26):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, is not counted, and its line stays in the list struck out (D469, D471, D472, D475); branch `claude/warn-hide-kept`; the evidence and his look card: `raptor-port/docs/handpass/2026-10-01-warn-hide-check.md`. Three questions for him came out of the check, each filed: [INSIGHTS-WHICH-COPY], [WARN-HIDE-DROP-NOTE], and the trial of a Sonnet walker ([SONNET-WALKER-TRIAL], D476).
 
 **Placed by their own lines — not his rulings:** from the `[DB-READINESS]` phase 7 walk (1 Oct 26), none of them this batch's — low, each with the next change there: [COUNT-CHIP-PHONE-TAP] (fixed for Chromium in phase 7; his iPhone look left), [INP-TILL-STALE] (a remark keeps a "till" date its request no longer reaches — new data), [OIL-INERT-TAP-SILENT], [OG-TAG-OVER-COUNT], [MEMBER-EDITPAGE-CHECK] (a check, not a known fault); from the group-A FULL walk (30 Sep 26) — with group B:
 [UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
@@ -1513,7 +1513,7 @@ loaded and what viewers still see; the second "N things to know ▾" opening the
 history. **Place:** low — his call; its own small job (WALK tier: a message on a shared surface), never inside another change.
 Carried here from the merged `claude/db-readiness-table-shaping-4094f6` handoff block when it was removed (1 Oct 26).
 
-### [WARN-HIDE-KEPT] A hidden warning stays hidden for everyone until unhidden; no flag on the pucks; its line struck out, not gone — RULED D469 (1 Oct 26), TO BUILD
+### [WARN-HIDE-KEPT] A hidden warning stays hidden for everyone until unhidden; no flag on the pucks; its line struck out, not gone — BUILT and FULL-checked 1 Oct 26 (D469, D471, D472, D475); his look and "merge live" next
 **His ruling (D469, 1 Oct 26 — answering the question the stored-record sweep of `[DB-READINESS]` phase 7 raised):** a hidden
 warning stays hidden, for everyone, across a reload and a sign-in, until someone unhides it; while it is hidden the pucks
 carry no flag for that item; and its line in the day's warning list stays where it is, struck out and darker, one tap from
@@ -1539,6 +1539,18 @@ that opens the list; the look of the hidden line. **APPROVED as drawn, 1 Oct 26 
 returns by itself when the situation changes (his Aug 26 words). **Tier:** FULL (the warning list, saved data, the published
 record). **Place:** the next job after `[DB-READINESS]` phase 7, on its own branch — the tables' shape is settled by the
 ruling itself (`wo` stays in the day's row), so IT is not waiting on the build.
+**BUILT and FULL-checked, 1 Oct 26, on `claude/warn-hide-kept`.** The plan (v2, both red teams' findings folded in):
+`raptor-port/docs/superpowers/plans/2026-10-01-warn-hide-kept-plan.md`. What the app does now: the contract
+`raptor-port/docs/ui-contracts.md` §Muting a check, the engine `raptor-port/docs/engine-rules.md` (the hides axis), what is
+saved `raptor-port/docs/data-schema.md` / `data-model.md` §9, the rules WH1–WH13
+(`raptor-port/docs/superpowers/specs/2026-10-01-warn-hide-behaviour-register.md`). The check: Astra's 44 scenarios walked by
+three walkers at both widths; what it found fixed red first (the board's stand-by seat, the load's count, the To go out
+line's tap, the changes window's gap); the re-walk; both final reads (Astra REVISE, Fable APPROVE — every finding fixed but
+the Insights question, left to him); the gates twice. Evidence and his look card:
+`raptor-port/docs/handpass/2026-10-01-warn-hide-check.md`. **Left, each filed:** `[INSIGHTS-WHICH-COPY]`, `[WARN-HIDE-DROP-NOTE]`;
+the known two-tabs gap (`raptor-port/docs/data-schema.md` known gaps, item 12) — Undo's refusal after another person's hide can
+only be SEEN once there is a shared database (it is pinned by a test). **Next:** his look on the preview, his answers to the
+two questions, "merge live"; then this item leaves by the script.
 
 ### [INSIGHTS-WHICH-COPY] Insights counts the WORKING copy on every page — on View-only Sched too (a question for him; found 1 Oct 26)
 Found by Astra's scenario design for `[WARN-HIDE-KEPT]` (its scenario 1). The Insights window (top bar, every page, every
@@ -1551,6 +1563,9 @@ View-only Sched, should Insights count the PUBLISHED schedule (as the page does)
 **Seen in the walk (walker B, scenario 1, 1 Oct 26):** while a hide waits on published Tuesday the member's day reads 4
 issues and his Insights reads 3 for Tuesday (week total 32 against 33, "Long work day" 1 against 2) — pictures
 `raptor-port/docs/img/handpass/2026-10-01-warn-hide/b/dk-07-s1-b-pending-face.png`, `dk-10-s1-b-pending-insights-byday.png`.
+**Astra's final read of `[WARN-HIDE-KEPT]` (1 Oct 26) rates it MEDIUM and would change it:** make Insights count the copy
+the page beside it shows — the issued one for a published day on View-only Sched — its exact steps are in
+`raptor-port/docs/superpowers/briefs/2026-10-01-warn-hide-kept-final-read-astra.md` (finding 1).
 **Place:** low — his answer first; then its own small job (WALK tier).
 
 ### [WARN-HIDE-DROP-NOTE] A drop that recreates a clash already hidden still shows the amber "already on …" note (a question for him; found 1 Oct 26)

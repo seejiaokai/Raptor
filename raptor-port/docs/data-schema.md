@@ -265,7 +265,7 @@ the day's warnings hidden as it was issued (only those that match a warning; abs
 — the rings, chips and dashes of the warnings that freeze AS SHOWN then (kept only beside `wo`); and in `w.face` a hidden
 warning carries `off: true`. `w.byDay` / `sev` / `chip` / `dash` stay as the rules raised them — they are the pending
 comparison's basis, and a hide is its own comparison (the working copy's `wo` against the version's `w.wo`, one pending
-change per warning that differs — `publish.ts hidePending`). An amendment's stored item counts (`ukinds`) gain `hide`.
+change per warning that differs — `publish.ts hidePending`). An amendment's stored item counts (`ukinds`) gain `hide`, and its stored `diff` carries one `kind:'hide'` entry per warning hidden or flagged again (`addr: hide:<di>.<fingerprint of its key>`, `from` / `to` the plain `shown` / `hidden` — `engine/schema.ts AlDiffEntry`; pinned by `engine/schema.test.ts`, an amendment issued with a hide and conformed).
 
 ### The week record — `weekStashSnap()` / the week stash
 

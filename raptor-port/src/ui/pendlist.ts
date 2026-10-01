@@ -278,8 +278,17 @@ export function pendItemWords(di: number, it: PendItem): Words {
   if (it.kind === 'hide') {
     const x = hidePending(di).find(h => h.entry.addr === e.addr)
     const nm = x ? x.who.map((id: string) => cs(id)).filter(Boolean).join(', ') : ''
-    return { where: x ? `Warning · ${nm}${nm ? ' — ' : ''}${x.msg}` : 'A warning', from: e.to === 'hidden' ? 'flagged' : 'hidden', to: e.to === 'hidden' ? 'hidden' : 'flagged again',
-      who: '', when: '', jump: !!(it.jump && it.jump.length) }
+    const where = x ? `Warning · ${nm}${nm ? ' — ' : ''}${x.msg}` : 'A warning'
+    /* who hid it, and when — "where the app knows" (D99), and it does: the change history has the line under these very
+       words (state/changelines.ts; Fable's final read F2 — this line was blank beside the All changes tab naming him).
+       The newest one for this day; a man renamed since leaves the stored words behind and the line simply says nothing. */
+    let who = '', when = ''
+    for (let i = ELOG.rows.length - 1; i >= 0; i--) {
+      const r: any = ELOG.rows[i]
+      if (r && r.di === di && r.sect === 'day' && r.lbl === where) { who = elogWho(r); when = elogWhen(r.t); break }
+    }
+    return { where, from: e.to === 'hidden' ? 'flagged' : 'hidden', to: e.to === 'hidden' ? 'hidden' : 'flagged again',
+      who, when, jump: !!(it.jump && it.jump.length) }
   }
   const byLog = (): { who: string; when: string } => {
     const r = lastEdit(it.keys || [])

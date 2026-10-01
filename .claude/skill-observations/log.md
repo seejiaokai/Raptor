@@ -2232,3 +2232,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the walk brief: every sentence a script records is built from the readings it just took (or is a neutral description of the action); conclusions are written by the walker in the report, never baked into the script.
 
 **Principle:** A script that will be re-run must derive its words from what it reads; a typed conclusion outlives the fact it described.
+
+### Observation 415: The same tooling trap was hit four more times in the session that logged it — a note is not enforcement
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] FULL check, after observation 411 was written: code or text containing backslash escapes was again passed through a Bash heredoc four times — a walker's script got a backspace where a regex word boundary was meant (its check then read FAIL beside the right words), a repair script silently re-wrote the same backspace, and two generated files got real newlines inside string literals.
+**Skill:** repo docs/gates-and-deploy.md; a Bash PreToolUse hook; walk brief (bug-check order)
+**Type:** internal
+**Phase/Area:** Passing generated code through a shell
+
+**Issue:** The trap was known, logged and in memory, and it still recurred — in the host AND in a helper that never saw the note. Each time the damage was silent: the command exited 0 and the file looked plausible.
+
+**Suggested improvement:** Make it structural: a PreToolUse hook on Bash that refuses a heredoc (or `-e` / `-c`) whose body contains a backslash followed by a letter and that writes or edits a source file, with the message 'write the script with the Write tool and run the file'. And put the one-line rule in every walk brief, since helpers do not load the host's memory.
+
+**Principle:** A trap that exits 0 cannot be fixed by remembering it; refuse the unsafe form where it is typed, and tell every helper, not only the host.
+
+### Observation 416: A browser test that polled for 'the thing is on screen' passed BEFORE the deferred scroll that carried it away
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] re-walk: a fix opened a list and then (one task later) scrolled the page to another element, carrying the wanted line off screen. The first browser test for it used a polling assertion on the line's position; it passed on the first sample, before the deferred scroll ran. Only the break test (put the bad scroll back, expect red) showed the test could not fail.
+**Skill:** bug-check order (repo docs/bug-check-order.md) §8.4 break tests; e2e conventions
+**Type:** open-source
+**Phase/Area:** Writing a browser test for where a view lands
+
+**Issue:** A polling assertion is satisfied by any moment at which the condition holds. For 'where does the view end up', the condition held instantly and stopped holding a frame later — the opposite of the flake polling is meant to absorb.
+
+**Suggested improvement:** For any test of a view's final position: first wait until the page has stopped moving (two equal scroll readings a short interval apart), then assert ONCE. And always run the break test on a new browser test before trusting it — it is the only thing that showed this one could not fail.
+
+**Principle:** Polling proves 'eventually true'; a landing must be judged at rest. A test that has never been seen to fail has not been shown to test anything.
