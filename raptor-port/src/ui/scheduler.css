@@ -6376,6 +6376,15 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .oilcount{display:inline-flex;align-items:center;margin-left:3px;padding:0 4px;border-radius:4px;
   font-size:9px;font-weight:700;background:var(--panel-2);color:var(--ink-2);border:1px solid var(--edge-2);cursor:pointer}
 .oilcount.some{background:rgba(47,166,92,.2);border-color:var(--oil);color:var(--ink)}
+/* THE COUNT ANSWERS A PRESS ITSELF — and that is what makes a FINGER land on it ([COUNT-CHIP-PHONE-TAP], the
+   [DB-READINESS] phase 7 walk; Astra's final read 1). A browser snaps a touch to the nearest element it believes
+   responds to a tap; the count's click is handled on the document, so it was not one, and on the phone's week the puck
+   2px above it took every finger tap — the row armed, or the puck was selected, and the window never opened (a mouse
+   click at the same point always worked, so every earlier check passed). A pressed state on the count itself makes it
+   the touch's own target: measured in Chromium's phone emulation, every event of the tap moved from the puck to the
+   count. No size changes — the row's measured heights stand. Pinned by e2e/availwin.spec.ts "phone, by finger", which
+   drives a real touch. Do not remove this rule as cosmetic. */
+.oilcount:active{filter:brightness(1.3)}
 /* the OIL question nobody has answered yet, on an Inputs row (Fable F6) — the
    same chip as the revise control, in the warning colour, so it reads as
    something waiting rather than something already decided */

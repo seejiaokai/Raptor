@@ -369,3 +369,30 @@ test('phone: the window stays the bottom panel over a preview (the bar is at the
   expect(r.left).toBe(12)
   expect(PHONE.height - r.bottom).toBe(12)
 })
+
+/* A FINGER ON THE COUNT, ON THE PHONE'S WEEK ([COUNT-CHIP-PHONE-TAP] — the [DB-READINESS] phase 7 walk, walker C's F1;
+   Astra's final read 1). The count's paint order was already pinned (geometry.spec.ts: the element at its centre is the
+   count) — and a real finger still missed it: a browser snaps a touch to the nearest element it believes RESPONDS to a
+   tap, the count (20 × 14 px, its click handled far away on the document) was not one, and the puck 2 px above it was.
+   So the tap armed the row on Edit Schedule and selected the puck on View-only Sched, and the window never opened. The
+   count now answers a press itself (`.oilcount:active`), which is what makes it a target. This drives a REAL touch — a
+   mouse click at the same point always worked, which is how every earlier check passed (bug-check order §7.8). */
+test.describe('phone, by finger', () => {
+  test.use({ viewport: PHONE, hasTouch: true })
+  test('a finger tap on the count opens the window on the edit week — and arms nothing', async ({ page }) => {
+    await login(page, 'a')
+    await go(page, 'editsched')
+    await page.evaluate(() => {
+      const w = window as any
+      w.DAYS[0].ground = [{ prog: 'OPS BRIEF', str: '09:00', end: '10:00', who: 'allavail' }]
+      w.afterSchedMutate()
+    })
+    const chip = page.locator('#eWeek .day[data-day="0"] .oilcount').first()
+    await chip.waitFor({ state: 'visible' })
+    await chip.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' }))
+    const b = (await chip.boundingBox())!
+    await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2)
+    await expect(page.locator('.availwin:not([hidden])'), 'the window of who is behind the puck').toBeVisible()
+    expect(await page.evaluate(() => ((window as any).ARM && (window as any).ARM.key) || null), 'the row was not armed instead').toBeNull()
+  })
+})

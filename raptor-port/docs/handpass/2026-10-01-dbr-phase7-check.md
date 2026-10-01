@@ -120,7 +120,7 @@ him on the row, and so does taking him off and "+ add" (C33) — the door D470 i
 | 1 | walker B (F1) | the window's foot kept the sentence from the tap after a time was edited behind it — older than the batch | **fixed, red first**; re-walked by the host (B19f: 3 / 3) |
 | 2 | walker A (O2) | on a Personal row the earn half's hint said "Tap a puck to stop a man earning" beside "0 of 44" — this batch's | **fixed, red first**; re-walked (A3, A5: "A personal request earns no OIL.") |
 | 3 | walker C (F2) | the name box earned nothing — the walked build predates D470 | **built (D470), red first**; re-walked by the host (C33-N1: Blade FO, Leave War Ranger FO*, Blade FO*, the same after a reload) |
-| 4 | walker C (F1) | phone: a finger tap on a count on the edit week arms the row instead of opening the window | reproduced by the host on this build AND on the build before the batch — **older; filed `[COUNT-CHIP-PHONE-TAP]`**; on his look card (a real iPhone) |
+| 4 | walker C (F1); Astra's final read 1 | phone: a finger tap on a count on the week views arms the row / selects the puck instead of opening the window | reproduced by the host on this build AND the build before the batch (older); diagnosed (the browser snaps the touch to the puck — the count did not answer a press); **fixed, red first** with a real-touch browser test (`e2e/availwin.spec.ts` "phone, by finger"); re-walked on both week views. **Left on `[COUNT-CHIP-PHONE-TAP]`: his iPhone** |
 | 5 | walker A (O4) | the Inputs editor leaves "till 19 Jul" when a range is taken back to one day | older; **filed `[INP-TILL-STALE]`** |
 | 6 | walker A (O1) | in OIL Earn a tap on a puck that cannot earn says nothing | older; **filed `[OIL-INERT-TAP-SILENT]`** |
 | 7 | walker A (O3) | the member's "OG" tag overlaps a count's top edge | older, cosmetic; **filed `[OG-TAG-OVER-COUNT]`** |
@@ -154,3 +154,22 @@ him on the row, and so does taking him off and "+ add" (C33) — the door D470 i
 - About thirty of walker B's 84 pictures did not come back to it when opened (a tool limit); those steps rest on the
   script's reading, confirmed by eye on their neighbours. The host opened the name-box pictures and the phone tap's.
 - **Only a real iPhone can prove:** finding 4 (the finger tap on a count on the week) — on his look card.
+
+## 7. The two final reads — both REVISE, every finding dispositioned
+Blind to each other, each given this sheet: `docs/superpowers/briefs/2026-10-01-db-readiness-phase7-final-read-fable.md`,
+`…-final-read-astra.md` (brief `…-final-read-brief.md`). **They disagreed usefully:** Fable found the name box wiped by a
+member's edit, which Astra's read of the same lines passed; Astra pressed the phone tap the host had filed as older.
+| # | Reader | Finding | Against `main` | Disposition |
+|---|---|---|---|---|
+| F1 | Fable (medium) | a member's edit of his own request re-made its row and wrote his name back over the scheduler's man (D470) or placeholder (D46) in the name box — the man off the row and his OIL with him, no line anywhere | older (phase 6 (c), and the relink rule before it); D470 made it cost a credit | **fixed, red first** (`engine/overlay.ts` rule 6: the box is kept when it holds someone other than the holder; a former holder still gives way) — `engine/oilnamebox.test.ts` (4 red); re-walked: unpublished, published (only the member's change reads pending), the Leave War, a placeholder (12 / 12) |
+| F2 | Fable (low) | the window's EARN half kept a tapped man's inert reason after a retype behind it | older (the same class as walker B's F1) | **fixed, red first** — `ui/oilpersonalcrowd.test.tsx` |
+| F3 | Fable (low) | the changes list named a request row's crowd change "A placeholder" — no row, no tap | older for Training rows; this batch made Personal rows reach it | **fixed, red first** — `ui/pendcrowd-request.test.ts`; re-walked (H-F3) |
+| 1 | Astra (medium) | the phone count tap | older, newly reachable on a Personal row | **fixed** — finding 4 of §6.3 |
+| gap 3 | Astra | no direct test of a hand-over to and from the man in the box with a decision standing | — | **test added** (`engine/oilnamebox.test.ts`) |
+**Their negatives agree on the rest:** the Personal crowd can move no OIL; the sim windows are right in every pass the
+validator runs and the warning list's words are unchanged; no writer can still leave a hole; no fourth list reads an
+empty list as missing; the carried remark never cuts the typist's words; no sentence on screen calls OIL pay; D470 never
+gathers the holder; D56 over D48 read the same way by both.
+**Roll-call rows the reads added:** the name box after the member's own edit (now walked); the changes window's line for a
+request row's crowd change (now walked); the earn half's foot after a retype (unit test; not walked — no route keeps the
+window open across the Inputs page, D66); the window's "N men are flagged" count includes the sim flags (walked, B14).

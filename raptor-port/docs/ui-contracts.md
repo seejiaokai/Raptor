@@ -8376,6 +8376,18 @@ same rebuild as its flights). Ground crew are exempt, as in the warning list. Pi
 half, the men behind a placeholder on a Personal request's row — and the requester's own puck on that row in OIL Earn
 mode — read "<callsign> — a personal request earns no OIL", inert, never "nothing measurable to earn from here" beside
 a row with written times (`ui/oilmode.ts inertWhy`, the kind read off the row as issued).
+**The foot says what is true NOW (the phase-7 walk, walker B's F1; Fable's final read F2):** after a tap on a man the window
+keeps WHO was tapped (`state/view.ts AVAILWIN_FOOTID`), not the sentence, and re-says it at every draw — his flag on the
+"who's available" half, his reason for not earning on the earn half — so an edit made behind the open window can never
+leave the list and the foot disagreeing. A sentence about what a switch DID carries no man and stays as said. On a row
+whose request never asks, the earn half's own hint is "A personal request earns no OIL.", never "Tap a puck to stop a man
+earning".
+**A finger lands on the count (`[COUNT-CHIP-PHONE-TAP]`):** `.oilcount:active` in `scheduler.css` is load-bearing, not
+cosmetic — without a pressed state of its own a browser snaps a touch on the count to the puck 2 px above it (the row
+arms, or the puck is selected, and the window never opens). Pinned by a REAL touch in `e2e/availwin.spec.ts` "phone, by
+finger"; proven in Chromium only — an iPhone is the owner's look.
+**The changes window names a request row's crowd change by its row** ("PERSONAL · who it stands for") and a tap goes to it
+(`ui/pendlist.ts rowByItem` resolves `i:<request id>` — Fable's final read F3; pin `ui/pendcrowd-request.test.ts`).
 
 **When the list cannot be worked out it says WHY**, by the real reason: the row
 is no longer on the schedule; it is cancelled; it is information only; there is

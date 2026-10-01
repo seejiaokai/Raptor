@@ -1917,6 +1917,12 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   address: default yes, his own switch in OIL Earn. The member who filed is never gathered there: he stays in the request
   half, on his own answer, never overwritten (so he still earns when his name has been replaced on the row). A request
   that never asks (Personal) still earns nobody anything. Pin: `engine/oilnamebox.test.ts`.
+  **And the box is the scheduler's to keep (Fable's final read, F1):** a request's row is re-made from the request whenever
+  the member edits it (`engine/overlay.ts`, rule 6) — keeping the extras, the red box, CX and information-only, and now
+  the NAME BOX too when it holds someone other than the request's holder (a man of the scheduler's, D470, or a
+  placeholder, D46). Before, the member's next edit of his remarks wrote his own name back and took the man, and his OIL,
+  off the row with no line anywhere. A FORMER holder left in the box by a hand-over (the request's `leftAt`) still gives
+  way to the new one.
 - **A recorded answer is revisable in place** (owner, 29 Aug 26 — his pick
   over a dedicated undo/redo; the global undo stack covers immediate
   regret). `oilAnswered(row)` (`ui/inputedit.tsx`) gates the affordance:

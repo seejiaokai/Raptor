@@ -93,7 +93,7 @@ award fix are due before the tables are settled. What to finish before the hand-
 
 **Ruled, to build next (D469, 1 Oct 26):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, and its line stays in the list struck out; a mock-up and three readings to him first, then its own branch and FULL check, after `[DB-READINESS]` phase 7.
 
-**Placed by their own lines — not his rulings:** from the `[DB-READINESS]` phase 7 walk (1 Oct 26), none of them this batch's — low, each with the next change there: [COUNT-CHIP-PHONE-TAP] (medium — on a phone's edit week a finger tap on an ALL AVAIL count arms the row instead of opening the window; his iPhone look first), [INP-TILL-STALE] (a remark keeps a "till" date its request no longer reaches — new data), [OIL-INERT-TAP-SILENT], [OG-TAG-OVER-COUNT], [MEMBER-EDITPAGE-CHECK] (a check, not a known fault); from the group-A FULL walk (30 Sep 26) — with group B:
+**Placed by their own lines — not his rulings:** from the `[DB-READINESS]` phase 7 walk (1 Oct 26), none of them this batch's — low, each with the next change there: [COUNT-CHIP-PHONE-TAP] (fixed for Chromium in phase 7; his iPhone look left), [INP-TILL-STALE] (a remark keeps a "till" date its request no longer reaches — new data), [OIL-INERT-TAP-SILENT], [OG-TAG-OVER-COUNT], [MEMBER-EDITPAGE-CHECK] (a check, not a known fault); from the group-A FULL walk (30 Sep 26) — with group B:
 [UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
 [TRK-UNDO-WRITES-DEFAULTS], [SECDEFAULT-OFFER-BEHIND-BOARD], [BLOCK-NO-HISTORY-LINE], [ACCOUNTS-SEED-FIRST-WRITE] (demo
 only), [SETTINGS-LIST-ROWS] (a stage-2 split, only if it bites), [LW-OIL-DATECHIP-HIDDEN], [READONLY-WEEK-WORDS];
@@ -1610,15 +1610,15 @@ was pressed. The rule is that the page, the write path and the command gate all 
 **To do:** press each as a member in a walk and confirm the write path refuses with its reason; if the page gate is the only
 thing between a member and those buttons, gate the panel too. **Place:** low — a check to run with the next roles work.
 
-### [COUNT-CHIP-PHONE-TAP] On a phone's edit week a finger tap on an ALL AVAIL count does not open the window (walk find, 1 Oct 26)
-Found by walker C of the `[DB-READINESS]` phase 7 walk (its F1) and reproduced by the host (`raptor-port/scripts/handpass/p7-h-phonetap.mjs`;
-picture `raptor-port/docs/img/handpass/2026-10-01-dbr-phase7/h/H-phonetap-editsched-1-finger.png`) — on that build AND on the
-build before the batch (`9191910b`), so it is older than phase 7. **What happens:** at 390 px on Edit Schedule, a finger tap on
-the count under an ALL / ALL AVAIL puck arms the row ("Planning Ground · OPS BRIEF", the crew drawer opens) instead of opening
-the ALL AVAIL window; walker C saw the puck above the count highlighted on View-only Sched. The count is 20 × 14 px and sits
-2 px under its puck, inside the row's own tap zone. On the phone's BOARD the same count opens the window (walker A). **Seen
-in Chromium's phone emulation only — not yet on his iPhone** (compare D158, a touch-emulation quirk closed for the Tracker):
-his look first. **To do, if it is real on the device:** the count takes its own tap before the row's arm (and a touch target
-a finger can hit — D37 says the count reads on every seat the puck lands on, and D38 that its tap opens the window); a
-browser test with a real touch sequence at phone width (bug-check order §7.8). **Tier:** WALK. **Place:** medium — the next
-phone job, after his look.
+### [COUNT-CHIP-PHONE-TAP] A finger tap on an ALL AVAIL count on the phone's week — FIXED for Chromium 1 Oct 26; his iPhone look left
+Found by walker C of the `[DB-READINESS]` phase 7 walk (F1), pressed by Astra's final read (1), reproduced by the host on that
+build and on the build before the batch (`9191910b`) — older than phase 7. **What happened:** at 390 px a finger tap on the count
+under an ALL / ALL AVAIL puck armed the row on Edit Schedule and selected the puck on View-only Sched; the window never
+opened. **Cause (diagnosed, `raptor-port/scripts/handpass/p7-h-phonetap2.mjs`):** a browser snaps a touch to the nearest element it
+believes answers a tap; the count's click is handled on the document, so it was not one, and the puck 2 px above took every
+event of the tap. **Fixed:** the count answers a press itself (`scheduler.css` `.oilcount:active`) — no size change; pinned by
+a real-touch browser test (`e2e/availwin.spec.ts` "phone, by finger") and re-walked on both week views.
+**Left:** (1) HIS IPHONE — the fix is proven in Chromium's phone emulation only; Safari decides a touch's target its own way
+(on his look card: tap a count under ALL AVAIL on View-only Sched). (2) A question for him if it is still fiddly there: the
+count is 20 × 14 px; Astra proposed a 28 × 28 px target on the phone's week, which costs a line of height on rows that carry
+one (a measured layout — a picture first). **Place:** his look; then close, or the bigger target as its own small job.
