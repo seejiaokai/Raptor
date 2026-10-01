@@ -22,8 +22,10 @@ the later merge keeps both (D78).
 - **Done:** the picture approved as drawn (D475); the plan, red-teamed by both (v2); the build; the FULL check — Astra's 44
   scenarios walked by three walkers at desktop and phone, what they found fixed red first (the board's stand-by seat, the
   load's count, the To go out line's tap, a gap in the changes window), the re-walk, both final reads (Astra REVISE, Fable
-  APPROVE — every finding fixed but one question left to him), the gates twice. One pull request is open for the branch
-  (`gh pr view claude/warn-hide-kept`); its `vercel[bot]` comment carries the preview link he looks at.
+  APPROVE — every finding fixed but one question left to him), the gates twice. **Everything is committed on the branch, and NOTHING IS
+  PUSHED YET:** on 1 Oct 26 the app's permission check refused the push ("out-of-place publication"); it needs his own word
+  ("push") or his own hand. Once it is pushed: open ONE pull request, stop watching it at once, and hand him the preview
+  link from its `vercel[bot]` comment (check first — `gh pr view claude/warn-hide-kept` — whether one exists by then).
 - **The evidence and his look card:** `raptor-port/docs/handpass/2026-10-01-warn-hide-check.md` (§11 is the card — five things to
   see, three to answer). What the app now does: `raptor-port/docs/ui-contracts.md` §Muting a check.
 - **Waiting on him:** (1) his look on the preview; (2) his answers to two questions, neither blocks the merge —
