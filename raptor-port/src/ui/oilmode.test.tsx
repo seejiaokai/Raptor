@@ -349,7 +349,7 @@ describe('the bug check (21 Sep 26)', () => {
 /* THE GREEN STRIP MUST REACH EVERY SEAT THE BOARD DRAWS — found by the owner in
    the running app, 21 Sep 26 ("Flying waves should be earning OIL", "SC MAIN
    should be earning OIL", "Common programme should be earning oil").
-   The money was always right; the STRIP was missing, because the board builds
+   The credit was always right; the STRIP was missing, because the board builds
    its cockpit seats and its Common Programme seats with their own builders
    rather than the shared one, and neither asked for the decoration. Nothing in
    5328 unit tests saw it: every assertion about the bar was made on a duty desk
@@ -430,7 +430,7 @@ describe('the green strip reaches the WEEK view too, not only the board', () => 
    used to be drawn on every row with an id, so an AVALON line, its desk and an
    ⓘ row all read "tap to stop this item earning" beside pucks that already said
    they earn nothing — and on a published day a tap wrote a real decision, so the
-   day grew an amendment for something that moves no money. */
+   day grew an amendment for something that moves no OIL. */
 describe('the item switch is only offered where the event can earn', () => {
   beforeEach(async () => {
     /* minted the way the board mints it — a hand-built shape would not be a
@@ -506,7 +506,7 @@ describe('a puck that is not earning says WHICH of the three reasons it is', () 
       ;(DAYS as any)[5] = { ...(orig || {}), oilev: ev }
       try { return oilOffReason(5, 'bane', item) } finally { (DAYS as any)[5] = orig }
     }
-    expect(read(evFor(null, null)).why, 'never asked — the one that costs money in silence').toBe('unasked')
+    expect(read(evFor(null, null)).why, 'never asked — the one that costs credit in silence').toBe('unasked')
     expect(read(evFor(0, null)).why, 'the member answered No, which is his own word').toBe('declined')
     expect(read(evFor(1, 'deny')).why, "the scheduler's own mark, over an answered yes").toBe('denied')
     expect(read(evFor(null, null)).what, 'and it names the request, so the sentence can say which one').toBe('Training')
@@ -615,7 +615,7 @@ describe('an inert claim names the row that made it inert', () => {
   })
 })
 
-/* HAND PASS FINDING 14 — the change history is the record of a money decision
+/* HAND PASS FINDING 14 — the change history is the record of a credit decision
    and read like a glitch: "Sidewinder earns nothing from SidewinderFO". The
    line reads the row's name back off the page, which is right for a schedule
    row and wrong for a claim, whose cell holds the man's own puck. */
@@ -641,7 +641,7 @@ describe('the history names a claim by what it IS, not by the puck in its cell',
 
    Two reviewers confirmed F2 independently: the rule "does this item earn" is
    written TWICE and the two copies read DIFFERENT SOURCES — the mode read the
-   live day's own decisions, the money read the frozen block on the issued
+   live day's own decisions, the credit read the frozen block on the issued
    document. They agree today only because publishing swaps one for the other,
    so this is a seam, not a live defect; it is shut now because every later step
    adds a reader, and a seam with five readers is not closed by hand.
@@ -651,14 +651,14 @@ describe('the history names a claim by what it IS, not by the puck in its cell',
    today. So this proves the SEAM is shut — one source behind both answers — and
    nothing about a user scenario. Named accordingly. */
 describe('the item guard reads the day\'s EVIDENCE, never the day\'s live decisions', () => {
-  it('a frozen block that masks an item is obeyed by the screen, not just by the money', async () => {
+  it('a frozen block that masks an item is obeyed by the screen, not just by the credit', async () => {
     const row = addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
     const item = rowItemKey(row.rid)
     /* the frozen answer says this item earns nobody; the live day carries no
        mark at all — the exact shape F2 describes */
     ;(DAYS[SAT] as any).oilev = { ...oilEvidence(SAT), d: { items: { [item]: 0 } } }
     const work = oilEarnedWork(DAYS[SAT], oilEvidenceOf(SAT))
-    expect(work.bane, 'the MONEY reads the frozen block and pays him nothing').toBeFalsy()
+    expect(work.bane, 'the CREDIT reads the frozen block and credits him nothing').toBeFalsy()
     expect(oilItemMasked(SAT, item), 'and the SCREEN must read the same block').toBe(true)
   })
 
@@ -721,7 +721,7 @@ describe('the OIL evidence is never served from a cache across a change', () => 
     oilReadPass(() => { oilItemMasked(SAT, item); oilWouldEarn(SAT) })
     toggleOilItem(SAT, item)
     expect(oilItemMasked(SAT, item), 'the cache died with the pass').toBe(true)
-    expect(oilWouldEarn(SAT), 'and the money agrees').toBe(false)
+    expect(oilWouldEarn(SAT), 'and the credit agrees').toBe(false)
   })
 
   it('one pass holds two different days apart', async () => {

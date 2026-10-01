@@ -1,0 +1,18 @@
+/* p7 walker C — probe 3: the Undo list's shape, the edit week's crew list, the search box, + Line. Reads only (plus one + Line). */
+import { boot, world } from './p6-lib.mjs'
+const { L, W } = await boot()
+const { browser, p, errors } = await world(L)
+console.log('HIST', await p.evaluate(() => { const h = window.HIST; return h ? Object.fromEntries(Object.entries(h).map(([k, v]) => [k, Array.isArray(v) ? 'array(' + v.length + ')' : typeof v === 'object' && v ? 'obj:' + Object.keys(v).slice(0, 8) : String(v).slice(0, 60)])) : null }))
+console.log('SCHED keys', await p.evaluate(() => Object.keys(window.SCHED)))
+console.log('ELOG', await p.evaluate(() => Object.keys(window.ELOG || {})))
+await W.toEdit(L, p); await W.showDay(p, 1)
+console.log('eRoster placeholders', await p.evaluate(() => [...document.querySelectorAll('#eRoster [data-person="all"], #eRoster [data-person="allavail"]')].map(e => ({ cls: e.className, vis: e.offsetParent !== null, par: e.parentElement.className }))))
+console.log('eWeek cockpit', await p.evaluate(() => [...document.querySelectorAll('#eWeek [data-slot]')].filter(e => /^1\.\d+\.\d+\.\d+\.[pw]$/.test(e.dataset.slot)).slice(0, 2).map(e => e.outerHTML.slice(0, 300))))
+console.log('eWeek other slots d1', await p.evaluate(() => [...document.querySelectorAll('#eWeek [data-slot], #eWeek [data-fill]')].map(e => e.dataset.slot || ('fill:' + e.dataset.fill)).filter(k => /^(fill:)?([dgsa]:)?1\./.test(k)).filter(k => !/^1\.\d+\.\d+\.\d+\.[pw]$/.test(k))))
+console.log('search', await p.evaluate(() => [...document.querySelectorAll('input[type=search], #searchB, #search, input[placeholder*="callsign"]')].map(e => ({ id: e.id, ph: e.placeholder, vis: e.offsetParent !== null }))))
+console.log('day head d1', JSON.stringify(await W.head(p, 1)))
+await L.shot(p, 'probe3-eweek')
+await W.boardOn(p, 1)
+console.log('board wave buttons', await p.evaluate(() => [...document.querySelectorAll('#schedBoard button')].filter(e => e.offsetParent !== null && /Line|Wave/.test(e.innerText)).map(e => e.outerHTML.slice(0, 200))))
+console.log('errors', errors)
+await browser.close()

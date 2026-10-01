@@ -14,6 +14,7 @@ import { notify } from '../state/store'
 import { flagDrop } from '../state/dropflag'
 import { canEditSched } from '../state/auth'
 import { reassignInput } from './inputedit'
+import { OIL_NO_MOVE } from './oilmode'
 import { landOn, liftOn, markLand } from './lift'
 import { DBG, initDragDbg } from './dragdbg'
 
@@ -200,7 +201,7 @@ export function applyDrop(el: any, x: any, y: any) {
      lands here with live DRAG state whatever the board drew. Same reason the
      role check sits here rather than at each call site: this is what actually
      stops it. */
-  if (view.OILDAY != null) { DRAG = null; dndOff(); HOOKS.toast('Leave OIL Earn before moving anyone — the day cannot change while you are deciding what it pays', 'warn'); return false }
+  if (view.OILDAY != null) { DRAG = null; dndOff(); HOOKS.toast(OIL_NO_MOVE, 'warn'); return false }
   if (!DRAG || !el || !el.closest) { DRAG = null; dndOff(); return false }
   /* WARN as it stands before anything is written — the drop delta's baseline
      (state/dropflag.ts). validate() reassigns WARN, so this is a snapshot by

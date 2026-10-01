@@ -6,7 +6,8 @@
 
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getState, initStore, setRole } from '../state/store'
+import { getState, initStore, setRole, saveManningRule, deleteManningRule } from '../state/store'
+import { MAX_MANNING_RULES } from '../engine'
 import { memoryBackend } from '../state/storage'
 import { CounterForm } from './CounterForm'
 import { Matrix } from './Matrix'
@@ -186,5 +187,48 @@ describe('Reset counters', () => {
     const ids = getState().requirements.default.rules.map(r => r.id)
     expect(ids).toContain('wmp')
     expect(ids).not.toContain('temp')
+  })
+})
+
+// [STORE-READER-SWEEP] ([DB-READINESS] group A, phase 7): the store keeps at most MAX_MANNING_RULES counters — the
+// most its reader accepts back — and the form says so, with the way out, instead of an Add button that does nothing.
+describe('the list is full', () => {
+  const fill = () => {
+    setRole('admin')
+    let n = getState().requirements.default.rules.length
+    for (let i = 0; n < MAX_MANNING_RULES; i++, n++)
+      saveManningRule({ id: `extra-${i}`, label: `EXTRA ${i}`, count: { kind: 'people', filter: {} }, threshold: { amber: 1, red: 0 } })
+    expect(getState().requirements.default.rules.length).toBe(MAX_MANNING_RULES)
+  }
+
+  it('a NEW counter: the form says the list is full and Add is disabled', () => {
+    fill()
+    render(<CounterForm ruleId={null} onClose={() => {}} />)
+    fireEvent.change(screen.getByTestId('cform-name'), { target: { value: 'ONE MORE' } })
+    expect(screen.getByTestId('cform-full').textContent).toBe(`${MAX_MANNING_RULES} counters is the most the app keeps. Delete one to add another.`)
+    expect((screen.getByTestId('cform-save') as HTMLButtonElement).disabled).toBe(true)
+  })
+
+  it('editing a counter already in the list still saves, and wears no such line', () => {
+    fill()
+    const onClose = vi.fn()
+    render(<CounterForm ruleId="extra-0" onClose={onClose} />)
+    expect(screen.queryByTestId('cform-full')).toBeNull()
+    fireEvent.change(screen.getByTestId('cform-name'), { target: { value: 'RENAMED' } })
+    fireEvent.click(screen.getByTestId('cform-save'))
+    expect(onClose).toHaveBeenCalled()
+    expect(getState().requirements.default.rules.find(r => r.id === 'extra-0')!.label).toBe('RENAMED')
+  })
+
+  it('one short of full: no line, and Add works', () => {
+    fill()
+    deleteManningRule('extra-0')
+    const onClose = vi.fn()
+    render(<CounterForm ruleId={null} onClose={onClose} />)
+    expect(screen.queryByTestId('cform-full')).toBeNull()
+    fireEvent.change(screen.getByTestId('cform-name'), { target: { value: 'LAST ONE' } })
+    fireEvent.click(screen.getByTestId('cform-save'))
+    expect(onClose).toHaveBeenCalled()
+    expect(getState().requirements.default.rules.length).toBe(MAX_MANNING_RULES)
   })
 })

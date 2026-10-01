@@ -1,0 +1,248 @@
+{
+ "parts": {
+  "namebox-N1": {
+   "at": "2026-10-01T03:32:39.991Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C33-N1",
+     "did": "Ranger's Training request (Sat 18 Jul 08:00–16:00, OIL question: Yes) landed on the Ground Programme; then: Blade dragged from the crew list onto the row's name box (it held Ranger); OIL Earn on; four sign-offs, Publish day; Leave War",
+     "said": "gesture toast: (none); the row now: name box Blade, extras []; Inputs page row: \"Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕\"; OIL Earn: Blade on the Ground Programme row: \"Blade\nFO\" — Blade earns a full day — tap to take him off this event ‖ (the row itself) on the Ground Programme row: \"TRAINING\" — A request is answered for each person on it — tap a puck on this row, not the row itself ‖ Ranger on the Personal Inputs card: \"Ranger\nFO\" — Ranger earns a full day — tap to take him off this event ‖ (the row itself) on the Personal Inputs card: \"Training\" — A request is answered for each person on it — tap a puck on this row, not the row itself",
+     "stored": "request's person stored: Ranger (acc g); stored Saturday row: [{\"prog\":\"TRAINING\",\"who\":\"Blade\",\"more\":[],\"from\":\"the request\"}]; day head after publishing: ORIG; LEAVE WAR 18 Jul — Ranger: \"FO*\", Blade: \"FO*\"; after a reload the same: true; reload: ok / ok",
+     "verdict": "RECORDED (a picture for the owner — not judged)",
+     "pics": [
+      "C33-N1-01-inputs-filed.png",
+      "C33-N1-02-row-as-filed.png",
+      "C33-N1-03-tap-name-box-then-blade.png",
+      "C33-N1-04-row-after.png",
+      "C33-N1-05-inputs-after.png",
+      "C33-N1-06-OIL-EARN-the-row.png",
+      "C33-N1-07-OIL-EARN-whole-board.png",
+      "C33-N1-08-saturday-published.png",
+      "C33-N1-09-leavewar-ranger.png",
+      "C33-N1-10-leavewar-ranger-tapped.png",
+      "C33-N1-09-leavewar-blade.png",
+      "C33-N1-10-leavewar-blade-tapped.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "facts": {
+    "filed": {
+     "person": "bane",
+     "type": "Training",
+     "date": "Jul 18",
+     "oil": {
+      "2026-07-18": 1
+     },
+     "acc": "g"
+    },
+    "inputs.row.before": "Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕",
+    "row.before": {
+     "prog": "TRAINING",
+     "who": "bane",
+     "more": [],
+     "str": "08:00",
+     "end": "16:00",
+     "src": "imrldi1s0419wqy"
+    },
+    "pucks.before": [
+     {
+      "where": "Ground Programme row",
+      "who": "Ranger",
+      "words": "Ranger\nIP",
+      "title": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+      "puckTitle": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+      "cls": "seat | puck sm oilbar oilbar-fo",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "none (no OIL switch on this puck)"
+     }
+    ],
+    "tapArm": {
+     "armedAfterTapOnNameBox": "(nothing armed — the tap selected Ranger's puck)",
+     "rowAfterTappingBlade": {
+      "prog": "TRAINING",
+      "who": "bane",
+      "more": [],
+      "str": "08:00",
+      "end": "16:00",
+      "src": "imrldi1s0419wqy"
+     },
+     "toasts": []
+    },
+    "gesture.toasts": [],
+    "row.after": {
+     "prog": "TRAINING",
+     "who": "slash",
+     "more": [],
+     "str": "08:00",
+     "end": "16:00",
+     "src": "imrldi1s0419wqy"
+    },
+    "row.after.names": {
+     "nameBox": "Blade",
+     "extras": []
+    },
+    "pucks.after": [
+     {
+      "where": "Ground Programme row",
+      "who": "Blade",
+      "words": "Blade\nIP",
+      "title": "Blade · IP · instructor pilot · earns a full day of OIL",
+      "puckTitle": "Blade · IP · instructor pilot · earns a full day of OIL",
+      "cls": "seat | puck sm oilbar oilbar-fo",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "none (no OIL switch on this puck)"
+     }
+    ],
+    "request.after": {
+     "person": "bane",
+     "type": "Training",
+     "date": "Jul 18",
+     "oil": {
+      "2026-07-18": 1
+     },
+     "acc": "g"
+    },
+    "inputs.row.after": "Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕",
+    "oil.button": "pressed",
+    "oil.pucks": [
+     {
+      "where": "Ground Programme row",
+      "who": "Blade",
+      "words": "Blade\nFO",
+      "title": "Blade earns a full day — tap to take him off this event",
+      "puckTitle": "Blade · IP · instructor pilot",
+      "cls": "seat oilpk on | puck sm oilglow",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "on"
+     },
+     {
+      "where": "Ground Programme row",
+      "who": "(the row itself)",
+      "words": "TRAINING",
+      "title": "A request is answered for each person on it — tap a puck on this row, not the row itself",
+      "cls": "ain oilitem none"
+     },
+     {
+      "where": "Personal Inputs card",
+      "who": "Ranger",
+      "words": "Ranger\nFO",
+      "title": "Ranger earns a full day — tap to take him off this event",
+      "puckTitle": "Ranger · IP · instructor pilot · SXO",
+      "cls": "seat oilpk on | puck sm oilglow",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "on"
+     },
+     {
+      "where": "Personal Inputs card",
+      "who": "(the row itself)",
+      "words": "Training",
+      "title": "A request is answered for each person on it — tap a puck on this row, not the row itself",
+      "cls": "sbi-ty inpty ty-gp oilitem none"
+     }
+    ],
+    "oil.switches": [
+     {
+      "who": "(the item)",
+      "words": "SDO",
+      "title": "Earns OIL — tap to stop this item earning",
+      "on": true
+     },
+     {
+      "who": "Fable",
+      "words": "Fable FO",
+      "title": "Fable earns a full day — tap to take him off this event",
+      "on": true
+     },
+     {
+      "who": "Blade",
+      "words": "Blade FO",
+      "title": "Blade earns a full day — tap to take him off this event",
+      "on": true
+     },
+     {
+      "who": "Ranger",
+      "words": "Ranger FO",
+      "title": "Ranger earns a full day — tap to take him off this event",
+      "on": true
+     }
+    ],
+    "oil.off": "pressed",
+    "sign": {
+     "cur": "Ace",
+     "sked": "Anvil",
+     "plan": "Anvil",
+     "appr": "Anvil"
+    },
+    "publish": {
+     "pressed": true,
+     "label": "Publish day"
+    },
+    "head": {
+     "tag": "ORIG",
+     "pending": "7 changes",
+     "beak": "none",
+     "alpub": "",
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": ""
+    },
+    "publish.toasts": [
+     "Schedule updated",
+     "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+     "Back to editing the schedule",
+     "Saturday published — APPROVED"
+    ],
+    "stored.day": [
+     {
+      "prog": "TRAINING",
+      "who": "Blade",
+      "more": [],
+      "from": "the request"
+     }
+    ],
+    "stored.issued": [
+     "weeks/13-07-2026#5 → TRAINING:Blade",
+     "weeks/13-07-2026:is:2026-07-18#0~0 → TRAINING:Blade"
+    ],
+    "leavewar": {
+     "Ranger": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Blade": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     }
+    },
+    "leavewar.tap.ranger": "bid-picker: Ranger Sat 18 Jul NOW FO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI WHERE IT CAME FROM Earned off a duty input that was accepted — change that input, not the schedule. REASON Training GIVEN BY Duty input DAYS a day — worked 08:00–16:00",
+    "leavewar.tap.blade": "bid-picker: Blade Sat 18 Jul NOW FO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI WHERE IT CAME FROM Earned off a duty input that was accepted — change that input, not the schedule. REASON Training GIVEN BY Duty input DAYS a day — worked 08:00–16:00",
+    "leavewar.afterReload": {
+     "Ranger": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Blade": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     }
+    }
+   }
+  }
+ }
+}

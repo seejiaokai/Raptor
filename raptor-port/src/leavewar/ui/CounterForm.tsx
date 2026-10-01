@@ -20,6 +20,7 @@ import { useMemo, useState } from 'react'
 import {
   CAT_LADDER,
   MAX_TEAM_SLOTS,
+  MAX_MANNING_RULES,
   ruleHave,
   type CrewFilter,
   type ManningRule,
@@ -241,8 +242,13 @@ export function CounterForm({ ruleId, onClose }: {
   const sampleDate = period.days[0]?.date
   const sample = valid && sampleDate ? ruleHave(draftCount(), people, grid, states, sampleDate, views) : null
 
+  // The list is full: a NEW counter would be refused by the store (the most a
+  // reload keeps — MAX_MANNING_RULES). Said here, with the way out, rather than
+  // an Add button that does nothing ([STORE-READER-SWEEP], phase 7).
+  const full = !existing && rules.length >= MAX_MANNING_RULES
+
   const save = () => {
-    if (!valid) return
+    if (!valid || full) return
     const id = existing?.id ?? mintId(label, new Set(rules.map(x => x.id)))
     // `desc` deliberately absent: a rule saved from this form gets its sheet
     // words written from the definition (describeRule), so they cannot lie.
@@ -399,8 +405,14 @@ export function CounterForm({ ruleId, onClose }: {
         </div>
       )}
 
+      {full && (
+        <div className="mwhen" data-testid="cform-full">
+          {MAX_MANNING_RULES} counters is the most the app keeps. Delete one to add another.
+        </div>
+      )}
+
       <div className="cfoot mth-foot">
-        <button className="creset pri" data-testid="cform-save" disabled={!valid} onClick={save}>
+        <button className="creset pri" data-testid="cform-save" disabled={!valid || full} onClick={save}>
           {existing ? 'Save counter' : 'Add counter'}
         </button>
         <button className="creset" data-testid="cform-cancel" onClick={onClose}>Cancel</button>

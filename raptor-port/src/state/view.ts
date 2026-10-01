@@ -413,14 +413,19 @@ export let AVAILWIN: AvailWin | null = null
    remembered to. Open A, tap a man, close, open B — and B's footer still spoke
    about a man who is not behind B. Found for real on 23 Sep 26, when this
    file's own tests leaked one window's sentence into the next. */
-export function setAvailWin(v: AvailWin | null) { AVAILWIN = v; AVAILWIN_FOOT = ''; AVAILWIN_BOX = null }
+export function setAvailWin(v: AvailWin | null) { AVAILWIN = v; AVAILWIN_FOOT = ''; AVAILWIN_FOOTID = ''; AVAILWIN_BOX = null }
 /* a tab change is a new list, so it starts with the tab's own hint */
-export function setAvailTab(t: 'who' | 'oil') { if (AVAILWIN) AVAILWIN = { ...AVAILWIN, tab: t }; AVAILWIN_FOOT = '' }
+export function setAvailTab(t: 'who' | 'oil') { if (AVAILWIN) AVAILWIN = { ...AVAILWIN, tab: t }; AVAILWIN_FOOT = ''; AVAILWIN_FOOTID = '' }
 /* THE SENTENCE UNDER THE LIST after a tap — "X — why", or what a switch did.
    Empty = the tab's own hint. Kept beside the window it belongs to, never in
-   the component, for the reason above. */
+   the component, for the reason above.
+   `AVAILWIN_FOOTID` — WHO the sentence is about, when it is "X — why" ([DB-READINESS] phase 7 walk, walker B's F1): the
+   window outlives edits made behind it, so the sentence kept from the tap went stale — the list said "no flag" over a
+   foot still naming one. With the man kept, the window says what is true of him NOW at every draw (AvailWindow.tsx). A
+   sentence about what a switch DID carries no id and stays as said. */
 export let AVAILWIN_FOOT = ''
-export function setAvailFoot(s: string) { AVAILWIN_FOOT = s }
+export let AVAILWIN_FOOTID = ''
+export function setAvailFoot(s: string, id = '') { AVAILWIN_FOOT = s; AVAILWIN_FOOTID = id }
 
 /* WHERE THE WINDOW SITS, kept OUTSIDE React on purpose. He edits the schedule
    behind it, so every keystroke notifies and re-renders; position held in
@@ -780,7 +785,12 @@ export function clearBell(){ BELLLIT.delete(bellKeyOf(CURPAGE,me())) }
    the list, it does not lie about the day). Admin-gated at the write path,
    cleared on login/logout — the LATEOFF precedent. WMOPEN is the per-day "show
    the hidden ones" reveal (the PIOPEN pattern) so a muted warning is always
-   reachable to un-mute. */
+   reachable to un-mute.
+   CHANGED BY D469 (owner, 1 Oct 26) — NOT BUILT YET ([WARN-HIDE-KEPT] in OUTSTANDING.md): a hidden warning stays hidden
+   for EVERYONE, across a reload and a sign-in, until someone unhides it (so "session-only" and "cleared on login/logout"
+   above go); while hidden the pucks carry no flag for that item (so "a muted problem is still a problem" goes for the
+   pucks); and its line stays in the day's list, struck out and darker, instead of under the WMOPEN reveal. Until the
+   build, this comment describes what the code still does. */
 export const WARNOFF=new Set<string>()
 export function warnMuteKey(w:any){ return `${w.di}|${w.code}|${(w.who||[]).join(',')}|${w.msg}` }
 export function warnShown(w:any){ return !WARNOFF.has(warnMuteKey(w)) }

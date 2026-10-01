@@ -70,7 +70,7 @@ export function shiftWeekKey(v:any,n:any){
   return `${pad(d)}/${pad(m)}/${y}`;
 }
 /* THE MONDAY OF THE WEEK A DATE FALLS IN, as a dd/mm/yyyy week key, from a
-   dateOrd ordinal (yyyymmdd). Needed by the OIL money to find the week a
+   dateOrd ordinal (yyyymmdd). Needed by the OIL credit to find the week a
    request's ONE row is anchored in when that week is not loaded
    ([OIL-XWEEK-ELSEWHERE], 22 Sep 26).
    Date-free, like everything else here: Sakamoto's day-of-week, then walk back

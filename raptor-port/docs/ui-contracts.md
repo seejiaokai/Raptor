@@ -4075,6 +4075,17 @@ except where noted:
 ## Muting a check, and resizing the checks panel (owner, Aug 26)
 
 Both are board-side, admin-only, session-only, and DESKTOP-scoped for the resize.
+- **CHANGED BY D469 (owner, 1 Oct 26) — NOT BUILT YET (`OUTSTANDING.md` `[WARN-HIDE-KEPT]`).** Three sentences of the
+  entry below are replaced by his ruling, and stand here only until the build lands: (1) *"cleared on login/logout"* — a
+  hidden warning now **stays hidden, for everyone, across a reload and a sign-in, until someone unhides it** (kept with
+  its day — `ScheduleDay.wo`); (2) *"the muted ones gather under an N hidden line"* — the hidden warning's line **stays
+  where it is in the day's list, struck out and darker, one tap from being flagged again**; (3) *"the day's header keeps
+  its true count and colour"* — while hidden, **the pucks carry no flag for that item**. Kept, as he was read: only a
+  scheduler hides and unhides; a hide is an Undo step; a hidden warning returns by itself when the situation changes.
+  **D471 (1 Oct 26):** built as its own job after `[DB-READINESS]` phase 7; a hide on a day ALREADY PUBLISHED waits for the
+  next amendment (a pending change — D45, D103); the published and printed schedule drop the hidden item's flag too.
+  **D472 (1 Oct 26):** a hidden warning is NOT COUNTED — a day with 3 issues and one hidden reads "2 issues", with no
+  "1 hidden" beside it; the hidden one is seen only by opening the day's issues list, struck through and darker.
 - **Mute a specific check — on the board AND the edit week, in sync.** Each
   `.wln` row in the board's checks panel (`board.ts:boardWarnHTML`) and each
   `.witem` row in the edit week's day-issue list (`html.ts:dayWarnHTML`) carries
@@ -8038,6 +8049,8 @@ holiday comes from Leave War through `HOOKS.oilEarningDay`.
 
 ### The green edge (§2.10 — the owner chose it over a chip: "c looks good")
 
+**(D470, 1 Oct 26: a man the scheduler puts in the row's NAME BOX in place of the member is the second kind too — he wears the
+edge as scheduled work, and the member who filed still earns on his own answer.)**
 **A LANDED REQUEST ROW CARRIES TWO KINDS OF MAN (owner, D18, 22 Sep 26).** The man who FILED the
 request wears the edge off his own answer. Anyone the SCHEDULER puts on that row beside him wears
 it as ordinary scheduled work, and each of them can be taken off on his own. So a request row can
@@ -8351,6 +8364,30 @@ above it could not move (no screen route reaches it: a preview turns OIL Earn
 off and disables it). **The D38 flag** (this event inside his own flight brief or
 debrief) is computed from the working copy's flights live, from the RECORD's
 flights on the issued face, and not at all on a plain preview.
+**His SIM brief and debrief are flagged the same way (`[CROWD-SIM-BRIEF]`, `[DB-READINESS]` group A phase 7, 1 Oct 26):**
+a man on the OFT at 10:00 is busy for the box and free for the quarter-hour before it (D36), so he stands behind a
+09:50 event — listed, amber, with the warning list's own sentence ("No time for the OFT EP-1 brief — OPS BRIEF sits
+inside 09:45–10:00"; the AMT block by its own BRIEF and DEBRIEF rows). One body for the two sentences
+(`engine/validate.ts simBriefSays` / `simDebriefSays`, which the warning pass itself calls); the day's sim windows are
+published beside its events (`SIMW`), and the issued face hands the window the RECORD's own (`AvailWindow.tsx`, from the
+same rebuild as its flights). Ground crew are exempt, as in the warning list. Pins: `engine/crowdsim.test.ts`,
+`ui/availwin.test.tsx`.
+**A request that never asks the OIL question says so (`[OIL-PERSONAL-PLACEHOLDER]`, phase 7):** in the "Who earns OIL"
+half, the men behind a placeholder on a Personal request's row — and the requester's own puck on that row in OIL Earn
+mode — read "<callsign> — a personal request earns no OIL", inert, never "nothing measurable to earn from here" beside
+a row with written times (`ui/oilmode.ts inertWhy`, the kind read off the row as issued).
+**The foot says what is true NOW (the phase-7 walk, walker B's F1; Fable's final read F2):** after a tap on a man the window
+keeps WHO was tapped (`state/view.ts AVAILWIN_FOOTID`), not the sentence, and re-says it at every draw — his flag on the
+"who's available" half, his reason for not earning on the earn half — so an edit made behind the open window can never
+leave the list and the foot disagreeing. A sentence about what a switch DID carries no man and stays as said. On a row
+whose request never asks, the earn half's own hint is "A personal request earns no OIL.", never "Tap a puck to stop a man
+earning".
+**A finger lands on the count (`[COUNT-CHIP-PHONE-TAP]`):** `.oilcount:active` in `scheduler.css` is load-bearing, not
+cosmetic — without a pressed state of its own a browser snaps a touch on the count to the puck 2 px above it (the row
+arms, or the puck is selected, and the window never opens). Pinned by a REAL touch in `e2e/availwin.spec.ts` "phone, by
+finger"; proven in Chromium only — an iPhone is the owner's look.
+**The changes window names a request row's crowd change by its row** ("PERSONAL · who it stands for") and a tap goes to it
+(`ui/pendlist.ts rowByItem` resolves `i:<request id>` — Fable's final read F3; pin `ui/pendcrowd-request.test.ts`).
 
 **When the list cannot be worked out it says WHY**, by the real reason: the row
 is no longer on the schedule; it is cancelled; it is information only; there is

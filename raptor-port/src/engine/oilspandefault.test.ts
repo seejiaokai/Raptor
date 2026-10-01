@@ -1,5 +1,5 @@
 /* [OIL-SEATS-CAN-EARN] STEP 3 — the default rides the SPAN, and ONE body
-   answers it for the screen and for the money.
+   answers it for the screen and for the credit.
    Plan: docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md §4, §5 step 3.
 
    WHY THE DEFAULT CANNOT RIDE THE ITEM (Codex OSE-01 and Fable M3, found from
@@ -7,16 +7,16 @@
    is stamped per ROW and every occupant takes it: a duty row's named man and an
    ALL AVAIL in its extras share one address, and an SC formation's MAIN and
    SPARE seats share one address. So "default this item off" would either strip
-   the named man of what he earns today or pay the placeholder with no override.
+   the named man of what he earns today or credit the placeholder with no override.
    There is no item-level way to give two occupants of one row different
    defaults. The default therefore belongs to the SPAN — per person, per piece
    of work — which is the only thing that is not shared.
 
-   AND THE SCREEN AND THE MONEY MUST READ THE SAME BODY (Fable R2-1 and Codex
+   AND THE SCREEN AND THE CREDIT MUST READ THE SAME BODY (Fable R2-1 and Codex
    OSE-R2-01 — again both reviewers, opposite ends, one defect). The first
-   rewrite changed the MONEY's default and left the MODE's, which returns true
+   rewrite changed the CREDIT's default and left the MODE's, which returns true
    with no claim. Traced through: a default-off man would draw GLOWING while the
-   money paid him nothing, and his tap would write `deny` for a credit he never
+   credit pass credited him nothing, and his tap would write `deny` for a credit he never
    had — making `allow` unreachable, so D24's only door would not exist.
    `spanDefault` is that one body.
 
@@ -61,7 +61,7 @@ const ev = (d: Partial<OilEvidence> = {}): OilEvidence =>
 describe('the decision algebra, with the span default underneath it', () => {
   it('an explicit OFF on the item beats everything, including the span and the man', () => {
     const e = ev({ d: { items: { 'r:x': 0 }, people: { 'bane|r:x': 'allow' } } })
-    expect(earnsFrom(e, 'bane', 'r:x', true), 'a switched-off item pays nobody').toBe(false)
+    expect(earnsFrom(e, 'bane', 'r:x', true), 'a switched-off item credits nobody').toBe(false)
     expect(earnsFrom(e, 'bane', 'r:x', false)).toBe(false)
   })
 
@@ -110,8 +110,8 @@ describe('every span carries its own default (§4)', () => {
   })
 })
 
-describe('ONE BODY behind the screen and the money (Fable R2-1 / Codex OSE-R2-01)', () => {
-  it('spanDefault answers off the span the money will actually use', () => {
+describe('ONE BODY behind the screen and the credit (Fable R2-1 / Codex OSE-R2-01)', () => {
+  it('spanDefault answers off the span the credit will actually use', () => {
     ;(DAYS[SAT] as any).ground = [{ prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' }]
     ensureRowIds(DAYS)
     const item = rowItemKey((DAYS[SAT] as any).ground[0].rid)
@@ -129,10 +129,10 @@ describe('ONE BODY behind the screen and the money (Fable R2-1 / Codex OSE-R2-01
     expect(spanDefault(DAYS[SAT], e2, 'bane', 'i:c1'), 'and Yes when he said Yes').toBe(true)
   })
 
-  it('THE PROPERTY: for every man on every item, the money pays exactly what the default says', () => {
+  it('THE PROPERTY: for every man on every item, the credit pass credits exactly what the default says', () => {
     /* the guard against the half-migration both reviewers found. It walks the
        real day rather than one fixture, so a seat whose default and whose
-       payment disagree cannot hide behind a case nobody wrote a test for. */
+       credit disagree cannot hide behind a case nobody wrote a test for. */
     ;(DAYS[SAT] as any).ground = [
       { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' },
       { prog: 'MORNING BRIEF', str: '0700', end: '0800', who: 'allavail' },

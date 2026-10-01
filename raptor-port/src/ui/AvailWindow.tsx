@@ -32,14 +32,14 @@ import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
 import { esc, selectPerson } from '../state/view'
 import { personPuckHTML, personWarnMsgs, withChipWorld } from './html'
-import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, evOf, OIL_OPEN_END } from './oilmode'
+import { oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, oilNoAskWhy, oilEligible, inertWhy, evOf, OIL_OPEN_END } from './oilmode'
 import { draftVerLabel } from '../engine/drafts'
 import { oilSentOf, oilReadPass } from '../engine/oilev'
 import { logAction } from '../engine/editlog'
 import { crowdClashes } from '../engine/validate'
 import { collectEvents } from '../engine/events'
 import {
-  AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, setAvailFoot,
+  AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, AVAILWIN_FOOTID, setAvailFoot,
   AVAILWIN_BOX, setAvailWinBox,
 } from './pops'
 
@@ -162,13 +162,18 @@ export function AvailWindow() {
        owner's own case. */
     const flagWorld = !ver ? 'live' : ofw ? 'issued' : 'none'
     let evsById: Record<string, any[]> | null = null
+    /* …and the RECORD's own sim brief / debrief windows, from the same rebuild ([CROWD-SIM-BRIEF], phase 7): the issued
+       face flags a man's sim brief as the day went out, never today's — one collected day, both halves */
+    let simw: any[] | undefined
     if (flagWorld === 'issued') {
       evsById = {}
-      for (const x of ((collectEvents()[di] || {}).events || [])) (evsById[x.id] = evsById[x.id] || []).push(x)
+      const rec: any = collectEvents()[di] || {}
+      for (const x of (rec.events || [])) (evsById[x.id] = evsById[x.id] || []).push(x)
+      simw = rec.simwin || []
     }
     const own = flagWorld !== 'none' && lbl.found
     const flagsFor = (id: string) => [
-      ...(own ? crowdClashes(di, id, lbl.s, lbl.e, lbl.name, evsById ? (evsById[id] || []) : undefined) : []),
+      ...(own ? crowdClashes(di, id, lbl.s, lbl.e, lbl.name, evsById ? (evsById[id] || []) : undefined, simw) : []),
       ...personWarnMsgs(di, id),
     ]
     const worst: Record<string, { sev: string, msg: string } | undefined> = {}
@@ -226,7 +231,13 @@ export function AvailWindow() {
             + `${gone.length === 1 ? 'is' : 'are'} no longer on the roster.</div>`
           : '')
     return {
-      lbl, lost, body, worst,
+      lbl, lost, body, worst, known,
+      noAsk: oilNoAskWhy(di, item),
+      /* the EARN half's foot about a tapped man who could not earn (Fable's final read, F2): said afresh in the chip's own
+         world while he is still listed and still cannot — and dropped the moment he can (a request retyped behind the
+         window), so the foot never contradicts the puck above it */
+      footOil: oil && AVAILWIN_FOOTID && known.includes(AVAILWIN_FOOTID) && !oilEligible(di, AVAILWIN_FOOTID, item)
+        ? `${((PEOPLE as any)[AVAILWIN_FOOTID] || {}).cs || AVAILWIN_FOOTID} — ${inertWhy(di, item)}` : '',
       n: people.length,
       earn: earners(people),
       flagged: known.filter(id => !!worst[id]).length,
@@ -281,7 +292,7 @@ export function AvailWindow() {
            and it would still cost an amendment on a published day. His seat
            says why; the footer repeats it. */
         const why = (r.querySelector('.seat.oilpk') as HTMLElement | null)?.title || `${cs} has nothing to earn from this event.`
-        setAvailFoot(why); notify(); return
+        setAvailFoot(why, id); notify(); return
       }
       /* the real write, through the same body the board's tap uses, so it lands
          on the day, rides the snapshot and a publish makes it a real amendment
@@ -298,12 +309,21 @@ export function AvailWindow() {
     /* D38 — "I can click on the flagging as well". The reason is already under
        his puck; the tap gives the FULL sentence, which is the one the warning
        list uses, because a wrapped line is cut to fit and this one is not. */
-    const w = m.worst[id]
-    setAvailFoot(w
-      ? `${cs} — ${w.msg}`
-      : `${cs} — nothing else on the programme at that time.`)
+    setAvailFoot(whySays(id), id)
     notify()
   }
+  /* WHAT IS TRUE OF ONE MAN NOW — the foot's sentence, built from THIS draw's flags, at the tap and at every draw after
+     it (walker B's F1: the sentence kept from the tap outlived an edit made behind the window). */
+  const whySays = (id: string) => {
+    const cs = ((PEOPLE as any)[id] || {}).cs || id
+    const w = m ? m.worst[id] : undefined
+    return w ? `${cs} — ${w.msg}` : `${cs} — nothing else on the programme at that time.`
+  }
+  /* the foot kept from a tap: about a man still in the list → said afresh; about a man no longer behind the puck (or on
+     the earn half, where the foot is what a switch did) → as kept, or the tab's own hint */
+  const foot = !m ? '' : AVAILWIN_FOOTID
+    ? (oil ? m.footOil : m.known.includes(AVAILWIN_FOOTID) ? whySays(AVAILWIN_FOOTID) : '')
+    : AVAILWIN_FOOT
 
   /* UNDER A MASK THE HINT SAYS SO (walk W2, 23 Sep 26): with the event or the
      whole day switched off, "tap a puck to stop a man earning" invited a tap
@@ -312,8 +332,11 @@ export function AvailWindow() {
   /* A ROW WITH A START AND NO END ([ALLAVAIL-OPEN-ROW], D360 — "need to say something like no oil worked out due end
      time to the admin"): its crowd is counted over the assumed hour the title names, but the OIL half — where OIL is
      decided — says nobody is credited from it, and why, on the working copy and on an issued record alike. */
-  const hint = !m ? '' : AVAILWIN_FOOT || (m.lost ? '' : oil
+  const hint = !m ? '' : foot || (m.lost ? '' : oil
     ? (m.lbl.assumed ? `${OIL_OPEN_END}.`
+      /* a request that never asks the OIL question (Personal): nobody in the list can earn, so the half says that —
+         never "tap a puck to stop a man earning" beside "0 of 44" (the phase-7 walk, walker A's O2) */
+      : m.noAsk ? `${m.noAsk.charAt(0).toUpperCase()}${m.noAsk.slice(1)}.`
       : ver ? 'Who earned OIL on the day as it was issued.'
       : masked ? (oilBlanketOn(di)
         ? 'Nothing on this day earns. Turn that off to switch men one by one.'

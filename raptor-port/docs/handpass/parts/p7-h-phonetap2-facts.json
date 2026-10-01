@@ -1,0 +1,59 @@
+{
+ "tag": "p7",
+ "facts": {
+  "none": {
+   "chip": {
+    "w": 20,
+    "h": 14
+   },
+   "atCentre": "the chip",
+   "opens": false,
+   "armed": "g:1.4",
+   "events": [
+    "pointerdown(touch) → SPAN.puck.allavail.sm",
+    "touchstart → SPAN.puck.allavail.sm",
+    "pointerup(touch) → SPAN.puck.allavail.sm",
+    "touchend → SPAN.puck.allavail.sm",
+    "mousedown → SPAN.puck.allavail.sm",
+    "mouseup → SPAN.puck.allavail.sm",
+    "click(touch) → SPAN.puck.allavail.sm"
+   ]
+  },
+  "bigger": {
+   "chip": {
+    "w": 28,
+    "h": 28
+   },
+   "atCentre": "the chip",
+   "opens": true,
+   "armed": null,
+   "events": [
+    "pointerdown(touch) → SPAN.oilcount",
+    "touchstart → SPAN.oilcount",
+    "pointerup(touch) → SPAN.oilcount",
+    "touchend → SPAN.oilcount",
+    "mousedown → SPAN.oilcount",
+    "mouseup → SPAN.oilcount",
+    "click(touch) → SPAN.oilcount"
+   ]
+  },
+  "active": {
+   "chip": {
+    "w": 20,
+    "h": 14
+   },
+   "atCentre": "the chip",
+   "opens": true,
+   "armed": null,
+   "events": [
+    "pointerdown(touch) → SPAN.oilcount",
+    "touchstart → SPAN.oilcount",
+    "pointerup(touch) → SPAN.oilcount",
+    "touchend → SPAN.oilcount",
+    "mousedown → SPAN.oilcount",
+    "mouseup → SPAN.oilcount",
+    "click(touch) → SPAN.oilcount"
+   ]
+  }
+ }
+}

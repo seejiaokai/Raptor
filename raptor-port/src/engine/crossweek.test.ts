@@ -93,7 +93,7 @@ describe('Test C — drift-seam pin: shiftWeekKey (engine) and shiftWeek (ui) mu
 describe('Test C2 — drift-seam pin: weekKeyOfOrd (engine) and mondayOf (ui) must never disagree', () => {
   /* the SAME "which week is this date in" question, deliberately implemented
      twice for the same reason as Test C — the engine stays Date-free, the ui
-     layer uses Date.UTC. The OIL money asks the engine's one when it has to
+     layer uses Date.UTC. The OIL credit asks the engine's one when it has to
      find the week a request's row is anchored in ([OIL-XWEEK-ELSEWHERE]), so a
      drift here would pay, or refuse to pay, out of the wrong week. */
   const DATES = [

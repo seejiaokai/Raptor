@@ -156,6 +156,18 @@ describe('persistence', () => {
     storesLoad()
     expect(STORE_CFG).toEqual(expected)
   })
+  /* [STORE-READER-SWEEP] ([DB-READINESS] group A, phase 7): a list EMPTIED through the app's own control is a decision
+     — the writer stores `[]` — and the reader took an empty list for "nothing saved" and put the standard set back at
+     the next load. A stored empty list now reads back empty; anything unusable still falls back. */
+  it('a list emptied on purpose stays empty after a reload', () => {
+    for (const [k] of STORE_CFG.slice()) delStore(k)
+    expect(STORE_CFG).toEqual([])
+    storesSave()
+    expect(mem['sqn142_stores'], 'the writer stores the empty list').toBe('[]')
+    addStore('DIVERGE')
+    storesLoad()
+    expect(STORE_CFG, 'the standard six do not come back').toEqual([])
+  })
   it('reset clears the stored list as well as the live one', () => {
     addStore('LGB'); storesSave()
     storesReset()

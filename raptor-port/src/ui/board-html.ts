@@ -421,7 +421,7 @@ export function sbDutyPanel(d:any,di:any,pv?:any,ro?:any){
     (dwv.rows||[]).forEach((r:any,ri:any)=>{
       const base=`d:${di}.${wi}.${ri}`, t=`dr:${di}.${wi}.${ri}`;
       oilRow(rowItemKey(r.rid));
-      /* INSIDE THE MODE A DESK SHOWS THE PEOPLE IT PAYS ([OIL-SEATS-CAN-EARN]
+      /* INSIDE THE MODE A DESK SHOWS THE PEOPLE IT CREDITS ([OIL-SEATS-CAN-EARN]
          step 7, register OIL8). A placeholder on the desk or under it opens into
          the men it stands for, each with his own puck, so one can be taken off
          the crowd; drawn as one inert body the row's whole switch was the only
@@ -547,13 +547,13 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
       }else{
         pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}><span class="itxt">${esc(r.who)}</span>${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
       }
-      /* INSIDE THE MODE THE SIM SHOWS THE PEOPLE IT PAYS ([OIL-SEATS-CAN-EARN]
+      /* INSIDE THE MODE THE SIM SHOWS THE PEOPLE IT CREDITS ([OIL-SEATS-CAN-EARN]
          step 7, register OIL8). The seat grid, the pairing and the empty drop
          slots are all about PLANNING the row, and planning is off in the mode —
          so the cell becomes the plain list of everyone the day credits from this
          row, with a placeholder opened into the men it stands for. Exactly the
          set the walk collects (seats, passengers, extras), so the screen cannot
-         show one crowd while the money pays another. */
+         show one crowd while the credit pass credits another. */
       if(oilModeOn(di)){
         pplCell=`<div class="ppl">`
           +oilRowPeople(di,[r.p,r.w].concat(r.pax||[]).concat(r.more||[]),rowItemKey(r.rid),oilWin(r))

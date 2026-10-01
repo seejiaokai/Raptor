@@ -9,6 +9,12 @@ could reach the served bundle in `dist/`.
 
 **Tally: 35 RED · 2 GREEN (findings) · 1 inconclusive · 1 surface not run.**
 
+*Test names since reworded (1 Oct 26, `[OIL-WORDS]`, D25 — OIL is earned leave, never pay). This sheet is left as it was
+written; four tests it quotes now read: "he is never credited TWICE, even though the crowd names him" (5c) · "THE CONTROL —
+a day job 2 changed the credit on must be signed again" (§ above the table, 8e) · "take-off and landing at the same minute
+credits the man his half day" (11c) · "spanDefault answers off the span the credit will actually use" (the note under the
+table). Search for the new wording.*
+
 ---
 
 ## The findings — surfaces with no red test

@@ -171,7 +171,10 @@ export function setSlotVal(key:any,id:any):boolean{
   { const m=key.match(XKEY);
     if(m&&c>=0){const k=key.slice(0,c),a=key.slice(c+1).replace(XKEY,'').split('.');
       const r=rowRef(k,a); if(!r)return true;
-      r.more=r.more||[]; r.more[+m[1]]=id||'';
+      /* NEVER PAST THE END ([OIL-READ-LEFTOVERS] 2, Fable F4 — phase 7): a full sim row opens a spare PAIR (D50), and a
+         drop on the second seat of it wrote beyond the list, leaving a hole saved as `null` in a list of text. The
+         seat skipped is a BLANK, as every other empty seat is. */
+      r.more=r.more||[]; while(r.more.length<+m[1])r.more.push(''); r.more[+m[1]]=id||'';
       while(r.more.length&&!r.more[r.more.length-1])r.more.pop();   // keep the tail tidy
       return true;} }
   if(c<0){flyRef(key)[key.split('.')[4]]=id||'';return true;}   // non-null: guarded above
@@ -182,7 +185,7 @@ export function setSlotVal(key:any,id:any):boolean{
       /* pax indices are held in place rather than spliced out: lSeat() renders an
          empty id as nothing, so a blanked pax leaves no gap on screen but every
          other pax keeps the slot key it already had (no re-render key drift). */
-      if(a[3]==='pax'){r.pax=r.pax||[];r.pax[+a[4]]=id||'';return true;}
+      if(a[3]==='pax'){r.pax=r.pax||[];while(r.pax.length<+a[4])r.pax.push('');r.pax[+a[4]]=id||'';return true;}   // no hole — see the extras branch above
       r[a[3]]=id||'';return true;}
     /* store the stable person ID, not PEOPLE[id].cs (ARCH-STACK 1C, 14 Sep 26).
        The renderers resolve who→id→cs (whoId), so the printed byte is unchanged,

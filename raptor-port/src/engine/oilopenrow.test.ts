@@ -1,12 +1,12 @@
 /* [ALLAVAIL-OPEN-ROW] — D360 (owner, 28 Sep 26: "ok, need to say something like no oil worked out due end time to the
-   admin"). An ALL AVAIL on a row with a START and NO END showed no count at all: the crowd is recorded only by the money
+   admin"). An ALL AVAIL on a row with a START and NO END showed no count at all: the crowd is recorded only by the credit
    walk, which rightly refuses a row with no written end (D31 — "display may guess; money may not"), so the count — a
-   SCHEDULING fact on every seat the puck can land on (D27, D37) — inherited the money's refusal and went silent.
+   SCHEDULING fact on every seat the puck can land on (D27, D37) — inherited the credit's refusal and went silent.
 
    Now the membership is recorded for such a row over the length the rest of the schedule assumes for it (the Logic
-   tab's `openEnd`; a sim its own `simLen`), and the MONEY IS UNTOUCHED: nobody is credited a thing from it. One test
+   tab's `openEnd`; a sim its own `simLen`), and the CREDIT IS UNTOUCHED: nobody is credited a thing from it. One test
    per kind of row a placeholder lands on (a ground row, a duty desk, a sim seat, a Common Programme row), each asserting
-   BOTH halves — the crowd written down, and nothing paid. Same harness as oilexpand.test.ts. */
+   BOTH halves — the crowd written down, and nothing credited. Same harness as oilexpand.test.ts. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
@@ -94,7 +94,7 @@ describe('what stays as it was', () => {
     expect(Object.keys(ev().sent)).toEqual([])
     expect(paid(), 'and the named man on it still earns nothing from an unwritten end').toEqual([])
   })
-  it('a cancelled row and an ⓘ row are not listed, as the money walk skips them', () => {
+  it('a cancelled row and an ⓘ row are not listed, as the credit walk skips them', () => {
     day().ground = [{ prog: 'A', str: '1830', end: '', who: 'allavail', cx: true }, { prog: 'B', str: '1830', end: '', who: 'allavail', info: true }]
     ensureRowIds(DAYS)
     expect(openEndRows(day())).toEqual([])
@@ -107,6 +107,6 @@ describe('what stays as it was', () => {
     day().dutywaves = [{ label: 'DUTIES', rows: [{ role: 'SDO', id: 'allavail', str: '0700', end: '1900' }] }]; ensureRowIds(DAYS)
     expect(ev().sent[rowItemKey(day().dutywaves[0].rows[0].rid)]).toEqual(CROWD)
     expect(asked[0]).toEqual([420, 1140])
-    expect(paid(), 'and it pays, as before').toEqual(CROWD)
+    expect(paid(), 'and it credits, as before').toEqual(CROWD)
   })
 })

@@ -15,79 +15,49 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/db-readiness-p6c-holder-base -->
-### `claude/db-readiness-p6c-holder-base` — `[DB-READINESS]` group A phase 6 (c) v3, the holder base: BUILT and FULL-checked (1 Oct 26, D467) — written 1 Oct 26 — verify before use
-- **This chat:** his opening line (round 3, the build and its FULL check of (c) v3 on a new branch cut from
-  `claude/db-readiness-table-shaping-4094f6`) — all done. One ruling: D468 (a moved request's extras stay with the old day — leave it); D469 unused. He asked, and was answered in
-  plain words (filed, not ruled): how long; what comes next; whether to build against the database (yes, on IT's TEST copy)
-  and whether to move now (after (c) and phase 7 merge; then one repo only) — `[RESTRICTED-ENV-WORKFLOW]`; why the folder is
-  8 GB (leftover worktrees ~6 GB, pictures, history — not the code) — `[REPO-TIDY]`.
-- **Built:** plan §3 (c) v3 and §9 (`raptor-port/docs/superpowers/plans/2026-09-30-db-readiness-phase6-plan.md`); round 3's
-  dispositions `…/briefs/2026-10-01-db-readiness-phase6c-dispositions-r3.md`.
-- **The check:** `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md` — Astra's scenarios (one reviewer); seven
-  walks (`scripts/handpass/p6c-walk-*.mjs`), each on this build AND the build before (c) (`9191910b`, served from
-  `raptor-port/dist-p6cbase` — ignored; `.claude/launch.json` `raptor-p6c` 4203 / `raptor-p6c-base` 4202), one at phone
-  width; the gates and perf; both final reads (Astra REVISE 1–4, Fable REVISE F1–F2 + F3 low) — every finding fixed red
-  first but Astra #3's Accept half (declined, with its reason) and F3 (measured, filed); the re-walk of all eight, 189/189.
-- **Found and fixed, red first:** new filings landed above older rows (W1); a member's new row on a published day marked on
-  every box (W2); a dead `kept` row taken for the request's row — the load's filing (another day's, and the version's own
-  issued dead), the changes-window jump, the retype message, **the OIL evidence (money: a man on the dead row of a request
-  filed under Unavailable was paid)**, a dead issued row read as its placement, a dead row's marks cleared by another
-  request; the load's confirm count ("already at Original"); a landing's id colliding with a stored dead row (Fable F1);
-  the baseline after a delete's book change (Fable F2). **The one rule since: a row that carries `kept` is never the
-  request's row.** **Intended, plan §8 items 14–15:** a moved request leaves the scheduler's additions on the old day
-  (**his answer, 1 Oct 26: leave it — D468**); an issued row's retimed mark on the time box. **Filed for group B:** the
-  after-command pass costs ~5–9 ms a command (`[DB-READINESS]` (iii)).
-- **Unfinished:** his look (the card at the foot of the sheet); then "merge live" —
-  this branch AND its parent `claude/db-readiness-table-shaping-4094f6` (phases 0–6), whose own cards are still unlooked-at.
-  **Before "merge live": remind him to EXPORT a copy of his Tracker first (D464).** Then phase 7.
-- **Parallel (D302):** rulings: D468 used — a next chat on this lineage takes D469, then a new range; observations
-  #396–#400 used here (a next chat takes #401 on).
-- **Traps met:** `codex exec` run in the background waits on stdin forever — add `< /dev/null` (observation #399);
-  `tsc -p tsconfig.json` checks nothing here — `npx tsc --noEmit -p tsconfig.app.json` (#397); a CX on the board opens its
-  "Cancel this item" sheet ("Cancel line" confirms); the desktop week's scroll is held by the app — to picture the
-  next-week preview, move its scroller by the element's offset (`p6c-probe5.mjs`).
-- **Pick up here:** his look and his answer; then his "merge live" for the lineage (parent first or together — his call).
-<!-- /now -->
-
-<!-- now:claude/db-readiness-table-shaping-4094f6 -->
-### `claude/db-readiness-table-shaping-4094f6` — `[DB-READINESS]` group A: phases 0–5b BUILT and FULL-checked; **phase 6 (a), (b), (d) BUILT and FULL-checked (30 Sep 26); (c) needs v3** — written 30 Sep 26 — verify before use
-- **This chat:** opened with the previous chat's opening line ("plan and build phase 6"); asked, he confirmed D467's order —
-  the FULL bug check of (a), (b), (d) — which is done. No new ruling.
-- **The check:** `raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md` — Astra's scenarios (one reviewer); the roll-call
-  (no missing door); five walks, each run on this build AND on the build before phase 6 (`0d1a5e18`, exported to `C:\p6b` —
-  a worktree fails on this repo's long picture names), the screen compared fact by fact (`scripts/handpass/p6-*.mjs`); three
-  at phone width; thirteen break tests; the gates and perf; both final reads (Astra: no findings; Fable: two low).
-- **Found and done:** F1 / F2 — two visible changes the plan's §8 lacked (the Amendments panel no longer counts marks a filing
-  or a delete left on never-published days; a delete now also clears a week nobody has saved — a defect of the build before)
-  — plan §8 items 3–4, his look card; F3 a stale comment; F4 four overlay wires with no test — tests written, each red when
-  broken; F5 the orphaned week writers `stashEditDays` / `stashEditWeek` removed; Fable F1 (a delete on a read-only week ON
-  SCREEN went ahead, a reload put him back) — fixed red first, one refusal rule; Fable F2 (the overlay's cost grows with the
-  deleted roster, ≈0.2 ms per `validate()` today) and Fable's question (the delete's seat history lines cover only the week on
-  screen — pre-existing) — both FILED in `OUTSTANDING.md` `[DB-READINESS]` "for group B".
-- **Unfinished:** (1) his look (the card at the foot of the sheet — step 1 walked at the real date) AND his look at phases
-  0–5b (the card at the foot of `…/2026-09-30-dbrA-group-walk.md`). (2) (c) v3 — the HOLDER BASE, dispositions
-  `…/briefs/2026-09-30-db-readiness-phase6-dispositions-r2.md`, red tests committed SKIPPED (`src/state/p6c-requestonread.test.ts`) —
-  in a fresh chat on its own branch (D467). (3) Phase 7. All under `[DB-READINESS]` in `OUTSTANDING.md`.
-- **Gates (30 Sep 26, under the lock, the final code):** unit 7363 passed, 12 skipped · build · tfin 728/0 · e2e 509 passed, 0 failed, 49 skipped · smoke 445/0 · rulecheck OK · docsize OK (OVER by 342, deferred — D29) · perf 4/0 (on the walked build and the build before phase 6, level) · the saved-week test files re-run after the last removal 47 files / 685 passed.
-- **Before this branch's "merge live": remind him to EXPORT a copy of his Tracker first (D464).** Branch pushed; no PR.
-- **Open question for him (not blocking):** the long message after "Load onto working copy" (he asked what it was, 30 Sep
-  26) — offered to file a shorter two-line version as its own small job; his answer, if any, not yet given.
-- **Parallel (D302):** rulings D460–D469 (D460–D467 used — a next chat on this branch takes D468–D469, then a new range);
-  observations #392–#395 used on this branch (a next chat takes #396 on). No other open branch known.
-- **Traps met:** a heredoc eats `\` — write Python edit scripts to a FILE; the gatelock `run` gate list has no perf (run
-  `PORT_URL=<build> npm run perf` under `gatelock take`); `git worktree add` of an old commit fails on this repo (long picture
-  names) — `git archive <commit> raptor-port/src …` to a short path and junction `node_modules`; a walk's toast recorder
-  dies with a reload — re-arm it (or read the picture).
-- **Pick up here:** his look; then (c) v3 per D467 — a fresh chat, its own branch cut from this one.
+<!-- now:claude/db-readiness-p7-oil-followups -->
+### `claude/db-readiness-p7-oil-followups` — `[DB-READINESS]` group A phase 7, the small OIL follow-ups: BUILT and FULL-checked, waiting for his look — written 1 Oct 26 — verify before use
+- **Where it started:** his opening line — tidy the two merged blocks away (phases 0–6 live, PR #476), then plan and build
+  phase 7 with its own bug check, on a new branch cut from `main`. The context was compacted once mid-chat; the plan's build
+  log (§6) and the evidence sheet were written as the work went and are the record.
+- **Built (on the branch, one pull request):** the six small OIL follow-ups — a placeholder on a Personal request's row is counted
+  and earns nobody; the ALL AVAIL window flags a man's sim brief / debrief; a sim row's seat list is saved without holes; the
+  stored-record sweep's three fixes; D470 (a man in another man's request name box earns, and the box survives the member's
+  own edit); the phone's finger tap on a count; OIL never called pay, on screen or in comments. All six archived.
+  Plan and build log `raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`; evidence
+  `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md` (his look card is its §9).
+- **Rulings this chat:** D469, D471, D472 (hidden warnings — NOT built; `[WARN-HIDE-KEPT]`), D470 (built) and D473 (the database
+  comes at the END — after phase 7 no more database-readiness work; the IT side's answers of 1 Oct 26 are in `[IT-QUESTIONS]`).
+- **Unfinished:** his look and "merge live" (none of it code). On his iPhone: a finger tap on a count under ALL AVAIL on the
+  week views — proven in Chromium only (`[COUNT-CHIP-PHONE-TAP]`). Open residue, all filed: `[WARN-HIDE-KEPT]` (the next job),
+  `[LOAD-MSG-SHORT]` (a question for him), `[INP-TILL-STALE]`, `[OIL-INERT-TAP-SILENT]`, `[OG-TAG-OVER-COUNT]`,
+  `[MEMBER-EDITPAGE-CHECK]`. Noticed, not this chat's: `[OIL-AWARD-IS-A-GRANT]` and `[OIL-EARNED-VS-GRANTED]` merged with
+  PR #469 and still sit in the backlog (each now says so).
+- **Branch:** `claude/db-readiness-p7-oil-followups` — pushed 1 Oct 26 on his "push it" (the app's permission check had
+  refused this chat's first attempt; the repo is public for now, D106), and its ONE pull request opened with that push.
+  Check before acting: `git ls-remote --heads origin claude/db-readiness-p7-oil-followups` and `gh pr list --head
+  claude/db-readiness-p7-oil-followups` — if the branch is there with no PR, open one, unsubscribe from it at once and hand
+  him the Vercel link with the look card. If it has MERGED, the next chat starts from `main` in a new worktree and never
+  picks this branch.
+- **Gates:** the full set green on the final code under the PC lock — counts in §Gate baseline below (the commits after
+  them are documents only). GitHub's own checks first ran with that push: read their result before anything else
+  (`gh run list --branch claude/db-readiness-p7-oil-followups --limit 2`), and never push while they run (D151).
+- **Open questions for him:** none from this chat beyond his look; `[LOAD-MSG-SHORT]` still waits.
+- **Parallel (D302):** this chat used D469–D473 and observations #401–#407. No other open branch known when written.
+- **Pick up here:** if he reports something from his look, fix it on this branch (red first, re-walk, the gates). Once he has
+  said "merge live" and it is live: `[WARN-HIDE-KEPT]` — a fresh chat, a new worktree on `main`, a picture to him first
+  (D469, D471, D472 in `.claude/decisions-full/scheduler.md`), then its own FULL check.
 <!-- /now -->
 
 ## Next, in order
 
-0. **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26)** — `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
-   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — next his look at both, his "merge live", then phase 7 (D453). The IT team is taking the app into Dataverse now, and he means to
+0. **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now"):** the app's features are built first; after
+   phase 7 no more database-readiness work until then; the table list (`raptor-port/docs/data-model.md`) is kept up to date as
+   each feature is added, and he — with his AI — writes the table format for the IT side to enter. Next job: `[WARN-HIDE-KEPT]`.
+   *Done while the step was "starting now" (29 Sep – 1 Oct 26):* `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7, the small OIL follow-ups, BUILT and FULL-checked 1 Oct 26 on `claude/db-readiness-p7-oil-followups` (`…/2026-10-01-dbr-phase7-check.md`) — waiting for his look and "merge live", which closes group A (D453); then `[WARN-HIDE-KEPT]` (D469, D471, D472). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
-   here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken.
+   here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken — *and that hand-over now waits for the end (D473).*
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
    `[POST-OUT-OUTCOMES]`, `[LW-MOVE-STANDARD]` (D264–D266) and `[ONE-DOOR]` (D309, D310, with `[POST-IN-DATE]`) MERGED
    (PRs #442, #443, #446, #447, #450) → **the one changes window (`[DRAFT-PENDING]`)** MERGED (PR #451, 28 Sep 26); its
@@ -99,15 +69,16 @@ the later merge keeps both (D78).
    **group A** (what decides the tables' shape — saving in small pieces, the schedule a day per piece, the change log, no
    week-deleting reconcile, the planning calendar's own records, no demo seed; with the small OIL follow-ups, D147) BEFORE
    IT settles its tables → the app connected (`[DB-STEP]`) → **group B** (tuned against the real database) → the lock's
-   screens. Ask IT when its tables settle. The whole list: `OUTSTANDING.md`'s priority list.
+   screens. *(D473, 1 Oct 26: group A is built; the connection, group B and the lock's screens wait for the end — there is no
+   "before its tables settle" to race now.)* The whole list: `OUTSTANDING.md`'s priority list.
 3. Filed, none blocking: `[TRK-PINCH-ASK]` (his iPhone look), `[LW-FROZEN-BAR-GAP]`; the Tracker leftovers'
    own residue — `[SAVE-NOTE-COVERS]` (medium, next), `[TRK-REMOUNT-LANDING]`, `[TRK-ASYNC-STALE]` (with `[DB-READINESS]`). Everything else: `OUTSTANDING.md`'s priority list.
 4. **Before ANY collaborator:** take the checks runner off this repo (Astra SEC-101, `[REPO-PRIVATE]`).
 
 ## Gate baseline
 
-The latest counts watched — 1 Oct 26, `claude/db-readiness-p6c-holder-base` (phase 6 (c) v3 with every fix of its FULL check
-and both final reads), under the PC lock: unit **7401 / 7401** (463 files) · build clean · tfin **728 / 0** · e2e **509 passed,
+The latest counts watched — 1 Oct 26, `claude/db-readiness-p7-oil-followups` (phase 7 with every fix of its FULL check and
+both final reads), under the PC lock: unit **7487 / 7487** (469 files) · build clean · tfin **728 / 0** · e2e **510 passed,
 0 failed**, 49 skipped · smoke **445 / 0** · rulecheck OK (notes `AM39d` now covered — older, left) · docsize OK (OVER, deferred
 — D29) · perf **4 / 0** (board DOM 1024 ≤ 1150, week 5134 ≤ 5450). Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:

@@ -365,7 +365,7 @@ describe('OIL11, OIL13 — an acknowledged input credits once the day is PUBLISH
     expect(cellOf('plasma', SAT)).toBe('FO')            // envelope 08:00 to 17:00 = 9h
   })
 
-  it('two answered inputs on one day share one envelope — overlap never pays twice', () => {
+  it('two answered inputs on one day share one envelope — overlap never credits twice', () => {
     plant({ person: 'bane', type: 'Duty', date: 'Jul 18', allday: false, s: 8 * 60, e: 12 * 60, oil: { [SAT]: 0.5 } })
     plant({ person: 'bane', type: 'Meeting', date: 'Jul 18', allday: false, s: 10 * 60, e: 14 * 60, oil: { [SAT]: 0.5 } })
     publish(5)
@@ -385,16 +385,16 @@ describe('OIL11, OIL13 — an acknowledged input credits once the day is PUBLISH
     expect(cellOf('plasma', SAT)).toBe('FO')
   })
 
-  /* OWNER RULING R-1 (21 Sep 26): ONLY THE ISSUED SCHEDULE PAYS, BOTH
+  /* OWNER RULING R-1 (21 Sep 26): ONLY THE ISSUED SCHEDULE CREDITS, BOTH
      DIRECTIONS. This test previously asserted the OPPOSITE — that un-typing the
      holiday stopped the credit at once — which is how the bug got in: the day's
      calendar was read LIVE before the issued block was ever opened, so an admin
      could delete everybody's day in lieu off a published day with no amendment,
      no signature, no record and nothing on screen. Astra found it from this end
      and Fable found the same seam from the other (a holiday declared after
-     publication paying nobody). The money now follows the issued document; the
+     publication crediting nobody). The credit now follows the issued document; the
      day must be published again for either direction to move. */
-  it('OIL24, OIL29 — revoking a PH does NOT take back issued money until the day is re-published', () => {
+  it('OIL24, OIL29 — revoking a PH does NOT take back issued credit until the day is re-published', () => {
     setRole('admin')
     setDayEvent('2026-07-15', 0, 'PH')
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 15', oil: { '2026-07-15': 1 } })
@@ -410,7 +410,7 @@ describe('OIL11, OIL13 — an acknowledged input credits once the day is PUBLISH
     expect(cellOf('bane', '2026-07-15'), 'republished as an ordinary Wednesday — the credit goes').toBeUndefined()
   })
 
-  it('OIL24 — a PH declared AFTER the day went out pays nobody until it is re-published', () => {
+  it('OIL24 — a PH declared AFTER the day went out credits nobody until it is re-published', () => {
     setRole('admin')
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 15', oil: { '2026-07-15': 1 } })
     publish(2)                                          // published as an ordinary Wednesday
@@ -540,7 +540,7 @@ describe('OIL14, OIL15 — [ALL-AVAIL-REDEF] who an ALL AVAIL puck stands for (o
      to SANs even when they are hidden?"). His 18 Aug rule keeps SANS off the
      Leave War roster unless "Show SANS" is on; his 21 Sep rule puts a SANS man
      planned with us inside ALL AVAIL. Hiding is a DISPLAY choice and must not
-     destroy his money: the credit is stored against the person, so it lands
+     destroy his credit: the credit is stored against the person, so it lands
      while he is hidden and his row arrives carrying it when the switch goes on. */
   it('OIL35 — a SANS man earns even while the war HIDES him, and his row arrives carrying it', () => {
     const san = Object.keys(PEOPLE).find((id: any) => (PEOPLE as any)[id].san && !(PEOPLE as any)[id].archived) as string
@@ -652,7 +652,7 @@ describe('bug-pass hardening (28 Aug 26)', () => {
 /* A WEEKEND NO LEAVE WAR PERIOD COVERS — owner's ruling D19 (22 Sep 26). A
    weekend counts as a day that earns whether or not a war holds it; the credit
    can only be written into a war that DOES. So a day outside every period
-   promised a full day of OIL that nobody could ever be paid, and said nothing
+   promised a full day of OIL that nobody could ever be credited, and said nothing
    about it. This is the wire that lets the schedule say so. */
 describe('the day knows when no leave war period covers it (D19)', () => {
   /* these load a 2028 week; hand the file's own week back so nothing after

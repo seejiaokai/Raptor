@@ -40,7 +40,7 @@ afterEach(() => {
 const publish = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; setDayApproved(di, true) }
 
 describe('a day whose year has no leave war period says so', () => {
-  it('names the missing period instead of promising money (D19) (AM48d)', () => {
+  it('names the missing period instead of promising credit (D19) (AM48d)', () => {
     HOOKS.oilNoPeriod = (di: number) => (di === SAT ? '2027' : '')
     validate()
     expect(codesOn(SAT), 'the day says what is wrong').toContain('OIL_NO_PERIOD')
@@ -74,12 +74,12 @@ describe('a day whose year has no leave war period says so', () => {
 })
 
 /* FIX 4 — THE MIRROR OF THE ADVISORY THE FORWARD CASE ALREADY HAS (hand pass
-   §6 row 4). R-1 says only the issued schedule pays, BOTH directions. The
+   §6 row 4). R-1 says only the issued schedule credits, BOTH directions. The
    forward half already speaks: a day published as an ordinary working day that
    the war LATER calls a holiday keeps its frozen "earns nothing" and says
    "publish it again so the OIL lands". The reverse half said nothing at all: a
    day published as a holiday that later stops being one goes on paying off its
-   frozen block, correctly, while the screen contradicts the money and offers no
+   frozen block, correctly, while the screen contradicts the credit and offers no
    way to look. */
 describe('a day that stopped being a holiday after it went out says so', () => {
   /* A WEEKDAY, deliberately: a Saturday cannot stop being a weekend, and the

@@ -104,6 +104,7 @@ import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate } from '../state/inputgate-hook'
 import { absencesAt, setAbsenceRows } from './state/merge'
+import { MAX_CARRIED_REMARK } from './engine/warrecs'
 import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
 import {
@@ -454,6 +455,16 @@ function cutDates(cuts: Map<string, Set<string>>): boolean {
   return ok
 }
 
+/* THE REMARK A REQUEST CARRIES, AT THE LENGTH THE STORE'S READER KEEPS ([STORE-READER-SWEEP], [DB-READINESS] group A,
+   phase 7 — engine/warrecs.ts readCarried cuts at MAX_CARRIED_REMARK). Approving writes the remark onto the leave WITH its
+   date ("… on 18 Feb"), which can carry a 200-letter remark past the limit; stored whole, the record in memory and the
+   record after a reload differed, the date cut mid-word. Over the limit, the date goes first — the next approval writes
+   it again (withRemarksTail) — and the typist's own words are kept up to the limit. */
+function carriedRemark(text: unknown): string {
+  const s = String(text ?? '')
+  return s.length <= MAX_CARRIED_REMARK ? s : withRemarksTail(s, null, null, 'none').slice(0, MAX_CARRIED_REMARK)
+}
+
 /** un-approve approved leave back into a request of `to` (design §5.2
  *  `lw.decideApproved`, §24): the Input shrinks / splits / goes on those dates,
  *  and a request carrying its remark and moved marks takes its place. Refused
@@ -482,7 +493,7 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
     const rec: RequestRec = {
       id: newRecId(), kind: 'request', code, state: to,
       ...(row.lwMoved?.[it.date] ? { shiftedFrom: row.lwMoved[it.date] } : {}),
-      carried: { ...(row.remarks ? { remarks: String(row.remarks) } : {}), ...(row.lwMoved?.[it.date] ? { lwMoved: { [it.date]: row.lwMoved[it.date] } } : {}) },
+      carried: { ...(row.remarks ? { remarks: carriedRemark(row.remarks) } : {}), ...(row.lwMoved?.[it.date] ? { lwMoved: { [it.date]: row.lwMoved[it.date] } } : {}) },
     }
     if (!rec.carried!.remarks && !rec.carried!.lwMoved) delete rec.carried
     adds.push({ personId: it.personId, date: it.date, drop: [], add: [rec] })
@@ -953,7 +964,7 @@ export interface DesiredOil {
    issued it: the issued evidence is unavailable, so the standing credit is the
    best truth we have (P2-IMPL-01). Never substitute draft content for missing
    issued content, and never reverse-collect a protected date. */
-/* WHAT ONE ISSUED DAY EARNS — the only door money comes through since
+/* WHAT ONE ISSUED DAY EARNS — the only door credit comes through since
    [OIL-AUTO-REMOVE] (§7.1). The day's own frozen OIL EVIDENCE BLOCK answers
    everything: the scheduler's decisions, the duty-and-commitments claims
    projected at publication, and the people each ALL / ALL AVAIL puck stood for.
@@ -989,7 +1000,7 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
      to credit OIL to SANs even when they are hidden?"), and neither must
      ARCHIVING him (Astra, 21 Sep 26, confirmed by the owner as R-2).
      This guard used to consult the LIVE Leave War roster, which made the roster
-     a second money authority sitting behind `creditFrom`: archive a man on the
+     a second credit authority sitting behind `creditFrom`: archive a man on the
      Monday and the reverse sweep deleted the day in lieu an ISSUED Saturday had
      already promised him — no amendment, no record, no way to see it happen.
      Who earned was decided when the day was published and frozen in its

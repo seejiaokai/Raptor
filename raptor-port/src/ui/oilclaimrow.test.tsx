@@ -9,7 +9,7 @@
      the puck on it  "Talisman earns half a day — tap to take him off this event"
 
    The cause is that `oilCapableItems` is derived from the SCHEDULE walk, and a
-   request's money never goes through it — the requester is paid from his own
+   request's credit never goes through it — the requester is credited from his own
    answer, and D18's extras are each decided on their own puck. So a perfectly
    live claim's item is absent from that set for a reason that has nothing to
    do with being unable to earn, and the row borrowed the inert wording.
@@ -94,7 +94,7 @@ const openMode = async () => {
   await act(async () => { toggleOilMode(SAT); notify() })
 }
 
-describe('a claim row and the puck beside it agree about money', () => {
+describe('a claim row and the puck beside it agree about OIL', () => {
   it('NO row says nothing here can earn while a puck on it says a man earns', async () => {
     claim()
     addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1' })
@@ -126,22 +126,22 @@ describe('a claim row and the puck beside it agree about money', () => {
     })
   })
 
-  /* D18's SECOND MAN — the money pays him and the mode said he earns nothing.
+  /* D18's SECOND MAN — the credit pass credits him and the mode said he earns nothing.
      Walk find, 22 Sep 26: Cobra earned NOTHING on the Saturday, was dragged
      onto Talisman's landed Training row through the row's own drop zone, and
-     the day then paid him HO — so job 8's engine half works. His puck in the
+     the day then credited him HO — so job 8's engine half works. His puck in the
      mode was drawn INERT, titled "Cobra — nothing measurable to earn from
-     here", carrying no item and no switch. The screen contradicted the money
+     here", carrying no item and no switch. The screen contradicted the credit
      about a man's entitlement AND offered no way to change it.
 
-     The cause is two bodies: the money moved to `oilEarnedWork` (oilev.ts,
+     The cause is two bodies: the credit moved to `oilEarnedWork` (oilev.ts,
      where D18 was built) while `oilEligible` still asked `dayOilWork`, whose
      ground walk skips every `src` row whole. */
   it('D18 — a second man on a claim row is drawn earning, not inert', async () => {
     claim()
     addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1', more: ['stiff'] })
     await openMode()
-    expect(oilDayFigures(SAT)['stiff'], 'the money pays the second man').toBeTruthy()
+    expect(oilDayFigures(SAT)['stiff'], 'the credit pass credits the second man').toBeTruthy()
     /* by his DISPLAYED name, derived — an inert puck carries no data-oilp at
        all, which is half the defect, so the id cannot be the only handle */
     const name = (PEOPLE as any)['stiff'].cs

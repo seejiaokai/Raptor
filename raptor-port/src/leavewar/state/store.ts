@@ -43,6 +43,7 @@ import {
   seedRequirements,
   seedWars,
   MAX_TEAM_SLOTS,
+  MAX_MANNING_RULES,
   SEED_QUAL_CATALOG,
   type CrewFilter,
   type ManningRule,
@@ -585,7 +586,7 @@ function readManningRule(x: unknown): ManningRule | null {
 }
 
 function readManningRules(x: unknown): ManningRule[] | null {
-  if (!Array.isArray(x) || x.length > 60) return null
+  if (!Array.isArray(x) || x.length > MAX_MANNING_RULES) return null
   const out: ManningRule[] = []
   const seen = new Set<string>()
   for (const r of x) {
@@ -3971,6 +3972,10 @@ export function saveManningRule(rule: ManningRule): boolean {
   const clean = readManningRule(rule)
   if (!clean) return false
   const rules = state.requirements.default.rules
+  /* a NEW counter past the limit the reload keeps is refused — a longer list would read back as damage and be replaced
+     by the built-in set (readManningRules); reworking one already in the list is always allowed
+     ([STORE-READER-SWEEP], [DB-READINESS] phase 7) */
+  if (!rules.some(r => r.id === clean.id) && rules.length >= MAX_MANNING_RULES) return false
   const next = rules.some(r => r.id === clean.id)
     ? rules.map(r => (r.id === clean.id ? clean : r))
     : [...rules, clean]

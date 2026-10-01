@@ -1,0 +1,16 @@
+{
+ "base": "http://localhost:4207",
+ "at": "2026-10-01T04:11:10.230Z",
+ "results": [
+  {
+   "name": "editsched: a finger tap on the count chip opens the window (phone)",
+   "ok": true,
+   "detail": "{\"chip\":{\"x\":207,\"y\":415,\"w\":20,\"h\":14},\"atCentre\":\"the chip\",\"puck\":{\"x\":204,\"y\":398,\"w\":74,\"h\":15},\"gap\":2}"
+  },
+  {
+   "name": "viewsched: a finger tap on the count chip opens the window (phone)",
+   "ok": true,
+   "detail": "{\"chip\":{\"x\":207,\"y\":415,\"w\":20,\"h\":14},\"atCentre\":\"the chip\",\"puck\":{\"x\":204,\"y\":398,\"w\":74,\"h\":15},\"gap\":2}"
+  }
+ ]
+}

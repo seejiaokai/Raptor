@@ -11,9 +11,9 @@
    body — "nothing measurable to earn from here" — so the only way to change
    anything about that crowd was the row's whole switch, all of them or none.
 
-   Step 5 made those seats EARN. Without this step the screen would pay a crowd
-   it gives the scheduler no way to correct, which is worse than not paying it:
-   the money moved and the door did not.
+   Step 5 made those seats EARN. Without this step the screen would credit a crowd
+   it gives the scheduler no way to correct, which is worse than not crediting it:
+   the credit moved and the door did not.
 
    THE DOOR MATTERS AS MUCH AS THE RULE. Three of the owner's finds on 21 Sep 26
    were surfaces a finished rule was never wired to, and no amount of reading the
@@ -100,8 +100,8 @@ const enter = async () => { await open(SAT); await click(oilBtn()) }
 /* ---- THE DOOR MOVED INTO THE WINDOW ([ALL-AVAIL-WINDOW], D38) --------------
    Step 7 built an INLINE crowd: inside the mode a placeholder became the
    individual pucks of the men behind it, drawn along the row. It was built for a
-   real reason — step 5 made those seats EARN, and paying a crowd the scheduler
-   cannot correct is worse than not paying it.
+   real reason — step 5 made those seats EARN, and crediting a crowd the scheduler
+   cannot correct is worse than not crediting it.
 
    The owner then ruled that the window replaces that in-row crowd (D38), so the
    door is now: the row shows the PLACEHOLDER and its counter, the counter opens
@@ -141,7 +141,7 @@ describe('a DUTY DESK opens its crowd (OIL8)', () => {
     await openWin('duty')
     expect(winNames()).toEqual(['plasma', 'stiff'])
     expect(winSeats().filter(s => s.classList.contains('inert')).length,
-      'none of them may be inert — the money is paying them').toBe(0)
+      'none of them may be inert — the credit pass is crediting them').toBe(0)
   })
 
   it('a placeholder in the desk EXTRAS line, beside a named man', async () => {
@@ -213,10 +213,10 @@ describe('the controls — nothing else about these rows changes', () => {
     expect(namesIn('simr')).toEqual(['divot', 'rocky'])
   })
 
-  it('the mode shows EVERYONE the row pays, even where the planning view hides them', async () => {
+  it('the mode shows EVERYONE the row credits, even where the planning view hides them', async () => {
     /* a passenger-style sim row draws only its passengers when it is being
        planned — the two seats are not part of that shape. The day's work walk
-       reads the seats all the same, so a man sitting in one is being paid. The
+       reads the seats all the same, so a man sitting in one is being credited. The
        mode is about who earns, so it shows him: the alternative is a credit on
        screen nowhere, which is the shape this whole change exists to end. */
     sim({ p: 'rocky', pax: ['freak'] })
@@ -257,7 +257,7 @@ describe('the COMMON PROGRAMME opens its crowd (OIL8)', () => {
     await openWin('prog')
     expect(winNames()).toEqual(['plasma', 'stiff'])
     expect(winSeats().filter(s => s.classList.contains('inert')).length,
-      'none of them may be inert — the money is paying them').toBe(0)
+      'none of them may be inert — the credit pass is crediting them').toBe(0)
   })
 
   it('a placeholder BESIDE a named man — the man stays on the row, the crowd is in the window', async () => {

@@ -159,14 +159,14 @@ describe('the date memo never serves a stale year', () => {
   })
 })
 
-/* FABLE F7 (22 Sep 26) — the OIL money decides whether a request's anchor day
+/* FABLE F7 (22 Sep 26) — the OIL credit decides whether a request's anchor day
    is one of the loaded days, and it was deciding by resolving the DAY's bare
    label against the REQUEST's year. A day label is bare under the LOADED week's
    convention, not the request's, so at a New Year boundary the two disagree and
    a loaded anchor day read as "not loaded". Dormant when it was found; live
    now that the answer chooses between reading the loaded week and reading
    another week's stored copy. */
-describe('the OIL money asks the app’s own question about a loaded day (Fable F7)', () => {
+describe('the OIL credit asks the app’s own question about a loaded day (Fable F7)', () => {
   it('a request stamped with the NEXT year still finds its anchor day in the loaded week', () => {
     loadWeek('28/12/2026')
     /* the week of 28 Dec 26 runs into January, so its Dec days are bare and its

@@ -65,6 +65,7 @@ export function installProbeBridge() {
   Object.defineProperty(w, 'WARN', { get: () => V.WARN, configurable: true })
   Object.defineProperty(w, 'REST', { get: () => V.REST, configurable: true })
   Object.defineProperty(w, 'EVD', { get: () => V.EVD, configurable: true })
+  Object.defineProperty(w, 'SIMW', { get: () => V.SIMW, configurable: true })   // the day's sim brief / debrief windows ([CROWD-SIM-BRIEF])
   /* live lets, published as getters so a probe always reads the current value */
   Object.defineProperty(w, 'ARM', { get: () => view.ARM, configurable: true })
   Object.defineProperty(w, 'SBDAY', { get: () => view.SBDAY, configurable: true })

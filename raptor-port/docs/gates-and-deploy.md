@@ -25,6 +25,13 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   gate and ALWAYS releases; `take` / `release` / `status` for a run done by hand (a fanned-out walk, one gate alone). The
   e2e run takes its port from `E2E_PORT` (each parallel chat its own). The lock is a folder outside every checkout,
   so every worktree on the PC shares it; the rule is `.claude/rules/shipping.md` §The checks.
+- **Four traps met running the checks by hand (30 Sep – 1 Oct 26, `[DB-READINESS]` phases 0–6; carried here from their
+  handoff blocks when those were removed):** `gatelock.mjs run`'s gate list has NO perf — run `PORT_URL=<the build's
+  address> npm run perf` under `gatelock.mjs take`; `tsc -p tsconfig.json` checks nothing here (the root config lists no
+  files) — the typecheck is `npx tsc --noEmit -p tsconfig.app.json`; `git worktree add` of an OLD commit fails on this repo
+  (long picture names) — to serve the build before a change, `git archive <commit> raptor-port/src …` into a short path
+  and junction `node_modules`; `codex exec` started in the background waits on its input for ever — end the command with
+  `< /dev/null`.
 - **Never push while a PR's checks are running** (D151, measured 23 Sep 26): GitHub judges the WHOLE pull request,
   so once it carries code any push — even notes-only — restarts every gate and cancels the run in progress. The
   older note in the `unit (raptor)` row below ("a docs-only push … starts no new one") predates that measurement.

@@ -105,7 +105,9 @@ export function cxReasonsLoad() {
     seen.add(low)
     out.push(lab)
   }
-  CXR_CFG = out.length ? out : CXR_STD.map(s => s)
+  /* a stored EMPTY list is a decision — every reason removed in the editor — and stays empty; a list whose every row was
+     bad still falls back to the shipped set ([STORE-READER-SWEEP], phase 7 — the same line stores.ts draws) */
+  CXR_CFG = out.length || (Array.isArray(raw) && raw.length === 0) ? out : CXR_STD.map(s => s)
 }
 
 export function cxReasonsReset() {

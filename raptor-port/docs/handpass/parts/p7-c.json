@@ -1,0 +1,2985 @@
+{
+ "parts": {
+  "doors-desktop": {
+   "at": "2026-10-01T02:30:07.727Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C29-setup",
+     "did": "Tuesday 14 Jul: the four sign-off boxes picked, Publish day pressed (so a pending mark has somewhere to show)",
+     "said": "day head: tag \"ORIG\", pending \"5 changes\", signed [— name — / — name — / — name — / — name —]",
+     "stored": "publish: {\"pressed\":true,\"label\":\"Publish day\"}",
+     "verdict": "PASS",
+     "pics": [
+      "C29-00-tuesday-published.png"
+     ]
+    },
+    {
+     "id": "C30-occ-all-p",
+     "did": "board, nothing pending: a real pointer drag of ALL from the crew list onto the front seat of VL #2, held by Outlaw",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=nact, 1.0.0.0.w=glass, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 0 = before; day head \"ORIG 5 changes\"; Undo list 5/6 = before; change history 5 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C30-occ-all-p.png"
+     ]
+    },
+    {
+     "id": "C30-occ-all-w",
+     "did": "board, nothing pending: a real pointer drag of ALL from the crew list onto the rear seat of VL #2, held by Hex",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=nact, 1.0.0.0.w=glass, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 0 = before; day head \"ORIG 5 changes\"; Undo list 5/6 = before; change history 5 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C30-occ-all-w.png"
+     ]
+    },
+    {
+     "id": "C30-occ-allavail-p",
+     "did": "board, nothing pending: a real pointer drag of ALL AVAIL from the crew list onto the front seat of VL #2, held by Outlaw",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=nact, 1.0.0.0.w=glass, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 0 = before; day head \"ORIG 5 changes\"; Undo list 5/6 = before; change history 5 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C30-occ-allavail-p.png"
+     ]
+    },
+    {
+     "id": "C30-occ-allavail-w",
+     "did": "board, nothing pending: a real pointer drag of ALL AVAIL from the crew list onto the rear seat of VL #2, held by Hex",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=nact, 1.0.0.0.w=glass, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 0 = before; day head \"ORIG 5 changes\"; Undo list 5/6 = before; change history 5 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C30-occ-allavail-w.png"
+     ]
+    },
+    {
+     "id": "C29-arm-all-p",
+     "did": "board: tap the empty front (+ FCP) seat of VL #1 to arm it, then tap ALL in the crew list",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.p; the ALL puck in the crew list: class \"rpuck no haswhy\", title \"ALL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C29-arm-all-p-armed.png",
+      "C29-arm-all-p.png"
+     ]
+    },
+    {
+     "id": "C29-arm-allavail-p",
+     "did": "board: tap the empty front (+ FCP) seat of VL #1 to arm it, then tap ALL AVAIL in the crew list",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.p; the ALL AVAIL puck in the crew list: class \"rpuck no haswhy\", title \"ALL AVAIL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C29-arm-allavail-p-armed.png",
+      "C29-arm-allavail-p.png"
+     ]
+    },
+    {
+     "id": "C29-arm-all-w",
+     "did": "board: tap the empty rear (+ RCP) seat of VL #1 to arm it, then tap ALL in the crew list",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.w; the ALL puck in the crew list: class \"rpuck no haswhy\", title \"ALL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C29-arm-all-w-armed.png",
+      "C29-arm-all-w.png"
+     ]
+    },
+    {
+     "id": "C29-arm-allavail-w",
+     "did": "board: tap the empty rear (+ RCP) seat of VL #1 to arm it, then tap ALL AVAIL in the crew list",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.w; the ALL AVAIL puck in the crew list: class \"rpuck no haswhy\", title \"ALL AVAIL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C29-arm-allavail-w-armed.png",
+      "C29-arm-allavail-w.png"
+     ]
+    },
+    {
+     "id": "C30-drag-all-p",
+     "did": "board: a real pointer drag of ALL from the crew list onto the empty front seat of VL #1",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C30-drag-all-p.png"
+     ]
+    },
+    {
+     "id": "C30-drag-allavail-p",
+     "did": "board: a real pointer drag of ALL AVAIL from the crew list onto the empty front seat of VL #1",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C30-drag-allavail-p.png"
+     ]
+    },
+    {
+     "id": "C30-drag-all-w",
+     "did": "board: a real pointer drag of ALL from the crew list onto the empty rear seat of VL #1",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C30-drag-all-w.png"
+     ]
+    },
+    {
+     "id": "C30-drag-allavail-w",
+     "did": "board: a real pointer drag of ALL AVAIL from the crew list onto the empty rear seat of VL #1",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C30-drag-allavail-w.png"
+     ]
+    },
+    {
+     "id": "C31-setup",
+     "did": "board: ALL added to the Common Programme row MASS BRIEF (arm its + then tap ALL); FLY W EXT SQN's man taken off and ALL put in that ground row's name box; ALL AVAIL put on the AMT BOX sim seat",
+     "said": "seats now holding a placeholder: Common Programme a:1.1.0, ground g:1.1, sim s:1.amt.1.p",
+     "stored": "these legal landings are allowed (D33) — they are the sources for the next door",
+     "verdict": "PASS",
+     "pics": [
+      "C31-00-placeholders-standing-legally.png"
+     ]
+    },
+    {
+     "id": "C31-cp-1000p",
+     "did": "board: a real pointer drag of the ALL puck standing on the Common Programme row onto the empty front seat of VL #1",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source a:1.1.0 still holds: all",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C31-cp-1000p.png"
+     ]
+    },
+    {
+     "id": "C31-cp-1000w",
+     "did": "board: a real pointer drag of the ALL puck standing on the Common Programme row onto the empty rear seat of VL #1",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source a:1.1.0 still holds: all",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C31-cp-1000w.png"
+     ]
+    },
+    {
+     "id": "C31-cp-1001p",
+     "did": "board: a real pointer drag of the ALL puck standing on the Common Programme row onto the OCCUPIED front seat of VL #2",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source a:1.1.0 still holds: all",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C31-cp-1001p.png"
+     ]
+    },
+    {
+     "id": "C31-ground-1000p",
+     "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL puck standing on the ground row's name box onto the empty front seat of VL #1",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source g:1.1 still holds: all",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C31-ground-1000p.png"
+     ]
+    },
+    {
+     "id": "C31-ground-1000w",
+     "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL puck standing on the ground row's name box onto the empty rear seat of VL #1",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source g:1.1 still holds: all",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C31-ground-1000w.png"
+     ]
+    },
+    {
+     "id": "C31-ground-1001p",
+     "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL puck standing on the ground row's name box onto the OCCUPIED front seat of VL #2",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source g:1.1 still holds: all",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C31-ground-1001p.png"
+     ]
+    },
+    {
+     "id": "C31-sim-1000p",
+     "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL AVAIL puck standing on the AMT sim seat onto the empty front seat of VL #1",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source s:1.amt.1.p still holds: allavail",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C31-sim-1000p.png"
+     ]
+    },
+    {
+     "id": "C31-sim-1000w",
+     "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL AVAIL puck standing on the AMT sim seat onto the empty rear seat of VL #1",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source s:1.amt.1.p still holds: allavail",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C31-sim-1000w.png"
+     ]
+    },
+    {
+     "id": "C31-sim-1001p",
+     "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL AVAIL puck standing on the AMT sim seat onto the OCCUPIED front seat of VL #2",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source s:1.amt.1.p still holds: allavail",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C31-sim-1001p.png"
+     ]
+    },
+    {
+     "id": "C31-reverse",
+     "did": "board: the named pilot on VL #2's front seat dragged onto the Common Programme seat that holds ALL (a swap would carry ALL into the cockpit)",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\"",
+     "stored": "cockpit 1.0.0.1.p now: casper; a:1.1.0 now: all; a placeholder in any cockpit: none; changes: none",
+     "verdict": "PASS",
+     "pics": [
+      "C31-reverse-swap.png"
+     ]
+    },
+    {
+     "id": "C32-keyboard-enter",
+     "did": "board: arm the empty front seat of VL #1, put the keyboard on the ALL AVAIL puck in the crew list (it takes focus) and press Enter, then Space",
+     "said": "toast: (none — the app did nothing) · armed 1.0.0.0.p",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-keyboard-enter.png"
+     ]
+    },
+    {
+     "id": "C32-search",
+     "did": "board: arm the empty front seat of VL #1, type \"ALL AVAIL\" in the name search, Enter",
+     "said": "typed \"ALL AVAIL\" in the board's name search with the cockpit armed, pressed Enter; crew list now offers: 63 pucks; toast: (none)",
+     "stored": "nothing written; the seat is empty",
+     "verdict": "PASS",
+     "pics": [
+      "C32-search.png"
+     ]
+    },
+    {
+     "id": "C32-dblclick",
+     "did": "board: arm the empty rear seat of VL #1, double-click ALL in the crew list",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" · \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.w",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-dblclick.png"
+     ]
+    },
+    {
+     "id": "C32-week-arm-all-p",
+     "did": "Edit Schedule (the week): tap the empty front seat of Tuesday's VL #1, then tap ALL in the week's crew list",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.p; the ALL puck in the crew list: class \"rpuck no haswhy\", title \"ALL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-week-arm-all-p-armed.png",
+      "C32-week-arm-all-p.png"
+     ]
+    },
+    {
+     "id": "C32-week-arm-allavail-p",
+     "did": "Edit Schedule (the week): tap the empty front seat of Tuesday's VL #1, then tap ALL AVAIL in the week's crew list",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.p; the ALL AVAIL puck in the crew list: class \"rpuck no haswhy\", title \"ALL AVAIL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-week-arm-allavail-p-armed.png",
+      "C32-week-arm-allavail-p.png"
+     ]
+    },
+    {
+     "id": "C32-week-arm-all-w",
+     "did": "Edit Schedule (the week): tap the empty rear seat of Tuesday's VL #1, then tap ALL in the week's crew list",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.w; the ALL puck in the crew list: class \"rpuck no haswhy\", title \"ALL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-week-arm-all-w-armed.png",
+      "C32-week-arm-all-w.png"
+     ]
+    },
+    {
+     "id": "C32-week-arm-allavail-w",
+     "did": "Edit Schedule (the week): tap the empty rear seat of Tuesday's VL #1, then tap ALL AVAIL in the week's crew list",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.w; the ALL AVAIL puck in the crew list: class \"rpuck no haswhy\", title \"ALL AVAIL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-week-arm-allavail-w-armed.png",
+      "C32-week-arm-allavail-w.png"
+     ]
+    },
+    {
+     "id": "C32-week-drag-all-1000p",
+     "did": "Edit Schedule (the week): a real pointer drag of ALL from the week's crew list onto Tuesday's empty front seat of VL #1",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-week-drag-all-1000p.png"
+     ]
+    },
+    {
+     "id": "C32-week-drag-allavail-1000w",
+     "did": "Edit Schedule (the week): a real pointer drag of ALL AVAIL from the week's crew list onto Tuesday's empty rear seat of VL #1",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-week-drag-allavail-1000w.png"
+     ]
+    },
+    {
+     "id": "C32-week-drag-allavail-1001p",
+     "did": "Edit Schedule (the week): a real pointer drag of ALL AVAIL from the week's crew list onto Tuesday's OCCUPIED front seat of VL #2",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-week-drag-allavail-1001p.png"
+     ]
+    },
+    {
+     "id": "C32-week-drag-all-1001w",
+     "did": "Edit Schedule (the week): a real pointer drag of ALL from the week's crew list onto Tuesday's OCCUPIED rear seat of VL #2",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-week-drag-all-1001w.png"
+     ]
+    },
+    {
+     "id": "C32-week-seat-1000p",
+     "did": "Edit Schedule (the week): the ALL puck standing in Tuesday's ground row name box dragged onto the empty front seat of VL #1",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source g:1.1 still holds: all",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-week-seat-1000p.png"
+     ]
+    },
+    {
+     "id": "C32-week-seat-1001w",
+     "did": "Edit Schedule (the week): the ALL puck standing in Tuesday's ground row name box dragged onto the OCCUPIED rear seat of VL #2",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source g:1.1 still holds: all",
+     "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-week-seat-1001w.png"
+     ]
+    },
+    {
+     "id": "C29-changes",
+     "did": "Edit Schedule: Tuesday's pending count opened (the changes window, \"To go out\")",
+     "said": "lines before the seat-to-seat and week doors: [\"Waiting to go out as\",\"AL1\",\"· 6 changes\",\"VL BFM · #1 FCP\",\"Saber\",\"15/7 09:00\",\"Warden → taken off\",\"VL BFM · #1 RCP\",\"Saber\",\"15/7 09:00\",\"Basher → taken off\",\"MASS BRIEF\",\"Saber\",\"15/7 09:00\",\"ALL\",\"AMT BOX · FCP\",\"Saber\",\"15/7 09:00\",\"ALL AVAIL\",\"FLY W EXT SQN\",\"Saber\",\"15/7 09:00\",\"Jester → ALL\",\"3 placeholders · who they stand for\",\"AMT BOX · who it stands for\",\"Ranger, Saber, Drifter, Warden, Hunter, Piston, Blade, Trident, Cinch, Cobra, Sidewinder, Anvil, Forge, Havoc, Reaper, Vandal, Gambit, Outlaw, Nomad, Diesel, Wildcard, Talisman, Recon, Echo, Relay, Basher, Ledger, Hex, Vector, Dash, Ghost, Ryder, Cutter, Fable\",\"MASS BRIEF · who it stands for\",\"Ranger, Saber, Drifter, Ace, Warden, Hunter, Piston, Blade, Trident, Cobra, Sidewinder, Anvil, Forge, Comet, Reaper, Vandal, Gambit, Outlaw, Ridge, Bolt, Nomad, Rebel, Saint, Diesel, Vapor, Wildcard, Talisman, Recon, Echo, Relay, Scope, Basher, Ledger, Rune, Cinder, Hex, Vector, Dash, Ghost, Ryder, Cutter, Fable, Marlin\",\"FLY W EXT SQN · who it stands for\",\"Ranger, Saber, Ace, Warden, Hunter, Piston, Blade, Trident, Cobra, Sidewinder, Anvil, Forge, Comet, Reaper, Vandal, Ridge, Bolt, Nomad, Rebel, Saint, Diesel, Vapor, Wildcard, Recon, Relay, Scope, Basher, Ledger, Rune, Cinder, Ghost, Ryder, Cutter, Fable, Marlin\",\"Tap a change to go to it.\"] — after every door: [\"Waiting to go out as\",\"AL1\",\"· 6 changes\",\"VL BFM · #1 FCP\",\"Saber\",\"15/7 09:00\",\"Warden → taken off\",\"VL BFM · #1 RCP\",\"Saber\",\"15/7 09:00\",\"Basher → taken off\",\"MASS BRIEF\",\"Saber\",\"15/7 09:00\",\"ALL\",\"AMT BOX · FCP\",\"Saber\",\"15/7 09:00\",\"ALL AVAIL\",\"FLY W EXT SQN\",\"Saber\",\"15/7 09:00\",\"Jester → ALL\",\"3 placeholders · who they stand for\",\"AMT BOX · who it stands for\",\"Ranger, Saber, Drifter, Warden, Hunter, Piston, Blade, Trident, Cinch, Cobra, Sidewinder, Anvil, Forge, Havoc, Reaper, Vandal, Gambit, Outlaw, Nomad, Diesel, Wildcard, Talisman, Recon, Echo, Relay, Basher, Ledger, Hex, Vector, Dash, Ghost, Ryder, Cutter, Fable\",\"MASS BRIEF · who it stands for\",\"Ranger, Saber, Drifter, Ace, Warden, Hunter, Piston, Blade, Trident, Cobra, Sidewinder, Anvil, Forge, Comet, Reaper, Vandal, Gambit, Outlaw, Ridge, Bolt, Nomad, Rebel, Saint, Diesel, Vapor, Wildcard, Talisman, Recon, Echo, Relay, Scope, Basher, Ledger, Rune, Cinder, Hex, Vector, Dash, Ghost, Ryder, Cutter, Fable, Marlin\",\"FLY W EXT SQN · who it stands for\",\"Ranger, Saber, Ace, Warden, Hunter, Piston, Blade, Trident, Cobra, Sidewinder, Anvil, Forge, Comet, Reaper, Vandal, Ridge, Bolt, Nomad, Rebel, Saint, Diesel, Vapor, Wildcard, Recon, Relay, Scope, Basher, Ledger, Rune, Cinder, Ghost, Ryder, Cutter, Fable, Marlin\",\"Tap a change to go to it.\"]; day head \"6 pending\"",
+     "stored": "a line that puts ALL / ALL AVAIL on a flying line: none",
+     "verdict": "PASS",
+     "pics": [
+      "C29-99-changes-window.png"
+     ]
+    },
+    {
+     "id": "C29-reload",
+     "did": "reload, sign in again, Edit Schedule",
+     "said": "Tuesday's VL #1 seats: eweek:(empty) + FCP / eweek:(empty) + RCP; VL #2: casper / rocky",
+     "stored": "ok a reload gives back exactly what was there · ok the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C29-98-after-reload.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "doors-phone": {
+   "at": "2026-10-01T02:32:03.855Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C32-phone-setup",
+     "did": "phone, board, Tuesday (a draft day): the 1st wave's \"+ Line\" tapped",
+     "said": "a blank third line with two empty seats: 1.0.2.0.p=empty, 1.0.2.0.w=empty",
+     "stored": "toast \"Line added\"",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-00-blank-line.png"
+     ]
+    },
+    {
+     "id": "C32-phone-board-all-p",
+     "did": "phone, board: tap the empty front seat of the new line, then tap ALL in the AIRCREW drawer",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.p; the crew drawer opened by itself; ALL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: null; still armed after the tap: true",
+     "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-board-all-p-armed.png",
+      "C32-phone-board-all-p.png"
+     ]
+    },
+    {
+     "id": "C32-phone-board-allavail-p",
+     "did": "phone, board: tap the empty front seat of the new line, then tap ALL AVAIL in the AIRCREW drawer",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.p; the crew drawer opened by itself; ALL AVAIL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: {\"text\":\"ALL\\ncannot crew a jet; name the people flying it\",\"w\":230,\"h\":27,\"right\":376,\"size\":\"13px\"}; still armed after the tap: true",
+     "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-board-allavail-p-armed.png",
+      "C32-phone-board-allavail-p.png"
+     ]
+    },
+    {
+     "id": "C32-phone-board-all-w",
+     "did": "phone, board: tap the empty rear seat of the new line, then tap ALL in the AIRCREW drawer",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.w; the crew drawer opened by itself; ALL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: null; still armed after the tap: true",
+     "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-board-all-w-armed.png",
+      "C32-phone-board-all-w.png"
+     ]
+    },
+    {
+     "id": "C32-phone-board-allavail-w",
+     "did": "phone, board: tap the empty rear seat of the new line, then tap ALL AVAIL in the AIRCREW drawer",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.w; the crew drawer opened by itself; ALL AVAIL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: {\"text\":\"ALL\\ncannot crew a jet; name the people flying it\",\"w\":230,\"h\":27,\"right\":376,\"size\":\"13px\"}; still armed after the tap: true",
+     "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-board-allavail-w-armed.png",
+      "C32-phone-board-allavail-w.png"
+     ]
+    },
+    {
+     "id": "C32-phone-drag-all-1020p",
+     "did": "phone, board: the AIRCREW drawer opened by its tab, a finger held on ALL and dragged onto the empty front seat of the new line",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · drawer: opened by its AIRCREW tab; the puck lifted: {\"body\":\"sb-lock sb-board-up tdrag dnd\",\"ghost\":true}; the finger was over: {\"slot\":\"1.0.2.0.p\",\"cls\":\"sb-slot empty dragover dragover-why\"}",
+     "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-drag-all-1020p.png"
+     ]
+    },
+    {
+     "id": "C32-phone-drag-allavail-1020p",
+     "did": "phone, board: the AIRCREW drawer opened by its tab, a finger held on ALL AVAIL and dragged onto the empty front seat of the new line",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · drawer: opened by its AIRCREW tab; the puck lifted: {\"body\":\"sb-lock sb-board-up tdrag dnd\",\"ghost\":true}; the finger was over: {\"slot\":\"1.0.2.0.p\",\"cls\":\"sb-slot empty dragover dragover-why\"}",
+     "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-drag-allavail-1020p.png"
+     ]
+    },
+    {
+     "id": "C32-phone-drag-all-1000p",
+     "did": "phone, board: the AIRCREW drawer opened by its tab, a finger held on ALL and dragged onto the OCCUPIED front seat of VL #1",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · drawer: opened by its AIRCREW tab; the puck lifted: {\"body\":\"sb-lock sb-board-up tdrag dnd\",\"ghost\":true}; the finger was over: {\"slot\":\"1.0.0.0.p\",\"cls\":\"seat dragover dragover-why\"}",
+     "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-drag-all-1000p.png"
+     ]
+    },
+    {
+     "id": "C32-phone-week-all-p",
+     "did": "phone, Edit Schedule (the week): tap the empty front seat of Tuesday's new line, then tap ALL in the crew drawer",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.p; the crew drawer opened by itself; ALL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: null; still armed after the tap: true",
+     "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-week-all-p-armed.png",
+      "C32-phone-week-all-p.png"
+     ]
+    },
+    {
+     "id": "C32-phone-week-allavail-p",
+     "did": "phone, Edit Schedule (the week): tap the empty front seat of Tuesday's new line, then tap ALL AVAIL in the crew drawer",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.p; the crew drawer opened by itself; ALL AVAIL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: {\"text\":\"ALL\\ncannot crew a jet; name the people flying it\",\"w\":230,\"h\":27,\"right\":380,\"size\":\"13px\"}; still armed after the tap: true",
+     "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-week-allavail-p-armed.png",
+      "C32-phone-week-allavail-p.png"
+     ]
+    },
+    {
+     "id": "C32-phone-week-all-w",
+     "did": "phone, Edit Schedule (the week): tap the empty rear seat of Tuesday's new line, then tap ALL in the crew drawer",
+     "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.w; the crew drawer opened by itself; ALL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: null; still armed after the tap: true",
+     "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-week-all-w-armed.png",
+      "C32-phone-week-all-w.png"
+     ]
+    },
+    {
+     "id": "C32-phone-week-allavail-w",
+     "did": "phone, Edit Schedule (the week): tap the empty rear seat of Tuesday's new line, then tap ALL AVAIL in the crew drawer",
+     "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.w; the crew drawer opened by itself; ALL AVAIL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: {\"text\":\"ALL\\ncannot crew a jet; name the people flying it\",\"w\":230,\"h\":27,\"right\":380,\"size\":\"13px\"}; still armed after the tap: true",
+     "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-week-allavail-w-armed.png",
+      "C32-phone-week-allavail-w.png"
+     ]
+    },
+    {
+     "id": "C32-phone-reload",
+     "did": "phone: reload, sign in again, Edit Schedule",
+     "said": "the new line's seats: empty / empty; VL #1: nact / glass",
+     "stored": "ok a reload gives back exactly what was there · ok the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C32-phone-99-after-reload.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "namebox-N1": {
+   "at": "2026-10-01T02:39:36.194Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C33-N1",
+     "did": "Ranger's Training request (Sat 18 Jul 08:00–16:00, OIL question: Yes) landed on the Ground Programme; then: Blade dragged from the crew list onto the row's name box (it held Ranger); OIL Earn on; four sign-offs, Publish day; Leave War",
+     "said": "gesture toast: (none); the row now: name box Blade, extras []; Inputs page row: \"Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕\"; OIL Earn: Blade on the Ground Programme row: \"Blade\nIP\" — Blade — nothing measurable to earn from here ‖ (the row itself) on the Ground Programme row: \"TRAINING\" — A request is answered for each person on it — tap a puck on this row, not the row itself ‖ Ranger on the Personal Inputs card: \"Ranger\nFO\" — Ranger earns a full day — tap to take him off this event ‖ (the row itself) on the Personal Inputs card: \"Training\" — A request is answered for each person on it — tap a puck on this row, not the row itself",
+     "stored": "request's person stored: Ranger (acc g); stored Saturday row: [{\"prog\":\"TRAINING\",\"who\":\"Blade\",\"more\":[],\"from\":\"the request\"}]; day head after publishing: ORIG; LEAVE WAR 18 Jul — Ranger: \"FO*\", Blade: \"(blank)\"; after a reload the same: true; reload: ok / ok",
+     "verdict": "RECORDED (a picture for the owner — not judged)",
+     "pics": [
+      "C33-N1-01-inputs-filed.png",
+      "C33-N1-02-row-as-filed.png",
+      "C33-N1-03-tap-name-box-then-blade.png",
+      "C33-N1-04-row-after.png",
+      "C33-N1-05-inputs-after.png",
+      "C33-N1-06-OIL-EARN-the-row.png",
+      "C33-N1-07-OIL-EARN-whole-board.png",
+      "C33-N1-08-saturday-published.png",
+      "C33-N1-09-leavewar-ranger.png",
+      "C33-N1-10-leavewar-ranger-tapped.png",
+      "C33-N1-09-leavewar-blade.png",
+      "C33-N1-10-leavewar-blade-tapped.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "facts": {
+    "filed": {
+     "person": "bane",
+     "type": "Training",
+     "date": "Jul 18",
+     "oil": {
+      "2026-07-18": 1
+     },
+     "acc": "g"
+    },
+    "inputs.row.before": "Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕",
+    "row.before": {
+     "prog": "TRAINING",
+     "who": "bane",
+     "more": [],
+     "str": "08:00",
+     "end": "16:00",
+     "src": "imrldi1s0qx6dfd"
+    },
+    "pucks.before": [
+     {
+      "where": "Ground Programme row",
+      "who": "Ranger",
+      "words": "Ranger\nIP",
+      "title": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+      "puckTitle": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+      "cls": "seat | puck sm oilbar oilbar-fo",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "none (no OIL switch on this puck)"
+     }
+    ],
+    "tapArm": {
+     "armedAfterTapOnNameBox": "(nothing armed — the tap selected Ranger's puck)",
+     "rowAfterTappingBlade": {
+      "prog": "TRAINING",
+      "who": "bane",
+      "more": [],
+      "str": "08:00",
+      "end": "16:00",
+      "src": "imrldi1s0qx6dfd"
+     },
+     "toasts": []
+    },
+    "gesture.toasts": [],
+    "row.after": {
+     "prog": "TRAINING",
+     "who": "slash",
+     "more": [],
+     "str": "08:00",
+     "end": "16:00",
+     "src": "imrldi1s0qx6dfd"
+    },
+    "row.after.names": {
+     "nameBox": "Blade",
+     "extras": []
+    },
+    "pucks.after": [
+     {
+      "where": "Ground Programme row",
+      "who": "Blade",
+      "words": "Blade\nIP",
+      "title": "Blade · IP · instructor pilot",
+      "puckTitle": "Blade · IP · instructor pilot",
+      "cls": "seat | puck sm",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "none (no OIL switch on this puck)"
+     }
+    ],
+    "request.after": {
+     "person": "bane",
+     "type": "Training",
+     "date": "Jul 18",
+     "oil": {
+      "2026-07-18": 1
+     },
+     "acc": "g"
+    },
+    "inputs.row.after": "Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕",
+    "oil.button": "pressed",
+    "oil.pucks": [
+     {
+      "where": "Ground Programme row",
+      "who": "Blade",
+      "words": "Blade\nIP",
+      "title": "Blade — nothing measurable to earn from here",
+      "puckTitle": "Blade · IP · instructor pilot",
+      "cls": "seat oilpk inert | puck sm",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "none (no OIL switch on this puck)"
+     },
+     {
+      "where": "Ground Programme row",
+      "who": "(the row itself)",
+      "words": "TRAINING",
+      "title": "A request is answered for each person on it — tap a puck on this row, not the row itself",
+      "cls": "ain oilitem none"
+     },
+     {
+      "where": "Personal Inputs card",
+      "who": "Ranger",
+      "words": "Ranger\nFO",
+      "title": "Ranger earns a full day — tap to take him off this event",
+      "puckTitle": "Ranger · IP · instructor pilot · SXO",
+      "cls": "seat oilpk on | puck sm oilglow",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "on"
+     },
+     {
+      "where": "Personal Inputs card",
+      "who": "(the row itself)",
+      "words": "Training",
+      "title": "A request is answered for each person on it — tap a puck on this row, not the row itself",
+      "cls": "sbi-ty inpty ty-gp oilitem none"
+     }
+    ],
+    "oil.switches": [
+     {
+      "who": "(the item)",
+      "words": "SDO",
+      "title": "Earns OIL — tap to stop this item earning",
+      "on": true
+     },
+     {
+      "who": "Fable",
+      "words": "Fable FO",
+      "title": "Fable earns a full day — tap to take him off this event",
+      "on": true
+     },
+     {
+      "who": "Ranger",
+      "words": "Ranger FO",
+      "title": "Ranger earns a full day — tap to take him off this event",
+      "on": true
+     }
+    ],
+    "oil.off": "pressed",
+    "sign": {
+     "cur": "Ace",
+     "sked": "Anvil",
+     "plan": "Anvil",
+     "appr": "Anvil"
+    },
+    "publish": {
+     "pressed": true,
+     "label": "Publish day"
+    },
+    "head": {
+     "tag": "ORIG",
+     "pending": "7 changes",
+     "beak": "none",
+     "alpub": "",
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": ""
+    },
+    "publish.toasts": [
+     "Schedule updated",
+     "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+     "Back to editing the schedule",
+     "Saturday published — APPROVED"
+    ],
+    "stored.day": [
+     {
+      "prog": "TRAINING",
+      "who": "Blade",
+      "more": [],
+      "from": "the request"
+     }
+    ],
+    "stored.issued": [
+     "weeks/13-07-2026#5 → TRAINING:Blade",
+     "weeks/13-07-2026:is:2026-07-18#0~0 → TRAINING:Blade"
+    ],
+    "leavewar": {
+     "Ranger": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Blade": {
+      "text": "(blank)",
+      "cls": "weekend act",
+      "title": ""
+     }
+    },
+    "leavewar.tap.ranger": "bid-picker: Ranger Sat 18 Jul NOW FO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI WHERE IT CAME FROM Earned off a duty input that was accepted — change that input, not the schedule. REASON Training GIVEN BY Duty input DAYS a day — worked 08:00–16:00",
+    "leavewar.tap.blade": "bid-picker: Blade Sat 18 Jul ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI",
+    "leavewar.afterReload": {
+     "Ranger": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Blade": {
+      "text": "(blank)",
+      "cls": "weekend act",
+      "title": ""
+     }
+    }
+   }
+  },
+  "namebox-N2": {
+   "at": "2026-10-01T02:40:16.534Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C33-N2",
+     "did": "Ranger's Training request (Sat 18 Jul 08:00–16:00, OIL question: Yes) landed on the Ground Programme; then: Ranger taken off the name box (right-click on his puck), the row's \"+ add\" tapped, Blade tapped in the crew list; OIL Earn on; four sign-offs, Publish day; Leave War",
+     "said": "gesture toast: \"Blade planned\"; the row now: name box Blade, extras []; Inputs page row: \"Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕\"; OIL Earn: Blade on the Ground Programme row: \"Blade\nIP\" — Blade — nothing measurable to earn from here ‖ (the row itself) on the Ground Programme row: \"TRAINING\" — A request is answered for each person on it — tap a puck on this row, not the row itself ‖ Ranger on the Personal Inputs card: \"Ranger\nFO\" — Ranger earns a full day — tap to take him off this event ‖ (the row itself) on the Personal Inputs card: \"Training\" — A request is answered for each person on it — tap a puck on this row, not the row itself",
+     "stored": "request's person stored: Ranger (acc g); stored Saturday row: [{\"prog\":\"TRAINING\",\"who\":\"Blade\",\"more\":[],\"from\":\"the request\"}]; day head after publishing: ORIG; LEAVE WAR 18 Jul — Ranger: \"FO*\", Blade: \"(blank)\"; after a reload the same: true; reload: ok / ok",
+     "verdict": "RECORDED (a picture for the owner — not judged)",
+     "pics": [
+      "C33-N2-01-inputs-filed.png",
+      "C33-N2-02-row-as-filed.png",
+      "C33-N2-03-ranger-taken-off.png",
+      "C33-N2-04-row-after.png",
+      "C33-N2-05-inputs-after.png",
+      "C33-N2-06-OIL-EARN-the-row.png",
+      "C33-N2-07-OIL-EARN-whole-board.png",
+      "C33-N2-08-saturday-published.png",
+      "C33-N2-09-leavewar-ranger.png",
+      "C33-N2-10-leavewar-ranger-tapped.png",
+      "C33-N2-09-leavewar-blade.png",
+      "C33-N2-10-leavewar-blade-tapped.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "facts": {
+    "filed": {
+     "person": "bane",
+     "type": "Training",
+     "date": "Jul 18",
+     "oil": {
+      "2026-07-18": 1
+     },
+     "acc": "g"
+    },
+    "inputs.row.before": "Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕",
+    "row.before": {
+     "prog": "TRAINING",
+     "who": "bane",
+     "more": [],
+     "str": "08:00",
+     "end": "16:00",
+     "src": "imrldi1s0mnsdvc"
+    },
+    "pucks.before": [
+     {
+      "where": "Ground Programme row",
+      "who": "Ranger",
+      "words": "Ranger\nIP",
+      "title": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+      "puckTitle": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+      "cls": "seat | puck sm oilbar oilbar-fo",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "none (no OIL switch on this puck)"
+     }
+    ],
+    "afterRemove": {
+     "row": {
+      "prog": "TRAINING",
+      "who": "",
+      "more": [],
+      "str": "08:00",
+      "end": "16:00",
+      "src": "imrldi1s0mnsdvc"
+     },
+     "toasts": [
+      "Ranger removed"
+     ],
+     "request": {
+      "person": "bane",
+      "acc": "g"
+     }
+    },
+    "armed": "g:5.0.+",
+    "gesture.toasts": [
+     "Blade planned"
+    ],
+    "row.after": {
+     "prog": "TRAINING",
+     "who": "slash",
+     "more": [],
+     "str": "08:00",
+     "end": "16:00",
+     "src": "imrldi1s0mnsdvc"
+    },
+    "row.after.names": {
+     "nameBox": "Blade",
+     "extras": []
+    },
+    "pucks.after": [
+     {
+      "where": "Ground Programme row",
+      "who": "Blade",
+      "words": "Blade\nIP",
+      "title": "Blade · IP · instructor pilot",
+      "puckTitle": "Blade · IP · instructor pilot",
+      "cls": "seat | puck sm",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "none (no OIL switch on this puck)"
+     }
+    ],
+    "request.after": {
+     "person": "bane",
+     "type": "Training",
+     "date": "Jul 18",
+     "oil": {
+      "2026-07-18": 1
+     },
+     "acc": "g"
+    },
+    "inputs.row.after": "Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕",
+    "oil.button": "pressed",
+    "oil.pucks": [
+     {
+      "where": "Ground Programme row",
+      "who": "Blade",
+      "words": "Blade\nIP",
+      "title": "Blade — nothing measurable to earn from here",
+      "puckTitle": "Blade · IP · instructor pilot",
+      "cls": "seat oilpk inert | puck sm",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "none (no OIL switch on this puck)"
+     },
+     {
+      "where": "Ground Programme row",
+      "who": "(the row itself)",
+      "words": "TRAINING",
+      "title": "A request is answered for each person on it — tap a puck on this row, not the row itself",
+      "cls": "ain oilitem none"
+     },
+     {
+      "where": "Personal Inputs card",
+      "who": "Ranger",
+      "words": "Ranger\nFO",
+      "title": "Ranger earns a full day — tap to take him off this event",
+      "puckTitle": "Ranger · IP · instructor pilot · SXO",
+      "cls": "seat oilpk on | puck sm oilglow",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "on"
+     },
+     {
+      "where": "Personal Inputs card",
+      "who": "(the row itself)",
+      "words": "Training",
+      "title": "A request is answered for each person on it — tap a puck on this row, not the row itself",
+      "cls": "sbi-ty inpty ty-gp oilitem none"
+     }
+    ],
+    "oil.switches": [
+     {
+      "who": "(the item)",
+      "words": "SDO",
+      "title": "Earns OIL — tap to stop this item earning",
+      "on": true
+     },
+     {
+      "who": "Fable",
+      "words": "Fable FO",
+      "title": "Fable earns a full day — tap to take him off this event",
+      "on": true
+     },
+     {
+      "who": "Ranger",
+      "words": "Ranger FO",
+      "title": "Ranger earns a full day — tap to take him off this event",
+      "on": true
+     }
+    ],
+    "oil.off": "pressed",
+    "sign": {
+     "cur": "Ace",
+     "sked": "Anvil",
+     "plan": "Anvil",
+     "appr": "Anvil"
+    },
+    "publish": {
+     "pressed": true,
+     "label": "Publish day"
+    },
+    "head": {
+     "tag": "ORIG",
+     "pending": "8 changes",
+     "beak": "none",
+     "alpub": "",
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": ""
+    },
+    "publish.toasts": [
+     "Schedule updated",
+     "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+     "Back to editing the schedule",
+     "Saturday published — APPROVED"
+    ],
+    "stored.day": [
+     {
+      "prog": "TRAINING",
+      "who": "Blade",
+      "more": [],
+      "from": "the request"
+     }
+    ],
+    "stored.issued": [
+     "weeks/13-07-2026#5 → TRAINING:Blade",
+     "weeks/13-07-2026:is:2026-07-18#0~0 → TRAINING:Blade"
+    ],
+    "leavewar": {
+     "Ranger": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Blade": {
+      "text": "(blank)",
+      "cls": "weekend act",
+      "title": ""
+     }
+    },
+    "leavewar.tap.ranger": "bid-picker: Ranger Sat 18 Jul NOW FO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI WHERE IT CAME FROM Earned off a duty input that was accepted — change that input, not the schedule. REASON Training GIVEN BY Duty input DAYS a day — worked 08:00–16:00",
+    "leavewar.tap.blade": "bid-picker: Blade Sat 18 Jul ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI",
+    "leavewar.afterReload": {
+     "Ranger": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Blade": {
+      "text": "(blank)",
+      "cls": "weekend act",
+      "title": ""
+     }
+    }
+   }
+  },
+  "namebox-X1": {
+   "at": "2026-10-01T02:41:25.603Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C33-X1",
+     "did": "Ranger's Training request (Sat 18 Jul 08:00–16:00, OIL question: Yes) landed on the Ground Programme; then: the row's \"+ add\" tapped, Blade tapped in the crew list (Ranger stays in the name box, Blade in the extras); OIL Earn on; four sign-offs, Publish day; Leave War",
+     "said": "gesture toast: \"Blade planned\"; the row now: name box Ranger, extras [Blade]; Inputs page row: \"Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕\"; OIL Earn: Ranger on the Ground Programme row: \"Ranger\nFO\" — Ranger earns a full day — tap to take him off this event ‖ Blade on the Ground Programme row: \"Blade\nFO\" — Blade earns a full day — tap to take him off this event ‖ (the row itself) on the Ground Programme row: \"TRAINING\" — A request is answered for each person on it — tap a puck on this row, not the row itself ‖ Ranger on the Personal Inputs card: \"Ranger\nFO\" — Ranger earns a full day — tap to take him off this event ‖ (the row itself) on the Personal Inputs card: \"Training\" — A request is answered for each person on it — tap a puck on this row, not the row itself",
+     "stored": "request's person stored: Ranger (acc g); stored Saturday row: [{\"prog\":\"TRAINING\",\"who\":\"Ranger\",\"more\":[\"Blade\"],\"from\":\"the request\"}]; day head after publishing: ORIG; LEAVE WAR 18 Jul — Ranger: \"FO*\", Blade: \"FO*\"; after a reload the same: true; reload: ok / ok",
+     "verdict": "RECORDED (a picture for the owner — not judged)",
+     "pics": [
+      "C33-X1-01-inputs-filed.png",
+      "C33-X1-02-row-as-filed.png",
+      "C33-X1-04-row-after.png",
+      "C33-X1-05-inputs-after.png",
+      "C33-X1-06-OIL-EARN-the-row.png",
+      "C33-X1-07-OIL-EARN-whole-board.png",
+      "C33-X1-08-saturday-published.png",
+      "C33-X1-09-leavewar-ranger.png",
+      "C33-X1-10-leavewar-ranger-tapped.png",
+      "C33-X1-09-leavewar-blade.png",
+      "C33-X1-10-leavewar-blade-tapped.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "facts": {
+    "filed": {
+     "person": "bane",
+     "type": "Training",
+     "date": "Jul 18",
+     "oil": {
+      "2026-07-18": 1
+     },
+     "acc": "g"
+    },
+    "inputs.row.before": "Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕",
+    "row.before": {
+     "prog": "TRAINING",
+     "who": "bane",
+     "more": [],
+     "str": "08:00",
+     "end": "16:00",
+     "src": "imrldi1s0ta2xw1"
+    },
+    "pucks.before": [
+     {
+      "where": "Ground Programme row",
+      "who": "Ranger",
+      "words": "Ranger\nIP",
+      "title": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+      "puckTitle": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+      "cls": "seat | puck sm oilbar oilbar-fo",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "none (no OIL switch on this puck)"
+     }
+    ],
+    "armed": "g:5.0.+",
+    "gesture.toasts": [
+     "Blade planned"
+    ],
+    "row.after": {
+     "prog": "TRAINING",
+     "who": "bane",
+     "more": [
+      "slash"
+     ],
+     "str": "08:00",
+     "end": "16:00",
+     "src": "imrldi1s0ta2xw1"
+    },
+    "row.after.names": {
+     "nameBox": "Ranger",
+     "extras": [
+      "Blade"
+     ]
+    },
+    "pucks.after": [
+     {
+      "where": "Ground Programme row",
+      "who": "Ranger",
+      "words": "Ranger\nIP",
+      "title": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+      "puckTitle": "Ranger · IP · instructor pilot · SXO · earns a full day of OIL",
+      "cls": "seat | puck sm oilbar oilbar-fo",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "none (no OIL switch on this puck)"
+     },
+     {
+      "where": "Ground Programme row",
+      "who": "Blade",
+      "words": "Blade\nIP",
+      "title": "Blade · IP · instructor pilot · earns a full day of OIL",
+      "puckTitle": "Blade · IP · instructor pilot · earns a full day of OIL",
+      "cls": "seat | puck sm oilbar oilbar-fo",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "none (no OIL switch on this puck)"
+     }
+    ],
+    "request.after": {
+     "person": "bane",
+     "type": "Training",
+     "date": "Jul 18",
+     "oil": {
+      "2026-07-18": 1
+     },
+     "acc": "g"
+    },
+    "inputs.row.after": "Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕",
+    "oil.button": "pressed",
+    "oil.pucks": [
+     {
+      "where": "Ground Programme row",
+      "who": "Ranger",
+      "words": "Ranger\nFO",
+      "title": "Ranger earns a full day — tap to take him off this event",
+      "puckTitle": "Ranger · IP · instructor pilot · SXO",
+      "cls": "seat oilpk on | puck sm oilglow",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "on"
+     },
+     {
+      "where": "Ground Programme row",
+      "who": "Blade",
+      "words": "Blade\nFO",
+      "title": "Blade earns a full day — tap to take him off this event",
+      "puckTitle": "Blade · IP · instructor pilot",
+      "cls": "seat oilpk on | puck sm oilglow",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "on"
+     },
+     {
+      "where": "Ground Programme row",
+      "who": "(the row itself)",
+      "words": "TRAINING",
+      "title": "A request is answered for each person on it — tap a puck on this row, not the row itself",
+      "cls": "ain oilitem none"
+     },
+     {
+      "where": "Personal Inputs card",
+      "who": "Ranger",
+      "words": "Ranger\nFO",
+      "title": "Ranger earns a full day — tap to take him off this event",
+      "puckTitle": "Ranger · IP · instructor pilot · SXO",
+      "cls": "seat oilpk on | puck sm oilglow",
+      "opacity": "1",
+      "filter": "none",
+      "earnsSwitch": "on"
+     },
+     {
+      "where": "Personal Inputs card",
+      "who": "(the row itself)",
+      "words": "Training",
+      "title": "A request is answered for each person on it — tap a puck on this row, not the row itself",
+      "cls": "sbi-ty inpty ty-gp oilitem none"
+     }
+    ],
+    "oil.switches": [
+     {
+      "who": "(the item)",
+      "words": "SDO",
+      "title": "Earns OIL — tap to stop this item earning",
+      "on": true
+     },
+     {
+      "who": "Fable",
+      "words": "Fable FO",
+      "title": "Fable earns a full day — tap to take him off this event",
+      "on": true
+     },
+     {
+      "who": "Ranger",
+      "words": "Ranger FO",
+      "title": "Ranger earns a full day — tap to take him off this event",
+      "on": true
+     },
+     {
+      "who": "Blade",
+      "words": "Blade FO",
+      "title": "Blade earns a full day — tap to take him off this event",
+      "on": true
+     },
+     {
+      "who": "Ranger",
+      "words": "Ranger FO",
+      "title": "Ranger earns a full day — tap to take him off this event",
+      "on": true
+     }
+    ],
+    "oil.off": "pressed",
+    "sign": {
+     "cur": "Ace",
+     "sked": "Anvil",
+     "plan": "Anvil",
+     "appr": "Anvil"
+    },
+    "publish": {
+     "pressed": true,
+     "label": "Publish day"
+    },
+    "head": {
+     "tag": "ORIG",
+     "pending": "7 changes",
+     "beak": "none",
+     "alpub": "",
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": ""
+    },
+    "publish.toasts": [
+     "Schedule updated",
+     "OIL mode — tap a puck to take a man off that event, or an item to stop the whole item earning",
+     "Back to editing the schedule",
+     "Saturday published — APPROVED"
+    ],
+    "stored.day": [
+     {
+      "prog": "TRAINING",
+      "who": "Ranger",
+      "more": [
+       "Blade"
+      ],
+      "from": "the request"
+     }
+    ],
+    "stored.issued": [
+     "weeks/13-07-2026#5 → TRAINING:Ranger+Blade",
+     "weeks/13-07-2026:is:2026-07-18#0~0 → TRAINING:Ranger+Blade"
+    ],
+    "leavewar": {
+     "Ranger": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Blade": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     }
+    },
+    "leavewar.tap.ranger": "bid-picker: Ranger Sat 18 Jul NOW FO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI WHERE IT CAME FROM Earned off a duty input that was accepted — change that input, not the schedule. REASON Training GIVEN BY Duty input DAYS a day — worked 08:00–16:00",
+    "leavewar.tap.blade": "bid-picker: Blade Sat 18 Jul NOW FO ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI WHERE IT CAME FROM Earned off a duty input that was accepted — change that input, not the schedule. REASON Training GIVEN BY Duty input DAYS a day — worked 08:00–16:00",
+    "leavewar.afterReload": {
+     "Ranger": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     },
+     "Blade": {
+      "text": "FO*",
+      "cls": "duty weekend act",
+      "title": ""
+     }
+    }
+   }
+  },
+  "warnhide": {
+   "at": "2026-10-01T02:59:08.022Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C37-v",
+     "did": "(a reload + sign-in (the app opens on 13 Jul), THEN sign out and in while the week of 20 Jul is on screen) Edit Schedule: week of 13 Jul, Tuesday's warning list opened, ✕ on its last line (\"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:0…\") — pressed; week of 20 Jul (its Mon), ✕ on the first line (\"Conflict — two events at once Outlaw — RU BFM & Sim EP-4 clash…\") — pressed; then a reload + sign-in; then sign out and in as the same admin; then the member",
+     "said": "before: 13 Jul \"⚠ 4 issues · 2 warning · tap to collapse ▲\", 20 Jul \"⚠ 10 issues · 2 warning · tap to collapse ▲\". RIGHT AFTER HIDING — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → NOT LISTED (hidden); 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → NOT LISTED (hidden); toasts [\"Check hidden — it returns if the day changes\",\"Check hidden — it returns if the day changes\"]. AFTER A RELOAD — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → \"Long work day Static — Static has a long work day:…\": LISTED as a live warning (not hidden) — class \"witem note\"; 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → \"Conflict — two events at once Outlaw — RU BFM & Si…\": NOT LISTED (hidden). AFTER SIGN OUT AND IN (same admin) — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → \"Long work day Static — Static has a long work day:…\": LISTED as a live warning (not hidden) — class \"witem note\"; 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → \"Conflict — two events at once Outlaw — RU BFM & Si…\": LISTED as a live warning (not hidden) — class \"witem hard\". The member's View-only Sched Tuesday: ⚠ 4 issues · tap to review ▼",
+     "stored": "rows the two hides wrote: weeks/13-07-2026, weeks/13-07-2026#1, weeks/20-07-2026, weeks/20-07-2026#0",
+     "verdict": "RECORDED (observe only — not judged)",
+     "pics": [
+      "C37v-01-week13-tuesday-before.png",
+      "C37v-02-week13-tuesday-one-hidden.png",
+      "C37v-03-week20-before.png",
+      "C37v-04-week20-one-hidden.png",
+      "C37v-05-after-reload-week13.png",
+      "C37v-05-after-reload-week20.png",
+      "C37v-06-after-sign-out-and-in-week13.png",
+      "C37v-06-after-sign-out-and-in-week20.png",
+      "C37v-07-member-view.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "detail": {
+    "T1": "Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)",
+    "T2": "Conflict — two events at once Outlaw — RU BFM & Sim EP-4 clash",
+    "a0": {
+     "head": "⚠ 4 issues · 2 warning · tap to collapse ▲",
+     "items": [
+      {
+       "text": "Conflict — two events at once Saint — VL SAT & APPOINTMENT clash",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the flight brief Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)",
+       "cls": "witem note",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      }
+     ],
+     "other": []
+    },
+    "a1": {
+     "head": "⚠ 4 issues · 2 warning · tap to collapse ▲",
+     "items": [
+      {
+       "text": "Conflict — two events at once Saint — VL SAT & APPOINTMENT clash",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the flight brief Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      }
+     ],
+     "other": [
+      "▼ 1 hidden"
+     ]
+    },
+    "b0": {
+     "head": "⚠ 10 issues · 2 warning · tap to collapse ▲",
+     "items": [
+      {
+       "text": "Conflict — two events at once Outlaw — RU BFM & Sim EP-4 clash",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Conflict — two events at once Vapor — APPOINTMENT & MEDICAL APPT clash",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Tight turn Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Tight turn Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the flight debrief Outlaw — Not enough time to attend the RU BFM debrief — Sim EP-4 sits inside 10:05–12:05 (land + 2h)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the sim brief Outlaw — No time for the OFT EP-4 brief — RU BFM sits inside 08:30–09:00",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the sim debrief Outlaw — No time for the OFT EP-4 debrief — RU BFM sits inside 10:30–11:00",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Double turning Ranger, Echo — 2 people are double turning: Ranger, Echo",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew solo — only allowed under syllabus Wildcard, Tally — Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew combination — CO approval required Diesel, Hex — CAT D pilot Diesel with CAT C WSO Hex in RU BFM — CO approval required",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      }
+     ],
+     "other": []
+    },
+    "b1": {
+     "head": "⚠ 10 issues · 2 warning · tap to collapse ▲",
+     "items": [
+      {
+       "text": "Conflict — two events at once Vapor — APPOINTMENT & MEDICAL APPT clash",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Tight turn Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Tight turn Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the flight debrief Outlaw — Not enough time to attend the RU BFM debrief — Sim EP-4 sits inside 10:05–12:05 (land + 2h)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the sim brief Outlaw — No time for the OFT EP-4 brief — RU BFM sits inside 08:30–09:00",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the sim debrief Outlaw — No time for the OFT EP-4 debrief — RU BFM sits inside 10:30–11:00",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Double turning Ranger, Echo — 2 people are double turning: Ranger, Echo",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew solo — only allowed under syllabus Wildcard, Tally — Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew combination — CO approval required Diesel, Hex — CAT D pilot Diesel with CAT C WSO Hex in RU BFM — CO approval required",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      }
+     ],
+     "other": [
+      "▼ 1 hidden"
+     ]
+    },
+    "wrote": [
+     "weeks/13-07-2026",
+     "weeks/13-07-2026#1",
+     "weeks/20-07-2026",
+     "weeks/20-07-2026#0"
+    ]
+   }
+  },
+  "warnhide-2": {
+   "at": "2026-10-01T02:59:29.597Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C37-v (second order)",
+     "did": "(the OTHER order: back to the week of 13 Jul, sign out and in with NO reload, THEN a reload + sign-in) Edit Schedule: week of 13 Jul, Tuesday's warning list opened, ✕ on its last line (\"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:0…\") — pressed; week of 20 Jul (its Mon), ✕ on the first line (\"Conflict — two events at once Outlaw — RU BFM & Sim EP-4 clash…\") — pressed; then a reload + sign-in; then sign out and in as the same admin; then the member",
+     "said": "before: 13 Jul \"⚠ 4 issues · 2 warning · tap to collapse ▲\", 20 Jul \"⚠ 10 issues · 2 warning · tap to collapse ▲\". RIGHT AFTER HIDING — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → NOT LISTED (hidden); 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → NOT LISTED (hidden); toasts [\"Check hidden — it returns if the day changes\",\"Check hidden — it returns if the day changes\"]. AFTER A RELOAD — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → \"Long work day Static — Static has a long work day:…\": LISTED as a live warning (not hidden) — class \"witem note\"; 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → \"Conflict — two events at once Outlaw — RU BFM & Si…\": NOT LISTED (hidden). AFTER SIGN OUT AND IN (same admin) — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → \"Long work day Static — Static has a long work day:…\": LISTED as a live warning (not hidden) — class \"witem note\"; 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → \"Conflict — two events at once Outlaw — RU BFM & Si…\": NOT LISTED (hidden). The member's View-only Sched Tuesday: ⚠ 4 issues · tap to review ▼",
+     "stored": "rows the two hides wrote: weeks/13-07-2026, weeks/13-07-2026#1, weeks/20-07-2026, weeks/20-07-2026#0",
+     "verdict": "RECORDED (observe only — not judged)",
+     "pics": [
+      "C37v2-01-week13-tuesday-before.png",
+      "C37v2-02-week13-tuesday-one-hidden.png",
+      "C37v2-03-week20-before.png",
+      "C37v2-04-week20-one-hidden.png",
+      "C37v-05b-after-sign-out-and-in-on-week13-week13.png",
+      "C37v-05b-after-sign-out-and-in-on-week13-week20.png",
+      "C37v-06b-then-a-reload-week13.png",
+      "C37v-06b-then-a-reload-week20.png",
+      "C37v-07b-member-view.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "detail": {
+    "T1": "Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)",
+    "T2": "Conflict — two events at once Outlaw — RU BFM & Sim EP-4 clash",
+    "a0": {
+     "head": "⚠ 4 issues · 2 warning · tap to collapse ▲",
+     "items": [
+      {
+       "text": "Conflict — two events at once Saint — VL SAT & APPOINTMENT clash",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the flight brief Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)",
+       "cls": "witem note",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      }
+     ],
+     "other": []
+    },
+    "a1": {
+     "head": "⚠ 4 issues · 2 warning · tap to collapse ▲",
+     "items": [
+      {
+       "text": "Conflict — two events at once Saint — VL SAT & APPOINTMENT clash",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the flight brief Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      }
+     ],
+     "other": [
+      "▼ 1 hidden"
+     ]
+    },
+    "b0": {
+     "head": "⚠ 10 issues · 2 warning · tap to collapse ▲",
+     "items": [
+      {
+       "text": "Conflict — two events at once Outlaw — RU BFM & Sim EP-4 clash",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Conflict — two events at once Vapor — APPOINTMENT & MEDICAL APPT clash",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Tight turn Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Tight turn Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the flight debrief Outlaw — Not enough time to attend the RU BFM debrief — Sim EP-4 sits inside 10:05–12:05 (land + 2h)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the sim brief Outlaw — No time for the OFT EP-4 brief — RU BFM sits inside 08:30–09:00",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the sim debrief Outlaw — No time for the OFT EP-4 debrief — RU BFM sits inside 10:30–11:00",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Double turning Ranger, Echo — 2 people are double turning: Ranger, Echo",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew solo — only allowed under syllabus Wildcard, Tally — Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew combination — CO approval required Diesel, Hex — CAT D pilot Diesel with CAT C WSO Hex in RU BFM — CO approval required",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      }
+     ],
+     "other": []
+    },
+    "b1": {
+     "head": "⚠ 10 issues · 2 warning · tap to collapse ▲",
+     "items": [
+      {
+       "text": "Conflict — two events at once Vapor — APPOINTMENT & MEDICAL APPT clash",
+       "cls": "witem hard",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Tight turn Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Tight turn Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the flight debrief Outlaw — Not enough time to attend the RU BFM debrief — Sim EP-4 sits inside 10:05–12:05 (land + 2h)",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the sim brief Outlaw — No time for the OFT EP-4 brief — RU BFM sits inside 08:30–09:00",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "No time for the sim debrief Outlaw — No time for the OFT EP-4 debrief — RU BFM sits inside 10:30–11:00",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Double turning Ranger, Echo — 2 people are double turning: Ranger, Echo",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew solo — only allowed under syllabus Wildcard, Tally — Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      },
+      {
+       "text": "Crew combination — CO approval required Diesel, Hex — CAT D pilot Diesel with CAT C WSO Hex in RU BFM — CO approval required",
+       "cls": "witem adv",
+       "struck": "none",
+       "opacity": "1",
+       "button": "Hide this check — it comes back if the situation changes"
+      }
+     ],
+     "other": [
+      "▼ 1 hidden"
+     ]
+    },
+    "wrote": [
+     "weeks/13-07-2026",
+     "weeks/13-07-2026#1",
+     "weeks/20-07-2026",
+     "weeks/20-07-2026#0"
+    ]
+   }
+  },
+  "lists-all": {
+   "at": "2026-10-01T03:00:21.853Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C37-i",
+     "did": "board, Tuesday: a jet's \"C / Config…\" → Stores configuration → ✎ → ✕ on every store → ✎ (done) → reload → the same menu again",
+     "said": "shipped list: [TPOD, 2 TKS, NAV, N/C, 3 TKS, CL] (6); after 6 removals the editor read: \"STORES CONFIGURATION ✎ Add The list is the squadron's, not this jet's — it survives a reload. Removing one keeps every jet that carries it.\"; the menu then offered []; the jets that carried a store still print it: []; AFTER THE RELOAD the menu offers: [] (0); the editor's Add put back: [TPOD] (this editor has no Reset)",
+     "stored": "rows written by the removals: settings/stores = []; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C37i-01-stores-as-shipped.png",
+      "C37i-02-every-store-removed.png",
+      "C37i-03-menu-with-no-stores.png",
+      "C37i-04-after-reload.png",
+      "C37i-05-one-added-back.png"
+     ]
+    },
+    {
+     "id": "C37-ii",
+     "did": "board, Tuesday: CX on the first flying line (the sheet \"Cancel this item\", opened) → ✎ Edit → ✕ on every reason → Done → ✕ (the line is NOT cancelled) → reload → the sheet again → Reset to standard (two taps)",
+     "said": "shipped quick reasons: [WX, OPS, LOGS] (3); after 3 removals the editor said \"No quick reasons — add one below, or reset to the standard set.\"; the sheet then offered []; AFTER THE RELOAD it offers [] (0); Reset (\"Reset to standard\" → \"Tap again to reset\") brought back [WX, OPS, LOGS]",
+     "stored": "rows written by the removals: settings/cxreasons = []; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C37ii-01-cx-sheet-as-shipped.png",
+      "C37ii-02-every-reason-removed.png",
+      "C37ii-03-after-reload.png",
+      "C37ii-04-reset-to-standard.png"
+     ]
+    },
+    {
+     "id": "C37-iii",
+     "did": "Quals → Enable editing → Edit quals → ✕ on every qualification column (a second tap where the column asked again) → Save changes → reload → Quals",
+     "said": "shipped columns: [SANS, SXO, SCHEDULER, SC DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF] (10); columns that did not go on the first tap: sxo (tap 1: toast [\"SXO is read by the VIEW AS filter, and who is appointed a scheduler automatically. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove SXO | qdel | REMOVE?\"); sched (tap 1: toast [\"Scheduler is read by the sign-off drop-downs — SKED CK, PLANNED BY and APPROVED BY. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove Scheduler | qdel | REMOVE?\"); scDay (tap 1: toast [\"SC DAY is read by the SC shift rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove SC DAY | qdel | REMOVE?\"); scNight (tap 1: toast [\"SC NIGHT is read by the SC shift rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove SC NIGHT | qdel | REMOVE?\"); daar (tap 1: toast [\"DAAR is read by the air-to-air refuelling rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove DAAR | qdel | REMOVE?\"); naar (tap 1: toast [\"NAAR is read by the air-to-air refuelling rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove NAAR | qdel | REMOVE?\"); after the removals: []; the save button read \"Enable editing\", toast []; AFTER THE RELOAD the page shows [] (0) qualification columns; its Add put back: [NVG] (this editor has no Reset)",
+     "stored": "rows written: settings/qualcols = []; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C37iii-01-edit-quals-as-shipped.png",
+      "C37iii-02-a-wired-column-asks-again.png",
+      "C37iii-03-every-column-removed.png",
+      "C37iii-04-after-reload.png",
+      "C37iii-05-one-added-back.png"
+     ]
+    },
+    {
+     "id": "C37-iv",
+     "did": "Leave War → ⚙ Settings → ＋ Counter, a name typed and Add counter pressed, again and again through the form until it refused; then a reload",
+     "said": "counters on the grid before: 11; added through the form: 49; at the limit: {\"where\":\"in the counter form\",\"sentence\":\"60 counters is the most the app keeps. Delete one to add another.\",\"addCounterButton\":{\"disabled\":false,\"title\":\"Add a manning counter — pick who it counts and when it turns amber or red\",\"words\":\"＋ Counter\"},\"formAddDisabledWithAName\":true,\"formAddWords\":\"Add counter\"}; toasts []; counters on the grid at the limit: 60; AFTER THE RELOAD: 60 (missing: none); the form after the reload: Add-counter button {\"disabled\":false,\"title\":\"Add a manning counter — pick who it counts and when it turns amber or red\",\"words\":\"＋ Counter\"}, form says \"60 counters is the most the app keeps. Delete one to add another.\"",
+     "stored": "stored counters row(s) at the limit: {}; after the reload: {}; rows written: ; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C37iv-01-first-counter-added.png",
+      "C37iv-02-the-list-is-full.png",
+      "C37iv-03-grid-with-every-counter.png",
+      "C37iv-04-after-reload.png",
+      "C37iv-05-after-reload-still-full.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "lists-counters": {
+   "at": "2026-10-01T03:02:55.406Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C37-iv",
+     "did": "Leave War → ⚙ Settings → ＋ Counter, a name typed and Add counter pressed, again and again through the form until it refused; then a reload",
+     "said": "counters on the grid before: 11; added through the form: 49; at the limit: {\"where\":\"in the counter form\",\"sentence\":\"60 counters is the most the app keeps. Delete one to add another.\",\"addCounterButton\":{\"disabled\":false,\"title\":\"Add a manning counter — pick who it counts and when it turns amber or red\",\"words\":\"＋ Counter\"},\"formAddDisabledWithAName\":true,\"formAddWords\":\"Add counter\"}; toasts []; counters on the grid at the limit: 60; AFTER THE RELOAD: 60 (missing: none); the form after the reload: Add-counter button {\"disabled\":false,\"title\":\"Add a manning counter — pick who it counts and when it turns amber or red\",\"words\":\"＋ Counter\"}, form says \"60 counters is the most the app keeps. Delete one to add another.\"",
+     "stored": "stored counters row(s) at the limit: {\"leavewar/manningdefs\":60}; after the reload: {\"leavewar/manningdefs\":60}; rows written: leavewar/manningdefs; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C37iv-01-first-counter-added.png",
+      "C37iv-02-the-list-is-full.png",
+      "C37iv-03-grid-with-every-counter.png",
+      "C37iv-04-after-reload.png",
+      "C37iv-05-after-reload-still-full.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "previews": {
+   "at": "2026-10-01T03:13:39.921Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C34a",
+     "did": "Tuesday (a draft): board → MEDICAL APPT's \"+ add\" → ALL AVAIL; Edit Schedule → Tuesday's plans menu → \"+ Alt Plan\"; View-only Sched → Tuesday's picker → the parked plan; its chip; a tap on the chip; a tap on the first man",
+     "said": "board chip after the placing: \"35\"; plans menu before: [\"Live working copy ●live now — this is what publishes [data-plangolive]\",\"+ Alt Plan [data-plandup]\"]; \"+ Alt Plan\" pressed: true, the app said [\"ALL AVAIL planned\",\"Schedule updated\",\"Tuesday — \\\"Plan B\\\" is now the live day, edit over it\"]; menu after: [\"Plan Atap to make it the live day [data-plansel]\",\"Plan B ●live now — this is what publishes [data-plangolive]\",\"+ Alt Plan [data-plandup]\"]; View-only Sched picker: [\"d:dr1=Plan A\",\"live=Plan B ● *\"]; live plan chip there: \"35\" — \"35 with nothing else on at that time — tap to see them (who is free as things stand now)\"; THE PARKED PLAN PREVIEWED — chip \"35\", its title \"35 with nothing else on at that time — tap to see them (who is free as things stand now)\"; the window \"MEDICAL APPT Jul 14 · 13:30–15:00\" lists 35, its line \"who is free as things stand now — Plan A\"; after a tap on the first man its foot reads \"Reaper — nothing else on the programme at that time.\"",
+     "stored": "the chip carries no issued-version stamp (d:dr1); the tap changed the working day: false; rows written by the tap: false",
+     "verdict": "PASS",
+     "pics": [
+      "C34a-01-tuesday-board-chip.png",
+      "C34a-02-plans-menu-after-alt-plan.png",
+      "C34a-03-saved-plan-previewed-chip.png",
+      "C34a-04-saved-plan-previewed-window.png"
+     ]
+    },
+    {
+     "id": "C34b",
+     "did": "Wednesday: board → MAINT CONF's \"+ add\" → ALL AVAIL; the four sign-offs, Publish day; a Local leave filed for Reaper (a crowd man) on the Inputs page; then the Original looked at from Edit Schedule's plans menu, from the board's, and on View-only Sched (as issued / working draft); in each: the chip, a tap on it, a tap on the first man",
+     "said": "issued with 37 behind the puck; published: tag \"ORIG\"; after the leave the day head reads \"1 pending\" and the live chip \"36\" (\"36 with nothing else on at that time — tap to see them (who is free as things stand now)\"). plans menu: [\"Live working copy ●live now — differences from Original go out as AL1 [data-plangolive]\",\"Originalread-only — look, don't change [data-planpv]\",\"+ Alt Plan [data-plandup]\"]. EDIT WEEK, ORIGINAL PREVIEWED — chip \"37\", title \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, its line \"who was free when this day was issued — Original\", Reaper still listed: true; foot after a tap \"Reaper — nothing else on the programme at that time.\"; \"Back to live copy\" there: true, live chip again \"36\". BOARD, ORIGINAL PREVIEWED — chip \"37\", \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, \"who was free when this day was issued — Original\"; OIL Earn button: \"no OIL Earn button drawn\". VIEW-ONLY SCHED [\"issued=Original — as issued *\",\"working=Working draft — not issued\"] — as issued: chip \"37\", \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\", window 37, \"who was free when this day was issued — Original\"; working draft: chip \"36\", \"36 with nothing else on at that time — tap to see them (who is free as things stand now)\", window 36, \"who is free as things stand now\"",
+     "stored": "the previewed chip carries the issued version's stamp (2026-07-15#0); a tap in the edit week's preview window changed the working day: false, wrote rows: false; in the board's: false / false",
+     "verdict": "PASS",
+     "pics": [
+      "C34b-01-editweek-original-previewed-chip.png",
+      "C34b-02-editweek-original-previewed-window.png",
+      "C34b-03-board-original-previewed-window.png",
+      "C34b-04-viewsched-as-issued-window.png",
+      "C34b-05-viewsched-working-draft-window.png"
+     ]
+    },
+    {
+     "id": "C35",
+     "did": "the published Wednesday (ALL AVAIL under MAINT CONF, one leave pending): View-only Sched → the chip tapped → a tap on the first man — as the admin and as the member (us), at 1440 px and at 390 px (the same stored world)",
+     "said": "ADMIN DESKTOP: chip 37 — \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, \"who was free when this day was issued — Original\", \"Who’s available 37\"; flagged: Kraken: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required | Otter: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required; window box {\"left\":1212,\"top\":96,\"width\":212,\"height\":540,\"viewport\":\"1440x900\"}; earn controls on screen: 0; reasons not drawn: 0 ‖ MEMBER DESKTOP: chip 37 — \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, \"who was free when this day was issued — Original\", \"Who’s available 37\"; flagged: Kraken: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required | Otter: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required; window box {\"left\":1212,\"top\":96,\"width\":212,\"height\":540,\"viewport\":\"1440x900\"}; earn controls on screen: 0; reasons not drawn: 0 ‖ ADMIN PHONE: chip 37 — \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, \"who was free when this day was issued — Original\", \"Who’s available 37\"; flagged: Kraken: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required | Otter: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required; window box {\"left\":12,\"top\":309,\"width\":366,\"height\":523,\"viewport\":\"390x844\"}; earn controls on screen: 0; reasons not drawn: 0; a finger tap on the chip did NOT open the window (it selected [\"ALL AVAIL\",\"ALL AVAIL\",\"\"] instead); a mouse click at the same spot was used to read the list ‖ MEMBER PHONE: chip 37 — \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, \"who was free when this day was issued — Original\", \"Who’s available 37\"; flagged: Kraken: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required | Otter: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required; window box {\"left\":12,\"top\":309,\"width\":366,\"height\":523,\"viewport\":\"390x844\"}; earn controls on screen: 0; reasons not drawn: 0; a finger tap on the chip did NOT open the window (it selected [\"ALL AVAIL\",\"ALL AVAIL\"] instead); a mouse click at the same spot was used to read the list",
+     "stored": "the four lists are the same men: true; the same flags: true; a tap wrote something anywhere: no",
+     "verdict": "PASS for the list, the flags and the roles — FAIL for a finger tap on the chip at phone width (finding F1)",
+     "pics": [
+      "C35-admin-desktop-window.png",
+      "C35-member-desktop-window.png",
+      "C35-admin-phone-finger-tap.png",
+      "C35-admin-phone-window.png",
+      "C35-member-phone-finger-tap.png",
+      "C35-member-phone-window.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "misc-all": {
+   "at": "2026-10-01T03:24:14.800Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C37-vi-a",
+     "did": "Leave War: Blade's box for Mon 20 Jul → PI → \"Post in\" (PI from 20 Jul), with no Post Out before it; reload",
+     "said": "the sheet: \"bid-picker: Blade Mon 20 Jul ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL PI FROM Post in Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"; toast []; Blade's boxes before: {\"2026-07-14\":\"\\\"\\\" [act]\",\"2026-07-17\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"\\\" [act]\",\"2026-07-21\":\"\\\"\\\" [act]\"}; after the Post In: {\"2026-07-14\":\"\\\"\\\" [gone act]\",\"2026-07-17\":\"\\\"\\\" [gone act]\",\"2026-07-20\":\"\\\"\\\" [act]\",\"2026-07-21\":\"\\\"\\\" [act]\"}; AFTER THE RELOAD: {\"2026-07-14\":\"\\\"\\\" [gone act]\",\"2026-07-17\":\"\\\"\\\" [gone act]\",\"2026-07-20\":\"\\\"\\\" [act]\",\"2026-07-21\":\"\\\"\\\" [act]\"}",
+     "stored": "rows written: leavewar/profile:slash = {\"post\":{\"id\":\"slash\",\"callsign\":\"Blade\",\"seat\":\"pilot\",\"band\":\"instructor\",\"sxo\":false,\"from\":\"2026-07-20\",\"to\":null,\"q\":\"IP\",\"scd\":true,\"scn\":true,\"xq\":[\"daar\",\"imc\",\"naar\",\"nvg\",\"scDay\",\"scNight\"],; the boxes read the same after the reload: true; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C37vi-pi-01-sheet.png",
+      "C37vi-pi-02-posted-in.png",
+      "C37vi-pi-03-after-reload.png"
+     ]
+    },
+    {
+     "id": "C37-vi-b",
+     "did": "Leave War: Blade's box for Mon 20 Jul → PO, \"SANS\", PO from 20 Jul → Post out; then his box for Tue 28 Jul (a PO box) → \"Place leave or OIL here instead…\" → PI, PI from 28 Jul → Post in; reload",
+     "said": "the post-out line: \"On 20 Jul: becomes SANS.\", toast []; boxes before {\"2026-07-17\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"\\\" [act]\",\"2026-07-22\":\"\\\"\\\" [act]\",\"2026-07-27\":\"\\\"\\\" [act]\",\"2026-07-28\":\"\\\"\\\" [act]\",\"2026-07-29\":\"\\\"\\\" [act]\"}; after the Post Out {\"2026-07-17\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"PO\\\" [gone act]\",\"2026-07-22\":\"\\\"PO\\\" [gone act]\",\"2026-07-27\":\"\\\"PO\\\" [gone act]\",\"2026-07-28\":\"\\\"PO\\\" [gone act]\",\"2026-07-29\":\"\\\"PO\\\" [gone act]\"}; the 28 Jul box opened \"postout-sheet: Blade Tue 28 Jul ✕ PO FROM POSTING Overseas Sqn Delete ✓ SANS Transfer to Sqn On 20 Jul: becomes SANS. Un\"; bid-picker: Blade Tue 28 Jul ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL PI FROM Post in Their first d; toast []; after the Post In {\"2026-07-17\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"PO\\\" [gone act]\",\"2026-07-22\":\"\\\"PO\\\" [gone act]\",\"2026-07-27\":\"\\\"PO\\\" [gone act]\",\"2026-07-28\":\"\\\"PO\\\" [gone act]\",\"2026-07-29\":\"\\\"PO\\\" [gone act]\"}; AFTER THE RELOAD {\"2026-07-17\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"PO\\\" [gone act]\",\"2026-07-22\":\"\\\"PO\\\" [gone act]\",\"2026-07-27\":\"\\\"PO\\\" [gone act]\",\"2026-07-28\":\"\\\"PO\\\" [gone act]\",\"2026-07-29\":\"\\\"PO\\\" [gone act]\"}",
+     "stored": "rows written: leavewar/profile:slash = {\"post\":{\"id\":\"slash\",\"callsign\":\"Blade\",\"seat\":\"pilot\",\"band\":\"instructor\",\"sxo\":false,\"from\":null,\"to\":\"2026-07-19\",\"q\":\"IP\",\"scd\":true,\"scn\":true,\"xq\":[\"daar\",\"imc\",\"naar\",\"nvg\",\"scDay\",\"scNight\"],\"san\":false,\"poArchi; the boxes read the same after the reload: true; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+     "verdict": "FAIL",
+     "pics": [
+      "C37vi-ob-01-post-out-sheet.png",
+      "C37vi-ob-02-post-in-sheet.png",
+      "C37vi-ob-03-out-and-back.png",
+      "C37vi-ob-04-after-reload.png"
+     ]
+    },
+    {
+     "id": "C37-vi-c",
+     "did": "Leave War → ⚙ Settings → ＋ Event row until there are six (4 presses); the last row's box for 20 Jul → \"P7 SIXTH\", tag Work, \"A range\" 20–22 Jul → Save; reload",
+     "said": "event rows before 2, after 6 (event-row-0, event-row-1, event-row-2, event-row-3, event-row-4, event-row-5); \"A range\" offered [\"One merged bar\",\"Repeat each day\"] and a month of day buttons (50 controls); after picking 22 Jul the sheet's last words: \" 23 24 25 26 27 28 29 30 31 20 Jul 26 – 22 Jul 26 Clear Save\"; after Save the sheet read \"nothing open\"; toast []; the last row's boxes 20–23 Jul: {\"2026-07-20\":\"\\\"P7 SIXTH\\\" [ev band has work editable, 3 days wide]\",\"2026-07-21\":\"under the bar (no box of its own)\",\"2026-07-22\":\"under the bar (no box of its own)\",\"2026-07-23\":\"\\\"＋\\\" [ev editable]\"}; AFTER THE RELOAD rows 6, boxes {\"2026-07-20\":\"\\\"P7 SIXTH\\\" [ev band has work editable, 3 days wide]\",\"2026-07-21\":\"under the bar (no box of its own)\",\"2026-07-22\":\"under the bar (no box of its own)\",\"2026-07-23\":\"\\\"＋\\\" [ev editable]\"}",
+     "stored": "rows written: leavewar/eventrows (1 chars) ; leavewar/war:y2026 (31420 chars) holds \"P7 SIXTH\"; the same after the reload: true; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C37vi-ev-01-event-sheet-range.png",
+      "C37vi-ev-02-sixth-row-with-band.png",
+      "C37vi-ev-03-after-reload.png"
+     ]
+    },
+    {
+     "id": "C37-vi-d",
+     "did": "Inputs: person Blade, type ATT C (a downchit), the form's Document field given a PDF \"p7-c-cert.pdf\", Tue 21 Jul, Add; the row's paperclip opened; reload; the paperclip again",
+     "said": "document field on the form: yes; chips after choosing the file: [\"p7-c-cert.pdf\\n✕\"]; the form asked: []; the row: \"Blade 21 Jul ATT C P7 downchit with a document now ✎ ✕\", its document controls []; the paperclip opened: \"Blade · ATT C · Jul 21 ✕ medically down — cannot report to work — P7 downchit with a document Edit input Close — the document drawn in it: iframe 688x522 \"p7-c-cert.pdf\"\"; AFTER THE RELOAD the row: \"Blade 21 Jul ATT C P7 downchit with a document now ✎ ✕\", controls []; the paperclip opened: \"Blade · ATT C · Jul 21 ✕ medically down — cannot report to work — P7 downchit with a document Edit input Close — the document drawn in it: iframe 688x522 \"p7-c-cert.pdf\"\"",
+     "stored": "the request's document note: null → after the reload null; the browser's document drawer: [\"document (, 733 bytes)\",\"p7-c-cert.pdf (, 4063 bytes)\",\"document (, 735 bytes)\",\"document (, 732 bytes)\",\"document (, 739 bytes)\",\"document (, 733 bytes)\",\"document (, 733 bytes)\"] → after the reload [\"document (, 733 bytes)\",\"p7-c-cert.pdf (, 4063 bytes)\",\"document (, 735 bytes)\",\"document (, 732 bytes)\",\"document (, 739 bytes)\",\"document (, 733 bytes)\",\"document (, 733 bytes)\"]; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C37vi-doc-01-form-with-document.png",
+      "C37vi-doc-02-document-opened.png",
+      "C37vi-doc-03-after-reload-document-opened.png"
+     ]
+    },
+    {
+     "id": "C37-vi-e",
+     "did": "Tracker: ☰ Show All → the first ball's Edit → Name \"P7 TYPED DETAIL\" → Save; Syllabus ✎ → ⇅ Reorder syllabi (the last chart to the top, Save order); Syllabus ✎ → 🗑 Delete syllabus on a built-in chart (it is hidden, restorable); reload",
+     "said": "charts as shipped: [2024, 2026, Tx 2026, A/G - A/A 2026]; the ball ST-01 on chart 2026: the editor's fields [\"NAME\",\"TYPE / FORMAT\",\"HOURS\",\"CREW\",\"PREREQUISITES\"], its Show All row after Save: \"ST-01 P7 TYPED DETAILnot done Type: Lecture · 3.0 Hrs Crew: — Prerequisites: — Edit\"; after the re-order: [A/G - A/A 2026, 2024, 2026, Tx 2026]; the delete asked \"Delete syllabus “2024”? This removes its flow, its layout and every student’s marks on it, in every course. It is a built-in — you can bring\"; after it: [A/G - A/A 2026, 2026, Tx 2026]; AFTER THE RELOAD: charts [A/G - A/A 2026, 2026, Tx 2026], the Reorder window lists as hidden/deleted [\"2024\"], the ball's Show All row: \"ST-01 P7 TYPED DETAILnot done Type: Lecture · 3.0 Hrs Crew: — Prerequisites: — Edit\"",
+     "stored": "rows written: tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026, tracker/v3:master:info:sb2026:ST-01; ok: a reload gives back exactly what was there (the app) · ok: a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen) · ok: the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C37vi-trk-01-details-typed.png",
+      "C37vi-trk-02-reorder-window.png",
+      "C37vi-trk-03-chart-hidden.png",
+      "C37vi-trk-04-after-reload-reorder-window.png",
+      "C37vi-trk-05-after-reload-detail.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "misc-outback": {
+   "at": "2026-10-01T03:27:28.671Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C37-vi-b",
+     "did": "Leave War: Blade's box for Mon 13 Jul → PO, \"Overseas Sqn\", PO from 13 Jul → Post out (today is Wed 15 Jul in this walk); the war's own PI tried on his 15 Jul box; then Admin → Users → ▸ Archived → Blade → Restore; Leave War; reload",
+     "said": "the post-out line: \"On 13 Jul: archived.\", toast []; archived on Quals at once: true; boxes before {\"2026-07-10\":\"\\\"\\\" [act]\",\"2026-07-13\":\"\\\"\\\" [act]\",\"2026-07-14\":\"\\\"\\\" [act]\",\"2026-07-15\":\"\\\"\\\" [act]\",\"2026-07-16\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"\\\" [act]\"}; after the Post Out {\"2026-07-10\":\"\\\"\\\" [act]\",\"2026-07-13\":\"\\\"PO\\\" [gone act]\",\"2026-07-14\":\"\\\"PO\\\" [gone act]\",\"2026-07-15\":\"\\\"PO\\\" [gone act]\",\"2026-07-16\":\"\\\"PO\\\" [gone act]\",\"2026-07-20\":\"\\\"PO\\\" [gone act]\"}; the war's own PI on the posted-out man answered: \"nt nobody — leave can still be dated there. Posted out from 13 Jul 26 — the post-in has to be before that day.\"; Admin's restore panel: [\"accArRestore(submit):Restore\",\"accArDel(submit):Delete\",\"accArCancel(submit):Cancel\"], its post-in date 2026-07-15, error line \"\", toast [\"Blade restored — he'll be asked to check his quals and CAT\"]; back on the roster: true; boxes after the restore {\"2026-07-10\":\"\\\"\\\" [act]\",\"2026-07-13\":\"\\\"PO\\\" [gone act]\",\"2026-07-14\":\"\\\"PO\\\" [gone act]\",\"2026-07-15\":\"\\\"\\\" [act]\",\"2026-07-16\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"\\\" [act]\"}; AFTER THE RELOAD {\"2026-07-10\":\"\\\"\\\" [act]\",\"2026-07-13\":\"\\\"PO\\\" [gone act]\",\"2026-07-14\":\"\\\"PO\\\" [gone act]\",\"2026-07-15\":\"\\\"\\\" [act]\",\"2026-07-16\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"\\\" [act]\"}",
+     "stored": "rows written: leavewar/profile:slash = {\"post\":{\"id\":\"slash\",\"callsign\":\"Blade\",\"seat\":\"pilot\",\"band\":\"instructor\",\"sxo\":false,\"from\":\"2026-07-15\",\"to\":null,\"q\":\"IP\",\"scd\":true,\"scn\":true,\"xq\":[\"daar\",\"imc\",\"naar\",\"nvg\",\"scDay\",\"scNight\"],\"san\":false,\"past\":[{\"from\":null,\"to\":\"2026-07-12\"}]}}; the boxes read the same after the reload: true; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C37vi-ob-01-post-out-sheet.png",
+      "C37vi-ob-02-leavewar-pi-refused.png",
+      "C37vi-ob-03-admin-restore.png",
+      "C37vi-ob-04-out-and-back.png",
+      "C37vi-ob-05-after-reload.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "lists-quals": {
+   "at": "2026-10-01T03:29:52.213Z",
+   "base": "http://localhost:4207",
+   "table": [
+    {
+     "id": "C37-iii",
+     "did": "Quals → Enable editing → Edit quals → ✕ on every qualification column (a second tap where the column asked again) → Save changes → reload → Quals",
+     "said": "shipped columns: [SANS, SXO, SCHEDULER, SC DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF] (10); columns that did not go on the first tap: sxo (tap 1: toast [\"SXO is read by the VIEW AS filter, and who is appointed a scheduler automatically. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove SXO | qdel | REMOVE?\"); sched (tap 1: toast [\"Scheduler is read by the sign-off drop-downs — SKED CK, PLANNED BY and APPROVED BY. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove Scheduler | qdel | REMOVE?\"); scDay (tap 1: toast [\"SC DAY is read by the SC shift rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove SC DAY | qdel | REMOVE?\"); scNight (tap 1: toast [\"SC NIGHT is read by the SC shift rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove SC NIGHT | qdel | REMOVE?\"); daar (tap 1: toast [\"DAAR is read by the air-to-air refuelling rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove DAAR | qdel | REMOVE?\"); naar (tap 1: toast [\"NAAR is read by the air-to-air refuelling rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove NAAR | qdel | REMOVE?\"); after the removals: []; the save button read \"Save changes\", toast [\"Quals saved (prototype — writes to Dataverse in the full build).\"]; AFTER THE RELOAD the page shows [] (0) qualification columns; its Add put back: [NVG] (this editor has no Reset)",
+     "stored": "rows written: settings/qualcols = []; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+     "verdict": "PASS",
+     "pics": [
+      "C37iii-01-edit-quals-as-shipped.png",
+      "C37iii-02-a-wired-column-asks-again.png",
+      "C37iii-03-every-column-removed.png",
+      "C37iii-04-after-reload.png",
+      "C37iii-05-one-added-back.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ },
+ "final": {
+  "at": "2026-10-01T03:29:59.876Z",
+  "rows": 69,
+  "verdicts": {
+   "PASS": 64,
+   "RECORDED": 5
+  },
+  "errors": [],
+  "missingPictures": [],
+  "table": [
+   {
+    "id": "C29-setup",
+    "did": "Tuesday 14 Jul: the four sign-off boxes picked, Publish day pressed (so a pending mark has somewhere to show)",
+    "said": "day head: tag \"ORIG\", pending \"5 changes\", signed [— name — / — name — / — name — / — name —]",
+    "stored": "publish: {\"pressed\":true,\"label\":\"Publish day\"}",
+    "verdict": "PASS",
+    "pics": [
+     "C29-00-tuesday-published.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C30-occ-all-p",
+    "did": "board, nothing pending: a real pointer drag of ALL from the crew list onto the front seat of VL #2, held by Outlaw",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=nact, 1.0.0.0.w=glass, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 0 = before; day head \"ORIG 5 changes\"; Undo list 5/6 = before; change history 5 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C30-occ-all-p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C30-occ-all-w",
+    "did": "board, nothing pending: a real pointer drag of ALL from the crew list onto the rear seat of VL #2, held by Hex",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=nact, 1.0.0.0.w=glass, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 0 = before; day head \"ORIG 5 changes\"; Undo list 5/6 = before; change history 5 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C30-occ-all-w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C30-occ-allavail-p",
+    "did": "board, nothing pending: a real pointer drag of ALL AVAIL from the crew list onto the front seat of VL #2, held by Outlaw",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=nact, 1.0.0.0.w=glass, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 0 = before; day head \"ORIG 5 changes\"; Undo list 5/6 = before; change history 5 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C30-occ-allavail-p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C30-occ-allavail-w",
+    "did": "board, nothing pending: a real pointer drag of ALL AVAIL from the crew list onto the rear seat of VL #2, held by Hex",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=nact, 1.0.0.0.w=glass, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 0 = before; day head \"ORIG 5 changes\"; Undo list 5/6 = before; change history 5 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C30-occ-allavail-w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C29-arm-all-p",
+    "did": "board: tap the empty front (+ FCP) seat of VL #1 to arm it, then tap ALL in the crew list",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.p; the ALL puck in the crew list: class \"rpuck no haswhy\", title \"ALL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C29-arm-all-p-armed.png",
+     "C29-arm-all-p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C29-arm-allavail-p",
+    "did": "board: tap the empty front (+ FCP) seat of VL #1 to arm it, then tap ALL AVAIL in the crew list",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.p; the ALL AVAIL puck in the crew list: class \"rpuck no haswhy\", title \"ALL AVAIL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C29-arm-allavail-p-armed.png",
+     "C29-arm-allavail-p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C29-arm-all-w",
+    "did": "board: tap the empty rear (+ RCP) seat of VL #1 to arm it, then tap ALL in the crew list",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.w; the ALL puck in the crew list: class \"rpuck no haswhy\", title \"ALL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C29-arm-all-w-armed.png",
+     "C29-arm-all-w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C29-arm-allavail-w",
+    "did": "board: tap the empty rear (+ RCP) seat of VL #1 to arm it, then tap ALL AVAIL in the crew list",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.w; the ALL AVAIL puck in the crew list: class \"rpuck no haswhy\", title \"ALL AVAIL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C29-arm-allavail-w-armed.png",
+     "C29-arm-allavail-w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C30-drag-all-p",
+    "did": "board: a real pointer drag of ALL from the crew list onto the empty front seat of VL #1",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C30-drag-all-p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C30-drag-allavail-p",
+    "did": "board: a real pointer drag of ALL AVAIL from the crew list onto the empty front seat of VL #1",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C30-drag-allavail-p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C30-drag-all-w",
+    "did": "board: a real pointer drag of ALL from the crew list onto the empty rear seat of VL #1",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C30-drag-all-w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C30-drag-allavail-w",
+    "did": "board: a real pointer drag of ALL AVAIL from the crew list onto the empty rear seat of VL #1",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 2 = before; day head \"ORIG 2 pending\"; Undo list 7/8 = before; change history 7 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C30-drag-allavail-w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C31-setup",
+    "did": "board: ALL added to the Common Programme row MASS BRIEF (arm its + then tap ALL); FLY W EXT SQN's man taken off and ALL put in that ground row's name box; ALL AVAIL put on the AMT BOX sim seat",
+    "said": "seats now holding a placeholder: Common Programme a:1.1.0, ground g:1.1, sim s:1.amt.1.p",
+    "stored": "these legal landings are allowed (D33) — they are the sources for the next door",
+    "verdict": "PASS",
+    "pics": [
+     "C31-00-placeholders-standing-legally.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C31-cp-1000p",
+    "did": "board: a real pointer drag of the ALL puck standing on the Common Programme row onto the empty front seat of VL #1",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source a:1.1.0 still holds: all",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C31-cp-1000p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C31-cp-1000w",
+    "did": "board: a real pointer drag of the ALL puck standing on the Common Programme row onto the empty rear seat of VL #1",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source a:1.1.0 still holds: all",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C31-cp-1000w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C31-cp-1001p",
+    "did": "board: a real pointer drag of the ALL puck standing on the Common Programme row onto the OCCUPIED front seat of VL #2",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source a:1.1.0 still holds: all",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C31-cp-1001p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C31-ground-1000p",
+    "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL puck standing on the ground row's name box onto the empty front seat of VL #1",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source g:1.1 still holds: all",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C31-ground-1000p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C31-ground-1000w",
+    "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL puck standing on the ground row's name box onto the empty rear seat of VL #1",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source g:1.1 still holds: all",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C31-ground-1000w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C31-ground-1001p",
+    "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL puck standing on the ground row's name box onto the OCCUPIED front seat of VL #2",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source g:1.1 still holds: all",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C31-ground-1001p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C31-sim-1000p",
+    "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL AVAIL puck standing on the AMT sim seat onto the empty front seat of VL #1",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source s:1.amt.1.p still holds: allavail",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C31-sim-1000p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C31-sim-1000w",
+    "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL AVAIL puck standing on the AMT sim seat onto the empty rear seat of VL #1",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source s:1.amt.1.p still holds: allavail",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C31-sim-1000w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C31-sim-1001p",
+    "did": "board (window made tall so both ends are on screen, as on a tall monitor): a real pointer drag of the ALL AVAIL puck standing on the AMT sim seat onto the OCCUPIED front seat of VL #2",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source s:1.amt.1.p still holds: allavail",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C31-sim-1001p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C31-reverse",
+    "did": "board: the named pilot on VL #2's front seat dragged onto the Common Programme seat that holds ALL (a swap would carry ALL into the cockpit)",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\"",
+    "stored": "cockpit 1.0.0.1.p now: casper; a:1.1.0 now: all; a placeholder in any cockpit: none; changes: none",
+    "verdict": "PASS",
+    "pics": [
+     "C31-reverse-swap.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-keyboard-enter",
+    "did": "board: arm the empty front seat of VL #1, put the keyboard on the ALL AVAIL puck in the crew list (it takes focus) and press Enter, then Space",
+    "said": "toast: (none — the app did nothing) · armed 1.0.0.0.p",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-keyboard-enter.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-search",
+    "did": "board: arm the empty front seat of VL #1, type \"ALL AVAIL\" in the name search, Enter",
+    "said": "typed \"ALL AVAIL\" in the board's name search with the cockpit armed, pressed Enter; crew list now offers: 63 pucks; toast: (none)",
+    "stored": "nothing written; the seat is empty",
+    "verdict": "PASS",
+    "pics": [
+     "C32-search.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-dblclick",
+    "did": "board: arm the empty rear seat of VL #1, double-click ALL in the crew list",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" · \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.w",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-dblclick.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-week-arm-all-p",
+    "did": "Edit Schedule (the week): tap the empty front seat of Tuesday's VL #1, then tap ALL in the week's crew list",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.p; the ALL puck in the crew list: class \"rpuck no haswhy\", title \"ALL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-week-arm-all-p-armed.png",
+     "C32-week-arm-all-p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-week-arm-allavail-p",
+    "did": "Edit Schedule (the week): tap the empty front seat of Tuesday's VL #1, then tap ALL AVAIL in the week's crew list",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.p; the ALL AVAIL puck in the crew list: class \"rpuck no haswhy\", title \"ALL AVAIL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-week-arm-allavail-p-armed.png",
+     "C32-week-arm-allavail-p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-week-arm-all-w",
+    "did": "Edit Schedule (the week): tap the empty rear seat of Tuesday's VL #1, then tap ALL in the week's crew list",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.w; the ALL puck in the crew list: class \"rpuck no haswhy\", title \"ALL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-week-arm-all-w-armed.png",
+     "C32-week-arm-all-w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-week-arm-allavail-w",
+    "did": "Edit Schedule (the week): tap the empty rear seat of Tuesday's VL #1, then tap ALL AVAIL in the week's crew list",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.0.0.w; the ALL AVAIL puck in the crew list: class \"rpuck no haswhy\", title \"ALL AVAIL — cannot crew a jet; name the people flying it\", its row reads \"PLACEHOLDERS · DRAG IN ALL AVAIL cannot crew a jet; name the people flying it ALL cannot crew a jet; name the people flying it\", struck-through: none; still armed after the tap: true",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-week-arm-allavail-w-armed.png",
+     "C32-week-arm-allavail-w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-week-drag-all-1000p",
+    "did": "Edit Schedule (the week): a real pointer drag of ALL from the week's crew list onto Tuesday's empty front seat of VL #1",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-week-drag-all-1000p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-week-drag-allavail-1000w",
+    "did": "Edit Schedule (the week): a real pointer drag of ALL AVAIL from the week's crew list onto Tuesday's empty rear seat of VL #1",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-week-drag-allavail-1000w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-week-drag-allavail-1001p",
+    "did": "Edit Schedule (the week): a real pointer drag of ALL AVAIL from the week's crew list onto Tuesday's OCCUPIED front seat of VL #2",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-week-drag-allavail-1001p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-week-drag-all-1001w",
+    "did": "Edit Schedule (the week): a real pointer drag of ALL from the week's crew list onto Tuesday's OCCUPIED rear seat of VL #2",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture)",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-week-drag-all-1001w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-week-seat-1000p",
+    "did": "Edit Schedule (the week): the ALL puck standing in Tuesday's ground row name box dragged onto the empty front seat of VL #1",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source g:1.1 still holds: all",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-week-seat-1000p.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-week-seat-1001w",
+    "did": "Edit Schedule (the week): the ALL puck standing in Tuesday's ground row name box dragged onto the OCCUPIED rear seat of VL #2",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · the source g:1.1 still holds: all",
+    "stored": "seats as they were (1.0.0.0.p=empty, 1.0.0.0.w=empty, 1.0.0.1.p=casper, 1.0.0.1.w=rocky); pending marks 5 = before; day head \"ORIG 6 pending\"; Undo list 11/12 = before; change history 11 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-week-seat-1001w.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C29-changes",
+    "did": "Edit Schedule: Tuesday's pending count opened (the changes window, \"To go out\")",
+    "said": "lines before the seat-to-seat and week doors: [\"Waiting to go out as\",\"AL1\",\"· 6 changes\",\"VL BFM · #1 FCP\",\"Saber\",\"15/7 09:00\",\"Warden → taken off\",\"VL BFM · #1 RCP\",\"Saber\",\"15/7 09:00\",\"Basher → taken off\",\"MASS BRIEF\",\"Saber\",\"15/7 09:00\",\"ALL\",\"AMT BOX · FCP\",\"Saber\",\"15/7 09:00\",\"ALL AVAIL\",\"FLY W EXT SQN\",\"Saber\",\"15/7 09:00\",\"Jester → ALL\",\"3 placeholders · who they stand for\",\"AMT BOX · who it stands for\",\"Ranger, Saber, Drifter, Warden, Hunter, Piston, Blade, Trident, Cinch, Cobra, Sidewinder, Anvil, Forge, Havoc, Reaper, Vandal, Gambit, Outlaw, Nomad, Diesel, Wildcard, Talisman, Recon, Echo, Relay, Basher, Ledger, Hex, Vector, Dash, Ghost, Ryder, Cutter, Fable\",\"MASS BRIEF · who it stands for\",\"Ranger, Saber, Drifter, Ace, Warden, Hunter, Piston, Blade, Trident, Cobra, Sidewinder, Anvil, Forge, Comet, Reaper, Vandal, Gambit, Outlaw, Ridge, Bolt, Nomad, Rebel, Saint, Diesel, Vapor, Wildcard, Talisman, Recon, Echo, Relay, Scope, Basher, Ledger, Rune, Cinder, Hex, Vector, Dash, Ghost, Ryder, Cutter, Fable, Marlin\",\"FLY W EXT SQN · who it stands for\",\"Ranger, Saber, Ace, Warden, Hunter, Piston, Blade, Trident, Cobra, Sidewinder, Anvil, Forge, Comet, Reaper, Vandal, Ridge, Bolt, Nomad, Rebel, Saint, Diesel, Vapor, Wildcard, Recon, Relay, Scope, Basher, Ledger, Rune, Cinder, Ghost, Ryder, Cutter, Fable, Marlin\",\"Tap a change to go to it.\"] — after every door: [\"Waiting to go out as\",\"AL1\",\"· 6 changes\",\"VL BFM · #1 FCP\",\"Saber\",\"15/7 09:00\",\"Warden → taken off\",\"VL BFM · #1 RCP\",\"Saber\",\"15/7 09:00\",\"Basher → taken off\",\"MASS BRIEF\",\"Saber\",\"15/7 09:00\",\"ALL\",\"AMT BOX · FCP\",\"Saber\",\"15/7 09:00\",\"ALL AVAIL\",\"FLY W EXT SQN\",\"Saber\",\"15/7 09:00\",\"Jester → ALL\",\"3 placeholders · who they stand for\",\"AMT BOX · who it stands for\",\"Ranger, Saber, Drifter, Warden, Hunter, Piston, Blade, Trident, Cinch, Cobra, Sidewinder, Anvil, Forge, Havoc, Reaper, Vandal, Gambit, Outlaw, Nomad, Diesel, Wildcard, Talisman, Recon, Echo, Relay, Basher, Ledger, Hex, Vector, Dash, Ghost, Ryder, Cutter, Fable\",\"MASS BRIEF · who it stands for\",\"Ranger, Saber, Drifter, Ace, Warden, Hunter, Piston, Blade, Trident, Cobra, Sidewinder, Anvil, Forge, Comet, Reaper, Vandal, Gambit, Outlaw, Ridge, Bolt, Nomad, Rebel, Saint, Diesel, Vapor, Wildcard, Talisman, Recon, Echo, Relay, Scope, Basher, Ledger, Rune, Cinder, Hex, Vector, Dash, Ghost, Ryder, Cutter, Fable, Marlin\",\"FLY W EXT SQN · who it stands for\",\"Ranger, Saber, Ace, Warden, Hunter, Piston, Blade, Trident, Cobra, Sidewinder, Anvil, Forge, Comet, Reaper, Vandal, Ridge, Bolt, Nomad, Rebel, Saint, Diesel, Vapor, Wildcard, Recon, Relay, Scope, Basher, Ledger, Rune, Cinder, Ghost, Ryder, Cutter, Fable, Marlin\",\"Tap a change to go to it.\"]; day head \"6 pending\"",
+    "stored": "a line that puts ALL / ALL AVAIL on a flying line: none",
+    "verdict": "PASS",
+    "pics": [
+     "C29-99-changes-window.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C29-reload",
+    "did": "reload, sign in again, Edit Schedule",
+    "said": "Tuesday's VL #1 seats: eweek:(empty) + FCP / eweek:(empty) + RCP; VL #2: casper / rocky",
+    "stored": "ok a reload gives back exactly what was there · ok the reload wrote nothing",
+    "verdict": "PASS",
+    "pics": [
+     "C29-98-after-reload.png"
+    ],
+    "part": "doors-desktop",
+    "at": "2026-10-01T02:30:07.727Z"
+   },
+   {
+    "id": "C32-phone-setup",
+    "did": "phone, board, Tuesday (a draft day): the 1st wave's \"+ Line\" tapped",
+    "said": "a blank third line with two empty seats: 1.0.2.0.p=empty, 1.0.2.0.w=empty",
+    "stored": "toast \"Line added\"",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-00-blank-line.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-board-all-p",
+    "did": "phone, board: tap the empty front seat of the new line, then tap ALL in the AIRCREW drawer",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.p; the crew drawer opened by itself; ALL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: null; still armed after the tap: true",
+    "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-board-all-p-armed.png",
+     "C32-phone-board-all-p.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-board-allavail-p",
+    "did": "phone, board: tap the empty front seat of the new line, then tap ALL AVAIL in the AIRCREW drawer",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.p; the crew drawer opened by itself; ALL AVAIL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: {\"text\":\"ALL\\ncannot crew a jet; name the people flying it\",\"w\":230,\"h\":27,\"right\":376,\"size\":\"13px\"}; still armed after the tap: true",
+    "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-board-allavail-p-armed.png",
+     "C32-phone-board-allavail-p.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-board-all-w",
+    "did": "phone, board: tap the empty rear seat of the new line, then tap ALL in the AIRCREW drawer",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.w; the crew drawer opened by itself; ALL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: null; still armed after the tap: true",
+    "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-board-all-w-armed.png",
+     "C32-phone-board-all-w.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-board-allavail-w",
+    "did": "phone, board: tap the empty rear seat of the new line, then tap ALL AVAIL in the AIRCREW drawer",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.w; the crew drawer opened by itself; ALL AVAIL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: {\"text\":\"ALL\\ncannot crew a jet; name the people flying it\",\"w\":230,\"h\":27,\"right\":376,\"size\":\"13px\"}; still armed after the tap: true",
+    "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-board-allavail-w-armed.png",
+     "C32-phone-board-allavail-w.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-drag-all-1020p",
+    "did": "phone, board: the AIRCREW drawer opened by its tab, a finger held on ALL and dragged onto the empty front seat of the new line",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · drawer: opened by its AIRCREW tab; the puck lifted: {\"body\":\"sb-lock sb-board-up tdrag dnd\",\"ghost\":true}; the finger was over: {\"slot\":\"1.0.2.0.p\",\"cls\":\"sb-slot empty dragover dragover-why\"}",
+    "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-drag-all-1020p.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-drag-allavail-1020p",
+    "did": "phone, board: the AIRCREW drawer opened by its tab, a finger held on ALL AVAIL and dragged onto the empty front seat of the new line",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · drawer: opened by its AIRCREW tab; the puck lifted: {\"body\":\"sb-lock sb-board-up tdrag dnd\",\"ghost\":true}; the finger was over: {\"slot\":\"1.0.2.0.p\",\"cls\":\"sb-slot empty dragover dragover-why\"}",
+    "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-drag-allavail-1020p.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-drag-all-1000p",
+    "did": "phone, board: the AIRCREW drawer opened by its tab, a finger held on ALL and dragged onto the OCCUPIED front seat of VL #1",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · drawer: opened by its AIRCREW tab; the puck lifted: {\"body\":\"sb-lock sb-board-up tdrag dnd\",\"ghost\":true}; the finger was over: {\"slot\":\"1.0.0.0.p\",\"cls\":\"seat dragover dragover-why\"}",
+    "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-drag-all-1000p.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-week-all-p",
+    "did": "phone, Edit Schedule (the week): tap the empty front seat of Tuesday's new line, then tap ALL in the crew drawer",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.p; the crew drawer opened by itself; ALL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: null; still armed after the tap: true",
+    "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-week-all-p-armed.png",
+     "C32-phone-week-all-p.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-week-allavail-p",
+    "did": "phone, Edit Schedule (the week): tap the empty front seat of Tuesday's new line, then tap ALL AVAIL in the crew drawer",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.p; the crew drawer opened by itself; ALL AVAIL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: {\"text\":\"ALL\\ncannot crew a jet; name the people flying it\",\"w\":230,\"h\":27,\"right\":380,\"size\":\"13px\"}; still armed after the tap: true",
+    "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-week-allavail-p-armed.png",
+     "C32-phone-week-allavail-p.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-week-all-w",
+    "did": "phone, Edit Schedule (the week): tap the empty rear seat of Tuesday's new line, then tap ALL in the crew drawer",
+    "said": "toast: \"ALL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.w; the crew drawer opened by itself; ALL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: null; still armed after the tap: true",
+    "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-week-all-w-armed.png",
+     "C32-phone-week-all-w.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-week-allavail-w",
+    "did": "phone, Edit Schedule (the week): tap the empty rear seat of Tuesday's new line, then tap ALL AVAIL in the crew drawer",
+    "said": "toast: \"ALL AVAIL — cannot crew a jet; name the people flying it\" (painted in the picture) · armed 1.0.2.0.w; the crew drawer opened by itself; ALL AVAIL there: class \"rpuck no haswhy\", on screen true; the reason printed under it: {\"text\":\"ALL\\ncannot crew a jet; name the people flying it\",\"w\":230,\"h\":27,\"right\":380,\"size\":\"13px\"}; still armed after the tap: true",
+    "stored": "seats as they were (1.0.2.0.p=empty, 1.0.2.0.w=empty, 1.0.0.0.p=nact, 1.0.0.0.w=glass); pending marks 1 = before; day head \"DRAFT 1 change\"; Undo list 1/2 = before; change history 1 lines = before; no row written",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-week-allavail-w-armed.png",
+     "C32-phone-week-allavail-w.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C32-phone-reload",
+    "did": "phone: reload, sign in again, Edit Schedule",
+    "said": "the new line's seats: empty / empty; VL #1: nact / glass",
+    "stored": "ok a reload gives back exactly what was there · ok the reload wrote nothing",
+    "verdict": "PASS",
+    "pics": [
+     "C32-phone-99-after-reload.png"
+    ],
+    "part": "doors-phone",
+    "at": "2026-10-01T02:32:03.855Z"
+   },
+   {
+    "id": "C33-N1",
+    "did": "Ranger's Training request (Sat 18 Jul 08:00–16:00, OIL question: Yes) landed on the Ground Programme; then: Blade dragged from the crew list onto the row's name box (it held Ranger); OIL Earn on; four sign-offs, Publish day; Leave War",
+    "said": "gesture toast: (none); the row now: name box Blade, extras []; Inputs page row: \"Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕\"; OIL Earn: Blade on the Ground Programme row: \"Blade\nIP\" — Blade — nothing measurable to earn from here ‖ (the row itself) on the Ground Programme row: \"TRAINING\" — A request is answered for each person on it — tap a puck on this row, not the row itself ‖ Ranger on the Personal Inputs card: \"Ranger\nFO\" — Ranger earns a full day — tap to take him off this event ‖ (the row itself) on the Personal Inputs card: \"Training\" — A request is answered for each person on it — tap a puck on this row, not the row itself",
+    "stored": "request's person stored: Ranger (acc g); stored Saturday row: [{\"prog\":\"TRAINING\",\"who\":\"Blade\",\"more\":[],\"from\":\"the request\"}]; day head after publishing: ORIG; LEAVE WAR 18 Jul — Ranger: \"FO*\", Blade: \"(blank)\"; after a reload the same: true; reload: ok / ok",
+    "verdict": "RECORDED (a picture for the owner — not judged)",
+    "pics": [
+     "C33-N1-01-inputs-filed.png",
+     "C33-N1-02-row-as-filed.png",
+     "C33-N1-03-tap-name-box-then-blade.png",
+     "C33-N1-04-row-after.png",
+     "C33-N1-05-inputs-after.png",
+     "C33-N1-06-OIL-EARN-the-row.png",
+     "C33-N1-07-OIL-EARN-whole-board.png",
+     "C33-N1-08-saturday-published.png",
+     "C33-N1-09-leavewar-ranger.png",
+     "C33-N1-10-leavewar-ranger-tapped.png",
+     "C33-N1-09-leavewar-blade.png",
+     "C33-N1-10-leavewar-blade-tapped.png"
+    ],
+    "part": "namebox-N1",
+    "at": "2026-10-01T02:39:36.194Z"
+   },
+   {
+    "id": "C33-N2",
+    "did": "Ranger's Training request (Sat 18 Jul 08:00–16:00, OIL question: Yes) landed on the Ground Programme; then: Ranger taken off the name box (right-click on his puck), the row's \"+ add\" tapped, Blade tapped in the crew list; OIL Earn on; four sign-offs, Publish day; Leave War",
+    "said": "gesture toast: \"Blade planned\"; the row now: name box Blade, extras []; Inputs page row: \"Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕\"; OIL Earn: Blade on the Ground Programme row: \"Blade\nIP\" — Blade — nothing measurable to earn from here ‖ (the row itself) on the Ground Programme row: \"TRAINING\" — A request is answered for each person on it — tap a puck on this row, not the row itself ‖ Ranger on the Personal Inputs card: \"Ranger\nFO\" — Ranger earns a full day — tap to take him off this event ‖ (the row itself) on the Personal Inputs card: \"Training\" — A request is answered for each person on it — tap a puck on this row, not the row itself",
+    "stored": "request's person stored: Ranger (acc g); stored Saturday row: [{\"prog\":\"TRAINING\",\"who\":\"Blade\",\"more\":[],\"from\":\"the request\"}]; day head after publishing: ORIG; LEAVE WAR 18 Jul — Ranger: \"FO*\", Blade: \"(blank)\"; after a reload the same: true; reload: ok / ok",
+    "verdict": "RECORDED (a picture for the owner — not judged)",
+    "pics": [
+     "C33-N2-01-inputs-filed.png",
+     "C33-N2-02-row-as-filed.png",
+     "C33-N2-03-ranger-taken-off.png",
+     "C33-N2-04-row-after.png",
+     "C33-N2-05-inputs-after.png",
+     "C33-N2-06-OIL-EARN-the-row.png",
+     "C33-N2-07-OIL-EARN-whole-board.png",
+     "C33-N2-08-saturday-published.png",
+     "C33-N2-09-leavewar-ranger.png",
+     "C33-N2-10-leavewar-ranger-tapped.png",
+     "C33-N2-09-leavewar-blade.png",
+     "C33-N2-10-leavewar-blade-tapped.png"
+    ],
+    "part": "namebox-N2",
+    "at": "2026-10-01T02:40:16.534Z"
+   },
+   {
+    "id": "C33-X1",
+    "did": "Ranger's Training request (Sat 18 Jul 08:00–16:00, OIL question: Yes) landed on the Ground Programme; then: the row's \"+ add\" tapped, Blade tapped in the crew list (Ranger stays in the name box, Blade in the extras); OIL Earn on; four sign-offs, Publish day; Leave War",
+    "said": "gesture toast: \"Blade planned\"; the row now: name box Ranger, extras [Blade]; Inputs page row: \"Ranger 18 Jul 08:00–16:00 TRAINING LATEP7 NAME BOX now OIL ✎ ✕\"; OIL Earn: Ranger on the Ground Programme row: \"Ranger\nFO\" — Ranger earns a full day — tap to take him off this event ‖ Blade on the Ground Programme row: \"Blade\nFO\" — Blade earns a full day — tap to take him off this event ‖ (the row itself) on the Ground Programme row: \"TRAINING\" — A request is answered for each person on it — tap a puck on this row, not the row itself ‖ Ranger on the Personal Inputs card: \"Ranger\nFO\" — Ranger earns a full day — tap to take him off this event ‖ (the row itself) on the Personal Inputs card: \"Training\" — A request is answered for each person on it — tap a puck on this row, not the row itself",
+    "stored": "request's person stored: Ranger (acc g); stored Saturday row: [{\"prog\":\"TRAINING\",\"who\":\"Ranger\",\"more\":[\"Blade\"],\"from\":\"the request\"}]; day head after publishing: ORIG; LEAVE WAR 18 Jul — Ranger: \"FO*\", Blade: \"FO*\"; after a reload the same: true; reload: ok / ok",
+    "verdict": "RECORDED (a picture for the owner — not judged)",
+    "pics": [
+     "C33-X1-01-inputs-filed.png",
+     "C33-X1-02-row-as-filed.png",
+     "C33-X1-04-row-after.png",
+     "C33-X1-05-inputs-after.png",
+     "C33-X1-06-OIL-EARN-the-row.png",
+     "C33-X1-07-OIL-EARN-whole-board.png",
+     "C33-X1-08-saturday-published.png",
+     "C33-X1-09-leavewar-ranger.png",
+     "C33-X1-10-leavewar-ranger-tapped.png",
+     "C33-X1-09-leavewar-blade.png",
+     "C33-X1-10-leavewar-blade-tapped.png"
+    ],
+    "part": "namebox-X1",
+    "at": "2026-10-01T02:41:25.603Z"
+   },
+   {
+    "id": "C34a",
+    "did": "Tuesday (a draft): board → MEDICAL APPT's \"+ add\" → ALL AVAIL; Edit Schedule → Tuesday's plans menu → \"+ Alt Plan\"; View-only Sched → Tuesday's picker → the parked plan; its chip; a tap on the chip; a tap on the first man",
+    "said": "board chip after the placing: \"35\"; plans menu before: [\"Live working copy ●live now — this is what publishes [data-plangolive]\",\"+ Alt Plan [data-plandup]\"]; \"+ Alt Plan\" pressed: true, the app said [\"ALL AVAIL planned\",\"Schedule updated\",\"Tuesday — \\\"Plan B\\\" is now the live day, edit over it\"]; menu after: [\"Plan Atap to make it the live day [data-plansel]\",\"Plan B ●live now — this is what publishes [data-plangolive]\",\"+ Alt Plan [data-plandup]\"]; View-only Sched picker: [\"d:dr1=Plan A\",\"live=Plan B ● *\"]; live plan chip there: \"35\" — \"35 with nothing else on at that time — tap to see them (who is free as things stand now)\"; THE PARKED PLAN PREVIEWED — chip \"35\", its title \"35 with nothing else on at that time — tap to see them (who is free as things stand now)\"; the window \"MEDICAL APPT Jul 14 · 13:30–15:00\" lists 35, its line \"who is free as things stand now — Plan A\"; after a tap on the first man its foot reads \"Reaper — nothing else on the programme at that time.\"",
+    "stored": "the chip carries no issued-version stamp (d:dr1); the tap changed the working day: false; rows written by the tap: false",
+    "verdict": "PASS",
+    "pics": [
+     "C34a-01-tuesday-board-chip.png",
+     "C34a-02-plans-menu-after-alt-plan.png",
+     "C34a-03-saved-plan-previewed-chip.png",
+     "C34a-04-saved-plan-previewed-window.png"
+    ],
+    "part": "previews",
+    "at": "2026-10-01T03:13:39.921Z"
+   },
+   {
+    "id": "C34b",
+    "did": "Wednesday: board → MAINT CONF's \"+ add\" → ALL AVAIL; the four sign-offs, Publish day; a Local leave filed for Reaper (a crowd man) on the Inputs page; then the Original looked at from Edit Schedule's plans menu, from the board's, and on View-only Sched (as issued / working draft); in each: the chip, a tap on it, a tap on the first man",
+    "said": "issued with 37 behind the puck; published: tag \"ORIG\"; after the leave the day head reads \"1 pending\" and the live chip \"36\" (\"36 with nothing else on at that time — tap to see them (who is free as things stand now)\"). plans menu: [\"Live working copy ●live now — differences from Original go out as AL1 [data-plangolive]\",\"Originalread-only — look, don't change [data-planpv]\",\"+ Alt Plan [data-plandup]\"]. EDIT WEEK, ORIGINAL PREVIEWED — chip \"37\", title \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, its line \"who was free when this day was issued — Original\", Reaper still listed: true; foot after a tap \"Reaper — nothing else on the programme at that time.\"; \"Back to live copy\" there: true, live chip again \"36\". BOARD, ORIGINAL PREVIEWED — chip \"37\", \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, \"who was free when this day was issued — Original\"; OIL Earn button: \"no OIL Earn button drawn\". VIEW-ONLY SCHED [\"issued=Original — as issued *\",\"working=Working draft — not issued\"] — as issued: chip \"37\", \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\", window 37, \"who was free when this day was issued — Original\"; working draft: chip \"36\", \"36 with nothing else on at that time — tap to see them (who is free as things stand now)\", window 36, \"who is free as things stand now\"",
+    "stored": "the previewed chip carries the issued version's stamp (2026-07-15#0); a tap in the edit week's preview window changed the working day: false, wrote rows: false; in the board's: false / false",
+    "verdict": "PASS",
+    "pics": [
+     "C34b-01-editweek-original-previewed-chip.png",
+     "C34b-02-editweek-original-previewed-window.png",
+     "C34b-03-board-original-previewed-window.png",
+     "C34b-04-viewsched-as-issued-window.png",
+     "C34b-05-viewsched-working-draft-window.png"
+    ],
+    "part": "previews",
+    "at": "2026-10-01T03:13:39.921Z"
+   },
+   {
+    "id": "C35",
+    "did": "the published Wednesday (ALL AVAIL under MAINT CONF, one leave pending): View-only Sched → the chip tapped → a tap on the first man — as the admin and as the member (us), at 1440 px and at 390 px (the same stored world)",
+    "said": "ADMIN DESKTOP: chip 37 — \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, \"who was free when this day was issued — Original\", \"Who’s available 37\"; flagged: Kraken: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required | Otter: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required; window box {\"left\":1212,\"top\":96,\"width\":212,\"height\":540,\"viewport\":\"1440x900\"}; earn controls on screen: 0; reasons not drawn: 0 ‖ MEMBER DESKTOP: chip 37 — \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, \"who was free when this day was issued — Original\", \"Who’s available 37\"; flagged: Kraken: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required | Otter: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required; window box {\"left\":1212,\"top\":96,\"width\":212,\"height\":540,\"viewport\":\"1440x900\"}; earn controls on screen: 0; reasons not drawn: 0 ‖ ADMIN PHONE: chip 37 — \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, \"who was free when this day was issued — Original\", \"Who’s available 37\"; flagged: Kraken: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required | Otter: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required; window box {\"left\":12,\"top\":309,\"width\":366,\"height\":523,\"viewport\":\"390x844\"}; earn controls on screen: 0; reasons not drawn: 0; a finger tap on the chip did NOT open the window (it selected [\"ALL AVAIL\",\"ALL AVAIL\",\"\"] instead); a mouse click at the same spot was used to read the list ‖ MEMBER PHONE: chip 37 — \"37 with nothing else on at that time — tap to see them (who was free when this day was issued)\"; window lists 37, \"who was free when this day was issued — Original\", \"Who’s available 37\"; flagged: Kraken: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required | Otter: CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required; window box {\"left\":12,\"top\":309,\"width\":366,\"height\":523,\"viewport\":\"390x844\"}; earn controls on screen: 0; reasons not drawn: 0; a finger tap on the chip did NOT open the window (it selected [\"ALL AVAIL\",\"ALL AVAIL\"] instead); a mouse click at the same spot was used to read the list",
+    "stored": "the four lists are the same men: true; the same flags: true; a tap wrote something anywhere: no",
+    "verdict": "PASS for the list, the flags and the roles — FAIL for a finger tap on the chip at phone width (finding F1)",
+    "pics": [
+     "C35-admin-desktop-window.png",
+     "C35-member-desktop-window.png",
+     "C35-admin-phone-finger-tap.png",
+     "C35-admin-phone-window.png",
+     "C35-member-phone-finger-tap.png",
+     "C35-member-phone-window.png"
+    ],
+    "part": "previews",
+    "at": "2026-10-01T03:13:39.921Z"
+   },
+   {
+    "id": "C37-i",
+    "did": "board, Tuesday: a jet's \"C / Config…\" → Stores configuration → ✎ → ✕ on every store → ✎ (done) → reload → the same menu again",
+    "said": "shipped list: [TPOD, 2 TKS, NAV, N/C, 3 TKS, CL] (6); after 6 removals the editor read: \"STORES CONFIGURATION ✎ Add The list is the squadron's, not this jet's — it survives a reload. Removing one keeps every jet that carries it.\"; the menu then offered []; the jets that carried a store still print it: []; AFTER THE RELOAD the menu offers: [] (0); the editor's Add put back: [TPOD] (this editor has no Reset)",
+    "stored": "rows written by the removals: settings/stores = []; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+    "verdict": "PASS",
+    "pics": [
+     "C37i-01-stores-as-shipped.png",
+     "C37i-02-every-store-removed.png",
+     "C37i-03-menu-with-no-stores.png",
+     "C37i-04-after-reload.png",
+     "C37i-05-one-added-back.png"
+    ],
+    "part": "lists-all",
+    "at": "2026-10-01T03:00:21.853Z"
+   },
+   {
+    "id": "C37-ii",
+    "did": "board, Tuesday: CX on the first flying line (the sheet \"Cancel this item\", opened) → ✎ Edit → ✕ on every reason → Done → ✕ (the line is NOT cancelled) → reload → the sheet again → Reset to standard (two taps)",
+    "said": "shipped quick reasons: [WX, OPS, LOGS] (3); after 3 removals the editor said \"No quick reasons — add one below, or reset to the standard set.\"; the sheet then offered []; AFTER THE RELOAD it offers [] (0); Reset (\"Reset to standard\" → \"Tap again to reset\") brought back [WX, OPS, LOGS]",
+    "stored": "rows written by the removals: settings/cxreasons = []; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+    "verdict": "PASS",
+    "pics": [
+     "C37ii-01-cx-sheet-as-shipped.png",
+     "C37ii-02-every-reason-removed.png",
+     "C37ii-03-after-reload.png",
+     "C37ii-04-reset-to-standard.png"
+    ],
+    "part": "lists-all",
+    "at": "2026-10-01T03:00:21.853Z"
+   },
+   {
+    "id": "C37-iii",
+    "did": "Quals → Enable editing → Edit quals → ✕ on every qualification column (a second tap where the column asked again) → Save changes → reload → Quals",
+    "said": "shipped columns: [SANS, SXO, SCHEDULER, SC DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF] (10); columns that did not go on the first tap: sxo (tap 1: toast [\"SXO is read by the VIEW AS filter, and who is appointed a scheduler automatically. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove SXO | qdel | REMOVE?\"); sched (tap 1: toast [\"Scheduler is read by the sign-off drop-downs — SKED CK, PLANNED BY and APPROVED BY. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove Scheduler | qdel | REMOVE?\"); scDay (tap 1: toast [\"SC DAY is read by the SC shift rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove SC DAY | qdel | REMOVE?\"); scNight (tap 1: toast [\"SC NIGHT is read by the SC shift rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove SC NIGHT | qdel | REMOVE?\"); daar (tap 1: toast [\"DAAR is read by the air-to-air refuelling rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove DAAR | qdel | REMOVE?\"); naar (tap 1: toast [\"NAAR is read by the air-to-air refuelling rules. Press REMOVE? to take it off the LoX — who already holds it is kept.\"], the ✕ now reads \"Remove NAAR | qdel | REMOVE?\"); after the removals: []; the save button read \"Save changes\", toast [\"Quals saved (prototype — writes to Dataverse in the full build).\"]; AFTER THE RELOAD the page shows [] (0) qualification columns; its Add put back: [NVG] (this editor has no Reset)",
+    "stored": "rows written: settings/qualcols = []; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+    "verdict": "PASS",
+    "pics": [
+     "C37iii-01-edit-quals-as-shipped.png",
+     "C37iii-02-a-wired-column-asks-again.png",
+     "C37iii-03-every-column-removed.png",
+     "C37iii-04-after-reload.png",
+     "C37iii-05-one-added-back.png"
+    ],
+    "part": "lists-quals",
+    "at": "2026-10-01T03:29:52.213Z"
+   },
+   {
+    "id": "C37-iv",
+    "did": "Leave War → ⚙ Settings → ＋ Counter, a name typed and Add counter pressed, again and again through the form until it refused; then a reload",
+    "said": "counters on the grid before: 11; added through the form: 49; at the limit: {\"where\":\"in the counter form\",\"sentence\":\"60 counters is the most the app keeps. Delete one to add another.\",\"addCounterButton\":{\"disabled\":false,\"title\":\"Add a manning counter — pick who it counts and when it turns amber or red\",\"words\":\"＋ Counter\"},\"formAddDisabledWithAName\":true,\"formAddWords\":\"Add counter\"}; toasts []; counters on the grid at the limit: 60; AFTER THE RELOAD: 60 (missing: none); the form after the reload: Add-counter button {\"disabled\":false,\"title\":\"Add a manning counter — pick who it counts and when it turns amber or red\",\"words\":\"＋ Counter\"}, form says \"60 counters is the most the app keeps. Delete one to add another.\"",
+    "stored": "stored counters row(s) at the limit: {\"leavewar/manningdefs\":60}; after the reload: {\"leavewar/manningdefs\":60}; rows written: leavewar/manningdefs; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+    "verdict": "PASS",
+    "pics": [
+     "C37iv-01-first-counter-added.png",
+     "C37iv-02-the-list-is-full.png",
+     "C37iv-03-grid-with-every-counter.png",
+     "C37iv-04-after-reload.png",
+     "C37iv-05-after-reload-still-full.png"
+    ],
+    "part": "lists-counters",
+    "at": "2026-10-01T03:02:55.406Z"
+   },
+   {
+    "id": "C37-v",
+    "did": "(a reload + sign-in (the app opens on 13 Jul), THEN sign out and in while the week of 20 Jul is on screen) Edit Schedule: week of 13 Jul, Tuesday's warning list opened, ✕ on its last line (\"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:0…\") — pressed; week of 20 Jul (its Mon), ✕ on the first line (\"Conflict — two events at once Outlaw — RU BFM & Sim EP-4 clash…\") — pressed; then a reload + sign-in; then sign out and in as the same admin; then the member",
+    "said": "before: 13 Jul \"⚠ 4 issues · 2 warning · tap to collapse ▲\", 20 Jul \"⚠ 10 issues · 2 warning · tap to collapse ▲\". RIGHT AFTER HIDING — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → NOT LISTED (hidden); 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → NOT LISTED (hidden); toasts [\"Check hidden — it returns if the day changes\",\"Check hidden — it returns if the day changes\"]. AFTER A RELOAD — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → \"Long work day Static — Static has a long work day:…\": LISTED as a live warning (not hidden) — class \"witem note\"; 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → \"Conflict — two events at once Outlaw — RU BFM & Si…\": NOT LISTED (hidden). AFTER SIGN OUT AND IN (same admin) — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → \"Long work day Static — Static has a long work day:…\": LISTED as a live warning (not hidden) — class \"witem note\"; 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → \"Conflict — two events at once Outlaw — RU BFM & Si…\": LISTED as a live warning (not hidden) — class \"witem hard\". The member's View-only Sched Tuesday: ⚠ 4 issues · tap to review ▼",
+    "stored": "rows the two hides wrote: weeks/13-07-2026, weeks/13-07-2026#1, weeks/20-07-2026, weeks/20-07-2026#0",
+    "verdict": "RECORDED (observe only — not judged)",
+    "pics": [
+     "C37v-01-week13-tuesday-before.png",
+     "C37v-02-week13-tuesday-one-hidden.png",
+     "C37v-03-week20-before.png",
+     "C37v-04-week20-one-hidden.png",
+     "C37v-05-after-reload-week13.png",
+     "C37v-05-after-reload-week20.png",
+     "C37v-06-after-sign-out-and-in-week13.png",
+     "C37v-06-after-sign-out-and-in-week20.png",
+     "C37v-07-member-view.png"
+    ],
+    "part": "warnhide",
+    "at": "2026-10-01T02:59:08.022Z"
+   },
+   {
+    "id": "C37-v (second order)",
+    "did": "(the OTHER order: back to the week of 13 Jul, sign out and in with NO reload, THEN a reload + sign-in) Edit Schedule: week of 13 Jul, Tuesday's warning list opened, ✕ on its last line (\"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:0…\") — pressed; week of 20 Jul (its Mon), ✕ on the first line (\"Conflict — two events at once Outlaw — RU BFM & Sim EP-4 clash…\") — pressed; then a reload + sign-in; then sign out and in as the same admin; then the member",
+    "said": "before: 13 Jul \"⚠ 4 issues · 2 warning · tap to collapse ▲\", 20 Jul \"⚠ 10 issues · 2 warning · tap to collapse ▲\". RIGHT AFTER HIDING — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → NOT LISTED (hidden); 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → NOT LISTED (hidden); toasts [\"Check hidden — it returns if the day changes\",\"Check hidden — it returns if the day changes\"]. AFTER A RELOAD — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → \"Long work day Static — Static has a long work day:…\": LISTED as a live warning (not hidden) — class \"witem note\"; 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → \"Conflict — two events at once Outlaw — RU BFM & Si…\": NOT LISTED (hidden). AFTER SIGN OUT AND IN (same admin) — 13 Jul: ⚠ 4 issues · 2 warning · tap to collapse ▲ → \"Long work day Static — Static has a long work day:…\": LISTED as a live warning (not hidden) — class \"witem note\"; 20 Jul: ⚠ 10 issues · 2 warning · tap to collapse ▲ → \"Conflict — two events at once Outlaw — RU BFM & Si…\": NOT LISTED (hidden). The member's View-only Sched Tuesday: ⚠ 4 issues · tap to review ▼",
+    "stored": "rows the two hides wrote: weeks/13-07-2026, weeks/13-07-2026#1, weeks/20-07-2026, weeks/20-07-2026#0",
+    "verdict": "RECORDED (observe only — not judged)",
+    "pics": [
+     "C37v2-01-week13-tuesday-before.png",
+     "C37v2-02-week13-tuesday-one-hidden.png",
+     "C37v2-03-week20-before.png",
+     "C37v2-04-week20-one-hidden.png",
+     "C37v-05b-after-sign-out-and-in-on-week13-week13.png",
+     "C37v-05b-after-sign-out-and-in-on-week13-week20.png",
+     "C37v-06b-then-a-reload-week13.png",
+     "C37v-06b-then-a-reload-week20.png",
+     "C37v-07b-member-view.png"
+    ],
+    "part": "warnhide-2",
+    "at": "2026-10-01T02:59:29.597Z"
+   },
+   {
+    "id": "C37-vi-a",
+    "did": "Leave War: Blade's box for Mon 20 Jul → PI → \"Post in\" (PI from 20 Jul), with no Post Out before it; reload",
+    "said": "the sheet: \"bid-picker: Blade Mon 20 Jul ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL PI FROM Post in Their first day in the squadron. Days before it are blank and count nobody — leave can still be dated there.\"; toast []; Blade's boxes before: {\"2026-07-14\":\"\\\"\\\" [act]\",\"2026-07-17\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"\\\" [act]\",\"2026-07-21\":\"\\\"\\\" [act]\"}; after the Post In: {\"2026-07-14\":\"\\\"\\\" [gone act]\",\"2026-07-17\":\"\\\"\\\" [gone act]\",\"2026-07-20\":\"\\\"\\\" [act]\",\"2026-07-21\":\"\\\"\\\" [act]\"}; AFTER THE RELOAD: {\"2026-07-14\":\"\\\"\\\" [gone act]\",\"2026-07-17\":\"\\\"\\\" [gone act]\",\"2026-07-20\":\"\\\"\\\" [act]\",\"2026-07-21\":\"\\\"\\\" [act]\"}",
+    "stored": "rows written: leavewar/profile:slash = {\"post\":{\"id\":\"slash\",\"callsign\":\"Blade\",\"seat\":\"pilot\",\"band\":\"instructor\",\"sxo\":false,\"from\":\"2026-07-20\",\"to\":null,\"q\":\"IP\",\"scd\":true,\"scn\":true,\"xq\":[\"daar\",\"imc\",\"naar\",\"nvg\",\"scDay\",\"scNight\"],; the boxes read the same after the reload: true; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+    "verdict": "PASS",
+    "pics": [
+     "C37vi-pi-01-sheet.png",
+     "C37vi-pi-02-posted-in.png",
+     "C37vi-pi-03-after-reload.png"
+    ],
+    "part": "misc-all",
+    "at": "2026-10-01T03:24:14.800Z"
+   },
+   {
+    "id": "C37-vi-b",
+    "did": "Leave War: Blade's box for Mon 13 Jul → PO, \"Overseas Sqn\", PO from 13 Jul → Post out (today is Wed 15 Jul in this walk); the war's own PI tried on his 15 Jul box; then Admin → Users → ▸ Archived → Blade → Restore; Leave War; reload",
+    "said": "the post-out line: \"On 13 Jul: archived.\", toast []; archived on Quals at once: true; boxes before {\"2026-07-10\":\"\\\"\\\" [act]\",\"2026-07-13\":\"\\\"\\\" [act]\",\"2026-07-14\":\"\\\"\\\" [act]\",\"2026-07-15\":\"\\\"\\\" [act]\",\"2026-07-16\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"\\\" [act]\"}; after the Post Out {\"2026-07-10\":\"\\\"\\\" [act]\",\"2026-07-13\":\"\\\"PO\\\" [gone act]\",\"2026-07-14\":\"\\\"PO\\\" [gone act]\",\"2026-07-15\":\"\\\"PO\\\" [gone act]\",\"2026-07-16\":\"\\\"PO\\\" [gone act]\",\"2026-07-20\":\"\\\"PO\\\" [gone act]\"}; the war's own PI on the posted-out man answered: \"nt nobody — leave can still be dated there. Posted out from 13 Jul 26 — the post-in has to be before that day.\"; Admin's restore panel: [\"accArRestore(submit):Restore\",\"accArDel(submit):Delete\",\"accArCancel(submit):Cancel\"], its post-in date 2026-07-15, error line \"\", toast [\"Blade restored — he'll be asked to check his quals and CAT\"]; back on the roster: true; boxes after the restore {\"2026-07-10\":\"\\\"\\\" [act]\",\"2026-07-13\":\"\\\"PO\\\" [gone act]\",\"2026-07-14\":\"\\\"PO\\\" [gone act]\",\"2026-07-15\":\"\\\"\\\" [act]\",\"2026-07-16\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"\\\" [act]\"}; AFTER THE RELOAD {\"2026-07-10\":\"\\\"\\\" [act]\",\"2026-07-13\":\"\\\"PO\\\" [gone act]\",\"2026-07-14\":\"\\\"PO\\\" [gone act]\",\"2026-07-15\":\"\\\"\\\" [act]\",\"2026-07-16\":\"\\\"\\\" [act]\",\"2026-07-20\":\"\\\"\\\" [act]\"}",
+    "stored": "rows written: leavewar/profile:slash = {\"post\":{\"id\":\"slash\",\"callsign\":\"Blade\",\"seat\":\"pilot\",\"band\":\"instructor\",\"sxo\":false,\"from\":\"2026-07-15\",\"to\":null,\"q\":\"IP\",\"scd\":true,\"scn\":true,\"xq\":[\"daar\",\"imc\",\"naar\",\"nvg\",\"scDay\",\"scNight\"],\"san\":false,\"past\":[{\"from\":null,\"to\":\"2026-07-12\"}]}}; the boxes read the same after the reload: true; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+    "verdict": "PASS",
+    "pics": [
+     "C37vi-ob-01-post-out-sheet.png",
+     "C37vi-ob-02-leavewar-pi-refused.png",
+     "C37vi-ob-03-admin-restore.png",
+     "C37vi-ob-04-out-and-back.png",
+     "C37vi-ob-05-after-reload.png"
+    ],
+    "part": "misc-outback",
+    "at": "2026-10-01T03:27:28.671Z"
+   },
+   {
+    "id": "C37-vi-c",
+    "did": "Leave War → ⚙ Settings → ＋ Event row until there are six (4 presses); the last row's box for 20 Jul → \"P7 SIXTH\", tag Work, \"A range\" 20–22 Jul → Save; reload",
+    "said": "event rows before 2, after 6 (event-row-0, event-row-1, event-row-2, event-row-3, event-row-4, event-row-5); \"A range\" offered [\"One merged bar\",\"Repeat each day\"] and a month of day buttons (50 controls); after picking 22 Jul the sheet's last words: \" 23 24 25 26 27 28 29 30 31 20 Jul 26 – 22 Jul 26 Clear Save\"; after Save the sheet read \"nothing open\"; toast []; the last row's boxes 20–23 Jul: {\"2026-07-20\":\"\\\"P7 SIXTH\\\" [ev band has work editable, 3 days wide]\",\"2026-07-21\":\"under the bar (no box of its own)\",\"2026-07-22\":\"under the bar (no box of its own)\",\"2026-07-23\":\"\\\"＋\\\" [ev editable]\"}; AFTER THE RELOAD rows 6, boxes {\"2026-07-20\":\"\\\"P7 SIXTH\\\" [ev band has work editable, 3 days wide]\",\"2026-07-21\":\"under the bar (no box of its own)\",\"2026-07-22\":\"under the bar (no box of its own)\",\"2026-07-23\":\"\\\"＋\\\" [ev editable]\"}",
+    "stored": "rows written: leavewar/eventrows (1 chars) ; leavewar/war:y2026 (31420 chars) holds \"P7 SIXTH\"; the same after the reload: true; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+    "verdict": "PASS",
+    "pics": [
+     "C37vi-ev-01-event-sheet-range.png",
+     "C37vi-ev-02-sixth-row-with-band.png",
+     "C37vi-ev-03-after-reload.png"
+    ],
+    "part": "misc-all",
+    "at": "2026-10-01T03:24:14.800Z"
+   },
+   {
+    "id": "C37-vi-d",
+    "did": "Inputs: person Blade, type ATT C (a downchit), the form's Document field given a PDF \"p7-c-cert.pdf\", Tue 21 Jul, Add; the row's paperclip opened; reload; the paperclip again",
+    "said": "document field on the form: yes; chips after choosing the file: [\"p7-c-cert.pdf\\n✕\"]; the form asked: []; the row: \"Blade 21 Jul ATT C P7 downchit with a document now ✎ ✕\", its document controls []; the paperclip opened: \"Blade · ATT C · Jul 21 ✕ medically down — cannot report to work — P7 downchit with a document Edit input Close — the document drawn in it: iframe 688x522 \"p7-c-cert.pdf\"\"; AFTER THE RELOAD the row: \"Blade 21 Jul ATT C P7 downchit with a document now ✎ ✕\", controls []; the paperclip opened: \"Blade · ATT C · Jul 21 ✕ medically down — cannot report to work — P7 downchit with a document Edit input Close — the document drawn in it: iframe 688x522 \"p7-c-cert.pdf\"\"",
+    "stored": "the request's document note: null → after the reload null; the browser's document drawer: [\"document (, 733 bytes)\",\"p7-c-cert.pdf (, 4063 bytes)\",\"document (, 735 bytes)\",\"document (, 732 bytes)\",\"document (, 739 bytes)\",\"document (, 733 bytes)\",\"document (, 733 bytes)\"] → after the reload [\"document (, 733 bytes)\",\"p7-c-cert.pdf (, 4063 bytes)\",\"document (, 735 bytes)\",\"document (, 732 bytes)\",\"document (, 739 bytes)\",\"document (, 733 bytes)\",\"document (, 733 bytes)\"]; ok: a reload gives back exactly what was there · ok: the reload wrote nothing",
+    "verdict": "PASS",
+    "pics": [
+     "C37vi-doc-01-form-with-document.png",
+     "C37vi-doc-02-document-opened.png",
+     "C37vi-doc-03-after-reload-document-opened.png"
+    ],
+    "part": "misc-all",
+    "at": "2026-10-01T03:24:14.800Z"
+   },
+   {
+    "id": "C37-vi-e",
+    "did": "Tracker: ☰ Show All → the first ball's Edit → Name \"P7 TYPED DETAIL\" → Save; Syllabus ✎ → ⇅ Reorder syllabi (the last chart to the top, Save order); Syllabus ✎ → 🗑 Delete syllabus on a built-in chart (it is hidden, restorable); reload",
+    "said": "charts as shipped: [2024, 2026, Tx 2026, A/G - A/A 2026]; the ball ST-01 on chart 2026: the editor's fields [\"NAME\",\"TYPE / FORMAT\",\"HOURS\",\"CREW\",\"PREREQUISITES\"], its Show All row after Save: \"ST-01 P7 TYPED DETAILnot done Type: Lecture · 3.0 Hrs Crew: — Prerequisites: — Edit\"; after the re-order: [A/G - A/A 2026, 2024, 2026, Tx 2026]; the delete asked \"Delete syllabus “2024”? This removes its flow, its layout and every student’s marks on it, in every course. It is a built-in — you can bring\"; after it: [A/G - A/A 2026, 2026, Tx 2026]; AFTER THE RELOAD: charts [A/G - A/A 2026, 2026, Tx 2026], the Reorder window lists as hidden/deleted [\"2024\"], the ball's Show All row: \"ST-01 P7 TYPED DETAILnot done Type: Lecture · 3.0 Hrs Crew: — Prerequisites: — Edit\"",
+    "stored": "rows written: tracker/v3:master:chart:sb2024, tracker/v3:master:chart:sb2026, tracker/v3:master:chart:sbagaa2026, tracker/v3:master:chart:sbtx2026, tracker/v3:master:info:sb2026:ST-01; ok: a reload gives back exactly what was there (the app) · ok: a reload gives back exactly what was there (the Tracker: every chart, detail, course, student, mark, and the screen) · ok: the reload wrote nothing",
+    "verdict": "PASS",
+    "pics": [
+     "C37vi-trk-01-details-typed.png",
+     "C37vi-trk-02-reorder-window.png",
+     "C37vi-trk-03-chart-hidden.png",
+     "C37vi-trk-04-after-reload-reorder-window.png",
+     "C37vi-trk-05-after-reload-detail.png"
+    ],
+    "part": "misc-all",
+    "at": "2026-10-01T03:24:14.800Z"
+   }
+  ]
+ }
+}

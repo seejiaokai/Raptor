@@ -1,0 +1,147 @@
+{
+ "tag": "p7",
+ "facts": {
+  "F1.box.afterDrag": "slash",
+  "F1.edit1": "saved",
+  "F1.row.afterEdit": {
+   "who": "slash",
+   "rmks": "bring the checklist"
+  },
+  "F1.oil.afterEdit": [
+   {
+    "who": "slash",
+    "item": "i:imrldi1s030d5bx",
+    "on": true
+   },
+   {
+    "who": "bane",
+    "item": "i:imrldi1s030d5bx",
+    "on": true
+   }
+  ],
+  "F1.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "F1.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "F1.edit2": "saved",
+  "F1.published.pending": {
+   "tabs": [
+    "New to you 0",
+    "All changes 9",
+    "To go out · AL1 1"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 1 change",
+    "Ranger · Training",
+    "Saber",
+    "15/7 09:00",
+    "“bring the checklist” → “bring the checklist and a pen”",
+    "Tap a change to go to it."
+   ]
+  },
+  "F1.leavewar": {
+   "Ranger": {
+    "text": "FO*",
+    "cls": "duty weekend act"
+   },
+   "Blade": {
+    "text": "FO*",
+    "cls": "duty weekend act"
+   }
+  },
+  "F1.errors": [],
+  "F1b.chip.before": [
+   {
+    "txt": "44",
+    "title": "All 44 earn a full day — tap to see each one (who is free as things stand now)",
+    "ver": "",
+    "item": "i:imrldi1s0due7za",
+    "beside": "allavail",
+    "slot": "g:5.0",
+    "painted": true,
+    "box": "20x15",
+    "color": "rgb(182, 192, 203)",
+    "bg": "rgb(26, 31, 38)"
+   }
+  ],
+  "F1b.edit": "saved",
+  "F1b.chip.after": [
+   {
+    "txt": "44",
+    "title": "All 44 earn a full day — tap to see each one (who is free as things stand now)",
+    "ver": "",
+    "item": "i:imrldi1s0due7za",
+    "beside": "allavail",
+    "slot": "g:5.0",
+    "painted": true,
+    "box": "20x15",
+    "color": "rgb(182, 192, 203)",
+    "bg": "rgb(26, 31, 38)"
+   }
+  ],
+  "F1b.errors": [],
+  "F3.put": {
+   "armed": true,
+   "offered": true,
+   "before": [
+    "bane"
+   ],
+   "after": [
+    "bane",
+    "allavail"
+   ],
+   "took": true,
+   "msg": "ALL AVAIL planned"
+  },
+  "F3.sign": {
+   "cur": "Ace",
+   "sked": "Anvil",
+   "plan": "Anvil",
+   "appr": "Anvil"
+  },
+  "F3.pub": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "F3.seat": {
+   "key": "1.0.0.0.p",
+   "who": "nact",
+   "cs": "Warden",
+   "line": "VL",
+   "to": "08:40",
+   "ld": "10:05"
+  },
+  "F3.pending": {
+   "tabs": [
+    "New to you 0",
+    "All changes 8",
+    "To go out · AL1 2"
+   ],
+   "lines": [
+    "Waiting to go out as",
+    "AL1",
+    "· 2 changes",
+    "VL BFM · #1 FCP",
+    "Saber",
+    "15/7 09:00",
+    "Warden → taken off",
+    "PERSONAL · who it stands for",
+    "Warden",
+    "Tap a change to go to it."
+   ]
+  },
+  "F3.tap": {
+   "tappable": 1,
+   "flash": "1"
+  },
+  "F3.errors": []
+ }
+}

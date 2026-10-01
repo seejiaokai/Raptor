@@ -2,7 +2,7 @@
    Spec: docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md.
 
    What this pins, ruling by ruling:
-   · §7.1  money comes ONLY from the issued block — the pass never reads live
+   · §7.1  credit comes ONLY from the issued block — the pass never reads live
            INPUTS again, so a member cannot move an issued credit by editing his
            own input, and an OD claim (which has no row) is in the document.
    · §7.2  a mark on the day is PUBLISHABLE: an OIL-only edit produces a real
@@ -53,7 +53,7 @@ const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 
 const publish = (di: number) => { sign(di); setDayApproved(di, true) }
 const groundRow = (di: number, r: any) => { DAYS[di].ground = (DAYS[di].ground || []).concat([r]); ensureRowIds(DAYS); return DAYS[di].ground[DAYS[di].ground.length - 1] }
 const claim = (r: any) => { INPUTS.unshift({ allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026, ...r }); return INPUTS[0] }
-/* THE FIGURE AS THE MONEY SEES IT: on a published day, off the ISSUED
+/* THE FIGURE AS THE CREDIT SEES IT: on a published day, off the ISSUED
    SNAPSHOT — which is the whole point of the block — and off the live working
    copy before it goes out. The same choice leavewar/sync.ts makes. */
 const figure = (di: number, person: string) => {
@@ -188,13 +188,13 @@ describe('the three states, and what cannot be overridden (§9.1)', () => {
   })
 
   it('OIL28, OIL13, OIL31 — an allow counts real work, it never invents it', () => {
-    /* a dormant claim, and a row with no times: neither can be allowed into money */
+    /* a dormant claim, and a row with no times: neither can be allowed into credit */
     claim({ iid: 'c1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'r', oil: { [SAT_ISO]: 1 } })
     const g = groundRow(SAT, { prog: 'NO TIMES', str: '', end: '', who: 'stiff' })
     ;(DAYS[SAT] as any).oild = { people: { [`bane|${inputItemKey('c1')}`]: 'allow', [`stiff|${rowItemKey(g.rid)}`]: 'allow' } }
     publish(SAT)
     expect(figure(SAT, 'bane'), 'the scheduler took the commitment off the programme').toBe(null)
-    expect(figure(SAT, 'stiff'), 'money must not come from a guess').toBe(null)
+    expect(figure(SAT, 'stiff'), 'credit must not come from a guess').toBe(null)
   })
 
   it('OIL3, OIL4 — a deny takes one man off ONE event and leaves his others alone', () => {
@@ -254,7 +254,7 @@ describe('an item address survives what it must (§7.4)', () => {
 })
 
 describe('the publish reminder asks the right question (§2.3)', () => {
-  it('OIL11 — the reminder speaks only where there is money waiting on a publication', () => {
+  it('OIL11 — the reminder speaks only where there is credit waiting on a publication', () => {
     /* a weekend day with nothing on it: the reminder must stay silent, or every
        Saturday morning would nag about a day nobody is working */
     Object.assign(DAYS[6], { waves: [], sims: { amt: [], oft: [] }, dutywaves: [], ground: [], allhands: [] })
@@ -355,37 +355,37 @@ describe('the bug check (Fable + Astra, 21 Sep 26)', () => {
   })
 })
 
-/* JOB 2 — a request over several days is answered per day, and pays on none of
+/* JOB 2 — a request over several days is answered per day, and credits on none of
    them. The claim lands ONE row, on its FIRST day, by design (acceptInput
    refuses a second landing for the same id). oilInputEligible then looked for
-   that row on the day being PAID, so every covered day but the first failed.
+   that row on the day being CREDITED, so every covered day but the first failed.
    Both red teams refused the obvious repair — landing a row on every covered
    day would change how leave, medicals, overseas duty and courses all land —
-   so the money reads the request itself, carrying the ONE row's standing
+   so the credit reads the request itself, carrying the ONE row's standing
    across every day the request covers. Reproduced in the app 21 Sep 26: Anvil,
-   Training Fri 17 → Mon 20, Saturday answered yes, nothing paid anywhere. */
-describe('a multi-day request pays on every day it was answered for (job 2)', () => {
+   Training Fri 17 → Mon 20, Saturday answered yes, nothing credited anywhere. */
+describe('a multi-day request credits on every day it was answered for (job 2)', () => {
   const span = (extra: any = {}) => claim({
     iid: 'mdq', person: 'bane', type: 'Training', date: 'Jul 17', endDate: 'Jul 20',
     allday: false, s: 8 * 60, e: 18 * 60, acc: 'g',
     oil: { '2026-07-18': 1, '2026-07-19': 0 }, ...extra,
   })
 
-  it('the Saturday it was answered YES for pays, and the Sunday it was answered NO for does not', () => {
+  it('the Saturday it was answered YES for credits, and the Sunday it was answered NO for does not', () => {
     span()
     groundRow(4, { prog: 'Training', str: '08:00', end: '18:00', who: 'bane', src: 'mdq' })  // the ONE row, on the Friday
     expect(figure(SAT, 'bane'), 'answered yes for the Saturday').toBe('FO')
     expect(figure(6, 'bane'), 'answered no for the Sunday').toBe(null)
   })
 
-  it("the one row's standing governs every covered day — a CANCELLED anchor pays nothing anywhere", () => {
+  it("the one row's standing governs every covered day — a CANCELLED anchor credits nothing anywhere", () => {
     span()
     const row = groundRow(4, { prog: 'Training', str: '08:00', end: '18:00', who: 'bane', src: 'mdq' })
     row.cx = true
     expect(figure(SAT, 'bane'), 'the scheduler cancelled the row, so the claim earns nothing').toBe(null)
   })
 
-  it('an INFO-ONLY anchor pays nothing anywhere either', () => {
+  it('an INFO-ONLY anchor credits nothing anywhere either', () => {
     span()
     const row = groundRow(4, { prog: 'Training', str: '08:00', end: '18:00', who: 'bane', src: 'mdq' })
     row.info = true
@@ -397,13 +397,13 @@ describe('a multi-day request pays on every day it was answered for (job 2)', ()
     expect(figure(SAT, 'bane')).toBe(null)
   })
 
-  /* The two ways a row can be missing pay OPPOSITE ways, so they must be told
+  /* The two ways a row can be missing credit OPPOSITE ways, so they must be told
      apart, not lumped together. A row DELETED out from under the claim earns
      nothing (pinned since R-2). A row simply sitting in a week nobody has
      loaded still earns — that is the cross-week half of this very bug. The
      request's FIRST covered day decides it: if that day is in front of us and
      carries no row, the row is gone; if it is not loaded, we just cannot see it. */
-  it('a request anchored in a week nobody has loaded still pays its answered days (Codex M1, cross-week)', () => {
+  it('a request anchored in a week nobody has loaded still credits its answered days (Codex M1, cross-week)', () => {
     claim({
       iid: 'xweek', person: 'stiff', type: 'Training', date: 'Jul 11', endDate: 'Jul 18',
       allday: false, s: 8 * 60, e: 18 * 60, acc: 'g', oil: { '2026-07-18': 1 },
@@ -429,7 +429,7 @@ describe('a multi-day request pays on every day it was answered for (job 2)', ()
 
    THE MIRROR, which is why this is not simply "stop skipping src rows" (Codex):
    feeding the row through the schedule half would put the REQUESTER through it
-   too, where the default is YES — overriding his own No and paying him twice.
+   too, where the default is YES — overriding his own No and crediting him twice.
    So the row is split. The requester stays in the input half, governed by his
    own answer. The extras are ordinary scheduled work on the same item. */
 describe('a second man on a landed request row earns from it (D18, job 8)', () => {
@@ -451,7 +451,7 @@ describe('a second man on a landed request row earns from it (D18, job 8)', () =
     expect(figure(SAT, 'stiff'), 'the scheduler put him there; it is ordinary work').toBe('FO')
   })
 
-  it('the requester is not paid TWICE — he is in the input half only', () => {
+  it('the requester is not credited TWICE — he is in the input half only', () => {
     landed(1, ['stiff'])
     const ev = oilEvidence(SAT)
     const work = oilEarnedWork(DAYS[SAT], ev)
@@ -465,14 +465,14 @@ describe('a second man on a landed request row earns from it (D18, job 8)', () =
     expect(figure(SAT, 'bane'), 'untouched').toBe('FO')
   })
 
-  it('a CANCELLED or info-only row pays neither of them', () => {
+  it('a CANCELLED or info-only row credits neither of them', () => {
     const row = landed(1, ['stiff'])
     row.cx = true
     expect(figure(SAT, 'bane')).toBe(null)
     expect(figure(SAT, 'stiff')).toBe(null)
   })
 
-  it('an ALL-DAY request pays the extra man too — the row carries no times (Fable M6)', () => {
+  it('an ALL-DAY request credits the extra man too — the row carries no times (Fable M6)', () => {
     claim({ iid: 'd18b', person: 'bane', type: 'Training', date: 'Jul 18', acc: 'g',
       allday: true, s: 0, e: 1439, oil: { [SAT_ISO]: 1 } })
     groundRow(SAT, { prog: 'Training', str: '', end: '', who: 'bane', src: 'd18b', more: ['stiff'] })
@@ -504,12 +504,12 @@ describe('F3 — an older frozen block must not manufacture a pending amendment'
 /* CODEX RANK 1 (22 Sep 26) — and it refutes the reasoning in 195943e. That
    commit repaired the KEY for blocks written before `stand` existed, and
    claimed `acc:'g'` meant "landed and paying". It did not: the old reader
-   explicitly rejected a cancelled or info-only row. So the money reader was
+   explicitly rejected a cancelled or info-only row. So the credit reader was
    left testing `undefined !== 'cx'` and answering YES — an already-issued day
-   whose row was cancelled would start PAYING, with no amendment and the frozen
-   schedule still saying the work did not happen. Money out of nowhere on a
+   whose row was cancelled would start CREDITING, with no amendment and the frozen
+   schedule still saying the work did not happen. OIL out of nowhere on a
    published record, which is worse than the phantom it replaced. */
-describe('an issued block written before `stand` must not start paying (Codex rank 1)', () => {
+describe('an issued block written before `stand` must not start crediting (Codex rank 1)', () => {
   const published = (mark: 'cx' | 'info') => {
     claim({ iid: 'leg1', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
       allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
@@ -521,17 +521,17 @@ describe('an issued block written before `stand` must not start paying (Codex ra
     for (const i of snap.d.oilev.inputs) delete i.stand
   }
 
-  it('a CANCELLED row on an issued day still pays nothing', () => {
+  it('a CANCELLED row on an issued day still credits nothing', () => {
     published('cx')
     expect(figure(SAT, 'bane'), 'the frozen schedule says the work did not happen').toBe(null)
   })
 
-  it('an INFO-ONLY row on an issued day still pays nothing', () => {
+  it('an INFO-ONLY row on an issued day still credits nothing', () => {
     published('info')
     expect(figure(SAT, 'bane')).toBe(null)
   })
 
-  it('and a LIVE row on an issued day still pays, so the guard has not gone too far', () => {
+  it('and a LIVE row on an issued day still credits, so the guard has not gone too far', () => {
     claim({ iid: 'leg2', person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'g',
       allday: false, s: 9 * 60, e: 17 * 60, oil: { [SAT_ISO]: 1 } })
     groundRow(SAT, { prog: 'DUTY', str: '0900', end: '1700', who: 'bane', src: 'leg2' })
@@ -543,13 +543,13 @@ describe('an issued block written before `stand` must not start paying (Codex ra
 })
 
 /* CODEX RANK 4 (22 Sep 26) — THE OTHER HALF OF THE SAME REPAIR. `3df527d`
-   taught the MONEY how to read a block written before `stand` existed, by
+   taught the CREDIT how to read a block written before `stand` existed, by
    reconstructing the old value from the frozen schedule. It left two readers
    still doing it the old, wrong way:
 
    · the evidence KEY still guessed the value from `acc`, so a day whose row was
      cancelled keys `cx` live and `active` frozen — a pending amendment on a day
-     nobody touched, on top of a day the money already agrees is unchanged;
+     nobody touched, on top of a day the credit already agrees is unchanged;
    · the signature BINDING compares a six-part string written by the old build
      against today's seven-part one, so every signature given before tonight
      falls off a day whose content has not moved.
@@ -568,9 +568,9 @@ describe('rank 4 — the KEY half: a day nobody touched offers no amendment', ()
     for (const i of snap.d.oilev.inputs) delete i.stand
   }
 
-  it('a CANCELLED row: both builds pay nothing, so nothing is pending', () => {
+  it('a CANCELLED row: both builds credit nothing, so nothing is pending', () => {
     agedPublish('cx')
-    expect(dayHasChanges(SAT), 'the money agrees it is unchanged; the key must too').toBe(false)
+    expect(dayHasChanges(SAT), 'the credit agrees it is unchanged; the key must too').toBe(false)
   })
 
   it('an INFO-ONLY row: the same', () => {
@@ -613,9 +613,9 @@ describe('rank 4 — the BINDING half: a signature given before `stand` existed'
     expect(daySigned(SAT), 'nothing was edited, so the sign-offs still cover the day').toBe(true)
   })
 
-  it('THE CONTROL — a day job 2 changed the money on must be signed again', () => {
+  it('THE CONTROL — a day job 2 changed the credit on must be signed again', () => {
     /* a two-day Training anchored on the FRIDAY and covering the Saturday: it
-       paid the Saturday nothing before job 2 and pays a full day now, so an old
+       credited the Saturday nothing before job 2 and credits a full day now, so an old
        signature cannot be allowed to cover it */
     claim({ iid: 'r4x', person: 'stiff', type: 'Training', date: 'Jul 17', endDate: 'Jul 18',
       acc: 'g', allday: false, s: 8 * 60, e: 18 * 60, oil: { [SAT_ISO]: 1 } })
@@ -623,23 +623,23 @@ describe('rank 4 — the BINDING half: a signature given before `stand` existed'
     signAll(SAT)
     expect(daySigned(SAT)).toBe(true)
     ageBindings(SAT)
-    expect(daySigned(SAT), 'the Saturday pays a day it never paid before').toBe(false)
+    expect(daySigned(SAT), 'the Saturday credits a day it never credited before').toBe(false)
   })
 })
 
 /* [OIL-XWEEK-ELSEWHERE] — BOTH reviewers want this closed before merge live
    (Fable F2, Codex rank 3), and both are right that the build's own note names
    the wrong mechanism. A request running from one week into the next, whose ONE
-   row the scheduler CANCELLED in the first week, goes on paying its days in the
+   row the scheduler CANCELLED in the first week, goes on crediting its days in the
    second. The note said that reads as `elsewhere`; it does not. Every `'g'` is
    cleared on a week swap, so the request reads `acc:''` → `unlanded`, and the
-   money paid it at the `acc !== 'g'` short-circuit before the standing was ever
+   credit pass credited it at the `acc !== 'g'` short-circuit before the standing was ever
    consulted. A repair written against the `elsewhere` branch would never fire.
 
-   Pre-existing rather than introduced by job 2 — the same line paid before it —
+   Pre-existing rather than introduced by job 2 — the same line credited before it —
    but it is a day paid for work the schedule itself says did not happen, and it
    can be frozen into a signed publication. */
-describe('an anchor row cancelled in a week nobody has loaded stops the money', () => {
+describe('an anchor row cancelled in a week nobody has loaded stops the credit', () => {
   const XW_WEEK = '06/07/2026'                    // Mon 6 Jul 26; index 5 is Sat 11 Jul
   const stashWeekWith = (row: any) => {
     const days = [0, 1, 2, 3, 4, 5, 6].map(i => ({ dt: `Jul ${6 + i}`, ground: [] as any[] }))
@@ -651,19 +651,19 @@ describe('an anchor row cancelled in a week nobody has loaded stops the money', 
 
   afterEach(() => { stashClear() })
 
-  it('a CANCELLED anchor row pays nothing on the Saturday a week later', () => {
+  it('a CANCELLED anchor row credits nothing on the Saturday a week later', () => {
     crossWeekClaim()
     stashWeekWith({ prog: 'TRAINING', str: '0800', end: '1800', who: 'stiff', src: 'xw', cx: true })
     expect(figure(SAT, 'stiff'), 'the schedule says the training did not happen').toBe(null)
   })
 
-  it('an INFO-ONLY anchor row pays nothing either', () => {
+  it('an INFO-ONLY anchor row credits nothing either', () => {
     crossWeekClaim()
     stashWeekWith({ prog: 'TRAINING', str: '0800', end: '1800', who: 'stiff', src: 'xw', info: true })
     expect(figure(SAT, 'stiff')).toBe(null)
   })
 
-  it('THE CONTROL — a LIVE anchor row a week away still pays', () => {
+  it('THE CONTROL — a LIVE anchor row a week away still credits', () => {
     crossWeekClaim()
     stashWeekWith({ prog: 'TRAINING', str: '0800', end: '1800', who: 'stiff', src: 'xw' })
     expect(figure(SAT, 'stiff')).toBe('FO')

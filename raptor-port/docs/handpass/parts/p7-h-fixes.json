@@ -1,0 +1,66 @@
+{
+ "base": "http://localhost:4207",
+ "at": "2026-10-01T04:10:46.712Z",
+ "results": [
+  {
+   "name": "F1 unpublished: after the member edits his remarks the scheduler's man is still in the name box",
+   "ok": true,
+   "detail": "{\"prog\":\"TRAINING\",\"str\":\"08:00\",\"end\":\"16:00\",\"who\":\"slash\",\"rmks\":\"bring the checklist\",\"srcType\":\"Training\",\"src\":\"imrldi1s030d5bx\",\"srcv\":\"fqpnzl\",\"rid\":\"rimrldi1s030d5bx\"}"
+  },
+  {
+   "name": "F1 unpublished: in OIL Earn he still earns from the row",
+   "ok": true,
+   "detail": "[{\"who\":\"slash\",\"item\":\"i:imrldi1s030d5bx\",\"on\":true},{\"who\":\"bane\",\"item\":\"i:imrldi1s030d5bx\",\"on\":true}]"
+  },
+  {
+   "name": "F1 published: the man is still in the box on the working copy",
+   "ok": true,
+   "detail": "{\"prog\":\"TRAINING\",\"str\":\"08:00\",\"end\":\"16:00\",\"who\":\"slash\",\"rmks\":\"bring the checklist and a pen\",\"srcType\":\"Training\",\"src\":\"imrldi1s030d5bx\",\"srcv\":\"1dxjsca\",\"rid\":\"rimrldi1s030d5bx\"}"
+  },
+  {
+   "name": "F1 published: what reads pending is the member's change — no line takes Blade off the row",
+   "ok": true,
+   "detail": "[\"Waiting to go out as\",\"AL1\",\"· 1 change\",\"Ranger · Training\",\"Saber\",\"15/7 09:00\",\"“bring the checklist” → “bring the checklist and a pen”\",\"Tap a change to go to it.\"]"
+  },
+  {
+   "name": "F1 published: the Leave War still credits both men",
+   "ok": true,
+   "detail": "{\"Ranger\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"},\"Blade\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"}}"
+  },
+  {
+   "name": "F1 — a reload gives back exactly what was there",
+   "ok": true,
+   "detail": "week 13/07/2026"
+  },
+  {
+   "name": "F1 — the reload wrote nothing",
+   "ok": true,
+   "detail": "no row changed"
+  },
+  {
+   "name": "F1b: the placeholder is still in the name box after the member's edit",
+   "ok": true,
+   "detail": "{\"prog\":\"TRAINING\",\"str\":\"08:00\",\"end\":\"16:00\",\"who\":\"allavail\",\"rmks\":\"bring the checklist\",\"srcType\":\"Training\",\"src\":\"imrldi1s0due7za\",\"srcv\":\"fqpnzl\",\"rid\":\"rimrldi1s0due7za\"}"
+  },
+  {
+   "name": "F1b: and it still wears its count",
+   "ok": true,
+   "detail": "{\"before\":[{\"txt\":\"44\",\"title\":\"All 44 earn a full day — tap to see each one (who is free as things stand now)\",\"ver\":\"\",\"item\":\"i:imrldi1s0due7za\",\"beside\":\"allavail\",\"slot\":\"g:5.0\",\"painted\":true,\"box\":\"20x15\",\"color\":\"rgb(182, 192, 203)\",\"bg\":\"rgb(26, 31, 38)\"}],\"after\":[{\"txt\":\"44\",\"title\":\"All 44 earn a full day — tap to see each one (who is free as things stand now)\",\"ver\":\"\",\"item\":\"i:imrldi1s0due7za\",\"beside\":\"allavail\",\"slot\":\"g:5.0\",\"painted\":true,\"box\":\"20x15\",\"color\":\"rgb(182, 192, 203)\",\"bg\":\"rgb(26, 31, 38)\"}]}"
+  },
+  {
+   "name": "F3: the request row's crowd change is named by its row",
+   "ok": true,
+   "detail": "[\"Waiting to go out as\",\"AL1\",\"· 2 changes\",\"VL BFM · #1 FCP\",\"Saber\",\"15/7 09:00\",\"Warden → taken off\",\"PERSONAL · who it stands for\",\"Warden\",\"Tap a change to go to it.\"]"
+  },
+  {
+   "name": "F3: and never \"A placeholder\"",
+   "ok": true,
+   "detail": "[\"Waiting to go out as\",\"AL1\",\"· 2 changes\",\"VL BFM · #1 FCP\",\"Saber\",\"15/7 09:00\",\"Warden → taken off\",\"PERSONAL · who it stands for\",\"Warden\",\"Tap a change to go to it.\"]"
+  },
+  {
+   "name": "F3: the line is a button, and a tap takes the schedule to the row",
+   "ok": true,
+   "detail": "{\"tappable\":1,\"flash\":\"1\"}"
+  }
+ ]
+}

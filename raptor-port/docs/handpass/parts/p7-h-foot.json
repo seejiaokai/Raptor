@@ -1,0 +1,74 @@
+{
+ "w4-foot-after-edit-behind": {
+  "at": "2026-10-01T03:33:09.924Z",
+  "base": "http://localhost:4206",
+  "checks": [
+   {
+    "name": "B19f after the time is edited behind the window the LIST follows: Talisman is listed with no flag",
+    "ok": true,
+    "detail": "{\"title\":\"OPS BRIEF Jul 14 · 09:20–09:40\",\"foot\":\"Talisman — nothing else on the programme at that time.\",\"tal\":\"(listed, no flag)\"}"
+   },
+   {
+    "name": "B19f …and the FOOT no longer gives him a sentence about minutes the event has left",
+    "ok": true,
+    "detail": "Talisman — nothing else on the programme at that time."
+   },
+   {
+    "name": "B19f closing and re-opening the window gives a foot that agrees with the list",
+    "ok": true,
+    "detail": "Tap a puck for why. One man is flagged."
+   }
+  ],
+  "facts": {
+   "B19f": {
+    "opened": {
+     "foot": "Tap a puck for why. 3 men are flagged.",
+     "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "tapped": {
+     "title": "OPS BRIEF Jul 14 · 09:45–09:58",
+     "foot": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "edited": {
+     "title": "OPS BRIEF Jul 14 · 09:20–09:40",
+     "foot": "Talisman — nothing else on the programme at that time.",
+     "tal": "(listed, no flag)"
+    },
+    "reopened": {
+     "title": "OPS BRIEF Jul 14 · 09:20–09:40",
+     "foot": "Tap a puck for why. One man is flagged.",
+     "tal": "(listed, no flag)"
+    }
+   },
+   "errors": []
+  },
+  "errors": [],
+  "pics": [
+   "B19f-1-foot-after-tap.png",
+   "B19f-2-foot-after-time-edited-behind.png",
+   "B19f-3-foot-after-reopen.png"
+  ],
+  "out": {
+   "opened": {
+    "foot": "Tap a puck for why. 3 men are flagged.",
+    "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   },
+   "tapped": {
+    "title": "OPS BRIEF Jul 14 · 09:45–09:58",
+    "foot": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   },
+   "edited": {
+    "title": "OPS BRIEF Jul 14 · 09:20–09:40",
+    "foot": "Talisman — nothing else on the programme at that time.",
+    "tal": "(listed, no flag)"
+   },
+   "reopened": {
+    "title": "OPS BRIEF Jul 14 · 09:20–09:40",
+    "foot": "Tap a puck for why. One man is flagged.",
+    "tal": "(listed, no flag)"
+   }
+  }
+ }
+}

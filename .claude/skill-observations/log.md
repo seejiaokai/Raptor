@@ -2022,3 +2022,108 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In §7.6, allow "not a defect, by construction" only when (a) the disposition lists EVERY branch of each definition it rests on and argues each, and (b) a test pins the case anyway (the invariant becomes an assertion, not prose). An argument that cannot be turned into a test is a hypothesis.
 
 **Principle:** A proof that a failure cannot happen is only as good as its enumeration of the definitions it uses; pin it with a test, because the branch you did not list is exactly where the next reviewer — or the bug — will be.
+
+### Observation 401: A cleanup step chained with `;` after a failed `&&` chain ran against state it did not create — a `git stash pop` reached another chat's stash
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7 build — proving a test red by stashing one file (`edit && git stash push -- file && vitest …; git stash pop`).
+**Skill:** test-driven-development (the red-first proof), systematic-debugging; repo guide raptor-port/CLAUDE.md §Build & verify
+**Type:** open-source
+**Phase/Area:** Proving a test fails without the fix
+
+**Issue:** The edit step at the head of the `&&` chain failed, so the `git stash push` never ran — but the `; git stash pop` after the chain still did, and popped the newest stash on the machine: one left weeks ago by another chat on another branch (the stash list is shared by every worktree of a repo). It happened to refuse (its one untracked file already existed) and changed nothing; a stash of tracked changes would have been merged into the working tree silently.
+
+**Suggested improvement:** In the red-first recipe: never pair a `stash pop` to a `stash push` with `;`. Use `git stash push -q -- <file> && { <run>; git stash pop -q; }` so the pop exists only if the push happened — or, better, avoid the stash entirely: copy the file aside (`cp f f.keep`), `git checkout -- f`, run, `mv f.keep f`. Before any `stash pop`, `git stash list | head -1` should name what was just pushed.
+
+**Principle:** An undo step must be bound to the do step it reverses; chained unconditionally it will one day undo something else — and shared, stack-shaped state (a stash, a lock, a temp dir) makes "something else" another person's work.
+
+### Observation 402: A script edited through a second script handed to a heredoc was mangled twice — known trap (#246, #259), met again when the edit was "just one line"
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7 — patching an already-written Python edit script with an inline `python - <<'EOF'` that contained `\n` escapes; then re-running the half-applied script, which applied its first edit twice (a duplicated constant, a build error).
+**Skill:** raptor-port guide §Build & verify / the python-edits memory; observations #246, #259
+**Type:** internal
+**Phase/Area:** Scripted file edits on Windows Git Bash
+
+**Issue:** Two failures in a row from one shortcut: (1) the inline patch's escapes arrived mangled, so the patched script was syntactically broken; (2) an edit script that asserts "exactly one match" per replacement is NOT safe to re-run after a partial success when a replacement leaves its own anchor in place (the anchor line is kept and text added after it) — the second run matched again and inserted the block twice.
+
+**Suggested improvement:** (a) Fix a script file with the Edit tool, never with another inline script. (b) Make each replacement idempotent-or-refusing: assert the NEW text is absent before replacing, or have the anchor be consumed by the replacement. (c) After any failed edit script, read `git diff --stat` before re-running anything.
+
+**Principle:** A partial run changes the preconditions of its own re-run; an edit script needs a guard that the change is not already there, not only that its anchor is.
+
+### Observation 403: `sed -i` in Git Bash rewrote a CRLF file as LF — a one-line edit became a whole-file diff
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7 — reverting one reworded comment line in `raptor-port/src/leavewar/state/store.ts` (the one CRLF file in that folder) with `sed -i`.
+**Skill:** repo guide raptor-port/CLAUDE.md §Build & verify; the python-edits-crlf memory (which names Python only)
+**Type:** internal
+**Phase/Area:** Scripted file edits on Windows Git Bash
+
+**Issue:** The repo's CRLF trap is written down for Python (`open(..., newline='')`). The same file bit twice in one session by two other routes: a Python pattern containing `\n` did not match its CRLF lines (silently, until the count assertion fired), and `sed -i` then converted every line ending, so `git diff --stat` showed the whole file changed for a one-line edit. Caught only because the diff stat was read before committing; restored with `git checkout -- <file>` and redone with the Edit tool.
+
+**Suggested improvement:** Widen the memory and the guide's line from "Python edits" to "ANY scripted edit": before a scripted edit, `file <path>` (it prints "with CRLF line terminators"); on a CRLF file use the Edit tool, which keeps line endings. After any scripted edit, read `git diff --stat` — a line count near the file's length is the tell.
+
+**Principle:** A trap recorded against one tool is a property of the FILE, not the tool; record it by what it is ("this file is CRLF — only the Edit tool is safe") so the next tool reached for does not rediscover it.
+
+### Observation 404: A mechanical rewording pass over-reached three ways — a dry run of the list is not a read of the diff
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7, [OIL-WORDS] — a script that reworded "paid / pays / money" in comments and test titles across 38 files (comments found by a real parser, so no code could move).
+**Skill:** New skill candidate: mechanical-rewording (or a section of writing-plans / verification-before-completion)
+**Type:** open-source
+**Phase/Area:** Bulk comment / wording changes
+
+**Issue:** The parser guarantee held (the production bundle was byte-identical before and after), and the pass was still wrong in ways only reading found: (1) it reworded idioms that were never about the subject ("pays for itself" in a performance note) and the very sentence that STATES the rule ("is earned leave, not pay"); (2) word-for-word substitution made nonsense where the old phrase already held the new word ("credit credited", "the crowd is credit"); (3) it rewrote the test file whose job is to list the banned words; (4) test titles it renamed were quoted by name in an older evidence sheet and in another source comment. Each was caught by a different check: a narrowed file filter, a doubled-word grep over the added lines, `git checkout` of the one file, a grep of every renamed title across the docs.
+
+**Suggested improvement:** For any scripted rewording: (a) scope by FILE first, then by line, with an explicit leave-alone pattern for the rule's own statement; (b) after applying, grep the ADDED lines for doubled or ungrammatical joins and for the old words still present; (c) list every renamed test title and grep docs and code for the OLD title — a renamed test is a broken citation; (d) leave historical evidence as written and add a dated note giving the new names; (e) keep a "bundle identical" proof, and say what it does and does not prove (no code moved — not "the words are right").
+
+**Principle:** A proof that nothing executable changed says nothing about whether the prose is right; mechanical rewrites need a mechanical safety proof AND a human-style read of the added lines.
+
+### Observation 405: `git add -A` while helper agents were still writing swept their half-finished files into a commit
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7 — the host committed a fix with `git add -A .` while three walker agents were writing scripts, reports and pictures into the same checkout.
+**Skill:** dispatching-parallel-agents; subagent-driven-development
+**Type:** open-source
+**Phase/Area:** Committing while delegated work is in flight
+
+**Issue:** The blanket add took the walkers' in-progress probe scripts and partial report files into a commit whose message described only the host's fix. Harmless here (they were later completed and committed again), but the commit no longer says what it holds, and a revert of that fix would have taken their work with it.
+
+**Suggested improvement:** In dispatching-parallel-agents: while any helper is writing into the checkout, the host stages by explicit path (`git add <files it changed>`), never `-A` / `.`; helpers' output is committed once, when they hand back, in its own commit.
+
+**Principle:** A commit should hold what its author did; when several writers share a working tree, "everything that changed" is no longer "what I changed".
+
+### Observation 406: Archiving a finished backlog item was refused because a ruling named the BACKLOG as one of its homes
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7 close-out — `backlog-archive.mjs` moved an item, the document gate then failed ("D470 names OUTSTANDING.md as a home, but that file never mentions D470") and the script put both files back.
+**Skill:** repo rule .claude/rules/record-decisions.md; session-handoff (Step 3, "a known issue RESOLVED")
+**Type:** internal
+**Phase/Area:** Recording a ruling's homes; archiving
+
+**Issue:** The ruling was recorded while its backlog item was still open, and its "where it lives" cell listed that item beside its real homes. The record-decisions rule already says "never OUTSTANDING.md alone" — but listing the backlog at all plants a trap: the item is the one home that is GOING to leave, and the gate (rightly) refuses the move until the row is corrected. The script's roll-back made it a non-event; the fix was to point the row at the archive.
+
+**Suggested improvement:** In record-decisions.md's homes paragraph: name a backlog item in a ruling's row only as "filed as [ID]", never as a home; if it must be listed, the archiving step updates the row to `OUTSTANDING-ARCHIVE.md` FIRST. In session-handoff Step 3, add: "before archiving an item, grep the full rulings rows for `OUTSTANDING.md` + its id".
+
+**Principle:** A pointer to a place whose purpose is to be emptied is a pointer with an expiry date; name durable homes, and treat the transient one as a status.
+
+### Observation 407: A "replaced" mark written in the wrong cell of a ruling's row was silently treated as a narrowing — the filing step said "done"
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** Recording a ruling that wholly replaces an earlier one (the repo's DECISIONS.md step 2, then `backlog-archive.mjs --rulings`).
+**Skill:** repo rule .claude/rules/record-decisions.md / DECISIONS.md step 2
+**Type:** internal
+**Phase/Area:** Marking a replaced ruling
+
+**Issue:** Step 2 says to start the earlier ruling's "ruling cell" with `**REPLACED BY D<n> (<date>).**`. The script reads the mark at the start of the THIRD cell (his words), as every archived row shows; the in-part marks (NARROWED) live in the FOURTH. Written in the fourth, the REPLACED mark was accepted as a change (the short line gained "changed by D<n>"), the run printed "done; the inventory is clean", and the replaced ruling stayed live in the list every chat loads. Found only because the count of that row in the archive was checked afterwards.
+
+**Suggested improvement:** In DECISIONS.md step 2 say which cell by position ("the cell right after the date") and show one example row; in the script, refuse a row whose fourth cell opens with REPLACED / SPENT ("the mark belongs at the start of the cell after the date") instead of reading it as a narrowing. After any replacement, verify: the old number is in DECISIONS-ARCHIVE.md once and in no live file.
+
+**Principle:** When a tool accepts a near-miss as a different valid input, "it ran clean" proves nothing; check the outcome the step exists to produce (here: the old ruling is gone from the live list), not the tool's exit.

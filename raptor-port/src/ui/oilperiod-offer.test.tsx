@@ -66,7 +66,7 @@ describe('the day offers to create the leave war period it says is missing', () 
   it('THE CONTROL — a member sees the reason but is offered no button', () => {
     setSession({ user: 'u', role: 'main' } as any); notify()
     draw()
-    expect(host.textContent, 'he is still told why nothing can be paid').toContain('no leave war period')
+    expect(host.textContent, 'he is still told why nothing can be credited').toContain('no leave war period')
     expect(offer(), 'but creating one is not his to do').toBeNull()
   })
 

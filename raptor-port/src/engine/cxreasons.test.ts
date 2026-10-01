@@ -97,6 +97,20 @@ describe('save / load round-trip', () => {
   })
 })
 
+describe('a list emptied on purpose', () => {
+  /* [STORE-READER-SWEEP] ([DB-READINESS] group A, phase 7): a list EMPTIED through the app's own control is a decision
+     — the writer stores `[]` — and the reader took an empty list for "nothing saved" and put the standard set back at
+     the next load. A stored empty list now reads back empty; anything unusable still falls back. */
+  it('stays empty after a reload', () => {
+    while (CXR_CFG.length) delCxReason(0)
+    cxReasonsSave()
+    expect(mem['sqn142_cxreasons'], 'the writer stores the empty list').toBe('[]')
+    addCxReason('DIVERGE')
+    cxReasonsLoad()
+    expect(CXR_CFG, 'the standard reasons do not come back').toEqual([])
+  })
+})
+
 describe('a hand-edited blob is untrusted', () => {
   const load = (raw: any) => { mem['sqn142_cxreasons'] = JSON.stringify(raw); cxReasonsLoad() }
   it('falls back to standard when the blob is not an array', () => {

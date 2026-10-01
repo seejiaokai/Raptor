@@ -318,6 +318,30 @@ describe("the owner's case — an ops brief inside a man's own debrief is FLAGGE
     expect(his!.className, 'no flag: 17:00 is the end of his 15:00–17:00 debrief').not.toMatch(/flagged|clash/)
   })
 
+  /* THE FOOT FOLLOWS THE ROW ([DB-READINESS] phase 7 walk, walker B's F1, 1 Oct 26 — older than the batch, found on the
+     sim flags and true of the flight ones too). The foot kept the SENTENCE it was given at the tap, so a time edited behind
+     the open window left the list saying "no flag" over a foot still saying "sits inside 15:00–17:00". The foot now keeps
+     WHO was tapped and says what is true of him now. */
+  it('a time edited BEHIND the open window: the foot about the tapped man follows the list', async () => {
+    debriefDay(TUE, ['15:30', '16:30'])
+    await openWin(TUE)
+    await click(rowOf(FLYER)!.querySelector('.puck'))
+    const foot = () => $('.availwin .win-foot').textContent || ''
+    expect(foot()).toContain('Not enough time to attend the VL BFM debrief')
+    await act(async () => {
+      const g = (DAYS[TUE] as any).ground[0]; g.str = '17:00'; g.end = '18:00'
+      validate(); notify()
+    })
+    expect(rowOf(FLYER)!.className, 'the list: no flag any more').not.toMatch(/flagged|clash/)
+    expect(foot(), 'and the foot no longer says there is one').not.toContain('debrief')
+    expect(foot()).toContain(`${cs(FLYER)} — nothing else on the programme at that time.`)
+    await act(async () => {
+      const g = (DAYS[TUE] as any).ground[0]; g.str = '15:30'; g.end = '16:30'
+      validate(); notify()
+    })
+    expect(foot(), 'and back again when the clash is back').toContain('Not enough time to attend the VL BFM debrief')
+  })
+
   it('and the hint under the list COUNTS him — the rows and the count are one reading', async () => {
     debriefDay(TUE, ['15:30', '16:30'])
     await openWin(TUE)
@@ -328,7 +352,60 @@ describe("the owner's case — an ops brief inside a man's own debrief is FLAGGE
   })
 })
 
-describe('the earning half moves real money, so it is gated and it writes (D43/D44)', () => {
+/* THE SAME CASE FOR A SIM ([CROWD-SIM-BRIEF], [DB-READINESS] phase 7). A man on the OFT at 10:00 is busy for the box and
+   free for the quarter-hour before it (D36), so the app's own rule puts him behind a 09:45 ops brief — and the window
+   flags that it sits inside his sim brief, in the warning list's own sentence (validate.ts simBriefSays). The real
+   resolver again, so "he is listed" is the rule's answer and not the fixture's. */
+describe("a crowd man's SIM brief or debrief is flagged too (D36 + D38)", () => {
+  const SIMMER = 'bane', STAYER = 'harpoon'
+  const simDay = (di: number, brief: [string, string]) => {
+    const d = DAYS[di] as any
+    d.waves = []; d.dutywaves = []; d.allhands = []
+    d.sims = { amt: [], oft: [{ label: 'EP-1', str: '1000', end: '1100', p: SIMMER, w: 'freak', rmks: '' }] }
+    d.ground = [{ prog: 'OPS BRIEF', str: brief[0], end: brief[1], who: 'allavail' }]
+    ensureRowIds(DAYS)
+  }
+  const rowOf = (id: string) => rows().find(r => r.dataset.awp === id)
+  beforeEach(() => {
+    HOOKS.oilSentinel = (iso: string, w: [number, number], day: any) => availableFor(iso, w, day)
+  })
+
+  it('the ops brief is 09:45–09:58 and his sim briefs 09:45–10:00: he is LISTED, and FLAGGED with the sim brief', async () => {
+    simDay(TUE, ['09:45', '09:58'])
+    await openWin(TUE)
+    const his = rowOf(SIMMER)
+    expect(his, 'free until the box itself, so the app\'s own rule puts him in the crowd (D36)').toBeTruthy()
+    expect(his!.className, 'amber, not red').toContain('flagged')
+    await click(his!.querySelector('.puck'))
+    expect($('.availwin .win-foot').textContent || '', 'the warning list\'s own sentence')
+      .toContain('No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00')
+  })
+
+  it('an ops brief inside his sim DEBRIEF (11:00–11:30) is flagged the same way', async () => {
+    simDay(TUE, ['11:05', '11:25'])
+    await openWin(TUE)
+    const his = rowOf(SIMMER)
+    expect(his, 'listed').toBeTruthy()
+    expect(his!.className).toContain('flagged')
+    expect(his!.textContent || '').toContain('No time for the OFT EP-1 debrief')
+  })
+
+  it('a man not on the sim is clean, and the count under the list is the rows\'', async () => {
+    simDay(TUE, ['09:45', '09:58'])
+    await openWin(TUE)
+    expect(rowOf(STAYER)!.className).not.toMatch(/flagged|clash/)
+    const n = rows().filter(r => /flagged|clash/.test(r.className)).length
+    expect($('.availwin .win-foot').textContent || '').toContain(n === 1 ? 'One man is flagged' : `${n} men are flagged`)
+  })
+
+  it('an ops brief clear of both windows flags nothing', async () => {
+    simDay(TUE, ['08:00', '09:30'])
+    await openWin(TUE)
+    expect(rowOf(SIMMER)!.className).not.toMatch(/flagged|clash/)
+  })
+})
+
+describe('the earning half moves real OIL, so it is gated and it writes (D43/D44)', () => {
   /* NOTE: this does NOT create the row. `puckRow` rewrites `ground` and
      ensureRowIds mints a FRESH id, so calling it again would leave the caller
      holding a key for a row that no longer exists — which is what happened, and
@@ -346,7 +423,7 @@ describe('the earning half moves real money, so it is gated and it writes (D43/D
        not just the screen"). This one test uses the crowd the step-7 fixtures
        use, because those two men demonstrably EARN from a Saturday row — who
        earns depends on what else each man is on that day, and a test that
-       asserts money against a crowd that earns nothing proves only its own
+       asserts credit against a crowd that earns nothing proves only its own
        fixture. The pilot/WSO split is covered by the column tests above. */
     HOOKS.oilSentinel = () => ['plasma', 'stiff']
     /* and clear the seed Saturday's OWN duty and sim rows, as the step-7
@@ -567,6 +644,29 @@ describe('a published day: the window reads the record, not today (Fable S3, S5)
     await openWin(SAT)
     expect(rows().find(r => r.dataset.awp === 'plasma')!.className,
       'the working copy has no sortie any more: clean').not.toMatch(/flagged|clash/)
+  })
+
+  /* [CROWD-SIM-BRIEF] (phase 7) — the same for his SIM brief: the issued face reads the sim windows of the day AS ISSUED
+     (AvailWindow hands crowdClashes the record's own `simwin` beside its events), never today's */
+  it("a sim-brief flag on the issued face comes from the RECORD — not from today", async () => {
+    HOOKS.oilSentinel = () => ['plasma', 'stiff']
+    Object.assign(DAYS[SAT] as any, { waves: [], dutywaves: [], oild: undefined })
+    ;(DAYS[SAT] as any).ground = [{ prog: 'OPS BRIEF', str: '0945', end: '0958', who: 'allavail' }]
+    ;(DAYS[SAT] as any).sims = { amt: [], oft: [{ label: 'EP-1', str: '1000', end: '1100', p: 'bane', w: 'plasma', rmks: '' }] }
+    ensureRowIds(DAYS)
+    const g = signOf(SAT); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    setDayApproved(SAT, true)                      // issued WITH the sim: its brief runs 09:45–10:00
+    ;(DAYS[SAT] as any).sims = { amt: [], oft: [] }   // today the sim is gone from the working copy
+    validate()
+    await act(async () => { view.setPage('viewsched'); notify() })
+    await click(viewChip())
+    const onRecord = rows().find(r => r.dataset.awp === 'plasma')!
+    expect(onRecord.className, 'the issued day had him on the sim: flagged, from the record').toContain('flagged')
+    expect(onRecord.textContent || '').toContain('No time for the OFT EP-1 brief')
+    await act(async () => { view.setPage('editsched'); notify() })
+    await openWin(SAT)
+    expect(rows().find(r => r.dataset.awp === 'plasma')!.className,
+      'the working copy has no sim any more: clean').not.toMatch(/flagged|clash/)
   })
 
   /* THE ONE PLACE A VERSION'S CHIP MEETS THE EARN MODE: the board, previewing

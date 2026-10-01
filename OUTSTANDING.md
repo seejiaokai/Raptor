@@ -48,6 +48,10 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
+are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
+`[DB-STEP]` wait for the end; the table list is kept up to date as each feature is added, and the table format is written on his
+side for the IT side to enter. The paragraph below is as written while the step was "starting now"; its ORDER stands.
 **THE DATABASE STEP STARTS NOW (D354, 29 Sep 26):** — and how it shares and locks, [DB-SYNC-MODEL] (D355, D356 — the mock-up and §9 DONE 29 Sep 26 on `claude/day-lock-mockup-data-model-493d27`, the red team running; his six screen questions open); for the IT team, the flow guide [IT-FLOW-GUIDE] is DONE (42 slides, `raptor-port/docs/it-flow-guide/`, merged on his "merge live" 29 Sep 26; archived). The IT team is taking the app into Dataverse now; the order below
 stands, its timing ("about two months away", "about a month before") is overtaken — the readiness batch and the OIL
 award fix are due before the tables are settled. What to finish before the hand-over: his answer to be recorded here.
@@ -78,19 +82,26 @@ award fix are due before the tables are settled. What to finish before the hand-
    `claude/db-readiness-p6c-holder-base`** (D467 — `raptor-port/docs/handpass/2026-10-01-dbr-phase6c-check.md`; the walk and
    both final reads found twelve defects, all fixed red first, one of them money; his answer on a moved request's extras:
    leave it, D468);
-   then his look (the cards), then 7.
-5. **When Manfred is ready — [DB-STEP]:** the data model to him, then the one adapter to his tables; the stack
+   **phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7 — the small OIL follow-ups below — BUILT and FULL-checked
+   1 Oct 26 on `claude/db-readiness-p7-oil-followups`** (plan and build log
+   `raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`; evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`) — **left: his look
+   and "merge live". That closes group A.**
+5. **At the END, once the features are built (D473, 1 Oct 26) — [DB-STEP]:** the table format written on his side (with his AI)
+   for the IT side to enter, then the one adapter to those tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
    then the individual bugs (D144).
 6. **Before ANY collaborator is added** — an event, not a slot: take the checks runner off this repo (SEC-101, in
    [REPO-PRIVATE]); and make the repo private again once the public period (D106) ends — his. IT's clone is such an event
    ([RESTRICTED-ENV-WORKFLOW]'s go-ahead), and so is [REPO-TIDY]'s screenshot move (the clear of the old worktrees any time).
 
-**The small OIL follow-ups — ONE batch, with the OIL award fix, before the tables are settled (D147, D203, D354):** [OIL-READ-LEFTOVERS] (its items 1, 2, 4),
-[STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
-[OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier). ([OIL-RELINK-XWEEK] closed 1 Oct 26 by `[DB-READINESS]` phase 6 (c).)
+**The small OIL follow-ups — ONE batch, with the OIL award fix, before the tables are settled (D147, D203, D354): BUILT 1 Oct 26 as
+`[DB-READINESS]` phase 7, all six archived** — [OIL-READ-LEFTOVERS] (its items 1, 2, 4), [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX]
+(answered D470 — a man in the name box of another man's request earns), [OIL-WORDS], [OIL-PERSONAL-PLACEHOLDER], [CROWD-SIM-BRIEF];
+evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`. Left: his look and "merge live". ([OIL-RELINK-XWEEK] closed 1 Oct 26 by `[DB-READINESS]` phase 6 (c).)
 
-**Placed by their own lines — not his rulings:** from the group-A FULL walk (30 Sep 26) — with group B:
+**Ruled, to build next (D469, 1 Oct 26):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, and its line stays in the list struck out; a mock-up and three readings to him first, then its own branch and FULL check, after `[DB-READINESS]` phase 7.
+
+**Placed by their own lines — not his rulings:** from the `[DB-READINESS]` phase 7 walk (1 Oct 26), none of them this batch's — low, each with the next change there: [COUNT-CHIP-PHONE-TAP] (fixed for Chromium in phase 7; his iPhone look left), [INP-TILL-STALE] (a remark keeps a "till" date its request no longer reaches — new data), [OIL-INERT-TAP-SILENT], [OG-TAG-OVER-COUNT], [MEMBER-EDITPAGE-CHECK] (a check, not a known fault); from the group-A FULL walk (30 Sep 26) — with group B:
 [UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
 [TRK-UNDO-WRITES-DEFAULTS], [SECDEFAULT-OFFER-BEHIND-BOARD], [BLOCK-NO-HISTORY-LINE], [ACCOUNTS-SEED-FIRST-WRITE] (demo
 only), [SETTINGS-LIST-ROWS] (a stage-2 split, only if it bites), [LW-OIL-DATECHIP-HIDDEN], [READONLY-WEEK-WORDS];
@@ -111,8 +122,9 @@ The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, af
 phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
 **Waiting on him — no order exists:**
-[OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
-D147), [LEDGER-READ-ASK] (a question for him, from the OIL award build), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
+[LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
+[OIL-EARNED-VS-GRANTED] (ANSWERED D400 and built with the award fix — merged, PR #469, 29 Sep 26; the item is still to archive),
+[LEDGER-READ-ASK] (a question for him, from the OIL award build), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
 ruled), [CRP-FLAG]'s remainder and then [FLAG-EXPORT], the [AMEND] leftovers, [ADMIN-DISPLAY] ("next time we revisit",
 D161), with [USER-GUIDE] (wanted, not urgent) and [PERF-RESIDUALS] (two of them change wording
@@ -443,24 +455,6 @@ show/hide it outside React; either needs a speed check (the re-render would land
 frame). The Quals page's frozen header has the same shape. **Place:** the next Leave War polish item,
 after `[HUMAN-RETEST]`; show him first — he may not see a one-frame blink at all.
 
-### [OIL-PERSONAL-PLACEHOLDER] A placeholder on a landed "Personal" request row draws no count (23 Sep 26)
-
-Found by Fable's scenario design, confirmed by reading (not walked). A "Personal" request can land on
-the ground programme (`ground:true`) but never asks the OIL question (`oilAsks` excludes it), and the
-request half of the evidence only records a placeholder's crowd for ASKING types — so ALL / ALL AVAIL
-dropped on such a row gets no membership: no count chip, no window, on any day. D27 says the count
-shows wherever the puck lands; D46 lets it land on a request row. **Pre-existing on `main`** (the
-membership code is `[OIL-SEATS-CAN-EARN]`'s), rare in practice. The fix touches the OIL evidence
-(`engine/oilev.ts` — record the crowd for any landed row standing a placeholder, earning or not), so
-it is FULL tier and wants both readers. Evidence: `raptor-port/docs/handpass/2026-09-23-allavail-window.md` §3.
-
-### [CROWD-SIM-BRIEF] The D38 flag does not cover a crowd man's SIM brief/debrief (23 Sep 26)
-
-The window flags an event that sits inside a crowd man's own FLIGHT brief or debrief (`crowdClashes`,
-`engine/validate.ts`). His SIM brief/debrief windows are built inside the warning pass from its
-private sim table and are not reachable from outside it, so a sim man behind an ALL AVAIL is listed
-clean. Needs the sim windows lifted into one body, as the flight ones were. WALK tier.
-
 ### [DEPLOY-DOCS] The Pages-era deploy text is stale since the repo went private (D59, 23 Sep 26)
 **STATUS 24 Sep 26: the DOCS half is DONE** in the spring clean — the Pages-era text of `raptor-port/CLAUDE.md` and
 `HANDOFF.md` moved whole to `raptor-port/docs/archive/`; the live rules are `.claude/rules/shipping.md` and
@@ -471,19 +465,14 @@ deploy — files that start the gates, so their own small change.
 
 `raptor-port/CLAUDE.md` §Build & verify and §How to work here, and `HANDOFF.md` §Deploy, still describe GitHub Pages as the official live site, the "done means live" chain ending at Pages, and `seejiaokai.github.io/Raptor` as the page to check. All of it stopped being true on 23 Sep 26: Pages is gone, the publish job is off, Vercel is the only viewer. Marked SUPERSEDED in place at the two most misleading lines; the proper rewrite is its own docs pass (D29 — never trim inside another change). **Tier: NONE.** Do it with `[DOC-TRIM]`, which owns the same two files.
 
-### [OIL-WORDS] Stop calling OIL "money" in the code comments (owner, D25, 22 Sep 26)
-
-OIL is banked TIME OFF, not pay. **Nothing on screen is wrong** — checked 22 Sep 26, no user-facing
-string says paid, pay or money. The shorthand is in CODE COMMENTS (`ui/oilmode.ts` ~117, 211, 294,
-455, 542, plus `engine/oil*.ts`) and some test names. **Tier: NONE.** Fold into any later pass that
-already touches those files; the definition now heads the OIL behaviour register.
-
 ### [OIL-AWARD-IS-A-GRANT] An award is a ledger grant stored a second way (Fable, 21 Sep 26)
 **BUILT 29 Sep 26 on `claude/award-earned-vs-granted-2ed66d`** (with `[OIL-EARNED-VS-GRANTED]`, D400–D402; plan
 `raptor-port/docs/superpowers/plans/2026-09-29-oil-award-one-kind-plan.md`, both reviewers' two rounds folded in) — every
 hand-given OIL award is one ledger entry drawn on the grid; the ledger recorded per entry for undo; earned / awarded /
 corrections apart. Left before "merge live": the walk, both final code reads, his look. The text below is the item as it
 stood.
+*(Noted 1 Oct 26 by the phase 7 chat: this MERGED — PR #469, 29 Sep 26. Still in the backlog; before it is archived, check its
+"who entered it and when" line, below, against what was built.)*
 **Raised by the [OIL-AWARD-ADD] design review as the real architectural root cause. NOT built, and
 deliberately not bundled — it moves persisted balances again and touches ~28 test files, so it is
 its own escalated session. It needs the owner's go before anything is written.** **GO GIVEN (D147, 24 Sep 26):**
@@ -522,7 +511,7 @@ which it is, so a split needs no guessing. Explained to him 29 Sep 26.
 derivation — the step-4 design §7 (`specs/2026-09-19-arch-stack-4-one-absence-design.md`). Decide both together.
 
 ### [OIL-EARNED-VS-GRANTED] The tracker calls an award "earned" (Fable, 21 Sep 26)
-**BUILT 29 Sep 26 with `[OIL-AWARD-IS-A-GRANT]`** (on its branch — not merged): "earned" is the automatic credits alone,
+**BUILT 29 Sep 26 with `[OIL-AWARD-IS-A-GRANT]`** (on its branch — not merged *[merged since: PR #469, 29 Sep 26 — noted 1 Oct 26]*): "earned" is the automatic credits alone,
 "awarded" every hand award, "corrections" its own row.
 **ANSWERED 29 Sep 26 — D400: "earned" is only what the app credited itself; every hand award, grid or tracker, reads
 "awarded". Built with [OIL-AWARD-IS-A-GRANT].** The text below is the question as it stood.
@@ -540,30 +529,6 @@ for will read "earned 4".
 One afternoon. **Ask him before doing it** — it changes two numbers he reads.
 **Do it as its own small change, in a FRESH chat** (agreed with him 21 Sep 26 — carried here 24 Sep 26 from
 `[OIL-NEXT-TWO]`, now archived, whose other half, his look at the award preview, closed when PR #423 merged).
-
-### [OIL-READ-LEFTOVERS] The four the two final code reads raised and this branch did not act on (22 Sep 26)
-
-Both providers read the finished OIL branch blind to each other and returned the SAME four defects;
-three were already fixed and the fourth (a nought-minute SC/AVALON/BB shift saying it still earns)
-was fixed in the same session. Reports and the reconciliation:
-`raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-final-read-{fable,codex,reconciled}.md`.
-These four are what was deliberately left:
-
-1. **The saved-plan preview's chip and its tap disagree about which list it is** (Fable F3, LOW).
-   Wording, on a surface `[ALL-AVAIL-WINDOW]` replaces. Do it there or not at all.
-2. **The second spare sim seat leaves a hole in the stored crew array** (Fable F4, LOW). Check it
-   against `slots.ts`'s trailing-blank trim before changing anything — the array shape is that
-   file's contract, not D50's.
-3. **An already-issued weekend carrying a placeholder reads "1 pending" the moment this ships**
-   (Fable F5, LOW). **PART DONE 22 Sep 26, on his "ok fix this first".** The day used to say "1
-   pending" with no cell marked and nothing in History, while the chip beside the puck said "?" —
-   something changed, nothing said what, and the one place to look was never written down. The day
-   now NAMES it (`OIL_OLD_BLOCK`), so he is not republishing blind. **CLOSED — RULED D54 (23 Sep 26,
-   "leave it as it is"): the day raises the mark.** He republishes once per affected day and those
-   men get their OIL. Do not re-open it later as a bug (standing order §7.6).
-4. **A placeholder that reaches a cockpit by copy draws the jet as crewed** (Fable F8, LOW,
-   pre-existing). D47 belts the money on purpose and names this; the screen half is one advisory
-   away. A product call, not a defect against the plan.
 
 ### [REPO-PRIVATE] Make the repo private and share it with developers — HALF DONE 23 Sep 26 (D59)
 
@@ -621,24 +586,6 @@ real names/IDs/DOB/next-of-kin/rank), and the stores, mission and area vocabular
 terms and compass points). The only `RESTRICTED` is the stamp the app PRINTS on schedules it
 generates (`src/ui/printpdf.ts`) — the product working, not a trace of anything received.
 `tracker.css`'s `.restricted` banner is dead style, rendered nowhere. **That check never opened the Tracker's SYLLABUS data** (222 events of course content) — and he has since ruled it OUT OF SCOPE (D62): leave it, never flag it again. Every other mention of the aircraft type is now "fighter squadron" or the bare "F-15" (D63, D64) — only that syllabus data keeps it.
-### [STORE-READER-SWEEP] A stored record read more narrowly than it is written — sweep for more (22 Sep 26)
-
-**TWO INSTANCES FOUND IN ONE FILE IN ONE EVENING, both silent, both about official
-dates.** `readPostOuts` insisted a posting record carry a LEAVING date, so every
-JOINING date `setPostIn` wrote was discarded at the next boot; and `setPeople`'s
-keep rule then tested membership of that record rather than the leaving date it
-means. Both fixed on `claude/oil-seats-can-earn`. Neither was found by a walk or
-a review — they came from re-reading the file around an unrelated fix.
-
-**The shape, so it can be looked for:** a writer grows a new case (a second date,
-a new field, a nullable end) and the untrusted-storage reader beside it is not
-widened with it. The write succeeds, the reload silently drops it, and nothing on
-screen says so. Two spot-checks came back clean (`readPersonEdits` matches
-`setPerson`'s type exactly; `readOilPolicy` covers both its fields) — the rest of
-`leavewar/state/store.ts`'s readers, and the scheduler's own storage seam, have
-not been walked. **Small, mechanical, and worth doing once**: for each reader,
-find its writer and diff the shapes. Priority: with the other small follow-ups.
-
 ### [LW-SCRUBBER-FLAKY] Leave War e2e tests time out on a saturated machine — PRE-EXISTING (21 Sep 26)
 `e2e/leavewar.spec.ts` "the bottom scrollbar is a year-wide scrubber", lw-desktop only. Under a full
 parallel run it sometimes times out after the SEP month button is clicked: the grid has not scrolled
@@ -692,9 +639,13 @@ Today each person has ONE running balance per counter; leave on 1 Jan simply com
 year is handled by the admin's "Reset counters". Decide next session: separate balances per year/war,
 carry-over rules, and which year a leave crossing 31 Dec charges. Context: clash catalogue Q10.
 
-### [DB-STEP] The shared-database step (Dataverse) — STARTS NOW (D354, 29 Sep 26)
+### [DB-STEP] The shared-database step (Dataverse) — AT THE END (D473, 1 Oct 26; "starts now", D354, is replaced)
+**AT THE END (D473, 1 Oct 26 — "Database at the end."):** the app goes into Dataverse once its features are built — the IT side's
+own advice (the app about 60% built; once it is in, every change needs their review and merge, and no AI outside that environment
+can sign in to check it). He, with his AI, writes the table format and schema for them to enter; `raptor-port/docs/data-model.md`
+is that list, kept up to date as each feature is added. What the platform offers today: `[IT-QUESTIONS]` (1 Oct 26).
 
-**STARTED 29 Sep 26 (D354):** the IT team is taking the app into Dataverse now; he means to keep working on the app beside it.
+*(As written 29 Sep 26, replaced by D473:)* **STARTED 29 Sep 26 (D354):** the IT team is taking the app into Dataverse now; he means to keep working on the app beside it.
 
 
 **ACCESS CHANGES TAKE EFFECT AT ONCE (Astra's read of `[ACCOUNTS]`, 26 Sep 26):** switching an account off, demoting
@@ -789,29 +740,6 @@ THREE halves now (owner, 15–17 Sep 26):
   - **Process:** produce 1–2 rendered sample PDFs for the owner to PICK before finalizing
     (his "show a picture before product code" rule); nothing merges without "merge live".
 - Separate gated PR after [CRP-FLAG]. Context: [CRP-FLAG]'s review log + the sample image.
-
-### [OIL-REQ-NAMEBOX] A man typed into a REQUEST row's name box in place of the requester earns nothing — OPEN, 22 Sep 26
-
-**Deferred deliberately during `[OIL-SEATS-CAN-EARN]` step 6, not missed.** That step made a
-PLACEHOLDER on an accepted request's row count the people it stands for, in the name box and in the
-extras line alike. It left one case alone: a real, named person dragged into the name box in place
-of the man who filed the request. He does no worse than before — he earned nothing there yesterday
-either — but he is plainly doing the work, and D18 ("for 2 he should earn") is the same argument
-that got the extras line paid.
-
-**Why it was left.** In every path the app has, that box holds the requester, and the money already
-pays him from his own answer. Crediting "whoever is in the box" would move money on a case nobody
-has reported, inside a step whose scope the plan fixed. Doing it silently is exactly the shape the
-OIL build keeps getting bitten by.
-
-**What to do.** Put it to the owner as a walk question — can the scheduler put someone ELSE in a
-request row's name box, and if so should he earn from it? If yes, it is one line in
-`landedExtras` (treat the name box like the extras, the requester still excluded) plus a test.
-**Priority: with the other small OIL follow-ups, after the walk.**
-**Context:** `raptor-port/docs/superpowers/specs/2026-09-22-oil-seats-can-earn-plan.md` §5 step 6;
-the body is `raptor-port/src/engine/oilev.ts` `landedExtras`, and its own comment says why.
-
----
 
 ### [TRK-PINCH-ASK] His iPhone look at the pinch fix (24 Sep 26)
 **Place:** his next Tracker session — nothing is broken; `[TRK-PINCH-DRAGS-BALL]` merged on D133 without his look.
@@ -1041,6 +969,9 @@ then); the server-side check (a plug-in and Custom APIs — IT's, §12 q8); §12
 **The shape work it hands to `[DB-READINESS]` group A** is listed there.
 
 ### [DB-READINESS] Our side of the database, built against the fake database — before the tables are settled (D203; D354 — the step starts now; filed 26 Sep 26)
+**D473 (1 Oct 26): THE DATABASE COMES AT THE END. Group A is built (phases 0–7, the last waiting on his look); GROUP B AND THE
+LOCK'S SCREENS WAIT for the connection — no more readiness work until then. New features keep to the same saving route, and the
+table list is updated with each.**
 **SPLIT (owner, D453, 29 Sep 26): GROUP A — before the IT team settles its tables — (1) saving in small pieces, (4) never
 seeding demo data, plus the design's shape work from `[DB-SYNC-MODEL]` (the schedule a day per piece, the single change
 log, no week-deleting reconcile, the planning calendar's own records — and, from the design's red team: the command
@@ -1108,6 +1039,10 @@ an edit that changes nothing 69 vs 65 ms, on the board 92 vs 83 ms; a real edit 
 the base as JSON and works the view out over a copy of all seven, at every scheduler command. Measure again with the
 30-second check (it runs the same pass); if it matters, compare only the days a command named plus those whose requests
 changed (`requestsSig` per day), and skip the view when neither moved.
+**Phases 0–6 MERGED 1 Oct 26 (PR #476, his "merge live"; live on Vercel). Phase 7 — the small OIL follow-ups — BUILT and
+FULL-checked 1 Oct 26 on `claude/db-readiness-p7-oil-followups`: plan and build log
+`raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`, evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`. Left: his look
+and "merge live" — then group A is whole.**
 
 ### [IT-QUESTIONS] Talk to the IT side now — their approvals take weeks (his, not code; D203, filed 26 Sep 26)
 The checklist is the primer's §7 (Artifact "Raptor Backend Primer"; its questions, kept here so they outlive it): code apps
@@ -1153,6 +1088,39 @@ natural keys — a week's start, week + day, a remark's date, person + counter);
 from the app's shipped lists. **The whole list — 29 questions in four groups (A: before the tables settle; B: the day lock;
 C: the design's other open questions; D: environment and process), each with its context — was given to him as a
 copyable text on 30 Sep 26, to send to IT; record their answers here as they come.**
+**ANSWERS FROM THE IT SIDE, 1 Oct 26 (told to him in person, relayed in chat the same day — heard, not in writing):**
+(1) *Timing:* the app is about 60% built with a lot of function still to come, so do NOT worry about the tables and schema
+now — do them at the END, or add to them as each new feature is created; IT's advice is NOT to put the app in the database
+yet. (2) *Why:* once it is there, every change means telling IT, a pull request, IT's review (does it need a new table?) and
+IT's merge; and no AI outside that environment can sign in to the app there, so bug checks become manual (as
+`[RESTRICTED-ENV-WORKFLOW]` already says). (3) *Who writes the tables:* HE does, with his AI — the table format and data
+schema, for IT to enter into Dataverse at the end. This reverses the 10 Sep agreement in
+`raptor-port/docs/handover-dataverse.md` ("You design the tables"). (4) *What the platform offers today:* no plug-ins and no
+Custom APIs; Dataverse functions work; Power Automate flows exist and can send a notification to a Teams chat group or to
+named users — NOT to an app role (so "the schedulers" would be a Teams group chat he creates). (5) *The change history's
+running number:* yes, the database can assign it (answers the `EditLog.seq` question above). (6) *A reading limit:* Dataverse
+"can only read 2000 lines of the latest" — his words; whether that is 2,000 rows per read with more pages to ask for, or a
+hard cap, is still to ask.
+**What it touches, each waiting on HIS decision (asked 1 Oct 26 — the agent's advice: follow IT; group A is whole once phase
+7 merges, group B and the lock's screens were always after the connection, so they simply wait):** D354 and D453's timing
+("the database step starts now"); `handover-dataverse.md` §What we agreed and §What happens next; the day lock's server-side
+check (D450, `data-model.md` §9 and §12 q8 — designed with one plug-in plus Custom APIs; with neither, a take-over and freeing
+an idle day need another route — a Dataverse function or a flow — to design when the lock is built); the 2,000-row reading
+limit against the Leave War's records and the change history (`data-model.md` §8 load by need). **DECIDED 1 Oct 26 — D473:
+"Database at the end."** D354 is replaced, D453 and D203 narrowed in their timing, the handover note corrected at its head; the
+lock's server-side check is redesigned when the lock is built.
+**THE IT SIDE'S WRITTEN REPLIES, 1 Oct 26 (to the Tracker proposal he forwarded — one syllabus row shared by its courses, its
+events and its drawing as JSON text in a multi-line column, marks per student; D474):** (1) *the format of the table list* —
+"doesn't matter. Just make sure it's readable by a human"; (2) *the prefix and naming* — the publisher prefix is decided when
+the tables are created; names can be anything that accurately labels what the table is for; (3) *the 2,000-row limit* — **per
+request, WITH PAGING** (not a hard cap), so a large read is asked for page by page and filtered on the server; (4) *whether a
+multi-line text column suits the two JSON columns* — he cannot say until he knows the largest chart's size. **Measured the same
+day and sent to him** (`raptor-port/src/tracker/data/`, the four shipped charts): the largest has 212 events and 285 links;
+its events are about 21,300 characters of JSON and the largest drawing about 33,200 — some 55,000 together, against Dataverse's
+documented ceiling of 1,048,576 characters for a multi-line text column (to confirm in his environment). No objection was
+raised to the proposal itself. **Was to ask (answered above):** an example
+of the format he wants the tables written in (one table, his way), the publisher prefix and naming rule, and what exactly the
+2,000 limit is.
 
 ### [LW-WINDOW-PRUNE-FLAKE-2] The month-window browser test's OTHER branch timed out once inside the full run — test-only (filed 30 Sep 26)
 `raptor-port/e2e/leavewar.spec.ts` "the grid draws a window of months over year-wide placeholders, keeps every row aligned,
@@ -1508,7 +1476,7 @@ live") rewritten for pull requests to IT, on his word. **Place:** with `[DB-STEP
 better for me to find bugs right?"* — yes for what only the database shows (two people on one day, the lock, slowness, real
 volumes), but on a TEST copy IT provides, never the live one; the app's own rules are still found the same way, by walking.
 *"should i put this in a database first or just continue working in my repo?"* — keep working here until phase 6 (c) and
-phase 7 are merged (they decide the tables' shape), then give IT the go-ahead; after the clone, work ONLY in IT's repo (one
+phase 7 are merged (they decide the tables' shape), then give IT the go-ahead *(overtaken 1 Oct 26 by D473 — the database comes at the END, once the features are built)*; after the clone, work ONLY in IT's repo (one
 copy on his desktop), never two. **To ask IT, with (2) above:** a test environment separate from the live one, with test data,
 that this PC can run the app against (so the walk still runs); push access for branches and pull requests from his desktop;
 whether the checks run on each pull request and whether a preview link exists; that IT's own changes (the connection files)
@@ -1533,3 +1501,82 @@ then the Storage, Tracker, rulings, command-layer and architecture rows (~0.4–
 `backlog-archive.mjs --move` puts a blank line before a block it lands, so a table row moved alone would not sit inside a
 table there — either the mover learns to land a row under a table header, or each row's detail is moved as a paragraph.
 **Place:** low; not a target (D141) — worth it only when the small-fixes branch has merged; put to him first.
+
+### [LOAD-MSG-SHORT] The line shown after "Load onto working copy" is long — a shorter two-line version? — a question for him (filed 1 Oct 26)
+**His question, 30 Sep 26** (on the group-A branch's look): what the long message after "Load onto working copy" was. It is
+the one sentence that load writes to the screen AND to the change history (`raptor-port/src/ui/interactions.ts`, the
+`data-restore` branch): "<day>: <version> loaded onto the working copy — viewers still see <version> until you publish ·
+N unpublished edits replaced · N requests also cover another day — left as filed · N requests came back onto the programme
+with their row — <days> read that too …" — each clause a real fact the load could not otherwise say (D98, D175, D363), so
+none can simply be dropped. **Offered to him, unanswered:** a shorter two-line version on screen (the first line what was
+loaded and what viewers still see; the second "N things to know ▾" opening the rest), the full sentence kept in the change
+history. **Place:** low — his call; its own small job (WALK tier: a message on a shared surface), never inside another change.
+Carried here from the merged `claude/db-readiness-table-shaping-4094f6` handoff block when it was removed (1 Oct 26).
+
+### [WARN-HIDE-KEPT] A hidden warning stays hidden for everyone until unhidden; no flag on the pucks; its line struck out, not gone — RULED D469 (1 Oct 26), TO BUILD
+**His ruling (D469, 1 Oct 26 — answering the question the stored-record sweep of `[DB-READINESS]` phase 7 raised):** a hidden
+warning stays hidden, for everyone, across a reload and a sign-in, until someone unhides it; while it is hidden the pucks
+carry no flag for that item; and its line in the day's warning list stays where it is, struck out and darker, one tap from
+being flagged again. Why (his words): the scheduler has acknowledged it, has other considerations, and does not want the
+schedule that goes out to alarm. The full row: `.claude/decisions-full/scheduler.md` D469.
+**What the app does today (so the build is known):** a hide is saved with its day (`ScheduleDay.wo`), but every sign-in
+clears the hidden list (`raptor-port/src/state/view.ts`) and the boot does not read the saved ones back for the week on
+screen (`state/store.ts initStore`) while a week opened later does (`loadWeek`); hidden warnings gather under an "N hidden"
+line; and a hidden warning still rings and chips its pucks (the Aug 26 rule: "a muted problem is still a problem").
+**To build:** (1) the boot and the sign-in read the loaded week's saved hides back, and a sign-in no longer clears them;
+(2) a hidden warning marks no puck — no ring, no chip, on the board, the edit week and (see the open reading) the schedule
+that goes out; (3) the hidden line is drawn in place, struck out and darker, its ↺ beside it — the "N hidden" fold goes;
+(4) `ui-contracts.md` §Mute a specific check rewritten to match (its D469 note marks the three sentences today).
+**His answers to the readings (D471, 1 Oct 26):** built as ITS OWN job after phase 7; (b) a hide on a day ALREADY PUBLISHED
+WAITS for the next amendment — a pending change (D45, D103); (c) the published and printed schedule DROP the hidden item's
+flag too. **(a) ANSWERED — D472 (1 Oct 26):** a hidden warning is NOT COUNTED — 3 issues with one hidden reads "2 issues",
+and the count line says nothing about a hidden one; it is noticed only by opening the day's issues list and seeing its line
+struck through and darker. **Every reading is now answered — the design is complete.** A picture first (the struck-out line
+on the board and the edit week, phone and desktop), then the build. **Kept, as he was read:** only a scheduler hides and unhides; a hide is an Undo step; a hidden warning
+returns by itself when the situation changes (his Aug 26 words). **Tier:** FULL (the warning list, saved data, the published
+record). **Place:** the next job after `[DB-READINESS]` phase 7, on its own branch — the tables' shape is settled by the
+ruling itself (`wo` stays in the day's row), so IT is not waiting on the build.
+
+### [INP-TILL-STALE] The Inputs editor leaves "till <date>" in the remarks when a range is taken back to one day (walk find, 1 Oct 26)
+Found by walker A of the `[DB-READINESS]` phase 7 walk (its O4; picture `raptor-port/docs/img/handpass/2026-10-01-dbr-phase7/a/A10x.png`),
+outside that batch. **Steps:** Inputs page, the editor of a one-day request on 18 Jul; click 19 Jul in its calendar (dates read
+"18 Jul → 19 Jul", the remarks gain "till 19 Jul"); click 19 Jul again (dates "19 Jul") — the remarks keep "till 19 Jul"; Save
+stores it and the row prints it. New data, not stored-only (so not D56). The app owns that token (`engine/inputs.ts
+withRemarksTail`) and D189 counts it on a published day. **To do:** the editor's re-pick rewrites or drops the token on every
+change of the span, the collapse to one day included; a test that drives the editor's own calendar. **Tier:** WALK (the
+published day's words). **Place:** low — with the next Inputs change.
+
+### [OIL-INERT-TAP-SILENT] In OIL Earn a tap on a puck that cannot earn says nothing (walk find, 1 Oct 26)
+Walker A's O1 (pictures `…/2026-10-01-dbr-phase7/a/A3r-phone-1.png`, `A3r-desk-1.png`). A puck with nothing to earn from its row
+(a row with no end time, a Personal request — and every other inert case) carries its reason as a hover title only; a tap
+selects it (blue) and says nothing, so on a phone the reason cannot be read on the row — only in the ALL AVAIL window's foot.
+The mode's general behaviour, older than phase 7. D31 says a seat with nothing to measure "says why instead"; D26 (leave the
+mode's phone tap targets as they are) is about the targets, not this silence. **To do, if he wants it:** a tap on an inert
+puck in the mode says its reason (the app's own message line), selecting nothing. **Place:** low — with the next OIL Earn change;
+a question for him first.
+
+### [OG-TAG-OVER-COUNT] The "OG" new-to-you tag sits over the top edge of an ALL AVAIL count (walk find, 1 Oct 26)
+Walker A's O3 (pictures `…/2026-10-01-dbr-phase7/a/R4b-*.png`, `R4-1.png`): on the member's View-only Sched, the dotted "OG" tag on
+a changed seat overlaps the count chip's top edge; the number stays legible close up, crowded at normal size. The admin's view
+is clean. Cosmetic, older than phase 7 (D172's tag, D37's chip). **Place:** low — with the next change to the tag or the chip;
+measure both at phone width.
+
+### [MEMBER-EDITPAGE-CHECK] A member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons — a check (walk note, 1 Oct 26)
+Walker A's O5 (picture `…/2026-10-01-dbr-phase7/a/R4-4.png`). No control leads a member to Edit Schedule; reached through the
+developer bridge on this PC, the page drew the Amendments panel with "Discard marks" and "Publish AL1" looking live. Nothing
+was pressed. The rule is that the page, the write path and the command gate all ask `raptor-port/src/state/perms.ts`.
+**To do:** press each as a member in a walk and confirm the write path refuses with its reason; if the page gate is the only
+thing between a member and those buttons, gate the panel too. **Place:** low — a check to run with the next roles work.
+
+### [COUNT-CHIP-PHONE-TAP] A finger tap on an ALL AVAIL count on the phone's week — FIXED for Chromium 1 Oct 26; his iPhone look left
+Found by walker C of the `[DB-READINESS]` phase 7 walk (F1), pressed by Astra's final read (1), reproduced by the host on that
+build and on the build before the batch (`9191910b`) — older than phase 7. **What happened:** at 390 px a finger tap on the count
+under an ALL / ALL AVAIL puck armed the row on Edit Schedule and selected the puck on View-only Sched; the window never
+opened. **Cause (diagnosed, `raptor-port/scripts/handpass/p7-h-phonetap2.mjs`):** a browser snaps a touch to the nearest element it
+believes answers a tap; the count's click is handled on the document, so it was not one, and the puck 2 px above took every
+event of the tap. **Fixed:** the count answers a press itself (`scheduler.css` `.oilcount:active`) — no size change; pinned by
+a real-touch browser test (`e2e/availwin.spec.ts` "phone, by finger") and re-walked on both week views.
+**Left:** (1) HIS IPHONE — the fix is proven in Chromium's phone emulation only; Safari decides a touch's target its own way
+(on his look card: tap a count under ALL AVAIL on View-only Sched). (2) A question for him if it is still fiddly there: the
+count is 20 × 14 px; Astra proposed a 28 × 28 px target on the phone's week, which costs a line of height on rows that carry
+one (a measured layout — a picture first). **Place:** his look; then close, or the bigger target as its own small job.

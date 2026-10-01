@@ -43,6 +43,16 @@ Nothing here changes what a screen does. The app's own units (a week, a chart
 layout) survive as JSON columns at stage 1 and normalise later, on the
 schedule in section 6.
 
+**When, and who writes the tables (owner, D473, 1 Oct 26):** the app goes into the database at the END, once its features
+are built. This document is the table list: it is kept up to date in the same change as any feature that adds or alters
+something the app saves, and at the end it is turned into the format the IT side asks for, for them to enter into Dataverse
+(they no longer design the tables). The platform as they described it on 1 Oct 26 — no plug-ins or Custom APIs, Dataverse
+functions and Power Automate flows, a reading limit of 2,000 rows PER REQUEST, WITH PAGING (their written reply the same day;
+every large read is filtered on the server and asked for page by page) — is in `OUTSTANDING.md` `[IT-QUESTIONS]`; the
+table list may be in any format a person can read, names anything that says what the table is for, the prefix theirs to
+pick when the tables are made; §9's day lock (rule 8, §12 question 8) was designed with one plug-in and is redesigned for that platform
+when the lock is built.
+
 ## 2. Design rules every entity follows
 
 | Rule | What it means in the schema |
@@ -193,6 +203,12 @@ has no name then), and **its events as JSON at stage 1** (`def` — only for a c
 untouched built-in reads its shipped events). `aliasOfId` is retired (a rename keeps the id).
 App change: a syllabus can be referenced by id from an enrolment, so a rename
 no longer has to rewrite marks and rosters.
+
+**One chart, shared — and marks belong to the student (owner, D474, 1 Oct 26):** a syllabus is ONE row every course on it
+reads; an edit to it reaches every course and every student on it, and is a change to rows (this one, its `Layout`, a
+ball's typed details) — never a new table and never a copy per course. Marks hang on the `Enrolment` and the event's fixed
+code, so moving, redrawing or re-wording a ball leaves them where they are; a new ball shows ungraded for everyone on the
+chart; deleting a ball removes its marks for everyone on it (D124). A variant for one course is a Duplicate.
 
 ### TrainingEvent
 
@@ -353,7 +369,9 @@ day's row**. Every field of today's persisted week record (`weekStashSnap()`, `s
 
 - **Into that day's row:** the day itself (`d[di]`); every `SCHED` map keyed by day index (`ok`, `sg`, `sb`, `cv`,
   `dr`, `cd`, `cr`); every map keyed by slot key, split by the day the key names (`c`, `p`, `ad` — `keyDay()`);
-  the muted warnings (`wo` — `warnMuteKey` leads with the day). The working sign-offs travel here (Sign-offs, above).
+  the muted warnings (`wo` — `warnMuteKey` leads with the day) — **confirmed by D469 (owner, 1 Oct 26): a hidden warning is
+  kept with its day, for everyone, until someone unhides it** (so `wo` is part of the day's row, and a hide is the day
+  holder's write like any other). The working sign-offs travel here (Sign-offs, above).
   *(Corrected 30 Sep 26, `[DB-READINESS]` group A phase 1 — plan §2.5, §4: `o` and `rt` are NOT in the day row. The
   Original is issuance 0 of its version and each amendment its own issuance — one `Amendment` row each; a withdrawn
   one keeps its row and gains an `AmendmentRetraction` row beside it. `rt` is keyed by version (`<verId>~<n>`), not by
@@ -874,6 +892,9 @@ Relationships: 1–1 `Syllabus`.
 From today: `charts.layouts[name]`.
 App change: none. The clearest case for a JSON column — the app reads and
 writes the whole layout as one unit, and nothing outside it queries inside.
+**Size (measured 1 Oct 26 on the four shipped charts, for the IT side's question):** the largest drawing is about 33,200
+characters of JSON and the largest chart's events (212 events, 285 links — the `Syllabus` row's JSON at stage 1) about
+21,300; a multi-line text column's documented ceiling is 1,048,576 characters.
 
 ## 4. Relationship diagram
 

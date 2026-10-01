@@ -4,13 +4,13 @@
    §7.3, §7.4, §9.1, §9.2, §9.3)
 
    ONE place that says what earns OIL on a day, and the ONE body that computes
-   it. Before this, the money came from two disagreeing sources: the day's
+   it. Before this, the credit came from two disagreeing sources: the day's
    ISSUED snapshot for schedule work, and LIVE `INPUTS` for a duty-and-
    commitments claim. So revising an OIL answer on a published Saturday moved
    the credit at once and produced no amendment, and an overseas-duty answer
    could never produce one at all, because OD has no row on the programme.
 
-   THE ANSWER: the day carries an OIL EVIDENCE BLOCK, and money comes only from
+   THE ANSWER: the day carries an OIL EVIDENCE BLOCK, and credit comes only from
    it. On an ISSUED day the block is FROZEN into the snapshot (`Day.oilev`,
    attached by publish.ts's daySnap) and the credit pass reads nothing else. On
    the live working copy the block is DERIVED ON READ from the current inputs,
@@ -103,7 +103,7 @@ export interface OilInputEv {
    *  it (job 2, 22 Sep 26). A request lands ONE row, on its FIRST day, by
    *  design — so asking "is there a row on the day being paid?" answered NO on
    *  every other day it covers, and a Saturday the member had answered YES for
-   *  paid nothing. The row's state travels with the claim instead:
+   *  credited nothing. The row's state travels with the claim instead:
    *  `unlanded` never landed · `active` a live row · `cx` cancelled ·
    *  `info` shown-only · `gone` its row was deleted · `elsewhere` landed on a
    *  week nobody has loaded. */
@@ -251,16 +251,16 @@ export function earnsFrom(ev: OilEvidence, person: string, item: string, dflt: b
   return dflt
 }
 
-/* ---- the ONE body behind the screen and the money ------------------------ */
+/* ---- the ONE body behind the screen and the credit ------------------------ */
 
 /** THE SEAT'S OWN ANSWER for one man on one item, before any decision is
  *  applied: does this piece of work earn by default?
  *
- *  IT EXISTS BECAUSE THE SCREEN AND THE MONEY MUST NOT ANSWER IT SEPARATELY
+ *  IT EXISTS BECAUSE THE SCREEN AND THE CREDIT MUST NOT ANSWER IT SEPARATELY
  *  (Fable R2-1 and Codex OSE-R2-01, found from opposite ends). The mode used to
  *  carry its own `itemDefaultFor`, which returned true whenever there was no
  *  claim. Once a seat can default OFF that is wrong in the worst direction: the
- *  man would draw GLOWING while the money paid him nothing, and his tap would
+ *  man would draw GLOWING while the credit pass credited him nothing, and his tap would
  *  write `deny` for a credit he never had — so `allow` became unreachable and
  *  D24's only door would not exist. Both now derive from here.
  *
@@ -290,7 +290,7 @@ export function spanDefault(day: any, ev: OilEvidence, person: string, item: str
  *  That is right for an ordinary row and FALSE for an exempt one: put a man on
  *  an empty AVALON RUNNER and he earns nothing, yet the switch read "Earns OIL
  *  — tap to stop this item earning", and tapping it on a published day would
- *  have cost a real amendment for a decision that moves no money (walk, 22 Sep
+ *  have cost a real amendment for a decision that moves no OIL (walk, 22 Sep
  *  26, on the AVALON desk's two empty rows). The empty case now asks the WALK
  *  what a man there would get, instead of counting a row with nobody on it. */
 export function itemState(day: any, ev: OilEvidence, item: string): 'on' | 'off' | 'mixed' {
@@ -318,12 +318,12 @@ export function itemState(day: any, ev: OilEvidence, item: string): 'on' | 'off'
  *  INPUTS — which is exactly right while this is the LIVE candidate, and is
  *  never reached on an issued day, whose block is frozen. */
 /** The ONE row a request landed on, wherever it sits, reduced to what the
- *  money needs to know. A request lands once (`acceptInput` refuses a second
+ *  credit needs to know. A request lands once (`acceptInput` refuses a second
  *  landing for the same id), so this is a search for a single row across every
  *  LOADED day — not a per-day question.
  *
  *  NOT FOUND is the case that needs care, because it means two opposite things
- *  and they pay opposite ways:
+ *  and they credit opposite ways:
  *    · the row was DELETED out from under the claim — it earns nothing, and a
  *      test has pinned that since R-2 (21 Sep 26);
  *    · the row is simply on a week nobody has LOADED — the claim stands, which
@@ -338,7 +338,7 @@ export function itemState(day: any, ev: OilEvidence, item: string): 'on' | 'off'
  *  go live). It used to stop at the loaded week and file the rest as a limit,
  *  and the limit was described wrongly: a request anchored in another week does
  *  not read `elsewhere`, because every `'g'` is cleared on a week swap, so it
- *  reads `acc:''` and the money paid it at a short-circuit before the standing
+ *  reads `acc:''` and the credit pass credited it at a short-circuit before the standing
  *  was consulted at all. A repair written against the `elsewhere` branch would
  *  never have fired. A ten-day Training cancelled on its row therefore went on
  *  paying its weekend in the following week — a day paid for work the schedule
@@ -351,7 +351,7 @@ export function itemState(day: any, ev: OilEvidence, item: string): 'on' | 'off'
  *    · a stash entry that cannot be read — we know the week WAS touched and
  *      cannot see how. Codex asked for the conservative answer here and is
  *      right: absence of evidence about a week somebody worked in is not
- *      evidence of work. `elsewhere` now means exactly that, and does not pay;
+ *      evidence of work. `elsewhere` now means exactly that, and does not credit;
  *    · a row found — its own state, the same as a loaded one. */
 function landedStanding(row: any): OilInputEv['stand'] {
   const acc = String(row.acc || '')
@@ -359,7 +359,7 @@ function landedStanding(row: any): OilInputEv['stand'] {
   const key = String(inpId(row))
   for (let i = 0; i < DAYS.length; i++) {
     /* the request's STANDING row — never a dead `kept` one another day holds (overlay.ts standsOn; Astra's round-3 read,
-       finding 1: a dead cancelled row found first paid nothing for the live one) */
+       finding 1: a dead cancelled row found first credited nothing for the live one) */
     const hit = standsOn(DAYS[i], key, row)
     if (hit) return hit.cx ? 'cx' : hit.info ? 'info' : 'active'
   }
@@ -368,7 +368,7 @@ function landedStanding(row: any): OilInputEv['stand'] {
      the loaded week's, the request's under its own `yr`. Comparing the day
      label against the ROW's year (which is what this did) reads the anchor day
      as not loaded across a New Year boundary (Fable F7). Pinned by
-     `engine/crossyear.test.ts` §"the OIL money asks the app's own question". */
+     `engine/crossyear.test.ts` §"the OIL credit asks the app's own question". */
   if (dateIx(row.date, row.yr) >= 0) return acc === 'g' ? 'gone' : 'unlanded'
   return stashStanding(dateOrd(row.date, row.yr), key)
 }
@@ -391,7 +391,7 @@ function stashStanding(first: number | null, key: string): OilInputEv['stand'] {
      rowElsewhere reads too, so the two can never read a stashed week two ways. The answers here are unchanged. */
   /* the row that STANDS there ([DB-READINESS] phase 6 (c) — weekstash.ts standingRowIn): a row whose request was since
      retyped, re-dated off its day or deleted is not its row. A request whose only row there is landed on read reads
-     'unlanded' — the same money as 'active': both pay the man's own answer (ui/oilmode.ts) */
+     'unlanded' — the same credit as 'active': both credit the man's own answer (ui/oilmode.ts) */
   const hit = standingRowIn(wk, key)
   if (hit === 'unreadable') return 'elsewhere'            // stashed and unreadable
   return hit ? (hit.row.cx ? 'cx' : hit.row.info ? 'info' : 'active') : 'unlanded'
@@ -463,14 +463,14 @@ function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
        assume only the requester could carry a decision about a request, which
        was true until a second man on the row started earning from it. Left as
        it was, taking that second man off did nothing: the prune deleted his
-       refusal on the way out and he was paid anyway. Caught by job 8's own
+       refusal on the way out and he was credited anyway. Caught by job 8's own
        test, which is the only place the two fixes meet. */
     if (landedExtras(day, iid, String(inp.person || '')).includes(person)) continue
     /* AND EVERY DECISION ON A ROW THAT CARRIES A PLACEHOLDER
        ([OIL-SEATS-CAN-EARN] step 6). Who a placeholder stands for is worked out
        from who is free, so it changes as people file leave — and a decision must
        not be thrown away because the man it names happens to be busy today.
-       Deleting it would silently pay him the moment he was free again, which is
+       Deleting it would silently credit him the moment he was free again, which is
        the same failure D18's half of this prune was written to close. The row
        standing the puck is what makes his decision legitimate, not today's
        answer to who is available. */
@@ -531,8 +531,8 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
     },
   })
   /* A ROW WITH A START AND NO END COUNTS ITS CROWD TOO ([ALLAVAIL-OPEN-ROW], D360, 28 Sep 26), over the window the
-     rest of the schedule assumes for it (oil.ts `openEndRows`). The walk above never reaches it — its money is refused,
-     and stays refused: this writes the MEMBERSHIP only, which the money reads solely for rows the walk measures. So the
+     rest of the schedule assumes for it (oil.ts `openEndRows`). The walk above never reaches it — its credit is refused,
+     and stays refused: this writes the MEMBERSHIP only, which the credit reads solely for rows the walk measures. So the
      count shows, the window lists the men, the crowd is frozen at publication like any other (D44), and nobody is
      credited a thing from a guessed hour (D31). */
   for (const r of openEndRows(d)) {
@@ -541,7 +541,7 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
   }
   const ins = projectOilInputs(iso as string)
   /* AND THE REQUEST HALF'S OWN MEMBERSHIP ([OIL-SEATS-CAN-EARN] step 6). An
-     accepted request's row is the one row the walk above skips whole — its money
+     accepted request's row is the one row the walk above skips whole — its credit
      comes down a separate route — so a placeholder standing on it would be
      resolved nowhere and written down nowhere, and an issued day could not hold
      its people still.
@@ -557,13 +557,41 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
     if (!inp.win || !landedHasSentinel(d, inp.iid) || !oilInputEligible(d, inp)) continue
     sent[inputItemKey(inp.iid)] = HOOKS.oilSentinel(iso as string, inp.win, d)
   }
+  /* AND A REQUEST THAT NEVER ASKS THE OIL QUESTION ([OIL-PERSONAL-PLACEHOLDER] — [DB-READINESS] group A, phase 7). The
+     loop above runs over the requests that ASK (`projectOilInputs` → `oilAsks`), and "Personal" lands a row like any
+     activity while never asking — so a placeholder on its row was written down nowhere: no count, no window, nothing
+     frozen at publication, on any day (D27, D37: the count shows wherever the puck lands; D44: frozen on every day).
+
+     MEMBERSHIP ONLY. Nothing here reaches the credit: `inputs` (what the request half credits from) is not touched, and the
+     schedule half skips every request row — so the crowd earns nothing, exactly as a NAMED man on a Personal row earns
+     nothing (D43: a placeholder behaves like named people). Pinned by oilpersonalcrowd.test.ts.
+
+     The same conditions as the loop above, read off the request itself: it covers this day, it is not taken off, its
+     row stands (landedRow — not `kept`, cancelled or information only), and its own window measures something (an
+     all-day request's row carries no times — the REQUEST's window, never the row's). `r.iid`, never `inpId`: a read
+     must not mint an id. */
+  { const ord = +String(iso).replace(/-/g, '')
+    for (const g of ((d && d.ground) || []) as any[]) {
+      if (!g || !g.src) continue
+      const iid = String(g.src), item = inputItemKey(iid)
+      if (Object.prototype.hasOwnProperty.call(sent, item) || !landedHasSentinel(d, iid)) continue
+      const r = (INPUTS as any[]).find(x => x && String(x.iid || '') === iid)
+      if (!r || oilAsks(r.type) || String(r.acc || '') === 'r') continue
+      const a = dateOrd(r.date, r.yr)
+      if (a == null) continue
+      const b = r.endDate ? dateOrd(r.endDate, r.yr) ?? a : a
+      if (ord < a || ord > b) continue
+      const w = inpWin(r)
+      if (!w || !(w[1] > w[0])) continue
+      sent[item] = HOOKS.oilSentinel(iso as string, [w[0], w[1]], d)
+    } }
   /* A DAY THAT EARNS NOBODY ANYTHING STILL KNOWS WHO IS BEHIND ITS PUCKS
      ([OIL-SEATS-CAN-EARN] step 9; D27, D44). The count is a SCHEDULING fact —
      dropped anywhere, a placeholder works out who would attend — and until now
-     it existed only as a by-product of working out the money, so five days a
+     it existed only as a by-product of working out the credit, so five days a
      week the puck stood for nobody and the chip said nothing.
-     The money half stays exactly where it was: `inputs` is left empty and
-     `earns` false, so every reader of what a day PAYS is byte-identical to
+     The credit half stays exactly where it was: `inputs` is left empty and
+     `earns` false, so every reader of what a day CREDITS is byte-identical to
      before. Only the membership is now kept. */
   if (!earns) return { iso, earns: false, d: dec, inputs: [], sent, mem: 1 }
   return { iso: iso as string, earns: true, d: dec, inputs: ins, sent, mem: 1 }
@@ -614,7 +642,7 @@ export function oilReadPass<T>(fn: () => T): T {
 }
 
 /** THE DAY'S WORK, resolved against the evidence's own membership — the ONE
- *  walk the money, the seat default and the switch's state all read, so none of
+ *  walk the credit, the seat default and the switch's state all read, so none of
  *  them can disagree with the others about what the day contains. On an issued
  *  day `ev.sent` is the frozen membership, so an ALL AVAIL event's people cannot
  *  change under the reader (§7.3). Uncached outside a read pass, exactly like
@@ -685,12 +713,12 @@ export function oilDecisionsKey(dec: OilDecisions | undefined): string {
  *
  *  CORRECTED, Codex rank 4, 22 Sep 26. The first repair guessed the missing
  *  value from `acc` — `'g'` meant `active`, anything else `unlanded`. That guess
- *  is the same false premise `3df527d` had to undo in the money reader: a day
+ *  is the same false premise `3df527d` had to undo in the credit reader: a day
  *  published while its row was CANCELLED keyed `active` here and `cx` live, so
- *  a day the money agrees is unchanged still offered an amendment nobody asked
+ *  a day the credit agrees is unchanged still offered an amendment nobody asked
  *  for. Two readers of one stored fact, and only one of them was repaired.
  *
- *  So the key reads it the way the money does — `effectiveStand`, which runs the
+ *  So the key reads it the way the credit does — `effectiveStand`, which runs the
  *  OLD rule against the day being read, which for an issued block is the frozen
  *  schedule itself. One body, one answer.
  *
@@ -704,7 +732,7 @@ function standIn(day: any, i: OilInputEv): OilInputEv['stand'] {
   return String(i.acc || '') === 'g' ? 'active' : 'unlanded'
 }
 
-/** DOES THIS STANDING LET THE CLAIM EARN? The one body — the money asks it and
+/** DOES THIS STANDING LET THE CLAIM EARN? The one body — the credit asks it and
  *  so does the key, so they cannot disagree about a day. */
 function standEarns(st: OilInputEv['stand']): boolean {
   return st !== 'cx' && st !== 'info' && st !== 'gone' && st !== 'elsewhere'
@@ -727,13 +755,13 @@ export const oilKeyNoMem = (k: string) => { const i = String(k || '').lastIndexO
  *  membership at all: an issued block written before it was recorded (see
  *  `oilDelta`). */
 export function oilEvidenceKey(ev: OilEvidence | null | undefined, day?: any, mem = true): string {
-  /* THE KEY RECORDS WHAT THE DAY PAYS, NOT AN INTERNAL WORD (22 Sep 26). It used
+  /* THE KEY RECORDS WHAT THE DAY CREDITS, NOT AN INTERNAL WORD (22 Sep 26). It used
      to serialise the standing itself, so a claim whose row simply moved to a
-     week nobody has loaded — `active` to `unlanded`, both of which pay exactly
-     the same — moved the key and offered an amendment with no money behind it.
+     week nobody has loaded — `active` to `unlanded`, both of which credit exactly
+     the same — moved the key and offered an amendment with no OIL behind it.
      That is the manufactured-amendment shape this branch has now met three
-     times. Two values, and they are the two the money makes: earns, or does
-     not. Every standing change that moves money still moves the key. */
+     times. Two values, and they are the two the credit makes: earns, or does
+     not. Every standing change that moves OIL still moves the key. */
   if (!ev) return ''
   const sent = mem ? memKey(ev) : ''
   /* A DAY THAT EARNS NOBODY ANYTHING STILL HAS A CROWD TO COMPARE
@@ -796,7 +824,7 @@ export function oilSignKey(ev: OilEvidence | null | undefined, day?: any): strin
 }
 
 /** DOES THIS ISSUED DAY PREDATE THE RECORD OF WHO IS BEHIND ITS PUCKS, AND WOULD
- *  REPUBLISHING IT PAY SOMEBODY IT DID NOT PAY (owner, 22 Sep 26 — "ok fix this
+ *  REPUBLISHING IT CREDIT SOMEBODY IT DID NOT CREDIT (owner, 22 Sep 26 — "ok fix this
  *  first")?
  *
  *  A block frozen by an earlier build carries no `mem` flag, and its blanks mean
@@ -833,12 +861,12 @@ export function oilKeyBeforeStand(ev: OilEvidence | null | undefined): string {
   return `${ev.iso}|${oilDecisionsKey(ev.d)}|${ins}|${sent}`
 }
 
-/** DID JOB 2 CHANGE WHAT THIS DAY PAYS? The old rule looked for the request's
- *  row on the day being paid; the new one reads the ONE anchor row's standing,
+/** DID JOB 2 CHANGE WHAT THIS DAY CREDITS? The old rule looked for the request's
+ *  row on the day being credited; the new one reads the ONE anchor row's standing,
  *  wherever it sits, and lets it govern every day the request covers. For most
  *  days the two agree. Where they do not — a Saturday covered by a request
- *  anchored on the Friday, which paid nothing before and pays a full day now —
- *  the day's money moved when the build changed, and no signature given before
+ *  anchored on the Friday, which credited nothing before and credits a full day now —
+ *  the day's credit moved when the build changed, and no signature given before
  *  the change can honestly still cover it.
  *
  *  This is the guard Codex asked for in rank 4: an old binding is never accepted
@@ -873,25 +901,25 @@ export function oilUpgradeMovedMoney(day: any, ev: OilEvidence | null | undefine
 export function oilInputEligible(day: any, inp: OilInputEv): boolean {
   if (!inp.asks || inp.acc === 'r' || !inp.win) return false
   /* the ONE row's state, frozen onto the claim at projection — NOT a lookup on
-     the day being paid, which is what made a multi-day request pay nothing on
+     the day being credited, which is what made a multi-day request credit nothing on
      every day but the one its row happened to sit on (job 2).
      THE `acc !== 'g'` SHORT-CIRCUIT THAT USED TO SIT HERE IS GONE
      ([OIL-XWEEK-ELSEWHERE]): it answered "pays" before the standing was read,
      and since every `'g'` is cleared on a week swap it caught every request
      anchored in another week — including one whose row had been cancelled. The
      standing now decides alone, and it says `unlanded` for everything that
-     genuinely never landed, which pays exactly as before. */
+     genuinely never landed, which credits exactly as before. */
   return standEarns(effectiveStand(day, inp))
 }
 
-/** A BLOCK FROZEN BEFORE `stand` EXISTED CARRIES NONE, AND THE MONEY MUST NOT
+/** A BLOCK FROZEN BEFORE `stand` EXISTED CARRIES NONE, AND THE CREDIT MUST NOT
  *  READ THAT ABSENCE AS "FINE" (Codex rank 1, 22 Sep 26 — and it refuted the
  *  reasoning in 195943e, which repaired only the key).
  *
  *  Left alone, the test above read `undefined !== 'cx'` and answered YES: an
- *  already-ISSUED day whose row had been cancelled started PAYING, with no
+ *  already-ISSUED day whose row had been cancelled started CREDITING, with no
  *  amendment and the frozen schedule still saying the work did not happen.
- *  Money out of nowhere on a published record — worse than the phantom
+ *  OIL out of nowhere on a published record — worse than the phantom
  *  amendment it replaced.
  *
  *  The premise that made it — that `acc:'g'` meant "landed and paying" — was
@@ -913,19 +941,19 @@ function effectiveStand(day: any, inp: OilInputEv): OilInputEv['stand'] {
  *  duty-and-commitments claims the evidence carries. `id -> spans`.
  *
  *  Both halves come from the SAME block, which is the whole point: on an issued
- *  day that block is the frozen document, so the money follows the schedule the
+ *  day that block is the frozen document, so the credit follows the schedule the
  *  squadron was given and nothing else. */
 /** The people a SCHEDULER added to a request's landed row, beside the man who
- *  filed it — D18. Read off the day being paid, so a man standing on the row is
+ *  filed it — D18. Read off the day being credited, so a man standing on the row is
  *  credited on the day he is actually on it and not on every day the request
  *  happens to cover. Sentinels are never real work here; the requester is
  *  excluded because the input half already carries him. */
 /** The men the SCHEDULER stood on a claim's landed row beside the requester
  *  (D18). EXPORTED because the mode has to ask exactly this question too:
  *  `oilEligible` used to fall back to `dayOilWork`, whose ground walk skips
- *  every `src` row whole, so an extra the money was paying was drawn INERT —
+ *  every `src` row whole, so an extra the credit pass was crediting was drawn INERT —
  *  "nothing measurable to earn from here" — with no item and no switch. The
- *  screen contradicted the money about a man's entitlement and offered no way
+ *  screen contradicted the credit about a man's entitlement and offered no way
  *  to change it (walk find, 22 Sep 26). One body, so they cannot disagree. */
 /** The row an accepted request landed on, if it is still live. A cancelled or
  *  information-only row is not work, so it has nobody on it for this purpose. */
@@ -960,11 +988,13 @@ export function landedHasSentinel(day: any, iid: string): boolean {
  *  a body that resolved availability itself would let an ISSUED day's crowd move
  *  when somebody files leave, which is the one thing D44 forbids.
  *
- *  A NAMED man in the name box is deliberately NOT gathered. In every path the
- *  app has, that box holds the man who filed the request, and he is paid by the
- *  input half on his own answer; crediting whoever is in it would be a second
- *  change to who gets paid, with no case behind it. The box matters here only
- *  when it holds a PLACEHOLDER. */
+ *  A NAMED MAN IN THE NAME BOX WHO IS NOT THE REQUEST'S OWN HOLDER IS GATHERED TOO (owner, D470, 1 Oct 26 —
+ *  [OIL-REQ-NAMEBOX], [DB-READINESS] phase 7). It was deliberately left out when the extras were built: in every
+ *  ordinary path that box holds the man who filed the request, and crediting whoever is in it was a second change to who
+ *  earns with no case behind it. The case was put to him — a scheduler puts another man in the box, who then does the
+ *  work — and he ruled yes: that man earns as a man added under the row does. The HOLDER is never gathered here (`add`
+ *  drops him): he stays in the request half, on his own answer, so he still earns when his name has been replaced on
+ *  the row — and his own No is never buried under an ordinary yes. */
 export function landedExtras(day: any, iid: string, owner: string, crowd?: string[] | null): string[] {
   const row = landedRow(day, iid)
   if (!row) return []
@@ -974,11 +1004,12 @@ export function landedExtras(day: any, iid: string, owner: string, crowd?: strin
     if (!id || id === owner || isSpecial(id) || !PEOPLE[id]) return
     if (!out.includes(id)) out.push(id)
   }
+  add(row.who)                                            // the name box, when it holds someone other than the holder (D470)
   for (const v of (row.more || [])) add(v)
   /* the crowd joins the men the scheduler typed, rather than replacing them: a
      row can carry a name AND a placeholder, and both are people who were there.
      The requester is dropped by `add` — he is already in the input half, and
-     paying him here would bury his own No under an ordinary yes. */
+     crediting him here would bury his own No under an ordinary yes. */
   if (landedHasSentinel(day, iid)) (crowd || []).forEach(add)
   return out
 }
@@ -995,10 +1026,10 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
       /* THE SPAN'S OWN DEFAULT, not a hard `true` ([OIL-SEATS-CAN-EARN] §4).
          The hard true was correct while every seat earned; from step 4 an SC
          spare, an AVALON or BB line and an AVALON desk reach this walk carrying
-         `false`, and paying them would be silent money — the exact opposite of
+         `false`, and crediting them would be silent OIL — the exact opposite of
          D24. `w.dflt !== false` rather than `w.dflt` so a span written by an
          older build, or by any future producer that forgets the field, keeps
-         today's answer instead of silently ceasing to pay. */
+         today's answer instead of silently ceasing to credit. */
       if (!earnsFrom(ev, person, String(w.item || ''), w.dflt !== false)) continue
       put(person, w)
     }
@@ -1009,7 +1040,7 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
     if (!oilInputEligible(day, inp) || !inp.win) continue            // dormant / cancelled / unreadable: nothing to allow
     const item = inputItemKey(inp.iid)
     /* the span carries the default that actually decided it, so a reader of the
-       work can tell WHY a claim paid without re-deriving it: the requester's own
+       work can tell WHY a claim credited without re-deriving it: the requester's own
        answer for him, and an ordinary yes for a man the scheduler stood beside
        him on the row (D18). */
     const span = (dflt: boolean): OilWork => ({ s: (inp.win as any)[0], e: (inp.win as any)[1], src: (inp.type || 'Duty').trim() as any, item, dflt, via: 'input' })
@@ -1024,7 +1055,7 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
 
        WHY IT IS A SPLIT AND NOT "STOP SKIPPING src ROWS" (Codex, 22 Sep 26):
        putting the row through the schedule half would put the REQUESTER through
-       it too, where the default is yes — overriding his own No and paying him
+       it too, where the default is yes — overriding his own No and crediting him
        twice, once as unconditional work and again as the answered claim. So the
        requester stays here, on his own answer, and the extras are ordinary
        scheduled work on the SAME item: default yes, each with his own override,
@@ -1032,10 +1063,10 @@ export function oilEarnedWork(day: any, ev: OilEvidence): Record<string, OilWork
 
        The CLAIM's window, not the row's (Fable M6): an all-day request lands a
        row with no times at all, and reading the row would have left the second
-       man on an all-day request unpaid — the mirror of the bug being fixed. */
+       man on an all-day request uncredited — the mirror of the bug being fixed. */
     /* THE CROWD BEHIND A PLACEHOLDER ON THAT ROW IS ORDINARY WORK TOO
        ([OIL-SEATS-CAN-EARN] step 6, D46 — no carve-outs). It is resolved from
-       the day's own written-down membership, so an issued day pays the people it
+       the day's own written-down membership, so an issued day credits the people it
        went out with and not whoever happens to be free when it is read. */
     for (const extra of landedExtras(day, inp.iid, inp.person, ev.sent[item])) {
       if (!earnsFrom(ev, extra, item, true)) continue

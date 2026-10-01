@@ -12,16 +12,16 @@
      ORDINARY item never reaches the `1` at all — unset → 0 → unset, exactly as
      today, so nothing a scheduler does on a normal row behaves differently.
 
-   · Fable R2-1 / Codex OSE-R2-01 — the screen and the money must read ONE body.
+   · Fable R2-1 / Codex OSE-R2-01 — the screen and the credit must read ONE body.
      `itemDefaultFor` used to answer `true` whenever there was no claim, which
-     once a seat defaults off would draw a man GLOWING while the money paid him
+     once a seat defaults off would draw a man GLOWING while the credit pass credited him
      nothing, and make his tap write `deny` for a credit he never had.
 
    · Codex OSE-R2-01, second half — `toggleOilPerson` compares the wanted state
      against the default and DELETES the override when they match. Under an item
      forced ON the effective default is true, not the seat's own answer, so the
      comparison has to be made against the effective one or taking a man off a
-     line the admin switched on would delete his refusal and pay him anyway.
+     line the admin switched on would delete his refusal and credit him anyway.
 
    Fable R2-10 put the WORDING here rather than at step 10: from this step the
    switch has more states than its two old titles can describe, and leaving it
@@ -120,8 +120,8 @@ describe('the cycle — and an ordinary row never behaves differently (Fable R2-
   })
 })
 
-describe('ONE body decides the default, on the screen as well as in the money', () => {
-  it('the mode\'s answer for a man is the span default the money uses', () => {
+describe('ONE body decides the default, on the screen as well as in the credit', () => {
+  it('the mode\'s answer for a man is the span default the credit uses', () => {
     const item = groundItem()
     const ev = oilEvidence(SAT)
     expect(oilPersonOn(SAT, 'bane', item)).toBe(spanDefault(DAYS[SAT], ev, 'bane', item))
@@ -139,7 +139,7 @@ describe('the person toggle compares against the EFFECTIVE default (Codex OSE-R2
     /* the half-migration this pins: the writer deletes an override whenever the
        wanted state equals the default. Compared against the SEAT's default that
        is wrong under a forced-on item — the refusal would be dropped and the
-       `1` would pay him again the same instant. */
+       `1` would credit him again the same instant. */
     const item = groundItem()
     mark(item, 1)
     expect(oilPersonOn(SAT, 'bane', item), 'the line is forced on, so he earns').toBe(true)

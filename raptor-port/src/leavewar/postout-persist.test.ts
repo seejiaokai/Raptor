@@ -193,7 +193,7 @@ describe('the crowd behind a placeholder does not change across a reload', () =>
    post-in button and was never widened for it). It is fixed here because it is
    the same record, the same body and the same failure — and because a joining
    date decides who is in the squadron on a date, which reaches the manning
-   counts, ALL AVAIL and therefore what a placeholder pays. */
+   counts, ALL AVAIL and therefore what a placeholder credits. */
 describe('a post-IN date survives a reload too', () => {
   it('the joining date is still on the person after a reboot', () => {
     const be = memoryBackend()
@@ -247,7 +247,7 @@ describe('a post-IN date survives a reload too', () => {
      `inSquadron` compares it LEXICALLY against real dates. "June 15" sorts after
      every 2026-xx-xx, so the man reads as not yet arrived on every day of the
      year — out of availability, out of the manning counts, out of every crowd a
-     placeholder stands for. Silent, and about who gets paid.
+     placeholder stands for. Silent, and about who gets credited.
      The parent reader rejected it by accident, because it demanded `to` be a
      string. This demands the SHAPE, which is what it always meant. */
   it('a date-shaped end is required, not merely a string', () => {

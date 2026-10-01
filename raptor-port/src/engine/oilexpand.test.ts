@@ -21,7 +21,7 @@
 
    THE FLYING BRANCH MUST NOT EXPAND, and that is not a detail. D33 refuses a
    placeholder in a cockpit, but data can arrive by copy — a captured day
-   template or a parked plan bypasses both doors — so the money keeps its own
+   template or a parked plan bypasses both doors — so the credit keeps its own
    belt. And D36: the flying window is report→debrief, three hours wider each
    side than availability, so handing it to the expander would gather men the
    squadron deliberately schedules around. Pinned here and in
@@ -30,8 +30,8 @@
    AND A ROW WITH NO ID YET EXPANDS FOR NOBODY (plan §6, Fable R2-8). The frozen
    membership is written per ITEM — `if (item) sent[item] = people` — so a row
    with no id has nowhere to freeze its crowd. Before this step such a row drew
-   a crowd in the mode and paid nobody through the evidence: the screen and the
-   money disagreeing, which is the shape this whole change exists to end. Every
+   a crowd in the mode and credited nobody through the evidence: the screen and the
+   credit disagreeing, which is the shape this whole change exists to end. Every
    painted row is minted an id by the mutation, load, publish and draft paths
    alike, so this closes by construction — and is pinned rather than left as a
    claim. */
@@ -69,7 +69,7 @@ afterEach(() => { HOOKS.oilEarningDay = earningDay; HOOKS.oilDayISO = dayISO; HO
 /* the raw walk, with a live expander — what the MODE sees */
 const work = (spy?: (win: [number, number], item: string) => void) =>
   dayOilWork(DAYS[SAT], { expandAll: (win, item) => { if (spy) spy(win, item); return CROWD.slice() } })
-/* the MONEY, which resolves every placeholder against the day's own frozen
+/* the CREDIT, which resolves every placeholder against the day's own frozen
    membership — so it proves the freeze wrote the crowd down as well */
 const paid = () => oilEarnedWork(DAYS[SAT], oilEvidence(SAT))
 const namesIn = (got: Record<string, any>) => Object.keys(got).sort()
@@ -79,7 +79,7 @@ describe('the seats that lost a placeholder now expand (plan §3 F3, C3)', () =>
     ;(DAYS[SAT] as any).dutywaves = [{ label: 'DUTIES', rows: [{ role: 'SDO', id: 'allavail', str: '0700', end: '1900' }] }]
     ensureRowIds(DAYS)
     expect(namesIn(work()), 'the crowd is on the desk').toEqual(CROWD)
-    expect(namesIn(paid()), 'and the day pays them').toEqual(CROWD)
+    expect(namesIn(paid()), 'and the day credits them').toEqual(CROWD)
   })
 
   it('A DUTY DESK\'s extras line', () => {
@@ -145,13 +145,13 @@ describe('what the crowd is resolved AGAINST', () => {
     const got = work()
     expect(namesIn(got), 'they reach the walk').toEqual(CROWD)
     expect(got.bane[0].dflt, 'carrying the desk\'s own answer, not one of their own').toBe(false)
-    expect(namesIn(paid()), 'so nobody is paid until the desk is switched on').toEqual([])
+    expect(namesIn(paid()), 'so nobody is credited until the desk is switched on').toEqual([])
     const item = rowItemKey((DAYS[SAT] as any).dutywaves[0].rows[0].rid)
     ;(DAYS[SAT] as any).oild = { items: { [item]: 1 } }
-    expect(namesIn(paid()), 'switched on, the whole crowd is paid').toEqual(CROWD)
+    expect(namesIn(paid()), 'switched on, the whole crowd is credited').toEqual(CROWD)
   })
 
-  it('THE FREEZE WROTE THE CROWD DOWN — the money reads the day\'s own membership', () => {
+  it('THE FREEZE WROTE THE CROWD DOWN — the credit reads the day\'s own membership', () => {
     ;(DAYS[SAT] as any).sims = { amt: [{ str: '1300', end: '1500', p: 'allavail', w: '' }] }
     ensureRowIds(DAYS)
     const item = rowItemKey((DAYS[SAT] as any).sims.amt[0].rid)
@@ -160,7 +160,7 @@ describe('what the crowd is resolved AGAINST', () => {
 })
 
 describe('the two places a placeholder must NOT expand', () => {
-  it('A COCKPIT SEAT — the money\'s own belt for data that arrived by copy (D33, D36)', () => {
+  it('A COCKPIT SEAT — the credit\'s own belt for data that arrived by copy (D33, D36)', () => {
     ;(DAYS[SAT] as any).waves = [{ label: 'WAVE 1', formations: [{ cs: 'RAP', to: '09:00', ld: '11:00', aircraft: [{ p: 'allavail', w: '' }] }] }]
     ensureRowIds(DAYS)
     const seen: string[] = []
@@ -178,7 +178,7 @@ describe('the two places a placeholder must NOT expand', () => {
     const seen: string[] = []
     const got = work((_win, item) => seen.push(item))
     expect(seen, 'the expander is never asked').toEqual([])
-    expect(namesIn(got), 'the mode draws no crowd it could not also pay').toEqual([])
+    expect(namesIn(got), 'the mode draws no crowd it could not also credit').toEqual([])
     expect(namesIn(paid())).toEqual([])
   })
 
@@ -190,7 +190,7 @@ describe('the two places a placeholder must NOT expand', () => {
 })
 
 describe('D28 — nothing that earns today stops earning', () => {
-  it('named men on every one of those seats are paid exactly as before', () => {
+  it('named men on every one of those seats are credited exactly as before', () => {
     const w = makeStandalone('sc')!
     w.formations[0].aircraft[0].p = 'bane'
     Object.assign(DAYS[SAT] as any, {

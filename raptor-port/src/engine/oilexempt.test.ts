@@ -71,7 +71,7 @@ describe('SC — the SPARE defaults off, the MAIN is the control that must not m
     expect(got.bane[0].dflt, 'D28 — the main earns exactly as it does today').toBe(true)
 
     const money = paid()
-    expect(money.bane, 'THE CONTROL: the main is still paid').toBeTruthy()
+    expect(money.bane, 'THE CONTROL: the main is still credited').toBeTruthy()
     expect(money.stiff, 'and the spare is not').toBeFalsy()
     expect(itemOf(w.formations[0])).toBeTruthy()
   })
@@ -79,7 +79,7 @@ describe('SC — the SPARE defaults off, the MAIN is the control that must not m
   it('the FORMATION-level spare flag counts too (Codex OSE-R2-02)', () => {
     /* a saved SC formation can carry `f.spare` with nothing on the aircraft row.
        A predicate naming only the aircraft flag would default every occupant of
-       such a shift ON and pay a spare shift that has never been paid. */
+       such a shift ON and credit a spare shift that has never been credited. */
     standalone('sc', (wv: any) => {
       wv.formations[0].spare = true
       wv.formations[0].aircraft[0].p = 'bane'      // an ordinary-looking MAIN row…
@@ -87,16 +87,16 @@ describe('SC — the SPARE defaults off, the MAIN is the control that must not m
     const got = work()
     expect(got.bane, 'he reaches the walk').toBeTruthy()
     expect(got.bane[0].dflt, '…but the whole formation is spare, so he earns nothing by default').toBe(false)
-    expect(paid().bane, 'and is not paid').toBeFalsy()
+    expect(paid().bane, 'and is not credited').toBeFalsy()
   })
 
-  it('the spare line OFFERS the switch, and switching it ON pays the man (D24)', () => {
+  it('the spare line OFFERS the switch, and switching it ON credits the man (D24)', () => {
     const w = standalone('sc', (wv: any) => { wv.formations[0].aircraft[2].p = 'stiff' })
     const item = itemOf(w.formations[0])
     expect(oilCapableItems(DAYS[SAT]).has(item), 'a switch is drawn, or D24 has no door').toBe(true)
     expect(paid().stiff, 'off to begin with').toBeFalsy()
     ;(DAYS[SAT] as any).oild = { items: { [item]: 1 } }
-    expect(paid().stiff, 'switched on, the spare is paid').toBeTruthy()
+    expect(paid().stiff, 'switched on, the spare is credited').toBeTruthy()
   })
 
   it('or the MAN alone is credited, leaving the rest of the shift alone (Fable M2 option A)', () => {
@@ -136,7 +136,7 @@ describe('AVALON and BB — the whole wave defaults off, with the switch offered
       const item = itemOf(w.formations[0])
       expect(oilCapableItems(DAYS[SAT]).has(item), 'the switch is offered').toBe(true)
       ;(DAYS[SAT] as any).oild = { items: { [item]: 1 } }
-      expect(paid().bane, 'switched on, it pays').toBeTruthy()
+      expect(paid().bane, 'switched on, it credits').toBeTruthy()
     })
   }
 
@@ -144,7 +144,7 @@ describe('AVALON and BB — the whole wave defaults off, with the switch offered
     const w = standalone('avalon', (wv: any) => { wv.formations[0].aircraft[0].p = 'bane' })
     ;(DAYS[SAT] as any).oild = { items: { [itemOf(w.formations[0])]: 1 } }
     const spans = paid().bane
-    expect(spans, 'the Saturday it sits on pays it').toBeTruthy()
+    expect(spans, 'the Saturday it sits on credits it').toBeTruthy()
     expect(spans[0].e - spans[0].s, 'a 19:00–07:00 line is twelve hours on this day').toBe(720)
   })
 })
@@ -163,7 +163,7 @@ describe('the duty desks — including one minted from an AVALON template (D35)'
     expect(paid().bane).toBeFalsy()
     expect(oilCapableItems(DAYS[SAT]).has(item), 'the switch is offered').toBe(true)
     ;(DAYS[SAT] as any).oild = { items: { [item]: 1 } }
-    expect(paid().bane, 'switched on, it pays').toBeTruthy()
+    expect(paid().bane, 'switched on, it credits').toBeTruthy()
   })
 
   it('A DESK MINTED FROM AN AVALON TEMPLATE IS THE SAME SEAT, SO IT GETS THE SAME ANSWER (D35)', () => {
@@ -199,7 +199,7 @@ describe('the FOURTH skip — an exempt desk with no times now SPEAKS at publish
 })
 
 describe('D28 — nothing that earns today stops earning', () => {
-  it('an ordinary flying line, a sim, a ground row and the Common Programme all still pay', () => {
+  it('an ordinary flying line, a sim, a ground row and the Common Programme all still credit', () => {
     const w = makeStandalone('sc')!
     w.formations[0].aircraft[0].p = 'bane'
     Object.assign(DAYS[SAT] as any, {
