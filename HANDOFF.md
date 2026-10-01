@@ -15,6 +15,21 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/planning-filing-3-oct -->
+### `claude/planning-filing-3-oct` — a planning and filing chat until Monday's reset (D484): `mattpocock/skills` read (D491), Astra's tidiness read and word-list draft, his features and bugs filed as he gives them — documents only, pushed, no PR yet — written 3 Oct 26 — verify before use
+- **Reviews until the reset (D492):** Astra alone reviews anything that needs a review; after the reset (Monday 5 Oct 26, 19:00)
+  Fable and Astra as before. Opus 5.5 does not take Fable's place. Work that needs both reviewers waits for the reset.
+- **D491:** the collection is not installed whole; a word list (`[WORD-LIST]`), two debugging lines and one audit line ride
+  with `[SKILL-FUSION]` — the read: `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md` §8.
+- **Astra's two runs, 3 Oct 26** (briefs and results in `raptor-port/docs/superpowers/briefs/2026-10-03-…`): the word-list
+  draft is back (about 195 terms, five marked unsure — NOT yet checked against the app; that check rides with `[SKILL-FUSION]`);
+  the tidiness read (`[CODE-TIDY-AUDIT]`) was still running when this was written — its report goes to him in plain words.
+- **Waiting on him:** the order of the feature batches (`[FEATURE-WISHLIST]`, D490), and his features and bugs — each gets its
+  questions in rounds of at most four with a recommended answer, and is filed under its area.
+- **The main checkout** (`C:/Users/User/projects/Raptor`) sits on this branch, not a worktree — put it back on `main` once merged.
+- **Parallel (D302):** rulings D491–D492 used here — a next chat takes D493 on; observation #420 used, #421 on.
+<!-- /now -->
+
 <!-- now:claude/ai-workflow-skills-review-87bf52 -->
 ### `claude/ai-workflow-skills-review-87bf52` — the skills review (D486–D490), "Discard marks" to be removed (D488), the document tidy: all documents, PR #480, his "merge live" given 2 Oct 26 — until Monday's reset: PLANNING AND FILING chats only — written 2 Oct 26 — verify before use
 - **UNTIL THE RESET (Monday 5 Oct 26, 19:00 — D484), his plan, 2 Oct 26:** he uses the time to talk through new features and
