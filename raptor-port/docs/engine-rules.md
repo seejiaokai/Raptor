@@ -1899,6 +1899,16 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   inherit); kept on time/remark edits — the save gate re-asks when the plan
   goes stale, and the credit pass re-checks coverage and non-working LIVE,
   so a moved input or a revoked PH leaves a stale yes inert.
+- **A placeholder on a request row whose request NEVER ASKS is COUNTED, and earns nobody anything
+  (`[OIL-PERSONAL-PLACEHOLDER]`, `[DB-READINESS]` group A phase 7, 1 Oct 26).** "Personal" lands a row like any
+  activity and is the one landed kind outside `oilAsks`. The day's work walk skips every request row, and the request
+  half of the evidence wrote a placeholder's crowd down only for the asking kinds — so ALL / ALL AVAIL on a Personal row
+  showed no count, opened no window and froze nothing at publication. `oilev.ts oilEvidence` now writes that crowd too
+  (the request's own window; the same conditions as an asking request's: it covers the day, is not taken off, its row
+  stands, not cancelled or information only), so D27 / D37 (the count wherever the puck lands) and D44 (frozen on every
+  day; a later change reads pending) hold there. **Membership only:** `inputs` — what the request half credits from — is
+  untouched, so the crowd earns nothing, as a NAMED man on a Personal row earns nothing (D43: a placeholder behaves like
+  named people). Pins: `engine/oilpersonalcrowd.test.ts`, `ui/oilpersonalcrowd.test.tsx`.
 - **A recorded answer is revisable in place** (owner, 29 Aug 26 — his pick
   over a dedicated undo/redo; the global undo stack covers immediate
   regret). `oilAnswered(row)` (`ui/inputedit.tsx`) gates the affordance:

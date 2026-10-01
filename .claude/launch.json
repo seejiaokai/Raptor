@@ -244,6 +244,74 @@
         "--strictPort"
       ],
       "port": 4202
+    },
+    {
+      "name": "raptor-p7-a",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-p7",
+        "--port",
+        "4205",
+        "--strictPort"
+      ],
+      "port": 4205
+    },
+    {
+      "name": "raptor-p7-b",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-p7",
+        "--port",
+        "4206",
+        "--strictPort"
+      ],
+      "port": 4206
+    },
+    {
+      "name": "raptor-p7-c",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-p7",
+        "--port",
+        "4207",
+        "--strictPort"
+      ],
+      "port": 4207
+    },
+    {
+      "name": "raptor-p7",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-p7",
+        "--port",
+        "4208",
+        "--strictPort"
+      ],
+      "port": 4208
     }
   ]
 }

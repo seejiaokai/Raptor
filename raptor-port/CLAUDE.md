@@ -179,7 +179,7 @@ mutation outside every command is not saved, whatever `histPush` it ends in. Any
 unsaved after a reload — no error, no clue, the edit just isn't there next time. Leave War: whatever it owns about a person beyond
 the projection goes in a persisted record laid back on by `setPeople`.
 
-**WHAT ACTUALLY PERSISTS** (verified 17 Sep 26): on a built site nearly everything survives a reload; memory-only is the dev server, tests, `?fresh=1` or storage that cannot be touched; session-only by design: undo/redo, the edit log and the view state. An older "session-only" sentence is stale — fix it, don't obey it · full text: docs/guide-full.md §What actually persists
+**WHAT ACTUALLY PERSISTS** (verified 17 Sep 26): on a built site nearly everything survives a reload; memory-only is the dev server, tests, `?fresh=1` or storage that cannot be touched; session-only by design: undo/redo and the view state (the change history is kept — D338). An older "session-only" sentence is stale — fix it · full text: docs/guide-full.md §What actually persists
 
 **React owns chrome, strings own density.** The dense surfaces (week,
 board, palette) are built by verbatim HTML-string builders and swapped via

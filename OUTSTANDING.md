@@ -113,6 +113,7 @@ phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WI
 
 **Waiting on him — no order exists:**
 [LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
+[WARN-HIDE-KEPT] (a question for him — how long a hidden warning stays hidden, and for whom; it decides whether the day's table keeps it, so before IT settles its tables),
 [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LEDGER-READ-ASK] (a question for him, from the OIL award build), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
@@ -1548,3 +1549,21 @@ none can simply be dropped. **Offered to him, unanswered:** a shorter two-line v
 loaded and what viewers still see; the second "N things to know ▾" opening the rest), the full sentence kept in the change
 history. **Place:** low — his call; its own small job (WALK tier: a message on a shared surface), never inside another change.
 Carried here from the merged `claude/db-readiness-table-shaping-4094f6` handoff block when it was removed (1 Oct 26).
+
+### [WARN-HIDE-KEPT] How long does a hidden warning stay hidden, and for whom? — a question for him (found by `[STORE-READER-SWEEP]`, 1 Oct 26)
+**What the app does today — two answers for one act.** A scheduler hides a warning on the board (his ask, Aug 26: *"turn off
+that specific warning advisory … but if things change that warning will appear again"*; Undo takes a hide back). The hide is
+SAVED with its day (`ScheduleDay.wo` — `raptor-port/docs/data-model.md` §9, `state/weekrows.ts`). But every sign-in clears the
+hidden list (`state/view.ts`, "cleared on login/logout"), and the boot does not read the saved ones back for the week the app
+opens on (`state/store.ts initStore`) — while a week opened LATER does read them back (`loadWeek`). So after a reload or a
+new sign-in: a warning hidden on the week on screen is back; one hidden on another week is still hidden, for whoever signs
+in next on that browser — and, once the app is in the database, for everyone, because the day's row is shared.
+**The choices (product, his):** (a) *for the day, for everyone, until the situation changes* — a hidden warning is an
+acknowledged one; the next scheduler does not re-hide it; the day head keeps its true count and "N hidden" shows them (the
+data model as written); (b) *for that scheduler, until he signs out* — nothing is saved; each sign-in starts with every
+warning showing (the older note in the code). **The agent's lean: (a)** — it is what the saved record already says, and
+"N hidden" keeps every hidden warning one tap away. **Why it has a deadline:** (b) takes `wo` out of the day's table, so
+his answer is wanted before IT settles its tables (D453). **To build on his answer** (small, FULL tier — saved data, the
+warning list): (a) the boot and the sign-in read the loaded week's saved hides back; (b) stop saving them and drop
+`loadWeek`'s restore. Either way `view.ts`'s note and `data-schema.md` are made to say the same thing. **Place:** with
+`[DB-READINESS]` group A's residue, before the tables settle.

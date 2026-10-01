@@ -8351,6 +8351,18 @@ above it could not move (no screen route reaches it: a preview turns OIL Earn
 off and disables it). **The D38 flag** (this event inside his own flight brief or
 debrief) is computed from the working copy's flights live, from the RECORD's
 flights on the issued face, and not at all on a plain preview.
+**His SIM brief and debrief are flagged the same way (`[CROWD-SIM-BRIEF]`, `[DB-READINESS]` group A phase 7, 1 Oct 26):**
+a man on the OFT at 10:00 is busy for the box and free for the quarter-hour before it (D36), so he stands behind a
+09:50 event — listed, amber, with the warning list's own sentence ("No time for the OFT EP-1 brief — OPS BRIEF sits
+inside 09:45–10:00"; the AMT block by its own BRIEF and DEBRIEF rows). One body for the two sentences
+(`engine/validate.ts simBriefSays` / `simDebriefSays`, which the warning pass itself calls); the day's sim windows are
+published beside its events (`SIMW`), and the issued face hands the window the RECORD's own (`AvailWindow.tsx`, from the
+same rebuild as its flights). Ground crew are exempt, as in the warning list. Pins: `engine/crowdsim.test.ts`,
+`ui/availwin.test.tsx`.
+**A request that never asks the OIL question says so (`[OIL-PERSONAL-PLACEHOLDER]`, phase 7):** in the "Who earns OIL"
+half, the men behind a placeholder on a Personal request's row — and the requester's own puck on that row in OIL Earn
+mode — read "<callsign> — a personal request earns no OIL", inert, never "nothing measurable to earn from here" beside
+a row with written times (`ui/oilmode.ts inertWhy`, the kind read off the row as issued).
 
 **When the list cannot be worked out it says WHY**, by the real reason: the row
 is no longer on the schedule; it is cancelled; it is information only; there is

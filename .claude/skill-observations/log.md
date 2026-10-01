@@ -2022,3 +2022,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In §7.6, allow "not a defect, by construction" only when (a) the disposition lists EVERY branch of each definition it rests on and argues each, and (b) a test pins the case anyway (the invariant becomes an assertion, not prose). An argument that cannot be turned into a test is a hypothesis.
 
 **Principle:** A proof that a failure cannot happen is only as good as its enumeration of the definitions it uses; pin it with a test, because the branch you did not list is exactly where the next reviewer — or the bug — will be.
+
+### Observation 401: A cleanup step chained with `;` after a failed `&&` chain ran against state it did not create — a `git stash pop` reached another chat's stash
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7 build — proving a test red by stashing one file (`edit && git stash push -- file && vitest …; git stash pop`).
+**Skill:** test-driven-development (the red-first proof), systematic-debugging; repo guide raptor-port/CLAUDE.md §Build & verify
+**Type:** open-source
+**Phase/Area:** Proving a test fails without the fix
+
+**Issue:** The edit step at the head of the `&&` chain failed, so the `git stash push` never ran — but the `; git stash pop` after the chain still did, and popped the newest stash on the machine: one left weeks ago by another chat on another branch (the stash list is shared by every worktree of a repo). It happened to refuse (its one untracked file already existed) and changed nothing; a stash of tracked changes would have been merged into the working tree silently.
+
+**Suggested improvement:** In the red-first recipe: never pair a `stash pop` to a `stash push` with `;`. Use `git stash push -q -- <file> && { <run>; git stash pop -q; }` so the pop exists only if the push happened — or, better, avoid the stash entirely: copy the file aside (`cp f f.keep`), `git checkout -- f`, run, `mv f.keep f`. Before any `stash pop`, `git stash list | head -1` should name what was just pushed.
+
+**Principle:** An undo step must be bound to the do step it reverses; chained unconditionally it will one day undo something else — and shared, stack-shaped state (a stash, a lock, a temp dir) makes "something else" another person's work.
+
+### Observation 402: A script edited through a second script handed to a heredoc was mangled twice — known trap (#246, #259), met again when the edit was "just one line"
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [DB-READINESS] phase 7 — patching an already-written Python edit script with an inline `python - <<'EOF'` that contained `\n` escapes; then re-running the half-applied script, which applied its first edit twice (a duplicated constant, a build error).
+**Skill:** raptor-port guide §Build & verify / the python-edits memory; observations #246, #259
+**Type:** internal
+**Phase/Area:** Scripted file edits on Windows Git Bash
+
+**Issue:** Two failures in a row from one shortcut: (1) the inline patch's escapes arrived mangled, so the patched script was syntactically broken; (2) an edit script that asserts "exactly one match" per replacement is NOT safe to re-run after a partial success when a replacement leaves its own anchor in place (the anchor line is kept and text added after it) — the second run matched again and inserted the block twice.
+
+**Suggested improvement:** (a) Fix a script file with the Edit tool, never with another inline script. (b) Make each replacement idempotent-or-refusing: assert the NEW text is absent before replacing, or have the anchor be consumed by the replacement. (c) After any failed edit script, read `git diff --stat` before re-running anything.
+
+**Principle:** A partial run changes the preconditions of its own re-run; an edit script needs a guard that the change is not already there, not only that its anchor is.

@@ -818,6 +818,10 @@ export const openLenWords = (min: number) =>
  *  "Who earns OIL" half and the row's switch in OIL Earn mode: its crowd is counted over an assumed hour, but nobody is
  *  credited from a guessed time (D31). */
 export const OIL_OPEN_END = 'No OIL worked out — this row has no end time'
+/** WHAT A DRAG IS TOLD INSIDE OIL EARN (ui/drag.ts — the day underneath does not move while a scheduler decides what it
+ *  earns). "…deciding what it earns", never "what it pays": OIL is earned leave, not pay (D25) — the on-screen half of
+ *  [OIL-WORDS], pinned with the Logic page's sentences by oilscreenwords.test.ts. */
+export const OIL_NO_MOVE = 'Leave OIL Earn before moving anyone — the day cannot change while you are deciding what it earns'
 /** A placeholder on a row the day could not count for — the "?" chip's title (D31: never a silent absence). Distinct
  *  from the older issued day's "?" (`unrecorded`). No start at all, or a start and end that measure nothing. */
 export const OIL_NO_START = 'No start time — give it a time to count who can attend'

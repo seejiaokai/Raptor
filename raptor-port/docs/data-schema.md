@@ -153,7 +153,7 @@ truth for what each type means; the fields below are what a record carries.
 | `half` | string? | half-day marker for types that allow it |
 | `type` | string | one of the catalogue codes below |
 | `remarks` | string? | free text, may be `''`; absent on the seed SANS rows |
-| `mod` | string | last-modified date, ISO `yyyy-mm-dd` on the seeds — but **the app writes the literal `'now'`** on every create, edit and trim (`src/ui/inputedit.tsx:348`, `:712`) and the Leave War sync does the same (`src/leavewar/sync.ts:334`); the reader resolves `'now'` to today's date (`src/engine/inputs.ts:683`). A store that keeps `'now'` keeps "modified today" for ever |
+| `mod` | string | last-modified date, ISO `yyyy-mm-dd` — **frozen at the moment of the write** (`engine/inputs.ts nowStamp`, every create, edit, trim and the Leave War's approve door); a record minted before the freeze may still carry the literal `'now'`, which the reader resolves to today (`inputStampISO`). *(Corrected 1 Oct 26, `[STORE-READER-SWEEP]`: this row said the app still writes `'now'`.)* |
 | `acc` | `undefined \| 'g' \| 'u' \| 'r'` | never landed / landed on the Ground Programme / actioned to Unavailable / **removed by a scheduler (dormant)** |
 | `hand` | number? | how many times the request has changed hands — +1 at every change of person (`ui/inputedit.tsx commitInputEdit`); absent = 0 (`[DB-READINESS]` group A phase 6 (a), 30 Sep 26) |
 | `leftAt` | `{ <personId>: number }`? | the holding at which the request LEFT each man — written by the hand-over; an OIL decision about him made under an earlier holding reads as nothing (phase 6 (a)) |
@@ -198,6 +198,7 @@ One record per day of the loaded week, Monday first. Times inside a day are
 }
 ```
 
+**Every entry of `pax[]` and `more[]` is text — a seat skipped is `''`, never a hole or `null`** (`engine/slots.ts setSlotVal` pads; `[OIL-READ-LEFTOVERS]` 2, `[DB-READINESS]` phase 7 — pin `ui/simspare.test.tsx`).
 `p` / `w` / `who` / `id` / `pax[]` are PEOPLE ids. Rows also carry flags the
 engine sets as the day is worked: `cx` (cancelled) with `cxr` (the cancel
 reason, from the cancel-reasons list), `info` (info-only), and on a
@@ -357,8 +358,8 @@ read path the viewer needs in render. Behind it (since 8 Sep 26) a durable
 per-browser drawer: **IndexedDB** `raptor-docs` (`src/storage/docstore.ts`),
 wired by `docBoot` from `main.tsx` on the built site only (dev/tests/`?fresh`
 stay memory-only). `docAdd` writes through to it; `docBoot` fills the cache
-back at boot and advances the id counter past every stored id (a reset `seq`
-must not reuse a hydrated `doc<N>`). Its OWN drawer, deliberately NOT the
+back at boot. Ids are random (`state/docs.ts newDocId` — `doc-<uuid>`), so two minters cannot collide; an older
+`doc<N>` id still resolves. *(Corrected 1 Oct 26, `[STORE-READER-SWEEP]`: this said the boot advances an id counter.)* Its OWN drawer, deliberately NOT the
 ~5 MB text seam a couple of photos would overflow. Accepts photos (`image/*`)
 and PDFs, capped at **8 MB** each. Append-only (undo can resurrect the input
 that owned one). Input records carry only the id, never the bytes. Fail-soft:
@@ -424,11 +425,11 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `wavehide` | `string[]` | hidden wave-template ids |
 | `wavedefault` | `string[]` | house wave order |
 | `dutytpl` | `DutyTpl[]` | `{ id, title, wave: '' \| 'sc' \| 'avalon' \| 'bb', rows: [{ role, str, end }] }` |
-| `cxreasons` | `string[]` | the cancel-reason list |
+| `cxreasons` | `string[]` | the cancel-reason list — **a stored empty list is a decision** (every reason removed in the editor) and reads back empty; a list whose every row is unusable falls back to the shipped set (`[STORE-READER-SWEEP]`, phase 7; the same for `stores` and `qualcols`) |
 | `lookahead` | `{ w, s }` | weeks ahead, to-Sunday flag |
 | `secdefault` | `string[]` | section order, from `notes, prog, waves, duty, sims, ground, inputs, avail, sans, unav` |
-| `stores` | `[[key, label]]` | the stores list |
-| `qualcols` | `QualCol[]` | the LoX column list — `{ k, h, lav?, apt?, scq?, aar?, fcpOnly? }` in display order (saved since the 8 Sep 26 bug pass: the ticks under a column persist, so the column must too) |
+| `stores` | `[[key, label]]` | the stores list — a stored empty list stays empty after a reload (as `cxreasons`) |
+| `qualcols` | `QualCol[]` | the LoX column list — `{ k, h, lav?, apt?, scq?, aar?, fcpOnly? }` in display order (saved since the 8 Sep 26 bug pass: the ticks under a column persist, so the column must too); a stored empty list — every column removed on the Quals page — stays empty after a reload (as `cxreasons`) |
 | `account:<id>` | `Account` | one row per account (`[DB-READINESS]` group A phase 4.4 — it was one `accounts` list): `{ id, name, role: 'admin' \| 'main', pid, on, offBy?, seenFrom?, createdAt? }` — `seenFrom` (`[DRAFT-PENDING]`, Fable F6): where the change history stood when the account was made, a POSITION `{ at, lineId }` (phase 4.3), so someone given access later starts with nothing new; `createdAt` (ms) — the older of two accounts for one person wins; `name` the sign-in name (lower-case, unique; stands for the defence mail address), `pid` the person (one account each), `on` false = **suspended** (D285); `offBy: 'po'` only when an "Overseas Sqn" posting suspended it on its date (what "he's back" enables — any hand Suspend / Enable drops it). An account is removed only with its person, by a delete (D287, `[POST-OUT-OUTCOMES]`). **No password.** No row at all = the four seeded demo accounts (`[ACCOUNTS]`, D166) |
 | `accessreq:<id>` | `AccessRequest` | one row per waiting request (was one `accessreqs` list): `{ id, name, cs, ini, seat, cat, at }` — who asked (the signed-in principal, from the session); what he typed, text only — the displayed callsign/name (≤ 14), initials (may be blank), `seat` `FCP`/`RCP`/`GND`, `cat` (`''` for personnel) — never a link to a puck; when. (D204; `[ACCOUNTS-NEW-PERSON]` D214, D216, D227 — the typed name field gave way to the initials, D219). Who has had it on screen is no longer on it: |
 | `reqseen:<accountId>` | `{ userId, seenRequestIds }` | each admin's own row of the requests he has had on screen — his bell (D216, D227); written only by `access.seen`, his own row; removed with his account (data-model `AccessRequestSeen`, R3-04) |
@@ -458,7 +459,7 @@ world replaces it, inside the boot's group); the one-time fold (`store.ts leavew
 | `ledger:<id>` | `LeaveLedger` | one `LedgerEntry`; a reload reads the ledger by (date, entry time, id) — every reader sorts it for itself |
 | `opening:<pid>:<counter>` | `LeaveOpening` | one opening balance, a number |
 | `profile:<pid>` | `LeavePersonProfile` | `{ post?, label? }` — his posting window (`post`: the `postouts` entry below) and his personnel label (`label`, the admin's text for a ground-crew row); the row goes when both do |
-| `current`, `oilpolicy`, `eventdefs`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `manningdefs`, `eventrows`, `showsans` | `Setting` | one key each, as before — only the keys a command changed are written |
+| `current`, `oilpolicy`, `eventdefs`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `manningdefs`, `eventrows`, `showsans` | `Setting` | one key each, as before — only the keys a command changed are written. `manningdefs` holds at most `MAX_MANNING_RULES` (60) counters: ONE number for the reader (a longer list reads as damage → the built-in set) and the writer (a new counter past it is refused, and the form says so) — `[STORE-READER-SWEEP]`, phase 7 |
 
 A started store is read as it stands — no opening, ledger entry or window stored means none, never the seed's; a
 row that will not read (or a war claiming a day another already holds, or a record that would break its address's

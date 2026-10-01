@@ -549,8 +549,10 @@ the live week (`persistAll`), the 14 durable settings keys (incl. `qualcols` and
 the whole Leave War world, the Tracker's `ocu:` data, and medical documents
 (IndexedDB). MEMORY-ONLY is now just the `vite` dev server, `MODE==='test'`,
 `?fresh=1`, or a browser whose storage cannot be touched. Genuinely still
-session-only, by design: **undo/redo history, the edit log, and the view-state
+session-only, by design: **undo/redo history and the view-state
 registries (`LATEOFF`, the armed slot, selection)** — none is in `persistAll`.
+*(Corrected 1 Oct 26, `[STORE-READER-SWEEP]`: this named the edit log too. The change history has been KEPT since
+`[DRAFT-PENDING]` — D338, 28 Sep 26: it outlives a sign-out and a reload, a row per line, `engine/editlog.ts elogLoad`.)*
 Several August "session-only / a reload forgets" rules elsewhere in this file
 were written before the 8 Sep 26 storage work and are marked superseded where
 they sit; if you find another, it is stale — fix it, don't obey it.
