@@ -202,6 +202,12 @@ untouched built-in reads its shipped events). `aliasOfId` is retired (a rename k
 App change: a syllabus can be referenced by id from an enrolment, so a rename
 no longer has to rewrite marks and rosters.
 
+**One chart, shared — and marks belong to the student (owner, D474, 1 Oct 26):** a syllabus is ONE row every course on it
+reads; an edit to it reaches every course and every student on it, and is a change to rows (this one, its `Layout`, a
+ball's typed details) — never a new table and never a copy per course. Marks hang on the `Enrolment` and the event's fixed
+code, so moving, redrawing or re-wording a ball leaves them where they are; a new ball shows ungraded for everyone on the
+chart; deleting a ball removes its marks for everyone on it (D124). A variant for one course is a Duplicate.
+
 ### TrainingEvent
 
 Owner: **Tracker**. One event on a chart: what it is, where it sits, and
