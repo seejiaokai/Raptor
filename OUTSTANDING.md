@@ -84,8 +84,8 @@ award fix are due before the tables are settled. What to finish before the hand-
    leave it, D468);
    **phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7 — the small OIL follow-ups below — BUILT and FULL-checked
    1 Oct 26 on `claude/db-readiness-p7-oil-followups`** (plan and build log
-   `raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`; evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`) — **left: his look
-   and "merge live". That closes group A.**
+   `raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`; evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`) — **MERGED 1 Oct 26 on his
+   "merge live" (PR #477). Group A is closed.**
 5. **At the END, once the features are built (D473, 1 Oct 26) — [DB-STEP]:** the table format written on his side (with his AI)
    for the IT side to enter, then the one adapter to those tables; the stack
    ([ARCH-STACK]) resumes there, with its step 6 still to come; the [AMEND] work is queued behind it. Architecture first,
@@ -97,9 +97,9 @@ award fix are due before the tables are settled. What to finish before the hand-
 **The small OIL follow-ups — ONE batch, with the OIL award fix, before the tables are settled (D147, D203, D354): BUILT 1 Oct 26 as
 `[DB-READINESS]` phase 7, all six archived** — [OIL-READ-LEFTOVERS] (its items 1, 2, 4), [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX]
 (answered D470 — a man in the name box of another man's request earns), [OIL-WORDS], [OIL-PERSONAL-PLACEHOLDER], [CROWD-SIM-BRIEF];
-evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`. Left: his look and "merge live". ([OIL-RELINK-XWEEK] closed 1 Oct 26 by `[DB-READINESS]` phase 6 (c).)
+evidence `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md`. MERGED 1 Oct 26 (PR #477). ([OIL-RELINK-XWEEK] closed 1 Oct 26 by `[DB-READINESS]` phase 6 (c).)
 
-**Ruled, to build next (D469, 1 Oct 26):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, and its line stays in the list struck out; a mock-up and three readings to him first, then its own branch and FULL check, after `[DB-READINESS]` phase 7.
+**Ruled, to build next (D469, 1 Oct 26):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, and its line stays in the list struck out; the three readings answered (D471, D472); on its own branch `claude/warn-hide-kept` (phase 7 merged, PR #477) — the mock-up sent to him 1 Oct 26 (`raptor-port/docs/mock/warn-hide.html`), then the plan, the build and its FULL check.
 
 **Placed by their own lines — not his rulings:** from the `[DB-READINESS]` phase 7 walk (1 Oct 26), none of them this batch's — low, each with the next change there: [COUNT-CHIP-PHONE-TAP] (fixed for Chromium in phase 7; his iPhone look left), [INP-TILL-STALE] (a remark keeps a "till" date its request no longer reaches — new data), [OIL-INERT-TAP-SILENT], [OG-TAG-OVER-COUNT], [MEMBER-EDITPAGE-CHECK] (a check, not a known fault); from the group-A FULL walk (30 Sep 26) — with group B:
 [UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
@@ -111,7 +111,7 @@ first), [LW-SCRUBBER-FLAKY] (test-only),
 [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
+[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (low, its own documents-only pass) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
@@ -1532,10 +1532,21 @@ WAITS for the next amendment — a pending change (D45, D103); (c) the published
 flag too. **(a) ANSWERED — D472 (1 Oct 26):** a hidden warning is NOT COUNTED — 3 issues with one hidden reads "2 issues",
 and the count line says nothing about a hidden one; it is noticed only by opening the day's issues list and seeing its line
 struck through and darker. **Every reading is now answered — the design is complete.** A picture first (the struck-out line
-on the board and the edit week, phone and desktop), then the build. **Kept, as he was read:** only a scheduler hides and unhides; a hide is an Undo step; a hidden warning
+on the board and the edit week, phone and desktop), then the build. **The picture — SENT 1 Oct 26:** `raptor-port/docs/mock/warn-hide.html`
+(pictures `raptor-port/docs/mock/img/warn-hide/`, script `raptor-port/scripts/handpass/wh-mock.mjs`), with three calls of the agent's put to him on
+it: View-only Sched shows the struck-out line too, without the ↺; a day with every issue hidden keeps a quiet "✓ No issues" bar
+that opens the list; the look of the hidden line. His answer: not yet given. **Kept, as he was read:** only a scheduler hides and unhides; a hide is an Undo step; a hidden warning
 returns by itself when the situation changes (his Aug 26 words). **Tier:** FULL (the warning list, saved data, the published
 record). **Place:** the next job after `[DB-READINESS]` phase 7, on its own branch — the tables' shape is settled by the
 ruling itself (`wo` stays in the day's row), so IT is not waiting on the build.
+
+### [DOCS-SIZE-PASS] Two always-read files are over their size tripwires — a documents-only pass is owed (found 1 Oct 26)
+`npm run docsize` on `main` (1 Oct 26, after PR #477): `OUTSTANDING.md` is about 150 lines over its ceiling of 1430, and
+`.claude/rules/decisions/how-we-work.md` about 400 bytes over its tripwire of 18000. Each code change since has reported it
+"OVER, deferred (D29)"; no job carried the pass itself. **To do, in a change that touches no `raptor-port/src`:** move what no
+longer belongs in each to its home (finished backlog items by `backlog-archive.mjs`; the rulings file is never trimmed — split
+the area or raise its tripwire with the reason, D136, D390), or raise a ceiling with its reason (D141). **Place:** low — its
+own small documents-only branch; a documents-only pull request fails the Docs guard on these sizes until it is done.
 
 ### [INP-TILL-STALE] The Inputs editor leaves "till <date>" in the remarks when a range is taken back to one day (walk find, 1 Oct 26)
 Found by walker A of the `[DB-READINESS]` phase 7 walk (its O4; picture `raptor-port/docs/img/handpass/2026-10-01-dbr-phase7/a/A10x.png`),

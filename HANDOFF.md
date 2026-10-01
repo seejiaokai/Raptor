@@ -15,38 +15,23 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/db-readiness-p7-oil-followups -->
-### `claude/db-readiness-p7-oil-followups` — `[DB-READINESS]` group A phase 7, the small OIL follow-ups: BUILT and FULL-checked, waiting for his look — written 1 Oct 26 — verify before use
-- **Where it started:** his opening line — tidy the two merged blocks away (phases 0–6 live, PR #476), then plan and build
-  phase 7 with its own bug check, on a new branch cut from `main`. The context was compacted once mid-chat; the plan's build
-  log (§6) and the evidence sheet were written as the work went and are the record.
-- **Built (on the branch, one pull request):** the six small OIL follow-ups — a placeholder on a Personal request's row is counted
-  and earns nobody; the ALL AVAIL window flags a man's sim brief / debrief; a sim row's seat list is saved without holes; the
-  stored-record sweep's three fixes; D470 (a man in another man's request name box earns, and the box survives the member's
-  own edit); the phone's finger tap on a count; OIL never called pay, on screen or in comments. All six archived.
-  Plan and build log `raptor-port/docs/superpowers/plans/2026-10-01-db-readiness-phase7-plan.md`; evidence
-  `raptor-port/docs/handpass/2026-10-01-dbr-phase7-check.md` (his look card is its §9).
-- **Rulings this chat:** D469, D471, D472 (hidden warnings — NOT built; `[WARN-HIDE-KEPT]`), D470 (built) and D473 (the database
-  comes at the END — after phase 7 no more database-readiness work; the IT side's answers of 1 Oct 26 are in `[IT-QUESTIONS]`).
-- **Unfinished:** his look and "merge live" (none of it code). On his iPhone: a finger tap on a count under ALL AVAIL on the
-  week views — proven in Chromium only (`[COUNT-CHIP-PHONE-TAP]`). Open residue, all filed: `[WARN-HIDE-KEPT]` (the next job),
-  `[LOAD-MSG-SHORT]` (a question for him), `[INP-TILL-STALE]`, `[OIL-INERT-TAP-SILENT]`, `[OG-TAG-OVER-COUNT]`,
-  `[MEMBER-EDITPAGE-CHECK]`. Noticed, not this chat's: `[OIL-AWARD-IS-A-GRANT]` and `[OIL-EARNED-VS-GRANTED]` merged with
-  PR #469 and still sit in the backlog (each now says so).
-- **Branch:** `claude/db-readiness-p7-oil-followups` — pushed 1 Oct 26 on his "push it" (the app's permission check had
-  refused this chat's first attempt; the repo is public for now, D106), and its ONE pull request opened with that push.
-  Check before acting: `git ls-remote --heads origin claude/db-readiness-p7-oil-followups` and `gh pr list --head
-  claude/db-readiness-p7-oil-followups` — if the branch is there with no PR, open one, unsubscribe from it at once and hand
-  him the Vercel link with the look card. If it has MERGED, the next chat starts from `main` in a new worktree and never
-  picks this branch.
-- **Gates:** the full set green on the final code under the PC lock — counts in §Gate baseline below (the commits after
-  them are documents only). GitHub's own checks first ran with that push: read their result before anything else
-  (`gh run list --branch claude/db-readiness-p7-oil-followups --limit 2`), and never push while they run (D151).
-- **Open questions for him:** none from this chat beyond his look; `[LOAD-MSG-SHORT]` still waits.
-- **Parallel (D302):** this chat used D469–D473 and observations #401–#407. No other open branch known when written.
-- **Pick up here:** if he reports something from his look, fix it on this branch (red first, re-walk, the gates). Once he has
-  said "merge live" and it is live: `[WARN-HIDE-KEPT]` — a fresh chat, a new worktree on `main`, a picture to him first
-  (D469, D471, D472 in `.claude/decisions-full/scheduler.md`), then its own FULL check.
+<!-- now:claude/warn-hide-kept -->
+### `claude/warn-hide-kept` — `[WARN-HIDE-KEPT]` the hidden-warnings change (D469, D471, D472): the picture SENT, the plan being written — written 1 Oct 26 — verify before use
+- **Where it started:** his opening line — tidy the merged phase 7 block away (PR #477, live), then build `[WARN-HIDE-KEPT]`
+  on a new branch cut from `main`: a picture to him first, then the build, with its own FULL bug check. No new ruling in it.
+- **Done so far:** the phase 7 block removed (its residue was all filed — checked item by item); the mock-up
+  `raptor-port/docs/mock/warn-hide.html` (pictures `raptor-port/docs/mock/img/warn-hide/`, made by
+  `raptor-port/scripts/handpass/wh-mock.mjs` from the real built app at 2x) published to him as an Artifact page
+  (https://claude.ai/artifact/5cBtGP2gHysgB5VbvuTGUZ — private to him). It shows the struck-out line on Edit Schedule and the
+  Scheduler Board, desktop and phone, the puck without its flag, View-only Sched, and a day with every issue hidden.
+- **Three calls put to him on that page (unanswered when written):** (1) View-only Sched shows the struck-out line too,
+  without the ↺; (2) a day with every issue hidden keeps a quiet "✓ No issues" bar that opens the list; (3) the look of
+  the hidden line (struck out, grey, dashed outline on Edit Schedule, the ↺ at full strength).
+- **Unfinished:** his answer on the picture; the plan and its red team (both reviewers — saved data and the published
+  record); the build; the FULL check; his look; "merge live".
+- **Parallel (D302):** rulings: D474 is the last used on `main` — this chat takes D475 on; observations #408 on. No other
+  open branch known when written.
+- **Pick up here:** `OUTSTANDING.md` `[WARN-HIDE-KEPT]`; the three rulings' full rows in `.claude/decisions-full/scheduler.md`.
 <!-- /now -->
 
 ## Next, in order
@@ -55,7 +40,7 @@ the later merge keeps both (D78).
    phase 7 no more database-readiness work until then; the table list (`raptor-port/docs/data-model.md`) is kept up to date as
    each feature is added, and he — with his AI — writes the table format for the IT side to enter. Next job: `[WARN-HIDE-KEPT]`.
    *Done while the step was "starting now" (29 Sep – 1 Oct 26):* `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
-   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7, the small OIL follow-ups, BUILT and FULL-checked 1 Oct 26 on `claude/db-readiness-p7-oil-followups` (`…/2026-10-01-dbr-phase7-check.md`) — waiting for his look and "merge live", which closes group A (D453); then `[WARN-HIDE-KEPT]` (D469, D471, D472). The IT team is taking the app into Dataverse now, and he means to
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7, the small OIL follow-ups, BUILT and FULL-checked 1 Oct 26 (`…/2026-10-01-dbr-phase7-check.md`) and MERGED the same day on his "merge live" (PR #477) — group A is closed (D453); `[WARN-HIDE-KEPT]` (D469, D471, D472) under way on `claude/warn-hide-kept`, its picture sent to him 1 Oct 26. The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken — *and that hand-over now waits for the end (D473).*
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
@@ -77,7 +62,7 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 1 Oct 26, `claude/db-readiness-p7-oil-followups` (phase 7 with every fix of its FULL check and
+The latest counts watched — 1 Oct 26, `claude/db-readiness-p7-oil-followups` (merged, PR #477 — phase 7 with every fix of its FULL check and
 both final reads), under the PC lock: unit **7487 / 7487** (469 files) · build clean · tfin **728 / 0** · e2e **510 passed,
 0 failed**, 49 skipped · smoke **445 / 0** · rulecheck OK (notes `AM39d` now covered — older, left) · docsize OK (OVER, deferred
 — D29) · perf **4 / 0** (board DOM 1024 ≤ 1150, week 5134 ≤ 5450). Restate a count only from a run you watched, and REPLACE the previous counts — never stack a

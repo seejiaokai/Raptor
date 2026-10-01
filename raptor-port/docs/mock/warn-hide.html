@@ -1,0 +1,160 @@
+<title>Hidden Warnings Mock-up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* layout: one column of sections, each a "today / new" pair of real app pictures; the house style of docs/mock/ */
+:root{
+  --bg:#f3f5f8; --panel:#ffffff; --ink:#18202b; --ink-2:#4a5566; --ink-3:#7a8597; --edge:#d8dee7;
+  --accent:#1a8fb3; --accent-soft:#e1f2f8; --ask:#b36b12; --ask-soft:#fbefdd;
+  --shot:#0d1117; --veil:rgba(8,12,18,.92);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e141c; --panel:#151d28; --ink:#e7edf5; --ink-2:#aab6c6; --ink-3:#7f8ba0; --edge:#26324a;
+    --accent:#4cc3e6; --accent-soft:#12303c; --ask:#f0b25a; --ask-soft:#3a2a12; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e141c; --panel:#151d28; --ink:#e7edf5; --ink-2:#aab6c6; --ink-3:#7f8ba0; --edge:#26324a;
+  --accent:#4cc3e6; --accent-soft:#12303c; --ask:#f0b25a; --ask-soft:#3a2a12; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
+h1{font-size:28px;line-height:1.2;margin:0;text-wrap:balance}
+h2{font-size:19px;margin:0;text-wrap:balance}
+p{margin:0;max-width:68ch;color:var(--ink-2)}
+.lede{display:flex;flex-direction:column;gap:10px}
+.eyebrow{font:500 12px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.quote{border-left:3px solid var(--accent);padding:6px 0 6px 12px;color:var(--ink);font-style:italic;max-width:68ch}
+.reads{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.reads ol,.reads ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--ink-2);max-width:80ch}
+.reads b{color:var(--ink)}
+section.page{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--edge);padding-top:20px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pair.phone{grid-template-columns:repeat(2,minmax(0,300px))}
+.pair.one{grid-template-columns:minmax(0,560px)}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figcaption{font:500 12px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+figcaption.after{color:var(--accent)}
+figure button{display:block;padding:0;margin:0;background:var(--shot);border:1px solid var(--edge);border-radius:8px;overflow:hidden;cursor:zoom-in;width:100%}
+figure img{display:block;width:100%;height:auto}
+.note{font-size:14px;color:var(--ink-2);max-width:80ch}
+.asks{background:var(--ask-soft);border:1px solid var(--ask);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.asks h2{color:var(--ask)}
+.asks ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",ui-monospace,monospace;letter-spacing:.06em;padding:1px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent);margin-left:6px;vertical-align:2px}
+.zoom{position:fixed;inset:0;background:var(--veil);overflow:auto;cursor:zoom-out;z-index:10;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.zoom img{display:block;margin:0 auto;max-width:none;border-radius:6px}
+@media (max-width:760px){.pair{grid-template-columns:1fr}.pair.phone{grid-template-columns:repeat(2,minmax(0,1fr))}h1{font-size:23px}}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="wrap">
+  <header class="lede">
+    <div class="eyebrow">Mock-up · D469, D471, D472 · 1 Oct 26 · version 1 — for your look before the build</div>
+    <h1>A hidden warning: struck out, not counted, no flag on the puck</h1>
+    <p class="quote">"It should just show a strike out and it's darker. Ready to be reactivated again for flagging." · "If there are 3 issues initially and a scheduler clicks 1 to hide it should just show 2 issues."</p>
+    <p>These are pictures of the real app. The example is Tuesday of the demo week: four issues, and the scheduler hides the last one, "Static has a long work day". In each pair, "today" is what the app does now and "new" is what the build will do. Tap a picture to see it full size.</p>
+  </header>
+
+  <section class="page">
+    <h2>Edit Schedule</h2>
+    <p class="note">Today the count stays at 4 and the line moves under "1 hidden". New: the count reads 3, and the line stays where it was, struck out and darker. The ↺ beside it flags it again.</p>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><button type="button" data-zoom><img src="img/warn-hide/dk-1-week-today.png" alt="Edit Schedule on a desktop today: Tuesday reads 4 issues, three lines listed and a fold reading 1 hidden"></button></figure>
+      <figure><figcaption class="after">Desktop · new</figcaption><button type="button" data-zoom><img src="img/warn-hide/dk-1-week-new.png" alt="Edit Schedule on a desktop, new: Tuesday reads 3 issues; Static's long work day line is still fourth in the list, struck out and darker, with a flag-again button"></button></figure>
+    </div>
+    <div class="pair phone">
+      <figure><figcaption>Phone · today</figcaption><button type="button" data-zoom><img src="img/warn-hide/ph-1-week-today.png" alt="Edit Schedule on a phone today: 4 issues and a fold reading 1 hidden"></button></figure>
+      <figure><figcaption class="after">Phone · new</figcaption><button type="button" data-zoom><img src="img/warn-hide/ph-1-week-new.png" alt="Edit Schedule on a phone, new: 3 issues and the hidden line struck out in its place"></button></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>Scheduler Board</h2>
+    <p class="note">The same change in the board's issues list. A hide made on either screen shows on both, as it does today.</p>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><button type="button" data-zoom><img src="img/warn-hide/dk-2-board-today.png" alt="The scheduler board on a desktop today: 4 issues, three lines and a fold reading 1 hidden"></button></figure>
+      <figure><figcaption class="after">Desktop · new</figcaption><button type="button" data-zoom><img src="img/warn-hide/dk-2-board-new.png" alt="The scheduler board on a desktop, new: 3 issues, the hidden line struck out in its place"></button></figure>
+    </div>
+    <div class="pair phone">
+      <figure><figcaption>Phone · today</figcaption><button type="button" data-zoom><img src="img/warn-hide/ph-2-board-today.png" alt="The scheduler board on a phone today"></button></figure>
+      <figure><figcaption class="after">Phone · new</figcaption><button type="button" data-zoom><img src="img/warn-hide/ph-2-board-new.png" alt="The scheduler board on a phone, new: 3 issues and the hidden line struck out"></button></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>The puck</h2>
+    <p class="note">Today Static's puck keeps its grey ring and its "L" chip even after the warning is hidden. New: his puck is plain. Saint's puck beside him keeps its red ring, because his warning is not hidden.</p>
+    <div class="pair">
+      <figure><figcaption>Today · hidden, still flagged</figcaption><button type="button" data-zoom><img src="img/warn-hide/dk-3-puck-today.png" alt="Static's puck on Tuesday today, with a grey ring and an L chip"></button></figure>
+      <figure><figcaption class="after">New · hidden, no flag</figcaption><button type="button" data-zoom><img src="img/warn-hide/dk-3-puck-new.png" alt="Static's puck on Tuesday, new: no ring and no chip; Saint's puck still ringed red"></button></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>View-only Sched <span class="tag">what everyone else sees</span></h2>
+    <p class="note">Once the day is published with the warning hidden, members see the count without it and Static's puck plain. If they open the list, the hidden line is there, struck out, with no ↺: only a scheduler can flag it again.</p>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><button type="button" data-zoom><img src="img/warn-hide/dk-5-view-today.png" alt="View-only Sched today: Tuesday published, 4 issues listed in full"></button></figure>
+      <figure><figcaption class="after">Desktop · new</figcaption><button type="button" data-zoom><img src="img/warn-hide/dk-5-view-new.png" alt="View-only Sched, new: 3 issues, the hidden line struck out with no button"></button></figure>
+    </div>
+    <div class="pair phone">
+      <figure><figcaption>Phone · today</figcaption><button type="button" data-zoom><img src="img/warn-hide/ph-5-view-today.png" alt="View-only Sched on a phone today"></button></figure>
+      <figure><figcaption class="after">Phone · new</figcaption><button type="button" data-zoom><img src="img/warn-hide/ph-5-view-new.png" alt="View-only Sched on a phone, new"></button></figure>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>When every issue on a day is hidden</h2>
+    <p class="note">Saturday has one issue. With it hidden the count is zero, but the line still has to be reachable to flag it again. So the bar stays, in a quiet grey, reading "✓ No issues". It says nothing about a hidden one; you see it only when you open the list.</p>
+    <div class="pair">
+      <figure><figcaption>Desktop · today</figcaption><button type="button" data-zoom><img src="img/warn-hide/dk-4-allhidden-today.png" alt="Saturday today: the bar reads 1 issue, with a fold reading 1 hidden"></button></figure>
+      <figure><figcaption class="after">Desktop · new</figcaption><button type="button" data-zoom><img src="img/warn-hide/dk-4-allhidden-new.png" alt="Saturday, new: a grey bar reading No issues, and the hidden line struck out under it"></button></figure>
+    </div>
+    <div class="pair phone">
+      <figure><figcaption>Phone · today</figcaption><button type="button" data-zoom><img src="img/warn-hide/ph-4-allhidden-today.png" alt="Saturday on a phone today"></button></figure>
+      <figure><figcaption class="after">Phone · new</figcaption><button type="button" data-zoom><img src="img/warn-hide/ph-4-allhidden-new.png" alt="Saturday on a phone, new"></button></figure>
+    </div>
+  </section>
+
+  <div class="reads">
+    <h2>What the build does, from your three rulings</h2>
+    <ul>
+      <li><b>Hidden for everyone, until someone taps ↺.</b> A reload or a sign-in no longer brings it back.</li>
+      <li><b>Only a scheduler hides and flags again.</b> Undo takes a hide back, as today.</li>
+      <li><b>It comes back by itself if the situation changes.</b> If Static's day gets longer or shorter, that is a new warning and it shows.</li>
+      <li><b>On a day already published, a hide waits for the next amendment.</b> The day reads "1 pending" and the four sign-offs fall. View-only Sched keeps the flag until the amendment goes out.</li>
+      <li><b>The published and printed schedule drop the flag too.</b></li>
+      <li><b>A man with two warnings keeps the flag of the one still showing.</b> Hide Saint's clash and his puck goes from red to the amber of his other warning.</li>
+      <li><b>The bar's colour follows what is left.</b> Hide the only red one and the bar turns amber.</li>
+      <li><b>A hidden crew-rest warning also drops the dotted "breaks tomorrow's crew rest" mark on the day before.</b> It is the same item.</li>
+    </ul>
+  </div>
+
+  <div class="asks">
+    <h2>Three calls I made that you may want different</h2>
+    <ol>
+      <li><b>View-only Sched shows the struck-out line</b> (without the ↺). The other way is to leave it off View-only Sched altogether, so only schedulers ever see it.</li>
+      <li><b>A day with every issue hidden keeps a quiet "✓ No issues" bar</b> that opens the list. On the board the heading reads "No conflicts flagged ✓" with the struck-out line under it.</li>
+      <li><b>The look of the hidden line:</b> struck out, grey, a dashed outline on Edit Schedule, and the ↺ at full strength so it is easy to find.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="zoom" id="zoom" hidden></div>
+<script>
+/* tap a picture: its full-size copy over the page, scrollable; tap again to close */
+(function(){
+  var z=document.getElementById('zoom'), zi=null;
+  document.querySelectorAll('[data-zoom]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var im=b.querySelector('img'); z.textContent=''; zi=new Image(); zi.src=im.src; zi.alt=im.alt; z.appendChild(zi);
+      zi.style.width=Math.max(im.naturalWidth/2, Math.min(im.naturalWidth, window.innerWidth-24))+'px';
+      z.hidden=false; z.scrollTop=0; z.scrollLeft=0;
+    });
+  });
+  z.addEventListener('click',function(){ z.hidden=true; z.textContent=''; });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') z.hidden=true; });
+})();
+</script>
