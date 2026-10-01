@@ -4745,6 +4745,16 @@ owner's ask). Each late input now carries its OWN control on the board.
 
 ## Week Insights: work hours (owner, 20 Aug 26)
 
+**WHICH SCHEDULE INSIGHTS COUNTS (owner, D477, 1 Oct 26 — RULED, NOT YET BUILT: `[INSIGHTS-WHICH-COPY]`).** *"it should follow
+the schedule on whats its showing"*: Insights counts the schedule the page is showing. On View-only Sched a PUBLISHED day is
+counted as published — its issued version, its issued hides (a hidden warning is not counted, D472) — never by changes still
+waiting on the working copy; a day that page shows as its working draft is counted as that. Edit Schedule and the Scheduler
+Board show the working copy, and Insights counts it there. Every figure of the window follows the one schedule, not only the
+issue counts. On a page with no schedule on it, Insights counts what View-only Sched shows. **As built today** every figure is
+worked out from the working copy on every page (`ui/Modals.tsx insightsHTML`, `engine/insights.ts`), so on View-only Sched a
+change waiting on a published day — a hide included — already moves it; that is the gap the build closes.
+
+
 "Perhaps have a section to show everyone's work hours in the insights for the
 week."
 

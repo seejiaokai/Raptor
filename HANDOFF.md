@@ -27,9 +27,12 @@ the later merge keeps both (D78).
   its `vercel[bot]` comment carries the preview link he looks at. Never push while its checks are running (D151).
 - **The evidence and his look card:** `raptor-port/docs/handpass/2026-10-01-warn-hide-check.md` (§11 is the card — five things to
   see, three to answer). What the app now does: `raptor-port/docs/ui-contracts.md` §Muting a check.
-- **Waiting on him:** (1) his look on the preview; (2) his answers to two questions, neither blocks the merge —
-  `[INSIGHTS-WHICH-COPY]` (on View-only Sched, should Insights count the published schedule? Astra would change it) and
-  `[WARN-HIDE-DROP-NOTE]` (the amber "already on …" note after a drop that recreates a hidden clash); (3) "merge live".
+- **Waiting on him:** (1) his look on the preview (PR #478; its checks green when written); (2) his answer to ONE question,
+  which does not block the merge — `[WARN-HIDE-DROP-NOTE]` (the amber "already on …" note after a drop that recreates a hidden
+  clash; he asked when it shows and was told — no ruling yet); (3) "merge live".
+- **ANSWERED the same evening — D477:** Insights counts the schedule the page is showing (on View-only Sched a published day
+  as published, a hidden warning not counted). NOT BUILT: `[INSIGHTS-WHICH-COPY]` is the next small job, in a FRESH chat on its
+  own branch after this one merges (WALK tier; the Sonnet-walker trial rides on its walk).
   **Never merge without those two words** — then carry it to live on Vercel (D143) and tell him once.
 - **After the merge:** `[WARN-HIDE-KEPT]` leaves `OUTSTANDING.md` by the script (its lasting facts are in the docs named in its
   item); this block is removed at the next handoff.
@@ -43,7 +46,7 @@ the later merge keeps both (D78).
   (2) The browser tests rebuild `raptor-port/dist` themselves when nothing serves port 4173; a walk is served from its own
   frozen copy (`raptor-port/dist-wh`, ports 4211–4214 in `.claude/launch.json`), re-frozen only between walks. (3) A browser
   test of where a view LANDS must wait until the page has stopped moving, then look once (observation 416).
-- **Parallel (D302):** rulings D475 and D476 used here (D474 was the last on `main`) — a next chat takes D477 on; observations
+- **Parallel (D302):** rulings D475, D476 and D477 used here (D474 was the last on `main`) — a next chat takes D478 on; observations
   #408–#416 used, #417 on. No other open branch known when written.
 - **Pick up here:** `OUTSTANDING.md` `[WARN-HIDE-KEPT]`; the evidence sheet above.
 <!-- /now -->

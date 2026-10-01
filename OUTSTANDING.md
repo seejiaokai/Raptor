@@ -111,7 +111,7 @@ first), [LW-SCRUBBER-FLAKY] (test-only),
 [PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (low, its own documents-only pass), [INSIGHTS-WHICH-COPY] (a question for him, low), [WARN-HIDE-DROP-NOTE] (a question for him, low), [SONNET-WALKER-TRIAL] (with the NEXT walk — D476) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
+[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (low, its own documents-only pass), [INSIGHTS-WHICH-COPY] (RULED D477 — to build: its own small job after `[WARN-HIDE-KEPT]` merges, WALK tier), [WARN-HIDE-DROP-NOTE] (a question for him, low), [SONNET-WALKER-TRIAL] (with the NEXT walk — D476) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
@@ -1552,7 +1552,7 @@ the known two-tabs gap (`raptor-port/docs/data-schema.md` known gaps, item 12) �
 only be SEEN once there is a shared database (it is pinned by a test). **Next:** his look on the preview, his answers to the
 two questions, "merge live"; then this item leaves by the script.
 
-### [INSIGHTS-WHICH-COPY] Insights counts the WORKING copy on every page — on View-only Sched too (a question for him; found 1 Oct 26)
+### [INSIGHTS-WHICH-COPY] Insights counts the schedule the page is showing — RULED D477 (1 Oct 26), TO BUILD (found 1 Oct 26: it counts the WORKING copy on every page)
 Found by Astra's scenario design for `[WARN-HIDE-KEPT]` (its scenario 1). The Insights window (top bar, every page, every
 signed-in person) works every number out from the working copy — sorties, formations, hours, and the issue counts by day
 and by type (`ui/Modals.tsx insightsHTML`, `engine/insights.ts`). So on View-only Sched a member's Insights already
@@ -1566,7 +1566,19 @@ issues and his Insights reads 3 for Tuesday (week total 32 against 33, "Long wor
 **Astra's final read of `[WARN-HIDE-KEPT]` (1 Oct 26) rates it MEDIUM and would change it:** make Insights count the copy
 the page beside it shows — the issued one for a published day on View-only Sched — its exact steps are in
 `raptor-port/docs/superpowers/briefs/2026-10-01-warn-hide-kept-final-read-astra.md` (finding 1).
-**Place:** low — his answer first; then its own small job (WALK tier).
+**HIS ANSWER — D477 (1 Oct 26):** *"it should follow the schedule on whats its showing so if theres 4 issues. and 1 is hidden
+then 3 issues will show."* Insights counts the schedule the page is showing: on View-only Sched a published day as PUBLISHED
+(its issued version and issued hides — a hidden warning not counted), never by changes waiting on the working copy; a day shown
+as its working draft, as that; Edit Schedule and the board, the working copy. Every figure of the window, not only the issue
+counts. On a page with no schedule (the agent's call, told to him): what View-only Sched shows. Full row:
+`.claude/decisions-full/scheduler.md` D477; the contract: `raptor-port/docs/ui-contracts.md` §Week Insights.
+**To build:** `engine/insights.ts computeInsights` takes the days and the warning bundle it must count instead of reading the
+working globals; `ui/Modals.tsx insightsHTML` resolves them per day the way the page does (`state/view.ts displayedBundle` /
+`html.ts withOfficialWarn` and the issued day snapshot — the same resolver the day beside it uses). Tests first: a published
+Tuesday with a pending hide, a pending seat change and a pending leave — on View-only Sched every Insights figure equals the
+published day's until the amendment is out, then all move together; on Edit Schedule they follow the working copy.
+**Place:** its own small job right after `[WARN-HIDE-KEPT]` merges, in a FRESH chat on its own branch (WALK tier: a shared
+window, the published face; one reviewer — Astra, who found it). The Sonnet-walker trial (D476) rides on its walk.
 
 ### [WARN-HIDE-DROP-NOTE] A drop that recreates a clash already hidden still shows the amber "already on …" note (a question for him; found 1 Oct 26)
 Found by the `[WARN-HIDE-KEPT]` walk (walker A, Astra's scenario 26; picture

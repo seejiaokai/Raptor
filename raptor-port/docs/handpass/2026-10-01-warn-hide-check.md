@@ -288,7 +288,8 @@ Written as what he should expect to see, in the app's own words. The demo Tuesda
    line). View-only Sched keeps the flag until you publish the amendment — then the line is struck there, with no button.
 5. **On his own iPhone:** the struck line and its ↺ — is the ↺ easy to hit, is the grey readable?
 
-**Three things for him to answer, none blocks the merge:**
+**Three things for him to answer, none blocks the merge** *(the first ANSWERED the same evening — D477: Insights counts
+the schedule the page is showing; the build is `[INSIGHTS-WHICH-COPY]`, its own small job after this merges)*:
 - On View-only Sched, Insights counts the working copy, so while a hide waits to go out it reads one issue fewer than
   the published day beside it. Should it count the published schedule there? Astra's final read rates this the one
   thing it would change (medium); it has always worked this way for every other waiting change. (`[INSIGHTS-WHICH-COPY]`)
