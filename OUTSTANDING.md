@@ -1108,7 +1108,17 @@ check (D450, `data-model.md` §9 and §12 q8 — designed with one plug-in plus 
 an idle day need another route — a Dataverse function or a flow — to design when the lock is built); the 2,000-row reading
 limit against the Leave War's records and the change history (`data-model.md` §8 load by need). **DECIDED 1 Oct 26 — D473:
 "Database at the end."** D354 is replaced, D453 and D203 narrowed in their timing, the handover note corrected at its head; the
-lock's server-side check is redesigned when the lock is built. **To ask IT next (his "I'll answer the questions later"):** an example
+lock's server-side check is redesigned when the lock is built.
+**THE IT SIDE'S WRITTEN REPLIES, 1 Oct 26 (to the Tracker proposal he forwarded — one syllabus row shared by its courses, its
+events and its drawing as JSON text in a multi-line column, marks per student; D474):** (1) *the format of the table list* —
+"doesn't matter. Just make sure it's readable by a human"; (2) *the prefix and naming* — the publisher prefix is decided when
+the tables are created; names can be anything that accurately labels what the table is for; (3) *the 2,000-row limit* — **per
+request, WITH PAGING** (not a hard cap), so a large read is asked for page by page and filtered on the server; (4) *whether a
+multi-line text column suits the two JSON columns* — he cannot say until he knows the largest chart's size. **Measured the same
+day and sent to him** (`raptor-port/src/tracker/data/`, the four shipped charts): the largest has 212 events and 285 links;
+its events are about 21,300 characters of JSON and the largest drawing about 33,200 — some 55,000 together, against Dataverse's
+documented ceiling of 1,048,576 characters for a multi-line text column (to confirm in his environment). No objection was
+raised to the proposal itself. **Was to ask (answered above):** an example
 of the format he wants the tables written in (one table, his way), the publisher prefix and naming rule, and what exactly the
 2,000 limit is.
 

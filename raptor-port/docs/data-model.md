@@ -47,8 +47,10 @@ schedule in section 6.
 are built. This document is the table list: it is kept up to date in the same change as any feature that adds or alters
 something the app saves, and at the end it is turned into the format the IT side asks for, for them to enter into Dataverse
 (they no longer design the tables). The platform as they described it on 1 Oct 26 — no plug-ins or Custom APIs, Dataverse
-functions and Power Automate flows, a 2,000-row reading limit still to be pinned down — is in `OUTSTANDING.md`
-`[IT-QUESTIONS]`; §9's day lock (rule 8, §12 question 8) was designed with one plug-in and is redesigned for that platform
+functions and Power Automate flows, a reading limit of 2,000 rows PER REQUEST, WITH PAGING (their written reply the same day;
+every large read is filtered on the server and asked for page by page) — is in `OUTSTANDING.md` `[IT-QUESTIONS]`; the
+table list may be in any format a person can read, names anything that says what the table is for, the prefix theirs to
+pick when the tables are made; §9's day lock (rule 8, §12 question 8) was designed with one plug-in and is redesigned for that platform
 when the lock is built.
 
 ## 2. Design rules every entity follows
@@ -890,6 +892,9 @@ Relationships: 1–1 `Syllabus`.
 From today: `charts.layouts[name]`.
 App change: none. The clearest case for a JSON column — the app reads and
 writes the whole layout as one unit, and nothing outside it queries inside.
+**Size (measured 1 Oct 26 on the four shipped charts, for the IT side's question):** the largest drawing is about 33,200
+characters of JSON and the largest chart's events (212 events, 285 links — the `Syllabus` row's JSON at stage 1) about
+21,300; a multi-line text column's documented ceiling is 1,048,576 characters.
 
 ## 4. Relationship diagram
 
