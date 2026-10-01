@@ -1,0 +1,1650 @@
+{
+ "parts": {
+  "s1-dk": {
+   "at": "2026-10-01T13:39:27.088Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "1.a",
+     "did": "Tuesday signed and published (Original); Insights opened on Edit Schedule",
+     "saw": "tiles [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING] · flying load [Relay=4, Echo=3, Hex=3, Static=3, Ace=2, Basher=2, Drifter=2, Gambit=2, Outlaw=2, Piston=2, Pixel=2, Ranger=2, txt:+ 26 more flying] · hours [Ridge=28h, Bolt=27h25, Ace=25h35, Vector=22h10, Static=21h20, Dash=21h05, Basher=18h15, Saber=17h10, Scope=16h40, Echo=16h35, Zenith=16h20, Relay=16h10, Fable=15h55, Anvil=15h, Hex=15h, Wildcard=14h05, Forge=13h30, Sidewinder=12h, Ranger=11h30, Gambit=11h05, Saint=10h15, Warden=10h15, Drifter=10h10, Comet=10h, Piston=9h45, Outlaw=9h30, Torch=8h55, Pixel=8h35, Cinch=8h30, Havoc=8h, Wisp=7h50, Vapor=7h35, Kraken=7h, Trident=6h55, Quill=6h25, Rune=6h05, Blade=5h40, Rebel=5h25, Cinder=5h05, Marlin=5h05, Cutter=5h, Ledger=4h55, Talisman=4h30, Nomad=4h25, Tally=4h10, Diesel=4h, Otter=4h, Recon=3h, Ghost=1h30, Grit=1h30, Ryder=1h30, Scribe=1h30, Cobra=1h, Hunter=1h, Jester=1h, Reaper=1h] · idle [chips:Anvil,Cinch,Cobra,Comet,Diesel,Forge,Ghost,Grit,Havoc,Hunter,Jester,Reaper,Recon,Ridge,Ryder,Scribe,Sidewinder,Talisman,Vandal,Zulu] · types [Conflict — two events at once 6; No time for the flight brief 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Long work day 2; Tight turn 2; Crew combination — CO approval required 2; No time for the flight debrief 2; OIL waiting — this day is not published 2; No time for the sim brief 1; No time for the sim debrief 1; Crew solo — only allowed under syllabus 1; Crew rest (<12h) 1; On leave + flying 1; Illegal aircrew combination 1] · byday [Monday 8 sorties · 4 formations · 14 issues; Tuesday 8 sorties · 4 formations · 4 issues; Wednesday 8 sorties · 4 formations · 7 issues; Thursday 8 sorties · 4 formations · 6 issues; Friday 0 sorties · 0 formations · clear; Saturday 0 sorties · 0 formations · 1 issue; Sunday 0 sorties · 0 formations · 1 issue] · tag \"ORIG\" · opened by: desktop Insights button · topmost at centre: true",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s1-a-edit-issued.png",
+      "dk-02-s1-a-edit-issued-foot.png"
+     ]
+    },
+    {
+     "id": "1.b",
+     "did": "Insights opened on Edit Schedule (desktop Insights button); then the board for Tuesday opened (bridge) while it was open",
+     "saw": "window still in the page: true; what is on top at the window's centre: window; board up: true",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s1-b-window-then-board.png"
+     ]
+    },
+    {
+     "id": "1.b2",
+     "did": "the window's own ✕ with the board up",
+     "saw": "✕ drawn: 1; the thing a finger lands on is the ✕: true",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "1.b3",
+     "did": "closing that window with the board up (its ✕, then Escape)",
+     "saw": "closed",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "1.c",
+     "did": "the Scheduler Board for Tuesday at 1440×900: every control in its bar, and where the shell's doors stand",
+     "saw": "bar: sbCal|Calendar ; sbHl|Highlight filter ; sbTpl|▤ Templates ; sbSortAll|⇅ Sort all ; sbUndo|↶ Undo ; sbRedo|↷ Redo ; sbHist|History ; sbSync|Sync · slow ; sbBell|Notifications ; sbDone|✓ Done ; |CAT ; |TYPE ; |QUALS · #insightBtn: drawn but COVERED by searchB · ☰ burger: in the page, not drawn · \"Week insights\" row: in the page, not drawn · a \"more\" menu in the bar: sbMore",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-s1-c-board-bar.png"
+     ]
+    },
+    {
+     "id": "1.c3",
+     "did": "the board bar's ⋯ menu",
+     "saw": "not drawn at this width",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "1.d",
+     "did": "on the board: Romeo ... Rebel taken off Tuesday's second wave seat (dragged off 1.1.1.0.p); ✓ Done; Insights on Edit Schedule",
+     "saw": "✓ Tuesday waits on the board (1 change) [1 pending] · ✓ the day on Edit Schedule says 1 pending/change [1 pending] · ✓ Insights unchanged from the issued figures (every section) [] · ✓ the window is topmost at its centre on Edit Schedule [desktop Insights button]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s1-d-board-after-takeoff.png",
+      "dk-06-s1-e-edit-after-board-change.png",
+      "dk-07-s1-e-edit-after-board-change-foot.png"
+     ]
+    },
+    {
+     "id": "1.e",
+     "did": "sign and Publish AL1 for Tuesday; Insights again",
+     "saw": "✓ AL1 on Tuesday, nothing pending [AL1 / 11 changes] · ✓ Insights moved (Aircrew flying 38 → 37 as Rebel flew only that sortie) [38 → 37] · ✓ Sorties and Formations unchanged [tiles [32 SORTIES | 16 FORMATIONS | 37 AIRCREW FLYING | 33 13 WARNING] · flying load [Relay=4, Echo=3, Hex=3, Static=3, ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s1-f-after-AL1.png",
+      "dk-09-s1-f-after-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "1.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s1-ph": {
+   "at": "2026-10-01T13:39:49.922Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "1.a",
+     "did": "Tuesday signed and published (Original); Insights opened on Edit Schedule",
+     "saw": "tiles [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING] · flying load [Relay=4, Echo=3, Hex=3, Static=3, Ace=2, Basher=2, Drifter=2, Gambit=2, Outlaw=2, Piston=2, Pixel=2, Ranger=2, txt:+ 26 more flying] · hours [Ridge=28h, Bolt=27h25, Ace=25h35, Vector=22h10, Static=21h20, Dash=21h05, Basher=18h15, Saber=17h10, Scope=16h40, Echo=16h35, Zenith=16h20, Relay=16h10, Fable=15h55, Anvil=15h, Hex=15h, Wildcard=14h05, Forge=13h30, Sidewinder=12h, Ranger=11h30, Gambit=11h05, Saint=10h15, Warden=10h15, Drifter=10h10, Comet=10h, Piston=9h45, Outlaw=9h30, Torch=8h55, Pixel=8h35, Cinch=8h30, Havoc=8h, Wisp=7h50, Vapor=7h35, Kraken=7h, Trident=6h55, Quill=6h25, Rune=6h05, Blade=5h40, Rebel=5h25, Cinder=5h05, Marlin=5h05, Cutter=5h, Ledger=4h55, Talisman=4h30, Nomad=4h25, Tally=4h10, Diesel=4h, Otter=4h, Recon=3h, Ghost=1h30, Grit=1h30, Ryder=1h30, Scribe=1h30, Cobra=1h, Hunter=1h, Jester=1h, Reaper=1h] · idle [chips:Anvil,Cinch,Cobra,Comet,Diesel,Forge,Ghost,Grit,Havoc,Hunter,Jester,Reaper,Recon,Ridge,Ryder,Scribe,Sidewinder,Talisman,Vandal,Zulu] · types [Conflict — two events at once 6; No time for the flight brief 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Long work day 2; Tight turn 2; Crew combination — CO approval required 2; No time for the flight debrief 2; OIL waiting — this day is not published 2; No time for the sim brief 1; No time for the sim debrief 1; Crew solo — only allowed under syllabus 1; Crew rest (<12h) 1; On leave + flying 1; Illegal aircrew combination 1] · byday [Monday 8 sorties · 4 formations · 14 issues; Tuesday 8 sorties · 4 formations · 4 issues; Wednesday 8 sorties · 4 formations · 7 issues; Thursday 8 sorties · 4 formations · 6 issues; Friday 0 sorties · 0 formations · clear; Saturday 0 sorties · 0 formations · 1 issue; Sunday 0 sorties · 0 formations · 1 issue] · tag \"ORIG\" · opened by: phone menu Week insights · topmost at centre: true",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-s1-a-edit-issued.png",
+      "ph-02-s1-a-edit-issued-foot.png"
+     ]
+    },
+    {
+     "id": "1.b",
+     "did": "Insights opened on Edit Schedule (phone menu Week insights); then the board for Tuesday opened (bridge) while it was open",
+     "saw": "window still in the page: true; what is on top at the window's centre: window; board up: true",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-03-s1-b-window-then-board.png"
+     ]
+    },
+    {
+     "id": "1.b2",
+     "did": "the window's own ✕ with the board up",
+     "saw": "✕ drawn: 1; the thing a finger lands on is the ✕: true",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "1.b3",
+     "did": "closing that window with the board up (its ✕, then Escape)",
+     "saw": "closed",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "1.c",
+     "did": "the Scheduler Board for Tuesday at 390×844: every control in its bar, and where the shell's doors stand",
+     "saw": "bar: sbCal|Jump to a date ; sbPrevDay|‹ ; sbHl|Highlight filter ; sbMore|⋯ ; sbNextDay|› ; sbUndo|↶ ; sbRedo|↷ ; sbHist|Show the changes ; sbSync|Toggle 1-second  ; sbBell|Notifications ; sbDone|✓ · #insightBtn: in the page, not drawn · ☰ burger: drawn but COVERED by [object SVGAnimatedString] · \"Week insights\" row: in the page, not drawn · a \"more\" menu in the bar: sbMore",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-04-s1-c-board-bar.png"
+     ]
+    },
+    {
+     "id": "1.c3",
+     "did": "the board bar's ⋯ menu opened",
+     "saw": "menu text: [\"⇅ Sort all 🖥 Desktop layout\"] · buttons now in the top 220px: sbCal|Jump to a date ; sbPrevDay|‹ ; sbHl|Highlight by c ; sbMore|⋯ ; sbMoreSort|⇅ Sort all ; sbMoreWide|🖥 Desktop lay ; sbNextDay|› ; sbUndo|↶ ; sbRedo|↷ ; sbHist|Show the chang ; sbSync|Toggle 1-secon ; sbBell|Notifications ; sbDone|✓ · any Insights entry: false",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-05-s1-c-board-more-menu.png"
+     ]
+    },
+    {
+     "id": "1.c2",
+     "did": "phone: is the ☰ burger reachable while the board is up",
+     "saw": "{\"drawn\":true,\"top\":false}",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "1.d",
+     "did": "on the board: Romeo ... Rebel taken off Tuesday's second wave seat (dragged off 1.1.1.0.p); ✓ Done; Insights on Edit Schedule",
+     "saw": "✓ Tuesday waits on the board (1 change) [1 pending] · ✓ the day on Edit Schedule says 1 pending/change [1 pending] · ✓ Insights unchanged from the issued figures (every section) [] · ✓ the window is topmost at its centre on Edit Schedule [phone menu Week insights]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-s1-d-board-after-takeoff.png",
+      "ph-07-s1-e-edit-after-board-change.png",
+      "ph-08-s1-e-edit-after-board-change-foot.png"
+     ]
+    },
+    {
+     "id": "1.e",
+     "did": "sign and Publish AL1 for Tuesday; Insights again",
+     "saw": "✓ AL1 on Tuesday, nothing pending [AL1 / 11 changes] · ✓ Insights moved (Aircrew flying 38 → 37 as Rebel flew only that sortie) [38 → 37] · ✓ Sorties and Formations unchanged [tiles [32 SORTIES | 16 FORMATIONS | 37 AIRCREW FLYING | 33 13 WARNING] · flying load [Relay=4, Echo=3, Hex=3, Static=3, ]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-s1-f-after-AL1.png",
+      "ph-10-s1-f-after-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "1.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s2-dk": {
+   "at": "2026-10-01T13:43:19.934Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "2.a",
+     "did": "Tuesday signed and published (Original); Insights opened",
+     "saw": "Edit Schedule bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (4 lines), tag \"ORIG\", chip \"5 changes\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · hours {\"Static\":\"21h20\",\"Dash\":\"21h05\",\"Basher\":\"18h15\",\"Hex\":\"15h\",\"Saint\":\"10h15\",\"Warden\":\"10h15\",\"Outlaw\":\"9h30\",\"Vapor\":\"7h35\",\"Rune\":\"6h05\",\"Rebel\":\"5h25\",\"Cinder\":\"5h05\",\"Marlin\":\"5h05\"} · issues tile 33 (13 WARNING) · By day Tuesday \"Tuesday 8 sorties · 4 formations · 4 issues\" · Long work day 2",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s2-a-issued.png",
+      "dk-02-s2-a-issued-foot.png"
+     ]
+    },
+    {
+     "id": "2.b",
+     "did": "Logic → ✎ Edit rules → \"Nominal report before T/O\" 3h → 2h → Done; Edit Schedule; Insights",
+     "saw": "Edit Schedule bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (4 lines), tag \"ORIG\", chip \"5 changes\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · hours {\"Static\":\"21h20\",\"Dash\":\"21h05\",\"Basher\":\"18h15\",\"Hex\":\"15h\",\"Saint\":\"10h15\",\"Warden\":\"10h15\",\"Outlaw\":\"9h30\",\"Vapor\":\"7h35\",\"Rune\":\"6h05\",\"Rebel\":\"5h25\",\"Cinder\":\"5h05\",\"Marlin\":\"5h05\"} · issues tile 33 (13 WARNING) · By day Tuesday \"Tuesday 8 sorties · 4 formations · 4 issues\" · Long work day 2 · DIFFERENCE vs 2.a: (no difference)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s2-b-after-reportLead.png",
+      "dk-04-s2-b-after-reportLead-foot.png"
+     ]
+    },
+    {
+     "id": "2.c",
+     "did": "Logic → \"Flight debrief after land\" 2h → 1h → Done; Insights",
+     "saw": "Edit Schedule bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (4 lines), tag \"ORIG\", chip \"1 pending\", marker \"Not yet signed\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · hours {\"Dash\":\"20h05\",\"Static\":\"18h20\",\"Basher\":\"16h15\",\"Hex\":\"12h\",\"Saint\":\"8h15\",\"Warden\":\"8h15\",\"Outlaw\":\"7h30\",\"Vapor\":\"6h35\",\"Rune\":\"5h05\",\"Rebel\":\"4h25\",\"Cinder\":\"4h05\",\"Marlin\":\"4h05\"} · issues tile 33 · DIFFERENCE vs 2.b: WORK HOURS · REPORT TO: -[Bolt=27h25; Ace=25h35; Vector=22h10; Static=21h20; Dash=21h05; Basher=18h15; Saber=17h10; Scope=16h40; Echo=16h35; Zenith=16h20; Relay=16h10; Fable=15h55; Hex=15h; Wildcard=14h05; Ranger=11h30; Gambit=11h05; Saint=10h15; Warden=10h15; Drift] +[Bolt=26h25; Ace=24h35; Vector=20h10; Dash=20h05; Static=18h20; Basher=16h15; Saber=16h10; Scope=15h40; Fable=14h55; Echo=14h35; Zenith=14h20; Relay=14h10; Wildcard=12h05; Hex=12h; Ranger=9h30; Gambit=9h05; Piston=8h45; Saint=8h15; Warden=8h]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-s2-c-after-debrief.png",
+      "dk-06-s2-c-after-debrief-foot.png"
+     ]
+    },
+    {
+     "id": "2.c2",
+     "did": "Logic → \"Flight debrief after land\" 1h → 4h; Insights",
+     "saw": "Edit Schedule bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" (7 lines), tag \"ORIG\", chip \"1 pending\", marker \"Not yet signed\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · hours {\"Static\":\"27h20\",\"Dash\":\"23h05\",\"Basher\":\"22h15\",\"Hex\":\"21h\",\"Saint\":\"14h15\",\"Warden\":\"14h15\",\"Outlaw\":\"13h30\",\"Vapor\":\"9h35\",\"Rune\":\"8h05\",\"Rebel\":\"7h25\",\"Cinder\":\"7h05\",\"Marlin\":\"7h05\"} · issues tile 38 (16 WARNING) · By day Tuesday \"Tuesday 8 sorties · 4 formations · 7 issues\" · By day all: Monday 8 sorties · 4 formations · 16 issues ; Tuesday 8 sorties · 4 formations · 7 issues ; Wednesday 8 sorties · 4 formations · 7 issues ; Thursday 8 sorties · 4 formations · 6 issues ; Friday 0 sorties · 0 formations · clear ; Saturday 0 sorties · 0 formations · 1 issue ; Sunday 0 sorties · 0 formations · 1 issue · Long work day 3 · DIFFERENCE vs 2.c: tile 13 WARNING: 33 → 38 || WORK HOURS · REPORT TO: -[Bolt=26h25; Ace=24h35; Vector=20h10; Dash=20h05; Static=18h20; Basher=16h15; Saber=16h10; Scope=15h40; Fable=14h55; Echo=14h35; Zenith=14h20; Relay=14h10; Wildcard=12h05; Hex=12h; Ranger=9h30; Gambit=9h05; Piston=8h45; Saint=8h15; Warden=8h] +[Bolt=29h25; Ace=29h15; Static=27h20; Vector=26h10; Dash=23h05; Basher=22h15; Hex=21h; Echo=20h35; Zenith=20h20; Relay=20h10; Saber=19h10; Scope=18h40; Wildcard=18h05; Fable=17h55; Ranger=15h30; Gambit=15h05; Saint=14h15; Warden=14h15; Drift] || CONFLICTS BY TYPE: -[Long work day 2; No time for the flight debrief 2; Crew rest (<12h) 1] +[Crew rest (<12h) 4; No time for the flight debrief 3; Long work",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-s2-c2-after-debrief4h.png",
+      "dk-08-s2-c2-after-debrief4h-foot.png"
+     ]
+    },
+    {
+     "id": "2.d",
+     "did": "sign the four and Publish AL1 (publish buttons: {\"pressed\":true,\"label\":\"Publish AL1\"})",
+     "saw": "Edit Schedule bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" (7 lines), tag \"AL1\", chip \"10 changes\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · hours {\"Static\":\"27h20\",\"Dash\":\"23h05\",\"Basher\":\"22h15\",\"Hex\":\"21h\",\"Saint\":\"14h15\",\"Warden\":\"14h15\",\"Outlaw\":\"13h30\",\"Vapor\":\"9h35\",\"Rune\":\"8h05\",\"Rebel\":\"7h25\",\"Cinder\":\"7h05\",\"Marlin\":\"7h05\"} · issues tile 38 · By day Tuesday \"Tuesday 8 sorties · 4 formations · 7 issues\" · By day all: Monday 8 sorties · 4 formations · 16 issues ; Tuesday 8 sorties · 4 formations · 7 issues ; Wednesday 8 sorties · 4 formations · 7 issues ; Thursday 8 sorties · 4 formations · 6 issues ; Friday 0 sorties · 0 formations · clear ; Saturday 0 sorties · 0 formations · 1 issue ; Sunday 0 sorties · 0 formations · 1 issue · Long work day 3 · DIFFERENCE vs 2.c2: (no difference)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-09-s2-d-after-AL1.png",
+      "dk-10-s2-d-after-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "2.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s2-ph": {
+   "at": "2026-10-01T13:44:30.149Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "2.a",
+     "did": "Tuesday signed and published (Original); Insights opened",
+     "saw": "Edit Schedule bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (4 lines), tag \"ORIG\", chip \"5 changes\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · hours {\"Static\":\"21h20\",\"Dash\":\"21h05\",\"Basher\":\"18h15\",\"Hex\":\"15h\",\"Saint\":\"10h15\",\"Warden\":\"10h15\",\"Outlaw\":\"9h30\",\"Vapor\":\"7h35\",\"Rune\":\"6h05\",\"Rebel\":\"5h25\",\"Cinder\":\"5h05\",\"Marlin\":\"5h05\"} · issues tile 33 (13 WARNING) · By day Tuesday \"Tuesday 8 sorties · 4 formations · 4 issues\" · Long work day 2",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-s2-a-issued.png",
+      null
+     ]
+    },
+    {
+     "id": "2.b",
+     "did": "Logic → ✎ Edit rules → \"Nominal report before T/O\" 3h → 2h → Done; Edit Schedule; Insights",
+     "saw": "Edit Schedule bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (4 lines), tag \"ORIG\", chip \"5 changes\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · hours {\"Static\":\"21h20\",\"Dash\":\"21h05\",\"Basher\":\"18h15\",\"Hex\":\"15h\",\"Saint\":\"10h15\",\"Warden\":\"10h15\",\"Outlaw\":\"9h30\",\"Vapor\":\"7h35\",\"Rune\":\"6h05\",\"Rebel\":\"5h25\",\"Cinder\":\"5h05\",\"Marlin\":\"5h05\"} · issues tile 33 (13 WARNING) · By day Tuesday \"Tuesday 8 sorties · 4 formations · 4 issues\" · Long work day 2 · DIFFERENCE vs 2.a: (no difference)",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-02-s2-b-after-reportLead.png",
+      null
+     ]
+    },
+    {
+     "id": "2.c",
+     "did": "Logic → \"Flight debrief after land\" 2h → 1h → Done; Insights",
+     "saw": "Edit Schedule bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (4 lines), tag \"ORIG\", chip \"1 pending\", marker \"Not yet signed\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · hours {\"Dash\":\"20h05\",\"Static\":\"18h20\",\"Basher\":\"16h15\",\"Hex\":\"12h\",\"Saint\":\"8h15\",\"Warden\":\"8h15\",\"Outlaw\":\"7h30\",\"Vapor\":\"6h35\",\"Rune\":\"5h05\",\"Rebel\":\"4h25\",\"Cinder\":\"4h05\",\"Marlin\":\"4h05\"} · issues tile 33 · DIFFERENCE vs 2.b: WORK HOURS · REPORT TO: -[Bolt=27h25; Ace=25h35; Vector=22h10; Static=21h20; Dash=21h05; Basher=18h15; Saber=17h10; Scope=16h40; Echo=16h35; Zenith=16h20; Relay=16h10; Fable=15h55; Hex=15h; Wildcard=14h05; Ranger=11h30; Gambit=11h05; Saint=10h15; Warden=10h15; Drift] +[Bolt=26h25; Ace=24h35; Vector=20h10; Dash=20h05; Static=18h20; Basher=16h15; Saber=16h10; Scope=15h40; Fable=14h55; Echo=14h35; Zenith=14h20; Relay=14h10; Wildcard=12h05; Hex=12h; Ranger=9h30; Gambit=9h05; Piston=8h45; Saint=8h15; Warden=8h]",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-03-s2-c-after-debrief.png",
+      null
+     ]
+    },
+    {
+     "id": "2.c2",
+     "did": "Logic → \"Flight debrief after land\" 1h → 4h; Insights",
+     "saw": "Edit Schedule bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" (7 lines), tag \"ORIG\", chip \"1 pending\", marker \"Not yet signed\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · hours {\"Static\":\"27h20\",\"Dash\":\"23h05\",\"Basher\":\"22h15\",\"Hex\":\"21h\",\"Saint\":\"14h15\",\"Warden\":\"14h15\",\"Outlaw\":\"13h30\",\"Vapor\":\"9h35\",\"Rune\":\"8h05\",\"Rebel\":\"7h25\",\"Cinder\":\"7h05\",\"Marlin\":\"7h05\"} · issues tile 38 (16 WARNING) · By day Tuesday \"Tuesday 8 sorties · 4 formations · 7 issues\" · By day all: Monday 8 sorties · 4 formations · 16 issues ; Tuesday 8 sorties · 4 formations · 7 issues ; Wednesday 8 sorties · 4 formations · 7 issues ; Thursday 8 sorties · 4 formations · 6 issues ; Friday 0 sorties · 0 formations · clear ; Saturday 0 sorties · 0 formations · 1 issue ; Sunday 0 sorties · 0 formations · 1 issue · Long work day 3 · DIFFERENCE vs 2.c: tile 13 WARNING: 33 → 38 || WORK HOURS · REPORT TO: -[Bolt=26h25; Ace=24h35; Vector=20h10; Dash=20h05; Static=18h20; Basher=16h15; Saber=16h10; Scope=15h40; Fable=14h55; Echo=14h35; Zenith=14h20; Relay=14h10; Wildcard=12h05; Hex=12h; Ranger=9h30; Gambit=9h05; Piston=8h45; Saint=8h15; Warden=8h] +[Bolt=29h25; Ace=29h15; Static=27h20; Vector=26h10; Dash=23h05; Basher=22h15; Hex=21h; Echo=20h35; Zenith=20h20; Relay=20h10; Saber=19h10; Scope=18h40; Wildcard=18h05; Fable=17h55; Ranger=15h30; Gambit=15h05; Saint=14h15; Warden=14h15; Drift] || CONFLICTS BY TYPE: -[Long work day 2; No time for the flight debrief 2; Crew rest (<12h) 1] +[Crew rest (<12h) 4; No time for the flight debrief 3; Long work",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-04-s2-c2-after-debrief4h.png",
+      null
+     ]
+    },
+    {
+     "id": "2.d",
+     "did": "sign the four and Publish AL1 (publish buttons: {\"pressed\":true,\"label\":\"Publish AL1\"})",
+     "saw": "Edit Schedule bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" (7 lines), tag \"AL1\", chip \"10 changes\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · hours {\"Static\":\"27h20\",\"Dash\":\"23h05\",\"Basher\":\"22h15\",\"Hex\":\"21h\",\"Saint\":\"14h15\",\"Warden\":\"14h15\",\"Outlaw\":\"13h30\",\"Vapor\":\"9h35\",\"Rune\":\"8h05\",\"Rebel\":\"7h25\",\"Cinder\":\"7h05\",\"Marlin\":\"7h05\"} · issues tile 38 · By day Tuesday \"Tuesday 8 sorties · 4 formations · 7 issues\" · By day all: Monday 8 sorties · 4 formations · 16 issues ; Tuesday 8 sorties · 4 formations · 7 issues ; Wednesday 8 sorties · 4 formations · 7 issues ; Thursday 8 sorties · 4 formations · 6 issues ; Friday 0 sorties · 0 formations · clear ; Saturday 0 sorties · 0 formations · 1 issue ; Sunday 0 sorties · 0 formations · 1 issue · Long work day 3 · DIFFERENCE vs 2.c2: (no difference)",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-05-s2-d-after-AL1.png",
+      null
+     ]
+    },
+    {
+     "id": "2.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s3-dk": {
+   "at": "2026-10-01T13:46:27.406Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "3.a",
+     "did": "Monday (draft): Outlaw's second-wave line moved by the board's time boxes to 13:00 – 14:25; Tuesday not yet published",
+     "saw": "Tuesday: Edit Schedule bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" (3 lines), tag \"DRAFT\", chip \"\", sign-offs [·|·|·|·] · Monday Outlaw's pucks: flying line:plain, other:plain · Insights: Tuesday 8 sorties · 4 formations · 3 issues · Crew rest 0 · issues tile 35",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s3-a-before-publish.png"
+     ]
+    },
+    {
+     "id": "3.b",
+     "did": "Tuesday signed and published (Original)",
+     "saw": "Tuesday: Edit Schedule bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" (3 lines), tag \"ORIG\", chip \"5 changes\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" · Monday Outlaw: flying line:plain, other:plain · Insights: Tuesday 8 sorties · 4 formations · 3 issues · Crew rest 0 · tile 35 (14 WARNING)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-s3-b-published.png",
+      "dk-03-s3-b-published-foot.png"
+     ]
+    },
+    {
+     "id": "3.c",
+     "did": "Monday's line made late again (19:20 – 20:45) on the board; ✓ Done; Tuesday and Insights",
+     "saw": "✓ Tuesday's published day list gains the live crew-rest warning (bar goes up by one) [Edit \"⚠ 3 issues · 1 warning · tap to collapse ▲\" → \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; View-only \"⚠ 3 issues · 1 warning · tap to collapse ▲\" → \"⚠ 4 ] · ✓ Monday wears the dotted \"breaks tomorrow's crew rest\" mark on Outlaw [flying line:plain chip R dotted] · ✓ Insights: Tuesday gains one issue [8 sorties · 4 formations · 3 issues → 8 sorties · 4 formations · 4 issues] · ✓ Insights: Crew rest conflicts +1 [0 → 1] · ✓ Tuesday gets no pending change from the live warning alone [chip \"5 changes\" marker \"\" signs ·|·|·|·] · ✓ Monday stays a working-copy change (still a draft) [Monday tag \"DRAFT\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s3-c-monday-late.png",
+      "dk-05-s3-c-monday-late-foot.png"
+     ]
+    },
+    {
+     "id": "3.c2",
+     "did": "the figures behind 3.c",
+     "saw": "tile 14 WARNING: 35 → 33 || WORK HOURS · REPORT TO: -[Relay=10h30; Piston=4h05; Outlaw=3h10; Wisp=1h30] +[Relay=16h10; Piston=9h45; Outlaw=9h30; Wisp=7h50] || CONFLICTS BY TYPE: -[Conflict — two events at once 8; No time for the flight debrief 3] +[Conflict — two events at once 6; No time for the flight debrief 2; Crew rest (<12h) 1] || BY DAY: -[Monday 8 sorties · 4 formations · 17 issues; Tuesday 8 sorties · 4 formations · 3 issues] +[Monday 8 sorties · 4 formations · 14 issues; Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "3.d",
+     "did": "top-bar Undo twice (pressed, pressed)",
+     "saw": "✓ Tuesday's bar back to what it was [⚠ 3 issues · 1 warning · tap to collapse ▲ / ⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Monday's dotted mark gone [flying line:plain, other:plain] · ✓ Insights identical to 3.b (every section) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s3-d-after-undo.png",
+      "dk-07-s3-d-after-undo-foot.png"
+     ]
+    },
+    {
+     "id": "3.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s3-ph": {
+   "at": "2026-10-01T13:47:17.021Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "3.a",
+     "did": "Monday (draft): Outlaw's second-wave line moved by the board's time boxes to 13:00 – 14:25; Tuesday not yet published",
+     "saw": "Tuesday: Edit Schedule bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" (3 lines), tag \"DRAFT\", chip \"\", sign-offs [·|·|·|·] · Monday Outlaw's pucks: flying line:plain, other:plain · Insights: Tuesday 8 sorties · 4 formations · 3 issues · Crew rest 0 · issues tile 35",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-s3-a-before-publish.png"
+     ]
+    },
+    {
+     "id": "3.b",
+     "did": "Tuesday signed and published (Original)",
+     "saw": "Tuesday: Edit Schedule bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" (3 lines), tag \"ORIG\", chip \"5 changes\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" · Monday Outlaw: flying line:plain, other:plain · Insights: Tuesday 8 sorties · 4 formations · 3 issues · Crew rest 0 · tile 35 (14 WARNING)",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-02-s3-b-published.png",
+      null
+     ]
+    },
+    {
+     "id": "3.c",
+     "did": "Monday's line made late again (19:20 – 20:45) on the board; ✓ Done; Tuesday and Insights",
+     "saw": "✓ Tuesday's published day list gains the live crew-rest warning (bar goes up by one) [Edit \"⚠ 3 issues · 1 warning · tap to collapse ▲\" → \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; View-only \"⚠ 3 issues · 1 warning · tap to collapse ▲\" → \"⚠ 4 ] · ✓ Monday wears the dotted \"breaks tomorrow's crew rest\" mark on Outlaw [flying line:plain chip R dotted] · ✓ Insights: Tuesday gains one issue [8 sorties · 4 formations · 3 issues → 8 sorties · 4 formations · 4 issues] · ✓ Insights: Crew rest conflicts +1 [0 → 1] · ✓ Tuesday gets no pending change from the live warning alone [chip \"5 changes\" marker \"\" signs ·|·|·|·] · ✓ Monday stays a working-copy change (still a draft) [Monday tag \"DRAFT\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-s3-c-monday-late.png",
+      null
+     ]
+    },
+    {
+     "id": "3.c2",
+     "did": "the figures behind 3.c",
+     "saw": "tile 14 WARNING: 35 → 33 || WORK HOURS · REPORT TO: -[Relay=10h30; Piston=4h05; Outlaw=3h10; Wisp=1h30] +[Relay=16h10; Piston=9h45; Outlaw=9h30; Wisp=7h50] || CONFLICTS BY TYPE: -[Conflict — two events at once 8; No time for the flight debrief 3] +[Conflict — two events at once 6; No time for the flight debrief 2; Crew rest (<12h) 1] || BY DAY: -[Monday 8 sorties · 4 formations · 17 issues; Tuesday 8 sorties · 4 formations · 3 issues] +[Monday 8 sorties · 4 formations · 14 issues; Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "3.d",
+     "did": "top-bar Undo twice (pressed, pressed)",
+     "saw": "✓ Tuesday's bar back to what it was [⚠ 3 issues · 1 warning · tap to collapse ▲ / ⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Monday's dotted mark gone [flying line:plain, other:plain] · ✓ Insights identical to 3.b (every section) []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-s3-d-after-undo.png",
+      null
+     ]
+    },
+    {
+     "id": "3.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s4-dk": {
+   "at": "2026-10-01T13:48:40.800Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "4.a",
+     "did": "Tuesday published (Original); Insights",
+     "saw": "tiles [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING] · flying load [Relay=4, Echo=3, Hex=3, Static=3, Ace=2, Basher=2, Drifter=2, Gambit=2, Outlaw=2, Piston=2, Pixel=2, Ranger=2, txt:+ 26 more flying] · hours [Ridge=28h, Bolt=27h25, Ace=25h35, Vector=22h10, Static=21h20, Dash=21h05",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s4-a-original.png"
+     ]
+    },
+    {
+     "id": "4.b",
+     "did": "Rebel taken off on the board; sign; Publish AL1; Insights",
+     "saw": "✓ Tuesday is AL1 [AL1] · ✓ Aircrew flying 38 → 37 (a visible difference between Original and AL1) [38 → 37]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s4-b-al1.png"
+     ]
+    },
+    {
+     "id": "4.c",
+     "did": "the plans selector opened (versions: Original | AL1); Original opened read-only (Original); then Insights",
+     "saw": "✓ the day visibly says it is showing Original (preview bar) [{\"cls\":\"day  dok preview\",\"bar\":\"← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working ] · ✓ Insights still counts AL1 (identical to 4.b in every section) [] · ✓ Aircrew flying still 37 [37]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s4-c-original-preview.png",
+      "dk-04-s4-c-insights-over-original.png",
+      null
+     ]
+    },
+    {
+     "id": "4.d",
+     "did": "Back to live copy (back)",
+     "saw": "✓ the preview bar is gone [{\"cls\":\"day  dok\",\"bar\":\"\",\"woff\":0,\"nys\":\"\",\"pend\":\"11 changes\",\"signs\":4,\"oilper\":0,\"sel\":\"Live working copy ▾\"}] · ✓ Insights identical to 4.b []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s4-d-back-live.png"
+     ]
+    },
+    {
+     "id": "4.e",
+     "did": "View-only Sched: Tuesday's own version selector offers [issued:AL1 — as issued | working:Working draft — not issued] (Original is not on its list — only the current issued version and the working draft); Insights opened beside it",
+     "saw": "✓ Insights still AL1 (identical to 4.b) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s4-e-view-only-original.png"
+     ]
+    },
+    {
+     "id": "4.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s5-dk": {
+   "at": "2026-10-01T13:51:15.173Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "5.a",
+     "did": "Tuesday (draft): the plans selector before anything is saved",
+     "saw": "[{\"kind\":\"data-plangolive\",\"id\":\"1\",\"text\":\"Live working copy ●live now — this is what publishes\"},{\"kind\":\"data-plandup\",\"id\":\"1\",\"text\":\"+ Alt Plan\"}] · label Live working copy ▾",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "5.b",
+     "did": "\"+ Alt Plan\" pressed → a second plan is live (label \"Plan B ▾\"); on it: Rebel taken off 2nd wave, a line cancelled (CX), the 2nd formation's take-off 09:40 → 10:30",
+     "saw": "plans listed: [{\"kind\":\"data-plansel\",\"id\":\"dr1\",\"text\":\"Plan Atap to make it the live day\"},{\"kind\":\"data-plangolive\",\"id\":\"1\",\"text\":\"Plan B ●live now — this is what publishes\"},{\"kind\":\"data-plandup\",\"id\":\"1\",\"text\":\"+ Alt Plan\"}] · Plan B state: seat holder \"\", line cx true",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s5-b-plan-b-live.png"
+     ]
+    },
+    {
+     "id": "5.c",
+     "did": "the plans selector → \"Plan Atap to make it the live day\" (the first plan) made live again",
+     "saw": "Plan A state: seat holder \"romeo\", line cx false, selector label \"Plan A ▾\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-s5-c-plan-a-live.png"
+     ]
+    },
+    {
+     "id": "5.d",
+     "did": "Plan A signed and published (Original); Insights",
+     "saw": "Edit Schedule bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (4 lines), tag \"ORIG\", chip \"10 changes\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · tiles [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING] · flying load [Relay=4, Echo=3, Hex=3, Static=3, Ace=2, Basher=2, Drifter=2, Gambit=2, Outlaw=2, Piston=2, Pixel=2, Ranger=2, txt:+ 26 more flying] · hours [Ridge=28h, Bolt=27h25, Ace=25h35",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s5-d-plan-a-published.png",
+      "dk-04-s5-d-plan-a-published-foot.png"
+     ]
+    },
+    {
+     "id": "5.e",
+     "did": "Plans → \"Plan Btap to make it the live day\" (Switch the working copy to Plan B on the published day)",
+     "saw": "✓ the edit surface now holds Plan B (Rebel off, line cancelled) [{\"romeo\":\"\",\"cx\":true}] · ✓ Tuesday shows pending changes and cleared sign-offs [chip \"3 pending\" signs ·|·|·|·] · ✓ Insights unchanged on every section (still Plan A) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s5-e-after-switch.png",
+      "dk-06-s5-e-after-switch-foot.png"
+     ]
+    },
+    {
+     "id": "5.f",
+     "did": "same moment, on View-only Sched",
+     "saw": "Insights identical to Plan A",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s5-f-view-only.png"
+     ]
+    },
+    {
+     "id": "5.g",
+     "did": "sign the four and Publish AL1 (Plan B goes out); Insights",
+     "saw": "✓ Tuesday is AL1 and nothing pending [AL1 / 16 changes] · ✓ Aircrew flying 38 → 37 [38 → 37] · ✓ Sorties 32 → 31 (the cancelled line leaves) [32 → 31] · ✓ By day Tuesday agrees with the tiles (7 sorties) [Tuesday 7 sorties · 4 formations · 3 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s5-g-after-AL1.png",
+      "dk-09-s5-g-after-AL1-foot.png"
+     ]
+    },
+    {
+     "id": "5.h",
+     "did": "figures that moved at AL1",
+     "saw": "tile SORTIES: 32 → 31 || tile AIRCREW FLYING: 38 → 37 || tile 13 WARNING: 33 → 32 || FLYING LOAD · SORTIES : -[Hex=3; Outlaw=2; txt:+ 26 more flying] +[Hex=2; Saber=2; txt:+ 25 more flying] || WORK HOURS · REPORT TO: -[Hex=15h; Outlaw=9h30; Rebel=5h25] +[Hex=8h55; Outlaw=3h25; Rebel=20 min] || NOT ON THE FLYING PROG: -[chips:Anvil,Cinch,Cobra,Comet,Diesel,Forge,Ghost,Grit,Havoc,Hunter,Jester,Reaper,Recon,Ridge,Ryder,Scribe,Sidewinder,Talisman,Vandal,Zulu] +[] || CONFLICTS BY TYPE: -[Crew rest (<12h) 1] +[] || BY DAY: -[Tuesday 8 sorties · 4 formations · 4 issues] +[Tuesday 7 sorties · 4 formations · 3 issues] || NOT ON THE FLYING PROG: -[] +[chips:Anvil,Cinch,Cobra,Comet,Diesel,Forge,Ghost,Grit,Havoc,Hunter,Jester,Reaper,Rebel,Recon,Ridge,Ryder,Scribe,Sidewinder,Talisman,Vandal,Zulu]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "5.i",
+     "did": "Scheduler Board: its plans selector → \"Plan Atap to make it the live day\" (label now \"Plan A ▾\"), ✓ Done; Insights on Edit Schedule",
+     "saw": "✓ the board showed the switch as pending [3 pending] · ✓ Insights unchanged from AL1 (identical) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s5-i-after-board-switch.png"
+     ]
+    },
+    {
+     "id": "5.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s6-dk": {
+   "at": "2026-10-01T13:52:38.328Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "6.a",
+     "did": "Tuesday published (Original) with four shown issues; Insights",
+     "saw": "Tuesday list: ⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕] · tile 33 / \"13 WARNING\" · two-events 6 · Tuesday \"Tuesday 8 sorties · 4 formations · 4 issues\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s6-a-original.png",
+      "dk-02-s6-a-original-foot.png"
+     ]
+    },
+    {
+     "id": "6.b",
+     "did": "✕ on Saint's clash (pressed); reload; the day's list and Insights",
+     "saw": "✓ the hidden line is struck out in Tuesday's list [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:STRUCK[↺] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ Tuesday waits: 1 pending [1 pending] · ✓ Insights identical to 6.a in every section []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s6-b-hide-waiting.png"
+     ]
+    },
+    {
+     "id": "6.b2",
+     "did": "same moment on View-only Sched",
+     "saw": "Insights identical to 6.a · Tuesday face bar: ⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain 1:plain 2:plain 3:plain",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s6-b2-view-only.png"
+     ]
+    },
+    {
+     "id": "6.c",
+     "did": "sign the four and Publish AL1 (the hide goes out)",
+     "saw": "✓ issues tile 33 → 32 [33 → 32] · ✓ warning subtitle 13 → 12 [13 WARNING → 12 WARNING] · ✓ Conflicts by type: two events 6 → 5 [6 → 5] · ✓ By day Tuesday 4 → 3 issues [Tuesday 8 sorties · 4 formations · 3 issues] · ✓ the Tuesday bar reads 3 issues on both pages [Edit \"⚠ 3 issues · 1 warning · tap to collapse ▲\" / View \"⚠ 3 issues · 1 warning · tap to collapse ▲\"] · ✓ the struck-out line is reachable in Tuesday's list (Edit has ↺, View-only has no button) [Edit ⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:STRUCK[↺] 1:plain[✕] 2:plain[✕] 3:plain[✕] / View ⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:STRUCK 1:pl]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s6-c-al1.png",
+      "dk-06-s6-c-al1-foot.png"
+     ]
+    },
+    {
+     "id": "6.d",
+     "did": "↺ on the struck line (pressed); reload; Insights",
+     "saw": "✓ the line is flagged again on the working copy (not struck) [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ Tuesday waits: pending [1 pending] · ✓ Insights identical to 6.c (still three) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s6-d-unhide-waiting.png"
+     ]
+    },
+    {
+     "id": "6.e",
+     "did": "sign and Publish AL2 (the unhide goes out)",
+     "saw": "✓ Tuesday is AL2 [AL2] · ✓ tile back to 33 / 13 warning [33 13 WARNING] · ✓ two events back to 6, Tuesday back to 4 [6 / Tuesday 8 sorties · 4 formations · 4 issues] · ✓ tile, types and days agree with each other (sum of By day = tile) [Monday 8 sorties · 4 formations · 14 issues;Tuesday 8 sorties · 4 formations · 4 issues;Wednesday 8 sorties · 4 formations · 7 issues;Thursday 8 sorties · 4 for]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s6-e-al2.png",
+      "dk-09-s6-e-al2-foot.png"
+     ]
+    },
+    {
+     "id": "6.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s7-dk": {
+   "at": "2026-10-01T13:54:52.049Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "7.a",
+     "did": "Tuesday published (Original). Rebel flies only on Tuesday (second wave, line 2); Anvil flies nothing",
+     "saw": "signs after publish [·|·|·|·] · Aircrew flying 38 · Rebel hours 5h25, Anvil hours 15h · idle has Rebel: false, has Anvil: true · Sorties 32 Formations 16",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s7-a-issued.png",
+      "dk-02-s7-a-issued-foot.png"
+     ]
+    },
+    {
+     "id": "7.a2",
+     "did": "the four sign-off boxes filled again for the next version (Edit Schedule)",
+     "saw": "signs [Ace|Anvil|Anvil|Anvil] · chip \"9 changes\" · Insights identical to 7.a",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s7-a2-resigned.png"
+     ]
+    },
+    {
+     "id": "7.b",
+     "did": "Rebel dragged off the seat on the board; ✓ Done; Insights",
+     "saw": "✓ Tuesday: 1 pending, sign-offs cleared [1 pending / ·|·|·|·] · ✓ Insights identical to 7.a in every section []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s7-b-off.png"
+     ]
+    },
+    {
+     "id": "7.c",
+     "did": "Rebel picked back onto the same seat ({\"took\":true,\"msg\":\"Rebel planned\"}); ✓ Done",
+     "saw": "✓ the exact put-back clears pending [chip \"11 changes\" marker \"\"] · ✓ the four sign-offs are restored to the names signed at publication [Ace|Anvil|Anvil|Anvil → Ace|Anvil|Anvil|Anvil] · ✓ Insights identical to 7.a []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s7-c-back.png"
+     ]
+    },
+    {
+     "id": "7.d",
+     "did": "Anvil (idle pilot) dragged onto Rebel's seat (seat now \"shaft\"); ✓ Done; Insights",
+     "saw": "✓ the seat holds Anvil [shaft] · ✓ Tuesday: 1 pending (a replacement is one change), sign-offs cleared [1 pending / ·|·|·|·] · ✓ Insights identical to 7.a (Rebel still flying, Anvil still idle) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s7-d-replaced-waiting.png",
+      "dk-07-s7-d-replaced-waiting-foot.png"
+     ]
+    },
+    {
+     "id": "7.e",
+     "did": "sign the four and Publish AL1 (the replacement goes out); Insights",
+     "saw": "✓ Tuesday is AL1, nothing pending [AL1 / 17 changes] · ✓ Sorties and Formations fixed [tiles [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING] · flying ] · ✓ Aircrew flying unchanged (one out, one in) [38 → 38] · ✓ Rebel joins the idle chips; Anvil leaves them [Cinch,Cobra,Comet,Diesel,Forge,Ghost,Grit,Havoc,Hunter,Jester,Reaper,Rebel,Recon,Ridge,Ryder,Scribe,Sidewinder,Talisman,Vandal,Zulu] · ✓ Anvil's hours change, Rebel's hours change [Anvil 15h → 20h05; Rebel 5h25 → 20 min]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s7-e-al1.png",
+      "dk-09-s7-e-al1-foot.png"
+     ]
+    },
+    {
+     "id": "7.f",
+     "did": "what moved at AL1",
+     "saw": "WORK HOURS · REPORT TO: -[Anvil=15h; Rebel=5h25] +[Anvil=20h05; Rebel=20 min] || NOT ON THE FLYING PROG: -[chips:Anvil,Cinch,Cobra,Comet,Diesel,Forge,Ghost,Grit,Havoc,Hunter,Jester,Reaper,Recon,Ridge,Ryder,Scribe,Sidewinder,Talisman,Vandal,Zulu] +[chips:Cinch,Cobra,Comet,Diesel,Forge,Ghost,Grit,Havoc,Hunter,Jester,Reaper,Rebel,Recon,Ridge,Ryder,Scribe,Sidewinder,Talisman,Vandal,Zulu]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "7.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s8-dk": {
+   "at": "2026-10-01T13:56:06.310Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "8.a",
+     "did": "Tuesday published (Original); Insights",
+     "saw": "Sorties 32, Formations 16, Aircrew 38 · Drifter load 2, Gambit load 2, Warden (not in the top twelve) · Tuesday \"Tuesday 8 sorties · 4 formations · 4 issues\" · cx f0.0:-/oo f0.1:-/oo f1.0:-/oo f1.1:-/oo",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s8-a-original.png",
+      "dk-02-s8-a-original-foot.png"
+     ]
+    },
+    {
+     "id": "8.b",
+     "did": "on the board: CX the first aircraft of wave 1 formation 1, then both aircraft of formation 2 (whole formation); ✓ Done; reload; Insights",
+     "saw": "✓ the working copy holds the cancellations [f0.0:-/xo f0.1:FCX/xx f1.0:-/oo f1.1:-/oo] · ✓ Tuesday waits: pending, sign-offs cleared [4 pending] · ✓ Insights identical to 8.a in every section (nothing disappears before AL) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s8-b-pending.png",
+      "dk-04-s8-b-pending-foot.png"
+     ]
+    },
+    {
+     "id": "8.b2",
+     "did": "the day's own head on Edit Schedule meanwhile",
+     "saw": "day head \"1 X 4\" · bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "8.c",
+     "did": "sign the four and Publish AL1; Insights",
+     "saw": "✓ Tuesday is AL1, nothing pending [AL1 / 13 changes] · ✓ Sorties 32 → 29 (one line + the two of the cancelled formation leave) [32 → 29] · ✓ Formations 16 → 15 (only the whole formation leaves) [16 → 15] · ✓ Tuesday row agrees: 5 sorties · 3 formations [Tuesday 5 sorties · 3 formations · 4 issues] · ✓ the By-day sorties add up to the Sorties tile [29 vs 29] · ✓ the affected flyers' loads fell (Drifter, Gambit) [Drifter 2 → (not in the top twelve); Gambit 2 → (not in the top twelve)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s8-c-al1.png",
+      "dk-06-s8-c-al1-foot.png"
+     ]
+    },
+    {
+     "id": "8.d",
+     "did": "everything that moved at AL1",
+     "saw": "tile SORTIES: 32 → 29 || tile FORMATIONS: 16 → 15 || tile AIRCREW FLYING: 38 → 37 || FLYING LOAD · SORTIES : -[Basher=2; Drifter=2; Gambit=2; txt:+ 26 more flying] +[Saber=2; Saint=2; Torch=2; txt:+ 25 more flying] || WORK HOURS · REPORT TO: -[Vector=22h10; Dash=21h05; Basher=18h15; Gambit=11h05; Warden=10h15; Drifter=10h10] +[Vector=16h05; Dash=15h; Basher=12h10; Gambit=5h; Warden=4h10; Drifter=4h05] || NOT ON THE FLYING PROG: -[chips:Anvil,Cinch,Cobra,Comet,Diesel,Forge,Ghost,Grit,Havoc,Hunter,Jester,Reaper,Recon,Ridge,Ryder,Scribe,Sidewinder,Talisman,Vandal,Zulu] +[] || BY DAY: -[Tuesday 8 sorties · 4 formations · 4 issues] +[Tuesday 5 sorties · 3 formations · 4 issues] || NOT ON THE FLYING PROG: -[] +[chips:Anvil,Cinch,Cobra,Comet,Dash,Diesel,Forge,Ghost,Grit,Havoc,Hunter,Jester,Reaper,Recon,Ridge,Ryder,Scribe,Sidewinder,Talisman,Vandal,Zulu]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "8.e",
+     "did": "the single cancelled line un-cancelled on the board (a change waiting on AL1); Insights",
+     "saw": "✓ Tuesday pending again [1 pending] · ✓ Insights identical to AL1 (8.c) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s8-e-uncx-pending.png"
+     ]
+    },
+    {
+     "id": "8.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s9-dk": {
+   "at": "2026-10-01T13:57:29.289Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "9.a",
+     "did": "Tuesday published (Original); Insights",
+     "saw": "times f0.0 08:40–10:05 · f1.1 14:40–16:05 · hours {\"Basher\":\"18h15\",\"Hex\":\"15h\",\"Warden\":\"10h15\",\"Outlaw\":\"9h30\",\"Rebel\":\"5h25\",\"Cinder\":\"5h05\"} · Long work day 2 · tile 33 (13 WARNING) · Tuesday \"Tuesday 8 sorties · 4 formations · 4 issues\" · Edit Schedule bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" (4 lines), tag \"ORIG\", chip \"5 changes\", sign-offs [·|·|·|·] · View-only Sched bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s9-a-original.png",
+      "dk-02-s9-a-original-foot.png"
+     ]
+    },
+    {
+     "id": "9.b",
+     "did": "board time boxes: formation 1 take-off 08:40 → 09:50 and landing 10:05 → 11:30; last formation of wave 2 landing → 23:59; ✓ Done; reload (f0.0 09:50–11:30 · f1.1 14:40–23:59)",
+     "saw": "✓ the working day shows the new times [f0.0 09:50–11:30 · f1.1 14:40–23:59] · ✓ Tuesday waits as pending [3 pending] · ✓ the working copy's own bar differs from the issued face (live working warnings), the published face holds [Edit \"⚠ 8 issues · 2 warning · tap to collapse ▲\" / View \"⚠ 4 issues · 2 warning · tap to collapse ▲\"] · ✓ Insights identical to 9.a (hours, LONGDAY, warnings) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s9-b-pending.png",
+      "dk-04-s9-b-pending-foot.png"
+     ]
+    },
+    {
+     "id": "9.c",
+     "did": "sign the four and Publish AL1; Insights",
+     "saw": "✓ Tuesday is AL1, nothing pending [AL1 / 13 changes] · ✓ the pilots of the moved formation have new hours (Warden, Basher, Outlaw, Hex) [before {\"Basher\":\"18h15\",\"Hex\":\"15h\",\"Warden\":\"10h15\",\"Outlaw\":\"9h30\",\"Rebel\":\"5h25\",\"Cinder\":\"5h05\"} → after {\"Basher\":\"19h40\",\"Hex\":\"16h25\",\"Rebel\":\"13h19\",\"C] · ✓ the late-landing pair have new hours (Rebel, Cinder) [Rebel 5h25→13h19, Cinder 5h05→12h59] · ✓ the warning figures moved with the hours at the same moment (issues tile, Long work day or By day Tuesday) [tile 33→37, Long 2→6, Tue \"Tuesday 8 sorties · 4 formations · 4 issues\"→\"Tuesday 8 sorties · 4 formations · 8 issues\"] · ✓ Insights and the day's own bar agree on Tuesday's issue count [By day \"Tuesday 8 sorties · 4 formations · 8 issues\" vs Edit \"⚠ 8 issues · 2 warning · tap to collapse ▲\" / View \"⚠ 8 issues · 2 warning · tap to collapse ▲\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s9-c-al1.png",
+      "dk-06-s9-c-al1-foot.png"
+     ]
+    },
+    {
+     "id": "9.d",
+     "did": "everything that moved at AL1",
+     "saw": "tile 13 WARNING: 33 → 37 || WORK HOURS · REPORT TO: -[Basher=18h15; Hex=15h; Warden=10h15; Outlaw=9h30; Vapor=7h35; Rebel=5h25; Cinder=5h05; Marlin=5h05] +[Basher=19h40; Hex=16h25; Vapor=15h29; Rebel=13h19; Cinder=12h59; Marlin=12h59; Warden=11h40; Outlaw=10h55] || CONFLICTS BY TYPE: -[Long work day 2] +[Long work day 6] || BY DAY: -[Tuesday 8 sorties · 4 formations · 4 issues] +[Tuesday 8 sorties · 4 formations · 8 issues]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "9.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s10-dk": {
+   "at": "2026-10-01T14:00:57.433Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "10.a",
+     "did": "Tuesday published (Original). Vandal and Zulu are on no schedule line that day",
+     "saw": "Vandal hours (none) (idle: true) · Zulu hours (none) (idle: true) · tile 33 13 WARNING · Tuesday \"Tuesday 8 sorties · 4 formations · 4 issues\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s10-a-original.png",
+      "dk-02-s10-a-original-foot.png"
+     ]
+    },
+    {
+     "id": "10.b",
+     "did": "board: \"+ Row\" on 1st-wave duties (WALK DUTY 18:00–23:00, Vandal: {\"armed\":true,\"msg\":\"Vandal planned\"}) and \"+ Item\" on Ground (WALK GROUND 17:00–22:30, Zulu: {\"armed\":true,\"msg\":\"Zulu planned\"}); ✓ Done; reload",
+     "saw": "✓ both rows exist with their times and people [{\"duty\":{\"role\":\"WALK DUTY\",\"id\":\"split\",\"str\":\"18:00\",\"end\":\"23:00\",\"rid\":\"rmuplq9d8iohhbd\"},\"ground\":{\"prog\":\"WALK GROUND\",\"str\":\"17:00\",\"end\":\"22:30\",\"who\":\"] · ✓ Tuesday waits as pending [2 pending] · ✓ Insights identical to 10.a in every section []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s10-b-board-rows.png",
+      "dk-04-s10-c-pending.png",
+      "dk-05-s10-c-pending-foot.png"
+     ]
+    },
+    {
+     "id": "10.c",
+     "did": "sign the four and Publish AL1; Insights",
+     "saw": "✓ Tuesday is AL1, nothing pending [AL1 / 20 changes] · ✓ Vandal now in Work hours with the duty span (5h) [Vandal (none) → 5h] · ✓ Zulu now in Work hours with the ground span (5h30) [Zulu (none) → 5h30] · ✓ the idle chips are unchanged (the list is who is not FLYING: duty and ground work do not take a man off it — Reaper has 1h of hours and was already listed) [Anvil,Cinch,Cobra,Comet,Diesel,Forge,Ghost,Grit,Havoc,Hunter,Jester,Reaper,Recon,Ridge,Ryder,Scribe,Sidewinder,Talisman,Vandal,Zulu] · ✓ Insights and the day agree on Tuesday's issue count [By day \"Tuesday 8 sorties · 4 formations · 4 issues\" vs \"⚠ 4 issues · 2 warning · tap to collapse ▲\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s10-d-al1.png",
+      "dk-07-s10-d-al1-foot.png"
+     ]
+    },
+    {
+     "id": "10.d",
+     "did": "everything that moved at AL1",
+     "saw": "WORK HOURS · REPORT TO: -[] +[Zulu=5h30; Vandal=5h]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "10.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s11-dk": {
+   "at": "2026-10-01T14:02:46.690Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "11.a",
+     "did": "Tuesday published (Original); Insights",
+     "saw": "Marlin (flies 2nd wave) hours 5h05, Rebel 5h25, Vandal (none) · tile 33 13 WARNING · types: on-leave+flying 1 · Tuesday \"Tuesday 8 sorties · 4 formations · 4 issues\" · idle count 20",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s11-a-original.png",
+      "dk-02-s11-a-original-foot.png"
+     ]
+    },
+    {
+     "id": "11.b",
+     "did": "Inputs → Add input: a leave (LL) for Warden (nact), Tuesday (asked: nothing); Insights; then the row's ✕ (gone); Insights again",
+     "saw": "✓ after filing: Tuesday pending with sign-offs cleared [1 pending / ·|·|·|·] · ✓ after filing: Insights identical to 11.a [] · ✓ after deleting: a complete round trip reads zero pending [chip \"7 changes\" marker \"\"] · ✓ after deleting: Insights identical to 11.a []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s11-b-leave-filed.png",
+      "dk-04-s11-c-leave-deleted.png"
+     ]
+    },
+    {
+     "id": "11.c",
+     "did": "filed: leave for Marlin (ok), a timed Duty request 18:00–23:00 for Vandal (ok), an Appointment for Cutter (ok) deleted again (gone); Insights",
+     "saw": "✓ Tuesday pending with sign-offs cleared [2 pending / ·|·|·|·] · ✓ the published face is unchanged (View-only Sched bar still the issued four) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Insights identical to 11.a (hours, idle names, conflicts) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s11-d-pending.png",
+      "dk-06-s11-d-pending-foot.png"
+     ]
+    },
+    {
+     "id": "11.d",
+     "did": "sign the four and Publish AL1; Insights",
+     "saw": "✓ Tuesday is AL1, nothing pending [AL1 / 16 changes] · ✓ the final state appears: Vandal now has the duty hours (5h) [Vandal (none) → 5h] · ✓ the abandoned Appointment never appears (Cutter not changed) [Cutter 5h → 5h] · ✓ the leave shows in Insights (On leave + flying up, or a change to Marlin) [on-leave 1→2; Marlin 5h05→5h05; tile 33→34] · ✓ Insights and the day's bar agree on Tuesday's issue count [By day \"Tuesday 8 sorties · 4 formations · 5 issues\" vs \"⚠ 5 issues · 3 warning · tap to collapse ▲\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s11-e-al1.png",
+      "dk-08-s11-e-al1-foot.png"
+     ]
+    },
+    {
+     "id": "11.e",
+     "did": "everything that moved at AL1",
+     "saw": "tile 13 WARNING: 33 → 34 || WORK HOURS · REPORT TO: -[] +[Vandal=5h] || CONFLICTS BY TYPE: -[On leave + flying 1] +[On leave + flying 2] || BY DAY: -[Tuesday 8 sorties · 4 formations · 4 issues] +[Tuesday 8 sorties · 4 formations · 5 issues]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "11.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s12-dk": {
+   "at": "2026-10-01T14:06:35.313Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "12.a",
+     "did": "Tuesday published (Original), Wednesday left as a draft",
+     "saw": "Wednesday: Edit Schedule bar \"⚠ 7 issues · 2 warning · tap to collapse ▲\" (7 lines), tag \"DRAFT\", chip \"\", sign-offs [·|·|·|·] · Insights tile 33 13 WARNING, Sorties 32, Formations 16, Aircrew 38 · Tuesday \"Tuesday 8 sorties · 4 formations · 4 issues\" · Wednesday \"Wednesday 8 sorties · 4 formations · 7 issues\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s12-a-tuesday-published.png",
+      "dk-02-s12-a-tuesday-published-foot.png"
+     ]
+    },
+    {
+     "id": "12.b",
+     "did": "a change waiting on Tuesday (Rebel off the board seat); Insights",
+     "saw": "✓ Tuesday pending [1 pending] · ✓ Insights identical to 12.a []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s12-b-tuesday-pending.png"
+     ]
+    },
+    {
+     "id": "12.c",
+     "did": "board: Wednesday's Cutter (psy) taken off his seat",
+     "saw": "✓ Insights moved at once (working copy is the only copy) [tile AIRCREW FLYING: 38 → 37 || FLYING LOAD · SORTIES : -[txt:+ 26 more flying] +[txt:+ 25 more flying] || WORK HOURS · REPORT TO: -[Cutter=5h] +[Cutter=1h] || ] · ✓ Aircrew flying 38 → 37 (psy flies only Wednesday) [38 → 37] · ✓ Tuesday row unchanged (its waiting change did not leak and Wednesday did not touch it) [Tuesday 8 sorties · 4 formations · 4 issues → Tuesday 8 sorties · 4 formations · 4 issues] · ✓ Wednesday still a draft (no pending chip, no version tag) [tag \"DRAFT\" chip \"1 change\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s12-c-seat.png"
+     ]
+    },
+    {
+     "id": "12.d",
+     "did": "board: Wednesday formation 2 of wave 2 cancelled (both aircraft CX)",
+     "saw": "✓ Insights moved at once (working copy is the only copy) [tile SORTIES: 32 → 30 || tile FORMATIONS: 16 → 15 || tile AIRCREW FLYING: 37 → 35 || tile 13 WARNING: 33 → 31 || FLYING LOAD · SORTIES : -[Pixel=2; txt:+ 25 mor] · ✓ Sorties down by 2 and Formations down by 1 [32/16 → 30/15] · ✓ Tuesday row unchanged (its waiting change did not leak and Wednesday did not touch it) [Tuesday 8 sorties · 4 formations · 4 issues → Tuesday 8 sorties · 4 formations · 4 issues] · ✓ Wednesday still a draft (no pending chip, no version tag) [tag \"DRAFT\" chip \"3 changes\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s12-d-cx.png"
+     ]
+    },
+    {
+     "id": "12.e",
+     "did": "board: Wednesday's first formation take-off 10:35 → 09:00 (alone: no figure of the window depends on it, the wave has a published in-time)",
+     "saw": "✓ Insights moved at once, or no figure depends on this edit (recorded) [NO CHANGE (time now 09:00–12:00)] · ✓ Tuesday row unchanged (its waiting change did not leak and Wednesday did not touch it) [Tuesday 8 sorties · 4 formations · 4 issues → Tuesday 8 sorties · 4 formations · 4 issues] · ✓ Wednesday still a draft (no pending chip, no version tag) [tag \"DRAFT\" chip \"4 changes\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s12-e-time.png"
+     ]
+    },
+    {
+     "id": "12.e2",
+     "did": "board: the same formation's landing 12:00 → 13:30",
+     "saw": "✓ Insights moved at once (working copy is the only copy) [tile 12 WARNING: 31 → 30 || WORK HOURS · REPORT TO: -[Hex=15h; Gambit=11h05] +[Hex=16h30; Gambit=12h35] || CONFLICTS BY TYPE: -[Conflict — two events at once 6;] · ✓ Tuesday row unchanged (its waiting change did not leak and Wednesday did not touch it) [Tuesday 8 sorties · 4 formations · 4 issues → Tuesday 8 sorties · 4 formations · 4 issues] · ✓ Wednesday still a draft (no pending chip, no version tag) [tag \"DRAFT\" chip \"5 changes\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s12-e2-time.png"
+     ]
+    },
+    {
+     "id": "12.f",
+     "did": "Edit Schedule: the x on the Wednesday On leave + flying warning",
+     "saw": "✓ Insights moved at once (working copy is the only copy) [tile 14 WARNING: 30 → 29 || CONFLICTS BY TYPE: -[On leave + flying 1] +[] || BY DAY: -[Wednesday 6 sorties · 3 formations · 4 issues] +[Wednesday 6 sorties · 3 ] · ✓ the Wednesday issue count drops by one [Wednesday 6 sorties · 3 formations · 4 issues → Wednesday 6 sorties · 3 formations · 3 issues] · ✓ Tuesday row unchanged (its waiting change did not leak and Wednesday did not touch it) [Tuesday 8 sorties · 4 formations · 4 issues → Tuesday 8 sorties · 4 formations · 4 issues] · ✓ Wednesday still a draft (no pending chip, no version tag) [tag \"DRAFT\" chip \"6 changes\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s12-f-hide.png",
+      "dk-09-s12-f-hide-foot.png"
+     ]
+    },
+    {
+     "id": "12.g",
+     "did": "sign the four and Publish day on Wednesday ({\"pressed\":true,\"label\":\"Publish day\"})",
+     "saw": "✓ Wednesday is ORIG [ORIG / 11 changes] · ✓ the same figures remain, now backed by Original (Insights identical to before publishing) [] · ✓ Tuesday still issued and its waiting change still invisible (Tuesday row as at 12.a) [Tuesday 8 sorties · 4 formations · 4 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s12-g-wed-published.png",
+      "dk-11-s12-g-wed-published-foot.png"
+     ]
+    },
+    {
+     "id": "12.h",
+     "did": "Tuesday after Wednesday went out",
+     "saw": "Tuesday still: tag \"ORIG\", chip \"1 pending\"",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "12.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s13-dk": {
+   "at": "2026-10-01T14:07:35.554Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "13.a",
+     "did": "Tuesday published; a seat change and a landing-time change left waiting on the working copy; View-only Sched with Tuesday on its issued version; Insights",
+     "saw": "Edit Schedule says: 2 pending · View-only selector {\"value\":\"issued\",\"text\":\"Original — as issued\",\"opts\":[\"issued:Original — as issued\",\"working:Working draft — not issued\"]} · face bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · Insights tiles [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING] · flying load [Relay=4, Echo=3, Hex=3, Static=3, Ace=2, Basher=2, Drifter=2, Gambit=2, Outlaw=2, Piston=2, Pixel=2, Ranger=2, txt",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s13-a-view-issued.png",
+      "dk-02-s13-a-view-issued-foot.png"
+     ]
+    },
+    {
+     "id": "13.b",
+     "did": "View-only Sched: Tuesday’s selector set to \"Working draft\"; Insights opened beside it",
+     "saw": "✓ the day visibly shows the working draft (selector reads Working draft) [{\"value\":\"working\",\"text\":\"Working draft — not issued\",\"opts\":[\"issued:Original — as issued\",\"working:Working draft — not issued\"]}] · ✓ the face shows the working copy (its bar differs from the issued face, or the draft marker shows) [issued \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → draft \"⚠ 4 issues · 2 warning · tap to collapse ▲\"] · ✓ Insights still counts the issued Original (identical to 13.a) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s13-b-view-working-face.png",
+      "dk-04-s13-b-view-working-insights.png",
+      "dk-05-s13-b-view-working-insights-foot.png"
+     ]
+    },
+    {
+     "id": "13.c",
+     "did": "Edit Schedule, with View-only Sched still switched to the working draft",
+     "saw": "Insights identical to 13.a",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s13-c-edit-while-draft.png"
+     ]
+    },
+    {
+     "id": "13.d",
+     "did": "selector switched back to the issued version",
+     "saw": "✓ selector reads the issued version again [{\"value\":\"issued\",\"text\":\"Original — as issued\",\"opts\":[\"issued:Original — as issued\",\"working:Working draft — not issued\"]}] · ✓ Insights text identical to 13.a []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s13-d-back-issued.png"
+     ]
+    },
+    {
+     "id": "13.e",
+     "did": "sign and Publish AL1",
+     "saw": "Aircrew flying 38 → 37; tile AIRCREW FLYING: 38 → 37 || FLYING LOAD · SORTIES : -[txt:+ 26 more flying] +[txt:+ 25 more flying] || WORK HOURS · REPORT TO: -[Vapor=7h35; Rebel=5h25; Cinder=5h05; Marlin=5h05] +[Vapor=14h30; Cinder=12h; Marlin=12h; Rebel=20 min] || NOT ON THE FLYING PROG: -[chips:Anvil,Cinch,Cobra,Comet,Diesel,Forge,Ghost,Grit,Havoc,Hunter,Jester,Reaper,Recon,Ridge,Ryder,Scribe,Sidewinder,Talisman,Vandal,Zulu] +[] || NOT ON THE FLYING PROG: -[] +[chips:Anvil,Cinch,Cobra,Comet,Diesel,Forge,Ghost,Grit,Havoc",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s13-e-al1.png",
+      "dk-09-s13-e-al1-foot.png"
+     ]
+    },
+    {
+     "id": "13.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s14-dk": {
+   "at": "2026-10-01T14:08:54.833Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "14.a",
+     "did": "Tuesday published; Rebel taken off on the board (one waiting change); Insights",
+     "saw": "✓ Tuesday pending [1 pending] · ✓ Insights identical to the Original []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s14-a-original.png",
+      "dk-02-s14-a-original-foot.png",
+      "dk-03-s14-b-change-waiting.png"
+     ]
+    },
+    {
+     "id": "14.b",
+     "did": "top-bar Undo (pressed (\"Undo — a change to the schedule\"; toasts [\"Undid: a change to the schedule\"]))",
+     "saw": "✓ pending cleared [7 changes] · ✓ Insights identical to the Original []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s14-c-after-undo.png"
+     ]
+    },
+    {
+     "id": "14.c",
+     "did": "top-bar Redo (pressed (\"Redo — a change to the schedule\"; toasts [\"Redid: a change to the schedule\"]))",
+     "saw": "✓ pending back [1 pending] · ✓ Insights identical to the Original []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s14-d-after-redo.png"
+     ]
+    },
+    {
+     "id": "14.d",
+     "did": "Scheduler Board's own Undo (pressed (\"Undo — a change to the schedule\"; toasts [\"Undid: a change to the schedule\"])) then Redo (pressed (\"Redo — a change to the schedule\"; toasts [\"Redid: a change to the schedule\"]))",
+     "saw": "✓ board Undo clears pending the same as the top bar [9 changes] · ✓ board Redo brings it back [1 pending] · ✓ Insights identical to the Original after both []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s14-e-board-undo.png",
+      "dk-07-s14-f-board-redo.png"
+     ]
+    },
+    {
+     "id": "14.e",
+     "did": "sign the four and Publish AL1",
+     "saw": "✓ Tuesday is AL1 [AL1 / 15 changes] · ✓ Insights moved (Aircrew flying 38 → 37) [38 → 37]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s14-g-al1.png",
+      "dk-09-s14-g-al1-foot.png"
+     ]
+    },
+    {
+     "id": "14.f",
+     "did": "top-bar Undo right after Publish AL1 (pressed (\"Undo — publishing an amendment\"; toasts [\"Undid: publishing an amendment\"]))",
+     "saw": "✓ AL1 is retracted: Tuesday reads ORIG again [ORIG] · ✓ the change is open again as pending [1 pending] · ✓ Insights back to the Original (identical to 14.a before) []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s14-h-undo-of-al1.png",
+      "dk-11-s14-h-undo-of-al1-foot.png"
+     ]
+    },
+    {
+     "id": "14.g",
+     "did": "top-bar Redo after that (pressed (\"Redo — publishing an amendment\"; toasts [\"Redid: publishing an amendment\"]))",
+     "saw": "Tuesday AL1 / 17 changes · Insights identical to AL1 (14.e)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-12-s14-i-redo-of-al1.png"
+     ]
+    },
+    {
+     "id": "14.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s15-dk": {
+   "at": "2026-10-01T14:10:26.582Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "15.a",
+     "did": "Original published, Rebel taken off, AL1 published",
+     "saw": "✓ Tuesday is AL1 [AL1 / 11 changes] · ✓ Original and AL1 differ in Insights (Aircrew 38 vs 37) [38 → 37]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s15-a-original.png",
+      "dk-02-s15-b-al1.png",
+      "dk-03-s15-b-al1-foot.png"
+     ]
+    },
+    {
+     "id": "15.b",
+     "did": "Original opened read-only (Original), \"Load onto working copy\" pressed (Load onto working copy); reload",
+     "saw": "✓ the working copy now holds the Original (Rebel back on his seat) [seat \"romeo\"] · ✓ Tuesday still AL1 and pending (the loaded text differs from AL1) [AL1 / 1 pending] · ✓ Insights still AL1 (identical to 15.a AL1 reading) [] · ✓ the published face (View-only Sched bar) unchanged [⚠ 4 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s15-c-after-load.png",
+      "dk-05-s15-c-after-load-foot.png"
+     ]
+    },
+    {
+     "id": "15.c",
+     "did": "Unpublish pressed ({\"pressed\":true,\"label\":\"Unpublish\"})",
+     "saw": "✓ Tuesday reads ORIG again (AL1 withdrawn) [ORIG / 13 changes] · ✓ Insights reverts to the Original reading (identical to 15.a original) [] · ✓ the AL1-shaped working edits remain pending, not lost (or Rebel back on the seat if the load put him there) [seat \"romeo\", chip \"13 changes\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s15-d-unpublished.png",
+      "dk-07-s15-d-unpublished-foot.png"
+     ]
+    },
+    {
+     "id": "15.d",
+     "did": "reload after the Unpublish",
+     "saw": "Insights identical to the Original reading",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s15-e-reloaded.png"
+     ]
+    },
+    {
+     "id": "15.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s16-dk": {
+   "at": "2026-10-01T14:12:35.156Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "16.a",
+     "did": "week of 13 Jul: Tuesday published with an AL1",
+     "saw": "title \"Week insights · Jul 13 – Jul 19\" · tiles [32 SORTIES | 16 FORMATIONS | 37 AIRCREW FLYING | 33 13 WARNING] · flying load [Relay=4, Echo=3, Hex=3, Static=3, Ace=2, Basher=2, Drifter=2, Gambit=2, Outlaw=2, Piston=2, Pixel=2, Ranger=2, txt:+ 25 more flying] · hours [Ridge=28h, Bolt=27h25, Ace=25h35 · By day Monday 8 sorties · 4 formations · 14 issues ; Tuesday 8 sorties · 4 formations · 4 issues ; Wednesday 8 sorties · 4 formations · 7 issues ; Thursday 8 sorties · 4 formations · 6 issues ; Friday 0 sorties · 0 formations · clear ; Saturday 0 sorties · 0 formations · 1 issue ; Sunday 0 sorties · 0 formations · 1 issue",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s16-a-week1-al1.png",
+      "dk-02-s16-a-week1-al1-foot.png"
+     ]
+    },
+    {
+     "id": "16.b",
+     "did": "week chip \"Jul 20\" (ok; loaded week 20/07/2026; days Jul 20,Jul 21,Jul 22,Jul 23,Jul 24,Jul 25,Jul 26)",
+     "saw": "✓ the title dates follow the loaded week (Jul 20 – Jul 26) [Week insights · Jul 20 – Jul 26] · ✓ figures differ from week 1 (a different week of data) [tile SORTIES: 32 → 17 || tile FORMATIONS: 16 → 9 || tile AIRCREW FLYING: 37 → 22 || tile 13 WARNING: 33 → 19 || FLYING LOAD · SORTIES : -[Relay=4; Echo=3; Hex=3] · ✓ all seven By-day rows are there and none repeats week 1's row text [Monday 6 sorties · 3 formations · 10 issues ; Tuesday 5 sorties · 3 formations · 4 issues ; Wednesday 4 sorties · 2 formations · 1 issue ; Thursday 2 sorties · ] · ✓ week 1's published Tuesday does not leak: Tuesday row is not week 1's [Tuesday 5 sorties · 3 formations · 4 issues]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s16-b-week2-chip.png",
+      "dk-04-s16-b-week2-chip-foot.png"
+     ]
+    },
+    {
+     "id": "16.b2",
+     "did": "the loaded week-2 working copy, counted from the page (sorties per day) for cross-checking",
+     "saw": "Jul 20:6 Jul 21:5 Jul 22:4 Jul 23:2 Jul 24:0 Jul 25:0 Jul 26:0 · Insights By day Monday 6 sorties · 3 formations · 10 issues ; Tuesday 5 sorties · 3 formations · 4 issues ; Wednesday 4 sorties · 2 formations · 1 issue ; Thursday 2 sorties · 1 formations · 2 issues ; Friday 0 sorties · 0 formations · clear ; Saturday 0 sorties · 0 formations · 1 issue ; Sunday 0 sorties · 0 formations · 1 issue",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "16.c",
+     "did": "week chip \"Jul 13\" again (ok; loaded week 13/07/2026)",
+     "saw": "✓ title back to Jul 13 – Jul 19 [Week insights · Jul 13 – Jul 19] · ✓ identical to the first reading of week 1, every section []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s16-c-back-week1.png"
+     ]
+    },
+    {
+     "id": "16.d",
+     "did": "\"Pick a date\" → 22 Jul (picked 22 Jul; loaded week 20/07/2026)",
+     "saw": "✓ title Jul 20 – Jul 26 [Week insights · Jul 20 – Jul 26] · ✓ identical to the chip route into week 2 []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s16-d-picker-week2.png"
+     ]
+    },
+    {
+     "id": "16.e",
+     "did": "Scheduler Board week step (stepped back one week); ✓ Done; loaded week 13/07/2026",
+     "saw": "✓ the board stepped to week 1 [20/07/2026 → 13/07/2026] · ✓ title and figures are week 1's exactly [Week insights · Jul 13 – Jul 19]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s16-e-board-step.png"
+     ]
+    },
+    {
+     "id": "16.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s17-dk": {
+   "at": "2026-10-01T14:13:54.261Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "17.a",
+     "did": "Original published; reload",
+     "saw": "✓ Insights after the reload identical to just before it; matches the expected state · Tuesday tag \"ORIG\" chip \"5 changes\" signs [·|·|·|·] · sync chip before: Sync · slow",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s17-a-before.png",
+      "dk-03-s17-a-after.png"
+     ]
+    },
+    {
+     "id": "17.b",
+     "did": "a change waiting on Tuesday (Rebel off); reload",
+     "saw": "✓ Insights after the reload identical to just before it; matches the expected state · Tuesday tag \"ORIG\" chip \"1 pending\" signs [·|·|·|·] · sync chip before: Sync · slow",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s17-b-before.png",
+      "dk-05-s17-b-after.png"
+     ]
+    },
+    {
+     "id": "17.c",
+     "did": "AL1 published; reload",
+     "saw": "✓ Insights after the reload identical to just before it; matches the expected state · Tuesday tag \"AL1\" chip \"11 changes\" signs [·|·|·|·] · sync chip before: Sync · slow",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s17-c-before.png",
+      "dk-08-s17-c-after.png"
+     ]
+    },
+    {
+     "id": "17.d",
+     "did": "Original loaded onto the working copy (Load onto working copy); reload",
+     "saw": "✓ Insights after the reload identical to just before it; matches the expected state · Tuesday tag \"AL1\" chip \"1 pending\" signs [·|·|·|·] · sync chip before: Sync · slow",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s17-d-before.png",
+      "dk-10-s17-d-after.png"
+     ]
+    },
+    {
+     "id": "17.e",
+     "did": "AL1 unpublished ({\"pressed\":true,\"label\":\"Unpublish\"}); reload",
+     "saw": "✓ Insights after the reload identical to just before it; matches the expected state · Tuesday tag \"ORIG\" chip \"13 changes\" signs [·|·|·|·] · sync chip before: Sync · slow",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s17-e-before.png",
+      "dk-12-s17-e-after.png"
+     ]
+    },
+    {
+     "id": "17.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s18-dk": {
+   "at": "2026-10-01T14:17:05.206Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "18.a",
+     "did": "Tuesday published (Original), then a waiting change (Rebel off): the expected window text recorded on Edit Schedule",
+     "saw": "Tuesday chip \"1 pending\" · tiles [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING] · flying load [Relay=4, Echo=3, Hex=3, Static=3, Ace=2, Basher=2, Drifter=2, Gambit=2, Outlaw=2, Piston=2, Pixel=2, Ranger=2, txt · opened by: desktop Insights button",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s18-a-expected.png"
+     ]
+    },
+    {
+     "id": "18.b",
+     "did": "as admin (Saber), every page (1440×900)",
+     "saw": "✓ viewsched: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ editsched: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ inputs: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ quals: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ logic: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ leavewar: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ tracker: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ help: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ admin: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s18-b-viewsched.png",
+      "dk-03-s18-b-editsched.png",
+      "dk-04-s18-b-inputs.png",
+      "dk-05-s18-b-quals.png",
+      "dk-06-s18-b-logic.png",
+      "dk-07-s18-b-leavewar.png",
+      "dk-08-s18-b-tracker.png",
+      "dk-09-s18-b-help.png",
+      "dk-10-s18-b-admin.png"
+     ]
+    },
+    {
+     "id": "18.c",
+     "did": "admin switched to the member view (role badge pressed; badge/acct reads \"SABER · MEMBER\"), every page he now has",
+     "saw": "✓ viewsched: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ inputs: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ quals: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ logic: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ leavewar: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ tracker: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ help: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s18-c-viewsched.png",
+      "dk-12-s18-c-inputs.png",
+      "dk-13-s18-c-leavewar.png",
+      "dk-14-s18-c-help.png"
+     ]
+    },
+    {
+     "id": "18.d",
+     "did": "signed in as the member (Ranger; \"RANGER · MEMBER\"), every page",
+     "saw": "✓ viewsched: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ inputs: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ quals: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ logic: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ leavewar: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ tracker: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 [] · ✓ help: desktop Insights button; title \"Week insights · Jul 13 – Jul 19\"; box 600x756; scrolls 2250/754 []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-s18-d-viewsched.png",
+      "dk-16-s18-d-inputs.png",
+      "dk-17-s18-d-quals.png",
+      "dk-18-s18-d-logic.png",
+      "dk-19-s18-d-leavewar.png",
+      "dk-20-s18-d-tracker.png",
+      "dk-21-s18-d-help.png"
+     ]
+    },
+    {
+     "id": "18.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s18-ph": {
+   "at": "2026-10-01T14:19:09.790Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "18.a",
+     "did": "Tuesday published (Original), then a waiting change (Rebel off): the expected window text recorded on Edit Schedule",
+     "saw": "Tuesday chip \"1 pending\" · tiles [32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 33 13 WARNING] · flying load [Relay=4, Echo=3, Hex=3, Static=3, Ace=2, Basher=2, Drifter=2, Gambit=2, Outlaw=2, Piston=2, Pixel=2, Ranger=2, txt · opened by: phone menu Week insights",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-s18-a-expected.png"
+     ]
+    },
+    {
+     "id": "18.b",
+     "did": "as admin (Saber), every page (390×844)",
+     "saw": "✓ viewsched: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ editsched: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ inputs: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ quals: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ logic: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ leavewar: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ tracker: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ help: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ admin: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-s18-b-viewsched.png",
+      "ph-03-s18-b-editsched.png",
+      "ph-04-s18-b-inputs.png",
+      "ph-05-s18-b-leavewar.png",
+      "ph-06-s18-b-tracker.png",
+      "ph-07-s18-b-admin.png"
+     ]
+    },
+    {
+     "id": "18.c",
+     "did": "admin switched to the member view (drawer: Switch to the member view; badge/acct reads \"Saber · Member\"), every page he now has",
+     "saw": "✓ viewsched: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ inputs: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ quals: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ logic: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ leavewar: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ tracker: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ help: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-s18-c-viewsched.png",
+      "ph-09-s18-c-leavewar.png"
+     ]
+    },
+    {
+     "id": "18.d",
+     "did": "signed in as the member (Ranger; \"Ranger · Member\"), every page",
+     "saw": "✓ viewsched: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ inputs: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ quals: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ logic: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ leavewar: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ tracker: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 [] · ✓ help: phone menu Week insights; title \"Week insights · Jul 13 – Jul 19\"; box 390x760; scrolls 2347/758 []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-s18-d-viewsched.png",
+      "ph-11-s18-d-logic.png",
+      "ph-12-s18-d-tracker.png"
+     ]
+    },
+    {
+     "id": "18.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s19-dk": {
+   "at": "2026-10-01T14:22:12.308Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "19.a",
+     "did": "Tuesday published with a waiting change (Rebel off); every non-Insights reader recorded",
+     "saw": "bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · day head {\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— nam · ⓘ {\"stat\":\"✓ Published — APPROVED 1 unpublished edit\",\"sev\":\"2 WARNING 1 ADVISORY 1 NOTE\",\"als\":\"No amendment has touched this day yet\",\"n\":4} · pending {\"e\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\",\"v\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\",\"c\":\"1 pending\",\"s\":\"·|·|·|·\"} · Amendments panel \"AMENDMENTS 1 day with changes to publish Discard marks Tue · 1 change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.\" · stored rows 215 (fingerprint bd97bea0) · Leave War page text 19465 chars, OIL tracker sheet 2131 chars",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s19-a-before.png"
+     ]
+    },
+    {
+     "id": "19.b",
+     "did": "Insights opened, scrolled to its foot and closed five times",
+     "saw": "✓ every recorded reader unchanged (bar, lines, head, ⓘ, pending, sign-offs, Amendments panel, Leave War page, OIL tracker) [identical] · ✓ the saved rows are byte-for-byte the same (nothing written by merely viewing) [215 rows, fingerprint bd97bea0 → 215 / bd97bea0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s19-c-after-5-opens.png"
+     ]
+    },
+    {
+     "id": "19.c",
+     "did": "reload (sign in again), then one more open / scroll / close",
+     "saw": "✓ readers identical before and after that one open [identical] · ✓ saved rows identical [215/bd97bea0 → 215/bd97bea0] · ✓ and the same as before the reload (nothing drifted across the reload) [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s19-d-after-reload.png"
+     ]
+    },
+    {
+     "id": "19.d",
+     "did": "Print / CSV export",
+     "saw": "NOT WALKED as a file: an export is a file download, which needs the owner’s say-so in chat; the exported content is built from the same rows and day lists compared above, and the saved rows did not change",
+     "verdict": "NOT WALKED (download needs permission)",
+     "pics": []
+    },
+    {
+     "id": "19.e",
+     "did": "OIL Earn figures",
+     "saw": "read through the Leave War OIL tracker sheet (2131 chars) — compared above, identical",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "19.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s19-ph": {
+   "at": "2026-10-01T14:23:19.333Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "19.a",
+     "did": "Tuesday published with a waiting change (Rebel off); every non-Insights reader recorded",
+     "saw": "bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · day head {\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— nam · ⓘ {\"stat\":\"✓ Published — APPROVED 1 unpublished edit\",\"sev\":\"2 WARNING 1 ADVISORY 1 NOTE\",\"als\":\"No amendment has touched this day yet\",\"n\":4} · pending {\"e\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\",\"v\":\"⚠ 4 issues · 2 warning · tap to collapse ▲\",\"c\":\"1 pending\",\"s\":\"·|·|·|·\"} · Amendments panel \"Amendments1 day with changes to publishDiscard marksTue · 1 changePublish AL1No amendments published yet — publish a day, edit it, then publish an AL.\" · stored rows 215 (fingerprint 51692a17) · Leave War page text 7463 chars, OIL tracker sheet 2078 chars",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-s19-a-before.png"
+     ]
+    },
+    {
+     "id": "19.b",
+     "did": "Insights opened, scrolled to its foot and closed five times",
+     "saw": "✓ every recorded reader unchanged (bar, lines, head, ⓘ, pending, sign-offs, Amendments panel, Leave War page, OIL tracker) [identical] · ✓ the saved rows are byte-for-byte the same (nothing written by merely viewing) [215 rows, fingerprint 51692a17 → 215 / 51692a17]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-s19-c-after-5-opens.png"
+     ]
+    },
+    {
+     "id": "19.c",
+     "did": "reload (sign in again), then one more open / scroll / close",
+     "saw": "✓ readers identical before and after that one open [identical] · ✓ saved rows identical [215/51692a17 → 215/51692a17] · ✓ and the same as before the reload (nothing drifted across the reload) [identical]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-s19-d-after-reload.png"
+     ]
+    },
+    {
+     "id": "19.d",
+     "did": "Print / CSV export",
+     "saw": "NOT WALKED as a file: an export is a file download, which needs the owner’s say-so in chat; the exported content is built from the same rows and day lists compared above, and the saved rows did not change",
+     "verdict": "NOT WALKED (download needs permission)",
+     "pics": []
+    },
+    {
+     "id": "19.e",
+     "did": "OIL Earn figures",
+     "saw": "read through the Leave War OIL tracker sheet (2078 chars) — compared above, identical",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "19.err",
+     "did": "the browser's error list",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  }
+ }
+}

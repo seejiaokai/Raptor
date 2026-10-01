@@ -15,6 +15,7 @@ import { keyDay, seatRow } from './keys'
 import { rowPlaces } from './slots'
 import { SCHED, approvedDays, dayApproved, dayDelta, dayDeltaCore, dayCurVer, daySnapOf } from './publish'
 import { hideKey, shownWarns } from './warnhide'
+import { rosterIds } from './faceattrs'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -1678,9 +1679,30 @@ function officialDiverges(){
   return windowDiverges(CURWEEK,VCONF.maxRun);
 }
 function officialFor(working:any){
-  if(!officialDiverges())return working;   // ALIAS — the exact same object, cannot drift
-  return withIssuedWeek(()=>validateCore());
+  if(!officialDiverges()){ ISS_DAYS=null; ISS_EVD=null; return working; }   // ALIAS — the exact same object, cannot drift
+  /* …and the week this pass judged, kept for the readers that COUNT the issued week (issuedWorld, below): the days as
+     installed — every published day its issued snapshot — and the per-person events built from them. Captured inside the
+     swap; the finally restores the working globals as before. */
+  return withIssuedWeek(()=>{ const b=validateCore(); ISS_DAYS=DAYS.slice(); ISS_EVD=EVD; return b; });
 }
+/* THE WEEK AS EVERYONE READS IT ([INSIGHTS-WHICH-COPY], owner D477 / D478, 1 Oct 26 — "It should show the latest copy, so
+   if working copy is the only copy then it will use that, unless its published then use Original, if theres an AL1 then
+   use AL1 etc."): day by day, a published day at its LATEST PUBLISHED version and a day not yet published as the working
+   copy — the days, the per-person events worked out from them (work hours), and the warnings as those faces show them
+   (faceWarn: each published day under the hides it went out with, a draft day under the working hides — exactly what
+   View-only Sched draws). It is the official pass's own world, so a change waiting on a published day is in none of the
+   three until it goes out. While nothing waits the official pass IS the working one (the alias), and so is this.
+   Answers for the LAST validate(): a reader calls validate() first (computeInsights does). */
+let ISS_DAYS:any=null, ISS_EVD:any=null;
+/* …and its ROSTER (Astra's final read, 1 Oct 26): the aircrew of those same days — each published day the roster its
+   current version went out with (publish.ts `snap.ros`, what the day panel's "free all day" counts; a man since deleted
+   outright has nothing to draw and drops, as faceattrs.ts rosterShown), a day not yet published today's — as one list
+   for the week. So a man added or archived since does not move "who is not flying" on a week already published. */
+function issuedRoster(){ const s=new Set<string>(); let now:any=null;
+  DAYS.forEach((_d:any,di:any)=>{ const v=dayApproved(di)?dayCurVer(di):null, sn:any=v!=null?daySnapOf(di,v):null;
+    (sn&&Array.isArray(sn.ros)?sn.ros.filter((id:any)=>!!PEOPLE[id]):(now||(now=rosterIds()))).forEach((id:any)=>s.add(id)); });
+  return [...s]; }
+export function issuedWorld(){ return {days:ISS_DAYS||DAYS, evd:ISS_EVD||EVD, warn:faceWarn(), roster:issuedRoster()}; }
 /* Install EVERY approved day's issued snapshot at once (F-4/CRP-006 — a
    Tuesday-issued day must be judged against a Monday-issued day, not Monday-
    working), run fn against it, then restore DAYS, SCHED and every validate()

@@ -15,50 +15,43 @@ the later merge keeps both (D78).
 
 ## Now
 
-<!-- now:claude/warn-hide-kept -->
-### `claude/warn-hide-kept` — `[WARN-HIDE-KEPT]` BUILT and FULL-checked; waiting for HIS LOOK and "merge live" — written 1 Oct 26 — verify before use
-- **Where it started:** his opening line — tidy the merged phase 7 block away (PR #477, live), then build `[WARN-HIDE-KEPT]`
-  (D469, D471, D472) on a new branch cut from `main`: a picture to him first, then the build, with its own FULL bug check.
-- **Done:** the picture approved as drawn (D475); the plan, red-teamed by both (v2); the build; the FULL check — Astra's 44
-  scenarios walked by three walkers at desktop and phone, what they found fixed red first (the board's stand-by seat, the
-  load's count, the To go out line's tap, a gap in the changes window), the re-walk, both final reads (Astra REVISE, Fable
-  APPROVE — every finding fixed but one question left to him), the gates twice. The branch is pushed (on his word "Push", 1 Oct 26 — the
-  app's permission check had refused it without) and ONE pull request is open for it (`gh pr view claude/warn-hide-kept`);
-  its `vercel[bot]` comment carries the preview link he looks at. Never push while its checks are running (D151).
-- **The evidence and his look card:** `raptor-port/docs/handpass/2026-10-01-warn-hide-check.md` (§11 is the card — five things to
-  see, three to answer). What the app now does: `raptor-port/docs/ui-contracts.md` §Muting a check.
-- **Waiting on him:** (1) his look on the preview (PR #478; its checks green on the code); (2) "merge live". Both of the
-  look card's questions are answered.
-- **ANSWERED the same evening — D477, D478:** Insights counts each day's latest PUBLISHED version (the Original, or the latest
-  amendment), and the working copy only for a day not yet published — on every page, Edit Schedule included (the agent's
-  reading of D478, told to him); a hidden warning not counted. NOT BUILT: `[INSIGHTS-WHICH-COPY]` is the next small job, in a
-  FRESH chat on its own branch after this one merges (WALK tier; the Sonnet-walker trial, D476, rides on its walk).
-  **D479:** the amber "already on …" note after a drop that recreates a hidden clash STAYS — closed, archived.
-  **Never merge without those two words** — then carry it to live on Vercel (D143) and tell him once.
-- **After the merge:** `[WARN-HIDE-KEPT]` leaves `OUTSTANDING.md` by the script (its lasting facts are in the docs named in its
-  item); this block is removed at the next handoff.
-- **A ruling this chat also recorded — D476 ("Trial"):** on the NEXT walk, one extra walker runs on Sonnet 5.5 beside the Opus
-  ones, on the same scenarios, and the comparison goes to him (`OUTSTANDING.md` `[SONNET-WALKER-TRIAL]`;
-  `raptor-port/docs/bug-check-order.md` §4). Nothing else goes to a cheaper model until he rules on it. He was at 88% of his
-  weekly allowance when this was written (resets about 5 Oct) — keep heavy work for after it unless he says otherwise, and
-  start new chats on HIGH thinking (this one ran on extra-high; changing it mid-chat would have re-read the whole chat).
-- **Traps met:** (1) code or text with backslashes passed through a shell heredoc arrives mangled, and exits 0 — hit five
-  times here, a helper's script included (observations 411, 415): write the script with the Write tool and run the file.
-  (2) The browser tests rebuild `raptor-port/dist` themselves when nothing serves port 4173; a walk is served from its own
-  frozen copy (`raptor-port/dist-wh`, ports 4211–4214 in `.claude/launch.json`), re-frozen only between walks. (3) A browser
-  test of where a view LANDS must wait until the page has stopped moving, then look once (observation 416).
-- **Parallel (D302):** rulings D475–D479 used here (D474 was the last on `main`) — a next chat takes D480 on; observations
-  #408–#416 used, #417 on. No other open branch known when written.
-- **Pick up here:** `OUTSTANDING.md` `[WARN-HIDE-KEPT]`; the evidence sheet above.
+<!-- now:claude/insights-which-copy -->
+### `claude/insights-which-copy` — `[INSIGHTS-WHICH-COPY]` (D477, D478): MERGED on his "merge live" (PR #479, 1 Oct 26); next: `[WORKSPAN-NEGATIVE]` in a fresh chat (D483) — written 1 Oct 26 — verify before use
+- **Done:** the Insights window counts each day's latest published version, the working copy only for a day not yet
+  published, on every page; WALK-checked (Astra's 19 scenarios by an Opus walker and the trial's Sonnet walker; Astra's final
+  read, one finding fixed and re-walked). Evidence: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md`.
+  He said "merge live" on 1 Oct 26 — check `gh pr view 479` shows MERGED and the live app is READY before anything else;
+  then `[INSIGHTS-WHICH-COPY]` leaves `OUTSTANDING.md` by the script (homes: `raptor-port/docs/ui-contracts.md` §Week
+  Insights and the evidence sheet) and this block is removed.
+- **His four answers, recorded (1 Oct 26):** **D480** — one more Sonnet-walker trial, on a build with known defects; **D481** —
+  the Scheduler Board gets an Insights button (proposed: beside the bell on a desktop, inside the ⋯ menu on a phone — a
+  picture to him first); **D482** — a rule changed on the Logic page moves Insights' work hours at once, as built; **D483** —
+  the negative work-hours fault is fixed in the next chat.
+- **BEFORE THE RESET — light work only (D484):** he is at 93% of his weekly Claude allowance; it resets **Monday 5 Oct 26, 19:00**.
+  Until then: the picture of the Scheduler Board's Insights button (`[INSIGHTS-BOARD-DOOR]`, D481 — a mock-up, no build, no
+  walkers; a fresh chat, a worktree on `main`), and anything Astra can do (it runs on his ChatGPT account). Nothing goes to
+  Sonnet meanwhile. **D485 (2 Oct 26, "batch the checks"):** related features are built together on one branch and get ONE check for the lot,
+  sized by the riskiest change. He may also have features BUILT before the reset (tests and the PC's checks only) and their
+  batch check run after it — nothing merges before its check.
+- **AFTER THE RESET (D483, D484):** `[WORKSPAN-NEGATIVE]` — a new worktree on `main`, its own branch, a FULL check (it changes the
+  measure the long-work-day warning shares). **The second Sonnet trial (D480) rides on its walk:** freeze the build as it
+  stands BEFORE the fix for the two trial walkers (one Opus, one Sonnet, the same brief, neither told what is wrong), and
+  report what each caught. After it: `[INSIGHTS-BOARD-DOOR]` (D481), a picture first.
+- **The main checkout** (`C:/Users/User/projects/Raptor`) was on this branch, not a worktree — it is put back on `main`
+  after the merge; check `git -C C:/Users/User/projects/Raptor branch --show-current`.
+- **Traps met:** the app allows five preview servers per folder and earlier chats' walk servers were still up (ports 4201–4203,
+  4212, 4213) — walkers can share one server, each browser context being its own world (observation 417).
+- **Parallel (D302):** rulings D480–D483 used here — a next chat takes D484 on; observations #417–#418 used, #419 on. No
+  other open branch known when written.
 <!-- /now -->
 
 ## Next, in order
 
 0. **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now"):** the app's features are built first; after
    phase 7 no more database-readiness work until then; the table list (`raptor-port/docs/data-model.md`) is kept up to date as
-   each feature is added, and he — with his AI — writes the table format for the IT side to enter. `[WARN-HIDE-KEPT]` is BUILT and FULL-checked (1 Oct 26, `claude/warn-hide-kept`) — waiting for his look and "merge live"; the next job after it is his to name from `OUTSTANDING.md`'s priority list.
+   each feature is added, and he — with his AI — writes the table format for the IT side to enter. `[WARN-HIDE-KEPT]` is BUILT, FULL-checked and MERGED (1 Oct 26, PR #478); `[INSIGHTS-WHICH-COPY]` (D477, D478) BUILT, WALK-checked and MERGED on his "merge live" (1 Oct 26, PR #479). **Next (D483): `[WORKSPAN-NEGATIVE]`** — the negative work-hours fault, in a fresh chat, with the second Sonnet-walker trial on its walk (D480); then `[INSIGHTS-BOARD-DOOR]` (D481).
    *Done while the step was "starting now" (29 Sep – 1 Oct 26):* `[IT-FLOW-GUIDE]` DONE (the guide for IT, `raptor-port/docs/it-flow-guide/`, 29 Sep 26); `[DB-SYNC-MODEL]`'s design DONE and merged (PR #475); `[DB-READINESS]` group A PLANNED 30 Sep 26 (plan v4,
-   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7, the small OIL follow-ups, BUILT and FULL-checked 1 Oct 26 (`…/2026-10-01-dbr-phase7-check.md`) and MERGED the same day on his "merge live" (PR #477) — group A is closed (D453); `[WARN-HIDE-KEPT]` (D469, D471, D472) under way on `claude/warn-hide-kept`, its picture approved 1 Oct 26 (D475). The IT team is taking the app into Dataverse now, and he means to
+   `claude/db-readiness-table-shaping-4094f6`) — its build under way: phases 0–5 and 5b built 30 Sep 26, the group's FULL check done (the walk and both code reads, every finding fixed); phase 6 (a), (b), (d) built and FULL-checked 30 Sep 26 (`raptor-port/docs/handpass/2026-09-30-dbr-phase6-check.md`); phase 6 (c) v3 built and FULL-checked 1 Oct 26 on `claude/db-readiness-p6c-holder-base` (D467 — `…/2026-10-01-dbr-phase6c-check.md`) — phases 0–6 MERGED 1 Oct 26 on his "merge live" (PR #476); phase 7, the small OIL follow-ups, BUILT and FULL-checked 1 Oct 26 (`…/2026-10-01-dbr-phase7-check.md`) and MERGED the same day on his "merge live" (PR #477) — group A is closed (D453); `[WARN-HIDE-KEPT]` (D469, D471, D472, D475) BUILT, FULL-checked and MERGED 1 Oct 26 (PR #478). The IT team is taking the app into Dataverse now, and he means to
    keep working on the app beside it. What to finish before the hand-over was put to him the same day; record his answer
    here and in `OUTSTANDING.md`'s priority list the moment he gives it. Everything below keeps its ORDER; its timing is overtaken — *and that hand-over now waits for the end (D473).*
 1. **HIS ORDER to the database step (D203, 26 Sep 26 — its timing overtaken by D354):** `[ACCOUNTS]`, `[ACCOUNTS-NEW-PERSON]`,
@@ -80,10 +73,10 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 1 Oct 26, `claude/warn-hide-kept` (`[WARN-HIDE-KEPT]` with every fix of its FULL check and both final
-reads; not yet merged), under the PC lock: unit **7553 / 7553** (473 files) · build clean · tfin **728 / 0** · e2e **518 passed,
+The latest counts watched — 1 Oct 26, `claude/insights-which-copy` (`[INSIGHTS-WHICH-COPY]` with the fix of its final read; merged
+the same day, PR #479), under the PC lock: unit **7560 / 7560** (474 files) · build clean · tfin **728 / 0** · e2e **518 passed,
 0 failed**, 49 skipped · smoke **445 / 0** · rulecheck OK (notes `AM39d` now covered — older, left) · docsize OK (OVER, deferred
-— D29) · perf **4 / 0** (board DOM 1024 ≤ 1150, week 5134 ≤ 5450). Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
+— D29) · perf not run on this branch (last watched on `claude/warn-hide-kept`: **4 / 0**, board DOM 1024 ≤ 1150, week 5134 ≤ 5450). Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
 history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
 `raptor-port/docs/gates-and-deploy.md`.
 

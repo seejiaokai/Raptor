@@ -7,8 +7,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { dayCount } from '../engine/waves'
 import { lgT } from '../engine/time'
-import { validate, WARN, WCODE, wlbl, withOfficialWarn, versionFaceWarn } from '../engine/validate'
-import { shownWarns } from '../engine/warnhide'
+import { validate, WCODE, wlbl, withOfficialWarn, versionFaceWarn } from '../engine/validate'
 import { isDraftVer } from '../engine/drafts'
 import { computeInsights } from '../engine/insights'
 import { markEdit } from '../engine/publish'
@@ -63,15 +62,16 @@ export function DayPop() {
 }
 
 /* openInsights' body, verbatim strings, as a pure builder */
-function insightsHTML() {
-  /* the week's issues, as every day's bar counts them — a hidden warning is not counted (owner D472, 1 Oct 26) */
-  const shown = shownWarns(WARN.all)
-  const I = computeInsights(), hard = shown.filter((w: any) => w.sev === 'hard').length, maxN = I.flyers.length ? I.flyers[0].n : 1
+export function insightsHTML() {
+  /* every figure from ONE computation — each day's latest published version, the working copy only for a day not yet
+     published (owner D477, D478, 1 Oct 26; engine/insights.ts). The issues tile used to be counted here, off the working
+     copy's list: it now reads the same world as the lists under it. A hidden warning is not counted (D472). */
+  const I = computeInsights(), hard = I.hard, maxN = I.flyers.length ? I.flyers[0].n : 1
   let h = `<div class="itiles">
     <div class="itile"><div class="n">${I.sorties}</div><div class="l">Sorties</div></div>
     <div class="itile"><div class="n">${I.forms}</div><div class="l">Formations</div></div>
     <div class="itile"><div class="n">${I.flyers.length}</div><div class="l">Aircrew flying</div></div>
-    <div class="itile ${hard ? 'hard' : ''}"><div class="n">${shown.length}</div><div class="l">${hard} warning</div></div></div>`
+    <div class="itile ${hard ? 'hard' : ''}"><div class="n">${I.issues}</div><div class="l">${hard} warning</div></div></div>`
   h += `<div class="isec-h">Flying load · sorties this week</div>`
   I.flyers.slice(0, 12).forEach((f: any) => {
     const p = PEOPLE[f.id]

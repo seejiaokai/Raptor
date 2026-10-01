@@ -278,6 +278,12 @@ that the other found, the false alarms, whether each opened its pictures, and th
 on that report nothing else goes to a cheaper model (the 17 Sep 26 rule, `guide-full.md` §Models): every other
 walker, the build, the roll-call and the reviews stay as they are. The open job: `OUTSTANDING.md`
 `[SONNET-WALKER-TRIAL]`.
+**A SECOND TRIAL (owner, D480, 1 Oct 26 — "One more trial").** The first ran on `[INSIGHTS-WHICH-COPY]`'s walk: the same
+verdict from both walkers on all 19 scenarios, no false alarm, about half the cost — on a build with nothing in it to catch.
+So on the NEXT walk one Sonnet 5.5 walker runs beside an Opus walker again, the same way, **on a build with known
+defects**: the build as it stood BEFORE its fix (or an earlier commit whose walk found real ones), neither walker told
+what is wrong, and the report says what each CAUGHT apart from whether each followed the brief. Until he rules on that
+second report nothing else goes to a cheaper model.
 
 **The owner's trigger rule, in one line:**
 
@@ -364,6 +370,12 @@ lived in a shared drawer and a new mode. **A cosmetic change to a shared drawer 
 | **LOOK** | The gates; one before/after picture at phone and desktop; a two-line evidence sheet. | 15–20 min |
 | **WALK** | The gates; the roll-call (if a shared drawer); the door check (if a gesture); the walk of the touched surfaces at both widths; the new gesture in both orders; a break test per surface; the sheet. | 1–1½ h |
 | **FULL** | Everything: the rules sweep; the other model designs the scenarios; the roll-call; the door check; the full walk; break tests; the case seeded into the demo data; **both** models read the code, given the sheet and asked for absences; re-walk what the fixes touched; the sheet with its pictures; then the owner's look. | 3–5 h of agent time |
+
+**One check for a batch (owner, D485, 2 Oct 26 — "batch the checks").** Related features are built together on one branch
+and checked ONCE: the tier is the highest any one change in the batch would get alone; the roll-call, the scenario list and
+the evidence sheet cover every feature, named one by one; each feature still lands with its own tests and the gates as it
+is built; nothing of the batch merges before its check (one pull request, one "merge live"). Keep a batch to what one
+check can hold — about two to four features of one area. A feature he wants live at once may go alone.
 
 **Order of steps in FULL:** build → gates → roll-call and door check → walk, and fix what it finds
 → gates → the two reads, *with the evidence sheet in their hands* → fix → re-walk only what the

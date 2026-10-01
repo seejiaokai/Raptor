@@ -2262,3 +2262,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** For any test of a view's final position: first wait until the page has stopped moving (two equal scroll readings a short interval apart), then assert ONCE. And always run the break test on a new browser test before trusting it — it is the only thing that showed this one could not fail.
 
 **Principle:** Polling proves 'eventually true'; a landing must be judged at rest. A test that has never been seen to fail has not been shown to test anything.
+
+### Observation 417: A fanned-out walk assumes one preview server per walker, and the app caps servers per folder
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [INSIGHTS-WHICH-COPY] walk with the Sonnet-walker trial: the second preview server was refused ("maximum 5 dev servers per folder; 4 belong to other chats") because earlier chats left their walk servers running.
+**Skill:** New skill candidate: fanned-out walk setup (bug-check order §4)
+**Type:** internal
+**Phase/Area:** walk setup
+
+**Issue:** The bug-check order gives each walker "its own port". Servers left running by finished chats count against a per-folder cap, so a later chat cannot start its own. The walker was pointed at a leftover server on the same frozen folder after checking it served the same bundle.
+
+**Suggested improvement:** In the order's fan-out paragraph: a walker's WORLD is its browser context, not its port — walkers may share one server of the frozen build; and a chat stops the servers it started when its walk ends (the handoff skill could list them).
+
+**Principle:** Isolation between parallel testers comes from separate storage, not separate servers; state the real isolation unit so a resource cap does not block the method.
+
+### Observation 418: A model-comparison trial on a build with no defect cannot measure detection
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** D476 trial: one Sonnet walker beside one Opus walker on the same 19 scenarios. Both passed everything; the only difference was an off-list side find by the Opus walker.
+**Skill:** New skill candidate: comparing a cheaper model on verification work
+**Type:** internal
+**Phase/Area:** trial design
+
+**Issue:** The trial was attached to "the next walk", which happened to be a small change with nothing wrong in it. The result shows compliance, honesty and false-alarm rate, but not whether the cheaper model catches defects — the question the owner cares about.
+
+**Suggested improvement:** When trialling a cheaper model as a checker, run it on a build with KNOWN defects as well (re-walk an earlier commit whose walk found real ones, or plant two), and report detection separately from compliance.
+
+**Principle:** A checker is judged on what it catches; a comparison needs cases where there is something to catch.
