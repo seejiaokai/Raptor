@@ -258,7 +258,11 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
      AND into dayDelta, as the warnings axis is: this list is the day's count, the To go out list and the amendment's
      item count; dayDelta is the publish button and the sign-offs — the two must never disagree (Fable F1, Astra 4). A
      tap goes to the warning's own line (its slot key), where it has one. */
-  if(sc===SCHED)hidePending(di).forEach((x:any)=>items.push({kind:'hide',addr:'',jump:x.key?[String(x.key)]:[],keys:[],entry:x.entry,axis:'hide'}));
+  /* its tap goes to the WARNING'S OWN LINE in the day's list (`warnline:<the hide key>` — ui/interactions.ts jumpToChange
+     reads the prefix): the line is the thing that changed, and a warning with no seat of its own (a long work day) has
+     one too (the walk, 1 Oct 26 — carrying the warning's seat, such a line could not be tapped, and one with a seat
+     lit the seat and left the list shut) */
+  if(sc===SCHED)hidePending(di).forEach((x:any)=>items.push({kind:'hide',addr:'',jump:[`warnline:${x.k}`],keys:[],entry:x.entry,axis:'hide'}));
   return items;}
 /* the request a content unit belongs to, when the unit is on a field an input's re-landing writes — its ground row's
    words, times, remarks or holder (restore.ts dayKeys: gr:di.ri.{prog,str,end,rmks}, g:di.ri) — '' otherwise. A removal
@@ -650,14 +654,14 @@ function warnDelta(di:any):DeltaEntry[]{di=+di;
    them (Fable F3). The key folds callsigns to ids, so a rename keeps it. `from` / `to` are the plain shown / hidden.
    A version issued before this build has no `wo`: nothing was hidden when it went out. Unset hook (an engine-only test),
    or a day with no stored warnings: nothing is compared. */
-export function hidePending(di:any):Array<{entry:DeltaEntry,hidden:boolean,code:string,who:string[],msg:string,sev:string,key?:string}>{di=+di;
+export function hidePending(di:any):Array<{entry:DeltaEntry,k:string,hidden:boolean,code:string,who:string[],msg:string,sev:string,key?:string}>{di=+di;
   if(!HOOKS.hideNow||!dayApproved(di))return [];
   const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
   if(!snap||!snap.w)return [];
   const was=new Set<string>(((snap.w.wo||[]) as any[]).map(String));
   return HOOKS.hideNow(di).filter((x:any)=>x.on!==was.has(x.k)).map((x:any)=>({
     entry:{addr:`hide:${di}.${fp(x.k)}`,kind:'hide',from:x.on?'shown':'hidden',to:x.on?'hidden':'shown'} as DeltaEntry,
-    hidden:x.on,code:x.code,who:x.who,msg:x.msg,sev:x.sev,key:x.key}));}
+    k:x.k,hidden:x.on,code:x.code,who:x.who,msg:x.msg,sev:x.sev,key:x.key}));}
 function hideDelta(di:any):DeltaEntry[]{ return hidePending(di).map((x:any)=>x.entry); }
 /* ONE REPAINT READS EACH DAY'S COMPARISON ONCE (Fable F9, 25 Sep 26 — measured: five published days signed through
    the app's selects cost one edit ~116 ms more at the phone's 4× slowdown, because D103's binding reads the whole
@@ -700,9 +704,12 @@ export function notYetSigned(di:any):boolean{di=+di;return dayApproved(di)&&dayH
    zeroes during a preview render). MUST be read on the LIVE day, before any
    withDaySnap swap. */
 /* `toVer` — the version the load will put on the working copy (the one being looked at); unnamed, the current one. It
-   decides the HIDES half only: the load sets the day's hides to THAT version's, so what it replaces is counted against
-   that version's keys — loading an older version whose hides the working copy already matches replaces none (Astra's
-   scenario design, 1 Oct 26: it said "Discard 1 edit" and discarded nothing). The content half is unchanged. */
+   decides the HIDES half only: the load sets the day's hides to THAT version's, so of the PENDING hides (hidePending —
+   the unpublished ones) it replaces each whose state that version does not share. Loading an older version whose hides
+   the working copy already matches replaces none (Astra's scenario design, 1 Oct 26: it said "Discard 1 edit" and
+   discarded nothing) — and a hide that is already PUBLISHED is never "your unpublished edit", however it differs from
+   the version loaded (the walk, 1 Oct 26: counted as every difference from that version, a look at the Original with
+   nothing pending read "1 pending" and "Discard 1 edit & load"). The content half is unchanged. */
 export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
   /* CONTENT ONLY — the count of working-draft edits that "Load onto working copy"
      actually DISCARDS. Recovery replaces DAYS (content) but NOT the global input
@@ -741,11 +748,13 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
     if(u){u.inp=true;return false;}
     return true;});
-  /* …and each warning whose hidden state the load will change: it puts the day's hides back to the LOADED version's
-     (drafts.ts loadVersionToWorkingCopy, D98), so each one that differs from that version's is an edit it replaces
-     ([WARN-HIDE-KEPT]). A saved plan carries no hides and changes none. */
+  /* …and each PENDING hide the load will undo: it puts the day's hides back to the LOADED version's (drafts.ts
+     loadVersionToWorkingCopy, D98), so a hide or a flag-again not yet published is an edit it replaces — unless that
+     version already has the warning the way the working copy has it ([WARN-HIDE-KEPT]). A saved plan carries no hides
+     and changes none. */
   const tsnap:any=toVer==null||String(toVer)===String(ver)?snap:(String(toVer).slice(0,2)==='d:'?null:daySnapOf(di,toVer));
-  const hides=tsnap&&tsnap.w&&HOOKS.hideDiffTo?HOOKS.hideDiffTo(di,((tsnap.w.wo||[]) as any[]).map(String)):0;
+  const twas=tsnap&&tsnap.w?new Set<string>(((tsnap.w.wo||[]) as any[]).map(String)):null;
+  const hides=twas?hidePending(di).filter((x:any)=>twas.has(x.k)!==x.hidden).length:0;
   return units.length+decDrop+lone.length+hides;}
 /* WHAT A LOAD CAN PUT BACK OF A VERSION'S FILINGS (owner, D98, 25 Sep 26 — "if the change results in going back to the
    same as the published schedule … it shouldnt show as pending"). For every request covering this day: the state

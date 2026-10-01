@@ -22,6 +22,7 @@ import { blockFromTpl, dutyTplReset } from '../engine/dutytpl'
 import { ensureRowIds } from '../engine/rowids'
 import { HOOKS } from '../engine/hooks'
 import { dayHTML, dayWarnHTML, exemptDeskOwn, personWarnMsgs } from './html'
+import { sbSlot } from './board-html'
 import { warnDelta } from '../state/dropflag'
 import * as view from '../state/view'
 import { setSession } from '../state/auth'
@@ -156,6 +157,49 @@ describe('roll-call rows 5, 6 — the exempt rows that ring by their OWN rule (W
     expect(/\bwarn\b/.test(after[0]!.className), 'all of that seat\'s hidden: plain — ' + after[0]!.className).toBe(false)
     expect(after[0]!.querySelector('.lchip'), 'no chip').toBeNull()
     expect(sevOf(MON, DOWN), 'his warning on the other flying line still rings him there').toBe('hard')
+  })
+
+  /* THE WALK'S FINDING 1 (walker A, scenario 8, 1 Oct 26): the BOARD drew an exempt flying seat with the man's whole-day
+     flag — the week's "its own rules and nothing else" (owner, 11 Aug 26; D94: "exempt-seat pucks keep their own rules")
+     was never wired into the board's cockpit seat. So with every warning of the AVALON seat hidden the week went plain
+     and the board stayed ringed red C, off his clash elsewhere; and a man flagged elsewhere, on an AVALON seat that
+     raises nothing for him, was red on the board and plain on the week. One body now — html.ts exemptLineOwn. */
+  it('row 6, the BOARD — the same seat on the scheduler board follows the same rule: its own warnings, and nothing from elsewhere', () => {
+    const d: any = DAYS[MON], wv: any = makeStandalone('avalon')
+    d.waves.push(wv)
+    wv.formations[0].aircraft[0].p = DOWN
+    ensureRowIds(DAYS); validate()
+    const gi = d.waves.length - 1, fkey = `${MON}.${gi}.0`, key = `${fkey}.0.p`
+    const mine = (x: any) => (x.who || []).includes(DOWN) && (String(x.key || '').indexOf(fkey) === 0 || String(x.also || '').indexOf(fkey) === 0)
+    const own = () => (rawWarn().byDay[MON].warns as any[]).filter(mine)
+    const pk = () => el(sbSlot(MON, key, 'p', DOWN)).querySelector(`.puck[data-person="${DOWN}"]`) as HTMLElement
+    expect(/\bwarn\b/.test(pk().className), 'ringed while the seat\'s own warnings show').toBe(true)
+    own().forEach(hide)
+    expect(sevOf(MON, DOWN), 'he is still flagged elsewhere that day').toBe('hard')
+    expect(/\bwarn\b/.test(pk().className), 'all of that seat\'s hidden: plain on the board too — ' + pk().className).toBe(false)
+    expect(pk().querySelector('.lchip'), 'no chip').toBeNull()
+    own().forEach(flagAgain)
+    expect(/\bwarn\b/.test(pk().className), 'flagged again: ringed again').toBe(true)
+  })
+
+  it('row 6, the BOARD, nothing hidden — a man flagged elsewhere sits plain on an AVALON seat that raises nothing for him', () => {
+    /* Saint clashes on the demo Tuesday (a hard warning of his own, elsewhere) */
+    const d: any = DAYS[TUE], wv: any = makeStandalone('avalon')
+    d.waves.push(wv)
+    wv.formations[0].aircraft[0].p = 'salsa'
+    ensureRowIds(DAYS); validate()
+    const gi = d.waves.length - 1, fkey = `${TUE}.${gi}.0`, key = `${fkey}.0.p`
+    const here = (rawWarn().byDay[TUE].warns as any[]).filter((x: any) => (x.who || []).includes('salsa')
+      && (String(x.key || '').indexOf(fkey) === 0 || String(x.also || '').indexOf(fkey) === 0))
+    expect(here, 'the AVALON seat raises nothing of its own for him').toEqual([])
+    expect(sevOf(TUE, 'salsa'), 'he is flagged elsewhere').toBe('hard')
+    HOOKS.editMode = () => true
+    const wk = [...el(dayHTML(TUE, true)).querySelectorAll(`.puck[data-person="salsa"]`)]
+      .filter(p => { const sl = p.closest('[data-slot]') as HTMLElement | null; return !!sl && String(sl.dataset.slot).indexOf(fkey + '.') === 0 })
+    expect(wk.length).toBe(1)
+    expect(/\bwarn\b/.test(wk[0]!.className), 'plain on the week').toBe(false)
+    const bd = el(sbSlot(TUE, key, 'p', 'salsa')).querySelector('.puck[data-person="salsa"]') as HTMLElement
+    expect(/\bwarn\b/.test(bd.className), 'and plain on the board — ' + bd.className).toBe(false)
   })
 })
 

@@ -31,7 +31,7 @@ import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap } from './html'
-import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft } from './board'
+import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
 import { isStandalone, CURWEEK } from '../engine/waves'
@@ -55,6 +55,45 @@ function jumpToWarn(di: number, ix: number) {
   view.setWarnFocus({ di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code, prevDi: w.prevDi, leaveBy: w.leaveBy })
   view.clearOtherHL()
   notify(); setTimeout(scrollToWarnFocus, 0)
+}
+
+/* TAKE ME TO THIS WARNING'S LINE ([WARN-HIDE-KEPT], the walk's finding, 1 Oct 26) — the To go out tab's "Warning · …
+   flagged → hidden" (D99: a tap takes the view to the change). The change is the LINE, so the view lands on the line:
+   the day's list opened (the board's fold too, on a phone), the line focused — its crew lit, as a tap on the line
+   lights them — brought on screen and marked for a moment in the amendment's colour, like every other change the
+   window takes the schedule to. It does NOT go on to the man's puck as a tap on the line itself does (jumpToWarn):
+   that pan carried the struck line off the screen (the re-walk, 1 Oct 26). Found by the warning's own key, so a list
+   that has re-sorted since still lands on it. The same first steps as jumpToChange: the board turned to the day, a look
+   at an older version left, View-only Sched's published day turned to its working draft (the pending change lives
+   there — the issued face still shows it as it went out). A warning the day no longer raises says so. */
+function jumpToWarnLine(k: string, di: any) {
+  if (di == null) return
+  closePendList()
+  hideHistBub()
+  const onBoard = view.SBDAY != null
+  if (onBoard && view.SBDAY !== +di) boardTab(+di)
+  if (!onBoard && view.DPREV.has(+di)) view.setDayPreview(+di, null)
+  if (!onBoard && view.CURPAGE === 'viewsched' && dayApproved(+di) && !view.VWORK.has(+di)) {
+    view.toggleViewWork(+di, true)
+    HOOKS.toast('Showing the working draft — the change is on it', 'ok')
+  }
+  const g = view.displayedByDay(+di)
+  const ix = ((g && g.warns) || []).findIndex((w: any) => view.warnMuteKey(w) === k)
+  if (ix < 0) { HOOKS.toast('That warning is no longer raised on this day', 'warn'); notify(); return }
+  const w = g.warns[ix]
+  view.DWOPEN.clear(); view.DWOPEN.add(+di)
+  if (onBoard && HOOKS.isPhone() && !SBWOPEN) toggleSbwarn()
+  view.setWarnFocus({ di: +di, ix, ids: (w.who || []).slice(), sev: w.sev, key: w.key, code: w.code, prevDi: w.prevDi, leaveBy: w.leaveBy })
+  view.clearOtherHL()
+  notify()
+  setTimeout(() => {
+    const root: any = onBoard ? document.querySelector('#schedBoard .sb-warn') : document.querySelector(`#${warnWeekId()} .day[data-day="${+di}"]`)
+    const row = root && root.querySelector(onBoard ? `.wln[data-wdi="${+di}"][data-wix="${ix}"]` : `.witem[data-wdi="${+di}"][data-wix="${ix}"]`) as HTMLElement | null
+    if (!row) return
+    if (onBoard) { if (typeof row.scrollIntoView === 'function') row.scrollIntoView({ block: 'center', behavior: 'smooth' }) }
+    else bringIntoView(root, row, warnWeekId())
+    flashChange(row, di)
+  }, 0)
 }
 
 /* THE REVERSE OF jumpToWarn (owner, 26 Aug 26 — "click a puck that has any
@@ -98,6 +137,10 @@ function scrollBoardWarnToSel() {
 export function jumpToChange(key: string | string[], di: any) {
   const cands = (Array.isArray(key) ? key : [key]).filter(Boolean).map(String)
   if (!cands.length) return
+  /* a warning hidden, or flagged again, on a published day ([WARN-HIDE-KEPT], D471): the change is a LINE of the day's
+     list, not a cell — its own route below, the same first steps */
+  const wk = cands.find(k => k.startsWith('warnline:'))
+  if (wk) { jumpToWarnLine(wk.slice('warnline:'.length), di); return }
   closePendList()
   hideHistBub()
   const onBoard = view.SBDAY != null

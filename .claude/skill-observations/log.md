@@ -2187,3 +2187,48 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** Traps that are about the TOOLS (not the task) belong in an always-loaded place, one line each: add "never pass code containing backslashes through a shell heredoc or `-e`; write the script to a file with the file tool and run it" to the project guide's Token discipline / tooling line, and have the handoff skill file tool traps there rather than in the branch's block.
 
 **Principle:** A trap noted where it was met dies with that note; a trap about a tool has to live where every user of the tool starts.
+
+### Observation 412: A fix made for a reviewer's predicted gap over-corrected, and only the walk's NEIGHBOUR cases caught it
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] FULL check: the scenario designer predicted that a load's confirm counted a pending change against the wrong version; the fix counted every difference from the loaded version instead, so an already-published difference read as an unpublished edit. The designer's own scenario passed; a walker's two neighbour cases (nothing pending; one pending on top) failed.
+**Skill:** bug-check order (repo docs/bug-check-order.md) §7.4 / §8; claudex-loop fix step
+**Type:** open-source
+**Phase/Area:** Fixing a finding, and walking a designed scenario
+
+**Issue:** The red-first test written for the predicted gap pinned exactly the predicted case. The fix was right for it and wrong for its neighbours, because the test never asked the count with NOTHING pending or with a difference that was already published.
+
+**Suggested improvement:** Add to the fix step: a fix to a COUNT or a comparison gets, beside the red test for the reported case, the zero case (nothing to count) and the already-settled case (a difference that is not the user's) — written before the fix. And to the walk brief: a walker given a designed scenario also walks its two nearest neighbours.
+
+**Principle:** A test that pins only the reported case licenses a fix that is right there and wrong beside it; counts need their zero and their already-settled neighbours.
+
+### Observation 413: The roll-call named ONE file for a thing two surfaces draw, so the second surface was never asked
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] FULL check: roll-call row 6 (an exempt flying line's own ring) cited the week's builder only. The board draws the same seat through its own builder, which had never carried that rule — found by a walker comparing the two screens, and already wrong on main.
+**Skill:** bug-check order (repo docs/bug-check-order.md) §6 the roll-call
+**Type:** open-source
+**Phase/Area:** Building the roll-call table
+
+**Issue:** The row was produced from a sweep of readers of one data bundle, so a surface that drew the thing WITHOUT reading that bundle's special rule could not appear in it. The row read as covered because it had a file and a test.
+
+**Suggested improvement:** In the roll-call, a row that names a rule a surface applies must list every SURFACE that draws that thing (week, board, preview, print…) with its own builder, not the one file where the rule is written; a surface with no call site is written MISSING, not omitted.
+
+**Principle:** A roll-call built from the callers of a rule cannot list the surface that never called it; enumerate the surfaces that draw the thing, then ask each for the rule.
+
+### Observation 414: A re-run walk script kept a hard-coded conclusion sentence that the fix had made false
+
+**Status:** OPEN
+**Date:** 2026-10-01
+**Session context:** [WARN-HIDE-KEPT] re-walk: a walker's script wrote an information row ending 'so the board already rings the seat and the week does not' as a fixed string. Re-run after the fix, the readings beside it showed both plain, and the sentence still asserted the defect.
+**Skill:** bug-check order — the walk's drivers (repo scripts/handpass); D16 fan-out brief
+**Type:** internal
+**Phase/Area:** Writing walk scripts that will be re-run as the re-walk
+
+**Issue:** The step's verdict was computed from the screen, but its prose was typed at the time of the first run. A reader of the re-walk's table meets a sentence that contradicts the reading in the same cell.
+
+**Suggested improvement:** In the walk brief: every sentence a script records is built from the readings it just took (or is a neutral description of the action); conclusions are written by the walker in the report, never baked into the script.
+
+**Principle:** A script that will be re-run must derive its words from what it reads; a typed conclusion outlives the fact it described.

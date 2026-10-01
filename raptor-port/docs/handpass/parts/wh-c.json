@@ -1,0 +1,2075 @@
+{
+ "parts": {
+  "28-dk": {
+   "at": "2026-10-01T09:51:29.314Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "28.0",
+     "did": "Edit Schedule, Tuesday, list opened — before any hide",
+     "saw": "✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"✕\" [✕] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-28-0-before.png"
+     ]
+    },
+    {
+     "id": "28.1",
+     "did": "pressed ✕ on Static's \"Long work day\" line",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the line kept its place (4th of 4) [3] · ✓ the bar says nothing about a hidden one [⚠ 3 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-28-1-hidden.png"
+     ]
+    },
+    {
+     "id": "28.rows",
+     "did": "the saved rows before and after that one hide",
+     "saw": "✓ it wrote Tuesday's own row [[\"weeks/13-07-2026\",\"weeks/13-07-2026#1\"]] · ✓ and no other day row; the week's own header row only because this week had never been saved (see rows.1–3) [[\"weeks/13-07-2026\",\"weeks/13-07-2026#1\"]] · ✓ one change-log batch [1] · ✓ the stored Tuesday row carries the hide [\"wo\":[\"1|LONGDAY|wolf|@wolf has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)\"]]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "28.2",
+     "did": "reloaded the page, signed in again as the admin",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-28-2-after-reload.png"
+     ]
+    },
+    {
+     "id": "28.3",
+     "did": "Logout, then signed in again as the same admin (no reload)",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-28-3-after-signout-in.png"
+     ]
+    },
+    {
+     "id": "28.4",
+     "did": "Logout, signed in as the member (Ranger), View-only Sched, Tuesday list opened",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ on any line of the list [] · ✓ the member has no Edit Schedule tab",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-28-4-member-view.png"
+     ]
+    },
+    {
+     "id": "28.5",
+     "did": "back as the admin; typed a new day note on Tuesday (a different field)",
+     "saw": "✓ the note took [ORDERS: FLYING ORDER (WALK C)] · ✓ the edit saved Tuesday's row [[\"weeks/13-07-2026#1\"]] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-28-5-after-next-edit.png"
+     ]
+    },
+    {
+     "id": "28.6",
+     "did": "reloaded again after that edit",
+     "saw": "✓ the note is still there [ORDERS: FLYING ORDER (WALK C)] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-28-6-reload-after-edit.png"
+     ]
+    },
+    {
+     "id": "28.7",
+     "did": "opened the Scheduler Board on Tuesday",
+     "saw": "✓ heading counts 3 [⚠ 3 issues · 2 warnings · tap to review] · ✓ the line is struck there · ✓ its button is ↺ [↺] · ✓ Static's pucks on the board carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-28-7-board.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "rows-dk": {
+   "at": "2026-10-01T10:02:42.400Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "rows.1",
+     "did": "a fresh world (no week saved yet); pressed ✕ on Tuesday's \"Long work day\"",
+     "saw": "✓ it wrote Tuesday's row [[\"weeks/13-07-2026\",\"weeks/13-07-2026#1\"]] · ✓ no other DAY row was written [[\"weeks/13-07-2026\",\"weeks/13-07-2026#1\"]] · ✓ the only other schedule row is the week's own header, written for the first time (this week had never been saved) [{\"others\":[\"weeks/13-07-2026\"],\"wkNew\":true}] · ✓ no request, person, calendar, Leave War or account row [[\"settings/elog:mupd87g3qx72.000001\",\"weeks/13-07-2026\",\"weeks/13-07-2026#1\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-rows-1-first-hide.png"
+     ]
+    },
+    {
+     "id": "rows.2",
+     "did": "pressed ↺ on the same line (the week is now saved)",
+     "saw": "✓ it wrote Tuesday's row and nothing else of the schedule [[\"weeks/13-07-2026#1\"]] · ✓ the week's header row did not change · ✓ the stored Tuesday row no longer carries the hide [(no wo field)]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "rows.3",
+     "did": "pressed ✕ again (a hide on a week already saved)",
+     "saw": "✓ it wrote Tuesday's row and nothing else of the schedule [[\"weeks/13-07-2026#1\"]] · ✓ one change-log batch, one history line [{\"put\":[\"settings/elog:mupd87g3qx72.000003\",\"weeks/13-07-2026#1\"],\"del\":[],\"newBatches\":[\"changes/cmupd87hv5tq07s-3\"],\"goneBatches\":[]}] · ✓ the stored Tuesday row carries the hide [\"wo\":[\"1|LONGDAY|wolf|@wolf has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-rows-3-second-hide.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "28-ph": {
+   "at": "2026-10-01T09:51:59.084Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "28.0",
+     "did": "Edit Schedule, Tuesday, list opened — before any hide",
+     "saw": "✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"✕\" [✕] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-28-0-before.png"
+     ]
+    },
+    {
+     "id": "28.1",
+     "did": "pressed ✕ on Static's \"Long work day\" line",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the line kept its place (4th of 4) [3] · ✓ the bar says nothing about a hidden one [⚠ 3 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-28-1-hidden.png"
+     ]
+    },
+    {
+     "id": "28.rows",
+     "did": "the saved rows before and after that one hide",
+     "saw": "✓ it wrote Tuesday's own row [[\"weeks/13-07-2026\",\"weeks/13-07-2026#1\"]] · ✓ and no other day row; the week's own header row only because this week had never been saved (see rows.1–3) [[\"weeks/13-07-2026\",\"weeks/13-07-2026#1\"]] · ✓ one change-log batch [1] · ✓ the stored Tuesday row carries the hide [\"wo\":[\"1|LONGDAY|wolf|@wolf has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)\"]]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "28.2",
+     "did": "reloaded the page, signed in again as the admin",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-28-2-after-reload.png"
+     ]
+    },
+    {
+     "id": "28.3",
+     "did": "Logout, then signed in again as the same admin (no reload)",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-28-3-after-signout-in.png"
+     ]
+    },
+    {
+     "id": "28.4",
+     "did": "Logout, signed in as the member (Ranger), View-only Sched, Tuesday list opened",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ on any line of the list [] · ✓ the member has no Edit Schedule tab",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-28-4-member-view.png"
+     ]
+    },
+    {
+     "id": "28.5",
+     "did": "back as the admin; typed a new day note on Tuesday (a different field)",
+     "saw": "✓ the note took [ORDERS: FLYING ORDER (WALK C)] · ✓ the edit saved Tuesday's row [[\"weeks/13-07-2026#1\"]] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-28-5-after-next-edit.png"
+     ]
+    },
+    {
+     "id": "28.6",
+     "did": "reloaded again after that edit",
+     "saw": "✓ the note is still there [ORDERS: FLYING ORDER (WALK C)] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-28-6-reload-after-edit.png"
+     ]
+    },
+    {
+     "id": "28.7",
+     "did": "opened the Scheduler Board on Tuesday",
+     "saw": "✓ heading counts 3 [▾ ⚠ 3 issues · 2 warnings · tap to collapse] · ✓ the line is struck there · ✓ its button is ↺ [↺] · ✓ Static's pucks on the board carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-28-7-board.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "27-issued-dk": {
+   "at": "2026-10-01T09:57:57.749Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "27.issued.1",
+     "did": "the scheduler (Saber): ✕, then the four sign-offs, then Publish day — Edit Schedule",
+     "saw": "✓ Tuesday is published [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}] · ✓ nothing waits after the publish (no \"Publish AL\" button, no \"N pending\" chip, no \"not yet\" marker) [{\"alpub\":\"\",\"nys\":\"\",\"chip\":\"6 changes\"}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-27issued-1-scheduler-edit.png"
+     ]
+    },
+    {
+     "id": "27.issued.2",
+     "did": "the scheduler: the Scheduler Board on Tuesday",
+     "saw": "✓ heading counts 3 [⚠ 3 issues · 2 warnings · tap to review] · ✓ the line is struck · ✓ its button is ↺ and topmost [↺ true] · ✓ Static's pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-27issued-2-scheduler-board.png"
+     ]
+    },
+    {
+     "id": "27.issued.3",
+     "did": "the scheduler: View-only Sched, Tuesday list opened",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere on the page [0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-27issued-3-scheduler-viewonly.png"
+     ]
+    },
+    {
+     "id": "27.issued.4",
+     "did": "the admin pressed his name badge → his member view; View-only Sched, Tuesday",
+     "saw": "✓ the badge now reads MEMBER [{\"pressed\":true,\"before\":\"SABER · ADMIN\",\"after\":\"SABER · MEMBER / Back to the admin view\"}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-27issued-4-admin-member-view.png"
+     ]
+    },
+    {
+     "id": "27.issued.5",
+     "did": "Logout; the member (Ranger): View-only Sched, Tuesday; then a tap on the line itself",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab · ✓ the tap changed nothing (same count, same strike) [⚠ 3 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-27issued-5-member.png"
+     ]
+    },
+    {
+     "id": "27.issued.6",
+     "did": "a guest (\"walkguest\"): the admin's guest switch on, signed in, asked for access, pressed \"View the schedule\"; Tuesday",
+     "saw": "✓ the guest view opened (its own page, \"Waiting for access — view only\") [Waiting for access — view only] · ✓ Static is drawn on Tuesday [2] · ✓ Static's pucks carry no flag (the same as the member's face) [puck r | puck r sm] · ✓ no issues bar and no ✕ / ↺ anywhere on his page [{\"bars\":0,\"btns\":0}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-27issued-6-guest.png"
+     ]
+    },
+    {
+     "id": "27.issued.7",
+     "did": "signed in again as the scheduler: Edit Schedule, Tuesday",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the day's head is as he left it [{\"was\":[\"ORIG\",\"6 changes\"],\"now\":[\"ORIG\",\"6 changes\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-27issued-7-scheduler-again.png"
+     ]
+    },
+    {
+     "id": "27.issued.8",
+     "did": "reloaded; signed in as the scheduler: Edit Schedule, then View-only Sched",
+     "saw": "✓ Edit Schedule: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Edit Schedule: the line is still in the list · ✓ Edit Schedule: the line is painted struck · ✓ Edit Schedule: its button is \"↺\" [↺] · ✓ Edit Schedule: the button is the thing a finger lands on [true] · ✓ Edit Schedule: his pucks carry no flag [] · ✓ the day's head is unchanged [[\"ORIG\",\"\",\"\"]] · ✓ View-only Sched: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ View-only Sched: the line is still in the list · ✓ View-only Sched: the line is painted struck · ✓ View-only Sched: its button is \"none\" [] · ✓ View-only Sched: his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-27issued-8-scheduler-reload.png"
+     ]
+    },
+    {
+     "id": "27.issued.9",
+     "did": "reloaded; signed in as the member: View-only Sched",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-27issued-9-member-reload.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "27-pending-dk": {
+   "at": "2026-10-01T09:59:20.799Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "27.pending.1",
+     "did": "the scheduler (Saber): the four sign-offs, Publish day, then ✕ — Edit Schedule",
+     "saw": "✓ Tuesday is published [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}] · ✓ one pending change (\"1 pending\", a \"Publish AL1\" button, \"Not yet signed\"), the four sign-offs fallen [{\"pending\":\"1 pending\",\"alpub\":\"Publish AL1\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"nys\":\"Not yet signed\"}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-27pending-1-scheduler-edit.png"
+     ]
+    },
+    {
+     "id": "27.pending.2",
+     "did": "the scheduler: the Scheduler Board on Tuesday",
+     "saw": "✓ heading counts 3 [⚠ 3 issues · 2 warnings · tap to review] · ✓ the line is struck · ✓ its button is ↺ and topmost [↺ true] · ✓ Static's pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-27pending-2-scheduler-board.png"
+     ]
+    },
+    {
+     "id": "27.pending.3",
+     "did": "the scheduler: View-only Sched, Tuesday list opened",
+     "saw": "✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"none\" [] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ no ✕ / ↺ anywhere on the page [0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-27pending-3-scheduler-viewonly.png"
+     ]
+    },
+    {
+     "id": "27.pending.4",
+     "did": "the admin pressed his name badge → his member view; View-only Sched, Tuesday",
+     "saw": "✓ the badge now reads MEMBER [{\"pressed\":true,\"before\":\"SABER · ADMIN\",\"after\":\"SABER · MEMBER / Back to the admin view\"}] · ✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"none\" [] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-27pending-4-admin-member-view.png"
+     ]
+    },
+    {
+     "id": "27.pending.5",
+     "did": "Logout; the member (Ranger): View-only Sched, Tuesday; then a tap on the line itself",
+     "saw": "✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"none\" [] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab · ✓ the tap changed nothing (same count, same strike) [⚠ 4 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-27pending-5-member.png"
+     ]
+    },
+    {
+     "id": "27.pending.6",
+     "did": "a guest (\"walkguest\"): the admin's guest switch on, signed in, asked for access, pressed \"View the schedule\"; Tuesday",
+     "saw": "✓ the guest view opened (its own page, \"Waiting for access — view only\") [Waiting for access — view only] · ✓ Static is drawn on Tuesday [2] · ✓ Static's pucks carry the flag (the published face keeps it) [puck r warn note | puck r sm warn note] · ✓ no issues bar and no ✕ / ↺ anywhere on his page [{\"bars\":0,\"btns\":0}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-27pending-6-guest.png"
+     ]
+    },
+    {
+     "id": "27.pending.7",
+     "did": "signed in again as the scheduler: Edit Schedule, Tuesday",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the day's head is as he left it [{\"was\":[\"ORIG\",\"1 pending\"],\"now\":[\"ORIG\",\"1 pending\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-27pending-7-scheduler-again.png"
+     ]
+    },
+    {
+     "id": "27.pending.8",
+     "did": "reloaded; signed in as the scheduler: Edit Schedule, then View-only Sched",
+     "saw": "✓ Edit Schedule: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Edit Schedule: the line is still in the list · ✓ Edit Schedule: the line is painted struck · ✓ Edit Schedule: its button is \"↺\" [↺] · ✓ Edit Schedule: the button is the thing a finger lands on [true] · ✓ Edit Schedule: his pucks carry no flag [] · ✓ the day's head is unchanged [[\"ORIG\",\"Publish AL1\",\"Not yet signed\"]] · ✓ View-only Sched: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ View-only Sched: the line is painted plain (not struck) · ✓ View-only Sched: its button is \"none\" [] · ✓ View-only Sched: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-27pending-8-scheduler-reload.png"
+     ]
+    },
+    {
+     "id": "27.pending.9",
+     "did": "reloaded; signed in as the member: View-only Sched",
+     "saw": "✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"none\" [] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ no ✕ / ↺ anywhere [0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-27pending-9-member-reload.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "27-draft-dk": {
+   "at": "2026-10-01T10:00:39.829Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "27.draft.1",
+     "did": "the scheduler (Saber): ✕ on Static's \"Long work day\" (Tuesday a draft) — Edit Schedule",
+     "saw": "✓ Tuesday is a draft [DRAFT] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-27draft-1-scheduler-edit.png"
+     ]
+    },
+    {
+     "id": "27.draft.2",
+     "did": "the scheduler: the Scheduler Board on Tuesday",
+     "saw": "✓ heading counts 3 [⚠ 3 issues · 2 warnings · tap to review] · ✓ the line is struck · ✓ its button is ↺ and topmost [↺ true] · ✓ Static's pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-27draft-2-scheduler-board.png"
+     ]
+    },
+    {
+     "id": "27.draft.3",
+     "did": "the scheduler: View-only Sched, Tuesday list opened",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere on the page [0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-27draft-3-scheduler-viewonly.png"
+     ]
+    },
+    {
+     "id": "27.draft.4",
+     "did": "the admin pressed his name badge → his member view; View-only Sched, Tuesday",
+     "saw": "✓ the badge now reads MEMBER [{\"pressed\":true,\"before\":\"SABER · ADMIN\",\"after\":\"SABER · MEMBER / Back to the admin view\"}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-27draft-4-admin-member-view.png"
+     ]
+    },
+    {
+     "id": "27.draft.5",
+     "did": "Logout; the member (Ranger): View-only Sched, Tuesday; then a tap on the line itself",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab · ✓ the tap changed nothing (same count, same strike) [⚠ 3 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-27draft-5-member.png"
+     ]
+    },
+    {
+     "id": "27.draft.6",
+     "did": "a guest (\"walkguest\"): the admin's guest switch on, signed in, asked for access, pressed \"View the schedule\"; Tuesday",
+     "saw": "✓ the guest view opened (its own page, \"Waiting for access — view only\") [Waiting for access — view only] · ✓ Static is drawn on Tuesday [2] · ✓ Static's pucks carry no flag (the same as the member's face) [puck r | puck r sm] · ✓ no issues bar and no ✕ / ↺ anywhere on his page [{\"bars\":0,\"btns\":0}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-27draft-6-guest.png"
+     ]
+    },
+    {
+     "id": "27.draft.7",
+     "did": "signed in again as the scheduler: Edit Schedule, Tuesday",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the day's head is as he left it [{\"was\":[\"DRAFT\",\"1 change\"],\"now\":[\"DRAFT\",\"1 change\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-27draft-7-scheduler-again.png"
+     ]
+    },
+    {
+     "id": "27.draft.8",
+     "did": "reloaded; signed in as the scheduler: Edit Schedule, then View-only Sched",
+     "saw": "✓ Edit Schedule: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Edit Schedule: the line is still in the list · ✓ Edit Schedule: the line is painted struck · ✓ Edit Schedule: its button is \"↺\" [↺] · ✓ Edit Schedule: the button is the thing a finger lands on [true] · ✓ Edit Schedule: his pucks carry no flag [] · ✓ the day's head is unchanged [[\"DRAFT\",\"\",\"\"]] · ✓ View-only Sched: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ View-only Sched: the line is still in the list · ✓ View-only Sched: the line is painted struck · ✓ View-only Sched: its button is \"none\" [] · ✓ View-only Sched: his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-27draft-8-scheduler-reload.png"
+     ]
+    },
+    {
+     "id": "27.draft.9",
+     "did": "reloaded; signed in as the member: View-only Sched",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-27draft-9-member-reload.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "27-issued-ph": {
+   "at": "2026-10-01T09:58:39.483Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "27.issued.1",
+     "did": "the scheduler (Saber): ✕, then the four sign-offs, then Publish day — Edit Schedule",
+     "saw": "✓ Tuesday is published [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}] · ✓ nothing waits after the publish (no \"Publish AL\" button, no \"N pending\" chip, no \"not yet\" marker) [{\"alpub\":\"\",\"nys\":\"\",\"chip\":\"6 changes\"}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-27issued-1-scheduler-edit.png"
+     ]
+    },
+    {
+     "id": "27.issued.2",
+     "did": "the scheduler: the Scheduler Board on Tuesday",
+     "saw": "✓ heading counts 3 [▾ ⚠ 3 issues · 2 warnings · tap to collapse] · ✓ the line is struck · ✓ its button is ↺ and topmost [↺ true] · ✓ Static's pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-27issued-2-scheduler-board.png"
+     ]
+    },
+    {
+     "id": "27.issued.3",
+     "did": "the scheduler: View-only Sched, Tuesday list opened",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere on the page [0]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-27issued-3-scheduler-viewonly.png"
+     ]
+    },
+    {
+     "id": "27.issued.4",
+     "did": "the admin pressed his name badge → his member view; View-only Sched, Tuesday",
+     "saw": "✓ the badge now reads MEMBER [{\"pressed\":true,\"before\":\"Switch to the member view\",\"after\":\"Saber · Member / Back to the admin view\"}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-27issued-4-admin-member-view.png"
+     ]
+    },
+    {
+     "id": "27.issued.5",
+     "did": "Logout; the member (Ranger): View-only Sched, Tuesday; then a tap on the line itself",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab · ✓ the tap changed nothing (same count, same strike) [⚠ 3 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-27issued-5-member.png"
+     ]
+    },
+    {
+     "id": "27.issued.6",
+     "did": "a guest (\"walkguest\"): the admin's guest switch on, signed in, asked for access, pressed \"View the schedule\"; Tuesday",
+     "saw": "✓ the guest view opened (its own page, \"Waiting for access — view only\") [Waiting for access — view only] · ✓ Static is drawn on Tuesday [2] · ✓ Static's pucks carry no flag (the same as the member's face) [puck r | puck r sm] · ✓ no issues bar and no ✕ / ↺ anywhere on his page [{\"bars\":0,\"btns\":0}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-27issued-6-guest.png"
+     ]
+    },
+    {
+     "id": "27.issued.7",
+     "did": "signed in again as the scheduler: Edit Schedule, Tuesday",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the day's head is as he left it [{\"was\":[\"ORIG\",\"6 changes\"],\"now\":[\"ORIG\",\"6 changes\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-27issued-7-scheduler-again.png"
+     ]
+    },
+    {
+     "id": "27.issued.8",
+     "did": "reloaded; signed in as the scheduler: Edit Schedule, then View-only Sched",
+     "saw": "✓ Edit Schedule: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Edit Schedule: the line is still in the list · ✓ Edit Schedule: the line is painted struck · ✓ Edit Schedule: its button is \"↺\" [↺] · ✓ Edit Schedule: the button is the thing a finger lands on [true] · ✓ Edit Schedule: his pucks carry no flag [] · ✓ the day's head is unchanged [[\"ORIG\",\"\",\"\"]] · ✓ View-only Sched: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ View-only Sched: the line is still in the list · ✓ View-only Sched: the line is painted struck · ✓ View-only Sched: its button is \"none\" [] · ✓ View-only Sched: his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-27issued-8-scheduler-reload.png"
+     ]
+    },
+    {
+     "id": "27.issued.9",
+     "did": "reloaded; signed in as the member: View-only Sched",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-27issued-9-member-reload.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "27-pending-ph": {
+   "at": "2026-10-01T10:00:02.214Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "27.pending.1",
+     "did": "the scheduler (Saber): the four sign-offs, Publish day, then ✕ — Edit Schedule",
+     "saw": "✓ Tuesday is published [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}] · ✓ one pending change (\"1 pending\", a \"Publish AL1\" button, \"Not yet signed\"), the four sign-offs fallen [{\"pending\":\"1 pending\",\"alpub\":\"Publish AL1\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"nys\":\"Not yet signed\"}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-27pending-1-scheduler-edit.png"
+     ]
+    },
+    {
+     "id": "27.pending.2",
+     "did": "the scheduler: the Scheduler Board on Tuesday",
+     "saw": "✓ heading counts 3 [▾ ⚠ 3 issues · 2 warnings · tap to collapse] · ✓ the line is struck · ✓ its button is ↺ and topmost [↺ true] · ✓ Static's pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-27pending-2-scheduler-board.png"
+     ]
+    },
+    {
+     "id": "27.pending.3",
+     "did": "the scheduler: View-only Sched, Tuesday list opened",
+     "saw": "✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"none\" [] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ no ✕ / ↺ anywhere on the page [0]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-27pending-3-scheduler-viewonly.png"
+     ]
+    },
+    {
+     "id": "27.pending.4",
+     "did": "the admin pressed his name badge → his member view; View-only Sched, Tuesday",
+     "saw": "✓ the badge now reads MEMBER [{\"pressed\":true,\"before\":\"Switch to the member view\",\"after\":\"Saber · Member / Back to the admin view\"}] · ✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"none\" [] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-27pending-4-admin-member-view.png"
+     ]
+    },
+    {
+     "id": "27.pending.5",
+     "did": "Logout; the member (Ranger): View-only Sched, Tuesday; then a tap on the line itself",
+     "saw": "✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"none\" [] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab · ✓ the tap changed nothing (same count, same strike) [⚠ 4 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-27pending-5-member.png"
+     ]
+    },
+    {
+     "id": "27.pending.6",
+     "did": "a guest (\"walkguest\"): the admin's guest switch on, signed in, asked for access, pressed \"View the schedule\"; Tuesday",
+     "saw": "✓ the guest view opened (its own page, \"Waiting for access — view only\") [Waiting for access — view only] · ✓ Static is drawn on Tuesday [2] · ✓ Static's pucks carry the flag (the published face keeps it) [puck r warn note | puck r sm warn note] · ✓ no issues bar and no ✕ / ↺ anywhere on his page [{\"bars\":0,\"btns\":0}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-27pending-6-guest.png"
+     ]
+    },
+    {
+     "id": "27.pending.7",
+     "did": "signed in again as the scheduler: Edit Schedule, Tuesday",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the day's head is as he left it [{\"was\":[\"ORIG\",\"1 pending\"],\"now\":[\"ORIG\",\"1 pending\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-27pending-7-scheduler-again.png"
+     ]
+    },
+    {
+     "id": "27.pending.8",
+     "did": "reloaded; signed in as the scheduler: Edit Schedule, then View-only Sched",
+     "saw": "✓ Edit Schedule: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Edit Schedule: the line is still in the list · ✓ Edit Schedule: the line is painted struck · ✓ Edit Schedule: its button is \"↺\" [↺] · ✓ Edit Schedule: the button is the thing a finger lands on [true] · ✓ Edit Schedule: his pucks carry no flag [] · ✓ the day's head is unchanged [[\"ORIG\",\"Publish AL1\",\"Not yet signed\"]] · ✓ View-only Sched: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ View-only Sched: the line is painted plain (not struck) · ✓ View-only Sched: its button is \"none\" [] · ✓ View-only Sched: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-27pending-8-scheduler-reload.png"
+     ]
+    },
+    {
+     "id": "27.pending.9",
+     "did": "reloaded; signed in as the member: View-only Sched",
+     "saw": "✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"none\" [] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ no ✕ / ↺ anywhere [0]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-27pending-9-member-reload.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "27-draft-ph": {
+   "at": "2026-10-01T10:01:18.195Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "27.draft.1",
+     "did": "the scheduler (Saber): ✕ on Static's \"Long work day\" (Tuesday a draft) — Edit Schedule",
+     "saw": "✓ Tuesday is a draft [DRAFT] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-27draft-1-scheduler-edit.png"
+     ]
+    },
+    {
+     "id": "27.draft.2",
+     "did": "the scheduler: the Scheduler Board on Tuesday",
+     "saw": "✓ heading counts 3 [▾ ⚠ 3 issues · 2 warnings · tap to collapse] · ✓ the line is struck · ✓ its button is ↺ and topmost [↺ true] · ✓ Static's pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-27draft-2-scheduler-board.png"
+     ]
+    },
+    {
+     "id": "27.draft.3",
+     "did": "the scheduler: View-only Sched, Tuesday list opened",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere on the page [0]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-27draft-3-scheduler-viewonly.png"
+     ]
+    },
+    {
+     "id": "27.draft.4",
+     "did": "the admin pressed his name badge → his member view; View-only Sched, Tuesday",
+     "saw": "✓ the badge now reads MEMBER [{\"pressed\":true,\"before\":\"Switch to the member view\",\"after\":\"Saber · Member / Back to the admin view\"}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-27draft-4-admin-member-view.png"
+     ]
+    },
+    {
+     "id": "27.draft.5",
+     "did": "Logout; the member (Ranger): View-only Sched, Tuesday; then a tap on the line itself",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0] · ✓ no Edit Schedule tab · ✓ the tap changed nothing (same count, same strike) [⚠ 3 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-27draft-5-member.png"
+     ]
+    },
+    {
+     "id": "27.draft.6",
+     "did": "a guest (\"walkguest\"): the admin's guest switch on, signed in, asked for access, pressed \"View the schedule\"; Tuesday",
+     "saw": "✓ the guest view opened (its own page, \"Waiting for access — view only\") [Waiting for access — view only] · ✓ Static is drawn on Tuesday [2] · ✓ Static's pucks carry no flag (the same as the member's face) [puck r | puck r sm] · ✓ no issues bar and no ✕ / ↺ anywhere on his page [{\"bars\":0,\"btns\":0}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-27draft-6-guest.png"
+     ]
+    },
+    {
+     "id": "27.draft.7",
+     "did": "signed in again as the scheduler: Edit Schedule, Tuesday",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the day's head is as he left it [{\"was\":[\"DRAFT\",\"1 change\"],\"now\":[\"DRAFT\",\"1 change\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-27draft-7-scheduler-again.png"
+     ]
+    },
+    {
+     "id": "27.draft.8",
+     "did": "reloaded; signed in as the scheduler: Edit Schedule, then View-only Sched",
+     "saw": "✓ Edit Schedule: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Edit Schedule: the line is still in the list · ✓ Edit Schedule: the line is painted struck · ✓ Edit Schedule: its button is \"↺\" [↺] · ✓ Edit Schedule: the button is the thing a finger lands on [true] · ✓ Edit Schedule: his pucks carry no flag [] · ✓ the day's head is unchanged [[\"DRAFT\",\"\",\"\"]] · ✓ View-only Sched: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ View-only Sched: the line is still in the list · ✓ View-only Sched: the line is painted struck · ✓ View-only Sched: its button is \"none\" [] · ✓ View-only Sched: his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-27draft-8-scheduler-reload.png"
+     ]
+    },
+    {
+     "id": "27.draft.9",
+     "did": "reloaded; signed in as the member: View-only Sched",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"none\" [] · ✓ his pucks carry no flag [] · ✓ no ✕ / ↺ anywhere [0]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-27draft-9-member-reload.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "31-dk": {
+   "at": "2026-10-01T09:16:10.447Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "31.1",
+     "did": "Edit Schedule: ✕ on Static's \"Long work day\"; read the top bar's Undo",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ Undo is offered and names \"hiding a warning\" [Undo — hiding a warning]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-31-1-hidden.png"
+     ]
+    },
+    {
+     "id": "31.2",
+     "did": "pressed Undo in the top bar",
+     "saw": "✓ it was pressed [{\"present\":true,\"title\":\"Undo — hiding a warning\",\"pressed\":true,\"toasts\":[\"Undid: hiding a warning\"]}] · ✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"✕\" [✕] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ the app said what it undid [Undid: hiding a warning] · ✓ Redo now names \"hiding a warning\" [Redo — hiding a warning]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-31-2-undone-top.png"
+     ]
+    },
+    {
+     "id": "31.3",
+     "did": "pressed Redo in the top bar",
+     "saw": "✓ it was pressed [{\"present\":true,\"title\":\"Redo — hiding a warning\",\"pressed\":true,\"toasts\":[\"Redid: hiding a warning\"]}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the app said what it redid [Redid: hiding a warning]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-31-3-redone-top.png"
+     ]
+    },
+    {
+     "id": "31.4",
+     "did": "reloaded after the Redo",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-31-4-redone-reload.png"
+     ]
+    },
+    {
+     "id": "31.5",
+     "did": "pressed ↺ on the struck line (flag again); read the top bar's Undo",
+     "saw": "✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"✕\" [✕] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ Undo names \"flagging a warning again\" [Undo — flagging a warning again]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-31-5-flagged-again.png"
+     ]
+    },
+    {
+     "id": "31.6",
+     "did": "pressed Undo (takes the flag-again back)",
+     "saw": "✓ pressed [{\"present\":true,\"title\":\"Undo — flagging a warning again\",\"pressed\":true,\"toasts\":[\"Undid: flagging a warning again\"]}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the app said so [Undid: flagging a warning again]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-31-6-flag-again-undone.png"
+     ]
+    },
+    {
+     "id": "31.7",
+     "did": "reloaded after that Undo",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-31-7-undone-reload.png"
+     ]
+    },
+    {
+     "id": "31.8",
+     "did": "↺ again, Undo, Redo (the flag-again redone), then a reload",
+     "saw": "✓ Redo named \"flagging a warning again\" [Redo — flagging a warning again] · ✓ before the reload: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ before the reload: the line is painted plain (not struck) · ✓ before the reload: its button is \"✕\" [✕] · ✓ before the reload: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ after the reload: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ after the reload: the line is painted plain (not struck) · ✓ after the reload: its button is \"✕\" [✕] · ✓ after the reload: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-31-9-flag-again-redone-reload.png"
+     ]
+    },
+    {
+     "id": "31.9",
+     "did": "the Scheduler Board on Tuesday: ✕ on the same line in its panel",
+     "saw": "✓ heading counts 3 [⚠ 3 issues · 2 warnings · tap to review] · ✓ struck, ↺ · ✓ Static's pucks on the board plain [] · ✓ the board's Undo names \"hiding a warning\" [Undo — hiding a warning]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-31-10-board-hidden.png"
+     ]
+    },
+    {
+     "id": "31.10",
+     "did": "pressed the board's Undo",
+     "saw": "✓ pressed [{\"present\":true,\"title\":\"Undo — hiding a warning\",\"pressed\":true,\"toasts\":[\"Undid: hiding a warning\"]}] · ✓ heading counts 4 [⚠ 4 issues · 2 warnings · tap to review] · ✓ the line is plain with ✕ [✕] · ✓ Static's pucks carry the flag again [3]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-31-11-board-undone.png"
+     ]
+    },
+    {
+     "id": "31.11",
+     "did": "pressed the board's Redo",
+     "saw": "✓ pressed [{\"present\":true,\"title\":\"Redo — hiding a warning\",\"pressed\":true,\"toasts\":[\"Redid: hiding a warning\"]}] · ✓ heading counts 3 [⚠ 3 issues · 2 warnings · tap to review] · ✓ struck, ↺ topmost [↺ true] · ✓ Static's pucks plain []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-31-12-board-redone.png"
+     ]
+    },
+    {
+     "id": "31.12",
+     "did": "closed the board (✓ Done): Edit Schedule's list; then a reload",
+     "saw": "✓ Edit Schedule: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Edit Schedule: the line is still in the list · ✓ Edit Schedule: the line is painted struck · ✓ Edit Schedule: its button is \"↺\" [↺] · ✓ Edit Schedule: the button is the thing a finger lands on [true] · ✓ Edit Schedule: his pucks carry no flag [] · ✓ after the reload: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ after the reload: the line is still in the list · ✓ after the reload: the line is painted struck · ✓ after the reload: its button is \"↺\" [↺] · ✓ after the reload: the button is the thing a finger lands on [true] · ✓ after the reload: his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-31-13-board-redone-reload.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "31-ph": {
+   "at": "2026-10-01T09:16:59.534Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "31.1",
+     "did": "Edit Schedule: ✕ on Static's \"Long work day\"; read the top bar's Undo",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ Undo is offered and names \"hiding a warning\" [Undo — hiding a warning]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-31-1-hidden.png"
+     ]
+    },
+    {
+     "id": "31.2",
+     "did": "pressed Undo in the top bar",
+     "saw": "✓ it was pressed [{\"present\":true,\"title\":\"Undo — hiding a warning\",\"pressed\":true,\"toasts\":[\"Undid: hiding a warning\"]}] · ✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"✕\" [✕] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ the app said what it undid [Undid: hiding a warning] · ✓ Redo now names \"hiding a warning\" [Redo — hiding a warning]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-31-2-undone-top.png"
+     ]
+    },
+    {
+     "id": "31.3",
+     "did": "pressed Redo in the top bar",
+     "saw": "✓ it was pressed [{\"present\":true,\"title\":\"Redo — hiding a warning\",\"pressed\":true,\"toasts\":[\"Redid: hiding a warning\"]}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the app said what it redid [Redid: hiding a warning]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-31-3-redone-top.png"
+     ]
+    },
+    {
+     "id": "31.4",
+     "did": "reloaded after the Redo",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-31-4-redone-reload.png"
+     ]
+    },
+    {
+     "id": "31.5",
+     "did": "pressed ↺ on the struck line (flag again); read the top bar's Undo",
+     "saw": "✓ bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted plain (not struck) · ✓ its button is \"✕\" [✕] · ✓ his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ Undo names \"flagging a warning again\" [Undo — flagging a warning again]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-31-5-flagged-again.png"
+     ]
+    },
+    {
+     "id": "31.6",
+     "did": "pressed Undo (takes the flag-again back)",
+     "saw": "✓ pressed [{\"present\":true,\"title\":\"Undo — flagging a warning again\",\"pressed\":true,\"toasts\":[\"Undid: flagging a warning again\"]}] · ✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag [] · ✓ the app said so [Undid: flagging a warning again]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-31-6-flag-again-undone.png"
+     ]
+    },
+    {
+     "id": "31.7",
+     "did": "reloaded after that Undo",
+     "saw": "✓ bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-31-7-undone-reload.png"
+     ]
+    },
+    {
+     "id": "31.8",
+     "did": "↺ again, Undo, Redo (the flag-again redone), then a reload",
+     "saw": "✓ Redo named \"flagging a warning again\" [Redo — flagging a warning again] · ✓ before the reload: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ before the reload: the line is painted plain (not struck) · ✓ before the reload: its button is \"✕\" [✕] · ✓ before the reload: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ after the reload: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ after the reload: the line is painted plain (not struck) · ✓ after the reload: its button is \"✕\" [✕] · ✓ after the reload: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-31-9-flag-again-redone-reload.png"
+     ]
+    },
+    {
+     "id": "31.9",
+     "did": "the Scheduler Board on Tuesday: ✕ on the same line in its panel",
+     "saw": "✓ heading counts 3 [▾ ⚠ 3 issues · 2 warnings · tap to collapse] · ✓ struck, ↺ · ✓ Static's pucks on the board plain [] · ✓ the board's Undo names \"hiding a warning\" [Undo — hiding a warning]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-31-10-board-hidden.png"
+     ]
+    },
+    {
+     "id": "31.10",
+     "did": "pressed the board's Undo",
+     "saw": "✓ pressed [{\"present\":true,\"title\":\"Undo — hiding a warning\",\"pressed\":true,\"toasts\":[\"Undid: hiding a warning\"]}] · ✓ heading counts 4 [▾ ⚠ 4 issues · 2 warnings · tap to collapse] · ✓ the line is plain with ✕ [✕] · ✓ Static's pucks carry the flag again [3]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-31-11-board-undone.png"
+     ]
+    },
+    {
+     "id": "31.11",
+     "did": "pressed the board's Redo",
+     "saw": "✓ pressed [{\"present\":true,\"title\":\"Redo — hiding a warning\",\"pressed\":true,\"toasts\":[\"Redid: hiding a warning\"]}] · ✓ heading counts 3 [▾ ⚠ 3 issues · 2 warnings · tap to collapse] · ✓ struck, ↺ topmost [↺ true] · ✓ Static's pucks plain []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-31-12-board-redone.png"
+     ]
+    },
+    {
+     "id": "31.12",
+     "did": "closed the board (✓ Done): Edit Schedule's list; then a reload",
+     "saw": "✓ Edit Schedule: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Edit Schedule: the line is still in the list · ✓ Edit Schedule: the line is painted struck · ✓ Edit Schedule: its button is \"↺\" [↺] · ✓ Edit Schedule: the button is the thing a finger lands on [true] · ✓ Edit Schedule: his pucks carry no flag [] · ✓ after the reload: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ after the reload: the line is still in the list · ✓ after the reload: the line is painted struck · ✓ after the reload: its button is \"↺\" [↺] · ✓ after the reload: the button is the thing a finger lands on [true] · ✓ after the reload: his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-31-13-board-redone-reload.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "30-dk": {
+   "at": "2026-10-01T09:21:26.559Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "30.0",
+     "did": "Admin → Users: Hex's row → Role \"Admin\" → Save; a second tab signed in as Hex; both on Edit Schedule, Tuesday",
+     "saw": "✓ Hex is an admin on the roster list [Hex hex · WSO · CAT C ADMIN] · ✓ tab B is Hex · Admin with Edit Schedule [HEX · ADMIN] · ✓ A: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ A: the line is painted plain (not struck) · ✓ A: its button is \"✕\" [✕] · ✓ A: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ B: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ B: the line is painted plain (not struck) · ✓ B: its button is \"✕\" [✕] · ✓ B: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-30-0-A-before.png",
+      "dk-02-30-0-B-before.png"
+     ]
+    },
+    {
+     "id": "30.1",
+     "did": "A (Saber) pressed ✕ on Static's \"Long work day\"; B (Hex) reloaded and signed in",
+     "saw": "✓ A: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ A: the line is still in the list · ✓ A: the line is painted struck · ✓ A: its button is \"↺\" [↺] · ✓ A: the button is the thing a finger lands on [true] · ✓ A: his pucks carry no flag [] · ✓ B after his reload: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ B after his reload: the line is still in the list · ✓ B after his reload: the line is painted struck · ✓ B after his reload: its button is \"↺\" [↺] · ✓ B after his reload: the button is the thing a finger lands on [true] · ✓ B after his reload: his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-30-1-B-sees-A-hide.png"
+     ]
+    },
+    {
+     "id": "30.1n",
+     "did": "B's tab BEFORE its reload (recorded, not judged — this build has no server, so a tab learns at its next reload)",
+     "saw": "bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · line plain btn \"✕\" (topmost) · pucks 2 / flagged 2 [flying line:note L, other:note L]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "30.2",
+     "did": "B (Hex) pressed ↺ on the struck line; A (Saber) reloaded and signed in",
+     "saw": "✓ B: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ B: the line is painted plain (not struck) · ✓ B: its button is \"✕\" [✕] · ✓ B: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ A after his reload: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ A after his reload: the line is painted plain (not struck) · ✓ A after his reload: its button is \"✕\" [✕] · ✓ A after his reload: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-30-2-B-flags-again.png",
+      "dk-05-30-2-A-sees-B-flag-again.png"
+     ]
+    },
+    {
+     "id": "30.3",
+     "did": "B reloaded again",
+     "saw": "✓ B: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ B: the line is painted plain (not struck) · ✓ B: its button is \"✕\" [✕] · ✓ B: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-30-3-B-reload.png"
+     ]
+    },
+    {
+     "id": "30.4",
+     "did": "A opened the changes window (the top bar's clock) → \"All changes\", grouped by Item, then by Who",
+     "saw": "✓ it lists the hide: \"flagged → hidden\" [⠿ ⏎ Changes · week of 13/7 ⏎ 2 changes this week ⏎ ✕ ⏎ New to you 1 ⏎ All changes 2 ⏎ Week ⏎ Mon ⏎ Tue ⏎ Wed ⏎ Thu ⏎ Fri ⏎ Sat ⏎ Sun ⏎ GROUP BY ⏎ Item ⏎ Who ⏎ ▾] · ✓ it lists the flag-again: \"hidden → flagged\" · ✓ it names Saber · ✓ it names Hex · ✓ the line is a \"Warning · Static — …\" line · ✓ exactly two warning changes (no duplicate, no contradiction) [{\"hide\":2,\"again\":2,\"note\":\"each counted once per grouping (Item + Who)\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-30-4-A-changes-window.png",
+      "dk-08-30-5-A-changes-by-who.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "32-dk": {
+   "at": "2026-10-01T09:22:54.821Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "32.1",
+     "did": "A (Saber) hid Static's \"Long work day\" on Tuesday; B (Hex) reloaded, saw it, and hid Saint's \"No time for the flight brief\" on the same Tuesday",
+     "saw": "✓ B saw A's hide after his reload [0:plain 1:plain 2:plain 3:struck] · ✓ B's Tuesday now has both struck, 2 issues [⚠ 2 issues · 2 warning · tap to collapse ▲ · 0:plain 1:plain 2:struck 3:struck]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-32-1-B-hides-on-same-day.png"
+     ]
+    },
+    {
+     "id": "32.2",
+     "did": "A (his tab not reloaded; Undo titled \"Undo — hiding a warning\") pressed Undo in the top bar",
+     "saw": "✗ Undo refused (it did not take the hide back) [Undid: hiding a warning] · ✗ the refusal names Hex [Undid: hiding a warning] · ✗ B's hide survived in the store (Saint's line still hidden for B after a reload) [0:plain 1:plain 2:plain 3:plain] · ✗ A's own hide was not taken back either (after A's reload both are struck, 2 issues) [⚠ 4 issues · 2 warning · tap to collapse ▲ · 0:plain 1:plain 2:plain 3:plain]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-02-32-2-A-undo-pressed.png",
+      "dk-03-32-3-A-after-reload.png"
+     ]
+    },
+    {
+     "id": "32.3",
+     "did": "fresh world: A hid Tuesday's \"Long work day\"; B reloaded and hid the first line of WEDNESDAY; A (tab not reloaded) pressed Undo",
+     "saw": "✓ B's Wednesday hide took (one fewer issue, first line struck) [⚠ 7 issues · 2 warning · tap to collapse ▲ → ⚠ 6 issues · 1 warning · tap to collapse ▲] · ✓ A's Undo was not blocked: it took his Tuesday hide back [Undid: hiding a warning · ⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ after A's reload Tuesday is flagged again (4 issues) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ and B's Wednesday hide is still there [⚠ 6 issues · 1 warning · tap to collapse ▲ · 0:struck 1:plain 2:plain 3:plain 4:plain 5:plain 6:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-32-4-B-hides-on-wednesday.png",
+      "dk-05-32-5-A-undo-other-day.png",
+      "dk-06-32-6-A-after-reload-wednesday.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "32b-b-dk": {
+   "at": "2026-10-01T09:24:06.727Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "32.a",
+     "did": "two tabs again: A hid \"Long work day\"; B reloaded and hid \"No time for the flight brief\"; A (tab not reloaded) typed a Tuesday day note; B reloaded",
+     "saw": "B now sees: ⚠ 3 issues · 2 warning · tap to collapse ▲ · 0:plain 1:plain 2:plain 3:struck — B's own hide is GONE (the stale tab's plain edit overwrote Tuesday too); A's hide is there",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-32b-a-B-after-A-plain-edit.png"
+     ]
+    },
+    {
+     "id": "32.b",
+     "did": "one tab: A hid \"Long work day\", Logout; Hex signed in (his Undo: {\"title\":\"Undo\",\"disabled\":true}), hid \"No time for the flight brief\", Logout; Saber signed in again",
+     "saw": "Saber's Undo: {\"title\":\"Undo\",\"disabled\":true}; a press: {\"present\":true,\"title\":\"Undo\",\"disabled\":true,\"pressed\":false}; Tuesday: ⚠ 2 issues · 2 warning · tap to collapse ▲ · 0:plain 1:plain 2:struck 3:struck — both hides kept, and neither man can undo the other's (the list empties at every sign-in, D148)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-32b-b-A-signed-in-again.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "29-dk": {
+   "at": "2026-10-01T09:30:48.080Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "29.1",
+     "did": "week of 13 Jul: ✕ on Tuesday's \"Long work day\"; every day's list opened",
+     "saw": "✓ only Tuesday's 4th line is struck in this week [{\"Tue\":[3]}] · ✓ Tuesday reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-29-1-wk13-tue-hidden.png"
+     ]
+    },
+    {
+     "id": "29.2",
+     "did": "pressed the \"Jul 20\" week chip; every day's list opened",
+     "saw": "✓ the week of 20 Jul is up [20/07/2026] · ✓ nothing is struck in this week (no leak from 13 Jul — not Tuesday, not Wednesday's own \"Long work day\") [{}] · ✓ Monday reads 10 issues [⚠ 10 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-29-2-wk20-mon-before.png"
+     ]
+    },
+    {
+     "id": "29.3",
+     "did": "week of 20 Jul: ✕ on Monday's \"CO approval required\" line (Diesel + Hex)",
+     "saw": "✓ only Monday's 10th line is struck in this week [{\"Mon\":[9]}] · ✓ bar reads 9 issue(s) [⚠ 9 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-29-3-wk20-mon-hidden.png"
+     ]
+    },
+    {
+     "id": "29.rows",
+     "did": "the saved rows (read only)",
+     "saw": "✓ exactly two day rows carry a hide: 13 Jul's Tuesday and 20 Jul's Monday [[\"weeks/13-07-2026#1\",\"weeks/20-07-2026#0\"]] · ✓ Tuesday 14 Jul holds the long-day hide only [[\"1|LONGDAY|wolf|@wolf has a long work day: 13h05, 05:00 → 18:05 (last landing 1] · ✓ Monday 20 Jul holds the CO-approval hide only [[\"0|CO_APPROVAL|fantom,rocky|CAT D pilot @fantom with CAT C WSO @rocky in RU BFM]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "29.4",
+     "did": "week chips: back to 13 Jul, forward to 20 Jul, back to 13 Jul — every day read each time",
+     "saw": "✓ 13 Jul: only Tuesday's line [{\"Tue\":[3]}] · ✓ 13 Jul's Monday has no struck line and the same lines as before — 20 Jul's Monday hide did not leak [⚠ 14 issues · 6 warning · tap to collapse ▲ · 15 lines] · ✓ 20 Jul: only Monday's line [{\"Mon\":[9]}] · ✓ 13 Jul again: only Tuesday's line [{\"Tue\":[3]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-29-4-back-on-wk13.png"
+     ]
+    },
+    {
+     "id": "29.5",
+     "did": "reloaded while on the week of 13 Jul (the app opened on 13/07/2026); both weeks read",
+     "saw": "✓ 13 Jul: only Tuesday's line [{\"Tue\":[3]}] · ✓ 20 Jul: only Monday's line [{\"Mon\":[9]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-29-5-wk20-after-reload.png"
+     ]
+    },
+    {
+     "id": "29.6",
+     "did": "reloaded while on the week of 20 Jul (the app opened on 13/07/2026); both weeks read",
+     "saw": "✓ 20 Jul: only Monday's line [{\"Mon\":[9]}] · ✓ 13 Jul: only Tuesday's line [{\"Tue\":[3]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-29-6-wk13-after-reload-from-wk20.png"
+     ]
+    },
+    {
+     "id": "29.7",
+     "did": "Logout; the member (Ranger): View-only Sched, the week chips, both weeks read",
+     "saw": "✓ 13 Jul: only Tuesday's line struck [{\"Tue\":[3]}] · ✓ 20 Jul: only Monday's line struck [{\"Mon\":[9]}] · ✓ no ✕ / ↺ on any line of either week · ✓ 20 Jul's Monday reads 9 issues for him too [⚠ 9 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-29-7-member-wk13.png",
+      "dk-08-29-8-member-wk20.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "29-ph": {
+   "at": "2026-10-01T09:32:17.546Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "29.1",
+     "did": "week of 13 Jul: ✕ on Tuesday's \"Long work day\"; every day's list opened",
+     "saw": "✓ only Tuesday's 4th line is struck in this week [{\"Tue\":[3]}] · ✓ Tuesday reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-29-1-wk13-tue-hidden.png"
+     ]
+    },
+    {
+     "id": "29.2",
+     "did": "pressed the \"Jul 20\" week chip; every day's list opened",
+     "saw": "✓ the week of 20 Jul is up [20/07/2026] · ✓ nothing is struck in this week (no leak from 13 Jul — not Tuesday, not Wednesday's own \"Long work day\") [{}] · ✓ Monday reads 10 issues [⚠ 10 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-29-2-wk20-mon-before.png"
+     ]
+    },
+    {
+     "id": "29.3",
+     "did": "week of 20 Jul: ✕ on Monday's \"CO approval required\" line (Diesel + Hex)",
+     "saw": "✓ only Monday's 10th line is struck in this week [{\"Mon\":[9]}] · ✓ bar reads 9 issue(s) [⚠ 9 issues · 2 warning · tap to collapse ▲] · ✓ the line is still in the list · ✓ the line is painted struck · ✓ its button is \"↺\" [↺] · ✓ the button is the thing a finger lands on [true] · ✓ his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-29-3-wk20-mon-hidden.png"
+     ]
+    },
+    {
+     "id": "29.rows",
+     "did": "the saved rows (read only)",
+     "saw": "✓ exactly two day rows carry a hide: 13 Jul's Tuesday and 20 Jul's Monday [[\"weeks/13-07-2026#1\",\"weeks/20-07-2026#0\"]] · ✓ Tuesday 14 Jul holds the long-day hide only [[\"1|LONGDAY|wolf|@wolf has a long work day: 13h05, 05:00 → 18:05 (last landing 1] · ✓ Monday 20 Jul holds the CO-approval hide only [[\"0|CO_APPROVAL|fantom,rocky|CAT D pilot @fantom with CAT C WSO @rocky in RU BFM]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "29.4",
+     "did": "week chips: back to 13 Jul, forward to 20 Jul, back to 13 Jul — every day read each time",
+     "saw": "✓ 13 Jul: only Tuesday's line [{\"Tue\":[3]}] · ✓ 13 Jul's Monday has no struck line and the same lines as before — 20 Jul's Monday hide did not leak [⚠ 14 issues · 6 warning · tap to collapse ▲ · 15 lines] · ✓ 20 Jul: only Monday's line [{\"Mon\":[9]}] · ✓ 13 Jul again: only Tuesday's line [{\"Tue\":[3]}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-29-4-back-on-wk13.png"
+     ]
+    },
+    {
+     "id": "29.5",
+     "did": "reloaded while on the week of 13 Jul (the app opened on 13/07/2026); both weeks read",
+     "saw": "✓ 13 Jul: only Tuesday's line [{\"Tue\":[3]}] · ✓ 20 Jul: only Monday's line [{\"Mon\":[9]}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-29-5-wk20-after-reload.png"
+     ]
+    },
+    {
+     "id": "29.6",
+     "did": "reloaded while on the week of 20 Jul (the app opened on 13/07/2026); both weeks read",
+     "saw": "✓ 20 Jul: only Monday's line [{\"Mon\":[9]}] · ✓ 13 Jul: only Tuesday's line [{\"Tue\":[3]}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-29-6-wk13-after-reload-from-wk20.png"
+     ]
+    },
+    {
+     "id": "29.7",
+     "did": "Logout; the member (Ranger): View-only Sched, the week chips, both weeks read",
+     "saw": "✓ 13 Jul: only Tuesday's line struck [{\"Tue\":[3]}] · ✓ 20 Jul: only Monday's line struck [{\"Mon\":[9]}] · ✓ no ✕ / ↺ on any line of either week · ✓ 20 Jul's Monday reads 9 issues for him too [⚠ 9 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-29-7-member-wk13.png",
+      "ph-08-29-8-member-wk20.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "06-dk": {
+   "at": "2026-10-01T09:37:08.182Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "6.1",
+     "did": "the board on Sunday 19 Jul: duty block → \"+ Row\", Ranger from the crew list onto it, role and times typed (15:00–23:00); ✓ Done; Edit Schedule, Sunday",
+     "saw": "✓ before the duty his Sunday puck carried no mark and the Sunday list no \"Breaks Monday\" line [puck sm] · ✓ the row took him and its times [{\"role\":\"LATE DUTY\",\"str\":\"15:00\",\"end\":\"23:00\",\"who\":[\"bane\"]}] · ✓ his Sunday puck now wears the dotted mark [puck sm boxdot oilbar oilbar-fo] · ✓ with the crew-rest chip (R) [R] · ✓ and the Sunday list has the \"Breaks Monday\" line for Ranger [⚠ 1 issue · tap to collapse ▲ Breaks Monday Ranger — had to leave by 18:20. Crew rest breach — Sunday ended 23:00 → crew]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-06-1-sunday-duty-added.png"
+     ]
+    },
+    {
+     "id": "6.2",
+     "did": "week chip \"Jul 20\": Monday 20 Jul's list",
+     "saw": "✓ Monday raises a Crew rest line for Ranger [Conflict — two events at once Outlaw — R / Conflict — two events at once Vapor — AP / Crew rest (<12h) Ranger — Crew rest brea / Tight turn Ranger — Tight turn ] · ✓ it is plain, with ✕ · ✓ Monday reads 11 issues [⚠ 11 issues · 3 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-06-2-monday-crew-rest-line.png"
+     ]
+    },
+    {
+     "id": "6.3",
+     "did": "✕ on Monday 20 Jul's Crew rest line (a draft Monday); week chip back to \"Jul 13\"; Sunday on Edit Schedule and on View-only Sched",
+     "saw": "✓ Monday: struck, ↺, 10 issues [⚠ 10 issues · 2 warning · tap to collapse ▲] · ✓ Sunday (Edit Schedule): the dotted mark is gone [puck sm oilbar oilbar-fo] · ✓ and the crew-rest chip is gone [] · ✓ and the Sunday list no longer has the \"Breaks Monday\" line [⚠ 1 issue · tap to collapse ▲ OIL waiting — this day is not published This day is not published yet,] · ✓ Ranger is still on the duty row [1] · ✓ Sunday (View-only Sched): no dotted mark, no CR chip [puck sm oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-06-3-monday-hidden.png",
+      "dk-04-06-4-sunday-after-monday-hide.png",
+      "dk-05-06-5-sunday-viewonly.png"
+     ]
+    },
+    {
+     "id": "6.3n",
+     "did": "Sunday's own list after the hide (recorded)",
+     "saw": "Ranger's Sunday puck: no dotted mark, chip \"\" · Sunday's list has no \"Breaks Monday\" line · before the hide: Ranger's Sunday puck: DOTTED, chip \"R\" · Sunday's list has a \"Breaks Monday\" line",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "6.4",
+     "did": "reloaded (the app opens on the week of 13 Jul — the week of 20 Jul not opened in this sitting); Sunday",
+     "saw": "✓ the app opened on 13 Jul [13/07/2026] · ✓ no dotted mark [puck sm oilbar oilbar-fo] · ✓ no crew-rest chip [] · ✓ no \"Breaks Monday\" line [⚠ 1 issue · tap to collapse ▲ OIL waiting — this day is not published This day is not published yet,]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-06-6-sunday-after-reload.png"
+     ]
+    },
+    {
+     "id": "6.5",
+     "did": "week of 20 Jul: ↺ on the struck Crew rest line; back to 13 Jul; Sunday",
+     "saw": "✓ Monday: plain again, 11 issues [⚠ 11 issues · 3 warning · tap to collapse ▲] · ✓ Sunday: the dotted mark is back [puck sm boxdot oilbar oilbar-fo] · ✓ with the crew-rest chip [R] · ✓ and the \"Breaks Monday\" line",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-06-7-sunday-after-flag-again.png"
+     ]
+    },
+    {
+     "id": "6.6",
+     "did": "reloaded again; Sunday",
+     "saw": "✓ the dotted mark, the chip and the \"Breaks Monday\" line are still there [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-06-8-sunday-flagged-reload.png"
+     ]
+    },
+    {
+     "id": "6.7",
+     "did": "unrelated hides: ✕ on Monday 20 Jul's \"CO approval required\" line; then ✕ on Sunday 19 Jul's own OIL reminder; Sunday",
+     "saw": "✓ Monday's Crew rest line still plain (10 issues: 11 less the unrelated one) [⚠ 10 issues · 3 warning · tap to collapse ▲] · ✓ Sunday keeps the dotted mark and CR chip after the unrelated Monday hide [puck sm boxdot oilbar oilbar-fo] · ✓ and after the hide of Sunday's own OIL reminder [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-06-9-sunday-after-unrelated-hides.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "07-dk": {
+   "at": "2026-10-01T09:39:35.118Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "7.0",
+     "did": "setup: Ranger's late Sunday duty (board); week of 20 Jul: Monday's four sign-offs, Publish day, the Crew rest line showing",
+     "saw": "✓ the duty row took [{\"role\":\"LATE DUTY\",\"str\":\"15:00\",\"end\":\"23:00\",\"who\":[\"bane\"]}] · ✓ Monday 20 Jul is published (ORIG) [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}] · ✓ its Crew rest line is plain, 11 issues [⚠ 11 issues · 3 warning · tap to collapse ▲] · ✓ Sunday (Edit Schedule): dotted mark + chip + \"Breaks Monday\" line [puck sm boxdot oilbar oilbar-fo · breaks true] · ✓ Sunday (View-only Sched): dotted mark + chip [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-07-0-monday-published.png",
+      "dk-02-07-0-sunday-edit.png",
+      "dk-03-07-0-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.1",
+     "did": "✕ on the published Monday's Crew rest line (the hide waits for an amendment); back to 13 Jul, Sunday",
+     "saw": "✓ Monday working copy: struck, ↺, 10 issues [⚠ 10 issues · 2 warning · tap to collapse ▲] · ✓ one pending, \"Publish AL1\" offered, sign-offs fallen [{\"chip\":\"1 pending\",\"alpub\":\"Publish AL1\",\"nys\":\"Not yet signed\"}] · ✓ the mark has NOT moved — Sunday (Edit Schedule): dotted mark + chip + \"Breaks Monday\" line [puck sm boxdot oilbar oilbar-fo · breaks true] · ✓ the mark has NOT moved — Sunday (View-only Sched): dotted mark + chip [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-07-1-monday-hide-pending.png",
+      "dk-05-07-1-sunday-edit.png",
+      "dk-06-07-1-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.2",
+     "did": "reloaded; signed in as the second scheduler (Hex · Admin); Sunday 19 Jul",
+     "saw": "✓ signed in as Hex · Admin [HEX · ADMIN] · ✓ still there — Sunday (Edit Schedule): dotted mark + chip + \"Breaks Monday\" line [puck sm boxdot oilbar oilbar-fo · breaks true] · ✓ still there — Sunday (View-only Sched): dotted mark + chip [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-07-2-sunday-edit.png",
+      "dk-08-07-2-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.3",
+     "did": "Hex: Monday 20 Jul's four sign-offs, \"Publish AL1\"; View-only Sched Monday; then Sunday 19 Jul",
+     "saw": "✓ AL1 went out [{\"pub\":{\"pressed\":true,\"label\":\"Publish AL1\"},\"tag\":\"AL1\",\"alpub\":\"\",\"marker\":\"Not yet published\"}] · ✓ the published Monday now shows the line struck, no button, 10 issues [⚠ 10 issues · 2 warning · tap to collapse ▲] · ✓ the mark has gone — Sunday (Edit Schedule): no dotted mark, no chip, no \"Breaks Monday\" line [puck sm oilbar oilbar-fo · breaks false] · ✓ the mark has gone — Sunday (View-only Sched): no dotted mark, no chip [puck sm oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-07-3-monday-AL1-viewonly.png",
+      "dk-10-07-3-sunday-edit.png",
+      "dk-11-07-3-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.4",
+     "did": "reloaded; signed in as Saber; Sunday 19 Jul",
+     "saw": "✓ still gone — Sunday (Edit Schedule): no dotted mark, no chip, no \"Breaks Monday\" line [puck sm oilbar oilbar-fo · breaks false] · ✓ still gone — Sunday (View-only Sched): no dotted mark, no chip [puck sm oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-07-4-sunday-edit.png",
+      "dk-13-07-4-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.5",
+     "did": "↺ on Monday's struck Crew rest line (a flag-again waiting for an amendment); Sunday 19 Jul",
+     "saw": "✓ Monday working copy: plain, ✕, 11 issues [⚠ 11 issues · 3 warning · tap to collapse ▲] · ✓ one pending, \"Publish AL2\" offered [{\"chip\":\"1 pending\",\"alpub\":\"Publish AL2\"}] · ✓ the mark has NOT come back yet — Sunday (Edit Schedule): no dotted mark, no chip, no \"Breaks Monday\" line [puck sm oilbar oilbar-fo · breaks false] · ✓ the mark has NOT come back yet — Sunday (View-only Sched): no dotted mark, no chip [puck sm oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-07-5-monday-flag-again-pending.png",
+      "dk-15-07-5-sunday-edit.png",
+      "dk-16-07-5-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.6",
+     "did": "reloaded; signed in as Hex; Sunday 19 Jul",
+     "saw": "✓ still not back — Sunday (Edit Schedule): no dotted mark, no chip, no \"Breaks Monday\" line [puck sm oilbar oilbar-fo · breaks false] · ✓ still not back — Sunday (View-only Sched): no dotted mark, no chip [puck sm oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-07-6-sunday-edit.png",
+      "dk-18-07-6-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.7",
+     "did": "Hex: Monday's four sign-offs, \"Publish AL2\"; Sunday 19 Jul",
+     "saw": "✓ AL2 went out [{\"pub\":{\"pressed\":true,\"label\":\"Publish AL2\"},\"tag\":\"AL2\"}] · ✓ the mark is back — Sunday (Edit Schedule): dotted mark + chip + \"Breaks Monday\" line [puck sm boxdot oilbar oilbar-fo · breaks true] · ✓ the mark is back — Sunday (View-only Sched): dotted mark + chip [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-07-7-sunday-edit.png",
+      "dk-20-07-7-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.8",
+     "did": "reloaded; signed in as Saber; Sunday 19 Jul",
+     "saw": "✓ still back — Sunday (Edit Schedule): dotted mark + chip + \"Breaks Monday\" line [puck sm boxdot oilbar oilbar-fo · breaks true] · ✓ still back — Sunday (View-only Sched): dotted mark + chip [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-07-8-sunday-edit.png",
+      "dk-22-07-8-sunday-view.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "04-dk": {
+   "at": "2026-10-01T09:41:57.451Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "4.1",
+     "did": "week of 20 Jul, Monday: typed 08:40 into the RU BFM line's landing box (= its take-off); then the week of 13 Jul: the preview to the right of Sunday",
+     "saw": "✓ before the edit: no such line, no red box, and the preview (drawn) had no red box [{\"red\":0,\"preview\":0,\"drawn\":true}] · ✓ Monday raises the \"take-off and landing are the same\" line, plain, with ✕ [⚠ 10 issues · 2 warning · tap to collapse ▲] · ✓ Monday's own two time boxes are red [2] · ✓ the preview (Edit Schedule) draws both red boxes, painted differently from a plain time box [[{\"txt\":\"06:20 08:40\",\"paint\":\"outline none rgb(241, 244, 247) 3px · border none rgb(241, 244, 247) 0px · shadow rgb(229, 168, 59) 0px 0px 0px 1px inset\",\"onScr] · ✓ the preview (View-only Sched) draws both red boxes [[\"06:20 08:40\",\"08:40\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-04-1-monday-nought-line.png",
+      "dk-04-04-1b-monday-red-boxes.png",
+      "dk-05-04-1-preview-edit.png",
+      "dk-06-04-1-preview-view.png"
+     ]
+    },
+    {
+     "id": "4.2",
+     "did": "✕ on Monday 20 Jul's nought-minute line (Monday a draft); back to the week of 13 Jul",
+     "saw": "✓ Monday: the line struck, ↺ [⚠ 9 issues · 2 warning · tap to collapse ▲] · ✓ Monday's own red boxes are gone [0] · ✓ the preview (Edit Schedule) has NO red box — both gone [[]] · ✓ the preview (View-only Sched) has no red box [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-04-2-monday-hidden.png",
+      "dk-08-04-2-preview-edit.png",
+      "dk-09-04-2-preview-view.png"
+     ]
+    },
+    {
+     "id": "4.3",
+     "did": "reloaded (the app opens on the week of 13 Jul; the week of 20 Jul not opened in this sitting)",
+     "saw": "✓ the preview (Edit Schedule) has no red box [0] · ✓ the preview (View-only Sched) has no red box [0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-04-3-preview-edit.png",
+      "dk-11-04-3-preview-view.png"
+     ]
+    },
+    {
+     "id": "4.4",
+     "did": "↺ on the nought-minute line; and an UNRELATED ✕ (Monday's \"CO approval required\"); back to the week of 13 Jul",
+     "saw": "✓ Monday: the nought-minute line plain again, its two boxes red again [⚠ 9 issues · 2 warning · tap to collapse ▲ · red 2] · ✓ the preview (Edit Schedule) draws both red boxes again — the unrelated hide took nothing [2] · ✓ the preview (View-only Sched) too [2]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-04-4-preview-edit.png",
+      "dk-13-04-4-preview-view.png"
+     ]
+    },
+    {
+     "id": "4.5",
+     "did": "reloaded",
+     "saw": "✓ the preview still draws both red boxes (Edit Schedule and View-only Sched) [[2,2]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-04-5-preview-edit.png",
+      "dk-15-04-5-preview-view.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "05-dk": {
+   "at": "2026-10-01T09:43:43.272Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "5.0",
+     "did": "setup: Monday 20 Jul — RU BFM landing typed = take-off; the four sign-offs; Publish day (the nought-minute line showing); the week of 13 Jul's preview",
+     "saw": "✓ Monday is published (ORIG) with the line plain and two red boxes [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\",\"red\":2}] · ✓ the preview on Edit Schedule: both red boxes [2] · ✓ the preview on View-only Sched: both red boxes [2]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-05-0-preview-edit.png",
+      "dk-02-05-0-preview-view.png"
+     ]
+    },
+    {
+     "id": "5.1",
+     "did": "✕ on the published Monday's nought-minute line (waits for an amendment); the preview",
+     "saw": "✓ Monday working copy: struck, its own red boxes gone, 1 pending, \"Publish AL1\" [{\"red\":0,\"chip\":\"1 pending\",\"alpub\":\"Publish AL1\"}] · ✓ KEPT while the hide is pending — the preview on Edit Schedule: both red boxes [2] · ✓ KEPT while the hide is pending — the preview on View-only Sched: both red boxes [2]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-05-1-monday-hide-pending.png",
+      "dk-04-05-1-preview-edit.png",
+      "dk-05-05-1-preview-view.png"
+     ]
+    },
+    {
+     "id": "5.2",
+     "did": "reloaded; the preview",
+     "saw": "✓ still kept — the preview on Edit Schedule: both red boxes [2] · ✓ still kept — the preview on View-only Sched: both red boxes [2]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-05-1r-preview-edit.png",
+      "dk-07-05-1r-preview-view.png"
+     ]
+    },
+    {
+     "id": "5.3",
+     "did": "Monday's four sign-offs, \"Publish AL1\"; the preview",
+     "saw": "✓ AL1 went out [{\"pub\":{\"pressed\":true,\"label\":\"Publish AL1\"},\"tag\":\"AL1\"}] · ✓ gone after the amendment — the preview on Edit Schedule: no red box [0] · ✓ gone after the amendment — the preview on View-only Sched: no red box [0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-05-2-preview-edit.png",
+      "dk-09-05-2-preview-view.png"
+     ]
+    },
+    {
+     "id": "5.4",
+     "did": "↺ on Monday's struck line (a flag-again waiting for an amendment); the preview",
+     "saw": "✓ Monday working copy: plain, its own two boxes red, 1 pending, \"Publish AL2\" [{\"red\":2,\"chip\":\"1 pending\",\"alpub\":\"Publish AL2\"}] · ✓ still gone while the flag-again is pending — the preview on Edit Schedule: no red box [0] · ✓ still gone while the flag-again is pending — the preview on View-only Sched: no red box [0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-05-3-preview-edit.png",
+      "dk-11-05-3-preview-view.png"
+     ]
+    },
+    {
+     "id": "5.5",
+     "did": "reloaded; the preview",
+     "saw": "✓ still gone — the preview on Edit Schedule: no red box [0] · ✓ still gone — the preview on View-only Sched: no red box [0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-05-3r-preview-edit.png",
+      "dk-13-05-3r-preview-view.png"
+     ]
+    },
+    {
+     "id": "5.6",
+     "did": "Monday's four sign-offs, \"Publish AL2\"; the preview",
+     "saw": "✓ AL2 went out [{\"pub\":{\"pressed\":true,\"label\":\"Publish AL2\"},\"tag\":\"AL2\"}] · ✓ back after that amendment — the preview on Edit Schedule: both red boxes [2] · ✓ back after that amendment — the preview on View-only Sched: both red boxes [2]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-05-4-preview-edit.png",
+      "dk-15-05-4-preview-view.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "44-dk": {
+   "at": "2026-10-01T10:02:31.879Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "44.0",
+     "did": "setup + baseline: Sunday 19 Jul signed and published (a weekend duty earns); then read: Logic, the PDF button's print frame, the CSV button's file, Leave War, OIL tracker",
+     "saw": "✓ Sunday is published [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}] · ✓ Logic shows \"fired N×\" lines [71 of 71 rules · 16 fired on this week's schedule] · ✓ Logic counts the long work day and the crew rest as fired [fired 2× · Mon, Tue · fired 1× · Tue] · ✓ the PDF button built a print frame with the schedule in it (the app says \"Print dialog opened\") [{\"toast\":\"Print dialog opened — choose \\\"Save as PDF\\\"\",\"len\":3262,\"pucks\":0}] · ✓ the print frame carries no warning mark and no warning words [{\"marks\":0,\"cls\":[],\"word\":\"\"}] · ✓ the CSV button built a text/csv file of flying lines [{\"rows\":33,\"head\":\"\\\"Day\\\",\\\"Date\\\",\\\"Wave\\\",\\\"CS\\\",\\\"Mission\\\",\\\"Brief\\\",\\\"TO\\\",\\\"Land\\\",\\\"FCP\\\",\\\"FCP lvl\\\",\\\"RCP\\\",\\\"RCP lvl\\\",\\\"Area\\\",\\\"Area time\\\",\\\"Rmks\\] · ✓ the CSV carries no warning words [] · ✓ the OIL tracker lists Dash's figures [Dash C 3 + 3 +1 carried in opening figure 1 left +1 19 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left +1 15 Aug FLT 1 left ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-44-a-before-logic.png",
+      "dk-02-44-a-before-oil-tracker.png",
+      "dk-03-44-a-before-leavewar.png"
+     ]
+    },
+    {
+     "id": "44.1",
+     "did": "pressed ✕ on all four of Tuesday's lines, Monday's first three and Saturday's OIL reminder; then read the five again",
+     "saw": "✓ the hides took: Tuesday \"No issues\", Monday 11, Saturday's reminder struck [{\"tue\":\"✓ No issues · tap to collapse ▲\",\"mon\":\"⚠ 11 issues · 3 warning · tap to collapse ▲\",\"sat\":\"✓ No issues · tap to collapse ▲\",\"pressed\":[\"Tue#0:pressed\",] · ✓ Logic: the \"fired\" line of every rule reads as before [71 of 71 rules · 16 fired on this week's schedule · LONGDAY: fired 2× · Mon, Tue · CREW_REST: fired 1× · Tue] · ✓ Logic: the long work day still counts Tuesday (its only Tuesday warning is the hidden one) [fired 2× · Mon, Tue] · ✓ print: the print frame's page is the same, to the letter [d8450f33:12938] · ✓ print: it carries no warning mark and no warning words [{\"marks\":0,\"cls\":[],\"word\":\"\"}] · ✓ CSV: the file is the same, to the letter [16b0cd2c:4399] · ✓ CSV: no warning words in it [] · ✓ Leave War: the page reads the same [7e3f8a00:19469] · ✓ OIL tracker: every figure reads the same [2d712f60:2183 · Dash C 3 + 3 +1 carried in opening figure 1 left +1 19 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left +1 15 Aug FLT 1 left ] · ✓ the Leave War's saved rows are the same [2e46e8e9:89438]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-44-b-tuesday-all-hidden.png",
+      "dk-05-44-b-hidden-logic.png",
+      "dk-06-44-b-hidden-oil-tracker.png",
+      "dk-07-44-b-hidden-leavewar.png"
+     ]
+    },
+    {
+     "id": "44.2",
+     "did": "reloaded; read the five again",
+     "saw": "✓ after the reload — Logic: the \"fired\" line of every rule reads as before [71 of 71 rules · 16 fired on this week's schedule · LONGDAY: fired 2× · Mon, Tue · CREW_REST: fired 1× · Tue] · ✓ after the reload — Logic: the long work day still counts Tuesday (its only Tuesday warning is the hidden one) [fired 2× · Mon, Tue] · ✓ after the reload — print: the print frame's page is the same, to the letter [d8450f33:12938] · ✓ after the reload — print: it carries no warning mark and no warning words [{\"marks\":0,\"cls\":[],\"word\":\"\"}] · ✓ after the reload — CSV: the file is the same, to the letter [16b0cd2c:4399] · ✓ after the reload — CSV: no warning words in it [] · ✓ after the reload — Leave War: the page reads the same [7e3f8a00:19469] · ✓ after the reload — OIL tracker: every figure reads the same [2d712f60:2183 · Dash C 3 + 3 +1 carried in opening figure 1 left +1 19 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left +1 15 Aug FLT 1 left ] · ✓ after the reload — the Leave War's saved rows are the same [2e46e8e9:89438]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-44-c-reload-logic.png",
+      "dk-09-44-c-reload-oil-tracker.png",
+      "dk-10-44-c-reload-leavewar.png"
+     ]
+    },
+    {
+     "id": "44.3",
+     "did": "pressed ↺ on every one of them; read the five again",
+     "saw": "✓ all flagged again: Tuesday 4, Monday 14 [⚠ 4 issues · 2 warning · tap to collapse ▲ · ⚠ 14 issues · 6 warning · tap to collapse ▲] · ✓ Logic: the \"fired\" line of every rule reads as before [71 of 71 rules · 16 fired on this week's schedule · LONGDAY: fired 2× · Mon, Tue · CREW_REST: fired 1× · Tue] · ✓ Logic: the long work day still counts Tuesday (its only Tuesday warning is the hidden one) [fired 2× · Mon, Tue] · ✓ print: the print frame's page is the same, to the letter [d8450f33:12938] · ✓ print: it carries no warning mark and no warning words [{\"marks\":0,\"cls\":[],\"word\":\"\"}] · ✓ CSV: the file is the same, to the letter [16b0cd2c:4399] · ✓ CSV: no warning words in it [] · ✓ Leave War: the page reads the same [7e3f8a00:19469] · ✓ OIL tracker: every figure reads the same [2d712f60:2183 · Dash C 3 + 3 +1 carried in opening figure 1 left +1 19 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left +1 15 Aug FLT 1 left ] · ✓ the Leave War's saved rows are the same [2e46e8e9:89438]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-44-d-flagged-again-logic.png",
+      "dk-12-44-d-flagged-again-oil-tracker.png",
+      "dk-13-44-d-flagged-again-leavewar.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "30-ph": {
+   "at": "2026-10-01T09:52:26.165Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "30.0",
+     "did": "Admin → Users: Hex's row → Role \"Admin\" → Save; a second tab signed in as Hex; both on Edit Schedule, Tuesday",
+     "saw": "✓ Hex is an admin on the roster list [Hex hex · Admin · WSO · CAT C] · ✓ tab B is Hex · Admin with Edit Schedule [Hex · Admin] · ✓ A: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ A: the line is painted plain (not struck) · ✓ A: its button is \"✕\" [✕] · ✓ A: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ B: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ B: the line is painted plain (not struck) · ✓ B: its button is \"✕\" [✕] · ✓ B: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-30-0-A-before.png",
+      "ph-02-30-0-B-before.png"
+     ]
+    },
+    {
+     "id": "30.1",
+     "did": "A (Saber) pressed ✕ on Static's \"Long work day\"; B (Hex) reloaded and signed in",
+     "saw": "✓ A: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ A: the line is still in the list · ✓ A: the line is painted struck · ✓ A: its button is \"↺\" [↺] · ✓ A: the button is the thing a finger lands on [true] · ✓ A: his pucks carry no flag [] · ✓ B after his reload: bar reads 3 issue(s) [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ B after his reload: the line is still in the list · ✓ B after his reload: the line is painted struck · ✓ B after his reload: its button is \"↺\" [↺] · ✓ B after his reload: the button is the thing a finger lands on [true] · ✓ B after his reload: his pucks carry no flag []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-30-1-B-sees-A-hide.png"
+     ]
+    },
+    {
+     "id": "30.1n",
+     "did": "B's tab BEFORE its reload (recorded, not judged — this build has no server, so a tab learns at its next reload)",
+     "saw": "bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · line plain btn \"✕\" (topmost) · pucks 2 / flagged 2 [flying line:note L, other:note L]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "30.2",
+     "did": "B (Hex) pressed ↺ on the struck line; A (Saber) reloaded and signed in",
+     "saw": "✓ B: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ B: the line is painted plain (not struck) · ✓ B: its button is \"✕\" [✕] · ✓ B: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc] · ✓ A after his reload: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ A after his reload: the line is painted plain (not struck) · ✓ A after his reload: its button is \"✕\" [✕] · ✓ A after his reload: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-30-2-B-flags-again.png",
+      "ph-05-30-2-A-sees-B-flag-again.png"
+     ]
+    },
+    {
+     "id": "30.3",
+     "did": "B reloaded again",
+     "saw": "✓ B: bar reads 4 issue(s) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ B: the line is painted plain (not struck) · ✓ B: its button is \"✕\" [✕] · ✓ B: his pucks carry the flag [puck r warn note wfoc | puck r sm warn note wfoc]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-30-3-B-reload.png"
+     ]
+    },
+    {
+     "id": "30.4",
+     "did": "A opened the changes window (the top bar's clock) → \"All changes\", grouped by Item, then by Who",
+     "saw": "✓ it lists the hide: \"flagged → hidden\" [⠿ ⏎ Changes · week of 13/7 ⏎ 2 changes this week ⏎ Hide ▾ ⏎ ✕ ⏎ New to you 1 ⏎ All changes 2 ⏎ Week ⏎ Mon ⏎ Tue ⏎ Wed ⏎ Thu ⏎ Fri ⏎ Sat ⏎ Sun ⏎ GROUP BY ⏎ Item ] · ✓ it lists the flag-again: \"hidden → flagged\" · ✓ it names Saber · ✓ it names Hex · ✓ the line is a \"Warning · Static — …\" line · ✓ exactly two warning changes (no duplicate, no contradiction) [{\"hide\":2,\"again\":2,\"note\":\"each counted once per grouping (Item + Who)\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-30-4-A-changes-window.png",
+      "ph-08-30-5-A-changes-by-who.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "06-ph": {
+   "at": "2026-10-01T09:53:15.098Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "6.1",
+     "did": "the board on Sunday 19 Jul: duty block → \"+ Row\", Ranger from the crew list onto it, role and times typed (15:00–23:00); ✓ Done; Edit Schedule, Sunday",
+     "saw": "✓ before the duty his Sunday puck carried no mark and the Sunday list no \"Breaks Monday\" line [puck sm] · ✓ the row took him and its times [{\"role\":\"LATE DUTY\",\"str\":\"15:00\",\"end\":\"23:00\",\"who\":[\"bane\"]}] · ✓ his Sunday puck now wears the dotted mark [puck sm boxdot oilbar oilbar-fo] · ✓ with the crew-rest chip (R) [R] · ✓ and the Sunday list has the \"Breaks Monday\" line for Ranger [⚠ 1 issue · tap to collapse ▲ Breaks Monday Ranger — had to leave by 18:20. Crew rest breach — Sunday ended 23:00 → crew]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-06-1-sunday-duty-added.png"
+     ]
+    },
+    {
+     "id": "6.2",
+     "did": "week chip \"Jul 20\": Monday 20 Jul's list",
+     "saw": "✓ Monday raises a Crew rest line for Ranger [Conflict — two events at once Outlaw — R / Conflict — two events at once Vapor — AP / Crew rest (<12h) Ranger — Crew rest brea / Tight turn Ranger — Tight turn ] · ✓ it is plain, with ✕ · ✓ Monday reads 11 issues [⚠ 11 issues · 3 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-06-2-monday-crew-rest-line.png"
+     ]
+    },
+    {
+     "id": "6.3",
+     "did": "✕ on Monday 20 Jul's Crew rest line (a draft Monday); week chip back to \"Jul 13\"; Sunday on Edit Schedule and on View-only Sched",
+     "saw": "✓ Monday: struck, ↺, 10 issues [⚠ 10 issues · 2 warning · tap to collapse ▲] · ✓ Sunday (Edit Schedule): the dotted mark is gone [puck sm oilbar oilbar-fo] · ✓ and the crew-rest chip is gone [] · ✓ and the Sunday list no longer has the \"Breaks Monday\" line [⚠ 1 issue · tap to collapse ▲ OIL waiting — this day is not published This day is not published yet,] · ✓ Ranger is still on the duty row [1] · ✓ Sunday (View-only Sched): no dotted mark, no CR chip [puck sm oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-06-3-monday-hidden.png",
+      "ph-04-06-4-sunday-after-monday-hide.png",
+      "ph-05-06-5-sunday-viewonly.png"
+     ]
+    },
+    {
+     "id": "6.3n",
+     "did": "Sunday's own list after the hide (recorded)",
+     "saw": "Ranger's Sunday puck: no dotted mark, chip \"\" · Sunday's list has no \"Breaks Monday\" line · before the hide: Ranger's Sunday puck: DOTTED, chip \"R\" · Sunday's list has a \"Breaks Monday\" line",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "6.4",
+     "did": "reloaded (the app opens on the week of 13 Jul — the week of 20 Jul not opened in this sitting); Sunday",
+     "saw": "✓ the app opened on 13 Jul [13/07/2026] · ✓ no dotted mark [puck sm oilbar oilbar-fo] · ✓ no crew-rest chip [] · ✓ no \"Breaks Monday\" line [⚠ 1 issue · tap to collapse ▲ OIL waiting — this day is not published This day is not published yet,]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-06-6-sunday-after-reload.png"
+     ]
+    },
+    {
+     "id": "6.5",
+     "did": "week of 20 Jul: ↺ on the struck Crew rest line; back to 13 Jul; Sunday",
+     "saw": "✓ Monday: plain again, 11 issues [⚠ 11 issues · 3 warning · tap to collapse ▲] · ✓ Sunday: the dotted mark is back [puck sm boxdot oilbar oilbar-fo] · ✓ with the crew-rest chip [R] · ✓ and the \"Breaks Monday\" line",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-06-7-sunday-after-flag-again.png"
+     ]
+    },
+    {
+     "id": "6.6",
+     "did": "reloaded again; Sunday",
+     "saw": "✓ the dotted mark, the chip and the \"Breaks Monday\" line are still there [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-06-8-sunday-flagged-reload.png"
+     ]
+    },
+    {
+     "id": "6.7",
+     "did": "unrelated hides: ✕ on Monday 20 Jul's \"CO approval required\" line; then ✕ on Sunday 19 Jul's own OIL reminder; Sunday",
+     "saw": "✓ Monday's Crew rest line still plain (10 issues: 11 less the unrelated one) [⚠ 10 issues · 3 warning · tap to collapse ▲] · ✓ Sunday keeps the dotted mark and CR chip after the unrelated Monday hide [puck sm boxdot oilbar oilbar-fo] · ✓ and after the hide of Sunday's own OIL reminder [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-06-9-sunday-after-unrelated-hides.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "07-ph": {
+   "at": "2026-10-01T09:55:01.035Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "7.0",
+     "did": "setup: Ranger's late Sunday duty (board); week of 20 Jul: Monday's four sign-offs, Publish day, the Crew rest line showing",
+     "saw": "✓ the duty row took [{\"role\":\"LATE DUTY\",\"str\":\"15:00\",\"end\":\"23:00\",\"who\":[\"bane\"]}] · ✓ Monday 20 Jul is published (ORIG) [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}] · ✓ its Crew rest line is plain, 11 issues [⚠ 11 issues · 3 warning · tap to collapse ▲] · ✓ Sunday (Edit Schedule): dotted mark + chip + \"Breaks Monday\" line [puck sm boxdot oilbar oilbar-fo · breaks true] · ✓ Sunday (View-only Sched): dotted mark + chip [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-07-0-monday-published.png",
+      "ph-02-07-0-sunday-edit.png",
+      "ph-03-07-0-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.1",
+     "did": "✕ on the published Monday's Crew rest line (the hide waits for an amendment); back to 13 Jul, Sunday",
+     "saw": "✓ Monday working copy: struck, ↺, 10 issues [⚠ 10 issues · 2 warning · tap to collapse ▲] · ✓ one pending, \"Publish AL1\" offered, sign-offs fallen [{\"chip\":\"1 pending\",\"alpub\":\"Publish AL1\",\"nys\":\"Not yet signed\"}] · ✓ the mark has NOT moved — Sunday (Edit Schedule): dotted mark + chip + \"Breaks Monday\" line [puck sm boxdot oilbar oilbar-fo · breaks true] · ✓ the mark has NOT moved — Sunday (View-only Sched): dotted mark + chip [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-07-1-monday-hide-pending.png",
+      "ph-05-07-1-sunday-edit.png",
+      "ph-06-07-1-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.2",
+     "did": "reloaded; signed in as the second scheduler (Hex · Admin); Sunday 19 Jul",
+     "saw": "✓ signed in as Hex · Admin [Hex · Admin] · ✓ still there — Sunday (Edit Schedule): dotted mark + chip + \"Breaks Monday\" line [puck sm boxdot oilbar oilbar-fo · breaks true] · ✓ still there — Sunday (View-only Sched): dotted mark + chip [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-07-2-sunday-edit.png",
+      "ph-08-07-2-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.3",
+     "did": "Hex: Monday 20 Jul's four sign-offs, \"Publish AL1\"; View-only Sched Monday; then Sunday 19 Jul",
+     "saw": "✓ AL1 went out [{\"pub\":{\"pressed\":true,\"label\":\"Publish AL1\"},\"tag\":\"AL1\",\"alpub\":\"\",\"marker\":\"Not yet published\"}] · ✓ the published Monday now shows the line struck, no button, 10 issues [⚠ 10 issues · 2 warning · tap to collapse ▲] · ✓ the mark has gone — Sunday (Edit Schedule): no dotted mark, no chip, no \"Breaks Monday\" line [puck sm oilbar oilbar-fo · breaks false] · ✓ the mark has gone — Sunday (View-only Sched): no dotted mark, no chip [puck sm oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-07-3-monday-AL1-viewonly.png",
+      "ph-10-07-3-sunday-edit.png",
+      "ph-11-07-3-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.4",
+     "did": "reloaded; signed in as Saber; Sunday 19 Jul",
+     "saw": "✓ still gone — Sunday (Edit Schedule): no dotted mark, no chip, no \"Breaks Monday\" line [puck sm oilbar oilbar-fo · breaks false] · ✓ still gone — Sunday (View-only Sched): no dotted mark, no chip [puck sm oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-07-4-sunday-edit.png",
+      "ph-13-07-4-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.5",
+     "did": "↺ on Monday's struck Crew rest line (a flag-again waiting for an amendment); Sunday 19 Jul",
+     "saw": "✓ Monday working copy: plain, ✕, 11 issues [⚠ 11 issues · 3 warning · tap to collapse ▲] · ✓ one pending, \"Publish AL2\" offered [{\"chip\":\"1 pending\",\"alpub\":\"Publish AL2\"}] · ✓ the mark has NOT come back yet — Sunday (Edit Schedule): no dotted mark, no chip, no \"Breaks Monday\" line [puck sm oilbar oilbar-fo · breaks false] · ✓ the mark has NOT come back yet — Sunday (View-only Sched): no dotted mark, no chip [puck sm oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-07-5-monday-flag-again-pending.png",
+      "ph-15-07-5-sunday-edit.png",
+      "ph-16-07-5-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.6",
+     "did": "reloaded; signed in as Hex; Sunday 19 Jul",
+     "saw": "✓ still not back — Sunday (Edit Schedule): no dotted mark, no chip, no \"Breaks Monday\" line [puck sm oilbar oilbar-fo · breaks false] · ✓ still not back — Sunday (View-only Sched): no dotted mark, no chip [puck sm oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-17-07-6-sunday-edit.png",
+      "ph-18-07-6-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.7",
+     "did": "Hex: Monday's four sign-offs, \"Publish AL2\"; Sunday 19 Jul",
+     "saw": "✓ AL2 went out [{\"pub\":{\"pressed\":true,\"label\":\"Publish AL2\"},\"tag\":\"AL2\"}] · ✓ the mark is back — Sunday (Edit Schedule): dotted mark + chip + \"Breaks Monday\" line [puck sm boxdot oilbar oilbar-fo · breaks true] · ✓ the mark is back — Sunday (View-only Sched): dotted mark + chip [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-19-07-7-sunday-edit.png",
+      "ph-20-07-7-sunday-view.png"
+     ]
+    },
+    {
+     "id": "7.8",
+     "did": "reloaded; signed in as Saber; Sunday 19 Jul",
+     "saw": "✓ still back — Sunday (Edit Schedule): dotted mark + chip + \"Breaks Monday\" line [puck sm boxdot oilbar oilbar-fo · breaks true] · ✓ still back — Sunday (View-only Sched): dotted mark + chip [puck sm boxdot oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-21-07-8-sunday-edit.png",
+      "ph-22-07-8-sunday-view.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "44-ph": {
+   "at": "2026-10-01T09:56:12.137Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "44.0",
+     "did": "setup + baseline: Sunday 19 Jul signed and published (a weekend duty earns); then read: Logic, the PDF button's print frame, the CSV button's file, Leave War, OIL tracker",
+     "saw": "✓ Sunday is published [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}] · ✓ Logic shows \"fired N×\" lines [71 of 71 rules · 16 fired on this week's schedule] · ✓ Logic counts the long work day and the crew rest as fired [fired 2× · Mon, Tue · fired 1× · Tue] · ✓ the PDF button built a print frame with the schedule in it (the app says \"Print dialog opened\") [{\"toast\":\"Print dialog opened — choose \\\"Save as PDF\\\"\",\"len\":3262,\"pucks\":0}] · ✓ the print frame carries no warning mark and no warning words [{\"marks\":0,\"cls\":[],\"word\":\"\"}] · ✓ the CSV button built a text/csv file of flying lines [{\"rows\":33,\"head\":\"\\\"Day\\\",\\\"Date\\\",\\\"Wave\\\",\\\"CS\\\",\\\"Mission\\\",\\\"Brief\\\",\\\"TO\\\",\\\"Land\\\",\\\"FCP\\\",\\\"FCP lvl\\\",\\\"RCP\\\",\\\"RCP lvl\\\",\\\"Area\\\",\\\"Area time\\\",\\\"Rmks\\] · ✓ the CSV carries no warning words [] · ✓ the OIL tracker lists Dash's figures [Dash C 3 + 3 +1 carried in opening figure 1 left +1 19 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left +1 15 Aug FLT 1 left ]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-44-a-before-logic.png",
+      "ph-02-44-a-before-oil-tracker.png",
+      "ph-03-44-a-before-leavewar.png"
+     ]
+    },
+    {
+     "id": "44.1",
+     "did": "pressed ✕ on all four of Tuesday's lines, Monday's first three and Saturday's OIL reminder; then read the five again",
+     "saw": "✓ the hides took: Tuesday \"No issues\", Monday 11, Saturday's reminder struck [{\"tue\":\"✓ No issues · tap to collapse ▲\",\"mon\":\"⚠ 11 issues · 3 warning · tap to collapse ▲\",\"sat\":\"✓ No issues · tap to collapse ▲\",\"pressed\":[\"Tue#0:pressed\",] · ✓ Logic: the \"fired\" line of every rule reads as before [71 of 71 rules · 16 fired on this week's schedule · LONGDAY: fired 2× · Mon, Tue · CREW_REST: fired 1× · Tue] · ✓ Logic: the long work day still counts Tuesday (its only Tuesday warning is the hidden one) [fired 2× · Mon, Tue] · ✓ print: the print frame's page is the same, to the letter [d8450f33:12938] · ✓ print: it carries no warning mark and no warning words [{\"marks\":0,\"cls\":[],\"word\":\"\"}] · ✓ CSV: the file is the same, to the letter [16b0cd2c:4399] · ✓ CSV: no warning words in it [] · ✓ Leave War: the page reads the same [76bbb0d1:7463] · ✓ OIL tracker: every figure reads the same [7227e669:2130 · Dash C 3 + 3 +1 carried in opening figure 1 left +1 19 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left +1 15 Aug FLT 1 left ] · ✓ the Leave War's saved rows are the same [ce31a929:89438]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-44-b-tuesday-all-hidden.png",
+      "ph-05-44-b-hidden-logic.png",
+      "ph-06-44-b-hidden-oil-tracker.png",
+      "ph-07-44-b-hidden-leavewar.png"
+     ]
+    },
+    {
+     "id": "44.2",
+     "did": "reloaded; read the five again",
+     "saw": "✓ after the reload — Logic: the \"fired\" line of every rule reads as before [71 of 71 rules · 16 fired on this week's schedule · LONGDAY: fired 2× · Mon, Tue · CREW_REST: fired 1× · Tue] · ✓ after the reload — Logic: the long work day still counts Tuesday (its only Tuesday warning is the hidden one) [fired 2× · Mon, Tue] · ✓ after the reload — print: the print frame's page is the same, to the letter [d8450f33:12938] · ✓ after the reload — print: it carries no warning mark and no warning words [{\"marks\":0,\"cls\":[],\"word\":\"\"}] · ✓ after the reload — CSV: the file is the same, to the letter [16b0cd2c:4399] · ✓ after the reload — CSV: no warning words in it [] · ✓ after the reload — Leave War: the page reads the same [76bbb0d1:7463] · ✓ after the reload — OIL tracker: every figure reads the same [7227e669:2130 · Dash C 3 + 3 +1 carried in opening figure 1 left +1 19 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left +1 15 Aug FLT 1 left ] · ✓ after the reload — the Leave War's saved rows are the same [ce31a929:89438]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-44-c-reload-logic.png",
+      "ph-09-44-c-reload-oil-tracker.png",
+      "ph-10-44-c-reload-leavewar.png"
+     ]
+    },
+    {
+     "id": "44.3",
+     "did": "pressed ↺ on every one of them; read the five again",
+     "saw": "✓ all flagged again: Tuesday 4, Monday 14 [⚠ 4 issues · 2 warning · tap to collapse ▲ · ⚠ 14 issues · 6 warning · tap to collapse ▲] · ✓ Logic: the \"fired\" line of every rule reads as before [71 of 71 rules · 16 fired on this week's schedule · LONGDAY: fired 2× · Mon, Tue · CREW_REST: fired 1× · Tue] · ✓ Logic: the long work day still counts Tuesday (its only Tuesday warning is the hidden one) [fired 2× · Mon, Tue] · ✓ print: the print frame's page is the same, to the letter [d8450f33:12938] · ✓ print: it carries no warning mark and no warning words [{\"marks\":0,\"cls\":[],\"word\":\"\"}] · ✓ CSV: the file is the same, to the letter [16b0cd2c:4399] · ✓ CSV: no warning words in it [] · ✓ Leave War: the page reads the same [76bbb0d1:7463] · ✓ OIL tracker: every figure reads the same [7227e669:2130 · Dash C 3 + 3 +1 carried in opening figure 1 left +1 19 Jul AUTO Weekend/PH Duty · 08:00–18:00 1 left +1 15 Aug FLT 1 left ] · ✓ the Leave War's saved rows are the same [ce31a929:89438]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-44-d-flagged-again-logic.png",
+      "ph-12-44-d-flagged-again-oil-tracker.png",
+      "ph-13-44-d-flagged-again-leavewar.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "32-ph": {
+   "at": "2026-10-01T09:56:56.738Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "32.1",
+     "did": "A (Saber) hid Static's \"Long work day\" on Tuesday; B (Hex) reloaded, saw it, and hid Saint's \"No time for the flight brief\" on the same Tuesday",
+     "saw": "✓ B saw A's hide after his reload [0:plain 1:plain 2:plain 3:struck] · ✓ B's Tuesday now has both struck, 2 issues [⚠ 2 issues · 2 warning · tap to collapse ▲ · 0:plain 1:plain 2:struck 3:struck]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-32-1-B-hides-on-same-day.png"
+     ]
+    },
+    {
+     "id": "32.2",
+     "did": "A (his tab not reloaded; Undo titled \"Undo — hiding a warning\") pressed Undo in the top bar",
+     "saw": "✗ Undo refused (it did not take the hide back) [Undid: hiding a warning] · ✗ the refusal names Hex [Undid: hiding a warning] · ✗ B's hide survived in the store (Saint's line still hidden for B after a reload) [0:plain 1:plain 2:plain 3:plain] · ✗ A's own hide was not taken back either (after A's reload both are struck, 2 issues) [⚠ 4 issues · 2 warning · tap to collapse ▲ · 0:plain 1:plain 2:plain 3:plain]",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-02-32-2-A-undo-pressed.png",
+      "ph-03-32-3-A-after-reload.png"
+     ]
+    },
+    {
+     "id": "32.3",
+     "did": "fresh world: A hid Tuesday's \"Long work day\"; B reloaded and hid the first line of WEDNESDAY; A (tab not reloaded) pressed Undo",
+     "saw": "✓ B's Wednesday hide took (one fewer issue, first line struck) [⚠ 7 issues · 2 warning · tap to collapse ▲ → ⚠ 6 issues · 1 warning · tap to collapse ▲] · ✓ A's Undo was not blocked: it took his Tuesday hide back [Undid: hiding a warning · ⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ after A's reload Tuesday is flagged again (4 issues) [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ and B's Wednesday hide is still there [⚠ 6 issues · 1 warning · tap to collapse ▲ · 0:struck 1:plain 2:plain 3:plain 4:plain 5:plain 6:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-32-4-B-hides-on-wednesday.png",
+      "ph-05-32-5-A-undo-other-day.png",
+      "ph-06-32-6-A-after-reload-wednesday.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "04-ph": {
+   "at": "2026-10-01T09:56:58.410Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "4",
+     "did": "the next-week preview",
+     "saw": "not drawn on a phone",
+     "verdict": "NOT WALKED (desktop only — the preview is not drawn on a phone)",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "05-ph": {
+   "at": "2026-10-01T09:56:59.999Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "5",
+     "did": "the next-week preview",
+     "saw": "not drawn on a phone",
+     "verdict": "NOT WALKED (desktop only — the preview is not drawn on a phone)",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "44b-dk": {
+   "at": "2026-10-01T10:09:51.293Z",
+   "base": "http://localhost:4213",
+   "phone": false,
+   "table": [
+    {
+     "id": "44b.0",
+     "did": "calendar button → 27 Dec 2025; the board on Saturday: \"+ Block\" → Standard, Dash onto its first row; four sign-offs, Publish day",
+     "saw": "✓ the week of 22 Dec 2025 is up [22/12/2025] · ✓ the duty row holds Dash with times [{\"role\":\"SDO\",\"str\":\"08:00\",\"end\":\"18:00\",\"who\":[\"spaceman\"]}] · ✓ Saturday is published [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}] · ✓ Saturday's list carries an OIL reminder about there being no Leave War period [[\"No OIL — no Leave War period covers this date There is no leave war period for 2025, so no\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-44b-1-saturday-no-period.png"
+     ]
+    },
+    {
+     "id": "44b.1",
+     "did": "✕ on Saturday's \"no Leave War period\" reminder (it names nobody); then the Leave War page and the OIL tracker",
+     "saw": "✓ the line is struck, with ↺ [✓ No issues · tap to collapse ▲] · ✓ it is no longer counted [⚠ 1 issue · tap to collapse ▲ → ✓ No issues · tap to collapse ▲] · ✓ on this published day the hide waits as ONE pending change [{\"chip\":\"1 pending\",\"alpub\":\"Publish AL1\"}] · ✓ the Leave War page reads the same [7df8e00:19465] · ✓ the OIL tracker reads the same [f33fcacd:2131] · ✓ the Leave War's saved rows are the same [1ba305dc:89190]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-44b-2-no-period-hidden.png",
+      "dk-04-44b-oil-tracker.png"
+     ]
+    },
+    {
+     "id": "44b.2",
+     "did": "↺ on it; the Leave War page and the OIL tracker again",
+     "saw": "✓ the line is plain again, nothing pending [⚠ 1 issue · tap to collapse ▲ · 10 changes] · ✓ the Leave War page, the OIL tracker and the saved rows are all the same [f33fcacd:2131]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-44b-oil-tracker.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "44b-ph": {
+   "at": "2026-10-01T10:12:55.425Z",
+   "base": "http://localhost:4213",
+   "phone": true,
+   "table": [
+    {
+     "id": "44b.0",
+     "did": "calendar button → 27 Dec 2025; the board on Saturday: \"+ Block\" → Standard, Dash onto its first row; four sign-offs, Publish day",
+     "saw": "✓ the week of 22 Dec 2025 is up [22/12/2025] · ✓ the duty row holds Dash with times [{\"role\":\"SDO\",\"str\":\"08:00\",\"end\":\"18:00\",\"who\":[\"spaceman\"]}] · ✓ Saturday is published [{\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}] · ✓ Saturday's list carries an OIL reminder about there being no Leave War period [[\"No OIL — no Leave War period covers this date There is no leave war period for 2025, so no\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-44b-1-saturday-no-period.png"
+     ]
+    },
+    {
+     "id": "44b.1",
+     "did": "✕ on Saturday's \"no Leave War period\" reminder (it names nobody); then the Leave War page and the OIL tracker",
+     "saw": "✓ the line is struck, with ↺ [✓ No issues · tap to collapse ▲] · ✓ it is no longer counted [⚠ 1 issue · tap to collapse ▲ → ✓ No issues · tap to collapse ▲] · ✓ on this published day the hide waits as ONE pending change [{\"chip\":\"1 pending\",\"alpub\":\"Publish AL1\"}] · ✓ the Leave War page reads the same [76bbb0d1:7463] · ✓ the OIL tracker reads the same [e6080456:2078] · ✓ the Leave War's saved rows are the same [1ba305dc:89190]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-44b-2-no-period-hidden.png",
+      "ph-04-44b-oil-tracker.png"
+     ]
+    },
+    {
+     "id": "44b.2",
+     "did": "↺ on it; the Leave War page and the OIL tracker again",
+     "saw": "✓ the line is plain again, nothing pending [⚠ 1 issue · tap to collapse ▲ · 10 changes] · ✓ the Leave War page, the OIL tracker and the saved rows are all the same [e6080456:2078]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-44b-oil-tracker.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

@@ -1,0 +1,2454 @@
+{
+ "parts": {
+  "s38a-dk": {
+   "at": "2026-10-01T09:38:57.741Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "38a.0",
+     "did": "Edit Schedule: Tuesday's four sign-off selects, then Publish day — Static's long work day (freezes on a published face) still flagged",
+     "saw": "✓ Publish day was pressed [{\"pressed\":true,\"label\":\"Publish day\"}] · ✓ the day reads ORIG [ORIG] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ its line is plain, with ✕ [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ Static's puck is flagged [flying line:ring(note) chip L, other:ring(note) chip L]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s38a-0-published-flagged.png"
+     ]
+    },
+    {
+     "id": "38a.1",
+     "did": "✕ on the line \"Static …\" in Tuesday's list (Edit Schedule) — the working copy",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the line is painted struck [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ its button is ↺, the thing a finger lands on [[\"↺\",true]] · ✓ the bar reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the bar says nothing of a hidden one [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's Tuesday pucks carry no flag [flying line:plain, other:plain] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ the button reads Publish AL1 [Publish AL1]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s38a-1-work-hidden.png",
+      "dk-03-s38a-1-work-hidden-puck.png"
+     ]
+    },
+    {
+     "id": "38a.2",
+     "did": "a reload and a fresh sign-in as the scheduler — the working copy again",
+     "saw": "✓ the line is still painted struck, with ↺ [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's pucks carry no flag [flying line:plain, other:plain] · ✓ 1 pending [1 pending] · ✓ Not yet signed [Not yet signed] · ✓ four sign-offs empty [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s38a-2-work-after-reload.png"
+     ]
+    },
+    {
+     "id": "38a.3",
+     "did": "a reload, signed in as the member (Ranger) — View-only Sched, Tuesday as issued, while the hide waits",
+     "saw": "✓ the day shows the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar still reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is NOT struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ / ↺ anywhere in the list [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Static's puck still carries its flag [flying line:ring(note) chip L, other:ring(note) chip L] · ✓ no pending chip, no marker on the published face [[\"\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s38a-3-member-pending.png",
+      "dk-06-s38a-3-member-pending-puck.png"
+     ]
+    },
+    {
+     "id": "38a.4",
+     "did": "the scheduler again: the four sign-off selects, then Publish AL1",
+     "saw": "✓ after signing the marker reads Not yet published [Not yet published] · ✓ the four are signed [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1 [AL1] · ✓ nothing pending [11 changes] · ✓ no marker [] · ✓ no Publish AL button [] · ✓ the line is still struck with ↺ on the working copy [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's pucks carry no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s38a-4-signed-over-hide.png",
+      "dk-08-s38a-4-work-after-AL1.png"
+     ]
+    },
+    {
+     "id": "38a.5",
+     "did": "a reload, signed in as the member — View-only Sched, Tuesday as issued, after AL1",
+     "saw": "✓ the day shows AL1, as issued [[\"AL1\",\"AL1 — as issued\"]] · ✓ the bar reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted struck [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ the struck line has NO button [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Static's puck carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s38a-5-member-after-AL1.png",
+      "dk-10-s38a-5-member-after-AL1-puck.png"
+     ]
+    },
+    {
+     "id": "38a.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s38b-dk": {
+   "at": "2026-10-01T09:39:25.468Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "38b.0",
+     "did": "Edit Schedule: Tuesday's four sign-off selects, then Publish day — Outlaw's crew-rest breach (stays live on a published face) still flagged",
+     "saw": "✓ Publish day was pressed [{\"pressed\":true,\"label\":\"Publish day\"}] · ✓ the day reads ORIG [ORIG] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ its line is plain, with ✕ [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ Outlaw's puck is flagged [flying line:ring(hard) chip R red, other:ring(hard) chip R red]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s38b-0-published-flagged.png"
+     ]
+    },
+    {
+     "id": "38b.1",
+     "did": "✕ on the line \"Outlaw …\" in Tuesday's list (Edit Schedule) — the working copy",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the line is painted struck [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ its button is ↺, the thing a finger lands on [[\"↺\",true]] · ✓ the bar reads 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the bar says nothing of a hidden one [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Outlaw's Tuesday pucks carry no flag [flying line:plain, other:plain] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ the button reads Publish AL1 [Publish AL1]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s38b-1-work-hidden.png",
+      "dk-03-s38b-1-work-hidden-puck.png"
+     ]
+    },
+    {
+     "id": "38b.1m",
+     "did": "RECORDED — Edit Schedule, Monday: Outlaw's \"breaks Tuesday\" dotted mark while the hide is pending",
+     "saw": "flying line:plain",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-s38b-1-work-hidden.png"
+     ]
+    },
+    {
+     "id": "38b.2",
+     "did": "a reload and a fresh sign-in as the scheduler — the working copy again",
+     "saw": "✓ the line is still painted struck, with ↺ [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Outlaw's pucks carry no flag [flying line:plain, other:plain] · ✓ 1 pending [1 pending] · ✓ Not yet signed [Not yet signed] · ✓ four sign-offs empty [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s38b-2-work-after-reload.png"
+     ]
+    },
+    {
+     "id": "38b.3",
+     "did": "a reload, signed in as the member (Ranger) — View-only Sched, Tuesday as issued, while the hide waits",
+     "saw": "✓ the day shows the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar still reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is NOT struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ / ↺ anywhere in the list [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Outlaw's puck still carries its flag [flying line:ring(hard) chip R red] · ✓ no pending chip, no marker on the published face [[\"\",\"\"]] · ✓ Monday: Outlaw's dotted \"breaks Tuesday\" mark is still drawn (Tuesday still flags it) [flying line:plain chip R dotted]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s38b-3-member-pending.png",
+      "dk-06-s38b-3-member-pending-puck.png"
+     ]
+    },
+    {
+     "id": "38b.4",
+     "did": "the scheduler again: the four sign-off selects, then Publish AL1",
+     "saw": "✓ after signing the marker reads Not yet published [Not yet published] · ✓ the four are signed [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1 [AL1] · ✓ nothing pending [11 changes] · ✓ no marker [] · ✓ no Publish AL button [] · ✓ the line is still struck with ↺ on the working copy [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Outlaw's pucks carry no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s38b-4-signed-over-hide.png",
+      "dk-08-s38b-4-work-after-AL1.png"
+     ]
+    },
+    {
+     "id": "38b.4m",
+     "did": "RECORDED — Edit Schedule, Monday: Outlaw's dotted mark after AL1 went out with the hide",
+     "saw": "flying line:plain",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-08-s38b-4-work-after-AL1.png"
+     ]
+    },
+    {
+     "id": "38b.5",
+     "did": "a reload, signed in as the member — View-only Sched, Tuesday as issued, after AL1",
+     "saw": "✓ the day shows AL1, as issued [[\"AL1\",\"AL1 — as issued\"]] · ✓ the bar reads 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the line is painted struck [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[no button] 1:STRUCK[no button] 2:plain[no button] 3:plain[no button]] · ✓ the struck line has NO button [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[no button] 1:STRUCK[no button] 2:plain[no button] 3:plain[no button]] · ✓ Outlaw's puck carries no flag [flying line:plain] · ✓ Monday: Outlaw's dotted \"breaks Tuesday\" mark is gone [flying line:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s38b-5-member-after-AL1.png",
+      "dk-10-s38b-5-member-after-AL1-puck.png"
+     ]
+    },
+    {
+     "id": "38b.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s38a-ph": {
+   "at": "2026-10-01T09:40:32.626Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "38a.0",
+     "did": "Edit Schedule: Tuesday's four sign-off selects, then Publish day — Static's long work day (freezes on a published face) still flagged",
+     "saw": "✓ Publish day was pressed [{\"pressed\":true,\"label\":\"Publish day\"}] · ✓ the day reads ORIG [ORIG] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ its line is plain, with ✕ [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ Static's puck is flagged [flying line:ring(note) chip L, other:ring(note) chip L]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s38a-0-published-flagged.png"
+     ]
+    },
+    {
+     "id": "38a.1",
+     "did": "✕ on the line \"Static …\" in Tuesday's list (Edit Schedule) — the working copy",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the line is painted struck [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ its button is ↺, the thing a finger lands on [[\"↺\",true]] · ✓ the bar reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the bar says nothing of a hidden one [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's Tuesday pucks carry no flag [flying line:plain, other:plain] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ the button reads Publish AL1 [Publish AL1]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-s38a-1-work-hidden.png",
+      "ph-03-s38a-1-work-hidden-puck.png"
+     ]
+    },
+    {
+     "id": "38a.2",
+     "did": "a reload and a fresh sign-in as the scheduler — the working copy again",
+     "saw": "✓ the line is still painted struck, with ↺ [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's pucks carry no flag [flying line:plain, other:plain] · ✓ 1 pending [1 pending] · ✓ Not yet signed [Not yet signed] · ✓ four sign-offs empty [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-s38a-2-work-after-reload.png"
+     ]
+    },
+    {
+     "id": "38a.3",
+     "did": "a reload, signed in as the member (Ranger) — View-only Sched, Tuesday as issued, while the hide waits",
+     "saw": "✓ the day shows the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar still reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is NOT struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ / ↺ anywhere in the list [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Static's puck still carries its flag [flying line:ring(note) chip L, other:ring(note) chip L] · ✓ no pending chip, no marker on the published face [[\"\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-s38a-3-member-pending.png",
+      "ph-06-s38a-3-member-pending-puck.png"
+     ]
+    },
+    {
+     "id": "38a.4",
+     "did": "the scheduler again: the four sign-off selects, then Publish AL1",
+     "saw": "✓ after signing the marker reads Not yet published [Not yet published] · ✓ the four are signed [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1 [AL1] · ✓ nothing pending [11 changes] · ✓ no marker [] · ✓ no Publish AL button [] · ✓ the line is still struck with ↺ on the working copy [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's pucks carry no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-s38a-4-signed-over-hide.png",
+      "ph-08-s38a-4-work-after-AL1.png"
+     ]
+    },
+    {
+     "id": "38a.5",
+     "did": "a reload, signed in as the member — View-only Sched, Tuesday as issued, after AL1",
+     "saw": "✓ the day shows AL1, as issued [[\"AL1\",\"AL1 — as issued\"]] · ✓ the bar reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted struck [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ the struck line has NO button [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Static's puck carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-s38a-5-member-after-AL1.png",
+      "ph-10-s38a-5-member-after-AL1-puck.png"
+     ]
+    },
+    {
+     "id": "38a.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s38b-ph": {
+   "at": "2026-10-01T09:40:58.810Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "38b.0",
+     "did": "Edit Schedule: Tuesday's four sign-off selects, then Publish day — Outlaw's crew-rest breach (stays live on a published face) still flagged",
+     "saw": "✓ Publish day was pressed [{\"pressed\":true,\"label\":\"Publish day\"}] · ✓ the day reads ORIG [ORIG] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ its line is plain, with ✕ [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ Outlaw's puck is flagged [flying line:ring(hard) chip R red, other:ring(hard) chip R red]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s38b-0-published-flagged.png"
+     ]
+    },
+    {
+     "id": "38b.1",
+     "did": "✕ on the line \"Outlaw …\" in Tuesday's list (Edit Schedule) — the working copy",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the line is painted struck [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ its button is ↺, the thing a finger lands on [[\"↺\",true]] · ✓ the bar reads 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the bar says nothing of a hidden one [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Outlaw's Tuesday pucks carry no flag [flying line:plain, other:plain] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ the button reads Publish AL1 [Publish AL1]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-s38b-1-work-hidden.png",
+      "ph-03-s38b-1-work-hidden-puck.png"
+     ]
+    },
+    {
+     "id": "38b.1m",
+     "did": "RECORDED — Edit Schedule, Monday: Outlaw's \"breaks Tuesday\" dotted mark while the hide is pending",
+     "saw": "flying line:plain",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-02-s38b-1-work-hidden.png"
+     ]
+    },
+    {
+     "id": "38b.2",
+     "did": "a reload and a fresh sign-in as the scheduler — the working copy again",
+     "saw": "✓ the line is still painted struck, with ↺ [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Outlaw's pucks carry no flag [flying line:plain, other:plain] · ✓ 1 pending [1 pending] · ✓ Not yet signed [Not yet signed] · ✓ four sign-offs empty [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-s38b-2-work-after-reload.png"
+     ]
+    },
+    {
+     "id": "38b.3",
+     "did": "a reload, signed in as the member (Ranger) — View-only Sched, Tuesday as issued, while the hide waits",
+     "saw": "✓ the day shows the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar still reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is NOT struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ / ↺ anywhere in the list [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Outlaw's puck still carries its flag [flying line:ring(hard) chip R red] · ✓ no pending chip, no marker on the published face [[\"\",\"\"]] · ✓ Monday: Outlaw's dotted \"breaks Tuesday\" mark is still drawn (Tuesday still flags it) [flying line:plain chip R dotted]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-s38b-3-member-pending.png",
+      "ph-06-s38b-3-member-pending-puck.png"
+     ]
+    },
+    {
+     "id": "38b.4",
+     "did": "the scheduler again: the four sign-off selects, then Publish AL1",
+     "saw": "✓ after signing the marker reads Not yet published [Not yet published] · ✓ the four are signed [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1 [AL1] · ✓ nothing pending [11 changes] · ✓ no marker [] · ✓ no Publish AL button [] · ✓ the line is still struck with ↺ on the working copy [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Outlaw's pucks carry no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-s38b-4-signed-over-hide.png",
+      "ph-08-s38b-4-work-after-AL1.png"
+     ]
+    },
+    {
+     "id": "38b.4m",
+     "did": "RECORDED — Edit Schedule, Monday: Outlaw's dotted mark after AL1 went out with the hide",
+     "saw": "flying line:plain",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-08-s38b-4-work-after-AL1.png"
+     ]
+    },
+    {
+     "id": "38b.5",
+     "did": "a reload, signed in as the member — View-only Sched, Tuesday as issued, after AL1",
+     "saw": "✓ the day shows AL1, as issued [[\"AL1\",\"AL1 — as issued\"]] · ✓ the bar reads 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the line is painted struck [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[no button] 1:STRUCK[no button] 2:plain[no button] 3:plain[no button]] · ✓ the struck line has NO button [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[no button] 1:STRUCK[no button] 2:plain[no button] 3:plain[no button]] · ✓ Outlaw's puck carries no flag [flying line:plain] · ✓ Monday: Outlaw's dotted \"breaks Tuesday\" mark is gone [flying line:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-s38b-5-member-after-AL1.png",
+      "ph-10-s38b-5-member-after-AL1-puck.png"
+     ]
+    },
+    {
+     "id": "38b.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s40-dk": {
+   "at": "2026-10-01T09:53:53.501Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "40.0",
+     "did": "Tuesday signed and published (Original), nothing hidden — the counts before",
+     "saw": "✓ published [[{\"pressed\":true,\"label\":\"Publish day\"},\"ORIG\"]] · ✓ the chip does not say pending [5 changes] · ✓ no marker [] · ✓ no Publish AL button [null] · ✓ Amendments names no day [{\"line\":\"No pending changes\",\"days\":[],\"list\":\"No amendments published yet — publish a day, edit it, then publish an AL.\",\"shown\":true}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s40-0-published.png"
+     ]
+    },
+    {
+     "id": "40.1",
+     "did": "✕ on Static's long work day; then the day's chip, the marker, the sign-offs, the button, the Amendments panel, the changes window (\"To go out\")",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":true}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 6\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged →] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the four sign-offs are empty [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ Publish AL1 is locked until the four sign (day head and Amendments) [[{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"},[{\"text\":\"Tue · 1 change\",\"btn\":\"Publis]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s40-1-one-hide-head.png",
+      "dk-04-s40-pend-togoout.png",
+      "dk-06-s40-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "40.1g",
+     "did": "the changes window, \"All changes\": where the hide is listed",
+     "saw": "✓ a line says who hid the warning [[\"▾ The day · 6 17:53 Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief\"]] · ✓ it sits under the group \"The day\" [[\"The day · 6\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s40-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "40.1t",
+     "did": "a tap on the \"Warning · … flagged → hidden\" line in \"To go out\" (Astra: it lands on the struck line)",
+     "saw": "✗ the line can be tapped (it is a button) [This change has no place of its own on the schedule to go to] · ✗ the tap lights something on the schedule [{\"flash\":null,\"flashIsLine\":false,\"listOpen\":true,\"y\":0,\"wfoc\":0,\"before\":{\"open\":true,\"y\":0,\"flash\":0},\"shot\":\"dk-05-s40-pend-tapped.png\"}]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-05-s40-pend-tapped.png"
+     ]
+    },
+    {
+     "id": "40.2",
+     "did": "the four sign-off selects over the pending hide",
+     "saw": "✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 10\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged →] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ the marker now reads Not yet published [Not yet published] · ✓ the four are signed [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ Publish AL1 is unlocked (day head and Amendments) [[{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"},[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s40-2-signed.png",
+      "dk-08-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.3",
+     "did": "✕ on a second warning (Saint's clash) while the four are signed",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day's chip reads 2 pending [2 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 2 changes [[\"1 day with changes to publish\",[{\"text\":\"Tue · 2 changes\",\"btn\":\"Publish AL1\",\"locked\":true}]]] · ✓ the window's heading says 2 changes waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 2 changes waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 2 [[\"New to you 0\",\"All changes 11\",\"To go out · AL1 2 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 2 changes\" and holds 2 lines [[\"Waiting to go out as AL1 · 2 changes\",[\"Warning · Saint — VL SAT & APPOINTMENT clash flagged → hidden\",\"Warning · Static — Static has a long work day: 13h05, ] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Saint — VL SAT & APPOINTMENT clash flagged → hidden\",\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h d] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Saint — VL SAT & APPOINTMENT clash flagged → hidden\",\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h d] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ the marker is back to Not yet signed [Not yet signed]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s40-3-two-hides.png",
+      "dk-11-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.3t",
+     "did": "the changes window, \"To go out\": a tap on each \"Warning · … flagged → hidden\" line (the plan: \"a tap takes the view to the line of the warning\"; Astra 40: \"tapping it lands on the struck line\")",
+     "saw": "✓ the clash line (it names a seat) can be tapped [{\"text\":\"Warning · Saint — VL SAT & APPOINTMENT clash flagged → hidden\",\"button\":true,\"title\":\"Go to this change\"}] · ✓ the tap lights something on Tuesday [{\"lit\":{\"tag\":\"SPAN\",\"cls\":\"seat chgflash\",\"text\":\"B Saint B\",\"day\":1,\"isWarnLine\":false,\"isPuck\":true},\"listOpen\":false,\"focusLine\":[]}] · ✗ what it lights is the struck warning line in the day list (Astra 40) [it lit the seat \"B Saint B\"; the day list stayed shut] · ✗ the long-work-day line (it names no seat) can be tapped [{\"text\":\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\",\"button\":false,\"title\":] · ✗ that tap lights something on Tuesday [{\"lit\":null,\"listOpen\":false,\"focusLine\":[]}]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-14-s40-3t-tap-clash-line.png",
+      "dk-15-s40-3t-tap-longday-line.png"
+     ]
+    },
+    {
+     "id": "40.3r",
+     "did": "RECORDED — where each tap landed, and the hint the window shows under the list",
+     "saw": "clash line: a button → lit a puck / seat \"B Saint B\", the day's list stayed shut · long-work-day line: not a button (\"This change has no place of its own on the schedule to go to\") → lit nothing, the day's list stayed shut · hint: \"Tap a change to go to it.\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-14-s40-3t-tap-clash-line.png",
+      "dk-15-s40-3t-tap-longday-line.png"
+     ]
+    },
+    {
+     "id": "40.4",
+     "did": "↺ on Saint's clash — back to one hidden warning",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 12\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged →] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-s40-4-back-to-one.png",
+      "dk-16-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.4s",
+     "did": "RECORDED — the sign-offs after the second hide was taken back (the day is again exactly what the four signed)",
+     "saw": "marker \"Not yet published\" · sign-offs [Ace | Anvil | Anvil | Anvil]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-18-s40-4-back-to-one.png"
+     ]
+    },
+    {
+     "id": "40.5",
+     "did": "the four sign-off selects, Publish AL1; then the Amendments panel's list and the ⓘ panel's \"AL versions covering Tuesday\"",
+     "saw": "✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1, nothing pending, no marker [[\"AL1\",\"17 changes\",\"\"]] · ✓ Amendments lists AL1 with ONE item [AL1 Tue · 1 item · appr Anvil] · ✓ the ⓘ panel lists AL1 with ONE item [AL1 1 item]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-s40-5-after-AL1.png",
+      "dk-21-s40-5-dayinfo-AL1.png"
+     ]
+    },
+    {
+     "id": "40.6",
+     "did": "↺ on the long work day after AL1 went out with it hidden",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the chip reads 1 pending [1 pending] · ✓ the button reads Publish AL2 [{\"label\":\"Publish AL2\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL2\"}] · ✓ \"To go out\" holds ONE line [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]] · ✓ it reads \"Warning · … hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]] · ✓ the marker reads Not yet signed [Not yet signed]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-s40-6-flag-again-pending.png",
+      "dk-23-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.7",
+     "did": "✕ on it again — the day is back to what AL1 went out with",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ nothing pending [19 changes] · ✓ no marker [] · ✓ no Publish AL button [] · ✓ the line is struck again [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-26-s40-7-back-to-nothing.png"
+     ]
+    },
+    {
+     "id": "40.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s40-ph": {
+   "at": "2026-10-01T09:54:36.394Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "40.0",
+     "did": "Tuesday signed and published (Original), nothing hidden — the counts before",
+     "saw": "✓ published [[{\"pressed\":true,\"label\":\"Publish day\"},\"ORIG\"]] · ✓ the chip does not say pending [5 changes] · ✓ no marker [] · ✓ no Publish AL button [null] · ✓ Amendments names no day [{\"line\":\"No pending changes\",\"days\":[],\"list\":\"No amendments published yet — publish a day, edit it, then publish an AL.\",\"shown\":false}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-s40-0-published.png"
+     ]
+    },
+    {
+     "id": "40.1",
+     "did": "✕ on Static's long work day; then the day's chip, the marker, the sign-offs, the button, the Amendments panel, the changes window (\"To go out\")",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":true}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 6\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged →] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the four sign-offs are empty [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ Publish AL1 is locked until the four sign (day head and Amendments) [[{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"},[{\"text\":\"Tue · 1 change\",\"btn\":\"Publis]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-s40-1-one-hide-head.png",
+      "ph-04-s40-pend-togoout.png",
+      "ph-06-s40-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "40.1g",
+     "did": "the changes window, \"All changes\": where the hide is listed",
+     "saw": "✓ a line says who hid the warning [[\"▾ The day · 6 17:54 Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief\"]] · ✓ it sits under the group \"The day\" [[\"The day · 6\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-s40-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "40.1t",
+     "did": "a tap on the \"Warning · … flagged → hidden\" line in \"To go out\" (Astra: it lands on the struck line)",
+     "saw": "✗ the line can be tapped (it is a button) [This change has no place of its own on the schedule to go to] · ✗ the tap lights something on the schedule [{\"flash\":null,\"flashIsLine\":false,\"listOpen\":true,\"y\":0,\"wfoc\":0,\"before\":{\"open\":true,\"y\":0,\"flash\":0},\"shot\":\"ph-05-s40-pend-tapped.png\"}]",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-05-s40-pend-tapped.png"
+     ]
+    },
+    {
+     "id": "40.2",
+     "did": "the four sign-off selects over the pending hide",
+     "saw": "✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 10\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged →] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ the marker now reads Not yet published [Not yet published] · ✓ the four are signed [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ Publish AL1 is unlocked (day head and Amendments) [[{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"},[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-s40-2-signed.png",
+      "ph-08-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.3",
+     "did": "✕ on a second warning (Saint's clash) while the four are signed",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day's chip reads 2 pending [2 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 2 changes [[\"1 day with changes to publish\",[{\"text\":\"Tue · 2 changes\",\"btn\":\"Publish AL1\",\"locked\":true}]]] · ✓ the window's heading says 2 changes waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 2 changes waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 2 [[\"New to you 0\",\"All changes 11\",\"To go out · AL1 2 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 2 changes\" and holds 2 lines [[\"Waiting to go out as AL1 · 2 changes\",[\"Warning · Saint — VL SAT & APPOINTMENT clash flagged → hidden\",\"Warning · Static — Static has a long work day: 13h05, ] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Saint — VL SAT & APPOINTMENT clash flagged → hidden\",\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h d] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Saint — VL SAT & APPOINTMENT clash flagged → hidden\",\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h d] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ the marker is back to Not yet signed [Not yet signed]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-13-s40-3-two-hides.png",
+      "ph-11-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.3t",
+     "did": "the changes window, \"To go out\": a tap on each \"Warning · … flagged → hidden\" line (the plan: \"a tap takes the view to the line of the warning\"; Astra 40: \"tapping it lands on the struck line\")",
+     "saw": "✓ the clash line (it names a seat) can be tapped [{\"text\":\"Warning · Saint — VL SAT & APPOINTMENT clash flagged → hidden\",\"button\":true,\"title\":\"Go to this change\"}] · ✓ the tap lights something on Tuesday [{\"lit\":{\"tag\":\"SPAN\",\"cls\":\"seat chgflash\",\"text\":\"B Saint B\",\"day\":1,\"isWarnLine\":false,\"isPuck\":true},\"listOpen\":false,\"focusLine\":[]}] · ✗ what it lights is the struck warning line in the day list (Astra 40) [it lit the seat \"B Saint B\"; the day list stayed shut] · ✗ the long-work-day line (it names no seat) can be tapped [{\"text\":\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\",\"button\":false,\"title\":] · ✗ that tap lights something on Tuesday [{\"lit\":null,\"listOpen\":false,\"focusLine\":[]}]",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-14-s40-3t-tap-clash-line.png",
+      "ph-15-s40-3t-tap-longday-line.png"
+     ]
+    },
+    {
+     "id": "40.3r",
+     "did": "RECORDED — where each tap landed, and the hint the window shows under the list",
+     "saw": "clash line: a button → lit a puck / seat \"B Saint B\", the day's list stayed shut · long-work-day line: not a button (\"This change has no place of its own on the schedule to go to\") → lit nothing, the day's list stayed shut · hint: \"Tap a change to go to it.\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-14-s40-3t-tap-clash-line.png",
+      "ph-15-s40-3t-tap-longday-line.png"
+     ]
+    },
+    {
+     "id": "40.4",
+     "did": "↺ on Saint's clash — back to one hidden warning",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the day's chip reads 1 pending [1 pending] · ✓ the button reads Publish AL1 [{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"}] · ✓ Amendments: \"1 day with changes to publish\", Tue · 1 change [[\"1 day with changes to publish\",[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":false}]]] · ✓ the window's heading says 1 change waiting to go out as AL1 [Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1] · ✓ the \"To go out · AL1\" tab counts 1 [[\"New to you 0\",\"All changes 12\",\"To go out · AL1 1 [on]\"]] · ✓ its list is headed \"Waiting to go out as AL1 · 1 change\" and holds 1 line [[\"Waiting to go out as AL1 · 1 change\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged →] · ✓ every line reads \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ no line says \"Warnings on this day changed\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-18-s40-4-back-to-one.png",
+      "ph-16-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.4s",
+     "did": "RECORDED — the sign-offs after the second hide was taken back (the day is again exactly what the four signed)",
+     "saw": "marker \"Not yet published\" · sign-offs [Ace | Anvil | Anvil | Anvil]",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-18-s40-4-back-to-one.png"
+     ]
+    },
+    {
+     "id": "40.5",
+     "did": "the four sign-off selects, Publish AL1; then the Amendments panel's list and the ⓘ panel's \"AL versions covering Tuesday\"",
+     "saw": "✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1, nothing pending, no marker [[\"AL1\",\"17 changes\",\"\"]] · ✓ Amendments lists AL1 with ONE item [AL1 Tue · 1 item · appr Anvil] · ✓ the ⓘ panel lists AL1 with ONE item [AL1 1 item]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-22-s40-5-after-AL1.png",
+      "ph-21-s40-5-dayinfo-AL1.png"
+     ]
+    },
+    {
+     "id": "40.6",
+     "did": "↺ on the long work day after AL1 went out with it hidden",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the chip reads 1 pending [1 pending] · ✓ the button reads Publish AL2 [{\"label\":\"Publish AL2\",\"locked\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL2\"}] · ✓ \"To go out\" holds ONE line [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]] · ✓ it reads \"Warning · … hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]] · ✓ the marker reads Not yet signed [Not yet signed]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-25-s40-6-flag-again-pending.png",
+      "ph-23-s40-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "40.7",
+     "did": "✕ on it again — the day is back to what AL1 went out with",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ nothing pending [19 changes] · ✓ no marker [] · ✓ no Publish AL button [] · ✓ the line is struck again [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-26-s40-7-back-to-nothing.png"
+     ]
+    },
+    {
+     "id": "40.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s37-39a-dk": {
+   "at": "2026-10-01T09:13:56.013Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "37a.1",
+     "did": "Tuesday still a draft: ✕ on \"Static …\" in its list (Edit Schedule)",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day reads DRAFT [DRAFT] · ✓ the line is painted struck, with ↺ [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ the bar reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's pucks carry no flag [flying line:plain, other:plain] · ✓ nothing reads pending on a draft day [[\"1 change\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s37a-1-draft-hidden.png",
+      "dk-02-s37a-1-draft-hidden-puck.png"
+     ]
+    },
+    {
+     "id": "37a.2",
+     "did": "a reload and a fresh sign-in as the scheduler",
+     "saw": "✓ the line is still struck, with ↺ [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s37a-2-draft-after-reload.png"
+     ]
+    },
+    {
+     "id": "37a.3",
+     "did": "the four sign-off selects, then Publish day — the Original goes out with the warning hidden",
+     "saw": "✓ Publish day was pressed [{\"pressed\":true,\"label\":\"Publish day\"}] · ✓ the day reads ORIG [ORIG] · ✓ the chip does not say pending [6 changes] · ✓ no marker [] · ✓ no Publish AL button [[\"\",null]] · ✓ Amendments names no day with changes [[\"No pending changes\",[]]] · ✓ the changes window has nothing \"To go out\" [[[\"New to you 0\",\"All changes 6\",\"To go out · AL1 0 [on]\"],[\"Nothing is waiting to go out.\"]]] · ✓ the line is still struck with ↺ [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's pucks carry no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s37a-3-published-hidden.png"
+     ]
+    },
+    {
+     "id": "37a.4",
+     "did": "a reload, signed in as the member — View-only Sched, Tuesday as issued (the Original)",
+     "saw": "✓ the day shows the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted struck [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ it has NO button [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Static's puck carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s37a-4-member-orig.png",
+      "dk-08-s37a-4-member-orig-puck.png"
+     ]
+    },
+    {
+     "id": "39a.1",
+     "did": "the scheduler again: ↺ on \"Static …\" (the Original went out with it hidden) — the working copy",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the line is plain again, with ✕ [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Static's puck is flagged again [flying line:ring(note) chip L, other:ring(note) chip L] · ✓ the chip reads 1 pending [1 pending] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the button reads Publish AL1 [Publish AL1] · ✓ \"To go out\" holds ONE line [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]] · ✓ it reads \"Warning · … hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s39a-1-work-flagged-again.png",
+      "dk-12-s39a-1-work-flagged-again-puck.png",
+      "dk-09-s39a-pend-togoout.png",
+      "dk-10-s39a-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "39a.2",
+     "did": "a reload, signed in as the member — the published face while the flag-again waits",
+     "saw": "✓ still the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar still reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still painted struck, no button [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Static's puck still carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s39a-2-member-pending.png",
+      "dk-14-s39a-2-member-pending-puck.png"
+     ]
+    },
+    {
+     "id": "39a.3",
+     "did": "a reload as the scheduler (the flag-again is kept), the four sign-off selects, Publish AL1",
+     "saw": "✓ after the reload the line was still plain and 1 pending [true] · ✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1, nothing pending, no marker [[\"AL1\",\"12 changes\",\"\"]] · ✓ the line is plain with ✕, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-s39a-3-work-after-AL1.png"
+     ]
+    },
+    {
+     "id": "39a.4",
+     "did": "a reload, signed in as the member — the published face after AL1",
+     "saw": "✓ the day shows AL1, as issued [[\"AL1\",\"AL1 — as issued\"]] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is NOT struck, no button [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Static's puck is flagged [flying line:ring(note) chip L, other:ring(note) chip L]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-s39a-4-member-after-AL1.png",
+      "dk-17-s39a-4-member-after-AL1-puck.png"
+     ]
+    },
+    {
+     "id": "37-39a.err",
+     "did": "the browser's error list through these two scenarios",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s37-39b-dk": {
+   "at": "2026-10-01T09:14:39.679Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "37b.1",
+     "did": "Tuesday still a draft: ✕ on \"Outlaw …\" in its list (Edit Schedule)",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day reads DRAFT [DRAFT] · ✓ the line is painted struck, with ↺ [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ the bar reads 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Outlaw's pucks carry no flag [flying line:plain, other:plain] · ✓ nothing reads pending on a draft day [[\"1 change\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s37b-1-draft-hidden.png",
+      "dk-02-s37b-1-draft-hidden-puck.png"
+     ]
+    },
+    {
+     "id": "37b.2",
+     "did": "a reload and a fresh sign-in as the scheduler",
+     "saw": "✓ the line is still struck, with ↺ [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s37b-2-draft-after-reload.png"
+     ]
+    },
+    {
+     "id": "37b.3",
+     "did": "the four sign-off selects, then Publish day — the Original goes out with the warning hidden",
+     "saw": "✓ Publish day was pressed [{\"pressed\":true,\"label\":\"Publish day\"}] · ✓ the day reads ORIG [ORIG] · ✓ the chip does not say pending [6 changes] · ✓ no marker [] · ✓ no Publish AL button [[\"\",null]] · ✓ Amendments names no day with changes [[\"No pending changes\",[]]] · ✓ the changes window has nothing \"To go out\" [[[\"New to you 0\",\"All changes 6\",\"To go out · AL1 0 [on]\"],[\"Nothing is waiting to go out.\"]]] · ✓ the line is still struck with ↺ [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Outlaw's pucks carry no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s37b-3-published-hidden.png"
+     ]
+    },
+    {
+     "id": "37b.4",
+     "did": "a reload, signed in as the member — View-only Sched, Tuesday as issued (the Original)",
+     "saw": "✓ the day shows the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar reads 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the line is painted struck [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[no button] 1:STRUCK[no button] 2:plain[no button] 3:plain[no button]] · ✓ it has NO button [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[no button] 1:STRUCK[no button] 2:plain[no button] 3:plain[no button]] · ✓ Outlaw's puck carries no flag [flying line:plain] · ✓ Monday: Outlaw carries no dotted \"breaks Tuesday\" mark [flying line:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s37b-4-member-orig.png",
+      "dk-08-s37b-4-member-orig-puck.png"
+     ]
+    },
+    {
+     "id": "39b.1",
+     "did": "the scheduler again: ↺ on \"Outlaw …\" (the Original went out with it hidden) — the working copy",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the line is plain again, with ✕ [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Outlaw's puck is flagged again [flying line:ring(hard) chip R red, other:ring(hard) chip R red] · ✓ the chip reads 1 pending [1 pending] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the button reads Publish AL1 [Publish AL1] · ✓ \"To go out\" holds ONE line [[\"Warning · Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 ] · ✓ it reads \"Warning · … hidden → flagged again\" [[\"Warning · Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s39b-1-work-flagged-again.png",
+      "dk-12-s39b-1-work-flagged-again-puck.png",
+      "dk-09-s39b-pend-togoout.png",
+      "dk-10-s39b-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "39b.2",
+     "did": "a reload, signed in as the member — the published face while the flag-again waits",
+     "saw": "✓ still the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar still reads 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the line is still painted struck, no button [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[no button] 1:STRUCK[no button] 2:plain[no button] 3:plain[no button]] · ✓ Outlaw's puck still carries no flag [flying line:plain] · ✓ Monday: still no dotted mark for Outlaw [flying line:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s39b-2-member-pending.png",
+      "dk-14-s39b-2-member-pending-puck.png"
+     ]
+    },
+    {
+     "id": "39b.3",
+     "did": "a reload as the scheduler (the flag-again is kept), the four sign-off selects, Publish AL1",
+     "saw": "✓ after the reload the line was still plain and 1 pending [true] · ✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1, nothing pending, no marker [[\"AL1\",\"12 changes\",\"\"]] · ✓ the line is plain with ✕, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-s39b-3-work-after-AL1.png"
+     ]
+    },
+    {
+     "id": "39b.4",
+     "did": "a reload, signed in as the member — the published face after AL1",
+     "saw": "✓ the day shows AL1, as issued [[\"AL1\",\"AL1 — as issued\"]] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is NOT struck, no button [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Outlaw's puck is flagged [flying line:ring(hard) chip R red] · ✓ Monday: Outlaw's dotted \"breaks Tuesday\" mark is drawn again [flying line:plain chip R dotted]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-s39b-4-member-after-AL1.png",
+      "dk-17-s39b-4-member-after-AL1-puck.png"
+     ]
+    },
+    {
+     "id": "37-39b.err",
+     "did": "the browser's error list through these two scenarios",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s37-39a-ph": {
+   "at": "2026-10-01T09:15:20.023Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "37a.1",
+     "did": "Tuesday still a draft: ✕ on \"Static …\" in its list (Edit Schedule)",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day reads DRAFT [DRAFT] · ✓ the line is painted struck, with ↺ [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ the bar reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's pucks carry no flag [flying line:plain, other:plain] · ✓ nothing reads pending on a draft day [[\"1 change\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s37a-1-draft-hidden.png",
+      "ph-02-s37a-1-draft-hidden-puck.png"
+     ]
+    },
+    {
+     "id": "37a.2",
+     "did": "a reload and a fresh sign-in as the scheduler",
+     "saw": "✓ the line is still struck, with ↺ [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-s37a-2-draft-after-reload.png"
+     ]
+    },
+    {
+     "id": "37a.3",
+     "did": "the four sign-off selects, then Publish day — the Original goes out with the warning hidden",
+     "saw": "✓ Publish day was pressed [{\"pressed\":true,\"label\":\"Publish day\"}] · ✓ the day reads ORIG [ORIG] · ✓ the chip does not say pending [6 changes] · ✓ no marker [] · ✓ no Publish AL button [[\"\",null]] · ✓ Amendments names no day with changes [[\"No pending changes\",[]]] · ✓ the changes window has nothing \"To go out\" [[[\"New to you 0\",\"All changes 6\",\"To go out · AL1 0 [on]\"],[\"Nothing is waiting to go out.\"]]] · ✓ the line is still struck with ↺ [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's pucks carry no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-s37a-3-published-hidden.png"
+     ]
+    },
+    {
+     "id": "37a.4",
+     "did": "a reload, signed in as the member — View-only Sched, Tuesday as issued (the Original)",
+     "saw": "✓ the day shows the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is painted struck [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ it has NO button [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Static's puck carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-s37a-4-member-orig.png",
+      "ph-08-s37a-4-member-orig-puck.png"
+     ]
+    },
+    {
+     "id": "39a.1",
+     "did": "the scheduler again: ↺ on \"Static …\" (the Original went out with it hidden) — the working copy",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the line is plain again, with ✕ [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Static's puck is flagged again [flying line:ring(note) chip L, other:ring(note) chip L] · ✓ the chip reads 1 pending [1 pending] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the button reads Publish AL1 [Publish AL1] · ✓ \"To go out\" holds ONE line [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]] · ✓ it reads \"Warning · … hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-s39a-1-work-flagged-again.png",
+      "ph-12-s39a-1-work-flagged-again-puck.png",
+      "ph-09-s39a-pend-togoout.png",
+      "ph-10-s39a-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "39a.2",
+     "did": "a reload, signed in as the member — the published face while the flag-again waits",
+     "saw": "✓ still the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar still reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ the line is still painted struck, no button [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Static's puck still carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-13-s39a-2-member-pending.png",
+      "ph-14-s39a-2-member-pending-puck.png"
+     ]
+    },
+    {
+     "id": "39a.3",
+     "did": "a reload as the scheduler (the flag-again is kept), the four sign-off selects, Publish AL1",
+     "saw": "✓ after the reload the line was still plain and 1 pending [true] · ✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1, nothing pending, no marker [[\"AL1\",\"12 changes\",\"\"]] · ✓ the line is plain with ✕, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-15-s39a-3-work-after-AL1.png"
+     ]
+    },
+    {
+     "id": "39a.4",
+     "did": "a reload, signed in as the member — the published face after AL1",
+     "saw": "✓ the day shows AL1, as issued [[\"AL1\",\"AL1 — as issued\"]] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is NOT struck, no button [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Static's puck is flagged [flying line:ring(note) chip L, other:ring(note) chip L]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-16-s39a-4-member-after-AL1.png",
+      "ph-17-s39a-4-member-after-AL1-puck.png"
+     ]
+    },
+    {
+     "id": "37-39a.err",
+     "did": "the browser's error list through these two scenarios",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s41-dk": {
+   "at": "2026-10-01T09:16:50.449Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "41.0",
+     "did": "setup: Tuesday published flagged (Original); ✕ on Static's long work day; the four sign-offs; Publish AL1",
+     "saw": "✓ AL1 went out [[{\"pressed\":true,\"label\":\"Publish AL1\"},\"AL1\"]] · ✓ the line is struck, 3 issues, nothing pending [[\"⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]\",\"11 changes\"]] · ✓ the Unpublish button is offered [Unpublish]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s41-0-AL1-hidden.png"
+     ]
+    },
+    {
+     "id": "41.1",
+     "did": "Unpublish on Tuesday's head (its confirm pressed) — the working copy",
+     "saw": "✓ Unpublish was pressed [{\"pressed\":true,\"label\":\"Unpublish\"}] · ✓ the day is back at the Original [ORIG] · ✓ the working copy keeps the hide: the line struck with ↺, 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ Static's pucks carry no flag on the working copy [flying line:plain, other:plain] · ✓ it reads 1 pending [1 pending] · ✓ the button reads Publish AL1 — never \"Reissue\" [Publish AL1] · ✓ \"To go out · AL1\" holds ONE line, \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ Amendments: Tue · 1 change [[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":true}]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s41-1-after-unpublish.png",
+      "dk-02-s41-pend-togoout.png",
+      "dk-03-s41-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "41.2",
+     "did": "a reload, signed in as the member — the published face after the Unpublish",
+     "saw": "✓ the day shows the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is NOT struck, no button [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Static's puck is flagged [flying line:ring(note) chip L, other:ring(note) chip L]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s41-2-member-after-unpublish.png",
+      "dk-06-s41-2-member-after-unpublish-puck.png"
+     ]
+    },
+    {
+     "id": "41.3",
+     "did": "a reload, signed in as the scheduler; then the four sign-offs and Publish AL1 again",
+     "saw": "✓ after the reload: the line struck, 1 pending, Publish AL1 [[\"⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]\",\"1 pending\",\"Publish AL1\"]] · ✓ Publish AL1 was pressed and the day reads AL1, nothing pending [[{\"pressed\":true,\"label\":\"Publish AL1\"},\"AL1\",\"17 changes\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s41-3-scheduler-after-reload.png",
+      "dk-08-s41-3-AL1-again.png"
+     ]
+    },
+    {
+     "id": "41.4",
+     "did": "the member again — AL1 is back out with the hide",
+     "saw": "✓ AL1, 3 issues, the line struck with no button [[\"AL1\",\"⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]\"]] · ✓ Static's puck carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s41-4-member-AL1-again.png",
+      "dk-10-s41-4-member-AL1-again-puck.png"
+     ]
+    },
+    {
+     "id": "41.5",
+     "did": "a second world: ✕ on the long work day, Tuesday published (Original, hidden), then Unpublish",
+     "saw": "✓ Unpublish was pressed [{\"pressed\":true,\"label\":\"Unpublish\"}] · ✓ the day reads DRAFT [DRAFT] · ✓ the line is still struck with ↺, 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ nothing reads pending [[\"7 changes\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s41-5-orig-unpublished.png"
+     ]
+    },
+    {
+     "id": "41.6",
+     "did": "the member — Tuesday is a draft again; View-only Sched follows the working copy's hides",
+     "saw": "✓ the day reads DRAFT [DRAFT] · ✓ 3 issues, the line struck with no button [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Static's puck carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s41-6-member-orig-unpublished.png",
+      "dk-13-s41-6-member-orig-unpublished-puck.png"
+     ]
+    },
+    {
+     "id": "41.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s41-ph": {
+   "at": "2026-10-01T09:17:32.732Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "41.0",
+     "did": "setup: Tuesday published flagged (Original); ✕ on Static's long work day; the four sign-offs; Publish AL1",
+     "saw": "✓ AL1 went out [[{\"pressed\":true,\"label\":\"Publish AL1\"},\"AL1\"]] · ✓ the line is struck, 3 issues, nothing pending [[\"⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]\",\"11 changes\"]] · ✓ the Unpublish button is offered [Unpublish]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s41-0-AL1-hidden.png"
+     ]
+    },
+    {
+     "id": "41.1",
+     "did": "Unpublish on Tuesday's head (its confirm pressed) — the working copy",
+     "saw": "✓ Unpublish was pressed [{\"pressed\":true,\"label\":\"Unpublish\"}] · ✓ the day is back at the Original [ORIG] · ✓ the working copy keeps the hide: the line struck with ↺, 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ Static's pucks carry no flag on the working copy [flying line:plain, other:plain] · ✓ it reads 1 pending [1 pending] · ✓ the button reads Publish AL1 — never \"Reissue\" [Publish AL1] · ✓ \"To go out · AL1\" holds ONE line, \"Warning · … flagged → hidden\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ Amendments: Tue · 1 change [[{\"text\":\"Tue · 1 change\",\"btn\":\"Publish AL1\",\"locked\":true}]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-s41-1-after-unpublish.png",
+      "ph-02-s41-pend-togoout.png",
+      "ph-03-s41-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "41.2",
+     "did": "a reload, signed in as the member — the published face after the Unpublish",
+     "saw": "✓ the day shows the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is NOT struck, no button [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Static's puck is flagged [flying line:ring(note) chip L, other:ring(note) chip L]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-s41-2-member-after-unpublish.png",
+      "ph-06-s41-2-member-after-unpublish-puck.png"
+     ]
+    },
+    {
+     "id": "41.3",
+     "did": "a reload, signed in as the scheduler; then the four sign-offs and Publish AL1 again",
+     "saw": "✓ after the reload: the line struck, 1 pending, Publish AL1 [[\"⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]\",\"1 pending\",\"Publish AL1\"]] · ✓ Publish AL1 was pressed and the day reads AL1, nothing pending [[{\"pressed\":true,\"label\":\"Publish AL1\"},\"AL1\",\"17 changes\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-s41-3-scheduler-after-reload.png",
+      "ph-08-s41-3-AL1-again.png"
+     ]
+    },
+    {
+     "id": "41.4",
+     "did": "the member again — AL1 is back out with the hide",
+     "saw": "✓ AL1, 3 issues, the line struck with no button [[\"AL1\",\"⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]\"]] · ✓ Static's puck carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-s41-4-member-AL1-again.png",
+      "ph-10-s41-4-member-AL1-again-puck.png"
+     ]
+    },
+    {
+     "id": "41.5",
+     "did": "a second world: ✕ on the long work day, Tuesday published (Original, hidden), then Unpublish",
+     "saw": "✓ Unpublish was pressed [{\"pressed\":true,\"label\":\"Unpublish\"}] · ✓ the day reads DRAFT [DRAFT] · ✓ the line is still struck with ↺, 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ nothing reads pending [[\"7 changes\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-s41-5-orig-unpublished.png"
+     ]
+    },
+    {
+     "id": "41.6",
+     "did": "the member — Tuesday is a draft again; View-only Sched follows the working copy's hides",
+     "saw": "✓ the day reads DRAFT [DRAFT] · ✓ 3 issues, the line struck with no button [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Static's puck carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-s41-6-member-orig-unpublished.png",
+      "ph-13-s41-6-member-orig-unpublished-puck.png"
+     ]
+    },
+    {
+     "id": "41.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s42-3-dk": {
+   "at": "2026-10-01T10:12:47.538Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "42a.1",
+     "did": "Tuesday published flagged; ✕ on the long work day (1 pending); plans selector → the Original (👁) → \"Load onto working copy\"",
+     "saw": "✓ before: 1 pending, the line struck [[\"1 pending\",\"⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]\"]] · ✓ the look shows the Original with the line NOT struck, 4 issues, no button [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ the first press asks: \"Discard 1 edit & load — confirm\" [[\"Load onto working copy\",\"Discard 1 edit & load — confirm\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s42a-1-look.png",
+      "dk-02-s42a-1-load-pressed.png",
+      "dk-03-s42a-1-loaded.png"
+     ]
+    },
+    {
+     "id": "42a.2",
+     "did": "the confirm pressed — the working copy afterwards",
+     "saw": "✓ the app said what it did [[\"Tuesday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced\"]] · ✓ the line is plain with ✕ again, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ Static's puck is flagged again [flying line:ring(note) chip L, other:ring(note) chip L] · ✓ nothing pending, no marker, no Publish AL button [[\"7 changes\",\"\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s42a-2-after-load.png"
+     ]
+    },
+    {
+     "id": "42a.3",
+     "did": "a reload as the scheduler, then as the member",
+     "saw": "✓ the scheduler: line plain, 4 issues, nothing pending [[\"⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]\",\"7 changes\"]] · ✓ the member: the Original, 4 issues, not struck [[\"ORIG\",\"⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s42a-3-after-reload.png",
+      "dk-06-s42a-3-member.png",
+      "dk-07-s42a-3-member-puck.png"
+     ]
+    },
+    {
+     "id": "42a.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "42b.1",
+     "did": "✕ on the long work day, Tuesday published (hidden); ↺ on it (1 pending); the Original (👁) → \"Load onto working copy\"",
+     "saw": "✓ before: 1 pending, the line plain [[\"1 pending\",\"⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]\"]] · ✓ the look shows the Original with the line STRUCK, 3 issues, no button [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ the first press asks: \"Discard 1 edit & load — confirm\" [[\"Load onto working copy\",\"Discard 1 edit & load — confirm\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s42b-1-look.png",
+      "dk-09-s42b-1-load-pressed.png",
+      "dk-10-s42b-1-loaded.png"
+     ]
+    },
+    {
+     "id": "42b.2",
+     "did": "the confirm pressed — the working copy afterwards",
+     "saw": "✓ the app said what it did [[\"Tuesday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced\"]] · ✓ the line is struck with ↺ again, 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ Static's pucks carry no flag [flying line:plain, other:plain] · ✓ nothing pending, no marker [[\"8 changes\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s42b-2-after-load.png"
+     ]
+    },
+    {
+     "id": "42b.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "3.1",
+     "did": "Original flagged → ✕ → AL1 (hidden) → ↺ on the working copy (1 pending, and now the same as the Original); the Original (👁) → \"Load onto working copy\"",
+     "saw": "✓ before: the day is at AL1, 1 pending, the line plain [[\"AL1\",\"1 pending\",\"⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]\"]] · ✓ \"To go out · AL2\" holds the one line \"hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]] · ✓ the look shows the Original: the line NOT struck, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ the load does NOT say it will discard an edit (the working copy already matches the Original — nothing is replaced) [[\"Load onto working copy\"]] · ✓ its message does not claim an edit was replaced [[\"Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-s3-1-look.png",
+      "dk-15-s3-1-load-pressed.png",
+      "dk-16-s3-1-loaded.png"
+     ]
+    },
+    {
+     "id": "3.2",
+     "did": "the working copy after the load",
+     "saw": "✓ the line is plain, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ the one difference from AL1 still reads 1 pending [1 pending] · ✓ \"To go out\" still holds the one line \"hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-s3-2-after-load.png",
+      "dk-17-s3-pend-togoout.png",
+      "dk-18-s3-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "3.said",
+     "did": "RECORDED — every word the load put on screen",
+     "saw": "buttons: Load onto working copy · messages: Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish · the look's own count beside the day: \"\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-14-s3-1-look.png",
+      "dk-15-s3-1-load-pressed.png",
+      "dk-16-s3-1-loaded.png"
+     ]
+    },
+    {
+     "id": "3.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "3c.1",
+     "did": "Original flagged → ✕ long day → AL1; then ✕ on Saint's clash (1 pending); the Original (👁) → \"Load onto working copy\"",
+     "saw": "✓ before: AL1, 1 pending [[\"AL1\",\"1 pending\"]] · ✗ while the Original is looked at, the count beside the day still reads 1 pending (WH8: one on every count) [the chip reads \"2 pending\"] · ✗ the confirm counts the ONE unpublished edit: \"Discard 1 edit & load — confirm\" [[\"Load onto working copy\",\"Discard 2 edits & load — confirm\"]] · ✗ its message says 1 unpublished edit was replaced [[\"Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish · 2 unpublished edits replaced\"]]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-20-s3c-1-look.png",
+      "dk-21-s3c-1-load-pressed.png",
+      "dk-22-s3c-1-loaded.png"
+     ]
+    },
+    {
+     "id": "3c.chip",
+     "did": "RECORDED — the count beside the day while the Original is looked at (before the look it read \"1 pending\"; the Amendments panel beside it says Tue · 1 change)",
+     "saw": "the chip beside the day reads \"2 pending\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-20-s3c-1-look.png",
+      "dk-21-s3c-1-load-pressed.png"
+     ]
+    },
+    {
+     "id": "3c.2",
+     "did": "the confirm pressed — the working copy is the Original: all four flagged; against AL1 one thing differs",
+     "saw": "✓ all four lines plain, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ 1 pending [1 pending] · ✓ \"To go out\" holds the one line: the long work day, \"hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-s3c-2-after-load.png",
+      "dk-23-s3c-pend-togoout.png",
+      "dk-24-s3c-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "3c.said",
+     "did": "RECORDED — every word the load put on screen",
+     "saw": "buttons: Load onto working copy → Discard 2 edits & load — confirm · messages: Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish · 2 unpublished edits replaced",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-20-s3c-1-look.png",
+      "dk-21-s3c-1-load-pressed.png",
+      "dk-22-s3c-1-loaded.png"
+     ]
+    },
+    {
+     "id": "3c.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "3d.1",
+     "did": "Original flagged → ✕ long day → AL1, and nothing more (nothing pending); the Original (👁) → \"Load onto working copy\"",
+     "saw": "✓ before: AL1, nothing pending, no marker [[\"AL1\",\"11 changes\",\"\"]] · ✗ while the Original is looked at, the count beside the day does not say something is pending (nothing is) [the chip reads \"1 pending\"] · ✗ the load does not ask to discard an unpublished edit (there is none) [Load onto working copy → Discard 1 edit & load — confirm (its hint: \"This discards your 1 unpublished edit on the working copy — the issued versions stay unchan]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-28-s3d-1-look.png",
+      "dk-29-s3d-1-load-pressed.png"
+     ]
+    },
+    {
+     "id": "3d.2",
+     "did": "the load carried through — the working copy is the Original; against AL1 one thing differs",
+     "saw": "✓ the long-day line is plain, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ 1 pending: \"hidden → flagged again\" [[\"1 pending\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]]] · ✗ its message does not say an unpublished edit was replaced [[\"Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish · 1 unpublished edit replaced\"]]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-32-s3d-2-after-load.png",
+      "dk-30-s3d-pend-togoout.png",
+      "dk-31-s3d-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "3d.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "3e.1",
+     "did": "RECORDED, for comparison — a remark typed on a Tuesday flying line after the Original (1 pending), AL1 published with it, nothing pending; the Original (👁) → \"Load onto working copy\"",
+     "saw": "before the look: AL1, chip \"11 changes\" · while the Original is looked at the chip reads \"\" · the load: Load onto working copy",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-33-s3e-1-look.png",
+      "dk-34-s3e-1-load-pressed.png"
+     ]
+    },
+    {
+     "id": "3e.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "3f.1",
+     "did": "RECORDED, for comparison — remark A typed → AL1; remark B typed on another line; the Original (👁) → \"Load onto working copy\" (confirmed)",
+     "saw": "before the look: AL1, chip \"1 pending\" · while the Original is looked at the chip reads \"1 pending\" · the load: Load onto working copy → Discard 1 edit & load — confirm · message: Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish · 1 unpublished edit replaced",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-35-s3f-1-look.png",
+      "dk-36-s3f-1-loaded.png"
+     ]
+    },
+    {
+     "id": "3f.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s42-3-ph": {
+   "at": "2026-10-01T10:14:47.631Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "42a.1",
+     "did": "Tuesday published flagged; ✕ on the long work day (1 pending); plans selector → the Original (👁) → \"Load onto working copy\"",
+     "saw": "✓ before: 1 pending, the line struck [[\"1 pending\",\"⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]\"]] · ✓ the look shows the Original with the line NOT struck, 4 issues, no button [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ the first press asks: \"Discard 1 edit & load — confirm\" [[\"Load onto working copy\",\"Discard 1 edit & load — confirm\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s42a-1-look.png",
+      "ph-02-s42a-1-load-pressed.png",
+      "ph-03-s42a-1-loaded.png"
+     ]
+    },
+    {
+     "id": "42a.2",
+     "did": "the confirm pressed — the working copy afterwards",
+     "saw": "✓ the app said what it did [[\"Tuesday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced\"]] · ✓ the line is plain with ✕ again, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ Static's puck is flagged again [flying line:ring(note) chip L, other:ring(note) chip L] · ✓ nothing pending, no marker, no Publish AL button [[\"7 changes\",\"\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-s42a-2-after-load.png"
+     ]
+    },
+    {
+     "id": "42a.3",
+     "did": "a reload as the scheduler, then as the member",
+     "saw": "✓ the scheduler: line plain, 4 issues, nothing pending [[\"⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]\",\"7 changes\"]] · ✓ the member: the Original, 4 issues, not struck [[\"ORIG\",\"⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-s42a-3-after-reload.png",
+      "ph-06-s42a-3-member.png",
+      "ph-07-s42a-3-member-puck.png"
+     ]
+    },
+    {
+     "id": "42a.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "42b.1",
+     "did": "✕ on the long work day, Tuesday published (hidden); ↺ on it (1 pending); the Original (👁) → \"Load onto working copy\"",
+     "saw": "✓ before: 1 pending, the line plain [[\"1 pending\",\"⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]\"]] · ✓ the look shows the Original with the line STRUCK, 3 issues, no button [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ the first press asks: \"Discard 1 edit & load — confirm\" [[\"Load onto working copy\",\"Discard 1 edit & load — confirm\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-s42b-1-look.png",
+      "ph-09-s42b-1-load-pressed.png",
+      "ph-10-s42b-1-loaded.png"
+     ]
+    },
+    {
+     "id": "42b.2",
+     "did": "the confirm pressed — the working copy afterwards",
+     "saw": "✓ the app said what it did [[\"Tuesday: Original loaded onto the working copy — viewers still see Original until you publish · 1 unpublished edit replaced\"]] · ✓ the line is struck with ↺ again, 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ Static's pucks carry no flag [flying line:plain, other:plain] · ✓ nothing pending, no marker [[\"8 changes\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-s42b-2-after-load.png"
+     ]
+    },
+    {
+     "id": "42b.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "3.1",
+     "did": "Original flagged → ✕ → AL1 (hidden) → ↺ on the working copy (1 pending, and now the same as the Original); the Original (👁) → \"Load onto working copy\"",
+     "saw": "✓ before: the day is at AL1, 1 pending, the line plain [[\"AL1\",\"1 pending\",\"⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]\"]] · ✓ \"To go out · AL2\" holds the one line \"hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]] · ✓ the look shows the Original: the line NOT struck, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ the load does NOT say it will discard an edit (the working copy already matches the Original — nothing is replaced) [[\"Load onto working copy\"]] · ✓ its message does not claim an edit was replaced [[\"Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-s3-1-look.png",
+      "ph-15-s3-1-load-pressed.png",
+      "ph-16-s3-1-loaded.png"
+     ]
+    },
+    {
+     "id": "3.2",
+     "did": "the working copy after the load",
+     "saw": "✓ the line is plain, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ the one difference from AL1 still reads 1 pending [1 pending] · ✓ \"To go out\" still holds the one line \"hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-19-s3-2-after-load.png",
+      "ph-17-s3-pend-togoout.png",
+      "ph-18-s3-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "3.said",
+     "did": "RECORDED — every word the load put on screen",
+     "saw": "buttons: Load onto working copy · messages: Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish · the look's own count beside the day: \"\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-14-s3-1-look.png",
+      "ph-15-s3-1-load-pressed.png",
+      "ph-16-s3-1-loaded.png"
+     ]
+    },
+    {
+     "id": "3.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "3c.1",
+     "did": "Original flagged → ✕ long day → AL1; then ✕ on Saint's clash (1 pending); the Original (👁) → \"Load onto working copy\"",
+     "saw": "✓ before: AL1, 1 pending [[\"AL1\",\"1 pending\"]] · ✗ while the Original is looked at, the count beside the day still reads 1 pending (WH8: one on every count) [the chip reads \"2 pending\"] · ✗ the confirm counts the ONE unpublished edit: \"Discard 1 edit & load — confirm\" [[\"Load onto working copy\",\"Discard 2 edits & load — confirm\"]] · ✗ its message says 1 unpublished edit was replaced [[\"Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish · 2 unpublished edits replaced\"]]",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-20-s3c-1-look.png",
+      "ph-21-s3c-1-load-pressed.png",
+      "ph-22-s3c-1-loaded.png"
+     ]
+    },
+    {
+     "id": "3c.chip",
+     "did": "RECORDED — the count beside the day while the Original is looked at (before the look it read \"1 pending\"; the Amendments panel beside it says Tue · 1 change)",
+     "saw": "the chip beside the day reads \"2 pending\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-20-s3c-1-look.png",
+      "ph-21-s3c-1-load-pressed.png"
+     ]
+    },
+    {
+     "id": "3c.2",
+     "did": "the confirm pressed — the working copy is the Original: all four flagged; against AL1 one thing differs",
+     "saw": "✓ all four lines plain, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ 1 pending [1 pending] · ✓ \"To go out\" holds the one line: the long work day, \"hidden → flagged again\" [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-25-s3c-2-after-load.png",
+      "ph-23-s3c-pend-togoout.png",
+      "ph-24-s3c-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "3c.said",
+     "did": "RECORDED — every word the load put on screen",
+     "saw": "buttons: Load onto working copy → Discard 2 edits & load — confirm · messages: Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish · 2 unpublished edits replaced",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-20-s3c-1-look.png",
+      "ph-21-s3c-1-load-pressed.png",
+      "ph-22-s3c-1-loaded.png"
+     ]
+    },
+    {
+     "id": "3c.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "3d.1",
+     "did": "Original flagged → ✕ long day → AL1, and nothing more (nothing pending); the Original (👁) → \"Load onto working copy\"",
+     "saw": "✓ before: AL1, nothing pending, no marker [[\"AL1\",\"11 changes\",\"\"]] · ✗ while the Original is looked at, the count beside the day does not say something is pending (nothing is) [the chip reads \"1 pending\"] · ✗ the load does not ask to discard an unpublished edit (there is none) [Load onto working copy → Discard 1 edit & load — confirm (its hint: \"This discards your 1 unpublished edit on the working copy — the issued versions stay unchan]",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-28-s3d-1-look.png",
+      "ph-29-s3d-1-load-pressed.png"
+     ]
+    },
+    {
+     "id": "3d.2",
+     "did": "the load carried through — the working copy is the Original; against AL1 one thing differs",
+     "saw": "✓ the long-day line is plain, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ 1 pending: \"hidden → flagged again\" [[\"1 pending\",[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) hidden → flagged again\"]]] · ✗ its message does not say an unpublished edit was replaced [[\"Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish · 1 unpublished edit replaced\"]]",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-32-s3d-2-after-load.png",
+      "ph-30-s3d-pend-togoout.png",
+      "ph-31-s3d-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "3d.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "3e.1",
+     "did": "RECORDED, for comparison — a remark typed on a Tuesday flying line after the Original (1 pending), AL1 published with it, nothing pending; the Original (👁) → \"Load onto working copy\"",
+     "saw": "before the look: AL1, chip \"11 changes\" · while the Original is looked at the chip reads \"\" · the load: Load onto working copy",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-33-s3e-1-look.png",
+      "ph-34-s3e-1-load-pressed.png"
+     ]
+    },
+    {
+     "id": "3e.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "3f.1",
+     "did": "RECORDED, for comparison — remark A typed → AL1; remark B typed on another line; the Original (👁) → \"Load onto working copy\" (confirmed)",
+     "saw": "before the look: AL1, chip \"1 pending\" · while the Original is looked at the chip reads \"1 pending\" · the load: Load onto working copy → Discard 1 edit & load — confirm · message: Tuesday: Original loaded onto the working copy — viewers still see AL1 until you publish · 1 unpublished edit replaced",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-35-s3f-1-look.png",
+      "ph-36-s3f-1-loaded.png"
+     ]
+    },
+    {
+     "id": "3f.err",
+     "did": "the browser's error list through this part",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s43-dk": {
+   "at": "2026-10-01T09:27:45.147Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "43.0",
+     "did": "setup: Original (flagged) → ✕ long day → AL1 → ↺ → AL2; then ✕ on Saint's clash on the working copy (pending)",
+     "saw": "✓ AL1 and AL2 went out [[{\"pressed\":true,\"label\":\"Publish AL1\"},{\"pressed\":true,\"label\":\"Publish AL2\"},\"AL2\"]] · ✓ the working copy: the clash struck, the long day plain, 1 pending [[\"⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:STRUCK[↺] 1:plain[✕] 2:plain[✕] 3:plain[✕]\",\"1 pending\"]] · ✓ the plans selector offers Original, AL1, AL2 [[\"Original\",\"AL1\",\"AL2\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s43-0-three-versions.png"
+     ]
+    },
+    {
+     "id": "43.Original.week",
+     "did": "Edit Schedule: plans selector → Original (👁 read-only)",
+     "saw": "✓ the look opened [← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Static's long-day line is NOT struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Saint's clash is NOT struck (the working copy's pending hide does not bleed in) [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ and no ↺ on any line [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no sign-off boxes, no \"Not yet signed\" marker [[0,\"\"]] · ✓ Static's puck in the day is flagged (L) [flying line:ring(note) chip L, other:ring(note) chip L] · ✓ Saint's puck in the day carries its red clash flag [flying line:ring(hard) chip C red, other:ring(hard) chip C red] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[true,true],\"after\":[true,true],\"shot\":\"dk-04-s43-Original-week-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s43-Original-week-look.png",
+      "dk-03-s43-Original-week-look-puck.png",
+      "dk-04-s43-Original-week-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.Original.week.r",
+     "did": "RECORDED — beside the Original look on Edit Schedule: the count chip on the day, and Static in the crew list beside the week",
+     "saw": "chip \"1 pending\" · crew list: other:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-s43-Original-week-look.png"
+     ]
+    },
+    {
+     "id": "43.Original.board",
+     "did": "the Scheduler Board on Tuesday, looking at Original (the look carried from the week)",
+     "saw": "✓ the board shows the look's bar [← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ its issues panel counts 4 [⚠ 4 issues · 2 warnings · tap to review] · ✓ Static's long-day line is NOT struck [⚠ 4 issues · 2 warnings · tap to review | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Saint's clash is NOT struck [⚠ 4 issues · 2 warnings · tap to review | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ and no ↺ on any line [⚠ 4 issues · 2 warnings · tap to review | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no \"Not yet signed\" marker [{\"woff\":0,\"signs\":0,\"nys\":\"\",\"pend\":\"\"}] · ✓ Static's pucks on the board are flagged (L) [flying line:ring(note) chip L, duty:ring(note) chip L] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[false,false],\"after\":[true,true],\"shot\":\"dk-06-s43-Original-board-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s43-Original-board-look.png",
+      "dk-06-s43-Original-board-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.Original.board.r",
+     "did": "RECORDED — beside the Original look on the board: the count chip, the sign-off boxes that can be changed",
+     "saw": "chip \"\" · open sign-off boxes 0 · Static in the board's crew list: crew list:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-s43-Original-board-look.png"
+     ]
+    },
+    {
+     "id": "43.AL1.week",
+     "did": "Edit Schedule: plans selector → AL1 (👁 read-only)",
+     "saw": "✓ the look opened [← Back to live copy 👁 Viewing the issued AL1 — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ the bar reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's long-day line is painted STRUCK [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Saint's clash is NOT struck (the working copy's pending hide does not bleed in) [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ no ✕ and no ↺ on any line [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ no sign-off boxes, no \"Not yet signed\" marker [[0,\"\"]] · ✓ Static's puck in the day is plain [flying line:plain, other:plain] · ✓ Saint's puck in the day carries its red clash flag [flying line:ring(hard) chip C red, other:ring(hard) chip C red] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[false,false],\"after\":[true,true],\"shot\":\"dk-09-s43-AL1-week-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s43-AL1-week-look.png",
+      "dk-08-s43-AL1-week-look-puck.png",
+      "dk-09-s43-AL1-week-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.AL1.week.r",
+     "did": "RECORDED — beside the AL1 look on Edit Schedule: the count chip on the day, and Static in the crew list beside the week",
+     "saw": "chip \"2 pending\" · crew list: other:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-s43-AL1-week-look.png"
+     ]
+    },
+    {
+     "id": "43.AL1.board",
+     "did": "the Scheduler Board on Tuesday, looking at AL1 (the look carried from the week)",
+     "saw": "✓ the board shows the look's bar [← Back to live copy 👁 Viewing the issued AL1 — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ its issues panel counts 3 [⚠ 3 issues · 2 warnings · tap to review] · ✓ Static's long-day line is painted STRUCK [⚠ 3 issues · 2 warnings · tap to review | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Saint's clash is NOT struck [⚠ 3 issues · 2 warnings · tap to review | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ no ✕ and no ↺ on any line [⚠ 3 issues · 2 warnings · tap to review | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ no \"Not yet signed\" marker [{\"woff\":0,\"signs\":0,\"nys\":\"\",\"pend\":\"\"}] · ✓ Static's pucks on the board are plain [flying line:plain, duty:plain] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[false,false],\"after\":[true,true],\"shot\":\"dk-11-s43-AL1-board-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s43-AL1-board-look.png",
+      "dk-11-s43-AL1-board-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.AL1.board.r",
+     "did": "RECORDED — beside the AL1 look on the board: the count chip, the sign-off boxes that can be changed",
+     "saw": "chip \"\" · open sign-off boxes 0 · Static in the board's crew list: crew list:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-10-s43-AL1-board-look.png"
+     ]
+    },
+    {
+     "id": "43.AL2.week",
+     "did": "Edit Schedule: plans selector → AL2 (👁 read-only)",
+     "saw": "✓ the look opened [← Back to live copy 👁 Viewing the issued AL2 — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Static's long-day line is NOT struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Saint's clash is NOT struck (the working copy's pending hide does not bleed in) [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ and no ↺ on any line [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no sign-off boxes, no \"Not yet signed\" marker [[0,\"\"]] · ✓ Static's puck in the day is flagged (L) [flying line:ring(note) chip L, other:ring(note) chip L] · ✓ Saint's puck in the day carries its red clash flag [flying line:ring(hard) chip C red, other:ring(hard) chip C red] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[true,true],\"after\":[true,true],\"shot\":\"dk-14-s43-AL2-week-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s43-AL2-week-look.png",
+      "dk-13-s43-AL2-week-look-puck.png",
+      "dk-14-s43-AL2-week-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.AL2.week.r",
+     "did": "RECORDED — beside the AL2 look on Edit Schedule: the count chip on the day, and Static in the crew list beside the week",
+     "saw": "chip \"1 pending\" · crew list: other:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-12-s43-AL2-week-look.png"
+     ]
+    },
+    {
+     "id": "43.AL2.board",
+     "did": "the Scheduler Board on Tuesday, looking at AL2 (the look carried from the week)",
+     "saw": "✓ the board shows the look's bar [← Back to live copy 👁 Viewing the issued AL2 — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ its issues panel counts 4 [⚠ 4 issues · 2 warnings · tap to review] · ✓ Static's long-day line is NOT struck [⚠ 4 issues · 2 warnings · tap to review | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Saint's clash is NOT struck [⚠ 4 issues · 2 warnings · tap to review | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ and no ↺ on any line [⚠ 4 issues · 2 warnings · tap to review | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no \"Not yet signed\" marker [{\"woff\":0,\"signs\":0,\"nys\":\"\",\"pend\":\"\"}] · ✓ Static's pucks on the board are flagged (L) [flying line:ring(note) chip L, duty:ring(note) chip L] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[false,false],\"after\":[true,true],\"shot\":\"dk-16-s43-AL2-board-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-s43-AL2-board-look.png",
+      "dk-16-s43-AL2-board-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.AL2.board.r",
+     "did": "RECORDED — beside the AL2 look on the board: the count chip, the sign-off boxes that can be changed",
+     "saw": "chip \"\" · open sign-off boxes 0 · Static in the board's crew list: crew list:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-15-s43-AL2-board-look.png"
+     ]
+    },
+    {
+     "id": "43.9",
+     "did": "back on the live copy after the six looks",
+     "saw": "✓ the working copy is as it was: the clash struck with ↺, the long day plain with ✕, 1 pending, AL2 [[\"⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:STRUCK[↺] 1:plain[✕] 2:plain[✕] 3:plain[✕]\",\"1 pending\",\"AL2\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-s43-9-work-after-looks.png"
+     ]
+    },
+    {
+     "id": "43.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s43-ph": {
+   "at": "2026-10-01T09:28:50.606Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "43.0",
+     "did": "setup: Original (flagged) → ✕ long day → AL1 → ↺ → AL2; then ✕ on Saint's clash on the working copy (pending)",
+     "saw": "✓ AL1 and AL2 went out [[{\"pressed\":true,\"label\":\"Publish AL1\"},{\"pressed\":true,\"label\":\"Publish AL2\"},\"AL2\"]] · ✓ the working copy: the clash struck, the long day plain, 1 pending [[\"⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:STRUCK[↺] 1:plain[✕] 2:plain[✕] 3:plain[✕]\",\"1 pending\"]] · ✓ the plans selector offers Original, AL1, AL2 [[\"Original\",\"AL1\",\"AL2\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s43-0-three-versions.png"
+     ]
+    },
+    {
+     "id": "43.Original.week",
+     "did": "Edit Schedule: plans selector → Original (👁 read-only)",
+     "saw": "✓ the look opened [← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Static's long-day line is NOT struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Saint's clash is NOT struck (the working copy's pending hide does not bleed in) [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ and no ↺ on any line [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no sign-off boxes, no \"Not yet signed\" marker [[0,\"\"]] · ✓ Static's puck in the day is flagged (L) [flying line:ring(note) chip L, other:ring(note) chip L] · ✓ Saint's puck in the day carries its red clash flag [flying line:ring(hard) chip C red, other:ring(hard) chip C red] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[true,true],\"after\":[true,true],\"shot\":\"ph-04-s43-Original-week-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-s43-Original-week-look.png",
+      "ph-03-s43-Original-week-look-puck.png",
+      "ph-04-s43-Original-week-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.Original.week.r",
+     "did": "RECORDED — beside the Original look on Edit Schedule: the count chip on the day, and Static in the crew list beside the week",
+     "saw": "chip \"1 pending\" · crew list: other:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-02-s43-Original-week-look.png"
+     ]
+    },
+    {
+     "id": "43.Original.board",
+     "did": "the Scheduler Board on Tuesday, looking at Original (the look carried from the week)",
+     "saw": "✓ the board shows the look's bar [← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ its issues panel counts 4 [▾ ⚠ 4 issues · 2 warnings · tap to collapse] · ✓ Static's long-day line is NOT struck [▾ ⚠ 4 issues · 2 warnings · tap to collapse | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Saint's clash is NOT struck [▾ ⚠ 4 issues · 2 warnings · tap to collapse | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ and no ↺ on any line [▾ ⚠ 4 issues · 2 warnings · tap to collapse | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no \"Not yet signed\" marker [{\"woff\":0,\"signs\":0,\"nys\":\"\",\"pend\":\"\"}] · ✓ Static's pucks on the board are flagged (L) [flying line:ring(note) chip L, duty:ring(note) chip L] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[false,false],\"after\":[true,true],\"shot\":\"ph-06-s43-Original-board-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-s43-Original-board-look.png",
+      "ph-06-s43-Original-board-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.Original.board.r",
+     "did": "RECORDED — beside the Original look on the board: the count chip, the sign-off boxes that can be changed",
+     "saw": "chip \"\" · open sign-off boxes 0 · Static in the board's crew list: crew list:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-05-s43-Original-board-look.png"
+     ]
+    },
+    {
+     "id": "43.AL1.week",
+     "did": "Edit Schedule: plans selector → AL1 (👁 read-only)",
+     "saw": "✓ the look opened [← Back to live copy 👁 Viewing the issued AL1 — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ the bar reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ Static's long-day line is painted STRUCK [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Saint's clash is NOT struck (the working copy's pending hide does not bleed in) [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ no ✕ and no ↺ on any line [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ no sign-off boxes, no \"Not yet signed\" marker [[0,\"\"]] · ✓ Static's puck in the day is plain [flying line:plain, other:plain] · ✓ Saint's puck in the day carries its red clash flag [flying line:ring(hard) chip C red, other:ring(hard) chip C red] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[false,false],\"after\":[true,true],\"shot\":\"ph-09-s43-AL1-week-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-s43-AL1-week-look.png",
+      "ph-08-s43-AL1-week-look-puck.png",
+      "ph-09-s43-AL1-week-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.AL1.week.r",
+     "did": "RECORDED — beside the AL1 look on Edit Schedule: the count chip on the day, and Static in the crew list beside the week",
+     "saw": "chip \"2 pending\" · crew list: other:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-07-s43-AL1-week-look.png"
+     ]
+    },
+    {
+     "id": "43.AL1.board",
+     "did": "the Scheduler Board on Tuesday, looking at AL1 (the look carried from the week)",
+     "saw": "✓ the board shows the look's bar [← Back to live copy 👁 Viewing the issued AL1 — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ its issues panel counts 3 [▾ ⚠ 3 issues · 2 warnings · tap to collapse] · ✓ Static's long-day line is painted STRUCK [▾ ⚠ 3 issues · 2 warnings · tap to collapse | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ Saint's clash is NOT struck [▾ ⚠ 3 issues · 2 warnings · tap to collapse | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ no ✕ and no ↺ on any line [▾ ⚠ 3 issues · 2 warnings · tap to collapse | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ no \"Not yet signed\" marker [{\"woff\":0,\"signs\":0,\"nys\":\"\",\"pend\":\"\"}] · ✓ Static's pucks on the board are plain [flying line:plain, duty:plain] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[false,false],\"after\":[true,true],\"shot\":\"ph-11-s43-AL1-board-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-s43-AL1-board-look.png",
+      "ph-11-s43-AL1-board-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.AL1.board.r",
+     "did": "RECORDED — beside the AL1 look on the board: the count chip, the sign-off boxes that can be changed",
+     "saw": "chip \"\" · open sign-off boxes 0 · Static in the board's crew list: crew list:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-10-s43-AL1-board-look.png"
+     ]
+    },
+    {
+     "id": "43.AL2.week",
+     "did": "Edit Schedule: plans selector → AL2 (👁 read-only)",
+     "saw": "✓ the look opened [← Back to live copy 👁 Viewing the issued AL2 — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Static's long-day line is NOT struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Saint's clash is NOT struck (the working copy's pending hide does not bleed in) [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ and no ↺ on any line [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no sign-off boxes, no \"Not yet signed\" marker [[0,\"\"]] · ✓ Static's puck in the day is flagged (L) [flying line:ring(note) chip L, other:ring(note) chip L] · ✓ Saint's puck in the day carries its red clash flag [flying line:ring(hard) chip C red, other:ring(hard) chip C red] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[true,true],\"after\":[true,true],\"shot\":\"ph-14-s43-AL2-week-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-s43-AL2-week-look.png",
+      "ph-13-s43-AL2-week-look-puck.png",
+      "ph-14-s43-AL2-week-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.AL2.week.r",
+     "did": "RECORDED — beside the AL2 look on Edit Schedule: the count chip on the day, and Static in the crew list beside the week",
+     "saw": "chip \"1 pending\" · crew list: other:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-12-s43-AL2-week-look.png"
+     ]
+    },
+    {
+     "id": "43.AL2.board",
+     "did": "the Scheduler Board on Tuesday, looking at AL2 (the look carried from the week)",
+     "saw": "✓ the board shows the look's bar [← Back to live copy 👁 Viewing the issued AL2 — read-only. This is what was sent out; it never changes. Load onto working copy] · ✓ its issues panel counts 4 [▾ ⚠ 4 issues · 2 warnings · tap to collapse] · ✓ Static's long-day line is NOT struck [▾ ⚠ 4 issues · 2 warnings · tap to collapse | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Saint's clash is NOT struck [▾ ⚠ 4 issues · 2 warnings · tap to collapse | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no ✕ and no ↺ on any line [▾ ⚠ 4 issues · 2 warnings · tap to collapse | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ no \"Not yet signed\" marker [{\"woff\":0,\"signs\":0,\"nys\":\"\",\"pend\":\"\"}] · ✓ Static's pucks on the board are flagged (L) [flying line:ring(note) chip L, duty:ring(note) chip L] · ✓ a tap on the long-day line lights Static's pucks [{\"before\":[false,false],\"after\":[true,true],\"shot\":\"ph-16-s43-AL2-board-line-tapped.png\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-15-s43-AL2-board-look.png",
+      "ph-16-s43-AL2-board-line-tapped.png"
+     ]
+    },
+    {
+     "id": "43.AL2.board.r",
+     "did": "RECORDED — beside the AL2 look on the board: the count chip, the sign-off boxes that can be changed",
+     "saw": "chip \"\" · open sign-off boxes 0 · Static in the board's crew list: crew list:ring(note) chip L",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-15-s43-AL2-board-look.png"
+     ]
+    },
+    {
+     "id": "43.9",
+     "did": "back on the live copy after the six looks",
+     "saw": "✓ the working copy is as it was: the clash struck with ↺, the long day plain with ✕, 1 pending, AL2 [[\"⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:STRUCK[↺] 1:plain[✕] 2:plain[✕] 3:plain[✕]\",\"1 pending\",\"AL2\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-17-s43-9-work-after-looks.png"
+     ]
+    },
+    {
+     "id": "43.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s23-dk": {
+   "at": "2026-10-01T09:30:17.390Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "23.0",
+     "did": "setup: Original flagged → ✕ long day → AL1; then ✕ on the other three on the working copy (3 pending)",
+     "saw": "✓ AL1 went out [[{\"pressed\":true,\"label\":\"Publish AL1\"},\"AL1\"]] · ✓ the three ✕ were pressed [[\"pressed\",\"pressed\",\"pressed\"]] · ✓ the working copy: all four struck, the bar reads \"✓ No issues\" [✓ No issues · tap to collapse ▲ | 0:STRUCK[↺] 1:STRUCK[↺] 2:STRUCK[↺] 3:STRUCK[↺]] · ✓ 3 pending [3 pending]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s23-0-work-all-hidden.png"
+     ]
+    },
+    {
+     "id": "23.1",
+     "did": "Edit Schedule, the working copy: ⓘ on Tuesday (every issue hidden)",
+     "saw": "✓ it says nothing is flagged — no \"N warning\" count [ | Nothing flagged — this day is clean ✓] · ✓ it still lists all four lines [\"Nothing flagged — this day is clean ✓\" · 4 lines: STRUCK STRUCK STRUCK STRUCK] · ✓ all four are painted struck [\"Nothing flagged — this day is clean ✓\" · 4 lines: STRUCK STRUCK STRUCK STRUCK] · ✓ no button on any line [[0,0,0,0]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s23-1-info-work.png"
+     ]
+    },
+    {
+     "id": "23.2",
+     "did": "Edit Schedule: a 👁 look at the Original, then its ⓘ",
+     "saw": "✓ the counts read 2 warning · 1 advisory · 1 note [2 WARNING 1 ADVISORY 1 NOTE] · ✓ four lines, none struck [\"2 WARNING 1 ADVISORY 1 NOTE\" · 4 lines: plain plain plain plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s23-2-info-look-original.png"
+     ]
+    },
+    {
+     "id": "23.3",
+     "did": "Edit Schedule: a 👁 look at AL1, then its ⓘ",
+     "saw": "✓ the counts read 2 warning · 1 advisory, and no note [2 WARNING 1 ADVISORY] · ✓ four lines; only the long work day (the fourth) is struck, in its place [\"2 WARNING 1 ADVISORY\" · 4 lines: plain plain plain STRUCK] · ✓ no button [[0,0,0,0]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s23-3-info-look-AL1.png"
+     ]
+    },
+    {
+     "id": "23.4",
+     "did": "the member, View-only Sched: Tuesday as issued (AL1) while three hides wait — its bar and its ⓘ",
+     "saw": "✓ the day bar reads 3 issues, only the long day struck [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ ⓘ counts 2 warning · 1 advisory, no note [2 WARNING 1 ADVISORY] · ✓ ⓘ lists four lines, only the fourth struck [\"2 WARNING 1 ADVISORY\" · 4 lines: plain plain plain STRUCK] · ✓ no button [[0,0,0,0]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s23-4-member-AL1.png",
+      "dk-06-s23-4-info-member-AL1.png"
+     ]
+    },
+    {
+     "id": "23.5",
+     "did": "the scheduler signs and publishes AL2 (every issue hidden); the member again — the bar, the pucks, the ⓘ",
+     "saw": "✓ AL2 went out [[{\"pressed\":true,\"label\":\"Publish AL2\"},\"AL2\"]] · ✓ the day keeps a quiet \"✓ No issues\" bar [✓ No issues · tap to collapse ▲] · ✓ it opens the list: four lines, all struck, no button [✓ No issues · tap to collapse ▲ | 0:STRUCK[no button] 1:STRUCK[no button] 2:STRUCK[no button] 3:STRUCK[no button]] · ✓ Saint, Outlaw and Static carry no flag [[\"salsa: flying line:plain, other:plain\",\"casper: flying line:plain\",\"wolf: flying line:plain, other:plain\"]] · ✓ ⓘ says nothing is flagged [ | Nothing flagged — this day is clean ✓] · ✓ ⓘ still lists all four, struck [\"Nothing flagged — this day is clean ✓\" · 4 lines: STRUCK STRUCK STRUCK STRUCK]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s23-5-member-AL2.png",
+      "dk-08-s23-5-member-AL2-puck.png",
+      "dk-09-s23-5-info-member-AL2.png"
+     ]
+    },
+    {
+     "id": "23.6",
+     "did": "the scheduler: a 👁 look at AL1 after AL2 is out — its list and its ⓘ",
+     "saw": "✓ the look's list: 3 issues, only the long day struck [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ ⓘ counts 2 warning · 1 advisory; only the fourth line struck [2 WARNING 1 ADVISORY · \"2 WARNING 1 ADVISORY\" · 4 lines: plain plain plain STRUCK]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s23-6-info-look-AL1-after-AL2.png"
+     ]
+    },
+    {
+     "id": "23.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s23-ph": {
+   "at": "2026-10-01T09:31:05.320Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "23.0",
+     "did": "setup: Original flagged → ✕ long day → AL1; then ✕ on the other three on the working copy (3 pending)",
+     "saw": "✓ AL1 went out [[{\"pressed\":true,\"label\":\"Publish AL1\"},\"AL1\"]] · ✓ the three ✕ were pressed [[\"pressed\",\"pressed\",\"pressed\"]] · ✓ the working copy: all four struck, the bar reads \"✓ No issues\" [✓ No issues · tap to collapse ▲ | 0:STRUCK[↺] 1:STRUCK[↺] 2:STRUCK[↺] 3:STRUCK[↺]] · ✓ 3 pending [3 pending]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s23-0-work-all-hidden.png"
+     ]
+    },
+    {
+     "id": "23.1",
+     "did": "Edit Schedule, the working copy: ⓘ on Tuesday (every issue hidden)",
+     "saw": "✓ it says nothing is flagged — no \"N warning\" count [ | Nothing flagged — this day is clean ✓] · ✓ it still lists all four lines [\"Nothing flagged — this day is clean ✓\" · 4 lines: STRUCK STRUCK STRUCK STRUCK] · ✓ all four are painted struck [\"Nothing flagged — this day is clean ✓\" · 4 lines: STRUCK STRUCK STRUCK STRUCK] · ✓ no button on any line [[0,0,0,0]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-s23-1-info-work.png"
+     ]
+    },
+    {
+     "id": "23.2",
+     "did": "Edit Schedule: a 👁 look at the Original, then its ⓘ",
+     "saw": "✓ the counts read 2 warning · 1 advisory · 1 note [2 WARNING 1 ADVISORY 1 NOTE] · ✓ four lines, none struck [\"2 WARNING 1 ADVISORY 1 NOTE\" · 4 lines: plain plain plain plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-s23-2-info-look-original.png"
+     ]
+    },
+    {
+     "id": "23.3",
+     "did": "Edit Schedule: a 👁 look at AL1, then its ⓘ",
+     "saw": "✓ the counts read 2 warning · 1 advisory, and no note [2 WARNING 1 ADVISORY] · ✓ four lines; only the long work day (the fourth) is struck, in its place [\"2 WARNING 1 ADVISORY\" · 4 lines: plain plain plain STRUCK] · ✓ no button [[0,0,0,0]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-s23-3-info-look-AL1.png"
+     ]
+    },
+    {
+     "id": "23.4",
+     "did": "the member, View-only Sched: Tuesday as issued (AL1) while three hides wait — its bar and its ⓘ",
+     "saw": "✓ the day bar reads 3 issues, only the long day struck [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ ⓘ counts 2 warning · 1 advisory, no note [2 WARNING 1 ADVISORY] · ✓ ⓘ lists four lines, only the fourth struck [\"2 WARNING 1 ADVISORY\" · 4 lines: plain plain plain STRUCK] · ✓ no button [[0,0,0,0]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-s23-4-member-AL1.png",
+      "ph-06-s23-4-info-member-AL1.png"
+     ]
+    },
+    {
+     "id": "23.5",
+     "did": "the scheduler signs and publishes AL2 (every issue hidden); the member again — the bar, the pucks, the ⓘ",
+     "saw": "✓ AL2 went out [[{\"pressed\":true,\"label\":\"Publish AL2\"},\"AL2\"]] · ✓ the day keeps a quiet \"✓ No issues\" bar [✓ No issues · tap to collapse ▲] · ✓ it opens the list: four lines, all struck, no button [✓ No issues · tap to collapse ▲ | 0:STRUCK[no button] 1:STRUCK[no button] 2:STRUCK[no button] 3:STRUCK[no button]] · ✓ Saint, Outlaw and Static carry no flag [[\"salsa: flying line:plain, other:plain\",\"casper: flying line:plain\",\"wolf: flying line:plain, other:plain\"]] · ✓ ⓘ says nothing is flagged [ | Nothing flagged — this day is clean ✓] · ✓ ⓘ still lists all four, struck [\"Nothing flagged — this day is clean ✓\" · 4 lines: STRUCK STRUCK STRUCK STRUCK]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-s23-5-member-AL2.png",
+      "ph-08-s23-5-member-AL2-puck.png",
+      "ph-09-s23-5-info-member-AL2.png"
+     ]
+    },
+    {
+     "id": "23.6",
+     "did": "the scheduler: a 👁 look at AL1 after AL2 is out — its list and its ⓘ",
+     "saw": "✓ the look's list: 3 issues, only the long day struck [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button]] · ✓ ⓘ counts 2 warning · 1 advisory; only the fourth line struck [2 WARNING 1 ADVISORY · \"2 WARNING 1 ADVISORY\" · 4 lines: plain plain plain STRUCK]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-s23-6-info-look-AL1-after-AL2.png"
+     ]
+    },
+    {
+     "id": "23.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s33-dk": {
+   "at": "2026-10-01T09:32:27.093Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "33.0",
+     "did": "setup: Tuesday published; ✕ on Static's long work day; the four sign-off selects over the pending hide",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ 1 pending, the marker reads Not yet published, the four are signed [[\"1 pending\",\"Not yet published\",[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]]] · ✓ \"To go out\" holds the one line naming Static [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s33-0-signed-over-hide.png",
+      "dk-01-s33-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "33.1",
+     "did": "Quals (All, Edit): Static's callsign box retyped \"Statix\"; then Edit Schedule, Tuesday",
+     "saw": "✓ Quals shows the new callsign [{\"now\":\"Statix\",\"shot\":\"dk-04-s33-quals-renamed-Statix.png\"}] · ✓ his pucks on Tuesday read Statix [[\"Statix\",\"Statix\"]] · ✓ the warning is still hidden: its line painted struck, with ↺ [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ the line now words him as Statix, and Static is gone from it [Long work day Statix — Statix has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assum] · ✓ no second long-work-day line appeared [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ the bar still reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ his pucks still carry no flag [flying line:plain, other:plain] · ✓ still exactly 1 pending [1 pending] · ✓ \"To go out\" still holds ONE line, now worded Statix, \"flagged → hidden\" [[\"Warning · Statix — Statix has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ the four sign-offs stand, the same names [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ the marker still reads Not yet published [Not yet published] · ✓ Publish AL1 is still unlocked [{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s33-quals-renamed-Statix.png",
+      "dk-07-s33-1-work-after-rename.png",
+      "dk-08-s33-1-work-after-rename-puck.png",
+      "dk-05-s33-pend-togoout.png",
+      "dk-06-s33-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "33.2",
+     "did": "the member — the published face (the Original) after the rename, the hide still waiting",
+     "saw": "✓ 4 issues; the long-work-day line is NOT struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ it words him as Statix [Long work day Statix — Statix has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assum] · ✓ his puck is still flagged [flying line:ring(note) chip L, other:ring(note) chip L]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s33-2-member-after-rename.png",
+      "dk-10-s33-2-member-after-rename-puck.png"
+     ]
+    },
+    {
+     "id": "33.3",
+     "did": "the scheduler after a reload: the four still signed, Publish AL1 pressed without signing again",
+     "saw": "✓ after the reload the four sign-offs still stand [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1, nothing pending [[\"AL1\",\"11 changes\"]] · ✓ the line is struck, worded Statix [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s33-3-AL1-out.png"
+     ]
+    },
+    {
+     "id": "33.4",
+     "did": "renamed again (\"Statik\") after AL1 went out with the hide — the working copy and the published face",
+     "saw": "✓ Quals shows Statik [{\"now\":\"Statik\",\"shot\":\"dk-12-s33-quals-renamed-Statik.png\"}] · ✓ working copy: the line still struck with ↺, worded Statik, 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺] Long work day Statik — Statik has a long work day: 13h05, 05:00 → 18:0] · ✓ nothing pending, no marker [[\"11 changes\",\"\"]] · ✓ published face (AL1): the line still struck, no button, worded Statik, 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button] Long work day Statik — Statik has a lo] · ✓ his puck carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s33-quals-renamed-Statik.png",
+      "dk-13-s33-4-work-second-rename.png",
+      "dk-14-s33-4-member-second-rename.png",
+      "dk-15-s33-4-member-second-rename-puck.png"
+     ]
+    },
+    {
+     "id": "33.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s10-dk": {
+   "at": "2026-10-01T09:35:33.506Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "10.0",
+     "did": "the board, Tuesday: the extras seat of the ground row \"OPS BRIEFER / EP SUP\" armed, ALL AVAIL picked from the crew list; then Tuesday signed and published; its count chip tapped on Edit Schedule",
+     "saw": "✓ the placeholder landed [{\"armed\":true,\"offered\":true,\"before\":[\"dice\"],\"after\":[\"dice\",\"allavail\"],\"took\":true,\"msg\":\"ALL AVAIL planned\"}] · ✓ Tuesday still lists its four warnings [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ published [{\"pressed\":true,\"label\":\"Publish day\"}] · ✓ the window opened [OPS BRIEFER / EP SUP Jul 14 · 05:00–06:00 · no end time, an hour assumed] · ✓ Outlaw is in the crowd, flagged, his reason under his puck [listed · row \"clash\" · puck ringed chip R · reason \"Crew rest breach — Monday landed 20:45, +2h debrief assumed \"] · ✓ the foot counts the flagged men [Tap a puck for why. 2 men are flagged.]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s10-0-board-allavail-placed.png",
+      "dk-02-s10-1-work-window-flagged.png"
+     ]
+    },
+    {
+     "id": "10.1",
+     "did": "the member, View-only Sched: the same chip on Tuesday as issued",
+     "saw": "✓ the window opened [OPS BRIEFER / EP SUP Jul 14 · 05:00–06:00 · no end time, an hour assumed] · ✓ the same crowd [[43,43]] · ✓ Outlaw flagged with his reason [listed · row \"clash\" · puck ringed chip R · reason \"Crew rest breach — Monday landed 20:45, +2h debrief assumed \"] · ✓ the same count of flagged men [[2,2]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s10-1-member-window-flagged.png"
+     ]
+    },
+    {
+     "id": "10.2",
+     "did": "the scheduler: ✕ on Outlaw's crew-rest breach (pending); the chip tapped again on the working copy",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ Outlaw is STILL in the crowd [listed · row \"\" · puck plain · reason \"\"] · ✓ the crowd is the same size [[43,43]] · ✓ his puck is plain and his reason is gone [listed · row \"\" · puck plain · reason \"\"] · ✓ \"N men are flagged\" went down by one [[\"Tap a puck for why. One man is flagged.\",2]] · ✓ Saint, untouched, is still flagged [listed · row \"clash\" · puck ringed chip C · reason \"VL SAT & APPOINTMENT clash\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s10-2-work-window-hidden.png"
+     ]
+    },
+    {
+     "id": "10.3",
+     "did": "the member while the hide waits: the published face's window",
+     "saw": "✓ Outlaw is still flagged with his reason [listed · row \"clash\" · puck ringed chip R · reason \"Crew rest breach — Monday landed 20:45, +2h debrief assumed \"] · ✓ the count of flagged men is unchanged [[\"Tap a puck for why. 2 men are flagged.\",2]] · ✓ the same crowd [[43,43]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s10-2-member-window-pending.png"
+     ]
+    },
+    {
+     "id": "10.4",
+     "did": "the four sign-offs, Publish AL1; the member again",
+     "saw": "✓ AL1 went out [[{\"pressed\":true,\"label\":\"Publish AL1\"},\"AL1\"]] · ✓ Outlaw is still in the crowd [listed · row \"\" · puck plain · reason \"\"] · ✓ his puck is plain, no reason [listed · row \"\" · puck plain · reason \"\"] · ✓ \"N men are flagged\" is one fewer [[\"Tap a puck for why. One man is flagged.\",2]] · ✓ the same crowd [[43,43]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s10-3-member-window-after-AL1.png"
+     ]
+    },
+    {
+     "id": "10.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s10-ph": {
+   "at": "2026-10-01T09:36:12.625Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "10.0",
+     "did": "the board, Tuesday: the extras seat of the ground row \"OPS BRIEFER / EP SUP\" armed, ALL AVAIL picked from the crew list; then Tuesday signed and published; its count chip tapped on Edit Schedule",
+     "saw": "✓ the placeholder landed [{\"armed\":true,\"offered\":true,\"before\":[\"dice\"],\"after\":[\"dice\",\"allavail\"],\"took\":true,\"msg\":\"ALL AVAIL planned\"}] · ✓ Tuesday still lists its four warnings [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ published [{\"pressed\":true,\"label\":\"Publish day\"}] · ✓ the window opened [OPS BRIEFER / EP SUP Jul 14 · 05:00–06:00 · no end time, an hour assumed] · ✓ Outlaw is in the crowd, flagged, his reason under his puck [listed · row \"clash\" · puck ringed chip R · reason \"Crew rest breach — Monday landed 20:45, +2h debrief assumed \"] · ✓ the foot counts the flagged men [Tap a puck for why. 2 men are flagged.]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s10-0-board-allavail-placed.png",
+      "ph-02-s10-1-work-window-flagged.png"
+     ]
+    },
+    {
+     "id": "10.1",
+     "did": "the member, View-only Sched: the same chip on Tuesday as issued",
+     "saw": "✓ the window opened [OPS BRIEFER / EP SUP Jul 14 · 05:00–06:00 · no end time, an hour assumed] · ✓ the same crowd [[43,43]] · ✓ Outlaw flagged with his reason [listed · row \"clash\" · puck ringed chip R · reason \"Crew rest breach — Monday landed 20:45, +2h debrief assumed \"] · ✓ the same count of flagged men [[2,2]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-s10-1-member-window-flagged.png"
+     ]
+    },
+    {
+     "id": "10.2",
+     "did": "the scheduler: ✕ on Outlaw's crew-rest breach (pending); the chip tapped again on the working copy",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ Outlaw is STILL in the crowd [listed · row \"\" · puck plain · reason \"\"] · ✓ the crowd is the same size [[43,43]] · ✓ his puck is plain and his reason is gone [listed · row \"\" · puck plain · reason \"\"] · ✓ \"N men are flagged\" went down by one [[\"Tap a puck for why. One man is flagged.\",2]] · ✓ Saint, untouched, is still flagged [listed · row \"clash\" · puck ringed chip C · reason \"VL SAT & APPOINTMENT clash\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-s10-2-work-window-hidden.png"
+     ]
+    },
+    {
+     "id": "10.3",
+     "did": "the member while the hide waits: the published face's window",
+     "saw": "✓ Outlaw is still flagged with his reason [listed · row \"clash\" · puck ringed chip R · reason \"Crew rest breach — Monday landed 20:45, +2h debrief assumed \"] · ✓ the count of flagged men is unchanged [[\"Tap a puck for why. 2 men are flagged.\",2]] · ✓ the same crowd [[43,43]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-s10-2-member-window-pending.png"
+     ]
+    },
+    {
+     "id": "10.4",
+     "did": "the four sign-offs, Publish AL1; the member again",
+     "saw": "✓ AL1 went out [[{\"pressed\":true,\"label\":\"Publish AL1\"},\"AL1\"]] · ✓ Outlaw is still in the crowd [listed · row \"\" · puck plain · reason \"\"] · ✓ his puck is plain, no reason [listed · row \"\" · puck plain · reason \"\"] · ✓ \"N men are flagged\" is one fewer [[\"Tap a puck for why. One man is flagged.\",2]] · ✓ the same crowd [[43,43]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-s10-3-member-window-after-AL1.png"
+     ]
+    },
+    {
+     "id": "10.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s33-ph": {
+   "at": "2026-10-01T09:36:46.325Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "33.0",
+     "did": "setup: Tuesday published; ✕ on Static's long work day; the four sign-off selects over the pending hide",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ 1 pending, the marker reads Not yet published, the four are signed [[\"1 pending\",\"Not yet published\",[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]]] · ✓ \"To go out\" holds the one line naming Static [[\"Warning · Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-s33-0-signed-over-hide.png",
+      "ph-01-s33-pend-togoout.png"
+     ]
+    },
+    {
+     "id": "33.1",
+     "did": "Quals (All, Edit): Static's callsign box retyped \"Statix\"; then Edit Schedule, Tuesday",
+     "saw": "✓ Quals shows the new callsign [{\"now\":\"Statix\",\"shot\":\"ph-04-s33-quals-renamed-Statix.png\"}] · ✓ his pucks on Tuesday read Statix [[\"Statix\",\"Statix\"]] · ✓ the warning is still hidden: its line painted struck, with ↺ [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ the line now words him as Statix, and Static is gone from it [Long work day Statix — Statix has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assum] · ✓ no second long-work-day line appeared [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]] · ✓ the bar still reads 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲] · ✓ his pucks still carry no flag [flying line:plain, other:plain] · ✓ still exactly 1 pending [1 pending] · ✓ \"To go out\" still holds ONE line, now worded Statix, \"flagged → hidden\" [[\"Warning · Statix — Statix has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) flagged → hidden\"]] · ✓ the four sign-offs stand, the same names [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ the marker still reads Not yet published [Not yet published] · ✓ Publish AL1 is still unlocked [{\"label\":\"Publish AL1\",\"locked\":false,\"title\":\"Publish AL1 — 1 change on Tuesday only\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-s33-quals-renamed-Statix.png",
+      "ph-07-s33-1-work-after-rename.png",
+      "ph-08-s33-1-work-after-rename-puck.png",
+      "ph-05-s33-pend-togoout.png",
+      "ph-06-s33-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "33.2",
+     "did": "the member — the published face (the Original) after the rename, the hide still waiting",
+     "saw": "✓ 4 issues; the long-work-day line is NOT struck [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ it words him as Statix [Long work day Statix — Statix has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assum] · ✓ his puck is still flagged [flying line:ring(note) chip L, other:ring(note) chip L]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-s33-2-member-after-rename.png",
+      "ph-10-s33-2-member-after-rename-puck.png"
+     ]
+    },
+    {
+     "id": "33.3",
+     "did": "the scheduler after a reload: the four still signed, Publish AL1 pressed without signing again",
+     "saw": "✓ after the reload the four sign-offs still stand [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1, nothing pending [[\"AL1\",\"11 changes\"]] · ✓ the line is struck, worded Statix [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-s33-3-AL1-out.png"
+     ]
+    },
+    {
+     "id": "33.4",
+     "did": "renamed again (\"Statik\") after AL1 went out with the hide — the working copy and the published face",
+     "saw": "✓ Quals shows Statik [{\"now\":\"Statik\",\"shot\":\"ph-12-s33-quals-renamed-Statik.png\"}] · ✓ working copy: the line still struck with ↺, worded Statik, 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:STRUCK[↺] Long work day Statik — Statik has a long work day: 13h05, 05:00 → 18:0] · ✓ nothing pending, no marker [[\"11 changes\",\"\"]] · ✓ published face (AL1): the line still struck, no button, worded Statik, 3 issues [⚠ 3 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:STRUCK[no button] Long work day Statik — Statik has a lo] · ✓ his puck carries no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-s33-quals-renamed-Statik.png",
+      "ph-13-s33-4-work-second-rename.png",
+      "ph-14-s33-4-member-second-rename.png",
+      "ph-15-s33-4-member-second-rename-puck.png"
+     ]
+    },
+    {
+     "id": "33.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s1-dk": {
+   "at": "2026-10-01T09:43:26.530Z",
+   "base": "http://localhost:4212",
+   "phone": false,
+   "table": [
+    {
+     "id": "1.a",
+     "did": "Tuesday published with all four warnings flagged; the member (Ranger), View-only Sched → Insights",
+     "saw": "the published face's Tuesday bar: \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · Insights — week tile \"33 13 WARNING\" · Conflicts by type \"Long work day 2\" · By day \"Tuesday 8 sorties · 4 formations · 4 issues\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s1-a-before-face.png",
+      "dk-02-s1-a-before-face-puck.png",
+      "dk-03-s1-a-before-insights.png",
+      "dk-04-s1-a-before-insights-byday.png"
+     ]
+    },
+    {
+     "id": "1.b",
+     "did": "the scheduler: ✕ on Static's long work day (pressed; 1 pending, not published); the member again → Insights",
+     "saw": "the published face's Tuesday bar: \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · Insights — week tile \"32 13 WARNING\" · Conflicts by type \"Long work day 1\" · By day \"Tuesday 8 sorties · 4 formations · 3 issues\" · [the scheduler's own Insights on Edit Schedule at this moment: tile \"32 13 WARNING\", \"Long work day 1\", \"Tuesday 8 sorties · 4 formations · 3 issues\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-s1-b-pending-face.png",
+      "dk-08-s1-b-pending-face-puck.png",
+      "dk-09-s1-b-pending-insights.png",
+      "dk-10-s1-b-pending-insights-byday.png"
+     ]
+    },
+    {
+     "id": "1.c",
+     "did": "the scheduler signs and publishes AL1; the member again → Insights",
+     "saw": "the published face's Tuesday bar: \"⚠ 3 issues · 2 warning · tap to collapse ▲\" · Insights — week tile \"32 13 WARNING\" · Conflicts by type \"Long work day 1\" · By day \"Tuesday 8 sorties · 4 formations · 3 issues\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-11-s1-c-after-AL1-face.png",
+      "dk-12-s1-c-after-AL1-face-puck.png",
+      "dk-13-s1-c-after-AL1-insights.png",
+      "dk-14-s1-c-after-AL1-insights-byday.png"
+     ]
+    },
+    {
+     "id": "1.sum",
+     "did": "the three checkpoints side by side (before the hide · hide pending · after AL1)",
+     "saw": "the published face's Tuesday count 4 → 4 → 3 · Insights \"By day\" Tuesday 4 → 3 → 3 · Insights week total 33 → 32 → 32 · Insights \"Long work day\" 2 → 1 → 1. WHILE THE HIDE WAITS, Insights on View-only Sched already shows one fewer than the published face the member is looking at (it follows the working copy); its three figures agree with each other.",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-s1-b-pending-face.png",
+      "dk-09-s1-b-pending-insights.png",
+      "dk-10-s1-b-pending-insights-byday.png"
+     ]
+    },
+    {
+     "id": "1.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s1-ph": {
+   "at": "2026-10-01T09:43:59.873Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "1.a",
+     "did": "Tuesday published with all four warnings flagged; the member (Ranger), View-only Sched → Insights",
+     "saw": "the published face's Tuesday bar: \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · Insights — week tile \"33 13 WARNING\" · Conflicts by type \"Long work day 2\" · By day \"Tuesday 8 sorties · 4 formations · 4 issues\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-s1-a-before-face.png",
+      "ph-02-s1-a-before-face-puck.png",
+      "ph-03-s1-a-before-insights.png",
+      "ph-04-s1-a-before-insights-byday.png"
+     ]
+    },
+    {
+     "id": "1.b",
+     "did": "the scheduler: ✕ on Static's long work day (pressed; 1 pending, not published); the member again → Insights",
+     "saw": "the published face's Tuesday bar: \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · Insights — week tile \"32 13 WARNING\" · Conflicts by type \"Long work day 1\" · By day \"Tuesday 8 sorties · 4 formations · 3 issues\" · [the scheduler's own Insights on Edit Schedule at this moment: tile \"32 13 WARNING\", \"Long work day 1\", \"Tuesday 8 sorties · 4 formations · 3 issues\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-07-s1-b-pending-face.png",
+      "ph-08-s1-b-pending-face-puck.png",
+      "ph-09-s1-b-pending-insights.png",
+      "ph-10-s1-b-pending-insights-byday.png"
+     ]
+    },
+    {
+     "id": "1.c",
+     "did": "the scheduler signs and publishes AL1; the member again → Insights",
+     "saw": "the published face's Tuesday bar: \"⚠ 3 issues · 2 warning · tap to collapse ▲\" · Insights — week tile \"32 13 WARNING\" · Conflicts by type \"Long work day 1\" · By day \"Tuesday 8 sorties · 4 formations · 3 issues\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-11-s1-c-after-AL1-face.png",
+      "ph-12-s1-c-after-AL1-face-puck.png",
+      "ph-13-s1-c-after-AL1-insights.png",
+      "ph-14-s1-c-after-AL1-insights-byday.png"
+     ]
+    },
+    {
+     "id": "1.sum",
+     "did": "the three checkpoints side by side (before the hide · hide pending · after AL1)",
+     "saw": "the published face's Tuesday count 4 → 4 → 3 · Insights \"By day\" Tuesday 4 → 3 → 3 · Insights week total 33 → 32 → 32 · Insights \"Long work day\" 2 → 1 → 1. WHILE THE HIDE WAITS, Insights on View-only Sched already shows one fewer than the published face the member is looking at (it follows the working copy); its three figures agree with each other.",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-07-s1-b-pending-face.png",
+      "ph-09-s1-b-pending-insights.png",
+      "ph-10-s1-b-pending-insights-byday.png"
+     ]
+    },
+    {
+     "id": "1.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "s37-39b-ph": {
+   "at": "2026-10-01T10:00:46.399Z",
+   "base": "http://localhost:4212",
+   "phone": true,
+   "table": [
+    {
+     "id": "37b.1",
+     "did": "Tuesday still a draft: ✕ on \"Outlaw …\" in its list (Edit Schedule)",
+     "saw": "✓ the ✕ was pressed [pressed] · ✓ the day reads DRAFT [DRAFT] · ✓ the line is painted struck, with ↺ [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ the bar reads 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Outlaw's pucks carry no flag [flying line:plain, other:plain] · ✓ nothing reads pending on a draft day [[\"1 change\",\"\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s37b-1-draft-hidden.png",
+      "ph-02-s37b-1-draft-hidden-puck.png"
+     ]
+    },
+    {
+     "id": "37b.2",
+     "did": "a reload and a fresh sign-in as the scheduler",
+     "saw": "✓ the line is still struck, with ↺ [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-s37b-2-draft-after-reload.png"
+     ]
+    },
+    {
+     "id": "37b.3",
+     "did": "the four sign-off selects, then Publish day — the Original goes out with the warning hidden",
+     "saw": "✓ Publish day was pressed [{\"pressed\":true,\"label\":\"Publish day\"}] · ✓ the day reads ORIG [ORIG] · ✓ the chip does not say pending [6 changes] · ✓ no marker [] · ✓ no Publish AL button [[\"\",null]] · ✓ Amendments names no day with changes [[\"No pending changes\",[]]] · ✓ the changes window has nothing \"To go out\" [[[\"New to you 0\",\"All changes 6\",\"To go out · AL1 0 [on]\"],[\"Nothing is waiting to go out.\"]]] · ✓ the line is still struck with ↺ [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[✕] 1:STRUCK[↺] 2:plain[✕] 3:plain[✕]] · ✓ 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ Outlaw's pucks carry no flag [flying line:plain, other:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-s37b-3-published-hidden.png"
+     ]
+    },
+    {
+     "id": "37b.4",
+     "did": "a reload, signed in as the member — View-only Sched, Tuesday as issued (the Original)",
+     "saw": "✓ the day shows the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar reads 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the line is painted struck [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[no button] 1:STRUCK[no button] 2:plain[no button] 3:plain[no button]] · ✓ it has NO button [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[no button] 1:STRUCK[no button] 2:plain[no button] 3:plain[no button]] · ✓ Outlaw's puck carries no flag [flying line:plain] · ✓ Monday: Outlaw carries no dotted \"breaks Tuesday\" mark [flying line:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-s37b-4-member-orig.png",
+      "ph-08-s37b-4-member-orig-puck.png"
+     ]
+    },
+    {
+     "id": "39b.1",
+     "did": "the scheduler again: ↺ on \"Outlaw …\" (the Original went out with it hidden) — the working copy",
+     "saw": "✓ the ↺ was pressed [pressed] · ✓ the line is plain again, with ✕ [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ Outlaw's puck is flagged again [flying line:ring(hard) chip R red, other:ring(hard) chip R red] · ✓ the chip reads 1 pending [1 pending] · ✓ the marker reads Not yet signed [Not yet signed] · ✓ the button reads Publish AL1 [Publish AL1] · ✓ \"To go out\" holds ONE line [[\"Warning · Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 ] · ✓ it reads \"Warning · … hidden → flagged again\" [[\"Warning · Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 ]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-s39b-1-work-flagged-again.png",
+      "ph-12-s39b-1-work-flagged-again-puck.png",
+      "ph-09-s39b-pend-togoout.png",
+      "ph-10-s39b-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "39b.2",
+     "did": "a reload, signed in as the member — the published face while the flag-again waits",
+     "saw": "✓ still the Original, as issued [[\"ORIG\",\"Original — as issued\"]] · ✓ the bar still reads 3 issues [⚠ 3 issues · 1 warning · tap to collapse ▲] · ✓ the line is still painted struck, no button [⚠ 3 issues · 1 warning · tap to collapse ▲ | 0:plain[no button] 1:STRUCK[no button] 2:plain[no button] 3:plain[no button]] · ✓ Outlaw's puck still carries no flag [flying line:plain] · ✓ Monday: still no dotted mark for Outlaw [flying line:plain]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-13-s39b-2-member-pending.png",
+      "ph-14-s39b-2-member-pending-puck.png"
+     ]
+    },
+    {
+     "id": "39b.3",
+     "did": "a reload as the scheduler (the flag-again is kept), the four sign-off selects, Publish AL1",
+     "saw": "✓ after the reload the line was still plain and 1 pending [true] · ✓ Publish AL1 was pressed [{\"pressed\":true,\"label\":\"Publish AL1\"}] · ✓ the day reads AL1, nothing pending, no marker [[\"AL1\",\"12 changes\",\"\"]] · ✓ the line is plain with ✕, 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[✕] 1:plain[✕] 2:plain[✕] 3:plain[✕]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-15-s39b-3-work-after-AL1.png"
+     ]
+    },
+    {
+     "id": "39b.4",
+     "did": "a reload, signed in as the member — the published face after AL1",
+     "saw": "✓ the day shows AL1, as issued [[\"AL1\",\"AL1 — as issued\"]] · ✓ the bar reads 4 issues [⚠ 4 issues · 2 warning · tap to collapse ▲] · ✓ the line is NOT struck, no button [⚠ 4 issues · 2 warning · tap to collapse ▲ | 0:plain[no button] 1:plain[no button] 2:plain[no button] 3:plain[no button]] · ✓ Outlaw's puck is flagged [flying line:ring(hard) chip R red] · ✓ Monday: Outlaw's dotted \"breaks Tuesday\" mark is drawn again [flying line:plain chip R dotted]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-16-s39b-4-member-after-AL1.png",
+      "ph-17-s39b-4-member-after-AL1-puck.png"
+     ]
+    },
+    {
+     "id": "37-39b.err",
+     "did": "the browser's error list through these two scenarios",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  }
+ }
+}

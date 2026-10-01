@@ -125,5 +125,46 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
       expect(m.lines.every(l => l.btn === ''), 'no ✕ and no ↺ for a member (D475)').toBe(true)
       expect((await pucks(page, `#vWeek .day[data-day="${TUE}"]`, STATIC)).some(p => p.warn || p.chip)).toBe(false)
     })
+
+    /* THE WALK'S FINDING (1 Oct 26): the pending line of a hide had nowhere to go — and the first fix opened the list
+       and then carried the view on to the man's puck, the struck line off the screen. Only a real browser can see
+       where a view lands: after the tap the struck line is ON SCREEN, focused, in a list the tap itself opened. */
+    test('WH8, D99 — on a published day, a tap on "Warning · … flagged → hidden" in To go out lands on the struck line', async ({ page }) => {
+      await login(page)
+      await go(page, 'editsched')
+      await openList(page, '#eWeek', TUE)
+      const day = `#eWeek .day[data-day="${TUE}"]`
+      for (const role of ['cur', 'sked', 'plan', 'appr']) {
+        const sel = page.locator(`${day} select[data-sign="${role}"][data-signday="${TUE}"]`).first()
+        const opts = await sel.locator('option').evaluateAll(os => os.map(o => (o as HTMLOptionElement).value).filter(Boolean))
+        await sel.selectOption(opts[0]!)
+      }
+      const pub = page.locator(`${day} [data-beak="${TUE}"]`).first()
+      await pub.evaluate(e => e.scrollIntoView({ block: 'center' }))
+      await pub.click()
+      await expect(page.locator(`${day} .verchip`).first()).toContainText('ORIG')
+      await openList(page, '#eWeek', TUE)
+      await page.locator(`${day} [data-woff="${TUE}.3"]`).first().click()
+      const chip = page.locator(`${day} .dpend`).first()
+      await expect(chip).toContainText('1 pending')
+      /* shut the list, so its being open afterwards is the tap's own doing */
+      await page.locator(`${day} [data-daywarn="${TUE}"]`).first().click()
+      await expect(page.locator(`${day} [data-dwbox="${TUE}"]`).first()).not.toHaveClass(/open/)
+      await chip.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'nearest' }))
+      await chip.click()
+      await page.locator('.chgwin:not([hidden]) .win-tab', { hasText: 'To go out' }).first().click()
+      const line = page.locator('.chgwin:not([hidden]) .pl-list button.pl-item').first()
+      await expect(line, 'the hide is listed, and its line is a button').toContainText('flagged')
+      await line.click()
+      const struck = page.locator(`${day} .witem.hid.on`).first()
+      await expect(struck, 'the list is open on the struck line').toBeVisible()
+      /* judged where the view comes to REST: the line is on screen the instant the list opens, and the defect was the
+         pan that came after — so wait until the page has stopped moving (two equal readings), then look */
+      const at = () => page.evaluate(() => `${Math.round(window.scrollY)}|${Math.round((document.querySelector('#eWeek') as HTMLElement).scrollLeft)}`)
+      await expect.poll(async () => { const a = await at(); await page.waitForTimeout(250); return (await at()) === a }, { message: 'the view comes to rest' }).toBe(true)
+      expect(await struck.evaluate(e => { const r = e.getBoundingClientRect(); return r.top >= 0 && r.bottom <= window.innerHeight && r.left >= 0 && r.right <= window.innerWidth }),
+        'and the line itself is on screen — not scrolled away to the man\'s puck').toBe(true)
+      await expect(struck).toContainText('long work day')
+    })
   })
 }

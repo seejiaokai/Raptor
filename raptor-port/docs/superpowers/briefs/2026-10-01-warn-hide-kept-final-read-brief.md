@@ -38,12 +38,13 @@ Read for WRONG lines and for MISSING ones. In particular:
 1. **The engine.** `validateCore`'s marks and traces (every site names its warning's code; the two cross-week traces);
    `shownOf` (the copy, the replay, `fz` / `lv`, `all`, the trace rule); `validate()` — what is `WARN`, `workingWarn()`,
    `rawWarn()`, `OFFICIAL`; `faceWarn` (the base, the per-day overlay under `w.wo`, `w.shown`, the memo's key);
-   `versionFaceWarn`; `HOOKS.issuedWarn` / `hideNow` / `hideDiffTo`; `withIssuedWeek` and `snapGlobals` / `restoreGlobals`
+   `versionFaceWarn`; `HOOKS.issuedWarn` / `hideNow`; `withIssuedWeek` and `snapGlobals` / `restoreGlobals`
    (is anything left pointing at the wrong bundle after a swap or a throw?); `restIfPlaced` / `crossDayIfPlaced` on the raw
    pass. Find an input for which a puck keeps the flag of a hidden warning, loses the flag of a shown one, or for which
    nothing hidden does NOT give back the raw bundle.
 2. **The published record.** `hidePending` / `hideDelta` in BOTH `dayDelta` and `dayPendingItemsIn`; `pendingKey` and the
-   sign-offs; `alIssue`'s `diff` / `units` / `ukinds`; `dayDiscardCount(di, toVer)` and its three callers; the load
+   sign-offs; `alIssue`'s `diff` / `units` / `ukinds`; `dayDiscardCount(di, toVer)` and its three callers (the pending hides the load
+   will undo — changed after the walk); the To go out line's tap (`warnline:` → `interactions.ts jumpToWarnLine`); the load
    (`drafts.ts loadVersionToWorkingCopy` → `HOOKS.setDayHides`) and its save; Unpublish; `retiredEntry` /
    `issuedFromRetired`; a version issued with hides read back from storage (`weekrows.ts`, `persist.ts`). Find an order of
    actions after which a published face shows or hides a flag it did not go out with while nothing is pending, a hide is
@@ -52,7 +53,8 @@ Read for WRONG lines and for MISSING ones. In particular:
    `histRestore`, the `sched.mutes` record's write and restore (`sched-commit.ts`), `weekStashSnap`, the week stash and a
    second week, Undo / Redo and D148. Find an order after which a saved hide is lost, doubled, attached to the wrong day
    or week, or written outside a command. Is `toggleWarnOff`'s `validate()` (inside a command) safe on every path?
-4. **Every reader** (the evidence sheet's roll-call): a count, colour, list, flag or message that still reads the RAW list
+4. **Every reader** (the evidence sheet's roll-call; `html.ts exemptLineOwn` — the exempt flying seat, now one body
+   for the week and the board, changed after the walk): a count, colour, list, flag or message that still reads the RAW list
    or the WORKING set where it must read the shown bundle or the version's own `off` — and the reverse (an engine probe
    that must see a hidden breach). Is a reader missing from the roll-call altogether?
 5. **The tests.** A test that passes for the wrong reason; a fixture that replaces where the app mutates; the marks guard

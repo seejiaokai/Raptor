@@ -14,7 +14,7 @@ import { isMember } from '../state/perms'
 import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
 import { oilSeatDeco } from './html'
-import { ORD, puck, puckMarks, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn } from './html'
+import { ORD, puck, puckMarks, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn, exemptLineOwn } from './html'
 
 /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 29 Aug
    4-digit pass: "most of the timing format is 08:00 … make sure everything
@@ -811,8 +811,13 @@ export function sbSlot(di:any,key:any,seat:any,id:any,pv?:any){
      which is exactly the kind of hole a missing call site leaves and no unit
      test noticed. SPARE seats and AVALON/BB still earn nothing, because
      dayOilWork skips them — this changes what is DRAWN, never what is owed. */
+  /* AN EXEMPT LINE'S SEAT RINGS FOR ITS OWN RULE ONLY, on the board as on the week (owner, 11 Aug 26; D94) — an SC
+     SPARE, anything on AVALON or BB. html.ts exemptLineOwn is the one body both read; this seat used to read the man's
+     whole-day marks, so it wore a clash he has elsewhere and kept it when every warning of THIS seat was hidden (the
+     [WARN-HIDE-KEPT] walk, scenario 8, 1 Oct 26). undefined = a fully checked line: the day-wide marks, as before. */
+  const ex=exemptLineOwn(di,key,id,pv);
   const m=puckMarks(di,id,pv)   // the week's four marks, dashed and dotted rings included (D94)
-  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${puck(id,m.sev,true,m.flag,m.dash,m.trace,oilSeatDeco(di,id,key).oil)}</span></div>`;
+  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${ex===undefined?puck(id,m.sev,true,m.flag,m.dash,m.trace,oilSeatDeco(di,id,key).oil):puck(id,ex?'hard':null,true,ex,false,null,oilSeatDeco(di,id,key).oil)}</span></div>`;
   if(pv)return `<div class="sb-slot"><span class="itxt">— ${seat==='p'?'FCP':'RCP'} empty —</span></div>`;
   return `<div class="sb-slot empty" data-slot="${key}">+ ${seat==='p'?'FCP':'RCP'}</div>`;
 }

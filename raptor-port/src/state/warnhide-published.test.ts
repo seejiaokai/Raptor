@@ -48,6 +48,7 @@ import * as view from './view'
 import { pendListHTML } from '../ui/pendlist'
 import { dayWarnHTML } from '../ui/html'
 import { peekWeekHTML } from '../ui/peek'
+import { jumpToChange } from '../ui/interactions'
 import { ensureRowIds } from '../engine/rowids'
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -131,6 +132,28 @@ describe('WH8 (D471) — a hide on a published day is ONE pending change, on eve
     expect(dayShownPendCount(TUE)).toBe(0)
     expect(daySigned(TUE), 'the four are valid again').toBe(true)
     expect(dayDiscardCount(TUE)).toBe(0)
+  })
+
+  /* THE WALK'S FINDING (walker B, scenario 40, 1 Oct 26): the pending line carried the warning's SEAT for its tap, so a
+     warning with no seat of its own (a long work day) could not be tapped at all — under a foot reading "Tap a change to
+     go to it" — and one with a seat lit the seat and left the day's list shut. D99: a tap takes the view to the change;
+     the change IS the line in the day's list. The item now carries the warning itself, and the tap opens the list on it. */
+  it('a tap on the pending line opens the day\'s list on that warning\'s line — a warning with no seat of its own included (D99)', async () => {
+    await boot(new MemoryBackend())
+    publish(TUE)
+    const key = view.warnMuteKey(byCode(TUE, 'LONGDAY'))
+    tap(byCode(TUE, 'LONGDAY'))
+    const item: any = dayPendingItems(TUE)[0]
+    expect(item.jump, 'the item names the warning, whatever seat it has or has not').toEqual([`warnline:${key}`])
+    expect(pendListHTML(TUE), 'so its line is a button').toMatch(/<button class="pl-item" data-plix="0"/)
+    view.DWOPEN.clear(); view.clearWarnFocus()
+    jumpToChange(item.jump, TUE)
+    expect(view.DWOPEN.has(TUE), 'the day\'s list is open').toBe(true)
+    const ix = warns(TUE).findIndex((w: any) => w.code === 'LONGDAY')
+    expect(view.WFOCUS, 'on the struck line, its crew lit').toMatchObject({ di: TUE, ix, ids: ['wolf'] })
+    expect(warns(TUE)[ix].off, 'still hidden — a tap looks, it changes nothing').toBe(true)
+    expect(dayDelta(TUE).map((e: any) => e.kind)).toEqual(['hide'])
+    view.clearWarnFocus(); view.DWOPEN.clear()       // the view is module state: leave it as the next test expects it
   })
 
   it('the amendment that carries it counts one item, stores the hide, and nothing is pending after', async () => {
@@ -299,6 +322,36 @@ describe('WH7, WH8 — Unpublish, Load onto working copy, a look at an older ver
     expect(kinds(TUE), 'and after that load the one difference from AL1 is still pending').toEqual(['hide'])
   })
 
+  /* THE WALK'S FINDING (walker B, scenarios 3c / 3d / 43, 1 Oct 26): counted against the version being loaded, the load's
+     confirm — and the "N pending" chip a look at that version wears — took every hide that DIFFERS between the working
+     copy and that version for "your unpublished edit", a hide already PUBLISHED included: with nothing pending, a look
+     at the Original read "1 pending" and "Discard 1 edit & load" where a typed remark read nothing. What a load
+     discards is an UNPUBLISHED change it will undo: a pending hide whose state the loaded version does not share. */
+  it('the load\'s confirm never counts a hide that is already published (D98, WH8)', async () => {
+    await boot(new MemoryBackend())
+    publish(TUE)
+    const orig = dayCurVer(TUE)
+    tap(byCode(TUE, 'LONGDAY')); amend(TUE)          // AL1 goes out with Static's long day hidden
+    const al1 = dayCurVer(TUE)
+    expect(dayDelta(TUE), 'nothing pending').toEqual([])
+    expect(dayDiscardCount(TUE, orig), '3d — nothing is pending, so a load of the Original discards nothing').toBe(0)
+    expect(dayDiscardCount(TUE, al1)).toBe(0)
+    /* 3c — one pending hide (Saint's clash) on top */
+    const clash = () => warns(TUE).find((w: any) => w.sev === 'hard' && (w.who || []).includes('salsa'))
+    tap(clash())
+    expect(dayShownPendCount(TUE), 'one pending').toBe(1)
+    expect(dayDiscardCount(TUE, orig), '3c — a load of the Original discards that one, not two').toBe(1)
+    expect(dayDiscardCount(TUE, al1), 'and so does a load of AL1').toBe(1)
+    /* 43 — AL2 flags the long day again; the pending hide of the clash is still the only unpublished edit */
+    tap(clash())                                     // back: nothing pending
+    tap(byCode(TUE, 'LONGDAY')); amend(TUE)          // AL2: flagged again
+    tap(clash())                                     // one pending hide
+    expect(dayShownPendCount(TUE)).toBe(1)
+    expect(dayDiscardCount(TUE, al1), '43 — a look at AL1 reads 1 pending, not 2').toBe(1)
+    expect(dayDiscardCount(TUE, orig)).toBe(1)
+    expect(dayDiscardCount(TUE)).toBe(1)
+  })
+
   it('a look at an older version shows the hides IT went out with (D187)', async () => {
     await boot(new MemoryBackend())
     publish(TUE)
@@ -369,7 +422,7 @@ describe("the marks that cross the week's edge follow next Monday's own hide (As
     expect(traceOf(SUN, 'bane'), 'the amendment is out: the mark goes').toBeNull()
   })
 
-  it('WH12 — the next-week preview drops the red time box of a nought-minute line whose warning is hidden there (Astra 1)', async () => {
+  it('WH12 — the next-week preview drops the amber time box of a nought-minute line whose warning is hidden there (Astra 1)', async () => {
     await boot(new MemoryBackend())
     const marks = () => { const d = document.createElement('div'); d.innerHTML = peekWeekHTML(); return d.querySelectorAll('[data-peek-day="0"] .badtm').length }
     loadWeek(W2)

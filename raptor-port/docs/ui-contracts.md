@@ -3440,7 +3440,11 @@ and the adapted `wrap` probe are what hold them.
 
 **25 Sep 26 (D94): the scheduler BOARD draws all three as the week does** — its flying, duty / sim and programme
 seats read `html.ts puckMarks`, the week's one reading of a puck's severity, printed flag (the trace's CR / 7
-caption), dash and trace. OIL-mode and exempt-seat pucks keep their own rules.
+caption), dash and trace. OIL-mode and exempt-seat pucks keep their own rules — **the exempt FLYING seat too, since
+1 Oct 26**: the board's cockpit seat (`board-html.ts sbSlot`) reads `html.ts exemptLineOwn`, the one body the week's
+flying loop reads. Until then it read the day-wide marks, so an AVALON / BB / SC SPARE copy wore a clash the man has
+elsewhere, and stayed ringed when every warning of that seat was hidden (found by the `[WARN-HIDE-KEPT]` walk; pins
+`ui/warnhide-readers.test.tsx` "row 6, the BOARD").
 
 One red, three strokes, in order of how directly the puck owns the problem:
 **solid** is his own breach, **dashed** is his own breach that a human
@@ -4098,7 +4102,7 @@ header keeps its true count" — and the D469 / D471 / D472 / D475 note that sto
     hidden, Edit Schedule keeps a quiet bar reading "✓ No issues" that opens the list; the board's heading reads "No
     conflicts flagged for <day> ✓" with the struck lines under it (D475).
   - **No flag on the pucks for that item (D469):** no ring, chip, dashed ring or dotted next-day mark — wherever the man is
-    drawn (the seats, the crew list, the Available grid, the ALL AVAIL window) — and no red time box on a nought-minute
+    drawn (the seats, the crew list, the Available grid, the ALL AVAIL window) — and no amber time box on a nought-minute
     line. A man with two warnings keeps the flag of the one still showing; a hidden crew-rest warning drops the dotted
     "breaks tomorrow" mark on the day before, across the week's edge too. The engine decides it once: every surface
     reads the bundle "as shown" (`validate.ts shownOf`), and a renderer reads the warning's own `off`, never the set.
@@ -4109,6 +4113,16 @@ header keeps its true count" — and the D469 / D471 / D472 / D475 note that sto
     published face keeps the flag until that amendment is out; then it strikes the line and drops the flag. Each
     version keeps the hides it went out with, and a look at an older version shows ITS hides. "Load onto working copy"
     puts the day's hides back to the loaded version's.
+    **A tap on its To go out line opens the day's list on that warning's line** (D99; the item carries `warnline:<the
+    hide key>`, `interactions.ts jumpToChange` → `jumpToWarnLine`): the list opened (the board's fold too, on a phone),
+    the line focused and its crew lit, the LINE brought on screen and marked for a moment in the amendment's colour — it
+    does not go on to the man's puck as a tap on the line itself does (that pan carried the struck line off the
+    screen); a warning with no seat of its own included; on View-only Sched the day turns to its working draft first,
+    where the pending change is (pin `e2e/warnhide.spec.ts`, both widths). **The load's confirm ("Discard N edits & load") and the "N
+    pending" chip of a look count only the PENDING hides the load will undo** (`publish.ts dayDiscardCount(di, toVer)`):
+    a hide already published is never "your unpublished edit", however it differs from the version loaded, and a
+    pending one the loaded version already shares is not discarded (the walk, 1 Oct 26 — pins
+    `state/warnhide-published.test.ts`).
 - **Resize the checks panel.** On desktop a grip (`.sb-wsplit`) sits on the
   border between the checks panel and the roster below it; dragging it sets an
   explicit height on `.sb-warn` (`wireWarnSplit`, a CSS var + `.sb-warn-sized`

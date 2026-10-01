@@ -208,6 +208,16 @@ describe('clicking a change jumps to it', () => {
     expect(rows[0]!.tagName, 'a plain row, not a button').not.toBe('BUTTON')
   })
 
+  /* [WARN-HIDE-KEPT] — the walk (walker C, 1 Oct 26): a line with its own words AND a from → to ran the two together,
+     "…debrief assumed)hidden → flagged again". The hide's history line is the first such line; a space parts them. */
+  it('a line with its own words and a from → to keeps a gap between them', async () => {
+    logAction(0, 'Warning · Static — a long work day (2h debrief assumed)', { sect: 'day', from: 'flagged', to: 'hidden' })
+    await openList()
+    const row = $$('.chgwin .cw-l').find(r => /Warning · Static/.test(r.textContent || ''))!
+    expect(row, 'the line is listed').toBeTruthy()
+    expect(row.textContent).toMatch(/assumed\) flagged → hidden/)
+  })
+
   it('says so when the detail it named has since gone', async () => {
     const f = DAYS[0].waves[0].formations
     const keep = JSON.parse(JSON.stringify(f))

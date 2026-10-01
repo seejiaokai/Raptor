@@ -104,7 +104,7 @@ describe('the line itself says the times cannot be right — not only the list o
   })
 
   /* [WARN-HIDE-KEPT] (owner D469, 1 Oct 26 — "if it's hidden, the pucks shouldn't have flagging for that specific item"):
-     the red time box is that warning's flag, drawn off the rule rather than the list — so it has to ask the list (WH3) */
+     the amber time box is that warning's flag, drawn off the rule rather than the list — so it has to ask the list (WH3) */
   it('WH3 — while that warning is HIDDEN the boxes are not marked: edit week, view week and board; flag it again and they are', () => {
     onlyLine(SAT, '10:00', '10:00')
     const w = (validate().byDay[SAT]?.warns ?? []).find((x: any) => x.code === 'FLT_NO_LEN')

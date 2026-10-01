@@ -88,7 +88,7 @@ const dsh=(di:any,id:any)=>(PV&&!OFW)?false:dashOf(di,id)
    breach rang not at all. ONE reading, so the two surfaces cannot drift: the severity, the printed flag (the
    trace's CR / 7 caption where the trace owns it — traceLeads, via chip), the dash and the trace. `off` is the
    caller's own "no marks here" (a frozen preview, a read-only row) — exactly what it gated before. */
-/* THE RED TIME BOX OF A NOUGHT-MINUTE LINE IS THAT WARNING'S FLAG ([WARN-HIDE-KEPT], owner D469, 1 Oct 26 — "if it's
+/* THE AMBER TIME BOX OF A NOUGHT-MINUTE LINE IS THAT WARNING'S FLAG ([WARN-HIDE-KEPT], owner D469, 1 Oct 26 — "if it's
    hidden, the pucks shouldn't have flagging for that specific item"): it is drawn off the rule itself (fltNoLen), not
    off the warning list, so it asks the list whether THAT line's warning is hidden — found by the warning's own slot key
    (`ff:<di>.<gi>.<li>.ld`, the key the validator files it under). One body for the week and the board. Under a
@@ -596,6 +596,30 @@ export function exemptDeskOwn(di:any,key:any,id:any){
   const hit=shownWarns(g&&g.warns).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='DOUBLE_BOOK')
     &&(x.who||[]).includes(id)&&(x.key===rk||x.also===rk));
   return hit?'C':null;
+}
+/* …AND THE SAME FOR AN EXEMPT FLYING LINE — an SC SPARE, anything on AVALON or BB (the rule and its history: the
+   comment at the week's flying loop below, owner 11 Aug 26). ONE body for the week (dayHTML) and the board (sbSlot)
+   so the two cannot drift — they HAD: the board's cockpit seat read the man's whole-day marks, so an exempt copy wore
+   a clash he has elsewhere, and with every warning of that seat hidden the week went plain while the board stayed
+   ringed (the [WARN-HIDE-KEPT] walk, scenario 8, 1 Oct 26; D94 already said "exempt-seat pucks keep their own rules").
+   `key` is the seat's own (`di.gi.li.ai.seat`) or its aircraft's. Returns undefined for a fully checked line (the
+   day-wide decoration, unchanged), null for a clean exempt copy, 'C' or 'Q' for a lit one. `off` is the caller's own
+   "no marks here" (the board's frozen preview), exactly as puckMarks takes it. */
+export function exemptLineOwn(di:any,key:any,id:any,off?:any){
+  const m=/^(\d+)\.(\d+)\.(\d+)\.(\d+)(?:\.|$)/.exec(String(key||'')); if(!m)return undefined;
+  const w=((DAYS[+m[1]]||{}).waves||[])[+m[2]], f=w&&(w.formations||[])[+m[3]], a=f&&(f.aircraft||[])[+m[4]];
+  if(!w||!f||!a||!saExempt(w,f,a))return undefined;
+  if(((PV||off)&&!OFW)||!id)return null;   /* official face shows these flags too (Codex CRPF-008) */
+  const fkey=`${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
+  const hit=shownWarns(g&&g.warns).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')   /* never a hidden one (D469) */
+    /* also `x.also`, so the SECOND place of a one-man-two-places pair
+       rings when it sits in a DIFFERENT wave (an AVALON seat + a BB
+       seat): the clash anchors on the first place, the other in `also`
+       — same match the exempt DESK puck already makes (7 Sep 26). A
+       same-formation pair already rings off the shared key prefix. */
+    &&(x.who||[]).includes(id)&&(x.key===fkey||String(x.key||'').indexOf(fkey+'.')===0
+      ||x.also===fkey||String(x.also||'').indexOf(fkey+'.')===0));
+  return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null;
 }
 /* one crew position inside a list cell (programme / duties / sims / ground).
    Draggable in edit mode; renders nothing when empty so cells stay clean. */
@@ -1763,18 +1787,9 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
              no amber rule lives here. BB can anchor nothing and so never
              rings, with no special case — until 7 Sep 26, when BB became
              AVALON's twin and anchors the same codes. */
-          const chk=!saExempt(w,f,a), fkey=`${di}.${gi}.${li}`;
-          const own=(id:any)=>{ if((PV&&!OFW)||!id)return null;   /* official face shows these flags too (Codex CRPF-008) */
-            const g=WARN.byDay[di];
-            const hit=shownWarns(g&&g.warns).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')   /* never a hidden one (D469) */
-              /* also `x.also`, so the SECOND place of a one-man-two-places pair
-                 rings when it sits in a DIFFERENT wave (an AVALON seat + a BB
-                 seat): the clash anchors on the first place, the other in `also`
-                 — same match the exempt DESK puck already makes (7 Sep 26). A
-                 same-formation pair already rings off the shared key prefix. */
-              &&(x.who||[]).includes(id)&&(x.key===fkey||String(x.key||'').indexOf(fkey+'.')===0
-                ||x.also===fkey||String(x.also||'').indexOf(fkey+'.')===0));
-            return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null; };
+          /* the reading itself is exemptLineOwn (above), the one body the board's cockpit seat reads too */
+          const chk=!saExempt(w,f,a);
+          const own=(id:any)=>exemptLineOwn(di,key,id)||null;
           const sv=(id:any)=>chk?sev(di,id):(own(id)?'hard':null), cp=(id:any)=>chk?chip(di,id):own(id), dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
           h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p),di)}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w),di)}</span></div>

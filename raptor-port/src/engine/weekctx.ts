@@ -234,7 +234,7 @@ export function nextMondayWorked(curWeek:any){
    PUBLISHED day: the hides its current issued version went out with (`w.wo`) — a hide made since waits for that day's
    next amendment (D471), so it is not in force yet. A week never saved, or one that will not parse: none. Read by the two
    marks that cross the week's edge (validate.ts shownOf — Sunday's "Breaks Monday", the run's forward mark) and by the
-   next-week preview's red time box (ui/peek.ts). Never throws — read inside validate(). */
+   next-week preview's amber time box (ui/peek.ts). Never throws — read inside validate(). */
 export function dayHidesIn(v:any,di:number):Set<string>{
   const out=new Set<string>(), s=stashGet(v); if(!s)return out;
   try{
