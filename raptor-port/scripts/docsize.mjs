@@ -160,8 +160,12 @@ const FILES = [
    ceiling-moved-with-code check reads these too. Set 28 Sep 26 at what each held after the conversion (How we work
    11.6k bytes, People & accounts 13.7k, scheduler 47.0k — most of it the settled notes and architecture, not rows —
    OIL 7.0k, Leave War 24.2k, Tracker 13.1k) plus room for about thirty more rulings each. */
+/* How we work 18000 → 22000 (3 Oct 26, with D491–D492): the thirty rulings of room were used in five days (D453–D492
+   are nearly all general rulings — the order to the database, the reviewers, the allowance). No row here is replaced
+   or spent yet (D484 and D492 are spent only after the 5 Oct 26 reset — archive them then), and a ruling is never
+   trimmed (D136), so the tripwire rises (D390). */
 const RULING_BYTES = [
-  ['.claude/rules/decisions/how-we-work.md', 0, 18000],
+  ['.claude/rules/decisions/how-we-work.md', 0, 22000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   ['.claude/rules/decisions/scheduler.md', 2, 62000],
   ['.claude/rules/decisions/oil.md',     2, 12000],
