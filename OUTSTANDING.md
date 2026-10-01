@@ -126,6 +126,7 @@ phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WI
 **From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no).
 
 **Waiting on him — no order exists:**
+[FEATURE-WISHLIST] (his list of features to come, 2 Oct 26 — his order wanted),
 [LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
 [OIL-EARNED-VS-GRANTED] (ANSWERED D400 and built with the award fix — merged, PR #469, 29 Sep 26; archived 2 Oct 26),
 [LEDGER-READ-ASK] (a question for him, from the OIL award build), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
@@ -1504,6 +1505,15 @@ there), a week with only draft days, a week with a published day carrying pendin
 by the order's questions — it removes a door and a command that writes the saved marks, so answer them honestly at build time.
 `[PHONE-DISCARD-MARKS]` is archived with it. **Not ruled, his to raise:** a button that puts a published day back to its last
 published version. **Place — D488: after the reset (D484), batched with other small Edit Schedule fixes (D485).**
+
+### [FEATURE-WISHLIST] Features he means to add — his list, not yet ruled or designed (2 Oct 26)
+His words, 2 Oct 26, asking where new features fit in the order of work: *"1. Format of how the inputs are displayed to calendar
+2. Caps & Ops limits 3. Insights to what type of mission each person flew 4. Training progress tracker graph 5. Workflow UI
+changes — More to come"*. None is designed; what each means is asked when its batch is planned (the planning step's rounds of
+questions) — never guessed. **The agent's proposed grouping, told to him, not ruled:** by area, each batch carrying the open small
+finds of its area and one check for the lot (D485) — Inputs (1, with `[INP-TILL-STALE]`); Insights (3, with `[INSIGHTS-BOARD-DOOR]`,
+after `[WORKSPAN-NEGATIVE]`); the Tracker (4, with its small finds); the rules (2 — a rules change, FULL tier); 5 placed once he
+says what it changes (before the features that would sit on the screens it moves). **Place:** his call — waiting on his order.
 
 ### [SKILL-FUSION] Fuse the harder questioning into the planning step — and three proposals from the same read (D486, 2 Oct 26)
 From the article he sent (codelynx.dev — five recommended skills): none is installed whole (D486). To build, documents only: the

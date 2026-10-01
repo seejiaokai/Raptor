@@ -405,7 +405,7 @@ scenario('HANDOFF.md: damage already at the base is reported, not failed', false
 scenario('a new top-level reference doc that no map names', true, c => c.write('raptor-port/docs/newref.md', '# new\n'), { mustSay: 'no map names' })
 scenario('a new top-level reference doc on the map', false, c => { c.write('raptor-port/docs/newref.md', '# new\n'); c.write('raptor-port/CLAUDE.md', '| the new reference | `docs/newref.md` |\n') })
 scenario('a design for one task, under superpowers/ (tier 3, no map needed)', false, c => c.write('raptor-port/docs/superpowers/specs/2026-09-24-x.md', '# x\n'))
-scenario('over a ceiling says it is a tripwire, not a target (D141)', true, c => c.edit('OUTSTANDING.md', t => t + 'x\n'.repeat(1400)), { mustSay: 'TRIPWIRE' })
+scenario('over a ceiling says it is a tripwire, not a target (D141)', true, c => c.edit('OUTSTANDING.md', t => t + 'x\n'.repeat(2000)), { mustSay: 'TRIPWIRE' })   // 2000: well past the backlog's tripwire (1650 since 2 Oct 26; at 1400 this stopped crossing it when the tripwire rose)
 scenario('a new area rulings file with no paths: (it would load in every chat)', true, c => c.write(OTHER, '# Rulings — other\n'), { mustSay: 'loads in EVERY chat' })
 
 /* THE TEXT MOVER (backlog-archive.mjs --move, D138): exact, or nothing. */
