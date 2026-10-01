@@ -1571,9 +1571,10 @@ that goes out; (3) the hidden line is drawn in place, struck out and darker, its
 (4) `ui-contracts.md` §Mute a specific check rewritten to match (its D469 note marks the three sentences today).
 **His answers to the readings (D471, 1 Oct 26):** built as ITS OWN job after phase 7; (b) a hide on a day ALREADY PUBLISHED
 WAITS for the next amendment — a pending change (D45, D103); (c) the published and printed schedule DROP the hidden item's
-flag too. **Still open — (a):** does the day's own count of problems ("N issues · N warning — tap to review" at the head of
-the day) still count a hidden one, or drop it and say "1 hidden"? He asked what "N issues" is; explained and asked again,
-1 Oct 26. **A picture first** (the struck-out line on the board and the edit week, phone and desktop), then the build. **Kept, as he was read:** only a scheduler hides and unhides; a hide is an Undo step; a hidden warning
+flag too. **(a) ANSWERED — D472 (1 Oct 26):** a hidden warning is NOT COUNTED — 3 issues with one hidden reads "2 issues",
+and the count line says nothing about a hidden one; it is noticed only by opening the day's issues list and seeing its line
+struck through and darker. **Every reading is now answered — the design is complete.** A picture first (the struck-out line
+on the board and the edit week, phone and desktop), then the build. **Kept, as he was read:** only a scheduler hides and unhides; a hide is an Undo step; a hidden warning
 returns by itself when the situation changes (his Aug 26 words). **Tier:** FULL (the warning list, saved data, the published
 record). **Place:** the next job after `[DB-READINESS]` phase 7, on its own branch — the tables' shape is settled by the
 ruling itself (`wo` stays in the day's row), so IT is not waiting on the build.

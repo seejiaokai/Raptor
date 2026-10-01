@@ -4083,8 +4083,9 @@ Both are board-side, admin-only, session-only, and DESKTOP-scoped for the resize
   its true count and colour"* — while hidden, **the pucks carry no flag for that item**. Kept, as he was read: only a
   scheduler hides and unhides; a hide is an Undo step; a hidden warning returns by itself when the situation changes.
   **D471 (1 Oct 26):** built as its own job after `[DB-READINESS]` phase 7; a hide on a day ALREADY PUBLISHED waits for the
-  next amendment (a pending change — D45, D103); the published and printed schedule drop the hidden item's flag too. Still
-  open, put to him again: whether the day's own count of problems still counts a hidden one.
+  next amendment (a pending change — D45, D103); the published and printed schedule drop the hidden item's flag too.
+  **D472 (1 Oct 26):** a hidden warning is NOT COUNTED — a day with 3 issues and one hidden reads "2 issues", with no
+  "1 hidden" beside it; the hidden one is seen only by opening the day's issues list, struck through and darker.
 - **Mute a specific check — on the board AND the edit week, in sync.** Each
   `.wln` row in the board's checks panel (`board.ts:boardWarnHTML`) and each
   `.witem` row in the edit week's day-issue list (`html.ts:dayWarnHTML`) carries
