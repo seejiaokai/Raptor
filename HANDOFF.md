@@ -23,7 +23,13 @@ the later merge keeps both (D78).
   with `[SKILL-FUSION]` — the read: `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md` §8.
 - **Astra's two runs, 3 Oct 26** (briefs and results in `raptor-port/docs/superpowers/briefs/2026-10-03-…`): the word-list
   draft is back (about 195 terms, five marked unsure — NOT yet checked against the app; that check rides with `[SKILL-FUSION]`);
-  the tidiness read (`[CODE-TIDY-AUDIT]`) was still running when this was written — its report goes to him in plain words.
+  the tidiness read (`[CODE-TIDY-AUDIT]`) is back — `…-code-tidy-audit-astra.md`: five separations, each FULL tier, none a
+  fault (the Leave War's row drawing out of its grid file; the scheduler's stylesheet split by screen; the Tracker's file
+  export/import out of its core; the Leave War's stored-data reading out of its store; its link to the schedule split in four
+  behind one front). The host spot-checked the files exist as described (line numbers are approximate). He has had a
+  three-line summary only — **owed: the plain-words report, ranked, for his yes or no on each** (nothing restructured before).
+- **He went to sleep 3 Oct 26 before giving the batch order. Advice given: continue in a FRESH chat on this branch, in one
+  sitting** — this chat's long context would be re-read at full price after a night's pause.
 - **Waiting on him:** the order of the feature batches (`[FEATURE-WISHLIST]`, D490), and his features and bugs — each gets its
   questions in rounds of at most four with a recommended answer, and is filed under its area.
 - **The main checkout** (`C:/Users/User/projects/Raptor`) sits on this branch, not a worktree — put it back on `main` once merged.
