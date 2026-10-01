@@ -1,0 +1,957 @@
+{
+ "w1-sim-flags-desktop": {
+  "at": "2026-10-01T02:22:56.264Z",
+  "base": "http://localhost:4206",
+  "table": [
+   {
+    "id": "B14",
+    "did": "Board, Tue 14 Jul: the OFT row retyped EP-1, 10:00–11:00 (Talisman / Echo on it); + Item \"OPS BRIEF\" 09:45–09:58, ALL AVAIL from the crew list; tapped its count; tapped Talisman in the window",
+    "screen": "chip 36; window \"Who’s available 36\"; Talisman and Echo listed, amber, \"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"; foot after the tap: \"Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"",
+    "stored": "n/a (a read)",
+    "verdict": "PASS",
+    "pics": [
+     "B14-1-board-window-brief.png",
+     "B14-2-window-brief.png",
+     "B14-3-window-foot-after-tap.png"
+    ]
+   },
+   {
+    "id": "B15",
+    "did": "With the window still open, typed the OPS BRIEF's times behind it: 11:05–11:25; tapped Echo",
+    "screen": "window stayed open, title \"OPS BRIEF Jul 14 · 11:05–11:25\"; Talisman and Echo amber, \"No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\"; foot: \"Echo — No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\"",
+    "stored": "n/a (a read)",
+    "verdict": "PASS",
+    "pics": [
+     "B15-1-board-window-debrief.png",
+     "B15-2-window-debrief.png",
+     "B15-3-window-foot-after-tap.png"
+    ]
+   },
+   {
+    "id": "B19",
+    "did": "OPS BRIEF moved outside both windows (09:20–09:40, 11:35–11:55); the sim's own time moved behind the window (10:30–11:30) and back; Ratchet (ground crew) and Nomad put on the sim's two extras by tap + crew list; every other man in the window read",
+    "screen": "outside: {\"flag\":\"\",\"why\":\"\"} / {\"flag\":\"\",\"why\":\"\"}; sim moved: {\"simAt1000\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"simAt1030_eventAt0945\":\"(listed, no flag)\",\"simAt1030_eventAt1016\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 10:15–10:30\"}; ground crew: {\"ratchetOnSim\":true,\"nomadOnSim\":true,\"ratchet\":\"(not listed)\",\"nomad\":{\"flag\":\"AMBER\",\"why\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"},\"tal\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"one\":\"Who’s available 36\"}; others flagged: {\"n\":34,\"flagged\":[\"Saint: VL SAT & APPOINTMENT clash\"]}",
+    "stored": "n/a (a read)",
+    "verdict": "PASS",
+    "pics": [
+     "B19-1-window-outside-before.png",
+     "B19-1-window-outside-after.png",
+     "B19-2-board-outside-after.png",
+     "B19-3-window-sim-moved-flag-gone.png",
+     "B19-4-window-sim-moved-flag-follows.png",
+     "B19-5-board-groundcrew-on-sim.png",
+     "B19-6-window-groundcrew-on-sim.png"
+    ]
+   },
+   {
+    "id": "B16",
+    "did": "AMT block typed BRIEF 11:00 · BOX 11:30–12:30 · DEBRIEF 12:30; Hunter and Ledger put on the BOX by tap + crew list; OPS BRIEF typed 11:10–11:20, its count tapped, Hunter tapped; then 10:40–10:58 behind the window",
+    "screen": "{\"title\":\"OPS BRIEF Jul 14 · 11:10–11:20\",\"hunter\":\"No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"ledger\":\"No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"all\":[\"Hunter:AMBER:No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"Warden:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)\",\"Saint:RED:VL SAT & APPOINTMENT clash\",\"Nomad:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\",\"Outlaw:RED:Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.\",\"Talisman:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\",\"Basher:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)\",\"Echo:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\",\"Ledger:AMBER:No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"Hex:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)\"]}; foot \"Hunter — No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\"; before the BRIEF row: {\"title\":\"OPS BRIEF Jul 14 · 10:40–10:58\",\"hunter\":\"(listed, no flag)\",\"ledger\":\"(listed, no flag)\"}",
+    "stored": "n/a (a read)",
+    "verdict": "PASS",
+    "pics": [
+     "B16-1-board-window-amt-brief.png",
+     "B16-2-window-amt-brief.png",
+     "B16-3-window-amt-brief-foot.png",
+     "B16-4-window-before-amt-brief-clean.png"
+    ]
+   },
+   {
+    "id": "B17",
+    "did": "Behind the window: OPS BRIEF 12:40–12:50; 13:05–13:20; the DEBRIEF row's end typed 12:45 then OPS BRIEF 12:50–12:58 and 12:32–12:42; the end blanked again",
+    "screen": "{\"brief\":{\"title\":\"OPS BRIEF Jul 14 · 11:10–11:20\",\"hunter\":\"No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"ledger\":\"No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"all\":[\"Hunter:AMBER:No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"Warden:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)\",\"Saint:RED:VL SAT & APPOINTMENT clash\",\"Nomad:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\",\"Outlaw:RED:Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.\",\"Talisman:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\",\"Basher:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)\",\"Echo:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\",\"Ledger:AMBER:No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"Hex:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)\"]},\"briefFoot\":\"Hunter — No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"lead\":{\"title\":\"OPS BRIEF Jul 14 · 10:40–10:58\",\"hunter\":\"(listed, no flag)\",\"ledger\":\"(listed, no flag)\"},\"debrief\":{\"title\":\"OPS BRIEF Jul 14 · 12:40–12:50\",\"hunter\":\"No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00\",\"ledger\":\"No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00\",\"all\":[\"Hunter:AMBER:No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00\",\"Ace:AMBER:No time for the VL SAT flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)\",\"Drifter:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)\",\"Rebel:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)\",\"Saint:RED:VL SAT & APPOINTMENT clash\",\"Gambit:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)\",\"Outlaw:RED:Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.\",\"Vapor:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)\",\"Ledger:AMBER:No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00\",\"Static:AMBER:No time for the VL SAT flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)\",\"Marlin:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)\",\"Cinder:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)\",\"Rune:AMBER:No time for the VL SAT flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)\",\"Dash:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)\",\"Vector:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)\"]},\"past\":\"(listed, no flag)\",\"endTyped_outside\":\"(listed, no flag)\",\"endTyped_inside\":\"No time for the AMT debrief — OPS BRIEF sits inside 12:30–12:45\"}",
+    "stored": "n/a (a read)",
+    "verdict": "PASS",
+    "pics": [
+     "B17-1-board-window-amt-debrief.png",
+     "B17-2-window-amt-debrief.png",
+     "B17-3-window-debrief-end-typed-outside.png",
+     "B17-4-window-debrief-end-typed-inside.png"
+    ]
+   },
+   {
+    "id": "B19w",
+    "did": "Three ground rows added: ADMIN TALK 09:45–09:58 (Talisman named), GC TASK 09:46–09:57 (Ratchet named), AMT TALK 11:10–11:20 (Hunter named); read the day's warning list; then ADMIN TALK → 11:05–11:25, AMT TALK → 12:40–12:50",
+    "screen": "brief: [\"Talisman — No time for the OFT EP-1 brief — ADMIN TALK sits inside 09:45–10:00\",\"Hunter — No time for the AMT brief — AMT TALK sits inside 11:00–11:30\"]; debrief: [\"Talisman — No time for the OFT EP-1 debrief — ADMIN TALK sits inside 11:00–11:30\",\"Hunter — No time for the AMT debrief — AMT TALK sits inside 12:30–13:00\"]",
+    "stored": "n/a (a read)",
+    "verdict": "PASS",
+    "pics": [
+     "B19w-1-warning-list-named-man-brief.png",
+     "B19w-2-warning-list-named-man-debrief.png"
+    ]
+   },
+   {
+    "id": "B18",
+    "did": "OPS BRIEF back at 09:45–09:58; the four sign-off boxes picked, Publish day; View-only Sched → the count → the window; back on the board the sim retyped 16:30–17:30; the board's window, the edit week's window, View-only Sched's window; reload; View-only Sched's window again",
+    "screen": "published: {\"pressed\":true,\"label\":\"Publish day\"} head \"ORIG\"; after the sim moved the day head reads {\"tag\":\"ORIG\",\"pending\":\"2 pending\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]}; working window: {\"chip\":\"36\",\"one\":\"Who’s available 36\",\"from\":\"who is free as things stand now\",\"tal\":\"(listed, no flag)\",\"echo\":\"(listed, no flag)\",\"flagged\":[\"Hunter:AMBER:No time for the AMT debrief — AMT TALK sits inside 12:30–13:00\",\"Saint:RED:VL SAT & APPOINTMENT clash\"]}; View-only Sched before: {\"chip\":\"36\",\"chipTitle\":\"36 with nothing else on at that time — tap to see them (who was free when this day was issued)\",\"one\":\"Who’s available 36\",\"from\":\"who was free when this day was issued — Original\",\"tal\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"echo\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"flagged\":[\"Hunter:AMBER:No time for the AMT debrief — AMT TALK sits inside 12:30–13:00\",\"Saint:RED:VL SAT & APPOINTMENT clash\",\"Nomad:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"Talisman:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"Echo:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"]}; after: {\"chip\":\"36\",\"chipTitle\":\"36 with nothing else on at that time — tap to see them (who was free when this day was issued)\",\"one\":\"Who’s available 36\",\"from\":\"who was free when this day was issued — Original\",\"tal\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"echo\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"flagged\":[\"Hunter:AMBER:No time for the AMT debrief — AMT TALK sits inside 12:30–13:00\",\"Saint:RED:VL SAT & APPOINTMENT clash\",\"Nomad:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"Talisman:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"Echo:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"]}; foot \"Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"; edit week: {\"chip\":\"36\",\"one\":\"Who’s available 36\",\"from\":\"who is free as things stand now\",\"tal\":\"(listed, no flag)\",\"flagged\":[\"Hunter:AMBER:No time for the AMT debrief — AMT TALK sits inside 12:30–13:00\",\"Saint:RED:VL SAT & APPOINTMENT clash\"]}; reloaded: {\"one\":\"Who’s available 36\",\"from\":\"who was free when this day was issued — Original\",\"tal\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"echo\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"}",
+    "stored": "week rows stored: [\"weeks/13-07-2026\",\"weeks/13-07-2026#1\",\"weeks/13-07-2026:is:2026-07-14#0~0\"]",
+    "verdict": "PASS",
+    "pics": [
+     "B18-1-board-published.png",
+     "B18-2-viewsched-issued-window.png",
+     "B18-3-viewsched-issued-window-close.png",
+     "B18-4-board-working-after-sim-moved.png",
+     "B18-5-window-working-after-sim-moved.png",
+     "B18-6-viewsched-issued-window-after-sim-moved.png",
+     "B18-7-viewsched-window-close-after-sim-moved.png",
+     "B18-8-viewsched-window-foot.png",
+     "B18-9-editweek-working-window.png",
+     "B18-10-viewsched-window-after-reload.png"
+    ]
+   }
+  ],
+  "checks": [
+   {
+    "name": "B14 Talisman and Echo (on the sim) are LISTED for an event in the sim's brief minutes",
+    "ok": true,
+    "detail": "{\"title\":\"OPS BRIEF Jul 14 · 09:45–09:58\",\"one\":\"Who’s available 36\",\"from\":\"who is free as things stand now\",\"foot\":\"Tap a puck for why. 3 men are flagged.\",\"n\":36,\"flagged\":[\"Saint:RED:VL SAT & APPOINTMENT clash\",\"Talisman:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"Echo:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"],\"lost\":\"\",\"chip\":\"36\"}"
+   },
+   {
+    "name": "B14 both wear the amber flag with the brief sentence",
+    "ok": true,
+    "detail": "{\"t\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"e\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"}"
+   },
+   {
+    "name": "B14 the flag is PAINTED: the flagged row's colours differ from a clean row's, and the reason has room on screen",
+    "ok": true,
+    "detail": "{\"flagged\":{\"row\":\"rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)\",\"puck\":\"none|rgb(251, 250, 240)|rgba(0, 0, 0, 0)\",\"why\":\"rgb(229, 168, 59)\"},\"clean\":{\"row\":\"rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)\",\"puck\":\"none|rgb(251, 250, 240)|rgba(0, 0, 0, 0)\",\"why\":\"\"},\"whyBox\":{\"x\":1221,\"y\":710,\"w\":93,\"h\":52}}"
+   },
+   {
+    "name": "B14 a tap on Talisman gives the full sentence in the window's foot",
+    "ok": true,
+    "detail": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   },
+   {
+    "name": "B19 (i) no man who is not on the sim wears a sim brief / debrief flag",
+    "ok": true,
+    "detail": "[]"
+   },
+   {
+    "name": "B15 the window stayed open while the time was typed behind it, and its title follows (11:05–11:25)",
+    "ok": true,
+    "detail": "OPS BRIEF Jul 14 · 11:05–11:25"
+   },
+   {
+    "name": "B15 Talisman and Echo are listed and amber with the DEBRIEF sentence (11:00–11:30)",
+    "ok": true,
+    "detail": "{\"t\":\"No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\",\"e\":\"No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\"}"
+   },
+   {
+    "name": "B15 a tap on Echo gives the debrief sentence in the foot",
+    "ok": true,
+    "detail": "Echo — No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30"
+   },
+   {
+    "name": "B19 (ii) 09:20–09:40 (outside the brief and the debrief): Talisman and Echo are listed and carry NO sim flag",
+    "ok": true,
+    "detail": "{\"title\":\"OPS BRIEF Jul 14 · 09:20–09:40\",\"tal\":{\"flag\":\"\",\"why\":\"\"},\"echo\":{\"flag\":\"\",\"why\":\"\"},\"simFlags\":[]}"
+   },
+   {
+    "name": "B19 (ii) 11:35–11:55 (outside the brief and the debrief): Talisman and Echo are listed and carry NO sim flag",
+    "ok": true,
+    "detail": "{\"title\":\"OPS BRIEF Jul 14 · 11:35–11:55\",\"tal\":{\"flag\":\"\",\"why\":\"\"},\"echo\":{\"flag\":\"\",\"why\":\"\"},\"simFlags\":[]}"
+   },
+   {
+    "name": "B19 the sim's own time edited behind the window: the 09:45 event loses the flag (the brief is now 10:15–10:30)",
+    "ok": true,
+    "detail": "{\"id\":\"haowen\",\"cs\":\"Talisman\",\"flag\":\"\",\"why\":\"\",\"paint\":{\"row\":\"rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)\",\"puck\":\"none|rgb(251, 250, 240)|rgba(0, 0, 0, 0)\",\"why\":\"\"},\"box\":{\"x\":1221,\"y\":689,\"w\":93,\"h\":17},\"whyBox\":null,\"puckBox\":{\"x\":1221,\"y\":690,\"w\":74,\"h\":15}}"
+   },
+   {
+    "name": "B19 …and an event at 10:16–10:28 takes it: \"…sits inside 10:15–10:30\"",
+    "ok": true,
+    "detail": "{\"id\":\"haowen\",\"cs\":\"Talisman\",\"flag\":\"AMBER\",\"why\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 10:15–10:30\",\"paint\":{\"row\":\"rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)\",\"puck\":\"none|rgb(251, 250, 240)|rgba(0, 0, 0, 0)\",\"why\":\"rgb(229, 168, 59)\"},\"box\":{\"x\":1221,\"y\":689,\"w\":93,\"h\":73},\"whyBox\":{\"x\":1221,\"y\":710,\"w\":93,\"h\":52},\"puckBox\":{\"x\":1221,\"y\":689,\"w\":74,\"h\":15}}"
+   },
+   {
+    "name": "B19 (iii) Ratchet (ground crew) rides the sim and wears no sim flag in the window",
+    "ok": true,
+    "detail": "{\"ratchetOnSim\":true,\"nomadOnSim\":true,\"ratchet\":\"(not listed)\",\"nomad\":{\"flag\":\"AMBER\",\"why\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"},\"tal\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"one\":\"Who’s available 36\"}"
+   },
+   {
+    "name": "B16 Hunter and Ledger (AMT BOX) are listed for 11:10–11:20 and amber with the AMT brief sentence (11:00–11:30)",
+    "ok": true,
+    "detail": "{\"title\":\"OPS BRIEF Jul 14 · 11:10–11:20\",\"hunter\":\"No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"ledger\":\"No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"all\":[\"Hunter:AMBER:No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"Warden:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)\",\"Saint:RED:VL SAT & APPOINTMENT clash\",\"Nomad:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\",\"Outlaw:RED:Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.\",\"Talisman:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\",\"Basher:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)\",\"Echo:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30\",\"Ledger:AMBER:No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30\",\"Hex:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)\"]}"
+   },
+   {
+    "name": "B16 an event at 10:40–10:58, before the BRIEF row starts: Hunter and Ledger listed, no AMT flag (no lead time invented)",
+    "ok": true,
+    "detail": "{\"title\":\"OPS BRIEF Jul 14 · 10:40–10:58\",\"hunter\":\"(listed, no flag)\",\"ledger\":\"(listed, no flag)\"}"
+   },
+   {
+    "name": "B17 12:40–12:50: Hunter and Ledger amber with the AMT debrief sentence (12:30–13:00, the DEBRIEF row's blank end + 30 min)",
+    "ok": true,
+    "detail": "{\"title\":\"OPS BRIEF Jul 14 · 12:40–12:50\",\"hunter\":\"No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00\",\"ledger\":\"No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00\",\"all\":[\"Hunter:AMBER:No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00\",\"Ace:AMBER:No time for the VL SAT flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)\",\"Drifter:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)\",\"Rebel:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)\",\"Saint:RED:VL SAT & APPOINTMENT clash\",\"Gambit:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)\",\"Outlaw:RED:Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.\",\"Vapor:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)\",\"Ledger:AMBER:No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00\",\"Static:AMBER:No time for the VL SAT flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)\",\"Marlin:AMBER:No time for the "
+   },
+   {
+    "name": "B17 13:05–13:20 (past the debrief): Hunter carries no AMT flag",
+    "ok": true,
+    "detail": "(listed, no flag)"
+   },
+   {
+    "name": "B17 DEBRIEF row typed 12:30–12:45: an event at 12:50–12:58 is NOT flagged",
+    "ok": true,
+    "detail": "(listed, no flag)"
+   },
+   {
+    "name": "B17 …and one at 12:32–12:42 is: \"…sits inside 12:30–12:45\"",
+    "ok": true,
+    "detail": "No time for the AMT debrief — OPS BRIEF sits inside 12:30–12:45"
+   },
+   {
+    "name": "B19w the list reads \"Talisman — No time for the OFT EP-1 brief — ADMIN TALK sits inside 09:45–10:00\"",
+    "ok": true,
+    "detail": "[\"Talisman — No time for the OFT EP-1 brief — ADMIN TALK sits inside 09:45–10:00\",\"Hunter — No time for the AMT brief — AMT TALK sits inside 11:00–11:30\"]"
+   },
+   {
+    "name": "B19w the list reads \"Hunter — No time for the AMT brief — AMT TALK sits inside 11:00–11:30\"",
+    "ok": true,
+    "detail": "[\"Talisman — No time for the OFT EP-1 brief — ADMIN TALK sits inside 09:45–10:00\",\"Hunter — No time for the AMT brief — AMT TALK sits inside 11:00–11:30\"]"
+   },
+   {
+    "name": "B19w no sim brief / debrief line for Ratchet (ground crew, on the sim's extras and named on GC TASK 09:46–09:57)",
+    "ok": true,
+    "detail": "[]"
+   },
+   {
+    "name": "B19w the list reads \"Talisman — No time for the OFT EP-1 debrief — ADMIN TALK sits inside 11:00–11:30\"",
+    "ok": true,
+    "detail": "[\"Talisman — No time for the OFT EP-1 debrief — ADMIN TALK sits inside 11:00–11:30\",\"Hunter — No time for the AMT debrief — AMT TALK sits inside 12:30–13:00\"]"
+   },
+   {
+    "name": "B19w the list reads \"Hunter — No time for the AMT debrief — AMT TALK sits inside 12:30–13:00\"",
+    "ok": true,
+    "detail": "[\"Talisman — No time for the OFT EP-1 debrief — ADMIN TALK sits inside 11:00–11:30\",\"Hunter — No time for the AMT debrief — AMT TALK sits inside 12:30–13:00\"]"
+   },
+   {
+    "name": "B18 the working copy's window (sim now 16:30–17:30): Talisman and Echo listed for 09:45–09:58 with NO sim flag",
+    "ok": true,
+    "detail": "[\"Hunter:AMBER:No time for the AMT debrief — AMT TALK sits inside 12:30–13:00\",\"Saint:RED:VL SAT & APPOINTMENT clash\"]"
+   },
+   {
+    "name": "B18 View-only Sched's window still lists Talisman and Echo and flags them from the day AS ISSUED (sim 10:00–11:00)",
+    "ok": true,
+    "detail": "{\"tal\":{\"id\":\"haowen\",\"cs\":\"Talisman\",\"flag\":\"AMBER\",\"why\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"paint\":{\"row\":\"rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)\",\"puck\":\"rgb(229, 168, 59) 0px 0px 0px 1.5px|rgb(251, 250, 240)|rgb(229, 168, 59)\",\"why\":\"rgb(229, 168, 59)\"},\"box\":{\"x\":1221,\"y\":801,\"w\":93,\"h\":73},\"whyBox\":{\"x\":1221,\"y\":822,\"w\":93,\"h\":52},\"puckBox\":{\"x\":1221,\"y\":801,\"w\":74,\"h\":15}},\"echo\":{\"id\":\"freak\",\"cs\":\"Echo\",\"flag\":\"AMBER\",\"why\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"paint\":{\"row\":\"rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)\",\"puck\":\"none|rgb(234, 251, 243)|rgba(0, 0, 0, 0)\",\"why\":\"rgb(229, 168, 59)\"},\"box\":{\"x\":1322,\"y\":199,\"w\":93,\"h\":73},\"whyBox\":{\"x\":1322,\"y\":220,\"w\":93,\"h\":52},\"puckBox\":{\"x\":1322,\"y\":199,\"w\":74,\"h\":15}}}"
+   },
+   {
+    "name": "B18 …and says it is the day as issued",
+    "ok": true,
+    "detail": "{\"from\":\"who was free when this day was issued — Original\",\"title\":\"36 with nothing else on at that time — tap to see them (who was free when this day was issued)\"}"
+   },
+   {
+    "name": "B18 the issued count did not move with the working copy's change",
+    "ok": true,
+    "detail": "{\"before\":\"Who’s available 36\",\"after\":\"Who’s available 36\"}"
+   },
+   {
+    "name": "B18 reload — a reload gives back exactly what was there",
+    "ok": true,
+    "detail": "week 13/07/2026"
+   },
+   {
+    "name": "B18 reload — the reload wrote nothing",
+    "ok": true,
+    "detail": "no row changed"
+   },
+   {
+    "name": "B18 after a reload View-only Sched's window flags them the same",
+    "ok": true,
+    "detail": "{\"one\":\"Who’s available 36\",\"from\":\"who was free when this day was issued — Original\",\"tal\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\",\"echo\":\"No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00\"}"
+   }
+  ],
+  "facts": {
+   "B14.put": {
+    "armed": true,
+    "offered": true,
+    "before": [],
+    "after": [
+     "allavail"
+    ],
+    "took": true,
+    "msg": "ALL AVAIL planned"
+   },
+   "B14.sim": {
+    "label": "EP-1",
+    "str": "10:00",
+    "end": "1100",
+    "p": "haowen",
+    "w": "freak",
+    "rid": "rmrldi1s0b5gutg"
+   },
+   "B14.simw": [
+    {
+     "ids": [
+      "haowen",
+      "freak"
+     ],
+     "label": "OFT EP-1",
+     "bs": 585,
+     "be": 600,
+     "ds": 660,
+     "de": 690,
+     "key": "s:1.oft.0"
+    }
+   ],
+   "item": "r:rmrldi1s0xi8hgx",
+   "B14.window": {
+    "title": "OPS BRIEF Jul 14 · 09:45–09:58",
+    "one": "Who’s available 36",
+    "from": "who is free as things stand now",
+    "foot": "Tap a puck for why. 3 men are flagged.",
+    "n": 36,
+    "flagged": [
+     "Saint:RED:VL SAT & APPOINTMENT clash",
+     "Talisman:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "Echo:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    ],
+    "lost": "",
+    "chip": "36"
+   },
+   "B14.tal": {
+    "id": "haowen",
+    "cs": "Talisman",
+    "flag": "AMBER",
+    "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "paint": {
+     "row": "rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)",
+     "puck": "none|rgb(251, 250, 240)|rgba(0, 0, 0, 0)",
+     "why": "rgb(229, 168, 59)"
+    },
+    "box": {
+     "x": 1221,
+     "y": 689,
+     "w": 93,
+     "h": 73
+    },
+    "whyBox": {
+     "x": 1221,
+     "y": 710,
+     "w": 93,
+     "h": 52
+    },
+    "puckBox": {
+     "x": 1221,
+     "y": 689,
+     "w": 74,
+     "h": 15
+    }
+   },
+   "B14.echo": {
+    "id": "freak",
+    "cs": "Echo",
+    "flag": "AMBER",
+    "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "paint": {
+     "row": "rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)",
+     "puck": "none|rgb(234, 251, 243)|rgba(0, 0, 0, 0)",
+     "why": "rgb(229, 168, 59)"
+    },
+    "box": {
+     "x": 1322,
+     "y": 199,
+     "w": 93,
+     "h": 73
+    },
+    "whyBox": {
+     "x": 1322,
+     "y": 220,
+     "w": 93,
+     "h": 52
+    },
+    "puckBox": {
+     "x": 1322,
+     "y": 199,
+     "w": 74,
+     "h": 15
+    }
+   },
+   "B14.cleanPaint": {
+    "row": "rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)",
+    "puck": "none|rgb(251, 250, 240)|rgba(0, 0, 0, 0)",
+    "why": ""
+   },
+   "B14.tap": "tapped",
+   "B14.foot": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+   "B19.others": {
+    "n": 34,
+    "flagged": [
+     "Saint: VL SAT & APPOINTMENT clash"
+    ]
+   },
+   "B15.window": {
+    "title": "OPS BRIEF Jul 14 · 11:05–11:25",
+    "one": "Who’s available 40",
+    "from": "who is free as things stand now",
+    "foot": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "n": 40,
+    "flagged": [
+     "Warden:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)",
+     "Saint:RED:VL SAT & APPOINTMENT clash",
+     "Outlaw:RED:Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+     "Talisman:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30",
+     "Basher:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)",
+     "Echo:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30",
+     "Hex:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)"
+    ],
+    "lost": ""
+   },
+   "B15.tal": {
+    "id": "haowen",
+    "cs": "Talisman",
+    "flag": "AMBER",
+    "why": "No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30",
+    "paint": {
+     "row": "rgb(241, 244, 247)|rgba(0, 0, 0, 0)|rgb(241, 244, 247)",
+     "puck": "none|rgb(251, 250, 240)|rgba(0, 0, 0, 0)",
+     "why": "rgb(229, 168, 59)"
+    },
+    "box": {
+     "x": 1221,
+     "y": 681,
+     "w": 93,
+     "h": 73
+    },
+    "whyBox": {
+     "x": 1221,
+     "y": 702,
+     "w": 93,
+     "h": 52
+    },
+    "puckBox": {
+     "x": 1221,
+     "y": 681,
+     "w": 74,
+     "h": 15
+    }
+   },
+   "B15.foot": "Echo — No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30",
+   "B19.outside.before": {
+    "title": "OPS BRIEF Jul 14 · 09:20–09:40",
+    "tal": {
+     "flag": "",
+     "why": ""
+    },
+    "echo": {
+     "flag": "",
+     "why": ""
+    },
+    "simFlags": []
+   },
+   "B19.outside.after": {
+    "title": "OPS BRIEF Jul 14 · 11:35–11:55",
+    "tal": {
+     "flag": "",
+     "why": ""
+    },
+    "echo": {
+     "flag": "",
+     "why": ""
+    },
+    "simFlags": []
+   },
+   "B19.follow": {
+    "simAt1000": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "simAt1030_eventAt0945": "(listed, no flag)",
+    "simAt1030_eventAt1016": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 10:15–10:30"
+   },
+   "B19.follow.simw": [
+    {
+     "ids": [
+      "haowen",
+      "freak"
+     ],
+     "label": "OFT EP-1",
+     "bs": 615,
+     "be": 630,
+     "ds": 690,
+     "de": 720,
+     "key": "s:1.oft.0"
+    }
+   ],
+   "B19.gc.put": {
+    "armed": true,
+    "offered": true,
+    "before": [],
+    "after": [
+     "torque"
+    ],
+    "took": true,
+    "msg": "Ratchet planned"
+   },
+   "B19.nomad.put": {
+    "armed": true,
+    "offered": true,
+    "before": [],
+    "after": [
+     "pike"
+    ],
+    "took": true,
+    "msg": "Nomad planned"
+   },
+   "B19.gc.simw": [
+    {
+     "ids": [
+      "haowen",
+      "freak",
+      "torque",
+      "pike"
+     ],
+     "label": "OFT EP-1",
+     "bs": 585,
+     "be": 600,
+     "ds": 660,
+     "de": 690,
+     "key": "s:1.oft.0"
+    }
+   ],
+   "B19.gc": {
+    "ratchetOnSim": true,
+    "nomadOnSim": true,
+    "ratchet": "(not listed)",
+    "nomad": {
+     "flag": "AMBER",
+     "why": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    },
+    "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "one": "Who’s available 36"
+   },
+   "B16.put": [
+    {
+     "armed": true,
+     "offered": true,
+     "before": [],
+     "after": [
+      "prowler"
+     ],
+     "took": true,
+     "msg": "Hunter planned"
+    },
+    {
+     "armed": true,
+     "offered": true,
+     "before": [],
+     "after": [
+      "drill"
+     ],
+     "took": true,
+     "msg": "Ledger planned"
+    }
+   ],
+   "B16.amt": [
+    {
+     "label": "BRIEF",
+     "str": "11:00",
+     "end": "",
+     "rid": "rmrldi1s02wmzw4"
+    },
+    {
+     "label": "BOX",
+     "str": "11:30",
+     "end": "12:30",
+     "rid": "rmrldi1s0tib0ql",
+     "p": "prowler",
+     "w": "drill"
+    },
+    {
+     "label": "DEBRIEF",
+     "str": "12:30",
+     "end": "",
+     "rid": "rmrldi1s0xo5j4g"
+    }
+   ],
+   "B16.simw": [
+    {
+     "ids": [
+      "haowen",
+      "freak",
+      "torque",
+      "pike"
+     ],
+     "label": "OFT EP-1",
+     "bs": 585,
+     "be": 600,
+     "ds": 660,
+     "de": 690,
+     "key": "s:1.oft.0"
+    },
+    {
+     "ids": [
+      "prowler",
+      "drill"
+     ],
+     "label": "AMT",
+     "bs": 660,
+     "be": 690,
+     "ds": 750,
+     "de": 780,
+     "key": "s:1.amt.0"
+    }
+   ],
+   "B16.window": {
+    "title": "OPS BRIEF Jul 14 · 11:10–11:20",
+    "hunter": "No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30",
+    "ledger": "No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30",
+    "all": [
+     "Hunter:AMBER:No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30",
+     "Warden:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)",
+     "Saint:RED:VL SAT & APPOINTMENT clash",
+     "Nomad:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30",
+     "Outlaw:RED:Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+     "Talisman:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30",
+     "Basher:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)",
+     "Echo:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30",
+     "Ledger:AMBER:No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30",
+     "Hex:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)"
+    ]
+   },
+   "B16.foot": "Hunter — No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30",
+   "B16.lead": {
+    "title": "OPS BRIEF Jul 14 · 10:40–10:58",
+    "hunter": "(listed, no flag)",
+    "ledger": "(listed, no flag)"
+   },
+   "B17.window": {
+    "title": "OPS BRIEF Jul 14 · 12:40–12:50",
+    "hunter": "No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00",
+    "ledger": "No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00",
+    "all": [
+     "Hunter:AMBER:No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00",
+     "Ace:AMBER:No time for the VL SAT flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+     "Drifter:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)",
+     "Rebel:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+     "Saint:RED:VL SAT & APPOINTMENT clash",
+     "Gambit:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)",
+     "Outlaw:RED:Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+     "Vapor:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+     "Ledger:AMBER:No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00",
+     "Static:AMBER:No time for the VL SAT flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+     "Marlin:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+     "Cinder:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+     "Rune:AMBER:No time for the VL SAT flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+     "Dash:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)",
+     "Vector:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)"
+    ]
+   },
+   "B17.simw.end": [
+    {
+     "ids": [
+      "haowen",
+      "freak",
+      "torque",
+      "pike"
+     ],
+     "label": "OFT EP-1",
+     "bs": 585,
+     "be": 600,
+     "ds": 660,
+     "de": 690,
+     "key": "s:1.oft.0"
+    },
+    {
+     "ids": [
+      "prowler",
+      "drill"
+     ],
+     "label": "AMT",
+     "bs": 660,
+     "be": 690,
+     "ds": 750,
+     "de": 765,
+     "key": "s:1.amt.0"
+    }
+   ],
+   "B17.endTyped": {
+    "brief": {
+     "title": "OPS BRIEF Jul 14 · 11:10–11:20",
+     "hunter": "No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30",
+     "ledger": "No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30",
+     "all": [
+      "Hunter:AMBER:No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30",
+      "Warden:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)",
+      "Saint:RED:VL SAT & APPOINTMENT clash",
+      "Nomad:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30",
+      "Outlaw:RED:Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+      "Talisman:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30",
+      "Basher:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)",
+      "Echo:AMBER:No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30",
+      "Ledger:AMBER:No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30",
+      "Hex:AMBER:Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 10:05–12:05 (land + 2h)"
+     ]
+    },
+    "briefFoot": "Hunter — No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30",
+    "lead": {
+     "title": "OPS BRIEF Jul 14 · 10:40–10:58",
+     "hunter": "(listed, no flag)",
+     "ledger": "(listed, no flag)"
+    },
+    "debrief": {
+     "title": "OPS BRIEF Jul 14 · 12:40–12:50",
+     "hunter": "No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00",
+     "ledger": "No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00",
+     "all": [
+      "Hunter:AMBER:No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00",
+      "Ace:AMBER:No time for the VL SAT flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+      "Drifter:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)",
+      "Rebel:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+      "Saint:RED:VL SAT & APPOINTMENT clash",
+      "Gambit:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)",
+      "Outlaw:RED:Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+      "Vapor:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+      "Ledger:AMBER:No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00",
+      "Static:AMBER:No time for the VL SAT flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+      "Marlin:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+      "Cinder:AMBER:No time for the RU ACM flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+      "Rune:AMBER:No time for the VL SAT flight brief — OPS BRIEF sits inside 12:20–14:40 (brief 12:20)",
+      "Dash:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)",
+      "Vector:AMBER:Not enough time to attend the RU BFM debrief — OPS BRIEF sits inside 11:05–13:05 (land + 2h)"
+     ]
+    },
+    "past": "(listed, no flag)",
+    "endTyped_outside": "(listed, no flag)",
+    "endTyped_inside": "No time for the AMT debrief — OPS BRIEF sits inside 12:30–12:45"
+   },
+   "B19w.put.tal": {
+    "armed": true,
+    "offered": true,
+    "before": [],
+    "after": [
+     "haowen"
+    ],
+    "took": true,
+    "msg": "Talisman — No time for the OFT EP-1 brief — ADMIN TALK sits inside 09:45–10:00"
+   },
+   "B19w.put.gc": {
+    "armed": true,
+    "offered": true,
+    "before": [],
+    "after": [
+     "torque"
+    ],
+    "took": true,
+    "msg": "Ratchet planned"
+   },
+   "B19w.put.hunter": {
+    "armed": true,
+    "offered": true,
+    "before": [],
+    "after": [
+     "prowler"
+    ],
+    "took": true,
+    "msg": "Hunter — No time for the AMT brief — AMT TALK sits inside 11:00–11:30"
+   },
+   "B19w.lines.brief": [
+    "Talisman — No time for the OFT EP-1 brief — ADMIN TALK sits inside 09:45–10:00",
+    "Hunter — No time for the AMT brief — AMT TALK sits inside 11:00–11:30"
+   ],
+   "B19w.lines.debrief": [
+    "Talisman — No time for the OFT EP-1 debrief — ADMIN TALK sits inside 11:00–11:30",
+    "Hunter — No time for the AMT debrief — AMT TALK sits inside 12:30–13:00"
+   ],
+   "B19w.all": [
+    "⚠ 6 issues",
+    "· 2 warnings ·",
+    "tap to review",
+    "Saint — VL SAT & APPOINTMENT clash",
+    "Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+    "Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+    "Talisman — No time for the OFT EP-1 debrief — ADMIN TALK sits inside 11:00–11:30",
+    "Hunter — No time for the AMT debrief — AMT TALK sits inside 12:30–13:00",
+    "Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)"
+   ],
+   "B18.working.before": {
+    "one": "Who’s available 36",
+    "from": "who is free as things stand now",
+    "flagged": [
+     "Hunter:AMBER:No time for the AMT debrief — AMT TALK sits inside 12:30–13:00",
+     "Saint:RED:VL SAT & APPOINTMENT clash",
+     "Nomad:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "Talisman:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "Echo:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    ]
+   },
+   "B18.publish": {
+    "sign": {
+     "cur": "Ace",
+     "sked": "Anvil",
+     "plan": "Anvil",
+     "appr": "Anvil"
+    },
+    "pub": {
+     "pressed": true,
+     "label": "Publish day"
+    },
+    "head": {
+     "tag": "ORIG",
+     "pending": "71 changes",
+     "beak": "none",
+     "alpub": "",
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": ""
+    },
+    "toasts": [
+     "ALL AVAIL planned",
+     "Ratchet planned",
+     "Nomad planned",
+     "Hunter planned",
+     "Ledger planned",
+     "Talisman — No time for the OFT EP-1 brief — ADMIN TALK sits inside 09:45–10:00",
+     "Ratchet planned",
+     "Hunter — No time for the AMT brief — AMT TALK sits inside 11:00–11:30",
+     "Tuesday published — APPROVED"
+    ]
+   },
+   "B18.weekRows": [
+    "weeks/13-07-2026",
+    "weeks/13-07-2026#1",
+    "weeks/13-07-2026:is:2026-07-14#0~0"
+   ],
+   "B18.view.before": {
+    "chip": "36",
+    "chipTitle": "36 with nothing else on at that time — tap to see them (who was free when this day was issued)",
+    "one": "Who’s available 36",
+    "from": "who was free when this day was issued — Original",
+    "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "echo": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "flagged": [
+     "Hunter:AMBER:No time for the AMT debrief — AMT TALK sits inside 12:30–13:00",
+     "Saint:RED:VL SAT & APPOINTMENT clash",
+     "Nomad:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "Talisman:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "Echo:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    ]
+   },
+   "B18.toasts.move": [
+    "Schedule updated"
+   ],
+   "B18.head.after": {
+    "tag": "ORIG",
+    "pending": "2 pending",
+    "beak": "none",
+    "alpub": "Publish AL1",
+    "unpub": "Unpublish",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": "Not yet signed"
+   },
+   "B18.simw.after": [
+    {
+     "ids": [
+      "haowen",
+      "freak",
+      "torque",
+      "pike"
+     ],
+     "label": "OFT EP-1",
+     "bs": 975,
+     "be": 990,
+     "ds": 1050,
+     "de": 1080,
+     "key": "s:1.oft.0"
+    },
+    {
+     "ids": [
+      "prowler",
+      "drill"
+     ],
+     "label": "AMT",
+     "bs": 660,
+     "be": 690,
+     "ds": 750,
+     "de": 780,
+     "key": "s:1.amt.0"
+    }
+   ],
+   "B18.working.after": {
+    "chip": "36",
+    "one": "Who’s available 36",
+    "from": "who is free as things stand now",
+    "tal": "(listed, no flag)",
+    "echo": "(listed, no flag)",
+    "flagged": [
+     "Hunter:AMBER:No time for the AMT debrief — AMT TALK sits inside 12:30–13:00",
+     "Saint:RED:VL SAT & APPOINTMENT clash"
+    ]
+   },
+   "B18.view.after": {
+    "chip": "36",
+    "chipTitle": "36 with nothing else on at that time — tap to see them (who was free when this day was issued)",
+    "one": "Who’s available 36",
+    "from": "who was free when this day was issued — Original",
+    "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "echo": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "flagged": [
+     "Hunter:AMBER:No time for the AMT debrief — AMT TALK sits inside 12:30–13:00",
+     "Saint:RED:VL SAT & APPOINTMENT clash",
+     "Nomad:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "Talisman:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+     "Echo:AMBER:No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+    ]
+   },
+   "B18.view.foot": "Talisman — No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+   "B18.editweek": {
+    "chip": "36",
+    "one": "Who’s available 36",
+    "from": "who is free as things stand now",
+    "tal": "(listed, no flag)",
+    "flagged": [
+     "Hunter:AMBER:No time for the AMT debrief — AMT TALK sits inside 12:30–13:00",
+     "Saint:RED:VL SAT & APPOINTMENT clash"
+    ]
+   },
+   "B18.view.reloaded": {
+    "one": "Who’s available 36",
+    "from": "who was free when this day was issued — Original",
+    "tal": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00",
+    "echo": "No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00"
+   },
+   "errors": []
+  },
+  "errors": [],
+  "pics": [
+   "B14-1-board-window-brief.png",
+   "B14-2-window-brief.png",
+   "B14-3-window-foot-after-tap.png",
+   "B15-1-board-window-debrief.png",
+   "B15-2-window-debrief.png",
+   "B15-3-window-foot-after-tap.png",
+   "B19-1-window-outside-before.png",
+   "B19-1-window-outside-after.png",
+   "B19-2-board-outside-after.png",
+   "B19-3-window-sim-moved-flag-gone.png",
+   "B19-4-window-sim-moved-flag-follows.png",
+   "B19-5-board-groundcrew-on-sim.png",
+   "B19-6-window-groundcrew-on-sim.png",
+   "B16-1-board-window-amt-brief.png",
+   "B16-2-window-amt-brief.png",
+   "B16-3-window-amt-brief-foot.png",
+   "B16-4-window-before-amt-brief-clean.png",
+   "B17-1-board-window-amt-debrief.png",
+   "B17-2-window-amt-debrief.png",
+   "B17-3-window-debrief-end-typed-outside.png",
+   "B17-4-window-debrief-end-typed-inside.png",
+   "B19w-1-warning-list-named-man-brief.png",
+   "B19w-2-warning-list-named-man-debrief.png",
+   "B18-1-board-published.png",
+   "B18-2-viewsched-issued-window.png",
+   "B18-3-viewsched-issued-window-close.png",
+   "B18-4-board-working-after-sim-moved.png",
+   "B18-5-window-working-after-sim-moved.png",
+   "B18-6-viewsched-issued-window-after-sim-moved.png",
+   "B18-7-viewsched-window-close-after-sim-moved.png",
+   "B18-8-viewsched-window-foot.png",
+   "B18-9-editweek-working-window.png",
+   "B18-10-viewsched-window-after-reload.png"
+  ]
+ }
+}

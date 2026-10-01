@@ -1,0 +1,86 @@
+{
+ "at": "2026-10-01T02:20:34.314Z",
+ "rows": [
+  {
+   "id": "A2",
+   "did": "all-day Personal (Ranger, Sat 18 Jul); ALL put in the row's NAME BOX (arm the name seat, tap ALL)",
+   "screen": [
+    "placing all in the name: armed false, offered true, the app said \"null\", seat now holds [bane]"
+   ],
+   "data": [
+    "request Personal Jul 18 all day acc=g",
+    "the day's row: who=bane more=[] str=\"\" end=\"\""
+   ],
+   "verdict": "FAIL",
+   "why": [
+    "all placed in the name — {\"armed\":false,\"offered\":true,\"before\":[\"bane\"],\"after\":[\"bane\"],\"took\":false,\"msg\":null}",
+    "BOARD (OIL Earn off): the count chip is painted on the row — []",
+    "BOARD: one chip per placeholder on the row — []",
+    "BOARD: a tap on the chip opens the ALL AVAIL window — {\"open\":false,\"why\":\"NO CHIP to tap in #schedBoard\"}",
+    "BOARD: the window lists as many men as the chip says — {\"chip\":null}",
+    "the scenario ran — TypeError: Cannot read properties of undefined (reading 'length')\n    at file:///C:/Users/User/projects/Raptor/raptor-port/scripts/handpass/p7-a-walk1.mjs:58:49"
+   ],
+   "pics": [
+    "A2-1-board-chip.png",
+    "A2-X-error.png"
+   ]
+  },
+  {
+   "id": "A4",
+   "did": "all-day Personal (Ranger, Thu 16 Jul); ALL AVAIL put in the extras",
+   "screen": [
+    "placing allavail in the extras: armed true, offered true, the app said \"ALL AVAIL planned\", seat now holds [bane,allavail]",
+    "board chip beside allavail: \"21\" — title \"21 with nothing else on at that time — tap to see them (who is free as things stand now)\"",
+    "board window \"PERSONAL Jul 16\": Who’s available 21; lists 21; \"which answer\" line: \"who is free as things stand now\"; foot: \"Tap a puck for why.\"; flagged: []",
+    "OIL Earn button on this weekday's board: none drawn",
+    "edit week chip beside allavail: \"21\" — title \"21 with nothing else on at that time — tap to see them (who is free as things stand now)\"",
+    "edit week window \"PERSONAL Jul 16\": Who’s available 21; lists 21; \"who is free as things stand now\"; foot \"Tap a puck for why.\""
+   ],
+   "data": [
+    "request Personal Jul 16 all day acc=g",
+    "the day's row: who=bane more=[\"allavail\"] str=\"\" end=\"\"",
+    "Ranger (the requester) listed in the crowd: false",
+    "stored day row weeks/13-07-2026#3: present; the request's row who=bane more=[\"allavail\"]",
+    "Leave War 2026-07-16 (working copy, not published): {\"Reaper\":{\"text\":\"\",\"cls\":\" act\"},\"Cinch\":{\"text\":\"\",\"cls\":\" act\"},\"Cobra\":{\"text\":\"\",\"cls\":\" act\"},\"Ranger\":{\"text\":\"\",\"cls\":\" act\"}}"
+   ],
+   "verdict": "PASS",
+   "why": [],
+   "pics": [
+    "A4-1-board-chip.png",
+    "A4-2-board-window.png",
+    "A4-6-editweek-chip.png",
+    "A4-7-editweek-window.png",
+    "A4-8-leavewar.png",
+    "A4-9-reloaded.png"
+   ]
+  },
+  {
+   "id": "A5",
+   "did": "timed Personal (Ranger, Sat 18 Jul 10:00–11:00); ALL in the name box AND ALL AVAIL in the extras",
+   "screen": [
+    "placing all in the name: armed false, offered true, the app said \"null\", seat now holds [bane]",
+    "placing allavail in the extras: armed true, offered true, the app said \"ALL AVAIL planned\", seat now holds [bane,allavail]",
+    "board chip beside allavail: \"44\" — title \"None of these 44 earn OIL today — tap to see each one (who is free as things stand now)\"",
+    "board window \"PERSONAL Jul 18 · 10:00–11:00\": Who’s available 44; lists 44; \"which answer\" line: \"who is free as things stand now\"; foot: \"Tap a puck for why.\"; flagged: []",
+    "second chip's window: lists undefined; \"undefined\""
+   ],
+   "data": [
+    "request Personal Jul 18 600–660 min acc=g",
+    "the day's row: who=bane more=[\"allavail\"] str=\"10:00\" end=\"11:00\"",
+    "Ranger (the requester) listed in the crowd: false"
+   ],
+   "verdict": "FAIL",
+   "why": [
+    "all placed in the name — {\"armed\":false,\"offered\":true,\"before\":[\"bane\"],\"after\":[\"bane\"],\"took\":false,\"msg\":null}",
+    "BOARD: one chip per placeholder on the row — [\"allavail=44\"]",
+    "the scenario ran — TypeError: Cannot read properties of undefined (reading 'length')\n    at file:///C:/Users/User/projects/Raptor/raptor-port/scripts/handpass/p7-a-walk1.mjs:67:224"
+   ],
+   "pics": [
+    "A5-1-board-chip.png",
+    "A5-2-board-window.png",
+    "A5-X-error.png"
+   ]
+  }
+ ],
+ "errors": []
+}

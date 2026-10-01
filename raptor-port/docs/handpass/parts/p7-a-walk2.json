@@ -1,0 +1,28 @@
+{
+ "at": "2026-10-01T02:23:43.427Z",
+ "rows": [
+  {
+   "id": "A6",
+   "did": "timed Personal (Ranger, Sat 18 Jul 10:00–11:00) with ALL AVAIL in the extras; then on the board: CX, CX again, ⓘ, ⓘ again, ✕ on its row, Undo; and a Sunday Personal row with only a named extra (Anvil)",
+   "screen": [
+    "A6-0-standing: chips painted — board 1, board with OIL Earn on 1, edit week 1 (\"44\"); row class [sb-arow c6r gr-frominput lateinp]; in the mode the item cell reads \"Nothing on this row can earn OIL, so there is nothing to switch off\"",
+    "CX pressed: pressed"
+   ],
+   "data": [
+    "row after CX: {\"prog\":\"PERSONAL\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"rmks\":\"P7 A6\",\"srcType\":\"Personal\",\"src\":\"imrldi1s0e4hq4l\",\"srcv\":\"1fxvomk\",\"rid\":\"rimrldi1s0e4hq4l\",\"more\":[\"allavail\"]}"
+   ],
+   "verdict": "FAIL",
+   "why": [
+    "the scenario ran — locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#sbOil:visible, #schedBoard [data-oilmode]:visible').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"sbOil\" aria-pressed=\"false\" class=\"abtn sb-daybtn sb-oilbtn\" title=\"Show who earns OIL on this day, and change it\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div id=\"cxPop\" class=\"air"
+   ],
+   "pics": [
+    "A6-0-standing-board.png",
+    "A6-0-standing-board-oilearn.png",
+    "A6-0-standing-editweek.png",
+    "A6-a-cancelled-board.png",
+    "A6-X-error.png"
+   ]
+  }
+ ],
+ "errors": []
+}

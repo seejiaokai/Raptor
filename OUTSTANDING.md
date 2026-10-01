@@ -91,6 +91,8 @@ award fix are due before the tables are settled. What to finish before the hand-
 [STORE-READER-SWEEP], [OIL-REQ-NAMEBOX] (a walk question for him), [OIL-WORDS],
 [OIL-PERSONAL-PLACEHOLDER] (FULL tier), [CROWD-SIM-BRIEF] (WALK tier). ([OIL-RELINK-XWEEK] closed 1 Oct 26 by `[DB-READINESS]` phase 6 (c).)
 
+**Ruled, to build next (D469, 1 Oct 26):** [WARN-HIDE-KEPT] — a hidden warning stays hidden for everyone until unhidden, flags no puck, and its line stays in the list struck out; a mock-up and three readings to him first, then its own branch and FULL check, after `[DB-READINESS]` phase 7.
+
 **Placed by their own lines — not his rulings:** from the group-A FULL walk (30 Sep 26) — with group B:
 [UNDO-PUBLISH-ERASES-ISSUANCE], [TRK-IMPORT-ONE-GROUP], [TRK-FIRST-ORDER-PLACE] (low); low, with the next change there:
 [TRK-UNDO-WRITES-DEFAULTS], [SECDEFAULT-OFFER-BEHIND-BOARD], [BLOCK-NO-HISTORY-LINE], [ACCOUNTS-SEED-FIRST-WRITE] (demo
@@ -113,7 +115,6 @@ phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WI
 
 **Waiting on him — no order exists:**
 [LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
-[WARN-HIDE-KEPT] (a question for him — how long a hidden warning stays hidden, and for whom; it decides whether the day's table keeps it, so before IT settles its tables),
 [OIL-EARNED-VS-GRANTED] (his figure — ask first, when the award fix reaches it;
 D147), [LEDGER-READ-ASK] (a question for him, from the OIL award build), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
 [REPO-PRIVATE]'s sharing half, [EOD] (design first; no slot
@@ -1550,20 +1551,25 @@ loaded and what viewers still see; the second "N things to know ▾" opening the
 history. **Place:** low — his call; its own small job (WALK tier: a message on a shared surface), never inside another change.
 Carried here from the merged `claude/db-readiness-table-shaping-4094f6` handoff block when it was removed (1 Oct 26).
 
-### [WARN-HIDE-KEPT] How long does a hidden warning stay hidden, and for whom? — a question for him (found by `[STORE-READER-SWEEP]`, 1 Oct 26)
-**What the app does today — two answers for one act.** A scheduler hides a warning on the board (his ask, Aug 26: *"turn off
-that specific warning advisory … but if things change that warning will appear again"*; Undo takes a hide back). The hide is
-SAVED with its day (`ScheduleDay.wo` — `raptor-port/docs/data-model.md` §9, `state/weekrows.ts`). But every sign-in clears the
-hidden list (`state/view.ts`, "cleared on login/logout"), and the boot does not read the saved ones back for the week the app
-opens on (`state/store.ts initStore`) — while a week opened LATER does read them back (`loadWeek`). So after a reload or a
-new sign-in: a warning hidden on the week on screen is back; one hidden on another week is still hidden, for whoever signs
-in next on that browser — and, once the app is in the database, for everyone, because the day's row is shared.
-**The choices (product, his):** (a) *for the day, for everyone, until the situation changes* — a hidden warning is an
-acknowledged one; the next scheduler does not re-hide it; the day head keeps its true count and "N hidden" shows them (the
-data model as written); (b) *for that scheduler, until he signs out* — nothing is saved; each sign-in starts with every
-warning showing (the older note in the code). **The agent's lean: (a)** — it is what the saved record already says, and
-"N hidden" keeps every hidden warning one tap away. **Why it has a deadline:** (b) takes `wo` out of the day's table, so
-his answer is wanted before IT settles its tables (D453). **To build on his answer** (small, FULL tier — saved data, the
-warning list): (a) the boot and the sign-in read the loaded week's saved hides back; (b) stop saving them and drop
-`loadWeek`'s restore. Either way `view.ts`'s note and `data-schema.md` are made to say the same thing. **Place:** with
-`[DB-READINESS]` group A's residue, before the tables settle.
+### [WARN-HIDE-KEPT] A hidden warning stays hidden for everyone until unhidden; no flag on the pucks; its line struck out, not gone — RULED D469 (1 Oct 26), TO BUILD
+**His ruling (D469, 1 Oct 26 — answering the question the stored-record sweep of `[DB-READINESS]` phase 7 raised):** a hidden
+warning stays hidden, for everyone, across a reload and a sign-in, until someone unhides it; while it is hidden the pucks
+carry no flag for that item; and its line in the day's warning list stays where it is, struck out and darker, one tap from
+being flagged again. Why (his words): the scheduler has acknowledged it, has other considerations, and does not want the
+schedule that goes out to alarm. The full row: `.claude/decisions-full/scheduler.md` D469.
+**What the app does today (so the build is known):** a hide is saved with its day (`ScheduleDay.wo`), but every sign-in
+clears the hidden list (`raptor-port/src/state/view.ts`) and the boot does not read the saved ones back for the week on
+screen (`state/store.ts initStore`) while a week opened later does (`loadWeek`); hidden warnings gather under an "N hidden"
+line; and a hidden warning still rings and chips its pucks (the Aug 26 rule: "a muted problem is still a problem").
+**To build:** (1) the boot and the sign-in read the loaded week's saved hides back, and a sign-in no longer clears them;
+(2) a hidden warning marks no puck — no ring, no chip, on the board, the edit week and (see the open reading) the schedule
+that goes out; (3) the hidden line is drawn in place, struck out and darker, its ↺ beside it — the "N hidden" fold goes;
+(4) `ui-contracts.md` §Mute a specific check rewritten to match (its D469 note marks the three sentences today).
+**Three readings to put to him WITH A PICTURE before building** (a mock-up of the struck-out line on the board and the edit
+week, at phone and desktop width): (a) does the day's "N issues · N warning" count still count a hidden one, or drop it;
+(b) a hide on a day ALREADY PUBLISHED — a pending change that goes out with the next amendment (D45), or at once;
+(c) the published and printed schedule drop the hidden item's flag as the working copy does (read from "the report to be
+submitted": yes). **Kept, as he was read:** only a scheduler hides and unhides; a hide is an Undo step; a hidden warning
+returns by itself when the situation changes (his Aug 26 words). **Tier:** FULL (the warning list, saved data, the published
+record). **Place:** the next job after `[DB-READINESS]` phase 7, on its own branch — the tables' shape is settled by the
+ruling itself (`wo` stays in the day's row), so IT is not waiting on the build.

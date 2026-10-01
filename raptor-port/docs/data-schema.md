@@ -280,7 +280,9 @@ binding would be lost (a signature is content-valid only while its binding still
 { d: DAYS,                                  // the seven day objects
   c, p, ad, a, al, ok, sg, sb, o, cv, dr, cd, v, am, rt, cr,   // the SIXTEEN SCHED fields,
                                             //   short names, from schedFields()
-  wo: string[] }                            // muted warning ids (view.WARNOFF)
+  wo: string[] }                            // muted warning ids (view.WARNOFF) — kept with the day for everyone until unhidden
+                                            //   (D469, 1 Oct 26; TODAY a sign-in still clears them and the boot does not read
+                                            //   them back for the week on screen — the build is `[WARN-HIDE-KEPT]`)
 ```
 *(`un` — the stable ids of the requests a scheduler took off on this week — left the record 30 Sep 26: it is read from
 each request's own `acc: 'r'` mark, `store.ts takenOff` — `[DB-READINESS]` group A, F3-02.)*

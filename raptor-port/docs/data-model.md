@@ -353,7 +353,9 @@ day's row**. Every field of today's persisted week record (`weekStashSnap()`, `s
 
 - **Into that day's row:** the day itself (`d[di]`); every `SCHED` map keyed by day index (`ok`, `sg`, `sb`, `cv`,
   `dr`, `cd`, `cr`); every map keyed by slot key, split by the day the key names (`c`, `p`, `ad` — `keyDay()`);
-  the muted warnings (`wo` — `warnMuteKey` leads with the day). The working sign-offs travel here (Sign-offs, above).
+  the muted warnings (`wo` — `warnMuteKey` leads with the day) — **confirmed by D469 (owner, 1 Oct 26): a hidden warning is
+  kept with its day, for everyone, until someone unhides it** (so `wo` is part of the day's row, and a hide is the day
+  holder's write like any other). The working sign-offs travel here (Sign-offs, above).
   *(Corrected 30 Sep 26, `[DB-READINESS]` group A phase 1 — plan §2.5, §4: `o` and `rt` are NOT in the day row. The
   Original is issuance 0 of its version and each amendment its own issuance — one `Amendment` row each; a withdrawn
   one keeps its row and gains an `AmendmentRetraction` row beside it. `rt` is keyed by version (`<verId>~<n>`), not by

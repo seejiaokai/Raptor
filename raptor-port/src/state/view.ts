@@ -780,7 +780,12 @@ export function clearBell(){ BELLLIT.delete(bellKeyOf(CURPAGE,me())) }
    the list, it does not lie about the day). Admin-gated at the write path,
    cleared on login/logout — the LATEOFF precedent. WMOPEN is the per-day "show
    the hidden ones" reveal (the PIOPEN pattern) so a muted warning is always
-   reachable to un-mute. */
+   reachable to un-mute.
+   CHANGED BY D469 (owner, 1 Oct 26) — NOT BUILT YET ([WARN-HIDE-KEPT] in OUTSTANDING.md): a hidden warning stays hidden
+   for EVERYONE, across a reload and a sign-in, until someone unhides it (so "session-only" and "cleared on login/logout"
+   above go); while hidden the pucks carry no flag for that item (so "a muted problem is still a problem" goes for the
+   pucks); and its line stays in the day's list, struck out and darker, instead of under the WMOPEN reveal. Until the
+   build, this comment describes what the code still does. */
 export const WARNOFF=new Set<string>()
 export function warnMuteKey(w:any){ return `${w.di}|${w.code}|${(w.who||[]).join(',')}|${w.msg}` }
 export function warnShown(w:any){ return !WARNOFF.has(warnMuteKey(w)) }

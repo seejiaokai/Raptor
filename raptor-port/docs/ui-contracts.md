@@ -4075,6 +4075,15 @@ except where noted:
 ## Muting a check, and resizing the checks panel (owner, Aug 26)
 
 Both are board-side, admin-only, session-only, and DESKTOP-scoped for the resize.
+- **CHANGED BY D469 (owner, 1 Oct 26) — NOT BUILT YET (`OUTSTANDING.md` `[WARN-HIDE-KEPT]`).** Three sentences of the
+  entry below are replaced by his ruling, and stand here only until the build lands: (1) *"cleared on login/logout"* — a
+  hidden warning now **stays hidden, for everyone, across a reload and a sign-in, until someone unhides it** (kept with
+  its day — `ScheduleDay.wo`); (2) *"the muted ones gather under an N hidden line"* — the hidden warning's line **stays
+  where it is in the day's list, struck out and darker, one tap from being flagged again**; (3) *"the day's header keeps
+  its true count and colour"* — while hidden, **the pucks carry no flag for that item**. Kept, as he was read: only a
+  scheduler hides and unhides; a hide is an Undo step; a hidden warning returns by itself when the situation changes.
+  Open readings for him (with a picture, before the build): the day's "N issues" count, a hide on a day already
+  published, the published and printed schedule.
 - **Mute a specific check — on the board AND the edit week, in sync.** Each
   `.wln` row in the board's checks panel (`board.ts:boardWarnHTML`) and each
   `.witem` row in the edit week's day-issue list (`html.ts:dayWarnHTML`) carries
