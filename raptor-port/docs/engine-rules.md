@@ -193,6 +193,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   stricter `<CS> IN TIME` grammar reads every SEED line identically, which
   is what keeps parity untouched where data exercises it; the wider grammar
   is a deliberate port divergence. Pinned in `intimes.test.ts`.
+  **D500 reaffirmed (2 Oct 26):** preserve the existing formation-name recognition and free-text input when designing In-time / Rally. A named line applies to that formation; an unnamed line supplies the wave-wide fallback. Existing specific-over-wide precedence is not changed by the clarification.
 
 ### How crew-rest, long-day and turn warnings are worded and marked
 

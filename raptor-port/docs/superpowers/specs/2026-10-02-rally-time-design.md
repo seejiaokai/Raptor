@@ -10,6 +10,16 @@ Status: planning and interactive mock-up only. No app build, final design approv
 
 **D495:** WORKSPAN-NEGATIVE remains the next batch. Assess this related proposal alongside it; do not silently replace the fix or make it wait for an unresolved large feature. The former fallback/advisory questions are superseded as QUESTIONS by this discussion, not answered or approved. Production flying events currently supply `report = intime ?? step`; substituting the configured normal report lead is not preservation of that current fallback.
 
+
+## Formation recognition confirmed — D500
+
+Keep the existing recognition of formation callsigns within their own wave, including free text such as `10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS`: this applies to VL. Matching remains bounded and case-insensitive. A line naming no formation in that wave supplies the wave-wide fallback; formations with their own specific instruction retain it. Specific instructions currently override the wide fallback regardless of line order.
+
+Preserve the accepted free-text format. The mock's `|` separator and whole-wave-only calculation are demonstration choices, not approved replacements for the app's parser. A labelled activity may help enforce chronology, but a rigid replacement grammar or mandatory separator has not been approved.
+
+Still proposed: how to choose the earliest in-time/rally instruction after resolving each formation's scope. D500 does not approve replacing specific-over-wide precedence with a minimum across both. Defer that remaining choice until needed; do not ask the owner again whether callsign recognition exists or whether an unnamed line covers the wave.
+
+Verification: read the current production reader and its existing coverage, then ran only `src/engine/intimes.test.ts`: all 18 tests passed. They cover accepted time spellings, bounded/case-insensitive callsigns, named-only lines, unnamed wave-wide fallback, specific override in either row order and seed equivalence. No app source/test changes or new grammar introduced. This is a focused check of an existing rule, not a full app walk.
 ## Proposed smallest UI
 
 Keep the compact existing lines and add button; rename their heading/button to In-time / Rally. Show the selected reporting time and the affected formation(s), so interpretation is visible. One operative clock per line; an activity label supports chronology. Remarks follow `|` in the mock-up and do not supply another reporting clock or attendance selection. An editor can provide this separator automatically rather than require manual punctuation; that choice is unapproved.
@@ -51,11 +61,11 @@ Prototype assumptions only: publish-block demonstration, same-minute preflight a
 
 ## First question round — awaiting answers
 
-1. One reporting clock per line, with an activity label and remarks kept separate? **Recommend yes.** This keeps clocks mentioned in notes from changing reporting.
-2. Whole-wave in-time 08:00 plus Reaper rally 09:00: if both apply to Reaper, does reporting remain 08:00? **Recommend yes.** An earlier applicable instruction remains required; specific later text must not silently overwrite it.
+1. One operative reporting clock per line with an activity label, while retaining existing recognised free-text spellings and formation names? **Recommend yes.** A mandatory separator is not proposed as a replacement for the existing input format; final treatment of other clocks in remarks remains pending.
+2. DEFERRED AFTER D500: the proposed minimum across whole-wave and formation-specific instructions would change current specific-over-wide fallback behaviour. That change is not approved. Preserve current precedence until the separate dual-stage choice is settled; do not re-ask the already-confirmed formation-recognition rule.
 3. Invalid timing order: allow editing and saving the draft, but stop publication with the exact incorrect pair explained? **Recommend yes.** Publication scope must cover real commands after approval.
 4. Overnight time explicitly says previous/next day where needed, with the interpreted sequence shown? **Recommend yes.** Never guess a date just to make a bad daytime sequence pass.
 
-Next round, after those answers: omitted labelled stages, no-report fallback and negative-hours behaviour, equal preflight timestamps under existing minimum brief rules, scope/attendance presentation and SC/late-show exceptions. Do not ask equal take-off/landing again: D49 already governs it.
+Next round, after those answers: omitted labelled stages, no-report fallback and negative-hours behaviour, equal preflight timestamps under existing minimum brief rules, dual-stage instruction precedence and SC/late-show exceptions. Do not ask equal take-off/landing again: D49 already governs it.
 
 OWED: Claude's independent plan read after Monday 5 Oct 26, 19:00. Owner design choices and visual approval remain pending. No app build or merge authorized by this design discussion.

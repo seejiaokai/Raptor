@@ -111,3 +111,14 @@ The complete original draft response is archived verbatim, with an added author/
 No repository edits or tests. Rulings: none added.
 
 Host disposition: verified the three engine module paths and corrected the design note. Preserved the original full draft on the planning branch. No app implementation or ownership choices were approved by these reads.
+## D500 formation clarification — complete independent Astra read
+
+**D500 short/full meaning read: passes.** It preserves existing own-wave callsign recognition and free text, without approving a new parser or changing specific-over-wide precedence.
+
+**Sol-authored clarification: no material findings.** The legacy VL example is correctly described. The engine rule preserves the existing fallback; the spec keeps dual-stage precedence, mandatory grammar and publication enforcement undecided. The reported 18 passing tests are clearly limited to the existing reader, not Rally implementation or a full app walk.
+
+I am not approving my own copied scope paragraph. I did not rerun or observe the tests.
+
+No edits. Rulings: none added by this agent.
+
+Host disposition: preserved the existing production callsign reader and accepted free text; no source/test edits. The mock remains an explicitly limited whole-wave demonstration, not proof of flight-specific parsing. Existing focused in-time suite 18/18 passed. Future Rally dual-stage calculations and enforcement still require product choices and an independently challenged implementation plan.
