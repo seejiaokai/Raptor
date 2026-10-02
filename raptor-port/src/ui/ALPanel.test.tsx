@@ -23,9 +23,6 @@ import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { ensureRowIds } from '../engine/rowids'
 import { setOilBlanket } from './oilmode'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true

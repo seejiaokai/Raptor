@@ -15,9 +15,6 @@ import { elogClear } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true

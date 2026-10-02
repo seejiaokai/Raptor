@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { go, validReportingFixture } from './app'
+import { go } from './app'
 
 /* [DRAFT-PENDING] — the ONE CHANGES WINDOW, in a real browser (the owner's D167, D168, D170, D171, D172; the design of
    record docs/mock/changes-window.html, option A). What only a real browser can prove: the window floats ABOVE the edit
@@ -184,7 +184,6 @@ for (const [label, size] of [['desktop', DESK], ['phone', PHONE]] as const) {
 
     test("an amended detail on a published day wears its AL tag AND the dot — neither hides the other", async ({ page }) => {
       await hexEditsThenSaber(page)
-      await validReportingFixture(page)
       /* Monday published (signed, the Original out), a jet's remarks changed and issued as AL1 — the detail now wears its
          "AL1" tag (its ::after, the tag the dot must never take — Fable F1, Astra 04) */
       await page.evaluate(() => {

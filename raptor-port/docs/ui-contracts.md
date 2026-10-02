@@ -626,13 +626,28 @@ The document input listener previews the active line in a cloned wave only:
 it updates this span, without storing, marking history, repainting the week
 or moving the caret. It names an actual wrong pair while typing. Blur/Enter
 commit through the existing writer; Escape, deletion and a no-op restore the
-feedback from saved content. Draft conflicts remain saveable; first publish,
-AL and reissue refuse until the actual reversed pair is corrected. The warning
+feedback from saved content. Draft conflicts remain saveable; **D509 supersedes
+the timing refusal:** first publish, AL and correcting reissue remain allowed
+with the reversed pair and freeze its red warning like any other. The warning
 wrapper's `data-warnkey="it:di.gi"` lets list clicks reach the reporting block,
 including read-only rendering. Read-only/version looks have no editor, add,
 delete or preview-feedback controls. No routine previous-day explanation row
 or date control appears. Source-positive tests: `rally-feedback.test.tsx`;
 running-app order/geometry proof is recorded in the Rally FULL evidence sheet.
+
+**Review fixes D509–D511 (3 Oct26):** blank B is named as suggested brief in
+timing messages. Both headers label a previous-day report `(prev day)`; the
+week adds only that exceptional marker beside the wave label, with no routine
+interpretation row. Detailed rest/trace/pre-drop and long-day start use
+`(previous day)`. An overlap reads as a positive duration before his named
+actual duty-end day. Header controls keep their established size and hit areas.
+The add button preserves an existing resolved report; otherwise earliest
+uncancelled valid take-off minus reportLead supplies its clock. Its words are
+reportText, beside the nominal time in Logic, max60 characters, escaped as
+literal text. CR/LF becomes spaces, trim/cap applies, blank restores the standard.
+The first clock wins if words include another clock. Only admins edit this
+setting; existing settings reset, persistence, snapshot/export and Undo apply.
+Existing reporting strings never change when either default changes.
 
 ## Amendment marks on screen
 

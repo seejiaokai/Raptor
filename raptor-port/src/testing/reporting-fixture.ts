@@ -1,4 +1,5 @@
-/* D502 test precondition only. Legacy reference data has IN after implied B.
+/* RETIRED by D509/D510, 3 Oct26. No active consumer; retained as adaptation history.
+   D502 test precondition only. Legacy reference data has IN after implied B.
    Publication/history tests need a VALID schedule before exercising issuance.
    Call once BEFORE their baseline clones; never call after the action under test.
    Production/reference seed and actual Rally/wrong-pair regression fixtures stay intact. */

@@ -21,9 +21,6 @@ import { dayHTML, dayInfoHTML, viewDayHTML, dayPreviewHTML } from './html'
 import { PEOPLE } from '../engine/people'
 import { boardSignHTML, boardHTML } from './board'
 import { ALPanel } from './ALPanel'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true

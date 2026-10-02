@@ -82,11 +82,11 @@ describe('engine parity with the reference', () => {
     expect(WARN).toBe(port)
   })
 
-  it('D502 positively detects all 13 existing seed IN/brief reversals without changing source data', () => {
+  it('D510 pristine seed has no reporting-order warnings and identical reference reporting fixtures', () => {
     const issues=validate().all.filter((x:any)=>x.code==='REPORT_ORDER')
-    expect(issues).toHaveLength(13)
-    expect(issues.every((x:any)=>x.sev==='hard'&&/in-time .* is later than brief /.test(x.msg))).toBe(true)
-    expect(issues.every((x:any)=>String(x.key).startsWith('it:'))).toBe(true)
+    expect(issues).toEqual([])
+    expect(JSON.parse(w.eval('JSON.stringify(DAYS.map(d=>d.waves.map(w=>w.intimes)))')))
+      .toEqual(DAYS.slice(0,REFN).map(d=>d.waves.map((wv:any)=>wv.intimes)))
   })
 
   /* top-level let/const in a classic script are not window properties — read

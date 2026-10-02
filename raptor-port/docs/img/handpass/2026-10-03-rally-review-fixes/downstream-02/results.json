@@ -1,0 +1,11 @@
+{
+  "results": [],
+  "pictures": [
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-02/I2-failure.png"
+  ],
+  "failure": {
+    "scenario": "I2",
+    "message": "The expression evaluated to a falsy value:\n\n  assert.ok(await page.evaluate(([d,h])=>window.INPUTS.some(i=>i.person==='krait'&&i.type==='SANS Availability'&&window.inputCoversDate(i,d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4))&&i.half===h),[iso,half]))\n",
+    "stack": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(await page.evaluate(([d,h])=>window.INPUTS.some(i=>i.person==='krait'&&i.type==='SANS Availability'&&window.inputCoversDate(i,d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4))&&i.half===h),[iso,half]))\n\n    at offer (file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/downstream.mjs:33:390)\n    at async file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/downstream.mjs:35:4"
+  }
+}

@@ -21,9 +21,6 @@ import { txtSet } from '../engine/slots'
 import { DPREV, setDayPreview } from '../state/view'
 import { HOOKS } from '../engine/hooks'
 import { planSelectorHTML, verTagHTML } from './html'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 /* sign all four roles so a day can be published / an AL issued */

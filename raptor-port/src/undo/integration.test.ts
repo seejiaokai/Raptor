@@ -20,9 +20,6 @@ import {
   installUndo, globalUndo, globalRedo, registerUndoStore, setCutoverModules, setUndoHooks, undoState,
 } from './index'
 import { _resetTimeline } from './timeline'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 const DSNAP = JSON.stringify(DAYS)

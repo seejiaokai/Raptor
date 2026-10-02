@@ -20,9 +20,6 @@ import { setDayPreview, DPREV, VWORK, setPage, setRestArm } from '../state/view'
 import { setSession } from '../state/auth'
 import { acceptInput, unacceptInput } from '../engine/slots'
 import { PIOPEN } from '../state/view'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 let w: any
@@ -33,7 +30,6 @@ let w: any
 let REFN = 0
 beforeAll(async () => {
   w = await refWindow()          // syncs the port's seed INPUTS into the reference
-  // D502 publication fixtures use valid reporting. Compare HTML using IDENTICAL
   // reporting text in both engines, as this helper already does for input data.
   // Untouched-seed warning parity and all 13 new checks stay pinned in engine/parity.
   DAYS.slice(0,w.eval('DAYS.length')).forEach((d:any,di:number)=>(d.waves||[]).forEach((wave:any,gi:number)=>{

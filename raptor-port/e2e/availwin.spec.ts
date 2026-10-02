@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { go, login, validReportingFixture } from './app'
+import { go, login } from './app'
 
 /* [ALL-AVAIL-WINDOW] — the counter's window, in a real browser (owner D38-D41;
    the approved design of record is docs/mock/allavail-window.html).
@@ -284,7 +284,6 @@ test('desktop: tapping a second chip while the window is open keeps it where he 
 const PREVIEW_DESK = { width: 1440, height: 900 }
 async function publishedBoard(page: Page) {
   await login(page, 'a')
-  await validReportingFixture(page)
   await go(page, 'editsched')
   await page.evaluate(() => {
     const w = window as any

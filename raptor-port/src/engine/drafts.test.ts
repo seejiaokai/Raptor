@@ -23,9 +23,6 @@ import { HIST, histInit, histApply, histPush, histSnap } from '../state/history'
 import { rowsOf, ridKey, ensureRowIds } from './rowids'
 import { verSeq, verId, dayIso } from './verid'
 import { CURWEEK } from './waves'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 /* a ROW key is stored rid-anchored once its row carries a rid (a funnel write

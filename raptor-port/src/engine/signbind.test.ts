@@ -29,9 +29,6 @@ const shownDigest = (di: number) => { const d: any = DAYS[di]
 import { dayIso, verId } from './verid'
 import { CURWEEK } from './waves'
 import { histInit, histPush, histApply, HIST } from '../state/history'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 /* DAYS[0] is mutated by these tests; clone-restore per test so nothing leaks. */

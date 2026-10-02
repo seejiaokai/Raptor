@@ -27,9 +27,6 @@ import { setSession } from './auth'
 import * as view from './view'
 import { onCommit } from '../command'
 import type { CommitEnvelope } from '../command'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 const DSNAP = JSON.stringify(DAYS)

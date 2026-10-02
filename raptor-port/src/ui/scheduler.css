@@ -275,6 +275,10 @@ img,a{-webkit-user-drag:none;user-drag:none}
   text-align:center}
 .lgin:focus{outline:2px solid var(--accent);outline-offset:0}
 .lgin.bad{border-color:var(--hard);color:#FBB4B9}
+.lgcell-text{flex-wrap:wrap;min-width:0}
+.lgcell-text>.k{flex-basis:100%;min-width:0;overflow-wrap:anywhere}
+.lgcell-text>.lgin{flex:1 1 100%;width:100%;min-width:0;max-width:100%;text-align:left}
+.lgcell-text>.val,.lgcell-text>.lgstd{min-width:0;max-width:100%;overflow-wrap:anywhere;white-space:normal}
 .lgstd{font-size:10px;color:var(--ink-3);margin-left:6px}
 .lgtog{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--ink-2)}
 .lgtog input{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
@@ -4012,8 +4016,10 @@ body.dw-lock{overflow:hidden}
    board panel's stripe below. */
 .sb-go{border:1px solid var(--edge);border-left:3px solid var(--flight);border-radius:10px;margin-bottom:12px;overflow:hidden;background:var(--panel)}
 .sb-go.night{border-left-color:var(--hard);background:rgba(240,85,95,.04)}
-.sb-go-h{display:flex;align-items:center;gap:10px;padding:7px 11px;background:var(--panel-2);border-bottom:1px solid var(--edge);font-weight:700;font-size:12px}
-.sb-go-h .asd{color:var(--ink-3);font-weight:500;font-size:11px;font-family:'JetBrains Mono',monospace;margin-left:auto}
+/* The fixed palette can constrain this header above the phone breakpoint.
+   Wrap whole groups instead of squeezing the report/date cue or clipping controls. */
+.sb-go-h{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:7px 11px;background:var(--panel-2);border-bottom:1px solid var(--edge);font-weight:700;font-size:12px}
+.sb-go-h .asd{color:var(--ink-3);font-weight:500;font-size:11px;font-family:'JetBrains Mono',monospace;margin-left:auto;flex-shrink:0;max-width:100%}
 .sb-go-h .night{color:#FBB4B9}
 .sb-wtitle{background:var(--panel);border:1px solid var(--edge);color:var(--ink);border-radius:7px;padding:4px 8px;font-size:12px;font-weight:600;cursor:pointer}
 .sb-wtitle:focus{outline:2px solid var(--accent);outline-offset:0}

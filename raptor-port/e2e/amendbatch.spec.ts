@@ -8,7 +8,7 @@
    with the same puck's ring once the seat's amendment attributes are taken off — they must be identical — on the
    edit week and the board, a published change and a waiting one alike. jsdom paints nothing, so it lives here. */
 import { test, expect, type Page } from '@playwright/test'
-import { login, go, validReportingFixture } from './app'
+import { login, go } from './app'
 
 const RING = (el: Element) => { const s = getComputedStyle(el); return [s.boxShadow, s.outlineStyle, s.outlineWidth, s.outlineColor, s.outlineOffset].join(' | ') }
 
@@ -49,7 +49,6 @@ for (const vp of [{ label: 'desktop', width: 1440, height: 900 }, { label: 'phon
     await page.setViewportSize({ width: vp.width, height: vp.height })
     await login(page)
     await go(page, 'editsched')
-    await validReportingFixture(page)
     await amendMonday(page)
     for (const [where, root] of [['the edit week', '#eWeek'], ['the board', '#schedBoard']] as const) {
       if (root === '#schedBoard') { await page.evaluate(() => (window as any).openScheduler(0)); await page.waitForTimeout(700) }

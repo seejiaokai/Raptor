@@ -16,9 +16,6 @@ import { SCHED, signOf, setDayApproved, dayApproved } from '../engine/publish'
 import { DAYTPL_CFG, dayTplReset } from '../engine/daytpl'
 import { HOOKS } from '../engine/hooks'
 import { boardHTML } from './board'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true

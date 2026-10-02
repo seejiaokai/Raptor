@@ -50,9 +50,10 @@ function logicBody(LGQ: string, LGF: string) {
       const edited = keys.some(ruleOff) || (r.kinds && Object.keys(KIND_LABEL).some(kindOff))
       const fields = keys.length ? `<span class="lgmatrix">` + keys.map((k: any) => {
         const off = ruleOff(k)
-        return `<span class="lgcell ${off ? 'adv' : ''}"><span class="k">${esc(RULE_SPEC[k].t)}</span>`
+        return `<span class="lgcell ${off ? 'adv' : ''}${RULE_SPEC[k].kind==='text'?' lgcell-text':''}"><span class="k">${esc(RULE_SPEC[k].t)}</span>`
           + (lgCanEdit()
             ? `<input class="lgin" data-lgset="${k}" data-lgi="${lgi++}" value="${esc(ruleFmt(k, VCONF[k]))}"`
+            + (RULE_SPEC[k].kind==='text'?` maxlength="${RULE_SPEC[k].maxlen}"`:'')
             + ` aria-label="${esc(RULE_SPEC[k].t)}">`
             : `<span class="val">${esc(ruleFmt(k, VCONF[k]))}</span>`)
           + (off ? `<span class="lgstd">standard ${esc(ruleFmt(k, RULE_STD.v[k]))}</span>`
@@ -108,7 +109,7 @@ export function LogicPage() {
       if (i) {
         if (!isAdmin()) return
         const k = i.dataset.lgset!, spec = RULE_SPEC[k], v = ruleParse(k, i.value)
-        if (v == null || v < spec.lo || v > spec.hi) {
+        if (v == null || (spec.kind!=='text' && (v < spec.lo || v > spec.hi))) {
           /* put the LIVE value back, the way every other refusing path in the
              app does (txtSet's callers, setInpField, the stores pen). The box
              used to sit there still showing `abc` while the rule underneath
@@ -119,7 +120,7 @@ export function LogicPage() {
           i.value = ruleFmt(k, VCONF[k])
           return HOOKS.toast(`${spec.t} must be between ${ruleFmt(k, spec.lo)} and ${ruleFmt(k, spec.hi)}`, 'warn')
         }
-        if (v === VCONF[k]) { i.classList.remove('bad'); return }
+        if (v === VCONF[k]) { i.classList.remove('bad'); i.value=ruleFmt(k,v); return }
         VCONF[k] = v; lgReapply()
         HOOKS.toast(`${spec.t} → ${ruleFmt(k, v)}${v === RULE_STD.v[k] ? ' (standard)' : ''}`)
         return

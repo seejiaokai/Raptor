@@ -20,9 +20,6 @@ import { verSeq, verId, dayIso } from './verid'
 import { CURWEEK } from './waves'
 import { digest } from './canonical'
 import { schedFields } from '../state/history'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 const rk = (k: string) => ridKey(k, DAYS)

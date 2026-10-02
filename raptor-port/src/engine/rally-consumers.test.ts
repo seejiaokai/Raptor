@@ -137,7 +137,8 @@ describe('RT4/RT8 independent Rally consumer arithmetic',()=>{
     DAYS[0].dutywaves=[{label:'Duty',rows:[{role:'Duty',id:'bane',str:'1200',end:'2330'}]}]
     DAYS[1].waves=[flight(['23:00 IN TIME'],f('01:30','03:00','23:10'))]
     const warning=validate().all.find((w:any)=>w.di===1&&w.code==='CREW_REST'&&w.who.includes('bane'))
-    expect(warning.msg).toContain('only -0h30 rest')
+    expect(warning.msg).toContain('told to report 23:00 (previous day) — 0h30 before his Monday duty ends.')
+    expect(warning.msg).not.toContain('-0h30')
     expect(warning.msg).not.toContain('-1h-30')
   })
   it('D503 previous-day23:00 report still breaches when twelve-hour rest clears exactly midnight',()=>{

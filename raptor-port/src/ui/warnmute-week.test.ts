@@ -19,9 +19,7 @@ import { validate, workingWarn } from '../engine/validate'
 import { DWOPEN, WARNOFF, warnMuteKey, toggleWarnOff, selDrop } from '../state/view'
 import { setSession } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
-import { validReportingFixture } from '../testing/reporting-fixture'
 // This warning-hide fixture deliberately contains the four unrelated Tuesday checks.
-validReportingFixture()
 
 const DSNAP = JSON.stringify(DAYS)
 const TUE = 1

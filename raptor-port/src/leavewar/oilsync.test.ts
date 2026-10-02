@@ -29,9 +29,6 @@ import {
 import { memoryBackend } from './state/storage'
 import { availableFor, createOilPeriodFor, getClashes, installAbsenceDoor, oilPendingFor, publishFlagsBids, runOilPass, syncAbsences } from './sync'
 import { HOOKS } from '../engine/hooks'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 const ISNAP = JSON.stringify(INPUTS)

@@ -25,9 +25,6 @@ import { applyMove } from '../engine/reorder'
 import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { ridKey } from '../engine/rowids'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true

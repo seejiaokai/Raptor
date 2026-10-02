@@ -185,7 +185,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   of that week, session edits included — exactly what a scheduler sees on
   navigating back to it. Nothing is invented and nothing is silently wrong.
 - **The in-time line's grammar** (owner, 21 Aug 26 — "accept any form of
-  combination", "U make the call on what u detect"). `reporting.ts:intimeTime`
+  combination", "U make the call on what u detect").
+  **Superseded by In-time / Rally below (D497–D507); retained historical grammar.** `reporting.ts:intimeTime`
   reads the FIRST valid clock time in a line — `0900`, `09:00`, `0900H`,
   `09:00H`, `0900L`, `09:00L`, any case — and never misreads glued tokens
   (`FL240`) or impossible clocks (`2590`). `parseReportingLines` scopes each line by
@@ -222,13 +223,16 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   overnight roll; typed B keeps its existing bounded rule. Every active valid-TO
   ordinary formation is checked, including an uncrewed row. A reversed pair
   produces a formation-named `REPORT_ORDER` warning with both actual times,
-  and prevents first publication, AL and correcting reissue. The command
-  checks before pending/signature reconciliation or issuance, and the raw
-  engine doors repeat the guard. Refusal changes no issued record, signature,
-  pending content or history. Hiding the warning never bypasses the pure check.
+  and stays severity hard in the working and normally frozen issued lists.
+  **D509 supersedes D502's publication block:** first publication, AL and
+  correcting reissue all remain allowed with the wrong pair present. No
+  command or raw engine publication door refuses because of timing. Warning
+  anchors, hiding, pending/signature reconciliation and history work normally.
   Draft edits remain saveable. Completed malformed clock tokens and immediate
   rally without applicable IN produce `REPORT_UNRESOLVED` advisories; these
-  alone do not block and no new compulsory reporting field is introduced.
+  never block publication and no new compulsory reporting field is introduced.
+  A blank/unparseable B names the checked time as **suggested brief**; a typed
+  valid B names it as brief. Equality and all existing standalone exemptions stay.
   These list warnings do not invent person puck marks. They follow the existing
   frozen-warning policy, while validator B reads current Logic, not the printed
   issued B suggestion (D186). Exact tests and the register:
@@ -236,7 +240,12 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 
 - **Signed header versus today's availability bands (D503).** `waveInTime`
   selects the earliest applicable signed reporting instant; the header and
-  add-line seed wrap it with `hm24`. Band boundaries alone clip to [0,1440].
+  headers state `(prev day)` on negative reporting clocks; detailed rest,
+  long-day, trace and pre-drop wording states `(previous day)`. Negative rest
+  reads as a positive overlap before the named actual duty-end day. The add
+  button retains an existing report; without one it uses earliest uncancelled
+  valid take-off minus reportLead (D510), followed by the configured reportText
+  (D511). No valid take-off keeps a text-only line. Band boundaries alone clip to [0,1440].
   A bucket made empty by previous-day boundaries carries `priorEmpty` and has
   no available members or wave-specific all-day total; the global Available
   all day list remains. This includes a negative-origin first band ending
@@ -284,6 +293,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   hours, then the real landing and the pad flagged as an assumption. A
   non-flying finish (a duty, a ground event) is a fixed clock time with
   nothing to assume, so the end stays bare. The START is left plain: for a
+  **Superseded by In-time / Rally above (D497–D507):** the older formula below
+  is retained as history; actual report now includes resolved Rally and a signed
+  previous-day origin, while absence of both retains step. Historically, for a
   sortie it is the published report/step time (`report = in-time ?? step`,
   never the dead `T/O − 3h` fallback), not an overridable assumption. This is
   a port/reference divergence parity compares, mirrored in
@@ -2143,7 +2155,12 @@ input claims), `src/ui/oilconfirm.test.tsx` (the ask sheet),
 
 ## Editable rules (Logic tab)
 
-`VCONF` (20 numbers) + `SHIFT_HARD` (6 gradings), admin-only.
+`VCONF` (20 numbers plus reportText) + `SHIFT_HARD` (6 gradings), admin-only.
+reportText is a single-line text setting beside reportLead, default
+`IN TIME + WX/NOTAMS`, max60 characters. Trim, replace CR/LF with spaces and
+restore the default when empty. It travels in the same rules.v override record,
+with reset, snapshot/export and Undo; numeric keys retain number validation.
+The normal parser reads minted text and the leading first valid clock wins.
 `RULE_STD` frozen standard; `RULE_SPEC[k]={t,u,lo,hi}`. `ruleParse` accepts
 "12h", "2h20", "90", "0700". Storage keeps ONLY the diff in
 `localStorage['sqn142_rules']`; `rulesLoad` (called by `initStore` at boot —

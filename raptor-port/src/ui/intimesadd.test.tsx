@@ -34,6 +34,8 @@ import { makeStandalone } from '../engine/waves'
 import { HOOKS } from '../engine/hooks'
 import { elogRows } from '../engine/editlog'
 import { dayHTML } from './html'
+import { VCONF } from '../engine/rules'
+import { reportingIssuesForWave,resolveReporting } from '../engine/reporting'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -75,6 +77,39 @@ afterAll(async () => {
 beforeEach(() => { TOASTS = [] })
 
 describe('adding and removing in-time lines', () => {
+  it('review D2 mints the configured literal text and lets the ordinary first-clock parser decide it',async()=>{
+    const w=W0(), keep=JSON.stringify(w), words=VCONF.reportText;
+    try{
+      for(const text of ['IN TIME + WX/NOTAMS','RALLY','<b>RALLY</b>','RALLY 13:00']){
+        VCONF.reportText=text;w.intimes=[];w.formations=[{cs:'VL',to:'12:00',ld:'13:00',aircraft:[]}];
+        await act(async()=>notify());await click($('#eWeek [data-itadd="0|0"]'));await drain();
+        expect(w.intimes).toEqual(['09:00H: '+text]);
+        expect($('#eWeek [data-itline="0|0|0"]').textContent).toBe('09:00H: '+text);
+        expect([...$('#eWeek [data-itline="0|0|0"]').querySelectorAll('b')].map(b=>b.textContent)).toEqual(['09:00H']);
+        expect(resolveReporting(w,w.formations[0],720).report).toBe(540);
+      }
+    }finally{VCONF.reportText=words;Object.keys(w).forEach(k=>delete w[k]);Object.assign(w,JSON.parse(keep));await act(async()=>notify());}
+  })
+  it('review D seeds the earliest uncancelled take-off less the existing nominal lead',async()=>{
+    const w=W0(), keep=JSON.stringify(w), lead=VCONF.reportLead;
+    try{
+      for(const [minutes,clock] of [[180,'09:00'],[120,'10:00']] as const){
+        VCONF.reportLead=minutes;w.intimes=[];
+        w.formations=[{cs:'EARLY',to:'06:00',ld:'07:00',cx:'weather',aircraft:[]},{cs:'LATE',to:'14:00',ld:'15:00',aircraft:[]},{cs:'VL',to:'12:00',ld:'13:00',aircraft:[]}];
+        await act(async()=>notify());await click($('#eWeek [data-itadd="0|0"]'));await drain();
+        expect(w.intimes).toEqual([clock+'H: IN TIME + WX/NOTAMS']);
+        const issues=reportingIssuesForWave(w);
+        if(minutes===180)expect(issues).toEqual([]);
+        else expect(issues[0].msg).toBe('VL: in-time 10:00 is later than suggested brief 09:40.');
+      }
+      VCONF.reportLead=180;w.intimes=[];w.formations=[{cs:'VL',to:'01:00',ld:'02:00',aircraft:[]}];
+      await act(async()=>notify());await click($('#eWeek [data-itadd="0|0"]'));await drain();
+      expect(w.intimes).toEqual(['22:00H: IN TIME + WX/NOTAMS']);expect(waveInTime(w)).toBe(-120);
+      w.intimes=[];w.formations=[{cs:'VL',to:'TBD',aircraft:[]}];
+      await act(async()=>notify());await click($('#eWeek [data-itadd="0|0"]'));await drain();
+      expect(w.intimes).toEqual(['IN TIME + WX/NOTAMS']);
+    }finally{VCONF.reportLead=lead;Object.keys(w).forEach(k=>delete w[k]);Object.assign(w,JSON.parse(keep));await act(async()=>notify());}
+  })
   it('the edit week offers "+ In time" on a flying wave and a ✕ per line; the view render offers neither', () => {
     const ed = dayHTML(0, true)
     expect(ed, 'add button on the edit surface').toContain(`data-itadd="0|0"`)

@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test'
 
-/* Only legacy publication/geometry fixtures: establish valid reporting BEFORE
+/* RETIRED by D509/D510, 3 Oct26. No active consumer; retained as adaptation history.
+   Only legacy publication/geometry fixtures: establish valid reporting BEFORE
    the tested action. Never used by Rally's intentional rejection checks. */
 export async function validReportingFixture(page:Page){
   await page.evaluate(()=>{

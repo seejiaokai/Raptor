@@ -447,7 +447,7 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `reqseen:<accountId>` | `{ userId, seenRequestIds }` | each admin's own row of the requests he has had on screen — his bell (D216, D227); written only by `access.seen`, his own row; removed with his account (data-model `AccessRequestSeen`, R3-04) |
 | `seen:<pid>` | `{ upto, extra }` | each person's own "seen" for the change history — §The change history above (was one `changeseen` record) |
 | `guestview` | `true` or null | the admin's switch letting people waiting for access read the published week as a guest — OFF (null) by default (D204) |
-| `rules` | `{ v: { rule: number }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin`), `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`) |
+| `rules` | `{ v: { numericRule?: number, reportText?: string }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin`), plus D511 text `reportText` (default `IN TIME + WX/NOTAMS`, trim/CR-LF-to-space, max60, empty falls back); `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`). Numeric keys remain numbers; text travels with the same rules record/reset/snapshot/export/Undo |
 
 ---
 

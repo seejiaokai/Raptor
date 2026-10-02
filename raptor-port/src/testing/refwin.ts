@@ -116,6 +116,7 @@ export function reday(w: any) {
          is never printed, so it is excluded here (Astra SID-06). */
       notes: (d.notes || []).map((n: any) => noteText(n)),
       waves: (d.waves || []).map((wv: any) => ({
+        intimes: wv.intimes || [],
         traffic: wv.traffic || [],
         forms: (wv.formations || []).map((f: any) => (f.aircraft || []).map((a: any) => a.area)),
       })),
@@ -123,6 +124,7 @@ export function reday(w: any) {
     w.eval(`(function(p){const D=DAYS[${i}];`
       + `if(D.notes)D.notes.forEach((_,j)=>{if(p.notes[j]!=null)D.notes[j]=p.notes[j];});`
       + `if(D.waves)D.waves.forEach((wv,g)=>{const q=p.waves[g];if(!q)return;`
+      + `wv.intimes=q.intimes.slice();`
       + `if(wv.traffic)wv.traffic.forEach((_,j)=>{if(q.traffic[j]!=null)wv.traffic[j]=q.traffic[j];});`
       + `(wv.formations||[]).forEach((f,k)=>{const fa=q.forms[k];if(!fa)return;`
       + `(f.aircraft||[]).forEach((a,j)=>{if(fa[j]!=null)a.area=fa[j];});});});`

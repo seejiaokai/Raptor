@@ -8,6 +8,7 @@ import { commitSetDayApproved,commitPublishALDay,schedWrite,SCHED_TYPES } from '
 import { onCommit } from '../command'
 import { histSnap } from './history'
 import { reportingIssuesForDay } from '../engine/reporting'
+import { validate,workingWarn } from '../engine/validate'
 
 const saved=JSON.stringify(DAYS), savedBook=JSON.stringify(SCHED);
 const sign=(di=0)=>Object.assign(signOf(di),{cur:'ignite',sked:'bane',plan:'stiff',appr:'pump'});
@@ -25,42 +26,51 @@ beforeEach(()=>{
 });
 afterEach(()=>{off();vi.restoreAllMocks();DAYS.splice(0,DAYS.length,...JSON.parse(saved));Object.keys(SCHED).forEach(k=>delete SCHED[k]);Object.assign(SCHED,JSON.parse(savedBook));});
 
-describe('RT6 D502 real publication refuses incorrect timing atomically',()=>{
-  it('engine first publish rejects a signed, uncrewed invalid formation without changing any state',()=>{
-    bad();sign();const before=snap();setDayApproved(0,true);
-    expect(snap()).toBe(before);expect(dayApproved(0)).toBe(false);
-    expect(toast.mock.calls.at(-1)[0]).toContain('rally 10:15 is later than brief 10:00');
+const orderWarn=(s:any)=>expect(s?.byDay?.warns).toEqual(expect.arrayContaining([expect.objectContaining({code:'REPORT_ORDER',sev:'hard'})]));
+const workingOrder=()=>{validate();expect(workingWarn().byDay[0].warns).toEqual(expect.arrayContaining([expect.objectContaining({code:'REPORT_ORDER',sev:'hard'})]));};
+const noRefusal=()=>expect(toast.mock.calls.flat().join(' ')).not.toContain('Cannot publish');
+
+describe('RT6 D509 publication retains incorrect timing as a warning',()=>{
+  it('engine first publish succeeds with the working and issued red warning',()=>{
+    bad();sign();workingOrder();setDayApproved(0,true);
+    expect(dayApproved(0)).toBe(true);orderWarn(SCHED.orig[0].w);workingOrder();noRefusal();
   });
-  it('command first publish rejects without envelope/boundary, then correction publishes',()=>{
+  it('command first publish emits its boundary with the warning, then a correction issues normally',()=>{
     schedWrite(SCHED_TYPES.text,bad,{key:'it:0.0'});sign();envelopes.length=0;
-    const before=snap();commitSetDayApproved(0,true);
-    expect(snap()).toBe(before);expect(envelopes).toEqual([]);
-    schedWrite(SCHED_TYPES.text,()=>{DAYS[0].waves[0].intimes=['09:00 IN TIME','10:00 RALLY']},{key:'it:0.0'});sign();
-    commitSetDayApproved(0,true);expect(dayApproved(0)).toBe(true);
+    commitSetDayApproved(0,true);expect(dayApproved(0)).toBe(true);orderWarn(SCHED.orig[0].w);
     expect(envelopes.at(-1).boundary.kind).toBe('publish');
+    schedWrite(SCHED_TYPES.text,()=>{DAYS[0].waves[0].intimes=['09:00 IN TIME','10:00 RALLY']},{key:'it:0.0'});sign();
+    commitPublishALDay(0);expect(SCHED.als).toHaveLength(1);
+    expect(SCHED.als[0].snap.w.byDay.warns.some((w:any)=>w.code==='REPORT_ORDER')).toBe(false);
+    expect(envelopes.at(-1).boundary.kind).toBe('publish');
+    noRefusal();
   });
-  it('AL wrapper gates before stale-mark reconciliation and retains the issued copy and signatures',()=>{
+  it('AL wrapper reconciles stale marks and issues the warning without changing the original',()=>{
     sign();commitSetDayApproved(0,true);const issued=JSON.stringify(SCHED.orig[0]);
     schedWrite(SCHED_TYPES.text,bad,{key:'it:0.0'});sign();
-    // A stale dotted mark must survive refusal too; reconciliation is an issuance action.
-    SCHED.pending['dn:0.999']=1;envelopes.length=0;const before=snap();
-    commitPublishALDay(0);expect(snap()).toBe(before);expect(envelopes).toEqual([]);
-    expect(JSON.stringify(SCHED.orig[0])).toBe(issued);expect(SCHED.als).toHaveLength(0);
+    SCHED.pending['dn:0.999']=1;envelopes.length=0;
+    commitPublishALDay(0);expect(envelopes.at(-1).boundary.kind).toBe('publish');
+    expect(JSON.stringify(SCHED.orig[0])).toBe(issued);expect(SCHED.als).toHaveLength(1);
+    expect(SCHED.pending['dn:0.999']).toBeUndefined();orderWarn(SCHED.als[0].snap.w);workingOrder();noRefusal();
   });
-  it('engine AL and final issue backstop reject independently of shown warnings',()=>{
+  it('raw engine AL correcting reissue succeeds independently of shown warnings',()=>{
     sign();setDayApproved(0,true);bad();sign();SCHED.pending['it:0.0']=1;SCHED.correcting[0]=true;
-    const before=snap();publishALDay(0);expect(snap()).toBe(before);
-    expect(alIssue(0)).toEqual({seq:0,id:'',sign:{},count:0});expect(snap()).toBe(before);
+    publishALDay(0);expect(SCHED.als).toHaveLength(1);orderWarn(SCHED.als[0].snap.w);workingOrder();noRefusal();
   });
-  it('raw engine AL timing guard refuses before minting a fresh imported row',()=>{
+  it('final issue door mints a warning-bearing correcting issue',()=>{
+    sign();setDayApproved(0,true);bad();sign();SCHED.pending['it:0.0']=1;SCHED.correcting[0]=true;
+    const result=alIssue(0);expect(result.id).not.toBe('');expect(result.seq).toBe(1);
+    orderWarn(SCHED.als[0].snap.w);noRefusal();
+  });
+  it('raw engine AL assigns an imported row its ordinary identity while issuing',()=>{
     sign();setDayApproved(0,true);bad();
     DAYS[0].waves[0].formations.push({cs:'RU',to:'14:00',ld:'15:00',br:'12:00',aircraft:[]});sign();
-    const before=snap();publishALDay(0);expect(snap()).toBe(before);
-    expect(DAYS[0].waves[0].formations[1].rid).toBeUndefined();
+    publishALDay(0);expect(SCHED.als).toHaveLength(1);orderWarn(SCHED.als[0].snap.w);
+    expect(DAYS[0].waves[0].formations[1].rid).toBeTruthy();noRefusal();
   });
-  it('invalid day does not prevent a valid neighbouring day publishing',()=>{
+  it('both an invalid and a valid neighbouring day publish',()=>{
     bad();sign();sign(1);setDayApproved(0,true);setDayApproved(1,true);
-    expect(dayApproved(0)).toBe(false);expect(dayApproved(1)).toBe(true);
+    expect(dayApproved(0)).toBe(true);expect(dayApproved(1)).toBe(true);orderWarn(SCHED.orig[0].w);noRefusal();
   });
   it('optional missing clocks are not a new mandatory-stage publication rule',()=>{
     DAYS[0].waves[0].intimes=['25:90 IN TIME','RALLY AFTER IN'];

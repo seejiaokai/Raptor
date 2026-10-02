@@ -50,9 +50,6 @@ import { dayHTML, dayStatHTML, viewDayHTML } from './html'
 import { boardSignHTML, boardMbtn, addWave } from './board'
 import { dayDrafts, draftDup, draftSelect, loadVersionToWorkingCopy } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 /* the day's WAITING-TO-GO-OUT chip — since [DRAFT-PENDING] (28 Sep 26) the same `.dpend` class also carries the
    changes window's "N new" / "N changes" chip, which is not a pending count (D168) */

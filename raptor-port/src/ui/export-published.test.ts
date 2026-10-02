@@ -9,9 +9,6 @@ import { signOf, setDayApproved } from '../engine/publish'
 import { initStore } from '../state/store'
 import { setSession } from '../state/auth'
 import { publishedDays } from './export'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 beforeEach(() => { initStore(); setSession({ user: 'a', role: 'admin' } as any) })

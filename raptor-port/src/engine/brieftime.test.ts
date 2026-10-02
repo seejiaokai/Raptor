@@ -239,8 +239,8 @@ describe('the crew-rest anchor (owner worked examples)', () => {
      bold lead prints it, so the message saying it too read as repetition) */
   it('names the leave-by time and the previous day', () => {
     const r = run('01:30', '2A: BFM-5')
-    /* anchor 12:00 − 12h = 00:00 the previous day */
-    expect(r.leaveBy).toBe('00:00')
+    /* anchor Tuesday 12:00 − 12h = Tuesday 00:00, next day from Monday */
+    expect(r.leaveBy).toBe('00:00 (next day)')
     expect(r.msg, 'the message no longer restates the leave-by').not.toContain('leave by')
     expect(r.prevDi).toBe(0)
   })
@@ -250,7 +250,7 @@ describe('the crew-rest anchor (owner worked examples)', () => {
        means he had to be gone by 00:00 */
     const r = runCase('01:30', '12:00', '13:00', '2A: BFM-5', '15:20')
     expect(r.flagged).toBe(true)
-    expect(r.leaveBy).toBe('00:00')
+    expect(r.leaveBy).toBe('00:00 (next day)')
   })
 })
 

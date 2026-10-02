@@ -1,0 +1,64 @@
+{
+  "results": [
+    {
+      "scenario": "I1",
+      "label": "issued Tuesday is fifteen nonnegative work hours",
+      "status": "PASS",
+      "observed": "Outlaw has a long work day: 15h00, 22:00 (previous day) → 13:00 (last landing 11:00 + 2h debrief assumed)"
+    },
+    {
+      "scenario": "I1",
+      "label": "draft sixteen-hour report leaves latest-issued Insights unchanged",
+      "status": "PASS",
+      "observed": {
+        "initial": {
+          "text": "21h40",
+          "minutes": 1300
+        },
+        "now": {
+          "text": "21h40",
+          "minutes": 1300
+        }
+      }
+    },
+    {
+      "scenario": "I1",
+      "label": "publishing moves actual weekly hours by exactly sixty minutes",
+      "status": "PASS",
+      "observed": {
+        "initial": {
+          "text": "21h40",
+          "minutes": 1300
+        },
+        "amended": {
+          "text": "22h40",
+          "minutes": 1360
+        }
+      }
+    },
+    {
+      "scenario": "I1",
+      "label": "changing only future default words leaves existing reporting and hours unchanged",
+      "status": "PASS",
+      "observed": {
+        "text": "22h40",
+        "minutes": 1360
+      }
+    },
+    {
+      "scenario": "I1",
+      "label": "console/page/HTTP errors",
+      "status": "PASS"
+    }
+  ],
+  "pictures": [
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-01/I1-issued-work-hours.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-01/I1-amended-work-hours.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-01/I2-failure.png"
+  ],
+  "failure": {
+    "scenario": "I2",
+    "message": "The expression evaluated to a falsy value:\n\n  assert.ok(await page.evaluate(([d,h])=>window.INPUTS.some(i=>i.person==='krait'&&i.type==='SANS Availability'&&i.start===d&&i.half===h),[iso,half]))\n",
+    "stack": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(await page.evaluate(([d,h])=>window.INPUTS.some(i=>i.person==='krait'&&i.type==='SANS Availability'&&i.start===d&&i.half===h),[iso,half]))\n\n    at offer (file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/downstream.mjs:33:390)\n    at async file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/downstream.mjs:35:4"
+  }
+}

@@ -14,9 +14,7 @@ import { isScheduler, PEOPLE } from '../engine/people'
 import { availByWave } from '../engine/avail'
 import { DAYS } from '../engine/data'
 import { armedKey, ROSDAY, setRosDay } from '../state/view'
-import { validReportingFixture } from '../testing/reporting-fixture'
 // D502: publication tests start with a valid report/brief pair, before store baseline and actions.
-validReportingFixture()
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

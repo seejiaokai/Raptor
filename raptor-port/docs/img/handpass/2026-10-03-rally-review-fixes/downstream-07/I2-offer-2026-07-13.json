@@ -1,0 +1,32 @@
+[
+  {
+    "person": "krait",
+    "date": "Jul 13",
+    "allday": false,
+    "s": 721,
+    "e": 1439,
+    "yr": 2026,
+    "half": "pm",
+    "sans": {
+      "f": true
+    },
+    "type": "SANS Availability",
+    "remarks": "till 13 Jul",
+    "mod": "2026-10-03",
+    "iid": "imurm1xvx3xbayp",
+    "ord": 0
+  },
+  {
+    "person": "krait",
+    "date": "Jul 15",
+    "allday": true,
+    "type": "SANS Availability",
+    "sans": {
+      "f": true
+    },
+    "mod": "2026-06-24",
+    "yr": 2026,
+    "iid": "imurl6k71znj907",
+    "ord": 19456
+  }
+]

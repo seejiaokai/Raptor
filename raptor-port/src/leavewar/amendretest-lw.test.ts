@@ -17,9 +17,6 @@ import { projectPeople } from './state/raptorRoster'
 import { initStore as lwInitStore, setDayEvent, setPeople, setRole } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync } from './sync'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 const ISNAP = JSON.stringify(INPUTS)

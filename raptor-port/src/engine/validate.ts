@@ -3,7 +3,7 @@ import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, rest
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
-import { reportingIssuesForDay } from './reporting'
+import { reportingIssuesForDay,stated } from './reporting'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
@@ -561,8 +561,8 @@ function validateCore(){
         const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;
         const source=prevSource[id]||prevSeed;
         const tail=landed!=null
-          ? `${source.dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`
-          : `${source.dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;
+          ? `${source.dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`
+          : `${source.dow} ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`;
         if(pfly[id]&&first<earliest){
           const bl=legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m);   // the leg told to report earliest is the breach
           /* The LEAVE-BY: the latest the previous day could have ended for this
@@ -574,7 +574,8 @@ function validateCore(){
              the message's old ", so he had to leave by" tail said it again —
              "that's like repeating what u said"). first===instructed when no
              earlier event binds, so the unbound arithmetic is unchanged. */
-          const leaveBy=hm24(first+1440-VCONF.crewRest);
+          const sourceIndex=source.restIndex??source.di;
+          const leaveBy=stated(first+(targetIndex-sourceIndex)*1440-VCONF.crewRest);
           /* A sanctioned late show still makes the jet if rest clears by
              STEP, VCONF.step before T/O — the same knob that pads the busy
              window, so editing the step timing moves this line with it
@@ -596,10 +597,12 @@ function validateCore(){
              breaks it — with the shortfall in the same breath. The old shape
              stated the report first, re-derived it through the tail, then
              re-stated the leave-by the trace row's own lead already carries. */
+          const rest=first+1440-pe, endDow=DAYS[((targetIndex+Math.floor(pe/1440)-1)%7+7)%7].dow;
+          const restWords=rest<0?`${dur(-rest)} before his ${endDow} duty ends`:`only ${dur(rest)} rest`;
           const crMsg=`Crew rest breach — ${tail}, but `
-            +(evBound?`his day starts ${hm24(first)} (${fe.label}) before the ${hm24(instructed)} report — only ${dur(first+1440-pe)} rest.`
-             :onShift?`${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${hm24(instructed)} — only ${dur(instructed+1440-pe)} rest.`
-             :`told to report ${hm24(instructed)} — only ${dur(instructed+1440-pe)} rest.`)
+            +(evBound?`his day starts ${stated(first)} (${fe.label}) before the ${stated(instructed)} report — ${restWords}.`
+             :onShift?`${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${stated(instructed)} — ${restWords}.`
+             :`told to report ${stated(instructed)} — ${restWords}.`)
             +(dashed?` Late show — he still makes the ${hm24(bl.to-VCONF.step)} step.`
                     :(!evBound&&bl.lateShow?` Late show cannot save it — the ${hm24(bl.to-VCONF.step)} step is still before rest clears.`:''));
           /* the warning anchors on what binds it: the early event's own slot
@@ -1009,7 +1012,7 @@ function validateCore(){
            leaves fast can discount it. A non-flying finish is a fixed clock
            time with nothing to assume, so it stays bare. */
         const back=ef?`${hm24(e)} (last landing ${hm24(ef.ld)} + ${lgT(VCONF.debrief)} debrief assumed)`:`${hm24(e)}`;
-        add('note','LONGDAY',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} has a long work day: ${dur(span)}, ${hm24(s)} → ${back}`);}
+        add('note','LONGDAY',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} has a long work day: ${dur(span)}, ${stated(s)} → ${back}`);}
     });
     /* the run breaks its limit ON this day, which is the day the scheduler has
        to clear — so that is where the flag lands */
@@ -1976,7 +1979,7 @@ export function crossDayIfPlaced(id:any,key:any,fromKey?:any){
   if(r)out=`${ordinal(r.n)} day in a row — breaks ${r.di==null?'next Monday':r.dow} (${VCONF.maxRun} is the limit)`;
   else{
     const c=restIfPlaced(id,key,from);
-    if(c)out=c.dir==='back'?`crew rest — not clear until ${hm24(c.earliest)}`:`crew rest — breaks ${c.di==null?'next '+c.dow:c.dow}: he must be gone by ${c.leaveBy}`;
+    if(c)out=c.dir==='back'?`crew rest — not clear until ${stated(c.earliest)}`:`crew rest — breaks ${c.di==null?'next '+c.dow:c.dow}: he must be gone by ${c.leaveBy}`;
   }
   XD_CACHE.set(ck,out);
   return out;

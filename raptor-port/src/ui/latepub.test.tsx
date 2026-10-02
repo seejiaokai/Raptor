@@ -39,11 +39,8 @@ import { makeStandalone } from '../engine/waves'
 import { VCONF } from '../engine/rules'
 import { blockFromTpl, dutyTplReset } from '../engine/dutytpl'
 import { sbDutyPanel } from './board-html'
-import { validReportingFixture } from '../testing/reporting-fixture'
 import { flightBrief, reportingIssuesForDay } from '../engine/reporting'
 import { hm24, parseHM } from '../engine/time'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 /* the day's WAITING-TO-GO-OUT chip — since [DRAFT-PENDING] (28 Sep 26) the same `.dpend` class also carries the

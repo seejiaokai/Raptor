@@ -77,7 +77,7 @@ export function flightBrief(f:any,to:number){
   const typed=parseHM(f.br);
   return typed!=null?(to-VCONF.briefLead<0&&typed>to?typed-1440:typed):to-VCONF.briefLead;
 }
-const stated=(t:number)=>hm24(t)+(t<0?' (previous day)':t>=1440?' (next day)':'');
+export const stated=(t:number,short=false)=>hm24(t)+(t<0?short?' (prev day)':' (previous day)':t>=1440?' (next day)':'');
 export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{
   if(w.standalone)return [];
   const parsed=parseReportingLines(w), issues:ReportingIssue[]=[];
@@ -89,7 +89,7 @@ export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{
     const stages:{name:string,time:number}[]=[];
     if(r.inTime!=null)stages.push({name:'in-time',time:r.inTime});
     if(r.rally!=null)stages.push({name:'rally',time:r.rally});
-    stages.push({name:'brief',time:flightBrief(f,to)},{name:'take-off',time:to});
+    stages.push({name:parseHM(f.br)==null?'suggested brief':'brief',time:flightBrief(f,to)},{name:'take-off',time:to});
     const ld=parseHM(f.ld); if(ld!=null)stages.push({name:'landing',time:ld<to?ld+1440:ld});
     for(let i=1;i<stages.length;i++){
       const before=stages[i-1],after=stages[i];

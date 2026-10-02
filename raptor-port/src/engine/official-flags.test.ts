@@ -38,9 +38,6 @@ vi.mock('./weeks-data', async (importOriginal) => {
 })
 // eslint-disable-next-line import/first
 import { weekDateLabels, shiftWeekKey } from './weeks-data'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 const DOWS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']

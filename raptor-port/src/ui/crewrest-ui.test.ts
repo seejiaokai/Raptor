@@ -13,6 +13,7 @@ import { VCONF } from '../engine/rules'
 import { parseHM } from '../engine/time'
 import { isStandalone, CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle } from '../engine/weeks-data'
+import { snapshotStash, restoreStash, stashPut } from '../engine/weekstash'
 import { dayHTML, dayWarnHTML } from './html'
 import { personWarns } from '../engine/avail'
 import { focusWarn, clearWarnFocus, setWarnFocus, toggleDayWarn, selectPerson, selDrop } from '../state/view'
@@ -153,7 +154,7 @@ describe('the previous-day trace', () => {
   it('the warning carries the time he had to leave — as data, not message text', () => {
     const ix = build('01:30', '2A: BFM-5')
     const w = WARN.byDay[1].warns[ix]
-    expect(w.leaveBy, 'anchor 12:00 less 12h crew rest').toBe('00:00')
+    expect(w.leaveBy, 'anchor 12:00 less 12h crew rest').toBe('00:00 (next day)')
     /* owner, 22 Aug 26: the trace row's bold lead prints the leave-by, so the
        message restating it read twice — it is a data field only now */
     expect(w.msg).not.toContain('leave by')
@@ -165,7 +166,7 @@ describe('the previous-day trace', () => {
     const t = traceOf(0, CREW)
     expect(t, 'filed against day 0, the day a scheduler can still fix').toBeTruthy()
     expect(t.di, 'and pointing at the day of the breach').toBe(1)
-    expect(t.leaveBy).toBe('00:00')
+    expect(t.leaveBy).toBe('00:00 (next day)')
     expect(traceIx(t, CREW), 'resolving to the warning\'s own index').toBe(ix)
     expect(traceOf(1, CREW), 'nothing is filed against the day of the breach').toBeNull()
   })
@@ -266,6 +267,8 @@ describe('the cross-day row on the warning list', () => {
        SAME as an ordinary issue list's, not a private container (owner,
        7 Aug 26). */
     build('22:45', '2A: BFM-5')
+    const source:any=firstForm(0)!
+    DAYS[0].waves.find((w:any)=>(w.formations||[]).includes(source)).intimes=[`${source.cs} IN TIME 1700H`]
     const today: any = firstForm(1)!
     const wave = DAYS[1].waves.find((w: any) => (w.formations || []).includes(today))
     wave.intimes = [`${today.cs} IN TIME 0600H`]
@@ -452,10 +455,14 @@ describe('the forward trace across the week edge', () => {
      branch does). Sunday 09:00–18:00: clears at 06:00, inside bane's
      05:40–06:20 nominal/instructed window, so it chips TT but never breaks. */
   it('a CREW_TIGHT-only forward case writes no trace', () => {
-    ;(DAYS[6] as any).dutywaves[0].rows.push({ role: 'Duty', id: 'bane', str: '0900', end: '1800' })
-    validate()
-    expect(traceOf(6, 'bane')).toBeNull()
-    ;(DAYS[6] as any).dutywaves[0].rows.pop()
+    const saved=snapshotStash()
+    try {
+      const next=weekBundle('20/07/2026').days
+      next[0].waves[0].intimes=['06:20 VL IN TIME'];next[0].waves[0].formations[0].br='06:20'
+      stashPut('20/07/2026',JSON.stringify({d:next}))
+      ;(DAYS[6] as any).dutywaves[0].rows.push({ role: 'Duty', id: 'bane', str: '0900', end: '1800' })
+      validate();expect(traceOf(6, 'bane')).toBeNull()
+    } finally { restoreStash(saved);(DAYS[6] as any).dutywaves[0].rows.pop() }
   })
   /* THE RING MUST BE EXPLAINABLE BY A TAP (23 Aug 26, found driving the
      built bundle): selectPerson used to open only days where the person has

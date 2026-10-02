@@ -1,0 +1,45 @@
+{
+  "results": [
+    {
+      "scenario": "I2",
+      "label": "prior-date-only offer is not treated as target-date availability in the actual picker",
+      "status": "PASS",
+      "observed": {
+        "rules": {
+          "seat": "p",
+          "sim": false,
+          "simKind": null,
+          "sc": null,
+          "scStart": null,
+          "scEnd": null,
+          "scSpare": false,
+          "aar": null,
+          "di": 1,
+          "slotStart": 0,
+          "slotEnd": 690,
+          "sansStart": -120,
+          "avJet": false,
+          "avDuty": false,
+          "avKind": null,
+          "scDesk": false,
+          "infoRow": false,
+          "saExempt": false
+        },
+        "bar": "SANS — no availability filed for today",
+        "gate": {
+          "status": "none"
+        },
+        "why": "KrakenD"
+      }
+    }
+  ],
+  "pictures": [
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-06/I2-prior-date-picker.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-06/I2-failure.png"
+  ],
+  "failure": {
+    "scenario": "I2",
+    "message": "Expected values to be strictly equal:\n\n'nact' !== 'krait'\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'nact' !== 'krait'\n\n    at file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/downstream.mjs:38:219\n    at async check (file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/downstream.mjs:18:47)\n    at async file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/downstream.mjs:38:93"
+  }
+}

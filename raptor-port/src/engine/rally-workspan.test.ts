@@ -3,11 +3,50 @@ import { buildDay, seatIntime, waveInTime, waveWindows } from './events'
 import { workSpan } from './validate'
 import { VCONF } from './rules'
 import { resolveReporting, reportingIssuesForDay, reportingIssuesForWave } from './reporting'
+import { DAYS } from './data'
+import { WEEK2_DAYS } from './week2'
+import { readFileSync } from 'node:fs'
 
 const formation = (cs='VL', to='12:00') => ({cs,to,ld:'13:00',br:'10:00',aircraft:[{p:'ignite',w:'bane',rmks:'',opts:{}}]})
 const wave = (intimes:string[], formations=[formation(),formation('RU')]) => ({label:'FIRST WAVE',intimes,formations})
 
 describe('Rally reporting decisions D497–D507: RT1 scope, RT2 grammar, RT3 actual dates, RT4 consumers, RT5 stages', () => {
+  it('review F the live vocabulary states all approved reporting rules and retires both older passages',()=>{
+    const vocabulary=readFileSync(new URL('../../docs/remarks-vocabulary.md',import.meta.url),'utf8');
+    for(const phrase of ['IN TIME','RALLY AFTER IN TIME','RALLYING','D503','D505','D506','REPORT_ORDER','REPORT_UNRESOLVED','previous day','LATE SHOW'])
+      expect(vocabulary).toContain(phrase);
+    const rules=readFileSync(new URL('../../docs/engine-rules.md',import.meta.url),'utf8');
+    expect(rules.match(/Superseded by In-time \/ Rally/g)).toHaveLength(2);
+  })
+  it('review B distinguishes the suggested brief from an explicitly typed brief',()=>{
+    for(const br of ['', 'TBD']){
+      const w=wave(['12:00 IN TIME'],[{...formation(),to:'12:40',br}]);
+      expect(reportingIssuesForWave(w)[0].msg).toBe('VL: in-time 12:00 is later than suggested brief 10:20.');
+    }
+    const w=wave(['12:00 IN TIME'],[{...formation(),to:'12:40',br:'10:20'}]);
+    expect(reportingIssuesForWave(w)[0].msg).toBe('VL: in-time 12:00 is later than brief 10:20.');
+  })
+  it.each([['week 1',DAYS],['week 2',WEEK2_DAYS]])('review C fresh %s has no reporting-order warning',(_name,days)=>{
+    expect(days.flatMap((d:any)=>reportingIssuesForDay(d)).filter((i:any)=>i.code==='REPORT_ORDER')).toEqual([]);
+  })
+  it('review C changes only the approved demo clocks, keeping their words and valid clocks',()=>{
+    const expected=[
+      [DAYS,0,0,['0940H: FIRST WAVE VL IN TIME + WX/NOTAMS','1040H: FIRST WAVE RU IN TIME + WX/NOTAMS']],
+      [DAYS,0,1,['1645H: NIGHT WAVE VL IN TIME + WX/NOTAMS','1620H: NIGHT WAVE RU IN TIME + WX/NOTAMS']],
+      [DAYS,1,0,['0600H: FIRST WAVE VL IN TIME + WX/NOTAMS','0700H: FIRST WAVE RU IN TIME + WX/NOTAMS']],
+      [DAYS,1,1,['1200H: SECOND WAVE VL IN TIME + WX/NOTAMS','1140H: SECOND WAVE RU IN TIME + WX/NOTAMS']],
+      [DAYS,2,0,['0735H: FIRST WAVE VL IN TIME + WX/NOTAMS','0735H: FIRST WAVE RU IN TIME + WX/NOTAMS']],
+      [DAYS,2,1,['1000H: SECOND WAVE VL IN TIME + WX/NOTAMS','1000H: SECOND WAVE RU IN TIME + WX/NOTAMS']],
+      [DAYS,3,0,['0945H: FIRST WAVE VL IN TIME + WX/NOTAMS','0945H: FIRST WAVE RU IN TIME + WX/NOTAMS']],
+      [DAYS,3,1,['1345H: NIGHT WAVE VL IN TIME + WX/NOTAMS','1345H: NIGHT WAVE RU IN TIME + WX/NOTAMS']],
+      [WEEK2_DAYS,0,0,['0540H: FIRST WAVE VL IN TIME + WX/NOTAMS','0540H: FIRST WAVE RU IN TIME + WX/NOTAMS']],
+      [WEEK2_DAYS,0,1,['0730H: SECOND WAVE VL IN TIME + WX/NOTAMS']],
+      [WEEK2_DAYS,1,0,['0500H: FIRST WAVE VL IN TIME + WX/NOTAMS']],
+      [WEEK2_DAYS,2,1,['1705H: NIGHT WAVE VL IN TIME + WX/NOTAMS']],
+      [WEEK2_DAYS,3,0,['0430H: FIRST WAVE VL IN TIME + WX/NOTAMS']],
+    ] as const;
+    for(const [days,di,gi,lines] of expected)expect(days[di].waves[gi].intimes).toEqual(lines);
+  })
   it('D505 scopes IN and RALLY separately, preserving a wide IN under specific RALLY', () => {
     const w=wave(['08:00 IN TIME','08:30 VL RALLY'])
     expect(seatIntime(w,w.formations[0],720)).toBe(480)

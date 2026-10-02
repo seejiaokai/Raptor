@@ -65,6 +65,19 @@ beforeEach(() => {
 afterEach(() => { storeBackend.impl = null })
 
 describe('settings write() — RESET-then-overlay (R3-001)', () => {
+  it('review D2 snapshots the text beside numeric overrides and restores or drops it through the same writer',()=>{
+    const value={v:{reportText:'<b>RALLY</b>',reportLead:120},s:{}};
+    expect(isOk(restore(settingsStore,[{collection:'settings',id:'rules',value,op:'put'}]))).toBe(true);
+    expect(VCONF.reportText).toBe('<b>RALLY</b>');expect(VCONF.reportLead).toBe(120);
+    const snapshot=JSON.parse(settingsStore.capture() as string);
+    expect(snapshot.rules).toEqual(value);
+    restore(settingsStore,[{collection:'settings',id:'rules',value:{v:{reportLead:150}},op:'put'}]);
+    expect(VCONF.reportText).toBe('IN TIME + WX/NOTAMS');expect(VCONF.reportLead).toBe(150);
+    restore(settingsStore,[{collection:'settings',id:'rules',value,op:'put'}]);
+    expect(VCONF.reportText).toBe('<b>RALLY</b>');
+    restore(settingsStore,[{collection:'settings',id:'rules',op:'delete'}]);
+    expect(VCONF.reportText).toBe('IN TIME + WX/NOTAMS');expect(VCONF.reportLead).toBe(180);
+  })
   it('restoring an older rules record drops a currently-live override, not just overlays', () => {
     const dflt = RULE_STD.v.crewRest
     // an active override: VCONF holds 999 and the stored record carries it

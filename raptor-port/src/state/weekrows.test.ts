@@ -21,9 +21,6 @@ import { commitSetDayApproved, commitPublishALDay, commitUnpublish, schedWrite, 
 import { setSession } from './auth'
 import * as view from './view'
 import { splitWeek, joinWeek, parseRowId, RowShapeError } from './weekrows'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 const DSNAP = JSON.stringify(DAYS)

@@ -8,7 +8,7 @@
    production build, so a CSS change that breaks one fails a gate. */
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek, validReportingFixture } from './app'
+import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek } from './app'
 
 const PHONE = { width: 390, height: 844 }
 const DESK = { width: 1500, height: 950 }
@@ -21,6 +21,49 @@ const FREETEXT = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .p
    pucks, sized by its content on purpose, and it takes the overflow check
    above like everything else. */
 const PROSE = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .areacell'
+
+test.describe('Rally previous-day Board header fits constrained content widths', () => {
+  for (const [name, viewport] of [
+    ['desktop', { width: 1440, height: 900 }], ['phone', PHONE],
+    ['landscape', { width: 844, height: 390 }], ['tablet', { width: 1024, height: 600 }],
+  ] as const) {
+    test(`date cue and every control remain readable and reachable on ${name}`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page); await go(page, 'editsched')
+      await page.locator('#eWeek [data-sbday="1"]:visible').click()
+      for (const li of [0, 1]) {
+        const field = page.locator(`#schedBoard [data-bfld="ff:1.0.${li}.to"]:visible`).first()
+        await field.fill('01:00'); await field.press('Tab')
+      }
+      while (await page.locator('#schedBoard [data-itdel^="1|0|"]:visible').count()) {
+        await page.locator('#schedBoard [data-itdel^="1|0|"]:visible').first().click()
+      }
+      await page.locator('#schedBoard [data-itadd="1|0"]:visible').click()
+      const line = page.locator('#schedBoard [data-itline="1|0|0"]:visible').first()
+      await line.fill('22:00 RALLY'); await line.press('Enter')
+      const header = page.locator('#schedBoard .sb-go-h:visible').first()
+      await expect(header.locator('.asd')).toContainText('22:00 (prev day)')
+      await header.scrollIntoViewIfNeeded()
+      const m = await header.evaluate(e => {
+        const summary = e.querySelector('.asd')!, r = summary.getBoundingClientRect(), h = e.getBoundingClientRect()
+        const style = getComputedStyle(summary), lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2
+        return { text: summary.textContent, width: r.width, height: r.height, lineHeight,
+          overflow: e.scrollWidth - e.clientWidth,
+          buttons: [...e.querySelectorAll('button')].map(b => {
+            const q = b.getBoundingClientRect(), hit = document.elementFromPoint(q.x + q.width / 2, q.y + q.height / 2)
+            return { label: b.textContent, inside: q.x >= h.x && q.right <= h.right + 1 && q.y >= h.y && q.bottom <= h.bottom + 1
+              && q.x >= 0 && q.right <= innerWidth && q.y >= 0 && q.bottom <= innerHeight,
+              hit: hit === b || b.contains(hit), width: q.width, height: q.height }
+          }) }
+      })
+      expect(m.text).toContain('22:00 (prev day)')
+      expect(m.width, 'the date cue has readable width').toBeGreaterThanOrEqual(120)
+      expect(m.height, 'the complete date cue fits within two lines').toBeLessThanOrEqual(m.lineHeight * 2.2)
+      expect(m.overflow, 'no wave-header horizontal overflow').toBeLessThanOrEqual(1)
+      expect(m.buttons.every(b => b.inside && b.hit && b.width >= 27 && b.height >= 14), JSON.stringify(m.buttons)).toBe(true)
+    })
+  }
+})
 
 test.describe('the puck is one fixed size everywhere', () => {
   for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
@@ -1010,7 +1053,6 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('the week lands on the day, on its snap point, with the puck on screen', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
-    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     /* Find a flagged day that is genuinely OFF SCREEN from the left edge, and
@@ -1067,7 +1109,6 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('a warning already on screen does not move the week sideways', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
-    await validReportingFixture(page)
     await go(page, 'viewsched')
     await scrollTo(page, '#vWeek', 0)
 
@@ -1121,7 +1162,6 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('the board scrolls its own panel to the puck', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
-    await validReportingFixture(page)
     await go(page, 'editsched')
 
     const di = await page.evaluate(() => {
@@ -1157,7 +1197,6 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('the edit week: a far-day witem brings its puck fully into view, on both axes', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
-    await validReportingFixture(page)
     await go(page, 'editsched')
 
     /* day 3 (Thursday) carries ILLEGAL_CREW (bapster+badger) in the seed —
@@ -1196,7 +1235,6 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('view schedule: a day-detail warning row brings its puck fully into view, on both axes', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
-    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     const di = await page.evaluate(() => {
@@ -1241,7 +1279,6 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('a blank tap that dismisses a warning box holds the view where it snapped', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await login(page)
-    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     const di = 0                       // day 0 carries hard warnings in the seed
@@ -1289,7 +1326,6 @@ test.describe('clicking a warning brings the puck into view', () => {
        assertions live in warnjump.test.tsx; the pixels are gated here). */
     await page.setViewportSize(DESK)
     await login(page)
-    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     const has = await page.evaluate(() => !!document.querySelector('#vWeek .puck.warn[data-person]:not(.sm) .lchip'))
@@ -1341,7 +1377,6 @@ test.describe('clicking a warning brings the puck into view', () => {
        hold, which is how the jump shipped unnoticed in the first place. */
     await page.setViewportSize(DESK)
     await login(page)
-    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     /* a person flagged on the day of his own first puck, so a box really
@@ -1402,7 +1437,6 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('a SIM_BRIEF warning pans to the sim row that briefs, and it lands on screen', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
-    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     /* warnings carry the causing line's slot-key (w.key); jsdom pins WHICH
@@ -1479,7 +1513,6 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('the board at a small viewport scrolls to the deepest warning\'s puck', async ({ page }) => {
     await page.setViewportSize({ width: 900, height: 600 })
     await login(page)
-    await validReportingFixture(page)
     await go(page, 'editsched')
 
     const di = await page.evaluate(() => {

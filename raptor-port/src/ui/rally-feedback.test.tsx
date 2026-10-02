@@ -77,9 +77,12 @@ describe('RT7 D502 live reporting feedback at the existing week/board doors',()=
     expect(intimesInner(w())).not.toContain('data-reporting-feedback');
     expect(dayHTML(0,false)).not.toContain('data-itadd');
   });
-  it('Board displays the resolved signed reporting header as a wrapped clock',()=>{
+  it('review E both headers and the view day state the previous day without changing raw text',()=>{
     w().intimes=['23:00 IN TIME'];Object.assign(w().formations[0],{to:'01:30',ld:'03:00',br:'23:10'});
-    expect(boardHTML(0)).toContain('<span class="asd">In-time / Rally 23:00');
+    expect(boardHTML(0)).toContain('<span class="asd">In-time / Rally 23:00 (prev day)');
+    expect(dayHTML(0,true)).toContain('In-time / Rally 23:00 (prev day)');
+    expect(dayHTML(0,false)).toContain('In-time / Rally 23:00 (prev day)');
+    expect(w().intimes).toEqual(['23:00 IN TIME']);
     expect(boardHTML(0)).not.toContain('In-time / Rally -1:00');
   });
 });

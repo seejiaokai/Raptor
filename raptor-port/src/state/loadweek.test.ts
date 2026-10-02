@@ -22,9 +22,6 @@ import { SCHED, signOf, setDayApproved, dayHasChanges } from '../engine/publish'
 import { HIST } from './history'
 import { commitInputEdit, removeInput, draftOf } from '../ui/inputedit'
 import { HOOKS } from '../engine/hooks'
-import { validReportingFixture } from '../testing/reporting-fixture'
-// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
-validReportingFixture()
 
 
 /* is this input's ground row currently sitting on some day of the loaded week? */
@@ -40,7 +37,6 @@ beforeEach(() => {
   for (let i = INPUTS.length - 1; i >= 0; i--) if ((INPUTS[i] as any)._t) INPUTS.splice(i, 1)
   initStore()
   loadWeek('13/07/2026')
-  validReportingFixture() // the newly loaded fixture must be publishable before any tested action
 })
 
 describe('loadWeek', () => {

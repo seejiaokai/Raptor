@@ -26,8 +26,9 @@ describe('a day-N brief edit rewrites the N−1 trace and no other day', () => {
     const d1 = DAYS[1].waves[0].formations[0]
     d1.to = '20:00'; d1.ld = '23:00'; d1.br = ''
     d1.aircraft[0].p = 'split'
-    /* Wednesday: split on the 10:35 VL line. Its published in-time is 10:00 and
-       the default brief 08:15, so the instructed report is 08:15 → a breach. */
+    /* Wednesday: split on the 10:35 VL line, with no reporting line so the
+       default brief 08:15 alone instructs this B-driven scenario. */
+    DAYS[2].waves[0].intimes = []
     DAYS[2].waves[0].formations[0].aircraft[0].p = 'split'
     validate()
     const before = traceOf(1, 'split')

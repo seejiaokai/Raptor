@@ -36,8 +36,9 @@ import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
 import { isStandalone, CURWEEK } from '../engine/waves'
 import { WARN } from '../engine/validate'
-import { waveInTime } from '../engine/events'
-import { hm24 } from '../engine/time'
+import { hm24,parseHM } from '../engine/time'
+import { parseReportingLines,resolveReporting } from '../engine/reporting'
+import { VCONF } from '../engine/rules'
 import { shiftWeek } from './weeknav'
 
 /* Focus a warning clicked from somewhere that is NOT an already-open day box —
@@ -733,16 +734,13 @@ export function routeClick(e: MouseEvent) {
     const [dis, gis] = ita.dataset.itadd!.split('|'); const di = +dis, gi = +gis
     const w = DAYS[di] && DAYS[di].waves[gi]; if (!w || isStandalone(w)) return
     const was = (w.intimes || []).join(', ')
-    /* seed the line with the wave's own derived in-time (earliest line, else
-       earliest T/O — waveInTime's exact fallback), so the minted text states
-       the number the engine already assumes and nothing moves until the
-       scheduler types otherwise. No callsign on purpose: "<CS> IN TIME" is
-       the phrase that sets a formation's report time (intimeMap), and this
-       button must not pick a jet nobody chose. */
-    const t0 = waveInTime(w)
+    const parsed = parseReportingLines(w)
+    const flights = (w.formations || []).filter((f:any) => !f.cx && parseHM(f.to) != null)
+    const reports = flights.map((f:any) => resolveReporting(w,f,parseHM(f.to)!,parsed).report).filter((t:any) => t != null)
+    const t0 = reports.length ? Math.min(...reports) : flights.length ? Math.min(...flights.map((f:any) => parseHM(f.to)!)) - VCONF.reportLead : null
     /* hh:mm since 30 Aug 26 — the minted line states its time in the app's one
        colon form, exactly as an edited line commits (intimeFold) */
-    const line = (t0 != null ? hm24(t0) + 'H: ' : '') + 'IN TIME + WX/NOTAMS'
+    const line = (t0 != null ? hm24(t0) + 'H: ' : '') + VCONF.reportText
     w.intimes = [...(w.intimes || []), line]
     markEdit(`it:${di}.${gi}`, was, w.intimes.join(', '))
     view.afterSchedMutate(); notify()
