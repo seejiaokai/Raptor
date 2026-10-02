@@ -78,6 +78,26 @@ one formation, take-off 12:00 → the line reads `09:00H: IN TIME + WX/NOTAMS` a
 setting changed to 120 → `10:00H`, and the order warning then names the suggested brief 09:40. Walk it in the
 running app: change the setting on the Logic page, press the button, read the line.
 
+**D2. The words the button fills in are a free-text Logic setting (D511).** Today the mint hard-codes
+`IN TIME + WX/NOTAMS`. Add ONE text setting beside the report-lead setting on the Logic page — "Text the
++ In-time / Rally button fills in", default `IN TIME + WX/NOTAMS` — and mint `<hh:mm>H: <that text>`.
+- It is a NEW KIND of setting: `VCONF` / `RULE_SPEC` hold numbers with a range. Do not force text through the
+  number path; give it its own spec entry (a `text` kind with a length cap, about 60 characters) and its own
+  input on the Logic page, saved and loaded by the SAME route as the other Logic settings (no new store, no new
+  storage key outside that route), and included wherever those settings are reset, exported or undone.
+- Trim it; an empty value falls back to the default; single line only (strip line breaks). It is user-entered:
+  escape it wherever it is drawn (the Logic page AND the minted line go through the existing escaping).
+- No special reading: the minted line is parsed exactly like a hand-typed one (`parseReportingLines`) — `RALLY`
+  makes it a rally, unrecognised words leave it the legacy unlabelled in-time. A clock typed INSIDE the setting
+  would come second on the line and is ignored (first clock wins, D501) — say so in the setting's hint.
+- Something the app SAVES changed: update `docs/data-schema.md` and `docs/data-model.md` in the same change
+  (D473), and `src/engine/schema.ts` if the settings record is declared there. Permissions: whoever may change
+  Logic today — no new rule in `perms.ts`.
+- Pins: default → `09:00H: IN TIME + WX/NOTAMS`; set to `RALLY` → `09:00H: RALLY` resolves as a rally; set to
+  empty → the default; a value with `<b>` is drawn as text; the value survives a reload. Walk it in the running
+  app at both widths: change the text on the Logic page, press the button, read the line, reload.
+- This makes the batch touch SAVED DATA — the bug-check tier for the round is FULL (question 3).
+
 **E. A previous-day time says so.** One shared helper (reporting.ts already has `stated()`): a value below 0
 prints its clock with " (previous day)". Use it in: the crew-rest message's "told to report" and "his day starts"
 parts and its leave-by; the long-day note's start; the pre-drop message; the trace row. The board and week wave
