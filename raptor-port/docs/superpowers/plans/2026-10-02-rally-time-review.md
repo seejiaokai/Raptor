@@ -268,3 +268,17 @@ Pictures saved in the thread visualization directory as `rally-day-automatic-ast
 Rulings: D503 verified; none added.
 
 Writer follow-through: retained the new source and both reviewer-opened pictures under `docs/img/rally-time-proposal/`; the spec now labels the older interaction prototype historical and links the D503 display reference. No production source change or new application-test claim.
+
+## Astra — actual-app reporting placement, 2 Oct 26 (complete response)
+
+The real app places in-time lines **above the take-off columns and formation rows** on both Edit Schedule and Scheduler Board.
+
+Runtime measurements confirm the board’s in-time block ended at y=1053.7, the column header began there, and the first TO field began at y=1088.2. This matches `board.ts:178–180` and `html.ts:1674–1678`.
+
+I saved and inspected [the actual-app label preview](../../img/rally-time-proposal/actual-app-in-time-rally.png). It preserves the real layout and seeded text, changes only the temporary button/header labels, and visibly says “PROPOSED LABEL · timing behaviour unchanged.”
+
+No browser errors. Isolated memory-backed context closed; host server left running. No source, saved user data, publication or timing behaviour changed. This was a single-component check, not a full walk.
+
+Rulings: none added.
+
+Host disposition: Sol independently opened the full-resolution picture; the original concept’s below-take-off placement was misleading and is now qualified in the spec. Proposed rename stays in the actual existing above-rows position. Owned preview server stopped. No product ruling inferred from the owner’s question or new application check claimed.
