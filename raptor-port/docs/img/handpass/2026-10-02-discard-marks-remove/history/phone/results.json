@@ -1,0 +1,17 @@
+[
+  {
+    "width": "phone",
+    "label": "no Discard marks control on the edit week",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "the visible change history retains ordinary edits and adds no marks-cleared line",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "browser errors",
+    "status": "PASS"
+  }
+]

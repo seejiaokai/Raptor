@@ -9,7 +9,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { PEOPLE, isScheduler } from './people'
-import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, pendingPublishDays, publishALDay, discardPending, alIssue, alCount, alDays, dayALs, nextSeq, diffCounts, dayDelta, dayHasChanges, markEdit, markStructuralAdd, markDeletion, deletionWasIssued, isDeleteKey, deleteCount, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel, dayCurVer } from './publish'
+import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, pendingPublishDays, publishALDay, alIssue, alCount, alDays, dayALs, nextSeq, diffCounts, dayDelta, dayHasChanges, markEdit, markStructuralAdd, markDeletion, deletionWasIssued, isDeleteKey, deleteCount, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel, dayCurVer } from './publish'
 import { dropRowMarks } from './publish'
 import { loadVersionToWorkingCopy, reconcileIssuedMarks } from './drafts'
 import { noteChange, txtSet, txtGet } from './slots'
@@ -205,22 +205,12 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(dayApproved(0)).toBe(true)             // the day stays published
   })
 
-  it('discardPending clears the marks', () => {
-    noteChange('dn:0.0'); discardPending()
-    expect(pendCount()).toBe(0)
-  })
-
-  /* Phase 2 lock (F-01): discardPending is restricted to NEVER-PUBLISHED days.
-     On a published day a discard would silently drop a live-vs-issued
-     divergence — the only supported way to change a published day is to publish
-     it as the next AL. */
-  it('discardPending keeps a PUBLISHED day’s pending, clears a DRAFT day’s', () => {
-    sign(0); setDayApproved(0, true)          // day 0 published (has an Original)
-    noteChange('dn:0.0')                        // a new draft edit on the published day
-    noteChange('dn:1.0')                        // a draft edit on never-published day 1
-    discardPending()
-    expect(SCHED.pending['dn:0.0'], 'published day pending must survive a discard').toBe(1)
-    expect(SCHED.pending['dn:1.0'], 'draft day pending must clear').toBeUndefined()
+  it('D488 — a draft keeps its marks until first publication; another day keeps its marks', () => {
+    noteChange('dn:0.0'); noteChange('dn:1.0')
+    expect(SCHED.pending['dn:0.0']).toBe(1)
+    sign(0); setDayApproved(0, true)
+    expect(SCHED.pending['dn:0.0']).toBeUndefined()
+    expect(SCHED.pending['dn:1.0']).toBe(1)
   })
 
   it('nextSeq is per-day: the day’s max issued seq + 1 (AM2)', () => {

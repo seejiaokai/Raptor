@@ -38,7 +38,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS, mintInpIds } from '../engine/inputs'
 import { reconcileDayFiling } from '../engine/slots'
 import { ensureRowIds, rowsOf } from '../engine/rowids'
-import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer, signClear, signClearPlans } from '../engine/publish'
+import { SCHED, setDayApproved, publishALDay, unpublishDay, dayCurVer, signClear, signClearPlans } from '../engine/publish'
 import { parseVerId } from '../engine/verid'
 import { splitParts, canonicalBook, issuedBook, parseVerN, dayIndexOf, BOOK_BY_KEY, BOOK_BY_DAY, type WeekParts } from './weekrows'
 import { mintOrd, sortByOrd } from '../command/ord'
@@ -489,7 +489,6 @@ export const SCHED_TYPES = {
   // phase 2b — the publish path (design §3.4)
   approve: 'sched.approve',
   publishAL: 'sched.publishAL',
-  discard: 'sched.discard',
   // [GLOBAL-UNDO] §6.5 — retract a published day to a working copy (the Unpublish button)
   unpublish: 'sched.unpublish',
   // follow-up #1 — the previously-unrouted paths (rows A–G). Auto-registered by
@@ -678,22 +677,6 @@ export function commitPublishALDay(di: number): CommitResult {
      W1-1, 24 Sep 26; AM20, AM19). Drop such marks first, whatever path left them: the reconcile
      only ever REMOVES a mark whose detail equals the issued version, so it cannot hide a change. */
   return commitPublish(SCHED_TYPES.publishAL, () => { reconcileIssuedMarks([+di]); publishALDay(di) }, di)
-}
-
-/* clear a never-published day's draft marks. Not a publish (mints no issued id,
-   declares no boundary) — routed through commit only so the pending-book change
-   reaches the stream. */
-export function commitDiscardPending(): CommitResult {
-  /* …and it is a line in the change history, on each day whose marks it cleared ([DRAFT-PENDING] — review log F3; Fable
-     P9 found it wrote none). It clears marks, not changes: the edits stay, and so do their own lines. */
-  const orig: any = SCHED.orig || {}, per = new Map<number, number>()
-  Object.keys(SCHED.pending).forEach(k => { const di = keyDay(k); if (!orig[di] && di != null && isFinite(+di)) per.set(+di, (per.get(+di) || 0) + 1) })
-  /* written INSIDE the discard ([DB-READINESS] group A, phase 4.1 — F2-03): the lines are kept with the command's own
-     latched effects, so they travel in its saved group and its change-log batch, and a refused discard leaves none */
-  return commitSchedVoid(SCHED_TYPES.discard, () => {
-    discardPending()
-    per.forEach((n, di) => logAction(di, `Draft marks cleared (${n})`, { sect: 'day' }))
-  })
 }
 
 /* [GLOBAL-UNDO] §6.5 — retract the latest issued version of a published day back

@@ -1,0 +1,17 @@
+[
+  {
+    "width": "short",
+    "label": "no Discard marks control on the edit week",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "the visible change history retains ordinary edits and adds no marks-cleared line",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "browser errors",
+    "status": "PASS"
+  }
+]

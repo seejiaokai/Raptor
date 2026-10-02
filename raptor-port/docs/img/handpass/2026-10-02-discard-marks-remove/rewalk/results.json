@@ -1,0 +1,163 @@
+[
+  {
+    "width": "desktop",
+    "label": "no Discard marks control on the edit week",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "draft editing retains a pending mark and its history",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "Undo then Redo preserves the ordinary draft edit",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "draft-only panel has guidance and no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "reload before publication keeps the draft note and marks",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "first publish clears this day’s marks and keeps its note",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "published day still offers its amendment with no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "AL1 retains the change in the issued record",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "reload retains the issued amendment and no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "member view has no clearing or amendment-publish control",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "browser errors",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "no Discard marks control on the edit week",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "draft editing retains a pending mark and its history",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "Undo then Redo preserves the ordinary draft edit",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "draft-only panel has guidance and no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "reload before publication keeps the draft note and marks",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "first publish clears this day’s marks and keeps its note",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "published day still offers its amendment with no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "AL1 retains the change in the issued record",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "reload retains the issued amendment and no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "walk completed",
+    "status": "FAIL",
+    "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /logout|sign out/i }).first()\u001b[22m\n\n    at C:\\Users\\User\\.codex\\worktrees\\8c06\\Raptor\\raptor-port\\scripts\\handpass\\discard-marks-remove.mjs:93:70"
+  },
+  {
+    "width": "short",
+    "label": "no Discard marks control on the edit week",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "draft editing retains a pending mark and its history",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "Undo then Redo preserves the ordinary draft edit",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "draft-only panel has guidance and no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "reload before publication keeps the draft note and marks",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "first publish clears this day’s marks and keeps its note",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "published day still offers its amendment with no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "AL1 retains the change in the issued record",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "reload retains the issued amendment and no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "member view has no clearing or amendment-publish control",
+    "status": "PASS"
+  },
+  {
+    "width": "short",
+    "label": "browser errors",
+    "status": "PASS"
+  }
+]

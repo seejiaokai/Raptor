@@ -21,7 +21,7 @@ import { SCHED, signOf, dayCurVer, dayApproved, protectedWeek } from '../engine/
 import { txtGet, txtSet, slotVal, setSlotVal, unacceptInput } from '../engine/slots'
 import { PLANPUCKS, DAYRMK } from './plan'
 import { initStore, writeText, writeInputs, weekStashSnap, weekDirty, loadWeek } from './store'
-import { commitSetDayApproved, commitPublishALDay, commitUnpublish, commitDiscardPending, schedWrite, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
+import { commitSetDayApproved, commitPublishALDay, commitUnpublish, schedWrite, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
 import { setSession } from './auth'
 import { hydrate, wirePersist, weekId } from './persist'
 import { splitWeek, weeksConverter } from './weekrows'
@@ -304,17 +304,19 @@ describe('the other-day writers touch only the days a command changed (plan §3 
     expect(weekWrites()).toEqual([`${wid}#0`])
   })
 
-  it('clearing draft marks names every day it cleared, and writes those days only', async () => {
-    await boot(new MemoryBackend())
-    const wid = weekId(W1)
+  it('D488 — first publication clears only its day’s saved marks; adjacent draft marks survive reload', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
     writeText('dn:2.0', 'X'); writeText('dn:5.0', 'Y')
-    clear()
-    commitDiscardPending()
-    const env = envs.find(e => e.type === 'sched.discard')!
-    expect(env.changes.map(c => `${c.collection}/${c.id}`).sort()).toEqual([`sched.book/${W1}#2`, `sched.book/${W1}#5`])
-    expect(weekWrites().sort()).toEqual([`${wid}#2`, `${wid}#5`])
-  })
-})
+    sign(2); commitSetDayApproved(2, true)
+    expect(SCHED.pending['dn:2.0']).toBeUndefined()
+    expect(SCHED.pending['dn:5.0']).toBeTruthy()
+    await boot(be)
+    expect(SCHED.pending['dn:2.0']).toBeUndefined()
+    expect(SCHED.pending['dn:5.0']).toBeTruthy()
+    expect(txtGet('dn:2.0')).toBe('X')
+    expect(txtGet('dn:5.0')).toBe('Y')
+  })})
 
 describe('the fold\'s converter for an old whole-week record', () => {
   it('turns one old record into the week\'s rows — the week row taking the old key — and leaves one it cannot split', () => {

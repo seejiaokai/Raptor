@@ -15,7 +15,7 @@ import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { storeBackend } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
-import { SCHED, signOf, dayPendingItems, dayShownPendCount, discardableCount } from '../engine/publish'
+import { SCHED, signOf, dayPendingItems, dayShownPendCount } from '../engine/publish'
 import { acceptInput, unacceptInput } from '../engine/slots'
 import { PLANPUCKS, DAYRMK } from './plan'
 import { initStore, weekStashSnap, weekDirty, loadWeek, writeInputsBatch } from './store'
@@ -123,16 +123,16 @@ describe('phase 6 (b) — a filing under Unavailable is counted, never marked', 
     expect(storedInpMarks(wb)).toEqual([])
   })
 
-  it('on a NEVER-published day: no mark, and "Discard marks" has nothing of the filing to clear', async () => {
+  it('D488 — on a NEVER-published day a filing adds no scheduler draft marks', async () => {
     await boot(new MemoryBackend())
     const inp = plant({ person: 'waldo', date: 'Jul 13' })
     /* the ✕ that takes its row off first is a removal like any other on the day (plan §8 item 11 — phase 6 (c)); the filing
        itself adds nothing */
     schedWrite(SCHED_TYPES.mutate, () => { unacceptInput(0, inp); afterSchedMutate() })
-    const before = discardableCount()
+    const before = Object.keys(SCHED.pending).sort()
     expect(fileUnavail(0, inp)).toBe(true)
     expect(inpMarks()).toEqual([])
-    expect(discardableCount(), 'the filing is not a draft mark').toBe(before)
+    expect(Object.keys(SCHED.pending).sort(), 'the filing is not a draft mark').toEqual(before)
   })
 
   it('published as an AL, then Unpublished: the filing reads pending again, from the filing itself', async () => {
