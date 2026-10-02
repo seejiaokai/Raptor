@@ -125,8 +125,9 @@ phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WI
 
 **From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION]. **D493 (2 Oct 26):** the tidiness read is answered — three tidy-ups approved, each with its area's batch: [LW-ROWS-SPLIT] (the next Leave War batch), [CSS-SPLIT-BY-SCREEN] (first step of the workflow UI pass), [TRK-FILE-TRANSFER-SPLIT] (the Tracker batch); two not now (in [CODE-TIDY-AUDIT]).
 
+**The feature batches — HIS ORDER, D495 (2 Oct 26); Codex plans and builds until the reset, Claude reviews after it (D494):** [DISCARD-MARKS-REMOVE] (the small first job) → [WORKSPAN-NEGATIVE] → Insights (with [INSIGHTS-BOARD-DOOR]) → the workflow UI pass ([CSS-SPLIT-BY-SCREEN] first) → Inputs → the Tracker (with [TRK-FILE-TRANSFER-SPLIT]) → caps and ops limits → one whole-app check — the list: [FEATURE-WISHLIST].
+
 **Waiting on him — no order exists:**
-[FEATURE-WISHLIST] (his list of features to come, 2 Oct 26 — features first by area, D490; the order of the batches he gives on 3 Oct 26),
 [LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
 [OIL-EARNED-VS-GRANTED] (ANSWERED D400 and built with the award fix — merged, PR #469, 29 Sep 26; archived 2 Oct 26),
 [LEDGER-READ-ASK] (a question for him, from the OIL award build), [LW-COMMIT-MANNING] (his call), [LEAVE-YEAR] ("we will do this next time", 19 Sep — no slot since),
@@ -1517,8 +1518,13 @@ says what it changes (before the features that would sit on the screens it moves
 **D490 (2 Oct 26, "Yes"): features first by area, each area's small finds riding with its batch, one whole-app check at the
 end.** **Item 5, in his words the same day:** *"how the UI flows, to make it more efficient for the user, how does the keyboard
 interact, how the mobile usage is done, moving of buttons etc."* — it crosses every screen, so it is planned as its own pass
-with pictures first; where it moves a screen's controls, that screen's feature batch comes after it or carries it. **The order
-of the batches: he will say on 3 Oct 26.**
+with pictures first; where it moves a screen's controls, that screen's feature batch comes after it or carries it.
+**THE ORDER — D495 (2 Oct 26, "the batch order looks ok"):** (1) `[WORKSPAN-NEGATIVE]`; (2) Insights — item 3, with
+`[INSIGHTS-BOARD-DOOR]`; (3) the workflow UI pass — item 5, `[CSS-SPLIT-BY-SCREEN]` its first step (D493); (4) Inputs — item 1,
+with `[INP-TILL-STALE]`; (5) the Tracker — item 4, with `[TRK-FILE-TRANSFER-SPLIT]` and its small finds; (6) the rules —
+item 2, caps and ops limits, FULL tier; (7) one whole-app check. **Who builds — D494:** until the reset (Monday 5 Oct 26,
+19:00) Codex plans and builds, started by one small job to prove it (`[DISCARD-MARKS-REMOVE]`); Claude reviews each branch
+after the reset, before any "merge live". Each feature's questions are still to be asked — none is designed. His bugs: later.
 
 ### [SKILL-FUSION] Fuse the harder questioning into the planning step — and three proposals from the same read (D486, 2 Oct 26)
 From the article he sent (codelynx.dev — five recommended skills): none is installed whole (D486). To build, documents only: the

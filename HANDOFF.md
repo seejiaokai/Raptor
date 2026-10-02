@@ -16,9 +16,20 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:claude/planning-filing-3-oct -->
-### `claude/planning-filing-3-oct` — a planning and filing chat until Monday's reset (D484): `mattpocock/skills` read (D491), Astra's tidiness read and word-list draft, his features and bugs filed as he gives them — documents only, pushed, no PR yet — written 3 Oct 26 — verify before use
-- **Reviews until the reset (D492):** Astra alone reviews anything that needs a review; after the reset (Monday 5 Oct 26, 19:00)
-  Fable and Astra as before. Opus 5.5 does not take Fable's place. Work that needs both reviewers waits for the reset.
+### `claude/planning-filing-3-oct` — UNTIL MONDAY'S RESET CODEX PLANS AND BUILDS (D494), in his order (D495); Claude reviews every Codex branch after the reset — this branch: documents only, pushed, no PR yet — written 2 Oct 26 — verify before use
+- **CODEX (D494, 2 Oct 26):** his Claude allowance is at 94%; he uses his ChatGPT allowance and its resets for heavy work.
+  Codex reads `AGENTS.md` (repo root — the bridge to every rule file), plans with him and builds, each job on its own
+  `codex/<name>` branch based on THIS branch; it never reviews its own work and never merges. **Owed by Claude after the
+  reset (Monday 5 Oct 26, 19:00), before any "merge live":** the independent read of every `codex/…` branch (both Fable and
+  Opus on risky work — earned leave, permissions, the published record, saved data), and of any plan Codex wrote. Codex's own
+  `## Now` block lists them. `AGENTS.md` itself is a working guide of a kind — Fable reads it after the reset (D70).
+- **THE ORDER (D495):** `[DISCARD-MARKS-REMOVE]` first (small — it proves Codex as a builder; the agent's addition) →
+  `[WORKSPAN-NEGATIVE]` → Insights → the workflow UI pass → Inputs → the Tracker → caps and ops limits → one whole-app check.
+  No feature is designed yet; his bugs come later. The second Sonnet-walker trial (D480) waits for Claude's first walk.
+- **The tidiness read is answered (D493):** three tidy-ups approved, each with its area's batch — `[LW-ROWS-SPLIT]`,
+  `[CSS-SPLIT-BY-SCREEN]`, `[TRK-FILE-TRANSFER-SPLIT]`; two not now (in `[CODE-TIDY-AUDIT]`).
+- **Reviews until the reset (D492, narrowed by D494):** Astra alone reviews what CLAUDE wrote; after the reset Fable and Astra
+  as before. Opus 5.5 does not take Fable's place.
 - **D491:** the collection is not installed whole; a word list (`[WORD-LIST]`), two debugging lines and one audit line ride
   with `[SKILL-FUSION]` — the read: `raptor-port/docs/superpowers/specs/2026-10-02-workflow-skills-fusion.md` §8.
 - **Astra's two runs, 3 Oct 26** (briefs and results in `raptor-port/docs/superpowers/briefs/2026-10-03-…`): the word-list
@@ -26,14 +37,13 @@ the later merge keeps both (D78).
   the tidiness read (`[CODE-TIDY-AUDIT]`) is back — `…-code-tidy-audit-astra.md`: five separations, each FULL tier, none a
   fault (the Leave War's row drawing out of its grid file; the scheduler's stylesheet split by screen; the Tracker's file
   export/import out of its core; the Leave War's stored-data reading out of its store; its link to the schedule split in four
-  behind one front). The host spot-checked the files exist as described (line numbers are approximate). He has had a
-  three-line summary only — **owed: the plain-words report, ranked, for his yes or no on each** (nothing restructured before).
-- **He went to sleep 3 Oct 26 before giving the batch order. Advice given: continue in a FRESH chat on this branch, in one
-  sitting** — this chat's long context would be re-read at full price after a night's pause.
-- **Waiting on him:** the order of the feature batches (`[FEATURE-WISHLIST]`, D490), and his features and bugs — each gets its
-  questions in rounds of at most four with a recommended answer, and is filed under its area.
+  behind one front). The host spot-checked the files exist as described (line numbers are approximate).
+- **Waiting on him:** what each feature means (rounds of at most four questions, a recommended answer each), and his bugs.
 - **The main checkout** (`C:/Users/User/projects/Raptor`) sits on this branch, not a worktree — put it back on `main` once merged.
-- **Parallel (D302):** rulings D491–D492 used here — a next chat takes D493 on; observation #420 used, #421 on.
+  This branch has no PR; it merges only on his "merge live" (documents and the document gate only).
+- **Dates:** the earlier entries of this block and D491–D492 say "3 Oct 26"; the PC's calendar read Friday 2 Oct 26 on the
+  day they were written.
+- **Parallel (D302):** rulings D491–D495 used here — Codex takes D496 on; observation #420 used, #421 on (Claude only).
 <!-- /now -->
 
 <!-- now:claude/ai-workflow-skills-review-87bf52 -->

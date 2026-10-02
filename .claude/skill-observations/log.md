@@ -2322,3 +2322,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In session-handoff, the opening line it gives the owner starts with "bring the checkout up to date (`git pull --ff-only`), then read HANDOFF.md" whenever the next chat starts on `main` after a merge; `HANDOFF.md`'s head already says "git fetch before acting on a block" — say it before READING too.
 
 **Principle:** A handoff kept in the repo is only as current as the checkout that reads it: update first, read second.
+
+### Observation 421: A handoff to another agent host needs a bridge file — the rules that "load by themselves" and the hooks do not travel
+
+**Status:** OPEN
+**Date:** 2026-10-02
+**Session context:** Planning and filing chat; the owner moved planning and building to Codex until his Claude allowance resets (D494).
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** Handing off to a different tool, not a fresh chat of the same one
+
+**Issue:** The handoff skill assumes the next session is the same host: always-loaded rule files, path-scoped rule files, and hooks (the ruling reminder, the end-of-turn document check, the background-folder guard). A different host (Codex) gets none of these; the repo had no AGENTS.md, so the next agent would have worked with no rules at all. This was caught only because the owner asked how to proceed.
+
+**Suggested improvement:** Add a step to session-handoff: "Is the next session a different host? Then check its bridge file exists and names (a) every always-loaded rule file, (b) the per-area files to open by hand, (c) each hook's job as a by-hand step, (d) the hard limits (merge, review of own work), (e) its own number ranges and branch naming."
+
+**Principle:** Context that arrives automatically in one tool is invisible when handing off to another; a cross-tool handoff must list what was automatic and turn each item into an explicit instruction.
