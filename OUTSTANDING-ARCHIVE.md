@@ -3180,3 +3180,14 @@ longer belongs in each to its home (finished backlog items by `backlog-archive.m
 the area or raise its tripwire with the reason, D136, D390), or raise a ceiling with its reason (D141). **Place:** low — its
 own small documents-only branch; a documents-only pull request fails the Docs guard on these sizes until it is done.
 
+
+*Moved here 2026-10-02 by backlog-archive.mjs ([PHONE-DISCARD-MARKS]). Forward facts: `raptor-port/docs/handpass/2026-10-02-discard-marks-remove.md`.*
+
+### [PHONE-DISCARD-MARKS] A phone has no door to "Discard marks" (found 28 Sep 26)
+**MOOT once `[DISCARD-MARKS-REMOVE]` is built (D488, 2 Oct 26): the button is being removed — and it never discarded a published
+day's pending changes, as the note below believed; it clears only the marks of days not yet published. Archive this with that build.**
+Found by the change-recording re-test's walker A1 (O4, `raptor-port/docs/handpass/parts/2026-09-28-cr-a1.md`): the
+Amendments panel that carries "Discard marks" is hidden under 820px, so on a phone a published day's pending changes can
+be discarded by no control (desktop only). **To do:** give the phone a way in (the day's pending list, or the ⓘ day
+panel) — a mock-up first if it adds a control. LOOK / WALK tier. **Place:** low; any time, none blocking.
+
