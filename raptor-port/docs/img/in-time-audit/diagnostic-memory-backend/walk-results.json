@@ -1,0 +1,385 @@
+{
+  "results": [
+    {
+      "width": "desktop",
+      "label": "specific instruction overrides earlier wave-wide instruction",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "last named instruction wins even when labelled Rally; reversing lines changes it",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "callsign in a remark scopes the line; unknown name falls back wave-wide",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "first clock supplies both named formations; prose does not pair clocks and names",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "first note clock is used; invalid instructions use step fallback",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "previous-evening interpretation exists, but multiple wide lines choose raw clock minimum",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "editing an unpublished in-time updates visible Insights",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "pending in-time amendment clears signatures and updates working report",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "pending in-time amendment leaves visible Insights on issued copy",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "view schedule keeps issued in-time while working copy differs",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "publishing amendment updates visible Insights",
+      "status": "PASS"
+    }
+  ],
+  "observations": [
+    {
+      "case": "specific-wide",
+      "byCS": {
+        "VL": {
+          "intime": 480,
+          "report": 480,
+          "brief": 380,
+          "to": 520,
+          "ld": 605,
+          "step": 460
+        },
+        "RU": {
+          "intime": 420,
+          "report": 420,
+          "brief": 440,
+          "to": 580,
+          "ld": 665,
+          "step": 520
+        }
+      },
+      "lines": [
+        "07:00 IN TIME + WX/NOTAMS",
+        "08:00H: FIRST WAVE VL IN TIME + WX/NOTAMS"
+      ],
+      "header": "in-time 07:00 · 4 ac",
+      "signs": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "pending": [
+        "it:1.rmuqkil2pjo5mcp"
+      ]
+    },
+    {
+      "case": "named-stages-last-line",
+      "byCS": {
+        "VL": {
+          "intime": 480,
+          "report": 480,
+          "brief": 380,
+          "to": 520,
+          "ld": 605,
+          "step": 460
+        },
+        "RU": {
+          "intime": null,
+          "report": 520,
+          "brief": 440,
+          "to": 580,
+          "ld": 665,
+          "step": 520
+        }
+      },
+      "lines": [
+        "07:00 VL IN TIME",
+        "08:00 VL RALLY"
+      ],
+      "header": "in-time 07:00 · 4 ac",
+      "signs": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "pending": [
+        "it:1.rmuqkil2pjo5mcp"
+      ]
+    },
+    {
+      "case": "incidental-name",
+      "byCS": {
+        "VL": {
+          "intime": 420,
+          "report": 420,
+          "brief": 380,
+          "to": 520,
+          "ld": 605,
+          "step": 460
+        },
+        "RU": {
+          "intime": null,
+          "report": 520,
+          "brief": 440,
+          "to": 580,
+          "ld": 665,
+          "step": 520
+        }
+      },
+      "lines": [
+        "07:00 IN TIME — coordinate with VL",
+        "25:90 TIME TBD"
+      ],
+      "header": "in-time 07:00 · 4 ac",
+      "signs": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "pending": [
+        "it:1.rmuqkil2pjo5mcp"
+      ]
+    },
+    {
+      "case": "two-names-two-clocks",
+      "byCS": {
+        "VL": {
+          "intime": 420,
+          "report": 420,
+          "brief": 380,
+          "to": 520,
+          "ld": 605,
+          "step": 460
+        },
+        "RU": {
+          "intime": 420,
+          "report": 420,
+          "brief": 440,
+          "to": 580,
+          "ld": 665,
+          "step": 520
+        }
+      },
+      "lines": [
+        "RU 07:00, VL 08:00",
+        "25:90 TIME TBD"
+      ],
+      "header": "in-time 07:00 · 4 ac",
+      "signs": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "pending": [
+        "it:1.rmuqkil2pjo5mcp"
+      ]
+    },
+    {
+      "case": "note-clock",
+      "byCS": {
+        "VL": {
+          "intime": 420,
+          "report": 420,
+          "brief": 380,
+          "to": 520,
+          "ld": 605,
+          "step": 460
+        },
+        "RU": {
+          "intime": 420,
+          "report": 420,
+          "brief": 440,
+          "to": 580,
+          "ld": 665,
+          "step": 520
+        }
+      },
+      "lines": [
+        "07:00 reference note; report 08:00",
+        "25:90 TIME TBD"
+      ],
+      "header": "in-time 07:00 · 4 ac",
+      "signs": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "pending": [
+        "it:1.rmuqkil2pjo5mcp"
+      ]
+    },
+    {
+      "case": "invalid-fallback",
+      "byCS": {
+        "VL": {
+          "intime": null,
+          "report": 460,
+          "brief": 380,
+          "to": 520,
+          "ld": 605,
+          "step": 460
+        },
+        "RU": {
+          "intime": null,
+          "report": 520,
+          "brief": 440,
+          "to": 580,
+          "ld": 665,
+          "step": 520
+        }
+      },
+      "lines": [
+        "25:90 VL IN TIME",
+        "IN TIME TBD"
+      ],
+      "header": "in-time 08:40 · 4 ac",
+      "signs": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "pending": [
+        "it:1.rmuqkil2pjo5mcp"
+      ]
+    },
+    {
+      "case": "previous-evening",
+      "byCS": {
+        "VL": {
+          "intime": -60,
+          "report": -60,
+          "brief": -50,
+          "to": 90,
+          "ld": 180,
+          "step": 30
+        },
+        "RU": {
+          "intime": 1380,
+          "report": 1380,
+          "brief": 440,
+          "to": 580,
+          "ld": 665,
+          "step": 520
+        }
+      },
+      "lines": [
+        "23:00 IN TIME",
+        "25:90 TIME TBD"
+      ],
+      "header": "in-time 23:00 · 4 ac",
+      "signs": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "pending": [
+        "it:1.rmuqkil2pjo5mcp",
+        "ff:1.rmuqkil2pjo5mcp.rmuqkil2pes9ind.to",
+        "ff:1.rmuqkil2pjo5mcp.rmuqkil2pes9ind.ld"
+      ]
+    },
+    {
+      "case": "raw-clock-minimum",
+      "byCS": {
+        "VL": {
+          "intime": 60,
+          "report": 60,
+          "brief": -50,
+          "to": 90,
+          "ld": 180,
+          "step": 30
+        },
+        "RU": {
+          "intime": 60,
+          "report": 60,
+          "brief": 440,
+          "to": 580,
+          "ld": 665,
+          "step": 520
+        }
+      },
+      "lines": [
+        "23:00 IN TIME",
+        "01:00 RALLY"
+      ],
+      "header": "in-time 01:00 · 4 ac",
+      "signs": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "pending": [
+        "it:1.rmuqkil2pjo5mcp",
+        "ff:1.rmuqkil2pjo5mcp.rmuqkil2pes9ind.to",
+        "ff:1.rmuqkil2pjo5mcp.rmuqkil2pes9ind.ld"
+      ]
+    },
+    {
+      "case": "pending-amendment",
+      "byCS": {
+        "VL": {
+          "intime": 465,
+          "report": 465,
+          "brief": 380,
+          "to": 520,
+          "ld": 605,
+          "step": 460
+        },
+        "RU": {
+          "intime": 480,
+          "report": 480,
+          "brief": 440,
+          "to": 580,
+          "ld": 665,
+          "step": 520
+        }
+      },
+      "lines": [
+        "07:45 VL IN TIME + WX/NOTAMS",
+        "08:00 RU IN TIME"
+      ],
+      "header": "in-time 07:45 · 4 ac",
+      "signs": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "pending": [
+        "it:1.rmuqkil2pjo5mcp"
+      ]
+    }
+  ],
+  "failure": {
+    "width": "desktop",
+    "message": "Expected values to be strictly equal:\n\n360 !== 465\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n360 !== 465\n\n    at file:///C:/Users/User/.codex/visualizations/2026/10/02/01a0fab0-9850-7130-8da0-de797da4a3ba/in-time-audit-walk.mjs:64:108\n    at async check (file:///C:/Users/User/.codex/visualizations/2026/10/02/01a0fab0-9850-7130-8da0-de797da4a3ba/in-time-audit-walk.mjs:20:32)\n    at async file:///C:/Users/User/.codex/visualizations/2026/10/02/01a0fab0-9850-7130-8da0-de797da4a3ba/in-time-audit-walk.mjs:64:4"
+  }
+}
