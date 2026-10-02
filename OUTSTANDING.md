@@ -125,7 +125,7 @@ phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Cod
 
 **From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION]. **D493 (2 Oct 26):** the tidiness read is answered — three tidy-ups approved, each with its area's batch: [LW-ROWS-SPLIT] (the next Leave War batch), [CSS-SPLIT-BY-SCREEN] (first step of the workflow UI pass), [TRK-FILE-TRANSFER-SPLIT] (the Tracker batch); two not now (in [CODE-TIDY-AUDIT]).
 
-**The feature batches — HIS ORDER, D495 (2 Oct 26); Astra plans/reviews, Sol 6.1 builds in Codex until the reset (D496), Claude reviews after it (D494):** [DISCARD-MARKS-REMOVE] (the small first job) → [WORKSPAN-NEGATIVE] → Insights (with [INSIGHTS-BOARD-DOOR]) → the workflow UI pass ([CSS-SPLIT-BY-SCREEN] first) → Inputs → the Tracker (with [TRK-FILE-TRANSFER-SPLIT]) → caps and ops limits → one whole-app check — the list: [FEATURE-WISHLIST].
+**The feature batches — HIS ORDER, D495 (2 Oct 26); Astra plans/reviews, Sol 6.1 builds in Codex until the reset (D496), Claude reviews after it (D494):** [DISCARD-MARKS-REMOVE] (the small first job) → [WORKSPAN-NEGATIVE] → [RALLY-REVIEW-FIXES] (NOW — the fixes from Claude's small check, D509) → Insights (with [INSIGHTS-BOARD-DOOR]) → the workflow UI pass ([CSS-SPLIT-BY-SCREEN] first) → Inputs → the Tracker (with [TRK-FILE-TRANSFER-SPLIT]) → caps and ops limits → one whole-app check — the list: [FEATURE-WISHLIST].
 **Timing follow-up:** [REST-FIRST-CREW-HINT] — existing empty-formation predictive-rest gap, filed with caps and ops limits; committed placement still validates. Current Rally evidence declares this limitation; no owner approval inferred.
 **Workflow UI follow-up:** [PALETTE-WRAPPED-HEADER] — inherited sticky-palette overlap under a wrapped desktop account bar; with the UI pass after [CSS-SPLIT-BY-SCREEN]. Current Rally and baseline reproduce it; not dismissed as a helper-only failure.
 
@@ -1586,6 +1586,18 @@ From Astra's tidiness read (its §3 — read it before building). The export / i
 catch-all "core context" — stop and report, do not force it. First the boundary test Astra names (export, fresh store,
 import, compare every record and id; cancel; a conflicting syllabus; no partial write on a refusal). FULL tier — saved data.
 **Place — D493, D485: with the Tracker batch (`[FEATURE-WISHLIST]` item 4).**
+
+### [RALLY-REVIEW-FIXES] The fixes from Claude's small check of the two Codex builds (3 Oct 26; D508, D509)
+Claude's small check (Opus planned, Sonnet read, the host confirmed — an early signal, not a bug check) found on
+`codex/rally-workspan`: a fresh demo week could not be published Mon–Thu (the new order check blocks on the suggested
+brief); the "+ In-time / Rally" button mints a flagged line; a previous-day time prints with no day; the typed-remarks
+list never gained Rally. **His answers, 3 Oct 26:** no timing problem blocks publishing — a red warning only, the blank
+brief checked as the suggested brief and named so (D509, narrowing D502); the demo week's in-times corrected; the button
+and the previous-day wording as sketched to him. On `codex/discard-marks-remove`: one unused import and six old walk
+scripts that still look for the removed button. The finds and the exact fixes:
+`raptor-port/docs/superpowers/briefs/2026-10-03-codex-review-fixes.md`. **Place:** NOW, by Codex (D496), before Insights —
+nothing is built on top of the Rally build until these are in. **Still owed after the reset, before any "merge live":**
+Claude's full check of both builds — the walk, the blind walker trial (D480), the second reads, the working-guide reads.
 
 ### [WORKSPAN-NEGATIVE] A line timed earlier than its wave's in-time gives a negative work-hours figure (found 1 Oct 26)
 **Current build status,2 Oct26:** implemented with [RALLY-TIME] on `codex/rally-workspan`; FULL automated gates and scoped running-app/performance evidence complete; fresh Astra round2 inspection PASS, both first-read findings repaired and two inherited follow-ups explicitly filed/nonblocking under D490. Evidence: `raptor-port/docs/handpass/2026-10-02-rally-workspan.md`. Not live, not merged; OWED Claude's read after the reset before main. The original fault and planning history below are retained.

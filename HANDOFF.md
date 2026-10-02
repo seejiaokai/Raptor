@@ -15,6 +15,29 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/codex-review-3-oct -->
+### `claude/codex-review-3-oct` — Claude's SMALL check of the two Codex builds (D508): done, fixes handed to Codex; the FULL check is still owed after the reset — documents only, pushed, no PR — written 3 Oct 26 — verify before use
+- **What it was (D508):** his allowance stood at 94%, so Opus 5.5 planned a small targeted check and Sonnet 5.5 did the
+  reading; no Fable; no walk of the running app. An early signal on Codex's reliability, NOT a bug check.
+- **Result:** the gates re-run on the Rally build all pass (unit 7613, tfin 728/0, e2e 518 + 49 skipped, smoke 445/0).
+  Discard: no fault, two leftovers. Rally: the rulings D497–D507 are in the code and every warning reads Rally through the
+  one shared calculation — but a fresh demo week could not be published Mon–Thu, the "+ In-time / Rally" button mints a
+  flagged line, a previous-day time prints with no day, and the typed-remarks list never gained Rally. The finds, what was
+  found correct, what was not proven, and the exact fixes: `raptor-port/docs/superpowers/briefs/2026-10-03-codex-review-fixes.md`.
+- **His rulings here:** D508 (this check's shape); D509 — no timing-order problem blocks publishing, a red warning only,
+  a blank brief checked as the suggested brief and named so (narrows D502). His go-aheads: the demo week's in-times
+  corrected; the button and the previous-day wording as sketched. Late show checked for him: it only changes the
+  crew-rest ring and needs no change.
+- **Next — CODEX (D496):** `[RALLY-REVIEW-FIXES]`. Fast-forward `codex/rally-workspan` to this branch, make fixes A–F
+  with a red test each, the gates, a walk of the running app, a fresh Astra read; the two Discard leftovers on
+  `codex/discard-marks-remove`. Then Insights waits for his four answers, as before.
+- **OWED: Claude's FULL check after the reset (Monday 5 Oct 26, 19:00), before any "merge live"** — both builds, on the
+  fixed snapshots: the walk, the blind Opus-against-Sonnet walker trial on the frozen baseline (D480; this check did NOT
+  spend it — neither Sonnet reader was a walker), the second independent reads (Fable too), the working-guide reads of
+  `AGENTS.md` and `codex-review-workflow.md` (D70), and the unproven lines named in the brief.
+- **Parallel (D302):** rulings D508–D509 used here — Codex takes D510 on. No observation written.
+<!-- /now -->
+
 <!-- now:codex/rally-workspan -->
 ### `codex/rally-workspan` — pushed; owner requested Claude review handoff; independent Astra inspection PASS, not live — written 2 Oct 26 — verify before use
 - **Branch/entry, corrected 3 Oct26:** `codex/rally-workspan` is now checked out in the regular folder `C:/Users/User/projects/Raptor` for the owner's Claude review. Sequential review needs no new worktree; pick this branch, avoid `main`. The old Codex folder `C:/Users/User/.codex/worktrees/8c06/Raptor` is retained at the same saved snapshot with detached HEAD, freeing the branch so the regular-folder picker succeeds. Both checkouts were clean before the move; no files, history or ignored proof deleted. This supersedes earlier main-checkout location statements in other blocks, which are preserved. Fetch and verify refs before acting. Checked app commit `786d2b2c7e296e2785cdc9adb9e47cbc38f23f3d` is pushed; handoff changes documents only. Ready checked-app preview: https://raptor-j79v451d3-kai-e2f5.vercel.app (deployment6809084164). No PR on either Codex build or the planning branch at handoff.
