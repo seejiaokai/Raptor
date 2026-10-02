@@ -254,3 +254,17 @@ I did not reopen pictures, rerun tests, edit files, or approve my original audit
 Rulings: none added.
 
 Sol disposition: terminology corrected to tests, with no count change or rerun. Retain the evidence limits: first primary suite/build success are Sol-watched outputs; supplementary log and final JSON were read by Astra; all pictures were opened by Sol only. Insights runtime comparison proves the copy/visibility transition, not independent expected-hour arithmetic. No stronger FULL approval is claimed. D500–D502 are unchanged.
+
+## Astra — D503 and compact display, 2 Oct 26 (complete response)
+
+D503 short/full meaning check passes. Both record the immediately preceding day, maximum one day back, and removal of the routine interpretation line/manual day control. The full ruling and revised spec preserve D500–D502, other checks and unresolved stage choices; production implementation remains explicitly pending.
+
+The compact mock passed local Chromium checks at **736px/light** and **320px/dark**. I opened both pictures: exact legacy text retained, no interpretation line or day buttons, no clipping or horizontal overflow, and no JavaScript errors.
+
+One documentation qualification: the spec’s mock section still calls the older `rally-reporting.html` the current recommendation. Mark that as the earlier interaction prototype and link the new compact preview as the D503 display reference, so its explicit-day demonstration is not mistaken for the current design.
+
+Pictures saved in the thread visualization directory as `rally-day-automatic-astra-736.png` and `rally-day-automatic-astra-320.png`. No app build, tests or document edits; this verifies the display, not date-resolution implementation.
+
+Rulings: D503 verified; none added.
+
+Writer follow-through: retained the new source and both reviewer-opened pictures under `docs/img/rally-time-proposal/`; the spec now labels the older interaction prototype historical and links the D503 display reference. No production source change or new application-test claim.
