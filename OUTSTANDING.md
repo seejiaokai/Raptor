@@ -1592,7 +1592,7 @@ Claude's small check (Opus planned, Sonnet read, the host confirmed — an early
 `codex/rally-workspan`: a fresh demo week could not be published Mon–Thu (the new order check blocks on the suggested
 brief); the "+ In-time / Rally" button mints a flagged line; a previous-day time prints with no day; the typed-remarks
 list never gained Rally. **His answers, 3 Oct 26:** no timing problem blocks publishing — a red warning only, the blank
-brief checked as the suggested brief and named so (D509, narrowing D502); the demo week's in-times corrected (3 hours before take-off, D510); the button
+brief checked as the suggested brief and named so (D509, narrowing D502); the demo week's in-times corrected (3 hours before take-off, D510); the button fills in a time and words both set in Logic (D510, D511); the button
 and the previous-day wording as sketched to him. On `codex/discard-marks-remove`: one unused import and six old walk
 scripts that still look for the removed button. The finds and the exact fixes:
 `raptor-port/docs/superpowers/briefs/2026-10-03-codex-review-fixes.md`. **Place:** NOW, by Codex (D496), before Insights —
