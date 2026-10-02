@@ -35,7 +35,7 @@ the later merge keeps both (D78).
   fixed snapshots: the walk, the blind Opus-against-Sonnet walker trial on the frozen baseline (D480; this check did NOT
   spend it — neither Sonnet reader was a walker), the second independent reads (Fable too), the working-guide reads of
   `AGENTS.md` and `codex-review-workflow.md` (D70), and the unproven lines named in the brief.
-- **Parallel (D302):** rulings D508–D509 used here — Codex takes D510 on. No observation written.
+- **Parallel (D302):** rulings D508–D510 used here (D510: the button fills in take-off less the Logic report setting, 3 hours) — Codex takes D511 on. No observation written.
 <!-- /now -->
 
 <!-- now:codex/rally-workspan -->
