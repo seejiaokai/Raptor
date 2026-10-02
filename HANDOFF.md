@@ -15,6 +15,28 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:codex/discard-marks-remove -->
+### `codex/discard-marks-remove` — first Codex build; D496 temporary model arrangement — written 2 Oct 26 — verify before use
+- **D496:** Astra plans/coordinates, Sol 6.1 challenges plans and builds/fixes, a fresh Astra inspector reads Sol code.
+  Delegation is automatic in Codex only until Monday 5 Oct 26, 19:00; the visible chat remains on his selected Sol 6.1.
+  See `AGENTS.md` and `raptor-port/docs/codex-review-workflow.md`. This narrows the older D494 model/review mapping in
+  the planning block below; its no-main-until-Claude-review restriction remains.
+- **Built, not merged:** `[DISCARD-MARKS-REMOVE]` — button, command/count and new marks-cleared history writing removed;
+  draft marks persist until publication. Based on `claude/planning-filing-3-oct` at d9492f1e.
+- **Checks in progress:** focused regression tests and production build passed; full gate run underway under the shared
+  PC lock on port 4227. First runtime walk found harness gaps (old Close helper, phone sign-out route, covered panel);
+  the fixed walk adds visible panel publishing, mixed-day isolation, issued-copy reads and publication Undo/Redo.
+  Evidence: `raptor-port/docs/handpass/2026-10-02-discard-marks-remove.md`. No completed FULL approval is claimed yet.
+- **Independent reads:** Astra's scenario/temporary-workflow read found coverage gaps and one fresh-inspector wording
+  defect; the latter is fixed. Fresh final code read waits for the completed runtime evidence and gates.
+  **OWED: Claude's read after the reset** — this build, its scenario coverage and working-guide changes, before main.
+- **Next:** finish the first bug check and report plainly; then ask the owner the negative-work-hours product questions
+  (at most four, recommendation each), with Astra coordinating, in D495 order. No next feature is built without answers.
+- **Planning source:** transfer the reviewed D496 docs-only commit to `claude/planning-filing-3-oct` before starting the
+  next job, so new branches carry the temporary arrangement. Preserve its separate existing handoff blocks.
+- **Rulings:** D496 used here; take D497 onward. Claude skill observations remain Claude-only; nothing there was written.
+<!-- /now -->
+
 <!-- now:claude/planning-filing-3-oct -->
 ### `claude/planning-filing-3-oct` — UNTIL MONDAY'S RESET CODEX PLANS AND BUILDS (D494), in his order (D495); Claude reviews every Codex branch after the reset — this branch: documents only, pushed, no PR yet — written 2 Oct 26 — verify before use
 - **CODEX (D494, 2 Oct 26):** his Claude allowance is at 94%; he uses his ChatGPT allowance and its resets for heavy work.

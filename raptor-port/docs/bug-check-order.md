@@ -1,5 +1,11 @@
 # HOW THIS PROJECT BUG-CHECKS — the standing order
 
+**Temporary Codex mapping — D496 (2 Oct 26), until Monday 5 Oct 26 at 19:00:** Astra plans and designs scenarios;
+Sol 6.1 challenges Astra's plans and builds; a fresh independent Astra inspector reads Sol's final code.
+The temporary same-provider reads replace the model/count mapping only, preserve every applicable check below,
+and do not count as cross-provider approval. Claude's further reads are owed before main (D494).
+Exact roles and bounded review/fix loop: `codex-review-workflow.md`. Existing Claude skills remain unchanged.
+
 Adopted 21 Sep 26, after the OIL build. Merged from two independent proposals written by models
 that did not build the code: Fable 5.1 and Astra/Codex (D8). Both are kept verbatim beside this file
 (`superpowers/briefs/2026-09-21-bugcheck-method-fable.md`, `…-codex.md`) so the reasoning behind

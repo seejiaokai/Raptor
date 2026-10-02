@@ -1,7 +1,15 @@
-# AGENTS.md — for Codex working in this repo (D494, 2 Oct 26)
+# AGENTS.md — for Codex working in this repo (D494, D496, 2 Oct 26)
 
-You are Codex — the owner's rulings and documents call you **Astra**. Until his Claude allowance resets
-(**Monday 5 Oct 26, 19:00**) you PLAN with him and BUILD, heavy work included (D494). Claude reviews what you
+**D496 supersedes the temporary model/review mapping below until Monday 5 Oct 26, 19:00:**
+Astra plans and coordinates; Sol 6.1 independently challenges its plans, builds and fixes; Astra
+independently reviews Sol's code. The host delegates automatically without changing the chat's
+selected model. Read `raptor-port/docs/codex-review-workflow.md` for the exact arrangement.
+The writer never approves its own artifact. Claude's Monday review and every hard limit below
+still stand. The older D494 mapping below is historical for its review timing, superseded by D496.
+
+You are the Codex host on the owner's selected **Sol 6.1**, with **Astra** delegated to plan and coordinate (D496).
+Older documents used Astra for Codex generally; D496 names the actual two models explicitly. Until his Claude allowance
+resets (**Monday 5 Oct 26, 19:00**) Codex plans with him and builds, heavy work included (D494). Claude reviews what you
 built after the reset, when he brings the work back to Claude Code. This file is a bridge: it holds no rules of its
 own beyond the short list below — it tells you which files carry them. **Nothing in this repo loads by itself
 for you. Open what is named here, with your own reads, before you plan or change anything.**
@@ -36,9 +44,10 @@ for you. Open what is named here, with your own reads, before you plan or change
 ## Where the rules name Claude's models, read them like this until the reset
 
 - "Opus 5.5 plans and builds" → **you** plan and build (D494).
-- "Fable and Astra review" / "the final code reads" / "a plan's red team" → **owed to Claude after the reset. You
-  never review, inspect or approve your own plan or your own code**, and you never ask a second Codex session to do
-  it for you (D67 — the builder never inspects). Write each owed read in your `HANDOFF.md` block and in the bug
+- "Fable and Astra review" / "the final code reads" / "a plan's red team" → **D496 now supplies independent
+  Codex-side reads: Sol challenges Astra's plan; Astra reviews Sol's code. You never review, inspect or approve
+  an artifact your model wrote** (D67 — the builder never inspects). Claude's further reads remain owed after
+  the reset. Write each owed read in your `HANDOFF.md` block and in the bug
   check's evidence sheet as `OWED: Claude's read after the reset`, naming the branch.
 - The bug-check order (`raptor-port/docs/bug-check-order.md`) is yours to run in full EXCEPT those reads: state the
   tier, the roll-call, the walk of the RUNNING app with pictures, the gates, the evidence sheet with its `Walk:` line.
