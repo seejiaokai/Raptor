@@ -16,25 +16,16 @@ the later merge keeps both (D78).
 ## Now
 
 <!-- now:codex/discard-marks-remove -->
-### `codex/discard-marks-remove` — first Codex build; D496 temporary model arrangement — written 2 Oct 26 — verify before use
-- **D496:** Astra plans/coordinates, Sol 6.1 challenges plans and builds/fixes, a fresh Astra inspector reads Sol code.
-  Delegation is automatic in Codex only until Monday 5 Oct 26, 19:00; the visible chat remains on his selected Sol 6.1.
-  See `AGENTS.md` and `raptor-port/docs/codex-review-workflow.md`. This narrows the older D494 model/review mapping in
-  the planning block below; its no-main-until-Claude-review restriction remains.
-- **Built, not merged:** `[DISCARD-MARKS-REMOVE]` — button, command/count and new marks-cleared history writing removed;
-  draft marks persist until publication. Based on `claude/planning-filing-3-oct` at d9492f1e.
-- **Checks in progress:** focused regression tests and production build passed; full gate run underway under the shared
-  PC lock on port 4227. First runtime walk found harness gaps (old Close helper, phone sign-out route, covered panel);
-  the fixed walk adds visible panel publishing, mixed-day isolation, issued-copy reads and publication Undo/Redo.
-  Evidence: `raptor-port/docs/handpass/2026-10-02-discard-marks-remove.md`. No completed FULL approval is claimed yet.
-- **Independent reads:** Astra's scenario/temporary-workflow read found coverage gaps and one fresh-inspector wording
-  defect; the latter is fixed. Fresh final code read waits for the completed runtime evidence and gates.
-  **OWED: Claude's read after the reset** — this build, its scenario coverage and working-guide changes, before main.
-- **Next:** finish the first bug check and report plainly; then ask the owner the negative-work-hours product questions
-  (at most four, recommendation each), with Astra coordinating, in D495 order. No next feature is built without answers.
-- **Planning source:** transfer the reviewed D496 docs-only commit to `claude/planning-filing-3-oct` before starting the
-  next job, so new branches carry the temporary arrangement. Preserve its separate existing handoff blocks.
-- **Rulings:** D496 used here; take D497 onward. Claude skill observations remain Claude-only; nothing there was written.
+### `codex/discard-marks-remove` — first Codex build complete; D496 roles — written 2 Oct 26 — verify before use
+- **Built, checked, not merged:** [DISCARD-MARKS-REMOVE] — button, command/count, permission registration and future marks-cleared history writer removed. Draft marks stay until first publication; normal AL publication, sign-offs, Undo/Redo and saved data retained. App base d9492f1e; build commit 91b9dff1. No CSS, demo seed, schema or grants changed.
+- **FULL checks watched under the PC lock:** unit 7560 (474 files); build PASS; tfin 728/0; browser 517 passed + one passed on retry, 49 skipped; Tracker 445/0; rulecheck/docsize OK; perf 4/0 (week 5134, board 1024). Retry is the already-filed LW-WINDOW-PRUNE-FLAKE-2; no Leave War code changed.
+- **Runtime:** desktop 18/18, phone 17/17, short 18/18, plus visible history three checks per width; zero browser errors. 44 final pictures, all inspected by host; saved results distinguish earlier harness failures from final proof. Mixed-day isolation, publication Undo/Redo, visible panel AL issuance, four renewed signatures, issued-copy visibility and reload checked. Phone week switching/physical-device testing not driven.
+- **Fresh independent Astra final read PASS:** all 13 changed source/test files and walker; relevant full-resolution pictures, results and raw gates read. No app defect or blocking evidence gap. Host fingerprint matches inspected snapshot; no source/harness changes after read. Evidence and complete response on the build branch: `raptor-port/docs/handpass/2026-10-02-discard-marks-remove.md`, `…-review.md`; immutable brief under `docs/superpowers/briefs/`.
+- **D496:** Astra plans/coordinates; Sol 6.1 challenges plans and builds/fixes; separate fresh Astra inspector reviews Sol code. Automatic Codex delegation until Monday 5 Oct 26, 19:00, visible chat stays Sol. Reviewed temporary arrangement is already committed/pushed to `claude/planning-filing-3-oct`; Claude skills/hooks untouched.
+- **OWED: Claude's read after the reset** — this branch's code, scenario coverage and working-guide changes, before main. Owner look is pending. No PR, main push or merge authorized.
+- **Filed:** PHONE-DISCARD-MARKS moved unchanged by archive script in a separate docs-only commit. DISCARD-MARKS-REMOVE stays live in the backlog awaiting the owed reads/owner look/merge.
+- **Next, D495:** WORKSPAN-NEGATIVE planning. Two questions sent, answers pending: use the flight's normal Logic reporting time when take-off precedes wave in-time (recommended yes); advisory for in-time later than take-off without blocking publish (recommended yes). Do not assume answers or build the next feature. Astra writes the design from answers; Sol challenges it. Sonnet walker trial still waits for Claude Monday.
+- **Rulings:** D496 recorded; next D497. Planning/filing continues on `claude/planning-filing-3-oct`; new builds branch from it. Preserve other chats' blocks. No Claude-only observation log written.
 <!-- /now -->
 
 <!-- now:claude/planning-filing-3-oct -->
@@ -127,12 +118,7 @@ the later merge keeps both (D78).
 
 ## Gate baseline
 
-The latest counts watched — 1 Oct 26, `claude/insights-which-copy` (`[INSIGHTS-WHICH-COPY]` with the fix of its final read; merged
-the same day, PR #479), under the PC lock: unit **7560 / 7560** (474 files) · build clean · tfin **728 / 0** · e2e **518 passed,
-0 failed**, 49 skipped · smoke **445 / 0** · rulecheck OK (notes `AM39d` now covered — older, left) · docsize OK (OVER, deferred
-— D29) · perf not run on this branch (last watched on `claude/warn-hide-kept`: **4 / 0**, board DOM 1024 ≤ 1150, week 5134 ≤ 5450). Restate a count only from a run you watched, and REPLACE the previous counts — never stack a
-history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC:
-`raptor-port/docs/gates-and-deploy.md`.
+The latest counts watched — 2 Oct 26, `codex/discard-marks-remove` ([DISCARD-MARKS-REMOVE]), under the PC lock: unit **7560 / 7560** (474 files) · build clean · tfin **728 / 0** · e2e **517 passed + one passed on retry, 0 final failures**, 49 skipped · smoke **445 / 0** · rulecheck OK (existing AM39d baseline note unchanged) · docsize OK · perf **4 / 0**, board DOM 1024 ≤ 1150, week 5134 ≤ 5450. The retry is the already-filed LW-WINDOW-PRUNE-FLAKE-2 (five-second December idle-prune poll); no Leave War source/test/CSS changed. Restate a count only from a run you watched, and REPLACE the previous counts — never stack a history. How to run them: `raptor-port/CLAUDE.md` §Build & verify; how they mislead, and the checks on his PC: `raptor-port/docs/gates-and-deploy.md`.
 
 ## Standing constraints
 

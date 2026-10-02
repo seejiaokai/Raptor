@@ -119,13 +119,13 @@ The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26
 [ALLAVAIL-OPEN-ROW] (investigate first).
 Insights — [INSIGHTS-WORKING-COPY] (a question for him, any time — the changes window it could have gone with merged 28 Sep 26).
 The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
-phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
+phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Codex build), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
-**His word, D488 (2 Oct 26):** [DISCARD-MARKS-REMOVE] — small; after the reset (D484), in a batch with other small Edit Schedule fixes (D485).
+**His word, D488; order narrowed by D495 (2 Oct 26):** [DISCARD-MARKS-REMOVE] — BUILT on `codex/discard-marks-remove`; FULL checks and independent Astra inspection passed. Claude's Monday further reads and owner look remain owed before main.
 
 **From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION]. **D493 (2 Oct 26):** the tidiness read is answered — three tidy-ups approved, each with its area's batch: [LW-ROWS-SPLIT] (the next Leave War batch), [CSS-SPLIT-BY-SCREEN] (first step of the workflow UI pass), [TRK-FILE-TRANSFER-SPLIT] (the Tracker batch); two not now (in [CODE-TIDY-AUDIT]).
 
-**The feature batches — HIS ORDER, D495 (2 Oct 26); Codex plans and builds until the reset, Claude reviews after it (D494):** [DISCARD-MARKS-REMOVE] (the small first job) → [WORKSPAN-NEGATIVE] → Insights (with [INSIGHTS-BOARD-DOOR]) → the workflow UI pass ([CSS-SPLIT-BY-SCREEN] first) → Inputs → the Tracker (with [TRK-FILE-TRANSFER-SPLIT]) → caps and ops limits → one whole-app check — the list: [FEATURE-WISHLIST].
+**The feature batches — HIS ORDER, D495 (2 Oct 26); Astra plans/reviews, Sol 6.1 builds in Codex until the reset (D496), Claude reviews after it (D494):** [DISCARD-MARKS-REMOVE] (the small first job) → [WORKSPAN-NEGATIVE] → Insights (with [INSIGHTS-BOARD-DOOR]) → the workflow UI pass ([CSS-SPLIT-BY-SCREEN] first) → Inputs → the Tracker (with [TRK-FILE-TRANSFER-SPLIT]) → caps and ops limits → one whole-app check — the list: [FEATURE-WISHLIST].
 
 **Waiting on him — no order exists:**
 [LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
@@ -1238,14 +1238,6 @@ deferral; then the restore checks a person's add / archive / restore needs (the 
 used). A Delete stays dead (D287). FULL tier. **Place:** after the change-recording re-test; beside `[DB-READINESS]` if not
 sooner — his call.
 
-### [PHONE-DISCARD-MARKS] A phone has no door to "Discard marks" (found 28 Sep 26)
-**MOOT once `[DISCARD-MARKS-REMOVE]` is built (D488, 2 Oct 26): the button is being removed — and it never discarded a published
-day's pending changes, as the note below believed; it clears only the marks of days not yet published. Archive this with that build.**
-Found by the change-recording re-test's walker A1 (O4, `raptor-port/docs/handpass/parts/2026-09-28-cr-a1.md`): the
-Amendments panel that carries "Discard marks" is hidden under 820px, so on a phone a published day's pending changes can
-be discarded by no control (desktop only). **To do:** give the phone a way in (the day's pending list, or the ⓘ day
-panel) — a mock-up first if it adds a control. LOOK / WALK tier. **Place:** low; any time, none blocking.
-
 ### [PHONE-WIDE-BOARD-BLANK] On a phone, the board's Desktop layout shows nothing below the sign-off (found 29 Sep 26)
 Found by the change-recording re-test's picture check (`raptor-port/docs/handpass/2026-09-28-change-recording.md` §4), and
 the same on `main` (measured on the live bundle): at 390×844, the board → ⋯ (on `main` the bar's own switch) → Desktop
@@ -1495,6 +1487,7 @@ that the window is topmost at its centre over the board at both widths. **Place:
 first; after `[WORKSPAN-NEGATIVE]`. Full row: `.claude/decisions-full/scheduler.md` D481.
 
 ### [DISCARD-MARKS-REMOVE] Remove the "Discard marks" button from the Amendments box (D488, 2 Oct 26)
+**BUILT 2 Oct 26, not merged:** `codex/discard-marks-remove`; Sol 6.1 built, fresh Astra final inspection PASS, FULL gates/runtime passed (one already-filed browser retry disclosed). Evidence and complete inspection response are on that branch in `raptor-port/docs/handpass/2026-10-02-discard-marks-remove.md` and `…-review.md`. Claude's further code/scenario/working-guide reads after Monday 5 Oct 26, 19:00, and owner look remain owed before main. The phone item is archived as moot. The original build recipe below is retained for review.
 His ruling: remove it. It clears only the change marks of days not yet published (the edits stay), a first publish clears them
 anyway, and its name misleads. **To build:** take the button out of the Amendments box (`ui/ALPanel.tsx`), with its command, its
 count and its "Draft marks cleared (N)" history line (`state/sched-commit.ts commitDiscardPending`, `engine/publish.ts
@@ -1505,7 +1498,7 @@ files name it), and the old walk scripts under `scripts/handpass/` that press it
 there), a week with only draft days, a week with a published day carrying pending changes, the change history. LOOK / WALK tier
 by the order's questions — it removes a door and a command that writes the saved marks, so answer them honestly at build time.
 `[PHONE-DISCARD-MARKS]` is archived with it. **Not ruled, his to raise:** a button that puts a published day back to its last
-published version. **Place — D488: after the reset (D484), batched with other small Edit Schedule fixes (D485).**
+published version. **Original place — D488:** after the reset (D484), batched with other small Edit Schedule fixes (D485). **Narrowed by D494/D495:** the small first Codex job, now built; review/merge still pending as above.
 
 ### [FEATURE-WISHLIST] Features he means to add — his list, not yet ruled or designed (2 Oct 26)
 His words, 2 Oct 26, asking where new features fit in the order of work: *"1. Format of how the inputs are displayed to calendar
@@ -1523,7 +1516,7 @@ with pictures first; where it moves a screen's controls, that screen's feature b
 `[INSIGHTS-BOARD-DOOR]`; (3) the workflow UI pass — item 5, `[CSS-SPLIT-BY-SCREEN]` its first step (D493); (4) Inputs — item 1,
 with `[INP-TILL-STALE]`; (5) the Tracker — item 4, with `[TRK-FILE-TRANSFER-SPLIT]` and its small finds; (6) the rules —
 item 2, caps and ops limits, FULL tier; (7) one whole-app check. **Who builds — D494:** until the reset (Monday 5 Oct 26,
-19:00) Codex plans and builds, started by one small job to prove it (`[DISCARD-MARKS-REMOVE]`); Claude reviews each branch
+19:00) Codex plans and builds, started by one small job to prove it (`[DISCARD-MARKS-REMOVE]`); **D496:** Astra plans/coordinates and independently reviews Sol 6.1's builds; Sol challenges Astra plans. Claude reviews each branch
 after the reset, before any "merge live". Each feature's questions are still to be asked — none is designed. His bugs: later.
 
 ### [SKILL-FUSION] Fuse the harder questioning into the planning step — and three proposals from the same read (D486, 2 Oct 26)
@@ -1600,10 +1593,10 @@ The cause: `engine/validate.ts workSpan` takes the wave's in-time as the report 
 landing, so the day's end falls before its start. Older than that build (the function is untouched; the same on `main`);
 it would happen again to new data, so it is real. It is the one measure the long-work-day warning shares, so the fix is a
 warning-rule change (FULL tier) — decide there what a report later than the take-off means (ignore the in-time for that
-line? flag it?). Pictures: `raptor-port/docs/img/handpass/2026-10-01-insights/host/`. **AFTER THE RESET of his weekly allowance, Monday 5 Oct 26, 19:00 (D484).** **Place — D483 (1 Oct 26, "U can fix the older
+line? flag it?). Pictures: `raptor-port/docs/img/handpass/2026-10-01-insights/host/`. **D494/D495 now make this the next Codex planning/build job; D496 supplies Astra planning/review and Sol 6.1 building. The original D484 after-reset timing is narrowed. Product choices are pending: fallback report time and advisory behaviour.** **Place — D483 (1 Oct 26, "U can fix the older
 fault in the next chat"): NEXT, in the next chat, on its own branch, with a FULL check (it changes the measure the
 long-work-day warning shares). The second Sonnet-walker trial (D480) rides on its walk — freeze the build BEFORE the fix for
-the two trial walkers.**
+the two trial walkers. The second Sonnet trial itself still waits for Claude's first walk after Monday's reset (AGENTS); do not invoke Claude in the meantime.**
 
 ### [PRIORITY-LIST-REWRITE] The backlog's priority list still tells finished stories — a rewrite, read by a reviewer (filed 2 Oct 26)
 Left by `[DOCS-SIZE-PASS]`: the list at the head of this file (about 90 lines) carries the merge stories of work long
