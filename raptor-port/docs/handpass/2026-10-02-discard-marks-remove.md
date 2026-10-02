@@ -83,7 +83,7 @@ Fixture: fresh isolated browser worlds from the existing seeded week; Monday is 
 
 Before-picture reference (historical, not a fresh base run): ../img/handpass/2026-09-24-amendment/rollcall/desktop/r10-alpanel.png, opened, shows the former button. Current matching panel pictures are final/desktop/desktop-draft-panel.png and desktop-amendment-panel.png.
 
-PHONE-DISCARD-MARKS is moot under D488: no desktop clearing door remains to mirror onto the phone. Its historical backlog item will be moved unchanged by the archive script in a separate docs-only filing commit.
+PHONE-DISCARD-MARKS is moot under D488: no desktop clearing door remains to mirror onto the phone. Its historical backlog item was moved unchanged by the archive script in a separate docs-only filing commit.
 
 Not changed: old handpass scripts/pictures are historical evidence and retain their original Discard marks steps.
 No IT guide reference to this button was found in its text; its pictures were not re-shot (D403).
@@ -104,5 +104,5 @@ Owner look: pending; this sheet is evidence for later review, never permission t
 Walk: 44 final pictures · 5 surfaces · 8 order groups · MISSING: harness/coverage gaps fixed; phone week-switch limitation stated; Claude reads and owner look owed.
 Rulings: D496 — temporary Codex planning/building/review roles; implementing D488 in D495 order.
 
-Docs: OUTSTANDING 100 items (+4 −0) · DECISIONS D1–D496 (new: D491, D492, D493, D494, D495, D496) · homes OK
+Docs: OUTSTANDING 99 items (+4 −1, −1 all in ARCHIVE) · DECISIONS D1–D496 (new: D491, D492, D493, D494, D495, D496) · homes OK
 docsize: OK
