@@ -122,3 +122,19 @@ I am not approving my own copied scope paragraph. I did not rerun or observe the
 No edits. Rulings: none added by this agent.
 
 Host disposition: preserved the existing production callsign reader and accepted free text; no source/test edits. The mock remains an explicitly limited whole-wave demonstration, not proof of flight-specific parsing. Existing focused in-time suite 18/18 passed. Future Rally dual-stage calculations and enforcement still require product choices and an independently challenged implementation plan.
+## D501–D502 answers — complete independent Astra read
+
+**D138 meaning read: passes.** D501/D502’s short/full pairs and D497/D498’s narrowed status preserve the owner’s answers:
+
+- One operative clock per line is approved; legacy free text remains, with no mandatory separator.
+- Editing feedback, saveable drafts and publication blocking are approved.
+- Specific-over-wide precedence remains unchanged and unresolved for the proposed dual-stage calculation.
+- Broader overnight inference remains unanswered.
+
+**Sol’s clarification: no material findings.** It explicitly exposes whole-line callsign matching, including names in remarks, and does not promise semantic understanding or ignore those matches. Existing overnight recognition is described as separately bounded for report and brief. No equality, blank-B or implementation approval is inferred.
+
+I did not approve my own earlier proposals or rerun tests. The prior 18-test result is correctly labelled historical evidence.
+
+No edits. Rulings: none added by this agent.
+
+Host disposition: two accepted product directions recorded, older tentative statuses narrowed in the same change, and existing recognition preserved. The one overnight question remains pending; no time elapsed is taken as an answer. No Rally app build started or mock parser represented as application behaviour. The publication block concerns the agreed incorrect timing order, not a blanket block for every existing advisory. Equal take-off/landing retains D49 pending no new contrary ruling.
