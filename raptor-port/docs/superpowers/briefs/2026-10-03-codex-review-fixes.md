@@ -61,17 +61,22 @@ and this file). Each fix: a test that is RED first, then the fix; `src/engine/` 
 stage's name is `suggested brief` ("VL: in-time 12:00 is later than suggested brief 10:20."). Pin both wordings.
 
 **C. The demo week raises none of these.** Correct the in-time lines of the 13 week-1 and 5 week-2 seed formations
-(`src/engine/data.ts` / `week2.ts`, wherever the seed lines live) so each in-time is at or before its formation's
-suggested brief; keep each line's words, change only its clock. `reference/` stays read-only. The parity tests
+(`src/engine/data.ts` / `week2.ts`, wherever the seed lines live) so each in-time is 3 HOURS before its formation's
+take-off (D510 — the same lead as the Logic default below); keep each line's words, change only its clock. `reference/` stays read-only. The parity tests
 already feed identical reporting fixtures to both engines — extend that, do not loosen a comparison. If parity
 cannot be kept without weakening an assertion, STOP and report; do not force it. Then a test: a fresh seed of both
 weeks raises zero `REPORT_ORDER`. The test-only helper `src/testing/reporting-fixture.ts` should then be unneeded
 for seed days — remove its use where it is, and say where it is not.
 
-**D. The button starts at the brief.** `interactions.ts` (the "+ In-time / Rally" mint): when the wave has no
-resolved report, mint the EARLIEST `flightBrief(f,to)` of its uncancelled formations (imported from
-`reporting.ts`), not the earliest take-off. Pin: a wave with one formation, take-off 12:00, blank brief → the line
-reads `09:40H: IN TIME + WX/NOTAMS` and raises no warning.
+**D. The button fills in a time set in Logic (D510 — replaces "starts at the brief").** `interactions.ts` (the
+"+ In-time / Rally" mint): when the wave has no resolved report, mint the EARLIEST take-off of its uncancelled
+formations LESS `VCONF.reportLead` — the existing Logic setting "Nominal report before T/O", 180 minutes by
+default. Add NO second setting. A result below 00:00 is the previous evening's clock (D503 reads it back as the
+previous day). Retitle the setting in `RULE_SPEC` so the Logic page says what it now also does, e.g. "Nominal
+report before T/O (also the time the + In-time / Rally button fills in)" — keep its key, range and default. Pin:
+one formation, take-off 12:00 → the line reads `09:00H: IN TIME + WX/NOTAMS` and raises no warning; with the
+setting changed to 120 → `10:00H`, and the order warning then names the suggested brief 09:40. Walk it in the
+running app: change the setting on the Logic page, press the button, read the line.
 
 **E. A previous-day time says so.** One shared helper (reporting.ts already has `stated()`): a value below 0
 prints its clock with " (previous day)". Use it in: the crew-rest message's "told to report" and "his day starts"
