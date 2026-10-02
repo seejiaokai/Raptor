@@ -282,3 +282,20 @@ No browser errors. Isolated memory-backed context closed; host server left runni
 Rulings: none added.
 
 Host disposition: Sol independently opened the full-resolution picture; the original concept’s below-take-off placement was misleading and is now qualified in the spec. Proposed rename stays in the actual existing above-rows position. Owned preview server stopped. No product ruling inferred from the owner’s question or new application check claimed.
+
+## Astra — D504 meaning and final question round, 2 Oct 26 (complete response)
+
+D504 short/full and spec meaning check passes. They preserve the owner’s visual approval and formation/wave-only scope, without adding personal targeting or promising semantic understanding of remarks. Earlier personal commitments remain separate, and remaining activity rules are not falsely marked approved.
+
+D498 now correctly records D503’s settled overnight rule. No blocking finding.
+
+The three proposed questions remain appropriate. Use the concrete duplicate-time example, and qualify rally-equals-brief acceptance as preserving existing brief and exception checks.
+
+No edits or tests. Rulings: D504 verified; none added.
+
+Owner question round prepared by Astra, independently challenged by Sol; no answers inferred:
+1. Whole-wave 08:00 IN TIME plus VL 08:30 RALLY: should VL still report 08:00? Recommend yes; formation overrides resolve separately by activity.
+2. Same formation/activity has 08:00 and 09:00 lines: which counts? Recommend earlier resolved time regardless of line order, following D498; current last-specific behaviour would change.
+3. Can RALLY and flight brief have the same time? Recommend yes; no invented rally-to-brief minimum gap, retaining existing brief lead and exception checks. In-time/rally immediacy is already settled and is not re-asked.
+
+Preservation choices, not new questions: no-report fallback remains step; blank brief and standalone exceptions retain existing meanings; no individual-person target/parser, no explicit day controls, no mandatory separator. The negative-hours job remains next and must not wait unnecessarily on a larger unresolved design.

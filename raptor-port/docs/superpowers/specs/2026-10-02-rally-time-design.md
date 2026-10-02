@@ -1,6 +1,6 @@
-# Rally time — D497–D503 design discussion, 2 Oct 26
+# Rally time — D497–D504 design discussion, 2 Oct 26
 
-Status: planning and interactive mock-up only. No app build or final whole-feature design approval. D503 settles the proposed reporting-day behaviour; its runtime change remains unbuilt. Planning branch: `claude/planning-filing-3-oct`. The completed Discard marks build is unchanged.
+Status: planning and interactive mock-up only. No app build yet; D504 approves the shown in-place label/layout and formation-only scope. Final activity-specific scope choices and independent plan challenge precede the build. D503 settles the proposed reporting-day behaviour; its runtime change remains unbuilt. Planning branch: `claude/planning-filing-3-oct`. The completed Discard marks build is unchanged.
 
 ## Owner's direction
 
@@ -11,6 +11,7 @@ Status: planning and interactive mock-up only. No app build or final whole-featu
 **D495:** WORKSPAN-NEGATIVE remains the next batch. Assess this related proposal alongside it; do not silently replace the fix or make it wait for an unresolved large feature. The former fallback/advisory questions are superseded as QUESTIONS by this discussion, not answered or approved. Production flying events currently supply `report = intime ?? step`; substituting the configured normal report lead is not preservation of that current fallback.
 
 
+**D504:** the actual-app label preview is approved, keeping reporting lines in their existing above-flight-rows position. Instructions target formations only; without an own-wave formation name, they cover the whole wave. Do not add individual-person targeting, parse personal names into attendance, or add a person picker/schema. Remarks remain free text. A word matching a real formation callsign retains its existing formation meaning; this is not general role interpretation. Earlier independently scheduled qualifying personal commitments remain governed by their existing calculation rules and do not target an in-time/rally line.
 ## Formation recognition confirmed — D500
 
 Keep the existing recognition of formation callsigns within their own wave, including free text such as `10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS`: this applies to VL. Matching remains bounded and case-insensitive. A line naming no formation in that wave supplies the wave-wide fallback; formations with their own specific instruction retain it. Specific instructions currently override the wide fallback regardless of line order.
@@ -31,7 +32,7 @@ Verification: read the current production reader and its existing coverage, then
 
 **Answer 4 is now settled by D503.** Automatically interpret a reporting clock later than the applicable take-off clock as the immediately preceding day, never two or more days back. Remove the proposed routine reporting/day interpretation line and Change day controls. This broadens the current report-lead-bounded overnight heuristic; implementation and real-app checks remain pending. Resolve each instruction against its applicable formation before comparing instants. Earlier reporting clocks keep their flight-day meaning; equality and missing-stage choices remain unchanged. Do not extend this reporting decision to typed-brief date rules or bypass actual stage, hours, rest or other checks.
 
-No app build or new runtime tests in this answer-filing turn. Existing reader verification from D500 remains historical evidence, not a new run. Remaining build choices: dual-stage instruction precedence within resolved formation scope, missing/equal-stage behaviour and incidental formation names in remarks. D503 settles reporting-day interpretation. Owner's general “yes” to framework D499 does not approve those product choices.
+No app build or new runtime tests in this answer-filing turn. Existing reader verification from D500 remains historical evidence, not a new run. Remaining build choices: dual-stage instruction precedence within resolved formation scope and missing/equal-stage behaviour. D504 rules out individual-person targeting; existing formation-token recognition stays. D503 settles reporting-day interpretation. Owner's general “yes” to framework D499 does not approve those product choices.
 ## Proposed smallest UI
 
 Keep the compact existing lines and add button; rename their heading/button to In-time / Rally. D503: omit the extra reporting/day interpretation line and Change day controls; show affected formations only when needed in D502 timing-conflict feedback. One operative clock per line; an activity label supports chronology. Remarks follow `|` in the mock-up and do not supply another reporting clock or attendance selection. An editor can provide this separator automatically rather than require manual punctuation; that choice is unapproved.
@@ -84,4 +85,4 @@ Prototype limitations: its publish block illustrates the direction now approved 
 
 Next round, after those answers: omitted labelled stages, no-report fallback and negative-hours behaviour, equal preflight timestamps under existing minimum brief rules, dual-stage instruction precedence and SC/late-show exceptions. Do not ask equal take-off/landing again: D49 already governs it.
 
-OWED: Claude's independent plan read after Monday 5 Oct 26, 19:00. Owner design choices and visual approval remain pending. No app build or merge authorized by this design discussion.
+OWED: Claude's independent plan read after Monday 5 Oct 26, 19:00. The D504 visual approval is recorded; remaining product choices and independent plan challenge precede the build. No app build or merge authorized by this design discussion.
