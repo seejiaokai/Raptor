@@ -137,8 +137,12 @@ const FILES = [
      [AMEND-SMALL-SEEN], [DEPLOY-DOCS]). The other 94 are live work — 19 more than at the last tidy, most of them small
      finds filed by the walks of [DB-READINESS] and the checks since — so what crossed the line belongs here (D141).
      Set about 60 lines above what the file holds. NOT done here, and owed: the priority list at the head of the file
-     still tells finished stories — rewriting it is a reword, which needs a reader's check (D138): [PRIORITY-LIST-REWRITE]. */
-  ['OUTSTANDING.md',                     1, 1650],
+     still tells finished stories — rewriting it is a reword, which needs a reader's check (D138): [PRIORITY-LIST-REWRITE].
+     1650 -> 1750, 2 Oct 26 (the planning and filing chat, D484, D490): the file crossed the line by ONE line when the
+     three tidy-ups he approved (D493) were filed as their own items; nothing here is finished ([DOCS-SIZE-PASS] read
+     every item the same day). He is giving his features and bugs to be FILED until the reset, so what crosses belongs
+     here (D141) — set with room for those items. */
+  ['OUTSTANDING.md',                     1, 1750],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only

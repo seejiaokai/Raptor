@@ -123,7 +123,7 @@ phone — [PHONE-DISCARD-MARKS] (low, from the change-recording walk), [PHONE-WI
 
 **His word, D488 (2 Oct 26):** [DISCARD-MARKS-REMOVE] — small; after the reset (D484), in a batch with other small Edit Schedule fixes (D485).
 
-**From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION].
+**From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION]. **D493 (2 Oct 26):** the tidiness read is answered — three tidy-ups approved, each with its area's batch: [LW-ROWS-SPLIT] (the next Leave War batch), [CSS-SPLIT-BY-SCREEN] (first step of the workflow UI pass), [TRK-FILE-TRANSFER-SPLIT] (the Tracker batch); two not now (in [CODE-TIDY-AUDIT]).
 
 **Waiting on him — no order exists:**
 [FEATURE-WISHLIST] (his list of features to come, 2 Oct 26 — features first by area, D490; the order of the batches he gives on 3 Oct 26),
@@ -1557,6 +1557,34 @@ reads yes, on the walkers (the biggest cost) no. **Context:** `raptor-port/docs/
 §2. **Place — D486: before `[DB-STEP]`; Astra's read is light work and may run before the reset (D484).** **D491 (3 Oct 26):
 it runs BEFORE the reset, and its brief gains the deletion test — report a restructure only if removing the piece gathers the
 complexity in one place, not merely moves it (the spec's §8).**
+**RUN, REPORTED AND ANSWERED — D493 (2 Oct 26, "as recommended"):** Astra's report is
+`raptor-port/docs/superpowers/briefs/2026-10-03-code-tidy-audit-astra.md` (five separations, none a fault). Three approved, each
+its own item — `[LW-ROWS-SPLIT]`, `[CSS-SPLIT-BY-SCREEN]`, `[TRK-FILE-TRANSFER-SPLIT]`. **Left open here, two:** the Leave War's
+saved-data reading (the report's §4) is looked at again at `[DB-STEP]`, which replaces it; the Leave War's link to the schedule
+(§5) is not split unless a later feature has to work heavily inside it — put it to him then.
+
+### [LW-ROWS-SPLIT] The Leave War's row drawing moves out of its grid file — APPROVED D493 (2 Oct 26), to build with the next Leave War batch
+From Astra's tidiness read (its §1 — read it before building: what must stay identical, the tests that pin it, the test to
+write FIRST). `PersonRow`, `PersonMonth`, their props and row-only predicates leave `src/leavewar/ui/Matrix.tsx` (about 4,700
+lines) for a new `MatrixRows.tsx`; the grid file keeps its state, geometry, selection and sheets. Nothing on screen changes.
+New file → `docs/file-map.md` in the same change. Tier by the order's questions at build time (Astra says FULL: permissions
+and the OIL display are drawn there). **Place — D493, D485: with the next Leave War feature batch, never alone.**
+
+### [CSS-SPLIT-BY-SCREEN] The scheduler's stylesheet split by screen — APPROVED D493 (2 Oct 26), the first step of the workflow UI pass
+From Astra's tidiness read (its §2 — read it before building). `src/ui/scheduler.css` (about 6,700 lines) becomes an ordered
+list of per-screen parts, every rule body moved unchanged and the overall order kept. Before any rule moves: a test that
+every part loads once and in order, and a recorded measurement of the key computed styles, admin and member, at phone, laptop
+and desktop widths — compared again after. No selector clean-up in the same change; no button changes size (D487). New files
+→ `docs/file-map.md`; `docs/performance.md` Part 1's checklist applies. **Place — D493: the first step of the workflow UI
+pass (`[FEATURE-WISHLIST]` item 5), before that pass moves anything.**
+
+### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
+From Astra's tidiness read (its §3 — read it before building). The export / import workflow (about 730 lines) leaves
+`src/tracker/app/core.js` for one module beside `fileFormat.js` and `fileStore.js`; the menus keep calling what they call now.
+**Astra's stop condition, kept:** if it cannot use the store and the format through a small explicit interface — no
+catch-all "core context" — stop and report, do not force it. First the boundary test Astra names (export, fresh store,
+import, compare every record and id; cancel; a conflicting syllabus; no partial write on a refusal). FULL tier — saved data.
+**Place — D493, D485: with the Tracker batch (`[FEATURE-WISHLIST]` item 4).**
 
 ### [WORKSPAN-NEGATIVE] A line timed earlier than its wave's in-time gives a negative work-hours figure (found 1 Oct 26)
 Found by the Opus walker of `[INSIGHTS-WHICH-COPY]`, off its list; reproduced by the host. Nothing published; on Monday's

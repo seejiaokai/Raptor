@@ -111,6 +111,14 @@ sounds:
   only on files that keep being changed — which is why the audit ranks by change count.
 - **The cheap, lasting half is the guard in §3**, not the audit.
 
+**The audit ran, and his answers — D493 (2 Oct 26, "as recommended").** Astra's report:
+`raptor-port/docs/superpowers/briefs/2026-10-03-code-tidy-audit-astra.md` — five separations, none a fault. **Approved, each
+built with its area's feature batch (D485, D490):** (1) the Leave War's row drawing out of its grid file — `[LW-ROWS-SPLIT]`;
+(2) the scheduler's stylesheet split by screen, as the FIRST step of the workflow UI pass — `[CSS-SPLIT-BY-SCREEN]`; (3) the
+Tracker's file save and load out of its main file, stopping if it cannot be lifted cleanly — `[TRK-FILE-TRANSFER-SPLIT]`.
+**Not now:** (4) the Leave War's saved-data reading — looked at again at `[DB-STEP]`, which replaces it; (5) the Leave War's
+link to the schedule — not split unless a later feature has to work heavily inside it (a new question for him then).
+
 ## 3. PROPOSAL — the same rubric as a standing guard on every change (not yet ruled)
 
 The source is built for this, and it costs almost nothing: the final code read is already reading the change. Three
