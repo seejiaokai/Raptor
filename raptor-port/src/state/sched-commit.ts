@@ -38,7 +38,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS, mintInpIds } from '../engine/inputs'
 import { reconcileDayFiling } from '../engine/slots'
 import { ensureRowIds, rowsOf } from '../engine/rowids'
-import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer, signClear, signClearPlans } from '../engine/publish'
+import { SCHED, setDayApproved, publishALDay, discardPending, unpublishDay, dayCurVer, signClear, signClearPlans, publicationTimingOK } from '../engine/publish'
 import { parseVerId } from '../engine/verid'
 import { splitParts, canonicalBook, issuedBook, parseVerN, dayIndexOf, BOOK_BY_KEY, BOOK_BY_DAY, type WeekParts } from './weekrows'
 import { mintOrd, sortByOrd } from '../command/ord'
@@ -633,11 +633,13 @@ export function discloseCurrentIssued(): void {
    record change) the commit emits nothing. `crossable` is true while none of the
    new ids is on the shared record yet — which at Step 2 is always, there being no
    shared database. Step 3 reads it to choose silent-reverse vs on-the-record undo. */
-function commitPublish(type: string, fn: () => void, di: number): CommitResult {
+function commitPublish(type: string, fn: () => void, di: number, checkTiming=true): CommitResult {
   const cmd: Command = {
     type, scope: schedScope(),
     apply: (txn) => {
       txn.enlist(schedStore)
+      // D502: refuse before AL reconciliation or the mutation epilogue.
+      if(checkTiming&&!publicationTimingOK(di))return;
       const before = issuedIdSet()
       /* ONE PRESS, ONE MESSAGE ([AMEND-SMALL-SEEN] 1, 28 Sep 26): the publish says what it published ("Published AL1 · 14
          items on Sat only") and the OIL check below may speak in the same breath ("…the SXO desk has no usable times, so
@@ -666,7 +668,7 @@ function commitPublish(type: string, fn: () => void, di: number): CommitResult {
    publish boundary). Routed additively: the engine setDayApproved runs unchanged
    inside the command. */
 export function commitSetDayApproved(di: number, on: any): CommitResult {
-  return commitPublish(SCHED_TYPES.approve, () => setDayApproved(di, on), di)
+  return commitPublish(SCHED_TYPES.approve, () => setDayApproved(di, on), di, !!on&&!SCHED.dayOK[di])
 }
 
 /* publish one day's changes as its next per-day AL (a new sched.issuance record +

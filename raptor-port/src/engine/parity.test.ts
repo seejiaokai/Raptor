@@ -51,6 +51,12 @@ const noPortOnly = (days: any) => days.map(({ sacrew, ...d }: any) =>
   ({ ...d, input: (d.input || []).filter((i: any) => !i.nx && !i.pv),
      forms: (d.forms || []).map(({ spareAcs, ...f }: any) => f) }))
 
+/* D502 adds reporting warnings only; the untouched reference has no reporting
+   order rule. Excise these two codes from BOTH warning lists, never from event,
+   hours, rest, puck marks or existing warnings. The untouched-seed pin below
+   checks their presence instead of silently tolerating the difference. */
+const oldWarns = (a:any[]) => a.filter(x=>!['REPORT_ORDER','REPORT_UNRESOLVED'].includes(x.code))
+
 describe('engine parity with the reference', () => {
   it('the reference is the 5-day week this comparison is bounded to', () => {
     expect(REFN).toBe(5)
@@ -67,12 +73,20 @@ describe('engine parity with the reference', () => {
     const port = validate()
     /* `all` is a flat list, so it is filtered by the day each warning names
        rather than sliced; every warning carries its di. */
-    const allTo = (a: any) => stripKeys(JSON.parse(JSON.stringify(a)).filter((x: any) => x.di == null || x.di < REFN))
+    const allTo = (a: any) => stripKeys(oldWarns(JSON.parse(JSON.stringify(a))).filter((x: any) => x.di == null || x.di < REFN))
     expect(allTo(port.all)).toEqual(allTo(ref.all))
-    expect(stripKeys(JSON.parse(JSON.stringify(port.byDay.slice(0, REFN))))).toEqual(stripKeys(JSON.parse(JSON.stringify(ref.byDay))))
+    const dayWarns=(a:any[])=>stripKeys(JSON.parse(JSON.stringify(a)).map((d:any)=>({...d,warns:oldWarns(d.warns)})))
+    expect(dayWarns(port.byDay.slice(0, REFN))).toEqual(dayWarns(ref.byDay))
     expect(byDay(port.sev)).toEqual(byDay(ref.sev))
     expect(byDay(port.chip)).toEqual(byDay(ref.chip))
     expect(WARN).toBe(port)
+  })
+
+  it('D502 positively detects all 13 existing seed IN/brief reversals without changing source data', () => {
+    const issues=validate().all.filter((x:any)=>x.code==='REPORT_ORDER')
+    expect(issues).toHaveLength(13)
+    expect(issues.every((x:any)=>x.sev==='hard'&&/in-time .* is later than brief /.test(x.msg))).toBe(true)
+    expect(issues.every((x:any)=>String(x.key).startsWith('it:'))).toBe(true)
   })
 
   /* top-level let/const in a classic script are not window properties — read

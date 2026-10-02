@@ -28,6 +28,10 @@ import { insightsHTML } from './Modals'
 import { commitNewInput } from './inputedit'
 import { addPersonAndAccount } from '../state/accounts'
 import { archivePerson } from '../leavewar/sync'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const TUE = 1, WED = 2, TUE_ISO = '2026-07-14'
 let pristine: any[], inputs0: string, people0: string

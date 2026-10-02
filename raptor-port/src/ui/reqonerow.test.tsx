@@ -22,6 +22,10 @@ import { dayHTML, dayInfoHTML } from './html'
 import { PEOPLE } from '../engine/people'
 import { boardSignHTML, switchDraft } from './board'
 import { pendListHTML } from './pendlist'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 /* the day's WAITING-TO-GO-OUT chip — since [DRAFT-PENDING] (28 Sep 26) the same `.dpend` class also carries the
    changes window's "N new" / "N changes" chip, which is not a pending count (D168) */

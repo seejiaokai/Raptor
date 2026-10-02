@@ -17,6 +17,10 @@ import * as view from './view'
 import { setSession } from './auth'
 import { histInit } from './history'
 import { ridKey } from '../engine/rowids'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const rk = (k: string) => ridKey(k, DAYS)
 const DSNAP = JSON.stringify(DAYS)

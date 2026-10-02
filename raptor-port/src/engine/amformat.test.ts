@@ -7,6 +7,10 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { SCHED, AMBOOK_VERSION, amFormatOf, protectedWeek, resetSched, dayApproved, dayHasChanges, daySnapOf, dayCurVer, signOf, setDayApproved } from './publish'
 import { schedFields } from '../state/history'
 import { dayIso, verId } from './verid'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 beforeEach(() => { resetSched() })
 

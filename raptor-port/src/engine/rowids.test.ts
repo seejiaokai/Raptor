@@ -9,6 +9,10 @@ import { DAYS } from './data'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
 import { WEEKS, CURWEEK } from './waves'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const clone = (v: any) => JSON.parse(JSON.stringify(v))
 
@@ -472,6 +476,7 @@ describe('identity rules — a copy is a new row, a move/undo/restore is the sam
     const { initStore, undo, redo } = await import('../state/store'); const { HOOKS } = await import('./hooks')
     const { alIssue, markEdit, dayCurVer } = await import('./publish'); const { loadVersionToWorkingCopy } = await import('./drafts')
     initStore()
+    validReportingFixture() // freshly restored publication setup, before snapshots/actions
     const orig = ids(DAYS[0])
     expect(orig.length).toBeGreaterThan(0)   // a leaked week-2 day would read this as [] (Minor 3)
     /* Phase 2: restoreDayVersion is gone — loadVersionToWorkingCopy pulls a version

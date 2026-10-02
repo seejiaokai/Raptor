@@ -29,6 +29,10 @@ import { addWaveTpl, delWaveTpl, setWaveHidden, waveTplSave, WAVETPL_CFG, WAVEHI
 import { installGlobalUndo, _snapView } from './undo-wire'
 import { setDayRemark } from './plan'
 import { HIST } from './history'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)

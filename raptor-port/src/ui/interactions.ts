@@ -37,7 +37,7 @@ import { pickRosDay } from './pan'
 import { isStandalone, CURWEEK } from '../engine/waves'
 import { WARN } from '../engine/validate'
 import { waveInTime } from '../engine/events'
-import { hhmm } from '../engine/time'
+import { hm24 } from '../engine/time'
 import { shiftWeek } from './weeknav'
 
 /* Focus a warning clicked from somewhere that is NOT an already-open day box —
@@ -729,7 +729,7 @@ export function routeClick(e: MouseEvent) {
   const ita = t.closest('[data-itadd]') as HTMLElement | null
   if (ita) {
     e.stopPropagation()
-    if (!canEditSched() || !HOOKS.editMode()) { HOOKS.toast('Only a scheduler can edit the in-times', 'warn'); return }
+    if (!canEditSched() || !HOOKS.editMode()) { HOOKS.toast('Only a scheduler can edit In-time / Rally', 'warn'); return }
     const [dis, gis] = ita.dataset.itadd!.split('|'); const di = +dis, gi = +gis
     const w = DAYS[di] && DAYS[di].waves[gi]; if (!w || isStandalone(w)) return
     const was = (w.intimes || []).join(', ')
@@ -742,7 +742,7 @@ export function routeClick(e: MouseEvent) {
     const t0 = waveInTime(w)
     /* hh:mm since 30 Aug 26 — the minted line states its time in the app's one
        colon form, exactly as an edited line commits (intimeFold) */
-    const line = (t0 != null ? hhmm(t0) + 'H: ' : '') + 'IN TIME + WX/NOTAMS'
+    const line = (t0 != null ? hm24(t0) + 'H: ' : '') + 'IN TIME + WX/NOTAMS'
     w.intimes = [...(w.intimes || []), line]
     markEdit(`it:${di}.${gi}`, was, w.intimes.join(', '))
     view.afterSchedMutate(); notify()
@@ -767,7 +767,7 @@ export function routeClick(e: MouseEvent) {
   const itd = t.closest('[data-itdel]') as HTMLElement | null
   if (itd) {
     e.stopPropagation()
-    if (!canEditSched() || !HOOKS.editMode()) { HOOKS.toast('Only a scheduler can edit the in-times', 'warn'); return }
+    if (!canEditSched() || !HOOKS.editMode()) { HOOKS.toast('Only a scheduler can edit In-time / Rally', 'warn'); return }
     const [dis, gis, ixs] = itd.dataset.itdel!.split('|'); const di = +dis, gi = +gis
     /* the index is read off the button's POSITION in its block, not its
        minted attribute: tapping a ✕ right after clearing another line's text

@@ -14,6 +14,10 @@ import { makeStandalone } from './waves'
 import { validate } from './validate'
 import { HOOKS } from './hooks'
 import { ridKey } from './rowids'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const rk = (k: string) => ridKey(k, DAYS)
 const DSNAP = JSON.stringify(DAYS)

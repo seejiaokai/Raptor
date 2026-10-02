@@ -39,6 +39,12 @@ import { makeStandalone } from '../engine/waves'
 import { VCONF } from '../engine/rules'
 import { blockFromTpl, dutyTplReset } from '../engine/dutytpl'
 import { sbDutyPanel } from './board-html'
+import { validReportingFixture } from '../testing/reporting-fixture'
+import { flightBrief, reportingIssuesForDay } from '../engine/reporting'
+import { hm24, parseHM } from '../engine/time'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 /* the day's WAITING-TO-GO-OUT chip — since [DRAFT-PENDING] (28 Sep 26) the same `.dpend` class also carries the
    changes window's "N new" / "N changes" chip, which is not a pending count (D168) */
@@ -648,7 +654,7 @@ describe('the second reads: the roster a face counts, a person slot, a brief a f
   })
 
   it('a blank B on a STANDBY line only: a brief-lead change reads nothing — the face prints no brief there (Fable #1)', () => {
-    ;(DAYS[TUE_] as any).waves.forEach((w: any) => (w.formations || []).forEach((f: any) => { if (!String(f.br || '').trim()) f.br = '07:00' }))
+    ;(DAYS[TUE_] as any).waves.forEach((w: any) => (w.formations || []).forEach((f: any) => { if (!String(f.br || '').trim()) f.br = hm24(flightBrief(f,parseHM(f.to)!)) }))
     ;(DAYS[TUE_] as any).waves.push(makeStandalone('sc'))
     validate(); publishDay(TUE_)
     expect((SCHED.orig as any)[TUE_].rv, 'its blank standby B still keeps the lead for the CSV').toEqual({ briefLead: (VCONF as any).briefLead })
@@ -861,11 +867,14 @@ describe('D187, the board\'s look — the whole record, and an exempt desk keeps
     d.dutywaves = d.dutywaves || []; d.dutywaves.push(desk)
     desk.rows[0].id = 'split'
     const w0 = d.waves[0]
+    w0.intimes = [] // this collision fixture uses default reporting for two identical air times
     w0.formations[0].aircraft[0].p = 'split'
     w0.formations[1].to = w0.formations[0].to; w0.formations[1].ld = w0.formations[0].ld
+    w0.formations[1].br = w0.formations[0].br // this fixture makes the second leg identical, including its brief
     w0.formations[1].aircraft[0].p = 'split'
     expect(validate().all.some((x: any) => x.di === TUE && x.code === 'DOUBLE_BOOK' && (x.who || []).includes('split')), 'double-booked on the flying line').toBe(true)
     publishDay(TUE)
+    expect(!!SCHED.dayOK[TUE],`fixture must actually publish: ${JSON.stringify(reportingIssuesForDay(d))}`).toBe(true)
     const ver = dayCurVer(TUE)
     let panel = '', board = ''
     /* the panel as the board's look draws it — read only, as board.ts passes it under a look (mvRO) */

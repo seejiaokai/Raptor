@@ -76,6 +76,7 @@ afterEach(() => {
    seat, with a T/O the report-time math below is built against. Mirrors
    dutyrest.test.ts's fixture mechanics (mutate the seat, not the whole day). */
 function flyMonday(id: string, to: string, br = '') {
+  ;(DAYS[0] as any).waves[0].intimes = [] // this fixture deliberately tests the default brief/report
   const f = (DAYS[0] as any).waves[0].formations[0]
   f.to = to; f.ld = '07:25'; f.br = br
   f.aircraft[0].w = id

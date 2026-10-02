@@ -77,6 +77,15 @@ export function lgRules(){
      t:()=>`Anything whose end reads <b>earlier than its start</b> has crossed midnight, and is rolled into the next day.<span class="why">Left as written, the interval is inverted and can never overlap anything — which silently switches every check off for that row.</span>`},
    ]},
 
+  {g:'In-time / Rally',
+   sub:'Reporting instructions apply to the named formations in their wave, or the whole wave when none is named.',
+   rows:[
+    {sev:'set',t:()=>`Each line uses its <b>first recognised clock</b>, such as 09:00H or 0900. Write <b>IN TIME</b>, <b>RALLY</b>, or both; an older clock-only instruction still means in-time. Remarks can stay on the line. Only this wave's formation names select crews; individual names do not. A formation-specific instruction replaces the wave-wide instruction for that activity. Duplicates use the earliest actual time, regardless of row order.`},
+    {sev:'set',t:()=>`For a flight, a reporting clock later than take-off means <b>the immediately previous day</b>. The earliest applicable in-time or rally starts the crew's reporting day; an earlier qualifying commitment can still start work or rest checks. <b>RALLY AFTER IN TIME</b>, without a clock, means rally at that formation's applicable in-time.`},
+    {sev:'hard',code:'REPORT_ORDER',t:()=>`Present stages must run <b>in-time → rally → brief → take-off → landing</b>. Equal adjacent times are allowed. A reversed pair names the formation and both times while editing. You can save the draft, but <b>publication and amendments are blocked</b> until it is corrected. Hiding a warning does not allow publication. Missing reporting instructions do not create a compulsory field.`},
+    {sev:'adv',code:'REPORT_UNRESOLVED',t:()=>`An unrecognised reporting clock, or <b>RALLY AFTER IN TIME</b> with no applicable in-time, asks you to check the instruction. This advisory alone does not block publication; it does not pretend that an unresolved clock was understood.`},
+   ]},
+
   {g:'Two things at once',
    sub:'The commonest question the board answers: is this person already busy?',
    rows:[

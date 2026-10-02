@@ -27,6 +27,10 @@ import { installGlobalUndo } from './undo-wire'
 import { _resetDisclosure } from './disclosure'
 import { joinParts } from './weekrows'
 import { stashClear } from '../engine/weekstash'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)

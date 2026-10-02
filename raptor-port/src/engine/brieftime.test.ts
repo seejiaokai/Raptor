@@ -63,7 +63,7 @@ describe('the brief time a scheduler indicates', () => {
     expect(leg.report).toBe(parseHM('21:30')! - 1440)
   })
 
-  it('does not silently roll a later clock on an ordinary daytime sortie back 24 hours', () => {
+  it('D503 rolls a reporting clock later than daytime take-off back one day, preserving the typed brief', () => {
     const f: any = firstForm(1)!
     const crew = f.aircraft[0].p
     f.to = '12:00'; f.ld = '13:30'; f.br = '18:10'
@@ -71,7 +71,7 @@ describe('the brief time a scheduler indicates', () => {
     wave.intimes = [`${f.cs} IN TIME 1930H`]
     const leg = legsOf(1, crew)[0]
     expect(leg.brief).toBe(parseHM('18:10'))
-    expect(leg.intime).toBe(parseHM('19:30'))
+    expect(leg.intime).toBe(parseHM('19:30')! - 1440)
   })
 
   /* A shift is not a sortie: it briefs nothing, and every consumer gates on

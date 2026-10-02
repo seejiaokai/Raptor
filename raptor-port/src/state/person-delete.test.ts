@@ -24,6 +24,10 @@ import { PLANPUCKS, addPuckRow } from './plan'
 import { newPersonProblem } from './roster-add'
 import { deletePerson, deleteCutoff, personKeysOnDay, effectiveToday, deletedRestoreProblem } from './person-delete'
 import { loadVersionToWorkingCopy, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''

@@ -1,5 +1,34 @@
 import type { Page } from '@playwright/test'
 
+/* Only legacy publication/geometry fixtures: establish valid reporting BEFORE
+   the tested action. Never used by Rally's intentional rejection checks. */
+export async function validReportingFixture(page:Page){
+  await page.evaluate(()=>{
+    const w=window as any;
+    w.DAYS.forEach((d:any)=>(d.waves||[]).forEach((wave:any)=>{
+      if(wave.standalone)return;
+      wave.intimes=(wave.intimes||[]).map((line:string)=>{
+        if(/\bRALLY\b/i.test(line))return line;
+        const clock=/(^|[^A-Za-z0-9])(?:(\d{1,2}):(\d{2})|(\d{3,4}))(\s*[HLhl]?)(?![A-Za-z0-9])/g;
+        let match:RegExpExecArray|null, chosen:RegExpExecArray|null=null, minute=0;
+        while((match=clock.exec(line))){const h=match[2]!=null?+match[2]:Math.floor(+match[4]!/100), m=match[3]!=null?+match[3]:+match[4]!%100;
+          if(h<24&&m<60){chosen=match;minute=h*60+m;break;}}
+        if(!chosen)return line;
+        const named=(wave.formations||[]).filter((f:any)=>{const name=String(f.cs||'').trim().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return name&&new RegExp('(^|[^A-Za-z0-9])'+name+'(?![A-Za-z0-9])','i').test(line);});
+        const limits=(wave.formations||[]).filter((f:any)=>!f.cx&&(!named.length||named.includes(f))).map((f:any)=>{
+          const to=w.parseHM(f.to), typed=w.parseHM(f.br);if(to==null)return null;
+          const brief=typed!=null?(to-w.VCONF.briefLead<0&&typed>to?typed-1440:typed):to-w.VCONF.briefLead;
+          return (minute>to?minute-1440:minute)>brief?brief:null;
+        }).filter((t:any)=>t!=null);
+        if(!limits.length)return line;
+        const value=w.hm24(Math.min(...limits)), token=chosen[1]+(chosen[2]!=null?value:value.replace(':',''))+chosen[5];
+        return line.slice(0,chosen.index)+token+line.slice(chosen.index+chosen[0].length);
+      });
+    }));
+    w.afterSchedMutate();
+  });
+}
+
 /* A SLOW MACHINE, ON DEMAND (23 Sep 26, [LW-MONTHJUMP-PHONE]). GitHub's runner
    can be two to three times slower than a desktop, and a test that passes only
    because the machine is fast is a red run waiting to happen there.

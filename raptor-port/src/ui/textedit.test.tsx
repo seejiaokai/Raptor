@@ -142,7 +142,9 @@ describe('the day-detail panel (tfin H)', () => {
   })
 
   it('a panel issue jumps to the puck and closes the panel', async () => {
-    await click($('#dayPopBody .dip-list .witem[data-adv]'))
+    const personIssue=$$('#dayPopBody .dip-list .witem[data-adv]').find(x=>!!x.querySelector('b')?.textContent)!
+    expect(personIssue,'this case follows a person warning, not a reporting line').toBeTruthy()
+    await click(personIssue)
     expect($('#dayPop')!.hidden).toBe(true)
     expect($$('#vWeek .puck.wfoc').length).toBeGreaterThanOrEqual(1)
     await click($('#vWeek .dwclear'))

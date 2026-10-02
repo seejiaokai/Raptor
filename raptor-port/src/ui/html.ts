@@ -5,13 +5,14 @@ import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
 import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
+import { reportingIssuesForWave } from '../engine/reporting'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, acceptedDay } from '../engine/slots'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS, versionFaceWarn, withVersionWarn } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -862,7 +863,7 @@ export function availHTML(d:any,di:any,ed:any){
   let h=`<div class="availpuck sec sec-avail"><div class="ap-h" data-avtog="${di}">`
     +`<span>Available crew</span><span class="n">by wave · close ⌃</span></div>`;
   if(A.wins.length){
-    A.wins.forEach((w:any,i:any)=>{const ids=active(A.byWave[i]), total=ids.length+allA.length;
+    A.wins.forEach((w:any,i:any)=>{const ids=active(A.byWave[i]), total=w.priorEmpty?0:ids.length+allA.length;
       h+=`<div class="ap-grp">${ORD[i]||(i+1)+'th'} wave${w.night?' · night':''} <span style="color:var(--ink-3);font-weight:500">${bandTxt(w)}</span> · ${total} can fly</div>`;
       h+=ids.length?grid(ids):(total?`<div class="ap-empty">all of them are under Available all day ↓</div>`:`<div class="ap-empty">— none free —</div>`);});
     h+=`<div class="ap-grp">Available all day · ${allA.length}</div>`+grid(allA);
@@ -987,7 +988,7 @@ function dayTraceHTML(di:any,pf:any){
     .filter(({id}:any)=>!pf||id===pf)
     .flatMap(({id,t}:any)=>[
       /* under a face or a look (PV + OFW) the breach's day resolves in ITS displayed list — the one its tap reads */
-      ...(t.leaveBy!=null?[{id,t,kind:'CR',tdi:t.di,ix:t.di==null?-1:traceIx(t,id,undefined,PV&&OFW?displayedBundle(t.di):undefined)}]:[]),
+      ...restTraceEntries(t).map((entry:any)=>({id,t:entry,kind:'CR',tdi:entry.di,ix:entry.di==null?-1:traceIx(entry,id,undefined,PV&&OFW?displayedBundle(entry.di):undefined)})),
       ...(t.run?[{id,t,kind:'RUN',tdi:t.run.di,ix:t.run.di==null?-1:traceIx(t,id,'RUN',PV&&OFW?displayedBundle(t.run.di):undefined)}]:[]),
     ])
     /* tdi==null is the FORWARD trace across the week edge (validate.ts's
@@ -1036,7 +1037,7 @@ function dayTraceHTML(di:any,pf:any){
        misfire. The breach itself appears on Monday when next week loads. */
     const addr=t.di!=null&&ix>=0?` data-wdi="${t.di}" data-wix="${ix}"${pan} title="Jump to the line on this day that caused it"`
       :t.di!=null?` title="As published — that day has changed since"`
-                         :` title="Next week's Monday — load it to see the breach itself"`;
+                         :` title="Next week's ${esc(t.dow||'Monday')} — load it to see the breach itself"`;
     return `<div class="witem hard wtr${on?' on':''}"${addr}>`
       +`<span class="wbar"></span><span><span class="wcode">Breaks ${esc(t.dow||'the next day')}</span>`
       +`<b>${esc(cs)}</b> — had to leave by <b>${esc(t.leaveBy)}</b>. ${esc(t.msg||'')}</span></div>`;
@@ -1193,8 +1194,9 @@ export function intimeLineHTML(t:any){
 export function intimesInner(w:any,ek?:any){
   return ((w&&w.intimes)||[]).map((t:any,i:number)=> ek
     ? `<span class="itline" contenteditable="true" spellcheck="false" data-itline="${ek}|${i}">${intimeLineHTML(t)}</span>`
-      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this in-time line" aria-label="Remove this in-time line">✕</button>`
-    : `<span>${intimeLineHTML(t)}</span>`).join('');}
+      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this In-time / Rally line" aria-label="Remove this In-time / Rally line">✕</button>`
+    : `<span>${intimeLineHTML(t)}</span>`).join('')
+    + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).map(i=>i.msg).join(' '))}</span>`:'');}
 /* AREA and TIME are not the model fields they are edited through. Until a
    scheduler types over them they READ OFF THE AIRCRAFT: the distinct area codes on
    the formation, and the formation's own TO–LD. Both surfaces have to agree on that
@@ -1665,14 +1667,14 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
         <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
         +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
-        ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}</div>`;
+        ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an In-time / Rally line to this wave">+ In-time / Rally</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
          add control is the fix for the old trap where deleting the last line
          dropped the whole block with no way back (owner, 21 Aug 26). Standalone
          waves are excluded: a shift briefs nothing, and a typed in-time there
          would silently move waveWindows. interactions.ts owns the click. */
       if(w.intimes&&w.intimes.length)
-        h+=`<div class="intimes${ed?' iedit':''}"${alAttr(`it:${di}.${gi}`)} ${ed?`data-intimes="${di}|${gi}"`:''}>${intimesInner(w,ed?`${di}|${gi}`:null)}</div>`;
+        h+=`<div class="intimes${ed?' iedit':''}" data-warnkey="it:${di}.${gi}"${alAttr(`it:${di}.${gi}`)} ${ed?`data-intimes="${di}|${gi}"`:''}>${intimesInner(w,ed?`${di}|${gi}`:null)}</div>`;
       h+=sa
         ? `<div class="cols formcols"><span>${esc(w.label||'')}<br>SHIFT</span><span class="c-c">START</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
         : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">B<br>TO</span><span class="c-c">LD</span><span>FCP / RCP</span><span>RMKS</span></div>`;

@@ -10,6 +10,7 @@ import { setInpField } from './inputedit'
 import { markEdit } from '../engine/publish'
 import { reconcileIssuedMarks } from '../engine/drafts'
 import { intimeFold } from '../engine/events'
+import { reportingIssuesForWave } from '../engine/reporting'
 import { storesText } from '../engine/stores'
 import { validate } from '../engine/validate'
 import { afterSchedMutate } from '../state/view'
@@ -43,6 +44,20 @@ function txtCommit() {
 }
 
 const heal = (el: any, want: any) => { if (el.children.length || el.textContent !== want) el.textContent = want }
+
+/* D502: preview the active text without writing a keystroke to history or
+   repainting the editable span. The ordinary blur/Enter path still commits. */
+export function routeReportingInput(e:Event){
+  if(!canEditSched())return;
+  const target=e.target as HTMLElement;
+  const line=target?.closest?.('[data-itline]') as HTMLElement|null;
+  if(!line)return;
+  const [di,gi,ix]=line.dataset.itline!.split('|').map(Number);
+  const w=DAYS[di]?.waves?.[gi], feedback=line.closest('.intimes')?.querySelector('[data-reporting-feedback]');
+  if(!w||!feedback)return;
+  const intimes=[...(w.intimes||[])];intimes[ix]=line.textContent||'';
+  feedback.textContent=reportingIssuesForWave({...w,intimes},gi).map(i=>i.msg).join(' ');
+}
 
 /* [ARCH-STACK] f/u#1 (F-05): a text mutation records SYNCHRONOUSLY through a
    sched.text command, reconciling issued marks INSIDE the command (as
@@ -116,6 +131,7 @@ export function routeFocusOut(e: FocusEvent) {
   const il = t.closest('[data-itline]') as HTMLElement | null
   if (il) {
     const [di, gi, ixs] = il.dataset.itline!.split('|'); const ix = +ixs!
+    const feedback = il.closest('.intimes')?.querySelector('[data-reporting-feedback]')
     const w = DAYS[+di!].waves[+gi!]
     const lines = w.intimes || []
     if (lines[ix] == null) return              // deleted or undone from under the caret
@@ -134,6 +150,7 @@ export function routeFocusOut(e: FocusEvent) {
       const btn = il.nextElementSibling
       if (btn && (btn as HTMLElement).matches && (btn as HTMLElement).matches('[data-itdel]')) btn.remove()
       il.remove()
+      if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).map(i=>i.msg).join(' ')
       txtCommit()
       return
     }
@@ -149,6 +166,8 @@ export function routeFocusOut(e: FocusEvent) {
       txtCommit()
     }
     const want = intimeLineHTML(nv); if (!sameInner(il, want)) il.innerHTML = want
+    // Escape/no-op blur must also discard any unsaved preview diagnostic.
+    if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).map(i=>i.msg).join(' ')
     return
   }
   /* the typed stores text ("bombs…") — opts.bombs lives outside the txt-key

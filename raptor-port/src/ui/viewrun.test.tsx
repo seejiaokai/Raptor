@@ -15,6 +15,10 @@ import { validate, withOfficialWarn } from '../engine/validate'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { dayHTML, viewDayHTML, dayInfoHTML } from './html'
 import { DWOPEN, WFOCUS, VWORK, PFOCUS, SELID, displayedByDay, dayDisplaysOfficial, focusWarn, selectPerson, setPage } from '../state/view'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 /* @vitest-environment jsdom */
 
@@ -38,7 +42,7 @@ function setup() {
   validate()
 }
 
-beforeEach(() => { initStore(); loadWeek('13/07/2026'); resetSched(); DWOPEN.add(6) })
+beforeEach(() => { initStore(); loadWeek('13/07/2026'); validReportingFixture(); resetSched(); DWOPEN.add(6) })
 afterEach(() => { DWOPEN.clear(); resetSched(); loadWeek('13/07/2026') })
 
 describe('view-only shows a published-truth run breach on a draft day', () => {

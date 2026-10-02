@@ -8,7 +8,7 @@
    production build, so a CSS change that breaks one fails a gate. */
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek } from './app'
+import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek, validReportingFixture } from './app'
 
 const PHONE = { width: 390, height: 844 }
 const DESK = { width: 1500, height: 950 }
@@ -1010,6 +1010,7 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('the week lands on the day, on its snap point, with the puck on screen', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
+    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     /* Find a flagged day that is genuinely OFF SCREEN from the left edge, and
@@ -1066,6 +1067,7 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('a warning already on screen does not move the week sideways', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
+    await validReportingFixture(page)
     await go(page, 'viewsched')
     await scrollTo(page, '#vWeek', 0)
 
@@ -1119,6 +1121,7 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('the board scrolls its own panel to the puck', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
+    await validReportingFixture(page)
     await go(page, 'editsched')
 
     const di = await page.evaluate(() => {
@@ -1154,6 +1157,7 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('the edit week: a far-day witem brings its puck fully into view, on both axes', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
+    await validReportingFixture(page)
     await go(page, 'editsched')
 
     /* day 3 (Thursday) carries ILLEGAL_CREW (bapster+badger) in the seed —
@@ -1192,6 +1196,7 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('view schedule: a day-detail warning row brings its puck fully into view, on both axes', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
+    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     const di = await page.evaluate(() => {
@@ -1236,6 +1241,7 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('a blank tap that dismisses a warning box holds the view where it snapped', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await login(page)
+    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     const di = 0                       // day 0 carries hard warnings in the seed
@@ -1283,6 +1289,7 @@ test.describe('clicking a warning brings the puck into view', () => {
        assertions live in warnjump.test.tsx; the pixels are gated here). */
     await page.setViewportSize(DESK)
     await login(page)
+    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     const has = await page.evaluate(() => !!document.querySelector('#vWeek .puck.warn[data-person]:not(.sm) .lchip'))
@@ -1334,6 +1341,7 @@ test.describe('clicking a warning brings the puck into view', () => {
        hold, which is how the jump shipped unnoticed in the first place. */
     await page.setViewportSize(DESK)
     await login(page)
+    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     /* a person flagged on the day of his own first puck, so a box really
@@ -1394,6 +1402,7 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('a SIM_BRIEF warning pans to the sim row that briefs, and it lands on screen', async ({ page }) => {
     await page.setViewportSize(DESK)
     await login(page)
+    await validReportingFixture(page)
     await go(page, 'viewsched')
 
     /* warnings carry the causing line's slot-key (w.key); jsdom pins WHICH
@@ -1470,6 +1479,7 @@ test.describe('clicking a warning brings the puck into view', () => {
   test('the board at a small viewport scrolls to the deepest warning\'s puck', async ({ page }) => {
     await page.setViewportSize({ width: 900, height: 600 })
     await login(page)
+    await validReportingFixture(page)
     await go(page, 'editsched')
 
     const di = await page.evaluate(() => {

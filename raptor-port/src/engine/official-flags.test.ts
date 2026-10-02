@@ -38,6 +38,10 @@ vi.mock('./weeks-data', async (importOriginal) => {
 })
 // eslint-disable-next-line import/first
 import { weekDateLabels, shiftWeekKey } from './weeks-data'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const DOWS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 const blankDay = (dow: string, dt: string): any =>
@@ -76,6 +80,7 @@ afterEach(() => {
    A ~06:00 report against a Sunday duty ending 23:00 (clear at 11:00) breaches;
    a mid-afternoon report (≥ 13:20 T/O with a blank brief) is clear. */
 function flyMonday(id: string, to: string, ld: string, br = '') {
+  ;(DAYS[0] as any).waves[0].intimes = [] // no instructed report in this default-brief/rest fixture
   const f = (DAYS[0] as any).waves[0].formations[0]
   f.to = to; f.ld = ld; f.br = br
   f.aircraft[0].w = id

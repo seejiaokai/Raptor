@@ -20,6 +20,10 @@ import { setDayPreview, DPREV, VWORK, setPage, setRestArm } from '../state/view'
 import { setSession } from '../state/auth'
 import { acceptInput, unacceptInput } from '../engine/slots'
 import { PIOPEN } from '../state/view'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 let w: any
 
@@ -29,6 +33,13 @@ let w: any
 let REFN = 0
 beforeAll(async () => {
   w = await refWindow()          // syncs the port's seed INPUTS into the reference
+  // D502 publication fixtures use valid reporting. Compare HTML using IDENTICAL
+  // reporting text in both engines, as this helper already does for input data.
+  // Untouched-seed warning parity and all 13 new checks stay pinned in engine/parity.
+  DAYS.slice(0,w.eval('DAYS.length')).forEach((d:any,di:number)=>(d.waves||[]).forEach((wave:any,gi:number)=>{
+    w.eval(`DAYS[${di}].waves[${gi}].intimes=${JSON.stringify(wave.intimes||[])}`)
+  }))
+  w.eval('validate()')
   REFN = w.eval('DAYS.length')
   validate()
 })
@@ -186,11 +197,13 @@ const noAhRmk = (s: string) => s
    compare (the reference-only rules here are no-ops on the port and vice
    versa). Pinned positively in intimesadd.test.tsx. */
 const noItCtl = (s: string) => s
-  .replace(/<button class="airbtn" data-itadd="[^"]*"[^>]*>\+ In time<\/button>/g, '')
+  .replace(/<button class="airbtn" data-itadd="[^"]*"[^>]*>\+ (?:In time|In-time \/ Rally)<\/button>/g, '')
   .replace(/<button class="itx" data-itdel="[^"]*"[^>]*>✕<\/button>/g, '')
   .replace(/<span class="itline" contenteditable="true" spellcheck="false" data-itline="[^"]*">/g, '<span>')
   .replace(/ (?:contenteditable="true" spellcheck="false" )?data-intimes="[^"]*"/g, '')
   .replace(/class="intimes iedit"/g, 'class="intimes"')
+  .replace(/<span class="reporting-feedback"[^>]*>[\s\S]*?<\/span>/g,'')
+  .replace(/ data-warnkey="it:[^"]*"/g,'')
 
 /* Divergence (owner, 30 Aug 26 — every time reads 08:00): the port DISPLAY-folds
    an in-time line's leading bolded time to hh:mm (intimeLineHTML via intimeFold;
@@ -202,6 +215,9 @@ const noItTime = (s: string) => s.replace(/<b>(\d{3,4})(\s*[HLhl]?)<\/b>/g, (all
   const h = +d.slice(0, d.length - 2), m = +d.slice(-2)
   return h < 24 && m < 60 ? `<b>${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}${suf}</b>` : all
 })
+// D504 reporting-line warning anchors have their own positive UI regression.
+const noReportingAnchor=(s:string)=>s.replace(/ data-warnkey="it:[^"]*"/g,'')
+const parityWhere=(a:string,b:string)=>{let i=0;while(i<a.length&&a[i]===b[i])i++;return `at ${i}: ${a.slice(i-65,i+130)} versus ${b.slice(i-65,i+130)}`}
 
 /* Divergence (owner, 15 Sep 26 — items 4 & 5): the green version tag moved out of
    .dhtpl into its own .dhver span, LEFT of the .badge, and now renders on the view
@@ -220,10 +236,10 @@ const noVerTag = (s: string) => {
 
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => noVerTag(noItTime(noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))))))))
+    const V = (s: string) => noReportingAnchor(noVerTag(noItTime(noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
-      expect(V(dayHTML(di, false)), 'day ' + di).toBe(V(ref))
+      expect(V(dayHTML(di, false)), 'day ' + di+' '+parityWhere(V(dayHTML(di,false)),V(ref))).toBe(V(ref))
     })
   })
 

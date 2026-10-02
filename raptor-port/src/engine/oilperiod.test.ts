@@ -15,6 +15,10 @@ import { DAYS } from './data'
 import { validate, WARN } from './validate'
 import { HOOKS } from './hooks'
 import { SCHED, signOf, setDayApproved, dayApproved, dayCurVer, daySnapOf } from './publish'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const SAT = 5                                   // the seed Saturday, 18 Jul 26
 const warnsOn = (di: number): any[] => {

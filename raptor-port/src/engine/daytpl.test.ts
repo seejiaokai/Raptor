@@ -12,6 +12,10 @@ import {
   applyDayTpl, dayTplSave, dayTplLoad, dayTplReset, MAX_DAYTPL, DAYTPL_PUBLISHED_MSG,
 } from './daytpl'
 import { ensureRowIds } from './rowids'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 /* templates are minted off DAYS[0] and applyDayTpl overwrites it wholesale —
    every test starts from the pristine day, same discipline restore.test.ts uses */

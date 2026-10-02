@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { go, login } from './app'
+import { go, login, validReportingFixture } from './app'
 
 /* [WARN-HIDE-KEPT] — A HIDDEN WARNING, in a real browser (owner D469 / D471 / D472 / D475, 1 Oct 26; the approved picture
    docs/mock/warn-hide.html). What only a real browser can prove (bug-check order, anti-pattern 21 — a class switched on is
@@ -51,6 +51,7 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
 
     test('WH4, WH5, WH3 — Edit Schedule: the line struck in place with ↺, the count without it, the puck plain; WH1 — and after a reload', async ({ page }) => {
       await login(page)
+      await validReportingFixture(page)
       await go(page, 'editsched')
       await openList(page, '#eWeek', TUE)
       const before = await readList(page, '#eWeek', TUE)
@@ -76,6 +77,7 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
       /* the browser's own storage: a reload, a fresh sign-in */
       await page.waitForTimeout(700)   // the save (its 300 ms merge)
       await login(page)
+      await validReportingFixture(page)
       await go(page, 'editsched')
       await openList(page, '#eWeek', TUE)
       const back = await readList(page, '#eWeek', TUE)
@@ -90,6 +92,7 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
 
     test('WH4 — the Scheduler Board: the same line struck in its panel, the heading without it', async ({ page }) => {
       await login(page)
+      await validReportingFixture(page)
       await go(page, 'editsched')
       await page.evaluate(d => (window as any).openScheduler(d), TUE)
       await page.waitForSelector('#schedBoard .sb-warn')
@@ -111,6 +114,7 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
 
     test('WH2, WH7 — a member signing in after: the count without it, the line struck, and no button', async ({ page }) => {
       await login(page)
+      await validReportingFixture(page)
       await go(page, 'editsched')
       await openList(page, '#eWeek', TUE)
       await page.locator(`#eWeek .day[data-day="${TUE}"] [data-woff="${TUE}.3"]`).first().click()
@@ -131,6 +135,7 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
        where a view lands: after the tap the struck line is ON SCREEN, focused, in a list the tap itself opened. */
     test('WH8, D99 — on a published day, a tap on "Warning · … flagged → hidden" in To go out lands on the struck line', async ({ page }) => {
       await login(page)
+      await validReportingFixture(page)
       await go(page, 'editsched')
       await openList(page, '#eWeek', TUE)
       const day = `#eWeek .day[data-day="${TUE}"]`

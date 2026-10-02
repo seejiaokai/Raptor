@@ -36,6 +36,10 @@ import { jumpToChange } from './interactions'
 import { jumpOf } from './ChangesWindow'
 import { PIOPEN } from '../state/view'
 import './changesmodel'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const fake = new Map<string, string>()
 const as = (u: string, p: string) => resetSession(sessionFor(signIn(u, p) as any))   // ad = Saber (admin), us = Ranger (member)

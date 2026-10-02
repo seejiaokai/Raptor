@@ -18,6 +18,31 @@ which joints are single-funnel (safe to build on) and which are drift-seams
 (where two copies of one rule can fall out of step — the bugs that keep
 recurring in this app).
 
+**Reporting flow added2 Oct26 (D497–D507):** existing `w.intimes` strings →
+`engine/reporting.ts` first-valid clock + own-wave formation/activity scope →
+per-formation signed actual report → `events.ts` → workSpan/LONGDAY/Insights,
+crew-rest and SANS. Ordinary busy remains step/dekit; OIL remains nominal
+reportLead/debrief. The same pure resolved stages feed draft inline preview,
+validator warnings and every publication guard. The command guard precedes
+reconciliation, issuance and commit boundary, so refused publication is atomic.
+Headers wrap signed times while availability bands alone clip to today's domain;
+prior-created empty buckets stay empty, existing same-day ties are preserved.
+Storage/copies/templates retain plain strings and no schema migration. D478
+selects latest-issued content for published Insights, D482 keeps current Logic
+arithmetic, and D186 freezes printed blank B only. These are distinct drift seams:
+never feed frozen printed B into validation or working content into issued hours.
+Coverage: `docs/superpowers/specs/2026-10-02-rally-behaviour-register.md`.
+
+**Dated-rest extension,2 Oct26:** the report's resolved date feeds a shared lookup
+of up to four authored source dates, including existing adjacent-week issued/working
+worlds. Rest validation and hypothetical placement/removal use the same dated
+winner; forward probes cover four targets. Trace provenance retains the actual
+source date and every affected target; external trace hides use that target's
+week/day, and multiple crew-rest targets coexist with the running-away trace.
+The original one-day descriptions below are historical where this extension applies.
+Prior-origin bands ending at00:00 have zero members/total while the separate global
+all-day list is retained. Neither extension changes normal busy windows or OIL.
+
 **Keep this true in the same PR** (same rule as `HANDOFF.md`). A feature that
 adds a surface, a flow, or a new drift-seam adds a line here. Stale is worse
 than absent — the next session trusts it.

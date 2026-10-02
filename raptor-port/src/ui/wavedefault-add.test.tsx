@@ -13,6 +13,10 @@ import { dayApproved, setDayApproved, signOf, SCHED } from '../engine/publish'
 import { setWaveDefault, waveDefaultReset } from '../engine'
 import { initStore, setSession, notify } from '../state/store'
 import { addWave } from './board'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const DSNAP = JSON.stringify(DAYS)
 beforeEach(() => {

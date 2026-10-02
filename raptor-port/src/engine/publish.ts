@@ -1,4 +1,5 @@
 import { DAYS } from './data'
+import { reportingIssuesForDay } from './reporting'
 import { PEOPLE } from './people'
 import { VCONF } from './rules'
 import { keyDay, uniqDays } from './keys'
@@ -25,6 +26,14 @@ const toast=(...a:any[])=>HOOKS.toast(...a);
 const reflow=()=>HOOKS.reflow();
 const histPush=()=>HOOKS.histPush();
 const renderStatus=()=>HOOKS.renderStatus();
+/* D502: fresh working-day judgment before publication mutates anything.
+   Hidden/frozen warnings cannot bypass this issuance backstop. */
+export function publicationTimingOK(di:number):boolean{
+  const issue=reportingIssuesForDay(DAYS[di]).find(i=>i.blocking);
+  if(!issue)return true;
+  toast(`Cannot publish — ${issue.msg} Correct the timing first.`, 'warn');
+  return false;
+}
 /* =====================================================================
    PUBLISH DAY (approve) + PUBLISH AL (amendment level, whole-schedule tint)
    ===================================================================== */
@@ -318,6 +327,7 @@ export function setDayApproved(di:any,on:any){
      changing a published day means editing its working draft and publishing the
      next AL. An `on=false` (or a repeat approve) is a no-op. */
   if(!on||SCHED.dayOK[di])return;
+  if(!publicationTimingOK(di))return;
   /* MINT THE ROW IDS BEFORE ANYTHING READS THE DAY (Fable, 21 Sep 26). §9.3
      promises publication freezes exactly the value the signature was validated
      against, and every OIL decision is addressed by a row id — so a row that
@@ -1109,6 +1119,7 @@ export function alIssue(di:any){di=+di;
      so any caller that reached here (present or future) cannot issue onto frozen
      data. Returns a zero-count result rather than throwing, matching its shape. */
   if(protectedWeek())return {seq:0,id:'',sign:{},count:0};
+  if(!publicationTimingOK(di))return {seq:0,id:'',sign:{},count:0};
   stampAmFormat();   // defensive: an AL on a validated (supported) book keeps it 'current' (P2-IMPL-04)
   const seq=nextSeq(di), iso=dayIso(CURWEEK,di), id=verId(iso,seq);
   /* the canonical delta vs the CURRENT issued version, captured BEFORE the marks
@@ -1152,6 +1163,7 @@ export function publishALDay(di:any){
      writeback would otherwise discard the issue on reload (a silent lost AL). */
   if(protectedWeek())return toast(`${(DAYS[di]||{}).dow||'This day'} is locked — it was published by an older version and can’t be amended here`);
   if(!dayApproved(di))return toast(`${DAYS[di].dow} is still draft — publish the day before publishing its changes`);
+  if(!publicationTimingOK(di))return;
   /* the same mint as the first publish above, for the same reason: every read
      in this turn — the delta, the signature binding, the frozen block — must
      see one set of row ids (Fable, 21 Sep 26). */
@@ -1163,7 +1175,8 @@ export function publishALDay(di:any){
   if(!dayHasChanges(di)&&!correcting)return toast(`No changes to publish on ${DAYS[di].dow}`);
   const seq=nextSeq(di);
   if(!daySigned(di))return toast(`Sign off ${signMissing(di).join(', ')} before publishing AL${seq}`);
-  const {sign,count}=alIssue(di);
+  const {id,sign,count}=alIssue(di);
+  if(!id)return;
   if(SCHED.correcting)delete SCHED.correcting[di];   // reissued — the correction is closed
   const who=sign||{};
   const held=pendingPublishDays().length;

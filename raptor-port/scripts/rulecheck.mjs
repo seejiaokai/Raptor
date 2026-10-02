@@ -236,6 +236,15 @@ const RULES = {
   /* [INSIGHTS-WHICH-COPY] (1 Oct 26 — D477, D478). Register:
      docs/superpowers/specs/2026-10-01-insights-which-copy-behaviour-register.md */
   IN1: 'Insights counts each day\'s latest published version; the working copy only for a day not yet published',
+  /* In-time / Rally — D497–D507; 2026-10-02-rally-behaviour-register.md */
+  RT1: 'formation-only scope is resolved separately for IN and RALLY, specific before wide',
+  RT2: 'first-valid clock and immediate-rally grammar preserve optional legacy reporting',
+  RT3: 'report later than flight take-off is prior day; earliest actual duplicate wins',
+  RT4: 'shared report reaches work span, header and today-only bands without changing shift rules',
+  RT5: 'wrong stage pair is named while editing; draft saves and equal stages are allowed',
+  RT6: 'first publication, AL and reissue refuse atomically, independent of warning visibility',
+  RT7: 'existing reporting editor doors, Escape/delete, history and read-only authority stay intact',
+  RT8: 'nominal OIL and ordinary busy versus SANS windows retain their own definitions',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

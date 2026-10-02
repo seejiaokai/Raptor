@@ -21,7 +21,7 @@ afterAll(() => { setSession(null); notify() })
 describe('the seed still shows the header note and the suggestion (positive control)', () => {
   it('a normal flying day draws the in-time note and at least one blue suggestion', () => {
     const h = boardHTML(0)
-    expect(h, 'the in-time · N ac note is on an ordinary wave header').toContain('class="asd">in-time')
+    expect(h, 'the In-time / Rally · N ac note is on an ordinary wave header').toContain('class="asd">In-time / Rally')
     expect(h, 'a blank-B flying line offers the blue suggested brief').toContain('class="bsug"')
   })
 })
@@ -40,7 +40,7 @@ describe('an SC wave drops the note and the suggestion but keeps the B box', () 
   it('no "in-time · N ac" header note', () => {
     const h = boardHTML(0)
     expect(h).not.toContain('class="asd"')
-    expect(h).not.toContain('in-time ')
+    expect(h).not.toContain('In-time / Rally ')
   })
   it('no blue suggested-brief ghost on its lines', () => {
     expect(boardHTML(0)).not.toContain('class="bsug"')

@@ -33,6 +33,10 @@ import { installGlobalUndo } from './undo-wire'
 import { _resetDisclosure } from './disclosure'
 import { afterSchedMutate } from './view'
 import * as view from './view'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)

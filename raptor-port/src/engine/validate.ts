@@ -3,9 +3,10 @@ import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, rest
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
+import { reportingIssuesForDay } from './reporting'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
-import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
+import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone } from './waves'
 import { DAYS } from './data'
@@ -32,6 +33,8 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'
   SANS_AVAIL:'SANS availability — planned outside the availability filed',
   OIL_NO_TIMES:'No OIL earned — a row has no usable times',
   FLT_NO_LEN:'Flight times — take-off and landing are the same',
+  REPORT_ORDER:'In-time / Rally — timings out of order',
+  REPORT_UNRESOLVED:'In-time / Rally — check the reporting instruction',
   OIL_OLD_BLOCK:'Published before these seats counted — republish to credit them',
   /* the four OIL advisories printed their CODE as the heading ("OIL_UNPUBLISHED — …") —
      [HUMAN-RETEST] amendment re-test, walk W4-F5, 24 Sep 26; pinned in ui/amendretest.test.tsx */
@@ -74,6 +77,17 @@ export const SEVWORD:any={hard:'Warning',adv:'Advisory',note:'Note'};
    long day and a conflict still shows the conflict ring. (Module-level since 26 Sep 26 so the published face — faceWarn —
    combines a frozen ring with a live one by the same order the day loop does.) */
 const SEVR:any={note:1,adv:2,hard:3};
+export const restTraceEntries=(t:any)=>t?.crs||(t?.leaveBy!=null?[t]:[]);
+/* The earliest target remains the compatible puck address; additional
+   targets survive independently, including after hide replay. */
+function mergeRestTrace(prior:any,addition:any){
+  if(addition.leaveBy==null)return {...prior,...addition};
+  const entries=restTraceEntries(prior).map((t:any)=>{const {run,crs,...entry}=t;return entry;});
+  const key=(t:any)=>`${t.targetWeek||''}|${t.targetDi??t.di}|${t.msg}`;
+  if(!entries.some((t:any)=>key(t)===key(addition)))entries.push({...addition});
+  if(entries.length===1)return {...prior,...entries[0]};
+  return {...prior,...entries[0],crs:entries};
+}
 /* THE WARNINGS A PUBLISHED FACE KEEPS LIVE ([LEAVE-LATE-PUBLISHED] — every other warning shows as issued, D179):
    · the Leave War's "no period covers this date" (Fable F5 — D179 leaves the war's reminders live, D19), and every other
      OIL warning — they speak from what the day earns under TODAY's calendar ("started earning", "stopped being a
@@ -311,8 +325,8 @@ function validateCore(){
      trace (its fields at the top level, unchanged) AND the run trace (nested
      under `run`) — day six of a run whose late landing also wrecks tomorrow. */
   /* `w` — the warning this mark points at: its day (null = next week's Monday), code, man and words (shownOf) */
-  const markTrace=(pdi:any,id:any,t:any,w?:any)=>{if(pdi==null)return; trace[pdi]=trace[pdi]||{}; trace[pdi][id]=Object.assign(trace[pdi][id]||{},t); traces.push({pdi,id,t,w});};
-  const dur=(m:any)=>`${Math.floor(m/60)}h${String(Math.round(m%60)).padStart(2,'0')}`;
+  const markTrace=(pdi:any,id:any,t:any,w?:any)=>{if(pdi==null)return; trace[pdi]=trace[pdi]||{}; trace[pdi][id]=mergeRestTrace(trace[pdi][id],t); traces.push({pdi,id,t,w});};
+  const dur=(m:any)=>`${m<0?'-':''}${Math.floor(Math.abs(m)/60)}h${String(Math.round(Math.abs(m)%60)).padStart(2,'0')}`;
   /* CONSECUTIVE WORKING DAYS (owner, Aug 26) — nobody may be on the programme
      more than VCONF.maxRun days without a break day. Counted in day order off
      day.events, which is every kind of tasking there is: a flight, a duty
@@ -338,6 +352,12 @@ function validateCore(){
       RUNLEN[i]=m;
     });
   }
+  const restWeek=CURWEEK, restSeeds=new Map<number,any>();
+  const restDayAt=(index:number)=>{
+    if(index>=0&&index<7)return ev[index];
+    if(!restSeeds.has(index))restSeeds.set(index,datedRestSeed(restWeek,index));
+    return restSeeds.get(index);
+  };
   /* THE RUN TRACE (owner, 5 Sep 26 — "make the warning like what the crew
      rest does… dotted pucks, to warn that the 7 day breach is on which day
      actually"). The breach lands on the day the count crosses the limit;
@@ -406,8 +426,16 @@ function validateCore(){
          scheduler who knows this crew walks off the jet fast can read that the
          2h is an assumption, not a fact. Null when the winning end is a SHIFT,
          which ends at its written time with no debrief tail to assume. */
-      const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={};
-      prevSeed.events.forEach((e:any)=>{
+      const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={}, prevSource:any={};
+      const targetIndex=day.restIndex??day.di??di;
+      for(let distance=1;distance<=4;distance++){
+      const origin=targetIndex-distance;
+      const source=probe?.dayAt?probe.dayAt(origin):distance===1?prevSeed:restDayAt(origin);
+      if(!source)continue;
+      // Preserve the existing previous-day arithmetic, moving each older
+      // authored end onto that same axis exactly once.
+      const offset=(1-distance)*1440;
+      source.events.forEach((e:any)=>{
         /* EVERYTHING THAT ENDS THE DAY BEARS CREW REST (owner, 21 Aug 26 —
            "anything that ends the day prior and affects the 12 hour crew
            rest will be a warning"; this widened twice the same day: first
@@ -420,10 +448,11 @@ function validateCore(){
            severity downgrade by event kind; and the REST[] map the picker
            reads is built from the same set, so they cannot disagree. */
         const rests=true;
-        const end=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift/duty ends when it ends
-        if(end==null)return;
+        const rawEnd=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift/duty ends when it ends
+        if(rawEnd==null)return;
+        const end=rawEnd+offset;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
-        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}
+        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?e.ld+offset:null; prevSource[e.id]=source;}
       });
       /* DUTY & COMMITMENT INPUTS BEAR CREW REST TOO (owner, 21 Aug 26 —
          "everything in duty and commitments affects crew rest… do not
@@ -439,19 +468,24 @@ function validateCore(){
          input has no board slot for the previous-day trace to jump to.
          REST[di] below is built from these same maps, so the SC picker's
          crew-rest refusal follows this rule with no second copy. */
-      prevSeed.input.forEach((i:any)=>{
+      source.input.forEach((i:any)=>{
         if(i.nx||i.pv||!restsInput(i.type))return;
         if(i.s==null||i.e==null||!isFinite(i.e)||i.e-i.s>=1439)return;
-        if(prevEnd[i.id]==null||i.e>prevEnd[i.id])prevEnd[i.id]=i.e;
-        if(prevFlyEnd[i.id]==null||i.e>prevFlyEnd[i.id]){prevFlyEnd[i.id]=i.e; prevFlyKey[i.id]=null; prevFlyLd[i.id]=null;}
+        const end=i.e+offset;
+        if(prevEnd[i.id]==null||end>prevEnd[i.id])prevEnd[i.id]=end;
+        if(prevFlyEnd[i.id]==null||end>prevFlyEnd[i.id]){prevFlyEnd[i.id]=end; prevFlyKey[i.id]=null; prevFlyLd[i.id]=null; prevSource[i.id]=source;}
       });
+      }
       /* when rest expires today, for everyone who had ANY commitment
          yesterday — the palette reads this to keep an SC slot closed to
          anyone who is not yet clear */
       const restMap:any={};
       Object.keys(prevFlyEnd).forEach((id:any)=>{
         const cl=prevFlyEnd[id]+VCONF.crewRest-1440;
-        if(cl>0)restMap[id]=cl;
+        // A prior-day report can still precede clearance at/before midnight.
+        // Keep the old positive-day map, adding signed clearance only where
+        // today's actual flight/SC report or brief reaches yesterday.
+        if(cl>0||day.fly.some((e:any)=>e.id===id&&((e.intime!=null&&e.intime<0)||(!e.shift&&e.brief!=null&&e.brief<0))))restMap[id]=cl;
       });
       if(!phantom)REST[di]=restMap;
       /* today's rest-bearing commitments: sorties AND shifts */
@@ -488,7 +522,8 @@ function validateCore(){
         if(pe==null||!isFinite(pe))return;
         const pfly={[id]:prevFlyEnd[id]!=null};
         const earliest=pe+VCONF.crewRest-1440;         // minutes into TODAY that crew rest expires
-        if(earliest<=0)return;                          // 12h already clear before midnight
+        // Do not assume clearance by midnight means a prior-day report is clear.
+        // The actual first commitment below is compared on the same signed axis.
         const legs=byR[id];
         const nominal=Math.min.apply(null,legs.map(nomOf));
         const instructed=Math.min.apply(null,legs.map(insOf));
@@ -524,9 +559,10 @@ function validateCore(){
            their head for a crew that leaves quickly. A shift (prevFlyLd null)
            has no debrief to assume, so it keeps the plain "ended". */
         const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;
+        const source=prevSource[id]||prevSeed;
         const tail=landed!=null
-          ? `${prevSeed.dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`
-          : `${prevSeed.dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;
+          ? `${source.dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`
+          : `${source.dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;
         if(pfly[id]&&first<earliest){
           const bl=legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m);   // the leg told to report earliest is the breach
           /* The LEAVE-BY: the latest the previous day could have ended for this
@@ -553,7 +589,7 @@ function validateCore(){
           const makesIt=!bl.shift&&earliest<=bl.to-VCONF.step;
           const dashed=!evBound&&!!bl.lateShow&&makesIt;
           if(!phantom){markChip(di,id,'CR','CREW_REST');markRing(di,id,'hard','CREW_REST'); if(dashed)markDash(di,id,'CREW_REST');}
-          const prevDi=prevSeed.di;
+          const prevDi=source.di;
           /* CAUSE-FIRST, SAID ONCE (owner, 22 Aug 26 — "refine the way u
              reason the crew rest warning. Clear and concise"): one forward
              chain — yesterday's end → when rest clears → the commitment that
@@ -576,7 +612,8 @@ function validateCore(){
              and NOT on the warning: parity.test.ts compares every field of
              WARN.byDay against the reference, while WARN.trace is port-only, so
              this stays clear of the reference entirely. */
-          markTrace(prevDi,id,{di,dow:day.dow,leaveBy,dashed,msg:crMsg,fromKey:prevFlyKey[id]},{di,code:'CREW_REST',who:[id],msg:crMsg});
+          const external=di==null?{targetDi:day.targetDi,targetWeek:day.targetWeek}:{};
+          markTrace(prevDi,id,{di,dow:day.dow,leaveBy,dashed,msg:crMsg,fromKey:prevFlyKey[id],...external},{di,code:'CREW_REST',who:[id],msg:crMsg,...external});
         } else if(nominal<earliest||instructed<earliest){
           /* Chip, no ring (owner, 7 Aug 26). A tight turn is a note, not a
              problem to fix — and this was the ONLY TT that rang: the same-day
@@ -610,6 +647,10 @@ function validateCore(){
       const k=code+'|'+who.join(',')+'|'+msg; if(seen.has(k))return; seen.add(k);
       const w={sev:s,code,who,day:day.dow,di,msg,key,...(extra||{})};ws.push(w);all.push(w);};
     const kOf=(e:any)=>e&&(e.slot||e.key)||null;   // byE events carry slot (fly/shift) or key (the rest)
+    /* D502: include uncrewed formations; no invented puck penalty.
+       These ordinary issued warnings freeze normally. */
+    reportingIssuesForDay(DAYS[di]).forEach(issue=>add(issue.blocking?'hard':'adv',issue.code,[],issue.msg,
+      issue.lines.length?`it:${di}.${issue.gi}`:`${di}.${issue.gi}.${issue.li}.0.p`));
     /* An SC / AVALON / BB line is a SHIFT, not a sortie. Its crew still count
        as tasked and are still checked for clashes and qualification, but a
        handover is not a turn, a 12-hour watch is not a long flying day, and a
@@ -1005,7 +1046,7 @@ function validateCore(){
        the warning's own message already names Sunday and its end time. An
        unauthored previous week seeds empty maps and the guards below skip
        every man, byte-identical to the old REST[di]={} branch. */
-    const prevSeed:any=idx>0?ev[idx-1]:(PREVSUN=prevSundaySeed(CURWEEK));
+    const prevSeed:any=idx>0?ev[idx-1]:(PREVSUN=restDayAt(-1));
     crewRestDay(prevSeed,day,di,false,add);
     // crew combination matrix + OCU without IP — shown as puck rings
     /* a SPARE+SPARE overlap is seen from both formations' loops below, so the
@@ -1399,10 +1440,12 @@ function validateCore(){
      Monday when next week is viewed. The trace carries di:null (no in-week
      day to jump to): dayTraceHTML renders it as an informational row, and an
      unauthored, unedited next week seeds empty arrays and writes nothing. */
-  crewRestDay(ev[6],(NEXTMON=nextMondaySeed(CURWEEK)),null,true,null);
+  NEXTMON=restDayAt(7);
+  for(let index=7;index<=10;index++)crewRestDay(restDayAt(index-1),restDayAt(index),null,true,null);
   /* the crew-rest body, kept for the pre-drop query below (restIfPlaced) —
      the same closure the day loop ran, one body, now three callers */
   CREWREST_BODY=crewRestDay;
+  CREWREST_BODY.dayAt=restDayAt;
   XD_CACHE=new Map();
   WARN={all,byDay,sev,chip,dash,trace,fz,lv,marks,traces};
   return WARN;
@@ -1424,14 +1467,14 @@ function validateCore(){
    NOTHING HIDDEN → THE RAW BUNDLE ITSELF, so every byte of the old behaviour (and the reference parity) is untouched.
    `off(w)` answers for one warning; `xwk(key)` for a next-Monday key; `force` runs the replay with nothing hidden (the
    tests' proof that the replay rebuilds the very maps the day loop wrote). */
-export function shownOf(raw:any,off:(w:any)=>boolean,xwk?:(k:string)=>boolean,force?:boolean):any{
+export function shownOf(raw:any,off:(w:any)=>boolean,xwk?:(k:string,w?:any)=>boolean,force?:boolean):any{
   if(!raw||!raw.marks)return raw;
   let any=false; const cp=new Map<any,any>();
   const byDay=(raw.byDay||[]).map((g:any)=>{ if(!g||!g.warns)return g; let ch=false;
     const ws=g.warns.map((w:any)=>{ if(!off(w))return w; ch=true; const c={...w,off:true}; cp.set(w,c); return c; });
     if(ch)any=true; return ch?{...g,warns:ws}:g; });
   /* the key a cross-week mark's warning WILL have on next week's Monday (day 0 of that week) */
-  const xHid=(t:any)=>!!(xwk&&t.w&&t.w.di==null&&xwk(hideKey({...t.w,di:0})));
+  const xHid=(t:any)=>!!(xwk&&t.w&&t.w.di==null&&xwk(hideKey({...t.w,di:t.w.targetDi??0}),t.w));
   if(!any&&!force&&!(raw.traces||[]).some(xHid))return raw;
   const named:any={};
   byDay.forEach((g:any)=>{ if(!g||!g.warns)return; g.warns.forEach((w:any)=>{ if(w.off)return;
@@ -1444,7 +1487,7 @@ export function shownOf(raw:any,off:(w:any)=>boolean,xwk?:(k:string)=>boolean,fo
     else{dash[m.di]=dash[m.di]||{}; dash[m.di][m.id]=true; c.dash[m.di]=c.dash[m.di]||{}; c.dash[m.di][m.id]=true;} });
   (raw.traces||[]).forEach((t:any)=>{ const w=t.w;
     if(w&&(w.di==null?xHid(t):!has(w.di,w.code,t.id)))return;
-    trace[t.pdi]=trace[t.pdi]||{}; trace[t.pdi][t.id]=Object.assign(trace[t.pdi][t.id]||{},t.t); });
+    trace[t.pdi]=trace[t.pdi]||{}; trace[t.pdi][t.id]=mergeRestTrace(trace[t.pdi][t.id],t.t); });
   return {all:(raw.all||[]).map((w:any)=>cp.get(w)||w),byDay,sev,chip,dash,trace,fz,lv,marks:raw.marks,traces:raw.traces,raw};}
 /* the WORKING copy's hides, as the engine reads them (state/view.ts lends its set through HOOKS — the engine cannot import
    state); unset (an engine-only test), nothing is hidden */
@@ -1453,12 +1496,20 @@ const NOHIDES=new Set<string>();
 /* one shown bundle per raw bundle, under the working hides (a toggle always re-validates, so a raw bundle is never asked
    for twice under two sets — the signature is the belt beside those braces) */
 const SHOWN=new WeakMap<any,{sig:string,b:any}>();
+function externalHides(raw:any){
+  const sets=new Map<string,Set<string>>();
+  const address=(w:any)=>`${w?.targetWeek||''}|${w?.targetDi??0}`;
+  (raw?.traces||[]).forEach((t:any)=>{const w=t.w;if(!w||w.di!=null)return;
+    const key=address(w);if(!sets.has(key))sets.set(key,w.targetWeek?dayHidesIn(w.targetWeek,w.targetDi??0):nextMondayHides(CURWEEK));});
+  return {any:[...sets.values()].some(s=>s.size),sig:[...sets].map(([k,s])=>k+':'+[...s].sort().join('\u241f')).sort().join('\u241e'),
+    off:(k:string,w?:any)=>!!sets.get(address(w))?.has(k)};
+}
 function shownWorking(raw:any){
-  const hs=hidden(), xw=(raw&&raw.traces||[]).some((t:any)=>t.w&&t.w.di==null)?nextMondayHides(CURWEEK):NOHIDES;
-  if(!hs.size&&!xw.size)return raw;
-  const sig=[...hs].sort().join('\u241f')+'\u241e'+[...xw].sort().join('\u241f'), hit=SHOWN.get(raw);
+  const hs=hidden(), xw=externalHides(raw);
+  if(!hs.size&&!xw.any)return raw;
+  const sig=[...hs].sort().join('\u241f')+'\u241e'+xw.sig, hit=SHOWN.get(raw);
   if(hit&&hit.sig===sig)return hit.b;
-  const b=shownOf(raw,(w:any)=>hs.size>0&&hs.has(hideKey(w)),(k:string)=>xw.has(k));
+  const b=shownOf(raw,(w:any)=>hs.size>0&&hs.has(hideKey(w)),xw.off);
   SHOWN.set(raw,{sig,b}); return b;}
 /* ---- THE TWO DOCUMENTS (published-schedule flagging, spec §5) ---------------
    validate() computes the WORKING bundle exactly as before — validateCore() above
@@ -1495,12 +1546,12 @@ function faceWarn(){
   const raw=OFFICIAL, fz:any[]=[];
   approvedDays().forEach((di:any)=>{ const v=dayCurVer(di), s=v!=null?daySnapOf(di,v):null; if(s&&s.w)fz.push({di,v,w:s.w}); });
   if(!fz.length)return shownWorking(raw);
-  const hs=hidden(), xw=(raw&&raw.traces||[]).some((t:any)=>t.w&&t.w.di==null)?nextMondayHides(CURWEEK):NOHIDES;
-  const k=fz.map((x:any)=>`${x.di}=${x.v}`).join(',')+'\u241e'+[...hs].sort().join('\u241f')+'\u241e'+[...xw].sort().join('\u241f');
+  const hs=hidden(), xw=externalHides(raw);
+  const k=fz.map((x:any)=>`${x.di}=${x.v}`).join(',')+'\u241e'+[...hs].sort().join('\u241f')+'\u241e'+xw.sig;
   if(FACE&&FACE_OF===raw&&FACE_K===k)return FACE;
   const issued:any={}; fz.forEach(({di,w}:any)=>{ issued[di]=new Set<string>((w.wo||[]) as string[]); });
   const offBy=(w:any)=>{ const st:Set<string>=issued[w.di]||hs; return st.size>0&&st.has(hideKey(w)); };
-  const off=shownOf(raw,offBy,(key:string)=>xw.has(key));
+  const off=shownOf(raw,offBy,xw.off);
   const byDay=(off.byDay||[]).slice(), sev={...off.sev}, chip={...off.chip}, dash={...off.dash}, trace={...off.trace};
   const put=(m:any,di:any,v:any)=>{ if(v)m[di]=v; else delete m[di]; };
   const reword=rewordSlice;
@@ -1880,7 +1931,8 @@ export function restIfPlaced(id:any,key:any,from?:any){
   const base=strip(EVDAYS[di]);
   const today={...base,fly:[...base.fly.filter(notMine),legF],events:[...base.events.filter(notMine),legE]};
   let hit:any=null;
-  const probe={id,hit:(h:any)=>{hit=h;}};
+  const dayAt=(index:number)=>index===di?today:strip(CREWREST_BODY.dayAt(index));
+  const probe={id,dayAt,hit:(h:any)=>{hit=h;}};
   /* ONLY A NEW BREACH IS AN ANSWER — the same delta the drop toast reads. A
      man whose 08:15 leg already breaks today's rest is asked about a 14:00
      seat: the probe still sees the 08:15 leg and says "breach", but landing
@@ -1890,17 +1942,18 @@ export function restIfPlaced(id:any,key:any,from?:any){
   /* the RAW pass (rawWarn): a breach the scheduler has hidden is still there — placing him must not read as creating it */
   const already=(d:any,h:any)=>{const g=RAW_B.byDay&&RAW_B.byDay[d]; const w=g&&g.warns&&g.warns.find((x:any)=>x.code==='CREW_REST'&&(x.who||[]).indexOf(id)>=0); return !!w&&w.msg===h.msg;};
   /* backward — his own report today against what ended yesterday */
-  const prev=di>0?strip(EVDAYS[di-1]):PREVSUN;
+  const prev=dayAt(di-1);
   if(prev)CREWREST_BODY(prev,today,di,true,null,probe);
   if(hit&&!already(di,hit))return {dir:'back',di,dow:DAYS[di].dow,earliest:hit.earliest,leaveBy:hit.leaveBy,msg:hit.msg};
   hit=null;
   /* forward — this leg's end against his first report tomorrow */
-  const next=di<6?strip(EVDAYS[di+1]):NEXTMON;
-  if(next&&next.fly)CREWREST_BODY({...today,di:null},next,di<6?di+1:null,true,null,probe);
-  if(hit){
-    const t=di===6?((RAW_B.trace&&RAW_B.trace[6]&&RAW_B.trace[6][id])||null):null;
-    const dup=di<6?already(di+1,hit):!!(t&&t.leaveBy!=null&&t.msg===hit.msg);
-    if(!dup)return {dir:'fwd',di:di<6?di+1:null,dow:next.dow,earliest:hit.earliest,leaveBy:hit.leaveBy,msg:hit.msg};
+  for(let index=di+1;index<=di+4;index++){
+    hit=null;const next=dayAt(index), targetDi=index<7?index:null;
+    if(next&&next.fly)CREWREST_BODY(dayAt(index-1),next,targetDi,true,null,probe);
+    if(!hit)continue;
+    const entries=restTraceEntries(RAW_B.trace?.[di]?.[id]);
+    const dup=targetDi!=null?already(targetDi,hit):entries.some((t:any)=>t.targetDi===next.targetDi&&t.targetWeek===next.targetWeek&&t.msg===hit.msg);
+    if(!dup)return {dir:'fwd',di:targetDi,dow:next.dow,earliest:hit.earliest,leaveBy:hit.leaveBy,msg:hit.msg};
   }
   return null;
 }
@@ -1923,7 +1976,7 @@ export function crossDayIfPlaced(id:any,key:any,fromKey?:any){
   if(r)out=`${ordinal(r.n)} day in a row — breaks ${r.di==null?'next Monday':r.dow} (${VCONF.maxRun} is the limit)`;
   else{
     const c=restIfPlaced(id,key,from);
-    if(c)out=c.dir==='back'?`crew rest — not clear until ${hm24(c.earliest)}`:`crew rest — breaks ${c.di==null?'next Monday':c.dow}: he must be gone by ${c.leaveBy}`;
+    if(c)out=c.dir==='back'?`crew rest — not clear until ${hm24(c.earliest)}`:`crew rest — breaks ${c.di==null?'next '+c.dow:c.dow}: he must be gone by ${c.leaveBy}`;
   }
   XD_CACHE.set(ck,out);
   return out;

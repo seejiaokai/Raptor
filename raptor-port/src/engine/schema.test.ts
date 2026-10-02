@@ -22,6 +22,10 @@ import { WAVETPL_CFG, addWaveTpl, addWaveTplLine, setWaveTplLine, waveFromTpl, w
 import { DUTYTPL_CFG, addTpl, setTplWave, blockFromTpl, dutyTplReset } from './dutytpl'
 import { inpId } from './inputs'
 import { alIssue, markEdit } from './publish'
+import { validReportingFixture } from '../testing/reporting-fixture'
+// D502: valid reporting precondition before baseline cloning; actions/assertions unchanged.
+validReportingFixture()
+
 
 /* ---- the mini-DSL --------------------------------------------------------
    'string' | 'number' | 'boolean'   a primitive; a trailing '?' allows absent

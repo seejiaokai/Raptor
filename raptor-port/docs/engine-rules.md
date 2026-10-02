@@ -46,12 +46,17 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - **Typed pre-flight clocks follow a small-hours T/O across midnight.** When
   the configured brief lead already puts the default brief on the previous
   evening, an indicated B later on the clock than T/O is shifted back one day;
-  the published in-time does the same when `reportLead` crosses midnight.
+  the reporting clock follows the separate D503 rule below, while SC's typed B
+  retains its existing `reportLead`-bounded midnight treatment.
   Thus a 00:30 T/O can carry B 22:10 and an in-time of 21:30 as negative
   minutes on the previous evening, exactly like its blank-B default. The roll
-  is deliberately limited to that small-hours boundary: a later clock typed
-  against an ordinary daytime sortie remains visible as typed rather than
-  silently becoming a nearly 24-hour lead.
+  for typed flight B is deliberately limited to that small-hours boundary:
+  a later B against a daytime sortie remains visible as typed rather than
+  silently becoming a nearly 24-hour lead. **D503 (2 Oct 26) broadens flight
+  IN/RALLY only:** any applicable reporting clock later than that formation's
+  take-off is the immediately previous day, at most one day back. Resolve
+  the date before comparing duplicate instructions. SC, AVALON and BB retain
+  their existing shift/exemption semantics; do not apply this broad roll to SC B.
 - **A TIME CELL TAKES A TIME, OR NOTHING** (owner, 12 Aug 26 — "start and end
   times must be numbers etc. if not reject the input"). `slots.ts`'s `txtSet`
   refuses any value in the `TIME_TXT` family that `hmOK` (`time.ts`) does not
@@ -180,10 +185,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   of that week, session edits included — exactly what a scheduler sees on
   navigating back to it. Nothing is invented and nothing is silently wrong.
 - **The in-time line's grammar** (owner, 21 Aug 26 — "accept any form of
-  combination", "U make the call on what u detect"). `events.ts:intimeTime`
+  combination", "U make the call on what u detect"). `reporting.ts:intimeTime`
   reads the FIRST valid clock time in a line — `0900`, `09:00`, `0900H`,
   `09:00H`, `0900L`, `09:00L`, any case — and never misreads glued tokens
-  (`FL240`) or impossible clocks (`2590`). `intimeMap` scopes each line by
+  (`FL240`) or impossible clocks (`2590`). `parseReportingLines` scopes each line by
   the WAVE'S OWN formation callsigns: a line naming a formation's callsign
   anywhere in its text is that formation's in-time; a line naming none
   covers every formation that has no line of its own; a specific line beats
@@ -194,6 +199,66 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   is what keeps parity untouched where data exercises it; the wider grammar
   is a deliberate port divergence. Pinned in `intimes.test.ts`.
   **D500 reaffirmed (2 Oct 26):** preserve the existing formation-name recognition and free-text input when designing In-time / Rally. A named line applies to that formation; an unnamed line supplies the wave-wide fallback. Existing specific-over-wide precedence is not changed by the clarification.
+
+- **In-time / Rally (D497–D507, 2 Oct 26).** `resolveReporting` is the shared
+  pure interpretation for event reports, wave headers, the warning collector
+  and publication. Bounded, case-insensitive IN TIME / IN-TIME / INTIME and
+  RALLY identify each activity. One first-valid clock bearing both labels
+  applies to both. A clock-only legacy instruction remains IN; a clockless
+  `RALLY AFTER IN TIME` (or `RALLY AFTER IN`) inherits its applicable IN.
+  Other clockless notes stay inert. Formation matching is bounded against only
+  this wave's actual formation names anywhere in the whole line, including
+  remarks; unmatched words and personal names do not create another target.
+  Specific-over-wide is resolved separately per activity (D505), then the
+  earliest signed actual instant wins duplicates independent of row order
+  (D506). The report is the earlier of resolved IN/RALLY; missing both keeps
+  the existing step fallback. An earlier qualifying commitment still governs
+  crew rest/work-span through the existing consumer rules; ordinary busy
+  windows, SANS min(report,step), nominal OIL earning, late-show and exemptions
+  keep their distinct meanings. There is no stored target/date or migration.
+
+- **Chronology and publication (D502/D507).** Present IN → RALLY → B → TO → LD
+  stages may be equal. Landing earlier on the clock retains the existing
+  overnight roll; typed B keeps its existing bounded rule. Every active valid-TO
+  ordinary formation is checked, including an uncrewed row. A reversed pair
+  produces a formation-named `REPORT_ORDER` warning with both actual times,
+  and prevents first publication, AL and correcting reissue. The command
+  checks before pending/signature reconciliation or issuance, and the raw
+  engine doors repeat the guard. Refusal changes no issued record, signature,
+  pending content or history. Hiding the warning never bypasses the pure check.
+  Draft edits remain saveable. Completed malformed clock tokens and immediate
+  rally without applicable IN produce `REPORT_UNRESOLVED` advisories; these
+  alone do not block and no new compulsory reporting field is introduced.
+  These list warnings do not invent person puck marks. They follow the existing
+  frozen-warning policy, while validator B reads current Logic, not the printed
+  issued B suggestion (D186). Exact tests and the register:
+  `docs/superpowers/specs/2026-10-02-rally-behaviour-register.md`.
+
+- **Signed header versus today's availability bands (D503).** `waveInTime`
+  selects the earliest applicable signed reporting instant; the header and
+  add-line seed wrap it with `hm24`. Band boundaries alone clip to [0,1440].
+  A bucket made empty by previous-day boundaries carries `priorEmpty` and has
+  no available members or wave-specific all-day total; the global Available
+  all day list remains. This includes a negative-origin first band ending
+  exactly00:00; same-day equal-start buckets retain old strict-overlap
+  behaviour. Normal wave auto-sorting remains by take-off. No routine Reports,
+  previous-day explanation row or Change day control is added.
+
+- **Dated rest after signed reporting (2 Oct 26, final-inspection repair).**
+  The older one-predecessor descriptions below are historical: the shared
+  validator/REST/placement body now examines four authored predecessor dates.
+  `datedRestSeed` reads actual adjacent-week dates through the same working/
+  official/frozen-input world as other seeds. Ends shift once to the target
+  axis; the latest qualifying end keeps its actual source day and slot.
+  This covers overnight duty/flight/input plus empty dates and the existing
+  eight-hour debrief/24-hour rest maximum. Ends after the report still breach.
+  Earlier-source removal and candidate placement overlay every date used by
+  backward/forward probes. Forward phantom targets reach next Monday–Thursday.
+  Multiple crew-rest targets from one source survive with run traces; hide
+  replay shares the merge rule and uses each external target's actual week/day.
+  Default positive-time results retain parity; no report rolls back two days.
+  Exact arithmetic/world/provenance pins: `rally-consumers.test.ts` and
+  `rally-dated-rest.test.ts`. Full dispositions: Rally rest-repair plan.
 
 ### How crew-rest, long-day and turn warnings are worded and marked
 
@@ -959,8 +1024,11 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   day with the candidate leg cloned from a sibling of the same formation,
   backward against yesterday and forward against tomorrow (next Monday's seed
   past Sunday); `crossDayIfPlaced` folds both into the one line `slotBar`
-  prints last. One body each — the query can never disagree with the flag the
-  drop then raises. Guards: exempt lines (`saExempt`) get no answer; a
+  prints last. Both use the same rest evaluator, but **an empty formation has
+  no sibling leg to clone and gets no predictive crew-rest answer**; its first
+  committed placement is validated normally. This baseline limitation is pinned
+  by `runtrace.test.ts` and filed as `[REST-FIRST-CREW-HINT]`; it is not an
+  exemption or owner approval. Guards: exempt lines (`saExempt`) get no answer; a
   seat-to-seat move passes `fromKey` so the seat being left reads as off (the
   run: a day off when it was his only event; crew rest: that leg removed from
   its day); answers are memoised per `(id, key, fromKey)` until the next
