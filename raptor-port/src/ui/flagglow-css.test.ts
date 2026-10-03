@@ -1,4 +1,5 @@
 // @vitest-environment node — reads a stylesheet off disk (the lift-css.test.ts shape)
+import { readSchedulerCss } from '../testing/scheduler-css'
 /* THE RINGS ON A PUCK — two of his rulings, one witness. jsdom paints nothing, so the stylesheet is read and the cascade
    worked out by hand for the rules that sit on the puck itself.
 
@@ -24,10 +25,9 @@
    ghost, the board, a published look, the ALL AVAIL window) are the walk's to see (the evidence sheet §3a, W1); and the
    focus is kept off the purple by ORDER in highlights.ts (it returns before adding "you"), pinned in interact.test.tsx
    "a focused warning takes the purple…". */
-import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
 
-const css = readFileSync(new URL('./scheduler.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+const css = readSchedulerCss().replace(/\/\*[\s\S]*?\*\//g, '')
 const RULES = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
   .map((m, order) => ({ order, sels: m[1]!.split(',').map(s => s.trim().replace(/\s+/g, ' ')), body: m[2]!.replace(/\s+/g, ' ') }))
 /** box-shadow layers: split on the commas that are not inside rgba(...) */

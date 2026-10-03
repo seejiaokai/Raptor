@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { readSchedulerCss } from '../testing/scheduler-css'
 /* [HUMAN-RETEST] the amendment system (24 Sep 26) — the gaps the re-test found, each
    pinned through the production functions the screens call. The rules they enforce are
    lines of raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md
@@ -520,7 +521,7 @@ describe('the ⓘ beside the issued face describes the issued version (Astra #2,
    drawn; the rings stay on the puck. A stylesheet guard, since the test browser paints nothing (AM19, AM51). */
 describe('the view page\'s pending hint never takes a warning ring\'s place (Fable final read #3, AM19)', () => {
   it('no rule draws it as an outline on the puck; it is the seat\'s', () => {
-    const css = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'scheduler.css'), 'utf8')
+    const css = readSchedulerCss()
     const rules = css.replace(/\/\*[\s\S]*?\*\//g, '').split('}')
     const onPuck = rules.filter((r) => /(^|,)\s*\.seat\[data-alp\]\s+\.puck\s*(,|\{)/.test(r) && /outline\s*:/.test(r))
     expect(onPuck, 'an outline on the puck hides the dashed and dotted rings').toEqual([])

@@ -1,3 +1,4 @@
+import { readSchedulerCss } from '../testing/scheduler-css'
 /* THE STYLESHEET MAY NOT RESTYLE THE WHOLE PAGE ON A DRAG (3 Sep 26, the
    slow-computer cut). Measured on the built app by toggling each body class
    alone: `body.tdrag{touch-action:none;user-select:none}` made Blink recompute
@@ -11,10 +12,9 @@
    · `body.tdrag` / `body.mdrag` never appear as a bare subject, only as the
      ancestor of a NAMED descendant (`body.tdrag .hscroll`);
    · the mouse ghost is the thing that carries the grabbing cursor. */
-import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
-const css = readFileSync(new URL('./scheduler.css', import.meta.url), 'utf8')
+const css = readSchedulerCss()
   .replace(/\/\*[\s\S]*?\*\//g, '')                       // comments explain the rule; only rules count
 
 /* every rule as [selector, body], selectors split on commas */

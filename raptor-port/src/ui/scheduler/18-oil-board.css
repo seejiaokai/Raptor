@@ -1,0 +1,154 @@
+/* ======================================================================
+   OIL ON THE SCHEDULE — [OIL-AUTO-REMOVE], owner 21 Sep 26
+   ====================================================================== */
+/* THE GREEN EDGE (§2.10). The owner asked to see OIL shown POSITIVELY rather
+   than its absence, three treatments were drawn on one real Saturday, and he
+   chose the edge bar: "c looks good."
+     · A bar down the LEFT edge of the puck. FULL height = a full day; the
+       BOTTOM HALF, a shade paler = half a day. Height is the structural signal
+       that survives colour-blindness; the tint is the one that survives being
+       read alone with nothing to compare against.
+     · It costs NO WIDTH — a pseudo-element inside the puck's own box — so no
+       callsign clips and the measured puck geometry (--puck-w/--puck-h and the
+       geometry gate) is untouched.
+     · Weekend / public-holiday days only. Five days a week the schedule is
+       byte-identical, because nothing emits the class at all.
+   THE COLLISION, and the call made. The crew palette ALREADY draws a green
+   left inset on a puck — `.rpuck.standby .puck{box-shadow:inset 2px 0 0
+   var(--ok)}`, meaning "on standby", with a grey twin for "busy" — and a
+   scheduler sees the palette and the board at once on a Saturday with an SC
+   wave. So the OIL bar is deliberately drawn apart from it in three ways at
+   once: a 4px SOLID bar against a 2px inset, its OWN colour token (--oil, a
+   deeper leaf green, not --ok), and only ever on a day that can earn. The
+   palette's mark is NOT changed for this. */
+:root{--oil:#2FA65C; --oil-half:#7FC79A}
+/* DRAWN AS A BACKGROUND GRADIENT, NOT A PSEUDO-ELEMENT. A puck's ::before is
+   RESERVED for the drag ghost's lift veil and its ::after for the SANS edge —
+   lift-css.test.ts pins both, and the veil has to sit on the one pseudo-element
+   the ghost's clone leaves free. A 4px gradient stripe costs no node, no width
+   and no pseudo-element, so it cannot collide with either. */
+.puck.oilbar{background-repeat:no-repeat}
+.puck.oilbar-fo{background-image:linear-gradient(var(--oil),var(--oil));background-size:4px 100%;background-position:left top}
+/* half a day: the BOTTOM HALF only, and a shade paler — height is the signal
+   that survives colour-blindness, the tint the one that survives being read
+   alone with nothing to compare against */
+.puck.oilbar-ho{background-image:linear-gradient(var(--oil-half),var(--oil-half));background-size:4px 50%;background-position:left bottom}
+/* AND IT MUST SURVIVE A CHIP SITTING ON IT (owner, 21 Sep 26 — "the green OIL
+   strip on the left side of the puck for Piston is not showing on top of the
+   advisory"). The stripe is the PUCK's background, and the late/advisory chip is
+   the puck's first child with a solid background of its own — so on any puck
+   wearing one, the chip painted straight over the 4px the stripe lives in and
+   the man read as earning nothing. Re-drawing the same stripe on the chip costs
+   no node and no width and cannot collide with the two reserved
+   pseudo-elements (the ghost's lift veil and the SANS edge). Written as
+   background-image, not the shorthand, so it layers over the chip's own colour;
+   it sits after the .lchip colour rules deliberately, and equal specificity
+   means the later one wins. */
+.puck.oilbar-fo .lchip{background-image:linear-gradient(var(--oil),var(--oil));background-size:4px 100%;background-position:left top;background-repeat:no-repeat}
+.puck.oilbar-ho .lchip{background-image:linear-gradient(var(--oil-half),var(--oil-half));background-size:4px 50%;background-position:left bottom;background-repeat:no-repeat}
+
+/* THE OIL EARN MODE (§2.1). The button lights, the board goes read-only for
+   schedule editing, and every puck that earns glows. Solid glow = a full day,
+   an outline only = a half (§2.1 item 4), so the two are distinct without
+   reading the figure. */
+.sb-panel.oilbar.on{border-color:var(--oil)}
+.mbtn.oilbtn.on{background:var(--oil);border-color:var(--oil);color:#04220f}
+.mbtn.oilblank.on{background:var(--adv);border-color:var(--adv);color:#12100a}
+.oilnote{padding:4px 8px;font-size:11px;color:var(--ink-2)}
+/* a puck that earns: the whole puck rings green. A HALF day is an outline only
+   — the same solid/outline distinction the owner asked for. */
+.puck.oilglow{box-shadow:0 0 0 2px var(--oil),0 0 8px rgba(47,166,92,.5)}
+.puck.oilglow.half{box-shadow:0 0 0 2px var(--oil)}
+.puck.oildim{opacity:.5}
+.puck .role.oilamt{background:var(--oil);color:#04220f}
+.puck .role.oilamt.half{background:var(--oil-half);color:#04220f}
+.puck .role.oilno{background:var(--ink-3);color:var(--panel)}
+/* THE DAY'S CONTROL BAR — Templates + OIL Earn in ONE row (owner, 21 Sep 26:
+   "Perhaps combine them into a single bar? … It can still remain on the phone at
+   that position? just merged", and "a looks better" of the two comps drawn for
+   him). It replaces two full-width panels, each of which cost a row and read as
+   part of the schedule rather than as controls.
+   The buttons take a TINT of the app's own accent, not the solid fill: solid is
+   Done and Publish day, and has to keep meaning "this finishes the job". */
+.daybar .sb-ph{gap:6px}
+.daybar-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;letter-spacing:.09em}
+.daybar-h.on{color:var(--oil)}
+.daybar.oilon{border-color:var(--oil)}
+.mbtn.daybtn{padding:5px 10px;font-size:10.5px;color:var(--ink);
+  background:color-mix(in srgb,var(--accent) 14%,transparent);border-color:var(--accent)}
+.mbtn.daybtn:hover{background:color-mix(in srgb,var(--accent) 24%,transparent)}
+/* the mode's own three: the way out is green, the day blanket amber while it is
+   ON — amber is "look at this", which a day switched off deserves */
+.mbtn.daybtn.done{background:var(--oil);border-color:var(--oil);color:#04220f}
+.mbtn.daybtn.blank{background:color-mix(in srgb,var(--adv) 16%,transparent);border-color:var(--adv)}
+.mbtn.daybtn.blank.on{background:var(--adv);border-color:var(--adv);color:#12100a}
+.daybar-note{padding:6px 11px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-2)}
+/* WHERE EACH PLACEMENT SHOWS. Phone: the bar is the whole control. Desktop: the
+   way IN rides the board's action row, so the bar appears only inside the mode,
+   where it carries the blanket and the instruction rather than a second button. */
+.abtn.sb-daybtn{background:color-mix(in srgb,var(--accent) 14%,transparent);border-color:var(--accent);color:var(--ink)}
+.abtn.sb-oilbtn.on{background:var(--oil);border-color:var(--oil);color:#04220f}
+/* `display:contents` so the two buttons lay out in .sb-actions' flex row exactly
+   as if this wrapper were not there — and `display:none` on a phone, so no
+   invisible element is ever a CHILD of that bar (the geometry gate counts its
+   children to prove they share one line, and a hidden one reads as a second row). */
+.sb-dayctl{display:contents}
+@media (max-width:820px){ .sb-dayctl{display:none} }
+/* the board's bell at the board's own button height, every width ([UNDO-TOPBAR] D349 (3)): the top bar's 34×32 bell made
+   the board's bar 2px taller than `main`'s at 1440 and at 844×390 (the Phase C walk measured 106 → 108, 186 → 188) */
+.sb-actions .bellbtn{height:30px;flex:0 0 auto}
+/* THE ⋯ MENU ([UNDO-TOPBAR] — owner D349 (3), 28 Sep 26): on a phone, Sort all and the Phone / Desktop layout switch sit
+   behind one ⋯ in the day row, beside the highlighter (SchedBoard.tsx). Not drawn on a desktop, whose bar keeps Sort all
+   as a button. It takes the row's slack (the highlighter's old margin-right:auto), so the search keeps the right. */
+.sb-morewrap{display:none;position:relative}
+@media (max-width:820px){
+  .sb-morewrap{display:inline-flex;flex:0 0 auto;margin-right:auto}
+  .sb-nav .sb-hltog{margin-right:0}
+  .sb-nav .sb-more{width:30px;min-width:0;height:26px;padding:0;display:inline-flex;align-items:center;justify-content:center;
+    font-size:17px;line-height:1;letter-spacing:.02em}
+  .sb-more.on{color:var(--accent);border-color:rgba(59,198,232,.6);background:rgba(59,198,232,.16)}
+}
+.sb-moremenu{position:absolute;top:calc(100% + 6px);left:0;z-index:30;display:flex;flex-direction:column;min-width:176px;
+  padding:4px;background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.5)}
+.sb-moreitem{display:flex;align-items:center;gap:9px;min-height:38px;padding:8px 11px;background:none;border:0;border-radius:7px;
+  color:var(--ink);font:inherit;font-size:13px;font-weight:500;text-align:left;cursor:pointer;white-space:nowrap}
+.sb-moreitem .bi{font-style:normal;width:18px;text-align:center}
+.sb-moreitem:hover,.sb-moreitem:focus-visible{background:var(--raised)}
+.sb-moreitem:disabled{opacity:.45;cursor:default}
+@media (min-width:821px){ .sb-panel.daybar:not(.oilon){display:none} }
+
+/* the item's own switch: its name reads as a control while the mode is on */
+.oilitem{display:flex;align-items:center;padding:0 4px;border-radius:4px;cursor:pointer;
+  font-size:11px;font-weight:600;min-height:20px;border:1px solid transparent;overflow:hidden}
+.oilitem.on{background:rgba(47,166,92,.18);border-color:var(--oil);color:var(--ink)}
+.oilitem.off{background:var(--panel-2);border-color:var(--edge-2);color:var(--ink-3);text-decoration:line-through}
+/* OFF BY DEFAULT, not switched off by hand — the four exempt kinds (D24). It
+   must not be green (green says "earning", and these earn nothing) and it must
+   not be struck out (nobody struck it out; one tap turns it on). Quiet, upright,
+   clearly still a control. Added after the 22 Sep 26 walk found an AVALON line
+   painted green while its own words said it earns nothing. */
+.oilitem.dflt{background:var(--panel-2);border-color:var(--edge-2);color:var(--ink-2)}
+.oilitem.none{cursor:default;color:var(--ink-3)}
+.seat.oilpk{cursor:pointer}
+.seat.oilpk.inert{cursor:default}
+/* the sentinel's count chip beside an ALL / ALL AVAIL puck (§7.6): plain when
+   the people behind it agree, green with a fraction when they are MIXED — a
+   mixed puck and an earns-nothing puck both wear no bar, so the chip is what
+   tells them apart. */
+.oilcount{display:inline-flex;align-items:center;margin-left:3px;padding:0 4px;border-radius:4px;
+  font-size:9px;font-weight:700;background:var(--panel-2);color:var(--ink-2);border:1px solid var(--edge-2);cursor:pointer}
+.oilcount.some{background:rgba(47,166,92,.2);border-color:var(--oil);color:var(--ink)}
+/* THE COUNT ANSWERS A PRESS ITSELF — and that is what makes a FINGER land on it ([COUNT-CHIP-PHONE-TAP], the
+   [DB-READINESS] phase 7 walk; Astra's final read 1). A browser snaps a touch to the nearest element it believes
+   responds to a tap; the count's click is handled on the document, so it was not one, and on the phone's week the puck
+   2px above it took every finger tap — the row armed, or the puck was selected, and the window never opened (a mouse
+   click at the same point always worked, so every earlier check passed). A pressed state on the count itself makes it
+   the touch's own target: measured in Chromium's phone emulation, every event of the tap moved from the puck to the
+   count. No size changes — the row's measured heights stand. Pinned by e2e/availwin.spec.ts "phone, by finger", which
+   drives a real touch. Do not remove this rule as cosmetic. */
+.oilcount:active{filter:brightness(1.3)}
+/* the OIL question nobody has answered yet, on an Inputs row (Fable F6) — the
+   same chip as the revise control, in the warning colour, so it reads as
+   something waiting rather than something already decided */
+.roil.ask{color:var(--warn);border-color:var(--warn)}
+

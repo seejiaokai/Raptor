@@ -1,3 +1,4 @@
+import { readSchedulerCss } from '../testing/scheduler-css'
 /* His find on the Insights preview, 3 Oct 26 (D536): on his iPhone the Insights window's title bar and ✕ sat under the
    browser's address bar and no scrolling reached them. A phone pop-up window is a bottom sheet (29 Aug 26), and its
    height limit was written in `vh` — on an iPhone that is the screen WITHOUT the browser's bars, so with the bars showing
@@ -6,11 +7,8 @@
    test can go red on this: the stylesheet itself is pinned — the sheet's limit is measured against the visible screen
    (`%` of the fixed backdrop, then `dvh`), never left as `vh`. His look on his own phone is the proof. */
 import { describe, expect, it } from 'vitest'
-import { readFileSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 
-const css = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'scheduler.css'), 'utf8')
+const css = readSchedulerCss()
 /* every `max-height` value of the `.modal-box{…}` rule that starts at `from`, in the order written (the last valid wins) */
 const limits = (from: number) => {
   const open = css.indexOf('.modal-box{', from), close = css.indexOf('}', open)

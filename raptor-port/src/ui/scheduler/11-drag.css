@@ -1,0 +1,181 @@
+/* BOTH GHOSTS RIDE THEIR OWN COMPOSITOR LAYER AND MOVE BY TRANSFORM (6 Sep 26,
+   traced on the built app at 4× CPU). Moved by inline left/top, a fixed
+   element in the page's own layer made the browser lay out and REPAINT the
+   whole page on every pointer move (~170ms a move on the slow laptop, a ghost
+   crawling at ~6fps). `will-change:transform` gives the ghost its own layer
+   and a translate() moves it with no page layout and no page paint; left/top
+   are pinned at 0 so the transform is the whole position (drag.ts tdOver /
+   moveDragImage). It does NOT stop the page RE-LAYERISING on every move
+   (~50ms at 4× — this page carries ~230 compositor layers, see drag.ts
+   ghostXf); no ghost variant does, measured.
+   THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26) — inset, so it survives
+   every clip; the drop shadow stays for depth, and both ride the one
+   box-shadow written on the .lift compound just below .dragimg.
+   THE PUCK'S CORNER (owner, 7 Sep 26, from his phone: the ring round a carried
+   puck "should follow the shape of the curved edges of the puck"). This ghost
+   used to clone the [data-drag] SHELL — a seat, a bare flex shell with no
+   corner of its own, so the veil below (which takes its corner from this
+   element) drew a SQUARE ring round a rounded puck; and from the AIRCREW
+   drawer a roster row as wide as its column, so the ring boxed empty space
+   beside the name (measured on the built app: 156px of it). It IS the puck
+   now, as the mouse's ghost always was (drag.ts tdArm clones `.puck` for both
+   pointers), and wears the puck's own corner; the declaration here is the
+   fallback for a source with no .puck inside it, and one number either way. */
+.tdghost{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520!important;pointer-events:none;margin:0!important;
+  opacity:.92;border-radius:var(--puck-r)}
+/* mouse drag: the puck ghost the PAGE draws under the cursor (drag.ts
+   setDragImage / moveDragImage) — the browser itself is handed a blank pixel,
+   so no platform snapshot is ever composed (the white card a secured or
+   remote-rendered browser drew around the puck, owner 3 Sep 26). The touch
+   ghost's recipe, minus the centring: this one is anchored where the cursor
+   grabbed, the offset folded into its translate. Sized inline from the live
+   puck's rect. It is HIT-TESTABLE and carries the grabbing cursor (the
+   slow-computer cut, 3 Sep 26): the ghost rides exactly under the pointer for
+   the whole drag, so putting `cursor:grabbing` on it shows the closed hand
+   everywhere without restyling anything else — `body.mdrag{cursor:…}` did the
+   same job by INHERITANCE, which made Blink recompute the style of every
+   element under body (~5k) at arm and at drop. drag.ts's hit-test skips the
+   ghost (elementsFromPoint — measured 6 Sep 26: toggling the ghost's
+   pointer-events around a single elementFromPoint instead rewrote its
+   hit-test data every move, repainting it and re-layerising the page), and
+   the drop removes it before its own hit-test.
+   THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26) — see below.
+   z-index IS !important LIKE THE POSITION BESIDE IT (fix, 7 Sep 26, found in
+   the live drive). A ghost is a CLONE, so it arrives wearing whatever state
+   classes the original had, and two of those name a stacking order of their
+   own: `.puck.me{z-index:2}` (the View-as puck) and `.puck.wfoc{z-index:5}` (a
+   puck lit by a clicked warning), both (0,2,0) against this rule's (0,1,0).
+   Measured in Chromium: the mouse ghost of a View-as puck computed `z-index:2`
+   and was painted UNDER the board — dragging your own puck showed no ghost at
+   all, ring or no ring. The ghost is a detached child of <body> and its layer
+   is the machine's business, not the cloned node's, which is exactly why
+   position/left/top/margin were already !important here; z-index was the one
+   that got away. Same on .tdghost above, which clones a SEAT: nothing gives a
+   seat a z-index today, and the ghost must not start depending on that. */
+.dragimg{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520!important;pointer-events:auto;cursor:grabbing;margin:0!important;opacity:.92}
+/* THE PICKED-UP BOX IS THE SHARED .lift (owner, 6 Sep 26 — "a cyan box around
+   the perimeter, not individual boxes"; src/ui/lift.ts adds the class, drag.ts
+   tdArm/setDragImage). INSET, so it is even on every side and no clip can eat
+   it, and the ghosts' own 2px accent OUTLINE — drawn outside the border box, a
+   different look from every other picked-up thing — is gone, with the 4px
+   radius that went with it: a ghost is a CLONE, so the ring follows the corner
+   of the thing being carried (a crew puck's 3px), which is the point of the
+   recipe naming no radius of its own. The dark drop shadow STAYS: it is what
+   lifts the ghost off the page, it is neutral rather than accent, and nothing
+   clips a fixed child of <body>. Both layers must ride ONE box-shadow, and the
+   rule is written on the `.lift` COMPOUND because the recipe's own
+   `.lift{box-shadow:var(--lift-box)}` sits later in this file — at equal
+   specificity it would replace the depth shadow outright and the ghost would
+   read as part of the page. */
+/* [GHOST-FLAG-SHADOW] (28 Sep 26): THE DEPTH SHADOW MOVED TO THE VEIL BELOW, and this compound now sets NO box-shadow.
+   It carried the depth here, in the same property the flag rings use — so the thin red, dashed, grey-note, "this is you"
+   and clicked-warning rings (!important, or more specific) ATE the depth shadow, and a plain amber advisory ring (same
+   specificity, earlier) was eaten BY it: a dragged amber puck lost its ring. On the veil the depth is its own property,
+   so every ghost keeps its own ring AND reads as lifted. The veil is a child, so the puck's own overflow clip would cut
+   its OUTER shadow: the lifted ghost lifts the clip, as `.haswhy` above already does while the hover reason shows (a
+   long name stays cut — `.puck .nm` clips itself). A filter was the other way; it shadowed the hover reason too
+   (Astra 05). Pinned by lift-css.test.ts and e2e/geometry.spec.ts; walk sf/sf-b-ghost.mjs. */
+.tdghost.lift,.dragimg.lift{overflow:visible}
+/* …and BOTH puck ghosts draw the accent on a VEIL pseudo-element. Two different
+   faults, one cure:
+   - THE FINGER's ghost (7 Sep 26, found in the live drive and measured edge by
+     edge on the built app: no cyan on any of the four). tdArm cloned the whole
+     [data-drag] SEAT for a touch drag then, and that seat was filled edge to
+     edge by an opaque .puck — an INSET shadow paints in the element's OWN
+     background layer, UNDER its children, so the ring was in the computed
+     style and invisible on the screen. (Later that day the finger's ghost
+     became the puck itself — see .tdghost above — which puts it in the mouse
+     ghost's case below; the veil stays for that reason.)
+   - THE MOUSE's ghost (fix wave, 7 Sep 26). It IS the puck — setDragImage and
+     tdArm clone `.puck`, not the seat — so it inherits every state rule the
+     puck already wears, and three of those carry !important: the "this is you"
+     purple ring (`.puck.me:not(…)`, unflagged only since D270, 27 Sep 26),
+     `.puck.boxred` (a hard conflict) and `.puck.boxdash` (7 Sep 26 there were
+     five — `.puck.me.boxred` / `.puck.me.boxdash` went with D270). No specificity beats an
+     !important declaration, so dragging your own puck or a conflicted one
+     showed the state ring and no cyan at all — and, the depth shadow being
+     replaced with it, nothing that read as picked up. (`.puck.warn.hard` is the
+     same shape one rung down: (0,3,0), no !important needed to win.)
+   A veil owns its own box-shadow property and paints OVER the clone's contents,
+   which answers both — the same answer .lift-land::after already gives a landing
+   on a seat.
+   ::BEFORE, NOT ::after, and z-index above the clone's children. A clone brings
+   the original's pseudo-elements with it, and ::after is TAKEN on exactly these
+   two nodes (the seat's mattered while the finger cloned the seat; the puck's
+   alone keeps the veil on ::before today): `.seat[data-alc]::after` is the AL amendment badge (its
+   `background:var(--alc)` and padding survive `content:''` + `inset:0` and would
+   paint a solid AL-coloured block over a finger-dragged ghost on any published
+   day being amended) and `.puck.san::after` is the SANS purple edge (its
+   `width:4px` survives `inset:0` — over-constrained, so `right` is dropped — and
+   the veil would shrink to a 4px bar at the wrong edge). Nothing in this file
+   gives a seat or a puck a ::before, so the veil owns it outright and both
+   badges keep painting; the z-index is what puts it back on top, since a
+   ::before is the FIRST child and would otherwise paint under the clone's
+   contents (5 clears the badge's and the SANS stripe's own 4, so the ring closes
+   on all four edges — which is the whole ask).
+   The chip ghost needs no veil either way: it clones a `.ic-chip` with no opaque
+   child, and its state rules (`.ic-chip.red/.amb/.san`) are ordinary (0,2,0)
+   pairs that `.ic-ghost.lift` already out-ranks from later in this file. The
+   depth shadow above is an OUTER shadow on the element and was never obscured. */
+.tdghost.lift::before,.dragimg.lift::before{content:'';position:absolute;inset:0;border-radius:inherit;
+  pointer-events:none;z-index:5;box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.6)}
+/* body.tdrag / body.mdrag are JS STATE MARKERS ONLY — no rule may give them a
+   declaration of their own (the slow-computer cut, 3 Sep 26). Measured by
+   toggling each class alone on the built app: `body.tdrag{touch-action:none;
+   user-select:none}` recomputed the style of EVERY element on the page
+   (8,952 — a quarter-second on a slow laptop) at arm AND at drop, and
+   `body.mdrag{cursor:grabbing}` half of it (4,822), because an inherited
+   property set on body has to be re-resolved down the whole tree — wildcard
+   or not. Neither declaration was doing work: html{} already refuses
+   user-select and the touch callout page-wide, drag.ts preventDefaults
+   touchmove while a touch drag is armed (a touch-action change mid-gesture is
+   ignored anyway), and the mouse cursor now rides on the ghost (.dragimg
+   above). A class with no matching declarations costs nothing to toggle
+   (measured: zero recalc). The one rule keyed on tdrag stays targeted
+   (`body.tdrag .hscroll`, ~1 element). Guarded by css-invalidation.test.ts. */
+
+/* ---- Inputs-calendar chip drag (caldrag.ts) — own names, not tdghost/tdrag:
+   that pair belongs to drag.ts's board machine (CLAUDE.md — "that machine
+   stays scoped to pucks") and this is a different one, over a different DOM,
+   riding the pointer at the calendar's own z-index rather than the board's.
+   THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26), the same one the board's
+   ghosts wear — inset, so it survives every clip; the drop shadow stays for
+   depth, and the compound below is why the two ride one box-shadow. */
+.ic-ghost{position:fixed!important;z-index:480;pointer-events:none;margin:0!important;
+  max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  transform:translate(-50%,-50%) scale(1.05);opacity:.85}
+.ic-ghost.lift{box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.5)}
+[data-icday].ic-over{outline:2px solid var(--accent);outline-offset:-2px;border-radius:6px}
+body.ic-dragging{user-select:none;-webkit-user-select:none}
+/* ---- drag & drop affordances outside the flying grid (programme / duties / sims /
+   ground / available). Empty cells stay clean until a drag starts. ---- */
+.ppl,.availpuck .ap-grid{min-height:var(--puck-h)}
+body.dnd [data-fill]{outline:1px dashed rgba(59,198,232,.38);outline-offset:2px;border-radius:5px}
+body.dnd [data-fill]:empty::after{content:'drop here';color:rgba(59,198,232,.5);font-size:9px;font-weight:700;letter-spacing:.04em}
+/* STANDING empty-cell hint (owner, 14 Aug 26): an empty People cell shows a
+   grey dotted rounded box even without a drag in progress, so a scheduler sees
+   where to tap or drop — matching the empty flying seats. The accent drag rule
+   above still takes over the moment a drag starts. Edit surfaces only — a
+   view-only week or a frozen preview never invites a drop. */
+.page.editing [data-fill]:empty,.schedboard [data-fill]:empty{outline:1px dashed var(--edge-2);outline-offset:2px;border-radius:5px;min-height:var(--puck-h);box-sizing:border-box}
+.page.editing [data-fill]:empty::after,.schedboard [data-fill]:empty::after{content:'+ tap or drop';color:var(--ink-3);font-size:9px;font-weight:600;letter-spacing:.03em;opacity:.7;padding-left:4px}
+.schedboard .pv-frozen [data-fill]:empty{outline:none}
+.schedboard .pv-frozen [data-fill]:empty::after{content:none}
+/* The week's empty People cells already carry the .addz "+ add" strip (lCell),
+   which was only bordered mid-drag. Show it standing when the cell holds no
+   crew, matching the board's hint. :not(:has(.puck)) = no one planted;
+   :not(:has(.itxt)) leaves an "ALL"/free-text cell alone. */
+.page.editing .ppl[data-fill]:not(:has(.puck)):not(:has(.itxt)) .addz{border-color:var(--edge-2);color:var(--ink-3);opacity:.9}
+[data-fill].dragover{outline:2px solid var(--accent)!important;outline-offset:2px;background:rgba(59,198,232,.08)}
+.availpuck.dragover,.eroster.dragover{outline:2px solid var(--accent);outline-offset:-2px;border-radius:10px}
+/* the position:relative only anchors the "drop to unassign" badge — but at
+   (0,2,1) it beat the phone rule that pins the aircrew drawer, so the drawer flew
+   3000px down the document the instant a drag armed: the palette vanished, and the
+   bin you drag a puck back to became unreachable on a phone. */
+body.dnd .availpuck{position:relative}
+@media (min-width:821px){body.dnd .eroster{position:relative}}
+body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';position:absolute;top:3px;left:50%;transform:translateX(-50%);font-size:8.5px;font-weight:700;letter-spacing:.05em;color:rgba(59,198,232,.72);background:rgba(11,13,16,.9);border:1px solid rgba(59,198,232,.3);border-radius:999px;padding:1px 7px;pointer-events:none;z-index:3;white-space:nowrap}
+.sb-open{cursor:pointer}
+.page.editing .day-head .dow,.page.editing .day-head .dt{cursor:pointer}
+.day-head .dow.sb-open:hover,.day-head .dt.sb-open:hover,.day-head .dow.crewday:hover{color:var(--accent)}
+

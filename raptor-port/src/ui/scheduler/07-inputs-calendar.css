@@ -1,0 +1,353 @@
+/* ============ INPUTS PAGE — MONTH CALENDAR ============ */
+/* The Inputs page's full-screen month view (ui/InputsCal.tsx), toggled from
+   #inCalBtn in the filter bar. STACKING: 350 — below the scheduler board's
+   400 (this is a sibling page's overlay, never opened from the board, so it
+   has no reason to out-rank it), and below every dialog above the board too:
+   420 for this surface's own day popover (below, once its own turn came),
+   the drawer's 440, the airspace popup's 460, the modal's 470 (see the
+   MODALS banner below for that ladder in full). Desktop-first; the phone
+   form follows in its own media block. */
+/* overflow:hidden clips the month-change slide (InputsCal.tsx animates the grid
+   in from ±28px) so an off-edge page never shows a scrollbar; the day popover is
+   its own position:fixed layer, so it escapes this clip and is unaffected. */
+.inpcal{position:fixed;inset:0;z-index:350;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.ic-head{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--edge);
+  background:var(--panel);flex-wrap:wrap}
+/* every nav/action button here rides .abtn's own look, just enlarged to a
+   real touch target — no separate button skin to keep in step with it */
+.ic-head .abtn{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+/* the gap above is load-bearing, not decoration (owner, 28 Aug 26 — "there's no
+   spacing between the calendar and the word 'as'"): a flex container drops the
+   whitespace either side of an anonymous text item, so the space written in the
+   JSX between <CalIcon/> and its label was being eaten and the medical as-of
+   button read "[cal]as of 13 Jul". 6px is the icon-and-label rhythm the rest of
+   the app already uses (.docbtn, #inMedBtn, .sb-actions .abtn). It is inert on
+   the text-only buttons here (Today, ‹ ›, ✕ List) — one item, no gap to draw.
+   The glyph takes the LABEL's colour for the same reason .filters .abtn and
+   .sb-actions do: .btnglyph's own --ink-2 is for a bare icon button, and left
+   alone it prints the calendar a shade dimmer than the words beside it. */
+.ic-head .abtn .btnglyph{color:currentColor}
+#icClose{margin-left:auto}
+.ic-mon{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.05em;
+  font-size:18px;font-weight:700;color:var(--ink);padding:0 2px}
+/* a month emptied by a filter has to say why — see InputsCal.tsx's own
+   comment on the pill (the product bar's "real empty states" rule) */
+.ic-filterpill{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 8px;
+  border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
+.ic-dow{display:grid;grid-template-columns:repeat(7,1fr);padding-top:4px;background:var(--edge)}
+.ic-dow span{text-align:center;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--ink-3);background:var(--bg);padding:3px 0}
+/* the 1px gaps on an --edge background draw every gridline for free — no
+   per-cell borders to keep aligned across up to 42 cells */
+/* THE MONTH BODY SCROLLS when a day outgrows its share (owner report, 29 Aug 26
+   — "calendar filled with many data I cannot scroll down to view"). Before this
+   it was a flat 7-col grid of 1fr rows: every week an equal slice of the fixed
+   viewport, each cell clipped, so a day packed with pucks/sections (drawn in
+   FULL by the owner's 22 Aug call — "if it fills up the whole day box, so be
+   it") clipped its overflow away with no way to reach it, and once one week
+   grew it shoved the lower weeks off the bottom of the fixed shell.
+   Now .ic-grid is a SCROLLING flex column of week rows. Each .ic-week is a flex
+   ROW, not a grid track, on purpose: a grid track sizes a wrapping-flex cell at
+   infinite width (one line), so it could never measure the packed cell's real
+   height and the pucks spilled OVER the weeks below; a flex row resolves the 7
+   cell widths first, then takes its height from the tallest cell's actual
+   wrapped content — so a packed week GROWS and the body scrolls to it. Each
+   week is at LEAST one viewport share tall (min-height below) so a normal month
+   still fills the screen exactly; --ic-rows is the live week count from the JSX,
+   and the `100%` resolves against this column's own definite flex height, so the
+   share stays right whatever the header wraps to — no magic pixel constant to
+   drift. Input chips stay capped at MAX_CHIPS + a "+N more" regardless (the
+   owner's lesser-priority call) — this reaches the FULL-drawn sections, it
+   doesn't uncap the inputs. */
+/* touch-action:pan-y (the absence-record re-test, W1-F1, 26 Sep 26): a finger's VERTICAL move still scrolls the weeks,
+   but a SIDEWAYS one now reaches the calendar's own swipe-to-page (owner, 22 Aug 26). With no touch rule the browser
+   took a sideways finger as its own pan and cancelled the pointer after one move, so on a phone only the ‹ › arrows
+   paged. A chip's hold-drag sets its own `none` when it lifts. */
+.ic-grid{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:1px;background:var(--edge);touch-action:pan-y}
+/* flex-shrink:0 is load-bearing: without it the column would SHRINK a packed
+   week back to fit the fixed body height (its siblings can't give more room),
+   clipping the very content this is meant to reveal. Held at ≥ one viewport
+   share by min-height, the week keeps its full content height instead and the
+   body scrolls to it; the cells stretch (align-items default) to that height so
+   the gridlines stay square. */
+.ic-week{display:flex;flex-shrink:0;gap:1px;background:var(--edge);
+  min-height:calc((100% - (var(--ic-rows,6) - 1)*1px)/var(--ic-rows,6))}
+/* position:relative is the +N more anchor (below): the title + sections may
+   legitimately fill the cell (the owner's call), so the overflow trim must
+   never be able to carry the one "there is more here" affordance away with
+   the inputs it stands for. */
+.ic-day,.ic-x{flex:1 1 0;min-width:0;background:var(--panel);overflow:hidden;padding:2px 3px;position:relative}
+.ic-num{font-size:11px;font-weight:700;color:var(--ink-2);width:18px;height:18px;line-height:18px;text-align:center}
+.ic-today .ic-num{border-radius:50%;background:var(--accent);color:var(--accent-ink)}
+.ic-wk .ic-num{color:var(--ink-3)}
+/* the day's TITLE (owner, 22 Aug 26 — the free text typed beside the date in
+   the popover; was the italic one-line remark). It WRAPS by his word ("u will
+   allow wrap text") and may run the cell — the title and sections outrank the
+   input chips below them. */
+.ic-rmk{font-size:10px;font-weight:700;color:var(--ink);line-height:1.25;white-space:normal;overflow-wrap:anywhere}
+.ic-chip{font-size:10px;border-radius:3px;padding:1px 4px;margin-bottom:1px;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;cursor:pointer;color:var(--ink);display:block}
+/* the three tones mirror inputTone (ui/inputedit.tsx) — the table's row
+   stripes and these chips both read that one function so the two surfaces
+   can never disagree on a colour */
+.ic-chip.red{background:rgba(240,85,95,.16);box-shadow:inset 2px 0 0 var(--hard)}
+.ic-chip.amb{background:rgba(229,168,59,.14);box-shadow:inset 2px 0 0 var(--adv)}
+.ic-chip.san{background:rgba(178,77,234,.16);box-shadow:inset 2px 0 0 var(--san)}
+/* a NOTE on the cell reads as plain muted text, no box (owner, 23 Aug 26 —
+   "for the notes, dont need to put a blue dotted box outside of it"). The
+   dashed accent border it used to wear read as an editable field it is not;
+   the muted colour still sets it apart from the bold title above it. */
+.ic-chip.plan{border:none;background:transparent;color:var(--ink-2);padding-left:0}
+/* the INPUT chips pack side by side now (owner, 22 Aug 26 — "coloured pucks
+   arranged side by side, just showing the callsign and the input"); each chip
+   shrinks-to-fit and ellipses only when a single one outgrows the cell */
+.ic-inrow{display:flex;flex-wrap:wrap;gap:2px;align-content:start}
+.ic-inrow .ic-chip{display:inline-block;margin-bottom:0;max-width:100%;flex:0 1 auto}
+/* a pucks section on the cell — tiny CAT-tinted person chips in a row */
+.ic-pks{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:1px;cursor:pointer}
+/* the standard olive puck body (owner, 23 Aug 26 — "standard green or
+   yellow"); the CATEGORY reads as a line on the RIGHT (its colour handed in as
+   --pk-cat, so no cat = no line) and a SANS person carries a purple line on the
+   LEFT. Pseudo-elements, not inline box-shadows, so the phone can thin them. */
+.ic-pk{position:relative;overflow:hidden;font-size:9px;font-weight:700;line-height:1;padding:2px 4px;
+  border-radius:3px;background:var(--fcp);color:var(--fcp-ink);white-space:nowrap}
+.ic-pk::after{content:'';position:absolute;top:0;bottom:0;right:0;width:3px;background:var(--pk-cat,transparent)}
+.ic-pk.sans::before{content:'';position:absolute;top:0;bottom:0;left:0;width:3px;background:var(--san)}
+/* pinned to the cell's bottom-right, over whatever is there: when it renders
+   at all it must be VISIBLE — an overflowing cell used to clip it out with
+   the very inputs it announces (review fix, 22 Aug 26). The panel background
+   keeps it legible over a chip it happens to cover. */
+.ic-more{position:absolute;right:2px;bottom:1px;display:block;background:var(--panel);border:0;
+  padding:0 2px;font-size:10px;color:var(--accent);cursor:pointer}
+
+@media (max-width:820px){
+  /* the phone form: a chip too narrow to hold a label becomes a plain colour
+     bar (owner-approved shape) — the tone still reads, the day still tells
+     its own story from the number and the ring alone. Side by side now, like
+     their desktop selves, so six read as a row of stubs, not a stack. */
+  .ic-chip{height:6px;width:14px;padding:0;font-size:0;border-radius:2px;margin-bottom:2px;flex:0 0 auto}
+  /* the TITLE stays visible on a phone (owner: "on mobile and desktop"),
+     one size down */
+  .ic-rmk{font-size:8.5px}
+  .ic-pk{font-size:0;width:10px;height:6px;padding:0;border-radius:2px}
+  /* thinner edge lines on the phone's bare colour bar so the olive body still reads */
+  .ic-pk::after,.ic-pk.sans::before{width:2px}
+  /* a NOTE collapses to a bare bar on the phone like every other chip (its text
+     can't fit the cell). With the desktop dashed box gone it would be an
+     invisible transparent slot, so give it a muted grey fill — visible, and
+     clearly not one of the toned input bars beside it. */
+  .ic-chip.plan{background:var(--edge-2)}
+  .ic-more{font-size:9px}
+  /* the bar gets tighter horizontal padding, but the buttons in it keep
+     their 44px touch target from the desktop rule above. It also stops
+     WRAPPING on a phone (owner, 1 Sep 26 — "put just a cross in the same
+     row"): the ‹ month › Today ✕ controls used to spill the close cross onto
+     its own second line once the wide month label + full-size buttons
+     overran ~370px. nowrap + a tighter gap keeps them on one line, and the
+     month label (below) gives up the last few px instead of the buttons —
+     so the cross stays beside Today, never below it. */
+  .ic-head{padding:8px 10px;gap:4px;flex-wrap:nowrap}
+  /* the Inputs month label is the widest thing in that row ("September 2026"),
+     so it shrinks a touch on a phone and ellipses only if a truly narrow
+     screen still can't seat the whole row — never the touch targets. Scoped
+     to #inpCal so the Medical as-of dropdown's own month label is untouched. */
+  #inpCal .ic-mon{font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
+
+/* ---- THE DAY POPOVER (hold-to-add / tap-to-open / .ic-more / a puck or
+   input chip's own tap) — a day's inputs, remark and planning notes without
+   leaving the month view. z-index 420, per the STACKING banner above:
+   above the calendar (350, its only ever anchor) and the board (400, the
+   two can never be open together anyway), below history's bubble (430), the
+   drawer (440), the airspace popup (460) and the generic .modal (470) — the
+   input-edit dialog that can open ON TOP of a row in this popover (.airpop,
+   460) needs to sit clearly above it, and every heavier box already does. */
+.ic-popwrap{position:fixed;inset:0;z-index:420;background:rgba(4,7,10,.55);
+  display:flex;align-items:center;justify-content:center;padding:16px}
+.ic-pop{background:var(--panel);border:1px solid var(--edge);border-radius:12px;
+  width:min(92vw,420px);max-height:70vh;overflow-y:auto;display:flex;flex-direction:column}
+.ic-pop-head{display:flex;align-items:center;gap:8px;padding:12px 15px;border-bottom:1px solid var(--edge);
+  position:sticky;top:0;background:var(--panel)}
+/* the date is content-sized so the TITLE beside it gets ALL the spare width
+   (b used to be flex:1, which split the head 50/50 with the title input and
+   started the field mid-head — review fix, 22 Aug 26); the ✕ pins itself
+   right so a member's title-less head still reads date … ✕ */
+.ic-pop-head b{font-size:15px;font-weight:700;flex:0 0 auto}
+.ic-pop-head .x{background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px;
+  min-width:44px;min-height:44px;margin-left:auto}
+.ic-pop-body{padding:12px 15px;display:flex;flex-direction:column;gap:14px}
+.ic-pop-empty{color:var(--ink-3);font-size:12.5px;font-style:italic}
+.ic-pop-rows{display:flex;flex-direction:column;gap:4px}
+/* an entry row is a <button> (the whole row opens the input-edit dialog),
+   so it borrows .ic-chip's own tone stripes rather than a second copy of
+   them, keeping the calendar and this popover reading the same three
+   colours off the same inputTone function */
+/* a column now (was a single flex line): the identity line on top, the
+   remark — when there is one — on its own line under it, both starting at
+   the same left edge so a stack of rows reads as aligned cards */
+.ic-poprow{display:flex;flex-direction:column;align-items:stretch;gap:3px;text-align:left;background:var(--bg);
+  border:1px solid var(--edge-2);border-radius:8px;padding:8px 10px;cursor:pointer;min-height:44px;
+  justify-content:center;font:inherit;color:inherit}
+.ic-poprow:hover{border-color:var(--accent)}
+.ic-poprow.red{box-shadow:inset 2px 0 0 var(--hard)}
+.ic-poprow.amb{box-shadow:inset 2px 0 0 var(--adv)}
+.ic-poprow.san{box-shadow:inset 2px 0 0 var(--san)}
+/* the identity line keeps the old row's flex: who at the left, type beside
+   it, the window pinned right */
+.ic-poprow-top{display:flex;align-items:center;gap:8px}
+.ic-poprow-who{font-weight:700;font-size:12px}
+.ic-poprow-lbl{flex:1;font-size:12px;color:var(--ink-2)}
+.ic-poprow-win{font-size:11px;color:var(--ink-3)}
+/* the remark reads muted under the identity, wrapping at the space (a long
+   word breaks rather than widening the sheet) and aligned to the card's
+   left edge like the callsign above it */
+.ic-poprow-rmk{font-size:11.5px;color:var(--ink-3);line-height:1.35;overflow-wrap:anywhere;white-space:normal}
+/* the TITLE beside the date in the head — the input takes the head's spare
+   width (the date is content-sized, the ✕ fixed), the read-only form is the
+   same slot as plain text */
+/* the TITLE text matches the DATE beside it (owner, 23 Aug 26 — "put it at
+   the right size of the date number"). Without an explicit size the input took
+   the UA default, which on a phone is 16px — larger than the 15px date, so the
+   title loomed over it. `.ic-pop .ic-pop-head` outspecifies the shared
+   `.ic-pop input` font shorthand so this size actually lands. */
+.ic-pop .ic-pop-head .ic-title-edit{flex:1;min-width:0;font-size:15px;font-weight:700}
+.ic-title-ro{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+/* the + Note / + Pucks pair, small buttons on one line at the top of the
+   sections area (owner, 22 Aug 26) */
+.ic-secbtns{display:flex;gap:6px}
+/* one SECTION — full width, an admin drag handle at its left; the dragover
+   bars are the board row-drag's own vocabulary (a 2px accent edge on the
+   half the drop would land) */
+.ic-secs{display:flex;flex-direction:column;gap:6px}
+/* THE CORNER BELONGS TO THE ROW, NOT TO ITS DRAG (fix, 7 Sep 26). The 8px used
+   to be written on `.ic-sec.dragging` below, and the landing veil takes
+   `border-radius:inherit` from the BARE element — which had none — so a section
+   was 8px round while it was carried and flashed SQUARE where it landed: the two
+   halves of one gesture drawn with different corners. The row's own box is
+   transparent (no background, no border), so naming the radius at rest costs
+   nothing visible and both halves now read the same. */
+.ic-sec{display:flex;align-items:flex-start;gap:6px;border-radius:8px}
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26): a section IS one element, so it wears
+   the shared recipe directly — on the `dragging` class REACT writes, because an
+   imperative class here would be wiped by the very re-render the arm causes
+   (src/ui/lift.ts). The fade stays: it is what says "this one is travelling". */
+.ic-sec.dragging{opacity:.45;box-shadow:var(--lift-box)}
+.ic-sec.dragover{box-shadow:0 -2px 0 var(--accent)}
+.ic-sec.dragover.after{box-shadow:0 2px 0 var(--accent)}
+.ic-sec>.ic-poppuck,.ic-sec>.ic-poppuck-edit,.ic-sec>.ic-secpucks{flex:1;min-width:0}
+.ic-sechandle{cursor:grab;color:var(--ink-3);font-size:13px;line-height:1;padding:6px 2px;user-select:none}
+.ic-sechandle:hover{color:var(--accent)}
+/* a pucks row — the app's canonical pucks in a fixed THREE-column grid (owner,
+   24 Aug 26 — "3 pucks per row"), then the + add… picker and the row's own ✕.
+   The grid is a full-width flex child so those two controls wrap below it. */
+.ic-secpucks{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:24px}
+.ic-secpk-grid{flex:1 1 100%;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;align-items:center}
+/* the 8px is the ROW's, not the drag's (fix, 7 Sep 26 — see .ic-sec above): the
+   landing veil inherits its radius from the bare element, so a corner named only
+   on `.pk-drag` gave a round lift and a square flash. The cell is transparent at
+   rest (the puck inside carries its own 3px), so it is invisible until one of
+   the two paints on it. */
+.ic-secpk{display:inline-flex;align-items:center;justify-content:flex-start;gap:2px;min-height:var(--puck-h);border-radius:8px}
+.ic-secpk .seat{display:flex}
+/* a removed puck leaves a BLANK cell that holds its grid position so the
+   survivors never shift (owner, 24 Aug 26); invisible but it occupies its third
+   of the row. opacity:0 rather than visibility:hidden so it is still hit-tested
+   — an empty slot is a real drop target for a swap/move (startPkDrag). */
+.ic-secpk-gap{opacity:0}
+.ic-pkdel{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:11px;padding:2px 3px}
+.ic-pkdel:hover{color:var(--hard)}
+/* a seated puck lifted for a drag — floats above its neighbours and follows the
+   finger (transform set inline by startPkDrag); pointer-events:none so the slot
+   UNDER the finger is what elementFromPoint reads. ONE LIFT, EVERY DRAG (owner,
+   6 Sep 26): it is one element, so it takes the shared recipe here — this class
+   is imperative, and safely so, because nothing re-renders under this drag. */
+.ic-secpk.pk-drag{position:relative;z-index:3;opacity:.85;cursor:grabbing;pointer-events:none;
+  box-shadow:var(--lift-box)}
+/* the slot a lifted puck is hovering over — where it will swap/land on release.
+   A gap target flips back to opaque so its dashed ring shows over the empty cell. */
+.ic-secpk.pk-swap-target{outline:2px dashed var(--accent);outline-offset:1px;border-radius:6px}
+.ic-secpk-gap.pk-swap-target{opacity:1}
+/* the + add button that opens the multi-select picker (replaced the one-at-a
+   -time select, owner 23 Aug 26) */
+.ic-pop .ic-pkadd{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);
+  border-radius:7px;font:600 11px 'Inter Tight',sans-serif;padding:4px 9px;cursor:pointer;min-height:28px}
+.ic-pop .ic-pkadd:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ---- THE MULTI-SELECT PUCK PICKER (owner, 23 Aug 26) — a sheet over the day
+   popover; z-index 450 sits above the popover (420) and below the input-edit
+   dialog (.airpop 460) and the generic modal (470), the same ladder the
+   popover documents. */
+.ic-pickwrap{position:fixed;inset:0;z-index:450;background:rgba(4,7,10,.6);
+  display:flex;align-items:center;justify-content:center;padding:16px}
+.ic-pick{background:var(--panel);border:1px solid var(--edge);border-radius:14px;
+  width:min(94vw,520px);max-height:82vh;display:flex;flex-direction:column;overflow:hidden}
+.ic-pick-head{display:flex;align-items:center;gap:10px;padding:12px 15px;border-bottom:1px solid var(--edge)}
+.ic-pick-head b{font-size:15px;font-weight:700}
+.ic-pick-n{font-size:12px;color:var(--ink-3)}
+.ic-pick-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;
+  font-size:18px;min-width:40px;min-height:40px}
+.ic-pick-cats{display:flex;flex-wrap:wrap;gap:6px;padding:10px 15px;border-bottom:1px solid var(--edge)}
+/* THE PUCKS, GROUPED BY SEAT like the aircrew palette (owner, 24 Aug 26 —
+   "arrange them just like how the placeholders arranges them"). The head, the
+   category tabs and the foot are fixed flex siblings; only .ic-pick-body
+   scrolls (flex:1 + min-height:0), so a phone ALWAYS shows the tabs above and
+   Cancel/Add below — the report the owner made ("can't even see the buttons
+   above and below") was the old single .ic-pick-grid, which shared the scroll
+   with nothing pinned and a full-screen sheet the wrap's padding then clipped. */
+.ic-pick-body{flex:1;min-height:0;overflow-y:auto;padding:12px 15px;display:flex;flex-direction:column;gap:13px}
+.ic-pick-grp{display:flex;flex-direction:column;gap:6px}
+.ic-pick-gh{display:flex;align-items:center;gap:7px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  text-transform:uppercase;letter-spacing:.07em;font-size:10.5px;font-weight:700;color:var(--ink-3)}
+.ic-pick-gn{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:15px;padding:0 4px;
+  border-radius:999px;background:var(--panel-2);color:var(--ink-2);font-size:9px;font-weight:700;letter-spacing:0}
+.ic-pick-row{display:flex;flex-wrap:wrap;gap:7px}
+.ic-pickp{background:none;border:1px solid transparent;border-radius:6px;padding:2px;cursor:pointer;
+  line-height:0;display:inline-flex;transition:opacity .12s ease}
+.ic-pickp .seat{display:flex;pointer-events:none}
+.ic-pickp.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 10px rgba(59,198,232,.35)}
+.ic-pickp.already{opacity:.4;cursor:default}
+/* the highlight FADE — a lit category dims everyone NOT in it so the applicable
+   pucks read at a glance (owner, 24 Aug 26: "fade those pucks … Not select
+   them"). Still fully tappable, just quietened; a picked puck is never dimmed,
+   or its accent ring would be unreadable. */
+.ic-pickp.dim{opacity:.22}
+.ic-pickp.dim.on{opacity:1}
+.ic-pick-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 15px;border-top:1px solid var(--edge)}
+.ic-pick-foot .abtn.primary[disabled]{opacity:.45;cursor:default}
+@media (max-width:820px){
+  /* full-screen sheet, edge to edge — the wrap's 16px padding + centring used
+     to clip a 100vh sheet top and bottom, hiding the title and the foot; and
+     100dvh (not 100vh) keeps the foot clear of the phone browser's own toolbar. */
+  .ic-pickwrap{padding:0;align-items:stretch;justify-content:stretch}
+  .ic-pick{width:100vw;height:100vh;height:100dvh;max-height:100dvh;border-radius:0}
+}
+/* the inputs block at the bottom: its small + Input leads it, top-left */
+.ic-inp-sec{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.ic-inp-sec .ic-pop-rows{align-self:stretch}
+.ic-poppucks-wrap{display:flex;flex-direction:column;gap:6px}
+.ic-poppucks{display:flex;flex-direction:column;gap:6px}
+.ic-poppuck{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--edge-2);
+  border-radius:8px;padding:5px 5px 5px 10px}
+.ic-poppuck-txt{flex:1;font-size:12.5px;overflow-wrap:anywhere}
+.ic-poppuck button{background:none;border:none;color:var(--ink-2);cursor:pointer;min-width:32px;min-height:32px}
+.ic-poppuck button:hover{color:var(--accent)}
+/* the remark/note text fields borrow .inped-f/.inped-k for the label look
+   (below, "editing one input from the week or the board") but need their
+   own input skin — they are not inside that dialog's `.inped-body`, whose
+   selector this popover deliberately does not reuse */
+.ic-pop input[type=text],.ic-pop input:not([type]){width:100%;box-sizing:border-box;background:var(--bg);
+  border:1px solid var(--edge-2);border-radius:8px;color:var(--ink);font:600 13px inherit;padding:8px 9px}
+.ic-pop input:focus{outline:none;border-color:var(--accent)}
+.ic-poppuck-edit{width:100%;box-sizing:border-box}
+@media (max-width:820px){
+  /* a bottom sheet, not a centred card — reachable one-thumb on a phone,
+     the same shape the drawer already uses for the same reason */
+  .ic-popwrap{align-items:flex-end;padding:0}
+  .ic-pop{width:100%;max-width:100%;border-radius:12px 12px 0 0;max-height:75vh}
+  .ic-pop .abtn,.ic-poprow,.ic-poppuck button{min-height:44px}
+  /* the row's ✕ (delete this whole pucks row) keeps its small glyph but earns a
+     full 44px thumb target on the phone. The per-puck ✕ is gone (owner, 24 Aug
+     26 — removal is drag-off / right-click now), so only the row-delete remains. */
+  .ic-secpucks .ic-rowdel{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+}
+

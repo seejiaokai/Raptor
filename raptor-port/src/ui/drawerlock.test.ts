@@ -1,4 +1,5 @@
 // @vitest-environment node — reads the stylesheet off disk, like layers.test.ts
+import { readSchedulerCss } from '../testing/scheduler-css'
 /* The page behind the burger drawer does not scroll (owner's iPhone, 6 Sep 26 —
    "instead of scrolling the side bar, it scrolls the page behind it as well").
    jsdom cannot scroll and Chromium's wheel chaining is only half the story
@@ -7,10 +8,9 @@
    drawer's one scroller — contains its overscroll and keeps the up-down pan on
    itself; the scrim takes no pan at all; and the body lock class the drawer
    sets (Drawer.tsx, pinned in odds.test.tsx) actually locks. */
-import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
-const css = readFileSync(new URL('./scheduler.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+const css = readSchedulerCss().replace(/\/\*[\s\S]*?\*\//g, '')
 const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(m => ({ sels: m[1].split(',').map(s => s.trim()).filter(Boolean), body: m[2] }))
 const bodyOf = (sel: string) => rules.filter(r => r.sels.includes(sel)).map(r => r.body).join(';')
 const declares = (body: string, prop: string, value: RegExp) => {

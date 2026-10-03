@@ -1,12 +1,12 @@
 // @vitest-environment node — reads a stylesheet off disk (the rowglow.test.ts shape)
+import { readSchedulerCss } from '../testing/scheduler-css'
 /* The lift recipe as a CSS CONTRACT. jsdom paints nothing, so an outer shadow
    that the card clips, a frame that lost its absolute position, or a veil that
    animates layout is unreachable from the ordinary suite — the file is the
    only witness. */
-import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
 
-const css = readFileSync(new URL('./scheduler.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+const css = readSchedulerCss().replace(/\/\*[\s\S]*?\*\//g, '')
 const RULES = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
   .map(m => ({ sels: m[1]!.split(',').map(s => s.trim().replace(/\s+/g, ' ')), body: m[2]!, at: m.index! }))
 const rulesFor = (sel: string) => RULES.filter(r => r.sels.includes(sel))

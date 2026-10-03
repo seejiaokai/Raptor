@@ -1,0 +1,438 @@
+/* ============ MODALS / DRAWER / AIRSPACE ============ */
+/* Stacking, highest last: the scheduler board is a full-screen overlay at 400,
+   so every dialog that can be opened FROM it has to sit above that — the assign
+   picker and the CX box were at 115 and opened invisibly behind the board. The
+   drag ghost stays on top of everything. */
+.modal{position:fixed;inset:0;z-index:470;background:rgba(4,7,10,.7);display:flex;align-items:center;justify-content:center;padding:22px}
+.modal[hidden]{display:none}
+.modal-box{background:var(--panel);border:1px solid var(--edge);border-radius:16px;width:460px;max-width:100%;max-height:84vh;max-height:84dvh;overflow:auto}
+.modal-head{padding:14px 16px;border-bottom:1px solid var(--edge);display:flex;align-items:center}
+.modal-head b{font-size:16px;font-weight:700}
+.modal-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px;line-height:1}
+.modal-body{padding:14px 16px}
+.mfield{display:flex;flex-direction:column;gap:3px;margin-bottom:11px}
+.mfield label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.mfield input,.mfield select{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:13px;padding:8px 10px;border-radius:9px}
+.userlist{margin-top:6px;border-top:1px solid var(--edge);padding-top:10px}
+.urow{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12.5px}
+.urow .ub{margin-left:auto;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:999px}
+.urow .ub.admin{background:rgba(59,198,232,.16);color:var(--accent)}
+.urow .ub.main{background:rgba(138,150,163,.16);color:var(--ink-2)}
+.modal-foot{padding:12px 16px;border-top:1px solid var(--edge);display:flex;gap:8px;justify-content:flex-end}
+/* ---- wave show/hide rows (owner, 29 Aug 26 pt.3) — the eye (show/hide) and trash
+   (delete) list for what appears in + Wave. Folded 30 Aug 26 into the one Flying-
+   waves sheet (ui/WaveTplModal.tsx), which reuses these row/eye styles. 44px
+   targets — this is a touch-first list. ---- */
+.wvmng-intro{font-size:12px;color:var(--ink-3);line-height:1.5;margin-bottom:12px}
+.wvmng-intro b{color:var(--ink-2)}
+.wvmng-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.wvmng-row{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--edge);border-radius:10px;padding:8px 10px;min-height:52px}
+.wvmng-name{display:flex;flex-direction:column;gap:1px;min-width:0;font-weight:600;font-size:14px;color:var(--ink)}
+.wvmng-sub{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-3);font-weight:400}
+.wvmng-row.off .wvmng-name{color:var(--ink-3)}
+.wvmng-acts{display:flex;align-items:center;gap:7px;margin-left:auto;flex:none}
+.wvmng-eye{appearance:none;display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 12px;border-radius:8px;cursor:pointer;
+  background:rgba(59,198,232,.12);border:1px solid rgba(59,198,232,.45);color:var(--accent);font-weight:600;font-size:12px}
+.wvmng-eye svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.9}
+.wvmng-eye.off{background:var(--raised);border-color:var(--edge-2);color:var(--ink-3)}
+.wvmng-eye:disabled{opacity:.5;cursor:default}
+.wvmng-trash{appearance:none;display:grid;place-items:center;width:44px;height:44px;min-width:44px;border-radius:8px;cursor:pointer;
+  background:var(--raised);border:1px solid var(--edge-2);color:var(--ink-3)}
+.wvmng-trash svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.9}
+.wvmng-trash:hover{color:var(--hard);border-color:rgba(240,85,95,.55)}
+.wvmng-trash:disabled{opacity:.5;cursor:default}
+.wvmng-row.confirm{border-color:rgba(240,85,95,.55);background:rgba(240,85,95,.07);flex-wrap:wrap;gap:8px}
+.wvmng-cmsg{font-size:13px;color:var(--ink);flex:1 1 100%}
+.wvmng-cmsg span{color:var(--ink-3);font-size:12px}
+.wvmng-cacts{display:flex;gap:8px;margin-left:auto}
+.wvmng-empty{color:var(--ink-3);font-size:13px;font-style:italic;padding:8px}
+/* PHONE: a modal slides up as a bottom SHEET rather than floating as a centred
+   card (owner, 29 Aug 26 pt.3 — reachable one-thumb, the pattern .ic-pop already
+   proves). Full-width, pinned to the bottom, rounded only on top, and it clears the
+   home-indicator safe area. Covers every .modal dialog (Manage waves, Templates,
+   Drafts, History, day/duty/wave editors); the centred desktop card is unchanged. */
+/* THE SHEET IS LIMITED BY THE VISIBLE SCREEN (his find on his iPhone, 3 Oct 26 — D536). `90vh` is 90% of the screen
+   WITHOUT the browser's bars; with the address bar and toolbar showing, that is taller than what is visible, and a sheet
+   pinned to the bottom pushes its own title bar and ✕ off the top, where no scrolling reaches them (the sheet is the
+   scroller). So the limit is the fixed backdrop's own height (`%` — it tracks the visible screen), then the dynamic
+   unit where the browser has it; never plain `vh`. Pinned by modal-phone-height.test.ts.
+   AND IT RUNS UP TO A THIN STRIP AT THE TOP (owner, D537, the same day — "pretty ugly that there's a lot of space to the
+   top"): the limit was 90%, which left a tenth of the screen of dimmed page above a tall window. Now the visible screen
+   less 24px — the rounded top and a sliver of the page still show, so it still reads as a sheet. A short window is
+   untouched: it is as tall as its content, at the bottom. */
+@media(max-width:820px){
+  .modal{align-items:flex-end;padding:0}
+  .modal-box{width:100%;max-width:100%;max-height:calc(100% - 24px);max-height:calc(100dvh - 24px - env(safe-area-inset-top));border-radius:16px 16px 0 0}
+  .modal-foot{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+}
+/* ---- the Duty-templates editor (owner, 13 Aug 26) — the DutyTplModal ---- */
+.tpl-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tpl-tab{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;
+  padding:6px 11px;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.04em;cursor:pointer}
+.tpl-tab:hover{border-color:var(--accent);color:var(--ink)}
+.tpl-tab.on{border-color:var(--accent);color:var(--accent);background:rgba(59,198,232,.08)}
+.tpl-tab.new{border-style:dashed;color:var(--ink-3)}
+.tpl-name{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--edge);border-radius:8px;
+  color:var(--ink);font-size:14px;font-weight:700;padding:8px 10px;margin-bottom:10px}
+.tpl-name:focus{outline:none;border-color:var(--accent)}
+/* the "For wave" picker under the name (7 Sep 26): a label + select on one
+   line, the app's select recipe, and a one-line note in the muted ink */
+.tpl-wave{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.tpl-wave select{background:var(--bg);border:1px solid var(--edge);border-radius:8px;color:var(--ink);font-size:13px;font-weight:600;padding:5px 8px;text-transform:none;letter-spacing:0}
+.tpl-wave select:focus{outline:none;border-color:var(--accent)}
+.tpl-wave-note{font-size:11px;color:var(--ink-3);line-height:1.35;margin-bottom:10px}
+/* ---- Flying-waves sheet: the show/hide zone folded in from the retired Manage
+   sheet (owner, 30 Aug 26 — one button for edit + manage). Reuses the .wvmng-*
+   row/eye styles that already sit by the modal above. ---- */
+.wtpl-h{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);margin:0 0 6px}
+.wtpl-h-tpl{margin-top:16px;padding-top:14px;border-top:1px solid var(--edge)}
+.wtpl-hint{font-size:12px;color:var(--ink-3);line-height:1.5;margin:0 0 10px}
+.wtpl-hint b{color:var(--ink-2)}
+.wtpl-types .wvmng-list{gap:6px}
+.tpl-namerow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.tpl-namerow .tpl-name{margin-bottom:0}
+.tpl-namerow .wvmng-eye{flex:none}
+.tpl-tab.hid{opacity:.5;text-decoration:line-through}
+.tcols,.trow{display:grid;grid-template-columns:22px 1fr 58px 58px 30px;gap:7px;align-items:center}
+.tcols{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--ink-3);padding:0 2px 4px}
+.trow{margin-bottom:6px}
+.trow .grip{display:flex;flex-direction:column;gap:1px}
+.tnudge{background:none;border:1px solid var(--edge);border-radius:4px;color:var(--ink-3);cursor:pointer;
+  font-size:8px;line-height:1;padding:1px 0;width:20px}
+.tnudge:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.tnudge:disabled{opacity:.3;cursor:default}
+.trow>input{background:var(--bg);border:1px solid var(--edge);border-radius:6px;color:var(--ink);
+  font-size:12px;padding:6px 7px;width:100%;box-sizing:border-box}
+.trow>input:focus{outline:none;border-color:var(--accent)}
+.trow>input.tm{font-family:'JetBrains Mono',monospace;text-align:center}
+.trow .del{background:none;border:1px solid var(--edge);border-radius:6px;color:var(--ink-3);cursor:pointer;height:30px}
+.trow .del:hover{color:#FBB4B9;border-color:var(--hard)}
+.addrow{margin-top:2px;background:none;border:1px dashed var(--edge-2);border-radius:7px;color:var(--ink-3);
+  padding:8px;width:100%;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;cursor:pointer}
+/* ---- in-place drag to reorder sections & waves (owner, 29 Aug 26 pt.3) --------
+   Replaced the per-day Arrange sheet with drag handles on the panels themselves.
+   A grip on each section wrapper (.sb-sec on the board, .dsec on the edit week) and
+   on each wave header (.wvgrip) drags the whole panel / wave into a new place;
+   ui/rowdrag.ts is the machine. Unlike the dense board ROW grip (.sb-grip, hidden
+   on a phone in favour of ▲▼ because a packed row has no room to grab), a section
+   or a wave is a big target, so these grips stay draggable at EVERY width — the
+   owner's "drag, no arrows" design. */
+/* the wrapper adds NO layout — the grip is an absolute OVERLAY sitting in the
+   panel's own left border+padding gutter, so no section shifts and every measured
+   register/alignment contract (edit-vs-read-only notes width, input row vs ground
+   row tracks) is byte-for-byte what it was. */
+.sb-sec,.dsec{position:relative}
+/* the section handle is the same dotted ⠿ the row and wave grips carry (owner, 31
+   Aug 26 — "the drag markers should all follow the old design in which it's
+   dotted"), sitting INLINE at the head of the panel's own header rather than as a
+   rail in the left gutter. Inline, it lines up with the wave grip's column, pushes
+   the title clear of itself, and centres on the title line (the header is a centred
+   flex row). touch-action:none so a thumb-drag reorders instead of scrolling; the
+   headers below kill text-selection so holding the grip never paints the title blue
+   (owner, 31 Aug 26 — "as you hold on the track marker it tends to select the text
+   beside it"). */
+.secgrip{cursor:grab;color:var(--ink-3);font-size:12px;line-height:1;padding:0;
+  display:inline-flex;align-items:center;flex:0 0 auto;touch-action:none;
+  user-select:none;-webkit-user-select:none}
+.secgrip:hover{color:var(--accent)}
+.secgrip:active{cursor:grabbing}
+/* the board header already centres its children; tighten its gap so the added grip
+   borrows from the header's own spacing, not from the sub-text / buttons on the
+   right (owner, 31 Aug 26 — "make sure any text or buttons on the right aren't too
+   close or overlapping"). Measured on a 390px phone: a 16px gap to the buttons
+   remains, no overlap. */
+.sb-sec .sb-ph{gap:6px}
+/* Available crew's own fold header (.ap-h) is a space-between row — title left,
+   "by wave · close" right. When the panel joins the draggable list (owner, 31 Aug 26
+   — "one list, drag anywhere") the injected grip must ride WITH the title on the left,
+   not be spread to the far edge, so switch it to flex-start and push the right-hand
+   summary back over with an auto margin. Same 6px grip gap as the .sb-ph cards. */
+.sb-sec .ap-h{justify-content:flex-start;gap:6px}
+.sb-sec .ap-h>.n{margin-left:auto}
+/* Personal Inputs' foldable header is baseline-aligned (.sb-ph.pl-fold, line ~1155),
+   which sat the grip on the title's FIRST line — ~7px above the centre of the
+   two-line title (measured). In the draggable list its grip must sit level with the
+   title like every other card, so centre it here (wrapped board header only; the
+   week's unwrapped copy keeps its baseline). Its .sub already floats right via
+   margin-left:auto, so only the vertical axis changes. */
+.sb-sec .sb-ph.pl-fold{align-items:center}
+.sb-ph,.sb-go-h,.go-tab,.sub-h,.ah-h,.wv-sech,.ap-h{user-select:none;-webkit-user-select:none}
+/* on the WEEK the grip goes inline in each section's own title header, so make those
+   headers a centred flex row for it and drop the old gutter-clearing indents (there
+   is no overlay in the gutter any more). Edit-only (.dsec), so parity is untouched. */
+.dsec>.allhands>.ah-h,.dsec>.sec>.sub-h,.dsec .wv-sech{display:flex;align-items:center;gap:6px}
+/* Available crew's fold header (.ap-h) on the WEEK joins the draggable list too
+   (owner, 31 Aug 26 — the crew working-aid panels are draggable on the edit
+   scheduler now, not just the board): the same flex-start + auto-margin move as the
+   board's copy (.sb-sec .ap-h above), so the injected grip rides with the title and
+   the "by wave · close" summary stays at the right edge. Edit-only, parity untouched. */
+.dsec .ap-h{display:flex;align-items:center;justify-content:flex-start;gap:6px}
+.dsec .ap-h>.n{margin-left:auto}
+/* the week's Flying-waves header (edit-only, html.ts) — the section header this
+   block never had. Coloured and cased like every other week section header
+   (.sub-h + var(--sec)); its box lines up with the wave blocks below (both
+   margin-left 10px). */
+.wv-sech{color:var(--sec);margin:10px 10px 0;padding-left:10px}
+/* the wave grip sits inline at the head of the wave block, before "Go N" / the
+   label — same always-draggable rule and touch-action as the section grip. */
+.wvgrip{cursor:grab;color:var(--ink-3);font-size:12px;line-height:1;padding:0 2px;touch-action:none;user-select:none;flex:0 0 auto}
+.wvgrip:hover{color:var(--accent)}
+.wvgrip:active{cursor:grabbing}
+/* the carried section and the drop line; a dragged WAVE block reuses .rowdrag /
+   .rowdrop (defined with the row grip) since it is the same kind of move. Since
+   6 Sep 26 the picked-up BOX on all three is the shared .lift (one lift, every
+   drag — rowdrag.ts adds it beside these), so .secdrag and .rowdrag are state
+   classes carrying nothing but the grip's own recolour. */
+.secdrag{/* the picked-up look is the shared .lift; this class only recolours the grip */}
+.secdrag .secgrip{color:var(--accent);cursor:grabbing}
+/* …and the BOARD's wrapper takes the card's corner while it is carried or
+   flashing (7 Sep 26, from the live drive). `.sb-sec` is a bare positioned
+   wrapper with no shape of its own, but its box is EXACTLY the `.sb-panel`
+   inside it (measured on the built board: 0px on all four sides) and that card
+   is 10px round — so the ring, which follows the element's own border-radius,
+   drew a square corner and left a cyan wedge past each rounded one. The edit
+   week's `.dsec` is deliberately NOT given the same: there the wrapper is 10px
+   wider than the card on both sides, so it is its own square strip and a square
+   ring is what fits it. The veil inherits this radius (see .lift-land::after). */
+.sb-sec.lift,.sb-sec.lift-land{border-radius:10px}
+.secdrop{box-shadow:inset 0 3px 0 0 var(--accent)}
+/* ---- the "Set default order?" snackbar (ui/SecDefaultSnackbar.tsx) — an
+   ACTIONABLE bottom bar (the plain toast can't carry a button), shown after a
+   section drag to offer that order as the squadron's house default. Sits above the
+   toast's own layer. */
+.secdef-snack{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);
+  background:var(--panel-2);border:1px solid var(--edge);border-radius:12px;padding:10px 14px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.secdef-msg{color:var(--ink);font-size:13px;font-weight:600}
+.secdef-btn{border:1px solid var(--edge);background:var(--bg);color:var(--ink-2);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer}
+.secdef-btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.secdef-btn.yes{background:var(--accent);border-color:var(--accent);color:#05222b}
+.secdef-btn.yes:hover{filter:brightness(1.06)}
+.addrow:hover{border-color:var(--ok);color:#9BE3B4}
+/* ---- the Flying-wave-templates editor (owner, 25 Aug 26). Reuses the duty
+   editor's modal/tab/name/nudge/del/addrow chrome above; these are the parts a
+   wave template adds — the rule-set picker, its note, and a per-line card that
+   stacks callsign over mission/times/role so the extra fields still read
+   top-to-bottom on a phone. */
+.wkind{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.wkind-btn{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:8px;
+  padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;flex:1 1 auto}
+.wkind-btn:hover{border-color:var(--accent);color:var(--ink)}
+.wkind-btn.on{border-color:var(--accent);color:var(--accent);background:rgba(59,198,232,.08)}
+.wknote{font-size:11px;line-height:1.4;color:var(--ink-3);margin:0 0 14px}
+.wline{border:1px solid var(--edge);border-radius:10px;background:var(--panel-2);padding:8px;margin-bottom:8px}
+.wline-top{display:grid;grid-template-columns:22px 1fr 30px;gap:7px;align-items:center;margin-bottom:6px}
+.wline-top .grip{display:flex;flex-direction:column;gap:1px}
+.wline-grid{display:grid;grid-template-columns:1fr 58px 58px 58px;gap:6px;align-items:center}
+.wline input{background:var(--bg);border:1px solid var(--edge);border-radius:6px;color:var(--ink);
+  font-size:13px;padding:6px 8px;height:32px;box-sizing:border-box;width:100%}
+.wline input:focus{outline:none;border-color:var(--accent)}
+.wline input.tm{font-family:'JetBrains Mono',monospace;text-align:center;font-size:12px}
+.wline input.wcs{font-weight:600}
+.wline .del{background:none;border:1px solid var(--edge);border-radius:6px;color:var(--ink-3);cursor:pointer;height:32px}
+.wline .del:hover{color:#FBB4B9;border-color:var(--hard)}
+/* the MAIN/SPARE flip — a plain MAIN reads muted, a SPARE takes the amber the
+   board's own SPARE badge uses, so the two surfaces agree at a glance */
+.wrole{border:1px solid var(--edge);border-radius:6px;background:var(--bg);color:var(--ink-2);cursor:pointer;
+  height:32px;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:11px;font-weight:800;
+  letter-spacing:.04em}
+.wrole:hover{border-color:var(--accent);color:var(--ink)}
+.wrole.spare{color:#F2D699;border-color:rgba(229,194,74,.55);background:rgba(229,194,74,.1)}
+.wrole-off{display:block}
+.wtpl-empty{text-align:center;padding:18px 10px 6px}
+.wtpl-empty p{margin:0 0 8px;font-size:14px;color:var(--ink)}
+.wtpl-empty p.sub{font-size:12px;line-height:1.5;color:var(--ink-3);max-width:340px;margin:0 auto 16px}
+.abtn.danger{color:#FBB4B9;border-color:rgba(240,85,95,.5)}
+.abtn.danger:hover{border-color:var(--hard);color:#fff;background:rgba(240,85,95,.15)}
+/* the "+ Block" template picker: the per-template role count and the pencil */
+.wm-sub{margin-left:8px;font-size:9px;color:var(--ink-3);font-weight:600}
+.wm-edit{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:11px;padding:0;
+  font-family:inherit}
+.wm-edit:hover{color:var(--accent)}
+.witem{display:flex;gap:10px;padding:10px 12px;font-size:12px;line-height:1.4;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;align-items:flex-start;cursor:pointer}
+.witem:hover{border-color:var(--edge-2)}
+.witem .wbar{width:3px;border-radius:2px;flex:0 0 3px;align-self:stretch}
+.witem.hard .wbar{background:var(--hard)}.witem.adv .wbar{background:var(--adv)}.witem.note .wbar{background:#8A96A3}
+.witem .wcode{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.03em;color:var(--ink-3);display:block;margin-bottom:1px}
+.empty{color:var(--ink-3);font-size:12px;padding:8px 0}
+.daywarn{margin:8px 10px 2px;padding:7px 11px;border-radius:9px;font-size:11.5px;cursor:pointer;display:flex;gap:8px;align-items:center;border:1px solid}
+.daywarn b{font-weight:700}
+.daywarn.hard{background:rgba(240,85,95,.12);border-color:rgba(240,85,95,.4);color:#FBB4B9}
+.daywarn.adv{background:rgba(229,168,59,.10);border-color:rgba(229,168,59,.35);color:#F2D69B}
+.daywarn.note{background:rgba(138,150,163,.10);border-color:rgba(138,150,163,.35);color:#C4CCD5}
+.daywarn:hover{filter:brightness(1.12)}
+/* THE CROSS-DAY STRIP (owner, 6 Aug 26) — what this day does to the NEXT one.
+   Always open, never collapsed behind the ⚠ count: it is one line, and the
+   whole point is that it is read without being looked for. Dotted left edge
+   and border, matching the dotted ring on the puck it names, so the two read
+   as one mark seen in two places. */
+/* The cross-day rows live INSIDE the .dwlist (owner, 7 Aug 26): the container
+   is transparent to layout, so each row takes the list's own gap, width and
+   row box — matching its neighbours is structural, not imitated. What marks
+   them as tomorrow's business is the dotted red bar (the puck's dotted-ring
+   stroke language) and the pink label, never a different box. */
+.dwtrace{display:contents}
+.dwtrace .witem .wbar{border-left:3px dotted var(--hard);background:none!important;border-radius:0}
+.dwtrace .witem .wcode{color:#FBB4B9}
+/* ---- inline (expanding) day warnings — replaces the old centred modal ---- */
+.dwbox{margin:8px 10px 2px;border-radius:10px}
+.dwbox .daywarn{margin:0;border-radius:9px}
+.dwbox.open .daywarn{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.daywarn .dwcue{color:inherit;opacity:.72}
+.daywarn .dwcar{margin-left:auto;font-size:10px;opacity:.8}
+.dwlist{display:flex;flex-direction:column;gap:5px;padding:7px;border:1px solid var(--edge);border-top:none;
+  border-radius:0 0 9px 9px;background:rgba(0,0,0,.22)}
+/* a list with no .daywarn header above it (the solo cross-day strip on a day
+   with no issue box) gets its top edge back */
+.dwlist.solo{border-top:1px solid var(--edge);border-radius:9px}
+.dwlist .witem{padding:7px 9px;font-size:11px;line-height:1.35;gap:8px;border-radius:8px}
+.dwlist .witem.on{border-color:var(--accent);background:rgba(59,198,232,.10);box-shadow:0 0 0 1px rgba(59,198,232,.35)}
+.dwlist .witem b{color:var(--ink)}
+/* HIDE A WARNING on the edit week (owner, 29 Aug 26 — parity with the board's
+   list, on the one set of the working copy's hides so the two stay in sync). The
+   text span grows so the ✕/↺ sits flush right; the button mirrors the board's
+   .wln-mute recipe (scheduler.css §sb-warn). */
+.dwlist .witem .wtx{flex:1;min-width:0;overflow-wrap:anywhere}
+.dwlist .witem-mute{flex:0 0 auto;align-self:flex-start;background:none;border:0;color:inherit;opacity:.5;cursor:pointer;font-size:12px;line-height:1.3;padding:0 3px;border-radius:5px}
+.dwlist .witem-mute:hover{opacity:1;background:rgba(255,255,255,.08)}
+/* the ONE check that carries an action (the missing leave war period, D19) — reads as a control, not as another muted glyph */
+.dwlist .witem-act{flex:0 0 auto;align-self:flex-start;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);cursor:pointer;font-size:11px;font-weight:600;line-height:1.3;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.dwlist .witem-act:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+/* A HIDDEN WARNING'S LINE ([WARN-HIDE-KEPT], owner D469 / D475, 1 Oct 26 — "it shouldn't totally disappear, it should just
+   show a strike out and it's darker. Ready to be reactivated again for flagging"; the approved picture is
+   docs/mock/warn-hide.html). In its place in the list: struck out, grey, a dashed outline, its severity bar greyed; the
+   ↺ at full strength so it is easy to find. The same line is drawn on View-only Sched and under a look, with no button. */
+.dwlist .witem.hid{background:transparent;border-style:dashed;border-color:var(--edge)}
+.dwlist .witem.hid .wbar{background:var(--edge-2)}
+.dwlist .witem.hid>span:not(.wbar){color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.dwlist .witem.hid b,.dwlist .witem.hid .wcode{color:var(--ink-3)}
+.dwlist .witem.hid .witem-mute{opacity:.9;color:var(--ink-2);font-size:14px;background:rgba(255,255,255,.07)}
+/* every issue of the day hidden (D472, D475): the bar stays so the list can be reached, quiet, saying "✓ No issues" */
+.daywarn.calm{background:var(--panel-2);border-color:var(--edge);color:var(--ink-2)}
+.dwclear{margin-top:1px;background:transparent;border:1px dashed var(--edge-2);color:var(--ink-3);
+  border-radius:8px;padding:5px 8px;font-size:10.5px;font-weight:600;cursor:pointer;letter-spacing:.02em}
+.dwclear:hover{border-color:var(--accent);color:var(--accent)}
+/* the puck (or pucks) that caused the focused warning */
+.puck.wfoc{outline:2px solid var(--hard);outline-offset:1px;box-shadow:0 0 0 1px #0B0D10,0 0 14px rgba(240,85,95,.55);z-index:5;position:relative}
+.puck.wfoc.advf{outline-color:var(--adv);box-shadow:0 0 0 1px #0B0D10,0 0 14px rgba(229,168,59,.5)}
+/* B14 · the SAME aircrew on the other days of the week — dashed and quieter, so
+   a cause sitting on the day before (crew rest, a late land, a double turn) is
+   traceable without competing with the puck that actually raised the warning */
+.puck.wfoc.echo{outline-style:dashed;outline-offset:1px;box-shadow:0 0 0 1px #0B0D10,0 0 7px rgba(240,85,95,.28);opacity:.92}
+.puck.wfoc.echo.advf{box-shadow:0 0 0 1px #0B0D10,0 0 7px rgba(229,168,59,.26)}
+/* the callsign chip shown on a day box that was opened by clicking a puck */
+.dwbox.pfoc .daywarn{border-style:dashed}
+.daywarn .dwwho{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:11px;font-weight:800;
+  letter-spacing:.05em;text-transform:uppercase;padding:1px 6px;border-radius:5px;margin-right:7px;
+  background:rgba(255,255,255,.10);color:var(--ink)}
+.dwecho{font-size:10.5px;color:var(--ink-3);line-height:1.35;padding:2px 1px 1px}
+/* min-width:0 because a grid item's default min-width:auto lets a tile's
+   min-content beat 1fr — four tiles measured 340px inside a 312px phone
+   modal and the fourth clipped at the edge (audit, 12 Aug 26). Two columns
+   under 480px for the same reason: four of these never fit that width. */
+.itiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+.itile{background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:10px;min-width:0}
+@media (max-width:480px){.itiles{grid-template-columns:repeat(2,1fr)}}
+.itile .n{font-size:22px;font-weight:700;line-height:1}
+.itile .l{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-top:5px;font-weight:600}
+.itile.hard .n{color:var(--hard)}
+.isec-h{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);font-weight:700;margin:15px 0 7px}
+.ibar{display:flex;align-items:center;gap:8px;margin:3px 0;font-size:12px}
+.ibar .nm{width:74px;flex:0 0 74px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ibar .track{flex:1;height:12px;background:var(--panel-2);border-radius:6px;overflow:hidden}
+/* `display:block` IS THE BAR (found 20 Aug 26, driving the built bundle for the
+   work-hours section). `.fill` is a <span> carrying `height:100%` and an inline
+   `width:N%`, and a span is `display:inline` — where width and height do not
+   apply at all. It measured 0x0: the Insights bars have been drawing an empty
+   track for every one of them, and jsdom could never say so because it reports
+   every rect as 0x0 anyway (the standing trap, CLAUDE.md §Build & verify). One
+   word, and both the flying-load and the work-hours rows draw. Pinned in
+   e2e/geometry.spec.ts, which is the only place that can see it. */
+.ibar .fill{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#57C9A0);border-radius:6px}
+/* 22px held a sortie count; a work-hours value is "25h35" and needs 33 (owner,
+   20 Aug 26 — the work-hours section). Widened for both rather than given the
+   new rows a modifier: 20px off a 454px track costs the flying bars nothing,
+   and one value column keeps the two sections reading as one panel. */
+.ibar .v{width:42px;text-align:right;color:var(--ink-2);font-family:'JetBrains Mono',monospace;font-size:11px}
+.ichips{display:flex;flex-wrap:wrap;gap:5px}
+.ichip{font-size:11px;padding:3px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
+.irow{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--edge)}
+
+/* The page behind the drawer does not scroll (owner's iPhone, 6 Sep 26 — "instead
+   of scrolling the side bar, it scrolls the page behind it as well"). Same two
+   holes as the board (see .sb-main / body.sb-lock): the scrim takes no pan at
+   all (`touch-action:none` — a touch there is a tap-to-close, never a scroll of
+   the page under it), and the panel, the drawer's one scroller, CONTAINS its
+   overscroll so a swipe that reaches its end does not chain to the document
+   (`touch-action:pan-y` keeps the up-down pan on the panel itself). The third
+   half is `body.dw-lock` (Drawer.tsx), the document lock. */
+.drawer{position:fixed;inset:0;z-index:440;background:rgba(4,7,10,.55);display:none;touch-action:none}
+.drawer.open{display:block}
+.drawer-panel{position:absolute;top:0;left:0;bottom:0;width:min(88vw,340px);overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;background:var(--panel);border-right:1px solid var(--edge);padding:16px}
+.drawer-panel h4{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:16px 0 7px;font-weight:600}
+.drawer-panel h4:first-child{margin-top:4px}
+.drawer-nav a{display:block;padding:10px;border-radius:9px;color:var(--ink);text-decoration:none;font-size:14px;font-weight:500;cursor:pointer}
+.drawer-nav a.on{background:rgba(59,198,232,.14);color:var(--accent)}
+.drawer-row{display:flex;gap:6px;flex-wrap:wrap}
+
+.airpop{position:fixed;inset:0;z-index:460;background:rgba(4,7,10,.55);display:flex;align-items:center;justify-content:center;padding:22px}
+.airpop[hidden]{display:none}
+.airpop-box{background:var(--panel);border:1px solid var(--edge);border-radius:14px;width:520px;max-width:100%;max-height:80vh;overflow:auto}
+.airpop-head{padding:12px 15px;border-bottom:1px solid var(--edge);display:flex;align-items:center}
+.airpop-head b{font-size:15px;font-weight:700}
+.airpop-head .x{background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px}
+/* The "Go to today" button in the "Jump to a date" header (WeekCal). It and
+   the ✕ cluster at the right — margin-left:auto is on the today button now, so
+   the ✕ that used to carry it follows on the today button's own right margin.
+   Design B (owner, 1 Sep 26): a calendar-page glyph — a bordered box with a
+   filled top bar (::before) — holding the notional today's date number. */
+.wc-today{margin-left:auto;margin-right:6px;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:9px;
+  width:38px;height:32px;cursor:pointer}
+.wc-today:hover,.wc-today:active{border-color:var(--accent);color:var(--accent)}
+.wc-pg{position:relative;width:21px;height:21px;border:1.8px solid currentColor;border-radius:5px}
+.wc-pg::before{content:'';position:absolute;top:-1.8px;left:-1.8px;right:-1.8px;height:6px;
+  background:currentColor;border-radius:4px 4px 0 0}
+.wc-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-top:4px;
+  font-size:9.5px;font-weight:800;color:var(--ink)}
+.airpop-body{padding:12px 15px}
+.airrow{display:flex;gap:8px;align-items:center;margin-bottom:6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink)}
+.airrow .adot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:0 0 7px}
+.airrow input{flex:1;background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:12px;padding:5px 8px;border-radius:7px}
+.airrow .del{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:14px}
+.airpop-foot{padding:10px 15px;border-top:1px solid var(--edge);display:flex;gap:8px;align-items:center}
+/* a name the slot's rules bar: still selectable, clearly not the default */
+/* ---- day details panel ---- */
+.dip-stat{padding:9px 12px;border-radius:9px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.dip-stat.ok{background:rgba(87,201,122,.13);border:1px solid rgba(87,201,122,.45);color:#A8E6BC}
+.dip-stat.draft{background:rgba(138,150,163,.10);border:1px solid var(--edge-2);color:var(--ink-2)}
+.dip-stat .dip-pend{margin-left:auto;font-size:10.5px;font-weight:700;color:#F2D699;
+  background:rgba(229,194,74,.13);border:1px solid rgba(229,194,74,.4);padding:2px 7px;border-radius:6px}
+/* a day not yet published: the day chip's words — gold when something on it is new to you, quiet otherwise
+   ([DRAFT-PENDING], Fable P7) */
+.dip-stat .dip-chg{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--ink-2);
+  border:1px solid var(--edge-2);padding:2px 7px;border-radius:6px}
+.dip-stat .dip-chg.new{color:#F2D699;background:rgba(229,194,74,.13);border-color:rgba(229,194,74,.4)}
+.dip-h{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);margin:14px 0 6px}
+.dip-als{display:flex;flex-wrap:wrap;gap:6px}
+.dip-al{display:inline-flex;align-items:center;gap:6px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  font-size:11.5px;font-weight:800;letter-spacing:.05em;color:var(--alc,var(--accent));
+  border:1px solid currentColor;border-radius:6px;padding:2px 8px;background:rgba(0,0,0,.25)}
+.dip-al i{font-family:'Inter Tight',sans-serif;font-style:normal;font-weight:600;font-size:10px;color:var(--ink-3);letter-spacing:0}
+.dip-none{font-size:11.5px;color:var(--ink-3);padding:3px 0}
+.dip-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px}
+.dip-r{display:flex;align-items:baseline;gap:8px;font-size:12px;border-bottom:1px dotted var(--edge);padding:3px 0}
+.dip-r .k{color:var(--ink-3)}
+.dip-r .v{margin-left:auto;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--ink)}
+.dip-r .v i{font-style:normal;font-weight:500;color:var(--ink-3);font-size:10.5px}
+.dip-sev{display:flex;gap:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:7px}
+.dip-sev b.hard{color:var(--hard)}.dip-sev b.adv{color:var(--adv)}.dip-sev b.note{color:#8A96A3}
+.dip-list{display:flex;flex-direction:column;gap:5px}
+.airview{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;color:var(--ink)}
+.airview .adot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle}
+

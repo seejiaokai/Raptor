@@ -1,0 +1,254 @@
+/* ---- the type legend and the AM/PM span picker (owner, 10 Aug 26) --------
+   Both sit inside .ifield, whose direct children are forced to 100% width and
+   36px height — so both are wrapped in a container the rule can reach rather
+   than fighting it. */
+
+/* THE LEGEND. A "?" beside the Type label opening an anchored popover, the
+   same shape as the date-window picker above (.inrange), because this is a
+   reference card and not a task: a modal would take the whole screen to say
+   what an abbreviation means. It hangs off the LABEL, so it costs no grid
+   cell and does not reflow the two tidy rows of four. */
+/* The label ELLIPSES its overflow, which is right for a long field name and
+   fatal for a popover hanging off one — the legend opened clipped to a 10px
+   strip, which is exactly the kind of thing only a screenshot catches. The
+   label that carries the legend opts out; every other label keeps the clip. */
+.ifield label.withhelp{overflow:visible}
+.ifield label .tylegend{margin-left:5px}
+.tylegend{position:relative;display:inline-block;text-transform:none}
+.tylegend-b{width:15px;height:15px;padding:0;line-height:1;font-size:10px;font-weight:800;
+  border-radius:50%;cursor:pointer;vertical-align:middle;
+  background:var(--panel-2);color:var(--ink-2);border:1px solid var(--edge)}
+.tylegend-b:hover,.tylegend-b.on{background:rgba(93,168,255,.16);border-color:rgba(93,168,255,.5);color:var(--ink)}
+.tylegend-pop{position:absolute;z-index:70;top:calc(100% + 6px);left:0;width:340px;
+  max-height:60vh;overflow:auto;text-align:left;
+  /* the label this hangs off sets white-space:nowrap and letter-spacing for
+     its own 10px caps — both are inherited straight into the popover, and the
+     first one ran every rule off the right edge in one unbroken line */
+  white-space:normal;letter-spacing:normal;font-weight:400;
+  background:var(--panel);border:1px solid var(--edge);border-radius:10px;
+  padding:10px 12px;box-shadow:0 12px 28px rgba(0,0,0,.5)}
+.tylegend-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.06em;font-size:11px;color:var(--ink-2);margin-bottom:6px}
+.tylegend-gt{font-size:9.5px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--ink-3);margin:8px 0 3px}
+.tylegend-g:first-of-type .tylegend-gt{margin-top:0}
+/* the rule the group shares, said once above its members */
+.tylegend-gr{font-size:10px;color:var(--ink-3);margin:0 0 4px;line-height:1.35}
+/* the code column is fixed so the names line up down the card — a ragged left
+   edge is what makes a twenty-row reference list hard to scan */
+/* wide enough for "Appointment" — a code column that wraps puts the name on a
+   second line and the list stops scanning */
+.tylegend-r{display:grid;grid-template-columns:66px 1fr;gap:8px;padding:2px 0;font-size:11px}
+.tylegend-r b{font-weight:800;color:var(--ink);font-size:10.5px;line-height:1.5}
+.tylegend-r span{color:var(--ink-2);line-height:1.35}
+.tylegend-r i{display:block;font-style:normal;font-size:10px;color:var(--ink-3)}
+
+/* THE SPAN PICKER. Four buttons in the height the other controls use, so the
+   row keeps its line. It replaces the all-day tick for leave and medical
+   types only, which is why .ifield.span exists alongside .ifield.chk. */
+.spanpick{display:flex;gap:0;height:36px;width:100%}
+.spanbtn{flex:1 1 0;min-width:0;padding:0 2px;cursor:pointer;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.04em;font-size:10.5px;font-weight:700;
+  background:var(--panel-2);color:var(--ink-2);border:1px solid var(--edge);border-right-width:0}
+.spanbtn:first-child{border-radius:8px 0 0 8px}
+.spanbtn:last-child{border-radius:0 8px 8px 0;border-right-width:1px}
+.spanbtn:hover{color:var(--ink);background:rgba(93,168,255,.10)}
+.spanbtn.on{background:rgba(93,168,255,.20);border-color:rgba(93,168,255,.55);color:var(--ink)}
+/* the selected button owns both its edges, or its right border is drawn by
+   the neighbour and reads a shade off */
+.spanbtn.on+.spanbtn{border-left-color:rgba(93,168,255,.55)}
+/* the popover must not hang off a phone screen, same fix as .inrange-pop */
+@media (max-width:700px){
+  .tylegend{position:static}
+  .tylegend-pop{left:8px;right:8px;width:auto}
+  .spanbtn{font-size:9.5px;letter-spacing:.02em}
+}
+
+/* THE SANS SUB-FORM (owner, 14 Aug 26; reworked flags-only the same day —
+   a per-event time pair could not be cleared with one tap on a phone, so
+   the timing moved onto the standard span picker below it). Three
+   checkboxes in ONE row now, not three stacked rows each with its own time
+   pair. One shared shape for all three editors: the add form's own
+   .ifield.sans, the in-table row editor, and the modal's .inped-f. */
+.sanspick{display:flex;gap:16px;align-items:center;height:36px}
+.sanspick-ck{display:flex;align-items:center;gap:5px;
+  font-size:11.5px;font-weight:700;color:var(--ink-2)}
+.sanspick-ck input{width:15px;height:15px;min-width:15px;accent-color:var(--san);margin:0}
+
+/* ---- editing one input from the week or the board (owner, 10 Aug 26) ---- */
+/* The times and the remarks are ordinary cells now, so they borrow the look
+   the ground-programme rows beside them already have — `.txed` on the week,
+   the board's own `.atm` / `.ain` boxes on the board. The only thing new is
+   the PLACEHOLDER on a contenteditable cell, which has none of its own: an
+   empty pair of time cells is not a gap, it is how "all day" is said, and a
+   cell that just looked blank would read as something nobody filled in. */
+.pl-row .t.inpt{min-width:0;overflow:hidden;white-space:nowrap}
+/* "all day" is seven characters in a 44px (week) / 52px (board) time cell, and
+   at the cell's own size it wraps to two lines and grows the row. The
+   placeholder alone is stepped down so the pair still SAYS the rule at a
+   glance without costing the height that made the word worth saying. */
+/* EVERY PLACEHOLDER, ONE RULE (owner, 10 Aug 26 — "if there are faded text on
+   an empty text box, make it more faded so that its obvious its not a written
+   text"). The board's boxes were rendering their ghost text at the SAME
+   --ink-3 the real values use, so an empty role box reading SDO and a filled
+   one reading SDO were the same colour: a blank block looked staffed.
+   MEASURED, not guessed. Real text on these surfaces is --ink (#F1F4F7) and
+   the dimmest ink token is --ink-3 (#8A96A3, about 5.2:1 on --panel). A
+   placeholder at --ink-3 x 0.55 lands near 2.3:1 — legible enough to read
+   deliberately, plainly too faint to be mistaken for content. It is set
+   through opacity rather than a fourth ink token so it composes with the two
+   size overrides just below and follows every surface's own background.
+   One selector, not per field, so the contract lives in one place. */
+input::placeholder,textarea::placeholder{color:var(--ink-3);opacity:.55}
+.txed.inpt:empty::before{content:attr(data-ph);color:var(--ink-3);opacity:.55;pointer-events:none;font-size:8.5px}
+/* 8px on the board, not 8.5: its phone START box is 46px, and the word was
+   still losing its last letter at 8.5 — the same clipped-text fault as the
+   time fields in the edit dialog, which is worth catching once rather than
+   twice. */
+.sb-arow.inprow .atm::placeholder{font-size:8px;letter-spacing:-.02em}
+.pl-row .rmk .ntx.inpt{display:block;min-height:1.3em}
+/* the board's input rows ARE ground-programme rows; the type keeps its chip
+   look inside the Item track, and the control track holds Accept where there
+   is one rather than the CX/flag/delete a schedule row carries */
+.sb-arow.inprow .inpty{width:100%;box-sizing:border-box}
+.sb-arow.inprow .lctl{justify-content:flex-end}
+.sb-arow.inprow .accs{margin-left:0}
+
+/* The label IS the button, so it inherits everything about how it looked as a
+   span — font, colour, alignment, the type chip's own border on the board —
+   and adds only the affordance: a pointer, an underline under the pointer,
+   and a real focus ring for the keyboard. Anything that changed its metrics
+   would move the row it sits in, which is the whole reason it is the label. */
+.pl-hint{margin-left:8px;text-transform:none;letter-spacing:.02em;font-size:8.5px;font-weight:600;color:var(--ink-3)}
+.inpedit{font:inherit;color:inherit;background:none;border:none;padding:0;margin:0;
+  text-align:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+.pl-row .ntx.inpedit{display:block;width:100%;overflow-wrap:anywhere}
+.inpedit:hover{text-decoration:underline;text-underline-offset:2px}
+.inpedit:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+/* the board's type chip keeps its own frame and colours — `.sbi-row .sbi-ty`
+   and `.sbi-ty.ty-*` both out-specify .inpedit, so only the affordance is new,
+   and a chip lights rather than underlines */
+button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
+.inpeb:hover{color:var(--ink);border-color:var(--accent)}
+.inpeb:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+/* the dialog. Narrower than the airspace popup it borrows its frame from —
+   four fields, none of them wide. */
+/* ---- the upchit save-time summary (owner, 27 Aug 26) ---------------------
+   Rides the airpop recipe one layer above the input dialog (z 460) that can
+   open it, so the sheet always paints over the form it interrupts. The
+   Keep/Remove pair is a forced choice — no default — so the buttons read as
+   an unanswered question until one is lit. */
+.airpop.upconf-pop{z-index:470}
+.airpop-box.upconf-box{width:min(94vw,440px)}
+.upconf-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.1em;font-size:10.5px;font-weight:800;color:var(--ink-3);margin:2px 0 7px}
+.upconf-list{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:6px}
+.upconf-list li{font-size:12.5px;color:var(--ink);background:var(--panel-2);
+  border:1px solid var(--edge);border-radius:8px;padding:7px 9px}
+.upconf-none{font-size:12.5px;color:var(--ink-2);margin:0 0 10px}
+.upconf-fit{font-size:12.5px;font-weight:700;color:#A8E6BC;margin:0 0 12px}
+.upconf-left{display:flex;align-items:center;gap:8px;background:var(--panel-2);
+  border:1px solid var(--edge);border-radius:8px;padding:7px 9px;margin-bottom:6px;font-size:12.5px;color:var(--ink)}
+.upconf-left .seg{margin-left:auto;display:flex;gap:4px;flex:0 0 auto}
+.upconf-seg{appearance:none;background:var(--bg);border:1px solid var(--edge-2);color:var(--ink-2);
+  font:inherit;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:7px;cursor:pointer}
+.upconf-seg.on-keep{background:var(--accent);border-color:transparent;color:var(--accent-ink)}
+.upconf-seg.on-rem{background:var(--hard);border-color:transparent;color:#14060A}
+.upconf-need{font-size:11.5px;color:var(--ink-3)}
+/* THE CLASH SHEET'S ROWS ARE FLAT (owner, 28 Aug 26 — "remove the box around
+   the buttons. It looks unclean"): no card fill, border or radius — each clash
+   is a plain line with its pills right-aligned, and rows separate by spacing
+   alone. Scoped to the medclash classes so the upchit sheet keeps its boxed
+   recipe. A clash row carries more words than a leftover row — both wrap so
+   the pills hold together on their own line when the phone runs out */
+.upconf-left.medclash-row,.upconf-left.medclash-tail{background:none;border:0;
+  border-radius:0;padding:5px 0;flex-wrap:wrap}
+.upconf-left.medclash-row .seg,.upconf-left.medclash-tail .seg{margin-left:auto;
+  flex-wrap:wrap;justify-content:flex-end}
+/* the leftover question hangs OFF the clash above it — indented and a step
+   quieter, so it reads as a follow-up to that clash, not a new one. Its
+   default (Remove) shows in the red 'on-rem' seg so a straight Save is
+   plainly cutting those days, never a silent drop (owner, 28 Aug 26) */
+.upconf-left.medclash-tail{margin:0 0 8px 14px;font-size:12px;color:var(--ink-2)}
+.medclash-tailnote{font-style:normal;font-weight:700;color:var(--ink-2)}
+.upconf-foot .abtn{flex:0 0 auto}
+/* ---- the OIL ask (owner, 28 Aug 26) — rides the upconf-* language; only
+   what it adds is styled here. The day grid reuses .rangecal/.rc-* wholesale:
+   applicable days light in the OIL cyan, everything else is inert. */
+.oilconf-what{font-size:12.5px;color:var(--ink);margin:0 0 10px}
+.oilconf-modes .seg{margin-left:0}
+/* the medical-document ask ([SYNC-INTEG]) reuses the OIL sheet's frame; its one
+   line of body copy matches the OIL "what" line. z-index above upconf so it can
+   sit over the upchit/clash sheets when both a document AND an upchit are pending. */
+.airpop.docconf-pop{z-index:472}
+.docconf-what{font-size:12.5px;color:var(--ink-2);margin:2px 0 0}
+.oilconf-count{font-size:11.5px;color:var(--ink-2);margin:8px 0 2px}
+.oilconf-note{font-size:11px;color:var(--ink-3);margin:10px 0 0}
+.rangecal.oilcal{margin:10px auto 0}
+/* the OIL revise chip on an inputs-table row (owner, 29 Aug 26): a recorded
+   weekend/PH OIL decision is changed here, in place — the chip only draws
+   where such a decision exists (oilAnswered). Cyan, the FO/HO family's own
+   colour on the Leave War grid; wider than the square action icons because
+   it is a word, not a glyph. */
+.inact .roil{width:auto;padding:0 8px;font-size:11px;font-weight:800;
+  letter-spacing:.4px;color:#9FDCEE;cursor:pointer;
+  border:1px solid rgba(59,198,232,.45);border-radius:6px}
+.inact .roil:hover{background:rgba(59,198,232,.14)}
+/* the input editor's own OIL row (same ask): the current standing beside a
+   Change… button that re-opens the OilConfirm sheet over every applicable day */
+.inped-oil{display:flex;align-items:center;gap:10px}
+.inped-oilsum{font-size:12px;color:var(--ink-2)}
+.inped-oil .abtn{padding:4px 10px;font-size:12px}
+.oilcal .rc-d.oc-off{color:var(--ink-3);opacity:.4;cursor:default;display:inline-flex;
+  align-items:center;justify-content:center}
+.oilcal .rc-d.oc-off:hover{border-color:transparent}  /* inert days do not light */
+.oilcal .rc-d.oc-ask{background:rgba(59,198,232,.10);box-shadow:inset 0 0 0 1px rgba(59,198,232,.35);
+  font-weight:700}
+.oilcal .rc-d.oc-ask.sel{background:rgba(59,198,232,.85);color:#04222b;font-weight:800;
+  box-shadow:none}
+.airpop-box.inpedbox{width:min(94vw,430px)}
+.inped-body{display:flex;flex-direction:column;gap:11px}
+.inped-f{display:flex;flex-direction:column;gap:5px}
+.inped-k{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.1em;font-size:10.5px;font-weight:800;color:var(--ink-3)}
+.inped-body select,.inped-body input[type=text],.inped-body input:not([type]){width:100%;box-sizing:border-box}
+.inped-body select,.inped-body input{background:var(--bg);border:1px solid var(--edge-2);border-radius:8px;
+  color:var(--ink);font:600 13px inherit;padding:8px 9px}
+.inped-body select:focus,.inped-body input:focus{outline:none;border-color:var(--accent)}
+.inped-when{display:flex;flex-direction:column;gap:7px}
+.inped-t{display:flex;gap:8px}
+/* 130px, not the 78px the Inputs page's own pair uses. Measured on the built
+   app after this shipped: Chromium renders `<input type=time>` in the
+   BROWSER's locale, and on en-US that is a 12-hour field — "12:00 AM" plus
+   the clock button. At 110px it drew "12:00 A" with the marker cut off, and
+   nothing reports it: scrollWidth reads 108 against a 110px box, because the
+   truncation happens inside the field's own shadow DOM. The Inputs page gets
+   away with 78px because its boxes stretch to the form column (298px desktop,
+   350px phone); this dialog sizes its own. Two at 130px plus the gap is 268px
+   inside a 346px phone dialog, so it still fits. */
+.inped-t input{width:130px}
+.inped-t[hidden]{display:none}
+.inped-ad{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2)}
+.inped-ad input{width:auto;padding:0}
+.inped-hint{font-size:10.5px;color:var(--ink-3);line-height:1.4}
+/* the read-only edit window's one line — who can change this input (W1-F3, 26 Sep 26) */
+.inped-ro{font-size:11px;color:var(--ink-2);line-height:1.4}
+/* THE READ-ONLY WINDOW READS AS READ-ONLY ([ABSENCE-SMALL-SEEN] 4, 28 Sep 26 — the re-test's W1). A member opening
+   another man's input gets the body `inert` (nothing in it answers a tap), but its fields were drawn exactly as live
+   ones — the dropdown box and arrow, the remarks box, the text cursor, the OIL "Change…" button — so only the line at
+   the foot said none of it could be changed. Locked, a field reads as its VALUE: no box, no arrow, no cursor but the
+   plain one, in the quieter ink; a tick box and a button are dimmed rather than removed, so the record still shows
+   what was chosen (the half of the day, the OIL answer). A look question for him on the look card. Keyed on the
+   `inert` the window already sets — one fact, so the look can never say "editable" while the body refuses a tap. */
+.inped-body[inert] :is(select,input:not([type=checkbox]):not([type=radio]),textarea){
+  background:transparent;border-color:transparent;color:var(--ink-2);cursor:default;
+  appearance:none;-webkit-appearance:none;padding-left:0;padding-right:0}
+.inped-body[inert] :is(input[type=checkbox],input[type=radio],button){opacity:.5;cursor:default}
+/* the Unavailable + Add's range calendar (owner, 19 Aug 26) — the same
+   .rangecal the Inputs page draws, stacked over its read-out line */
+.inped-dates{display:flex;flex-direction:column;gap:5px}
+/* a type that is not a choice (the SANS panel's add) reads as a plain value
+   in the same register the select would have used */
+.inped-v{font:600 13px inherit;color:var(--ink);padding:2px 0}
+

@@ -1,0 +1,183 @@
+{
+  "ref": "0804877ca099c844b77bfd8692cd2d055e5534c7",
+  "sourceHash": "0c16a9f046abaedb4f06e7876e2811a78e4695cf930fee884e3432d3c0f26fec",
+  "parts": [
+    {
+      "name": "00-foundation-login.css",
+      "line": 1,
+      "start": 0,
+      "end": 13570,
+      "hash": "ebbc4cea6418701d9724cfba5274b0c7d2a71afa0d2d4b7fec5f1af2bbd05231",
+      "bytes": 13570
+    },
+    {
+      "name": "01-logic.css",
+      "line": 209,
+      "start": 13570,
+      "end": 19308,
+      "hash": "8ce69d081820b8d68f690dd181f3fa0bfb592dab9d993045fb8ce2da8fe37269",
+      "bytes": 5738
+    },
+    {
+      "name": "02-shell.css",
+      "line": 299,
+      "start": 19308,
+      "end": 42698,
+      "hash": "80eb246a906a4d7187d0353e653f79296293d095a37ee731ddf0a2d3a226fa4c",
+      "bytes": 23390
+    },
+    {
+      "name": "03-week.css",
+      "line": 617,
+      "start": 42698,
+      "end": 91709,
+      "hash": "aa6eceaf574d7eef7d6c55d4178771efd0ce91b1d25d3f1f1ffa3cea48e8e5a5",
+      "bytes": 49011
+    },
+    {
+      "name": "04-pucks-sections.css",
+      "line": 1226,
+      "start": 91709,
+      "end": 153398,
+      "hash": "db216a5a2d09abc4a661f0a24189a17ec6adb52004247e2bd7c62a01a536df56",
+      "bytes": 61689
+    },
+    {
+      "name": "05-quals.css",
+      "line": 1998,
+      "start": 153398,
+      "end": 166355,
+      "hash": "70b74e0ec94d7a0386965c7c85879da3338bf39b971a5dd6a4c13c7248ad429c",
+      "bytes": 12957
+    },
+    {
+      "name": "06-inputs.css",
+      "line": 2167,
+      "start": 166355,
+      "end": 192122,
+      "hash": "7a53930a87cff060a9b2b9a33f6d5bad655227cbcace306638245018c554264b",
+      "bytes": 25767
+    },
+    {
+      "name": "07-inputs-calendar.css",
+      "line": 2550,
+      "start": 192122,
+      "end": 217978,
+      "hash": "d5830889b2ea5b92942892c83ad2a7b7b2fdd88ad439e3a91770fe81286470dd",
+      "bytes": 25856
+    },
+    {
+      "name": "08-windows-tools.css",
+      "line": 2903,
+      "start": 217978,
+      "end": 253589,
+      "hash": "4a888668f45e4c639e7e55fc7744b0424b3e31761c4e7ddd331fef43131602c8",
+      "bytes": 35611
+    },
+    {
+      "name": "09-week-responsive.css",
+      "line": 3341,
+      "start": 253589,
+      "end": 284109,
+      "hash": "c969c00549cff345332c3dd52b605d0ce44cb7364c25a4e34c159ec59264c025",
+      "bytes": 30520
+    },
+    {
+      "name": "10-board-history.css",
+      "line": 3772,
+      "start": 284109,
+      "end": 321356,
+      "hash": "4d2d9d5229bd6bbf4d66f9cb1bad942c376c6891a72197519c164da5f4483155",
+      "bytes": 37247
+    },
+    {
+      "name": "11-drag.css",
+      "line": 4260,
+      "start": 321356,
+      "end": 335945,
+      "hash": "85c5f84d14342bcda18e88adea03368db8616d3d8939668acf53c2dbdcc7d97c",
+      "bytes": 14589
+    },
+    {
+      "name": "12-schedule-editing.css",
+      "line": 4441,
+      "start": 335945,
+      "end": 361662,
+      "hash": "08836bf6b47b23b436b65a386bb51b1da55e937b4cb67f3bf8b97cd183c49736",
+      "bytes": 25717
+    },
+    {
+      "name": "13-board-rows-responsive.css",
+      "line": 4799,
+      "start": 361662,
+      "end": 428903,
+      "hash": "44ae65676240d5c7c3e6b9bc5a737984850ea6201a26b4e52e04d4367db07dd3",
+      "bytes": 67241
+    },
+    {
+      "name": "14-input-editors.css",
+      "line": 5721,
+      "start": 428903,
+      "end": 446582,
+      "hash": "53754c01a7379759889e413f9464371821df94f5c78335a7600970c71114e976",
+      "bytes": 17679
+    },
+    {
+      "name": "15-admin-help.css",
+      "line": 5975,
+      "start": 446582,
+      "end": 456957,
+      "hash": "99c99492a8bef5ce27c1eeabbff2abfee4adb52a285f3e8c5d987060c7892b80",
+      "bytes": 10375
+    },
+    {
+      "name": "16-medical.css",
+      "line": 6111,
+      "start": 456957,
+      "end": 466409,
+      "hash": "310b259ac0fb34599315b6e4cc45f3dd495e91db6b3b68a1091184df2c84cebf",
+      "bytes": 9452
+    },
+    {
+      "name": "17-save-status.css",
+      "line": 6240,
+      "start": 466409,
+      "end": 468460,
+      "hash": "1a7820c1ecf89b73d0741bcb6e7eeb448c26b57917047f9b64d44c34f172973a",
+      "bytes": 2051
+    },
+    {
+      "name": "18-oil-board.css",
+      "line": 6261,
+      "start": 468460,
+      "end": 480165,
+      "hash": "7fe7909768b726690edea1da738bc55fc94ee82600526785aeec36fd123c9148",
+      "bytes": 11705
+    },
+    {
+      "name": "19-availability.css",
+      "line": 6415,
+      "start": 480165,
+      "end": 488761,
+      "hash": "c5d317621069c5e2f5f5b546f5b8a35fa89f8740654e914e524dddb9b5508d41",
+      "bytes": 8596
+    },
+    {
+      "name": "20-changes-quals.css",
+      "line": 6541,
+      "start": 488761,
+      "end": 503294,
+      "hash": "4dfe893de5defb60982ccd034af7d7955ea99bde295bb693370d2adfc0510fa8",
+      "bytes": 14533
+    },
+    {
+      "name": "21-insights.css",
+      "line": 6703,
+      "start": 503294,
+      "end": 506840,
+      "hash": "bf04e0f818976fefa59b85334a1b48dd6615d80caf1e9ed6a571384dfe18c440",
+      "bytes": 3546
+    }
+  ],
+  "exactByteRecomposition": true
+}

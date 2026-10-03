@@ -1,0 +1,513 @@
+
+> raptor-port@0.0.0 smoke:tracker
+> node scripts/tracker/smoke.mjs
+
+building dist/ …
+(node:34612) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+> raptor-port@0.0.0 build
+> tsc -b && vite build
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+vite v8.2.0 building client environment for production...
+[2Ktransforming...✓ 301 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                          3.02 kB │ gzip:   1.34 kB
+dist/assets/idle-BfPG9c67.css            3.44 kB │ gzip:   1.11 kB
+dist/assets/TrackerPage-RlgGU7Bu.css    32.01 kB │ gzip:   6.59 kB
+dist/assets/LeaveWarPage-C7jiJ1U2.css   76.18 kB │ gzip:  13.14 kB
+dist/assets/index-CXdqUrrO.css         218.74 kB │ gzip:  40.10 kB
+dist/assets/undo-DPMBoZSA.js             0.03 kB │ gzip:   0.05 kB
+dist/assets/idle-uKU43X6z.js             0.43 kB │ gzip:   0.27 kB
+dist/assets/weeknav-DEdR3eQ_.js          0.90 kB │ gzip:   0.49 kB
+dist/assets/jsx-runtime-B-hcVAMW.js      8.55 kB │ gzip:   3.26 kB
+dist/assets/oilmode-CqbsTo16.js         12.30 kB │ gzip:   4.73 kB
+dist/assets/wavetpl-DeZHH-ii.js         14.29 kB │ gzip:   5.82 kB
+dist/assets/html-DvP4ZE4p.js            58.06 kB │ gzip:  20.98 kB
+dist/assets/inputedit-DgwrjY5a.js       90.15 kB │ gzip:  29.82 kB
+dist/assets/store-Dhw1hb2v.js          146.82 kB │ gzip:  49.50 kB
+dist/assets/LeaveWarPage-z5-AAJbu.js   195.26 kB │ gzip:  56.03 kB
+dist/assets/sched-commit-DkN8S9q8.js   318.29 kB │ gzip: 105.23 kB
+dist/assets/TrackerPage-BwJaeqhR.js    413.18 kB │ gzip: 100.34 kB
+dist/assets/index-D9vjwfCC.js          624.34 kB │ gzip: 199.29 kB
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/ui/pan.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/EditWeek.tsx, src/ui/GuestApp.tsx, src/ui/Shell.tsx, src/ui/ViewWeek.tsx, src/ui/highlights.ts, ..., dynamic import will not move module into another chunk.
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/ui/drag.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/Shell.tsx, src/ui/board.ts, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/ui/board-html.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/board.ts, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/ui/board.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/state/undo-wire.ts, src/ui/DraftsModal.tsx, src/ui/SchedBoard.tsx, src/ui/WeekCal.tsx, src/ui/interactions.ts, dynamic import will not move module into another chunk.
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/ui/palette-html.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/EditWeek.tsx, src/ui/SchedBoard.tsx, dynamic import will not move module into another chunk.
+
+✓ built in 538ms
+
+=== http://localhost:4179/ (Tracker tab) ===
+
+ PASS  app boots and renders the flow board — 210 events
+ PASS  the readability check actually reads the balls — 210 labels measured
+ PASS  every event code is readable on its own ball — worst CFT-01 4.76:1 — rgb(11, 13, 16) on #B24DEA
+ PASS  the prerequisite arrows are visible against the page — 3.90:1 (#657085)
+ PASS  one hover enter per ball crossing (no bubble flicker) — 1 enter events
+ PASS  Details mode says it is on — text="Details mode — click an event for its brief. Marking is off.Turn off"
+ PASS  Details mode says marking is off — text="Details mode — click an event for its brief. Marking is off.Turn off"
+ PASS  Details mode offers a way out
+ PASS  marking really is off while Details mode is on
+ PASS  the way out clears Details mode
+ PASS  marking works again once Details mode is off
+ PASS  inline editor has all five fields — Name / Type / format / Hours / Crew / Prerequisites
+ PASS  inline editor is not covered by anything
+ PASS  save writes through to the list
+ PASS  Show All stays open after save
+ PASS  cancel discards edits
+ PASS  Reset to doc fills the boxes with the document (w3-F4)
+ PASS  …and Cancel after it keeps what was typed (w3-F4)
+ PASS  reset to doc restores source values
+ PASS  edits survive a reload
+ PASS  Show All groups by event code, not by phase — ST | ACG | CFT | T | AVI | IAT
+ PASS  the first two groups are the ones the course starts with — ST | ACG | CFT
+ PASS  every group runs in increasing number order
+ PASS  filtering "ST" returns only events whose code starts with ST
+ PASS  filtering "ST" keeps them in increasing order — ST-01,ST-02,ST-03,ST-04,ST-05,ST-06,ST-09,ST-10,ST-11,ST-12,ST-13,ST-14,ST-15,ST-16,ST-16B,ST-17,ST-18
+ PASS  a filtered code shows as a single group — ST
+ PASS  searching a word still looks inside names and crew — ST-04, DAAR-1, DAAR-2, NAAR-1
+ PASS  Tx 2026 shows its own wording for SA-5 — Surface Attack-5 (Refer to BCTM SA-6)
+ PASS  saving a row on Tx leaves the other charts' wording alone — Surface Attack-5
+ PASS  pop-up editor is compact — height 321px, textareas 52/52px
+ PASS  pop-up editor stacks above the Show All panel (81) — z-index 91
+ PASS  clicking a ball opens the grading popup
+ PASS  layout snapshot covers every event, not only moved ones — 210 positions
+ PASS  collected charts carry the syllabus and its layout
+ PASS  collected charts name nobody
+ PASS  collected students carry the roster
+ PASS  the file-access wrapper is reachable
+ PASS  this browser can write back into the same file
+ PASS  the page is a secure context, which the file pickers require
+ PASS  a code is the part before the dash — ST | TR(S) | SA(S)
+ PASS  numbers sort as numbers, not as text — ST-1,ST-2,ST-3,ST-10,ST-21
+ PASS  a suffix sorts after the bare number, and beside its own kind — ST-16,ST-16B,ST-17
+ PASS  groups lead with whichever code the course reaches first — ST,ACG
+ PASS  inside a group the order is by number, not by where it sits in the course — ST-01,ST-2,ST-10
+ PASS  typing a code returns that family alone — ST-01,ST-10,ST-2
+ PASS  a word that is no code still searches the whole row
+ PASS  an empty filter keeps everything
+ PASS  an exact code wins outright — ST-01
+ PASS  the words printed on a ball are searchable, not just its code — AVI-12 | NAAR | IEPE/IPC
+ PASS  a code that starts several returns all of them, first one first — ST-01,ST-10
+ PASS  an exact code beats a label that merely starts with it — AVI-12
+ PASS  nothing matching returns nothing
+ PASS  an empty search finds nothing rather than everything
+(node:34612) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/User/projects/Raptor/raptor-port/src/tracker/app/eventOrder.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to \\?\C:\Users\User\projects\Raptor\raptor-port\package.json.
+ PASS  the Import button exists
+ PASS  the Export button exists
+ PASS  #openFileBtn is gone with the file-as-store model
+ PASS  #saveCopyBtn is gone with the file-as-store model
+ PASS  #importSylBtn is gone with the file-as-store model
+ PASS  #restoreBtn is gone with the file-as-store model
+ PASS  #openFileName is gone with the file-as-store model
+ PASS  #lastSaved is gone with the file-as-store model
+ PASS  #optCharts is gone with the file-as-store model
+ PASS  #optStudents is gone with the file-as-store model
+ PASS  #fileHasStudents is gone with the file-as-store model
+ PASS  there is never a second Save button
+ PASS  a structure edit brings the Save button up
+ PASS  Save changes clears the unsaved dot
+ PASS  Save changes reports the syllabus saved — class="savestat ok" text="● saved"
+ PASS  with both boxes ticked the suggested name warns about students
+ PASS  a completed save does report itself in green — class="savestat ok" text="● saved"
+ PASS  the Save button appears once work is outstanding
+ PASS  nothing still reads green while work is outstanding — class="savestat " text=""
+ PASS  the words step aside while ✓ Save changes shows (the button says it) — text="" · Save button 1
+ PASS  #cloudBtn is gone from the toolbar
+ PASS  #loadLatestBtn is gone from the toolbar
+ PASS  #saveBtn is gone from the toolbar
+ PASS  #importBtn is gone from the toolbar
+ PASS  #exportHtmlBtn is gone from the toolbar
+ PASS  saving still works with no cloud button
+ PASS  Export opens a dialog
+ PASS  Export starts with students unticked
+ PASS  Export lists the syllabi to tick
+ PASS  Export sits above the Show All panel (81)
+ PASS  Export resets students to unticked every time
+ PASS  the one Import button is the syllabus import too
+ PASS  importing as new creates a separate syllabus — 4 events
+ PASS  importing as new leaves the original syllabus alone — 210 events
+ PASS  importing as new leaves every mark in place
+ PASS  replacing a syllabus writes the new chart — 5 events
+ PASS  replacing a syllabus leaves every mark untouched
+ PASS  applying charts writes no roster, mark or date key
+ PASS  applying students writes the roster
+ PASS  the roster it writes carries an enrolment id, not a bare name — [{"id":"smusivbux8p48xv","name":"STUDENT Z"}]
+ PASS  applying students writes marks and failure counts
+ PASS  a syllabus source round-trips through JSON
+ PASS  a chart survives a full save-and-reopen unchanged — sb2024,sb2026,sbtx2026,sbagaa2026,scmusivadxzz
+ PASS  drawn lines, arrowheads and font sizes survive too — __derived,__edgeMeta,__lines,__merges,__unmerges|__derived,__edgeMeta,__font,__lines,__merges,__unmerges|__derived,__edgeMeta,__font,__lines,__merges,__unmerges|__derived,__edgeMeta,__font,__lines,__merges,__unmerges|__derived,__edgeMeta,__font,__lines,__merges,__unmerges vs __derived,__edgeMeta,__lines,__merges,__unmerges|__derived,__edgeMeta,__font,__lines,__merges,__unmerges|__derived,__edgeMeta,__font,__lines,__merges,__unmerges|__derived,__edgeMeta,__font,__lines,__merges,__unmerges|__derived,__edgeMeta,__font,__lines,__merges,__unmerges
+ PASS  the saved text names nobody when students are not ticked
+ PASS  the pace card has both end-date boxes — 2
+ PASS  nothing in the pace card overflows its row — 0px of overflow
+ PASS  no end-date box runs off the side panel — 0px past the edge
+ PASS  no end-date box is squeezed too narrow to read
+ PASS  the edit toolbar never overlaps the board
+ PASS  the edit toolbar ends above the board, so it can bury no event — 51px between the strip and the board
+ PASS  turning edit mode on does not add or remove header buttons
+ PASS  Fit is reachable while editing
+ PASS  Reset layout is reachable while editing
+ PASS  Fit and Reset layout live in the edit strip, not the header
+ PASS  ST-01 can actually be dragged in edit mode — moved 70,44 of 70,45
+ PASS  the chart zoom control says which side it zooms — "Chart−127%+reset"
+ PASS  the panel zoom control says which side it zooms — "Panel−100%+reset"
+ PASS  the top bar fits on one row at 1440 — 30px tall, tallest control 30px, 12 groups
+ PASS  the whole header stays one row at 1440, title included — header 51px, tallest control 30px
+ PASS  Crew is the first control in the bar and sits left of Course — activeSel → courseSel → courseMenuBtn → sylSel (crew 46px, course 204px)
+ PASS  the picker is labelled Crew, not Marking as
+ PASS  Course follows Crew, and each edit pencil sits right after its dropdown — activeSel → courseSel → courseMenuBtn → sylSel → sylMenuBtn
+ PASS  the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · Show All · File · search · Hide — activeSel → courseSel → courseMenuBtn → sylSel → sylMenuBtn → detailsBtn → showAllBtn → fileMenuBtn → hSearch → hSearchClear → barHideBtn
+ PASS  the spacer falls after the search, with only the Save slot to its right — spacer at 10/12, right of it: [saveslot]
+ PASS  the search checks run against a chart taller than the screen — parked at 8044px
+ PASS  typing an event code snaps the board to that ball — ST-01: scroll 8044 -> 73, in view true
+ PASS  exactly one ball is ringed, and it is the one searched for — 1 rings
+ PASS  the search ring never touches the yellow available ring — 2.5px between them
+ PASS  the search ring is a colour of its own, not the blue that means "selected" — #00e5c8
+ PASS  a search that finds nothing leaves the board and the mark alone — scroll 73 -> 73, 1 rings, "no match"
+ PASS  clearing the box takes the ring off
+ PASS  typing opens a list of every matching event, the ringed one lit, and it can be clicked — 20 rows, lit 0, "1 of 20", first row hit true
+ PASS  each prediction shows the event's name beside its code — 20 of 20 named
+ PASS  more text narrows the list — 20 → 10: ST-16, ST-16B, ST-11, ST-10
+ PASS  ↓ moves the light and the ring to the next prediction together — lit 1, ringed ST-16B, second row ST-16B
+ PASS  clicking a prediction rings that event, keeps the text and shuts the list — ringed ST-11 (wanted ST-11), list on false, "ST-1" 3 of 10
+ PASS  clicking back into the box brings the list back
+ PASS  Escape clears the box and the list with it
+ PASS  the undo checks run with a student on the roster — crew "STUDENT A"
+ PASS  ↶ ↷ sit in the app’s top bar, not in the edit strip or the Tracker’s header, and are greyed with nothing to undo — bar true, strip false, greyed true/true
+ PASS  a grade lights ↶ outside edit mode, and the tooltip says what it takes back — grade dco, greyed false, "Undo the mark on ST-01 for STUDENT A (Ctrl+Z)"
+ PASS  ↶ takes the grade back and lights ↷ — grade 0, undo greyed true, redo greyed false
+ PASS  ↷ puts it back
+ PASS  Ctrl+Z undoes from the keyboard
+ PASS  the mark undone is the mark saved: storage holds no grade for ST-01
+ PASS  every grouped action is still reachable from its menu
+ PASS  the three dropdowns, Show All, the ⓘ info icon and ↶ ↷ stay out of the menus
+ PASS  Reorder crew sits in the Students card beside + Add
+ PASS  a menu opens, and clicking away closes it again
+ PASS  Save changes is out of the way when there is nothing to save
+ PASS  a moved ball saves itself — no Save button for a drag
+ PASS  Save changes appears the moment a structure edit makes something unsaved
+ PASS  the bar is the same height with the Save button showing — was 30px
+ PASS  a bus rail is not severed by hops over its own risers — M307.3 1650.7 L307.3 1713.7 L530.3 1713.7 L530.3 1729.7
+ PASS  shipped per-ball font sizes reach a fresh visitor — font-size:7px
+ PASS  Show All lists events — 5 rows
+ PASS  every Show All row says whether it is done — 5 of 5 rows carry a status
+ PASS  the status reads as a grade or "not done" — first badge "not done"
+ PASS  at least one app-written date is on screen to be judged — 1 found: 21/10/26
+ PASS  no date the app writes still spells the month
+ PASS  app-written dates are dd/mm/yy shaped — 21/10/26
+ PASS  the duplicate line under the date boxes is gone — 0 echo lines
+ PASS  every failure is its own chip — ST-01, ST-01X, ST-01XX for three — chips: ST-01, ST-01X, ST-01XX, ST-02
+ PASS  a single failure shows the plain code — chips: ST-01, ST-01X, ST-01XX, ST-02
+ PASS  the worst offender is listed first — ST-01, ST-01X, ST-01XX, ST-02
+ PASS  the total counts failures, not events — total: "4 fails"
+ PASS  a failure is recorded on the day it is pressed — dates: 2026-10-03, 2026-10-03, 2026-10-03, 2026-10-03 (today 2026-10-03)
+ PASS  hovering a failure chip shows the day it happened — bubble: "ST-01XSquadron WelcomeSTUDENT A: 2nd failure of 3 on ST-01Failed on: 03/10/26"
+ PASS  the bubble goes when the mouse leaves
+ PASS  clicking a failure chip shows its day too — bubble: "ST-02Checklist IntroductionSTUDENT A: 1st failure of 1 on ST"
+ PASS  the next touch anywhere puts the tapped bubble away
+ PASS  the Failures title opens the full list, one row per failure with its date — rows: ST-01, ST-01X, ST-01XX, ST-02 · dates: 2026-10-03, 2026-10-03, 2026-10-03, 2026-10-03 · 4 fails
+ PASS  changing a day in the list re-dates that one failure, and the labels follow the days — chip dates: 2026-08-01, 2026-10-03, 2026-10-03, 2026-10-03
+ PASS  Escape closes the failures list
+ PASS  the pop-up lists this student’s failures on the event with their days — box 2026-10-03 · ST-01, ST-01X, ST-01XX · 2026-08-01, 2026-10-03, 2026-10-03
+ PASS  a + records the failure on the day in the "Failed on" box — ST-01@2026-08-01, ST-01X@2026-08-15, ST-01XX@2026-10-03, ST-01XXX@2026-10-03, ST-02@2026-10-03
+ PASS  a − takes the latest failure back
+ PASS  another student’s Failures card shows their own record, not this one’s — 0 chips
+ PASS  switching back brings the failures back
+ PASS  the Done on box offers today before a grade — 2026-10-03
+ PASS  marking DCO dates the event the day it was pressed — 2026-10-03
+ PASS  the day can be changed afterwards, and it sticks — 2026-08-10
+ PASS  the failure bubble names the student it belongs to — ST-02Checklist IntroductionSTUDENT A: 1st failure of 1 on ST-02Failed on: 03/10/
+ PASS  Not done drops the day again — 2026-10-03
+ PASS  the failures list has a ceiling and scrolls inside it — max-height 104px, overflow-y auto
+ PASS  removing the failures empties the card again — 0 chips left
+ PASS  an unfailed student sees "none", not a blank card — "none"
+ PASS  Export is open before Escape
+ PASS  Escape closes Export
+ PASS  Show All is open before Escape
+ PASS  Escape closes Show All
+ PASS  the grading pop-up is open before Escape
+ PASS  Escape closes the grading pop-up
+ PASS  on a phone the chart fits the screen width, so it only scrolls up and down — 390px of chart in 390px of screen
+ PASS  a phone can scroll well past the end of the chart, clear of the zoom control — 170px of room under the chart
+ PASS  the phone bar holds every control on screen — off the edge: none
+ PASS  the phone bar does not hide controls behind a sideways scroll — 0px of hidden scroll
+ PASS  the phone bar stays within three rows — 2 rows, 70px tall — sub:103 sub:88 menu:28 sub:88 menu:28 detailsBtn:28 menu:54 findwrap:29 barHideBtn:22 saveslot:62
+ PASS  the phone bar still measures something — 10 controls seen
+ PASS  on a phone Crew is the leftmost control, reachable without scrolling the bar — 0px from the header's left padding, crew 8px vs course 117px
+ PASS  on a phone the search box is behind a button, not sitting in the bar — input 0px, button 29px
+ PASS  tapping the magnifier opens a box that fills the width and can be typed in — 325px of 390px, below the bar true, tap hits hSearch
+ PASS  on a phone the predictions fill the width under the strip and take a tap — 376px of 390px, below true, tap hits a row true
+ PASS  the course menu is actually tappable on a phone
+ PASS  the syl menu is actually tappable on a phone
+ PASS  the file menu is actually tappable on a phone
+ PASS  every syllabus is selectable on a phone — {"n":5,"visible":true}
+ PASS  the panel zoom control does not sit on top of a card
+ PASS  the student names on the key ball are big enough to read — 12px tall
+ PASS  no student name runs off the key ball
+ PASS  the Students card is the same size as the Overall card beside it — 0px apart
+ PASS  every statistic but lull periods fits one phone screen, no pinching — 587px in 656px — Students ⇅ Reorder+  150, Overall — STUDENT A 150, Next event (flow-bas 88, Plannable now (shows 88, Currency & flex 138, Pace & expected end  111, Failures — STUDENT A 65, Lull periods — STUDE 65
+ PASS  set pace and both end dates sit on one row — 3 boxes on 1 row(s)
+ PASS  each end-date box leaves half again the room a date needs — 108, 108px wide, a date needs 48px
+ PASS  no end-date box runs past its own box or its card — 0px past its box, -12px past the card
+ PASS  the info panel opens at 100% on its new baseline — 100%
+ PASS  the last row is Lull periods and Failures, paired — Failures + Lull
+ PASS  the desktop chart is still shown full size, not shrunk to fit
+ PASS  the bar carries a Hide control
+ PASS  the bar is shown to begin with
+ PASS  hiding the bar removes it
+ PASS  hiding leaves a way back that names the crew — crew="STUDENT A"
+ PASS  the chart grows into the freed space — 785 → 810px
+ PASS  the choice is remembered per browser (ocuLocal, not the shared file)
+ PASS  showing the bar brings it back
+ PASS  showing the bar clears the remembered choice
+ PASS  the duplicated calendar mode dropdown is gone
+ PASS  the calendar no longer sits in the side panel
+ PASS  there is a Set lull period button
+ PASS  the lull calendar is shut until it is asked for
+ PASS  + Add opens with the squadron roster listed above the text box — Add a crew memberFrom the squadron rosterReconPilot · OCUTalismanPilot · OCUWildcardPilot 
+ PASS  a roster entry reads callsign, then seat and category — {"key":"prism","label":"Recon","sub":"Pilot · OCU"}
+ PASS  the text box says it is the other way in
+ PASS  the list sits above the text box
+ PASS  the search box narrows the list to the typed callsign
+ PASS  picking a person adds them under their callsign, upper-cased — STUDENT A, STUDENT B, RECON
+ PASS  and marks their chip as linked to the squadron roster
+ PASS  a typed callsign still adds an unlinked crew member
+ PASS  the pencil renames a student — new label on the dropdown, old one gone
+ PASS  a rename keeps the enrolment id and the squadron link
+ PASS  the export file carries the link ON the student, not in a block of its own — {"id":"smusiwh1iakoh8q","name":"RECON","pid":"prism"}
+ PASS  an unlinked crew member has no link in it
+ PASS  removing a linked crew member takes the link with them
+ PASS  the syllabus dropdown carries ids, not names — sb2024,sb2026,sbtx2026
+ PASS  the boot ran the syllabus-id migration (both flags set, a catalogue written) — 1,1
+ PASS  the current syllabus resolves a label from its id — sb2026 -> 2026
+ PASS  the course has two students to test lull periods against — STUDENT A, STUDENT B
+ PASS  paging the month does not finish the period off by itself
+ PASS  two clicks on the calendar make one lull period
+ PASS  the calendar closes itself once the period is complete
+ PASS  the lull chip shows two numeric dates — chip: "01/10/26
+→
+31/10/26
+×"
+ PASS  a date past the 12th puts the DAY first, proving the order — chip: "01/10/26
+→
+31/10/26
+×" — leading numbers 1 and 31
+ PASS  a lull period belongs to one student, not the whole course — STUDENT B shows 0
+ PASS  switching back shows the first student their own periods again
+ PASS  Copy to… puts the periods on the student that was ticked
+ PASS  tapping a period reopens the calendar to change it
+ PASS  the pace box can be cleared to type a new number — shows ""
+ PASS  a pace typed in stays put — shows "3.5"
+ PASS  a second student has their own pace, not the first one's — STUDENT A=3.5 STUDENT B=2
+ PASS  a second student has their own end date — STUDENT A=2027-03-01 STUDENT B=
+ PASS  switching back returns that student's own pace and end date — pace=3.5 end=2027-03-01
+ PASS  per-student pace survives a reload — STUDENT B shows 2
+ PASS  per-student end date survives a reload — STUDENT A shows 2027-03-01
+ PASS  Escape leaves the period alone rather than half-changing it
+ PASS  a lull period only stretches its own student’s projected end
+ PASS  lull periods survive a save and reopen
+ PASS  these checks run against a chart taller than the screen — {"balls":212,"scrollable":true}
+ PASS  the tall syllabus has students to mark — 2 students
+ PASS  opening the app lands on the last event marked, not at the top of the chart — AGS-01: scrolled 5879px, in view true
+ PASS  the syllabus can still be changed on a course that has marks
+ PASS  picking a crew member lands on their latest work, well down the chart, centred — AGS-01: scrolled 5879px, in view true, 0px off centre
+ PASS  picking the other one lands on THEIR latest work, near the top, centred — ACG-03: scrolled 337px, in view true, 0px off centre
+ PASS  picking a crew member with no marks yet lands on the chart's first event, centred — parked 5297px; ST-01 in view true at 73px, 0px off centre
+ PASS  a click on another crew member's wedge picks them, and opens nothing — picker reads STUDENT TALL1, pop-ups open: 0
+ PASS  every ball edges the picked crew member's wedge in cyan — 212/212 balls, wedge 0 (expected 0)
+ PASS  picking by wedge leaves the view where it is — 5879px → 5879px
+ PASS  the same wedge again — now the selected crew member's — opens the details
+ PASS  the centre of the ball opens the details too
+ PASS  grading a ball leaves the view where it is — graded AAM-06: 3973px → 3973px
+ PASS  a remembered syllabus that no longer exists does not break opening the app
+ PASS  the app still opens with a remembered student who is gone — 212 events, 0 page errors
+ PASS  these checks start from the single shipped course — 26ABSG
+ PASS  a new course is added at the TOP of the list — SMOKE FIRST | 26ABSG
+ PASS  the reorder modal knows which list it is showing
+ PASS  moving a course down reorders the Course dropdown — 26ABSG | SMOKE FIRST
+ PASS  the course order survives a reload — 26ABSG | SMOKE FIRST
+ PASS  the crew list opens in the same modal
+ PASS  reordering crew reorders the Crew dropdown — STUDENT B | STUDENT A
+ PASS  reordering crew also re-slices the balls — first slice #000000 -> #ffffff
+ PASS  the crew order survives a reload — STUDENT B | STUDENT A
+ PASS  the app reopens on the course you were last on — SMOKE FIRST
+ PASS  that memory is this browser's and this person's alone, not in the shared file — key=ocuLocal:who:stiff:lastCourse, mine=cmusixerctvp94s, curId=cmusixerctvp94s, shared=[]
+ PASS  a remembered course that no longer exists falls back cleanly — 26ABSG PROGRESS TRACKER, 0 new page errors
+ PASS  the app reopens on the crew member you last looked at, without grading anyone — wanted STUDENT B, got STUDENT B
+ PASS  the next person on the browser opens on their own place, not the last person's course — 26ABSG PROGRESS TRACKER
+ PASS  and the admin, back, is on his own course again — SMOKE FIRST PROGRESS TRACKER
+ PASS  no damaged file can stop the app opening again — all four refused, app starts every time
+ PASS  opening a file adds its courses without deleting yours — MINE | 26ABSG | THEIRS
+ PASS  the Reset layout warning says the drawn lines go too — Reset this syllabus back to the course-map layout? This puts every box back where the map has it AND deletes a
+ PASS  Reset layout really does clear the lines — 69 -> 0
+ PASS  Undo brings the lines back after a Reset layout — 69 before, 69 after undo
+ PASS  Redo after changing syllabus cannot stamp the old chart onto the new one — the button is greyed — greyed true; Tx 2026 held 0 moved boxes, now 0
+ PASS  changing an event's details saves itself — no Save button
+ PASS  deleting a syllabus-specific note stays deleted after a reload — typed "Surface Attack-5", reopened as "Surface Attack-5"
+ PASS  the pace-and-lulls checks know which enrolment they are seeding — id smusiysq7df2qtz
+ PASS  renaming a course carries each crew member's pace and lull periods — on cmusiysq6worw7l: pace {"epw":"3.5","target":"2027-01-01"}, lulls [{"a":1,"b":2}]
+ PASS  and leaves none of those records behind under the old course name — 0 keys still under 26ABSG
+ PASS  removing a crew member takes their name and their work with them — nothing left behind
+ PASS  adding the same callsign back starts them clean — pace after re-adding: null
+ PASS  the reordered list really is different from the shipped one, so this check can fail — shipped [sb2024, sb2026, sbtx2026, sbagaa2026] vs saved [sb2026, sb2024, sbtx2026, sbagaa2026]
+ PASS  the chart order you saved is the order you get back — saved [sb2026, sb2024, sbtx2026, sbagaa2026] -> restored [sb2026, sb2024, sbtx2026, sbagaa2026]
+ PASS  "Next event" marks anything that cannot be flown yet as not yet — CFT-01 (not yet), IAT-01 (not yet), TR(S)-1 (not yet), TR-1(P) (not yet)
+ PASS  two failures draw two red ticks on the ball — 2 ticks, stroke #F0555F
+ PASS  an event marked N.A. carries no failure ticks — 0 red ticks
+ PASS  a failure cannot be added to an event marked N.A. — 0 ticks, counter reads 2
+ PASS  zooming in holds the event under the middle of the view — cy 3000 -> 2998 at z=1.2
+ PASS  zooming holds the horizontal position once the width overflows — cx 83 -> 83, cy 2995 -> 2995
+ PASS  switching to the Line tool does not move the board — top 278.734375 -> 278.734375, wrapper 26.390625 -> 26.390625
+ PASS  the hint is visible, takes exactly one line of real space, and passes clicks through — {"top":278.734375,"hintShown":true,"hintHeight":43.78125,"wrapHeight":26.390625,"passesClicks":true,"legendClear":false}
+ PASS  the colour legend is not covered by the edit-mode hint — Move: true, Line: false
+ PASS  the syllabus picker offers Tx 2026 — 2024 | 2026 | Tx 2026 | A/G - A/A 2026
+ PASS  Tx BFM-5 shows the BCTM BFM-7 profile, not the long course's — {"name":"Basic Fighting Manoeuvres-5 (Refer to BCTM BFM-7)","crew":"IP / W, UP / IW or IP"}
+ PASS  opening a file leaves no redundant info overrides behind — sent 225, stored 0
+ PASS  Tx BFM-5 still shows its own profile after a file open — {"name":"Basic Fighting Manoeuvres-5 (Refer to BCTM BFM-7)","crew":"IP / W, UP / IW or IP"}
+ PASS  switching back to 2026 restores the long course's BFM-5 — Basic Fighting Manoeuvres-5
+ PASS  no uncaught page errors
+ PASS  no unexpected failed requests
+ PASS  no prereq points at a missing event
+ PASS  no circular prereqs
+ PASS  no hand-drawn line ends in an arrowhead pointing at nothing
+ PASS  no drawn link claims a prerequisite the syllabus does not have
+ PASS  the user's 2026 hand edits hold
+ PASS  2026 prereqs match the course map
+ PASS  every event on the 2026 map exists in the syllabus
+ PASS  every prerequisite on the 2026 map matches the syllabus
+ PASS  no event the map strikes through is still in 2026
+ PASS  the user's A/G - A/A hand edits hold
+ PASS  every event on the A/G - A/A map exists in that syllabus
+ PASS  every prerequisite on the A/G - A/A map matches that syllabus
+ PASS  Tx academics match 2026, as the document says they must — 0: 
+ PASS  Tx shares 2026's simulator ordering
+ PASS  Tx carries the DAAR / NAAR refresher chain
+ PASS  every Tx refresher event has a place on the chart
+ PASS  Tx SA-1 bridges to TI-2, not LASDT-2 — SA-1=[SA(S)-2,TI-2,ST-17,JMP-04,AGS-04,OPS-07] TI-2=[TI-1,LASDT-2,AAM-14]
+ PASS  SAT-1 waits for SA-5 as well as its sim, on both Tx courses
+ PASS  events the document removed are absent from every 2026 syllabus
+ PASS  2024 still carries them, being the older course
+ PASS  Tx keeps SA(S)-3 inside the sim chain — present=true SA(S)-4=[SA(S)-3]
+ PASS  Tx mirrors the user's 2026 hand edits
+ PASS  no frozen bare-id prerequisite texts remain
+ PASS  every kept prerequisite text is a prose note, not a bare list
+ PASS  Tx overrides carry the renumbered profiles — {"name":"Basic Fighting Manoeuvres-5 (Refer to BCTM BFM-7)","crew":"IP / W, UP / IW or IP"}
+ PASS  Tx overrides never invent an event the syllabus lacks
+ PASS  Tx 2026 is the 2026 event list minus the ten the short course cuts — tx=200 expected=200
+ PASS  the user's own Tx wiring holds
+ PASS  every Tx event has a place on the chart
+ PASS  Tx leaves no position behind for a removed event
+ PASS  Tx carries the 2026 drawn lines — 81 lines
+ PASS  no Tx drawn line anchors to a removed event
+ PASS  the retired "Tx 2026 v2" name is gone everywhere
+ PASS  the default order is the user's four charts — 2024 · 2026 · Tx 2026 · A/G - A/A 2026
+ PASS  Tx NTR-1 waits for SA-4 — [NTR(S)-1,SA-4]
+ PASS  2026 carries the DAAR / NAAR refresher chain
+ PASS  2026 links that the extracted chart images get wrong stay right
+ PASS  A/G - A/A sim chain SA(S)-2 -> -3 -> -4 -> -5 stays joined
+ PASS  A/G - A/A carries the four links read off its map
+ PASS  A/G - A/A prereqs match its own course map
+ PASS  A/G - A/A doc layout places every event
+ PASS  A/G - A/A doc layout: no two balls overlap
+ PASS  A/G - A/A doc layout starts at ST-01
+ PASS  A/G - A/A sim wire runs straight down one lane — SA(S)-1@479.89867650042413 SA(S)-2@480 SA(S)-3@480 SA(S)-4@480 SA(S)-5@480 SA(S)-6@480 SA(S)-7@480 ACM(S)-1@480
+ PASS  A/G - A/A H wire is one straight line
+ PASS  A/G - A/A NN wire is drawn and carries SA-4 -> NTR-1
+ PASS  A/G - A/A routing metadata only decorates real links
+ PASS  the deleted Tx 2024 chart is gone from every list — gone
+ PASS  every chart in the running order still exists
+ PASS  each syllabus ends where it should
+ PASS  no new arrows longer than 1000px
+ PASS  no new arrows pointing back up the page
+ PASS  shipped starting data names nobody — 0 student keys: 
+ PASS  demo rosters use placeholder names only
+ PASS  envelope names its format and version — format ocu-tracker, version 3 (expected 3)
+ PASS  envelope records that it holds nothing
+ PASS  a file that is not ours is rejected, not half-read
+ PASS  charts survive the round trip intact
+ PASS  students survive the round trip intact
+ PASS  charts-only file says so
+ PASS  charts-only file has no students key
+ PASS  charts-only file names nobody
+ PASS  a name containing a colon is refused, naming the part
+ PASS  every kind of damaged file is refused, with a message saying what is wrong — 10 kinds all refused
+ PASS  a good file is still accepted after all that
+ PASS  a chart with no loop in it is not reported as circular
+ PASS  a loop is reported with the events that form it
+ PASS  two paths that rejoin are not mistaken for a loop
+ PASS  a charts-only file is named plainly
+ PASS  a file with people in it says so in its name
+ PASS  a students-only file also says so
+ PASS  the poke-ball editor stays open while it asks "Delete?"
+ PASS  Escape answers a confirm box with "no"
+ PASS  …leaves the editor that asked still open
+ PASS  …and deletes nothing
+ PASS  Escape closes the poke-ball editor
+ PASS  Escape closes the event details editor
+ PASS  Escape closes the reorder list
+ PASS  a new event leaves the chart with unsaved flow edits — ✓ Save changes shows
+ PASS  switching course with unsaved flow edits asks first
+ PASS  saying no keeps the course and the edits — cmusizlptss6dkv
+ PASS  saying yes switches course and stops claiming there are unsaved flow edits — cmusizbqykie8uk — ● switched to 26ABSG
+ PASS  phone: the Details-mode hint sits above the view tabs, not on them — {"tabTop":173,"hintBottom":169,"hit":true}
+ PASS  phone: the edit-mode hint sits above the view tabs, not on them — {"tabTop":363,"hintBottom":359,"hit":true}
+ PASS  phone: zoom reset goes back to fitting the width, not to 100% — 40% → + 50% (472px over) → reset 40% (0px over)
+ PASS  phone: a Raptor refresh does not bring the side panel back under the chart — {"flow":true,"panelHidden":true,"boardShown":true}
+ PASS  phone: the header Show All button is hidden — the tab does its job
+ PASS  phone: the Show All title is one short line — {"h":22,"text":"All events"}
+ PASS  two flight events found to test Last Flown with — TR-1(P), TR-2
+ PASS  marking a flight done sets Last Flown to its date — 2026-08-20 / 2026-08-20
+ PASS  an older flight marked afterwards does not drag Last Flown back — 2026-08-20 / 2026-08-20
+ PASS  a later flight moves Last Flown forward — 2026-08-25 / 2026-08-25
+ PASS  the Font box shows the size the chart is actually using — box "7", chart 7px
+ PASS  hovering a side-panel chip shows the event details bubble — "TR-1(P)\nTransition-01\nType: 1 x F-15SG\nCrew: UP / IP\nPrerequisites: EPT-02, ST-16, JMP-01, TR(S)-3"
+ PASS  clicking a side-panel chip snaps the chart to that ball and rings it — {"id":"TR-1(P)","found":true,"inView":true,"ring":true}
+ PASS  the bubble goes when the chip is clicked
+ PASS  phone: a long press on a chip shows the details bubble — "TR-1(P)\nTransition-01\nType: 1 x F-15SG\nCrew: UP / IP\nPrerequisites: EPT-02, ST-16, JMP-01, TR(S)-3"
+ PASS  phone: a long press does not jump away from the Info tab
+ PASS  phone: a tap on a chip switches to the Flow chart and lands on that ball — {"id":"TR-1(P)","found":true,"flow":true,"inView":true}
+ PASS  phone: a pinch out keeps the ball under the fingers — ST-01 ends 0px from the fingers; 0.4 translate(0.0,0.0) scale(1.000) → 1.333 translate(0.0,0.0) scale(1.000)
+ PASS  phone: a pinch in keeps the ball under the fingers — ST-01 ends 0px from the fingers; 1.333 translate(0.0,0.0) scale(1.000) → 0.6 translate(0.0,0.0) scale(1.000)
+ PASS  phone: fingers that slide while pinching carry the ball with them — ST-01 ends 1px from the fingers; 0.6 translate(0.0,0.0) scale(1.000) → 1.457 translate(0.0,0.0) scale(1.000)
+ PASS  phone, Edit chart layout: a pinch keeps the chart under the fingers — the chart point under the fingers moved 1px; 1 translate(-569.0,53.0) scale(1.457) → 1 translate(-1722.4,-7.5) scale(4.000)
+ PASS  phone: opening Edit chart layout keeps the middle of the chart in the middle — ST-01 1px from where holding the middle puts it
+ PASS  phone, Edit chart layout — Move, the first finger on a ball: the pinch zooms and changes nothing else — translate(-1.0,186.0) scale(0.400) → translate(-402.0,146.6) scale(1.086)
+ PASS  phone, Edit chart layout — Move, the first finger on a ball that has already moved it: the pinch zooms and changes nothing else — translate(-402.0,146.6) scale(1.086) → translate(-1365.8,36.5) scale(2.947)
+ PASS  phone, Edit chart layout — Select all, then a finger on one of them: the pinch zooms and changes nothing else — translate(-1365.8,36.5) scale(2.947) → translate(-230.1,166.3) scale(0.771)
+ PASS  phone, Edit chart layout — Delete: a pinch starting on a drawn line leaves the line
+ PASS  phone, Edit chart layout — Edit lines: a pinch starting on a line's end square moves nothing
+ PASS  phone, Edit chart layout — pinch, lift one finger, carry on with the other: nothing moves
+ PASS  phone, Edit chart layout — two lost lifts: the next finger is a new touch and still drags a ball — undo 2→3
+ PASS  phone, Edit chart layout — Line: a pinch draws no line
+ PASS  phone: "✓ Done editing chart" keeps the middle of the chart in the middle — ST-01 1px from where holding the middle puts it
+ PASS  phone: after Edit chart layout a pinch zooms the ordinary chart — its editing view stays behind (left side not cut off) — translate(0.0,0.0) scale(1.000)
+ PASS  a charts-only file imports without asking about people — Brought in SMOKE IMP. Everyone’s marks are untouched. It is saved.OK
+ PASS  the imported chart is in the syllabus list
+ PASS  a charts-only import wrote no mark
+ PASS  a chart already here asks replace / add as new — “SMOKE IMP” already exists. Replace it, or add the incoming one under a new name?Skip this oneAdd as newReplace it
+ PASS  a file with people asks ONCE before bringing them in — This file also contains students and marks. Bring them in too? A student already here who is ALSO in the file will have their marks replaced by the file’s. Anyone the file does not name keeps theirs, untouched.CancelOK
+ PASS  No keeps the people out and says so — Brought in SMOKE IMP. Everyone’s marks are untouched. It is saved.OK
+ PASS  after No the course is not here
+ PASS  asked again on the next file with people — This file also contains students and marks. Bring them in too? A student already here who is ALSO in the file will have their marks replaced by the file’s. Anyone the file does not name keeps theirs, untouched.CancelOK
+ PASS  Yes reports charts and people both — Brought in SMOKE IMP · students & marks restored. It is saved.OK
+ PASS  after Yes the restored course is here
+
+445 passed, 0 failed
+

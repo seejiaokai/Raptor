@@ -1692,6 +1692,12 @@ and allowance remains. Its new branch is cut from `codex/insights-mission-mix` w
 **D540–D541 (3 Oct 26):** owner explicitly requires that integrated base before any rule moves, keeps the three earlier builds
 separate for Claude's review, and requires no visible change plus opening every phone/desktop screen picture. Next batch branch:
 `codex/workflow-ui`; scope: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md`. Later UI product choices still wait.
+**Built/checks, 3 Oct 26:** split22 contiguous runs from the combined base, original bytes and all4 emitted CSS assets exactly equal;
+full unit7727,reference728,browser527+49existing skips,Tracker445,all6adapted/perf4/rulecheck/docsize PASS. Every main screen at
+phone/desktop walked; all187before+136after original PNGs opened, actual-member/laptop/breakpoint/short-height matrix also checked.
+Known `[PHONE-WIDE-BOARD-BLANK]` remains unchanged and is not a wide-body usability PASS. Fresh independent Astra R1 PASS for the bound mechanical split;
+evidence: `raptor-port/docs/handpass/2026-10-03-css-split.md`. Claude's full read after Monday19:00 still owed before main;
+item stays here until the required reads and owner's live word. Further UI questions asked, answers pending; no further UI design inferred.
 
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
 From Astra's tidiness read (its §3 — read it before building). The export / import workflow (about 730 lines) leaves

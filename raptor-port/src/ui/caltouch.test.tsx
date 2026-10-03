@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { readSchedulerCss } from '../testing/scheduler-css'
 /* THE INPUTS CALENDAR BY FINGER (the absence-record re-test, 26 Sep 26 — found by the calendar walker W1 on a phone,
    reproduced by the host with the walker's own probe).
 
@@ -12,12 +13,9 @@
 
    Its own file: a gesture test elsewhere can leave a one-shot click eater armed under fake timers. */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { readFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { initCalDrag } from './caldrag'
 
-const css = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'scheduler.css'), 'utf8')
+const css = readSchedulerCss()
 
 describe('the month swipe reaches the calendar on a phone (W1-F1)', () => {
   it('the calendar grid hands a sideways finger to its own swipe, and keeps the vertical scroll', () => {

@@ -1,0 +1,21 @@
+/* the postman's indicator (storage seam, 8 Sep 26) — sits after the nav */
+.savestat{margin-left:8px;padding:6px 10px;border-radius:10px;font-size:12px;color:var(--ink-2);background:var(--raised);white-space:nowrap}
+.savestat.failed{color:#E5C24A}
+.savestat button{margin-left:4px;padding:2px 8px;border-radius:8px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit;cursor:pointer}
+/* …but OUT OF THE BAR'S ROW ([LW-FIGSEL-FLAKE], 28 Sep 26). In the row it took ~90px for the third of a second every save
+   takes, after EVERY change: a desktop bar with less to spare wrapped onto a second line and back, dropping the whole page
+   ~46px under the pointer (1366 wide: View-only Sched, Inputs, Quals, the Leave War, Admin; 1440 on the Tracker, and on
+   the Leave War with GitHub's wider fonts — the figure-drag test it broke), and the phone's sideways bar pushed Undo, Redo
+   and the changes clock ~46px right as a change landed (2 Sep 26: a control tapped again and again must not move). It
+   floats just under the bar's right end instead — `position:fixed` so the phone bar's sideways scroll box cannot clip it;
+   its top is the bar's bottom, measured (ui/SaveStatus.tsx), because the bar is one line or two by page and width. Still
+   inside the bar's own layer (60), as before: a window, a drawer or the board covers it as they covered the bar. It lets
+   a press through to whatever it floats over (the week's search box sits there) — all but "Not saved — Retry"'s own
+   button. Scoped to the top bar:
+   the Tracker's own save note (tracker/components/Header.jsx) shares the class and stays in its row.
+   Pinned by e2e/geometry.spec.ts "the Saving… note never moves the top bar". */
+.topbar > .savestat{position:fixed;right:20px;top:64px;margin:0;border:1px solid var(--edge-2);
+  box-shadow:0 10px 30px -12px rgba(0,0,0,.8);pointer-events:none}
+.topbar > .savestat button{pointer-events:auto}
+@media (max-width:820px){ .topbar > .savestat{right:14px} }   /* the phone bar's own side padding */
+

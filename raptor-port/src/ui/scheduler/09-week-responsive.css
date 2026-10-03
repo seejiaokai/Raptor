@@ -1,0 +1,431 @@
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:820px){
+  .burger{display:flex}
+  .topbar .nav{display:none}
+  .acct .sel{display:none}
+  /* the role chip moved out of .acct to the far right of the bar (22 Aug 26);
+     it stays hidden on the tight phone bar, as it was in its old spot */
+  .spring .rolechip{display:none}
+  .seg{display:none}
+  /* the seg (with the rolling week buttons) is desktop-only; on a phone the lone
+     calendar icon carries week-jumping and the swipe carries day-to-day. The view
+     page's week nav now rides inside .filters as .wkseg, so hide that (and its
+     divider) too — the .wknav-m calendar + swipe still carry navigation.
+     The icon sits far LEFT, aligned with the DRAFT banner and the day cards
+     below it (owner, 22 Aug 26), with a bottom gap so it never touches that
+     grey box. */
+  #page-viewsched .wkseg,#page-viewsched .wkdiv,#page-editsched .wkseg,#page-editsched .wkdiv{display:none}
+  /* the calendar opener is now the first control INSIDE the filter row (owner,
+     26 Aug 26 — one row, not a row of its own), sized to sit on the icons' line. */
+  .filters .filt-cal{display:inline-flex;width:34px;height:26px;border-radius:9px;flex:0 0 auto}
+  .filters .filt-cal .btnglyph{width:16px;height:16px}
+  /* the qualification filters are the fastest way to read a phone screen —
+     "who here is a supervisor / an instructor / SANS" — so instead of hiding
+     the row it becomes ONE horizontally scrollable line with the label pinned.
+     BOTH week pages since 23 Aug 26 (the edit page grew the same chips): every
+     selector here is comma-joined rather than copied, so the two rows are one
+     recipe and cannot drift — the view page's effect is unchanged. */
+  /* ONE ROW OF ICONS + SEARCH, THE CHIPS DROP BELOW (owner, 26 Aug 26 — "we
+     just need 1 row. If we need to expand the highlights, then it will create a
+     new row to show the sub menu"). The row used to be a sideways scroller that
+     crammed the chips onto the one line; it now WRAPS, so the icons and the
+     search hold line one and the .hlrow chip strip forms line two only when the
+     highlight is open. */
+  #page-viewsched .filters,#page-editsched .filters{display:flex;flex-wrap:wrap;
+    padding:7px 12px;gap:5px;align-items:center}
+  #page-viewsched .filters>*,#page-editsched .filters>*{flex:0 0 auto}
+  /* THE PHONE FOLD (owner, 23 Aug 26; became its own row 26 Aug 26): the chips
+     hide unless the row carries .hl-open (the .hl-tog toggle flips view.HLOPEN).
+     Collapsed there is no chip row at all; open, the .hlrow wrapper becomes LINE
+     TWO — full width (flex-basis:100%), ordered after the icons and the search.
+     It does NOT wrap: an expanded group (Quals is six chips) is one atomic
+     inline-flex unit that cannot break, so wrapping just let it run off the
+     screen edge (owner, 26 Aug 26 — "Quals is extended too much … follow how
+     the scheduler board highlighter is designed where I can scroll left and
+     right"). Line two is therefore a sideways scroller, the SAME recipe as the
+     board's .sb-hl.open further down — nowrap + overflow-x:auto, scrollbar
+     hidden, its groups held at their natural width. */
+  #page-viewsched .filters:not(.hl-open) .hlrow,#page-editsched .filters:not(.hl-open) .hlrow{display:none}
+  #page-viewsched .filters.hl-open .hlrow,#page-editsched .filters.hl-open .hlrow{display:flex;flex-wrap:nowrap;
+    flex:0 0 100%;order:10;gap:5px;align-items:center;padding-top:2px;overflow-x:auto;scrollbar-width:none}
+  #page-viewsched .filters.hl-open .hlrow::-webkit-scrollbar,#page-editsched .filters.hl-open .hlrow::-webkit-scrollbar{display:none}
+  #page-viewsched .filters.hl-open .hlrow>*,#page-editsched .filters.hl-open .hlrow>*{flex:0 0 auto}
+  /* the two-element lead swaps: the desktop label goes, the toggle arrives.
+     .hl-lab must be beaten here — the pin rule below used to target .lab and
+     would have re-shown it (display:flex) at higher specificity. */
+  #page-viewsched .filters .hl-lab,#page-editsched .filters .hl-lab{display:none}
+  .hl-tog{display:flex;align-items:center;justify-content:center;width:30px;height:26px;flex:0 0 auto;
+    background:var(--panel-2);border:1px solid var(--edge);border-radius:9px;color:var(--ink-2);cursor:pointer}
+  .hl-tog .btnglyph{width:16px;height:16px;color:currentColor}
+  /* lit whenever a filter or search is live — the .fchip.on accent recipe, so
+     a filtered week folded out of sight still announces itself */
+  .hl-tog.on{color:var(--accent);border-color:rgba(59,198,232,.6);background:rgba(59,198,232,.16)}
+  /* The sticky left/right pins the sideways scroller needed are GONE with it
+     (owner, 26 Aug 26): the row wraps now, so the toggle just sits inline and the
+     search holds the right of line one on its own. The search box is the one
+     control that answers "where is this man flying" on a phone (owner, 20 Aug 26),
+     so it stays on line one — margin-left:auto pushes it to the right edge, ahead
+     of the chip row that wraps below. */
+  #page-viewsched .filters .right,#page-editsched .filters .right{display:flex;margin-left:auto;
+    align-items:center}
+  #page-viewsched .filters .searchbox,#page-editsched .filters .searchbox{padding:3px 8px;border-radius:8px}
+  #page-viewsched .filters .searchbox input,#page-editsched .filters .searchbox input{width:96px;font-size:12px}
+  .day{flex:0 0 calc(100vw - 24px);overflow-x:auto}
+  .week{padding:2px 12px 30px;gap:12px}
+  /* ---- phone header: ONE scrollable row ----
+     It used to wrap onto four rows (182px of chrome before you saw any schedule).
+     Now it is a single nowrap strip that scrolls sideways, with the mark + burger
+     pinned left, and every control inside it tightened a notch. */
+  .topbar{gap:8px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;padding:8px 14px}
+  .topbar::-webkit-scrollbar{display:none}
+  .topbar>*{flex:0 0 auto}
+  /* THE PHONE TOP BAR IS A CLEAN, NON-SCROLLING ROW (owner, 24 Aug 26 — "the
+     top bar on mobile looks bad, unlike the desktop version. And when I scroll
+     I could see the buttons design leaking"). The old bar crammed six controls
+     into a sideways scroller, then pinned the burger, the mark and the undo/
+     redo trio OVER it with opaque box-shadows so they'd stay put while the
+     middle scrolled. That overlap WAS the leak: the moment the strip scrolled,
+     a control slid out from behind a pin and peeked past it (the "nc · slow"
+     sync pill bleeding out from under the RAPTOR mark). Two moves retire both
+     the clutter and the leak together:
+       1. The two SECONDARY actions leave the bar for the burger drawer —
+          Logout already lived there, and Insights joins it (Drawer.tsx). What
+          remains — burger, mark, sync, bell and the edit-only undo/redo/history
+          trio — fits ONE row on every common phone, so the bar no longer needs
+          to scroll at all, and reads as uncluttered as the desktop bar.
+       2. With nothing overflowing, nothing is pinned. Every sticky position and
+          opaque box-shadow patch that caused the leak is gone; the bar is a
+          plain flex line. overflow-x:auto is kept only as a safety net for a
+          sub-340px screen, where the row now scrolls as ONE piece — no pins, so
+          no control can emerge from behind another. */
+  .topbar .mark .k{font-size:8.5px;letter-spacing:.14em}
+  .topbar .mark .v{font-size:15px}
+  .topbar .mark .rglyph{width:24px;height:24px}
+  .burger{width:32px;height:30px}
+  /* Insights + Logout move into the burger drawer on a phone (Drawer.tsx); the
+     empty .acct (its "View as" select is already phone-hidden) leaves too, so
+     it stops eating a flex gap. The bar keeps only what a scheduler reaches
+     without opening the menu. */
+  .topbar #insightBtn,.topbar #logout,.spring .acct{display:none}
+  /* UNDO / REDO / EDIT HISTORY (owner, 23 Aug 26 — the trio rides the phone bar
+     while editing). Icon-only (.bl off) and ordered LAST so it sits at the
+     thumb-friendly right edge. No longer sticky: the decluttered row fits, so
+     the trio just sits in flow with the same clean look as the desktop bar. */
+  /* [SUPERSEDED 28 Sep 26 — D348: "the mobile icons [should] be right to left, notification, notification then the
+     redo and undo button. Kinda similar to the desktop." The trio is no longer ordered last: it runs in the desktop's
+     order — Undo · Redo · (the clock) · the sync dot · the bell at the far right. `order:9` removed.] */
+  .tb-hist{display:inline-flex;align-items:center;gap:6px}
+  .tb-hist .abtn{width:30px;min-width:0;height:30px;padding:0;display:inline-flex;
+    align-items:center;justify-content:center}
+  .tb-hist .bl{display:none}
+  .spring{gap:7px;flex-wrap:nowrap}
+  .topbar .pillbtn{padding:5px 9px;font-size:11px;gap:5px}
+  .topbar .pillbtn .dot{width:6px;height:6px}
+  .topbar .abtn{padding:5px 9px;font-size:11px}
+  .topbar .fastsync{padding:5px 8px;font-size:10.5px}
+  /* On the EDIT page the undo/redo/history trio joins the bar, so the sync pill
+     sheds its label down to a single status dot to make the room — the trio and
+     the bell are what a scheduler reaches mid-edit, and the sync state still
+     reads off the dot's colour. The view page keeps the full "Sync · slow"
+     pill (it has the room). This is what lets the edit bar fit one clean row
+     instead of scrolling the history button off the right edge. */
+  /* [UNDO-TOPBAR] (D349 (1), 28 Sep 26): the pair shows on every page where a change is made now, so the label drops to
+     its dot wherever the pair shows — `.has-undo`, never `.editing`, which is Edit Schedule's blue tint and stays
+     Edit Schedule's (the plan's §11.10, Fable's red team 5; pinned by topbar-css.test.ts) */
+  .topbar.has-undo .fastsync .synclbl{display:none}
+  .topbar.has-undo .fastsync{padding:6px 8px}
+  .topbar.has-undo .fastsync .dot{margin:0}
+  /* ---- flying grid on a phone: THE WHOLE LINE FITS, no sideways swipe ----
+     Never scaled: iOS/WebKit shrinks boxes under CSS zoom but leaves the text at its
+     specified px, which clipped B/TO, LD and the puck callsigns. Instead the phone
+     keeps the SAME five columns as the desktop — CS/MSN | B/TO | LD | FCP/RCP | RMKS,
+     remarks to the right of the pucks — and AREA + TIME stay in their full-width strip
+     under each formation. That is only affordable because the puck is now the reference
+     tool's 74 x 15 at 9px type; it is also exactly how the reference lays its own
+     flight line out on a phone (measured: 7 columns inside 357 CSS px).
+     The three left columns are FIXED, not minmax, and that is the whole trick. With
+     minmax the grid's "maximise tracks" step hands them their maximum before the 1fr
+     RMKS track is ever resolved, so RMKS was collapsing to 32px at 375 while CS/MSN sat
+     on 46. Pinning them close to the reference tool's own measured widths (it uses
+     CS 28, B/TO 40, LD 29) gives RMKS every remaining pixel instead: 340 - 159 - 108
+     = 73 at 390, 58 at 375, 113 at a 430 Pro Max. Narrow, but readable at 8.5px, and
+     the reference wraps its own remarks to two or three lines too. Overflow-x stays on
+     purely as a safety net. The widths are set by what has to render without clipping,
+     measured not guessed: a 'hh:mm' in 9px JetBrains Mono is 27px, so B/TO and LD need
+     34 and 28 of content respectively, i.e. 38 and 32 of track once .fcell's 2px side
+     padding is counted.
+     28 Sep 26: CS/MSN 38 → 50 so a six-letter callsign shows whole ([AMEND-SMALL-SEEN] 3 — the reasoning and the
+     measurements at `.form .csmsn b .ntx`); RMKS gives the 12px, 73 → 61 at 390. B/TO and LD are unchanged. */
+  .week .go{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+  /* FCP/RCP is derived from the puck: 2 x 74 + 3px gap + 8px .acrow padding = 159 */
+  .form,.cols.formcols{grid-template-columns:50px 38px 32px calc(var(--puck-w)*2 + 11px) minmax(0,1fr)}
+  .rmkcell{font-size:8.5px;padding:3px 4px;gap:1px;overflow:hidden}
+  /* .ntx carries a 30px min-width globally so an empty editable field stays tappable.
+     Inside a phone flight line that min-width is wider than the columns that hold it —
+     it is what pushed the wave 3px into a horizontal scroll at 375, and what made LD
+     and CS/MSN report as clipped when their actual text fitted fine. Released here for
+     both RMKS and the left cells; the cell itself is the tap target, and RMKS also gets
+     overflow:hidden above so an unbreakable token clips instead of buying a swipe.
+     Edit mode keeps a small 14px floor so a genuinely empty field is still findable. */
+  .rmkcell .ntx,.fcell .ntx{min-width:0}
+  .page.editing .fcell .ntx{min-width:14px}
+  .form .bto b,.form .bto span,.form .ld{font-size:9px}
+  /* tighter leading + 3px top padding so the BRIEF/T-O pair and the CS/MSN pair both
+     land inside the first puck row */
+  .form .bto{line-height:1.15}
+  .form .csmsn b{font-size:9.5px}
+  .form .csmsn i{line-height:1.05}
+  .fcell{padding:3px 2px 4px}
+  .cols.formcols span{padding:3px 4px}
+  .daydots{display:flex}
+  /* Columnar lists (programme / duties / sims / ground / inputs) all render 1:1 too. */
+  /* COMMON PROGRAMME now stacks its two times into one TIME column on a phone,
+     exactly as the duties / sims / ground lists (.pl-row) do — which frees the
+     room for RMKS to sit BESIDE the pucks instead of dropping to a strip below
+     (owner, 22 Aug 26 — "make the common programme layout similar to" those).
+     Row becomes NAME | TIME | PEOPLE | RMKS. Placed by POSITION, not by class:
+     the .ah-cols markup is byte-compared against the reference
+     (html.test.ts:noAhRmk), so it stays Name/Start/End/People/Rmks, and each
+     .ah-row stays .nm, start-.t, end-.t, .ppl, .rmk — the positions are fixed. */
+  /* the .plist.one proportions (wide NAME, one-puck PEOPLE): the programme's
+     names are long (STANDARDISATION at 104px) and its people cells are usually
+     one body, so NAME takes the room — the same call the flying table made
+     (CLAUDE.md, 12 Aug 26 name-priority). A rare second body wraps under the
+     first, exactly as it does on the ground list. */
+  .allhands .ah-cols,.allhands .ah-row{grid-template-columns:132px 34px calc(var(--puck-w) + 2px) minmax(0,1fr);gap:3px 5px;padding:4px 6px}
+  .allhands .ah-cols>:nth-child(1){grid-column:1}
+  .allhands .ah-cols>:nth-child(2){grid-column:2;font-size:0}
+  .allhands .ah-cols>:nth-child(2)::before{content:'TIME';font-size:9px}
+  .allhands .ah-cols>:nth-child(3){display:none}
+  .allhands .ah-cols>:nth-child(4){grid-column:3}
+  .allhands .ah-cols>:nth-child(5){grid-column:4}
+  .allhands .ah-row>.nm{grid-column:1;grid-row:1/span 2}
+  .allhands .ah-row>:nth-child(2){grid-column:2;grid-row:1}
+  .allhands .ah-row>:nth-child(3){grid-column:2;grid-row:2;padding-top:0}
+  .allhands .ah-row .ppl{grid-column:3;grid-row:1/span 2;gap:2px}
+  .allhands .ah-row .rmk{grid-column:4;grid-row:1/span 2;font-size:8.5px;padding-top:2px;overflow:hidden}
+  .allhands .ah-row .rmk .ntx{min-width:0}
+  /* Duties / sims / ground / inputs on a phone: remarks sit to the RIGHT of the pucks
+     here too, not on a strip below — same as the flying table, same as the desktop.
+     The trick that pays for it is stacking START over END into one TIME column instead
+     of giving each its own. That is copied from the reference tool: its own phone Sims
+     table has no END column at all, which is exactly why it can afford a ~73px remarks
+     column next to two 74px pucks inside a 402pt screen. Ours: 323px of row at 390,
+     minus NAME 52, TIME 34, PEOPLE 154 (74 + 2px gap + 74, plus the 2px .ppl inset)
+     and three 5px gaps = 68px for RMKS. Within a couple of px of the reference. */
+  .plist .pl-cols,.plist .pl-row{grid-template-columns:52px 34px calc(var(--puck-w)*2 + 6px) minmax(0,1fr);gap:3px 5px}
+  /* fixed leading track + one trailing 1fr — see trap (b) */
+  .plist.one .pl-cols,.plist.one .pl-row{grid-template-columns:132px 34px calc(var(--puck-w) + 2px) minmax(0,1fr)}
+  .plist .pl-cols>.h-en{display:none}
+  .plist .pl-cols>.h-nm{grid-column:1}
+  /* START's heading reads TIME on a phone, because the cell under it holds both times */
+  .plist .pl-cols>.h-st{grid-column:2;font-size:0}
+  .plist .pl-cols>.h-st::before{content:'TIME';font-size:9px}
+  .plist .pl-cols>.h-pp{grid-column:3}
+  .plist .pl-cols>.h-rk{grid-column:4}
+  .plist .pl-row>.nm{grid-column:1;grid-row:1/span 2}
+  .plist .pl-row .t.t-s{grid-column:2;grid-row:1}
+  .plist .pl-row .t.t-e{grid-column:2;grid-row:2;padding-top:0}
+  .plist .pl-row .t.allday{grid-column:2;grid-row:1/span 2}
+  .plist .pl-row .ppl{grid-column:3;grid-row:1/span 2;gap:2px}
+  .plist .pl-row .rmk{grid-column:4;grid-row:1/span 2;font-size:8.5px;padding-top:2px;overflow:hidden}
+  .plist .pl-row .rmk .ntx{min-width:0}
+  .allhands .ah-row .ppl,.plist .pl-row .ppl{padding-left:2px}
+  .allhands .ah-cols>:nth-child(4),.plist .pl-cols>:nth-child(4){padding-left:2px}
+  /* A SEAT'S DECORATION WRAPS UNDER ITS PUCK RATHER THAN OUT OF THE COLUMN
+     (the walk's S1, 22 Sep 26). The people column here is exactly ONE puck wide
+     on a row that holds one, and a puck is a measured 74px — so anything drawn
+     BESIDE it (today the ALL / ALL AVAIL count chip) hung 23px out into the
+     RMKS column and was painted under the remarks box. A press at the chip's own
+     centre put a caret in the schedule instead of opening the list of who is
+     behind the puck, which on a published day is the record of who was paid.
+     `max-width` is what does the work — the seat is `flex:0 0 auto`, so without
+     it the chip simply widens the seat past its cell — and the wrap is what
+     catches the chip once it can no longer sit alongside. It costs one short
+     line of height, and only on a row that actually carries a decoration: a bare
+     puck is exactly the column's width and never wraps. Pinned in
+     e2e/geometry.spec.ts, because jsdom reports every rect as 0x0. */
+  .allhands .ah-row .ppl .seat,.plist .pl-row .ppl .seat{flex-wrap:wrap;max-width:100%;row-gap:2px}
+}
+/* ---- small phones (360px Android, iPhone SE/mini) ----
+   Same FIVE-column layout as every other width — CS/MSN | B/TO | LD | FCP/RCP | RMKS —
+   just one notch tighter so the whole flight line still fits with no swipe: 2px gaps
+   and paddings round the pucks, 9px times. Fixed left columns for the same reason as
+   the block above — minmax would let them eat the RMKS budget. Puck column is
+   2 x 74 + 2px gap + 4px .acrow padding = 154, so at a 310px wave RMKS keeps
+   310 - 154 - 100 = 56. Times drop to 8.5px here, where 'hh:mm' measures 26px and so
+   still clears LD's 26px of content. */
+/* THE NAME COLUMN TAKES THE SLACK THE PEOPLE COLUMN WAS NOT USING (owner,
+   12 Aug 26 — "STANDARDISATIO / N MEETING" read as a typo, not a wrap).
+   NAME and PEOPLE were both `1fr` and split the row evenly at 97px each on a
+   390px phone — but MEASURED there, the widest people cell in the whole week
+   uses 76px of its 97 (one puck; two never fit side by side at this width and
+   already stack), so 21px sat idle beside a name column too narrow for its own
+   text. The longest single word in the programme is STANDARDISATION at 104px;
+   every other word is 78px or less. Pinning PEOPLE to one puck plus a hair
+   takes NAME to 111px, which clears 104px — so nothing in this dataset breaks
+   mid-word at all, rather than breaking more tidily.
+   PHONE ONLY, at 480px rather than the file's usual 820px, and that bound is
+   the probe's doing rather than a guess: `probes/adapted/wrap-async.cjs` jams
+   a 61-character string into this cell and asserts it WRAPS. Applied up to
+   820px, the reallocation gave NAME so much room on a tablet that the jam fit
+   on one line and the probe went red — not a broken layout (its overflow and
+   collide checks still passed) but a fair warning that a tablet was being
+   re-proportioned to fix a phone. A tablet's even split was never the
+   complaint, so it keeps it. */
+@media (max-width:374px){
+  /* CS/MSN 36px (29 Sep 26, measured): 48px (28 Sep 26, for a six on one line) squeezed REMARKS until a stand-alone
+     line's MAIN / SPARE tag broke in two ("MAI N") at 360px — every one of the walk's 12, where 36px and below keep them
+     all whole and 38px breaks half. Since D367 the callsign wraps instead of being cut, so the extra width bought nothing
+     a name still needs. */
+  .form,.cols.formcols{grid-template-columns:36px 36px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr)}
+  .form .bto b,.form .bto span,.form .ld{font-size:8.5px}
+  .form .csmsn b{font-size:9px}
+  .fcell{padding:3px 2px 4px}
+  .acrow{padding:3px 2px;gap:3px}
+  .acrow .pucks{gap:2px}
+  .rmkcell{padding:2px 3px;font-size:8px}
+  .plist .pl-cols,.plist .pl-row{grid-template-columns:46px 30px calc(var(--puck-w)*2 + 6px) minmax(0,1fr);gap:3px 4px}
+  .plist.one .pl-cols,.plist.one .pl-row{grid-template-columns:110px 30px calc(var(--puck-w) + 2px) minmax(0,1fr)}
+  .plist .pl-row .rmk{font-size:8px;padding-top:2px}
+  .plist .pl-row .t{font-size:9px}
+}
+/* ===== DESKTOP density + horizontal scroll (mobile above is untouched) ===== */
+@media (min-width:821px){
+  /* No scrollbar of its own: the pinned #hscroll at the foot of the window IS
+     the week's scrollbar. (Five rules here used to try to draw a second one and
+     were overridden by the earlier min-width:821px block — dead either way.) */
+  .week{scroll-snap-type:none;padding:2px 20px 40px;gap:12px}
+  /* tighter day column — less width, less wasted space */
+  .day{flex:0 0 552px}
+  /* LET THE LAST DAYS REACH THE FRONT (owner, 23 Aug 26 — the arrows "totally
+     skip Saturday and Sunday … Friday should be nicely aligned on the left …
+     it jumps to Monday immediately"). A wide screen shows 3–4 columns at once,
+     so the week's own width ran out with a MIDDLE day (Thu/Fri) still pinned
+     left as a broken sliver, and the › arrow crossed into next week straight
+     off that jammed edge — the weekend was never a clean, front-aligned view.
+     This generated spacer adds just enough trailing scroll room to round the
+     final stop UP to a whole-day boundary, so the last screen reads as a clean
+     Fri | Sat | Sun (earliest of them flush left, no sliver, no empty void),
+     and the week only rolls over once you step PAST it. Its width is set per
+     screen width in JS (pan.ts setWeekTail → --week-tail): the right amount is
+     "round the natural end up to one day", which CSS alone cannot compute. A
+     generated flex item is used, not a spacer node, because the week is rebuilt
+     by innerHTML day-swaps that would wipe a real child. Desktop only — a phone
+     day fills the screen and already reaches the front. */
+  .week::after{content:'';flex:0 0 var(--week-tail,0px);align-self:flex-start;pointer-events:none}
+  .day-head{padding:10px 13px}
+  .day-head .dow{font-size:15px}
+  /* flying table: larger fonts, tighter columns (ScheduleTrain-style density).
+     With AREA + TIME moved out to the strip below each formation, RMKS grows from
+     ~61px to ~198px, so remarks and stores chips finally sit on one or two lines. */
+  .form,.cols.formcols{grid-template-columns:76px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr)}
+  .cols.formcols span{font-size:9.5px;padding:3px 5px}
+  .fcell{padding:4px 4px}
+  .fcell.csmsn b{font-size:12.5px}
+  .fcell.csmsn i{font-size:9.5px}
+  .fcell.bto b,.fcell.bto span{font-size:11px}
+  .fcell.ld{font-size:11px}
+  .acrow{padding:3px 4px;gap:3px}
+  /* NO puck font override here on purpose. The puck is 74 x 15 with 9px type at every
+     width, desktop included — that is the reference tool's own measured puck, and the
+     standing rule is one canonical puck size everywhere including anything added later.
+     A 12px override used to live here; it broke that rule and clipped the type. */
+  .rmkcell{font-size:10px;padding:4px 6px}
+  .rmkcell .stores .stchip{font-size:9px}
+  .form-area{padding:4px 9px;gap:9px}
+  .form-area .fa-lb{font-size:9.5px}
+  .areacell{font-size:10.5px}
+  .timecell{font-size:10.5px;padding-left:9px}
+  .intimes span{font-size:10.5px}
+  /* columnar lists (programme / duties / sims / ground): bigger, denser */
+  .allhands .ah-row,.plist .pl-row{font-size:12px}
+  .allhands .ah-cols,.plist .pl-cols{font-size:9.5px}
+  .allhands .ah-row .t,.plist .pl-row .t{font-size:11px}
+  .plist .pl-row .rmk{font-size:10.5px}
+  .plist .pl-sub,.availpuck .ap-grp{font-size:9.5px}
+  .sub-h{font-size:11px}
+  /* Ground Programme and Common Programme share the SIMS layout on DESKTOP
+     (owner, 22 Aug 26 — "align … the same as how the sims are … which can
+     accommodate 2 pucks side by side"): the same Name / Start / End / two-puck
+     People / Rmks tracks every plist block already uses. Ground keeps `.one` on
+     the block so the PHONE still gives its long item names ("HQ ENGAGEMENT" …) a
+     wide name column — which is why this override is desktop-only rather than a
+     class change — and Common Programme's own `.allhands` grid is brought onto
+     the identical tracks (its Start/End were 42px and its People column was a
+     wider 112–232px band; both now match Sims). */
+  .plist.one.sec-grnd .pl-cols,.plist.one.sec-grnd .pl-row,
+  .allhands .ah-cols,.allhands .ah-row{
+    grid-template-columns:minmax(64px,1fr) 44px 44px calc(var(--puck-w)*2 + 10px) minmax(0,1.25fr);
+  }
+  /* THE NEXT-WEEK PREVIEW (ui/peek.ts, owner ask). Fills the trailing space
+     .week::after used to leave empty (its own real day columns replace the
+     spacer — see pan.ts:setWeekTail) with an inert, read-only look-ahead: same
+     552px flex-basis so scroll stops still land on a whole day, dimmed and
+     with a pointer cursor so it reads as "there, but not here yet" rather than
+     as a broken/loading day. Desktop-only, matching where it is ever mounted. */
+  /* DIMMED BY A VEIL, NOT BY OPACITY (5 Sep 26, measured — docs/performance.md
+     ledger 22). opacity:.5 on a whole day column made it a translucent group
+     that could not share a compositor layer with anything it overlapped, and
+     every puck, remark and seat inside the two preview days became a layer of
+     its own — 47 of the desktop week's 261. A page-background veil at the same
+     alpha over the day is the same arithmetic (.5·day + .5·bg) and paints in
+     place. The veil is clipped to the padding box (.day is overflow:hidden),
+     so the border and the shadow, both outside it, are halved by hand.
+     pointer-events:none keeps the click that loads next week. rgba(11,13,16)
+     is --bg; rgba(42,49,58) is --edge. */
+  .day.peek{position:relative;cursor:pointer;border-color:rgba(42,49,58,.5);box-shadow:0 24px 60px -34px rgba(0,0,0,.45)}
+  .day.peek::after{content:'';position:absolute;inset:0;border-radius:inherit;background:rgba(11,13,16,.5);pointer-events:none;transition:background-color .15s}
+  .day.peek:hover::after,.day.peek:focus-within::after{background:rgba(11,13,16,.2)}
+  /* the boundary between the real week and the preview needs to read at a
+     glance — a muted label ahead of the first preview day, the same
+     small-caps "section header" treatment .pl-hint/.sub-h already use rather
+     than a new pattern. Full-width so it wraps onto its own line above the
+     day name (day-head already wraps: row-gap is set above in this block). */
+  .day.peek .peek-nextwk{flex:0 0 100%;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+    text-transform:uppercase;letter-spacing:.08em;font-size:9.5px;font-weight:700;color:var(--ink-3)}
+}
+/* THE DAY-HEAD IS TWO FIXED ROWS ON A PHONE (owner, 25 Aug 26 — "Because of
+   the word today, the layout is not the same between these … keep it
+   similar"). As one wrapping flex row, WHERE the head broke depended on the
+   title's width: "Monday Jul 13 · Today" pushed the 4x4 badge onto row two
+   while every other day kept it on row one — same controls, different
+   places on different days. The rows are pinned by `order` plus a
+   full-width ::before break so every day reads identically: row 1 is the
+   title + date (+Today) with the turn-pattern badge at the right edge;
+   row 2 is Templates/Drafts on the left and the status / publish cluster
+   on the right. The view page, which renders no Templates span, keeps the
+   same two-row shape with its status cluster right-aligned. Desktop is
+   untouched — its wider head holds one row whatever the title says.
+   (Its own @media block, NOT the min-width:821px one above — these rules
+   landed there first by mistake and pinned the DESKTOP head into two rows;
+   the probe that caught it now lives in e2e/geometry.spec.ts.) */
+@media (max-width:820px){
+  .day-head{gap:6px;row-gap:6px}
+  .day-head .dow{order:1}
+  .day-head .dt{order:2}
+  /* the tag shares the badge's order so DOM order keeps tag-then-badge together on
+     row one, instead of the tag sorting before the day name (Codex PSF-003 / Fable #2) */
+  .day-head .dhver{order:3}
+  .day-head .badge{order:3}
+  .day-head::before{content:'';order:4;flex-basis:100%;height:0}
+  /* COMPRESS THE DAY-HEAD CONTROLS ON MOBILE (owner, 26 Aug 26 — "compress
+     these buttons to reduce the amount of space used on the mobile"). The two
+     control spans (.dhtpl = tag · Templates · plans selector; .dstat = pending ·
+     info · Publish) were each their own wrapping box, so the cluster stacked
+     several rows high. display:contents dissolves both boxes so every control
+     becomes a direct child of the head's flex flow and packs greedily into two
+     rows. Their children inherit order:5 to stay after the title/date row (the
+     full-width ::before break above). Desktop is untouched — one row there. */
+  .day-head .dhtpl,.day-head .dstat{display:contents}
+  .day-head .dhtpl>*,.day-head .dstat>*{order:5}
+  /* the WIDE controls — the plans selector and the Publish button — drop to a
+     trailing row together, so the cluster reads as two tidy rows: the small
+     status chips (tag · Templates · pending · info) first, then the wide pair. */
+  .day-head .dhtpl .planselbtn,.day-head .dstat .dbeak{order:6}
+  .day-head .dhtpl .dhbtn,
+  .day-head .dhtpl .planselbtn,
+  .day-head .dstat .dbeak{padding-top:3px;padding-bottom:3px}
+}
+

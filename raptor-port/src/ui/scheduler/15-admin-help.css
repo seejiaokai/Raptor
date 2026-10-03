@@ -1,0 +1,136 @@
+/* ---- The Admin page (owner, 23 Aug 26; settings-console layout 25 Aug 26) —
+   the seventh tab. A category rail indexes the page and a single content pane
+   shows the chosen category, the way a settings screen reads. The .urow/.ub/
+   .mfield rules above are global (written for the old #userModal, never scoped
+   to .modal), so the moved Manage-users panel reuses them as-is.
+
+   Two panes, one width: on a wide screen the rail (fixed) and the pane sit side
+   by side and BOTH stay visible; below 821px the shell is one column, the rail
+   is the whole screen, and the `.drilled` flag swaps it for the pane + a back
+   arrow — the iOS-settings list→detail move, which is the only way a two-pane
+   layout fits a phone. Every panel stays in the DOM (only `.on` shows), so the
+   template openers keep their ids whichever category is live. ---- */
+#page-admin .adm-inner{max-width:920px;margin:0 auto;padding:18px 20px}
+#page-admin .adm-shell{display:flex;flex-direction:column;gap:14px}
+
+/* the rail — the app's own coloured-tab language: a flat list of category
+   buttons, the active one lifted onto --raised with an accent left bar */
+#page-admin .adm-rail h2{font-size:24px;font-weight:700;letter-spacing:-.025em;margin:0 0 12px}
+#page-admin .adm-cat{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+  background:var(--panel);border:1px solid var(--edge);border-left:3px solid transparent;border-radius:11px;
+  padding:11px 12px;margin-bottom:8px;color:var(--ink)}
+#page-admin .adm-cat:hover{border-color:var(--edge-2)}
+#page-admin .adm-cat.on{background:var(--raised);border-color:var(--edge-2);border-left-color:var(--accent)}
+#page-admin .adm-cat:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#page-admin .adm-cat-ic{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:9px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-3)}
+#page-admin .adm-cat.on .adm-cat-ic{color:var(--accent);border-color:rgba(59,198,232,.35)}
+#page-admin .adm-cat-ic .btnglyph{width:18px;height:18px}
+#page-admin .adm-cat-tx{display:flex;flex-direction:column;gap:2px;min-width:0}
+#page-admin .adm-cat-l{font-size:13.5px;font-weight:650;letter-spacing:-.01em}
+#page-admin .adm-cat-s{font-size:11px;color:var(--ink-3);line-height:1.3}
+#page-admin .adm-cat-chev{flex:0 0 auto;margin-left:auto;color:var(--ink-3);font-size:18px;line-height:1}
+
+/* the pane — one card, a header strip (back arrow + title) over the body */
+#page-admin .adm-pane{background:var(--panel);border:1px solid var(--edge);border-radius:12px;overflow:hidden}
+#page-admin .adm-pane-head{display:flex;align-items:center;gap:6px;padding:13px 16px;border-bottom:1px solid var(--edge)}
+#page-admin .adm-pane-head h3{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0}
+#page-admin .adm-back{display:none;flex:0 0 auto;width:32px;height:32px;margin:-4px 2px -4px -6px;align-items:center;justify-content:center;
+  background:transparent;border:none;color:var(--ink-2);font-size:24px;line-height:1;cursor:pointer;border-radius:8px}
+#page-admin .adm-back:hover{background:var(--panel-2);color:var(--ink)}
+#page-admin .adm-back:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#page-admin .adm-pane-body{padding:16px}
+#page-admin .adm-panel{display:none}
+#page-admin .adm-panel.on{display:block}
+#page-admin .adm-note{color:var(--ink-3);font-size:11px;line-height:1.5;margin:8px 0 0}
+/* the Data panel's two clearing controls — a small uppercase heading names
+   each sweep, a hairline separates them, and the range mode's From/To pair
+   shares one row (each date field halves, matching the single-field width) */
+#page-admin .adm-sub,#page-help .adm-sub{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:800;margin:0 0 10px}
+#page-admin .adm-sep{border:none;border-top:1px solid var(--edge);margin:18px 0 14px}
+#page-admin .adm-2col{display:flex;gap:10px}
+#page-admin .adm-2col .mfield{flex:1 1 0;min-width:0}
+#page-admin .adm-2col input[type=date]{width:100%;box-sizing:border-box}
+#page-admin #admConfig .abtn{display:block;width:100%;text-align:left;margin-top:2px}
+#page-admin #admConfig .adm-note{margin-bottom:12px}
+/* Admin → Users ([ACCOUNTS], D166, D204): the requests waiting and the accounts, one row
+   each — sign-in name over callsign, the role pill at the right; a tapped row opens its
+   editor underneath (never on your own account) */
+#page-admin .acc-list{border-top:1px solid var(--edge)}
+#page-admin .acc-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 0;border-bottom:1px solid var(--edge)}
+#page-admin .acc-row.off .acc-name{color:var(--ink-3);text-decoration:line-through}
+#page-admin .acc-main{flex:1 1 180px;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:left;
+  background:none;border:none;padding:0;color:inherit;font:inherit}
+#page-admin .acc-tap{cursor:pointer}
+#page-admin .acc-tap:disabled{cursor:default}
+#page-admin .acc-tap:not(:disabled):hover .acc-name{color:var(--accent)}
+#page-admin .acc-name{font-size:13px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+#page-admin .acc-sub{font-size:11.5px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+#page-admin .acc-sub b{color:var(--ink-2);font-weight:600}
+#page-admin .acc-tag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:1px 7px;border-radius:999px;
+  background:rgba(245,166,35,.14);color:#F5C06A}
+#page-admin .acc-tag.you{background:rgba(59,198,232,.14);color:var(--accent)}
+#page-admin .acc-row .ub{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:999px}
+#page-admin .acc-row .ub.admin{background:rgba(59,198,232,.16);color:var(--accent)}
+#page-admin .acc-row .ub.main{background:rgba(138,150,163,.16);color:var(--ink-2)}
+#page-admin .acc-acts{display:flex;flex-wrap:wrap;gap:6px}
+/* [ACCOUNTS-NEW-PERSON]: PERSON — "On the roster" | "New person" (the approved mock-up), and a
+   callsign/name past 14 letters said at once under its box (D226) */
+#page-admin .acc-mode{margin:-6px 0 10px}
+#page-admin .cs-long{color:#FBB4B9;font-size:11.5px;line-height:1.35}
+/* the New person notes breathe before the next control, as the mock-up drew them (the walk, 26 Sep 26) */
+#page-admin .adm-note.acc-note{margin:-2px 0 12px}
+#page-admin .acc-edit{flex:1 1 100%;padding:10px 0 4px}
+#page-admin .acc-edit .mfield select,#page-admin .acc-edit .mfield input{width:100%;box-sizing:border-box}
+#page-admin #admUsers .mfield select,#page-admin #admUsers .mfield input{width:100%;box-sizing:border-box}
+#page-admin .acc-switch{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-2);cursor:pointer;line-height:1.45}
+#page-admin .acc-switch input{margin-top:2px;flex:0 0 auto;width:16px;height:16px;accent-color:var(--accent)}
+/* (the Admin + Wave show/hide list was removed 29 Aug 26 pt.3 — show/hide/delete
+   moved to the + Wave menu, and on 30 Aug 26 folded into the one Flying-waves sheet;
+   its .wvmng-* row/eye styles live by the modal and are reused there.) */
+/* the forced-member render — a member cannot reach this page from the nav,
+   so this is the page-gate's own answer, styled as a quiet centred panel */
+.adm-deny{max-width:520px;margin:60px auto;padding:22px 24px;text-align:center;color:var(--ink-2);
+  background:var(--panel);border:1px solid var(--edge);border-radius:12px;font-size:13px;line-height:1.6}
+
+/* ---- The Help page (owner, 25 Aug 26) — bug reports. One centred column:
+   the report form for everyone (plus the member's own filed reports as a
+   receipt), and the admin's full list. A category chip's colour derives
+   from the category's index via --h (HelpPage.tsx), so every category keeps
+   one stable hue with no hand-kept colour map. ---- */
+#page-help .help-inner{max-width:720px;margin:0 auto;padding:18px 20px}
+#page-help h2{font-size:24px;font-weight:700;letter-spacing:-.025em;margin:0 0 12px}
+#page-help .help-card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;margin-bottom:14px}
+#page-help .help-card h3{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 4px}
+#page-help .help-lead{margin:0 0 12px}
+#page-help .mfield textarea{background:var(--bg);border:1px solid var(--edge);color:var(--ink);
+  font-family:'Inter Tight',sans-serif;font-size:13px;padding:8px 10px;border-radius:9px;resize:vertical;min-height:76px}
+#page-help .mfield textarea:focus{outline:none;border-color:var(--accent)}
+#page-help .buglist{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.bugrow{background:var(--bg);border:1px solid var(--edge);border-radius:10px;padding:9px 11px}
+.bughead{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.bugcat{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:20px;
+  color:hsl(var(--h) 70% 72%);background:hsl(var(--h) 60% 50% / .14);border:1px solid hsl(var(--h) 60% 55% / .35)}
+.bugnew{font-size:9.5px;font-weight:800;letter-spacing:.08em;padding:1px 6px;border-radius:20px;color:#fff;background:var(--hard)}
+.bugwhen{margin-left:auto;font-size:10.5px;color:var(--ink-3);white-space:nowrap}
+.bugtext{font-size:12.5px;color:var(--ink-2);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* PHONE (<821px): one column, drill from the list into the detail. The pane is
+   hidden until a category is tapped (`.drilled`), the rail hidden once it is. */
+@media (max-width:820px){
+  #page-admin .adm-pane{display:none}
+  #page-admin .adm-shell.drilled .adm-rail{display:none}
+  #page-admin .adm-shell.drilled .adm-pane{display:block}
+  #page-admin .adm-back{display:inline-flex}
+  #page-admin .adm-cat{min-height:56px}
+}
+
+/* DESKTOP (>=821px): the rail and pane sit side by side and both stay put — no
+   drilling, so the back arrow and the row chevrons are dropped. */
+@media (min-width:821px){
+  #page-admin .adm-shell{flex-direction:row;align-items:start;gap:18px}
+  #page-admin .adm-rail{flex:0 0 244px}
+  #page-admin .adm-pane{flex:1 1 0;min-width:0}
+  #page-admin .adm-cat-chev{display:none}
+}
+

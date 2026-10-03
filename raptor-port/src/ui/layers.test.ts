@@ -1,3 +1,4 @@
+import { readSchedulerCss } from '../testing/scheduler-css'
 /* THE THREE RULES THAT KEEP THE DESKTOP EDIT WEEK AT ~105 COMPOSITOR LAYERS
    (5 Sep 26 — docs/performance.md ledger 22; ui-contracts.md §Compositor
    layers). jsdom cannot count layers; this reads the stylesheet the way
@@ -5,10 +6,9 @@
    found to matter: a filter on a palette puck (59 layers), an opacity on a
    preview day (47), and the roster aside stacking below the week's z-indexed
    pucks (44) each put the layers straight back. */
-import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
-const css = readFileSync(new URL('./scheduler.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+const css = readSchedulerCss().replace(/\/\*[\s\S]*?\*\//g, '')
 const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(m => ({ sels: m[1].split(',').map(s => s.trim()).filter(Boolean), body: m[2] }))
 const withSel = (re: RegExp) => rules.filter(r => r.sels.some(s => re.test(s)))
 const declares = (body: string, prop: string) => new RegExp('(^|[;\\s])' + prop + '\\s*:').test(body)

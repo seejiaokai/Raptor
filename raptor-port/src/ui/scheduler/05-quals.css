@@ -1,0 +1,169 @@
+/* ============ QUALS PAGE ============ */
+.qbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 20px;border-bottom:1px solid var(--edge);background:rgba(20,24,29,.4)}
+.qbar .grow{flex:1}
+.qhelp{padding:10px 20px;color:var(--ink-3);font-size:11.5px;line-height:1.6}
+.qhelp a{cursor:pointer}
+.qadd{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--edge)}
+.qadd input,.qadd select{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:12.5px;padding:7px 9px;border-radius:8px}
+.qadd .lab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+/* the seat-view strip that heads the table (owner, 15 Aug 26) — the seat
+   switch is the everyday control, so it lives directly above the table it
+   filters, read as one segmented control, with "+ Add person" to the right (a button to Admin → Users
+   since [ACCOUNTS-NEW-PERSON], D217 — the fold-open form is retired). */
+.qtablehead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 20px 8px}
+.qtablehead .seglab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.qtablehead .grow{flex:1}
+.segview{display:inline-flex;background:var(--panel-2);border:1px solid var(--edge-2);border-radius:11px;padding:3px;gap:2px}
+.segview button{border:none;background:transparent;color:var(--ink-2);font-weight:600;font-size:12.5px;
+  padding:7px 15px;border-radius:8px;cursor:pointer;font-family:'Inter Tight',sans-serif}
+.segview button:hover{color:var(--ink)}
+.segview button.on{background:rgba(59,198,232,.12);color:var(--accent);box-shadow:inset 0 0 0 1px rgba(59,198,232,.5)}
+.segview button:active{transform:translateY(1px)}
+/* the 20px page gutter is a MARGIN, not padding, so it sits OUTSIDE the scroll
+   box — otherwise the frozen callsign sticks at the padding edge and scrolled
+   cells show through the 20px gap to its left (owner, 15 Aug 26). */
+/* position:relative is the lift frame's containing block (src/ui/lift.ts) — no
+   z-index, so it opens no stacking context (the .mx-wrap precedent) and the
+   frame stacks in the same context as the table's own sticky cells. Being IN
+   the scroller is deliberate too: the frame is placed in content coordinates
+   and rides the sideways scroll for free, instead of standing still while the
+   column it wraps slides away.
+   THE HOST ARRANGES AROUND THE FRAME (review, 7 Sep 26). This is the one frame
+   in the app that TRAVELS — Leave War's spans its wrap's constant visible box,
+   this one moves with the content — so a scrolled column slides its whole
+   rectangle under the FROZEN callsign column, and at the shared recipe's z 7
+   it drew its cyan ring over the frozen names. Lowering the frame ALONE is not
+   the cure: under `.qtbl thead th`'s opaque z 2 the ring round the picked-up
+   heading disappears on every ordinary drag. So the numbers are a set — the
+   frame drops to the heading row's own 2 (it is rendered AFTER the table, so
+   equal z-index still paints it over the heading by DOM order) and the frozen
+   cells are raised above it below (body 3, corner 4). The frozen column then
+   covers the frame's overhang exactly as it covers the column's own cells (the
+   .mxfixed lesson — a cover that also covers what it decorates is right, not a
+   fault). Raising the body cell over the heading row costs nothing: nothing
+   scrolls VERTICALLY inside .qwrap, so a name cell and a heading never meet;
+   where the frozen column and the heading row DO meet — the corner — 4 still
+   wins. Pinned as a set in lift-css.test.ts. */
+.qwrap{padding:6px 0 40px;margin:0 20px;overflow-x:auto;position:relative}
+.qwrap .lift-frame{z-index:2}
+/* THE FROZEN QUALS HEADER (owner, 29 Aug 26 — "the quals top bar should also
+   freeze like the leave war top bar … desktop and mobile … same mechanism").
+   The Leave War `.mxfixed` mechanism, scaled to this table: `.qwrap` scrolls
+   the table sideways so it owns the horizontal axis, the PAGE owns the vertical
+   — no CSS sticky can freeze the header against the page while the wrap owns
+   its other axis, so QualsPage mounts a fixed MIRROR of the heading + group row
+   just below the pinned app top bar. z-index 55 is under the top bar (60) so it
+   can never paint over it; the inner scroller tracks the grid sideways (JS,
+   one-way) and hides its own scrollbar. transform:translateZ(0) lifts the bar
+   onto its own layer so the sideways follow repaints cheaply — the same layer
+   promotion `.mxfixed` uses. */
+.qfixed{position:fixed;z-index:55;overflow:hidden;background:var(--panel-2);
+  box-shadow:0 2px 10px rgba(0,0,0,.4);transform:translateZ(0)}
+.qfixed-scroll{overflow-x:auto;overflow-y:hidden;touch-action:none;scrollbar-width:none;will-change:scroll-position}
+.qfixed-scroll::-webkit-scrollbar{display:none}
+/* the mirror table drops the grid's own left margin/min-width — it is sized to
+   the measured widths (table-layout:fixed) and positioned by the fixed wrapper */
+.qfixed .qtbl{margin:0;min-width:0}
+.qtbl{border-collapse:collapse;width:100%;min-width:1050px;font-size:11.5px}
+.qtbl th,.qtbl td{border:1px solid var(--edge);padding:5px 7px;text-align:center;white-space:nowrap}
+.qtbl thead th{position:sticky;top:0;background:var(--panel-2);color:var(--ink-2);font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;font-weight:700;z-index:2}
+.qtbl th.lav{background:#2a2740;color:#cfc6ef}
+.qtbl th.fix{background:#22302a;color:#bfe8d4}
+.qtbl th.apt{background:#2b2536;color:#E9C7FF}
+.qtbl th.scq{background:#2e2a1c;color:#F2D699}
+.qtbl td.qcell.scq-on .qchk{color:var(--adv)}
+.qtbl th.aarq{background:#16303a;color:#A9E4F5}
+.qtbl td.qcell.aar-on .qchk{color:var(--accent)}
+.qtbl td.qcell.na{color:var(--edge-2);cursor:default}
+.qtbl td.qcell.apt-on .qchk{color:var(--san)}
+/* CALLSIGN is frozen to the left edge (owner, 15 Aug 26): on a phone the table
+   is wider than the screen and scrolls sideways, and without this the name
+   column slid away, leaving rows of unlabelled ticks. Sticky needs an opaque
+   background so the scrolling cells pass UNDER it; the header corner sits above
+   both the sticky row (top) and the other headers (left). */
+/* the frozen column's right edge is SEALED by a pseudo-element, not a box-shadow
+   (owner, 16 Aug 26 — a wide CAT badge, OCU/instructor, showed emerging right up
+   against the callsign as the narrower initials/flight columns scrolled under
+   it). In a `border-collapse` table a cell's own box-shadow does NOT reliably
+   paint over its sibling cells, so the emerging badge stayed visible; a
+   positioned ::after that is a CHILD of the sticky cell paints inside that
+   cell's own stacking context, cleanly above the unpositioned cells scrolling
+   beneath it. It runs
+   3px of the cell's own opaque colour (hiding the badge's leading edge) then
+   fades over 9px as a soft depth cue. Body cell is --bg, header --panel-2. */
+/* the two z-indexes were 1 and 3; they went up by two on 7 Sep 26 so the frozen
+   column also out-ranks the travelling lift frame (z 2 — the reasoning is on
+   .qwrap above). Nothing else in this table is positioned, so the pair only
+   ever has the heading row (2) and that frame to beat. */
+.qtbl td.qname{position:sticky;left:0;z-index:3;background:var(--bg)}
+.qtbl thead th[data-sort="cs"]{position:sticky;left:0;top:0;z-index:4;background:var(--panel-2)}
+.qtbl td.qname::after,.qtbl thead th[data-sort="cs"]::after{content:'';position:absolute;top:0;bottom:0;left:100%;width:16px;pointer-events:none;opacity:0;transition:opacity .12s}
+/* the seal only appears once the table is actually scrolled sideways (the
+   .qwrap gets .xscroll from QualsPage) — unscrolled it would dim the leading
+   edge of the next column (the "I" of INITIALS) for no reason. */
+.qwrap.xscroll .qtbl td.qname::after,.qwrap.xscroll .qtbl thead th[data-sort="cs"]::after{opacity:1}
+.qtbl td.qname::after{background:linear-gradient(to right,var(--bg) 0 6px,rgba(11,13,16,0) 16px)}
+.qtbl thead th[data-sort="cs"]::after{background:linear-gradient(to right,var(--panel-2) 0 6px,rgba(26,31,38,0) 16px)}
+.qtbl .qname{text-align:left;font-weight:600;color:var(--accent);cursor:pointer}
+.qtbl .qname:hover{text-decoration:underline}
+.qtbl tbody tr:hover{background:rgba(255,255,255,.02)}
+.qtbl .grp td{background:rgba(59,198,232,.06);color:var(--accent);text-align:left;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:10.5px;font-family:'Barlow Condensed','Inter Tight',sans-serif}
+.qtbl .lvl{font-weight:700}
+.qchk{cursor:default;color:var(--ok);font-weight:800}
+/* the instructor mark (owner, 10 Aug 26): a LETTER where the others carry a
+   tick, so it reads as a different kind of statement at a glance rather than
+   as a tick someone drew oddly. It keeps its column's colour — the .aar-on
+   rule above still applies — and the letterform is squared up to sit on the
+   same optical centre as the ✓ so the column does not look ragged. */
+.qchk.qi{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:12.5px;letter-spacing:.06em;font-weight:900}
+.qtbl.editing .qcell{cursor:pointer}
+.qtbl.editing .qcell:hover{background:rgba(59,198,232,.12)}
+.qlvlsel{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-size:11px;border-radius:6px;padding:2px 4px}
+/* the INITIALS column: plain text until edit mode hands it an input */
+.qtbl .qinitc{color:var(--ink-2);letter-spacing:.04em;font-weight:600}
+.qinit{width:104px;background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-size:11px;
+  border-radius:6px;padding:2px 4px;text-align:center;text-transform:uppercase;letter-spacing:.04em}
+.qinit:focus{outline:none;border-color:var(--accent)}
+/* Flight is editable on the same terms as the initials beside it (owner,
+   5 Aug 26) — the column exists to be GROUPED by, and a column nobody can
+   fill in never groups anything. Narrower because a flight is a letter or
+   two where initials are three. */
+.qflt{width:56px}
+/* ---- EDIT QUALS (owner, 5 Aug 26): the headings become the columns -------
+   `touch-action:none` is what makes the drag work with a finger — without it
+   the browser claims the gesture as a scroll and the pointermove stream stops
+   at the first pixel. The grip and the ✕ only exist in this mode, so nothing
+   here narrows the heading the rest of the time. */
+.qtbl.qediting thead th.qcol{cursor:grab;user-select:none;touch-action:none}
+.qtbl.qediting thead th.qcol.qdragging{cursor:grabbing;opacity:.5}
+/* the drop target is marked on the side the column will land in — a solid
+   edge rather than a wash, so it reads at a glance against the coloured
+   heading backgrounds (lav / apt / scq / aarq all sit behind it) */
+.qtbl.qediting thead th.qcol.qdrop{box-shadow:inset 3px 0 0 var(--accent),inset -3px 0 0 var(--accent)}
+.qgrip{color:var(--ink-3);margin-right:5px;letter-spacing:-2px;font-size:9px;vertical-align:middle}
+.qdel{margin-left:6px;color:var(--hard);cursor:pointer;font-weight:800;font-size:10px;
+  padding:1px 4px;border-radius:5px;border:1px solid transparent}
+.qdel:hover{background:rgba(240,85,95,.16);border-color:rgba(240,85,95,.4)}
+/* armed: the second press removes a column the rules read, so it stops
+   looking like a dismiss ✕ and starts looking like a question */
+.qtbl thead th.qcol.arm .qdel{background:rgba(240,85,95,.2);border-color:rgba(240,85,95,.6);letter-spacing:.02em}
+.qhint{color:var(--ink-3);font-size:11px}
+/* the callsign is editable in edit mode — it keeps the accent colour it has
+   when it is plain text, so the column reads the same either way */
+.qcs{width:100%;min-width:74px;background:var(--bg);border:1px solid var(--edge);color:var(--accent);
+  font-size:11.5px;font-weight:600;border-radius:6px;padding:2px 5px}
+.qcs:focus{outline:none;border-color:var(--accent)}
+.qarch{color:var(--hard);cursor:pointer;font-weight:800;display:none}
+.qtbl.editing .qarch{display:inline}
+/* the Archived drawer under the table (19 Aug 26): a fold-away records list,
+   deliberately quieter than the roster above it */
+.qarchive{margin:0 20px 40px;padding-top:2px}
+.qarchlist{margin-top:8px;border:1px solid var(--edge);border-radius:10px;padding:6px 12px;max-width:520px}
+.qarchrow{display:flex;align-items:center;gap:12px;padding:7px 2px;border-bottom:1px solid var(--edge)}
+.qarchrow:last-of-type{border-bottom:none}
+.qarchcs{color:var(--accent);font-weight:600;font-size:12.5px;min-width:90px}
+.qarchmeta{color:var(--ink-3);font-size:11.5px;flex:1}
+.qrestore{margin-left:auto}
+.qarchhint{color:var(--ink-3);font-size:11px;line-height:1.5;padding:8px 2px 4px}
+.qmini{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:15px;border-radius:3px;font-size:9px;font-weight:800;color:#fff;margin-right:4px}
+
