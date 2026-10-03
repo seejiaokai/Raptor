@@ -66,16 +66,18 @@ async function run() {
         const row=document.createElement('div'); row.className='mix-row'
         const nm=document.createElement('span'); nm.className='mix-name'; nm.textContent=name
         row.appendChild(nm)
-        row.insertAdjacentHTML('beforeend', `<span class="mix-track"><span class="mix-fill" style="width:${total/4*100}%"><span class="mix-blue" style="width:${blue/total*100}%"></span><span class="mix-red" style="width:${red/total*100}%"></span></span></span><span class="mix-total">${total}</span><span class="mix-counts">${blue} blue · ${red} red</span>`)
+        row.insertAdjacentHTML('beforeend', `<span class="mix-track"><span class="mix-fill" style="width:${total/4*100}%"><span class="mix-blue" style="flex:0 0 ${blue/total*100}%"></span><span class="mix-red" style="flex:0 0 ${red/total*100}%"></span></span></span><span class="mix-total">${total}</span><span class="mix-counts">${blue} blue · ${red} red</span>`)
         el.replaceWith(row)
         rows.push({name,total,blue,red}); i++; el=next
       }
       if(el && el.textContent.includes('more flying')) el.outerHTML='<button class="mix-show" type="button">Show all 38 aircrew ↓</button>'
       const box=document.querySelector('#insightModal .modal-box')
-      return {rows,scrollWidth:box.scrollWidth,clientWidth:box.clientWidth}
+      const segments=Array.from(body.querySelectorAll('.mix-fill')).map(track=>({width:track.getBoundingClientRect().width,parts:Array.from(track.children).map(s=>({width:s.getBoundingClientRect().width,percent:parseFloat(s.style.flexBasis)}))}))
+      return {rows,segments,scrollWidth:box.scrollWidth,clientWidth:box.clientWidth}
     })
     assert.equal(checks.rows.length,12)
     for(const row of checks.rows) assert.equal(row.blue+row.red,row.total)
+    for(const row of checks.segments)for(const s of row.parts)assert.ok(Math.abs(s.width-row.width*s.percent/100)<1)
     assert.ok(checks.scrollWidth <= checks.clientWidth+1)
     await page.locator('#insightModal .modal-box').screenshot({path:path.join(__dirname,`sorties-${label}.png`)})
     fs.writeFileSync(path.join(__dirname,`sorties-${label}.html`), await page.locator('#insightModal .modal-box').evaluate(el => el.outerHTML))

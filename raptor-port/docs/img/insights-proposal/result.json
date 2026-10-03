@@ -79,6 +79,164 @@
           "red": 0
         }
       ],
+      "segments": [
+        {
+          "width": 434,
+          "parts": [
+            {
+              "width": 217,
+              "percent": 50
+            },
+            {
+              "width": 217,
+              "percent": 50
+            }
+          ]
+        },
+        {
+          "width": 325.5,
+          "parts": [
+            {
+              "width": 0,
+              "percent": 0
+            },
+            {
+              "width": 325.5,
+              "percent": 100
+            }
+          ]
+        },
+        {
+          "width": 325.5,
+          "parts": [
+            {
+              "width": 325.5,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 325.5,
+          "parts": [
+            {
+              "width": 217,
+              "percent": 66.6667
+            },
+            {
+              "width": 108.5,
+              "percent": 33.3333
+            }
+          ]
+        },
+        {
+          "width": 217,
+          "parts": [
+            {
+              "width": 108.5,
+              "percent": 50
+            },
+            {
+              "width": 108.5,
+              "percent": 50
+            }
+          ]
+        },
+        {
+          "width": 217,
+          "parts": [
+            {
+              "width": 217,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 217,
+          "parts": [
+            {
+              "width": 217,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 217,
+          "parts": [
+            {
+              "width": 217,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 217,
+          "parts": [
+            {
+              "width": 217,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 217,
+          "parts": [
+            {
+              "width": 217,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 217,
+          "parts": [
+            {
+              "width": 217,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 217,
+          "parts": [
+            {
+              "width": 217,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        }
+      ],
       "scrollWidth": 598,
       "clientWidth": 598
     },
@@ -87,7 +245,7 @@
       "kind": "Board-opener-placement",
       "button": {
         "x": 1273.984375,
-        "y": 73.96173858642578,
+        "y": 73.96483612060547,
         "width": 72.015625,
         "height": 28
       }
@@ -167,6 +325,164 @@
           "total": 2,
           "blue": 2,
           "red": 0
+        }
+      ],
+      "segments": [
+        {
+          "width": 224,
+          "parts": [
+            {
+              "width": 112,
+              "percent": 50
+            },
+            {
+              "width": 112,
+              "percent": 50
+            }
+          ]
+        },
+        {
+          "width": 168,
+          "parts": [
+            {
+              "width": 0,
+              "percent": 0
+            },
+            {
+              "width": 168,
+              "percent": 100
+            }
+          ]
+        },
+        {
+          "width": 168,
+          "parts": [
+            {
+              "width": 168,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 168,
+          "parts": [
+            {
+              "width": 112,
+              "percent": 66.6667
+            },
+            {
+              "width": 56,
+              "percent": 33.3333
+            }
+          ]
+        },
+        {
+          "width": 112,
+          "parts": [
+            {
+              "width": 56,
+              "percent": 50
+            },
+            {
+              "width": 56,
+              "percent": 50
+            }
+          ]
+        },
+        {
+          "width": 112,
+          "parts": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 112,
+          "parts": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 112,
+          "parts": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 112,
+          "parts": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 112,
+          "parts": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 112,
+          "parts": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "width": 112,
+          "parts": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
         }
       ],
       "scrollWidth": 388,

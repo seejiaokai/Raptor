@@ -4761,7 +4761,18 @@ not free-text interpretation, decides the whole formation's role. No extra red i
 the scheduler's Remarks are sufficient. Existing mission-type dots, scheduler red flags and warnings retain their
 meanings. **D520 approves the shown after-edit question below the formation's AREA strip:** show after leaving completed
 Remarks, keeping Remarks visible; either answer removes its temporary space. Wait for the tap/Tab transition to finish,
-preserving next focus. Answer retention/reset, save and edit cancellation still need a firm plan before the new-chat build.
+preserving next focus. D525–D527 below settle retention, saved unanswered edits and correction; the complete technical
+plan and final remaining picture look still precede the new-chat build.
+
+**QUESTION LIFECYCLE (owner D525–D527, 3 Oct 26 — approved, NOT YET BUILT):** remember the chosen formation role until
+Mission or relevant DS/RED support wording changes; crew/time changes do not ask again (D525). Save completed Remarks
+normally even if the question is left unanswered; invalidate a stale answer with the same relevant edit, leaving the
+role unresolved and the affected person's ordinary total bar intact (D526). Later choosing a role is a separate saved
+action and Undo step. Apply this to every forward writer; unresolved saved roles are legitimate, no guessed colour,
+answer-before-creation requirement or new publication block. Working edits/answers on an issued day still wait for AL.
+Offer Change mission role temporarily while editing relevant Remarks (D527), reusing the formation question and edit
+permission; no permanent line marker. Named red Missions remain automatic, without overrides/questions. Recheck live
+formation identity/context/permission when answering; never apply an old popup's answer to a changed formation.
 
 **OPTIONAL SQUADRON TRACKING (owner D521, 3 Oct 26 — approved switch, NOT YET BUILT):** the Logic page provides a
 squadron-wide on/off setting for blue/red sortie tracking. D512's split and D518's questions apply when tracking is on;
@@ -4772,7 +4783,7 @@ roles are chosen; no guessed colours or burst of questions.** Reuse applicable a
 no third category is added. Existing explicit settings survive loading. No per-user preference or data deletion is approved.
 Retaining valid answers while off is the proposed reversible behaviour; changed context cannot reuse stale answers.
 New answers on issued days still wait for an amendment under D478. Exact incomplete-breakdown wording/resolution access
-and the save/cancel/repeat/correction lifecycle remain design work.
+remain design work; D525–D527 above settle the save/repeat/correction lifecycle.
 
 The older `[INSIGHTS-WORKING-COPY]` question is superseded by D478 below and the merged `[INSIGHTS-WHICH-COPY]` build;
 it is not an outstanding product choice.

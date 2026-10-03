@@ -37,7 +37,7 @@ async function run(){
     fill.replaceChildren();fill.classList.add('mix-total-only');row.querySelector('.mix-counts').textContent='Total only · roles not recorded'
     document.querySelectorAll('#insightBody .mix-fill').forEach(track=>{
      track.style.display='flex';track.style.height='12px'
-     Array.from(track.children).forEach(segment=>{segment.style.flex='0 0 '+segment.style.width;segment.style.width='auto';segment.style.height='100%'})
+     Array.from(track.children).forEach(segment=>{segment.style.flex='0 0 '+(segment.style.flexBasis||segment.style.width);segment.style.width='auto';segment.style.height='100%'})
     })
    },fixture)
    const rows=await page.locator('#insightBody .mix-row').count();assert.equal(rows,12)

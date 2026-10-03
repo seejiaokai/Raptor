@@ -117,7 +117,7 @@ Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QU
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
-Insights — [INSIGHTS-MISSION-MIX] (D512/D518 categories, D520 question placement and D521 Logic switch approved; remaining choices pending), with [INSIGHTS-BOARD-DOOR].
+Insights — [INSIGHTS-MISSION-MIX] (D512–D527 categories, question placement/lifecycle and optional Logic switch settled; independent plan challenge PASS, complete picture look pending), with [INSIGHTS-BOARD-DOOR].
 The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
 phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Codex build), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
@@ -1476,14 +1476,15 @@ that the window is topmost at its centre over the board at both widths. **Place:
 first; after `[WORKSPAN-NEGATIVE]`. Full row: `.claude/decisions-full/scheduler.md` D481.
 
 ### [INSIGHTS-MISSION-MIX] Split each person's weekly sortie bar into blue and red (D512, 3 Oct 26)
-**Approved direction; lifecycle/design/build pending:** "Red", "DS" and "Red Air" missions count red automatically (D518).
+**Direction/lifecycle settled; independent plan challenge PASS, final look/build pending:** "Red", "DS" and "Red Air" missions count red automatically (D518).
 Other missions remain blue unless DS/RED in an aircraft's Remarks triggers a Blue/Red role question; its answer covers
 the whole formation (D517). No extra red indicator appears on schedule lines (D519).
 D520 approves the after-edit question below formation AREA, Remarks visible, temporary space removed after either answer.
 D521 adds a squadron-wide blue/red tracking on/off setting on Logic; D522 starts Off at first setup. D523 keeps ordinary
 total bars for people with unanswered roles until those roles are chosen, without guessing or a burst of questions.
-D524 approves the shown Logic switch look/label. The earlier save/cancel/repeat/correction choices, incomplete-bar look
-and role-resolution access remain pending; ordinary Insights remains available.
+D524 approves the shown Logic switch look/label. D525 remembers until Mission/relevant support wording changes; D526
+saves Remarks even unanswered, total bars until roles chosen; D527 offers a temporary correction action while editing
+relevant Remarks. The complete chart/Board/incomplete-bar look and missing-role access pictures remain to confirm; no build here.
 One person who flies both has both coloured segments in their existing total bar. His supplied phone picture names the
 target: Flying load · sorties this week. Continue this batch now while Claude's further review waits; no live merge.
 **D513:** initial twelve flying people, with Show all. **D514:** DS for another formation is our red air, but DS wording
@@ -1493,7 +1494,8 @@ before deciding and is concerned about disrupting scheduling; D518 subsequently 
 D516 excludes SC/AVALON/BB
 standby duties from flying load and includes SC main in work hours.
 Preserve latest-issued-day counting (D478), cancellation/standalone exclusions, stable person identity and work hours.
-Design/picture: `raptor-port/docs/superpowers/specs/2026-10-03-insights-mission-mix.md`. **Place:** Insights, item 3 of
+Design/picture: `raptor-port/docs/superpowers/specs/2026-10-03-insights-mission-mix.md`; authored build plan and independent
+challenge: `raptor-port/docs/superpowers/plans/2026-10-03-insights-mission-mix-build-plan.md` / `…-plan-review.md`. **Place:** Insights, item 3 of
 `[FEATURE-WISHLIST]`, with `[INSIGHTS-BOARD-DOOR]`; product questions only after checking existing rulings. Claude's further
 independent read after the reset remains owed before main.
 

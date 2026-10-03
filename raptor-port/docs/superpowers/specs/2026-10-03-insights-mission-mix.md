@@ -1,12 +1,12 @@
 # Insights mission mix — design in progress, 3 Oct 26
 
-Status: D512–D524 settle categories, formation scope, conditional question/placement, no extra role label, optional Logic
-tracking starting Off, shown Logic control look and total bars until unanswered roles are resolved. Remaining question lifecycle,
-complete visual design and Board entry placement await his look;
+Status: D512–D527 settle categories, formation scope, conditional question/placement/lifecycle, no extra role label, optional
+Logic tracking starting Off, shown Logic control look and total bars until unanswered roles are resolved. Complete
+visual design and Board entry placement await his look;
 no application code is built here. Astra plans under D496; Sol independently challenges before building. Claude's further
 plan/code read after Monday 5 Oct 26, 19:00 is owed before main. No merge/main push.
 
-## Current owner direction — D517–D523 supersedes the control proposals below
+## Current owner direction — D517–D527 supersedes the control proposals below
 
 Tracking is optional per squadron on Logic (D521), Off at first setup (D522). When on, the whole formation is on one side
 (D517). Mission names DS, RED and RED AIR count red without asking (D518).
@@ -16,8 +16,8 @@ about per-aircraft scope or a permanent/every-Mission-focus choice. D519 rejects
 lines: the scheduler's Remarks are sufficient. Preserve existing mission-type dots, scheduler red flags and warnings.
 Show only the conditional question, no line marker. D520 approves it below formation AREA after leaving completed
 Remarks. D523 keeps an ordinary total bar for a person with unresolved roles, until chosen; no guessed colours or bulk
-questions. Answer retention/reset, saving/cancellation/correction and the complete visual look remain to bind before the
-new-chat build (D515). The saved choice makes
+questions. D525–D527 settle answer retention, saving unanswered Remarks and temporary correction access; the complete
+remaining visual look and technical plan still precede the new-chat build (D515). The saved choice makes
 the eventual batch FULL tier; the earlier provisional WALK is superseded. Earlier mockups/read responses are historical
 exploration, never implementation requirements. This section governs every older proposal/pending statement below.
 
@@ -142,10 +142,10 @@ Mission text/box/row size unchanged, panel on-screen, both DOM-only buttons oper
 No saved role, typing/Tab, phone keyboard, issuing or Edit Schedule control proof is claimed; this is tier NONE design.
 The Mission-anchored popup covers written Remarks in the phone sample, so it is replaced by the placement proposal below.
 
-## Current after-edit question picture and pending lifecycle
+## Earlier approved after-edit placement — lifecycle now settled D525–D527
 
 Owner D520 approves the pictured after-edit question below the formation, with Remarks visible and temporary space
-removed after either answer. Save/cancel/repeat/correction remain pending; this is still a design, not an implemented feature.
+removed after either answer. D525–D527 now settle remembering, save-first and correction; this is still a design, not an implemented feature.
 `../../img/insights-proposal/remarks-normal-phone.png` and `remarks-question-phone.png` show the normal and question states;
 desktop and short-screen pairs plus `remarks-bubble.cjs` / `remarks-bubble-result.json` are in that folder. A compact
 "VL: Blue or Red?" question sits AFTER the formation's AREA strip, outside its aircraft rows, with both Remarks visible.
@@ -155,7 +155,7 @@ No extra line indicator or permanent choice is added. Formation scope and cue ru
 Proposal: open only after leaving the completed relevant edit AND its tap/Tab transition finishing; no focus theft,
 rebuilding the next editor, typing-pause prompt or automatic scroll jump. Announce a below-viewport question accessibly;
 preserve focused field and scroll while opening/removing it. Large formations may require ordinary scrolling to reach it.
-Saving/cancel/repeat/correction choices below remain pending and are not decided by this picture.
+This earlier two-button picture approved placement only; the updated Later/correction pictures below bind the selected lifecycle.
 
 ## Optional squadron tracking — D521
 
@@ -178,8 +178,8 @@ recommendation was not selected). Existing explicit setting values survive loadi
 issued answers and automatic Mission roles, with an ordinary total bar for a person whose eligible sorties include
 unanswered ambiguous flights until roles are resolved. No burst of questions or guessed blue. The explanatory look
 and access to resolve missing roles still need a picture and firm plan; no third category is approved.
-New flights written while tracking is off are legitimate untracked data, not D56 legacy demo records. The earlier
-strict-writer requirement is therefore conditional on tracking being on, subject to the agreed re-enable lifecycle.
+New flights written while tracking is off are legitimate untracked data, not D56 legacy demo records. The
+earlier strict-writer recommendation is superseded by D526: unresolved roles may be saved with tracking on or off.
 On a published day, a newly supplied role still waits for its amendment under D478. No backfill of an issued snapshot.
 
 New switch/incomplete-bar pictures: `../../img/insights-proposal/logic-off/on-{phone,desktop}.png` and
@@ -198,26 +198,49 @@ the question, zero page errors. All six final pictures opened; short-screen pict
 and question together. No phone keyboard, real edit lifecycle, saved role, Undo, issuing or source-build proof is claimed.
 Independent placement recommendation and Sol challenge: `../plans/2026-10-03-insights-remarks-placement-read.md`.
 
-Three owner lifecycle choices are pending, now presented together after D524: remember until Mission/relevant support
-wording changes; leave unanswered by saving Remarks and choosing later (NEW recommended alternative), versus keeping
-the edit unfinished until choosing, versus cancelling/reverting it; temporary Change mission role action during relevant
-Remarks editing. Do not infer an answer from picture approval. Complete chart/Board/incomplete-bar look and resolution
-access remain pending before the firm plan/new-chat build.
+D525–D527 settle the three recommendations with "ok": remember until Mission/relevant support wording changes;
+save completed Remarks even unanswered and choose the role later; temporary Change mission role during relevant Remarks
+editing. Crew/time changes do not reprompt. Named red Missions stay automatic. Complete chart/Board/incomplete-bar look
+and the correction/missing-role access picture remain to confirm before the firm plan/new-chat build.
 
-Save-first is a newly offered product alternative, NOT an accepted extension of D523. Independent Astra agrees it fits
-the nonblocking UI and existing save-on-leaving behaviour. IF chosen: save Remarks plus stale-answer invalidation together,
+Save-first is now approved D526, superseding the earlier unfinished/cancel-edit proposals. It was separately asked,
+never inferred from D523. Save Remarks plus stale-answer invalidation together,
 with unresolved role represented explicitly; later role answer is a separate saved action and Undo step. All forward
 writers may save unresolved roles consistently, ordinary total bars until resolved; no guessed role, bulk prompt or new
 publication block. Recheck formation/context/edit permission when answering; new working role waits AL under D478.
-This would replace the earlier strict-answer-before-commit/atomic Remarks-plus-answer technical recommendations below,
-not waive a test. Complete D524 meaning read and lifecycle challenge in `../plans/2026-10-03-insights-logic-switch-read.md`.
+This replaces the earlier strict-answer-before-commit/atomic Remarks-plus-answer technical recommendations below.
+Complete earlier D524 meaning read/lifecycle challenge is in `../plans/2026-10-03-insights-logic-switch-read.md`; its
+then-pending statements remain historical. Astra's authored implementation plan binds the now-selected lifecycle:
+`../plans/2026-10-03-insights-mission-mix-build-plan.md`. Sol's independent challenge and complete dispositions are in
+`../plans/2026-10-03-insights-mission-mix-plan-review.md`; the author does not approve its own plan.
 
 Independent coordinator responses and Sol challenge/disposition:
 `../plans/2026-10-03-insights-conditional-role-read.md`. D512/D514/D517–D519 short/full/home comparison PASS after the
-D512 operative sentence was corrected; conversion clean. D56 permits unchanged pre-field stored demo formations to use
-the Mission default without retroactive cleanup or accuracy claims for their ambiguous Remarks. D478 forbids recolouring
-an issued day from a new working answer before its AL. This old-data exception never covers NEW imports/templates/copies:
-when tracking is enabled, every forward writer obtains or carries a valid answer before committing a new ambiguous
-formation under the earlier unfinished-edit proposal. D521 permits unanswered formations while off; the new save-first
-alternative would also permit unresolved data while on if the owner selects it. The final FULL plan must bind canonical
+D512 operative sentence was corrected; conversion clean. Its historical D56 default proposal is superseded by the final
+plan's simpler single pure resolver: every conditional formation without an applicable answer is unresolved, old or new.
+There is no backfill, demo-repair campaign or invented historical answer. D478 forbids recolouring
+an issued day from a new working answer before its AL. D56 never covers NEW imports/templates/copies:
+the earlier answer-before-commit proposal is now superseded by D526: every forward writer may save an unresolved role,
+with an ordinary total bar until chosen. D521 also permits unanswered formations while off. The final FULL plan must bind canonical
 role comparison/restoration, the chosen Undo/save lifecycle, central writers, copied context and issued snapshots.
+
+## Complete lifecycle pictures — final look requested
+
+The selected behaviour now has updated question and correction pictures:
+`../../img/insights-proposal/lifecycle-question-{phone,desktop,short}.png` and
+`lifecycle-correction-{phone,desktop,short}.png` in the same folder. Blue / Red / Later sits below AREA after the Remarks
+edit and its next focus transition finish. Later closes the question with the completed text retained. For an existing
+valid answer, Change mission role appears only during relevant Remarks editing and opens the same question; no permanent
+line label is added. Leaving correction unanswered retains that valid answer. Unresolved data can be answered by returning
+to its relevant Remarks editor, without rewriting text or a bulk prompt.
+
+`remarks-lifecycle.cjs` / `remarks-lifecycle-result.json` are DOM-only illustrations. Phone390×844, desktop1440×1000,
+short390×568: row/Mission geometry preserved, question below AREA with no Remarks overlap, next focus retained after
+prototype Tab, answer/Later close it, illustrative Later retains Remarks, correction opens it, zero page errors.
+All six final PNGs opened by Sol. Short pictures manually scrolled; real saved roles, Undo, permissions, publication,
+phone keyboard and both application editing routes remain unbuilt. These are tier NONE checks, not feature proof.
+
+The corrected chart fixture uses fixed proportional segment widths (including Ace1+1); chart/Board four pictures and
+Logic/incomplete-bar five pictures were regenerated and all final PNGs opened. The final owner look request includes
+complete mixed/ordinary bars, the total-only explanation, desktop/phone Board access, Later and temporary correction.
+It remains pending until the owner's actual reply; elapsed time does not approve the pictures. The new-chat build waits.
