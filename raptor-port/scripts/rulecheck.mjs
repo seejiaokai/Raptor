@@ -252,6 +252,8 @@ const RULES = {
   MIX14: 'answer/correction history names actor/date/sides; no-op/refusal adds none',
   MIX15: 'twelve/all/reset, unresolved total bars and escaped/fallback labels share one renderer',
   MIX16: 'desktop and phone Board doors open the topmost shared Insights modal',
+  MIX17: 'an open question stays through an unrelated edit on the same day and still answers afresh (D535)',
+  MIX18: 'the read-only published Remarks door keeps its amendment mark',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

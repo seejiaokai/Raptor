@@ -4795,6 +4795,13 @@ Mission — leaves a formation needing an answer. Passing through an unchanged R
 asked again on the next pass; while the Remarks box of a formation with no chosen role is being edited, the same temporary
 control as D527's shows, worded **Choose mission role**. A Mission change that drops a chosen answer (D525) therefore asks.
 One gesture that leaves several formations needing answers asks for none (no burst, D523). Placement stays D520's.
+**An open question stays (D535, 3 Oct 26):** until Blue, Red or Later is pressed, the formation's own Mission or cue wording
+changes, the formation goes, tracking is turned Off, an Undo/Redo runs, or he moves to another day, week, version or sign-in.
+An unrelated edit on the same day — a time, a crew seat, another line — does not remove it. The answer is still checked
+afresh when pressed (same formation, wording, view and sign-in; nobody else's answer in between).
+**The read-only published Remarks door keeps its amendment mark (D534's fix F1):** it drops only the schedule-edit key; a box
+changed at AL*n* is outlined there as everywhere else. A role copied by a day template is named in History by its
+formation's callsign, the row id only when it has none (F3).
 **A Blue/Red answer counts at once (D530):** on a published day too, it needs no amendment and does not touch the day's
 sign-offs — it is a label for the statistics, not part of the programme (as a Logic rule change is not, D482). This replaces
 "working answers on an issued day wait for AL" above and "new answers on issued days still wait for an amendment" below,

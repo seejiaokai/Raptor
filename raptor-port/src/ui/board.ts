@@ -295,7 +295,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
           ${sa ? saRoleHTML(key, a, !stoRO) : ''}
-          ${boxHTML('nts', roleAccess ? `data-role-remarks="${esc(f.rid||'')}" data-role-day="${di}" readonly aria-label="Published Remarks — read only"` : `data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis}`, a.rmks || '', 'Remarks')}
+          ${boxHTML('nts', roleAccess ? `data-role-remarks="${esc(f.rid||'')}" data-role-day="${di}" readonly aria-label="Published Remarks — read only"${alAttr(`fr:${key}`)}` : `data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis}`, a.rmks || '', 'Remarks')}
           ${sa ? '' : (stoRO
             ? storesView(a.opts)
             : `<span class="stores">`

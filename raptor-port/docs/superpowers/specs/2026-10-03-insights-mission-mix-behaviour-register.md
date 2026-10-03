@@ -19,9 +19,11 @@ runtime test. Full rows D512–D531 and D532 were read before applying detail. T
 | MIX11 | D518, D524, D530 | Only scheduler writes, including forged-command protection | central permission and changed-record guards, guest/pending/Off tests |
 | MIX12 | D530 | Persist/reload/retry/replay/empty hydration; malformed records remain inert | real Whiteboard/Postman/MemoryBackend/boot pipeline and existing reset tests |
 | MIX13 | D525, D530 | Exact annotation Undo/Redo; off-week/day landing without programme restore | actual global timeline and UI controls |
-| MIX14 | D525, D530 | Actor/date/old/new history; no-op, Later and refusal add no role line | actual change-line subscriber and reverse command |
+| MIX14 | D525, D530 | Actor/date/old/new history, a template copy named by its formation's callsign (never the row id); no-op, Later and refusal add no role line | actual change-line subscriber and reverse command |
 | MIX15 | D512–D513, D516, D523 | First12/Show all, common scale, total-only unresolved, safe labels; all hours | actual shared renderer, 0/12/13/many worlds, browser chart |
 | MIX16 | D515, D532 | Board desktop/phone overflow opens same modal above Board | registered production Playwright cases plus all-door frozen walk |
+| MIX17 | D535, D529 | An open question stays through an unrelated edit on the same day; its own wording change, a structural change, Undo/Redo, tracking Off or navigation still remove it; the answer is checked afresh | mounted App real week handlers, unrelated and same-formation timing edits, then the real answer (`mission-role-interim-fixes.test.tsx`) |
+| MIX18 | D532, D530 | The read-only Remarks door on the Board's latest published view keeps its "Changed at AL" mark | real sign/approve/text/AL route, then the Board's own preview builder, tracking On and Off |
 
 Complete scenario execution and picture inspection: `../../handpass/2026-10-03-insights-mission-mix.md`.
 Existing work-hours/warning/OIL/Tracker tests and gates remain required; no ceiling or prior assertion weakened.

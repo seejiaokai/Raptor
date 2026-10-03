@@ -31,6 +31,9 @@ import type { CommitEnvelope, Change } from '../command/types'
 import { logAction } from '../engine/editlog'
 import { parseHideDetail } from '../engine/hidedetail'
 import { decodeRoleId } from '../engine/mission-role'
+import type { RoleIdentity } from '../engine/mission-role'
+import { DAYS } from '../engine/data'
+import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
 import { dateOrd, INPUTS } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
@@ -401,6 +404,15 @@ function boundaryLines(env: CommitEnvelope): void {
    command (a restore is not a person's forward change — the subscriber skips it). The days are the step's own records:
    a day of a week (`days/<wk>#<di>`), an input's span before and after, a Leave War day, an issued version's day. One
    line per run of neighbouring days, in the undo's own words ("Undo — Warden put on RU 1 back seat"). */
+/* the callsign of the formation a mission-role answer belongs to, read off the LOADED week by its row id — '' when
+   the answer's week is not the one on screen or the formation has none (the caller falls back to the id) */
+function roleFormationName(role: RoleIdentity): string {
+  if (role.weekKey !== CURWEEK) return ''
+  for (const d of DAYS) for (const w of d?.waves || []) for (const f of w?.formations || []) {
+    if (f?.rid === role.formationRid) return String(f.cs || '').replace(/\s+/g, ' ').trim().slice(0, 80)
+  }
+  return ''
+}
 export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 'undo' | 'redo'): void {
   const days = new Set<string>()
   const addSpan = (s: Span | null) => { if (!s) return; for (let d = s.date; d <= s.end; d = nextIso(d)) days.add(d) }
@@ -448,7 +460,9 @@ export function changeLinesFor(env: CommitEnvelope): void {
         if (!role) continue
         let detail:any=null
         try { detail=JSON.parse(env.detail || 'null') } catch { /* a copy's enclosing command may carry other facts */ }
-        const name=typeof detail?.name==='string'?detail.name.replace(/\s+/g,' ').trim().slice(0,80):role.formationRid
+        /* a copy (a day template) rides the day's own command, which carries no name: read the formation's callsign off
+           the loaded week, where the copy has just landed — the row id is the last resort, never the usual wording */
+        const name=typeof detail?.name==='string'?detail.name.replace(/\s+/g,' ').trim().slice(0,80):(roleFormationName(role)||role.formationRid)
         const origin=typeof detail?.origin==='string'?detail.origin.slice(0,80):'copied with the day template'
         const side=(value:any)=>value?.side==='blue'?'Blue':value?.side==='red'?'Red':'Unresolved'
         logAction(null,`${name} · mission role · ${origin}`,{date:role.dayISO,sect:'day',sub:role.formationRid,fld:'mission-role',from:side(c.before),to:side(c.after)})

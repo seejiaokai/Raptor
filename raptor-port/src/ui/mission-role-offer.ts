@@ -5,7 +5,7 @@ import { CURWEEK } from '../engine/waves'
 import { missionContext, encodeRoleId } from '../engine/mission-role'
 import { dayIso } from '../engine/verid'
 import { missionTracking, missionTrackingEpoch } from '../engine/insights-config'
-import { roleTarget, targetIsCurrent, readRole, setMissionRole, invalidateRoleTargets, roleTargetGeneration } from '../state/mission-roles'
+import { roleTarget, targetIsCurrent, sameQuestion, readRole, setMissionRole, invalidateRoleTargets, roleTargetGeneration } from '../state/mission-roles'
 import type { RoleTarget } from '../state/mission-roles'
 import { canEditSched } from '../state/auth'
 import { CURPAGE, SBDAY, DPREV, esc, navGen, VIEW_RESET } from '../state/view'
@@ -30,7 +30,7 @@ function returnCaret(field:HTMLElement,caret?:Caret):void {
     const a=point(caret.anchor),f=point(caret.focus);window.getSelection()?.setBaseAndExtent(a[0],a[1],f[0],f[1])
   }
 }
-let current: { target:RoleTarget; question:boolean; node:HTMLElement; field:HTMLElement; caret?:Caret } | null=null
+let current: { target:RoleTarget; question:boolean; node:HTMLElement; field:HTMLElement; caret?:Caret; place:string } | null=null
 let timer:ReturnType<typeof setTimeout> | undefined
 let offerEpoch=0
 const fieldKey=(el:HTMLElement)=>el.dataset.txt || el.dataset.bfld || ''
@@ -60,6 +60,12 @@ function remarksFor(t:RoleTarget):HTMLElement|null {
 function anchor(t:RoleTarget):HTMLElement|null {
   const root=SBDAY!=null?document.getElementById('sbBoard'):document.getElementById('eWeek')
   return root ? [...root.querySelectorAll<HTMLElement>('.sb-area[data-role-formation],.form[data-role-formation]')].find(n=>n.dataset.roleFormation===t.formationRid && Number(n.dataset.roleDay)===t.di) || null : null
+}
+/* where the formation sits on its day — a structural move, delete or replacement changes it, and that still dismisses
+   an open question (the plan's rule, kept by D535); an edit elsewhere on the day leaves it where it was */
+function placeOf(t:RoleTarget):string {
+  for(const [gi,w] of (DAYS[t.di]?.waves||[]).entries()) for(const [li,f] of (w.formations||[]).entries()) if(f.rid===t.formationRid) return `${gi}.${li}.${(f.aircraft||[]).length}`
+  return ''
 }
 function clear():void {current?.node.remove();current=null}
 export function resetMissionRoleOffer():void {offerEpoch++;if(timer)clearTimeout(timer);timer=undefined;clear();invalidateRoleTargets()}
@@ -114,11 +120,21 @@ function show(t:RoleTarget,question:boolean,field:HTMLElement):void {
       else if('ok' in result&&!result.ok) {clear();HOOKS.toast('message' in result&&result.message?String(result.message):'That mission-role question is no longer current. Select Remarks to try again.')}
     }
   })
-  at.after(node);current={target:t,question,node,field,caret}
+  at.after(node);current={target:t,question,node,field,caret,place:placeOf(t)}
 }
 export function reconcileMissionRoleOffer():void {
   if(!current)return
-  if(!targetIsCurrent(current.target))return clear()
+  if(!targetIsCurrent(current.target)) {
+    /* D535 (3 Oct 26): an open QUESTION stays through an unrelated edit on the same day. It continues on a freshly
+       resolved target — the buttons are rebuilt on it, so an answer is still checked against today's facts. */
+    const fresh=current.question&&current.place===placeOf(current.target)?sameQuestion(current.target):null
+    const field=fresh&&remarksFor(fresh)
+    if(!fresh||!field)return clear()
+    const caret=current.field===field?current.caret:undefined
+    clear();show(fresh,true,field)
+    if(current&&caret)(current as {caret?:Caret}).caret=caret
+    return
+  }
   if(!current.node.isConnected) {
     const {target,question}=current, field=remarksFor(target)
     if(!field)return clear()

@@ -45,7 +45,7 @@ const server = http.createServer((q, r) => {
       alMarkedBoxesInView: line.querySelectorAll('[data-alc]').length, roleRemarksBoxes: line.querySelectorAll('[data-role-remarks]').length }
   }, di)
   try {
-    page = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage()
+    page = await (await browser.newContext({ viewport: { width: Number(process.env.VW || 1440), height: Number(process.env.VH || 900) } })).newPage()
     page.on('pageerror', e => out.errors.push('PAGEERROR ' + e.message))
     page.on('console', m => { if (m.type() === 'error') out.errors.push(m.text()) })
     await page.goto(`http://localhost:${port}/`); await page.addStyleTag({ content: '*{scroll-behavior:auto !important}' })

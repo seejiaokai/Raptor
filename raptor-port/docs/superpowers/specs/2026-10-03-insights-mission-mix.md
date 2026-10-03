@@ -33,6 +33,10 @@ frozen desktop-and-phone walk and the full gates were NOT run by this read and s
 reset. It fixes no source and permits no merge or push to main. Report:
 `../../handpass/2026-10-03-insights-mission-mix-opus-interim.md`.
 
+**D534 (same day):** he then had Opus fix that read's three findings (F1–F3) on the build branch, each with a failing-first
+test; Fable and Astra read those fixes in the review after the reset (the writer never inspects — D67). **D535:** an open
+Blue/Red question stays on screen through unrelated edits on the same day (F2's fix; the rule is in `ui-contracts.md`).
+
 ## Early Opus plan review — D528, 3 Oct 26
 
 The owner took the finished plan to Opus 5.5; its 3 Oct review is complete with verdict REVISE, not PASS.

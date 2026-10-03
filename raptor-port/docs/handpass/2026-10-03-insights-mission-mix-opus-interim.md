@@ -12,6 +12,10 @@ no application source and permits no merge or push to main.
 
 ## Verdict — REVISE (small): three concrete findings, none corrupts data
 
+**Update, same day:** all three were FIXED on the branch by Opus under D534 (F2 as he ruled it, D535), each with a
+failing-first test, re-walked at desktop and phone size, full gates green — see §Fixes. The verdict below is the read of
+build `4cfe81a1` as Codex left it. The fixes themselves are unreviewed until Fable and Astra read them after the reset.
+
 No finding touches what is saved, signed or counted. One is a visible regression on a published day (F1), one is a
 plan departure in behaviour (F2), one is wording a scheduler will read (F3). The design the plan asked for — answers
 kept apart from the signed programme, keyed by formation and wording, their own history/Undo/permissions — is what the
@@ -142,6 +146,67 @@ planning build) are theirs and stand as they recorded them — not re-verified h
 
 `Walk: not run (D533) — three targeted probes on the frozen build at desktop size; 2 pictures saved, both opened.`
 Phone size, short-height layouts, the weekly editor's flows and a physical iPhone: not exercised.
+
+## Fixes — D534 (3 Oct 26)
+
+He asked Opus to fix F1–F3 on the build branch (D534) and ruled F2's behaviour (D535: the open question stays). He
+also offered Sonnet for the fixes with Opus reviewing; declined — D484 sends nothing to Sonnet before the reset, and
+`raptor-executor.md` keeps the implementation in the main session. **Opus wrote these fixes, so Opus does not inspect
+them: Fable and Astra read them in the review after the reset.**
+
+**Tier.** The eight questions for the fixes alone: money NO; the published record — F1 changes how an issued day's
+amendment mark is DRAWN, never the record (YES, as a drawer); saved data — F3 changes the words of a new History line
+only (NO new field); a shared drawer YES (the Board's Remarks box); a new gesture NO (F2 changes how long an existing
+question lives); a new surface NO; roles NO; the warning list NO. They ride the Insights batch, which is FULL (D485);
+this is that check's "fix → re-walk what the fixes touched → gates" step, and its two independent reads stay owed.
+
+| Fix | What changed | Failing-first test (`src/ui/mission-role-interim-fixes.test.tsx`) |
+|---|---|---|
+| F1 | `src/ui/board.ts:298` — the read-only door's attributes now carry `alAttr` as the ordinary box does | "F1 — the read-only Remarks door … keeps its Changed at AL mark": real sign → approve → text → publish AL → the Board's own preview builder; was `null`, now `data-alc="1"`; tracking Off pinned the same |
+| F2 | `src/state/mission-roles.ts` — `sameQuestion()` re-resolves a target when only the day's revision moved (`targetIsCurrent` unchanged in meaning: still strict at answer time); `src/ui/mission-role-offer.ts` — `reconcileMissionRoleOffer` rebuilds an open QUESTION on that fresh target when the formation still sits where it sat | "F2 (D535) — an open question stays through an unrelated edit…": mounted App, real week handlers; another formation's take-off, then the same formation's take-off, then the real Red — was 0 questions, now 1, and the answer lands on the asking formation. A second test pins what must STILL dismiss it (its own wording stops asking; tracking Off) — green before and after |
+| F3 | `src/state/changelines.ts` — a copy with no name in the command reads the formation's callsign off the loaded week; the row id is the last resort | "F3 — a role copied by a day template is named in History by its formation": real `addDayTpl` → `pickDayTpl`; was the row id, now "VL · mission role · copied with the day template" |
+
+**What still removes an open question (kept, per plan §7 and D535):** Blue / Red / Later; the formation's mission or
+cue wording changing; the formation moving, losing an aircraft or going (its place on the day is compared); tracking
+Off; Undo/Redo; a change of day, week, version or sign-in; someone else's answer to the same question.
+
+**Roll-call for the fixes** (the thing each attaches to, every place it is drawn):
+
+| Thing | Place | Has it |
+|---|---|---|
+| The amendment mark on Remarks | Board, working copy (editable box) | YES — unchanged (`data-bfld` + `alAttr`) |
+| | Board, latest published, tracking Off / member / exact-Red or no-cue formation (disabled box) | YES — unchanged |
+| | Board, latest published, tracking On, scheduler, cue formation (read-only door) | **was MISSING — fixed (F1)**; seen at desktop and phone |
+| | Board, an OLDER published version | YES — unchanged (no door there) |
+| | Weekly editor and View-only Sched (text spans) | YES — unchanged; the door does not exist there |
+| The open question | Board, working copy | stays through an unrelated edit — seen at desktop and phone |
+| | Weekly editor, working copy | stays — mounted test (real week handlers); NOT walked in the browser |
+| | Board, latest published (read-only door) | same code path; NOT walked — nothing can be edited under a preview |
+| The role's History line | a manual answer | named by callsign — unchanged |
+| | a day-template copy | **fixed (F3)** — seen at desktop |
+| | Undo/Redo of either | "Undo — …" line unchanged; not re-walked |
+
+**Re-walk on the fixed build** (`raptor-port/dist` built from this working tree; Chromium, real controls;
+`docs/img/insights-opus-interim/probe-almark.cjs`, `probe-tpl.cjs`; browser errors: none):
+
+| Check | Desktop 1440×900 | Phone 390×844 |
+|---|---|---|
+| F1 — Remarks changed at AL1 keeps its mark, tracking On | PASS — 3 marked boxes, as with tracking Off | PASS |
+| F2 — question still there after another line's take-off is changed; then Red answers | PASS | PASS |
+| F3 — History names the formation for a template copy | PASS — "VL · mission role · copied with the day template" | NOT WALKED — the probe looks for the desktop Templates button; the wording is not width-dependent |
+| Template travel, one Undo, Redo (regression check) | PASS | NOT WALKED |
+
+Pictures, all four opened: `docs/img/insights-opus-interim/fixed/fixed-desktop-almark-tracking-on.png` and
+`fixed-phone-almark-tracking-on.png` (the "DS FOR ALPHA" box now outlined like the PROBE boxes),
+`fixed-desktop-tpl-destination.png` ("Change mission role" on the destination day),
+`fixed-phone-question-kept-then-answered.png`.
+
+**Checks — one full gate run on the fixed working tree, the PC lock taken and released by `gatelock.mjs run`, 3 Oct 26, about 14 minutes in all, every gate watched to its result:** unit **7,646 passed, 0 failed** (481 files, 280 s — Codex's 7,642 plus these 4) · build PASS · the original's assertions **728 / 0** · browser tests **520 passed, 0 failed, 49 skipped** of 569 (3.3 min) · Tracker suite **445 / 0** · rule coverage OK (MIX17, MIX18 registered and named by a test) · document check OK. Before it, the feature's own seven test files: 84 / 84. The three new tests were RED on the unfixed build first (the report's F1–F3 wording is their failure text). `npm run perf` and the adapted probes were NOT run (no drawing or layout was added; the mark is one attribute on an existing box).
+
+`Walk: docs/handpass/2026-10-03-insights-mission-mix-opus-interim.md · 6 pictures (2 before, 4 after) · 3 surfaces re-walked (Board working copy, Board latest published, History) · 2 orders (edit-then-answer; save-apply-undo-redo) · MISSING: 1 fixed (F1)`
+
+**Not done here, still owed:** the weekly editor's flows in a real browser, short-height layouts, a physical iPhone,
+the 33 scenarios, the two independent reads of these fixes and of the build (D534, D533).
 
 ## Still owed before main
 

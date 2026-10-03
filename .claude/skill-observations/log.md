@@ -2367,3 +2367,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the receiving checklist for a handed-over heavy task: read the account's usage first when a rationing ruling is live; if the task as written will not fit, say so with the number and offer sizes before any work — and name in the report exactly what the smaller size did NOT run.
 
 **Principle:** A task's size is a fact about the reviewer's budget as much as about the work; check the budget before the first read, and let the owner choose the size rather than discover it by running out.
+
+### Observation 424: A time estimate given to the owner must be a measured one, or be said to be a guess
+
+**Status:** OPEN
+**Date:** 2026-10-03
+**Session context:** Fixing three review findings on the Insights build; the bug-check block told the owner the full gate set would take "about an hour" of his PC.
+**Skill:** bug-check order §0a step 3 (tell him what the tier means and roughly how long)
+**Type:** internal
+**Phase/Area:** Stating the checks before running them
+
+**Issue:** The hour was a guess carried from the order's tier table, not from a run. He asked why the gates take an hour; the run then took about 14 minutes (unit 280 s, browser tests 198 s, Tracker suite 296 s). The earlier build's own evidence already recorded the unit suite at 279 s, so a measured figure was one read away.
+
+**Suggested improvement:** When stating how long a check takes, read the last recorded run (the handoff block or the evidence sheet carries gate times) and quote it; if none exists, say "not measured". Keep the measured gate-set time in the handoff block so the next chat quotes it.
+
+**Principle:** A duration told to a non-technical owner is a claim he plans around; quote the last measurement, and label a guess as a guess.

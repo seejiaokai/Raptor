@@ -88,12 +88,21 @@ export function roleTarget(di: number, rid: string): RoleTarget | null {
   try { id=encodeRoleId(identity) } catch { return null }
   return {...identity,id,di,origin:source.origin,label:source.label,name:String(source.f.cs || rid),dayRevision:revisionOf('days',`${CURWEEK}#${di}`),roleRevision:revisionOf('insights.role',id),session:SESSION,generation,trackingEpoch:missionTrackingEpoch(),view:viewStamp(),formation:source.f}
 }
-export function targetIsCurrent(t: RoleTarget): boolean {
+/** The same QUESTION, re-resolved (D535, 3 Oct 26): an unrelated edit on the day moves the day's revision and may
+ * replace the formation object, and the open question must survive it. Everything that identifies the question is
+ * still required — the same formation and wording (the id), the same face, sign-in, view and generation, tracking On,
+ * and nobody's answer to it in between; only the day's own revision is allowed to have moved. Returns the fresh
+ * target the question continues on, or null when it is a different question (or none). */
+export function sameQuestion(t: RoleTarget): RoleTarget | null {
   const now=roleTarget(t.di,t.formationRid)
-  return !!now && missionTracking() && canEditSched() && !protectedWeek() && CURPAGE==='editsched'
+  return now && missionTracking() && canEditSched() && !protectedWeek() && CURPAGE==='editsched'
     && t.id===now.id && t.weekKey===CURWEEK && t.origin===now.origin && t.session===SESSION
     && t.generation===generation && t.trackingEpoch===missionTrackingEpoch() && t.view===viewStamp()
-    && t.dayRevision===now.dayRevision && t.roleRevision===now.roleRevision && t.formation===now.formation
+    && t.roleRevision===now.roleRevision ? now : null
+}
+export function targetIsCurrent(t: RoleTarget): boolean {
+  const now=sameQuestion(t)
+  return !!now && t.dayRevision===now.dayRevision && t.formation===now.formation
 }
 export function setMissionRole(t: RoleTarget, side: MissionSide): CommitResult {
   return commit({type:'insights.role.set',scope:{module:'insights',weekId:t.weekKey},expectedRevs:{['insights.role/'+t.id]:t.roleRevision},meta:{key:JSON.stringify({name:t.name,origin:t.label})},apply(txn){

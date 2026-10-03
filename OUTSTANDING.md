@@ -118,7 +118,7 @@ The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
 Insights — [INSIGHTS-MISSION-MIX] (D512–D532 settled; built on the isolated branch, qualified FULL checks complete,
-fresh independent Astra R2 PASS; Opus interim code read (D533) REVISE — three small findings F1–F3 to fix first;
+fresh independent Astra R2 PASS; Opus interim code read (D533) found three small findings, fixed by Opus the same day (D534, D535);
 Claude's later read owed before main), with [INSIGHTS-BOARD-DOOR].
 The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
 phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Codex build), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
@@ -1505,6 +1505,12 @@ Blue/Red question disappears after any other edit on the same day (`mission-role
 formation (`changelines.ts:449–453`). Two low edges left unverified. A code read with three targeted runs only: the 33
 scenarios, the phone-and-desktop walk and the gates were NOT run and stay owed. Report, repro scripts, two pictures:
 `raptor-port/docs/handpass/2026-10-03-insights-mission-mix-opus-interim.md`, `raptor-port/docs/img/insights-opus-interim/`.
+**F1–F3 FIXED the same day by Opus (D534), F2 as he ruled it (D535 — the open question stays through an unrelated edit):** each
+with a failing-first test (`src/ui/mission-role-interim-fixes.test.tsx`), re-walked on the rebuilt app at desktop and phone
+size, one full gate run green (unit 7,646/0, browser 520 passed/49 skipped, original 728/0, Tracker 445/0). Opus wrote them,
+so Fable and Astra read them in the review after the reset; nothing here is owed to Codex now. Two low edges stay unverified
+(a published day's "changes to go out" strip after a dirty-text Choose; the weekly editor's Templates button while a saved
+plan is being looked at) — for that review to try.
 **D532 — final look approved 3 Oct 26 ("ok approved"):** complete 18-picture phone/desktop/short gallery accepted,
 including Choose/Change, Working/Published context labels, latest-published read-only Remarks and both Board entry places.
 Implementation now authorized in the isolated new build chat under the unchanged revised plan. FULL checks, all33,
