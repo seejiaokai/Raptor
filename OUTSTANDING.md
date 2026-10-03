@@ -1240,6 +1240,12 @@ sign-off the screen is empty; the bar's buttons sit off to the right (pan sidewa
 picks it on a phone sees a blank day. **To do:** find why the sections collapse in the wide layout under 820px (the
 phone's own grid rules probably still apply), then walk it at 390 and 844×390 with both layouts. WALK tier. **Place:**
 medium; any time, none blocking.
+4 Oct diagnostic on the unchanged workflow bundle confirms the first cause: phone
+`display:contents` on the board wrapper survives Desktop layout's horizontal parent.
+All ten sections are0px at390/820,832px at821/844 landscape; Phone layout restores346px.
+Candidate: restore the wide wrapper's flex column, then verify widths, actual panning
+and return/Done. No repair built or picture approved. Evidence:
+`raptor-port/docs/handpass/2026-10-04-workflow-ui-investigation.md` §Phone Desktop layout.
 
 ### [BUBBLE-SMALL-SEEN] Two small things about the message bubble, found by the change-recording walk (29 Sep 26)
 Both the same on `main` (the Phase A pictures, taken on `main`, show them): (1) **Unpublish says nothing** — pressed on a
@@ -1494,6 +1500,14 @@ a surface pinned to a screen edge and limited by screen height is checked for th
 fixed parent, never `vh`), because the check's browser has no address bar and cannot show the fault (§7.9). **Place:** low —
 with the workflow UI pass (D495), or sooner if he meets one. Report:
 `raptor-port/docs/handpass/2026-10-03-insights-mission-mix-opus-interim.md` §His find.
+4 Oct bounded investigation: tested portrait footers reachable; landscape editor,
+day-details and document footers recover through native outer scrolling. No physical
+iPhone bars/keyboard proof. Current inventory corrects the older list: the phone
+people picker already uses100dvh, week calendar shares80vh, and the bell has no panel.
+Availability lacks an existing count-chip fixture. Type-help60vh card has awkward
+absolute placement; page/inner scrolling reaches its last text and outside closes,
+so no trapped-panel claim. Keep open; change only a demonstrated problem after the
+owner's picture look. Evidence: `raptor-port/docs/handpass/2026-10-04-workflow-ui-investigation.md`.
 
 ### [INSIGHTS-BOARD-DOOR] The Scheduler Board gets a way to open Insights — BUILT on the Insights branch, awaiting reads/main
 Built with `[INSIGHTS-MISSION-MIX]` after D532 picture agreement: desktop beside the bell; phone in More only.
@@ -1626,10 +1640,10 @@ with pictures first; where it moves a screen's controls, that screen's feature b
 with `[INP-TILL-STALE]`; (5) the Tracker — item 4, with `[TRK-FILE-TRANSFER-SPLIT]` and its small finds; (6) the rules —
 item 2, caps and ops limits, FULL tier; (7) one whole-app check. **Who builds — D494:** until the reset (Monday 5 Oct 26,
 19:00) Codex plans and builds, started by one small job to prove it (`[DISCARD-MARKS-REMOVE]`); **D496:** Astra plans/coordinates and independently reviews Sol 6.1's builds; Sol challenges Astra plans. Claude reviews each branch
-after the reset, before any "merge live". Insights is built; workflow priorities D542–D544 are answered (build/correct a day,
-phone quick checks/small edits with full editing retained, times/notes keyboard entry keeping Enter/Escape).
-These are planning priorities, not approved designs or more file splits; his later provenance/meaning questions are carried
-into the new chat before further design. D545 adds [SCHEDULE-TAB-ROW-FLOW]. The other feature batches' questions still wait.
+after the reset, before any "merge live". Insights is built. D546 (4 Oct 26) defers the first two workflow recommendations
+(D542/D543: build/correct a day first, phone quick checks/small edits first); he will introduce ideas during building.
+D544's times/notes keyboard entry keeping Enter/Escape stays pending. The usability/file-split distinction has been explained;
+no layout is approved. D545 adds [SCHEDULE-TAB-ROW-FLOW], its boundaries still unanswered. The other feature batches' questions wait.
 
 ### [SKILL-FUSION] Fuse the harder questioning into the planning step — and three proposals from the same read (D486, 2 Oct 26)
 From the article he sent (codelynx.dev — five recommended skills): none is installed whole (D486). To build, documents only: the
@@ -1693,19 +1707,19 @@ and allowance remains. Its new branch is cut from `codex/insights-mission-mix` w
 (`HANDOFF.md`). After the split, every screen is walked at phone and desktop size, not only the measured ones.
 **D540–D541 (3 Oct 26):** owner explicitly requires that integrated base before any rule moves, keeps the three earlier builds
 separate for Claude's review, and requires no visible change plus opening every phone/desktop screen picture. Next batch branch:
-`codex/workflow-ui`; scope: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md`. Priorities D542–D544 answered; actual UI design still waits.
+`codex/workflow-ui`; scope: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md`. D546 defers D542/D543; D544 keyboard work remains. Actual UI design still waits.
 **Built/checks, 3 Oct 26:** split22 contiguous runs from the combined base, original bytes and all4 emitted CSS assets exactly equal;
 full unit7727,reference728,browser527+49existing skips,Tracker445,all6adapted/perf4/rulecheck/docsize PASS. Every main screen at
 phone/desktop walked; all187before+136after original PNGs opened, actual-member/laptop/breakpoint/short-height matrix also checked.
 Known `[PHONE-WIDE-BOARD-BLANK]` remains unchanged and is not a wide-body usability PASS. Fresh independent Astra R1 PASS for the bound mechanical split;
 evidence: `raptor-port/docs/handpass/2026-10-03-css-split.md`. Claude's full read after Monday19:00 still owed before main;
-item stays here until the required reads and owner's live word. Continue planning in a new chat from D542–D545 and the filed UI faults;
-clarify his question about usability priorities versus long-file splits first. No further UI design or source change inferred.
+item stays here until the required reads and owner's live word. Continue from D544–D546 and the filed UI faults;
+usability versus file splitting explained, first two priorities deferred. No further UI design or source change inferred.
 
 ### [SCHEDULE-TAB-ROW-FLOW] Tab follows the open schedule text boxes across the row, then to the next row — D545, 4 Oct 26
 His report/request: while the scheduler types, Tab currently does not go to the next open text box on the right.
 At the rightmost open text box, Tab should go to the leftmost open text box in the next row.
-**Not built. Place:** workflow UI pass, after the completed stylesheet split; next-chat product planning with D542–D544.
+**Not built. Place:** workflow UI pass, after the completed stylesheet split; product planning with D544/D546 (first two earlier priorities deferred).
 Forward Tab between open text boxes is settled; exact screens, closed-cell opening, Shift+Tab and final-row exit are not.
 Keep Enter commits/Escape restores; unchanged Remarks traversal never asks the mission-role question (D529).
 Scope/home: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md` (D545); picture before any visual change.
@@ -1768,6 +1782,12 @@ Existing-behaviour audit after owner challenge: `raptor-port/docs/superpowers/pl
 ### [PALETTE-WRAPPED-HEADER] Wrapped desktop account bar covers the sticky palette's first option (found 2 Oct 26)
 At1280×560 with RANGER · ADMIN and a two-row104px top bar, ALL AVAIL's center at y64 is behind the account badge after the page scrolls. Current actual reporting-warning jump reaches it before any target scroll; frozen9cc baseline lacks that new warning door, but native page scroll plus target scroll reaches the identical covered rectangle with the same badge/flight/reporting strings. Both served bundles are verified; no force click or data injection. Initial empty-week geometry did not reproduce the covered state and is retained, not offered as clearance. Required1440×480 and six named-person picker phone/short routes pass, without excusing the1280 defect.
 Cause/fix triage: `raptor-port/docs/superpowers/plans/2026-10-02-rally-header-overlap-triage.md`; raw linked results in the Rally main consolidated manifest, preserved in `raptor-port/docs/handpass/2026-10-02-rally-workspan-evidence.zip`. Adapt the palette's sticky clearance to the actual header height, preserving existing control sizes and scroll/paint contracts. No repair or owner acceptance inferred. **Place:** workflow UI batch under D490/D495, after [CSS-SPLIT-BY-SCREEN]; final current-batch inspector judges the declared scope.
+4 Oct normal-scroll reproduction on the unchanged workflow bundle with **Saber admin**:
+header104px at1280×560, crew list stuck at y8; both placeholders covered. At1600×900
+and1440×480 header58px and those hits work; return to1280 covers them again. Candidate
+remains actual-header clearance plus available-height update, not raised stacking or
+hard-coded104px. Still open, no repair/picture approval. Evidence:
+`raptor-port/docs/handpass/2026-10-04-workflow-ui-investigation.md` §Desktop crew list.
 
 ### [REST-FIRST-CREW-HINT] Empty formation gives no predictive crew-rest hint for its first occupant (found 2 Oct 26)
 Rally runtime evidence: an empty Wednesday formation resolves reporting to Tuesday11:00, but Ranger gets no pre-placement rest hint. First assignment correctly raises9h crew rest against Monday's overnight endingTuesday02:00. A different remaining crew member supplies a sibling and Ranger's hypothetical placement then correctly gives clearance14:00. Removal restores the missing-first-hint condition. Baseline query contract and a dedicated test explicitly return null for an empty formation; this is existing behaviour, not a new Rally regression, and is not exempted as stored-demo-only harm. The broad guide claim that the query never disagrees has been qualified in `raptor-port/docs/engine-rules.md`.

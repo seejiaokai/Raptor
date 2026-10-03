@@ -1,0 +1,2022 @@
+{
+  "scope": "native scroll and actual-control qualification of landscape footer misses, legend and wide-board recovery",
+  "errors": [],
+  "cases": [
+    {
+      "name": "input-editor",
+      "observations": [
+        {
+          "state": "landscape-initial",
+          "facts": {
+            "viewport": {
+              "w": 1035,
+              "h": 479,
+              "vv": 478.25830078125
+            },
+            "scrollY": 0,
+            "documentHeight": 4094,
+            "elements": [
+              {
+                "sel": "#inpEditPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 302.5,
+                  "y": 83.5,
+                  "width": 430,
+                  "height": 312,
+                  "top": 83.5,
+                  "right": 732.5,
+                  "bottom": 395.5,
+                  "left": 302.5
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 428,
+                "scrollHeight": 444,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "inpEditType"
+              },
+              {
+                "sel": "#inpEditCancel",
+                "id": "inpEditCancel",
+                "rect": {
+                  "x": 593.8125,
+                  "y": 490.875,
+                  "width": 65.359375,
+                  "height": 28,
+                  "top": 490.875,
+                  "right": 659.171875,
+                  "bottom": 518.875,
+                  "left": 593.8125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 63,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              }
+            ]
+          }
+        },
+        {
+          "state": "native-inner-scroll",
+          "facts": {
+            "viewport": {
+              "w": 1035,
+              "h": 479,
+              "vv": 478.25830078125
+            },
+            "scrollY": 0,
+            "documentHeight": 4094,
+            "elements": [
+              {
+                "sel": "#inpEditPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 302.5,
+                  "y": 83.5,
+                  "width": 430,
+                  "height": 312,
+                  "top": 83.5,
+                  "right": 732.5,
+                  "bottom": 395.5,
+                  "left": 302.5
+                },
+                "scrollTop": 134,
+                "scrollLeft": 0,
+                "scrollWidth": 428,
+                "scrollHeight": 444,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "airpop-body inped-body"
+              },
+              {
+                "sel": "#inpEditCancel",
+                "id": "inpEditCancel",
+                "rect": {
+                  "x": 593.8125,
+                  "y": 356.875,
+                  "width": 65.359375,
+                  "height": 28,
+                  "top": 356.875,
+                  "right": 659.171875,
+                  "bottom": 384.875,
+                  "left": 593.8125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 63,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "inpEditCancel"
+              }
+            ]
+          }
+        },
+        {
+          "state": "native-outer-scroll-from-header",
+          "facts": {
+            "viewport": {
+              "w": 1035,
+              "h": 479,
+              "vv": 478.25830078125
+            },
+            "scrollY": 0,
+            "documentHeight": 4094,
+            "elements": [
+              {
+                "sel": "#inpEditPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 302.5,
+                  "y": 83.5,
+                  "width": 430,
+                  "height": 312,
+                  "top": 83.5,
+                  "right": 732.5,
+                  "bottom": 395.5,
+                  "left": 302.5
+                },
+                "scrollTop": 134,
+                "scrollLeft": 0,
+                "scrollWidth": 428,
+                "scrollHeight": 444,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "airpop-body inped-body"
+              },
+              {
+                "sel": "#inpEditCancel",
+                "id": "inpEditCancel",
+                "rect": {
+                  "x": 593.8125,
+                  "y": 356.875,
+                  "width": 65.359375,
+                  "height": 28,
+                  "top": 356.875,
+                  "right": 659.171875,
+                  "bottom": 384.875,
+                  "left": 593.8125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 63,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "inpEditCancel"
+              }
+            ]
+          }
+        }
+      ],
+      "closed": false,
+      "status": "COMPLETE"
+    },
+    {
+      "name": "day-details",
+      "observations": [
+        {
+          "state": "landscape-initial",
+          "facts": {
+            "viewport": {
+              "w": 844,
+              "h": 390,
+              "vv": 390
+            },
+            "scrollY": 0,
+            "documentHeight": 2723,
+            "elements": [
+              {
+                "sel": "#dayPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 162,
+                  "y": 39,
+                  "width": 520,
+                  "height": 312,
+                  "top": 39,
+                  "right": 682,
+                  "bottom": 351,
+                  "left": 162
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 518,
+                "scrollHeight": 342,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "dayPopBody"
+              },
+              {
+                "sel": "#dayPopDone",
+                "id": "dayPopDone",
+                "rect": {
+                  "x": 607.3125,
+                  "y": 343.796875,
+                  "width": 58.6875,
+                  "height": 28,
+                  "top": 343.796875,
+                  "right": 666,
+                  "bottom": 371.796875,
+                  "left": 607.3125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 57,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false,
+                "hit": "dayPop"
+              }
+            ]
+          }
+        },
+        {
+          "state": "native-inner-scroll",
+          "facts": {
+            "viewport": {
+              "w": 844,
+              "h": 390,
+              "vv": 390
+            },
+            "scrollY": 0,
+            "documentHeight": 2723,
+            "elements": [
+              {
+                "sel": "#dayPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 162,
+                  "y": 39,
+                  "width": 520,
+                  "height": 312,
+                  "top": 39,
+                  "right": 682,
+                  "bottom": 351,
+                  "left": 162
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 518,
+                "scrollHeight": 342,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "witem note"
+              },
+              {
+                "sel": "#dayPopDone",
+                "id": "dayPopDone",
+                "rect": {
+                  "x": 607.3125,
+                  "y": 343.796875,
+                  "width": 58.6875,
+                  "height": 28,
+                  "top": 343.796875,
+                  "right": 666,
+                  "bottom": 371.796875,
+                  "left": 607.3125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 57,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false,
+                "hit": "dayPop"
+              }
+            ]
+          }
+        },
+        {
+          "state": "native-outer-scroll-from-header",
+          "facts": {
+            "viewport": {
+              "w": 844,
+              "h": 390,
+              "vv": 390
+            },
+            "scrollY": 0,
+            "documentHeight": 2723,
+            "elements": [
+              {
+                "sel": "#dayPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 162,
+                  "y": 39,
+                  "width": 520,
+                  "height": 312,
+                  "top": 39,
+                  "right": 682,
+                  "bottom": 351,
+                  "left": 162
+                },
+                "scrollTop": 32,
+                "scrollLeft": 0,
+                "scrollWidth": 518,
+                "scrollHeight": 342,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": ""
+              },
+              {
+                "sel": "#dayPopDone",
+                "id": "dayPopDone",
+                "rect": {
+                  "x": 607.3125,
+                  "y": 311.796875,
+                  "width": 58.6875,
+                  "height": 28,
+                  "top": 311.796875,
+                  "right": 666,
+                  "bottom": 339.796875,
+                  "left": 607.3125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 57,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "dayPopDone"
+              }
+            ]
+          }
+        }
+      ],
+      "closed": true,
+      "status": "COMPLETE"
+    },
+    {
+      "name": "medical-document",
+      "observations": [
+        {
+          "state": "landscape-initial",
+          "facts": {
+            "viewport": {
+              "w": 844,
+              "h": 390,
+              "vv": 390
+            },
+            "scrollY": 120,
+            "documentHeight": 724,
+            "elements": [
+              {
+                "sel": "#docViewPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 62,
+                  "y": 39,
+                  "width": 720,
+                  "height": 312,
+                  "top": 39,
+                  "right": 782,
+                  "bottom": 351,
+                  "left": 62
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 718,
+                "scrollHeight": 376,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "docview-img"
+              },
+              {
+                "sel": "#docViewDone",
+                "id": "docViewDone",
+                "rect": {
+                  "x": 707.3125,
+                  "y": 378.1875,
+                  "width": 58.6875,
+                  "height": 28,
+                  "top": 378.1875,
+                  "right": 766,
+                  "bottom": 406.1875,
+                  "left": 707.3125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 57,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              }
+            ]
+          }
+        },
+        {
+          "state": "native-inner-scroll",
+          "facts": {
+            "viewport": {
+              "w": 844,
+              "h": 390,
+              "vv": 390
+            },
+            "scrollY": 120,
+            "documentHeight": 724,
+            "elements": [
+              {
+                "sel": "#docViewPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 62,
+                  "y": 39,
+                  "width": 720,
+                  "height": 312,
+                  "top": 39,
+                  "right": 782,
+                  "bottom": 351,
+                  "left": 62
+                },
+                "scrollTop": 66,
+                "scrollLeft": 0,
+                "scrollWidth": 718,
+                "scrollHeight": 376,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "docview-img"
+              },
+              {
+                "sel": "#docViewDone",
+                "id": "docViewDone",
+                "rect": {
+                  "x": 707.3125,
+                  "y": 312.1875,
+                  "width": 58.6875,
+                  "height": 28,
+                  "top": 312.1875,
+                  "right": 766,
+                  "bottom": 340.1875,
+                  "left": 707.3125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 57,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "docViewDone"
+              }
+            ]
+          }
+        },
+        {
+          "state": "native-outer-scroll-from-header",
+          "facts": {
+            "viewport": {
+              "w": 844,
+              "h": 390,
+              "vv": 390
+            },
+            "scrollY": 334,
+            "documentHeight": 724,
+            "elements": [
+              {
+                "sel": "#docViewPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 62,
+                  "y": 39,
+                  "width": 720,
+                  "height": 312,
+                  "top": 39,
+                  "right": 782,
+                  "bottom": 351,
+                  "left": 62
+                },
+                "scrollTop": 66,
+                "scrollLeft": 0,
+                "scrollWidth": 718,
+                "scrollHeight": 376,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "docview-img"
+              },
+              {
+                "sel": "#docViewDone",
+                "id": "docViewDone",
+                "rect": {
+                  "x": 707.3125,
+                  "y": 312.1875,
+                  "width": 58.6875,
+                  "height": 28,
+                  "top": 312.1875,
+                  "right": 766,
+                  "bottom": 340.1875,
+                  "left": 707.3125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 57,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "docViewDone"
+              }
+            ]
+          }
+        }
+      ],
+      "closed": true,
+      "status": "COMPLETE"
+    },
+    {
+      "name": "input-type-legend",
+      "observations": [
+        {
+          "state": "short-open",
+          "facts": {
+            "viewport": {
+              "w": 390,
+              "h": 568,
+              "vv": 568
+            },
+            "scrollY": 120,
+            "documentHeight": 1240,
+            "elements": [
+              {
+                "sel": "#inTypePop",
+                "id": "inTypePop",
+                "rect": {
+                  "x": 8,
+                  "y": 454,
+                  "width": 374,
+                  "height": 340.796875,
+                  "top": 454,
+                  "right": 382,
+                  "bottom": 794.796875,
+                  "left": 8
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 372,
+                "scrollHeight": 755,
+                "clientHeight": 339,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "absolute",
+                "maxHeight": "340.8px",
+                "ownHit": false
+              },
+              {
+                "sel": "#inTypeHelp",
+                "id": "inTypeHelp",
+                "rect": {
+                  "x": 55.234375,
+                  "y": 569,
+                  "width": 15,
+                  "height": 15,
+                  "top": 569,
+                  "right": 70.234375,
+                  "bottom": 584,
+                  "left": 55.234375
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 13,
+                "scrollHeight": 14,
+                "clientHeight": 13,
+                "display": "inline-block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              }
+            ]
+          }
+        },
+        {
+          "state": "native-page-scroll",
+          "facts": {
+            "viewport": {
+              "w": 390,
+              "h": 568,
+              "vv": 568
+            },
+            "scrollY": 672,
+            "documentHeight": 1240,
+            "elements": [
+              {
+                "sel": "#inTypePop",
+                "id": "inTypePop",
+                "rect": {
+                  "x": 8,
+                  "y": -98,
+                  "width": 374,
+                  "height": 340.796875,
+                  "top": -98,
+                  "right": 382,
+                  "bottom": 242.796875,
+                  "left": 8
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 372,
+                "scrollHeight": 755,
+                "clientHeight": 339,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "absolute",
+                "maxHeight": "340.8px",
+                "ownHit": true,
+                "hit": ""
+              },
+              {
+                "sel": "#inTypeHelp",
+                "id": "inTypeHelp",
+                "rect": {
+                  "x": 55.234375,
+                  "y": 17,
+                  "width": 15,
+                  "height": 15,
+                  "top": 17,
+                  "right": 70.234375,
+                  "bottom": 32,
+                  "left": 55.234375
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 13,
+                "scrollHeight": 14,
+                "clientHeight": 13,
+                "display": "inline-block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false,
+                "hit": ""
+              }
+            ]
+          }
+        },
+        {
+          "state": "native-legend-scroll",
+          "facts": {
+            "viewport": {
+              "w": 390,
+              "h": 568,
+              "vv": 568
+            },
+            "scrollY": 672,
+            "documentHeight": 1240,
+            "elements": [
+              {
+                "sel": "#inTypePop",
+                "id": "inTypePop",
+                "rect": {
+                  "x": 8,
+                  "y": -98,
+                  "width": 374,
+                  "height": 340.796875,
+                  "top": -98,
+                  "right": 382,
+                  "bottom": 242.796875,
+                  "left": 8
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 372,
+                "scrollHeight": 755,
+                "clientHeight": 339,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "absolute",
+                "maxHeight": "340.8px",
+                "ownHit": true,
+                "hit": ""
+              },
+              {
+                "sel": "#inTypeHelp",
+                "id": "inTypeHelp",
+                "rect": {
+                  "x": 55.234375,
+                  "y": 17,
+                  "width": 15,
+                  "height": 15,
+                  "top": 17,
+                  "right": 70.234375,
+                  "bottom": 32,
+                  "left": 55.234375
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 13,
+                "scrollHeight": 14,
+                "clientHeight": 13,
+                "display": "inline-block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false,
+                "hit": ""
+              }
+            ]
+          }
+        }
+      ],
+      "outsideClose": true,
+      "status": "COMPLETE"
+    },
+    {
+      "name": "wide-native-pan",
+      "observations": [
+        {
+          "state": "wide-initial",
+          "facts": {
+            "viewport": {
+              "w": 390,
+              "h": 844,
+              "vv": 844
+            },
+            "scrollY": 0,
+            "documentHeight": 3941,
+            "elements": [
+              {
+                "sel": ".schedboard",
+                "id": "schedBoard",
+                "rect": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 390,
+                  "height": 844,
+                  "top": 0,
+                  "right": 390,
+                  "bottom": 844,
+                  "left": 0
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 1180,
+                "scrollHeight": 844,
+                "clientHeight": 844,
+                "display": "flex",
+                "overflowY": "hidden",
+                "position": "fixed",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "sbSign"
+              },
+              {
+                "sel": ".sb-main",
+                "id": "",
+                "rect": {
+                  "x": 0,
+                  "y": 77,
+                  "width": 1180,
+                  "height": 767,
+                  "top": 77,
+                  "right": 1180,
+                  "bottom": 844,
+                  "left": 0
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 1180,
+                "scrollHeight": 767,
+                "clientHeight": 767,
+                "display": "flex",
+                "overflowY": "hidden",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-boardwrap",
+                "id": "",
+                "rect": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 0,
+                  "height": 0,
+                  "top": 0,
+                  "right": 0,
+                  "bottom": 0,
+                  "left": 0
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 0,
+                "scrollHeight": 0,
+                "clientHeight": 0,
+                "display": "contents",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false,
+                "hit": "sb-top"
+              },
+              {
+                "sel": "#sbBoard",
+                "id": "sbBoard",
+                "rect": {
+                  "x": 816,
+                  "y": 77,
+                  "width": 44,
+                  "height": 767,
+                  "top": 77,
+                  "right": 860,
+                  "bottom": 844,
+                  "left": 816
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 46,
+                "scrollHeight": 7378,
+                "clientHeight": 767,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 142,
+                  "width": 0,
+                  "height": 761,
+                  "top": 142,
+                  "right": 830,
+                  "bottom": 903,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 761,
+                "clientHeight": 761,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 915,
+                  "width": 0,
+                  "height": 621.25,
+                  "top": 915,
+                  "right": 830,
+                  "bottom": 1536.25,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 621,
+                "clientHeight": 621,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 1548.25,
+                  "width": 0,
+                  "height": 2061.84375,
+                  "top": 1548.25,
+                  "right": 830,
+                  "bottom": 3610.09375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 2062,
+                "clientHeight": 2062,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 3622.09375,
+                  "width": 0,
+                  "height": 766.25,
+                  "top": 3622.09375,
+                  "right": 830,
+                  "bottom": 4388.34375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 766,
+                "clientHeight": 766,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 4400.34375,
+                  "width": 0,
+                  "height": 726.25,
+                  "top": 4400.34375,
+                  "right": 830,
+                  "bottom": 5126.59375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 726,
+                "clientHeight": 726,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 5138.59375,
+                  "width": 0,
+                  "height": 652.25,
+                  "top": 5138.59375,
+                  "right": 830,
+                  "bottom": 5790.84375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 652,
+                "clientHeight": 652,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 5802.84375,
+                  "width": 0,
+                  "height": 85,
+                  "top": 5802.84375,
+                  "right": 830,
+                  "bottom": 5887.84375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 85,
+                "clientHeight": 85,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 5899.84375,
+                  "width": 0,
+                  "height": 1002,
+                  "top": 5899.84375,
+                  "right": 830,
+                  "bottom": 6901.84375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 1002,
+                "clientHeight": 1002,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 6913.84375,
+                  "width": 0,
+                  "height": 206,
+                  "top": 6913.84375,
+                  "right": 830,
+                  "bottom": 7119.84375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 206,
+                "clientHeight": 206,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 7131.84375,
+                  "width": 0,
+                  "height": 299,
+                  "top": 7131.84375,
+                  "right": 830,
+                  "bottom": 7430.84375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 299,
+                "clientHeight": 299,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": "#sbMore",
+                "id": "sbMore",
+                "rect": {
+                  "x": 610.265625,
+                  "y": 43,
+                  "width": 30,
+                  "height": 26,
+                  "top": 43,
+                  "right": 640.265625,
+                  "bottom": 69,
+                  "left": 610.265625
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 28,
+                "scrollHeight": 24,
+                "clientHeight": 24,
+                "display": "flex",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": "#sbDone",
+                "id": "sbDone",
+                "rect": {
+                  "x": 1142,
+                  "y": 6,
+                  "width": 30,
+                  "height": 30,
+                  "top": 6,
+                  "right": 1172,
+                  "bottom": 36,
+                  "left": 1142
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 28,
+                "scrollHeight": 28,
+                "clientHeight": 28,
+                "display": "flex",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              }
+            ]
+          }
+        },
+        {
+          "state": "native-touch-pan",
+          "facts": {
+            "viewport": {
+              "w": 390,
+              "h": 844,
+              "vv": 844
+            },
+            "scrollY": 0,
+            "documentHeight": 3941,
+            "elements": [
+              {
+                "sel": ".schedboard",
+                "id": "schedBoard",
+                "rect": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 390,
+                  "height": 844,
+                  "top": 0,
+                  "right": 390,
+                  "bottom": 844,
+                  "left": 0
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 1180,
+                "scrollHeight": 844,
+                "clientHeight": 844,
+                "display": "flex",
+                "overflowY": "hidden",
+                "position": "fixed",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "sbSign"
+              },
+              {
+                "sel": ".sb-main",
+                "id": "",
+                "rect": {
+                  "x": 0,
+                  "y": 77,
+                  "width": 1180,
+                  "height": 767,
+                  "top": 77,
+                  "right": 1180,
+                  "bottom": 844,
+                  "left": 0
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 1180,
+                "scrollHeight": 767,
+                "clientHeight": 767,
+                "display": "flex",
+                "overflowY": "hidden",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-boardwrap",
+                "id": "",
+                "rect": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 0,
+                  "height": 0,
+                  "top": 0,
+                  "right": 0,
+                  "bottom": 0,
+                  "left": 0
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 0,
+                "scrollHeight": 0,
+                "clientHeight": 0,
+                "display": "contents",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false,
+                "hit": "sb-top"
+              },
+              {
+                "sel": "#sbBoard",
+                "id": "sbBoard",
+                "rect": {
+                  "x": 816,
+                  "y": 77,
+                  "width": 44,
+                  "height": 767,
+                  "top": 77,
+                  "right": 860,
+                  "bottom": 844,
+                  "left": 816
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 46,
+                "scrollHeight": 7378,
+                "clientHeight": 767,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 142,
+                  "width": 0,
+                  "height": 761,
+                  "top": 142,
+                  "right": 830,
+                  "bottom": 903,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 761,
+                "clientHeight": 761,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 915,
+                  "width": 0,
+                  "height": 621.25,
+                  "top": 915,
+                  "right": 830,
+                  "bottom": 1536.25,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 621,
+                "clientHeight": 621,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 1548.25,
+                  "width": 0,
+                  "height": 2061.84375,
+                  "top": 1548.25,
+                  "right": 830,
+                  "bottom": 3610.09375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 2062,
+                "clientHeight": 2062,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 3622.09375,
+                  "width": 0,
+                  "height": 766.25,
+                  "top": 3622.09375,
+                  "right": 830,
+                  "bottom": 4388.34375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 766,
+                "clientHeight": 766,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 4400.34375,
+                  "width": 0,
+                  "height": 726.25,
+                  "top": 4400.34375,
+                  "right": 830,
+                  "bottom": 5126.59375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 726,
+                "clientHeight": 726,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 5138.59375,
+                  "width": 0,
+                  "height": 652.25,
+                  "top": 5138.59375,
+                  "right": 830,
+                  "bottom": 5790.84375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 652,
+                "clientHeight": 652,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 5802.84375,
+                  "width": 0,
+                  "height": 85,
+                  "top": 5802.84375,
+                  "right": 830,
+                  "bottom": 5887.84375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 85,
+                "clientHeight": 85,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 5899.84375,
+                  "width": 0,
+                  "height": 1002,
+                  "top": 5899.84375,
+                  "right": 830,
+                  "bottom": 6901.84375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 1002,
+                "clientHeight": 1002,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 6913.84375,
+                  "width": 0,
+                  "height": 206,
+                  "top": 6913.84375,
+                  "right": 830,
+                  "bottom": 7119.84375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 206,
+                "clientHeight": 206,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 830,
+                  "y": 7131.84375,
+                  "width": 0,
+                  "height": 299,
+                  "top": 7131.84375,
+                  "right": 830,
+                  "bottom": 7430.84375,
+                  "left": 830
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 4,
+                "scrollHeight": 299,
+                "clientHeight": 299,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": "#sbMore",
+                "id": "sbMore",
+                "rect": {
+                  "x": 610.265625,
+                  "y": 43,
+                  "width": 30,
+                  "height": 26,
+                  "top": 43,
+                  "right": 640.265625,
+                  "bottom": 69,
+                  "left": 610.265625
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 28,
+                "scrollHeight": 24,
+                "clientHeight": 24,
+                "display": "flex",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": "#sbDone",
+                "id": "sbDone",
+                "rect": {
+                  "x": 1142,
+                  "y": 6,
+                  "width": 30,
+                  "height": 30,
+                  "top": 6,
+                  "right": 1172,
+                  "bottom": 36,
+                  "left": 1142
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 28,
+                "scrollHeight": 28,
+                "clientHeight": 28,
+                "display": "flex",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              }
+            ]
+          }
+        },
+        {
+          "state": "normal-return",
+          "facts": {
+            "viewport": {
+              "w": 390,
+              "h": 844,
+              "vv": 844
+            },
+            "scrollY": 0,
+            "documentHeight": 3941,
+            "elements": [
+              {
+                "sel": ".schedboard",
+                "id": "schedBoard",
+                "rect": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 390,
+                  "height": 844,
+                  "top": 0,
+                  "right": 390,
+                  "bottom": 844,
+                  "left": 0
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 390,
+                "scrollHeight": 844,
+                "clientHeight": 844,
+                "display": "flex",
+                "overflowY": "visible",
+                "position": "fixed",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "nin"
+              },
+              {
+                "sel": ".sb-main",
+                "id": "",
+                "rect": {
+                  "x": 0,
+                  "y": 75,
+                  "width": 390,
+                  "height": 769,
+                  "top": 75,
+                  "right": 390,
+                  "bottom": 844,
+                  "left": 0
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 390,
+                "scrollHeight": 6816,
+                "clientHeight": 769,
+                "display": "flex",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "nin"
+              },
+              {
+                "sel": ".sb-boardwrap",
+                "id": "",
+                "rect": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 0,
+                  "height": 0,
+                  "top": 0,
+                  "right": 0,
+                  "bottom": 0,
+                  "left": 0
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 0,
+                "scrollHeight": 0,
+                "clientHeight": 0,
+                "display": "contents",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false,
+                "hit": "sb-top"
+              },
+              {
+                "sel": "#sbBoard",
+                "id": "sbBoard",
+                "rect": {
+                  "x": 0,
+                  "y": 275,
+                  "width": 390,
+                  "height": 6616.4375,
+                  "top": 275,
+                  "right": 390,
+                  "bottom": 6891.4375,
+                  "left": 0
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 390,
+                "scrollHeight": 6616,
+                "clientHeight": 6616,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 14,
+                  "y": 338.5,
+                  "width": 346,
+                  "height": 149,
+                  "top": 338.5,
+                  "right": 360,
+                  "bottom": 487.5,
+                  "left": 14
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 346,
+                "scrollHeight": 149,
+                "clientHeight": 149,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "nin"
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 14,
+                  "y": 499.5,
+                  "width": 346,
+                  "height": 1106.71875,
+                  "top": 499.5,
+                  "right": 360,
+                  "bottom": 1606.21875,
+                  "left": 14
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 346,
+                "scrollHeight": 1107,
+                "clientHeight": 1107,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 14,
+                  "y": 1618.21875,
+                  "width": 346,
+                  "height": 1494.5625,
+                  "top": 1618.21875,
+                  "right": 360,
+                  "bottom": 3112.78125,
+                  "left": 14
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 346,
+                "scrollHeight": 1495,
+                "clientHeight": 1495,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 14,
+                  "y": 3124.78125,
+                  "width": 346,
+                  "height": 840.71875,
+                  "top": 3124.78125,
+                  "right": 360,
+                  "bottom": 3965.5,
+                  "left": 14
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 346,
+                "scrollHeight": 841,
+                "clientHeight": 841,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 14,
+                  "y": 3977.5,
+                  "width": 346,
+                  "height": 1101.71875,
+                  "top": 3977.5,
+                  "right": 360,
+                  "bottom": 5079.21875,
+                  "left": 14
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 346,
+                "scrollHeight": 1102,
+                "clientHeight": 1102,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 14,
+                  "y": 5091.21875,
+                  "width": 346,
+                  "height": 998.21875,
+                  "top": 5091.21875,
+                  "right": 360,
+                  "bottom": 6089.4375,
+                  "left": 14
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 346,
+                "scrollHeight": 998,
+                "clientHeight": 998,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 14,
+                  "y": 6101.4375,
+                  "width": 346,
+                  "height": 61,
+                  "top": 6101.4375,
+                  "right": 360,
+                  "bottom": 6162.4375,
+                  "left": 14
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 346,
+                "scrollHeight": 61,
+                "clientHeight": 61,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 14,
+                  "y": 6174.4375,
+                  "width": 346,
+                  "height": 260,
+                  "top": 6174.4375,
+                  "right": 360,
+                  "bottom": 6434.4375,
+                  "left": 14
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 346,
+                "scrollHeight": 260,
+                "clientHeight": 260,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 14,
+                  "y": 6446.4375,
+                  "width": 346,
+                  "height": 134,
+                  "top": 6446.4375,
+                  "right": 360,
+                  "bottom": 6580.4375,
+                  "left": 14
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 346,
+                "scrollHeight": 134,
+                "clientHeight": 134,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": ".sb-sec",
+                "id": "",
+                "rect": {
+                  "x": 14,
+                  "y": 6592.4375,
+                  "width": 346,
+                  "height": 275,
+                  "top": 6592.4375,
+                  "right": 360,
+                  "bottom": 6867.4375,
+                  "left": 14
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 346,
+                "scrollHeight": 275,
+                "clientHeight": 275,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "relative",
+                "maxHeight": "none",
+                "ownHit": false
+              },
+              {
+                "sel": "#sbMore",
+                "id": "sbMore",
+                "rect": {
+                  "x": 90,
+                  "y": 42,
+                  "width": 30,
+                  "height": 26,
+                  "top": 42,
+                  "right": 120,
+                  "bottom": 68,
+                  "left": 90
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 28,
+                "scrollHeight": 24,
+                "clientHeight": 24,
+                "display": "flex",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "sbMore"
+              },
+              {
+                "sel": "#sbDone",
+                "id": "sbDone",
+                "rect": {
+                  "x": 352,
+                  "y": 6,
+                  "width": 30,
+                  "height": 30,
+                  "top": 6,
+                  "right": 382,
+                  "bottom": 36,
+                  "left": 352
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 28,
+                "scrollHeight": 28,
+                "clientHeight": 28,
+                "display": "flex",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "bi"
+              }
+            ]
+          }
+        }
+      ],
+      "closed": true,
+      "status": "COMPLETE"
+    }
+  ],
+  "pictures": [
+    "input-editor-landscape-before-scroll.png",
+    "input-editor-landscape-after-scroll.png",
+    "day-details-landscape-before-scroll.png",
+    "day-details-landscape-after-scroll.png",
+    "medical-document-landscape-before-scroll.png",
+    "medical-document-landscape-after-scroll.png",
+    "legend-short-initial.png",
+    "legend-short-page-scroll.png",
+    "legend-short-inner-scroll.png",
+    "board-wide-native-touch-pan.png"
+  ],
+  "status": "COMPLETE"
+}

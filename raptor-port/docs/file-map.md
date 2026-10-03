@@ -300,6 +300,11 @@ is looking for a file. Paths in the Tooling table are relative to `raptor-port/`
 
 D499: `docs/codex-review-workflow.md` carries the Codex-only proportional check addendum. `docs/superpowers/plans/2026-10-02-codex-check-framework-review.md` retains its draft, independent disposition and observed Playwright runtime readiness; Claude's workflow and regular browser configuration stay unchanged.
 
+Workflow UI diagnosis: `docs/handpass/2026-10-04-workflow-ui-investigation.md` records the authorized read-only
+header/phone-Board/panel investigation, source identity, normal-control recovery and physical-iPhone limits.
+`docs/img/workflow-ui-investigation/` retains drivers, raw partial/final results and pictures; `inspection.json`
+names34 individually opened qualifying originals. Causes and repair candidates are filed, no app repair or visual approval.
+
 
 In-time/Rally planning evidence: docs/superpowers/plans/2026-10-02-in-time-behaviour-audit.md records current readers/writers/lifecycle and finite runtime coverage. docs/img/in-time-audit/ contains the driver, result JSON, final inspected pictures, supplementary test log and first memory-backend diagnostic run. This is existing-behaviour audit evidence, not a Rally build approval.
 

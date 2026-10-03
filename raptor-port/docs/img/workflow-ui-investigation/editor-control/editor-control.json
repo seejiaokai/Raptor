@@ -1,0 +1,31 @@
+{
+  "errors": [],
+  "status": "COMPLETE",
+  "before": {
+    "rect": {
+      "x": 593.8125,
+      "y": 356.875,
+      "width": 65.359375,
+      "height": 28,
+      "top": 356.875,
+      "right": 659.171875,
+      "bottom": 384.875,
+      "left": 593.8125
+    },
+    "innerWidth": 1035,
+    "innerHeight": 479,
+    "vv": {
+      "width": 1035,
+      "height": 478.25830078125,
+      "scale": 0.8154589533805847
+    },
+    "hit": "inpEditCancel"
+  },
+  "playwrightBox": {
+    "x": 593.8125,
+    "y": 356.875,
+    "width": 65.359375,
+    "height": 28
+  },
+  "closed": true
+}
