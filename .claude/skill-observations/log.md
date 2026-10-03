@@ -2337,3 +2337,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** Add a step to session-handoff: "Is the next session a different host? Then check its bridge file exists and names (a) every always-loaded rule file, (b) the per-area files to open by hand, (c) each hook's job as a by-hand step, (d) the hard limits (merge, review of own work), (e) its own number ranges and branch naming."
 
 **Principle:** Context that arrives automatically in one tool is invisible when handing off to another; a cross-tool handoff must list what was automatic and turn each item into an explicit instruction.
+
+### Observation 422: A plan's assumption about how users write free text must be checked against the stored examples
+
+**Status:** OPEN
+**Date:** 2026-10-03
+**Session context:** Opus 5.5 plan-only review of the Insights mission-mix build plan (D528), after a two-round cross-model plan challenge had already passed it.
+**Skill:** claudex-loop (plan review brief) / the bug-check order's scenario design
+**Type:** open-source
+**Phase/Area:** Plan review — what the reviewer is told to check against the source
+
+**Issue:** The plan split free-text remarks into clauses at semicolons, and the earlier independent challenge accepted that after checking only that the text setter preserves semicolons. Neither side looked at what the stored remarks actually contain: the demo weeks use a double slash as the separator and no semicolon anywhere, so the fix covered a format nobody types and its regression scenarios tested that same unused format. A second gap of the same kind: the plan promised content "after the next Tab" on a surface whose redraw is deliberately blocked while a caret is in a text box — checkable in one grep of the repaint guard.
+
+**Suggested improvement:** In the plan-review brief, add one line: "for every rule that parses or splits user-typed text, list the real stored examples of that field and run the rule over them by eye; for every promised on-screen moment, name the guard or event that lets the screen change at that moment." Scenario rows for text rules use strings copied from the stored data, not invented ones.
+
+**Principle:** Verifying that a mechanism works on the input the plan imagines is not verifying it works on the input users produce; a reviewer of a text rule reads the data, not only the function.

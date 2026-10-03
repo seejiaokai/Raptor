@@ -78,6 +78,16 @@ the later merge keeps both (D78).
 - **Dates:** the earlier entries of this block and D491–D492 say "3 Oct 26"; the PC's calendar read Friday 2 Oct 26 on the
   day they were written.
 - **Parallel (D302):** rulings D491–D495 used here — Codex takes D496 on; observation #420 used, #421 on (Claude only).
+- **OPUS 5.5 EARLY PLAN REVIEW OF INSIGHTS (D528) — DONE 3 Oct 26, verdict REVISE, not PASS.** Plan-only, on this branch;
+  nothing built, no source touched, the frozen plan and its earlier review records unchanged (the plan's fingerprint matched).
+  The whole review: `raptor-port/docs/superpowers/plans/2026-10-03-insights-opus-plan-review.md` — five blocking findings
+  (the Remarks separator the plan splits on is not the one the squadron types; Edit Schedule cannot redraw under the caret, so
+  the question needs another way in; a Mission change drops the answer and nothing asks; an unanswered Remarks box re-asks on
+  every pass; the proposed compare address either vanishes from the change list or takes every stored sign-off down), eight
+  improvements, three owner choices (O1–O3). **Next:** the Insights planning chat reconciles them and has the revised plan
+  read independently again; his answers to O1–O3 take D529 on; his picture look is still unanswered. **Still owed by Claude
+  after the build, before `main`:** the code and scenario read of `codex/insights-mission-mix`. The Insights block above
+  (Codex's) still says this review is "not yet run" — its own chat corrects it.
 <!-- /now -->
 
 <!-- now:claude/ai-workflow-skills-review-87bf52 -->

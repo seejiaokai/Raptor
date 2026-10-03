@@ -1500,6 +1500,9 @@ Design/picture: `raptor-port/docs/superpowers/specs/2026-10-03-insights-mission-
 challenge: `raptor-port/docs/superpowers/plans/2026-10-03-insights-mission-mix-build-plan.md` / `…-plan-review.md`. **Place:** Insights, item 3 of
 `[FEATURE-WISHLIST]`, with `[INSIGHTS-BOARD-DOOR]`; product questions only after checking existing rulings. Claude's further
 independent read after the reset remains owed before main.
+**Opus 5.5 early plan review (D528) DONE 3 Oct 26 — REVISE, not PASS:** five blocking findings, eight improvements, three
+owner choices, in `raptor-port/docs/superpowers/plans/2026-10-03-insights-opus-plan-review.md`. To reconcile in the planning
+chat before the build; the code/scenario read after the build is still owed.
 
 ### [DISCARD-MARKS-REMOVE] Remove the "Discard marks" button from the Amendments box (D488, 2 Oct 26)
 **BUILT 2 Oct 26, not merged:** `codex/discard-marks-remove`; Sol 6.1 built, fresh Astra final inspection PASS, FULL gates/runtime passed (one already-filed browser retry disclosed). Evidence and complete inspection response are on that branch in `raptor-port/docs/handpass/2026-10-02-discard-marks-remove.md` and `…-review.md`. Claude's further code/scenario/working-guide reads after Monday 5 Oct 26, 19:00, and owner look remain owed before main. The phone item is archived as moot. The original build recipe below is retained for review.
