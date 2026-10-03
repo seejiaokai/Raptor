@@ -6,7 +6,7 @@ import { Whiteboard } from './whiteboard'
 import { Postman } from './postman'
 import { MemoryBackend } from './memory'
 import { BrowserBackend } from './browser'
-import { RESET, wipeDue, resetPreSchema } from './reset'
+import { resetEntry, wipeDue, resetPreSchema } from './reset'
 import { refuseAhead, schemaOf } from './schema'
 import { foldDue, runFold, targetFormat } from './fold'
 
@@ -27,7 +27,7 @@ export async function bootStorage(backend: Backend): Promise<{ wb: Whiteboard; p
   const due = wipeDue(snap)
   const found = backend.unfinished()
   if (due && found) {
-    const kept = found.filter(e => !RESET.includes(e.collection))
+    const kept = found.filter(e => !resetEntry(e.collection,e.id))
     if (kept.length !== found.length) await backend.writeJournal(kept.length ? kept : null)
   }
   /* clear any pre-1A persisted scheduler data and stamp the schema version BEFORE

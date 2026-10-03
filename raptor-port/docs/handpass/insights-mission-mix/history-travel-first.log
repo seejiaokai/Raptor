@@ -1,0 +1,36 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/state/mission-roles.test.ts (14 tests | 1 failed) 585ms
+   × D525/D530 answer/correction history names actor, date and sides, while no-op/refusal creates no role line 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/state/mission-roles.test.ts > D525/D530 answer/correction history names actor, date and sides, while no-op/refusal creates no role line
+TypeError: Cannot read properties of undefined (reading 'includes')
+ ❯ src/state/mission-roles.test.ts:158:65
+    156|   const lines=ELOG.rows.slice(n).filter((r:any)=>r.fld==='mission-role…
+    157|   expect(lines).toHaveLength(2);expect(lines.map((r:any)=>[r.from,r.to…
+    158|   expect(lines.every((r:any)=>r.who&&r.date===t.dayISO&&r.label.includ…
+       |                                                                 ^
+    159|   const after=ELOG.rows.length;setMissionRole(roleTarget(0,'role-test'…
+    160|   expect(ELOG.rows.length).toBe(after);globalUndo();expect(ELOG.rows.a…
+ ❯ src/state/mission-roles.test.ts:158:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  15:38:51
+   Duration  7.01s (transform 4.33s, setup 110ms, import 4.61s, tests 585ms, environment 1.43s)
+

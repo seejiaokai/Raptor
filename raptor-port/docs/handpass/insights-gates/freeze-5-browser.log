@@ -1,0 +1,213 @@
+
+Running 197 tests using 3 workers
+
+(node:46640) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:38148) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:29220) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/197] [raptor] › e2e\amendbatch.spec.ts:48:7 › desktop: a changed puck wears its ALn tag and its edge is untouched — week and board (D92, D93, AM19)
+[2/197] [raptor] › e2e\availwin.spec.ts:61:7 › desktop: the window opened from the board is painted OVER the board, and closes
+[3/197] [raptor] › e2e\amendbatch.spec.ts:48:7 › phone: a changed puck wears its ALn tag and its edge is untouched — week and board (D92, D93, AM19)
+[4/197] [raptor] › e2e\availwin.spec.ts:61:7 › phone: the window opened from the board is painted OVER the board, and closes
+[5/197] [raptor] › e2e\availwin.spec.ts:89:5 › the window sits above the board and below every dialog layer
+[6/197] [raptor] › e2e\availwin.spec.ts:132:5 › phone: the window opens as the full-width bottom panel of the approved design (S8)
+[7/197] [raptor] › e2e\availwin.spec.ts:143:5 › desktop: the window opens skinny in the top-right corner, 212 wide (D40)
+[8/197] [raptor] › e2e\availwin.spec.ts:156:5 › desktop: a window dragged, closed and opened again comes back to its corner (S11)
+[9/197] [raptor] › e2e\availwin.spec.ts:177:5 › desktop: a window dragged to the right edge stays reachable when the browser narrows (S15)
+[10/197] [raptor] › e2e\availwin.spec.ts:213:5 › a window dragged on a desktop becomes the phone panel on a phone, and gets its place back after
+[11/197] [raptor] › e2e\availwin.spec.ts:231:5 › phone: a panel dragged down follows a new phone width, bar still reachable
+[12/197] [raptor] › e2e\availwin.spec.ts:248:5 › desktop: a tap on the bar does not pin the window — widening the browser keeps it in its corner
+[13/197] [raptor] › e2e\availwin.spec.ts:259:5 › desktop: tapping a second chip while the window is open keeps it where he dragged it
+[14/197] [raptor] › e2e\availwin.spec.ts:315:9 › desktop 1440×900: the ALL AVAIL window opens clear of the board's preview bar, and follows it
+[15/197] [raptor] › e2e\availwin.spec.ts:315:9 › desktop 1440×900: the changes window opens clear of the board's preview bar, and follows it
+[16/197] [raptor] › e2e\availwin.spec.ts:315:9 › desktop 1440×700: the ALL AVAIL window opens clear of the board's preview bar, and follows it
+[17/197] [raptor] › e2e\availwin.spec.ts:315:9 › desktop 1440×700: the changes window opens clear of the board's preview bar, and follows it
+[18/197] [raptor] › e2e\availwin.spec.ts:350:5 › desktop: a window he dragged is NOT moved when a preview starts under it
+[19/197] [raptor] › e2e\availwin.spec.ts:362:5 › phone: the window stays the bottom panel over a preview (the bar is at the top of the board)
+[20/197] [raptor] › e2e\availwin.spec.ts:382:7 › phone, by finger › a finger tap on the count opens the window on the edit week — and arms nothing
+[21/197] [raptor] › e2e\changeswin.spec.ts:61:9 › the changes window — desktop › another person's changes: the day reads "N new", the OG tag is painted on the changed pucks, the window floats above the week
+[22/197] [raptor] › e2e\changeswin.spec.ts:110:9 › the changes window — desktop › the window floats above the scheduler board too
+[23/197] [raptor] › e2e\changeswin.spec.ts:61:9 › the changes window — phone › another person's changes: the day reads "N new", the OG tag is painted on the changed pucks, the window floats above the week
+[24/197] [raptor] › e2e\changeswin.spec.ts:110:9 › the changes window — phone › the window floats above the scheduler board too
+[25/197] [raptor] › e2e\changeswin.spec.ts:124:7 › two windows — the one pressed last is in front (Astra DP-10) › the ALL AVAIL window and the changes window trade places on a press, and neither climbs over a modal
+[26/197] [raptor] › e2e\changeswin.spec.ts:162:9 › History on — the gold dots — desktop › every changed detail wears a gold dot while History is on — a seat outside its corner, a typed detail inside it — and none once it is off
+[27/197] [raptor] › e2e\changeswin.spec.ts:185:9 › History on — the gold dots — desktop › an amended detail on a published day wears its AL tag AND the dot — neither hides the other
+[28/197] [raptor] › e2e\changeswin.spec.ts:162:9 › History on — the gold dots — phone › every changed detail wears a gold dot while History is on — a seat outside its corner, a typed detail inside it — and none once it is off
+[29/197] [raptor] › e2e\changeswin.spec.ts:185:9 › History on — the gold dots — phone › an amended detail on a published day wears its AL tag AND the dot — neither hides the other
+[30/197] [raptor] › e2e\changeswin.spec.ts:211:7 › History on a phone — Hide, the bar, Show (D339, D344, D345) › Hide sends the panel to the bar at the bottom; the dotted detail is in view and a tap raises its bubble; Show brings it back; ✕ turns History off
+[31/197] [raptor] › e2e\changeswin.spec.ts:240:9 › History on a phone — Hide, the bar, Show (D339, D344, D345) › the hidden bar stays reachable over the ALL AVAIL window — ALL AVAIL first (Astra 07)
+[32/197] [raptor] › e2e\changeswin.spec.ts:240:9 › History on a phone — Hide, the bar, Show (D339, D344, D345) › the hidden bar stays reachable over the ALL AVAIL window — History first (Astra 07)
+[33/197] [raptor] › e2e\changeswin.spec.ts:260:7 › Group by Item — the window as the mock-up draws it (D340, D345) › Item first and on; one change is one line; two changes to one formation are a header and two lines, the seat named
+[34/197] [raptor] › e2e\geometry.spec.ts:27:9 › the puck is one fixed size everywhere › 74x15 on phone, on both week surfaces and in the palette
+[35/197] [raptor] › e2e\geometry.spec.ts:52:9 › the puck is one fixed size everywhere › the ARMED palette's struck entries keep the puck 74x15 on phone
+[36/197] [raptor] › e2e\geometry.spec.ts:27:9 › the puck is one fixed size everywhere › 74x15 on desktop, on both week surfaces and in the palette
+[37/197] [raptor] › e2e\geometry.spec.ts:52:9 › the puck is one fixed size everywhere › the ARMED palette's struck entries keep the puck 74x15 on desktop
+[38/197] [raptor] › e2e\geometry.spec.ts:81:9 › the puck is one fixed size everywhere › the SANS Availability palette section holds its geometry on phone
+[39/197] [raptor] › e2e\geometry.spec.ts:175:9 › the puck is one fixed size everywhere › the SANS Availability card grid holds its geometry on phone
+[40/197] [raptor] › e2e\geometry.spec.ts:81:9 › the puck is one fixed size everywhere › the SANS Availability palette section holds its geometry on desktop
+[41/197] [raptor] › e2e\geometry.spec.ts:175:9 › the puck is one fixed size everywhere › the SANS Availability card grid holds its geometry on desktop
+[42/197] [raptor] › e2e\geometry.spec.ts:216:7 › the puck is one fixed size everywhere › the seat column of the form grid is derived from --puck-w
+[43/197] [raptor] › e2e\geometry.spec.ts:232:9 › free text wraps instead of overflowing › no free-text cell spills its box on phone
+[44/197] [raptor] › e2e\geometry.spec.ts:232:9 › free text wraps instead of overflowing › no free-text cell spills its box on desktop
+[45/197] [raptor] › e2e\geometry.spec.ts:249:7 › free text wraps instead of overflowing › and it wraps because of the two rules that make it wrap
+[46/197] [raptor] › e2e\geometry.spec.ts:264:7 › free text wraps instead of overflowing › a whole week of jammed free text still gains no sideways swipe
+[47/197] [raptor] › e2e\geometry.spec.ts:294:7 › the week pans by whole day boxes › one arrow click = one day box, and the proxy scrollbar maps 1:1
+[48/197] [raptor] › e2e\geometry.spec.ts:329:7 › the week pans by whole day boxes › an edit does not throw the week back to Monday
+[49/197] [raptor] › e2e\geometry.spec.ts:342:5 › a hole in a programme row renders no element at all
+[50/197] [raptor] › e2e\geometry.spec.ts:387:5 › the board's duty rows keep a readable ITEM column on a phone
+[51/197] [raptor] › e2e\geometry.spec.ts:429:5 › phone: the remarks box shares the pucks row, to their right, with no + reveal
+[52/197] [raptor] › e2e\geometry.spec.ts:457:5 › desktop: every remarks box stays put, empty or not, with no reveal button anywhere
+[53/197] [raptor] › e2e\geometry.spec.ts:482:5 › a callsign too long for its puck fades instead of being clipped clean
+[54/197] [raptor] › e2e\geometry.spec.ts:519:9 › a flying line's callsign shows six letters whole › on phone, on both weeks
+[55/197] [raptor] › e2e\geometry.spec.ts:519:9 › a flying line's callsign shows six letters whole › on desktop, on both weeks
+[56/197] [raptor] › e2e\geometry.spec.ts:565:9 › a changed time's AL tag sits under the time › on phone, in the flying line and the list rows, on both weeks
+[57/197] [raptor] › e2e\geometry.spec.ts:565:9 › a changed time's AL tag sits under the time › on desktop, in the flying line and the list rows, on both weeks
+[58/197] [raptor] › e2e\geometry.spec.ts:596:5 › the read-only input window draws its locked fields as values, not boxes
+[59/197] [raptor] › e2e\geometry.spec.ts:653:5 › desktop: the scheduler-board chrome is tight — compact buttons on one action row, clean tabs
+[60/197] [raptor] › e2e\geometry.spec.ts:712:5 › desktop: the edit-scheduler aircrew column hides to the right and the week reclaims the width
+[61/197] [raptor] › e2e\geometry.spec.ts:782:5 › desktop: the board people cells keep a steady-height trailing drop zone
+[62/197] [raptor] › e2e\geometry.spec.ts:819:7 › the crew-rest rings are three distinguishable strokes › dashed is not filled in from behind, and dotted clears the solid ring
+[63/197] [raptor] › e2e\geometry.spec.ts:881:7 › the crew-rest rings are three distinguishable strokes › the cross-day row sits inside the list, same box as its neighbours
+[64/197] [raptor] › e2e\geometry.spec.ts:928:7 › the crew-rest rings are three distinguishable strokes › the cross-day row pans to the late line on its own day
+[65/197] [raptor] › e2e\geometry.spec.ts:979:5 › puck text stays inside the puck, descenders and all
+[66/197] [raptor] › e2e\geometry.spec.ts:1010:7 › clicking a warning brings the puck into view › the week lands on the day, on its snap point, with the puck on screen
+[67/197] [raptor] › e2e\geometry.spec.ts:1066:7 › clicking a warning brings the puck into view › a warning already on screen does not move the week sideways
+[68/197] [raptor] › e2e\geometry.spec.ts:1119:7 › clicking a warning brings the puck into view › the board scrolls its own panel to the puck
+[69/197] [raptor] › e2e\geometry.spec.ts:1154:7 › clicking a warning brings the puck into view › the edit week: a far-day witem brings its puck fully into view, on both axes
+[70/197] [raptor] › e2e\geometry.spec.ts:1192:7 › clicking a warning brings the puck into view › view schedule: a day-detail warning row brings its puck fully into view, on both axes
+[71/197] [raptor] › e2e\geometry.spec.ts:1236:7 › clicking a warning brings the puck into view › a blank tap that dismisses a warning box holds the view where it snapped
+[72/197] [raptor] › e2e\geometry.spec.ts:1277:7 › clicking a warning brings the puck into view › a chip click selects like the puck body, and the selection styling is blue-only
+[73/197] [raptor] › e2e\geometry.spec.ts:1326:7 › clicking a warning brings the puck into view › selecting a puck holds the screen still while his boxes open
+[74/197] [raptor] › e2e\geometry.spec.ts:1394:7 › clicking a warning brings the puck into view › a SIM_BRIEF warning pans to the sim row that briefs, and it lands on screen
+[75/197] [raptor] › e2e\geometry.spec.ts:1470:7 › clicking a warning brings the puck into view › the board at a small viewport scrolls to the deepest warning's puck
+[76/197] [raptor] › e2e\geometry.spec.ts:1536:5 › board: the flying line keeps its grid-item count with stores present
+[77/197] [raptor] › e2e\geometry.spec.ts:1564:5 › board at 390px: the remarks cell rides beside the seat pucks, and its config button stays reachable
+[78/197] [raptor] › e2e\geometry.spec.ts:1599:5 › board at 390px: an eight-pax sim row stacks its pucks two per row
+[79/197] [raptor] › e2e\geometry.spec.ts:1622:5 › board at 390px: the seats sit clear of the time boxes and of each other
+[80/197] [raptor] › e2e\geometry.spec.ts:1651:5 › board at 390px: a deleted AMT pax leaves a droppable hole in its own place
+[81/197] [raptor] › e2e\geometry.spec.ts:1677:5 › board at 390px: taps near the right edge land where they aim
+[82/197] [raptor] › e2e\geometry.spec.ts:1714:5 › the burger drawer at 390px scrolls only itself — the page behind it holds still
+[83/197] [raptor] › e2e\geometry.spec.ts:1750:5 › board at 390px: Live checks folds to one line, and a fill parks the drawer
+[84/197] [raptor] › e2e\geometry.spec.ts:1786:5 › board at 390px: the armed aircrew columns never overlap their neighbour
+[85/197] [raptor] › e2e\geometry.spec.ts:1833:5 › the phone board is one window: sign-off, then checks, then panels, aircrew in an edge drawer
+[86/197] [raptor] › e2e\geometry.spec.ts:1866:5 › the pen reorders, and the popup survives a click into a rename field
+[87/197] [raptor] › e2e\geometry.spec.ts:1888:5 › the stores popup opens inside the visible slice when the page is pinch-zoomed
+[88/197] [raptor] › e2e\geometry.spec.ts:1908:5 › a renamed store keeps its chip on every jet that carries it
+[89/197] [raptor] › e2e\geometry.spec.ts:1930:5 › the stores popup tracks the live C button across a multi-toggle visit
+[90/197] [raptor] › e2e\geometry.spec.ts:1984:5 › the stores popup opened from the BOARD anchors to the board's own C button, not the week's
+[91/197] [raptor] › e2e\geometry.spec.ts:2037:5 › typing a rename then clicking a different row's control does not eat the first click
+[92/197] [raptor] › e2e\geometry.spec.ts:2072:5 › the board's flying line is single-row in .sb-wide at phone width, and stays 10 grid items throughout
+[93/197] [raptor] › e2e\geometry.spec.ts:2119:5 › the board flying line carries the brief inline between MSN and TO at phone width
+[94/197] [raptor] › e2e\geometry.spec.ts:2168:5 › the row grip shows at every width and the ▲▼ nudge is gone
+[95/197] [raptor] › e2e\geometry.spec.ts:2192:5 › the phone board keeps its column layout after the grip is added
+[96/197] [raptor] › e2e\geometry.spec.ts:2255:5 › the notes row keeps a usable text field and a single row on a phone
+[97/197] [raptor] › e2e\geometry.spec.ts:2309:5 › dragging a grip reorders the wave and keeps a pair together
+[98/197] [raptor] › e2e\geometry.spec.ts:2356:5 › a phone row DRAG reorders a row and the board still reads correctly
+[99/197] [raptor] › e2e\geometry.spec.ts:2392:5 › a section dropped on the board flashes the board's own panel, not the week's copy
+[100/197] [raptor] › e2e\geometry.spec.ts:2425:5 › the desktop day sign-off is ONE row of four equal pills
+[101/197] [raptor] › e2e\geometry.spec.ts:2442:5 › the board title is a fixed slot, so the day chips do not shift between days
+[102/197] [raptor] › e2e\geometry.spec.ts:2459:5 › Ground and Common Programme share the sims columns on desktop
+[103/197] [raptor] › e2e\geometry.spec.ts:2478:5 › the top bar wears the edit tint on Edit Schedule only
+[104/197] [raptor] › e2e\geometry.spec.ts:2490:5 › the Leave War desktop grid grows a fixed, year-wide bottom scrollbar that slides it
+[105/197] [raptor] › e2e\geometry.spec.ts:2558:5 › the board keeps its row register on a read-only render (finding #1, via a member session now)
+[106/197] [raptor] › e2e\geometry.spec.ts:2609:5 › navigating away from Edit Schedule with the board open hides it, not just its controls
+[107/197] [raptor] › e2e\geometry.spec.ts:2637:5 › the blocker: right-clicking a WEEK puck on View-only Sched does not clear it, even with a board previously left open
+[108/197] [raptor] › e2e\geometry.spec.ts:2672:5 › a squadron member who reaches the board gets a read-only render — no grip, no nudge
+[109/197] [raptor] › e2e\geometry.spec.ts:2703:5 › no button/control row on the board overflows its own width on a phone
+[110/197] [raptor] › e2e\geometry.spec.ts:2747:5 › a late input's mark is visible on the view-only page, where the squadron reads it
+[111/197] [raptor] › e2e\geometry.spec.ts:2769:5 › the mark never widens or overflows the row it sits in
+[112/197] [raptor] › e2e\geometry.spec.ts:2787:5 › a promoted late input keeps the board row in register — no eighth grid item
+[113/197] [raptor] › e2e\geometry.spec.ts:2852:7 › desktop: Edit Schedule opens on the day View-only was showing
+[114/197] [raptor] › e2e\geometry.spec.ts:2865:7 › desktop: and back the other way — View-only opens on the day Edit was showing
+[115/197] [raptor] › e2e\geometry.spec.ts:2852:7 › phone: Edit Schedule opens on the day View-only was showing
+[116/197] [raptor] › e2e\geometry.spec.ts:2865:7 › phone: and back the other way — View-only opens on the day Edit was showing
+[117/197] [raptor] › e2e\geometry.spec.ts:2877:5 › a repaint that is not a page switch still holds the week where it is
+[118/197] [raptor] › e2e\geometry.spec.ts:2906:9 › editing an input from the schedule › phone: the control costs its row no height, and stays reachable under a long remark
+[119/197] [raptor] › e2e\geometry.spec.ts:2906:9 › editing an input from the schedule › desktop: the control costs its row no height, and stays reachable under a long remark
+[120/197] [raptor] › e2e\geometry.spec.ts:2979:9 › editing an input from the schedule › phone: an input row lines up with the ground programme's rows
+[121/197] [raptor] › e2e\geometry.spec.ts:2979:9 › editing an input from the schedule › desktop: an input row lines up with the ground programme's rows
+[122/197] [raptor] › e2e\geometry.spec.ts:3012:7 › editing an input from the schedule › the dialog fits a phone and never scrolls the page sideways
+[123/197] [raptor] › e2e\geometry.spec.ts:3058:7 › the phone board keeps its controls to one row › the buttons sit on a single line and the bar does not overflow sideways
+[124/197] [raptor] › e2e\geometry.spec.ts:3113:7 › the phone board keeps its controls to one row › the day and the date both fit the phone bar, on the longest day name
+[125/197] [raptor] › e2e\geometry.spec.ts:3149:7 › the phone board keeps its controls to one row › the full day name comes back above 820px
+[126/197] [raptor] › e2e\geometry.spec.ts:3176:7 › the phone board keeps its controls to one row › phone: the day strip is gone from the bar, and the arrows still step the day
+[127/197] [raptor] › e2e\geometry.spec.ts:3210:7 › the phone board keeps its controls to one row › the parked aircrew handle does not claim the gesture it forwards
+[128/197] [raptor] › e2e\geometry.spec.ts:3232:7 › the phone board keeps its controls to one row › the open AIRCREW drawer starts below the bar and scrolls
+[129/197] [raptor] › e2e\geometry.spec.ts:3313:9 › the History bubble › phone: it fits on screen and never pushes the page sideways
+[130/197] [raptor] › e2e\geometry.spec.ts:3313:9 › the History bubble › desktop: it fits on screen and never pushes the page sideways
+[131/197] [raptor] › e2e\geometry.spec.ts:3346:7 › the History bubble › desktop: it stacks under every dialog that can open over the board
+[132/197] [raptor] › e2e\geometry.spec.ts:3387:7 › the History bubble › phone: an anchor at the top edge cannot push the bubble off-screen
+[133/197] [raptor] › e2e\geometry.spec.ts:3466:7 › the History bubble › desktop: shows the whole story on hover, with no chevron
+[134/197] [raptor] › e2e\geometry.spec.ts:3516:9 › the board holds the page still underneath it › phone: scrolling past the end of the board does not drive the week behind it
+[135/197] [raptor] › e2e\geometry.spec.ts:3516:9 › the board holds the page still underneath it › desktop: scrolling past the end of the board does not drive the week behind it
+[136/197] [raptor] › e2e\geometry.spec.ts:3587:9 › the way into the changes list follows the width › desktop: the board's History button is on screen and opens the one changes window; the old lines are gone
+[137/197] [raptor] › e2e\geometry.spec.ts:3587:9 › the way into the changes list follows the width › phone: the board's History button is on screen and opens the one changes window; the old lines are gone
+[138/197] [raptor] › e2e\geometry.spec.ts:3624:5 › the Highlight chips fold behind the toggle on a phone, and stand open on a desktop
+[139/197] [raptor] › e2e\geometry.spec.ts:3661:5 › the expanded highlight chips scroll sideways, not off the page
+[140/197] [raptor] › e2e\geometry.spec.ts:3692:7 › the day arrows › phone: they sit at the two edges of the day row, and the bar stays one line
+[141/197] [raptor] › e2e\geometry.spec.ts:3747:7 › the day arrows › phone: tapping them steps the day and flows continuously across weeks
+[142/197] [raptor] › e2e\geometry.spec.ts:3778:7 › the day arrows › desktop: the board has visible week arrows that jump a week and keep the day
+[143/197] [raptor] › e2e\geometry.spec.ts:3804:7 › the day arrows › phone: the top-left calendar icon opens the week picker
+[144/197] [raptor] › e2e\geometry.spec.ts:3822:7 › the day arrows › desktop: the arrows are not drawn, because all seven days are on the bar
+[145/197] [raptor] › e2e\geometry.spec.ts:3836:7 › the day arrows › phone: a sideways drag across the board does nothing at all
+[146/197] [raptor] › e2e\geometry.spec.ts:3876:7 › the viewport meta › is untouched where the platform is not an Apple touch device
+[147/197] [raptor] › e2e\geometry.spec.ts:3893:7 › the green eligibility rings › empty vs filled vs armed are distinct paints, and rings move nothing
+[148/197] [raptor] › e2e\geometry.spec.ts:3979:7 › the Available-crew panel folds › open by default, folds on tap, opens back
+[149/197] [raptor] › e2e\geometry.spec.ts:4018:7 › the crew-day picker › desktop: the last day is unreachable by scroll but reachable by its name
+[150/197] [raptor] › e2e\geometry.spec.ts:4053:7 › the crew-day picker › desktop: the week ends whole — Sunday can sit at the front, and the retired edge hint never shows
+[151/197] [raptor] › e2e\geometry.spec.ts:4089:7 › the crew-day picker › desktop: the panel arrows clamp at the weeks ends
+[152/197] [raptor] › e2e\geometry.spec.ts:4106:7 › the crew-day picker › desktop: the day header and column headings stay pinned as the roster scrolls
+[153/197] [raptor] › e2e\geometry.spec.ts:4144:7 › the crew-day picker › desktop: › steps one clean day at a time to a whole-day end, then rolls into next week
+[154/197] [raptor] › e2e\geometry.spec.ts:4250:7 › the frozen callsign column › phone: the callsign stays at the left edge when the Quals table scrolls sideways
+[155/197] [raptor] › e2e\geometry.spec.ts:4279:7 › the frozen callsign column › phone: the frozen header re-measures its width when the screen rotates
+[156/197] [raptor] › e2e\geometry.spec.ts:4302:7 › the frozen callsign column › phone: the frozen header is in step with the table the moment it appears
+[157/197] [raptor] › e2e\geometry.spec.ts:4342:5 › a dragged quals heading wears one frame down the table, and the column flashes where it lands
+[158/197] [raptor] › e2e\geometry.spec.ts:4476:7 › the collapsible legend › phone: the legend is closed by default and opens on click
+[159/197] [raptor] › e2e\geometry.spec.ts:4499:5 › the flying line keeps its five boxes on one baseline on a phone
+[160/197] [raptor] › e2e\geometry.spec.ts:4537:5 › the phone board clears its parked aircrew tab
+[161/197] [raptor] › e2e\geometry.spec.ts:4572:5 › the phone board: duty/sim/ground AND Common Programme remarks align with the flying line
+[162/197] [raptor] › e2e\geometry.spec.ts:4612:5 › the phone board: a long remark grows its box instead of scrolling inside it
+[163/197] [raptor] › e2e\geometry.spec.ts:4661:5 › the Insights bars draw, and their lengths mean something
+[164/197] [raptor] › e2e\geometry.spec.ts:4697:5 › the desktop checks panel resizes by its grip
+[165/197] [raptor] › e2e\geometry.spec.ts:4730:5 › the phone Inputs cards align their type and date columns
+[166/197] [raptor] › e2e\geometry.spec.ts:4772:9 › the Inputs month calendar › fills the viewport with 7 equal columns, chips inside their cells, on phone
+[167/197] [raptor] › e2e\geometry.spec.ts:4772:9 › the Inputs month calendar › fills the viewport with 7 equal columns, chips inside their cells, on desktop
+[168/197] [raptor] › e2e\geometry.spec.ts:4854:7 › the day-head lays out the same on every day › phone: Today does not move the controls; desktop: one row
+[169/197] [raptor] › e2e\geometry.spec.ts:4889:7 › the motion set, and its reduced-motion off-switch › pages and the board animate; reduced motion computes none
+[170/197] [raptor] › e2e\geometry.spec.ts:4915:7 › a mouse drag of a puck runs on the pointer machine, not the native drag › ghost tracks the cursor, no dragstart/dragover fires, the drop lands
+[171/197] [raptor] › e2e\geometry.spec.ts:5005:7 › slow-computer diet › desktop: the Leave War screen is a separate chunk, pre-warmed after login
+[172/197] [raptor] › e2e\geometry.spec.ts:5028:7 › slow-computer diet › desktop: the edit week is warmed and parked laid-out before Edit is ever opened
+[173/197] [raptor] › e2e\geometry.spec.ts:5067:5 › phone: the placeholder count chip sits inside its column and takes its own press
+[174/197] [raptor] › e2e\geometry.spec.ts:5097:5 › desktop: the same chip is inside its column and on top
+[175/197] [raptor] › e2e\geometry.spec.ts:5137:5 › the weekend says it is unpublished from the first paint, not after an unrelated edit
+[176/197] [raptor] › e2e\geometry.spec.ts:5169:5 › the sign-in and Request access buttons sit square under their boxes, inside the card
+[177/197] [raptor] › e2e\geometry.spec.ts:5187:7 › the sign-up card's two selects are the boxes' size and edges (desktop)
+[178/197] [raptor] › e2e\geometry.spec.ts:5187:7 › the sign-up card's two selects are the boxes' size and edges (phone)
+[179/197] [raptor] › e2e\geometry.spec.ts:5212:5 › Quals "+ Add person" leaves the cursor in the Callsign/Name box, every press (desktop)
+[180/197] [raptor] › e2e\geometry.spec.ts:5227:5 › the New person fields fit the Users pane on a phone (add and approve)
+[181/197] [raptor] › e2e\geometry.spec.ts:5303:7 › 1366 desktop: the Saving… note never moves the top bar or its buttons, and it can be read
+[182/197] [raptor] › e2e\geometry.spec.ts:5303:7 › phone: the Saving… note never moves the top bar or its buttons, and it can be read
+[183/197] [raptor] › e2e\insights.spec.ts:7:9 › Insights real routes desktop › D512/D515/D524/D532 default Off, Logic control, Board text before annotation answer
+[184/197] [raptor] › e2e\insights.spec.ts:7:9 › Insights real routes phone › D512/D515/D524/D532 default Off, Logic control, Board text before annotation answer
+[185/197] [raptor] › e2e\medical.spec.ts:14:9 › the medical view renders and fits › three populated sections, no overflow, on phone
+[186/197] [raptor] › e2e\medical.spec.ts:14:9 › the medical view renders and fits › three populated sections, no overflow, on desktop
+[187/197] [raptor] › e2e\medical.spec.ts:105:7 › the medical view renders and fits › the as-of picker replays history
+[188/197] [raptor] › e2e\onedoor.spec.ts:35:7 › [ONE-DOOR] desktop: Archive → away on the war → Restore from a later post-in → his welcome back → his own Quals row
+[189/197] [raptor] › e2e\onedoor.spec.ts:35:7 › [ONE-DOOR] phone: Archive → away on the war → Restore from a later post-in → his welcome back → his own Quals row
+[190/197] [raptor] › e2e\warnhide.spec.ts:52:9 › a hidden warning — desktop › WH4, WH5, WH3 — Edit Schedule: the line struck in place with ↺, the count without it, the puck plain; WH1 — and after a reload
+[191/197] [raptor] › e2e\warnhide.spec.ts:91:9 › a hidden warning — desktop › WH4 — the Scheduler Board: the same line struck in its panel, the heading without it
+[192/197] [raptor] › e2e\warnhide.spec.ts:112:9 › a hidden warning — desktop › WH2, WH7 — a member signing in after: the count without it, the line struck, and no button
+[193/197] [raptor] › e2e\warnhide.spec.ts:132:9 › a hidden warning — desktop › WH8, D99 — on a published day, a tap on "Warning · … flagged → hidden" in To go out lands on the struck line
+[194/197] [raptor] › e2e\warnhide.spec.ts:52:9 › a hidden warning — phone › WH4, WH5, WH3 — Edit Schedule: the line struck in place with ↺, the count without it, the puck plain; WH1 — and after a reload
+[195/197] [raptor] › e2e\warnhide.spec.ts:91:9 › a hidden warning — phone › WH4 — the Scheduler Board: the same line struck in its panel, the heading without it
+[196/197] [raptor] › e2e\warnhide.spec.ts:112:9 › a hidden warning — phone › WH2, WH7 — a member signing in after: the count without it, the line struck, and no button
+[197/197] [raptor] › e2e\warnhide.spec.ts:132:9 › a hidden warning — phone › WH8, D99 — on a published day, a tap on "Warning · … flagged → hidden" in To go out lands on the struck line
+  197 passed (2.9m)

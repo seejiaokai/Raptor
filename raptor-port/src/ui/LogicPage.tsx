@@ -13,6 +13,7 @@ import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { useVersion } from './useStore'
 import { lgRules, LG_TIER } from './logic-html'
+import { missionTracking, setMissionTracking } from '../engine/insights-config'
 
 /* the reference's ruleApply: write, persist, re-run the engine, repaint */
 function ruleApply() {
@@ -184,6 +185,14 @@ export function LogicPage() {
           The schedule is being checked against these values, not the published ones
           {admin ? ' — “Reset to standard” puts them all back.' : '. Only an admin can change them.'}</> : null}
       </div>
+      <section className="lg-insights" aria-labelledby="lgInsightsTitle">
+        <b id="lgInsightsTitle">Insights</b>
+        <label className="lg-insights-row"><span>Track Blue/Red sorties<small>Split flying load by mission role. Conditional DS or RED wording asks the scheduler.</small></span>
+          <span className="lg-insights-switch">{lgCanEdit()
+            ? <input id="lgMissionMix" type="checkbox" role="switch" checked={missionTracking()} onChange={e=>{if(lgCanEdit()) setMissionTracking(e.currentTarget.checked)}} aria-label="Track Blue/Red sorties" />
+            : <span id="lgMissionMix" className={'lg-switch-read'+(missionTracking()?' on':'')} role="switch" aria-checked={missionTracking()} aria-disabled="true" aria-label="Track Blue/Red sorties" />}{missionTracking()?'On':'Off'}</span>
+        </label>
+      </section>
       <div className="lgwrap" id="lgBody" ref={bodyRef} dangerouslySetInnerHTML={{ __html: b.html }} />
     </>
   )

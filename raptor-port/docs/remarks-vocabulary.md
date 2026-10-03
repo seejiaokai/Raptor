@@ -145,6 +145,24 @@ day knows why it went. Free text; nothing parses it.
 
 ---
 
+## Mission role for Insights — when squadron tracking is On (D512–D532)
+
+The exact Mission names `DS`, `RED`, `RED AIR` (also `REDAIR` / `RED-AIR`, ignoring case and extra spaces) count Red.
+Other Mission names normally count Blue. A bounded DS/RED cue in a non-exact Mission or any aircraft Remarks asks
+the scheduler to choose Blue or Red for the whole formation; FOR/FROM and an external unit never guess the answer.
+`DS2`, `DS-2`, `RED AIR 2` and `ACM/DS` are cues; `DSFOR`, `REDS` and `CREDIBLE` are not.
+
+The question follows a qualifying own edit after the text is saved. Later keeps unanswered text valid. Focus Remarks
+to reveal temporary Choose/Change mission role below AREA. Answers are separate Insights annotations with actor history
+and Undo; they update published Insights immediately without changing signed programme wording. Latest published Remarks
+is read-only and labelled Published; the working copy is separate. Tracking starts Off and does not change totals or hours.
+
+Only `;` and `//` split support clauses: `DS FOR VL // BRIEF 30 PRIOR` and `DS FOR VL; REJOIN 1430` retain the answer
+when only the separate time changes. A single slash, comma or undelimited time stays inside its cue clause; changing that
+clause or Mission can require a different answer. Standby waves remain outside flying load.
+
+Rule: `engine/mission-role.ts`, `state/mission-roles.ts`; full context definition in the frozen revised Insights plan.
+
 ## What is NOT text
 
 Worth stating, because these look like they might be:

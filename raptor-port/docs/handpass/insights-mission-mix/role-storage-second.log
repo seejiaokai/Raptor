@@ -1,0 +1,90 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/state/mission-roles.test.ts (5 tests | 4 failed) 67ms
+   × real answer intent writes one annotation, keeps the programme byte-for-byte, and round-trips live Undo 37ms
+   × same side makes no envelope; stale context and a forged member intent refuse without touching the answer 8ms
+   × tracking defaults Off on absent/malformed records and toggles through real settings Undo 7ms
+   × resetting hydration clears old in-memory answers; read/write clone; a failing multi-store transaction rolls back 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/state/mission-roles.test.ts > real answer intent writes one annotation, keeps the programme byte-for-byte, and round-trips live Undo
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/state/mission-roles.test.ts:32:43
+     30|   const target=roleTarget(0,'role-test')!; const day=JSON.stringify(DA…
+     31|   const seq=commandStream().length
+     32|   expect(setMissionRole(target,'red').ok).toBe(true)
+       |                                           ^
+     33|   const env=commandStream().slice(seq).find(e=>e.type==='insights.role…
+     34|   expect(env.scope).toEqual({module:'insights',weekId:CURWEEK})
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |raptor| src/state/mission-roles.test.ts > same side makes no envelope; stale context and a forged member intent refuse without touching the answer
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/state/mission-roles.test.ts:43:75
+     41| })
+     42| it('same side makes no envelope; stale context and a forged member int…
+     43|   const t=roleTarget(0,'role-test')!; expect(setMissionRole(t,'blue').…
+       |                                                                           ^
+     44|   const n=commandStream().length; expect(setMissionRole(roleTarget(0,'…
+     45|   expect(commandStream().length).toBe(n)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |raptor| src/state/mission-roles.test.ts > tracking defaults Off on absent/malformed records and toggles through real settings Undo
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/state/mission-roles.test.ts:55:55
+     53|   store.set('insights',null); insightsLoad(); expect(missionTracking()…
+     54|   store.set('insights',{trackBlueRedSorties:'yes'}); insightsLoad(); e…
+     55|   setMissionTracking(true); expect(missionTracking()).toBe(true)
+       |                                                       ^
+     56|   globalUndo(); expect(missionTracking()).toBe(false)
+     57|   globalRedo(); expect(missionTracking()).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |raptor| src/state/mission-roles.test.ts > resetting hydration clears old in-memory answers; read/write clone; a failing multi-store transaction rolls back
+TypeError: Cannot set properties of undefined (setting 'side')
+ ❯ src/state/mission-roles.test.ts:61:30
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 1 passed (5)
+   Start at  15:05:12
+   Duration  3.73s (transform 2.44s, setup 55ms, import 2.62s, tests 67ms, environment 777ms)
+

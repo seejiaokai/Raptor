@@ -1,0 +1,55 @@
+
+[WebServer] (node:50092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+[WebServer]   - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+[WebServer] Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/ui/pan.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/EditWeek.tsx, src/ui/GuestApp.tsx, src/ui/Shell.tsx, src/ui/ViewWeek.tsx, src/ui/highlights.ts, ..., dynamic import will not move module into another chunk.
+
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/ui/drag.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/Shell.tsx, src/ui/board.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/ui/board-html.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/board.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/ui/board.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/state/undo-wire.ts, src/ui/DraftsModal.tsx, src/ui/SchedBoard.tsx, src/ui/WeekCal.tsx, src/ui/interactions.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/ui/palette-html.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/EditWeek.tsx, src/ui/SchedBoard.tsx, dynamic import will not move module into another chunk.
+[WebServer] 
+
+
+[WebServer] (node:39080) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:49584) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+[WebServer]   - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+[WebServer] Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+
+Running 3 tests using 2 workers
+
+(node:26276) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:38220) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/3] [raptor] › e2e\insights.spec.ts:7:9 › Insights real routes desktop › D512/D515/D524/D532 default Off, Logic control, Board text before annotation answer
+[2/3] [raptor] › e2e\insights.spec.ts:7:9 › Insights real routes phone › D512/D515/D524/D532 default Off, Logic control, Board text before annotation answer
+(node:38868) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[3/3] [lw-desktop] › e2e\leavewar.spec.ts:4492:5 › the grid draws a window of months over year-wide placeholders, keeps every row aligned, and draws in place
+  3 passed (13.0s)

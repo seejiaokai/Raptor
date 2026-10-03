@@ -1,0 +1,26 @@
+{
+  "base": "http://localhost:4199",
+  "results": [
+    {
+      "id": "desktop-S27-Off",
+      "status": "PASS",
+      "facts": "real default-Off setting and edit gate"
+    },
+    {
+      "id": "desktop-R1-dirty-Board",
+      "status": "FAIL",
+      "error": "TimeoutError: locator.textContent: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-role-choose]')\u001b[22m\n"
+    }
+  ],
+  "pictures": [
+    "docs/img/insights-build-editing/freeze-4-editing/desktop-logic-off.png",
+    "docs/img/insights-build-editing/freeze-4-editing/desktop-logic-on.png",
+    "docs/img/insights-build-editing/freeze-4-editing/desktop-Board-dirty-choose.png",
+    "docs/img/insights-build-editing/freeze-4-editing/desktop-R1-dirty-Board-failure.png"
+  ],
+  "errors": [],
+  "limitations": [
+    "Chromium emulation, not physical iPhone/iOS keyboard."
+  ],
+  "error": "TimeoutError: locator.textContent: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-role-choose]')\u001b[22m\n"
+}

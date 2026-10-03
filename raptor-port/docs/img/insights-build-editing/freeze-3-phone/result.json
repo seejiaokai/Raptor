@@ -1,0 +1,87 @@
+{
+  "base": "http://localhost:4199",
+  "results": [
+    {
+      "id": "phone-S27-Off",
+      "status": "PASS",
+      "facts": "real default-Off setting and edit gate"
+    },
+    {
+      "id": "phone-S01-S03-S07",
+      "status": "PASS",
+      "facts": "exact/cue boundaries operated via native Mission and Remarks fields"
+    },
+    {
+      "id": "phone-S08-S11-S12",
+      "status": "PASS",
+      "facts": "text persisted first, Later saves no answer, unchanged Tab never reopens, manual Choose and Change survive pointer blur"
+    },
+    {
+      "id": "phone-S09-S22-S23",
+      "status": "PASS",
+      "facts": "strict native node/selection preserved through Choose and answer, continued typing works; separate timing clause no question"
+    },
+    {
+      "id": "phone-S06-S08-answered",
+      "status": "PASS",
+      "facts": "answered BFM Remarks then Mission ACM asks once; answered Red retained across // and ; separate timing edits without annotation/history write"
+    },
+    {
+      "id": "phone-S24-S29-S30",
+      "status": "PASS",
+      "facts": "real Board opener, topmost modal, twelve/all/reopen, short window and keyboard-height scroll reachability"
+    },
+    {
+      "id": "phone-S25-S27-S31",
+      "status": "PASS",
+      "facts": {
+        "before": 26,
+        "afterEdits": 34,
+        "cpuRate": 4,
+        "board": 1112,
+        "week": 5631,
+        "offers": 0,
+        "offNodes": {
+          "board": 1112,
+          "week": 5631
+        },
+        "budgetScope": "separate long stress fixture, bounded On/Off growth; recorded demo ceiling enforced by npm perf"
+      }
+    },
+    {
+      "id": "phone-S10-structural",
+      "status": "PASS",
+      "facts": "add a distinct-cue aircraft then remove it through the actual structural door: remaining single context asks once"
+    },
+    {
+      "id": "phone-week-editor",
+      "status": "PASS",
+      "facts": "contenteditable route also saves text and answers through actual controls"
+    },
+    {
+      "id": "phone-week-S06-S22-S23",
+      "status": "PASS",
+      "facts": "both house separators preserve answered role in contenteditable; real keyboard Enter returns to identical node and exact selection"
+    }
+  ],
+  "pictures": [
+    "docs/img/insights-build-editing/freeze-3-phone/phone-logic-off.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-logic-on.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-mission-question.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-remarks-question.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-change-action.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-insights-twelve.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-insights-all.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-height-568.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-height-430.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-everything-board.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-structural-question.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-week-question.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-week-answered.png",
+    "docs/img/insights-build-editing/freeze-3-phone/phone-week-keyboard-selection.png"
+  ],
+  "errors": [],
+  "limitations": [
+    "Chromium emulation, not physical iPhone/iOS keyboard."
+  ]
+}

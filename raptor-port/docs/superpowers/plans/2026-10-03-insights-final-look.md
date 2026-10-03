@@ -1,7 +1,8 @@
 # Insights — final design pictures, 3 Oct 26
 
 Status: final pictures inspected; independent Astra design read PASS after two presentation fixes.
-Owner agreement is pending under D515. No application source, tests, contracts or saved-role behaviour changed.
+Owner agreement is now recorded under D532; the source build is authorized in this new chat. This record's design stage
+changed no application source, tests or saved-role behaviour.
 This record is design evidence, not the FULL build check or a code approval.
 
 ## Baseline and isolation
@@ -170,7 +171,8 @@ No design/plan/source change follows these two closing-status corrections.
 
 ## Next / owed
 
-Await explicit owner final-look agreement (D515); record it before source work, after rechecking D532.
-Then the unchanged revised plan drives failing production-route tests first, Sol implementation, all S01–S33,
+Owner replied "ok approved" to the complete gallery, recorded as D532 before source work after refreshed-ref availability
+checks. This fulfills D515's final look requirement; no settled product question or technical-plan round reopened.
+The unchanged revised plan now drives failing production-route tests first, Sol implementation, all S01–S33,
 FULL locked gates/frozen walk and a fresh Astra final-code inspection. OWED: Claude's later code/scenario
 read after the reset on `codex/insights-mission-mix`, before main. No PR, merge or main push.

@@ -15,6 +15,8 @@
 
    Ordinary TS/React-layer style (new file). */
 import { logReversed } from './changelines'
+import { roleStore, invalidateRoleTargets } from './mission-roles'
+import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
 import { seedAccounts } from './accounts'
@@ -67,6 +69,10 @@ function weekIsStashOnly(entry: UndoEntry, wk: string): boolean {
    the one day whose sign-offs, plans or mutes changed — every schedule record names its day since [DB-READINESS] group
    A, phase 1 (walk S14a: Saturday's sign-off redone with the board on Friday must land on Saturday). */
 function schedDayOf(entry: UndoEntry): number | null {
+  for (const ch of entry.forward) if (ch.collection === 'insights.role') {
+    const id=decodeRoleId(ch.id)
+    if (id) for (let di=0;di<7;di++) if (dayIso(id.weekKey,di)===id.dayISO) return di
+  }
   const dayOfCh = (ch: Change) => { const dk = dayKeyOf(ch.collection, ch.id); return dk && dk.includes('#') ? Number(dk.split('#')[1]) : null }
   for (const ch of entry.forward) if (ch.collection === 'days') return dayOfCh(ch)
   for (const ch of entry.forward) if (ch.collection === 'sched.issuance' || ch.collection === 'sched.retraction') { const d = dayOfCh(ch); if (d != null) return d }
@@ -133,7 +139,7 @@ function landingOf(entry: UndoEntry): Landing | null {
   let primary: string | null = null
   let then: (() => void) | undefined
   if (m === 'lw') primary = 'leavewar'
-  else if (m === 'sched') primary = canEditSched() ? 'editsched' : null
+  else if (m === 'sched' || m === 'insights') primary = canEditSched() ? 'editsched' : null
   else if (m === 'inputs' || m === 'plan') {
     primary = 'inputs'
     /* the calendar's own records (a day title, its puck rows — saved through the Inputs page's door, so filed under
@@ -146,7 +152,7 @@ function landingOf(entry: UndoEntry): Landing | null {
   } else if (m === 'settings') {
     const ids = fwd.filter(c => c.collection === 'settings').map(c => c.id)
     if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || k === 'guestview')) { primary = 'admin'; then = () => requestAdminUsers(false) }
-    else if (ids.includes('rules')) primary = 'logic'
+    else if (ids.includes('rules') || ids.includes('insights')) primary = 'logic'
     else if (ids.includes('qualcols')) primary = 'quals'
     else if (ids.includes('lookahead')) primary = 'inputs'
     else if (ids.some(k => k === 'dutytpl' || k === 'wavetpl' || k === 'wavehide' || k === 'daytpl' || k === 'secdefault' || k === 'wavedefault')) primary = 'admin'
@@ -209,6 +215,8 @@ function resolvePublishDay(id: string): { weekId: string; di: number } | null {
    Runs INSIDE the restore reducer, so it precedes the deferred reflow — the same
    order histApply uses (armDrop/prunePreviews before reflow). */
 function postRestore(entry: UndoEntry, dir: 'undo' | 'redo', pulledBack: Array<{ weekId: string; di: number }>): void {
+  invalidateRoleTargets()
+  if (entry.forward.every(ch=>ch.collection==='insights.role')) return
   schedPostRestore(entry, dir, pulledBack)
   /* the "use this section order as the default?" offer asks about the drag just made — once any step is undone or
      redone it asks about an order no longer on screen (walker A1 O5: "Set as default" would have promoted the order
@@ -263,7 +271,8 @@ export function installGlobalUndo(): void {
      (undo/timeline.ts), so those five stay out and say why (B3). A delete is kept dead by person-delete.ts (B4). */
   registerUndoStore(peopleStore, ['people'])
   registerUndoStore(settingsStore, ['settings'])
-  setCutoverModules(['sched', 'lw', 'inputs', 'plan', 'people', 'settings'])
+  registerUndoStore(roleStore, ['insights.role'])
+  setCutoverModules(['sched', 'lw', 'inputs', 'plan', 'people', 'settings', 'insights'])
   setUndoHooks({
     loadContext,
     snapView,

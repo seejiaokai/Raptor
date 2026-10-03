@@ -1,0 +1,24 @@
+
+> raptor-port@0.0.0 perf
+> node probes/perf-port.cjs
+
+   trial 1/3  oneEdit 126.5/180.7 · noop 42.8/70.6 · board 197/279.5 · noopB 62/95.1   (ref/port ms)
+   trial 2/3  oneEdit 126.5/186.8 · noop 44.4/75.1 · board 199.6/274.9 · noopB 61.2/102.4   (ref/port ms)
+   trial 3/3  oneEdit 130.7/207.3 · noop 42.8/70.4 · board 206/279.9 · noopB 56.8/93.1   (ref/port ms)
+
+   4x phone, painted cost    reference     port   ratio  per node  (median of 3 trials)
+   oneEdit                     126.5ms  180.7ms  1.48×    1.20×   [1.43 1.48 1.59]
+   noop                         42.8ms   70.4ms  1.65×    1.34×   [1.64 1.65 1.69]
+   board                         197ms  274.9ms  1.38×    0.53×   [1.36 1.38 1.42]
+   noopB                        56.8ms   93.1ms  1.64×    0.63×   [1.53 1.64 1.67]
+   week DOM                     4173n   5134n  1.23× the nodes, 1.32× the markup
+   board DOM                     393n   1024n  2.61× the nodes, 3.07× the markup
+ ok   perf · the week stays under its recorded DOM ceiling (5450) want yes · got yes
+ ok   perf · the board stays under its recorded DOM ceiling (1150) want yes · got yes
+ ok   B · a day-1 edit rewrites only day 1, the day its crew rest traces to, and the days of the edited man's run trace want held · got held
+   scrollLeft across an edit: 400 → 400
+ ok   D · the week does not jump back to Monday on an edit       want held · got held
+   a field open while another panel changes: no field (informational — matches the reference)
+
+4 passed · 0 failed
+perf-port done

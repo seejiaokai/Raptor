@@ -1,0 +1,10 @@
+PASS phone-S27-Off
+PASS phone-S01-S03-S07
+PASS phone-S08-S11-S12
+PASS phone-S09-S22-S23
+PASS phone-S06-S08-answered
+PASS phone-S24-S29-S30
+PASS phone-S25-S27-S31
+PASS phone-S10-structural
+PASS phone-week-editor
+PASS phone-week-S06-S22-S23

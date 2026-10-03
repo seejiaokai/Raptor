@@ -1,0 +1,49 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/engine/mission-role.test.ts (21 tests | 1 failed) 16ms
+   × D529/D531 template seeds accept only unique matching conditional ordinary formations, never standby 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/engine/mission-role.test.ts > D529/D531 template seeds accept only unique matching conditional ordinary formations, never standby
+AssertionError: expected { format: 1, seeds: [ { …(3) } ] } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "format": 1,
+  "seeds": [
+    {
+      "context": "[1,\"ACM\",[\"DS FOR VL\"]]",
+      "path": [
+        0,
+        0,
+      ],
+      "side": "red",
+    },
+  ],
+}
+
+ ❯ src/engine/mission-role.test.ts:62:94
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 20 passed (21)
+   Start at  15:41:03
+   Duration  382ms (transform 83ms, setup 62ms, import 41ms, tests 16ms, environment 0ms)
+

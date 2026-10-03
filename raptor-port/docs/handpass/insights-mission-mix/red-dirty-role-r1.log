@@ -1,0 +1,91 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/ui/mission-role-offer.test.tsx (25 tests | 12 failed) 19947ms
+   × MIX6 R1 Choose saves dirty Remarks before role action in week 610ms
+   × MIX6 R1 Change saves dirty Remarks before role action in week 682ms
+   × MIX6 R1 open question saves dirty Remarks before role action in week 681ms
+   × MIX6 R1 removed cue saves dirty Remarks before role action in week 754ms
+   × MIX6 R1 Later saves dirty Remarks before role action in week 544ms
+   × MIX6 R1 an open question saves dirty exact-DS Mission and retires the conditional offer in week 609ms
+   × MIX6 R1 Choose saves dirty Remarks before role action in Board 884ms
+   × MIX6 R1 Change saves dirty Remarks before role action in Board 1061ms
+   × MIX6 R1 open question saves dirty Remarks before role action in Board 812ms
+   × MIX6 R1 removed cue saves dirty Remarks before role action in Board 879ms
+   × MIX6 R1 Later saves dirty Remarks before role action in Board 809ms
+   × MIX6 R1 an open question saves dirty exact-DS Mission and retires the conditional offer in Board 960ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 Choose saves dirty Remarks before role action in week
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 Change saves dirty Remarks before role action in week
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 open question saves dirty Remarks before role action in week
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 Later saves dirty Remarks before role action in week
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 Choose saves dirty Remarks before role action in Board
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 Change saves dirty Remarks before role action in Board
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 open question saves dirty Remarks before role action in Board
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 Later saves dirty Remarks before role action in Board
+AssertionError: expected 'DS FOR ALPHA' to be 'DS FROM BRAVO' // Object.is equality
+
+Expected: "DS FROM BRAVO"
+Received: "DS FOR ALPHA"
+
+ ❯ src/ui/mission-role-offer.test.tsx:154:51
+    152|     } else {
+    153|       if(action!=='Later')await click(q('[data-role-side="red"]'));els…
+    154|       await settle();expect(txtGet('fr:0.0.0.0')).toBe(value)
+       |                                                   ^
+    155|       const fresh=roleTarget(0,DAYS[0].waves[0]!.formations[0]!.rid!)!
+    156|       expect(fresh.id).not.toBe(old.id);expect(readRole(old.id)?.side)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 removed cue saves dirty Remarks before role action in week
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 removed cue saves dirty Remarks before role action in Board
+AssertionError: expected 'DS FOR ALPHA' to be 'ordinary briefing' // Object.is equality
+
+Expected: "ordinary briefing"
+Received: "DS FOR ALPHA"
+
+ ❯ src/ui/mission-role-offer.test.tsx:150:51
+    148|     if(['Choose','Change','removed cue'].includes(action))await click(…
+    149|     if(action==='removed cue'){
+    150|       await settle();expect(txtGet('fr:0.0.0.0')).toBe(value);expect(d…
+       |                                                   ^
+    151|       expect(commandStream().slice(n).filter(e=>e.type==='insights.rol…
+    152|     } else {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 an open question saves dirty exact-DS Mission and retires the conditional offer in week
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 R1 an open question saves dirty exact-DS Mission and retires the conditional offer in Board
+AssertionError: expected 'ACM' to be 'DS' // Object.is equality
+
+Expected: "DS"
+Received: "ACM"
+
+ ❯ src/ui/mission-role-offer.test.tsx:174:36
+    172|     const n=commandStream().filter(e=>e.type==='insights.role.set').le…
+    173|     await click(q('[data-role-side="red"]'));await settle()
+    174|     expect(txtGet('ff:0.0.0.msn')).toBe('DS');expect(roleTarget(0,DAYS…
+       |                                    ^
+    175|     expect(commandStream().filter(e=>e.type==='insights.role.set')).to…
+    176|     expect(q(selector)).toBe(field);expect(document.activeElement).toB…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  12 failed | 13 passed (25)
+   Start at  16:44:50
+   Duration  24.68s (transform 3.36s, setup 57ms, import 3.63s, tests 19.95s, environment 845ms)
+

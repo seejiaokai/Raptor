@@ -1,0 +1,20 @@
+PASS desktop-S27-Off
+PASS desktop-S01-S03-S07
+PASS desktop-S08-S11-S12
+PASS desktop-S09-S22-S23
+PASS desktop-S06-S08-answered
+locator.scrollIntoViewIfNeeded: Element is not attached to the DOM
+Call log:
+  - attempting scroll into view action
+    - waiting for element to be stable
+
+    at hit (C:\Users\User\projects\Raptor\.claude\worktrees\codex-insights-mission-mix\raptor-port\scripts\handpass\insights-editing.mjs:16:35)
+    at C:\Users\User\projects\Raptor\.claude\worktrees\codex-insights-mission-mix\raptor-port\scripts\handpass\insights-editing.mjs:68:234
+    at async check (C:\Users\User\projects\Raptor\.claude\worktrees\codex-insights-mission-mix\raptor-port\scripts\handpass\insights-editing.mjs:13:50)
+    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-editing.mjs:64:3 {
+  log: [
+    '  - attempting scroll into view action',
+    '    - waiting for element to be stable'
+  ],
+  name: 'Error'
+}

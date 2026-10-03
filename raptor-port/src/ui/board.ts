@@ -25,6 +25,11 @@ import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, day
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
+import { commit, isOk } from '../command'
+import { schedStore, SCHED_TYPES } from '../state/sched-commit'
+import { withFreshMissionRoles } from '../state/mission-roles'
+import { missionTracking } from '../engine/insights-config'
+import { resolveMissionRole } from '../engine/mission-role'
 import { dayDrafts, curDraftId, draftDup, draftSelect, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { openAvailWinFrom } from './AvailWindow'
@@ -179,7 +184,9 @@ function boardHTMLBody(di: number, pv?: boolean) {
       fly += `<div class="intimes${mvRO ? '' : ' iedit'}"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `data-intimes="${di}|${gi}"`}>${intimesInner(w, mvRO ? null : `${di}|${gi}`)}</div>`
     fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
-    w.formations.forEach((f: any, li: number) => { f.aircraft.forEach((a: any, ai: number) => {
+    w.formations.forEach((f: any, li: number) => {
+      const roleAccess=pv && !sa && missionTracking() && canEditSched() && view.CURPAGE==='editsched' && !protectedWeek() && view.DPREV.get(di)===dayCurVer(di) && !f.cx && f.aircraft.some((a:any)=>!a.cx) && resolveMissionRole(f).conditional
+      f.aircraft.forEach((a: any, ai: number) => {
       const key = `${di}.${gi}.${li}.${ai}`, fp = `ff:${di}.${gi}.${li}`
       const cxOn = !!(a.cx || f.cx)
       /* stoRO, not pv alone — this was the last of the read-only gap left
@@ -288,7 +295,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
           ${sa ? saRoleHTML(key, a, !stoRO) : ''}
-          ${boxHTML('nts', `data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis}`, a.rmks || '', 'Remarks')}
+          ${boxHTML('nts', roleAccess ? `data-role-remarks="${esc(f.rid||'')}" data-role-day="${di}" readonly aria-label="Published Remarks — read only"` : `data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis}`, a.rmks || '', 'Remarks')}
           ${sa ? '' : (stoRO
             ? storesView(a.opts)
             : `<span class="stores">`
@@ -320,8 +327,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
        row-drag machine steps right over it. */
     if (!sa) {
       const areaTxt = areaText(f), timeTxt = atimeText(f)
-      if (!(mvRO && !areaTxt && !timeTxt))
-        fly += `<div class="sb-area"><span class="fa-lb">AREA</span>`
+      if (roleAccess || !(mvRO && !areaTxt && !timeTxt))
+        fly += `<div class="sb-area"${missionTracking()?` data-role-formation="${esc(f.rid||'')}" data-role-day="${di}"`:''}><span class="fa-lb">AREA</span>`
           + `<span class="areacell"${alAttr(`ar:${di}.${gi}.${li}`)} ${mvRO ? '' : `contenteditable="true" spellcheck="false" data-area="${di}.${gi}.${li}"`}>${esc(areaTxt)}</span>`
           + `<span class="timecell"${alAttr(`at:${di}.${gi}.${li}`)} ${mvRO ? '' : `contenteditable="true" spellcheck="false" data-atime="${di}.${gi}.${li}"`}>${esc(timeTxt)}</span></div>`
     } })
@@ -660,9 +667,12 @@ export function pickDayTpl(di: any, id: any): 'armed' | 'applied' | 'noop' | 're
      "target gone?" disarm does not fire and a stale arm would plant into the
      replacement sortie (P2-IMPL-11). Mirrors the recovery / draft-switch paths. */
   if (view.ARM && view.ARM.di === di) view.disarmSlot()
-  if (!applyDayTpl(di, id)) return 'noop'
-  afterSchedMutate()
-  return 'applied'
+  let applied=false
+  const result=commit({type:SCHED_TYPES.mutate,scope:{module:'sched',weekId:CURWEEK},apply(txn){
+    txn.enlist(schedStore)
+    withFreshMissionRoles(txn,()=>{applied=applyDayTpl(di,id);if(applied)afterSchedMutate()})
+  }})
+  return isOk(result) && applied ? 'applied' : 'noop'
 }
 /* canEditSched() and the DPREV (frozen-preview) guard live HERE, not only on
    the button's render gate — a stale button left over from a role change, or

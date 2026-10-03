@@ -2,6 +2,10 @@ import { PEOPLE } from './people'
 import { validate, issuedWorld, workSpan } from './validate'
 import { shownWarns } from './warnhide'
 import { isStandalone } from './waves'
+import { CURWEEK } from './waves'
+import { HOOKS } from './hooks'
+import { resolveMissionRole, encodeRoleId } from './mission-role'
+import { dayIso } from './verid'
 /* =====================================================================
    WEEK INSIGHTS — make sense of the week (load, coverage, conflicts)
    ===================================================================== */
@@ -15,6 +19,7 @@ export function computeInsights(){
   validate();
   const {days:DAYS, evd:EVD, warn:WARN, roster:ROSTER}=issuedWorld();
   let sorties=0,forms=0; const fc:any={}, dayStats:any[]=[];
+  const tracking=HOOKS.missionRoleEnabled(), readRole=HOOKS.missionRoleReader(), mixes:any={};
   /* WORK HOURS (owner, 20 Aug 26 — "perhaps have a section to show everyone's
      work hours in the insights for the week"). Summed off the SAME per-person
      day span the long-work-day note is raised from (`workSpan`, validate.ts),
@@ -33,7 +38,16 @@ export function computeInsights(){
        Before this, sorties/forms/fc (and idle, which is derived from fc) counted
        both while dayStats.warns/hard — read straight off WARN, which already
        skips cancelled and exempt lines — did not: one object, two rules. */
-    (d.waves||[]).forEach((w:any)=>{if(isStandalone(w))return;w.formations.forEach((f:any)=>{if(f.cx)return;forms++;df++;f.aircraft.forEach((a:any)=>{if(a.cx)return;sorties++;ds++;[a.p,a.w].forEach((id:any)=>{if(id)fc[id]=(fc[id]||0)+1;});});});});
+    (d.waves||[]).forEach((w:any)=>{if(isStandalone(w))return;w.formations.forEach((f:any)=>{if(f.cx)return;forms++;df++;
+      const source=tracking?resolveMissionRole(f,context=>{
+        const date=dayIso(CURWEEK,di);let id:string;
+        try{id=encodeRoleId({weekKey:CURWEEK,dayISO:date,formationRid:f.rid,context});}catch{return null;}
+        return {id,answer:readRole(CURWEEK,date,f.rid,context)};
+      }):null;
+      const role=source?.role;
+      f.aircraft.forEach((a:any)=>{if(a.cx)return;sorties++;ds++;[a.p,a.w].forEach((id:any)=>{if(id){fc[id]=(fc[id]||0)+1;
+        if(tracking){const mix=mixes[id]||(mixes[id]={blue:0,red:0,unresolved:0});mix[role||'unresolved']++;}
+      }});});});});
     const ev=EVD[di]||{};
     Object.keys(ev).forEach((id:any)=>{
       const w=workSpan(ev[id]); if(!w)return;
@@ -42,7 +56,8 @@ export function computeInsights(){
     const dw=shownWarns(WARN.byDay[di]&&WARN.byDay[di].warns);   /* a hidden warning is not counted (owner D472, 1 Oct 26) — by the hides that version went out with (D477) */
     dayStats.push({dow:d.dow,ac:ds,forms:df,warns:dw.length,hard:dw.filter((x:any)=>x.sev==='hard').length});
   });
-  const flyers=Object.keys(fc).map((id:any)=>({id,n:fc[id]})).sort((a:any,b:any)=>b.n-a.n||PEOPLE[a.id].cs.localeCompare(PEOPLE[b.id].cs));
+  const flyerName=(id:any)=>PEOPLE[id]?.cs||String(id);
+  const flyers=Object.keys(fc).map((id:any)=>({id,n:fc[id],...(tracking?{roleMix:mixes[id]}:{})})).sort((a:any,b:any)=>b.n-a.n||flyerName(a.id).localeCompare(flyerName(b.id)));
   /* who is NOT flying, out of the roster those days went out with — never today's list of people: a man added or
      archived since a week was published does not move it (issuedWorld's roster; PEOPLE gives the label only) */
   const idle=ROSTER.filter((id:any)=>PEOPLE[id]&&!fc[id]).sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
@@ -55,5 +70,5 @@ export function computeInsights(){
   const hours=Object.keys(wm).map((id:any)=>({id,mins:wm[id],days:wd[id]}))
     .sort((a:any,b:any)=>b.mins-a.mins||csOf(a.id).localeCompare(csOf(b.id)));
   /* the week's two totals, for the window's tile — counted here so the tile and the lists read one world */
-  return {sorties,forms,flyers,idle,byType,dayStats,hours,issues:shown.length,hard:shown.filter((w:any)=>w.sev==='hard').length};
+  return {sorties,forms,flyers,idle,byType,dayStats,hours,tracking,issues:shown.length,hard:shown.filter((w:any)=>w.sev==='hard').length};
 }

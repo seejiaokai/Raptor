@@ -396,6 +396,7 @@ function moduleOfColl(collection: string): Module {
   if (collection === 'plan') return 'plan'
   if (collection === 'people') return 'people'
   if (collection === 'settings') return 'settings'
+  if (collection === 'insights.role') return 'insights'
   if (collection.startsWith('lw.')) return 'lw'
   if (collection.startsWith('trk.')) return 'trk'
   return 'sched'

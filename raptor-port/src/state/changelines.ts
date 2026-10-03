@@ -30,6 +30,7 @@ import { onCommit } from '../command'
 import type { CommitEnvelope, Change } from '../command/types'
 import { logAction } from '../engine/editlog'
 import { parseHideDetail } from '../engine/hidedetail'
+import { decodeRoleId } from '../engine/mission-role'
 import { PEOPLE } from '../engine/people'
 import { dateOrd, INPUTS } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
@@ -405,6 +406,7 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
   const addSpan = (s: Span | null) => { if (!s) return; for (let d = s.date; d <= s.end; d = nextIso(d)) days.add(d) }
   for (const c of entry.forward || []) {
     const id = String(c.id)
+    if (c.collection === 'insights.role') { const role=decodeRoleId(id); if(role) days.add(role.dayISO) }
     /* a day of a week — its content, or the warnings hidden on it (`sched.mutes/<wk>#<di>`, [WARN-HIDE-KEPT]) */
     if (c.collection === 'days' || c.collection === 'sched.mutes') { const [wk, di] = id.split('#'); try { const iso = dayIsoOf(wk!, +di!); if (iso) days.add(iso) } catch (_) { /* a malformed id names no day */ } }
     else if (c.collection === 'inputs' && id !== '__order') { addSpan(spanOf(c.before)); addSpan(spanOf(c.after)) }
@@ -441,6 +443,16 @@ export function changeLinesFor(env: CommitEnvelope): void {
        back, so neither is said twice */
     const wi: WarInputs = war ? warInputLines(env) : { said: new Set(), approvedFor: new Set(), backToBid: new Set() }
     for (const c of env.changes) {
+      if (c.collection === 'insights.role') {
+        const role=decodeRoleId(c.id)
+        if (!role) continue
+        let detail:any=null
+        try { detail=JSON.parse(env.detail || 'null') } catch { /* a copy's enclosing command may carry other facts */ }
+        const name=typeof detail?.name==='string'?detail.name.replace(/\s+/g,' ').trim().slice(0,80):role.formationRid
+        const origin=typeof detail?.origin==='string'?detail.origin.slice(0,80):'copied with the day template'
+        const side=(value:any)=>value?.side==='blue'?'Blue':value?.side==='red'?'Red':'Unresolved'
+        logAction(null,`${name} · mission role · ${origin}`,{date:role.dayISO,sect:'day',sub:role.formationRid,fld:'mission-role',from:side(c.before),to:side(c.after)})
+      }
       if (c.collection === 'inputs' && c.id !== '__order') { if (!wi.said.has(c)) inputLines(c, env, war) }
       else if (c.collection === 'lw.ledger') ledgerLines(c)
       else if (c.collection === 'lw.postouts') postoutLines(c, env)

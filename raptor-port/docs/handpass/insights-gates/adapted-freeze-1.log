@@ -1,0 +1,192 @@
+
+> raptor-port@0.0.0 probes:adapted
+> node probes/adapted/run-all.cjs
+
+
+===== aar-async =====
+ ok   parse · every remarks form reads the same as the reference want all 19 agree · got all 19 agree
+   seed: DAAR 31 · NAAR 21
+ ok   seed · nobody ships NAAR without DAAR                      want 0 · got 0
+ ok   seed · no WSO holds a front-seat AAR qualification         want 0 · got 0
+   seq subject: Wildcard
+ ok   seq · NAAR is refused before DAAR is held                  want blocked · got blocked
+ ok   seq · both stand once DAAR is signed off                   want both · got both
+ ok   seq · removing DAAR takes NAAR with it                     want cascaded · got cascaded
+ ok   quals · the FCP view lists no WSO                          want absent · got absent
+ ok   quals · and strikes no AAR cell on that view               want 0 · got 0
+   WSO view: 48 struck cells over 24 rows
+ ok   quals · the WSO view strikes DAAR and NAAR on every row    want 48 · got 48
+ ok   flag · no DAAR on a tanker line raises AAR_QUAL            want 1 · got 1
+ ok   flag · "NO AAR" in the same remark raises nothing          want 0 · got 0
+ ok   flag · the rear seat is not the one being tanked           want 0 · got 0
+ ok   flag · DAAR covers a DAY tanker line                       want 0 · got 0
+ ok   flag · but not a NIGHT one                                 want 1 · got 1
+   palette: 63 shown · 11 selectable · 52 darkened · sample why "cannot crew a jet; name the people flying it"
+ ok   palette · the slot reads its AAR need off the remarks      want DAAR · got DAAR
+ ok   palette · every selectable man holds that currency         want 0 · got 0
+ ok   palette · and the ones who do not are darkened             want darkened · got darkened
+
+17 passed · 0 failed
+aar-async done
+
+===== audit-async =====
+ ok   1 · overnight duty does not bar the 07-13 shift          want CLEAR · got CLEAR
+ ok   1b · tomorrow inside the night tail DOES bar             want BAR · got BAR
+ ok   2 · a meeting inside the brief window raises NO_BRIEF    want NO_BRIEF · got NO_BRIEF
+   3 · subject input type: Fly with
+ ok   3 · an un-accepted personal input clashes at once (owner, 10 Aug 26) want C/hard · got C/hard
+ ok   3 · and accepting it puts it on the programme            want on the programme · got on the programme
+ ok   4 · a 2300-0100 sim is stored rolled, not inverted       want 1380-1500 · got 1380-1500
+ ok   4 · and it clashes with the duty inside it               want DOUBLE_BOOK · got DOUBLE_BOOK
+ ok   5 · a sim extra is seen by the engine                    want DOUBLE_BOOK · got DOUBLE_BOOK
+ ok   6 · a late desk duty raises the crew-rest breach (owner, 21 Aug 26) want CREW_REST · got CREW_REST
+ ok   6 · and the picker agrees with the engine                want barred · got barred
+ ok   7 · a man on a row twice does not clash with himself     want none · got none
+ ok   8 · slotRules reads a sim front seat                     want p · got p
+ ok   8 · a WSO is barred from it                              want BAR · got BAR
+ ok   8 · but not from a pax place                             want null · got null
+ ok   11 · nobody on leave is drawn as available               want 0 · got 0
+ ok   11 · and the free counts are numbers                     want ok · got ok
+ ok   15 · undo disarms                                        want disarmed · got disarmed
+ ok   15 · and the wave really went                            want gone · got gone
+FAIL  13 · the AL mark follows the row it marked               want 1 · got lost
+ ok   13 · and no mark is left on the dead address             want gone · got gone
+FAIL  13 · the issued AL is rewritten too                      want dn:0.1 · got 
+   9 · armed 0.0.0.0.p, then switched to day 3
+ ok   9 · changing day puts the armed slot down                want null · got null
+   12 · inputs 46/46 → 47/47 → 46/0
+ ok   12 · the added row really appears                        want 47 · got 47
+ ok   12 · undo takes it back out of the model                 want 46 · got 46
+FAIL  12 · and the table follows the model                     want 46 · got 0
+   14 · traffic add — history 26 → 27 · key tr:0.rmus3ew7kaco2rw
+ ok   14 · a traffic add is undoable                           want stepped · got stepped
+ ok   14 · and lands in the next AL as a tr: key               want marked · got marked
+
+no runtime errors
+
+24 passed · 3 failed
+audit-async done
+audit-async FAILED
+
+===== drop-async =====
+A · programme row with 3 holes and 3 crew
+ ok   A · a hole renders no element at all                   want 0 · got 0
+ ok   A · every remaining puck is flush left                 want 1 · got 1
+ ok   A · and every puck is the canonical width              want 74 · got 74
+ ok   B2 · wobble  7px → armed                               want armed · got armed
+ ok   B2 · wobble  9px → armed                               want armed · got armed
+ ok   B2 · wobble 20px → armed                               want armed · got armed
+ ok   B2 · wobble 40px → cancelled                           want cancelled · got cancelled
+ ok   B3 · a drop below the cell still lands on the row      want landed · got landed
+ ok   B6 · a drop back onto the same seat reports it         want told · got told
+
+9 passed · 0 failed
+drop-async done
+
+===== sa-async =====
+   badges: "4 X 4" → SC "4 X 4 / 2" → all "4 X 4 / 6"
+ ok   badge · an SC wave adds its own count to day 1             want 4 X 4 / 2 · got 4 X 4 / 2
+ ok   badge · AVALON and BB add theirs too                       want 4 X 4 / 6 · got 4 X 4 / 6
+ ok   badge · and no other day moved                             want 4 X 4|4 X 4|4 X 4|0 X 0 X 0|0 X 0 X 0|0 X 0 X 0|4 X 2|4 X 1|2 X 2|2|0 X 0 X 0|0 X 0 X 0|0 X 0 X 0 · got 4 X 4|4 X 4|4 X 4|0 X 0 X 0|0 X 0 X 0|0 X 0 X 0|4 X 2|4 X 1|2 X 2|2|0 X 0 X 0|0 X 0 X 0|0 X 0 X 0
+ ok   shape · the three waves come up exactly as the reference builds them want [{"label":"SC","kind":"sc","noconf":false,"shifts":["AM 07:00-13:00 ac4 spare2","PM 13:00-19:00 ac4 spare2"]},{"label":"AVALON","kind":"avalon","noconf":true,"shifts":["NIGHT 19:00-07:00 ac4 spare2"]},{"label":"BB","kind":"bb","noconf":true,"shifts":["SHIFT - ac4 spare2"]}] · got [{"label":"SC","kind":"sc","noconf":false,"shifts":["AM 07:00-13:00 ac4 spare2","PM 13:00-19:00 ac4 spare2"]},{"label":"AVALON","kind":"avalon","noconf":true,"shifts":["NIGHT 19:00-07:00 ac4 spare2"]},{"label":"BB","kind":"bb","noconf":true,"shifts":["SHIFT - ac4 spare2"]}]
+ ok   shape · AVALON no longer auto-creates a duty block         want MISSING · got MISSING
+   24 exempt seats filled from the men already working · warnings 33->33
+ ok   exempt · AVALON, BB and the SC spares raise nothing new    want nothing · got nothing
+ ok   exempt · a downchit man on an SC SPARE is still flagged    want DNIF_FLY · got DNIF_FLY
+ ok   exempt · so is a man without SC currency                   want SC_QUAL · got SC_QUAL
+   SC main check on stiff: DOUBLE_BOOK, DOUBLE_BOOK, DOUBLE_BOOK, DT_SUM, LONGDAY, NO_BRIEF, NO_BRIEF
+ ok   main · an SC MAIN seat over a real flight double-books     want DOUBLE_BOOK · got DOUBLE_BOOK
+ ok   main · and the SPARE beside it adds nothing                want DOUBLE_BOOK,DOUBLE_BOOK,DOUBLE_BOOK,DT_SUM,LONGDAY,NO_BRIEF,NO_BRIEF · got DOUBLE_BOOK,DOUBLE_BOOK,DOUBLE_BOOK,DT_SUM,LONGDAY,NO_BRIEF,NO_BRIEF
+ ok   chips · the ladder is the reference order plus RUN, CP and CPH want Q > C > CPH > RUN > CR > CP > NB > DB > SB > SD > A > TT > DT > LD · got Q > C > CPH > RUN > CR > CP > NB > DB > SB > SD > A > TT > DT > LD
+   SUP filter: lit 8
+ ok   filter · SUP lights supervisors only                       want 0 · got 0
+ ok   filter · and misses none of them                           want 0 · got 0
+ ok   filter · with somebody actually lit                        want lit · got lit
+   phone filters: display flex · chips 15 · chip-row side-scroll true
+ ok   phone · the filter strip is on screen                      want flex · got flex
+ ok   phone · folded, the page gains no sideways swipe           want 0 · got 0
+ ok   phone · opened, the chip ROW scrolls itself rather than the page want itself · got itself
+ ok   phone · the strip itself holds still                       want still · got still
+ ok   phone · and the page gains no sideways swipe               want 0 · got 0
+ ok   board · the phone board stacks its panels                  want column · got column
+ ok   board · and offers the desktop-layout button               want offered · got offered
+   board desktop on a phone: sideW 320 · pan 790 · btn "📱 Phone layout"
+ ok   board · the desktop layout really switches over            want wide · got wide
+ ok   board · the side panel takes its full width                want 320 · got 320
+ ok   board · and the board becomes pannable instead of squashed want pannable · got pannable
+ ok   board · the button offers the way back                     want offers phone · got offers phone
+
+25 passed · 0 failed
+sa-async done
+
+===== sc2-async =====
+   SC AM 07:00-13:00 · SC PM 13:00-19:00 · arming 0.2.1.0.p
+   1 · Ranger on SC AM MAIN, planning SC PM MAIN — class "rpuck"
+ ok   1 · the other half of the day does not bar the PM shift    want (clear) · got (clear)
+   2 · Saber flying 14:00-15:30 — class "rpuck no haswhy" · bar "on VL BFM 13:00–16:00 — inside this shift"
+ ok   2 · a flight inside the shift bars the SC slot             want BAR · got BAR
+ ok   2 · and the puck is struck in the palette                  want struck · got struck
+   3 · Drifter on a ground event 14:00-15:00 — class "rpuck busy"
+ ok   3 · a ground event inside the window does not bar          want (clear) · got (clear)
+ ok   3 · and he really plants into the SC seat                  want YES · got YES
+   4 · SC slot armed: 55 shown · busy 0 · standby 0 · struck 31
+       arm strip: "Planning FCP · SC PMSC DAY current only · shift 13:00–19:00"
+ ok   4 · an armed SC slot fades nobody day-wide                 want 0 · got 0
+ ok   4 · and the palette lists nobody without SC DAY currency   want 0 · got 0
+ ok   4 · the arm strip names the shift                          want named · got named
+   5 · ordinary flying seat armed: 63 shown · busy 0
+ ok   5 · an ordinary armed seat fades nobody day-wide either    want 0 · got 0
+   6 · PM moved to 19:00-23:00 → night shift · 33 shown
+ ok   6 · the slot re-reads its shift from the window            want night · got night
+ ok   6 · and lists nobody without SC NIGHT currency             want 0 · got 0
+ ok   7 · the roster seeds nobody with SC NIGHT alone            want 0 · got 0
+   7 · subject Wildcard
+ ok   7 · SC NIGHT is refused before SC DAY is held              want blocked · got blocked
+ ok   7 · both stand once SC DAY is signed off                   want both · got both
+ ok   7 · removing SC DAY takes SC NIGHT with it                 want cascaded · got cascaded
+
+15 passed · 0 failed
+sc2-async done
+
+===== wrap-async =====
+ ok   W390 phone view · no free-text cell overflows its box        want none · got none
+ ok   W390 phone view · no name reaches into the START cell        want none · got none
+ ok   W390 phone view · the jammed row wrapped onto several lines  want wrapped · got wrapped
+ ok   W390 phone view · and the day did not turn into a sideways swipe want 0 · got 0
+ ok   W390 phone edit · no free-text cell overflows its box        want none · got none
+ ok   W390 phone edit · no name reaches into the START cell        want none · got none
+ ok   W390 phone edit · the jammed row wrapped onto several lines  want wrapped · got wrapped
+ ok   W390 phone edit · and the day did not turn into a sideways swipe want 0 · got 0
+ ok   W430 phone view · no free-text cell overflows its box        want none · got none
+ ok   W430 phone view · no name reaches into the START cell        want none · got none
+ ok   W430 phone view · the jammed row wrapped onto several lines  want wrapped · got wrapped
+ ok   W430 phone view · and the day did not turn into a sideways swipe want 0 · got 0
+ ok   W430 phone edit · no free-text cell overflows its box        want none · got none
+ ok   W430 phone edit · no name reaches into the START cell        want none · got none
+ ok   W430 phone edit · the jammed row wrapped onto several lines  want wrapped · got wrapped
+ ok   W430 phone edit · and the day did not turn into a sideways swipe want 0 · got 0
+ ok   W820 tablet view · no free-text cell overflows its box       want none · got none
+ ok   W820 tablet view · no name reaches into the START cell       want none · got none
+ ok   W820 tablet view · the jammed row wrapped onto several lines want wrapped · got wrapped
+ ok   W820 tablet view · and the day did not turn into a sideways swipe want 0 · got 0
+ ok   W820 tablet edit · no free-text cell overflows its box       want none · got none
+ ok   W820 tablet edit · no name reaches into the START cell       want none · got none
+ ok   W820 tablet edit · the jammed row wrapped onto several lines want wrapped · got wrapped
+ ok   W820 tablet edit · and the day did not turn into a sideways swipe want 0 · got 0
+ ok   W1500 desk view · no free-text cell overflows its box        want none · got none
+ ok   W1500 desk view · no name reaches into the START cell        want none · got none
+ ok   W1500 desk view · the jammed row wrapped onto several lines  want wrapped · got wrapped
+ ok   W1500 desk view · and the day did not turn into a sideways swipe want 0 · got 0
+ ok   W1500 desk edit · no free-text cell overflows its box        want none · got none
+ ok   W1500 desk edit · no name reaches into the START cell        want none · got none
+ ok   W1500 desk edit · the jammed row wrapped onto several lines  want wrapped · got wrapped
+ ok   W1500 desk edit · and the day did not turn into a sideways swipe want 0 · got 0
+ ok   W390 board · no board text overflows its box                 want none · got none
+ ok   W390 board · no board panel gains a sideways scroll          want none · got none
+ ok   W1500 board · no board text overflows its box                want none · got none
+ ok   W1500 board · no board panel gains a sideways scroll         want none · got none
+
+36 passed · 0 failed
+wrap-async done
+
+1 adapted probe(s) failed

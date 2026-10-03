@@ -117,7 +117,8 @@ Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QU
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
-Insights — [INSIGHTS-MISSION-MIX] (D512–D531 choices settled; revised technical plan PASS; final phone/desktop pictures independently checked, owner agreement pending on the isolated build branch), with [INSIGHTS-BOARD-DOOR].
+Insights — [INSIGHTS-MISSION-MIX] (D512–D532 settled; built on the isolated branch, qualified FULL checks complete,
+fresh independent Astra R2 PASS; Claude's later read owed before main), with [INSIGHTS-BOARD-DOOR].
 The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
 phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Codex build), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
@@ -1460,7 +1461,12 @@ build as it stood BEFORE its fix, neither walker told what is wrong, and report 
 §4). **Its place:** `[WORKSPAN-NEGATIVE]`'s walk (the next chat, D483) — freeze the build before the fix for the two trial
 walkers. Then his answer to the second report is a new ruling. Until then nothing else goes to a cheaper model.
 
-### [INSIGHTS-BOARD-DOOR] The Scheduler Board gets a way to open Insights — RULED D481 (1 Oct 26), TO BUILD (found 1 Oct 26)
+### [INSIGHTS-BOARD-DOOR] The Scheduler Board gets a way to open Insights — BUILT on the Insights branch, awaiting reads/main
+Built with `[INSIGHTS-MISSION-MIX]` after D532 picture agreement: desktop beside the bell; phone in More only.
+Actual callback and phone/desktop hit tests passed; the phone cascade overlap was found in pictures and repaired.
+Fresh independent Astra final R2 PASS on freeze5 after both repairs; original phone-toolbar geometry also passes.
+FULL evidence: `raptor-port/docs/handpass/2026-10-03-insights-mission-mix.md`. Claude's later read remains owed before main.
+Original discovery and recipe below are historical, preserved for review.
 Found by Astra's scenario design for `[INSIGHTS-WHICH-COPY]` and recorded by both walkers at both widths: while the
 Scheduler Board is up, its own bar carries no Insights button (Calendar, Highlight, Templates, Sort all, Undo, Redo, History,
 Sync, the bell, ✓ Done — D349's approved bar) and the shell's button and the phone's ☰ are covered by the board. It has
@@ -1476,7 +1482,23 @@ that the window is topmost at its centre over the board at both widths. **Place:
 first; after `[WORKSPAN-NEGATIVE]`. Full row: `.claude/decisions-full/scheduler.md` D481.
 
 ### [INSIGHTS-MISSION-MIX] Split each person's weekly sortie bar into blue and red (D512, 3 Oct 26)
-**Direction/lifecycle settled through D531; Opus REVISE addressed, revised technical plan independently PASS; final look/build pending:** "Red", "DS" and "Red Air" missions count red automatically (D518).
+**BUILT on `codex/insights-mission-mix`, not merged; qualified FULL checks complete, fresh independent Astra R2 PASS, Claude's later read owed:** "Red", "DS" and "Red Air" missions count red automatically (D518).
+The revised plan is implemented: guarded context annotations, separate issued/working answers, immediate published
+Insights, actor/history/Undo, silent templates/unchanged tabbing, default-Off Logic control and twelve/Show all.
+Evidence and all33 qualified real-route results: `raptor-port/docs/handpass/2026-10-03-insights-mission-mix.md`.
+Three adapted audit assertions also fail identically on the unchanged planning snapshot (AL-mark relocation/issued
+key rewrite and Input Undo table landing); recorded limitations, no unrelated feature repair or false clean gate.
+Fresh Astra R1 found the dirty-text/Choose ordering defect, now repaired with twelve failing-first connected editor
+tests; repaired freeze4 functional walk and locked freeze5 affected walk passed, exact-freeze5 full unit7642/0,
+affected Raptor browser197/0 and perf4/0. Fresh NEW Astra second inspection PASS, zero new concrete defects,804 hashes
+matched. Full report: `raptor-port/docs/handpass/2026-10-03-insights-mission-mix-review-r2.md`; physical iPhone unverified.
+Nonblocking D489 maintenance note: history and
+Undo descriptions separately parse role-command human metadata; a shared description helper may prevent future drift.
+No extraction or later CSS-split work is required for this acceptance or started in this batch.
+**D532 — final look approved 3 Oct 26 ("ok approved"):** complete 18-picture phone/desktop/short gallery accepted,
+including Choose/Change, Working/Published context labels, latest-published read-only Remarks and both Board entry places.
+Implementation now authorized in the isolated new build chat under the unchanged revised plan. FULL checks, all33,
+fresh Astra inspection and Claude's later code/scenario read before main remain required; no merge/main push/PR.
 Other missions remain blue unless DS/RED in Remarks or a non-exact Mission name cues a Blue/Red role question; its answer covers
 the whole formation (D517). No extra red indicator appears on schedule lines (D519).
 D520 approves the after-edit question below formation AREA, Remarks visible, temporary space removed after either answer.
@@ -1513,10 +1535,11 @@ role" button while its Remarks box is edited — never on passing through; D530 
 included, with no amendment and no effect on sign-offs (wording changes still wait) — it replaces "answers on an issued day wait
 for the amendment" above and in D478/D523/D526; D531 a Mission box containing DS or RED that is not exactly DS / RED / RED AIR
 asks, never guesses. The frozen plan predates all three and stays unchanged. NEW revision and independent read are done;
-his complete final picture agreement is next. New build chat created isolated `codex/insights-mission-mix` from refreshed
-planning baseline `5f9bf978`; source untouched. All 18 final phone/desktop/short-phone pictures inspected; independent
+his complete final picture agreement is now D532. New build chat created isolated `codex/insights-mission-mix` from refreshed
+planning baseline `5f9bf978`. At design approval source was untouched; implementation and checks now use that isolated branch.
+All 18 final phone/desktop/short-phone design pictures inspected; independent
 Astra design read PASS after corrections. Gallery `raptor-port/docs/img/insights-final-look/index.html`; complete evidence
-and responses `raptor-port/docs/superpowers/plans/2026-10-03-insights-final-look.md`. D532 remains next; no new ruling.
+and responses `raptor-port/docs/superpowers/plans/2026-10-03-insights-final-look.md`. D532 recorded before source work; D533 next.
 
 ### [DISCARD-MARKS-REMOVE] Remove the "Discard marks" button from the Amendments box (D488, 2 Oct 26)
 **BUILT 2 Oct 26, not merged:** `codex/discard-marks-remove`; Sol 6.1 built, fresh Astra final inspection PASS, FULL gates/runtime passed (one already-filed browser retry disclosed). Evidence and complete inspection response are on that branch in `raptor-port/docs/handpass/2026-10-02-discard-marks-remove.md` and `…-review.md`. Claude's further code/scenario/working-guide reads after Monday 5 Oct 26, 19:00, and owner look remain owed before main. The phone item is archived as moot. The original build recipe below is retained for review.

@@ -1,0 +1,231 @@
+[
+  {
+    "run": "freeze-1-editing",
+    "opened": [
+      "desktop-logic-off.png",
+      "desktop-logic-on.png",
+      "desktop-mission-question.png",
+      "desktop-remarks-question.png",
+      "desktop-S08-S11-S12-failure.png"
+    ],
+    "scope": "Preserved intermediate and failure evidence; not final acceptance",
+    "inspector": "Sol host, running-app picture inspection"
+  },
+  {
+    "run": "freeze-1-editing-2",
+    "opened": [
+      "desktop-change-action.png",
+      "desktop-height-700.png",
+      "desktop-insights-all.png",
+      "desktop-insights-twelve.png",
+      "desktop-logic-off.png",
+      "desktop-logic-on.png",
+      "desktop-mission-question.png",
+      "desktop-remarks-question.png",
+      "desktop-S25-S27-S31-failure.png"
+    ],
+    "scope": "Preserved intermediate and failure evidence; not final acceptance",
+    "inspector": "Sol host, running-app picture inspection"
+  },
+  {
+    "run": "freeze-1-editing-3",
+    "opened": [
+      "desktop-change-action.png",
+      "desktop-logic-off.png",
+      "desktop-logic-on.png",
+      "desktop-mission-question.png",
+      "desktop-remarks-question.png",
+      "desktop-S06-S08-answered-failure.png"
+    ],
+    "scope": "Preserved intermediate and failure evidence; not final acceptance",
+    "inspector": "Sol host, running-app picture inspection"
+  },
+  {
+    "run": "freeze-1-editing-4",
+    "opened": [
+      "desktop-change-action.png",
+      "desktop-insights-all.png",
+      "desktop-insights-twelve.png",
+      "desktop-logic-off.png",
+      "desktop-logic-on.png",
+      "desktop-mission-question.png",
+      "desktop-remarks-question.png",
+      "desktop-S24-S29-S30-failure.png"
+    ],
+    "scope": "Preserved intermediate and failure evidence; not final acceptance",
+    "inspector": "Sol host, running-app picture inspection"
+  },
+  {
+    "run": "freeze-2-editing",
+    "opened": [
+      "desktop-change-action.png",
+      "desktop-everything-board.png",
+      "desktop-height-700.png",
+      "desktop-insights-all.png",
+      "desktop-insights-twelve.png",
+      "desktop-logic-off.png",
+      "desktop-logic-on.png",
+      "desktop-mission-question.png",
+      "desktop-remarks-question.png",
+      "desktop-structural-question.png",
+      "desktop-week-editor-failure.png"
+    ],
+    "scope": "Preserved intermediate and failure evidence; not final acceptance",
+    "inspector": "Sol host, running-app picture inspection"
+  },
+  {
+    "run": "freeze-2-editing-r2",
+    "opened": [
+      "desktop-change-action.png",
+      "desktop-height-700.png",
+      "desktop-insights-all.png",
+      "desktop-insights-twelve.png",
+      "desktop-logic-off.png",
+      "desktop-logic-on.png",
+      "desktop-mission-question.png",
+      "desktop-remarks-question.png"
+    ],
+    "scope": "Preserved intermediate and failure evidence; not final acceptance",
+    "inspector": "Sol host, running-app picture inspection"
+  },
+  {
+    "run": "freeze-2-editing-r3",
+    "opened": [
+      "desktop-change-action.png",
+      "desktop-everything-board.png",
+      "desktop-height-700.png",
+      "desktop-insights-all.png",
+      "desktop-insights-twelve.png",
+      "desktop-logic-off.png",
+      "desktop-logic-on.png",
+      "desktop-mission-question.png",
+      "desktop-remarks-question.png",
+      "desktop-structural-question.png",
+      "desktop-week-answered.png",
+      "desktop-week-keyboard-selection.png",
+      "desktop-week-question.png",
+      "phone-change-action.png",
+      "phone-everything-board.png",
+      "phone-height-430.png",
+      "phone-height-568.png",
+      "phone-insights-all.png",
+      "phone-insights-twelve.png",
+      "phone-logic-off.png",
+      "phone-logic-on.png",
+      "phone-mission-question.png",
+      "phone-remarks-question.png",
+      "phone-structural-question.png",
+      "phone-week-answered.png",
+      "phone-week-keyboard-selection.png",
+      "phone-week-question.png"
+    ],
+    "scope": "20 functional checks pass; phone toolbar visual defect subsequently repaired in freeze3",
+    "inspector": "Sol host, running-app picture inspection"
+  },
+  {
+    "run": "freeze-3-phone",
+    "opened": [
+      "phone-change-action.png",
+      "phone-everything-board.png",
+      "phone-height-430.png",
+      "phone-height-568.png",
+      "phone-insights-all.png",
+      "phone-insights-twelve.png",
+      "phone-logic-off.png",
+      "phone-logic-on.png",
+      "phone-mission-question.png",
+      "phone-remarks-question.png",
+      "phone-structural-question.png",
+      "phone-week-answered.png",
+      "phone-week-keyboard-selection.png",
+      "phone-week-question.png"
+    ],
+    "scope": "Final phone CSS corrected; actual controls reachable",
+    "inspector": "Sol host, running-app picture inspection"
+  },
+  {
+    "run": "freeze-4-editing",
+    "opened": [
+      "desktop-logic-off.png",
+      "desktop-logic-on.png",
+      "desktop-Board-dirty-choose.png",
+      "desktop-R1-dirty-Board-failure.png"
+    ],
+    "scope": "Preserved harness failure: after answer the original field remained focused; repeated click was not a real refocus for Change. First dirty Choose passed; no final acceptance from partial run.",
+    "inspector": "Sol host, every saved image opened"
+  },
+  {
+    "run": "freeze-4-editing-r2",
+    "opened": [
+      "desktop-logic-off.png",
+      "desktop-logic-on.png",
+      "desktop-Board-dirty-choose.png",
+      "desktop-Board-dirty-open-answer.png",
+      "desktop-Board-dirty-exact-DS.png",
+      "desktop-mission-question.png",
+      "desktop-remarks-question.png",
+      "desktop-change-action.png",
+      "desktop-insights-twelve.png",
+      "desktop-insights-all.png",
+      "desktop-height-700.png",
+      "desktop-everything-board.png",
+      "desktop-structural-question.png",
+      "desktop-week-question.png",
+      "desktop-week-answered.png",
+      "desktop-week-keyboard-selection.png",
+      "desktop-week-dirty-choose.png",
+      "desktop-week-dirty-open-answer.png",
+      "desktop-week-dirty-exact-DS.png",
+      "phone-logic-off.png",
+      "phone-logic-on.png",
+      "phone-Board-dirty-choose.png",
+      "phone-Board-dirty-open-answer.png",
+      "phone-Board-dirty-exact-DS.png",
+      "phone-mission-question.png",
+      "phone-remarks-question.png",
+      "phone-change-action.png",
+      "phone-insights-twelve.png",
+      "phone-insights-all.png",
+      "phone-height-568.png",
+      "phone-height-430.png",
+      "phone-everything-board.png",
+      "phone-structural-question.png",
+      "phone-week-question.png",
+      "phone-week-answered.png",
+      "phone-week-keyboard-selection.png",
+      "phone-week-dirty-choose.png",
+      "phone-week-dirty-open-answer.png",
+      "phone-week-dirty-exact-DS.png"
+    ],
+    "allUniquePicturesOpened": true,
+    "openedAtOriginalResolution": true,
+    "pictureReferences": 40,
+    "uniquePhysicalPictures": 39,
+    "duplicatePicture": {
+      "file": "desktop-height-700.png",
+      "references": 2,
+      "qualification": "Opened the one surviving physical image. The earlier capture at the same path is unavailable; this is not two independently inspected pictures."
+    },
+    "scope": "Independent picture inspection only; no browser run, source/test/driver changes, or code approval.",
+    "inspector": "Astra coordinator, every unique PNG opened at original resolution",
+    "runResultRead": "The result file reports 24 PASS, 0 FAIL, errors []. Those are host runtime assertions, separate from this visual inspection.",
+    "findings": [
+      "Desktop and phone Board Mission/Remarks questions show Working copy, the formation name, and Blue/Red/Later below the formation. Change mission role occupies its own row and does not cover Remarks. Desktop and phone week pictures likewise keep the prompt/action below the formation.",
+      "Dirty Choose pictures show the updated BRAVO text with FROM selected; dirty already-open-answer pictures show updated ECHO text without the question. Exact-DS pictures show no question. These pixels support the visible state; command order and context identity are established by the runtime assertions, not the pictures alone.",
+      "Desktop and phone keyboard-selection pictures visibly retain selected text in the original Remarks location while the Change action is shown. The phone week Remarks column is narrow and wraps the text into several lines; it remains within the column. A still image cannot prove node identity or native keyboard event order.",
+      "Phone Board uses the contained two-row toolbar with More; no duplicate desktop Insights button or toolbar overlap is visible. The AIRCREW rail remains to the right of the prompt and its three buttons. Desktop roster/sidebar and toolbar remain visible without intersecting the role controls.",
+      "At desktop height 700, phone height 568, and phone height 430, the focused Board Remarks field and all three question buttons are visible together after scrolling. The 430-high picture leaves very little content below the question, but the full question fits.",
+      "Logic Off/On state labels and switches are clear at both widths. Phone description wraps inside the card without colliding with the switch. On captures show editing controls; Off captures show the Edit rules entry.",
+      "Both Insights modal widths show the week title, close control, four totals, Blue/Red legend, total-only explanation, split rows with separate values, and total-only rows without invented splits. Phone totals arrange into two columns; labels and count columns fit.",
+      "Twelve-row modal pictures show Show all 40 and the beginning of work hours. All-row pictures visibly expand the flying list beyond twelve; remaining rows and the hours section extend below the captured viewport.",
+      "Structural-question pictures show one role question below the remaining formation. Dense Board pictures keep notes, common programme and surrounding controls arranged within the available surface. No new visible role-control overlap or clipping blocker was found in the inspected pictures."
+    ],
+    "limitations": [
+      "Chromium phone emulation does not establish physical iPhone/Safari behavior, virtual-keyboard resizing, touch selection handles, or operating-system keyboard behavior.",
+      "Some Logic, dirty-action and week captures include Saving indicators or temporary toasts; a still picture is not evidence that persistence had completed. Toasts cover small unrelated lower portions in some captures, without covering the role question buttons.",
+      "Show all pictures do not show all 40 rows, the full hours section, or a completed scroll to the bottom. Completeness/reopening/scroll interactions rely on the separately reported runtime checks.",
+      "The surviving desktop-height-700.png is a Board question picture. The duplicated result reference does not provide a second short-height state.",
+      "These pictures do not independently establish persistence, Undo/Redo, async ordering, CPU timings, DOM counts, accessibility semantics, or hit testing. This is not final code approval."
+    ]
+  }
+]

@@ -31,6 +31,7 @@ import { registerConverter, type Converter } from '../storage/fold'
 import type { Entry } from '../storage/backend'
 import type { Change, CommitEnvelope, LogicalCollection } from '../command/types'
 import { wireChangeBatches } from './changebatch'
+import { hydrateRoles } from './mission-roles'
 /* the change history's and the accounts' one-time conversions (the fold's `elog` and `accounts` converters — phase 4) */
 import './settingsrows'
 import { wireRowConsumer, registerComposer, registerMapper, type RowWrite } from './rowmap'
@@ -152,6 +153,7 @@ function readStoredWeek(rows: WeekRows, wk: string): { json: string; preserved: 
 
 /** whiteboard → module singletons; call BEFORE initStore() */
 export function hydrate(wb: Whiteboard): void {
+  hydrateRoles(wb.keys('settings').filter(k=>k.startsWith('missionrole:')).map(k=>[k.slice('missionrole:'.length),parse(wb.get('settings',k))] as [string,unknown]))
   /* [DB-READINESS] group A, phase 0 (plan §2.8) — "already started" is the stamp's `initialized`,
      which seeds skip on (state/store.ts initStore). A STARTED store holding no inputs record has no
      inputs — the seed module's rows are cleared, never shown. Only a store stamped the old way (a
@@ -365,6 +367,7 @@ export function wireRows(wb: Whiteboard): void {
   registerMapper('inputs', (c, env) => (env?.type === SCHED_TYPES.load ? [] : rowOf('inputs')(c)))
   registerMapper('people', rowOf('people'))
   registerMapper('plan', rowOf('plan'))
+  registerMapper('insights.role', c=>[{collection:'settings',id:'missionrole:'+c.id,value:c.op==='delete'?null:JSON.stringify(c.after)}])
   unwireRows?.()
   unwireRows = wireRowConsumer(wb)
 }

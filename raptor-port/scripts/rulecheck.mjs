@@ -236,6 +236,22 @@ const RULES = {
   /* [INSIGHTS-WHICH-COPY] (1 Oct 26 — D477, D478). Register:
      docs/superpowers/specs/2026-10-01-insights-which-copy-behaviour-register.md */
   IN1: 'Insights counts each day\'s latest published version; the working copy only for a day not yet published',
+  MIX1: 'mission tracking defaults Off and remains separate from warning rules',
+  MIX2: 'exact DS/RED/RED AIR is automatic Red; conditional cues are not guessed',
+  MIX3: 'context v1 uses supported normalized mission and sorted unique cue clauses',
+  MIX4: 'one formation role follows unchanged seat/cancellation/standby counting',
+  MIX5: 'qualifying own edits ask; unchanged tabbing/enabling/Later never burst',
+  MIX6: 'text saves before a separate answer; Later records no answer',
+  MIX7: 'reset/navigation/context/version changes invalidate stale offers',
+  MIX8: 'answer changes only the separate annotation, never signed programme',
+  MIX9: 'published and working wording use independent immediate answers',
+  MIX10: 'fresh template seeds are validated and day/answers undo or roll back together',
+  MIX11: 'central permission guards refuse member/guest/pending/Off/forged role writes',
+  MIX12: 'role saves use the real sealed pipeline, retry/replay and empty/malformed hydration',
+  MIX13: 'role Undo/Redo restores exact records with correct week/day landing',
+  MIX14: 'answer/correction history names actor/date/sides; no-op/refusal adds none',
+  MIX15: 'twelve/all/reset, unresolved total bars and escaped/fallback labels share one renderer',
+  MIX16: 'desktop and phone Board doors open the topmost shared Insights modal',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

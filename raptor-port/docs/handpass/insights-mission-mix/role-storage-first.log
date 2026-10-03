@@ -1,0 +1,48 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/state/mission-roles.test.ts (5 tests | 5 failed) 43ms
+   × real answer intent writes one annotation, keeps the programme byte-for-byte, and round-trips live Undo 27ms
+   × same side makes no envelope; stale context and a forged member intent refuse without touching the answer 4ms
+   × tracking defaults Off on absent/malformed records and toggles through real settings Undo 3ms
+   × resetting hydration clears old in-memory answers; read/write clone; a failing multi-store transaction rolls back 4ms
+   × role identities are week/date/context records, outside ordinary settings capture 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/state/mission-roles.test.ts > real answer intent writes one annotation, keeps the programme byte-for-byte, and round-trips live Undo
+ FAIL  |raptor| src/state/mission-roles.test.ts > same side makes no envelope; stale context and a forged member intent refuse without touching the answer
+ FAIL  |raptor| src/state/mission-roles.test.ts > tracking defaults Off on absent/malformed records and toggles through real settings Undo
+ FAIL  |raptor| src/state/mission-roles.test.ts > resetting hydration clears old in-memory answers; read/write clone; a failing multi-store transaction rolls back
+ FAIL  |raptor| src/state/mission-roles.test.ts > role identities are week/date/context records, outside ordinary settings capture
+TypeError: Cannot read properties of undefined (reading 'split')
+ ❯ toMin src/engine/time.ts:2:43
+      1| import { VCONF } from './rules'
+      2| export const toMin=(t:any)=>{const[h,m]=t.split(':').map(Number);retur…
+       |                                           ^
+      3| export const fromMin=(m:any)=>String(Math.floor(m/60)%24).padStart(2,'…
+      4| export function hhmm(m:any){return String(Math.floor(m/60)).padStart(2…
+ ❯ src/engine/events.ts:341:19
+ ❯ src/engine/events.ts:313:20
+ ❯ buildDay src/engine/events.ts:311:19
+ ❯ src/engine/events.ts:577:35
+ ❯ collectEvents src/engine/events.ts:577:15
+ ❯ validateCore src/engine/validate.ts:280:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  15:04:53
+   Duration  3.67s (transform 2.40s, setup 53ms, import 2.58s, tests 43ms, environment 799ms)
+

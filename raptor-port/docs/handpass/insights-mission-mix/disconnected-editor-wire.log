@@ -1,0 +1,126 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/ui/mission-role-offer.test.tsx (11 tests | 6 failed) 7533ms
+   × a real week Remarks commit saves first, asks once, and answers only the formation annotation 779ms
+   × unchanged tabbing, enabling and Later never save an answer or reopen the automatic question 488ms
+   × changing an unanswered cue to another cue asks again, while a noncue/timing edit does not 478ms
+   × removing one aircraft through the real Board route asks for the remaining formation changed context 816ms
+   × MIX6 unchanged blur then immediate Remarks refocus retains its manual Choose after queued work 715ms
+   × MIX6 keyboard activation returns to the identical Remarks node and retained selection 721ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > a real week Remarks commit saves first, asks once, and answers only the formation annotation
+AssertionError: expected  to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/ui/mission-role-offer.test.tsx:41:63
+     39|   await settle()
+     40|   expect(txtGet('fr:0.0.0.0')).toBe('DS FOR EAGLE')
+     41|   expect(document.querySelectorAll('.mission-role-question')).toHaveLe…
+       |                                                               ^
+     42|   const f=DAYS[0].waves[0]!.formations[0]!,t=roleTarget(0,f.rid!)!
+     43|   const n=commandStream().length;await click(q('[data-role-side="red"]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > unchanged tabbing, enabling and Later never save an answer or reopen the automatic question
+TypeError: Cannot read properties of null (reading 'dispatchEvent')
+ ❯ src/ui/mission-role-offer.test.tsx:25:52
+     23| const q=(s:string)=>document.querySelector<HTMLElement>(s)!
+     24| const settle=()=>act(async()=>{await new Promise(r=>setTimeout(r,20))})
+     25| const click=async(el:HTMLElement)=>act(async()=>el.dispatchEvent(new M…
+       |                                                    ^
+     26| beforeEach(async()=>{
+     27|   const mem:Record<string,string>={};storeBackend.impl={getItem:k=>mem…
+ ❯ process.env.NODE_ENV.exports.act ../../../../raptor-port/node_modules/react/cjs/react.development.js:814:22
+ ❯ click src/ui/mission-role-offer.test.tsx:25:36
+ ❯ src/ui/mission-role-offer.test.tsx:51:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > changing an unanswered cue to another cue asks again, while a noncue/timing edit does not
+TypeError: Cannot read properties of null (reading 'dispatchEvent')
+ ❯ src/ui/mission-role-offer.test.tsx:25:52
+     23| const q=(s:string)=>document.querySelector<HTMLElement>(s)!
+     24| const settle=()=>act(async()=>{await new Promise(r=>setTimeout(r,20))})
+     25| const click=async(el:HTMLElement)=>act(async()=>el.dispatchEvent(new M…
+       |                                                    ^
+     26| beforeEach(async()=>{
+     27|   const mem:Record<string,string>={};storeBackend.impl={getItem:k=>mem…
+ ❯ process.env.NODE_ENV.exports.act ../../../../raptor-port/node_modules/react/cjs/react.development.js:814:22
+ ❯ click src/ui/mission-role-offer.test.tsx:25:36
+ ❯ src/ui/mission-role-offer.test.tsx:62:142
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > removing one aircraft through the real Board route asks for the remaining formation changed context
+AssertionError: expected  to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/ui/mission-role-offer.test.tsx:81:63
+     79|   await click(q('#sbBoard [data-ldel="0.0.0.0"]'));await settle()
+     80|   expect(DAYS[0].waves[0]!.formations[0]!.aircraft.length).toBe(count-…
+     81|   expect(document.querySelectorAll('.mission-role-question')).toHaveLe…
+       |                                                               ^
+     82| })
+     83| it('a reset between text commit and delayed offer invalidates the queu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 unchanged blur then immediate Remarks refocus retains its manual Choose after queued work
+TypeError: Cannot read properties of null (reading 'dispatchEvent')
+ ❯ src/ui/mission-role-offer.test.tsx:25:52
+     23| const q=(s:string)=>document.querySelector<HTMLElement>(s)!
+     24| const settle=()=>act(async()=>{await new Promise(r=>setTimeout(r,20))})
+     25| const click=async(el:HTMLElement)=>act(async()=>el.dispatchEvent(new M…
+       |                                                    ^
+     26| beforeEach(async()=>{
+     27|   const mem:Record<string,string>={};storeBackend.impl={getItem:k=>mem…
+ ❯ process.env.NODE_ENV.exports.act ../../../../raptor-port/node_modules/react/cjs/react.development.js:814:22
+ ❯ click src/ui/mission-role-offer.test.tsx:25:36
+ ❯ src/ui/mission-role-offer.test.tsx:92:139
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 keyboard activation returns to the identical Remarks node and retained selection
+TypeError: Cannot read properties of null (reading 'dispatchEvent')
+ ❯ src/ui/mission-role-offer.test.tsx:25:52
+     23| const q=(s:string)=>document.querySelector<HTMLElement>(s)!
+     24| const settle=()=>act(async()=>{await new Promise(r=>setTimeout(r,20))})
+     25| const click=async(el:HTMLElement)=>act(async()=>el.dispatchEvent(new M…
+       |                                                    ^
+     26| beforeEach(async()=>{
+     27|   const mem:Record<string,string>={};storeBackend.impl={getItem:k=>mem…
+ ❯ process.env.NODE_ENV.exports.act ../../../../raptor-port/node_modules/react/cjs/react.development.js:814:22
+ ❯ click src/ui/mission-role-offer.test.tsx:25:36
+ ❯ src/ui/mission-role-offer.test.tsx:99:139
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 5 passed (11)
+   Start at  16:12:33
+   Duration  12.32s (transform 3.40s, setup 58ms, import 3.66s, tests 7.53s, environment 865ms)
+

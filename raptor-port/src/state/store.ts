@@ -18,6 +18,8 @@ import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
+import { insightsLoad } from '../engine/insights-config'
+import { registerMissionRoles } from './mission-roles'
 import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -700,6 +702,7 @@ export function wireStore() {
   /* phase 3: the PEOPLE + SETTINGS command layer (their own enlistable stores,
      record registry, permissions). Idempotent. */
   registerPeopleSettingsCommandLayer()
+  registerMissionRoles()
   /* [ACCOUNTS] D200 (3): the command gate's authority is the ONE permissions matrix
      (state/perms.ts, which mirrors data-model.md §11). From here on every non-system
      command — the scheduler's, the roster's, the settings', undo's, the Leave War's
@@ -817,6 +820,7 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
      against the real roster, not the seed. */
   resyncPeopleBaseline()
   rulesLoad()
+  insightsLoad()
   storesLoad()
   lookaheadLoad()
   cxReasonsLoad()

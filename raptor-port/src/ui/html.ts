@@ -1737,7 +1737,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            broke both — a focused live warning lit a box inside last week's
            paper, and the tap could scroll into one. */
         const badAtt=noLen?`${PV?'':` data-warnkey="${fp}.ld"`} title="${esc((f.cs||w.label||'A flying line')+' '+FLT_NO_LEN_SAYS(parseHM(f.to),sa))}"`:'';
-        h+=`<div class="form${rowCls(f)}">
+        h+=`<div class="form${rowCls(f)}"${HOOKS.missionRoleEnabled()?` data-role-formation="${esc(f.rid||'')}" data-role-day="${di}"`:''}>
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa
             ? `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`

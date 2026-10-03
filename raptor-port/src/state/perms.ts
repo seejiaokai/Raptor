@@ -46,6 +46,7 @@ export const T = {
   qualification: 'Qualification',
   qualmark: 'QualMark',
   setting: 'Setting, SchemaVersion',
+  missionrole: 'MissionRoleAnswer',
   user: 'User',
   accessreq: 'AccessRequest',
   /* [DB-READINESS] group A, phase 4.4 (R3-04): each admin's own record of the requests he has had on screen — out of the
@@ -73,6 +74,7 @@ export const PERMS: Record<string, PermRow> = {
   [T.qualification]: row(cell('C R U D'), cell('R')),
   [T.qualmark]: row(cell('C R U D'), cell('R', 'C U D')),
   [T.setting]: row(cell('C R U D'), cell('R')),
+  [T.missionrole]: row(cell('C R U D'), cell('R'), cell('R')),
   [T.user]: row(cell('C R U D'), cell('', 'R')),
   [T.accessreq]: row(cell('R D'), NONE, NONE, cell('', 'C')),
   [T.reqseen]: row(cell('', 'C R U'), NONE),
@@ -252,9 +254,11 @@ const op = (table: string, act: Act, own: OwnRule = 'never', more?: [string, Act
   (more ? { table, act, own, more } : { table, act, own })
 
 const SETTINGS_KEYS_ALL = ['rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
-  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'guestview'] as const
+  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'guestview', 'insights'] as const
 
 export const COMMAND_OPS: Record<string, CommandOp> = {
+  'insights.role.set': op(T.missionrole, 'U'),
+  'insights.role.copy': op(T.missionrole, 'C'),
   /* the scheduler — its writes are the scheduler's (admin); a joined child command is
      never re-authorised, so a member's own input landing a row on a published day's
      working copy runs inside the authorised inputs.write and is unaffected */
@@ -455,6 +459,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         return `an admin's record (${where})`
       case 'lw.war': case 'lw.ledger': case 'lw.opening': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.label': case 'lw.config':
       case 'plan':
+      case 'insights.role':
         return `an admin's record (${where})`
       default: break                       // the Tracker (the schedule and the week stash are refused above)
     }

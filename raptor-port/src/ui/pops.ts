@@ -4,7 +4,9 @@ import { VIEW_RESET } from '../state/view'
 export let DAYPOP: number | null = null
 export function setDayPop(di: number | null) { DAYPOP = di }
 export let INSIGHTS = false
-export function setInsights(on: boolean) { INSIGHTS = on }
+export let INSIGHTS_ALL = false
+export function setInsights(on: boolean) { if (!on || !INSIGHTS) INSIGHTS_ALL=false; INSIGHTS = on }
+export function setInsightsAll(on: boolean) { INSIGHTS_ALL=on }
 /* the airspace/traffic popup: which wave it is looking at, as 'di|gi' */
 export let AIRKEY: string | null = null
 export function setAirKey(k: string | null) { AIRKEY = k }
@@ -120,6 +122,7 @@ export type { AvailWin, AvailBox } from '../state/view'
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },
+  { name: 'INSIGHTS_ALL', reset: () => setInsightsAll(false) },
   { name: 'AIRKEY', reset: () => setAirKey(null) },
   { name: 'TPLEDIT', reset: () => setTplEdit(false) },
   { name: 'WAVEEDIT', reset: () => setWaveEdit(false) },
@@ -134,3 +137,4 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
 ]
 export function resetPopsForSession(): void { for (const p of POPS_RESET) p.reset() }
 VIEW_RESET.push({ name: 'POPS', scopes: ['session'], reset: resetPopsForSession })
+VIEW_RESET.push({name:'INSIGHTS_ALL',scopes:['week'],reset:()=>setInsightsAll(false)})

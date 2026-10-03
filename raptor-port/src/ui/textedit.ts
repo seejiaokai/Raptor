@@ -37,7 +37,7 @@ function txtCommit() {
   setTimeout(() => {
     TXTQ = 0
     const a = document.activeElement as any
-    if (a && a.closest && (a.closest('[data-txt]') || a.isContentEditable)) return
+    if (editingText()) return
     afterSchedMutate()
   }, 0)
 }
@@ -334,5 +334,5 @@ export function routeKeyDown(e: KeyboardEvent) {
    under the caret (the reference's txtCommit guard, as a predicate) */
 export function editingText() {
   const a = document.activeElement as any
-  return !!(a && a.closest && (a.closest('[data-txt]') || a.closest('[data-inp]') || a.isContentEditable))
+  return !!(a && a.closest && (a.closest('[data-txt],[data-bfld],[data-inp],[data-role-remarks],[data-role-ui]') || a.isContentEditable))
 }

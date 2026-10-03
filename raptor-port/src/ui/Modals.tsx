@@ -15,7 +15,7 @@ import { esc, afterSchedMutate, dayDisplaysOfficial, CURPAGE, DPREV } from '../s
 import { isAdmin } from '../state/perms'
 import { notify } from '../state/store'
 import { dayInfoHTML, issuedFaceVer, withChipWorld } from './html'
-import { DAYPOP, setDayPop, INSIGHTS, setInsights, AIRKEY, setAirKey } from './pops'
+import { DAYPOP, setDayPop, INSIGHTS, setInsights, INSIGHTS_ALL, setInsightsAll, AIRKEY, setAirKey } from './pops'
 import { useVersion } from './useStore'
 
 export function DayPop() {
@@ -73,11 +73,14 @@ export function insightsHTML() {
     <div class="itile"><div class="n">${I.flyers.length}</div><div class="l">Aircrew flying</div></div>
     <div class="itile ${hard ? 'hard' : ''}"><div class="n">${I.issues}</div><div class="l">${hard} warning</div></div></div>`
   h += `<div class="isec-h">Flying load · sorties this week</div>`
-  I.flyers.slice(0, 12).forEach((f: any) => {
+  if(I.tracking) h+=`<div class="insights-legend"><span class="mix-blue">Blue</span><span class="mix-red">Red</span></div><p class="insights-explain">Total-only rows include unanswered mission roles.</p>`
+  I.flyers.slice(0, INSIGHTS_ALL ? I.flyers.length : 12).forEach((f: any) => {
     const p = PEOPLE[f.id]
-    h += `<div class="ibar"><span class="nm" title="${esc(p.name || '')}">${esc(p.cs)}</span><span class="track"><span class="fill" style="width:${Math.round(f.n / maxN * 100)}%"></span></span><span class="v">${f.n}</span></div>`
+    const mix=f.roleMix, split=I.tracking && mix && !mix.unresolved
+    const bar=split?`<span class="mix-segments" style="width:${f.n/maxN*100}%"><span class="mix-blue" style="width:${mix.blue/f.n*100}%"></span><span class="mix-red" style="width:${mix.red/f.n*100}%"></span></span>`:`<span class="fill" style="width:${f.n/maxN*100}%"></span>`
+    h += `<div class="ibar${I.tracking?' mission-mix-row':''}"><span class="nm" title="${esc(p?.name || '')}">${esc(p?.cs || f.id)}</span><span class="track">${bar}</span><span class="mix-numbers">${split?`<span class="mix-count-blue">${mix.blue}</span><span class="mix-count-red">${mix.red}</span>`:''}<span class="v">${f.n}</span></span></div>`
   })
-  if (I.flyers.length > 12) h += `<div style="color:var(--ink-3);font-size:11px;margin-top:4px">+ ${I.flyers.length - 12} more flying</div>`
+  if (I.flyers.length > 12) h += `<button type="button" class="abtn insights-show-all" data-insights-all>${INSIGHTS_ALL?'Show less ↑':`Show all ${I.flyers.length} ↓`}</button>`
   /* WORK HOURS (owner, 20 Aug 26 — "perhaps have a section to show everyone's
      work hours in the insights for the week"). Beside the flying load on
      purpose: the two answer the same question from opposite ends — who is
@@ -194,7 +197,7 @@ export function InsightsModal() {
     <div className="modal" id="insightModal" onClick={e => { if ((e.target as HTMLElement).id === 'insightModal') close() }}>
       <div className="modal-box" style={{ width: 600 }}>
         <div className="modal-head"><b>Week insights · {DAYS[0].dt} – {DAYS[DAYS.length - 1].dt}</b><button className="x" id="insightClose" onClick={close}>✕</button></div>
-        <div className="modal-body" id="insightBody" dangerouslySetInnerHTML={{ __html: insightsHTML() }} />
+        <div className="modal-body" id="insightBody" onClick={e=>{if((e.target as HTMLElement).closest('[data-insights-all]')) {setInsightsAll(!INSIGHTS_ALL);notify()}}} dangerouslySetInnerHTML={{ __html: insightsHTML() }} />
       </div>
     </div>
   )

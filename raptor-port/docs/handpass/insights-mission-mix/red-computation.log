@@ -1,0 +1,76 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/engine/insights-mission-mix.test.ts (3 tests | 2 failed) 35ms
+     × a person in both seats counts twice; a crew-empty aircraft still counts as a sortie 27ms
+     × a conditional role affects the whole formation; cancelled aircraft cue context but never count 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/engine/insights-mission-mix.test.ts > D512 D516 D517 D523 D531 — one same traversal for total and formation role > a person in both seats counts twice; a crew-empty aircraft still counts as a sortie
+AssertionError: expected { id: 'ignite', n: 3 } to match object { n: 3, roleMix: { blue: 2, …(2) } }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "n": 3,
+-   "roleMix": {
+-     "blue": 2,
+-     "red": 1,
+-     "unresolved": 0,
+-   },
+  }
+
+ ❯ src/engine/insights-mission-mix.test.ts:29:60
+     27|     expect(got.sorties).toBe(3)
+     28|     expect(got.forms).toBe(2)
+     29|     expect(got.flyers.find((p: any) => p.id === 'ignite')).toMatchObje…
+       |                                                            ^
+     30|   })
+     31|   it('a conditional role affects the whole formation; cancelled aircra…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |raptor| src/engine/insights-mission-mix.test.ts > D512 D516 D517 D523 D531 — one same traversal for total and formation role > a conditional role affects the whole formation; cancelled aircraft cue context but never count
+AssertionError: expected { id: 'ignite', n: 1 } to match object { n: 1, roleMix: { blue: +0, …(2) } }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "n": 1,
+-   "roleMix": {
+-     "blue": 0,
+-     "red": 0,
+-     "unresolved": 1,
+-   },
+  }
+
+ ❯ src/engine/insights-mission-mix.test.ts:36:91
+     34|     const got: any = computeInsights()
+     35|     expect(got.sorties).toBe(2)
+     36|     for (const id of ['ignite', 'bane']) expect(got.flyers.find((p: an…
+       |                                                                                           ^
+     37|     expect(got.flyers.some((p: any) => p.id === 'stiff')).toBe(false)
+     38|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  14:53:59
+   Duration  866ms (transform 577ms, setup 51ms, import 592ms, tests 35ms, environment 0ms)
+

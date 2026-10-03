@@ -9,7 +9,7 @@ import { SBDAY, CURPAGE, DPREV, HISTMODE, esc, restArmed, HLSET, SEARCH, HLOPEN,
 import { toggleChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
-import { setWeekCal } from './pops'
+import { setWeekCal, setInsights } from './pops'
 import { CalIcon, HistIcon, HlIcon } from './icons'
 import { HlChips } from './hlchips'
 import { oilShown, oilModeOn, toggleOilMode } from './oilmode'
@@ -390,6 +390,7 @@ export function SchedBoard() {
               aria-label="More — Sort all and the layout" title="Sort all · Phone / Desktop layout"
               onClick={() => setMoreOpen(o => !o)}>⋯</button>
             {moreOpen && <div className="sb-moremenu" id="sbMoreMenu" role="menu">
+              <button className="sb-moreitem" id="sbMoreInsights" role="menuitem" onClick={()=>{setMoreOpen(false);setInsights(true);notify()}}>Insights</button>
               {/* the same gate Sort all has on the desktop bar: edit mode, and not while a frozen published version is shown */}
               {open && HOOKS.editMode() && <button className="sb-moreitem" id="sbMoreSort" role="menuitem" disabled={SBDAY != null && DPREV.has(SBDAY)}
                 onClick={() => { setMoreOpen(false); if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi">⇅</span> Sort all</button>}
@@ -512,6 +513,8 @@ export function SchedBoard() {
               leaves Edit Schedule). Their own ids, so nothing on the page is doubled. */}
           <SyncChip id="sbSync" lblId="sbSyncLbl" />
           <BellButton id="sbBell" />
+          {/* Match the desktop-only day controls: hidden buttons are not direct phone-toolbar children. */}
+          <span className="sb-dayctl"><button className="abtn sb-insights" id="sbInsights" onClick={()=>{setInsights(true);notify()}}>Insights</button></span>
           {/* THE VERSION PICKER LEFT THIS BAR (owner, 26 Aug 26). It moved down
               into the board's sign-off strip, and since the 15 Sep 26 redesign
               that strip carries the ONE plans selector (boardSignHTML →

@@ -412,6 +412,23 @@ on the same seam — never a new stack.
 If a proposed feature can't be expressed as "emit/consume envelopes over this seam", that's the
 signal to stop and revisit the design — not to add a parallel mechanism.
 
+### Insights annotations (D518, D525, D529–D531)
+
+`insights.role.set` is a user command in `{ module:'insights', weekId }`, enlisting only `insights.roles`.
+`insights.role/<encoded-id>` records reconstruct their own supported identity/value; the command-stream mapper
+persists physical `settings/missionrole:<encoded-id>` rows. Settings capture deliberately excludes this namespace.
+The store's capture/restore/records/signature/write and changed-record permission gate are registered centrally.
+The global timeline derives exact before/after inverses, expected revisions, actor eligibility and week/day landing;
+role-only restore invalidates transient targets and repaints Insights without scheduler post-restore mutation,
+pending reconciliation, signature pruning or OIL writes. Annotation dates are navigation context, not a programme
+publication-boundary key: publication cannot block Undo of a display annotation. History says formation/role/context,
+old/new side, actor and date; no-op, Later and refusal emit no role line.
+
+The actual fresh-identity transport is day-template application. `pickDayTpl` enlists the scheduler and role stores
+before replacing the day; validated seeds are a joined `insights.role.copy` child. Day/answers/save batch/Undo are one
+closure and roll back together. Copy scope checks preexisting formation IDs and destination records for collisions.
+Template seeds stay outside ordinary day content. Tracking is a separate `settings/insights` global-Undo record.
+
 ## 6. Worked example — the one absence record ([ARCH-STACK] step 4, 20 Sep 26)
 
 Approved leave is the Raptor Input; the Leave War keeps only requests, OIL credits and notices. So

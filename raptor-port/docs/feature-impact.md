@@ -105,6 +105,20 @@ skips by name, so a move of two same-valued rows is no longer value-reconciled
 away; a draft-day move, or a move of a still-draft added row, keeps the ordinary
 field mark — see `docs/engine-rules.md` §Publishing.
 
+### Flow A1 — Insights mission-role annotation (D518, D524, D525, D529–D532)
+
+Qualifying own Mission/Remarks/structural edit → existing text/structure command saves first → shared transient
+offer adapter re-resolves formation/context → explicit Blue/Red → typed `insights.role.set` → guarded annotation
+store only → one role/history/change-log save group → latest-issued Insights redraw. Working and latest-published
+Remarks use distinct source contexts; historical preview/ordinary view/print/CSV expose no role writer. Focused
+Remarks offers temporary Choose/Change below AREA; Later has no command. No permanent formation field or marker.
+Off defaults to existing totals. Both editors and all Shell/Drawer/Board modal doors consume the same implementation.
+Template creation retains optional validated seeds outside day content; applying is a joined scheduler/annotation
+transaction. Same-RID alternate plans and version loads only select a context; they never replay annotations.
+Undo restores exact annotations and lands on their week/day without invoking scheduler restore side effects.
+Drift seams to pin: native Board `change` versus week `focusout`, stale queued callbacks, published/working origin,
+guarded physical settings namespace, atomic fresh-row copy, Show-all resets, and modal stacking above the Board.
+
 ### Flow B — a personal input added or edited (the owner's example)
 ```
 add form / row editor / week cell / board cell / board panel adds

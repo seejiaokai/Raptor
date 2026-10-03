@@ -4750,11 +4750,23 @@ owner's ask). Each late input now carries its OWN control on the board.
 
 ## Week Insights: work hours (owner, 20 Aug 26)
 
+**FINAL LOOK APPROVED (owner D532, 3 Oct 26):** final inspected phone/desktop pictures approve temporary Choose/Change
+mission role below AREA, Working copy / Published · version wording, latest-published read-only Remarks access,
+split/total-only chart with initial twelve plus Show all, desktop Board Insights beside the bell and phone entry in ⋯.
+The revised plan is implemented on `codex/insights-mission-mix`, awaiting independent code approval and Claude's
+post-reset read before main. Earlier final-picture pending statements below are fulfilled by D532; their settled
+behaviour remains binding. Final gallery/evidence: `docs/superpowers/plans/2026-10-03-insights-final-look.md`.
+Actual FULL checks, real-route scenario results and inspected running-bundle pictures:
+`docs/handpass/2026-10-03-insights-mission-mix.md`. The shared offer controller serves both editing routes and the
+latest-issued read-only Remarks door, without replacing the active field. It restores native keyboard selection
+after an explicit role action. Guarded annotations have their own history/Undo; no canonical programme role field.
+Phone Insights exists only in the Board's More menu; the desktop action remains beside the bell.
+
 **STANDBY ELIGIBILITY (owner D516, 3 Oct 26):** SC, AVALON and BB standby duties do not count as flying load. SC main
 counts towards work hours. The blue default for other mission names never turns these duties into sorties; retain the
 separate sortie-eligibility and work-hours calculations. This settles neither other duties' hours nor earned leave.
 
-**FORMATION ROLE AND CONDITIONAL QUESTION (owner D517–D519, 3 Oct 26 — approved direction, NOT YET BUILT):** the whole
+**FORMATION ROLE AND CONDITIONAL QUESTION (owner D517–D519, 3 Oct 26 — built on the branch):** the whole
 formation is on one side. With blue/red tracking enabled (D521), Mission names DS, RED and RED AIR count red automatically, with no Blue/Red question. Other
 missions remain blue unless DS or RED in aircraft Remarks or in a non-exact Mission name cues the question (D531); the answer,
 not free-text interpretation, decides the whole formation's role. No extra red indicator is drawn on schedule lines:
@@ -4762,10 +4774,10 @@ the scheduler's Remarks are sufficient. Existing mission-type dots, scheduler re
 meanings. **D520 approves the shown after-edit question below the formation's AREA strip:** D529 gates it on a qualifying
 own-edit transition, including Remarks/Mission or a single-target structural edit; unchanged focus/Tab never asks.
 Keep Remarks visible; either answer removes its temporary space. Wait for the tap/Tab transition to finish,
-preserving next focus. D525–D527 below settle retention, saved unanswered edits and correction; the complete technical
-plan and final remaining picture look still precede the new-chat build.
+preserving next focus. D525–D527 below settle retention, saved unanswered edits and correction; the approved revised
+plan and D532 pictures are the basis of the branch implementation.
 
-**QUESTION LIFECYCLE (owner D525–D527, 3 Oct 26 — approved, NOT YET BUILT):** remember the chosen formation role until
+**QUESTION LIFECYCLE (owner D525–D527, 3 Oct 26 — built on the branch):** remember the chosen formation role until
 Mission or relevant DS/RED support wording changes; crew/time changes do not ask again (D525). Save completed Remarks
 normally even if the question is left unanswered; derive whether the saved answer still applies after the relevant edit, leaving the
 role unresolved and the affected person's ordinary total bar intact (D526). Later choosing a role is a separate saved
@@ -4776,7 +4788,7 @@ Offer Change mission role temporarily while editing relevant Remarks (D527), reu
 permission; no permanent line marker. Named red Missions remain automatic, without overrides/questions. Recheck live
 formation identity/context/permission when answering; never apply an old popup's answer to a changed formation.
 
-**HIS ANSWERS TO THE OPUS 5.5 PLAN REVIEW (owner D529–D531, 3 Oct 26 — approved, NOT YET BUILT; they change parts of the
+**HIS ANSWERS TO THE OPUS 5.5 PLAN REVIEW (owner D529–D531, 3 Oct 26 — built on the branch; they change parts of the
 three paragraphs around this one, and win where they differ).**
 **When the question is asked (D529):** automatically only straight after the scheduler's own edit — to Remarks OR to the
 Mission — leaves a formation needing an answer. Passing through an unchanged Remarks box never asks, and Later is not
@@ -4792,18 +4804,23 @@ and not yet out means the published and the working copy can need different answ
 **A Mission box containing DS or RED that is not exactly DS / RED / RED AIR (D531)** — `DS-2`, `RED AIR 2`, `ACM/DS` —
 asks the question; it is never counted blue or red by guessing. The three exact names stay automatic red.
 
-**REVISED PLAN BINDING (3 Oct 26 — technical read PASS, final picture agreement pending):** the NEW Astra plan
+**REVISED PLAN BINDING (3 Oct 26 — technical read PASS, final picture agreement D532):** the NEW Astra plan
 `docs/superpowers/plans/2026-10-03-insights-mission-mix-build-plan-revised.md` keeps per-context role annotations outside
 day/issued/signature content, with their own guarded actor-history/Undo command. Unmatched old contexts remain saved;
 same-context saved-plan/version loading does not replay an old answer over a later correction. Published and working
 wording resolve separately. House `//` and `;` delimit context clauses; ordinary `/` remains support wording. Temporary
-actions insert without replacing the focused editor. For published A while working B differs, the concrete proposed door
-uses the Board's latest-published view and focusable read-only Remarks, with Published · version in the question;
-working access says Working copy when needed. No published programme edit or permanent marker. This door and text must
-be shown in the final pictures before the new-chat build. Complete Sol findings/dispositions and Astra's independent
-D529–D531 meaning PASS are in `docs/superpowers/plans/2026-10-03-insights-revised-plan-review.md`; no runtime proof claimed.
+actions insert without replacing the focused editor.
+Before Choose/Change or a question action, any dirty active Mission/Remarks for that formation commits through its
+existing editor writer without moving focus. The action then resolves the freshly saved context; no cached wording is
+answered. Later saves the text but no answer, and cue removal/exact automatic Mission retires the question. Published
+read-only Remarks never enter a programme writer. Text and role remain separate history/Undo commands.
+For published A while working B differs, the approved built door uses the Board's latest-published view and focusable
+read-only Remarks, with Published · version in the question;
+working access says Working copy when needed. No published programme edit or permanent marker. This door and text
+received D532 picture agreement before implementation. Complete plan findings/dispositions and Astra's independent
+D529–D531 meaning PASS are in `docs/superpowers/plans/2026-10-03-insights-revised-plan-review.md`; runtime proof is in the FULL sheet.
 
-**OPTIONAL SQUADRON TRACKING (owner D521, 3 Oct 26 — approved switch, NOT YET BUILT):** the Logic page provides a
+**OPTIONAL SQUADRON TRACKING (owner D521, 3 Oct 26 — built on the branch):** the Logic page provides a
 squadron-wide on/off setting for blue/red sortie tracking. D512's split and D518's questions apply when tracking is on;
 **D524 approves the shown Logic Insights control, labelled Track blue/red sorties and shown Off.**
 this does not turn off ordinary Insights, sortie totals or work hours. **D522: start Off at first squadron setup; enable
@@ -4812,21 +4829,21 @@ roles are chosen; no guessed colours or burst of questions.** Reuse applicable a
 no third category is added. Existing explicit settings survive loading. No per-user preference or data deletion is approved.
 Retaining valid answers while off is the proposed reversible behaviour; changed context cannot reuse stale answers.
 New role answers count at once under D530; changed issued-day wording still waits under D478. Exact incomplete-breakdown wording/resolution access
-remain design work; D525–D527 above settle the save/repeat/correction lifecycle.
+are now approved by D532; D525–D527 above settle the save/repeat/correction lifecycle.
 
 The older `[INSIGHTS-WORKING-COPY]` question is superseded by D478 below and the merged `[INSIGHTS-WHICH-COPY]` build;
 it is not an outstanding product choice.
 
-**SORTIE MISSION MIX (owner D512, 3 Oct 26 — approved categories, NOT YET BUILT).** Each person's existing weekly sortie
+**SORTIE MISSION MIX (owner D512, 3 Oct 26 — built on the branch).** Each person's existing weekly sortie
 bar splits into blue and red segments WHEN tracking is enabled and ALL their eligible roles are resolved (D521/D523):
 missions named "Red", "DS" and (D518) "Red Air" count red; other missions count blue
 except a role chosen through D518's conditional question above. A person
 with both kinds shows both segments within the one total bar. If any eligible role is unanswered, D523 keeps that person's
 ordinary total bar until resolved. This adds the mission mix to the sortie count; it does not
-change work-hours bars, sortie eligibility or the latest-issued-day rule below. The proposed picture and remaining design
-choices live in `superpowers/specs/2026-10-03-insights-mission-mix.md`; build with `[INSIGHTS-BOARD-DOOR]` in the Insights batch.
+change work-hours bars, sortie eligibility or the latest-issued-day rule below. The approved design and history
+live in `superpowers/specs/2026-10-03-insights-mission-mix.md`; built with `[INSIGHTS-BOARD-DOOR]` in the Insights batch.
 
-**LIST LENGTH (owner D513, 3 Oct 26 — approved, NOT YET BUILT):** show the first twelve flying people initially, with
+**LIST LENGTH (owner D513, 3 Oct 26 — built on the branch):** show the first twelve flying people initially, with
 Show all for the rest; retain total-descending/callsign ordering. Work-hours list stays complete as below.
 
 **DIRECTION OF SUPPORT (owner D514, 3 Oct 26):** DS for another formation means our flight is red air for them; DS wording
@@ -4842,7 +4859,7 @@ day are not counted until they go out; a hidden warning is not counted (D472), b
 (D477: 4 issues with 1 hidden read 3). One rule on EVERY page — Edit Schedule and the Scheduler Board included, and the
 pages with no schedule on them — and for every figure of the window, not only the issue counts. *(D477's first reading, "the
 schedule the page is showing", with Edit Schedule counting the working copy, was set aside by D478 the same evening.)*
-*(One exception, approved 3 Oct 26 and NOT YET BUILT — D530: a Blue/Red mission-role answer is not "a change waiting on the
+*(One exception, approved and built on the branch 3 Oct 26 — D530: a Blue/Red mission-role answer is not "a change waiting on the
 day"; it counts at once, published days included, with no amendment. Wording changes still wait. See the D529–D531 paragraph above.)*
 **As built:** every figure of the window — the four tiles, the flying load, the work hours, who is not flying, conflicts by
 type, by day — comes from ONE computation (`engine/insights.ts computeInsights`), which reads ONE world
@@ -4858,9 +4875,9 @@ published neighbours as published — the same judgement View-only Sched draws. 
 **A rule changed on the Logic page moves the work hours at once, published days included — as built, and ruled so (owner,
 D482, 1 Oct 26: "A rule change logic page should move the mentioned work hours").** A rule is not a change to a day: the
 app keeps no versions of its rules, and hours are worked out from the published day's content by today's rules.
-**The Scheduler Board gets a way to open the window (owner, D481, 1 Oct 26 — "Yes, give me an insights button") — NOT YET
-BUILT, `[INSIGHTS-BOARD-DOOR]`:** proposed to him — a button in the board's bar beside the bell on a desktop; inside the
-bar's ⋯ menu on a phone, whose bar is one row and full.
+**The Scheduler Board gets a way to open the window (owner, D481, 1 Oct 26 — "Yes, give me an insights button") — BUILT
+on `codex/insights-mission-mix`, `[INSIGHTS-BOARD-DOOR]`:** a button in the board's bar beside the bell on a desktop; inside
+the bar's ⋯ menu on a phone, whose bar stays one row. Both use the existing shared window and preserve the Board on close.
 *Before this build* every figure was worked out from the working copy on every page, so a change waiting on a published
 day — a hide included — already moved it.
 

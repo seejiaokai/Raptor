@@ -7,6 +7,7 @@
 */
 import type { Change, LogicalCollection } from '../command'
 import type { RecordCtx, RecordOwner, Module } from './types'
+import { decodeRoleId } from '../engine/mission-role'
 
 export function recordKey(c: { collection: string; id: string }): string {
   return `${c.collection}/${c.id}`
@@ -22,6 +23,7 @@ const WEEK_COLLS = new Set<string>([
    `<wk>#<di>` or `<wk>:<rest>`, so the week is the head before the first ':' or
    '#'. */
 export function weekOf(collection: string, id: string): string | null {
+  if (collection === 'insights.role') return decodeRoleId(id)?.weekKey ?? null
   return WEEK_COLLS.has(collection) ? id.split(/[:#]/)[0] : null
 }
 
@@ -37,6 +39,7 @@ function isoOfDay(wk: string, di: number): string {
   return `${dt.getUTCFullYear()}-${p(dt.getUTCMonth() + 1)}-${p(dt.getUTCDate())}`
 }
 export function dayKeyOf(collection: string, id: string): string | null {
+  if (collection === 'insights.role') return null // navigation only; never a publication/day-key barrier
   const wk = weekOf(collection, id)
   if (wk == null) return null
   const c = id.indexOf(':')
@@ -74,6 +77,7 @@ const MODULE_OF_COLL = (collection: string): Module => {
   if (collection === 'plan') return 'plan'
   if (collection === 'people') return 'people'
   if (collection === 'settings') return 'settings'
+  if (collection === 'insights.role') return 'insights'
   if (collection.startsWith('lw.')) return 'lw'
   if (collection.startsWith('trk.')) return 'trk'
   return 'sched'

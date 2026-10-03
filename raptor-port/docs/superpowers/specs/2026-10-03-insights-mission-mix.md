@@ -1,19 +1,27 @@
-# Insights mission mix — design in progress, 3 Oct 26
+# Insights mission mix — approved design and branch implementation, 3 Oct 26
+
+**Build status:** D532 approved the complete final look before source changes. The revised plan is implemented on
+isolated `codex/insights-mission-mix`, with qualified FULL checks complete and fresh independent Astra R2 PASS for freeze5.
+Current implementation evidence, all33 qualified routes, running-app pictures, repairs and limitations:
+`../../handpass/2026-10-03-insights-mission-mix.md`. Claude's later code/scenario read remains owed before main.
+Earlier prototype/pending statements below describe their historical stage; they do not cancel D532 or count as
+implementation proof. Frozen original/revised plans and earlier reviews are preserved.
 
 Status: D512–D531 settle categories, formation scope, conditional question/placement/lifecycle, no extra role label, optional
 Logic tracking starting Off, shown Logic control look and total bars until unanswered roles are resolved. Complete
-visual design and Board entry placement await his reply to the final inspected phone/desktop gallery;
-no application code is built here. Astra plans under D496; Sol independently challenges before building. D528 permits
+visual design and Board entry placement approved under D532;
+application implementation is on the separate build branch. Astra plans under D496; Sol independently challenges before building. D528 permits
 the owner's early Opus 5.5 plan review using remaining allowance; later code review remains owed before main. No merge/main push.
 
-## Final picture look — 3 Oct 26, awaiting owner agreement
+## Final picture look — D532 approved, 3 Oct 26
 
 The new isolated `codex/insights-mission-mix` checkout starts at refreshed planning baseline `5f9bf978`.
 [Final phone/desktop gallery](../../img/insights-final-look/index.html) shows temporary Choose/Change, Working/Published
 context wording, proposed latest-published read-only Remarks access, chart and Board placement. All 18 final pictures
 opened and inspected; independent Astra design read PASS after two presentation fixes. Complete responses, limitations,
 diagnostic preservation and fingerprints: [new final-look record](../plans/2026-10-03-insights-final-look.md).
-Source changes await his explicit agreement under D515. Default-Off Logic switch remains already approved (D524).
+Owner replied "ok approved" to this complete gallery (D532), fulfilling D515 before source work in this new build chat.
+Implement the unchanged revised plan on the isolated branch. Default-Off Logic switch remains already approved (D524).
 Design illustrations do not execute the 33 build scenarios or approve code. Frozen original plan/reviews unchanged.
 
 ## Early Opus plan review — D528, 3 Oct 26
@@ -68,9 +76,9 @@ Picture impact: the chart, Board entry placement, Logic control and below-AREA B
 An unanswered edit now has the temporary Choose mission role label, matching the existing Change mission role control's
 footprint. For a published answer while working wording differs, the concrete proposal uses the Board's existing latest-
 published viewing door: focus its read-only Remarks to reveal the same action, with Published · version in the question;
-working access says Working copy when needed. Older previews have no write action. This access/wording is pending his
-final picture agreement; no new permanent marker/dropdown or silent visual approval. Existing prototypes remain
-illustrations of the older lifecycle. The new final-look gallery above shows the refinement and awaits his agreement.
+working access says Working copy when needed. Older previews have no write action. This access/wording received
+final picture agreement under D532; no new permanent marker/dropdown. Existing prototypes remain
+illustrations of the older lifecycle. The approved new final-look gallery above shows the refinement.
 
 ## Current owner direction — D517–D527 supersedes the control proposals below
 

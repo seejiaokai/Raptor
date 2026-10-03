@@ -432,7 +432,9 @@ a later change to the standard is picked up rather than frozen in a browser.
 
 | Key | Value | Record |
 |---|---|---|
-| `daytpl` | `DayTpl[]` | `{ id, title, d: DayTplBlob }` — a whole saved day (the day shape above, minus date fields) |
+| `daytpl` | `DayTpl[]` | `{ id, title, d: DayTplBlob, missionRoleSeeds? }` — whole saved day, minus dates/crew/row IDs; optional `{ format:1, seeds:[{ path:[wave,formation], context, side }] }` outside `d`, validated against conditional context v1; applying creates fresh annotation IDs in the same structure transaction (D529–D531) |
+| `insights` | `{ trackBlueRedSorties:true }` or null | squadron Insights tracking; absent/malformed is Off; independently loaded, saved and undone; warning rules/search/reset/count/stamp do not consume it (D512, D524) |
+| `missionrole:<encoded-id>` | `MissionRoleAnswer` | one guarded row: `{ format:1, contextVersion:1, weekKey, dayISO, formationRid, context, side:'blue'\|'red' }`; ID = URI-encoded JSON tuple `[1,weekKey,dayISO,formationRid,context]`. Week is a real Monday, day within it. Unsupported or mismatched records remain stored and inert. Mapper alone writes these rows; raw settings writes refuse. Existing schema wipe removes these rows and filters them from an unfinished reset journal, without a schema bump (D530) |
 | `wavetpl` | `WaveTpl[]` | `{ id, title, kind: 'fly' \| 'sc' \| 'avalon' \| 'bb', lines: [{ cs, msn, to, ld, spare }] }` |
 | `wavehide` | `string[]` | hidden wave-template ids |
 | `wavedefault` | `string[]` | house wave order |

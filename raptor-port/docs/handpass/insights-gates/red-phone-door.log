@@ -1,0 +1,38 @@
+
+Running 1 test using 1 worker
+
+
+
+(node:36844) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[1/1] [raptor] › e2e\insights.spec.ts:7:9 › Insights real routes phone › D512/D515/D524/D532 default Off, Logic control, Board text before annotation answer
+  1) [raptor] › e2e\insights.spec.ts:7:9 › Insights real routes phone › D512/D515/D524/D532 default Off, Logic control, Board text before annotation answer 
+
+    Error: expect(locator).toBeHidden() failed
+
+    Locator:  locator('#sbInsights')
+    Expected: hidden
+    Received: visible
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeHidden" with timeout 5000ms
+      - waiting for locator('#sbInsights')
+        14 × locator resolved to <button id="sbInsights" class="abtn sb-insights">Insights</button>
+           - unexpected value "visible"
+
+
+      11 |       await go(page,'editsched');await page.locator('#eWeek [data-sbday="0"]').first().click()
+      12 |       // The phone's approved door lives in More, keeping its action row unchanged.
+    > 13 |       if(name==='phone')await expect(page.locator('#sbInsights')).toBeHidden()
+         |                                                                   ^
+      14 |       else await expect(page.locator('#sbInsights')).toBeVisible()
+      15 |       const field=page.locator('#sbBoard [data-bfld="fr:0.0.0.0"]:visible')
+      16 |       await field.fill('DS FOR EAGLE');await field.press('Tab')
+        at C:\Users\User\projects\Raptor\.claude\worktrees\codex-insights-mission-mix\raptor-port\e2e\insights.spec.ts:13:67
+
+    Error Context: test-results\insights-Insights-real-rou-14f4c-xt-before-annotation-answer-raptor\error-context.md
+
+
+  1 failed
+    [raptor] › e2e\insights.spec.ts:7:9 › Insights real routes phone › D512/D515/D524/D532 default Off, Logic control, Board text before annotation answer 

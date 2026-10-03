@@ -1,0 +1,50 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/state/mission-role-persist.test.ts (6 tests | 1 failed) 10148ms
+   × Undo during a slow accepted save wins over the older in-flight answer 10023ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/state/mission-role-persist.test.ts > Undo during a slow accepted save wins over the older in-flight answer
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/state/mission-role-persist.test.ts:57:27
+     55| it('Undo during a slow accepted save wins over the older in-flight ans…
+     56|   const {be,t}=await setup();be.latency=500;setMissionRole(t,'red');co…
+     57|   expect(globalUndo().ok).toBe(true);expect(readRole(t.id)).toBeUndefi…
+       |                           ^
+     58|   await vi.advanceTimersByTimeAsync(500);await sending;const final=pos…
+     59|   expect(be.peek('settings','missionrole:'+t.id)).toBeNull();be.latenc…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  |raptor| src/state/mission-role-persist.test.ts > Undo during a slow accepted save wins over the older in-flight answer
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+
+ Test Files  1 failed | 1 passed (2)
+ ❯ src/state/mission-role-persist.test.ts:33:1
+      Tests  1 failed | 16 passed (17)
+
+   Start at  15:27:52
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+   Duration  13.43s (transform 3.79s, setup 103ms, import 4.19s, tests 10.47s, environment 1.79s)
+

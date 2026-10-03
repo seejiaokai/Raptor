@@ -1,0 +1,12 @@
+src/state/mission-roles.test.ts(34,39): error TS2339: Property 'ok' does not exist on type 'CommitResult'.
+  Property 'ok' does not exist on type '{ queued: true; done: Promise<CommitResult>; }'.
+src/state/mission-roles.test.ts(45,71): error TS2339: Property 'ok' does not exist on type 'CommitResult'.
+  Property 'ok' does not exist on type '{ queued: true; done: Promise<CommitResult>; }'.
+src/state/mission-roles.test.ts(46,92): error TS2339: Property 'ok' does not exist on type 'CommitResult'.
+  Property 'ok' does not exist on type '{ queued: true; done: Promise<CommitResult>; }'.
+src/state/mission-roles.test.ts(49,34): error TS2339: Property 'ok' does not exist on type 'CommitResult'.
+  Property 'ok' does not exist on type '{ queued: true; done: Promise<CommitResult>; }'.
+src/state/mission-roles.test.ts(51,59): error TS2339: Property 'ok' does not exist on type 'CommitResult'.
+  Property 'ok' does not exist on type '{ queued: true; done: Promise<CommitResult>; }'.
+src/state/mission-roles.test.ts(65,243): error TS2339: Property 'ok' does not exist on type 'CommitResult'.
+  Property 'ok' does not exist on type '{ queued: true; done: Promise<CommitResult>; }'.

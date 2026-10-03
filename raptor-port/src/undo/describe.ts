@@ -80,6 +80,7 @@ const TYPE_PHRASE: Record<string, string> = {
 
 /* the settings records, by the page they are edited on */
 const SETTING_PHRASE: Record<string, string> = {
+  insights: 'Blue/Red sortie tracking',
   rules: 'a rule on the Logic page',
   qualcols: 'the LoX columns',
   dutytpl: 'a duty template',
@@ -102,6 +103,7 @@ function genericLabel(entry: UndoEntry): string {
     case 'plan': return 'a change to the plan'
     case 'people': return 'a change on Quals'
     case 'settings': return 'a settings change'
+    case 'insights': return 'a mission role'
     case 'lw': return 'a change on the Leave War'
     case 'trk': return 'a change to the tracker'
     default: return 'a change'
@@ -273,6 +275,13 @@ function inputsCount(entry: UndoEntry): number {
 export function describeEntry(entry: UndoEntry): string {
   /* read only what the entry holds — a partial one (no closure yet, a test's) is still described */
   if (!Array.isArray(entry.forward)) entry = { ...entry, forward: [] }
+  if (entry.type === 'insights.role.set') {
+    let name=''
+    try { const d=JSON.parse(entry.detail || 'null'); if(typeof d?.name==='string') name=d.name.trim().replace(/\s+/g,' ').slice(0,80) } catch { /* absent facts */ }
+    const change=entry.forward.find(c=>c.collection==='insights.role')
+    const side=(change?.after as any)?.side
+    return `the mission role${name ? ' for '+name : ''}${side==='blue' || side==='red' ? ' — '+(side==='blue'?'Blue':'Red') : ''}`
+  }
   if (entry.type === 'sched.text') return textLabel(entry.detail) || TYPE_PHRASE['sched.text']
   /* a warning hidden, or flagged again — which of the two, from the command's own detail ([WARN-HIDE-KEPT], D469) */
   if (entry.type === 'sched.warnMute') { const h = parseHideDetail(entry.detail); return h && !h.hidden ? 'flagging a warning again' : TYPE_PHRASE['sched.warnMute'] }

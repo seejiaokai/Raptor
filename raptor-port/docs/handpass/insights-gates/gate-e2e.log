@@ -1,0 +1,734 @@
+[WebServer] (node:37504) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+[WebServer]   - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+[WebServer] Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/ui/pan.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/EditWeek.tsx, src/ui/GuestApp.tsx, src/ui/Shell.tsx, src/ui/ViewWeek.tsx, src/ui/highlights.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/ui/drag.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/Shell.tsx, src/ui/board.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/ui/board-html.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/board.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/ui/board.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/state/undo-wire.ts, src/ui/DraftsModal.tsx, src/ui/SchedBoard.tsx, src/ui/WeekCal.tsx, src/ui/interactions.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/ui/palette-html.ts is dynamically imported by src/probe-bridge.ts but also statically imported by src/ui/EditWeek.tsx, src/ui/SchedBoard.tsx, dynamic import will not move module into another chunk.
+[WebServer] 
+
+[WebServer] (node:36004) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:44596) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+[WebServer]   - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+[WebServer] Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+
+Running 569 tests using 8 workers
+
+(node:33400) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:29288) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:1568) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:10648) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:5676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/569] [raptor] › e2e\amendbatch.spec.ts:48:7 › desktop: a changed puck wears its ALn tag and its edge is untouched — week and board (D92, D93, AM19)
+[2/569] [raptor] › e2e\availwin.spec.ts:61:7 › desktop: the window opened from the board is painted OVER the board, and closes
+(node:49844) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[3/569] [raptor] › e2e\availwin.spec.ts:61:7 › phone: the window opened from the board is painted OVER the board, and closes
+[4/569] [raptor] › e2e\amendbatch.spec.ts:48:7 › phone: a changed puck wears its ALn tag and its edge is untouched — week and board (D92, D93, AM19)
+(node:28980) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[5/569] [raptor] › e2e\availwin.spec.ts:89:5 › the window sits above the board and below every dialog layer
+(node:36404) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[6/569] [raptor] › e2e\availwin.spec.ts:156:5 › desktop: a window dragged, closed and opened again comes back to its corner (S11)
+[7/569] [raptor] › e2e\availwin.spec.ts:132:5 › phone: the window opens as the full-width bottom panel of the approved design (S8)
+[8/569] [raptor] › e2e\availwin.spec.ts:143:5 › desktop: the window opens skinny in the top-right corner, 212 wide (D40)
+[9/569] [raptor] › e2e\availwin.spec.ts:177:5 › desktop: a window dragged to the right edge stays reachable when the browser narrows (S15)
+[10/569] [raptor] › e2e\availwin.spec.ts:213:5 › a window dragged on a desktop becomes the phone panel on a phone, and gets its place back after
+[11/569] [raptor] › e2e\availwin.spec.ts:231:5 › phone: a panel dragged down follows a new phone width, bar still reachable
+[12/569] [raptor] › e2e\availwin.spec.ts:248:5 › desktop: a tap on the bar does not pin the window — widening the browser keeps it in its corner
+[13/569] [raptor] › e2e\availwin.spec.ts:259:5 › desktop: tapping a second chip while the window is open keeps it where he dragged it
+[14/569] [raptor] › e2e\availwin.spec.ts:315:9 › desktop 1440×900: the ALL AVAIL window opens clear of the board's preview bar, and follows it
+[15/569] [raptor] › e2e\availwin.spec.ts:315:9 › desktop 1440×900: the changes window opens clear of the board's preview bar, and follows it
+[16/569] [raptor] › e2e\availwin.spec.ts:315:9 › desktop 1440×700: the ALL AVAIL window opens clear of the board's preview bar, and follows it
+[17/569] [raptor] › e2e\availwin.spec.ts:315:9 › desktop 1440×700: the changes window opens clear of the board's preview bar, and follows it
+[18/569] [raptor] › e2e\availwin.spec.ts:350:5 › desktop: a window he dragged is NOT moved when a preview starts under it
+[19/569] [raptor] › e2e\availwin.spec.ts:362:5 › phone: the window stays the bottom panel over a preview (the bar is at the top of the board)
+[20/569] [raptor] › e2e\availwin.spec.ts:382:7 › phone, by finger › a finger tap on the count opens the window on the edit week — and arms nothing
+[21/569] [raptor] › e2e\changeswin.spec.ts:61:9 › the changes window — desktop › another person's changes: the day reads "N new", the OG tag is painted on the changed pucks, the window floats above the week
+[22/569] [raptor] › e2e\changeswin.spec.ts:110:9 › the changes window — desktop › the window floats above the scheduler board too
+[23/569] [raptor] › e2e\changeswin.spec.ts:61:9 › the changes window — phone › another person's changes: the day reads "N new", the OG tag is painted on the changed pucks, the window floats above the week
+[24/569] [raptor] › e2e\changeswin.spec.ts:110:9 › the changes window — phone › the window floats above the scheduler board too
+[25/569] [raptor] › e2e\changeswin.spec.ts:124:7 › two windows — the one pressed last is in front (Astra DP-10) › the ALL AVAIL window and the changes window trade places on a press, and neither climbs over a modal
+[26/569] [raptor] › e2e\changeswin.spec.ts:162:9 › History on — the gold dots — desktop › every changed detail wears a gold dot while History is on — a seat outside its corner, a typed detail inside it — and none once it is off
+[27/569] [raptor] › e2e\changeswin.spec.ts:185:9 › History on — the gold dots — desktop › an amended detail on a published day wears its AL tag AND the dot — neither hides the other
+[28/569] [raptor] › e2e\changeswin.spec.ts:162:9 › History on — the gold dots — phone › every changed detail wears a gold dot while History is on — a seat outside its corner, a typed detail inside it — and none once it is off
+[29/569] [raptor] › e2e\changeswin.spec.ts:185:9 › History on — the gold dots — phone › an amended detail on a published day wears its AL tag AND the dot — neither hides the other
+[30/569] [raptor] › e2e\changeswin.spec.ts:211:7 › History on a phone — Hide, the bar, Show (D339, D344, D345) › Hide sends the panel to the bar at the bottom; the dotted detail is in view and a tap raises its bubble; Show brings it back; ✕ turns History off
+[31/569] [raptor] › e2e\changeswin.spec.ts:240:9 › History on a phone — Hide, the bar, Show (D339, D344, D345) › the hidden bar stays reachable over the ALL AVAIL window — ALL AVAIL first (Astra 07)
+[32/569] [raptor] › e2e\changeswin.spec.ts:240:9 › History on a phone — Hide, the bar, Show (D339, D344, D345) › the hidden bar stays reachable over the ALL AVAIL window — History first (Astra 07)
+[33/569] [raptor] › e2e\changeswin.spec.ts:260:7 › Group by Item — the window as the mock-up draws it (D340, D345) › Item first and on; one change is one line; two changes to one formation are a header and two lines, the seat named
+[34/569] [raptor] › e2e\geometry.spec.ts:27:9 › the puck is one fixed size everywhere › 74x15 on phone, on both week surfaces and in the palette
+[35/569] [raptor] › e2e\geometry.spec.ts:52:9 › the puck is one fixed size everywhere › the ARMED palette's struck entries keep the puck 74x15 on phone
+[36/569] [raptor] › e2e\geometry.spec.ts:27:9 › the puck is one fixed size everywhere › 74x15 on desktop, on both week surfaces and in the palette
+[37/569] [raptor] › e2e\geometry.spec.ts:52:9 › the puck is one fixed size everywhere › the ARMED palette's struck entries keep the puck 74x15 on desktop
+[38/569] [raptor] › e2e\geometry.spec.ts:81:9 › the puck is one fixed size everywhere › the SANS Availability palette section holds its geometry on phone
+[39/569] [raptor] › e2e\geometry.spec.ts:175:9 › the puck is one fixed size everywhere › the SANS Availability card grid holds its geometry on phone
+[40/569] [raptor] › e2e\geometry.spec.ts:81:9 › the puck is one fixed size everywhere › the SANS Availability palette section holds its geometry on desktop
+[41/569] [raptor] › e2e\geometry.spec.ts:175:9 › the puck is one fixed size everywhere › the SANS Availability card grid holds its geometry on desktop
+[42/569] [raptor] › e2e\geometry.spec.ts:216:7 › the puck is one fixed size everywhere › the seat column of the form grid is derived from --puck-w
+[43/569] [raptor] › e2e\geometry.spec.ts:232:9 › free text wraps instead of overflowing › no free-text cell spills its box on phone
+[44/569] [raptor] › e2e\geometry.spec.ts:249:7 › free text wraps instead of overflowing › and it wraps because of the two rules that make it wrap
+[45/569] [raptor] › e2e\geometry.spec.ts:232:9 › free text wraps instead of overflowing › no free-text cell spills its box on desktop
+[46/569] [raptor] › e2e\geometry.spec.ts:264:7 › free text wraps instead of overflowing › a whole week of jammed free text still gains no sideways swipe
+[47/569] [raptor] › e2e\geometry.spec.ts:294:7 › the week pans by whole day boxes › one arrow click = one day box, and the proxy scrollbar maps 1:1
+[48/569] [raptor] › e2e\geometry.spec.ts:329:7 › the week pans by whole day boxes › an edit does not throw the week back to Monday
+[49/569] [raptor] › e2e\geometry.spec.ts:342:5 › a hole in a programme row renders no element at all
+[50/569] [raptor] › e2e\geometry.spec.ts:387:5 › the board's duty rows keep a readable ITEM column on a phone
+[51/569] [raptor] › e2e\geometry.spec.ts:429:5 › phone: the remarks box shares the pucks row, to their right, with no + reveal
+[52/569] [raptor] › e2e\geometry.spec.ts:457:5 › desktop: every remarks box stays put, empty or not, with no reveal button anywhere
+[53/569] [raptor] › e2e\geometry.spec.ts:482:5 › a callsign too long for its puck fades instead of being clipped clean
+[54/569] [raptor] › e2e\geometry.spec.ts:519:9 › a flying line's callsign shows six letters whole › on phone, on both weeks
+[55/569] [raptor] › e2e\geometry.spec.ts:519:9 › a flying line's callsign shows six letters whole › on desktop, on both weeks
+[56/569] [raptor] › e2e\geometry.spec.ts:565:9 › a changed time's AL tag sits under the time › on phone, in the flying line and the list rows, on both weeks
+[57/569] [raptor] › e2e\geometry.spec.ts:565:9 › a changed time's AL tag sits under the time › on desktop, in the flying line and the list rows, on both weeks
+[58/569] [raptor] › e2e\geometry.spec.ts:596:5 › the read-only input window draws its locked fields as values, not boxes
+[59/569] [raptor] › e2e\geometry.spec.ts:653:5 › desktop: the scheduler-board chrome is tight — compact buttons on one action row, clean tabs
+[60/569] [raptor] › e2e\geometry.spec.ts:712:5 › desktop: the edit-scheduler aircrew column hides to the right and the week reclaims the width
+[61/569] [raptor] › e2e\geometry.spec.ts:782:5 › desktop: the board people cells keep a steady-height trailing drop zone
+[62/569] [raptor] › e2e\geometry.spec.ts:819:7 › the crew-rest rings are three distinguishable strokes › dashed is not filled in from behind, and dotted clears the solid ring
+[63/569] [raptor] › e2e\geometry.spec.ts:881:7 › the crew-rest rings are three distinguishable strokes › the cross-day row sits inside the list, same box as its neighbours
+[64/569] [raptor] › e2e\geometry.spec.ts:928:7 › the crew-rest rings are three distinguishable strokes › the cross-day row pans to the late line on its own day
+[65/569] [raptor] › e2e\geometry.spec.ts:979:5 › puck text stays inside the puck, descenders and all
+[66/569] [raptor] › e2e\geometry.spec.ts:1010:7 › clicking a warning brings the puck into view › the week lands on the day, on its snap point, with the puck on screen
+[67/569] [raptor] › e2e\geometry.spec.ts:1066:7 › clicking a warning brings the puck into view › a warning already on screen does not move the week sideways
+[68/569] [raptor] › e2e\geometry.spec.ts:1119:7 › clicking a warning brings the puck into view › the board scrolls its own panel to the puck
+[69/569] [raptor] › e2e\geometry.spec.ts:1154:7 › clicking a warning brings the puck into view › the edit week: a far-day witem brings its puck fully into view, on both axes
+[70/569] [raptor] › e2e\geometry.spec.ts:1192:7 › clicking a warning brings the puck into view › view schedule: a day-detail warning row brings its puck fully into view, on both axes
+[71/569] [raptor] › e2e\geometry.spec.ts:1236:7 › clicking a warning brings the puck into view › a blank tap that dismisses a warning box holds the view where it snapped
+[72/569] [raptor] › e2e\geometry.spec.ts:1277:7 › clicking a warning brings the puck into view › a chip click selects like the puck body, and the selection styling is blue-only
+[73/569] [raptor] › e2e\geometry.spec.ts:1326:7 › clicking a warning brings the puck into view › selecting a puck holds the screen still while his boxes open
+[74/569] [raptor] › e2e\geometry.spec.ts:1394:7 › clicking a warning brings the puck into view › a SIM_BRIEF warning pans to the sim row that briefs, and it lands on screen
+[75/569] [raptor] › e2e\geometry.spec.ts:1470:7 › clicking a warning brings the puck into view › the board at a small viewport scrolls to the deepest warning's puck
+[76/569] [raptor] › e2e\geometry.spec.ts:1536:5 › board: the flying line keeps its grid-item count with stores present
+[77/569] [raptor] › e2e\geometry.spec.ts:1564:5 › board at 390px: the remarks cell rides beside the seat pucks, and its config button stays reachable
+[78/569] [raptor] › e2e\geometry.spec.ts:1599:5 › board at 390px: an eight-pax sim row stacks its pucks two per row
+[79/569] [raptor] › e2e\geometry.spec.ts:1622:5 › board at 390px: the seats sit clear of the time boxes and of each other
+[80/569] [raptor] › e2e\geometry.spec.ts:1651:5 › board at 390px: a deleted AMT pax leaves a droppable hole in its own place
+[81/569] [raptor] › e2e\geometry.spec.ts:1677:5 › board at 390px: taps near the right edge land where they aim
+[82/569] [raptor] › e2e\geometry.spec.ts:1714:5 › the burger drawer at 390px scrolls only itself — the page behind it holds still
+[83/569] [raptor] › e2e\geometry.spec.ts:1750:5 › board at 390px: Live checks folds to one line, and a fill parks the drawer
+[84/569] [raptor] › e2e\geometry.spec.ts:1786:5 › board at 390px: the armed aircrew columns never overlap their neighbour
+[85/569] [raptor] › e2e\geometry.spec.ts:1833:5 › the phone board is one window: sign-off, then checks, then panels, aircrew in an edge drawer
+[86/569] [raptor] › e2e\geometry.spec.ts:1866:5 › the pen reorders, and the popup survives a click into a rename field
+[87/569] [raptor] › e2e\geometry.spec.ts:1888:5 › the stores popup opens inside the visible slice when the page is pinch-zoomed
+[88/569] [raptor] › e2e\geometry.spec.ts:1908:5 › a renamed store keeps its chip on every jet that carries it
+[89/569] [raptor] › e2e\geometry.spec.ts:1930:5 › the stores popup tracks the live C button across a multi-toggle visit
+[90/569] [raptor] › e2e\geometry.spec.ts:1984:5 › the stores popup opened from the BOARD anchors to the board's own C button, not the week's
+[91/569] [raptor] › e2e\geometry.spec.ts:2037:5 › typing a rename then clicking a different row's control does not eat the first click
+[92/569] [raptor] › e2e\geometry.spec.ts:2072:5 › the board's flying line is single-row in .sb-wide at phone width, and stays 10 grid items throughout
+[93/569] [raptor] › e2e\geometry.spec.ts:2119:5 › the board flying line carries the brief inline between MSN and TO at phone width
+[94/569] [raptor] › e2e\geometry.spec.ts:2168:5 › the row grip shows at every width and the ▲▼ nudge is gone
+[95/569] [raptor] › e2e\geometry.spec.ts:2192:5 › the phone board keeps its column layout after the grip is added
+[96/569] [raptor] › e2e\geometry.spec.ts:2255:5 › the notes row keeps a usable text field and a single row on a phone
+[97/569] [raptor] › e2e\geometry.spec.ts:2309:5 › dragging a grip reorders the wave and keeps a pair together
+[98/569] [raptor] › e2e\geometry.spec.ts:2356:5 › a phone row DRAG reorders a row and the board still reads correctly
+[99/569] [raptor] › e2e\geometry.spec.ts:2392:5 › a section dropped on the board flashes the board's own panel, not the week's copy
+[100/569] [raptor] › e2e\geometry.spec.ts:2425:5 › the desktop day sign-off is ONE row of four equal pills
+[101/569] [raptor] › e2e\geometry.spec.ts:2442:5 › the board title is a fixed slot, so the day chips do not shift between days
+[102/569] [raptor] › e2e\geometry.spec.ts:2459:5 › Ground and Common Programme share the sims columns on desktop
+[103/569] [raptor] › e2e\geometry.spec.ts:2478:5 › the top bar wears the edit tint on Edit Schedule only
+[104/569] [raptor] › e2e\geometry.spec.ts:2490:5 › the Leave War desktop grid grows a fixed, year-wide bottom scrollbar that slides it
+[105/569] [raptor] › e2e\geometry.spec.ts:2558:5 › the board keeps its row register on a read-only render (finding #1, via a member session now)
+[106/569] [raptor] › e2e\geometry.spec.ts:2609:5 › navigating away from Edit Schedule with the board open hides it, not just its controls
+[107/569] [raptor] › e2e\geometry.spec.ts:2637:5 › the blocker: right-clicking a WEEK puck on View-only Sched does not clear it, even with a board previously left open
+[108/569] [raptor] › e2e\geometry.spec.ts:2672:5 › a squadron member who reaches the board gets a read-only render — no grip, no nudge
+[109/569] [raptor] › e2e\geometry.spec.ts:2703:5 › no button/control row on the board overflows its own width on a phone
+[110/569] [raptor] › e2e\geometry.spec.ts:2747:5 › a late input's mark is visible on the view-only page, where the squadron reads it
+[111/569] [raptor] › e2e\geometry.spec.ts:2769:5 › the mark never widens or overflows the row it sits in
+[112/569] [raptor] › e2e\geometry.spec.ts:2787:5 › a promoted late input keeps the board row in register — no eighth grid item
+[113/569] [raptor] › e2e\geometry.spec.ts:2852:7 › desktop: Edit Schedule opens on the day View-only was showing
+[114/569] [raptor] › e2e\geometry.spec.ts:2865:7 › desktop: and back the other way — View-only opens on the day Edit was showing
+[115/569] [raptor] › e2e\geometry.spec.ts:2852:7 › phone: Edit Schedule opens on the day View-only was showing
+[116/569] [raptor] › e2e\geometry.spec.ts:2865:7 › phone: and back the other way — View-only opens on the day Edit was showing
+[117/569] [raptor] › e2e\geometry.spec.ts:2877:5 › a repaint that is not a page switch still holds the week where it is
+[118/569] [raptor] › e2e\geometry.spec.ts:2906:9 › editing an input from the schedule › phone: the control costs its row no height, and stays reachable under a long remark
+[119/569] [raptor] › e2e\geometry.spec.ts:2906:9 › editing an input from the schedule › desktop: the control costs its row no height, and stays reachable under a long remark
+[120/569] [raptor] › e2e\geometry.spec.ts:2979:9 › editing an input from the schedule › phone: an input row lines up with the ground programme's rows
+[121/569] [raptor] › e2e\geometry.spec.ts:2979:9 › editing an input from the schedule › desktop: an input row lines up with the ground programme's rows
+[122/569] [raptor] › e2e\geometry.spec.ts:3012:7 › editing an input from the schedule › the dialog fits a phone and never scrolls the page sideways
+[123/569] [raptor] › e2e\geometry.spec.ts:3058:7 › the phone board keeps its controls to one row › the buttons sit on a single line and the bar does not overflow sideways
+[124/569] [raptor] › e2e\geometry.spec.ts:3113:7 › the phone board keeps its controls to one row › the day and the date both fit the phone bar, on the longest day name
+[125/569] [raptor] › e2e\geometry.spec.ts:3149:7 › the phone board keeps its controls to one row › the full day name comes back above 820px
+[126/569] [raptor] › e2e\geometry.spec.ts:3176:7 › the phone board keeps its controls to one row › phone: the day strip is gone from the bar, and the arrows still step the day
+[127/569] [raptor] › e2e\geometry.spec.ts:3210:7 › the phone board keeps its controls to one row › the parked aircrew handle does not claim the gesture it forwards
+[128/569] [raptor] › e2e\geometry.spec.ts:3232:7 › the phone board keeps its controls to one row › the open AIRCREW drawer starts below the bar and scrolls
+[129/569] [raptor] › e2e\geometry.spec.ts:3313:9 › the History bubble › phone: it fits on screen and never pushes the page sideways
+[130/569] [raptor] › e2e\geometry.spec.ts:3313:9 › the History bubble › desktop: it fits on screen and never pushes the page sideways
+[131/569] [raptor] › e2e\geometry.spec.ts:3346:7 › the History bubble › desktop: it stacks under every dialog that can open over the board
+[132/569] [raptor] › e2e\geometry.spec.ts:3387:7 › the History bubble › phone: an anchor at the top edge cannot push the bubble off-screen
+[133/569] [raptor] › e2e\geometry.spec.ts:3466:7 › the History bubble › desktop: shows the whole story on hover, with no chevron
+[134/569] [raptor] › e2e\geometry.spec.ts:3516:9 › the board holds the page still underneath it › phone: scrolling past the end of the board does not drive the week behind it
+[135/569] [raptor] › e2e\geometry.spec.ts:3516:9 › the board holds the page still underneath it › desktop: scrolling past the end of the board does not drive the week behind it
+[136/569] [raptor] › e2e\geometry.spec.ts:3587:9 › the way into the changes list follows the width › desktop: the board's History button is on screen and opens the one changes window; the old lines are gone
+[137/569] [raptor] › e2e\geometry.spec.ts:3587:9 › the way into the changes list follows the width › phone: the board's History button is on screen and opens the one changes window; the old lines are gone
+[138/569] [raptor] › e2e\geometry.spec.ts:3624:5 › the Highlight chips fold behind the toggle on a phone, and stand open on a desktop
+[139/569] [raptor] › e2e\geometry.spec.ts:3661:5 › the expanded highlight chips scroll sideways, not off the page
+[140/569] [raptor] › e2e\geometry.spec.ts:3692:7 › the day arrows › phone: they sit at the two edges of the day row, and the bar stays one line
+[141/569] [raptor] › e2e\geometry.spec.ts:3747:7 › the day arrows › phone: tapping them steps the day and flows continuously across weeks
+[142/569] [raptor] › e2e\geometry.spec.ts:3778:7 › the day arrows › desktop: the board has visible week arrows that jump a week and keep the day
+[143/569] [raptor] › e2e\geometry.spec.ts:3804:7 › the day arrows › phone: the top-left calendar icon opens the week picker
+[144/569] [raptor] › e2e\geometry.spec.ts:3822:7 › the day arrows › desktop: the arrows are not drawn, because all seven days are on the bar
+[145/569] [raptor] › e2e\geometry.spec.ts:3836:7 › the day arrows › phone: a sideways drag across the board does nothing at all
+[146/569] [raptor] › e2e\geometry.spec.ts:3876:7 › the viewport meta › is untouched where the platform is not an Apple touch device
+[147/569] [raptor] › e2e\geometry.spec.ts:3893:7 › the green eligibility rings › empty vs filled vs armed are distinct paints, and rings move nothing
+[148/569] [raptor] › e2e\geometry.spec.ts:3979:7 › the Available-crew panel folds › open by default, folds on tap, opens back
+[149/569] [raptor] › e2e\geometry.spec.ts:4018:7 › the crew-day picker › desktop: the last day is unreachable by scroll but reachable by its name
+[150/569] [raptor] › e2e\geometry.spec.ts:4053:7 › the crew-day picker › desktop: the week ends whole — Sunday can sit at the front, and the retired edge hint never shows
+[151/569] [raptor] › e2e\geometry.spec.ts:4089:7 › the crew-day picker › desktop: the panel arrows clamp at the weeks ends
+[152/569] [raptor] › e2e\geometry.spec.ts:4106:7 › the crew-day picker › desktop: the day header and column headings stay pinned as the roster scrolls
+[153/569] [raptor] › e2e\geometry.spec.ts:4144:7 › the crew-day picker › desktop: › steps one clean day at a time to a whole-day end, then rolls into next week
+[154/569] [raptor] › e2e\geometry.spec.ts:4250:7 › the frozen callsign column › phone: the callsign stays at the left edge when the Quals table scrolls sideways
+[155/569] [raptor] › e2e\geometry.spec.ts:4279:7 › the frozen callsign column › phone: the frozen header re-measures its width when the screen rotates
+[156/569] [raptor] › e2e\geometry.spec.ts:4302:7 › the frozen callsign column › phone: the frozen header is in step with the table the moment it appears
+[157/569] [raptor] › e2e\geometry.spec.ts:4342:5 › a dragged quals heading wears one frame down the table, and the column flashes where it lands
+[158/569] [raptor] › e2e\geometry.spec.ts:4476:7 › the collapsible legend › phone: the legend is closed by default and opens on click
+[159/569] [raptor] › e2e\geometry.spec.ts:4499:5 › the flying line keeps its five boxes on one baseline on a phone
+[160/569] [raptor] › e2e\geometry.spec.ts:4537:5 › the phone board clears its parked aircrew tab
+[161/569] [raptor] › e2e\geometry.spec.ts:4572:5 › the phone board: duty/sim/ground AND Common Programme remarks align with the flying line
+[162/569] [raptor] › e2e\geometry.spec.ts:4612:5 › the phone board: a long remark grows its box instead of scrolling inside it
+[163/569] [raptor] › e2e\geometry.spec.ts:4661:5 › the Insights bars draw, and their lengths mean something
+[164/569] [raptor] › e2e\geometry.spec.ts:4697:5 › the desktop checks panel resizes by its grip
+[165/569] [raptor] › e2e\geometry.spec.ts:4730:5 › the phone Inputs cards align their type and date columns
+[166/569] [raptor] › e2e\geometry.spec.ts:4772:9 › the Inputs month calendar › fills the viewport with 7 equal columns, chips inside their cells, on phone
+[167/569] [raptor] › e2e\geometry.spec.ts:4772:9 › the Inputs month calendar › fills the viewport with 7 equal columns, chips inside their cells, on desktop
+[168/569] [raptor] › e2e\geometry.spec.ts:4854:7 › the day-head lays out the same on every day › phone: Today does not move the controls; desktop: one row
+[169/569] [raptor] › e2e\geometry.spec.ts:4889:7 › the motion set, and its reduced-motion off-switch › pages and the board animate; reduced motion computes none
+[170/569] [raptor] › e2e\geometry.spec.ts:4915:7 › a mouse drag of a puck runs on the pointer machine, not the native drag › ghost tracks the cursor, no dragstart/dragover fires, the drop lands
+[171/569] [raptor] › e2e\geometry.spec.ts:5005:7 › slow-computer diet › desktop: the Leave War screen is a separate chunk, pre-warmed after login
+[172/569] [raptor] › e2e\geometry.spec.ts:5028:7 › slow-computer diet › desktop: the edit week is warmed and parked laid-out before Edit is ever opened
+[173/569] [raptor] › e2e\geometry.spec.ts:5067:5 › phone: the placeholder count chip sits inside its column and takes its own press
+[174/569] [raptor] › e2e\geometry.spec.ts:5097:5 › desktop: the same chip is inside its column and on top
+[175/569] [raptor] › e2e\geometry.spec.ts:5137:5 › the weekend says it is unpublished from the first paint, not after an unrelated edit
+[176/569] [raptor] › e2e\geometry.spec.ts:5169:5 › the sign-in and Request access buttons sit square under their boxes, inside the card
+[177/569] [raptor] › e2e\geometry.spec.ts:5187:7 › the sign-up card's two selects are the boxes' size and edges (desktop)
+[178/569] [raptor] › e2e\geometry.spec.ts:5187:7 › the sign-up card's two selects are the boxes' size and edges (phone)
+[179/569] [raptor] › e2e\geometry.spec.ts:5212:5 › Quals "+ Add person" leaves the cursor in the Callsign/Name box, every press (desktop)
+[180/569] [raptor] › e2e\geometry.spec.ts:5227:5 › the New person fields fit the Users pane on a phone (add and approve)
+[181/569] [raptor] › e2e\geometry.spec.ts:5303:7 › 1366 desktop: the Saving… note never moves the top bar or its buttons, and it can be read
+[182/569] [raptor] › e2e\geometry.spec.ts:5303:7 › phone: the Saving… note never moves the top bar or its buttons, and it can be read
+[183/569] [raptor] › e2e\insights.spec.ts:6:9 › Insights real routes desktop › D512/D515/D524/D532 default Off, Logic control, Board text before annotation answer
+[184/569] [raptor] › e2e\insights.spec.ts:6:9 › Insights real routes phone › D512/D515/D524/D532 default Off, Logic control, Board text before annotation answer
+[185/569] [raptor] › e2e\medical.spec.ts:14:9 › the medical view renders and fits › three populated sections, no overflow, on phone
+[186/569] [raptor] › e2e\medical.spec.ts:14:9 › the medical view renders and fits › three populated sections, no overflow, on desktop
+[187/569] [raptor] › e2e\medical.spec.ts:105:7 › the medical view renders and fits › the as-of picker replays history
+[188/569] [raptor] › e2e\onedoor.spec.ts:35:7 › [ONE-DOOR] desktop: Archive → away on the war → Restore from a later post-in → his welcome back → his own Quals row
+[189/569] [raptor] › e2e\onedoor.spec.ts:35:7 › [ONE-DOOR] phone: Archive → away on the war → Restore from a later post-in → his welcome back → his own Quals row
+[190/569] [raptor] › e2e\warnhide.spec.ts:52:9 › a hidden warning — desktop › WH4, WH5, WH3 — Edit Schedule: the line struck in place with ↺, the count without it, the puck plain; WH1 — and after a reload
+[191/569] [raptor] › e2e\warnhide.spec.ts:91:9 › a hidden warning — desktop › WH4 — the Scheduler Board: the same line struck in its panel, the heading without it
+[192/569] [raptor] › e2e\warnhide.spec.ts:112:9 › a hidden warning — desktop › WH2, WH7 — a member signing in after: the count without it, the line struck, and no button
+[193/569] [raptor] › e2e\warnhide.spec.ts:132:9 › a hidden warning — desktop › WH8, D99 — on a published day, a tap on "Warning · … flagged → hidden" in To go out lands on the struck line
+[194/569] [raptor] › e2e\warnhide.spec.ts:52:9 › a hidden warning — phone › WH4, WH5, WH3 — Edit Schedule: the line struck in place with ↺, the count without it, the puck plain; WH1 — and after a reload
+[195/569] [raptor] › e2e\warnhide.spec.ts:91:9 › a hidden warning — phone › WH4 — the Scheduler Board: the same line struck in its panel, the heading without it
+[196/569] [raptor] › e2e\warnhide.spec.ts:112:9 › a hidden warning — phone › WH2, WH7 — a member signing in after: the count without it, the line struck, and no button
+[197/569] [raptor] › e2e\warnhide.spec.ts:132:9 › a hidden warning — phone › WH8, D99 — on a published day, a tap on "Warning · … flagged → hidden" in To go out lands on the struck line
+(node:13976) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[198/569] [lw-phone] › e2e\leavewar.spec.ts:139:5 › the undo/redo pair sits in the app’s top bar on the Leave War, disabled at rest
+(node:28720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[199/569] [lw-phone] › e2e\leavewar.spec.ts:173:5 › the callsign column stays put when the grid scrolls sideways
+(node:51748) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:42008) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[200/569] [lw-phone] › e2e\leavewar.spec.ts:193:5 › the frozen overlay lines up with the rows it freezes
+[201/569] [lw-phone] › e2e\leavewar.spec.ts:224:5 › the frozen overlay lines up with every row it freezes, top to bottom
+(node:40668) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[202/569] [lw-phone] › e2e\leavewar.spec.ts:260:5 › the frozen overlay callsign opens the sheet once the year has scrolled
+(node:35180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[203/569] [lw-phone] › e2e\leavewar.spec.ts:273:5 › the frozen header re-measures its width when the screen rotates
+[204/569] [lw-phone] › e2e\leavewar.spec.ts:311:5 › the page is the one thing that scrolls vertically
+[205/569] [lw-phone] › e2e\leavewar.spec.ts:345:5 › the frozen column is opaque — day cells never show through it
+(node:37352) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[206/569] [lw-phone] › e2e\leavewar.spec.ts:299:5 › the grid has no vertical scroller of its own
+[207/569] [lw-phone] › e2e\leavewar.spec.ts:351:5 › the page itself never scrolls sideways — only the grid does
+[208/569] [lw-phone] › e2e\leavewar.spec.ts:361:5 › the VIEWING AS chip stays inside the screen, its words whole, and the top row never scrolls sideways
+(node:18676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[209/569] [lw-phone] › e2e\leavewar.spec.ts:338:5 › the grid still owns the sideways scroll
+[210/569] [lw-phone] › e2e\leavewar.spec.ts:380:5 › a blocked day is painted amber on its header, and an ordinary day is not
+[211/569] [lw-phone] › e2e\leavewar.spec.ts:390:5 › a blocked day that falls on a weekend still paints amber, not grey
+[212/569] [lw-phone] › e2e\leavewar.spec.ts:408:5 › the half-day divider is painted on a half-day chip and absent on a whole-day chip
+[213/569] [lw-phone] › e2e\leavewar.spec.ts:431:5 › the matrix stays within a sane DOM size
+[214/569] [lw-phone] › e2e\leavewar.spec.ts:573:5 › a month button scrolls the grid to that month
+[215/569] [lw-phone] › e2e\leavewar.spec.ts:619:5 › a month button works from wherever the grid already is
+[216/569] [lw-phone] › e2e\leavewar.spec.ts:647:5 › the whole month strip is on screen at phone width
+[217/569] [lw-phone] › e2e\leavewar.spec.ts:664:5 › the four bid states read as three colours and one plain cell
+[218/569] [lw-phone] › e2e\leavewar.spec.ts:691:5 › a bid can be placed, and lands plain because nobody has answered it
+[219/569] [lw-phone] › e2e\leavewar.spec.ts:712:5 › a placed bid survives a reload — the war persists per browser
+[220/569] [lw-phone] › e2e\leavewar.spec.ts:739:5 › the grid offers no medical markers — for a member or an admin
+[221/569] [lw-phone] › e2e\leavewar.spec.ts:756:5 › tapping a counter cell opens that person's breakdown of the shown figure
+[222/569] [lw-phone] › e2e\leavewar.spec.ts:771:5 › the bid sheet is visible in full, not clipped by the grid scroller
+[223/569] [lw-phone] › e2e\leavewar.spec.ts:793:5 › opening the bid sheet never makes the page scroll sideways
+[224/569] [lw-phone] › e2e\leavewar.spec.ts:806:5 › a cell Raptor owns is the same green as an approved bid
+[225/569] [lw-phone] › e2e\leavewar.spec.ts:818:5 › the Raptor mark is painted, and an ordinary bid carries none
+[226/569] [lw-phone] › e2e\leavewar.spec.ts:843:5 › a cell Raptor owns offers no way to change it
+[227/569] [lw-phone] › e2e\leavewar.spec.ts:852:5 › closing the war locks the squadron out, and the admin account still edits
+[228/569] [lw-phone] › e2e\leavewar.spec.ts:868:5 › an admin moves a bid to another date, and it lands pending there
+[229/569] [lw-phone] › e2e\leavewar.spec.ts:924:5 › drag-selecting a row fills the leave across the whole span
+[230/569] [lw-phone] › e2e\leavewar.spec.ts:944:5 › a drag that would go below zero asks once, then writes on the same leave again
+[231/569] [lw-phone] › e2e\leavewar.spec.ts:964:5 › a member scoped to one person can input on that row only
+[232/569] [lw-phone] › e2e\leavewar.spec.ts:979:5 › a member scoped to one person drag-fills their own row only
+[233/569] [lw-phone] › e2e\leavewar.spec.ts:993:5 › a drag-selection offers Move, and the move banner appears on entering it
+[234/569] [lw-phone] › e2e\leavewar.spec.ts:1026:5 › a loose box moves the inputs present, first input landing on the clicked day
+[235/569] [lw-phone] › e2e\leavewar.spec.ts:1048:5 › right-click cancels a move on desktop
+[236/569] [lw-phone] › e2e\leavewar.spec.ts:1066:5 › dragging an event row opens the event sheet ranged to the span
+[237/569] [lw-phone] › e2e\leavewar.spec.ts:1154:5 › a drag-select parked at the counter column auto-scrolls the grid left
+[238/569] [lw-phone] › e2e\leavewar.spec.ts:1161:5 › with the figures drawer open the band starts at the DRAWER's edge
+[239/569] [lw-phone] › e2e\leavewar.spec.ts:1174:5 › a held finger dragged to the drawer's edge auto-scrolls the grid left
+[240/569] [lw-phone] › e2e\leavewar.spec.ts:1203:5 › the date header freezes on desktop when the page scrolls down
+[241/569] [lw-phone] › e2e\leavewar.spec.ts:1223:5 › the frozen bar is in step with the grid the moment it appears
+[242/569] [lw-phone] › e2e\leavewar.spec.ts:1269:5 › a column that widens while the dates are frozen re-measures the frozen bar
+[243/569] [lw-phone] › e2e\leavewar.spec.ts:1313:5 › the open-bidding outline moves with the rows when the manning Archive opens
+[244/569] [lw-phone] › e2e\leavewar.spec.ts:1342:5 › at published, a tap on an approved leave edits its note, and it sticks
+[245/569] [lw-phone] › e2e\leavewar.spec.ts:1371:5 › both frozen columns stay put when the grid scrolls sideways
+[246/569] [lw-phone] › e2e\leavewar.spec.ts:1385:5 › the two frozen columns sit flush — no gap, no overlap
+[247/569] [lw-phone] › e2e\leavewar.spec.ts:1403:5 › the balance column is opaque — day cells never show through it
+[248/569] [lw-phone] › e2e\leavewar.spec.ts:1460:5 › the counter column does not eat the grid on a phone
+[249/569] [lw-phone] › e2e\leavewar.spec.ts:1477:5 › the counter column changes every row at once
+[250/569] [lw-phone] › e2e\leavewar.spec.ts:1496:5 › a negative balance is painted red, and a positive one is not
+[251/569] [lw-phone] › e2e\leavewar.spec.ts:1516:5 › the date headers are square, the .day leak overridden
+[252/569] [lw-phone] › e2e\leavewar.spec.ts:1526:5 › the figure picker doubles as the legend, every figure spelled out
+[253/569] [lw-phone] › e2e\leavewar.spec.ts:1543:5 › the figures reorder, and Reset restores the default order
+[254/569] [lw-phone] › e2e\leavewar.spec.ts:1575:5 › the drawer opens closed on a phone and open on a desktop
+[255/569] [lw-phone] › e2e\leavewar.spec.ts:1588:5 › the drawer sits beside the names, its rows level with the days, and closing restores the header
+[256/569] [lw-phone] › e2e\leavewar.spec.ts:1642:5 › a drawer box opens that person's breakdown of that figure; a title says what it counts
+[257/569] [lw-phone] › e2e\leavewar.spec.ts:1665:5 › the stuck header carries the drawer titles, the switch and the month once the roster has scrolled
+[258/569] [lw-phone] › e2e\leavewar.spec.ts:1719:5 › the corner switch fills its cell — the whole corner is the tap target
+[259/569] [lw-phone] › e2e\leavewar.spec.ts:1736:5 › the corner covers the month rail all the way to the drawer's edge
+[260/569] [lw-phone] › e2e\leavewar.spec.ts:1762:5 › a month jump lands the month clear of the drawer, not under it
+[261/569] [lw-phone] › e2e\leavewar.spec.ts:1783:5 › a day beside the open drawer still takes a tap
+[262/569] [lw-phone] › e2e\leavewar.spec.ts:1815:5 › the month strip reads from the drawer's edge, not the closed column's
+[263/569] [lw-phone] › e2e\leavewar.spec.ts:1888:5 › the month strip follows the drawer WIDENING while it is already out
+[264/569] [lw-phone] › e2e\leavewar.spec.ts:1939:5 › the column follows the leave just entered to the balance it comes off
+[265/569] [lw-phone] › e2e\leavewar.spec.ts:1950:5 › the box whose number changed flashes, once
+[266/569] [lw-phone] › e2e\leavewar.spec.ts:1965:5 › an admin hides a figure and the drawer loses that column; a member has no eye
+[267/569] [lw-phone] › e2e\leavewar.spec.ts:1979:5 › the Legend pop-out carries the figures key, and fits the screen
+[268/569] [lw-phone] › e2e\leavewar.spec.ts:2043:5 › a drag down a drawer column lights the run, on that pool only
+[269/569] [lw-phone] › e2e\leavewar.spec.ts:2061:5 › a drag on a total, or by a member, lights nothing
+[270/569] [lw-phone] › e2e\leavewar.spec.ts:2092:5 › the band lets a press through to the drawer once the grid has scrolled
+[271/569] [lw-phone] › e2e\leavewar.spec.ts:2121:5 › a finger's hold-and-drag down the drawer lights the run and does not scroll the page
+[272/569] [lw-phone] › e2e\leavewar.spec.ts:2183:5 › the bar takes one number for the run, the boxes flash, and one Undo takes it all back
+[273/569] [lw-phone] › e2e\leavewar.spec.ts:2226:5 › -1.5 subtracts; 0, abc and 1.25 are refused and the run stays
+[274/569] [lw-phone] › e2e\leavewar.spec.ts:2257:5 › OIL from the grid is the tracker's own credit
+[275/569] [lw-phone] › e2e\leavewar.spec.ts:2282:5 › a tap outside clears the bar, the drawer toggle clears it, and a sideways scroll does not
+[276/569] [lw-phone] › e2e\leavewar.spec.ts:2324:5 › a member never sees the bar
+[277/569] [lw-phone] › e2e\leavewar.spec.ts:2333:5 › on a phone the bar comes up whole, clear of the bottom edge
+[278/569] [lw-phone] › e2e\leavewar.spec.ts:2370:5 › a scrolled sheet keeps its header and its close button
+[279/569] [lw-phone] › e2e\leavewar.spec.ts:2395:5 › the page scrolls behind an open sheet, and the panel stays put
+[280/569] [lw-phone] › e2e\leavewar.spec.ts:2438:5 › a finger behind an open sheet scrolls the grid itself; a tap on a cell closes the sheet and opens nothing
+[281/569] [lw-phone] › e2e\leavewar.spec.ts:2539:5 › on a desktop the scrim stays in the way of the mouse
+[282/569] [lw-phone] › e2e\leavewar.spec.ts:2554:5 › the viewer's row is lit and the title sheet answers with their numbers
+[283/569] [lw-phone] › e2e\leavewar.spec.ts:2597:5 › nothing in the callsign column is cut off
+[284/569] [lw-phone] › e2e\leavewar.spec.ts:2616:5 › the counter controls sit on one row, in order, OIL right after rearrange, zoom after OIL
+[285/569] [lw-phone] › e2e\leavewar.spec.ts:2640:5 › a member counter bar is Manning then OIL, adjacent, one row
+[286/569] [lw-phone] › e2e\leavewar.spec.ts:2658:5 › in Rearrange the counter grip is left of the name and nothing clips
+[287/569] [lw-phone] › e2e\leavewar.spec.ts:2678:5 › in Rearrange the name column grows by the grip: callsigns keep their width, the frozen pair stays joined
+[288/569] [lw-phone] › e2e\leavewar.spec.ts:2708:5 › switching leave war repaints the grid and keeps the balance
+[289/569] [lw-phone] › e2e\leavewar.spec.ts:2733:5 › the new-leave-war sheet is anchored to the viewport, not the topbar
+[290/569] [lw-phone] › e2e\leavewar.spec.ts:2759:5 › an admin creates a leave war, and it joins the picker
+[291/569] [lw-phone] › e2e\leavewar.spec.ts:2772:5 › overlapping dates are refused, with the reason on screen
+[292/569] [lw-phone] › e2e\leavewar.spec.ts:2788:5 › a locked column is visibly dimmer than an open one, and still readable
+[293/569] [lw-phone] › e2e\leavewar.spec.ts:2808:5 › an admin sees no lock, because the window does not bind them
+[294/569] [lw-phone] › e2e\leavewar.spec.ts:2819:5 › the range calendar paints the span between the two taps
+[295/569] [lw-phone] › e2e\leavewar.spec.ts:2847:5 › every control in the range calendar is a real tap target
+[296/569] [lw-phone] › e2e\leavewar.spec.ts:2862:5 › the bidding-window sheet is anchored to the viewport, not clipped
+[297/569] [lw-phone] › e2e\leavewar.spec.ts:2880:5 › a posted-out cell is hatched, and an ordinary cell is not
+[298/569] [lw-phone] › e2e\leavewar.spec.ts:2900:5 › OFF is not offered as a leave to bid
+[299/569] [lw-phone] › e2e\leavewar.spec.ts:2910:5 › the topbar scrolls away instead of holding the top of the screen
+[300/569] [lw-phone] › e2e\leavewar.spec.ts:2936:5 › the chrome above the grid is a fraction of the screen, not most of it
+[301/569] [lw-phone] › e2e\leavewar.spec.ts:2947:5 › the date header stays put while the topbar goes
+[302/569] [lw-phone] › e2e\leavewar.spec.ts:2960:5 › the grid gets most of the screen on a phone once the chrome is scrolled away
+[303/569] [lw-phone] › e2e\leavewar.spec.ts:2976:5 › every date column names its weekday
+[304/569] [lw-phone] › e2e\leavewar.spec.ts:2990:5 › the counter control is a real tap target on a phone
+[305/569] [lw-phone] › e2e\leavewar.spec.ts:3015:5 › the counter sheet changes the column, and every row with it
+[306/569] [lw-phone] › e2e\leavewar.spec.ts:3037:5 › swiping across the counter column cycles it
+[307/569] [lw-phone] › e2e\leavewar.spec.ts:3057:5 › a small or vertical drag on the counter column changes nothing
+[308/569] [lw-phone] › e2e\leavewar.spec.ts:3070:5 › swiping the day columns leaves the counter alone
+[309/569] [lw-phone] › e2e\leavewar.spec.ts:3091:5 › an admin reaches no Edit person from the name sheet
+[310/569] [lw-phone] › e2e\leavewar.spec.ts:3104:5 › the callsign, its CAT chip and a personnel label all fit the phone column
+[311/569] [lw-phone] › e2e\leavewar.spec.ts:3120:5 › an event widens its day, then wraps and grows only its own rows
+[312/569] [lw-phone] › e2e\leavewar.spec.ts:3163:5 › a member reads the events and cannot type into them
+[313/569] [lw-phone] › e2e\leavewar.spec.ts:3171:5 › an off day is green, a no-leave day orange, and a work word red
+[314/569] [lw-phone] › e2e\leavewar.spec.ts:3211:5 › the counter picker is a contained, squared control
+[315/569] [lw-phone] › e2e\leavewar.spec.ts:3222:5 › the period picker says what it is
+[316/569] [lw-phone] › e2e\leavewar.spec.ts:3234:5 › the tinted chips are not ink in their own background hue
+[317/569] [lw-phone] › e2e\leavewar.spec.ts:3255:5 › the picker options are neutral, not the chip green
+[318/569] [lw-phone] › e2e\leavewar.spec.ts:3275:5 › the under-manned chip reads 0 days on the projected roster, and is disabled
+[319/569] [lw-phone] › e2e\leavewar.spec.ts:3325:5 › the under-manned chip opens the days that caused it
+[320/569] [lw-phone] › e2e\leavewar.spec.ts:3338:5 › choosing a day jumps the grid to it, clear of the frozen columns
+[321/569] [lw-phone] › e2e\leavewar.spec.ts:3364:5 › the jumped-to day is visibly marked
+[322/569] [lw-phone] › e2e\leavewar.spec.ts:3378:5 › the under-manned list stays on screen and its rows are reachable
+[323/569] [lw-phone] › e2e\leavewar.spec.ts:3401:5 › the strip lights the month the grid is showing, and only one
+[324/569] [lw-phone] › e2e\leavewar.spec.ts:3405:5 › the lit month follows a real scroll
+[325/569] [lw-phone] › e2e\leavewar.spec.ts:3455:5 › every month in the strip can be reached and lights itself
+[326/569] [lw-phone] › e2e\leavewar.spec.ts:3479:5 › the lit month is painted, not merely classed
+[327/569] [lw-phone] › e2e\leavewar.spec.ts:3493:5 › scrolling the year stays responsive with the readout attached
+[328/569] [lw-phone] › e2e\leavewar.spec.ts:3511:5 › an admin can reopen bidding after closing it
+[329/569] [lw-phone] › e2e\leavewar.spec.ts:3524:5 › a member is offered no way back
+[330/569] [lw-phone] › e2e\leavewar.spec.ts:3535:5 › a decision made before the reopen survives it
+[331/569] [lw-phone] › e2e\leavewar.spec.ts:3554:5 › the page carries no second squadron mark — the shell is the only identity
+[332/569] [lw-phone] › e2e\leavewar.spec.ts:3559:5 › the roster is grouped SXO → IP → OPS P → IWSO → OPS W → OCU → Personnel
+[333/569] [lw-phone] › e2e\leavewar.spec.ts:3565:5 › every callsign wears its CAT colour, reused from the Quals palette
+[334/569] [lw-phone] › e2e\leavewar.spec.ts:3572:5 › CAT sub-headings split the ops groups on desktop and fold away on a phone
+[335/569] [lw-phone] › e2e\leavewar.spec.ts:3578:5 › an admin hand-drags the roster from the ⇅ toggle, which is also the way out; a member gets no tool
+[336/569] [lw-phone] › e2e\leavewar.spec.ts:3648:5 › a picked-up row wears one frame the width of the visible grid, and the row it lands on flashes once
+[337/569] [lw-phone] › e2e\leavewar.spec.ts:3734:5 › a personnel row shows its callsign, with no edit box, in Rearrange
+[338/569] [lw-phone] › e2e\leavewar.spec.ts:3751:5 › the grid reads counts, months, header, events, roster — top to bottom
+[339/569] [lw-phone] › e2e\leavewar.spec.ts:3765:5 › every month wears a bracket spanning exactly its days
+[340/569] [lw-phone] › e2e\leavewar.spec.ts:3780:5 › the month strip fits its wrapped rows and clears the bracket bar below
+[341/569] [lw-phone] › e2e\leavewar.spec.ts:3790:5 › a member can collapse and reopen the manning counts
+[342/569] [lw-phone] › e2e\leavewar.spec.ts:3799:5 › the blocked exercise week prints its reason across the event row
+[343/569] [lw-phone] › e2e\leavewar.spec.ts:3829:5 › on a phone the header freezes under the top bar and thaws on the way back
+[344/569] [lw-phone] › e2e\leavewar.spec.ts:3906:5 › the zoom steps the whole grid down and back, on both widths
+[345/569] [lw-phone] › e2e\leavewar.spec.ts:3921:5 › the zoom control is in the top row on both widths; a phone opens one step out
+[346/569] [lw-phone] › e2e\leavewar.spec.ts:3931:5 › the OIL tracker has its own − / + beside RANGE, on one row; a phone opens it one step out
+[347/569] [lw-phone] › e2e\leavewar.spec.ts:4009:5 › every label and reason on an OIL credit box reads in full, at every zoom step
+[348/569] [lw-phone] › e2e\leavewar.spec.ts:4067:5 › the month strip is one line of twelve, inside the viewport
+[349/569] [lw-phone] › e2e\leavewar.spec.ts:4083:5 › tagging a typed event colours the day without minting a type
+[350/569] [lw-phone] › e2e\leavewar.spec.ts:4107:5 › posting out tags the last day, and the row leaves the months after it
+[351/569] [lw-phone] › e2e\leavewar.spec.ts:4142:5 › a seeded posting-out hides its row in later months too
+[352/569] [lw-phone] › e2e\leavewar.spec.ts:4158:5 › the roster does not reflow mid-scroll, only once the scroll settles
+[353/569] [lw-phone] › e2e\leavewar.spec.ts:4183:5 › an admin builds a counter in the form, and the new row counts
+[354/569] [lw-phone] › e2e\leavewar.spec.ts:4209:5 › deleting a counter takes its row off the grid
+[355/569] [lw-phone] › e2e\leavewar.spec.ts:4227:5 › every admin control is reachable within the viewport
+[356/569] [lw-phone] › e2e\leavewar.spec.ts:4266:5 › undo/redo drive a real grid edit: fill, clear, restore
+[357/569] [lw-phone] › e2e\leavewar.spec.ts:4298:6 › undo fired in MOVE mode does not corrupt: the grid stays usable
+[358/569] [lw-phone] › e2e\leavewar.spec.ts:4318:5 › the select sheet still works, and undo acts on the committed edit
+[359/569] [lw-phone] › e2e\leavewar.spec.ts:4334:6 › rapid undo/redo settle to a consistent grid
+[360/569] [lw-phone] › e2e\leavewar.spec.ts:4368:5 › a tab switch keeps the grid alive: the same node returns, shrinks-and-rebuilds on desktop, measurements still live
+[361/569] [lw-phone] › e2e\leavewar.spec.ts:4414:5 › a glowing green box frames the open-bidding window and clears when bidding closes
+[362/569] [lw-phone] › e2e\leavewar.spec.ts:4456:5 › the open-bidding box keeps its left edge on 1 Jan through Rearrange
+[363/569] [lw-phone] › e2e\leavewar.spec.ts:4492:5 › the grid draws a window of months over year-wide placeholders, keeps every row aligned, and draws in place
+[364/569] [lw-phone] › e2e\leavewar.spec.ts:4594:5 › the bottom scrollbar is a year-wide scrubber; the desktop grid fills the whole year and the bar then slides it
+[365/569] [lw-phone] › e2e\leavewar.spec.ts:4677:5 › the bottom scrollbar shows the grid's place the moment it appears
+[366/569] [lw-phone] › e2e\leavewar.spec.ts:4711:5 › a post-out dated in July keeps his July row, after the war was first shown on a later month
+[367/569] [lw-phone] › e2e\step4-leavewar.spec.ts:238:5 › approve a 5-day bid, delete its middle day, undo, redo
+[368/569] [lw-phone] › e2e\step4-leavewar.spec.ts:274:5 › an admin files leave on the Inputs page over a pending bid: bid gone, amber !, OK seen clears it
+[369/569] [lw-phone] › e2e\step4-leavewar.spec.ts:314:5 › the member files leave over their own bid: bid gone, a message, no notice left on the war
+[370/569] [lw-phone] › e2e\step4-leavewar.spec.ts:334:5 › LL 14–18 Jul, then ATT C 16–17 Jul on the Inputs page: the leave is cut, +2 back, undo restores
+[371/569] [lw-phone] › e2e\step4-leavewar.spec.ts:368:5 › a morning ATT C over a full-day LL leaves the afternoon as LL
+[372/569] [lw-phone] › e2e\step4-leavewar.spec.ts:387:5 › two leaves on the same time are refused with a message naming the first
+[373/569] [lw-phone] › e2e\step4-leavewar.spec.ts:399:5 › two leaves in one morning at times that do not overlap: allowed, half a day charged once, off the longer one
+[374/569] [lw-phone] › e2e\step4-leavewar.spec.ts:420:5 › leave during a course: the leave shows with +1 and is deducted
+[375/569] [lw-phone] › e2e\step4-leavewar.spec.ts:435:5 › clearing leave after a posting-out: LL with the PO tag, charged, never counted in manning
+[376/569] [lw-phone] › e2e\step4-leavewar.spec.ts:454:5 › move an approved leave after bidding closes: dotted moved mark, undo, redo
+[377/569] [lw-phone] › e2e\step4-leavewar.spec.ts:497:5 › publishing a weekend day KEEPS a pending bid for someone working it and flags the day
+[378/569] [lw-phone] › e2e\step4-leavewar.spec.ts:543:5 › the tap list: approve one half, refuse the other, un-approve back to a bid — each undoable
+[379/569] [lw-phone] › e2e\step4-leavewar.spec.ts:581:5 › tap-list permissions: a member gets no decisions, clears only their own bid, and "OK, seen" only on their own notice
+[380/569] [lw-phone] › e2e\step4-leavewar.spec.ts:622:5 › a reload (not ?fresh) keeps every filed leave, cut, notice and post-out — nothing lost or doubled
+[381/569] [lw-phone] › e2e\step4-leavewar.spec.ts:674:5 › phone and desktop: the tap list fits, the page never scrolls sideways, no console errors
+[382/569] [lw-phone] › e2e\step4-leavewar.spec.ts:709:5 › BUG: the balance column drops as soon as leave is filed on the Inputs page
+[383/569] [lw-phone] › e2e\step4-leavewar.spec.ts:727:5 › BUG: an overnight leave does not block a medical the next morning — the medical cuts the tail
+(node:42092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[384/569] [lw-desktop] › e2e\leavewar.spec.ts:139:5 › the undo/redo pair sits in the app’s top bar on the Leave War, disabled at rest
+(node:5740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[385/569] [lw-desktop] › e2e\leavewar.spec.ts:173:5 › the callsign column stays put when the grid scrolls sideways
+(node:53004) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[386/569] [lw-desktop] › e2e\leavewar.spec.ts:193:5 › the frozen overlay lines up with the rows it freezes
+(node:48144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[387/569] [lw-desktop] › e2e\leavewar.spec.ts:224:5 › the frozen overlay lines up with every row it freezes, top to bottom
+(node:52408) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[388/569] [lw-desktop] › e2e\leavewar.spec.ts:260:5 › the frozen overlay callsign opens the sheet once the year has scrolled
+(node:4900) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[389/569] [lw-desktop] › e2e\leavewar.spec.ts:273:5 › the frozen header re-measures its width when the screen rotates
+(node:34232) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[390/569] [lw-desktop] › e2e\leavewar.spec.ts:299:5 › the grid has no vertical scroller of its own
+[391/569] [lw-desktop] › e2e\leavewar.spec.ts:311:5 › the page is the one thing that scrolls vertically
+[392/569] [lw-desktop] › e2e\leavewar.spec.ts:345:5 › the frozen column is opaque — day cells never show through it
+(node:37880) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[393/569] [lw-desktop] › e2e\leavewar.spec.ts:338:5 › the grid still owns the sideways scroll
+[394/569] [lw-desktop] › e2e\leavewar.spec.ts:351:5 › the page itself never scrolls sideways — only the grid does
+[395/569] [lw-desktop] › e2e\leavewar.spec.ts:361:5 › the VIEWING AS chip stays inside the screen, its words whole, and the top row never scrolls sideways
+[396/569] [lw-desktop] › e2e\leavewar.spec.ts:380:5 › a blocked day is painted amber on its header, and an ordinary day is not
+[397/569] [lw-desktop] › e2e\leavewar.spec.ts:390:5 › a blocked day that falls on a weekend still paints amber, not grey
+[398/569] [lw-desktop] › e2e\leavewar.spec.ts:408:5 › the half-day divider is painted on a half-day chip and absent on a whole-day chip
+[399/569] [lw-desktop] › e2e\leavewar.spec.ts:431:5 › the matrix stays within a sane DOM size
+[400/569] [lw-desktop] › e2e\leavewar.spec.ts:573:5 › a month button scrolls the grid to that month
+[401/569] [lw-desktop] › e2e\leavewar.spec.ts:619:5 › a month button works from wherever the grid already is
+[402/569] [lw-desktop] › e2e\leavewar.spec.ts:647:5 › the whole month strip is on screen at phone width
+[403/569] [lw-desktop] › e2e\leavewar.spec.ts:664:5 › the four bid states read as three colours and one plain cell
+[404/569] [lw-desktop] › e2e\leavewar.spec.ts:691:5 › a bid can be placed, and lands plain because nobody has answered it
+[405/569] [lw-desktop] › e2e\leavewar.spec.ts:712:5 › a placed bid survives a reload — the war persists per browser
+[406/569] [lw-desktop] › e2e\leavewar.spec.ts:739:5 › the grid offers no medical markers — for a member or an admin
+[407/569] [lw-desktop] › e2e\leavewar.spec.ts:756:5 › tapping a counter cell opens that person's breakdown of the shown figure
+[408/569] [lw-desktop] › e2e\leavewar.spec.ts:771:5 › the bid sheet is visible in full, not clipped by the grid scroller
+[409/569] [lw-desktop] › e2e\leavewar.spec.ts:793:5 › opening the bid sheet never makes the page scroll sideways
+[410/569] [lw-desktop] › e2e\leavewar.spec.ts:806:5 › a cell Raptor owns is the same green as an approved bid
+[411/569] [lw-desktop] › e2e\leavewar.spec.ts:818:5 › the Raptor mark is painted, and an ordinary bid carries none
+[412/569] [lw-desktop] › e2e\leavewar.spec.ts:843:5 › a cell Raptor owns offers no way to change it
+[413/569] [lw-desktop] › e2e\leavewar.spec.ts:852:5 › closing the war locks the squadron out, and the admin account still edits
+[414/569] [lw-desktop] › e2e\leavewar.spec.ts:868:5 › an admin moves a bid to another date, and it lands pending there
+[415/569] [lw-desktop] › e2e\leavewar.spec.ts:924:5 › drag-selecting a row fills the leave across the whole span
+[416/569] [lw-desktop] › e2e\leavewar.spec.ts:944:5 › a drag that would go below zero asks once, then writes on the same leave again
+[417/569] [lw-desktop] › e2e\leavewar.spec.ts:964:5 › a member scoped to one person can input on that row only
+[418/569] [lw-desktop] › e2e\leavewar.spec.ts:979:5 › a member scoped to one person drag-fills their own row only
+[419/569] [lw-desktop] › e2e\leavewar.spec.ts:993:5 › a drag-selection offers Move, and the move banner appears on entering it
+[420/569] [lw-desktop] › e2e\leavewar.spec.ts:1026:5 › a loose box moves the inputs present, first input landing on the clicked day
+[421/569] [lw-desktop] › e2e\leavewar.spec.ts:1048:5 › right-click cancels a move on desktop
+[422/569] [lw-desktop] › e2e\leavewar.spec.ts:1066:5 › dragging an event row opens the event sheet ranged to the span
+[423/569] [lw-desktop] › e2e\leavewar.spec.ts:1154:5 › a drag-select parked at the counter column auto-scrolls the grid left
+[424/569] [lw-desktop] › e2e\leavewar.spec.ts:1161:5 › with the figures drawer open the band starts at the DRAWER's edge
+[425/569] [lw-desktop] › e2e\leavewar.spec.ts:1174:5 › a held finger dragged to the drawer's edge auto-scrolls the grid left
+[426/569] [lw-desktop] › e2e\leavewar.spec.ts:1203:5 › the date header freezes on desktop when the page scrolls down
+[427/569] [lw-desktop] › e2e\leavewar.spec.ts:1223:5 › the frozen bar is in step with the grid the moment it appears
+[428/569] [lw-desktop] › e2e\leavewar.spec.ts:1269:5 › a column that widens while the dates are frozen re-measures the frozen bar
+[429/569] [lw-desktop] › e2e\leavewar.spec.ts:1313:5 › the open-bidding outline moves with the rows when the manning Archive opens
+[430/569] [lw-desktop] › e2e\leavewar.spec.ts:1342:5 › at published, a tap on an approved leave edits its note, and it sticks
+[431/569] [lw-desktop] › e2e\leavewar.spec.ts:1371:5 › both frozen columns stay put when the grid scrolls sideways
+[432/569] [lw-desktop] › e2e\leavewar.spec.ts:1385:5 › the two frozen columns sit flush — no gap, no overlap
+[433/569] [lw-desktop] › e2e\leavewar.spec.ts:1403:5 › the balance column is opaque — day cells never show through it
+[434/569] [lw-desktop] › e2e\leavewar.spec.ts:1460:5 › the counter column does not eat the grid on a phone
+[435/569] [lw-desktop] › e2e\leavewar.spec.ts:1477:5 › the counter column changes every row at once
+[436/569] [lw-desktop] › e2e\leavewar.spec.ts:1496:5 › a negative balance is painted red, and a positive one is not
+[437/569] [lw-desktop] › e2e\leavewar.spec.ts:1516:5 › the date headers are square, the .day leak overridden
+[438/569] [lw-desktop] › e2e\leavewar.spec.ts:1526:5 › the figure picker doubles as the legend, every figure spelled out
+[439/569] [lw-desktop] › e2e\leavewar.spec.ts:1543:5 › the figures reorder, and Reset restores the default order
+[440/569] [lw-desktop] › e2e\leavewar.spec.ts:1575:5 › the drawer opens closed on a phone and open on a desktop
+[441/569] [lw-desktop] › e2e\leavewar.spec.ts:1588:5 › the drawer sits beside the names, its rows level with the days, and closing restores the header
+[442/569] [lw-desktop] › e2e\leavewar.spec.ts:1642:5 › a drawer box opens that person's breakdown of that figure; a title says what it counts
+[443/569] [lw-desktop] › e2e\leavewar.spec.ts:1665:5 › the stuck header carries the drawer titles, the switch and the month once the roster has scrolled
+[444/569] [lw-desktop] › e2e\leavewar.spec.ts:1719:5 › the corner switch fills its cell — the whole corner is the tap target
+[445/569] [lw-desktop] › e2e\leavewar.spec.ts:1736:5 › the corner covers the month rail all the way to the drawer's edge
+[446/569] [lw-desktop] › e2e\leavewar.spec.ts:1762:5 › a month jump lands the month clear of the drawer, not under it
+[447/569] [lw-desktop] › e2e\leavewar.spec.ts:1783:5 › a day beside the open drawer still takes a tap
+[448/569] [lw-desktop] › e2e\leavewar.spec.ts:1815:5 › the month strip reads from the drawer's edge, not the closed column's
+[449/569] [lw-desktop] › e2e\leavewar.spec.ts:1888:5 › the month strip follows the drawer WIDENING while it is already out
+[450/569] [lw-desktop] › e2e\leavewar.spec.ts:1939:5 › the column follows the leave just entered to the balance it comes off
+[451/569] [lw-desktop] › e2e\leavewar.spec.ts:1950:5 › the box whose number changed flashes, once
+[452/569] [lw-desktop] › e2e\leavewar.spec.ts:1965:5 › an admin hides a figure and the drawer loses that column; a member has no eye
+[453/569] [lw-desktop] › e2e\leavewar.spec.ts:1979:5 › the Legend pop-out carries the figures key, and fits the screen
+[454/569] [lw-desktop] › e2e\leavewar.spec.ts:2043:5 › a drag down a drawer column lights the run, on that pool only
+[455/569] [lw-desktop] › e2e\leavewar.spec.ts:2061:5 › a drag on a total, or by a member, lights nothing
+[456/569] [lw-desktop] › e2e\leavewar.spec.ts:2092:5 › the band lets a press through to the drawer once the grid has scrolled
+[457/569] [lw-desktop] › e2e\leavewar.spec.ts:2121:5 › a finger's hold-and-drag down the drawer lights the run and does not scroll the page
+[458/569] [lw-desktop] › e2e\leavewar.spec.ts:2183:5 › the bar takes one number for the run, the boxes flash, and one Undo takes it all back
+[459/569] [lw-desktop] › e2e\leavewar.spec.ts:2226:5 › -1.5 subtracts; 0, abc and 1.25 are refused and the run stays
+[460/569] [lw-desktop] › e2e\leavewar.spec.ts:2257:5 › OIL from the grid is the tracker's own credit
+[461/569] [lw-desktop] › e2e\leavewar.spec.ts:2282:5 › a tap outside clears the bar, the drawer toggle clears it, and a sideways scroll does not
+[462/569] [lw-desktop] › e2e\leavewar.spec.ts:2324:5 › a member never sees the bar
+[463/569] [lw-desktop] › e2e\leavewar.spec.ts:2333:5 › on a phone the bar comes up whole, clear of the bottom edge
+[464/569] [lw-desktop] › e2e\leavewar.spec.ts:2370:5 › a scrolled sheet keeps its header and its close button
+[465/569] [lw-desktop] › e2e\leavewar.spec.ts:2395:5 › the page scrolls behind an open sheet, and the panel stays put
+[466/569] [lw-desktop] › e2e\leavewar.spec.ts:2438:5 › a finger behind an open sheet scrolls the grid itself; a tap on a cell closes the sheet and opens nothing
+[467/569] [lw-desktop] › e2e\leavewar.spec.ts:2539:5 › on a desktop the scrim stays in the way of the mouse
+[468/569] [lw-desktop] › e2e\leavewar.spec.ts:2554:5 › the viewer's row is lit and the title sheet answers with their numbers
+[469/569] [lw-desktop] › e2e\leavewar.spec.ts:2597:5 › nothing in the callsign column is cut off
+[470/569] [lw-desktop] › e2e\leavewar.spec.ts:2616:5 › the counter controls sit on one row, in order, OIL right after rearrange, zoom after OIL
+[471/569] [lw-desktop] › e2e\leavewar.spec.ts:2640:5 › a member counter bar is Manning then OIL, adjacent, one row
+[472/569] [lw-desktop] › e2e\leavewar.spec.ts:2658:5 › in Rearrange the counter grip is left of the name and nothing clips
+[473/569] [lw-desktop] › e2e\leavewar.spec.ts:2678:5 › in Rearrange the name column grows by the grip: callsigns keep their width, the frozen pair stays joined
+[474/569] [lw-desktop] › e2e\leavewar.spec.ts:2708:5 › switching leave war repaints the grid and keeps the balance
+[475/569] [lw-desktop] › e2e\leavewar.spec.ts:2733:5 › the new-leave-war sheet is anchored to the viewport, not the topbar
+[476/569] [lw-desktop] › e2e\leavewar.spec.ts:2759:5 › an admin creates a leave war, and it joins the picker
+[477/569] [lw-desktop] › e2e\leavewar.spec.ts:2772:5 › overlapping dates are refused, with the reason on screen
+[478/569] [lw-desktop] › e2e\leavewar.spec.ts:2788:5 › a locked column is visibly dimmer than an open one, and still readable
+[479/569] [lw-desktop] › e2e\leavewar.spec.ts:2808:5 › an admin sees no lock, because the window does not bind them
+[480/569] [lw-desktop] › e2e\leavewar.spec.ts:2819:5 › the range calendar paints the span between the two taps
+[481/569] [lw-desktop] › e2e\leavewar.spec.ts:2847:5 › every control in the range calendar is a real tap target
+[482/569] [lw-desktop] › e2e\leavewar.spec.ts:2862:5 › the bidding-window sheet is anchored to the viewport, not clipped
+[483/569] [lw-desktop] › e2e\leavewar.spec.ts:2880:5 › a posted-out cell is hatched, and an ordinary cell is not
+[484/569] [lw-desktop] › e2e\leavewar.spec.ts:2900:5 › OFF is not offered as a leave to bid
+[485/569] [lw-desktop] › e2e\leavewar.spec.ts:2910:5 › the topbar scrolls away instead of holding the top of the screen
+[486/569] [lw-desktop] › e2e\leavewar.spec.ts:2936:5 › the chrome above the grid is a fraction of the screen, not most of it
+[487/569] [lw-desktop] › e2e\leavewar.spec.ts:2947:5 › the date header stays put while the topbar goes
+[488/569] [lw-desktop] › e2e\leavewar.spec.ts:2960:5 › the grid gets most of the screen on a phone once the chrome is scrolled away
+[489/569] [lw-desktop] › e2e\leavewar.spec.ts:2976:5 › every date column names its weekday
+[490/569] [lw-desktop] › e2e\leavewar.spec.ts:2990:5 › the counter control is a real tap target on a phone
+[491/569] [lw-desktop] › e2e\leavewar.spec.ts:3015:5 › the counter sheet changes the column, and every row with it
+[492/569] [lw-desktop] › e2e\leavewar.spec.ts:3037:5 › swiping across the counter column cycles it
+[493/569] [lw-desktop] › e2e\leavewar.spec.ts:3057:5 › a small or vertical drag on the counter column changes nothing
+[494/569] [lw-desktop] › e2e\leavewar.spec.ts:3070:5 › swiping the day columns leaves the counter alone
+[495/569] [lw-desktop] › e2e\leavewar.spec.ts:3091:5 › an admin reaches no Edit person from the name sheet
+[496/569] [lw-desktop] › e2e\leavewar.spec.ts:3104:5 › the callsign, its CAT chip and a personnel label all fit the phone column
+[497/569] [lw-desktop] › e2e\leavewar.spec.ts:3120:5 › an event widens its day, then wraps and grows only its own rows
+[498/569] [lw-desktop] › e2e\leavewar.spec.ts:3163:5 › a member reads the events and cannot type into them
+[499/569] [lw-desktop] › e2e\leavewar.spec.ts:3171:5 › an off day is green, a no-leave day orange, and a work word red
+[500/569] [lw-desktop] › e2e\leavewar.spec.ts:3211:5 › the counter picker is a contained, squared control
+[501/569] [lw-desktop] › e2e\leavewar.spec.ts:3222:5 › the period picker says what it is
+[502/569] [lw-desktop] › e2e\leavewar.spec.ts:3234:5 › the tinted chips are not ink in their own background hue
+[503/569] [lw-desktop] › e2e\leavewar.spec.ts:3255:5 › the picker options are neutral, not the chip green
+[504/569] [lw-desktop] › e2e\leavewar.spec.ts:3275:5 › the under-manned chip reads 0 days on the projected roster, and is disabled
+[505/569] [lw-desktop] › e2e\leavewar.spec.ts:3325:5 › the under-manned chip opens the days that caused it
+[506/569] [lw-desktop] › e2e\leavewar.spec.ts:3338:5 › choosing a day jumps the grid to it, clear of the frozen columns
+[507/569] [lw-desktop] › e2e\leavewar.spec.ts:3364:5 › the jumped-to day is visibly marked
+[508/569] [lw-desktop] › e2e\leavewar.spec.ts:3378:5 › the under-manned list stays on screen and its rows are reachable
+[509/569] [lw-desktop] › e2e\leavewar.spec.ts:3401:5 › the strip lights the month the grid is showing, and only one
+[510/569] [lw-desktop] › e2e\leavewar.spec.ts:3405:5 › the lit month follows a real scroll
+[511/569] [lw-desktop] › e2e\leavewar.spec.ts:3455:5 › every month in the strip can be reached and lights itself
+[512/569] [lw-desktop] › e2e\leavewar.spec.ts:3479:5 › the lit month is painted, not merely classed
+[513/569] [lw-desktop] › e2e\leavewar.spec.ts:3493:5 › scrolling the year stays responsive with the readout attached
+[514/569] [lw-desktop] › e2e\leavewar.spec.ts:3511:5 › an admin can reopen bidding after closing it
+[515/569] [lw-desktop] › e2e\leavewar.spec.ts:3524:5 › a member is offered no way back
+[516/569] [lw-desktop] › e2e\leavewar.spec.ts:3535:5 › a decision made before the reopen survives it
+[517/569] [lw-desktop] › e2e\leavewar.spec.ts:3554:5 › the page carries no second squadron mark — the shell is the only identity
+[518/569] [lw-desktop] › e2e\leavewar.spec.ts:3559:5 › the roster is grouped SXO → IP → OPS P → IWSO → OPS W → OCU → Personnel
+[519/569] [lw-desktop] › e2e\leavewar.spec.ts:3565:5 › every callsign wears its CAT colour, reused from the Quals palette
+[520/569] [lw-desktop] › e2e\leavewar.spec.ts:3572:5 › CAT sub-headings split the ops groups on desktop and fold away on a phone
+[521/569] [lw-desktop] › e2e\leavewar.spec.ts:3578:5 › an admin hand-drags the roster from the ⇅ toggle, which is also the way out; a member gets no tool
+[522/569] [lw-desktop] › e2e\leavewar.spec.ts:3648:5 › a picked-up row wears one frame the width of the visible grid, and the row it lands on flashes once
+[523/569] [lw-desktop] › e2e\leavewar.spec.ts:3734:5 › a personnel row shows its callsign, with no edit box, in Rearrange
+[524/569] [lw-desktop] › e2e\leavewar.spec.ts:3751:5 › the grid reads counts, months, header, events, roster — top to bottom
+[525/569] [lw-desktop] › e2e\leavewar.spec.ts:3765:5 › every month wears a bracket spanning exactly its days
+[526/569] [lw-desktop] › e2e\leavewar.spec.ts:3780:5 › the month strip fits its wrapped rows and clears the bracket bar below
+[527/569] [lw-desktop] › e2e\leavewar.spec.ts:3790:5 › a member can collapse and reopen the manning counts
+[528/569] [lw-desktop] › e2e\leavewar.spec.ts:3799:5 › the blocked exercise week prints its reason across the event row
+[529/569] [lw-desktop] › e2e\leavewar.spec.ts:3829:5 › on a phone the header freezes under the top bar and thaws on the way back
+[530/569] [lw-desktop] › e2e\leavewar.spec.ts:3906:5 › the zoom steps the whole grid down and back, on both widths
+[531/569] [lw-desktop] › e2e\leavewar.spec.ts:3921:5 › the zoom control is in the top row on both widths; a phone opens one step out
+[532/569] [lw-desktop] › e2e\leavewar.spec.ts:3931:5 › the OIL tracker has its own − / + beside RANGE, on one row; a phone opens it one step out
+[533/569] [lw-desktop] › e2e\leavewar.spec.ts:4009:5 › every label and reason on an OIL credit box reads in full, at every zoom step
+[534/569] [lw-desktop] › e2e\leavewar.spec.ts:4067:5 › the month strip is one line of twelve, inside the viewport
+[535/569] [lw-desktop] › e2e\leavewar.spec.ts:4083:5 › tagging a typed event colours the day without minting a type
+[536/569] [lw-desktop] › e2e\leavewar.spec.ts:4107:5 › posting out tags the last day, and the row leaves the months after it
+[537/569] [lw-desktop] › e2e\leavewar.spec.ts:4142:5 › a seeded posting-out hides its row in later months too
+[538/569] [lw-desktop] › e2e\leavewar.spec.ts:4158:5 › the roster does not reflow mid-scroll, only once the scroll settles
+[539/569] [lw-desktop] › e2e\leavewar.spec.ts:4183:5 › an admin builds a counter in the form, and the new row counts
+[540/569] [lw-desktop] › e2e\leavewar.spec.ts:4209:5 › deleting a counter takes its row off the grid
+[541/569] [lw-desktop] › e2e\leavewar.spec.ts:4227:5 › every admin control is reachable within the viewport
+[542/569] [lw-desktop] › e2e\leavewar.spec.ts:4266:5 › undo/redo drive a real grid edit: fill, clear, restore
+[543/569] [lw-desktop] › e2e\leavewar.spec.ts:4298:6 › undo fired in MOVE mode does not corrupt: the grid stays usable
+[544/569] [lw-desktop] › e2e\leavewar.spec.ts:4318:5 › the select sheet still works, and undo acts on the committed edit
+[545/569] [lw-desktop] › e2e\leavewar.spec.ts:4334:6 › rapid undo/redo settle to a consistent grid
+[546/569] [lw-desktop] › e2e\leavewar.spec.ts:4368:5 › a tab switch keeps the grid alive: the same node returns, shrinks-and-rebuilds on desktop, measurements still live
+[547/569] [lw-desktop] › e2e\leavewar.spec.ts:4414:5 › a glowing green box frames the open-bidding window and clears when bidding closes
+[548/569] [lw-desktop] › e2e\leavewar.spec.ts:4456:5 › the open-bidding box keeps its left edge on 1 Jan through Rearrange
+[549/569] [lw-desktop] › e2e\leavewar.spec.ts:4492:5 › the grid draws a window of months over year-wide placeholders, keeps every row aligned, and draws in place
+[550/569] [lw-desktop] › e2e\leavewar.spec.ts:4594:5 › the bottom scrollbar is a year-wide scrubber; the desktop grid fills the whole year and the bar then slides it
+[551/569] [lw-desktop] › e2e\leavewar.spec.ts:4677:5 › the bottom scrollbar shows the grid's place the moment it appears
+[552/569] [lw-desktop] › e2e\leavewar.spec.ts:4711:5 › a post-out dated in July keeps his July row, after the war was first shown on a later month
+[553/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:238:5 › approve a 5-day bid, delete its middle day, undo, redo
+[554/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:274:5 › an admin files leave on the Inputs page over a pending bid: bid gone, amber !, OK seen clears it
+[555/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:314:5 › the member files leave over their own bid: bid gone, a message, no notice left on the war
+[556/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:334:5 › LL 14–18 Jul, then ATT C 16–17 Jul on the Inputs page: the leave is cut, +2 back, undo restores
+[557/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:368:5 › a morning ATT C over a full-day LL leaves the afternoon as LL
+[558/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:387:5 › two leaves on the same time are refused with a message naming the first
+[559/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:399:5 › two leaves in one morning at times that do not overlap: allowed, half a day charged once, off the longer one
+[560/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:420:5 › leave during a course: the leave shows with +1 and is deducted
+[561/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:435:5 › clearing leave after a posting-out: LL with the PO tag, charged, never counted in manning
+  1) [lw-desktop] › e2e\leavewar.spec.ts:4492:5 › the grid draws a window of months over year-wide placeholders, keeps every row aligned, and draws in place 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      4579 |   })
+      4580 |   await expect(page.locator('[data-testid="head-2026-01-01"]')).toHaveCount(1)
+    > 4581 |   if (!janWasDrawn) await expect.poll(async () => (await read()).months.includes('2026-12')).toBe(false)
+           |                                                                                              ^
+      4582 |   else expect((await read()).months.length).toBe(12)   // the fill finished the year first: the jump only scrolled
+      4583 |   expect((await read()).misaligned).toBe(0)
+      4584 | })
+        at C:\Users\User\projects\Raptor\.claude\worktrees\codex-insights-mission-mix\raptor-port\e2e\leavewar.spec.ts:4581:94
+
+    Error Context: test-results\leavewar-the-grid-draws-a--678f4--aligned-and-draws-in-place-lw-desktop\error-context.md
+
+
+(node:47188) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[562/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:454:5 › move an approved leave after bidding closes: dotted moved mark, undo, redo
+[563/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:497:5 › publishing a weekend day KEEPS a pending bid for someone working it and flags the day
+[564/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:543:5 › the tap list: approve one half, refuse the other, un-approve back to a bid — each undoable
+[565/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:581:5 › tap-list permissions: a member gets no decisions, clears only their own bid, and "OK, seen" only on their own notice
+[566/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:622:5 › a reload (not ?fresh) keeps every filed leave, cut, notice and post-out — nothing lost or doubled
+[567/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:674:5 › phone and desktop: the tap list fits, the page never scrolls sideways, no console errors
+[568/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:709:5 › BUG: the balance column drops as soon as leave is filed on the Inputs page
+[569/569] [lw-desktop] › e2e\step4-leavewar.spec.ts:727:5 › BUG: an overnight leave does not block a medical the next morning — the medical cuts the tail
+  1 failed
+    [lw-desktop] › e2e\leavewar.spec.ts:4492:5 › the grid draws a window of months over year-wide placeholders, keeps every row aligned, and draws in place 
+  49 skipped
+  519 passed (3.5m)

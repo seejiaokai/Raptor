@@ -661,6 +661,21 @@ From today: `ELOG.rows`.
 App change: the 400-row cap becomes a retention policy the database owns (see
 Open questions).
 
+### MissionRoleAnswer — separate Insights annotation (D518, D525, D529–D531)
+
+Owner: **Insights**. One formation-wide Blue/Red answer for an exact supported context, outside signed programme
+content. Identity: `(scheduleWeek, dayISO, formationRid, contextVersion=1, context)`; the versioned context contains
+normalized mission plus sorted unique cue-bearing Remarks clauses, including cancelled aircraft wording. Exact
+DS/RED/RED AIR remains automatic Red and cannot be overridden by an annotation. Noncue formations remain Blue.
+Supported conditional contexts with no valid matching answer remain unresolved, never guessed.
+
+Stage 1 uses `settings/missionrole:<URI-encoded JSON tuple>` and `{ format:1, contextVersion:1, weekKey, dayISO,
+formationRid, context, side }`. Only the guarded typed Insights command writes; the global timeline/history and
+change-log batch carry actor/revisions/audit, rather than mutating the formation or issued snapshot. Same identity
+and context share corrections across alternate plans; differing contexts coexist. Fresh template rows receive
+validated seeds as independent annotations in the whole-day transaction; same-ID/context restoration never
+replays an old answer. Existing schedule-data wipe clears this overlay too. Permission row: §11 below.
+
 ### Attachment
 
 Owner: **Scheduler**. Metadata for one uploaded document. **The bytes are not a column** — they live
@@ -1376,6 +1391,7 @@ update, delete (delete is the soft delete throughout).
 | `Qualification` | C R U D | R | — | — | the list of qualification columns (Quals → Edit quals) |
 | `QualMark` | C R U D | R, C U D **own** | — | — | `personId` = my person — a member ticks his own quals, every one (D149) |
 | `Setting`, `SchemaVersion` | C R U D | R (`Setting` only) | — | — | the guest switch is a `Setting` (D204) |
+| `MissionRoleAnswer` | C R U D | R | R | — | separate Insights annotation, one formation/date/week/exact versioned mission context; scheduler answers and corrections only (D518, D525, D530). Updates latest-published Insights immediately; no programme, issued snapshot, holder, pending item, sign-off or OIL write. Guest reads the resulting Insights figures. |
 | `User` | C R U D | R **own** | — | — | one account per person, tied to it (D166); created with a new `Person` in one step, or linked to one already on the roster (D214, D217); the sign-in name (the defence mail address) unique; **suspended** (`enabled` false — D280, D285) while he is away, and **deleted with his `Person` when he leaves flying for good** (D287 — at the database step the tombstone, D290); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes or deletes his own account |
 | `AccessRequest` | R D | — | — | C **own** | a person signed in but on no list asks once, giving what the admin's New person form asks — callsign/name, initials, seat, CAT — as typed text (D204, D214); an admin approves — creating the `User`, linked to a person he picks (a typed callsign never claims one) or to a new `Person` made from the request with his corrections — or declines, each one step; a `User` added or renamed onto a waiting sign-in name deletes its request; which admins have had it on screen is no longer on the request — each admin's own `AccessRequestSeen` row (`[DB-READINESS]` group A, phase 4.4 — R3-04) |
 | `AccessRequestSeen` | C R U **own** | — | — | — | `userId` = my account — which waiting requests this admin has had on screen, the list of their ids: his bell lights until he has (D216, D227 — each admin's bell is his own); one row per admin, removed with his `User` (`[DB-READINESS]` group A, phase 4.4, 30 Sep 26 — R3-04) |

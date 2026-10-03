@@ -1,0 +1,78 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/state/mission-role-persist.test.ts (8 tests | 4 failed) 178ms
+   × one accepted annotation is a sealed save group, reloads intact, and does not write programme rows 49ms
+   × a backend failure retains accepted state and the exact whole group until retry succeeds 15ms
+   × an interrupted template group recovers day and annotation together, even when first boot replay fails 16ms
+   × MIX12 two independently answered contexts survive the actual backend flush and boot 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/state/mission-role-persist.test.ts > one accepted annotation is a sealed save group, reloads intact, and does not write programme rows
+AssertionError: expected [ 'elog:mus46sc6in0s.000002' ] to include 'missionrole:%5B1%2C%2213%2F07%2F2026%…'
+ ❯ src/state/mission-role-persist.test.ts:46:83
+     44|   const {be,wb,t}=await setup(),groups:any[]=[];const off=wb.subscribe…
+     45|   setMissionRole(t,'red');expect(groups).toHaveLength(1)
+     46|   expect(groups[0].filter((e:any)=>e.collection==='settings').map((e:a…
+       |                                                                                   ^
+     47|   expect(groups[0].some((e:any)=>e.collection==='weeks'||e.collection=…
+     48|   await postman.flush();expect(be.peek('settings','missionrole:'+t.id)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  |raptor| src/state/mission-role-persist.test.ts > a backend failure retains accepted state and the exact whole group until retry succeeds
+AssertionError: the given combination of arguments (null and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string
+ ❯ src/state/mission-role-persist.test.ts:53:130
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  |raptor| src/state/mission-role-persist.test.ts > an interrupted template group recovers day and annotation together, even when first boot replay fails
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/state/mission-role-persist.test.ts:65:128
+     63|   const {be,t}=await setup();setMissionRole(t,'red');await postman.flu…
+     64|   expect(pickDayTpl(1,tpl.id)).toBe('applied');const dest=roleTarget(1…
+     65|   await postman.flush();expect(postman.status).toBe('failed');expect(b…
+       |                                                                                                                                ^
+     66|   postman.detach();be.failReplay(1);await boot(be)
+     67|   expect(postman.status).toBe('failed');expect(readRole(dest.id)?.side…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  |raptor| src/state/mission-role-persist.test.ts > MIX12 two independently answered contexts survive the actual backend flush and boot
+AssertionError: expected undefined to be 'red' // Object.is equality
+
+- Expected:
+"red"
+
++ Received:
+undefined
+
+ ❯ src/state/mission-role-persist.test.ts:86:64
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 4 passed (8)
+   Start at  16:12:46
+   Duration  3.88s (transform 2.47s, setup 55ms, import 2.66s, tests 178ms, environment 788ms)
+

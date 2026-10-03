@@ -1,0 +1,837 @@
+raptor-port/docs/handpass/insights-gates/adapted-freeze-1.log:54: trailing whitespace.
++FAIL  13 · the issued AL is rewritten too                      want dn:0.1 · got 
+raptor-port/docs/handpass/insights-gates/baseline-audit.log:22: trailing whitespace.
++FAIL  13 · the issued AL is rewritten too                      want dn:0.1 · got 
+raptor-port/docs/handpass/insights-gates/baseline-build.log:34: trailing whitespace.
++[plugin builtin:vite-reporter] 
+raptor-port/docs/handpass/insights-gates/final-browser-artifacts/geometry-the-phone-board-k-e08fb--does-not-overflow-sideways-raptor/error-context.md:2442: trailing whitespace.
++  3011 | 
+raptor-port/docs/handpass/insights-gates/final-browser-artifacts/geometry-the-phone-board-k-e08fb--does-not-overflow-sideways-raptor/error-context.md:2478: trailing whitespace.
++  3047 | 
+raptor-port/docs/handpass/insights-gates/final-browser-artifacts/geometry-the-phone-board-k-e08fb--does-not-overflow-sideways-raptor/error-context.md:2497: trailing whitespace.
++  3066 | 
+raptor-port/docs/handpass/insights-gates/final-browser-artifacts/geometry-the-phone-board-k-e08fb--does-not-overflow-sideways-raptor/error-context.md:2536: trailing whitespace.
++  3104 | 
+raptor-port/docs/handpass/insights-gates/final-browser-artifacts/geometry-the-phone-board-k-e08fb--does-not-overflow-sideways-raptor/error-context.md:2579: trailing whitespace.
++  3147 | 
+raptor-port/docs/handpass/insights-gates/final-browser-artifacts/geometry-the-phone-board-k-e08fb--does-not-overflow-sideways-raptor/error-context.md:2600: trailing whitespace.
++  3168 | 
+raptor-port/docs/handpass/insights-gates/final-browser-r1-fixed.log:142: trailing whitespace.
++  1) [raptor] › e2e\geometry.spec.ts:3058:7 › the phone board keeps its controls to one row › the buttons sit on a single line and the bar does not overflow sideways 
+raptor-port/docs/handpass/insights-gates/final-browser-r1-fixed.log:635: trailing whitespace.
++    [raptor] › e2e\geometry.spec.ts:3058:7 › the phone board keeps its controls to one row › the buttons sit on a single line and the bar does not overflow sideways 
+raptor-port/docs/handpass/insights-gates/final-unit-r1-fixed.log:28: new blank line at EOF.
+raptor-port/docs/handpass/insights-gates/final-unit.log:28: new blank line at EOF.
+raptor-port/docs/handpass/insights-gates/freeze-3-build.log:34: trailing whitespace.
++[plugin builtin:vite-reporter] 
+raptor-port/docs/handpass/insights-gates/freeze-4-build.log:34: trailing whitespace.
++[plugin builtin:vite-reporter] 
+raptor-port/docs/handpass/insights-gates/freeze-5-build.log:34: trailing whitespace.
++[plugin builtin:vite-reporter] 
+raptor-port/docs/handpass/insights-gates/freeze-5-unit.log:32: new blank line at EOF.
+raptor-port/docs/handpass/insights-gates/gate-build.log:33: trailing whitespace.
++[plugin builtin:vite-reporter] 
+raptor-port/docs/handpass/insights-gates/gate-e2e.log:9: trailing whitespace.
++[WebServer] 
+raptor-port/docs/handpass/insights-gates/gate-e2e.log:11: trailing whitespace.
++[WebServer] [plugin builtin:vite-reporter] 
+raptor-port/docs/handpass/insights-gates/gate-e2e.log:17: trailing whitespace.
++[WebServer] 
+raptor-port/docs/handpass/insights-gates/gate-e2e.log:19: trailing whitespace.
++[WebServer] 
+raptor-port/docs/handpass/insights-gates/gate-e2e.log:22: trailing whitespace.
++[WebServer] 
+raptor-port/docs/handpass/insights-gates/gate-e2e.log:25: trailing whitespace.
++[WebServer] 
+raptor-port/docs/handpass/insights-gates/gate-e2e.log:697: trailing whitespace.
++  1) [lw-desktop] › e2e\leavewar.spec.ts:4492:5 › the grid draws a window of months over year-wide placeholders, keeps every row aligned, and draws in place 
+raptor-port/docs/handpass/insights-gates/gate-e2e.log:732: trailing whitespace.
++    [lw-desktop] › e2e\leavewar.spec.ts:4492:5 › the grid draws a window of months over year-wide placeholders, keeps every row aligned, and draws in place 
+raptor-port/docs/handpass/insights-gates/gate-smoke.log:40: trailing whitespace.
++[plugin builtin:vite-reporter] 
+raptor-port/docs/handpass/insights-gates/gate-smoke.log:284: trailing whitespace.
++ PASS  + Add opens with the squadron roster listed above the text box — Add a crew memberFrom the squadron rosterReconPilot · OCUTalismanPilot · OCUWildcardPilot 
+raptor-port/docs/handpass/insights-gates/gate-smoke.log:399: trailing whitespace.
++ PASS  Tx academics match 2026, as the document says they must — 0: 
+raptor-port/docs/handpass/insights-gates/gate-smoke.log:439: trailing whitespace.
++ PASS  shipped starting data names nobody — 0 student keys: 
+raptor-port/docs/handpass/insights-gates/gate-smoke.log:513: new blank line at EOF.
+raptor-port/docs/handpass/insights-gates/gate-unit.log:52: new blank line at EOF.
+raptor-port/docs/handpass/insights-gates/red-phone-door.log:9: trailing whitespace.
++  1) [raptor] › e2e\insights.spec.ts:7:9 › Insights real routes phone › D512/D515/D524/D532 default Off, Logic control, Board text before annotation answer 
+raptor-port/docs/handpass/insights-gates/red-phone-door.log:38: trailing whitespace.
++    [raptor] › e2e\insights.spec.ts:7:9 › Insights real routes phone › D512/D515/D524/D532 default Off, Logic control, Board text before annotation answer 
+raptor-port/docs/handpass/insights-mission-mix/browser-recheck.log:10: trailing whitespace.
++[WebServer] 
+raptor-port/docs/handpass/insights-mission-mix/browser-recheck.log:11: trailing whitespace.
++[WebServer] [plugin builtin:vite-reporter] 
+raptor-port/docs/handpass/insights-mission-mix/browser-recheck.log:17: trailing whitespace.
++[WebServer] 
+raptor-port/docs/handpass/insights-mission-mix/browser-recheck.log:20: trailing whitespace.
++[WebServer] 
+raptor-port/docs/handpass/insights-mission-mix/browser-recheck.log:22: trailing whitespace.
++[WebServer] 
+raptor-port/docs/handpass/insights-mission-mix/browser-recheck.log:25: trailing whitespace.
++[WebServer] 
+raptor-port/docs/handpass/insights-mission-mix/chart-first.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/collision-missing-seeds.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/disconnected-board-wire.log:30: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/disconnected-editor-wire.log:126: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/disconnected-logic-wire.log:37: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/disconnected-persist-wire.log:78: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/doors-wired.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/fixed-desktop-button-wrapper.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/fixed-dirty-role-r1.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/freeze-build-1.log:34: trailing whitespace.
++[plugin builtin:vite-reporter] 
+raptor-port/docs/handpass/insights-mission-mix/freeze-build-2-final.log:34: trailing whitespace.
++[plugin builtin:vite-reporter] 
+raptor-port/docs/handpass/insights-mission-mix/freeze-build-2.log:34: trailing whitespace.
++[plugin builtin:vite-reporter] 
+raptor-port/docs/handpass/insights-mission-mix/history-travel-first.log:36: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/history-travel-fixed.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/integration-first.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/offer-first.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/offer-storage-resolver.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/pipeline-final-focused.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/pipeline-fixed.log:45: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/pre-freeze-2-final.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/queued-guards.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/reader-guard-fixed.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/readonly-logic-fixed.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/red-computation.log:76: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/red-dirty-role-r1.log:91: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/red-reader-alias.log:34: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:304: trailing whitespace.
+++             Ranger · 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:687: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:688: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:694: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:695: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:705: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:706: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:716: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:717: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:727: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:728: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:738: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:739: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:749: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:750: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:760: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:761: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:771: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:772: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:782: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:783: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:793: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:794: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:806: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:807: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:817: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:818: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:824: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:825: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:835: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:836: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:846: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:847: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:857: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:858: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:868: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:869: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:879: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:880: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:890: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:891: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:901: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:902: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:912: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:913: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:923: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:924: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:934: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:935: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:945: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:946: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:956: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:957: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:967: trailing whitespace.
+++             
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:968: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1503: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1504: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1510: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1511: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1521: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1522: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1532: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1533: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1543: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1544: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1554: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1555: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1565: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1566: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1576: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1577: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1587: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1588: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1598: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1599: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1609: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1610: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1622: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1623: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1633: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1634: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1640: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1641: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1651: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1652: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1662: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1663: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1673: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1674: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1684: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1685: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1695: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1696: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1706: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1707: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1717: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1718: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1728: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1729: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1739: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1740: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1750: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1751: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1761: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1762: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1772: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1773: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1783: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1784: trailing whitespace.
+++     
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1807: trailing whitespace.
+++                 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1808: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1863: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1864: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1871: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:1872: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:2580: trailing whitespace.
+++                        · 6 warning · 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3457: trailing whitespace.
+++                       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3458: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3481: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3482: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3572: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3573: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3601: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3602: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3630: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3631: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3712: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3713: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3819: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3820: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3888: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3889: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3917: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3918: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3946: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:3947: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4022: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4023: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4135: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4136: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4207: trailing whitespace.
+++                       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4208: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4232: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4233: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4323: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4324: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4352: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4353: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4381: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4382: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4463: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4464: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4576: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4577: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4647: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4648: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4676: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4677: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4705: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4706: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4787: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4788: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4894: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:4895: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:7244: trailing whitespace.
+++                         1st wave 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:7260: trailing whitespace.
+++                         2nd wave · night 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:8376: trailing whitespace.
+++                 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:8377: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:8432: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:8433: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:8440: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:8441: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9140: trailing whitespace.
+++                        · 2 warning · 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9358: trailing whitespace.
+++                       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9359: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9382: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9383: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9473: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9474: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9502: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9503: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9531: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9532: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9601: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9602: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9708: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9709: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9779: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9780: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9808: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9809: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9837: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9838: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9907: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:9908: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10001: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10002: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10073: trailing whitespace.
+++                       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10074: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10097: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10098: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10188: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10189: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10217: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10218: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10246: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10247: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10322: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10323: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10431: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10432: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10502: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10503: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10531: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10532: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10560: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10561: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10630: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10631: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10724: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:10725: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:12177: trailing whitespace.
+++                         1st wave 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:12382: trailing whitespace.
+++                         2nd wave 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:13597: trailing whitespace.
+++                 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:13598: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:13653: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:13654: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:13661: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:13662: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14361: trailing whitespace.
+++                        · 1 warning · 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14520: trailing whitespace.
+++                       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14521: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14544: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14545: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14635: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14636: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14664: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14665: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14693: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14694: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14775: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14776: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14876: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14877: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14947: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14948: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14976: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:14977: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15005: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15006: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15075: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15076: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15181: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15182: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15253: trailing whitespace.
+++                       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15254: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15277: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15278: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15368: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15369: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15397: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15398: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15426: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15427: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15508: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15509: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15602: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15603: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15673: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15674: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15702: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15703: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15731: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15732: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15801: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15802: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15907: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:15908: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:16985: trailing whitespace.
+++                         1st wave 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:17138: trailing whitespace.
+++                         2nd wave 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:18246: trailing whitespace.
+++                 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:18247: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:18302: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:18303: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:18310: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:18311: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19010: trailing whitespace.
+++                        · 3 warning · 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19265: trailing whitespace.
+++                       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19266: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19289: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19290: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19380: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19381: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19409: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19410: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19438: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19439: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19508: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19509: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19609: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19610: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19680: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19681: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19709: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19710: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19738: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19739: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19814: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19815: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19920: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19921: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19985: trailing whitespace.
+++                       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:19986: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20010: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20011: trailing whitespace.
+++         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20101: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20102: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20130: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20131: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20159: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20160: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20229: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20230: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20330: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20331: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20408: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20409: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20437: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20438: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20466: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20467: trailing whitespace.
+++           
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20542: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20543: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20643: trailing whitespace.
+++                         
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:20644: trailing whitespace.
+++               
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:22019: trailing whitespace.
+++                         1st wave 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:22035: trailing whitespace.
+++                         2nd wave · night 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:23110: trailing whitespace.
+++                 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:23111: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:23166: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:23167: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:23174: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:23175: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:25972: trailing whitespace.
+++                 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:25973: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:26028: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:26029: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:26036: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:26037: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:28199: trailing whitespace.
+++                 
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:28200: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:28255: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:28256: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:28263: trailing whitespace.
+++                   
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:28264: trailing whitespace.
+++       
+raptor-port/docs/handpass/insights-mission-mix/red-refocus-keyboard.log:29010: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/red-role-storage.log:42: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/red-single-template.log:42: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/red-stale-offer.log:85: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/red-standby-seed.log:49: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/red-structural-offer.log:42: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/refocus-actor-reader-first.log:68: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/refocus-actor-reader-fixed.log:34: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/refocus-final-focused.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/resolver-computation.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/role-lifecycle-first.log:42: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/role-storage-first.log:48: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/role-storage-second.log:90: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/role-storage-third.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/seed-guard-fixed.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/stale-offer-fixed.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/storage-pipeline-first.log:155: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/storage-pipeline-second.log:50: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/storage-pipeline-third.log:45: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/template-first.log:52: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/two-context-wipe.log:18: new blank line at EOF.
+raptor-port/docs/handpass/insights-mission-mix/unrelated-cancellation.log:18: new blank line at EOF.
+raptor-port/docs/superpowers/plans/2026-10-03-insights-build-coordination.md:89: new blank line at EOF.

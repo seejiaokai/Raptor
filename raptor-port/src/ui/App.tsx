@@ -19,9 +19,12 @@ import { DayTplModal } from './DayTplModal'
 import { DraftsModal } from './DraftsModal'
 import { SecDefaultSnackbar } from './SecDefaultSnackbar'
 import { AvailWindow } from './AvailWindow'
+import { installMissionRoleOffers, reconcileMissionRoleOffer } from './mission-role-offer'
 
 export function App() {
   useVersion()
+  useEffect(()=>installMissionRoleOffers(),[])
+  useEffect(()=>reconcileMissionRoleOffer())
   /* [ONE-DOOR] round 1 (Fable F8 / Astra 4): a session whose account went off, or whose person was archived or deleted,
      since he signed in is turned off on the next repaint — the suspended screen, his writes refused from then on; and
      (the final code read, Astra 1) one whose account was deleted is turned off too, one whose role or person another

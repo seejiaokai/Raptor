@@ -1,0 +1,13 @@
+PASS everything-day
+PASS desktop-S27-Off
+PASS desktop-S01-S03-S07
+locator.textContent: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-role-choose]')
+
+    at C:\Users\User\projects\Raptor\.claude\worktrees\codex-insights-mission-mix\raptor-port\scripts\handpass\insights-editing.mjs:43:168
+    at async check (C:\Users\User\projects\Raptor\.claude\worktrees\codex-insights-mission-mix\raptor-port\scripts\handpass\insights-editing.mjs:13:50)
+    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-editing.mjs:39:3 {
+  log: [ "  - waiting for locator('[data-role-choose]')" ],
+  name: 'TimeoutError'
+}

@@ -1,0 +1,68 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/ui/insights-mix.test.tsx (3 tests | 1 failed) 360ms
+   × MIX4 MIX14 MIX15 four seats split two/two, one unresolved makes ordinary four; member and guest reads match admin 53ms
+ ❯ |raptor| src/state/mission-roles.test.ts (15 tests | 1 failed) 433ms
+   × MIX14 same-key competing actor blocks the old answer and own Undo, while a different context does not 13ms
+ ❯ |raptor| src/ui/mission-role-offer.test.tsx (10 tests | 1 failed) 7453ms
+   × MIX6 keyboard activation returns to the identical Remarks node and retained selection 825ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/state/mission-roles.test.ts > MIX14 same-key competing actor blocks the old answer and own Undo, while a different context does not
+AssertionError: expected '{"ok":false,"reason":"refused","messa…' to contain 'Ranger'
+
+Expected: "Ranger"
+Received: "{"ok":false,"reason":"refused","message":"That mission-role question is no longer current"}"
+
+ ❯ src/state/mission-roles.test.ts:181:111
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |raptor| src/ui/insights-mix.test.tsx > MIX4 MIX14 MIX15 four seats split two/two, one unresolved makes ordinary four; member and guest reads match admin
+TypeError: can is not a function
+ ❯ src/ui/insights-mix.test.tsx:36:79
+     34|   schedWrite(SCHED_TYPES.mutate,()=>{DAYS[0].waves[0]!.formations[0]!.…
+     35|   expect(html().querySelector('.mix-segments')).toBeNull();setMissionR…
+     36|   for(const role of ['main','guest']){setSession({user:'viewer',role})…
+       |                                                                               ^
+     37| })
+     38| it('MIX15 D512/D523 unsupported labels escape/fallback and unresolved …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > MIX6 keyboard activation returns to the identical Remarks node and retained selection
+AssertionError: expected '' to be 'DS FOR VL' // Object.is equality
+
+- Expected
++ Received
+
+- DS FOR VL
+
+ ❯ src/ui/mission-role-offer.test.tsx:102:88
+    100|   const range=document.createRange();range.selectNodeContents(field);w…
+    101|   const choose=q('[data-role-choose]');await act(async()=>choose.focus…
+    102|   expect(document.activeElement).toBe(field);expect(window.getSelectio…
+       |                                                                                        ^
+    103| })
+    104| it.each(['Off then On','page away then back','target removed'])('MIX7 …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  3 failed | 25 passed (28)
+   Start at  16:05:14
+   Duration  11.77s (transform 6.30s, setup 142ms, import 7.15s, tests 8.25s, environment 2.74s)
+
