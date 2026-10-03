@@ -117,7 +117,7 @@ Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QU
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
-Insights — [INSIGHTS-MISSION-MIX] (D512 categories approved; picture and two product answers pending), with [INSIGHTS-BOARD-DOOR].
+Insights — [INSIGHTS-MISSION-MIX] (D512/D518 categories, D520 question placement and D521 Logic switch approved; remaining choices pending), with [INSIGHTS-BOARD-DOOR].
 The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
 phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Codex build), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
@@ -1479,6 +1479,10 @@ first; after `[WORKSPAN-NEGATIVE]`. Full row: `.claude/decisions-full/scheduler.
 **Approved direction; lifecycle/design/build pending:** "Red", "DS" and "Red Air" missions count red automatically (D518).
 Other missions remain blue unless DS/RED in an aircraft's Remarks triggers a Blue/Red role question; its answer covers
 the whole formation (D517). No extra red indicator appears on schedule lines (D519).
+D520 approves the after-edit question below formation AREA, Remarks visible, temporary space removed after either answer.
+D521 adds a squadron-wide blue/red tracking on/off setting on Logic; D522 starts Off at first setup. D523 keeps ordinary
+total bars for people with unanswered roles until those roles are chosen, without guessing or a burst of questions.
+The earlier save/cancel/repeat/correction choices and final switch/incomplete-bar look remain pending; ordinary Insights remains available.
 One person who flies both has both coloured segments in their existing total bar. His supplied phone picture names the
 target: Flying load · sorties this week. Continue this batch now while Claude's further review waits; no live merge.
 **D513:** initial twelve flying people, with Show all. **D514:** DS for another formation is our red air, but DS wording

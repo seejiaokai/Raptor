@@ -1,19 +1,23 @@
 # Insights mission mix — design in progress, 3 Oct 26
 
-Status: D512–D519 settle categories, formation scope, conditional question and no extra role label. Question lifecycle,
+Status: D512–D523 settle categories, formation scope, conditional question/placement, no extra role label, optional Logic
+tracking starting Off and total bars until unanswered roles are resolved. Remaining question lifecycle,
 complete visual design and Board entry placement await his look;
 no application code is built here. Astra plans under D496; Sol independently challenges before building. Claude's further
 plan/code read after Monday 5 Oct 26, 19:00 is owed before main. No merge/main push.
 
-## Current owner direction — D517–D519 supersedes the control proposals below
+## Current owner direction — D517–D523 supersedes the control proposals below
 
-The whole formation is on one side (D517). Mission names DS, RED and RED AIR count red without asking (D518).
+Tracking is optional per squadron on Logic (D521), Off at first setup (D522). When on, the whole formation is on one side
+(D517). Mission names DS, RED and RED AIR count red without asking (D518).
 For another Mission, such as ACM, DS or RED in any aircraft's Remarks triggers a Blue/Red role question for the
 formation; the cue does not decide the answer. Other eligible sorties without a cue stay blue. Do not ask again
 about per-aircraft scope or a permanent/every-Mission-focus choice. D519 rejects any extra Red indicator on schedule
 lines: the scheduler's Remarks are sufficient. Preserve existing mission-type dots, scheduler red flags and warnings.
-Revise the picture to show only the conditional question, no line marker. Answer retention/reset, question timing,
-cancellation and the complete visual look remain to bind before the new-chat build (D515). The saved choice makes
+Show only the conditional question, no line marker. D520 approves it below formation AREA after leaving completed
+Remarks. D523 keeps an ordinary total bar for a person with unresolved roles, until chosen; no guessed colours or bulk
+questions. Answer retention/reset, saving/cancellation/correction and the complete visual look remain to bind before the
+new-chat build (D515). The saved choice makes
 the eventual batch FULL tier; the earlier provisional WALK is superseded. Earlier mockups/read responses are historical
 exploration, never implementation requirements. This section governs every older proposal/pending statement below.
 
@@ -28,7 +32,8 @@ infer a category-control approval or repeat the same question before showing the
 
 ## Approved and preserved
 
-- D512/D518: the existing Flying load · sorties this week chart splits each person's total bar into blue and red segments.
+- D512/D518 with D521–D523: when tracking is on and all roles resolved, the existing Flying load · sorties this week
+  chart splits each person's total bar into blue and red segments; unanswered roles keep that person's ordinary total.
   Named Red/DS/Red Air missions are red; other missions are blue except an answer from the conditional question.
   Both segments show for a mixed person. D517 formation scope and D519 no line label apply.
 - D481: the Scheduler Board gets an Insights opener. The proposed positions are beside the bell on desktop and in ⋯
@@ -139,7 +144,8 @@ The Mission-anchored popup covers written Remarks in the phone sample, so it is 
 
 ## Current after-edit question picture and pending lifecycle
 
-Owner requested a picture of the after-edit, nonblocking question; timing/placement is a proposal, not a new ruling.
+Owner D520 approves the pictured after-edit question below the formation, with Remarks visible and temporary space
+removed after either answer. Save/cancel/repeat/correction remain pending; this is still a design, not an implemented feature.
 `../../img/insights-proposal/remarks-normal-phone.png` and `remarks-question-phone.png` show the normal and question states;
 desktop and short-screen pairs plus `remarks-bubble.cjs` / `remarks-bubble-result.json` are in that folder. A compact
 "VL: Blue or Red?" question sits AFTER the formation's AREA strip, outside its aircraft rows, with both Remarks visible.
@@ -150,6 +156,40 @@ Proposal: open only after leaving the completed relevant edit AND its tap/Tab tr
 rebuilding the next editor, typing-pause prompt or automatic scroll jump. Announce a below-viewport question accessibly;
 preserve focused field and scroll while opening/removing it. Large formations may require ordinary scrolling to reach it.
 Saving/cancel/repeat/correction choices below remain pending and are not decided by this picture.
+
+## Optional squadron tracking — D521
+
+Owner wants the blue/red feature switchable on/off on Logic so a squadron can opt out. Approved scope is the
+blue/red split and its role question, not ordinary Insights, sortie totals or work hours. D522 starts Off at first setup;
+enable when wanted. D523 keeps ordinary total bars for people with unanswered roles until roles are chosen, without
+guessing colours or a burst of questions. Retaining saved answers is proposed; no data deletion is authorized.
+
+Recommended label: **Track blue/red sorties**, using Logic's existing admin Edit rules access and configuration save
+route. This is a distinct feature boolean, never a repurposed warning/severity control. Current Logic numeric/matrix
+settings persist through rulesSave/validate/notify; no Logic Undo support has been verified or promised. Do not include
+the feature preference in warning-rule off-standard counts or the RULES MODIFIED stamp.
+Recommended off state: normal unsplit sortie bars and no colour legend or role questions; ordinary totals, Show all,
+hours and other Insights unchanged. Retain valid answers; changes to Mission/support context make stale answers
+inapplicable within an ordinary day edit, without modifying issued snapshots. Switching the view on/off itself does
+not amend a day or clear sign-offs.
+
+D522 settles the default Off, one visible standard without hidden installation-dependent defaults (Astra's earlier On
+recommendation was not selected). Existing explicit setting values survive loading. D523 settles enabling: reuse valid
+issued answers and automatic Mission roles, with an ordinary total bar for a person whose eligible sorties include
+unanswered ambiguous flights until roles are resolved. No burst of questions or guessed blue. The explanatory look
+and access to resolve missing roles still need a picture and firm plan; no third category is approved.
+New flights written while tracking is off are legitimate untracked data, not D56 legacy demo records. The earlier
+strict-writer requirement is therefore conditional on tracking being on, subject to the agreed re-enable lifecycle.
+On a published day, a newly supplied role still waits for its amendment under D478. No backfill of an issued snapshot.
+
+New switch/incomplete-bar pictures: `../../img/insights-proposal/logic-off/on-{phone,desktop}.png` and
+`sorties-unanswered-phone.png`. Label **Track blue/red sorties**, group Insights; distinct feature control, not a warning.
+Relay's illustrative total4 says "Total only · roles not recorded"; others have fully resolved illustrative splits.
+`logic-switch.cjs` / `logic-switch-result.json`: default Off, DOM-only on/off, both viewport widths fit, total4/twelve
+initial rows preserved, coloured segment widths match fixture ratios, zero page errors; all five final PNGs opened.
+No actual setting saving/reset/permission, role resolution or mobile-keyboard implementation is proven. Exact wording,
+control look and resolution access await the final look. Complete independent meaning reads and Sol challenges:
+`../plans/2026-10-03-insights-logic-switch-read.md`; D512/D518/D520–D523 short/full/home PASS after stale statements fixed.
 
 Design-only checks: phone390×844, desktop1440×1000, short390×568; Mission text/box and aircraft row heights unchanged,
 question below Remarks without overlap, next-field focus preserved after prototype Tab, both DOM-only answers remove
@@ -168,5 +208,6 @@ Independent coordinator responses and Sol challenge/disposition:
 D512 operative sentence was corrected; conversion clean. D56 permits unchanged pre-field stored demo formations to use
 the Mission default without retroactive cleanup or accuracy claims for their ambiguous Remarks. D478 forbids recolouring
 an issued day from a new working answer before its AL. This old-data exception never covers NEW imports/templates/copies:
-every forward writer obtains or carries a valid answer before committing a new ambiguous formation. The FULL plan
+when tracking is enabled, every forward writer obtains or carries a valid answer before committing a new ambiguous
+formation. D521 legitimately allows unanswered formations while off, subject to the re-enable design above. The FULL plan
 must cover canonical role comparison/restoration, one Undo action, central writers, copied context and issued snapshots.

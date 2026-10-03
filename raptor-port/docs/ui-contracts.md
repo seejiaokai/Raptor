@@ -4755,19 +4755,33 @@ counts towards work hours. The blue default for other mission names never turns 
 separate sortie-eligibility and work-hours calculations. This settles neither other duties' hours nor earned leave.
 
 **FORMATION ROLE AND CONDITIONAL QUESTION (owner D517–D519, 3 Oct 26 — approved direction, NOT YET BUILT):** the whole
-formation is on one side. Mission names DS, RED and RED AIR count red automatically, with no Blue/Red question. Other
+formation is on one side. With blue/red tracking enabled (D521), Mission names DS, RED and RED AIR count red automatically, with no Blue/Red question. Other
 missions remain blue unless DS or RED in an aircraft's Remarks triggers a Blue/Red mission-role question; the answer,
 not free-text interpretation, decides the whole formation's role. No extra red indicator is drawn on schedule lines:
 the scheduler's Remarks are sufficient. Existing mission-type dots, scheduler red flags and warnings retain their
-meanings. Question timing, answer retention/reset and edit cancellation still need a firm plan before the new-chat build.
+meanings. **D520 approves the shown after-edit question below the formation's AREA strip:** show after leaving completed
+Remarks, keeping Remarks visible; either answer removes its temporary space. Wait for the tap/Tab transition to finish,
+preserving next focus. Answer retention/reset, save and edit cancellation still need a firm plan before the new-chat build.
+
+**OPTIONAL SQUADRON TRACKING (owner D521, 3 Oct 26 — approved switch, NOT YET BUILT):** the Logic page provides a
+squadron-wide on/off setting for blue/red sortie tracking. D512's split and D518's questions apply when tracking is on;
+this does not turn off ordinary Insights, sortie totals or work hours. **D522: start Off at first squadron setup; enable
+when wanted. D523: on enabling, a person with unanswered ambiguous flight roles keeps an ordinary total bar until those
+roles are chosen; no guessed colours or burst of questions.** Reuse applicable answers and named-Mission automatic roles;
+no third category is added. Existing explicit settings survive loading. No per-user preference or data deletion is approved.
+Retaining valid answers while off is the proposed reversible behaviour; changed context cannot reuse stale answers.
+New answers on issued days still wait for an amendment under D478. Exact incomplete-breakdown wording/resolution access
+and the save/cancel/repeat/correction lifecycle remain design work.
 
 The older `[INSIGHTS-WORKING-COPY]` question is superseded by D478 below and the merged `[INSIGHTS-WHICH-COPY]` build;
 it is not an outstanding product choice.
 
 **SORTIE MISSION MIX (owner D512, 3 Oct 26 — approved categories, NOT YET BUILT).** Each person's existing weekly sortie
-bar splits into blue and red segments: missions named "Red", "DS" and (D518) "Red Air" count red; other missions count blue
+bar splits into blue and red segments WHEN tracking is enabled and ALL their eligible roles are resolved (D521/D523):
+missions named "Red", "DS" and (D518) "Red Air" count red; other missions count blue
 except a role chosen through D518's conditional question above. A person
-with both kinds shows both segments within the one total bar. This adds the mission mix to the sortie count; it does not
+with both kinds shows both segments within the one total bar. If any eligible role is unanswered, D523 keeps that person's
+ordinary total bar until resolved. This adds the mission mix to the sortie count; it does not
 change work-hours bars, sortie eligibility or the latest-issued-day rule below. The proposed picture and remaining design
 choices live in `superpowers/specs/2026-10-03-insights-mission-mix.md`; build with `[INSIGHTS-BOARD-DOOR]` in the Insights batch.
 
