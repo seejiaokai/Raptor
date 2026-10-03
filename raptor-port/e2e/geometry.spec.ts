@@ -22,6 +22,49 @@ const FREETEXT = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .p
    above like everything else. */
 const PROSE = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .areacell'
 
+test.describe('Rally previous-day Board header fits constrained content widths', () => {
+  for (const [name, viewport] of [
+    ['desktop', { width: 1440, height: 900 }], ['phone', PHONE],
+    ['landscape', { width: 844, height: 390 }], ['tablet', { width: 1024, height: 600 }],
+  ] as const) {
+    test(`date cue and every control remain readable and reachable on ${name}`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page); await go(page, 'editsched')
+      await page.locator('#eWeek [data-sbday="1"]:visible').click()
+      for (const li of [0, 1]) {
+        const field = page.locator(`#schedBoard [data-bfld="ff:1.0.${li}.to"]:visible`).first()
+        await field.fill('01:00'); await field.press('Tab')
+      }
+      while (await page.locator('#schedBoard [data-itdel^="1|0|"]:visible').count()) {
+        await page.locator('#schedBoard [data-itdel^="1|0|"]:visible').first().click()
+      }
+      await page.locator('#schedBoard [data-itadd="1|0"]:visible').click()
+      const line = page.locator('#schedBoard [data-itline="1|0|0"]:visible').first()
+      await line.fill('22:00 RALLY'); await line.press('Enter')
+      const header = page.locator('#schedBoard .sb-go-h:visible').first()
+      await expect(header.locator('.asd')).toContainText('22:00 (prev day)')
+      await header.scrollIntoViewIfNeeded()
+      const m = await header.evaluate(e => {
+        const summary = e.querySelector('.asd')!, r = summary.getBoundingClientRect(), h = e.getBoundingClientRect()
+        const style = getComputedStyle(summary), lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2
+        return { text: summary.textContent, width: r.width, height: r.height, lineHeight,
+          overflow: e.scrollWidth - e.clientWidth,
+          buttons: [...e.querySelectorAll('button')].map(b => {
+            const q = b.getBoundingClientRect(), hit = document.elementFromPoint(q.x + q.width / 2, q.y + q.height / 2)
+            return { label: b.textContent, inside: q.x >= h.x && q.right <= h.right + 1 && q.y >= h.y && q.bottom <= h.bottom + 1
+              && q.x >= 0 && q.right <= innerWidth && q.y >= 0 && q.bottom <= innerHeight,
+              hit: hit === b || b.contains(hit), width: q.width, height: q.height }
+          }) }
+      })
+      expect(m.text).toContain('22:00 (prev day)')
+      expect(m.width, 'the date cue has readable width').toBeGreaterThanOrEqual(120)
+      expect(m.height, 'the complete date cue fits within two lines').toBeLessThanOrEqual(m.lineHeight * 2.2)
+      expect(m.overflow, 'no wave-header horizontal overflow').toBeLessThanOrEqual(1)
+      expect(m.buttons.every(b => b.inside && b.hit && b.width >= 27 && b.height >= 14), JSON.stringify(m.buttons)).toBe(true)
+    })
+  }
+})
+
 test.describe('the puck is one fixed size everywhere', () => {
   for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
     test(`74x15 on ${name}, on both week surfaces and in the palette`, async ({ page }) => {

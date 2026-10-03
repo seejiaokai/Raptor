@@ -112,6 +112,11 @@ describe('a rear-seat ride raises the crew-pairing CP advisory', () => {
 
 describe('the flying-only rules are OFF for personnel', () => {
   it('flying twice in a day is not "double turning"', () => {
+    /* Two compact sorties keep LONGDAY out of this flying-rule exemption. */
+    for (const [gi,to,ld,report] of [[0,'12:00','13:00','09:00'],[1,'16:00','17:00','13:00']] as const) {
+      const w = DAYS[0].waves[gi], f = w.formations[0]
+      w.intimes = [`${report} ${f.cs} IN TIME`]; f.to=to; f.ld=ld; f.br=''
+    }
     /* a real WSO in two sorties one day IS double turning */
     setSlotVal('0.0.0.0.w', 'freak')
     setSlotVal('0.1.0.0.w', 'freak')

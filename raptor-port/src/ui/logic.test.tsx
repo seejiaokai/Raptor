@@ -155,6 +155,16 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
     expect(VCONF.crewRest).toBe(600)         // unchanged — refused, not written
     expect(RULE_SPEC.crewRest.lo).toBeGreaterThan(180)
   })
+  it('review D2 offers an adjacent bounded text setting and displays markup literally',async()=>{
+    const field=()=>$('#lgBody input[data-lgset="reportText"]') as HTMLInputElement;
+    expect(field()).toBeTruthy();expect(field().maxLength).toBe(60);
+    expect(field().closest('.lgmatrix')!.querySelector('[data-lgset="reportLead"]')).toBeTruthy();
+    await setField(field(),'<b>RALLY</b> "&');
+    expect(VCONF.reportText).toBe('<b>RALLY</b> "&');expect(field().value).toBe(VCONF.reportText);
+    expect(field().closest('.lgmatrix')!.querySelector('b')).toBeNull();
+    expect(field().getAttribute('value')).toBe('<b>RALLY</b> "&');
+    await setField(field(),'   ');expect(VCONF.reportText).toBe('IN TIME + WX/NOTAMS');
+  })
 
   it('a setting quoted on two rows edits from either box — the circled CREW_TIGHT row included', async () => {
     /* the owner circled the CREW_TIGHT advisory asking "is this editable as

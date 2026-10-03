@@ -18,6 +18,7 @@ import { initStore as lwInitStore, setDayEvent, setPeople, setRole } from './sta
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync } from './sync'
 
+
 const ISNAP = JSON.stringify(INPUTS)
 const DSNAP = JSON.stringify(DAYS)
 const TUE = 1, TUE_ISO = '2026-07-14'

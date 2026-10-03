@@ -1,0 +1,68 @@
+{
+  "results": [
+    {
+      "width": "desktop",
+      "label": "P1 fresh demo Mon–Thu publishes in both seed weeks with zero reporting-order warning",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "L1/L3 numeric then text, Undo/Redo/reset keep both live values",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "L4 literal markup/quotes, blank and 60-character words",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "M1 week add uses09:00 default atTO12:00 and the control is reachable",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "M1/L1 Board add uses10:00 and configured words; first clock wins; suggested brief09:40",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "L4 literal words minted without markup nodes",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "L1/L4 both overrides survive an ordinary reload and fresh sign-in",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "P1 first publication succeeds with wrong pair and freezes the red warning",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "P3 hide working warning, issue its AL, and read issued hidden state",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "P3 view-only copy has literal reporting text and no add or hide authority from its new text",
+      "status": "PASS"
+    }
+  ],
+  "observations": [],
+  "pictures": [
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-fresh-demo-published.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-logic-defaults.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-suggested-brief-mint.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-published-warning.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-hidden-warning-AL.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-failure.png"
+  ],
+  "failure": {
+    "width": "desktop",
+    "message": "Cannot read properties of undefined (reading 'length')",
+    "stack": "TypeError: Cannot read properties of undefined (reading 'length')\n    at file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/walk.mjs:97:57\n    at async check (file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/walk.mjs:10:32)\n    at async file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/walk.mjs:94:3"
+  }
+}

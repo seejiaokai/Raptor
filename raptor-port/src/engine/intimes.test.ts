@@ -17,7 +17,10 @@
        "<CS> IN TIME" grammar resolves them, which is what keeps parity
        untouched where data exercises it. */
 import { describe, expect, it } from 'vitest'
-import { intimeTime, intimeFold, intimeMap, waveInTime } from './events'
+import { intimeTime, intimeFold, waveInTime } from './events'
+import { resolveReporting } from './reporting'
+import { parseHM } from './time'
+const intimeMap=(w:any)=>Object.fromEntries((w.formations||[]).map((f:any)=>[f.cs,resolveReporting(w,f,parseHM(f.to)!).report]).filter(([,t]:any)=>t!=null))
 import { DAYS } from './data'
 
 const wave = (intimes: string[], css: string[] = ['VL', 'RU']) => ({

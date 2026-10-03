@@ -1,0 +1,45 @@
+{
+  "results": [
+    {
+      "width": "desktop",
+      "label": "short-screen header and Add are readable with an uncovered hit target",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "P4 loading Original restores its wrong pair and leaves every issued snapshot frozen",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "P4 remaining wrong pair can be reissued after loading the old version",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "actual saved agency print rendered with its CSS page size",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "console/page/HTTP errors",
+      "status": "PASS"
+    },
+    {
+      "width": "phone",
+      "label": "short-screen header and Add are readable with an uncovered hit target",
+      "status": "PASS"
+    },
+    {
+      "width": "phone",
+      "label": "console/page/HTTP errors",
+      "status": "PASS"
+    }
+  ],
+  "pictures": [
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/supplement/desktop-previous-day-short-screen.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/supplement/desktop-old-version-reissued.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/supplement/phone-previous-day-short-screen.png"
+  ],
+  "failure": null
+}

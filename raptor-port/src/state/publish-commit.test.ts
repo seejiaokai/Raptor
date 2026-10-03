@@ -28,6 +28,7 @@ import * as view from './view'
 import { onCommit } from '../command'
 import type { CommitEnvelope } from '../command'
 
+
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
 

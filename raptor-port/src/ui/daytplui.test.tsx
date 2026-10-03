@@ -17,6 +17,7 @@ import { DAYTPL_CFG, dayTplReset } from '../engine/daytpl'
 import { HOOKS } from '../engine/hooks'
 import { boardHTML } from './board'
 
+
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement

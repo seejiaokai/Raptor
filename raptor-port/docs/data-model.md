@@ -813,6 +813,12 @@ configuration key. The whole `sqn142_*` / Leave War preferences family.
 | `scope` | choice `scheduler\|leavewar\|tracker` | yes | (new) — the three worlds share one table |
 | `value` | JSON | yes | the record as the app already serialises it |
 
+D511 (3 Oct26): the existing rules row's `value.v` also carries optional
+`reportText: string`, beside numeric reportLead. Default IN TIME + WX/NOTAMS,
+single line/max60/trimmed, blank falls back. All other v keys remain numbers;
+no new Setting key or table. Existing reset, serializable settings snapshot,
+export and Undo carry the same typed value and restore missing text to default.
+
 Relationships: none.
 From today: the `raptor:settings/*` keys and the ~20 `raptor:leavewar/*`
 preference keys.

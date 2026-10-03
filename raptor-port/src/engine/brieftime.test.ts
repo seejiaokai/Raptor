@@ -63,7 +63,7 @@ describe('the brief time a scheduler indicates', () => {
     expect(leg.report).toBe(parseHM('21:30')! - 1440)
   })
 
-  it('does not silently roll a later clock on an ordinary daytime sortie back 24 hours', () => {
+  it('D503 rolls a reporting clock later than daytime take-off back one day, preserving the typed brief', () => {
     const f: any = firstForm(1)!
     const crew = f.aircraft[0].p
     f.to = '12:00'; f.ld = '13:30'; f.br = '18:10'
@@ -71,7 +71,7 @@ describe('the brief time a scheduler indicates', () => {
     wave.intimes = [`${f.cs} IN TIME 1930H`]
     const leg = legsOf(1, crew)[0]
     expect(leg.brief).toBe(parseHM('18:10'))
-    expect(leg.intime).toBe(parseHM('19:30'))
+    expect(leg.intime).toBe(parseHM('19:30')! - 1440)
   })
 
   /* A shift is not a sortie: it briefs nothing, and every consumer gates on
@@ -239,8 +239,8 @@ describe('the crew-rest anchor (owner worked examples)', () => {
      bold lead prints it, so the message saying it too read as repetition) */
   it('names the leave-by time and the previous day', () => {
     const r = run('01:30', '2A: BFM-5')
-    /* anchor 12:00 − 12h = 00:00 the previous day */
-    expect(r.leaveBy).toBe('00:00')
+    /* anchor Tuesday 12:00 − 12h = Tuesday 00:00, next day from Monday */
+    expect(r.leaveBy).toBe('00:00 (next day)')
     expect(r.msg, 'the message no longer restates the leave-by').not.toContain('leave by')
     expect(r.prevDi).toBe(0)
   })
@@ -250,7 +250,7 @@ describe('the crew-rest anchor (owner worked examples)', () => {
        means he had to be gone by 00:00 */
     const r = runCase('01:30', '12:00', '13:00', '2A: BFM-5', '15:20')
     expect(r.flagged).toBe(true)
-    expect(r.leaveBy).toBe('00:00')
+    expect(r.leaveBy).toBe('00:00 (next day)')
   })
 })
 

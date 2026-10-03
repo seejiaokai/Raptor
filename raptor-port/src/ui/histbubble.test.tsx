@@ -23,6 +23,7 @@ import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
 import { hideHistBub, histKeyOf, HIST_CELLS, refreshHistDots, findHistCell } from './histbubble'
 
+
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement

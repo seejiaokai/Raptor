@@ -22,6 +22,7 @@ import { DPREV, setDayPreview } from '../state/view'
 import { HOOKS } from '../engine/hooks'
 import { planSelectorHTML, verTagHTML } from './html'
 
+
 /* sign all four roles so a day can be published / an AL issued */
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
 const reset = () => {

@@ -254,6 +254,15 @@ const RULES = {
   MIX16: 'desktop and phone Board doors open the topmost shared Insights modal',
   MIX17: 'an open question stays through an unrelated edit on the same day and still answers afresh (D535)',
   MIX18: 'the read-only published Remarks door keeps its amendment mark',
+  /* In-time / Rally — D497–D507; 2026-10-02-rally-behaviour-register.md */
+  RT1: 'formation-only scope is resolved separately for IN and RALLY, specific before wide',
+  RT2: 'first-valid clock and immediate-rally grammar preserve optional legacy reporting',
+  RT3: 'report later than flight take-off is prior day; earliest actual duplicate wins',
+  RT4: 'shared report reaches work span, header and today-only bands without changing shift rules',
+  RT5: 'wrong stage pair is named while editing; draft saves and equal stages are allowed',
+  RT6: 'first publication, AL and reissue refuse atomically, independent of warning visibility',
+  RT7: 'existing reporting editor doors, Escape/delete, history and read-only authority stay intact',
+  RT8: 'nominal OIL and ordinary busy versus SANS windows retain their own definitions',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

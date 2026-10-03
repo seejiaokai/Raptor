@@ -26,6 +26,7 @@ import { sbSlot } from './board-html'
 import { warnDelta } from '../state/dropflag'
 import * as view from '../state/view'
 import { setSession } from '../state/auth'
+// Isolate the existing warning-hide readers from the new reporting-order checks.
 
 const DSNAP = JSON.stringify(DAYS)
 const MON = 0, TUE = 1

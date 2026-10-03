@@ -23,6 +23,7 @@ import { DUTYTPL_CFG, addTpl, setTplWave, blockFromTpl, dutyTplReset } from './d
 import { inpId } from './inputs'
 import { alIssue, markEdit } from './publish'
 
+
 /* ---- the mini-DSL --------------------------------------------------------
    'string' | 'number' | 'boolean'   a primitive; a trailing '?' allows absent
    [spec]                            an array whose every element is spec

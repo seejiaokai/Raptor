@@ -290,6 +290,10 @@ So on the NEXT walk one Sonnet 5.5 walker runs beside an Opus walker again, the 
 defects**: the build as it stood BEFORE its fix (or an earlier commit whose walk found real ones), neither walker told
 what is wrong, and the report says what each CAUGHT apart from whether each followed the brief. Until he rules on that
 second report nothing else goes to a cheaper model.
+**ONE EXCEPTION, ONCE (owner, D508, 3 Oct 26 — his allowance at 94% before the reset).** For the two Codex builds
+(`codex/discard-marks-remove`, `codex/rally-workspan`) Opus 5.5 plans a small, targeted check and Sonnet 5.5 does the
+reading and the walking, with no Fable; the host reproduces every find. It is an early signal on Codex's reliability,
+NOT a bug check: the full check, this second trial and the second reads stay owed after the reset, before "merge live".
 
 **The owner's trigger rule, in one line:**
 

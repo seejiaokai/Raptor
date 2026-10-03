@@ -21,6 +21,7 @@ import * as view from './view'
 import { onCommit } from '../command'
 import type { CommitEnvelope } from '../command'
 
+
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }

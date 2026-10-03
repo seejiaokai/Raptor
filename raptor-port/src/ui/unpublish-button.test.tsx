@@ -15,6 +15,7 @@ import * as view from '../state/view'
 import { _resetDisclosure } from '../state/disclosure'
 import { dayStatHTML } from './html'
 
+
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }

@@ -127,7 +127,7 @@ export function textLabel(key: string | undefined): string | null {
     case 'ff': return last === 'cs' ? 'a flying line’s callsign' : last === 'msn' ? 'a mission' : 'a flying line’s details'
     case 'fr': return 'a remark on a flying line'
     case 'dr': case 'sr': case 'gr': case 'ap': return 'a detail on the schedule'
-    case 'it': return 'an in-time'
+    case 'it': return 'an In-time / Rally line'
     case 'st': return 'the stores on a jet'
     case 'ar': return 'an area'
     case 'at': return 'an area time'

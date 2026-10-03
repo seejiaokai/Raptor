@@ -22,6 +22,7 @@ import { setSession } from './auth'
 import * as view from './view'
 import { splitWeek, joinWeek, parseRowId, RowShapeError } from './weekrows'
 
+
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
 const W1 = '13/07/2026', W2 = '20/07/2026'

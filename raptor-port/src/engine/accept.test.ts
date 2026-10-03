@@ -15,6 +15,7 @@ import { validate } from './validate'
 import { HOOKS } from './hooks'
 import { ridKey } from './rowids'
 
+
 const rk = (k: string) => ridKey(k, DAYS)
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)

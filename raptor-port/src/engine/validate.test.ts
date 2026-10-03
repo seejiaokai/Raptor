@@ -35,7 +35,7 @@ describe('validation engine (tfin F)', () => {
 
   const SEV = ['hard', 'adv', 'note']
   const CODES = ['DOUBLE_BOOK', 'DNIF_FLY', 'LEAVE_FLY', 'INPUT_FLY', 'TURN', 'ILLEGAL_CREW', 'CREW_SOLO', 'CO_APPROVAL', 'OCU_NO_IP', 'CREW_REST', 'QUAL',
-    'NO_BRIEF', 'DEBRIEF', 'SIM_BRIEF', 'SIM_DEBRIEF', 'CREW_TIGHT', 'LONGDAY', 'DT_SUM', 'NO_IR', 'AAR_INSTR']
+    'NO_BRIEF', 'DEBRIEF', 'SIM_BRIEF', 'SIM_DEBRIEF', 'CREW_TIGHT', 'LONGDAY', 'DT_SUM', 'NO_IR', 'AAR_INSTR', 'REPORT_ORDER', 'REPORT_UNRESOLVED']
 
   it('every warning has a known tier', () => {
     const W = validate()
@@ -717,4 +717,3 @@ describe('a weekend duty desk with no times warns on the day itself', () => {
     expect(w[0].msg).toBe('SDO and SXO have no usable times — nobody on them earns OIL for this day')
   })
 })
-

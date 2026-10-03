@@ -1,0 +1,78 @@
+{
+  "results": [
+    {
+      "width": "desktop",
+      "label": "P1 fresh demo Mon–Thu publishes in both seed weeks with zero reporting-order warning",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "L1/L3 numeric then text, Undo/Redo/reset keep both live values",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "L4 literal markup/quotes, blank and 60-character words",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "M1 week add uses09:00 default atTO12:00 and the control is reachable",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "M1/L1 Board add uses10:00 and configured words; first clock wins; suggested brief09:40",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "L4 literal words minted without markup nodes",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "L1/L4 both overrides survive an ordinary reload and fresh sign-in",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "P1 first publication succeeds with wrong pair and freezes the red warning",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "P3 hide working warning, issue its AL, and read issued hidden state",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "P3 view-only copy has literal reporting text and no add or hide authority from its new text",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "P3 restore and reissue keep raw timing problem but restore its visible warning",
+      "status": "PASS"
+    },
+    {
+      "width": "desktop",
+      "label": "P2 correcting timing issues new version and drops reporting-order warning",
+      "status": "PASS"
+    }
+  ],
+  "observations": [],
+  "pictures": [
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-fresh-demo-published.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-logic-defaults.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-suggested-brief-mint.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-published-warning.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-hidden-warning-AL.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-failure.png"
+  ],
+  "failure": {
+    "width": "desktop",
+    "message": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#undoBtn:visible').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"undoBtn\" class=\"abtn hbtn\" title=\"Undo — publishing an amendment\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <span data-sbweek=\"1\" title=\"Next week\" class=\"sbday sbweek\" aria-label=\"Next week\">›</span> from <div id=\"schedBoard\" class=\"schedboard\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <span data-sbweek=\"1\" title=\"Next week\" class=\"sbday sbweek\" aria-label=\"Next week\">›</span> from <div id=\"schedBoard\" class=\"schedboard\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    57 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <span data-sbweek=\"1\" title=\"Next week\" class=\"sbday sbweek\" aria-label=\"Next week\">›</span> from <div id=\"schedBoard\" class=\"schedboard\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+    "stack": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#undoBtn:visible').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"undoBtn\" class=\"abtn hbtn\" title=\"Undo — publishing an amendment\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <span data-sbweek=\"1\" title=\"Next week\" class=\"sbday sbweek\" aria-label=\"Next week\">›</span> from <div id=\"schedBoard\" class=\"schedboard\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <span data-sbweek=\"1\" title=\"Next week\" class=\"sbday sbweek\" aria-label=\"Next week\">›</span> from <div id=\"schedBoard\" class=\"schedboard\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    57 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <span data-sbweek=\"1\" title=\"Next week\" class=\"sbday sbweek\" aria-label=\"Next week\">›</span> from <div id=\"schedBoard\" class=\"schedboard\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.superpowers\\rally-review-fixes\\walk.mjs:13:113)\n    at async undo (C:\\Users\\User\\projects\\Raptor\\.superpowers\\rally-review-fixes\\walk.mjs:21:23)\n    at async file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/walk.mjs:102:59\n    at async check (C:\\Users\\User\\projects\\Raptor\\.superpowers\\rally-review-fixes\\walk.mjs:10:32)\n    at async file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/walk.mjs:101:23"
+  }
+}

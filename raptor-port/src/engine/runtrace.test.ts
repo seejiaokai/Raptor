@@ -130,7 +130,7 @@ describe('the run trace — every earlier day of a run points at the day it brea
     workOn('split', [0, 1, 2, 3, 4, 5, 6])
     validate()
     const t = traceOf(1, 'split')
-    expect(t.leaveBy, 'crew rest still there').toBe('20:15')
+    expect(t.leaveBy, 'crew rest still there').toBe('19:35')
     expect(t.di).toBe(2)
     expect(t.run).toEqual({ di: 6, dow: 'Sunday', n: 7 })
     expect(traceChip(t), 'RUN outranks CR, as on the breach day').toBe('RUN')
@@ -186,7 +186,7 @@ describe('runIfPlaced — would a day here push a run past the limit, and where 
 describe('restIfPlaced — crew rest asked before the write, both directions, off the validator\'s own body', () => {
   /* the audit-c-crossday fixture: Tuesday's first formation lands 23:00
      (+2h debrief → rest clears 13:00 Wednesday); Wednesday's first formation
-     reports 08:15 */
+     reports 07:35 */
   const lateTuesday = () => { const d1 = DAYS[1].waves[0].formations[0]; d1.to = '20:00'; d1.ld = '23:00'; d1.br = '' }
   it('BACKWARD: he flew late yesterday; the seat asked about reports before rest clears', () => {
     lateTuesday()
@@ -197,7 +197,7 @@ describe('restIfPlaced — crew rest asked before the write, both directions, of
     const r: any = restIfPlaced('split', seatW)
     expect(r, 'a breach is foreseen').toBeTruthy()
     expect(r.dir).toBe('back'); expect(r.di).toBe(2); expect(r.dow).toBe('Wednesday')
-    expect(r.leaveBy).toBe('20:15')
+    expect(r.leaveBy).toBe('19:35')
     expect(crossDayIfPlaced('split', seatW)).toMatch(/^crew rest — not clear until 13:00/)
     /* and the write agrees: planting him raises exactly that warning */
     DAYS[2].waves[0].formations[0].aircraft[0].w = 'split'
@@ -206,14 +206,14 @@ describe('restIfPlaced — crew rest asked before the write, both directions, of
   })
   it('FORWARD: he reports early tomorrow; the late seat asked about would break tomorrow', () => {
     lateTuesday()
-    DAYS[2].waves[0].formations[0].aircraft[0].p = 'split'   // Wednesday 08:15 report
+    DAYS[2].waves[0].formations[0].aircraft[0].p = 'split'   // Wednesday 07:35 report
     validate()
     const seatW = '1.0.0.0.w'                         // beside Tuesday's late line's FCP
     const r: any = restIfPlaced('split', seatW)
     expect(r, 'the breach tomorrow is foreseen').toBeTruthy()
     expect(r.dir).toBe('fwd'); expect(r.di).toBe(2); expect(r.dow).toBe('Wednesday')
-    expect(r.leaveBy).toBe('20:15')
-    expect(crossDayIfPlaced('split', seatW)).toBe('crew rest — breaks Wednesday: he must be gone by 20:15')
+    expect(r.leaveBy).toBe('19:35')
+    expect(crossDayIfPlaced('split', seatW)).toBe('crew rest — breaks Wednesday: he must be gone by 19:35')
   })
   it('an empty formation has no sibling leg to clone and answers null; a duty key bears no crew rest', () => {
     lateTuesday()
@@ -289,7 +289,7 @@ describe('review findings (5 Sep 26) — the question reads the week AFTER a mov
   it('a same-day crew-rest move: the leg being moved cannot break its own crew rest', () => {
     const d1 = DAYS[1].waves[0].formations[0]; d1.to = '20:00'; d1.ld = '23:00'; d1.br = ''
     d1.aircraft[0].p = 'split'
-    DAYS[2].waves[0].formations[0].aircraft[0].p = 'split'   // his real 08:15 breach on Wednesday
+    DAYS[2].waves[0].formations[0].aircraft[0].p = 'split'   // his real 07:35 breach on Wednesday
     validate()
     /* a formation in Wednesday's SECOND wave, pushed to the afternoon with no
        published in-time, so its own report is 13:40 — after rest clears */
@@ -299,12 +299,12 @@ describe('review findings (5 Sep 26) — the question reads the week AFTER a mov
     const f2 = w2.formations[0]; f2.to = '16:00'; f2.ld = '17:00'; f2.br = ''
     validate()
     const laterKey = '2.1.0.0.w'
-    /* asked plainly the probe still sees his 08:15 leg, but that breach is
+    /* asked plainly the probe still sees his 07:35 leg, but that breach is
        already on the warning list word for word — nothing NEW, so silence
-       (the same delta the drop toast reads); moved off the 08:15 leg, the
+       (the same delta the drop toast reads); moved off the 07:35 leg, the
        later leg alone is clear */
     expect(restIfPlaced('split', laterKey), 'an existing breach is not this seat\'s').toBeNull()
-    expect(restIfPlaced('split', laterKey, { di: 2, key: '2.0.0.0.p', sole: false }), 'moving OFF the 08:15 leg: judged on the later leg alone').toBeNull()
+    expect(restIfPlaced('split', laterKey, { di: 2, key: '2.0.0.0.p', sole: false }), 'moving OFF the 07:35 leg: judged on the later leg alone').toBeNull()
     /* and a seat that would make it WORSE is new: an earlier report than the one already flagged */
     const w0 = DAYS[2].waves[0]; w0.intimes = []
     const f0 = w0.formations[1]; expect(f0, 'a second formation in wave 0').toBeTruthy()

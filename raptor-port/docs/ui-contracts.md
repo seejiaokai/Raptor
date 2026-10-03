@@ -593,7 +593,7 @@ span could never be minted from inside the contenteditable.
   `interactions.ts`, guarded `canEditSched() && HOOKS.editMode()` like every
   model-writing branch): `markEdit('it:di.gi', was, now)` — so the AL diff,
   the changes list, undo and the issued-mark reconcile read exactly as a
-  typed edit does. The engine needed no wiring: `intimeMap`/`waveInTime`
+  typed edit does. The engine reads the same strings: `resolveReporting`/`waveInTime`
   parse the `w.intimes` strings themselves, so a line is registered the
   moment it carries a time.
 - **The minted line is engine-neutral**: it seeds with the wave's own
@@ -602,7 +602,7 @@ span could never be minted from inside the contenteditable.
   the one the engine already assumes; a wave with no derivable time seeds
   the bare phrase, which parses as nothing until a time is typed. NO
   callsign, deliberately: `<CS> IN TIME` is the phrase that sets a
-  formation's report time (`intimeMap`), and the button must not pick a
+  formation's report time (`resolveReporting`), and the button must not pick a
   jet nobody chose. After the repaint the caret lands at the end of the
   new line (the LogicPage deferred-focus idiom), scoped to the surface the
   button was tapped on.
@@ -613,6 +613,41 @@ span could never be minted from inside the contenteditable.
 Pinned in `intimesadd.test.tsx`; the reference-parity divergence is lifted
 by `noItCtl` in `html.test.ts` (all three additions are edit-mode-only, so
 the read-only compare needed nothing).
+
+**In-time / Rally extension (D497–D507, 2 Oct 26):** the existing position,
+per-line editor, add/delete doors and string storage remain. Both flying-wave
+add buttons and the board's derived header now say **In-time / Rally**.
+Formation names select scope; no person/role targeting or compulsory delimiter
+is added. Remarks remain free text. The engine's first-valid clock and separate
+IN/RALLY scope precedence are documented in `engine-rules.md`.
+
+An editable block has one empty-when-clear `reporting-feedback` status span.
+The document input listener previews the active line in a cloned wave only:
+it updates this span, without storing, marking history, repainting the week
+or moving the caret. It names an actual wrong pair while typing. Blur/Enter
+commit through the existing writer; Escape, deletion and a no-op restore the
+feedback from saved content. Draft conflicts remain saveable; **D509 supersedes
+the timing refusal:** first publish, AL and correcting reissue remain allowed
+with the reversed pair and freeze its red warning like any other. The warning
+wrapper's `data-warnkey="it:di.gi"` lets list clicks reach the reporting block,
+including read-only rendering. Read-only/version looks have no editor, add,
+delete or preview-feedback controls. No routine previous-day explanation row
+or date control appears. Source-positive tests: `rally-feedback.test.tsx`;
+running-app order/geometry proof is recorded in the Rally FULL evidence sheet.
+
+**Review fixes D509–D511 (3 Oct26):** blank B is named as suggested brief in
+timing messages. Both headers label a previous-day report `(prev day)`; the
+week adds only that exceptional marker beside the wave label, with no routine
+interpretation row. Detailed rest/trace/pre-drop and long-day start use
+`(previous day)`. An overlap reads as a positive duration before his named
+actual duty-end day. Header controls keep their established size and hit areas.
+The add button preserves an existing resolved report; otherwise earliest
+uncancelled valid take-off minus reportLead supplies its clock. Its words are
+reportText, beside the nominal time in Logic, max60 characters, escaped as
+literal text. CR/LF becomes spaces, trim/cap applies, blank restores the standard.
+The first clock wins if words include another clock. Only admins edit this
+setting; existing settings reset, persistence, snapshot/export and Undo apply.
+Existing reporting strings never change when either default changes.
 
 ## Amendment marks on screen
 
@@ -3583,11 +3618,22 @@ takes `warnTarget`'s document-order heuristic **within the causing day**; and
 the override is read only off the board, since `dayTraceHTML` is a `html.ts`
 builder the board never calls.
 
-**One rendering coupling follows from this**, and it is the only one: an edit
-on day N that changes its crew-rest picture rewrites day N−1 too. The
-day-isolation assertion in `probes/perf-port.cjs` names that exemption
-precisely — any OTHER day changing is still the bug that probe was written
-for.
+**Rendering coupling:** an edit on day N rewrites the actual earlier source
+day whose end governs crew rest. The original ordinary fixture still changes
+only N−1, as the day-isolation assertion in `probes/perf-port.cjs` requires.
+Signed reporting, overnight ends and empty dates can instead govern from up
+to four authored dates earlier; an unrelated day changing remains a defect.
+The Rally dated-rest tests pin actual source identity rather than inventing
+an adjacent-day trace.
+
+**Rally dated-rest extension (2 Oct 26):** one source can carry several
+crew-rest target rows alongside its run row. Every distinct target renders,
+with its own warning address and hide state. The compatible puck fields
+retain the earliest target. Off-week targets reach Monday–Thursday, retain
+no loaded-week navigation attributes, and name the actual day in the title.
+A Tuesday hide removes Tuesday's row only, using Tuesday's working or issued
+hide keys; it cannot hide Monday or Thursday. The old Monday-only description
+below is the original single-target case, preserved by the expanded lookup.
 
 ### The forward trace across the week edge — a phantom row (owner, 23 Aug 26)
 

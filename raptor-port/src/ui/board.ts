@@ -8,9 +8,10 @@ import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId } from '
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
+import { stated } from '../engine/reporting'
 import { WARN, validate, WCODE, wlbl, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { shownWarns } from '../engine/warnhide'
-import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
+import { hhmm, hm24, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
 import { standsOn } from '../engine/overlay'
@@ -171,8 +172,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
          data-air click is handled globally (interactions.ts setAirKey → AirPop),
          which already reaches the board, so no board-side wiring is needed. */
       + `${sa || mvRO ? '' : `<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}`
-      + (sc ? '' : `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`)
-      + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
+      + (sc ? '' : `<span class="asd">In-time / Rally ${inT != null ? stated(inT,true) : '—'} · ${asd} ac</span>`)
+      + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an In-time / Rally line to this wave">+ In-time / Rally</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     /* The IN TIME + WX/NOTAMS lines edit exactly as the week's do (html.ts):
        an editable .intimes block committing `it:` through the global
@@ -181,7 +182,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
        before; this makes the published lines themselves editable here too
        (owner, 14 Aug 26 — the board should edit everything the week can). */
     if (w.intimes && w.intimes.length)
-      fly += `<div class="intimes${mvRO ? '' : ' iedit'}"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `data-intimes="${di}|${gi}"`}>${intimesInner(w, mvRO ? null : `${di}|${gi}`)}</div>`
+      fly += `<div class="intimes${mvRO ? '' : ' iedit'}" data-warnkey="it:${di}.${gi}"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `data-intimes="${di}|${gi}"`}>${intimesInner(w, mvRO ? null : `${di}|${gi}`)}</div>`
     fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
     w.formations.forEach((f: any, li: number) => {

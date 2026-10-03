@@ -1,0 +1,22 @@
+[
+  {
+    "name": "desktop",
+    "pass": false,
+    "value": "IN TIME + WX/NOTAMS",
+    "needed": 120.13232421875,
+    "available": 52,
+    "right": 908,
+    "viewport": 1440,
+    "errors": []
+  },
+  {
+    "name": "phone",
+    "pass": false,
+    "value": "IN TIME + WX/NOTAMS",
+    "needed": 120.13232421875,
+    "available": 44,
+    "right": 358,
+    "viewport": 390,
+    "errors": []
+  }
+]

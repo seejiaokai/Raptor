@@ -39,6 +39,7 @@ import * as view from './view'
 import { mkNote } from '../engine/note'
 import { commitNewInput } from '../ui/inputedit'
 
+
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
 const DSNAP = JSON.stringify(DAYS)

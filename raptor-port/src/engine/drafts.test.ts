@@ -24,6 +24,7 @@ import { rowsOf, ridKey, ensureRowIds } from './rowids'
 import { verSeq, verId, dayIso } from './verid'
 import { CURWEEK } from './waves'
 
+
 /* a ROW key is stored rid-anchored once its row carries a rid (a funnel write
    self-heals one in); wrap a raw stored-key expectation so it reads that form.
    dn:/del:/inp: are NONROW and unchanged, so they need no wrap. */

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "desktop",
+    "pass": true,
+    "value": "IN TIME + WX/NOTAMS",
+    "needed": 120.13232421875,
+    "available": 362,
+    "right": 908,
+    "viewport": 1440,
+    "numeric": 66,
+    "errors": []
+  },
+  {
+    "name": "desktop",
+    "long": {
+      "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "cap": 60,
+      "right": 917,
+      "pageOverflow": 0
+    },
+    "pass": true
+  },
+  {
+    "name": "phone",
+    "pass": true,
+    "value": "IN TIME + WX/NOTAMS",
+    "needed": 120.13232421875,
+    "available": 237,
+    "right": 358,
+    "viewport": 390,
+    "numeric": 58,
+    "errors": []
+  },
+  {
+    "name": "phone",
+    "long": {
+      "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "cap": 60,
+      "right": 367,
+      "pageOverflow": 0
+    },
+    "pass": true
+  }
+]

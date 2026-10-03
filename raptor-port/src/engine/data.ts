@@ -4,14 +4,14 @@ export const DAYS:any[]=[
   notes:[{t:'EP: ENGINE FIRE ON TAKE OFF'},{t:'ORDERS: FLYING ORDERS SECTION 2'}],
   allhands:[{prog:'SODB',str:'0745',end:'0815'},{prog:'MET + NOTAM BRIEF',str:'0815',end:'0830',who:'nact'},{prog:'FLIGHT SAFETY STAND-DOWN',str:'0830',end:'0900',who:'bane'},{prog:'WPNS & TACTICS SYNC',str:'1130',end:'1200',who:'harpoon'},{prog:'STANDARDISATION MEETING',str:'1330',end:'1430',who:'pump'},{prog:'OCU PROGRESS REVIEW',str:'1445',end:'1530',who:'bapster'},{prog:'INTEL UPDATE',str:'1600',end:'1620',who:'romeo'},{prog:'OPS SHARING + NAV SYS BRIEF',str:'1755',end:'',who:'stiff'},{prog:'DINNER WITH CMD',str:'1830',end:''},{prog:'CMD ENGAGEMENT @ CREW ROOM (ALL)',str:'2130',end:''}],
   waves:[
-   {label:'WAVE 1',night:false,intimes:['1200H: FIRST WAVE VL IN TIME + WX/NOTAMS','1300H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:['1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H'],formations:[
+   {label:'WAVE 1',night:false,intimes:['0940H: FIRST WAVE VL IN TIME + WX/NOTAMS','1040H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:['1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H'],formations:[
      {cs:'VL',msn:'BFM',to:'12:40',ld:'14:05',aircraft:[
        {p:'stiff',w:'freak',area:'NORTH',rmks:'1B: BFM-6',opts:{tk2:true,tpod:true,nav:false,bombs:''}},
        {p:'bane',w:'wolf',area:'SOUTH',rmks:'2A: BFM-5',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]},
      {cs:'RU',msn:'BFM',to:'13:40',ld:'15:05',aircraft:[
        {p:'slipway',w:'divot',area:'NORTH',rmks:'PRI LSR',opts:{tk2:true,tpod:true,nav:false,bombs:''}},
        {p:'pump',w:'dirty',area:'SOUTH',rmks:'2A: BFM-ADD',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]},
-   {label:'WAVE 2',night:true,intimes:['1900H: NIGHT WAVE VL IN TIME + WX/NOTAMS','1920H: NIGHT WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
+   {label:'WAVE 2',night:true,intimes:['1645H: NIGHT WAVE VL IN TIME + WX/NOTAMS','1620H: NIGHT WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
      {cs:'VL',msn:'BFM',to:'19:45',ld:'21:10',aircraft:[
        {p:'stiff',w:'freak',area:'WEST',rmks:'1B: NIGHT BFM',opts:{tk2:true,tpod:false,nav:true,bombs:''}},
        {p:'bapster',w:'nick',area:'SOUTH',rmks:'2A: DT / OCU',opts:{tk2:false,tpod:false,nav:true,bombs:''}}]},
@@ -40,7 +40,7 @@ export const DAYS:any[]=[
      {cs:'RU',msn:'BFM',to:'09:40',ld:'11:05',aircraft:[
        {p:'slipway',w:'divot',area:'EAST',rmks:'1A: NO AAR',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
        {p:'bruise',w:'spaceman',area:'SOUTH',rmks:'PRI LSR',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]},
-   {label:'WAVE 2',night:false,intimes:['1200H: SECOND WAVE VL IN TIME + WX/NOTAMS','1300H: SECOND WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
+   {label:'WAVE 2',night:false,intimes:['1200H: SECOND WAVE VL IN TIME + WX/NOTAMS','1140H: SECOND WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
      {cs:'VL',msn:'SAT',to:'14:40',ld:'16:05',aircraft:[
        {p:'dj',w:'wolf',area:'NORTH+EAST',rmks:'SAT 2VX',opts:{tk2:true,tpod:true,nav:false,bombs:'2 X GBU-12'}},
        {p:'salsa',w:'pain',area:'SOUTH',rmks:'2A: SAT-REF',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]},
@@ -57,14 +57,14 @@ export const DAYS:any[]=[
   notes:[{t:'ORDERS: FLYING ORDERS SECTION 2'}],
   allhands:[{prog:'SODB',str:'0745',end:'0800'}],
   waves:[
-   {label:'WAVE 1',night:false,intimes:['1000H: FIRST WAVE VL IN TIME + WX/NOTAMS','1000H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
+   {label:'WAVE 1',night:false,intimes:['0735H: FIRST WAVE VL IN TIME + WX/NOTAMS','0735H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
      {cs:'VL',msn:'ACM',to:'10:35',ld:'12:00',aircraft:[
        {p:'harpoon',w:'dirty',area:'EAST',rmks:'1B: ACM-4',opts:{tk2:true,tpod:true,nav:false,bombs:''}},
        {p:'bruise',w:'rocky',area:'SOUTH',rmks:'2A: ACM ADD',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]},
      {cs:'RU',msn:'ACM',to:'10:35',ld:'12:00',aircraft:[
        {p:'ignite',w:'psy',area:'EAST',rmks:'RED AIR',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
        {p:'krait',w:'wrangler',area:'SOUTH',rmks:'2A: ACM-8',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]},
-   {label:'WAVE 2',night:false,intimes:['1200H: SECOND WAVE VL IN TIME + WX/NOTAMS','1200H: SECOND WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
+   {label:'WAVE 2',night:false,intimes:['1000H: SECOND WAVE VL IN TIME + WX/NOTAMS','1000H: SECOND WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
      {cs:'VL',msn:'BFM',to:'13:00',ld:'14:25',aircraft:[
        {p:'harpoon',w:'dirty',area:'NORTH+EAST',rmks:'1B: BFM-4 // TIGHT TURN',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
        {p:'yeti',w:'shrek',area:'SOUTH',rmks:'2A: BFM ADD',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]},
@@ -81,14 +81,14 @@ export const DAYS:any[]=[
   notes:[{t:'EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H'},{t:'ORDERS: FLYING ORDERS SECTION 4'}],
   allhands:[{prog:'SODB',str:'0745',end:'0800'},{prog:'HQ ENGAGEMENT',str:'0845',end:'1630',who:'dj'}],
   waves:[
-   {label:'WAVE 1',night:false,intimes:['1200H: FIRST WAVE VL IN TIME + WX/NOTAMS','1200H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
+   {label:'WAVE 1',night:false,intimes:['0945H: FIRST WAVE VL IN TIME + WX/NOTAMS','0945H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
      {cs:'VL',msn:'SAT',to:'12:45',ld:'14:10',aircraft:[
        {p:'slash',w:'glass',area:'WEST',rmks:'1B: SAT-REF',opts:{tk2:true,tpod:true,nav:false,bombs:''}},
        {p:'salsa',w:'stuff',area:'SOUTH',rmks:'2A: SAT-2',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]},
      {cs:'RU',msn:'AD',to:'12:45',ld:'14:10',aircraft:[
        {p:'dj',w:'wolf',area:'WEST',rmks:'DS FOR VL',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
        {p:'bapster',w:'badger',area:'SOUTH',rmks:'2A: AD-1 / CX M1',opts:{tk2:false,tpod:false,nav:false,bombs:''}}]}]},
-   {label:'WAVE 2',night:true,intimes:['1615H: NIGHT WAVE VL IN TIME + WX/NOTAMS','1615H: NIGHT WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
+   {label:'WAVE 2',night:true,intimes:['1345H: NIGHT WAVE VL IN TIME + WX/NOTAMS','1345H: NIGHT WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
      {cs:'VL',msn:'BFM',to:'16:45',ld:'18:10',aircraft:[
        {p:'nact',w:'freak',area:'WEST',rmks:'1A: D-N CURRENCY',opts:{tk2:true,tpod:false,nav:true,bombs:''}},
        {p:'ignite',w:'nasty',area:'SOUTH',rmks:'2A: BFM-ADD',opts:{tk2:true,tpod:false,nav:true,bombs:''}}]},
@@ -135,4 +135,3 @@ export const DAYS:any[]=[
    (state/store.ts:loadWeek → engine/weeks-data.ts). DAYS itself is left byte
    identical — parity/e2e snapshot it at module load and must stay exact. */
 export const WEEK1_DAYS_SNAP=JSON.stringify(DAYS);
-

@@ -1,0 +1,11 @@
+{
+  "results": [],
+  "pictures": [
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-04/I2-failure.png"
+  ],
+  "failure": {
+    "scenario": "I2",
+    "message": "[{\"person\":\"krait\",\"date\":\"Jul 13\",\"allday\":false,\"s\":721,\"e\":1439,\"yr\":2026,\"half\":\"pm\",\"sans\":{\"f\":true},\"type\":\"SANS Availability\",\"remarks\":\"till 13 Jul\",\"mod\":\"2026-10-03\",\"iid\":\"imurlz7hu6youj4\",\"ord\":0},{\"person\":\"krait\",\"date\":\"Jul 15\",\"allday\":true,\"type\":\"SANS Availability\",\"sans\":{\"f\":true},\"mod\":\"2026-06-24\",\"yr\":2026,\"iid\":\"imurl6k71znj907\",\"ord\":19456}]",
+    "stack": "AssertionError [ERR_ASSERTION]: [{\"person\":\"krait\",\"date\":\"Jul 13\",\"allday\":false,\"s\":721,\"e\":1439,\"yr\":2026,\"half\":\"pm\",\"sans\":{\"f\":true},\"type\":\"SANS Availability\",\"remarks\":\"till 13 Jul\",\"mod\":\"2026-10-03\",\"iid\":\"imurlz7hu6youj4\",\"ord\":0},{\"person\":\"krait\",\"date\":\"Jul 15\",\"allday\":true,\"type\":\"SANS Availability\",\"sans\":{\"f\":true},\"mod\":\"2026-06-24\",\"yr\":2026,\"iid\":\"imurl6k71znj907\",\"ord\":19456}]\n    at offer (file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/downstream.mjs:33:550)\n    at async file:///C:/Users/User/projects/Raptor/.superpowers/rally-review-fixes/downstream.mjs:35:4"
+  }
+}

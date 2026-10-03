@@ -266,7 +266,8 @@ describe('warning strips (tfin B14)', () => {
   })
 
   it('focusing one warning lights only its crew — solid on the day, echoes elsewhere', async () => {
-    const it0 = $('#vWeek .dwlist .witem[data-wdi]')
+    // Reporting-order warnings belong to a line, not a person; this case tests crew focus.
+    const it0 = $$('#vWeek .dwlist .witem[data-wdi]').find(x=>!!x.querySelector('b')?.textContent)!
     const wdi = it0.dataset.wdi!
     const cs = (it0.querySelector('b')!.textContent || '').split(', ').filter(Boolean)
     await click(it0)

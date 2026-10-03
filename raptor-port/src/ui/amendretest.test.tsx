@@ -53,6 +53,7 @@ import { routeClick } from './interactions'
 import { DraftsModal } from './DraftsModal'
 import { setDraftsEdit, setDayPop } from './pops'
 import { DayPop } from './Modals'
+
 /* the day's WAITING-TO-GO-OUT chip — since [DRAFT-PENDING] (28 Sep 26) the same `.dpend` class also carries the
    changes window's "N new" / "N changes" chip, which is not a pending count (D168) */
 const PEND_CHIP = '.dpend:not(.dnew):not(.dchg)'

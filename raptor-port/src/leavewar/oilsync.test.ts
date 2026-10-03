@@ -30,6 +30,7 @@ import { memoryBackend } from './state/storage'
 import { availableFor, createOilPeriodFor, getClashes, installAbsenceDoor, oilPendingFor, publishFlagsBids, runOilPass, syncAbsences } from './sync'
 import { HOOKS } from '../engine/hooks'
 
+
 const ISNAP = JSON.stringify(INPUTS)
 const DSNAP = JSON.stringify(DAYS)
 const SAT = '2026-07-18' // the seed Saturday: plasma stands SDO 0800–1800

@@ -258,7 +258,8 @@ describe('the SANS window opens at the IN-TIME (owner, 26 Aug 26)', () => {
   const hits = () => validate().all.filter((w: any) =>
     w.code === 'SANS_AVAIL' && (w.who || []).includes(FLY_ID))
 
-  it("slotRules' sansStart: the seed's LATER in-time leaves the step (min guard); an earlier one opens the window there", () => {
+  it("slotRules' sansStart: an authored LATER in-time leaves the step (min guard); an earlier one opens the window there", () => {
+    DAYS[0].waves[1].intimes = ['1900H: NIGHT WAVE IN TIME + WX/NOTAMS']
     const r0 = slotRules(FLY_KEY)
     expect(r0.sansStart, '19:00 in-time > 18:45 step — the window cannot shrink').toBe(r0.slotStart)
     DAYS[0].waves[1].intimes = EARLY

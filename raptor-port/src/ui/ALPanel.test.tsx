@@ -24,6 +24,7 @@ import { HOOKS } from '../engine/hooks'
 import { ensureRowIds } from '../engine/rowids'
 import { setOilBlanket } from './oilmode'
 
+
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement

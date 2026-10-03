@@ -16,6 +16,7 @@ import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { dayHTML, viewDayHTML, dayInfoHTML } from './html'
 import { DWOPEN, WFOCUS, VWORK, PFOCUS, SELID, displayedByDay, dayDisplaysOfficial, focusWarn, selectPerson, setPage } from '../state/view'
 
+
 /* @vitest-environment jsdom */
 
 const WARDEN = 'nact'

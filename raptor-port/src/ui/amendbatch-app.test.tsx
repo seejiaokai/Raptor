@@ -16,6 +16,7 @@ import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
 
+
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const $ = (s: string) => document.querySelector(s) as HTMLElement | null
