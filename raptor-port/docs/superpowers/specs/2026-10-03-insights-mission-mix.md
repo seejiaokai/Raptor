@@ -1,7 +1,7 @@
 # Insights mission mix — design in progress, 3 Oct 26
 
-Status: D512–D523 settle categories, formation scope, conditional question/placement, no extra role label, optional Logic
-tracking starting Off and total bars until unanswered roles are resolved. Remaining question lifecycle,
+Status: D512–D524 settle categories, formation scope, conditional question/placement, no extra role label, optional Logic
+tracking starting Off, shown Logic control look and total bars until unanswered roles are resolved. Remaining question lifecycle,
 complete visual design and Board entry placement await his look;
 no application code is built here. Astra plans under D496; Sol independently challenges before building. Claude's further
 plan/code read after Monday 5 Oct 26, 19:00 is owed before main. No merge/main push.
@@ -187,8 +187,9 @@ New switch/incomplete-bar pictures: `../../img/insights-proposal/logic-off/on-{p
 Relay's illustrative total4 says "Total only · roles not recorded"; others have fully resolved illustrative splits.
 `logic-switch.cjs` / `logic-switch-result.json`: default Off, DOM-only on/off, both viewport widths fit, total4/twelve
 initial rows preserved, coloured segment widths match fixture ratios, zero page errors; all five final PNGs opened.
-No actual setting saving/reset/permission, role resolution or mobile-keyboard implementation is proven. Exact wording,
-control look and resolution access await the final look. Complete independent meaning reads and Sol challenges:
+No actual setting saving/reset/permission, role resolution or mobile-keyboard implementation is proven. D524 approves
+the shown Off Logic control's look and Track blue/red sorties label; incomplete-bar wording and resolution access still
+await the final look. Complete independent meaning reads and Sol challenges:
 `../plans/2026-10-03-insights-logic-switch-read.md`; D512/D518/D520–D523 short/full/home PASS after stale statements fixed.
 
 Design-only checks: phone390×844, desktop1440×1000, short390×568; Mission text/box and aircraft row heights unchanged,
@@ -197,11 +198,19 @@ the question, zero page errors. All six final pictures opened; short-screen pict
 and question together. No phone keyboard, real edit lifecycle, saved role, Undo, issuing or source-build proof is claimed.
 Independent placement recommendation and Sol challenge: `../plans/2026-10-03-insights-remarks-placement-read.md`.
 
-Three owner lifecycle choices are pending: ask after finishing the relevant edit and remember until Mission/support
-wording changes; closing without answering keeps newly typed wording in the editor UNCOMMITTED versus cancels that
-edit; a temporary Change mission role action while editing relevant Remarks for corrections. No retention/cancel choice
-is assumed from the direction ruling. If wording is retained, it must remain an edit buffer, never silently saved as
-an unanswered new category. Complete chart/Board placement look still pending before the firm plan/new-chat build.
+Three owner lifecycle choices are pending, now presented together after D524: remember until Mission/relevant support
+wording changes; leave unanswered by saving Remarks and choosing later (NEW recommended alternative), versus keeping
+the edit unfinished until choosing, versus cancelling/reverting it; temporary Change mission role action during relevant
+Remarks editing. Do not infer an answer from picture approval. Complete chart/Board/incomplete-bar look and resolution
+access remain pending before the firm plan/new-chat build.
+
+Save-first is a newly offered product alternative, NOT an accepted extension of D523. Independent Astra agrees it fits
+the nonblocking UI and existing save-on-leaving behaviour. IF chosen: save Remarks plus stale-answer invalidation together,
+with unresolved role represented explicitly; later role answer is a separate saved action and Undo step. All forward
+writers may save unresolved roles consistently, ordinary total bars until resolved; no guessed role, bulk prompt or new
+publication block. Recheck formation/context/edit permission when answering; new working role waits AL under D478.
+This would replace the earlier strict-answer-before-commit/atomic Remarks-plus-answer technical recommendations below,
+not waive a test. Complete D524 meaning read and lifecycle challenge in `../plans/2026-10-03-insights-logic-switch-read.md`.
 
 Independent coordinator responses and Sol challenge/disposition:
 `../plans/2026-10-03-insights-conditional-role-read.md`. D512/D514/D517–D519 short/full/home comparison PASS after the
@@ -209,5 +218,6 @@ D512 operative sentence was corrected; conversion clean. D56 permits unchanged p
 the Mission default without retroactive cleanup or accuracy claims for their ambiguous Remarks. D478 forbids recolouring
 an issued day from a new working answer before its AL. This old-data exception never covers NEW imports/templates/copies:
 when tracking is enabled, every forward writer obtains or carries a valid answer before committing a new ambiguous
-formation. D521 legitimately allows unanswered formations while off, subject to the re-enable design above. The FULL plan
-must cover canonical role comparison/restoration, one Undo action, central writers, copied context and issued snapshots.
+formation under the earlier unfinished-edit proposal. D521 permits unanswered formations while off; the new save-first
+alternative would also permit unresolved data while on if the owner selects it. The final FULL plan must bind canonical
+role comparison/restoration, the chosen Undo/save lifecycle, central writers, copied context and issued snapshots.

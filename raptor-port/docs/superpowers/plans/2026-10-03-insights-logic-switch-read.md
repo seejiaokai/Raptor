@@ -122,3 +122,42 @@ a hidden phone opener before correction; final script passes. No real setting sa
 Tier NONE, no application source or owner data changed; phone keyboard/source lifecycle/Undo/issuing unproved. New full
 plan still unbound pending save/cancel/repeat/correction and complete look/resolution access. OWED: Claude's read after
 the reset on codex/insights-mission-mix. Build in the new chat only under D515, with FULL gates/walk/fresh Astra inspection.
+
+## Later D524 approval — complete independent Astra response
+
+**D524 meaning comparison: PASS.** The short sentence exactly matches the full row’s operative sentence. The full row,
+lasting UI contract and spec consistently limit approval to the shown Logic switch’s look and **Track blue/red sorties**
+label, starting Off. None claims approval of earlier charts, Board placement, implementation or the remaining lifecycle.
+
+**I recommend offering save-first.** It fits the approved nonblocking question and preserves the existing Remarks
+save-on-leaving behaviour. It is a **new product proposal**, not something D523 already authorizes for edits made while
+tracking is enabled.
+
+If the owner chooses it, the coherent boundary is:
+
+- Save completed Remarks normally. If the changed context invalidates an earlier answer, clear that answer in the same
+  save. Keep the formation unresolved until an answer is chosen; never retain a stale colour or assume Blue.
+- The temporary question can be left unanswered without losing the saved Remarks. The affected person keeps their whole
+  ordinary total bar. “Later” would describe this more clearly than “Cancel”; exact copy remains proposed.
+- A later Blue/Red choice is a separate saved action. Consequently, Undo normally reverses that choice first, then the
+  earlier Remarks edit. Withdraw the earlier promise of one atomic Remarks-plus-answer action.
+- Apply this consistently to forward writers, including imports, templates and copies: unresolved roles become legitimate
+  saved data. Replace the earlier requirement to answer before creation commits. Do not generate a burst of questions or
+  block publication without a separate ruling.
+- Preserve issued-day boundaries: working edits and role answers do not change the issued view until AL. A published
+  unresolved record must remain representable without guessed colour.
+- At answer time, recheck the formation, relevant context and edit permission. Repeat and correction access remain separate product choices.
+
+The proposed three save choices are valid if plainly distinguished: **save Remarks and answer later**; **keep the edit
+unfinished until answering**; **discard that Remarks edit**. Present the latter two as alternatives to the recommendation,
+not extra required buttons or warnings.
+
+No new permanent field in the visible editor or schedule-line marker follows from this proposal. The underlying saved
+answer remains necessary for whichever lifecycle the owner chooses.
+
+Rulings: D524 independently verified; save-first remains a proposal awaiting the owner’s choice.
+
+Host disposition: accepts this as a new proposed lifecycle, not an inference from D523. Three questions presented
+together: remember until relevant change; save completed Remarks/answer later versus unfinished/cancelled edit; temporary
+correction action in relevant Remarks editor. No answer yet, no dependent source work. If save-first is selected, replace
+strict answer-before-commit and atomic-one-Undo suggestions throughout the final plan, preserving issued boundaries.

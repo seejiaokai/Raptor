@@ -1482,7 +1482,8 @@ the whole formation (D517). No extra red indicator appears on schedule lines (D5
 D520 approves the after-edit question below formation AREA, Remarks visible, temporary space removed after either answer.
 D521 adds a squadron-wide blue/red tracking on/off setting on Logic; D522 starts Off at first setup. D523 keeps ordinary
 total bars for people with unanswered roles until those roles are chosen, without guessing or a burst of questions.
-The earlier save/cancel/repeat/correction choices and final switch/incomplete-bar look remain pending; ordinary Insights remains available.
+D524 approves the shown Logic switch look/label. The earlier save/cancel/repeat/correction choices, incomplete-bar look
+and role-resolution access remain pending; ordinary Insights remains available.
 One person who flies both has both coloured segments in their existing total bar. His supplied phone picture names the
 target: Flying load · sorties this week. Continue this batch now while Claude's further review waits; no live merge.
 **D513:** initial twelve flying people, with Show all. **D514:** DS for another formation is our red air, but DS wording

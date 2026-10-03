@@ -4765,6 +4765,7 @@ preserving next focus. Answer retention/reset, save and edit cancellation still 
 
 **OPTIONAL SQUADRON TRACKING (owner D521, 3 Oct 26 — approved switch, NOT YET BUILT):** the Logic page provides a
 squadron-wide on/off setting for blue/red sortie tracking. D512's split and D518's questions apply when tracking is on;
+**D524 approves the shown Logic Insights control, labelled Track blue/red sorties and shown Off.**
 this does not turn off ordinary Insights, sortie totals or work hours. **D522: start Off at first squadron setup; enable
 when wanted. D523: on enabling, a person with unanswered ambiguous flight roles keeps an ordinary total bar until those
 roles are chosen; no guessed colours or burst of questions.** Reuse applicable answers and named-Mission automatic roles;
