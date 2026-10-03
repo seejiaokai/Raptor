@@ -2352,3 +2352,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the plan-review brief, add one line: "for every rule that parses or splits user-typed text, list the real stored examples of that field and run the rule over them by eye; for every promised on-screen moment, name the guard or event that lets the screen change at that moment." Scenario rows for text rules use strings copied from the stored data, not invented ones.
 
 **Principle:** Verifying that a mechanism works on the input the plan imagines is not verifying it works on the input users produce; a reviewer of a text rule reads the data, not only the function.
+
+### Observation 423: A review brief written by another host is sized without the reviewer's allowance in view — check the plan's usage before starting it
+
+**Status:** OPEN
+**Date:** 2026-10-03
+**Session context:** A Codex-written brief asked Claude for a FULL interim review (all documents, 33 scenarios walked, every gate) while a standing ruling said Claude waits until the weekly reset.
+**Skill:** session-handoff (the receiving side) / bug-check order §5 (stating the tier)
+**Type:** internal
+**Phase/Area:** Start of a handed-over task
+
+**Issue:** The brief was complete and correct in itself, but the reviewer's weekly allowance stood at 94% used; run as written it would have stopped partway and left no review at all. Nothing in the brief, the handoff or the bug-check order prompts the receiving chat to read the plan's usage before accepting a heavy task. Reading it (one tool call) and offering three sizes got a ruling (D533) and a finished, narrower review with three confirmed findings.
+
+**Suggested improvement:** In the receiving checklist for a handed-over heavy task: read the account's usage first when a rationing ruling is live; if the task as written will not fit, say so with the number and offer sizes before any work — and name in the report exactly what the smaller size did NOT run.
+
+**Principle:** A task's size is a fact about the reviewer's budget as much as about the work; check the budget before the first read, and let the owner choose the size rather than discover it by running out.

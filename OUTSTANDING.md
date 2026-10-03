@@ -118,7 +118,8 @@ The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
 Insights — [INSIGHTS-MISSION-MIX] (D512–D532 settled; built on the isolated branch, qualified FULL checks complete,
-fresh independent Astra R2 PASS; Claude's later read owed before main), with [INSIGHTS-BOARD-DOOR].
+fresh independent Astra R2 PASS; Opus interim code read (D533) REVISE — three small findings F1–F3 to fix first;
+Claude's later read owed before main), with [INSIGHTS-BOARD-DOOR].
 The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
 phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Codex build), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
@@ -1495,6 +1496,15 @@ matched. Full report: `raptor-port/docs/handpass/2026-10-03-insights-mission-mix
 Nonblocking D489 maintenance note: history and
 Undo descriptions separately parse role-command human metadata; a shared description helper may prevent future drift.
 No extraction or later CSS-split work is required for this acceptance or started in this batch.
+**Opus 5.5 interim code read (D533) DONE 3 Oct 26 — REVISE (small), three findings to fix on the build branch before Claude's
+review after the reset; none changes what is saved, signed or counted:** **F1** (regression, confirmed in the running app) — on
+the Board's view of the latest published version, tracking On, a cue formation's Remarks box loses its "Changed at AL…" mark
+(`src/ui/board.ts:298` drops `alAttr` with the read-only door's attributes); **F2** (plan departure, confirmed) — an open
+Blue/Red question disappears after any other edit on the same day (`mission-roles.ts:96`, the day-revision test); **F3**
+(wording, confirmed) — the History line for a role copied by a day template prints the row's internal code instead of the
+formation (`changelines.ts:449–453`). Two low edges left unverified. A code read with three targeted runs only: the 33
+scenarios, the phone-and-desktop walk and the gates were NOT run and stay owed. Report, repro scripts, two pictures:
+`raptor-port/docs/handpass/2026-10-03-insights-mission-mix-opus-interim.md`, `raptor-port/docs/img/insights-opus-interim/`.
 **D532 — final look approved 3 Oct 26 ("ok approved"):** complete 18-picture phone/desktop/short gallery accepted,
 including Choose/Change, Working/Published context labels, latest-published read-only Remarks and both Board entry places.
 Implementation now authorized in the isolated new build chat under the unchanged revised plan. FULL checks, all33,

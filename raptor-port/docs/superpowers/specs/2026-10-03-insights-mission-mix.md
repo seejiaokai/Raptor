@@ -24,6 +24,15 @@ Owner replied "ok approved" to this complete gallery (D532), fulfilling D515 bef
 Implement the unchanged revised plan on the isolated branch. Default-Off Logic switch remains already approved (D524).
 Design illustrations do not execute the 33 build scenarios or approve code. Frozen original plan/reviews unchanged.
 
+## Interim Opus code read — D533, 3 Oct 26
+
+The owner brought a Codex-written brief for a full interim review of the finished build to Opus 5.5. With his weekly
+Claude allowance at 94% used he chose a code read only (D533): an independent read of build commit 4cfe81a1 and its
+connections, with the few riskiest paths tried in the running app. The 33 scenarios through their real routes, the
+frozen desktop-and-phone walk and the full gates were NOT run by this read and stay owed to Claude's review after the
+reset. It fixes no source and permits no merge or push to main. Report:
+`../../handpass/2026-10-03-insights-mission-mix-opus-interim.md`.
+
 ## Early Opus plan review — D528, 3 Oct 26
 
 The owner took the finished plan to Opus 5.5; its 3 Oct review is complete with verdict REVISE, not PASS.
