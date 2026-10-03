@@ -3,8 +3,17 @@
 Status: D512–D527 settle categories, formation scope, conditional question/placement/lifecycle, no extra role label, optional
 Logic tracking starting Off, shown Logic control look and total bars until unanswered roles are resolved. Complete
 visual design and Board entry placement await his look;
-no application code is built here. Astra plans under D496; Sol independently challenges before building. Claude's further
-plan/code read after Monday 5 Oct 26, 19:00 is owed before main. No merge/main push.
+no application code is built here. Astra plans under D496; Sol independently challenges before building. D528 permits
+the owner's early Opus 5.5 plan review using remaining allowance; later code review remains owed before main. No merge/main push.
+
+## Early Opus plan review — D528, 3 Oct 26
+
+The owner still has some Claude allowance and will take the finished plan to Opus 5.5 now, before the new-chat build.
+This is a scoped exception to D496's earlier no-Claude-before-reset instruction, not a wholesale model/workflow change.
+Codex prepares the handoff; the owner dispatches it. The frozen Astra plan/review records retain their earlier timing
+statements as historical text; D528 controls this early plan read. No permission to implement, merge or push main follows.
+Complete final picture look remains unanswered; the early review cannot approve it for the owner. Claude's later code
+review remains necessary. The review brief is `../plans/2026-10-03-insights-opus-plan-handoff.md`.
 
 ## Current owner direction — D517–D527 supersedes the control proposals below
 

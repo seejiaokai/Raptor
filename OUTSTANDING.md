@@ -1485,6 +1485,8 @@ total bars for people with unanswered roles until those roles are chosen, withou
 D524 approves the shown Logic switch look/label. D525 remembers until Mission/relevant support wording changes; D526
 saves Remarks even unanswered, total bars until roles chosen; D527 offers a temporary correction action while editing
 relevant Remarks. The complete chart/Board/incomplete-bar look and missing-role access pictures remain to confirm; no build here.
+D528: owner takes the saved handoff to Opus5.5 for an early plan review using remaining allowance before the new-chat
+build; this narrowly supersedes the wait-until-reset instruction, not the later code review or main/merge limits.
 One person who flies both has both coloured segments in their existing total bar. His supplied phone picture names the
 target: Flying load · sorties this week. Continue this batch now while Claude's further review waits; no live merge.
 **D513:** initial twelve flying people, with Show all. **D514:** DS for another formation is our red air, but DS wording
