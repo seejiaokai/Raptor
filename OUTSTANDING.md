@@ -1626,8 +1626,10 @@ with pictures first; where it moves a screen's controls, that screen's feature b
 with `[INP-TILL-STALE]`; (5) the Tracker — item 4, with `[TRK-FILE-TRANSFER-SPLIT]` and its small finds; (6) the rules —
 item 2, caps and ops limits, FULL tier; (7) one whole-app check. **Who builds — D494:** until the reset (Monday 5 Oct 26,
 19:00) Codex plans and builds, started by one small job to prove it (`[DISCARD-MARKS-REMOVE]`); **D496:** Astra plans/coordinates and independently reviews Sol 6.1's builds; Sol challenges Astra plans. Claude reviews each branch
-after the reset, before any "merge live". Insights planning has started under D512; the other features' questions are still
-to be asked. His bugs: later.
+after the reset, before any "merge live". Insights is built; workflow priorities D542–D544 are answered (build/correct a day,
+phone quick checks/small edits with full editing retained, times/notes keyboard entry keeping Enter/Escape).
+These are planning priorities, not approved designs or more file splits; his later provenance/meaning questions are carried
+into the new chat before further design. D545 adds [SCHEDULE-TAB-ROW-FLOW]. The other feature batches' questions still wait.
 
 ### [SKILL-FUSION] Fuse the harder questioning into the planning step — and three proposals from the same read (D486, 2 Oct 26)
 From the article he sent (codelynx.dev — five recommended skills): none is installed whole (D486). To build, documents only: the
@@ -1691,13 +1693,22 @@ and allowance remains. Its new branch is cut from `codex/insights-mission-mix` w
 (`HANDOFF.md`). After the split, every screen is walked at phone and desktop size, not only the measured ones.
 **D540–D541 (3 Oct 26):** owner explicitly requires that integrated base before any rule moves, keeps the three earlier builds
 separate for Claude's review, and requires no visible change plus opening every phone/desktop screen picture. Next batch branch:
-`codex/workflow-ui`; scope: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md`. Later UI product choices still wait.
+`codex/workflow-ui`; scope: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md`. Priorities D542–D544 answered; actual UI design still waits.
 **Built/checks, 3 Oct 26:** split22 contiguous runs from the combined base, original bytes and all4 emitted CSS assets exactly equal;
 full unit7727,reference728,browser527+49existing skips,Tracker445,all6adapted/perf4/rulecheck/docsize PASS. Every main screen at
 phone/desktop walked; all187before+136after original PNGs opened, actual-member/laptop/breakpoint/short-height matrix also checked.
 Known `[PHONE-WIDE-BOARD-BLANK]` remains unchanged and is not a wide-body usability PASS. Fresh independent Astra R1 PASS for the bound mechanical split;
 evidence: `raptor-port/docs/handpass/2026-10-03-css-split.md`. Claude's full read after Monday19:00 still owed before main;
-item stays here until the required reads and owner's live word. Further UI questions asked, answers pending; no further UI design inferred.
+item stays here until the required reads and owner's live word. Continue planning in a new chat from D542–D545 and the filed UI faults;
+clarify his question about usability priorities versus long-file splits first. No further UI design or source change inferred.
+
+### [SCHEDULE-TAB-ROW-FLOW] Tab follows the open schedule text boxes across the row, then to the next row — D545, 4 Oct 26
+His report/request: while the scheduler types, Tab currently does not go to the next open text box on the right.
+At the rightmost open text box, Tab should go to the leftmost open text box in the next row.
+**Not built. Place:** workflow UI pass, after the completed stylesheet split; next-chat product planning with D542–D544.
+Forward Tab between open text boxes is settled; exact screens, closed-cell opening, Shift+Tab and final-row exit are not.
+Keep Enter commits/Escape restores; unchanged Remarks traversal never asks the mission-role question (D529).
+Scope/home: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md` (D545); picture before any visual change.
 
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
 From Astra's tidiness read (its §3 — read it before building). The export / import workflow (about 730 lines) leaves
