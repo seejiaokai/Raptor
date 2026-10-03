@@ -2,9 +2,19 @@
 
 Status: D512–D531 settle categories, formation scope, conditional question/placement/lifecycle, no extra role label, optional
 Logic tracking starting Off, shown Logic control look and total bars until unanswered roles are resolved. Complete
-visual design and Board entry placement await his look;
+visual design and Board entry placement await his reply to the final inspected phone/desktop gallery;
 no application code is built here. Astra plans under D496; Sol independently challenges before building. D528 permits
 the owner's early Opus 5.5 plan review using remaining allowance; later code review remains owed before main. No merge/main push.
+
+## Final picture look — 3 Oct 26, awaiting owner agreement
+
+The new isolated `codex/insights-mission-mix` checkout starts at refreshed planning baseline `5f9bf978`.
+[Final phone/desktop gallery](../../img/insights-final-look/index.html) shows temporary Choose/Change, Working/Published
+context wording, proposed latest-published read-only Remarks access, chart and Board placement. All 18 final pictures
+opened and inspected; independent Astra design read PASS after two presentation fixes. Complete responses, limitations,
+diagnostic preservation and fingerprints: [new final-look record](../plans/2026-10-03-insights-final-look.md).
+Source changes await his explicit agreement under D515. Default-Off Logic switch remains already approved (D524).
+Design illustrations do not execute the 33 build scenarios or approve code. Frozen original plan/reviews unchanged.
 
 ## Early Opus plan review — D528, 3 Oct 26
 
@@ -60,7 +70,7 @@ footprint. For a published answer while working wording differs, the concrete pr
 published viewing door: focus its read-only Remarks to reveal the same action, with Published · version in the question;
 working access says Working copy when needed. Older previews have no write action. This access/wording is pending his
 final picture agreement; no new permanent marker/dropdown or silent visual approval. Existing prototypes remain
-illustrations of the older lifecycle and do not yet show that refinement.
+illustrations of the older lifecycle. The new final-look gallery above shows the refinement and awaits his agreement.
 
 ## Current owner direction — D517–D527 supersedes the control proposals below
 

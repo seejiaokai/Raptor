@@ -117,7 +117,7 @@ Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QU
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
-Insights — [INSIGHTS-MISSION-MIX] (D512–D531 choices settled; Opus REVISE addressed, revised technical plan independently PASS; final picture look pending), with [INSIGHTS-BOARD-DOOR].
+Insights — [INSIGHTS-MISSION-MIX] (D512–D531 choices settled; revised technical plan PASS; final phone/desktop pictures independently checked, owner agreement pending on the isolated build branch), with [INSIGHTS-BOARD-DOOR].
 The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
 phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Codex build), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
@@ -1513,7 +1513,10 @@ role" button while its Remarks box is edited — never on passing through; D530 
 included, with no amendment and no effect on sign-offs (wording changes still wait) — it replaces "answers on an issued day wait
 for the amendment" above and in D478/D523/D526; D531 a Mission box containing DS or RED that is not exactly DS / RED / RED AIR
 asks, never guesses. The frozen plan predates all three and stays unchanged. NEW revision and independent read are done;
-his complete final picture look is next, then build only in a new chat. D532 remains next; no build branch created here.
+his complete final picture agreement is next. New build chat created isolated `codex/insights-mission-mix` from refreshed
+planning baseline `5f9bf978`; source untouched. All 18 final phone/desktop/short-phone pictures inspected; independent
+Astra design read PASS after corrections. Gallery `raptor-port/docs/img/insights-final-look/index.html`; complete evidence
+and responses `raptor-port/docs/superpowers/plans/2026-10-03-insights-final-look.md`. D532 remains next; no new ruling.
 
 ### [DISCARD-MARKS-REMOVE] Remove the "Discard marks" button from the Amendments box (D488, 2 Oct 26)
 **BUILT 2 Oct 26, not merged:** `codex/discard-marks-remove`; Sol 6.1 built, fresh Astra final inspection PASS, FULL gates/runtime passed (one already-filed browser retry disclosed). Evidence and complete inspection response are on that branch in `raptor-port/docs/handpass/2026-10-02-discard-marks-remove.md` and `…-review.md`. Claude's further code/scenario/working-guide reads after Monday 5 Oct 26, 19:00, and owner look remain owed before main. The phone item is archived as moot. The original build recipe below is retained for review.

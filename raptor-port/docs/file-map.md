@@ -288,3 +288,8 @@ D499: `docs/codex-review-workflow.md` carries the Codex-only proportional check 
 
 
 In-time/Rally planning evidence: docs/superpowers/plans/2026-10-02-in-time-behaviour-audit.md records current readers/writers/lifecycle and finite runtime coverage. docs/img/in-time-audit/ contains the driver, result JSON, final inspected pictures, supplementary test log and first memory-backend diagnostic run. This is existing-behaviour audit evidence, not a Rally build approval.
+
+Insights final-look evidence: `docs/superpowers/plans/2026-10-03-insights-final-look.md` retains baseline/isolation, complete
+independent Astra design responses, corrections and limitations. `docs/img/insights-final-look/` contains the new design
+generator, gallery, result, picture fingerprints, 18 final inspected PNGs and four earlier diagnostic PNGs. Application
+source unchanged; owner picture agreement and the FULL build check still due. Earlier proposals/plan/reviews are frozen.
