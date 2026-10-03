@@ -4802,6 +4802,9 @@ afresh when pressed (same formation, wording, view and sign-in; nobody else's an
 **The read-only published Remarks door keeps its amendment mark (D534's fix F1):** it drops only the schedule-edit key; a box
 changed at AL*n* is outlined there as everywhere else. A role copied by a day template is named in History by its
 formation's callsign, the row id only when it has none (F3).
+**A pop-up window is never taller than the visible screen (D536, 3 Oct 26 — his find on his iPhone):** the phone bottom sheet's
+limit is `90%` of its fixed backdrop, then `90dvh`; never plain `vh`, which on an iPhone counts the screen without the
+browser's bars and pushed the Insights window's title bar and ✕ under the address bar (`modal-phone-height.test.ts`).
 **A Blue/Red answer counts at once (D530):** on a published day too, it needs no amendment and does not touch the day's
 sign-offs — it is a label for the statistics, not part of the programme (as a Logic rule change is not, D482). This replaces
 "working answers on an issued day wait for AL" above and "new answers on issued days still wait for an amendment" below,

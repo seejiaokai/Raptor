@@ -116,7 +116,7 @@ and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 S
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
-[ALLAVAIL-OPEN-ROW] (investigate first).
+[ALLAVAIL-OPEN-ROW] (investigate first), [VH-SHEETS-IPHONE] (low — other pop-ups sized by `vh`, his D536 find fixed for the windows), [MODAL-DRAG-CLOSE] (his report — a window closes when text is drag-selected and let go outside it; small, awaiting his word or the UI pass).
 Insights — [INSIGHTS-MISSION-MIX] (D512–D532 settled; built on the isolated branch, qualified FULL checks complete,
 fresh independent Astra R2 PASS; Opus interim code read (D533) found three small findings, fixed by Opus the same day (D534, D535);
 Claude's later read owed before main), with [INSIGHTS-BOARD-DOOR].
@@ -1462,6 +1462,33 @@ build as it stood BEFORE its fix, neither walker told what is wrong, and report 
 §4). **Its place:** `[WORKSPAN-NEGATIVE]`'s walk (the next chat, D483) — freeze the build before the fix for the two trial
 walkers. Then his answer to the second report is a new ruling. Until then nothing else goes to a cheaper model.
 
+### [MODAL-DRAG-CLOSE] A pop-up window closes when text is selected by dragging and the finger or mouse is let go outside it — found 3 Oct 26
+**His report (3 Oct 26, the Duty templates window, "desktop mode"):** *"it seems like this page closes itself when I tried to type in
+a new row role. Something along that line. Seems like a bug."* **Reproduced on a desktop, on the Insights build and on the build
+before it:** press inside a box in the window, drag to select its text, let go on the dark surround — the window closes. The press
+started inside and the release landed outside, so the browser reports ONE click on the surround, which is the window's "tap
+outside to close" test (`src/ui/DutyTplModal.tsx:74` — `e.target.id === 'tplModal'`; the same test on at least six other
+windows: Insights, day templates, plans, manage waves, and the rest of `ui/*Modal*.tsx`). Typing, Enter, a suggestion and Tab did
+not close it, at desktop or phone size; a real iPhone keyboard was not available to try. **To build:** close on the surround only
+when the press BEGAN on the surround too (remember the pointer-down target; one shared helper for every window, with a test that
+drags from a box to the surround on each). His standing rule "a click-open popup closes on a click outside it" (4 Sep 26) stays —
+a drag that started inside is not a click outside. **Not fixed here:** no ruling asked for it (D534 and D536 name their fixes).
+**Place:** small, with the workflow UI pass (D495) — or at once on his word. Evidence and probe:
+`raptor-port/docs/handpass/2026-10-03-insights-mission-mix-opus-interim.md` §His second report.
+
+### [VH-SHEETS-IPHONE] Other pop-ups sized by the screen height without the browser's bars — found 3 Oct 26, not changed
+His find on the Insights preview (D536): on his iPhone the Insights window's title bar and ✕ sat under the address bar, because
+a phone pop-up window's limit was written in `vh` — the screen WITHOUT the browser's bars. Fixed for every `.modal` window
+(`src/ui/scheduler.css`, pinned by `modal-phone-height.test.ts`). **Left as they are, each to be looked at on his phone and
+changed only if it can be cut off:** the airspace pop-up (`80vh`), the input picker's sheet (`75vh`), two menus (`70vh`,
+`82vh`), the availability and changes windows (`62vh`), the calendar and notification panels (`calc(100vh − …)`), the document
+viewer (`58vh`), the History bubble's list (`40vh`), and the Tracker's and Leave War's own stylesheets (not read). The short
+ones leave room and nobody has reported them. **A line for the bug-check order, for its reviewers (D70 — not edited here):**
+a surface pinned to a screen edge and limited by screen height is checked for the unit it is limited in (`dvh` or a `%` of a
+fixed parent, never `vh`), because the check's browser has no address bar and cannot show the fault (§7.9). **Place:** low —
+with the workflow UI pass (D495), or sooner if he meets one. Report:
+`raptor-port/docs/handpass/2026-10-03-insights-mission-mix-opus-interim.md` §His find.
+
 ### [INSIGHTS-BOARD-DOOR] The Scheduler Board gets a way to open Insights — BUILT on the Insights branch, awaiting reads/main
 Built with `[INSIGHTS-MISSION-MIX]` after D532 picture agreement: desktop beside the bell; phone in More only.
 Actual callback and phone/desktop hit tests passed; the phone cascade overlap was found in pictures and repaired.
@@ -1511,6 +1538,9 @@ size, one full gate run green (unit 7,646/0, browser 520 passed/49 skipped, orig
 so Fable and Astra read them in the review after the reset; nothing here is owed to Codex now. Two low edges stay unverified
 (a published day's "changes to go out" strip after a dirty-text Choose; the weekly editor's Templates button while a saved
 plan is being looked at) — for that review to try.
+**His find on the preview, fixed the same day (D536):** on his iPhone the Insights window's title bar and ✕ sat under the
+address bar; the pop-up windows' height limit now follows the visible screen. Only his phone can prove it — his look. The
+same sizing elsewhere is filed as `[VH-SHEETS-IPHONE]`.
 **D532 — final look approved 3 Oct 26 ("ok approved"):** complete 18-picture phone/desktop/short gallery accepted,
 including Choose/Change, Working/Published context labels, latest-published read-only Remarks and both Board entry places.
 Implementation now authorized in the isolated new build chat under the unchanged revised plan. FULL checks, all33,

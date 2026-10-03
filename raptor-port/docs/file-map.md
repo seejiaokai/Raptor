@@ -299,7 +299,7 @@ validator and template seed sanitizer; `mission-role.test.ts` pins its golden co
 loads the fixed default-Off tracking setting. `src/state/mission-roles.ts` owns guarded annotation records, authoritative
 answer intent, fresh-identity template copy scope and display-only restore; `mission-roles.test.ts` drives real commands
 and production Undo. `src/ui/mission-role-offer.ts` is the shared transient week/Board focus/own-edit adapter;
-`mission-role-offer.test.tsx` drives mounted application routes. `mission-role-interim-fixes.test.tsx` pins the Opus interim read's three fixes (D534: the published door's amendment mark, D535's question that stays, the template copy's History name). `src/engine/insights-mission-mix.test.ts` pins aggregate
+`mission-role-offer.test.tsx` drives mounted application routes. `mission-role-interim-fixes.test.tsx` pins the Opus interim read's three fixes (D534: the published door's amendment mark, D535's question that stays, the template copy's History name). `src/ui/modal-phone-height.test.ts` pins the pop-up windows' height limit to the visible screen (D536 — his iPhone find; never plain `vh`). `src/engine/insights-mission-mix.test.ts` pins aggregate
 seat counts, cancellation/standby rules and work-hour invariance. `docs/handpass/insights-mission-mix/` retains red-first
 and focused-check logs; `docs/superpowers/plans/2026-10-03-insights-build-coordination.md` contains Astra's independent
 D532 meaning read and S01–S33 route map. `src/state/mission-role-persist.test.ts` exercises the real Whiteboard/Postman

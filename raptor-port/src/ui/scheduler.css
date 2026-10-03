@@ -2901,7 +2901,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    drag ghost stays on top of everything. */
 .modal{position:fixed;inset:0;z-index:470;background:rgba(4,7,10,.7);display:flex;align-items:center;justify-content:center;padding:22px}
 .modal[hidden]{display:none}
-.modal-box{background:var(--panel);border:1px solid var(--edge);border-radius:16px;width:460px;max-width:100%;max-height:84vh;overflow:auto}
+.modal-box{background:var(--panel);border:1px solid var(--edge);border-radius:16px;width:460px;max-width:100%;max-height:84vh;max-height:84dvh;overflow:auto}
 .modal-head{padding:14px 16px;border-bottom:1px solid var(--edge);display:flex;align-items:center}
 .modal-head b{font-size:16px;font-weight:700}
 .modal-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px;line-height:1}
@@ -2947,9 +2947,14 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    proves). Full-width, pinned to the bottom, rounded only on top, and it clears the
    home-indicator safe area. Covers every .modal dialog (Manage waves, Templates,
    Drafts, History, day/duty/wave editors); the centred desktop card is unchanged. */
+/* THE SHEET IS LIMITED BY THE VISIBLE SCREEN (his find on his iPhone, 3 Oct 26 — D536). `90vh` is 90% of the screen
+   WITHOUT the browser's bars; with the address bar and toolbar showing, that is taller than what is visible, and a sheet
+   pinned to the bottom pushes its own title bar and ✕ off the top, where no scrolling reaches them (the sheet is the
+   scroller). So the limit is the fixed backdrop's own height (`%` — it tracks the visible screen), then the dynamic
+   unit where the browser has it; never plain `vh`. Pinned by modal-phone-height.test.ts. */
 @media(max-width:820px){
   .modal{align-items:flex-end;padding:0}
-  .modal-box{width:100%;max-width:100%;max-height:90vh;border-radius:16px 16px 0 0}
+  .modal-box{width:100%;max-width:100%;max-height:90%;max-height:90dvh;border-radius:16px 16px 0 0}
   .modal-foot{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 }
 /* ---- the Duty-templates editor (owner, 13 Aug 26) — the DutyTplModal ---- */

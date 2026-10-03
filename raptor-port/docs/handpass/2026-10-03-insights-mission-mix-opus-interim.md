@@ -205,6 +205,59 @@ Pictures, all four opened: `docs/img/insights-opus-interim/fixed/fixed-desktop-a
 
 `Walk: docs/handpass/2026-10-03-insights-mission-mix-opus-interim.md · 6 pictures (2 before, 4 after) · 3 surfaces re-walked (Board working copy, Board latest published, History) · 2 orders (edit-then-answer; save-apply-undo-redo) · MISSING: 1 fixed (F1)`
 
+## His find on the preview — D536 (3 Oct 26)
+
+Looking at the fixed build on his iPhone he opened Insights and sent a picture: the window's title bar and ✕ sat under
+the browser's address bar, and no scrolling reached them. **"Fix it thanks"** (D536).
+
+- **Cause.** On a phone a pop-up window is a bottom sheet (29 Aug 26) limited to `90vh`. On an iPhone `vh` is the screen
+  WITHOUT the browser's bars; with the address bar and toolbar showing, the sheet is taller than what is visible, and
+  being pinned to the bottom it pushes its own top off the screen. The sheet itself is the scroller, so scrolling moves
+  the content, never the sheet. Insights is the tall one (longer still with the Blue/Red legend and numbers), and this
+  build gave the phone its own door to it (Board → ⋯ → Insights) — old code a new door made easy to reach.
+- **Provenance.** The rule is older than this build (the shared `.modal-box`), so every tall pop-up window on his phone
+  had it; not a regression of the Insights build, but met through it.
+- **Fix.** `src/ui/scheduler.css` — the phone sheet's limit is `90%` of the fixed backdrop (which tracks the visible
+  screen), then `90dvh` where the browser has the dynamic unit; the desktop/tablet card gains `84dvh` after its `84vh`.
+  Every `.modal` window gets it, Insights among them.
+- **Tests.** `src/ui/modal-phone-height.test.ts` — RED first ("expected '90vh' to be '90dvh'"), pins the stylesheet:
+  the sheet's limit ends on the dynamic height, has the `%` fallback, never plain `vh`. `e2e/insights.spec.ts` — three
+  new browser cases (short phone 390×560, phone, short desktop 1440×620): Board door → Insights → Show all → the title
+  bar is on screen and the ✕ is the element under a tap on it. **These three were green before the fix too** — the
+  check's browser has no address bar that shrinks the screen, so it cannot show his fault; they guard the promise where
+  it is measurable.
+- **Tier.** A shared drawer (every pop-up window) — WALK, not LOOK. Roll-call of what is sized the same way:
+
+| Surface sized by `vh` | Pinned to an edge on a phone? | Disposition |
+|---|---|---|
+| Every `.modal` window — Insights, Templates, Plans, Manage waves, day/duty/wave editors | bottom sheet, was `90vh` | **fixed (D536)** |
+| The airspace pop-up (`80vh`), the input picker (`75vh` sheet; its full-screen form already `100dvh`), the History bubble's list (`40vh`), the availability and changes windows (`62vh`), the calendar and notification panels (`calc(100vh − …)`), the document viewer (`58vh`), two menus (`70vh`, `82vh`) | several are | **filed** — `OUTSTANDING.md` `[VH-SHEETS-IPHONE]`; none reported, the short ones leave room, not changed here |
+
+- **Seen.** Fixed build, Chromium at 390×660: window top at 66 px, title bar and ✕ on screen, limit 594 px (90%) —
+  `docs/img/insights-opus-interim/fixed/d536-phone-390x660-insights-window.png` (opened). Desktop 1440×900: top at
+  72 px, limit 756 px (measured, no picture kept).
+- **What only his phone can prove (bug-check §7.9):** that the title bar clears the address bar on his iPhone, with the
+  browser's bars both showing and hidden. **This is the one line on his look card.**
+- **Checks — a second full gate run after the stylesheet change, PC lock taken and released, about 14 minutes:** unit **7,649 / 0**
+  (482 files) · build PASS · the original's assertions **728 / 0** · browser tests **523 passed, 0 failed, 49 skipped** (the three
+  new cases among them) · Tracker suite **445 / 0** · rule coverage OK · document check OK.
+
+## His second report — the Duty templates window "closes itself" (3 Oct 26) — FOUND, FILED, NOT FIXED
+
+*"when I'm on this page in desktop mode, it seems like this page closes itself when I tried to type in a new row role. Something
+along that line."* He did not ask for a fix and no ruling allows one (D534/D536 name their fixes), so it is filed.
+
+- **Reproduced on a desktop (1440×900), build AND the untouched planning build:** Board → Duties → + Block → the pencil → + Add role →
+  press inside the new Role box, drag to select its text, let go OUTSIDE the window: **the window closes.** The press began
+  inside the box and the release landed on the dark surround, so the browser reports one click on the surround — which is the
+  window's "tap outside to close" (`src/ui/DutyTplModal.tsx:74`, and the same test on at least six other windows).
+- **NOT reproduced:** tapping the box, typing letter by letter, Enter, picking a suggestion, Tab — at desktop size, and on a phone
+  in both Phone layout and the Board's Desktop layout (Chromium emulation: no real keyboard, so an iPhone's keyboard moving the
+  window under a finger is unproven either way).
+- **Provenance:** older than the Insights build (same result on the planning build); `DutyTplModal.tsx` is untouched by it.
+- **Probe:** `docs/img/insights-opus-interim/probe-dutytpl.cjs`. Filed as `OUTSTANDING.md` `[MODAL-DRAG-CLOSE]`.
+
+
 **Not done here, still owed:** the weekly editor's flows in a real browser, short-height layouts, a physical iPhone,
 the 33 scenarios, the two independent reads of these fixes and of the build (D534, D533).
 
