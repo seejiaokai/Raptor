@@ -127,14 +127,35 @@ direct typing/Tab, saved-category/issuing/Undo and Edit Schedule's proposed cont
 Those two product questions were answered: D517 one formation role; D518 conditional question, neither constant nor
 every-Mission-focus control; D519 no extra line label. Earlier pictures show the exploration, never the chosen design.
 
-## Current conditional-question picture and pending lifecycle
+## Earlier floating question picture
 
-`../../img/insights-proposal/conditional-normal-phone.png` and `conditional-question-phone.png` show the current proposal;
+`../../img/insights-proposal/conditional-normal-phone.png` and `conditional-question-phone.png` retain an earlier proposal;
 desktop and short-screen pairs, `conditional-role.cjs` and `conditional-role-result.json` live in the same folder.
 Illustrative first-aircraft Remarks are DS FOR RU, existing Mission BFM. A compact question identifies formation VL,
 asks Blue or Red without choosing an answer, and adds no line marker. Phone390×844, desktop1440×1000 and short390×568:
 Mission text/box/row size unchanged, panel on-screen, both DOM-only buttons operate, zero page errors. All six opened.
 No saved role, typing/Tab, phone keyboard, issuing or Edit Schedule control proof is claimed; this is tier NONE design.
+The Mission-anchored popup covers written Remarks in the phone sample, so it is replaced by the placement proposal below.
+
+## Current after-edit question picture and pending lifecycle
+
+Owner requested a picture of the after-edit, nonblocking question; timing/placement is a proposal, not a new ruling.
+`../../img/insights-proposal/remarks-normal-phone.png` and `remarks-question-phone.png` show the normal and question states;
+desktop and short-screen pairs plus `remarks-bubble.cjs` / `remarks-bubble-result.json` are in that folder. A compact
+"VL: Blue or Red?" question sits AFTER the formation's AREA strip, outside its aircraft rows, with both Remarks visible.
+It adds temporary vertical space and moves following content down; either illustrative answer removes that space.
+No extra line indicator or permanent choice is added. Formation scope and cue rules remain D517–D519.
+
+Proposal: open only after leaving the completed relevant edit AND its tap/Tab transition finishing; no focus theft,
+rebuilding the next editor, typing-pause prompt or automatic scroll jump. Announce a below-viewport question accessibly;
+preserve focused field and scroll while opening/removing it. Large formations may require ordinary scrolling to reach it.
+Saving/cancel/repeat/correction choices below remain pending and are not decided by this picture.
+
+Design-only checks: phone390×844, desktop1440×1000, short390×568; Mission text/box and aircraft row heights unchanged,
+question below Remarks without overlap, next-field focus preserved after prototype Tab, both DOM-only answers remove
+the question, zero page errors. All six final pictures opened; short-screen picture manually scrolled to show Remarks
+and question together. No phone keyboard, real edit lifecycle, saved role, Undo, issuing or source-build proof is claimed.
+Independent placement recommendation and Sol challenge: `../plans/2026-10-03-insights-remarks-placement-read.md`.
 
 Three owner lifecycle choices are pending: ask after finishing the relevant edit and remember until Mission/support
 wording changes; closing without answering keeps newly typed wording in the editor UNCOMMITTED versus cancels that
