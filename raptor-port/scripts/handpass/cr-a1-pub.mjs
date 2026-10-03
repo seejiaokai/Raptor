@@ -1,3 +1,4 @@
+// Retired with the Discard marks button (D488); kept as historical walk evidence.
 /* Walker A1 — publishing and the one Undo (28 Sep 26): Fable S12 (Undo of a publish is an Unpublish; Redo lands
    published with the four cleared; the changes window's lines), S12b (an Undo past the undone publish never hands the
    spent sign-offs back — register AM39c), S28 (the Unpublish button, then Undo; the version preview never left on a

@@ -1,0 +1,1514 @@
+[
+  {
+    "id": "sbCal",
+    "text": " Calendar",
+    "title": "Jump to a date",
+    "disabled": false
+  },
+  {
+    "id": "sbPrevDay",
+    "text": "‹ Previous day",
+    "title": "Previous day",
+    "disabled": false
+  },
+  {
+    "id": "sbHl",
+    "text": "",
+    "title": "Highlight by category / quals",
+    "disabled": false
+  },
+  {
+    "id": "sbMore",
+    "text": "⋯",
+    "title": "Sort all · Phone / Desktop layout",
+    "disabled": false
+  },
+  {
+    "id": "sbNextDay",
+    "text": "› Next day",
+    "title": "Next day",
+    "disabled": false
+  },
+  {
+    "id": "sbTpl",
+    "text": "▤ Templates",
+    "title": "Save this day, or apply a saved one",
+    "disabled": false
+  },
+  {
+    "id": "sbSortAll",
+    "text": "⇅ Sort all",
+    "title": "Reorder every section on this day back into its own reading order, waves and duty blocks included — one confirm, one undo step",
+    "disabled": false
+  },
+  {
+    "id": "sbUndo",
+    "text": "↶ Undo",
+    "title": "Undo — a change to the schedule",
+    "disabled": false
+  },
+  {
+    "id": "sbRedo",
+    "text": "↷ Redo",
+    "title": "Redo",
+    "disabled": true
+  },
+  {
+    "id": "sbHist",
+    "text": " History",
+    "title": "Show the changes, and who changed each detail — hover it, or tap it on a phone",
+    "disabled": false
+  },
+  {
+    "id": "sbSync",
+    "text": "Sync · slow",
+    "title": "Toggle 1-second sync (for publishing / meetings)",
+    "disabled": false
+  },
+  {
+    "id": "sbBell",
+    "text": "",
+    "title": "Notifications",
+    "disabled": false
+  },
+  {
+    "id": "sbDone",
+    "text": "✓ Done",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CAT",
+    "title": "CAT filters — tap to expand",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "A",
+    "title": "Cat A (4-ship FL)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "B",
+    "title": "Cat B (2-ship FL)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "C",
+    "title": "Cat C (operational wingman)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "D",
+    "title": "Cat D (wingman)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "OCU",
+    "title": "OCU (ab-initio)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "Type",
+    "title": "Type filters — tap to expand",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "SANS",
+    "title": "SANS — staff-assigned & NS aircrew",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "Ins",
+    "title": "Instructors (IW / IP / IR / FI)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "FL",
+    "title": "All flight leads (Cat A & B)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "SUP",
+    "title": "Supervisors — Cat A & B",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "Quals",
+    "title": "Quals filters — tap to expand",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "SXO",
+    "title": "SXO-qualified",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "SC D",
+    "title": "SC Day current",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "SC N",
+    "title": "SC Night current",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "DAAR",
+    "title": "Day AAR qualified",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "NAAR",
+    "title": "Night AAR qualified",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "TF",
+    "title": "TF (terrain-following) qualified",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "Live working copy▾",
+    "title": "Switch between your plans, or look back at an issued version",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "1 change",
+    "title": "Every change on Monday and who made it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "i",
+    "title": "Monday — approval, AL versions, advisories",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "Publish day",
+    "title": "Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Monday",
+    "disabled": true
+  },
+  {
+    "id": "",
+    "text": "Templates",
+    "title": "Save this day, or apply a saved one",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Note",
+    "title": "Add a note line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this note",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this note",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "⇅ Auto sort",
+    "title": "Sort this section",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Item",
+    "title": "Add a squadron-wide item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "Make public",
+    "title": "Show this note on the view-only schedule",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Wave",
+    "title": "Add a flying wave",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "Traffic",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "⇅ Auto sort",
+    "title": "Sort this section",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ In time",
+    "title": "Add an in-time line to this wave",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Line",
+    "title": "Add a line to this wave",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕ Wave",
+    "title": "Remove this whole wave",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this in-time line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this in-time line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "C",
+    "title": "Stores configuration",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this line (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag this for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+",
+    "title": "Add another aircraft to this formation",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "C",
+    "title": "Stores configuration",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this line (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag this for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+",
+    "title": "Add another aircraft to this formation",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "C",
+    "title": "Stores configuration",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this line (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag this for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+",
+    "title": "Add another aircraft to this formation",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "C",
+    "title": "Stores configuration",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this line (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag this for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+",
+    "title": "Add another aircraft to this formation",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "Traffic",
+    "title": "",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "⇅ Auto sort",
+    "title": "Sort this section",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ In time",
+    "title": "Add an in-time line to this wave",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Line",
+    "title": "Add a line to this wave",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕ Wave",
+    "title": "Remove this whole wave",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this in-time line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this in-time line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "C",
+    "title": "Stores configuration",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this line (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag this for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+",
+    "title": "Add another aircraft to this formation",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "C",
+    "title": "Stores configuration",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this line (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag this for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+",
+    "title": "Add another aircraft to this formation",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "C",
+    "title": "Stores configuration",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this line (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag this for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+",
+    "title": "Add another aircraft to this formation",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "C",
+    "title": "Stores configuration",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this line (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag this for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+",
+    "title": "Add another aircraft to this formation",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this line",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Block",
+    "title": "Add a duty block",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "⇅ Auto sort",
+    "title": "Sort this section",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Row",
+    "title": "Add a duty row",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕ Block",
+    "title": "Remove this block and its rows",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this duty (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this duty",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this duty (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this duty",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this duty (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this duty",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "⇅ Auto sort",
+    "title": "Sort this section",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Row",
+    "title": "Add a duty row",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕ Block",
+    "title": "Remove this block and its rows",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this duty (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this duty",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this duty (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this duty",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this duty (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this duty",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "Make public",
+    "title": "Show this note on the view-only schedule",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "⇅ Auto sort",
+    "title": "Sort this section",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Block",
+    "title": "Add an AMT block — BRIEF, BOX and DEBRIEF together",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Row",
+    "title": "Add a AMT row",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this sim (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this sim",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this sim (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this sim",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this sim (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this sim",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "⇅ Auto sort",
+    "title": "Sort this section",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Row",
+    "title": "Add a OFT row",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this sim (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this sim",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this sim (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this sim",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this sim (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this sim",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this sim (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this sim",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this sim (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this sim",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "Make public",
+    "title": "Show this note on the view-only schedule",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Inputs",
+    "title": "Add a personal input (meeting, course…) — it goes straight onto the Ground Programme",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "⇅ Auto sort",
+    "title": "Sort this section",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Item",
+    "title": "Add a ground item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CX",
+    "title": "Cancel this item (CX)",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ⓘ",
+    "title": "Info only — show this item on the programme, never check it against the rules, and never earn OIL from it",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "■",
+    "title": "Red box — flag for the next scheduler",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Remove this item",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "Make public",
+    "title": "Show this note on the view-only schedule",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Add",
+    "title": "Add a SANS availability for this day",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "CPTallyOFPM",
+    "title": "Edit this input — times, type, remarks or delete",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "+ Add",
+    "title": "Add an unavailability (leave, medical, overseas duty) — pick a date range in the dialog",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "OML",
+    "title": "Edit this input — times, type, remarks or delete",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "ATT C",
+    "title": "Edit this input — times, type, remarks or delete",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  },
+  {
+    "id": "",
+    "text": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "disabled": false
+  }
+]

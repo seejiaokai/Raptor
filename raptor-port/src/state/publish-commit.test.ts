@@ -1,6 +1,6 @@
 /* [ARCH-STACK] Step 2 phase 2b — the scheduler PUBLISH path routed through the
    command gate (design §3.4, §5.1, §8 item 2). ADDITIVE: the engine
-   setDayApproved / publishALDay / discardPending run UNCHANGED inside commit();
+   setDayApproved / publishALDay run UNCHANGED inside commit();
    this proves the publish path now
      - emits the issued records (sched.orig on first publish, sched.als on an AL),
      - declares the publish boundary {kind:'publish', ids, crossable} (§3.4),
@@ -16,7 +16,7 @@ import { txtSet } from '../engine/slots'
 import { CURWEEK } from '../engine/waves'
 import { initStore, writeText } from './store'
 import {
-  commitSetDayApproved, commitPublishALDay, commitDiscardPending,
+  commitSetDayApproved, commitPublishALDay,
   currentIssuedIds, discloseCurrentIssued, schedStore,
 } from './sched-commit'
 import { issuedDisclosed, _resetDisclosure } from './disclosure'
@@ -128,14 +128,15 @@ describe('an amendment (publishALDay) appends a sched.issuance record + boundary
   })
 })
 
-describe('discardPending routes through commit with no boundary', () => {
-  it('commitDiscardPending emits a book change and declares no publish boundary', () => {
-    txtSet('dn:0.0', 'DRAFT NOTE')       // a draft-day pending mark, never published
+describe('D488 — first publication clears draft marks through the publish command', () => {
+  it('keeps the draft mark until publishing, with no separate clearing command', () => {
+    writeText('dn:0.0', 'DRAFT NOTE')
+    expect(SCHED.pending['dn:0.0']).toBeTruthy()
     caught = []
-    commitDiscardPending()
-    expect(caught.length).toBe(1)
-    expect(caught[0].type).toBe('sched.discard')
-    expect(caught[0].boundary).toBeUndefined()
+    sign(0); commitSetDayApproved(0, true)
+    expect(SCHED.pending['dn:0.0']).toBeUndefined()
+    expect(caught.map(e => e.type)).toEqual(['sched.approve'])
+    expect(caught[0].boundary!.kind).toBe('publish')
   })
 })
 

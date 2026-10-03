@@ -10,7 +10,7 @@
    P5  the board's Unavailable rows carry the input's address, so an absence line lands there too (Astra DP-08)
    P6  a Quals change on "To go out" names who made it and when (review log F5)
    P7  the ⓘ day panel on a day not yet published speaks the chip's words, never the raw count (D118)
-   P9  "Discard marks" is a line
+   D488 draft edits keep their marks; the separate clearing action is removed
    P12 a door's reason never outlives the command it was handed in for */
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { storeBackend, HOOKS } from '../engine/hooks'
@@ -18,12 +18,12 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId } from '../engine/inputs'
 import { ELOG, elogClear, elogFlush, elogLoad, logAction } from '../engine/editlog'
-import { SCHED, signOf, setDayApproved, dayApproved, alAttr } from '../engine/publish'
+import { SCHED, signOf, setDayApproved, dayApproved, alAttr, pendDays } from '../engine/publish'
 import { setSlotVal, slotVal } from '../engine/slots'
 import { moveDutyRow } from '../engine/reorder'
 import { ensureRowIds } from '../engine/rowids'
 import { draftDup } from '../engine/drafts'
-import { initStore, resetSession, writeInputs, commitDiscardPending } from '../state/store'
+import { initStore, resetSession, writeInputs, writeSlot } from '../state/store'
 import { signIn, sessionFor } from '../state/accounts'
 import { changesLoad } from '../state/changes'
 import { updatePersonField } from '../state/quals-write'
@@ -195,17 +195,16 @@ describe('P3 — a member taps a line about a published day on View-only Sched',
   })
 })
 
-describe('P9 — Discard marks is a line', () => {
-  it('clearing the marks on a day not yet published leaves a line on that day', () => {
+describe('D488 — draft edits keep their marks and ordinary history', () => {
+  it('an edit records the change without a marks-cleared line', () => {
     const di = draftDay()
     as('ad', 'a')
-    const key = `d:${di}.0.0`
-    setSlotVal(key, someoneNot(slotVal(key)))
     elogClear()
-    expect((commitDiscardPending() as any).ok).toBe(true)
-    const l = ELOG.rows.find(r => /draft marks cleared/i.test(r.lbl))
-    expect(l, 'a line says the marks were cleared').toBeTruthy()
-    expect(l!.di).toBe(di)
+    const key = `d:${di}.0.0`
+    writeSlot(key, someoneNot(slotVal(key)))
+    expect(pendDays()).toContain(di)
+    expect(ELOG.rows.some(r => /draft marks cleared/i.test(r.lbl))).toBe(false)
+    expect(ELOG.rows.some(r => r.di === di)).toBe(true)
   })
 })
 

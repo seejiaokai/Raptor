@@ -944,10 +944,10 @@ wireStore()
    actions and the history verbs, re-exported so the UI has one import.
    markEdit stays the raw engine action; the publish verbs the UI calls are the
    command-routed wrappers (phase 2b — additive: they run the SAME engine
-   setDayApproved/publishALDay/discardPending inside commit()). */
+   setDayApproved/publishALDay inside commit()). */
 export { markEdit } from '../engine/publish'
 export {
-  commitSetDayApproved, commitPublishALDay, commitDiscardPending,
+  commitSetDayApproved, commitPublishALDay,
 } from './sched-commit'
 /* the quarantine classifier lives in the engine (so the engine's filing
    primitives share it) but the UI imports it from here, its established home.

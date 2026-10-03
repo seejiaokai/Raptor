@@ -270,7 +270,6 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'sched.section.reorder': op(T.sched, 'U'),
   'sched.approve': op(T.amendment, 'C'),
   'sched.publishAL': op(T.amendment, 'C'),
-  'sched.discard': op(T.sched, 'U'),
   'sched.unpublish': op(T.amendment, 'C'),
   'sched.stores': op(T.sched, 'U'),
   'sched.sign': op(T.amendment, 'C'),

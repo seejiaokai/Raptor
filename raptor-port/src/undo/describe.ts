@@ -42,7 +42,6 @@ const TYPE_PHRASE: Record<string, string> = {
   'sched.approve': 'publishing a day',
   'sched.publishAL': 'publishing an amendment',
   'sched.unpublish': 'taking a published day back',
-  'sched.discard': 'clearing a day’s draft changes',
   'sched.sign': 'a sign-off',
   /* NOT "a change to the schedule" ([OIL-UNDO-WORDS], found by driving the app
      22 Sep 26). Taking a man off an event does not move the schedule — the earn

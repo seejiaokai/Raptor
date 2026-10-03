@@ -1,3 +1,4 @@
+// Retired with the Discard marks button (D488); kept as historical walk evidence.
 /* w1 · S33 (Fable) + Astra rank 13 — a row moved past another and put exactly back, by hand and by Undo/Redo,
    on a FRESH demo world (nothing reloaded), MONDAY's first duty block on the board.
    Setup: publish Monday; AL1 changes the SECOND duty row's start time (so that row wears a solid AL1 mark).

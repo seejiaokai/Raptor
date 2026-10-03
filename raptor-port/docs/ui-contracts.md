@@ -651,6 +651,10 @@ Existing reporting strings never change when either default changes.
 
 ## Amendment marks on screen
 
+**D488 (2 Oct 26):** the Amendments box has no Discard marks button; there is no substitute on the phone.
+Draft marks stay until first publication. Published changes use the existing AL / load doors.
+Regression: `src/ui/amendretest.test.tsx`; runtime: `docs/handpass/2026-10-02-discard-marks-remove.md`.
+
 **An amendment mark is a PUBLISHED-day thing — a draft day shows none** (owner,
 25 Aug 26 — "if I have not published the schedule yet, don't show all the orange
 dotted lines … only once published does an AL-coloured mark make sense"). A mark

@@ -1,3 +1,4 @@
+// Retired with the Discard marks button (D488); kept as historical walk evidence.
 /* w1 · S2 (Fable) = Astra rank 3 — "Discard marks" when the only pending edits are on PUBLISHED days.
    Desktop only (the Amendments panel is hidden under 820px — S6 walks the phone).
    A FRESH demo world (a new browser context, nothing reloaded — bug-check order §7.7), so no draft

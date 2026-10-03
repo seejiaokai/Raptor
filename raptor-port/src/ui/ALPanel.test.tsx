@@ -1,8 +1,7 @@
 // @vitest-environment jsdom
 /* The amendment panel, Phase 2 (the per-day verId rewrite). The panel now shows
    PER-DAY publish (each published day with real changes vs its issued version
-   gets a "Publish AL{seq}" button calling publishALDay(di)), a "Discard marks"
-   button, and a READ-ONLY issued-AL history list — the week-wide AL-number
+   gets a "Publish AL{seq}" button calling publishALDay(di)), and a READ-ONLY issued-AL history list — the week-wide AL-number
    <select> and the per-AL unpublish ✕ are GONE (take-backs are Phase 3).
 
    Security pin (kept): a recorded sign-off callsign is interpolated into the AL

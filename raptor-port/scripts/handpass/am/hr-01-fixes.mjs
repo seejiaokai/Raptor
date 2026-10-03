@@ -1,3 +1,4 @@
+// Retired with the Discard marks button (D488); kept as historical walk evidence.
 /* The HOST's re-walk of fixes F1–F5 (evidence sheet §3/§12), written as assertions of the RIGHT
    behaviour so a PASS means correct (bug-check order §5 "the re-walk"). Builds its own world
    through the app's own controls on a fresh (persisting) context.
