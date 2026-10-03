@@ -1681,7 +1681,10 @@ list of per-screen parts, every rule body moved unchanged and the overall order 
 every part loads once and in order, and a recorded measurement of the key computed styles, admin and member, at phone, laptop
 and desktop widths — compared again after. No selector clean-up in the same change; no button changes size (D487). New files
 → `docs/file-map.md`; `docs/performance.md` Part 1's checklist applies. **Place — D493: the first step of the workflow UI
-pass (`[FEATURE-WISHLIST]` item 5), before that pass moves anything.**
+pass (`[FEATURE-WISHLIST]` item 5), before that pass moves anything.** **D539 (3 Oct 26):** Codex builds it its normal way (Astra
+plans, Sol builds, Astra reads); Opus does not plan it; an interim Opus read of the finished split, if it is done before the reset
+and allowance remains. Its new branch is cut from `codex/insights-mission-mix` with the two other built branches merged in first
+(`HANDOFF.md`). After the split, every screen is walked at phone and desktop size, not only the measured ones.
 
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
 From Astra's tidiness read (its §3 — read it before building). The export / import workflow (about 730 lines) leaves
