@@ -4756,20 +4756,22 @@ separate sortie-eligibility and work-hours calculations. This settles neither ot
 
 **FORMATION ROLE AND CONDITIONAL QUESTION (owner D517–D519, 3 Oct 26 — approved direction, NOT YET BUILT):** the whole
 formation is on one side. With blue/red tracking enabled (D521), Mission names DS, RED and RED AIR count red automatically, with no Blue/Red question. Other
-missions remain blue unless DS or RED in an aircraft's Remarks triggers a Blue/Red mission-role question; the answer,
+missions remain blue unless DS or RED in aircraft Remarks or in a non-exact Mission name cues the question (D531); the answer,
 not free-text interpretation, decides the whole formation's role. No extra red indicator is drawn on schedule lines:
 the scheduler's Remarks are sufficient. Existing mission-type dots, scheduler red flags and warnings retain their
-meanings. **D520 approves the shown after-edit question below the formation's AREA strip:** show after leaving completed
-Remarks, keeping Remarks visible; either answer removes its temporary space. Wait for the tap/Tab transition to finish,
+meanings. **D520 approves the shown after-edit question below the formation's AREA strip:** D529 gates it on a qualifying
+own-edit transition, including Remarks/Mission or a single-target structural edit; unchanged focus/Tab never asks.
+Keep Remarks visible; either answer removes its temporary space. Wait for the tap/Tab transition to finish,
 preserving next focus. D525–D527 below settle retention, saved unanswered edits and correction; the complete technical
 plan and final remaining picture look still precede the new-chat build.
 
 **QUESTION LIFECYCLE (owner D525–D527, 3 Oct 26 — approved, NOT YET BUILT):** remember the chosen formation role until
 Mission or relevant DS/RED support wording changes; crew/time changes do not ask again (D525). Save completed Remarks
-normally even if the question is left unanswered; invalidate a stale answer with the same relevant edit, leaving the
+normally even if the question is left unanswered; derive whether the saved answer still applies after the relevant edit, leaving the
 role unresolved and the affected person's ordinary total bar intact (D526). Later choosing a role is a separate saved
 action and Undo step. Apply this to every forward writer; unresolved saved roles are legitimate, no guessed colour,
-answer-before-creation requirement or new publication block. Working edits/answers on an issued day still wait for AL.
+answer-before-creation requirement or new publication block. Working wording edits on an issued day still wait for AL;
+role answers alone count at once without changing signs/pending/amendments (D530).
 Offer Change mission role temporarily while editing relevant Remarks (D527), reusing the formation question and edit
 permission; no permanent line marker. Named red Missions remain automatic, without overrides/questions. Recheck live
 formation identity/context/permission when answering; never apply an old popup's answer to a changed formation.
@@ -4790,6 +4792,17 @@ and not yet out means the published and the working copy can need different answ
 **A Mission box containing DS or RED that is not exactly DS / RED / RED AIR (D531)** — `DS-2`, `RED AIR 2`, `ACM/DS` —
 asks the question; it is never counted blue or red by guessing. The three exact names stay automatic red.
 
+**REVISED PLAN BINDING (3 Oct 26 — technical read PASS, final picture agreement pending):** the NEW Astra plan
+`docs/superpowers/plans/2026-10-03-insights-mission-mix-build-plan-revised.md` keeps per-context role annotations outside
+day/issued/signature content, with their own guarded actor-history/Undo command. Unmatched old contexts remain saved;
+same-context saved-plan/version loading does not replay an old answer over a later correction. Published and working
+wording resolve separately. House `//` and `;` delimit context clauses; ordinary `/` remains support wording. Temporary
+actions insert without replacing the focused editor. For published A while working B differs, the concrete proposed door
+uses the Board's latest-published view and focusable read-only Remarks, with Published · version in the question;
+working access says Working copy when needed. No published programme edit or permanent marker. This door and text must
+be shown in the final pictures before the new-chat build. Complete Sol findings/dispositions and Astra's independent
+D529–D531 meaning PASS are in `docs/superpowers/plans/2026-10-03-insights-revised-plan-review.md`; no runtime proof claimed.
+
 **OPTIONAL SQUADRON TRACKING (owner D521, 3 Oct 26 — approved switch, NOT YET BUILT):** the Logic page provides a
 squadron-wide on/off setting for blue/red sortie tracking. D512's split and D518's questions apply when tracking is on;
 **D524 approves the shown Logic Insights control, labelled Track blue/red sorties and shown Off.**
@@ -4798,7 +4811,7 @@ when wanted. D523: on enabling, a person with unanswered ambiguous flight roles 
 roles are chosen; no guessed colours or burst of questions.** Reuse applicable answers and named-Mission automatic roles;
 no third category is added. Existing explicit settings survive loading. No per-user preference or data deletion is approved.
 Retaining valid answers while off is the proposed reversible behaviour; changed context cannot reuse stale answers.
-New answers on issued days still wait for an amendment under D478. Exact incomplete-breakdown wording/resolution access
+New role answers count at once under D530; changed issued-day wording still waits under D478. Exact incomplete-breakdown wording/resolution access
 remain design work; D525–D527 above settle the save/repeat/correction lifecycle.
 
 The older `[INSIGHTS-WORKING-COPY]` question is superseded by D478 below and the merged `[INSIGHTS-WHICH-COPY]` build;

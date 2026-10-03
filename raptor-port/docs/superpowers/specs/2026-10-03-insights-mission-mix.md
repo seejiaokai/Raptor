@@ -1,6 +1,6 @@
 # Insights mission mix — design in progress, 3 Oct 26
 
-Status: D512–D527 settle categories, formation scope, conditional question/placement/lifecycle, no extra role label, optional
+Status: D512–D531 settle categories, formation scope, conditional question/placement/lifecycle, no extra role label, optional
 Logic tracking starting Off, shown Logic control look and total bars until unanswered roles are resolved. Complete
 visual design and Board entry placement await his look;
 no application code is built here. Astra plans under D496; Sol independently challenges before building. D528 permits
@@ -8,7 +8,7 @@ the owner's early Opus 5.5 plan review using remaining allowance; later code rev
 
 ## Early Opus plan review — D528, 3 Oct 26
 
-The owner still has some Claude allowance and will take the finished plan to Opus 5.5 now, before the new-chat build.
+The owner took the finished plan to Opus 5.5; its 3 Oct review is complete with verdict REVISE, not PASS.
 This is a scoped exception to D496's earlier no-Claude-before-reset instruction, not a wholesale model/workflow change.
 Codex prepares the handoff; the owner dispatches it. The frozen Astra plan/review records retain their earlier timing
 statements as historical text; D528 controls this early plan read. No permission to implement, merge or push main follows.
@@ -32,7 +32,35 @@ The review (`../plans/2026-10-03-insights-opus-plan-review.md`, verdict REVISE) 
 - **D531 — a Mission box that contains DS or RED without being exactly DS / RED / RED AIR** (`DS-2`, `RED AIR 2`,
   `ACM/DS`) asks the question; never a guess. Narrows D518's "other missions without a Remarks cue stay blue".
 
-Still open: the review's findings B1–B4 and improvements I1–I8 (technical, the planner's), and his complete picture look.
+The review's findings B1–B4 and improvements I1–I8 are reconciled in the NEW Astra-authored plan,
+`../plans/2026-10-03-insights-mission-mix-build-plan-revised.md`. Sol's independent whole-plan read is PASS for the technical
+plan, recorded with complete findings/dispositions in `../plans/2026-10-03-insights-revised-plan-review.md`. The frozen plan and all earlier
+review records remain unchanged. B5's original canonical Mission-composite proposal is withdrawn under D530; the revised
+plan instead settles the review's §7 separate-answer architecture. Complete picture look still needs his actual reply.
+Astra's independent short/full/current-home comparison for D529–D531 is PASS; no new ruling or build permission follows.
+
+## Current plan reconciliation — D529–D531 govern, no application build
+
+The revised plan keeps saved role labels outside schedule-day/signature/amendment content. Insights resolves the
+label against the latest published wording; a working editor resolves against its working wording. When these differ,
+both answers have separate applicable contexts. Answer commands/history/Undo/authorization/persistence and copies,
+templates, saved plans and older-version loading are explicit; role-only changes never clear signs or create pending
+units. Role validity is derived from the versioned context, without sweeping writer-side deletion or backfilling snapshots.
+Wording edits retain the normal day/AL behaviour. New saved data and permission seams keep the eventual build FULL tier.
+
+The cue separator includes the house `//` form alongside semicolon; single `/` remains part of support wording. The
+question/action uses direct sibling insertion after AREA and later builder reconciliation, preserving the actual focused
+node/caret rather than replacing it. Auto-question is a single own-edit state transition under D529; unchanged focus/Tab,
+Escape, reload, Undo, enabling or a multi-formation gesture never opens a burst. Choose mission role is the temporary
+unanswered door; Change mission role remains the answered door.
+
+Picture impact: the chart, Board entry placement, Logic control and below-AREA Blue/Red/Later placement are retained.
+An unanswered edit now has the temporary Choose mission role label, matching the existing Change mission role control's
+footprint. For a published answer while working wording differs, the concrete proposal uses the Board's existing latest-
+published viewing door: focus its read-only Remarks to reveal the same action, with Published · version in the question;
+working access says Working copy when needed. Older previews have no write action. This access/wording is pending his
+final picture agreement; no new permanent marker/dropdown or silent visual approval. Existing prototypes remain
+illustrations of the older lifecycle and do not yet show that refinement.
 
 ## Current owner direction — D517–D527 supersedes the control proposals below
 

@@ -117,7 +117,7 @@ Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QU
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
 [ALLAVAIL-OPEN-ROW] (investigate first).
-Insights — [INSIGHTS-MISSION-MIX] (D512–D527 categories, question placement/lifecycle and optional Logic switch settled; independent plan challenge PASS, complete picture look pending), with [INSIGHTS-BOARD-DOOR].
+Insights — [INSIGHTS-MISSION-MIX] (D512–D531 choices settled; Opus REVISE addressed, revised technical plan independently PASS; final picture look pending), with [INSIGHTS-BOARD-DOOR].
 The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
 phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Codex build), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
@@ -1476,8 +1476,8 @@ that the window is topmost at its centre over the board at both widths. **Place:
 first; after `[WORKSPAN-NEGATIVE]`. Full row: `.claude/decisions-full/scheduler.md` D481.
 
 ### [INSIGHTS-MISSION-MIX] Split each person's weekly sortie bar into blue and red (D512, 3 Oct 26)
-**Direction/lifecycle settled; independent plan challenge PASS, final look/build pending:** "Red", "DS" and "Red Air" missions count red automatically (D518).
-Other missions remain blue unless DS/RED in an aircraft's Remarks triggers a Blue/Red role question; its answer covers
+**Direction/lifecycle settled through D531; Opus REVISE addressed, revised technical plan independently PASS; final look/build pending:** "Red", "DS" and "Red Air" missions count red automatically (D518).
+Other missions remain blue unless DS/RED in Remarks or a non-exact Mission name cues a Blue/Red role question; its answer covers
 the whole formation (D517). No extra red indicator appears on schedule lines (D519).
 D520 approves the after-edit question below formation AREA, Remarks visible, temporary space removed after either answer.
 D521 adds a squadron-wide blue/red tracking on/off setting on Logic; D522 starts Off at first setup. D523 keeps ordinary
@@ -1485,8 +1485,8 @@ total bars for people with unanswered roles until those roles are chosen, withou
 D524 approves the shown Logic switch look/label. D525 remembers until Mission/relevant support wording changes; D526
 saves Remarks even unanswered, total bars until roles chosen; D527 offers a temporary correction action while editing
 relevant Remarks. The complete chart/Board/incomplete-bar look and missing-role access pictures remain to confirm; no build here.
-D528: owner takes the saved handoff to Opus5.5 for an early plan review using remaining allowance before the new-chat
-build; this narrowly supersedes the wait-until-reset instruction, not the later code review or main/merge limits.
+D528 early Opus5.5 plan review is complete; this narrowly superseded the wait-until-reset instruction, not the later
+code review or main/merge limits.
 One person who flies both has both coloured segments in their existing total bar. His supplied phone picture names the
 target: Flying load · sorties this week. Continue this batch now while Claude's further review waits; no live merge.
 **D513:** initial twelve flying people, with Show all. **D514:** DS for another formation is our red air, but DS wording
@@ -1496,19 +1496,24 @@ before deciding and is concerned about disrupting scheduling; D518 subsequently 
 D516 excludes SC/AVALON/BB
 standby duties from flying load and includes SC main in work hours.
 Preserve latest-issued-day counting (D478), cancellation/standalone exclusions, stable person identity and work hours.
-Design/picture: `raptor-port/docs/superpowers/specs/2026-10-03-insights-mission-mix.md`; authored build plan and independent
-challenge: `raptor-port/docs/superpowers/plans/2026-10-03-insights-mission-mix-build-plan.md` / `…-plan-review.md`. **Place:** Insights, item 3 of
+Design/picture: `raptor-port/docs/superpowers/specs/2026-10-03-insights-mission-mix.md`; NEW authored revision and independent
+read: `raptor-port/docs/superpowers/plans/2026-10-03-insights-mission-mix-build-plan-revised.md` / `2026-10-03-insights-revised-plan-review.md`.
+Frozen original plan/reads remain unchanged. **Place:** Insights, item 3 of
 `[FEATURE-WISHLIST]`, with `[INSIGHTS-BOARD-DOOR]`; product questions only after checking existing rulings. Claude's further
 independent read after the reset remains owed before main.
 **Opus 5.5 early plan review (D528) DONE 3 Oct 26 — REVISE, not PASS:** five blocking findings, eight improvements, three
-owner choices, in `raptor-port/docs/superpowers/plans/2026-10-03-insights-opus-plan-review.md`. To reconcile in the planning
-chat before the build; the code/scenario read after the build is still owed.
+owner choices, in `raptor-port/docs/superpowers/plans/2026-10-03-insights-opus-plan-review.md`. B1–B4 and I1–I8 reconciled in
+the NEW Astra plan; B5's original fix withdrawn under D530/§7. Sol's independent final read is PASS for that technical
+plan, not owner look/code approval. Astra's D529–D531 short/full meaning read is PASS. Complete responses/dispositions
+are in the NEW revised-plan review record. Final picture look includes proposed latest-published read-only Remarks
+access with Published/Working context text; original chart/Board/Logic placement remains. Code/scenario read still owed.
 **His answers, "1-3 as recommended" (3 Oct 26) — they change the plan:** D529 the question is asked automatically only straight
 after the scheduler's own edit (Remarks or Mission) leaves a formation needing an answer, otherwise a temporary "Choose mission
 role" button while its Remarks box is edited — never on passing through; D530 a Blue/Red answer counts at once, published days
 included, with no amendment and no effect on sign-offs (wording changes still wait) — it replaces "answers on an issued day wait
 for the amendment" above and in D478/D523/D526; D531 a Mission box containing DS or RED that is not exactly DS / RED / RED AIR
-asks, never guesses. The frozen plan predates all three: revise it (with B1–B4, I1–I8), then an independent read, then his look.
+asks, never guesses. The frozen plan predates all three and stays unchanged. NEW revision and independent read are done;
+his complete final picture look is next, then build only in a new chat. D532 remains next; no build branch created here.
 
 ### [DISCARD-MARKS-REMOVE] Remove the "Discard marks" button from the Amendments box (D488, 2 Oct 26)
 **BUILT 2 Oct 26, not merged:** `codex/discard-marks-remove`; Sol 6.1 built, fresh Astra final inspection PASS, FULL gates/runtime passed (one already-filed browser retry disclosed). Evidence and complete inspection response are on that branch in `raptor-port/docs/handpass/2026-10-02-discard-marks-remove.md` and `…-review.md`. Claude's further code/scenario/working-guide reads after Monday 5 Oct 26, 19:00, and owner look remain owed before main. The phone item is archived as moot. The original build recipe below is retained for review.
