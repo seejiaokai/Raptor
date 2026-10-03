@@ -1,3 +1,4 @@
+// Retired with the Discard marks button (D488); kept as historical walk evidence.
 /* [DRAFT-PENDING] — the walk (28 Sep 26). One world per run (a fresh browser, the production build), at HP_W × HP_H.
    Every step is an ASSERTION of the right behaviour (PASS means correct), so re-running it on a fixed build IS the
    re-walk (bug-check order §5). Pictures and results.md go to HP_SHOTS/<width-tag>.

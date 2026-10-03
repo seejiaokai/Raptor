@@ -1,3 +1,4 @@
+// Retired with the Discard marks button (D488); kept as historical walk evidence.
 /* [DB-READINESS] group A FULL walk — W1 part C: three quick edits then an IMMEDIATE reload (8), a week switch (9), a
    saved plan / a day template / Discard (10), OIL Earn on a published weekend day (11). Desktop 1440×900, a fresh world.
    Usage (from raptor-port/scripts/handpass): node dbrA-W1-c.mjs */

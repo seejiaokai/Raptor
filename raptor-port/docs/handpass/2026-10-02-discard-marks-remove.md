@@ -106,3 +106,32 @@ Rulings: D496 — temporary Codex planning/building/review roles; implementing D
 
 Docs: OUTSTANDING 99 items (+4 −1, −1 all in ARCHIVE) · DECISIONS D1–D496 (new: D491, D492, D493, D494, D495, D496) · homes OK
 docsize: OK
+
+## Claude small-review leftovers —3 Oct26 (current follow-up)
+
+Authority: owner-directed Discard section of the3Oct review-fixes brief on origin/codex/rally-workspan; original D488 removal and D496 independent roles. Branch codex/discard-marks-remove started clean at3e0970259cd5b6564c53dddc448d210c2dc1ae3d, identical to its remote. Rally A–F/D2 is separately pushed at94aa8913123cbbc3abeeef26884bc5c11c1a9504; no Rally source imported here. No new owner ruling; D512 remains next. The older completed build evidence above stays historical.
+
+Astra read-only plan: delete the sole unused logAction import in src/state/sched-commit.ts; prepend a retirement comment to exactly six historical scripts, preserving every body byte. Sol independently challenged it: unused import removal could affect module initialization, so verify its lack of callers and retained editlog import/use in state/history.ts; all five standing gates still run. No other source/helper/fixture/test changed. Keeping w1-s02-discard preserves historical proof rather than deleting it. No extra first-publication feature or test is inferred from the brief's explicitly unverified observation.
+
+Incremental runtime tier **NONE**: all eight questions NO — no money/credit arithmetic, publishing/signing/version/Undo writer, saved-data/schema/reset, shared drawing, control/mode, surface, role/permission or warning/rule meaning changes. The seven-line cleanup has no UI-visible surface; the parent feature's FULL tier/evidence is unchanged. This is an unused-import/head-comment housekeeping interpretation, not a waiver for functional source changes. Standing CLAUDE all-five automated gates plus rulecheck/docsize retained; no artificial before/after picture or synthetic permanent test for identical behaviour. Original scripts are not executed against the removed button; six node--check syntax checks and exact original-body byte checks PASS.
+
+Before-change source contract captured in .superpowers/discard-review-fixes/before.log and before.json: exactly one logAction occurrence (unused import), all six retirement heads missing. After-change after.log/after.json: exactly one import-line deletion and six comment-line insertions; each complete original script body byte-identical. No new product behaviour was changed, so these static observations are not labelled a failing runtime test. Original bytes/hashes and final diff are retained for independent inspection. Gate results and portable archive are recorded below when complete.
+
+**Walk: NOT DONE for this follow-up** — only an unused import and historical comments changed; no runtime behaviour or visible surface changed. Earlier44-picture FULL walk is retained, not renamed a new walk. Fresh independent Astra inspection of this seven-file delta and completed proof is pending. OWED: Claude's read after the reset — codex/discard-marks-remove, FULL independent walk/further code/scenario/working-guide reads and D480 blind walker trial before main. Owner look and physical-device/native-phone-week-switch proof remain pending. No main push, merge, PR for merging or Insights work. Rulings: none this follow-up; D512 remains next.
+
+### Follow-up final evidence — frozen for fresh inspection
+
+All seven automated checks PASS, run once from the full raptor-port path under the single-PC lock, then released: unit7560/7560 in474files; build; reference728/0; full browser518passed/49existing skips (no retry needed this run); Tracker445/0; rulecheck; docsize. Raw outcomes and exit codes retained. No adapted probes/perf or new standalone app walk: this delta changes no UI/rendering/validation/behaviour; the earlier parent FULL proof and its disclosed retry/physical-device limits remain historical. No tests weakened or modified.
+
+Frozen source/script7-file fingerprint771cfc7f80361ff2858889382a50670a29c76b02c7ce65c9f5d2ee6032da70c9 (SHA256 of path-sorted LF-joined `path lowercase-file-sha256`, no trailing newline). Current19-file bundle fingerprint147b658e75128ca1065a5f2526a40eaf6c53f634d8ecb7043fc08a2b757cbdc6 (ordered JSON manifest). The source equals the reviewed original with precisely the seven authorized line edits. Module initialization remains reached through retained publish/history imports; history still calls logAction. No code/script/bundle change after this freeze.
+
+Portable proof `2026-10-03-discard-review-fixes-evidence.zip`,764,126bytes, SHA2564CCD520EA21202F474352A9192E5C3219668F1BDCEB102EB7893A7C76E1BDCF6. Extract relative to repo root in isolated scratch: original7file bytes, final7files, before/after/source/bundle manifests, exact patch, static preservation/syntax checks, raw all-five+rulecheck/docsize logs and runner, exact19built files. No external junction/dependency tree. Review report is preserved separately in Git after the archive is frozen; host document check repeats after its final status updates.
+
+Copied from this run's document output (old D1–D496 branch history remains; latest D508–D511 are on the separate review/Rally branch, not re-recorded here):
+
+Docs: OUTSTANDING 99 items (+4 −1, −1 all in ARCHIVE) · DECISIONS D1–D496 (new: D491, D492, D493, D494, D495, D496) · homes OK
+docsize: OK
+
+Fresh independent Astra delta inspection pending verdict on this complete frozen evidence. No whole-feature reapproval or new runtime walk claimed. Rulings: none; D512 remains next globally. OWED: Claude's read after the reset — codex/discard-marks-remove — before main.
+
+Fresh independent [Astra delta inspection](../superpowers/plans/2026-10-03-discard-review-fixes-inspection.md) **PASS** for this seven-file cleanup; no source defect or blocking evidence gap. Immutable report8,777bytes, SHA256FE84EF366273DA6AF60B1E052B4CBF18DC390A61686DC6259BAEB55EE313E341. Inspector independently matched every original/final source hash, seven-file fingerprint, all19bundle hashes and bundle fingerprint; all52archive entries match their local files, zero mismatches. Raw summaries support all seven zero-exit gates. Retired body content and editlog module reachability were independently read. No new app walk or whole-feature reapproval; Claude/owner obligations stay. Source/scripts/bundle/driver/archive frozen before verdict and unchanged afterward; only final handoff/status docs and document check follow.

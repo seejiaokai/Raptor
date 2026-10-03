@@ -44,7 +44,6 @@ import { splitParts, canonicalBook, issuedBook, parseVerN, dayIndexOf, BOOK_BY_K
 import { mintOrd, sortByOrd } from '../command/ord'
 import { reconcileIssuedMarks, setTouchedDaysResolver } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
-import { logAction } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { isPreservedWeek } from '../engine/weekstash'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'

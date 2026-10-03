@@ -5,6 +5,8 @@ review arrangement in Codex until Monday 5 Oct 26 at 19:00; Claude's final read 
 
 D488 final inspection: `docs/superpowers/briefs/2026-10-02-discard-marks-remove-astra-final.md` is the immutable fresh-Astra brief; its response/disposition is retained in `docs/handpass/2026-10-02-discard-marks-remove-review.md`.
 
+3Oct D488 review leftovers: `docs/handpass/2026-10-03-discard-review-fixes-evidence.zip` preserves original/final seven-file bytes, static checks, raw gates and exact built bundle; current results append to the existing D488 evidence sheet. Fresh independent delta report: `docs/superpowers/plans/2026-10-03-discard-review-fixes-inspection.md`. The six historical scripts named in Claude's brief now carry retirement heads; their bodies remain unchanged.
+
 D488 (2 Oct 26): `scripts/handpass/discard-marks-remove.mjs` drives the removed-door checks, draft edit → Undo → Redo,
 first publication, AL1, reload/sign-in and member view at desktop, phone and short laptop sizes. Its evidence is
 `docs/handpass/2026-10-02-discard-marks-remove.md`; pictures and observed results live under
