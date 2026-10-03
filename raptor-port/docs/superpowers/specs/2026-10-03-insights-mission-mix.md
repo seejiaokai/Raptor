@@ -15,6 +15,25 @@ statements as historical text; D528 controls this early plan read. No permission
 Complete final picture look remains unanswered; the early review cannot approve it for the owner. Claude's later code
 review remains necessary. The review brief is `../plans/2026-10-03-insights-opus-plan-handoff.md`.
 
+## Owner answers to the Opus 5.5 plan review — D529–D531, 3 Oct 26 (newest; they win over every statement below)
+
+The review (`../plans/2026-10-03-insights-opus-plan-review.md`, verdict REVISE) put three choices to him; he answered
+"1-3 as recommended". The frozen Astra plan predates them and must be revised before any build.
+- **D529 — when the question is asked.** Automatically only straight after the scheduler's own edit, to Remarks or to the
+  Mission, leaves a formation needing an answer. Passing through an unchanged Remarks box never asks; a temporary
+  **Choose mission role** button shows while that box is being edited (the same control as D527's). Several formations
+  left unanswered by one gesture: none asks by itself. Narrows D518 and D520; placement unchanged.
+- **D530 — a Blue/Red answer counts at once**, on a published day too, with no amendment and no effect on sign-offs. A
+  change to Mission or Remarks wording on a published day still waits for its amendment. Narrows D478, D523 and D526 for
+  the answer only; every "answers on an issued day wait for AL" statement below is superseded. The answer stays saved, in
+  the change history, and undoable. The plan must say where the answer is kept now that it is outside the signed, frozen
+  published copy, including wording changed on the working copy and not yet out (published and working copy may need
+  different answers). The review's finding B5 no longer applies in its first form.
+- **D531 — a Mission box that contains DS or RED without being exactly DS / RED / RED AIR** (`DS-2`, `RED AIR 2`,
+  `ACM/DS`) asks the question; never a guess. Narrows D518's "other missions without a Remarks cue stay blue".
+
+Still open: the review's findings B1–B4 and improvements I1–I8 (technical, the planner's), and his complete picture look.
+
 ## Current owner direction — D517–D527 supersedes the control proposals below
 
 Tracking is optional per squadron on Logic (D521), Off at first setup (D522). When on, the whole formation is on one side

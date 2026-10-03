@@ -4774,6 +4774,22 @@ Offer Change mission role temporarily while editing relevant Remarks (D527), reu
 permission; no permanent line marker. Named red Missions remain automatic, without overrides/questions. Recheck live
 formation identity/context/permission when answering; never apply an old popup's answer to a changed formation.
 
+**HIS ANSWERS TO THE OPUS 5.5 PLAN REVIEW (owner D529–D531, 3 Oct 26 — approved, NOT YET BUILT; they change parts of the
+three paragraphs around this one, and win where they differ).**
+**When the question is asked (D529):** automatically only straight after the scheduler's own edit — to Remarks OR to the
+Mission — leaves a formation needing an answer. Passing through an unchanged Remarks box never asks, and Later is not
+asked again on the next pass; while the Remarks box of a formation with no chosen role is being edited, the same temporary
+control as D527's shows, worded **Choose mission role**. A Mission change that drops a chosen answer (D525) therefore asks.
+One gesture that leaves several formations needing answers asks for none (no burst, D523). Placement stays D520's.
+**A Blue/Red answer counts at once (D530):** on a published day too, it needs no amendment and does not touch the day's
+sign-offs — it is a label for the statistics, not part of the programme (as a Logic rule change is not, D482). This replaces
+"working answers on an issued day wait for AL" above and "new answers on issued days still wait for an amendment" below,
+for the ANSWER only: a change to Mission or Remarks wording on a published day still waits for its amendment (D478). The
+answer is still saved, shown in the change history with who made it, and undoable. Wording changed on the working copy
+and not yet out means the published and the working copy can need different answers — the plan must hold both.
+**A Mission box containing DS or RED that is not exactly DS / RED / RED AIR (D531)** — `DS-2`, `RED AIR 2`, `ACM/DS` —
+asks the question; it is never counted blue or red by guessing. The three exact names stay automatic red.
+
 **OPTIONAL SQUADRON TRACKING (owner D521, 3 Oct 26 — approved switch, NOT YET BUILT):** the Logic page provides a
 squadron-wide on/off setting for blue/red sortie tracking. D512's split and D518's questions apply when tracking is on;
 **D524 approves the shown Logic Insights control, labelled Track blue/red sorties and shown Off.**
@@ -4813,6 +4829,8 @@ day are not counted until they go out; a hidden warning is not counted (D472), b
 (D477: 4 issues with 1 hidden read 3). One rule on EVERY page — Edit Schedule and the Scheduler Board included, and the
 pages with no schedule on them — and for every figure of the window, not only the issue counts. *(D477's first reading, "the
 schedule the page is showing", with Edit Schedule counting the working copy, was set aside by D478 the same evening.)*
+*(One exception, approved 3 Oct 26 and NOT YET BUILT — D530: a Blue/Red mission-role answer is not "a change waiting on the
+day"; it counts at once, published days included, with no amendment. Wording changes still wait. See the D529–D531 paragraph above.)*
 **As built:** every figure of the window — the four tiles, the flying load, the work hours, who is not flying, conflicts by
 type, by day — comes from ONE computation (`engine/insights.ts computeInsights`), which reads ONE world
 (`engine/validate.ts issuedWorld`): the days as the published-schedule pass installs them (each published day its current

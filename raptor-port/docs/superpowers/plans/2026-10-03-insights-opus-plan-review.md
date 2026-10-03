@@ -226,3 +226,27 @@ The build stays in a new chat after the plan and the look are agreed (D515). Owe
 Claude's code and scenario read of `codex/insights-mission-mix` before `main`.
 
 Rulings: none made in this review. D529 is next if the owner answers O1–O3.
+
+## 7. Addendum, the same day — the owner's answers (recorded as rulings, not review findings)
+
+He answered "1-3 as recommended", after asking what was recommended for O2 and being told "count at once".
+- **O1 → D529.** As recommended: the automatic question only straight after the scheduler's own edit (Remarks or
+  Mission) leaves a formation needing an answer; otherwise a temporary **Choose mission role** button while its
+  Remarks box is edited. This is the product side of B3 and B4; B2's mechanism still has to be planned.
+- **O2 → D530.** A Blue/Red answer counts at once, published days included, with no amendment and no effect on
+  sign-offs; wording changes still wait. It narrows D478, D523 and D526 for the answer only. **Effect on this
+  review:** B5 no longer applies in its first form — the answer leaves the compared and signed content — and B5's
+  proposed fix (the side riding on the Mission value) is withdrawn with it; I1 (derived validity) stands and fits
+  this shape. What the revised plan must now settle instead:
+  where the answer lives (a record beside the week, keyed by the formation's row id and its context, is the
+  natural shape — the published copy is frozen and must not be written); that Insights reads, for each published
+  formation, the answer whose context matches the PUBLISHED wording, and Edit Schedule's button offers the answer
+  for the WORKING wording, so the two can differ while a wording change waits; how the answer travels with a day
+  template, a saved plan and a loaded older version; its own command, Undo words and change-history line; and
+  that a day's sign-offs and pending count are untouched by it (a test each). I2 (the context string as a pinned
+  saved format) matters more under this shape, not less.
+- **O3 → D531.** A Mission box containing DS or RED that is not exactly DS / RED / RED AIR asks; never a guess.
+  I6 (spellings of RED AIR) stays the planner's technical call.
+
+The frozen plan predates D529–D531 and must be revised, then read independently again, before the build.
+

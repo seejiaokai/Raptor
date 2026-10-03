@@ -1503,6 +1503,12 @@ independent read after the reset remains owed before main.
 **Opus 5.5 early plan review (D528) DONE 3 Oct 26 — REVISE, not PASS:** five blocking findings, eight improvements, three
 owner choices, in `raptor-port/docs/superpowers/plans/2026-10-03-insights-opus-plan-review.md`. To reconcile in the planning
 chat before the build; the code/scenario read after the build is still owed.
+**His answers, "1-3 as recommended" (3 Oct 26) — they change the plan:** D529 the question is asked automatically only straight
+after the scheduler's own edit (Remarks or Mission) leaves a formation needing an answer, otherwise a temporary "Choose mission
+role" button while its Remarks box is edited — never on passing through; D530 a Blue/Red answer counts at once, published days
+included, with no amendment and no effect on sign-offs (wording changes still wait) — it replaces "answers on an issued day wait
+for the amendment" above and in D478/D523/D526; D531 a Mission box containing DS or RED that is not exactly DS / RED / RED AIR
+asks, never guesses. The frozen plan predates all three: revise it (with B1–B4, I1–I8), then an independent read, then his look.
 
 ### [DISCARD-MARKS-REMOVE] Remove the "Discard marks" button from the Amendments box (D488, 2 Oct 26)
 **BUILT 2 Oct 26, not merged:** `codex/discard-marks-remove`; Sol 6.1 built, fresh Astra final inspection PASS, FULL gates/runtime passed (one already-filed browser retry disclosed). Evidence and complete inspection response are on that branch in `raptor-port/docs/handpass/2026-10-02-discard-marks-remove.md` and `…-review.md`. Claude's further code/scenario/working-guide reads after Monday 5 Oct 26, 19:00, and owner look remain owed before main. The phone item is archived as moot. The original build recipe below is retained for review.

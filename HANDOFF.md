@@ -84,8 +84,13 @@ the later merge keeps both (D78).
   (the Remarks separator the plan splits on is not the one the squadron types; Edit Schedule cannot redraw under the caret, so
   the question needs another way in; a Mission change drops the answer and nothing asks; an unanswered Remarks box re-asks on
   every pass; the proposed compare address either vanishes from the change list or takes every stored sign-off down), eight
-  improvements, three owner choices (O1–O3). **Next:** the Insights planning chat reconciles them and has the revised plan
-  read independently again; his answers to O1–O3 take D529 on; his picture look is still unanswered. **Still owed by Claude
+  improvements, three owner choices (O1–O3). **His answers, "1-3 as recommended", are recorded: D529** (ask automatically only
+  straight after his own edit to Remarks or Mission; otherwise a temporary "Choose mission role" button; never on passing
+  through), **D530** (a Blue/Red answer counts at once, published days included — no amendment, sign-offs untouched; wording
+  changes still wait; narrows D478, D523, D526), **D531** (a Mission box like DS-2 asks, never guesses). D530 changes where the
+  answer is kept — the review's §7 says what the revised plan must settle. **Next:** the Insights planning chat revises the
+  plan for B1–B4, I1–I8 and D529–D531 and has it read independently again; D532 is next; his picture look is still unanswered. **Owed:** D529–D531's
+  short lines read against their full rows by a reviewer who did not write them (the filing script asks, D138) — Astra, in that chat. **Still owed by Claude
   after the build, before `main`:** the code and scenario read of `codex/insights-mission-mix`. The Insights block above
   (Codex's) still says this review is "not yet run" — its own chat corrects it.
 <!-- /now -->
