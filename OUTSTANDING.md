@@ -1685,6 +1685,9 @@ pass (`[FEATURE-WISHLIST]` item 5), before that pass moves anything.** **D539 (3
 plans, Sol builds, Astra reads); Opus does not plan it; an interim Opus read of the finished split, if it is done before the reset
 and allowance remains. Its new branch is cut from `codex/insights-mission-mix` with the two other built branches merged in first
 (`HANDOFF.md`). After the split, every screen is walked at phone and desktop size, not only the measured ones.
+**D540–D541 (3 Oct 26):** owner explicitly requires that integrated base before any rule moves, keeps the three earlier builds
+separate for Claude's review, and requires no visible change plus opening every phone/desktop screen picture. Next batch branch:
+`codex/workflow-ui`; scope: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md`. Later UI product choices still wait.
 
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
 From Astra's tidiness read (its §3 — read it before building). The export / import workflow (about 730 lines) leaves
