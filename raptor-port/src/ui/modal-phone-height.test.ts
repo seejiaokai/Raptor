@@ -23,8 +23,9 @@ describe('a pop-up window never grows taller than the visible screen (D536)', ()
     const phone = css.indexOf('.modal{align-items:flex-end;padding:0}')
     expect(phone, 'the phone bottom-sheet block').toBeGreaterThan(-1)
     const v = limits(phone)
-    expect(v[v.length - 1], 'the limit that wins is the dynamic height').toBe('90dvh')
-    expect(v, 'a browser without dvh falls back to the fixed backdrop, which tracks the visible screen').toContain('90%')
+    /* D537 (the same day): the limit is the visible screen less a thin 24px strip — it was 90%, a tenth of the screen of gap */
+    expect(v[v.length - 1], 'the limit that wins is the dynamic height, less the thin strip').toBe('calc(100dvh - 24px - env(safe-area-inset-top))')
+    expect(v, 'a browser without dvh falls back to the fixed backdrop, which tracks the visible screen').toContain('calc(100% - 24px)')
     expect(v.some(x => /\dvh$/.test(x) && !/dvh$/.test(x)), 'never plain vh').toBe(false)
   })
   it('the desktop / tablet card ends on the dynamic height too', () => {

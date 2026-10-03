@@ -242,7 +242,7 @@ the browser's address bar, and no scrolling reached them. **"Fix it thanks"** (D
   (482 files) · build PASS · the original's assertions **728 / 0** · browser tests **523 passed, 0 failed, 49 skipped** (the three
   new cases among them) · Tracker suite **445 / 0** · rule coverage OK · document check OK.
 
-## His second report — the Duty templates window "closes itself" (3 Oct 26) — FOUND, FILED, NOT FIXED
+## His second report — the Duty templates window "closes itself" (3 Oct 26) — found and filed; then FIXED on his "Fix it" (D538, below)
 
 *"when I'm on this page in desktop mode, it seems like this page closes itself when I tried to type in a new row role. Something
 along that line."* He did not ask for a fix and no ruling allows one (D534/D536 name their fixes), so it is filed.
@@ -257,6 +257,35 @@ along that line."* He did not ask for a fix and no ruling allows one (D534/D536 
 - **Provenance:** older than the Insights build (same result on the planning build); `DutyTplModal.tsx` is untouched by it.
 - **Probe:** `docs/img/insights-opus-interim/probe-dutytpl.cjs`. Filed as `OUTSTANDING.md` `[MODAL-DRAG-CLOSE]`.
 
+
+## His look at D536's fix, and "Fix it" — D537, D538 (3 Oct 26)
+
+His iPhone picture of the new preview: the Insights window whole, title bar and ✕ on screen — **D536's fix proven on his
+phone.** And: *"Pretty ugly that there's a lot of space to the top"* (D537), then *"Fix it"* (D538 — read as covering the gap
+and the Duty templates closing, which had just been put to him; he was told so).
+
+- **The gap (D537).** The sheet's limit was 90% of the visible screen, which leaves a tenth of the screen of dimmed page above
+  a tall window. Now the visible screen less 24 px (`calc(100% - 24px)`, then the same in `dvh` less the top safe area):
+  the rounded top and a sliver of the page still show. A short window is untouched. `modal-phone-height.test.ts` pins the
+  new limit (a requirement changed by D537, not a weakened assertion); the three browser cases in `e2e/insights.spec.ts`
+  now also assert, on a phone, that a tall window starts within 26 px of the top.
+- **The window that closes after a drag (D538, `[MODAL-DRAG-CLOSE]`).** One helper, `src/ui/outside.ts` `clickedOutside`: a
+  window closes on its surround only when the press that began the click began on the surround too; a click with no
+  press recorded (keyboard, assistive technology) still counts. **Roll-call — every window that closes on a click on
+  its surround, all thirteen now through the helper:** Duty templates, day templates, wave templates, plans, Insights,
+  the day panel, the airspace pop-up, the document viewer, the menu drawer, the input editor, the cancel-reason and
+  Sort-all confirmations, the week calendar. The Inputs calendar's two pop-ups already closed on the press itself and
+  were never affected. `outside.test.tsx` — RED first on all three of its tests: the drag on Duty templates, the drag on
+  Insights (and an honest click still closes each), and a scan that no window keeps its own test.
+- **Tier.** A shared drawer and an existing gesture on thirteen windows — WALK. Re-tried in the running app after the
+  gates: the same drag on the Duty templates window at 1440×900 — **window still open** (it closed before the fix), and typing and + Add role
+  still work (`probe-dutytpl.cjs`); the Insights window at 390×660 and 390×844 — **top at 24 px**, title bar and ✕ on screen
+  (`fixed/d537-phone-390x844-insights-window.png`, opened; the smaller size measured only). Browser errors: none.
+- **Checks.** A third full gate run, PC lock taken and released, about 15 minutes: unit **7,652 / 0** (483 files) · build PASS · the
+  original's assertions **728 / 0** · browser tests **523 passed, 0 failed, 49 skipped** · Tracker suite **445 / 0** · rule coverage
+  OK · document check OK (the backlog's size marker is over, deferred — D29).
+- **Not done:** the other twelve windows were not each dragged in a browser (the scan and the shared helper cover them;
+  two are driven in the mounted test); a real iPhone has not yet shown the new, smaller gap — his look.
 
 **Not done here, still owed:** the weekly editor's flows in a real browser, short-height layouts, a physical iPhone,
 the 33 scenarios, the two independent reads of these fixes and of the build (D534, D533).

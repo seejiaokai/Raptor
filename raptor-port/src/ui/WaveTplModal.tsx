@@ -35,6 +35,7 @@ import { isAdmin } from '../state/perms'
 import { WAVEEDIT, setWaveEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
+import { clickedOutside } from './outside'
 
 /* inline glyphs — crisp at any size and theme-safe (stroke:currentColor), the same
    reason the board's own icons are inline SVG (moved here from WaveManageSheet). */
@@ -87,7 +88,7 @@ export function WaveTplModal() {
   const tplHidden = tpl ? isWaveHidden(tpl.id) : false
 
   return (
-    <div className="modal" id="waveTplModal" onClick={e => { if ((e.target as HTMLElement).id === 'waveTplModal') close() }}>
+    <div className="modal" id="waveTplModal" onClick={e => { if (clickedOutside(e, 'waveTplModal')) close() }}>
       <div className="modal-box" style={{ width: 480 }}>
         <div className="modal-head"><b>Flying waves</b><button className="x" id="waveTplClose" onClick={close}>✕</button></div>
         <div className="modal-body">

@@ -2951,10 +2951,14 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    WITHOUT the browser's bars; with the address bar and toolbar showing, that is taller than what is visible, and a sheet
    pinned to the bottom pushes its own title bar and ✕ off the top, where no scrolling reaches them (the sheet is the
    scroller). So the limit is the fixed backdrop's own height (`%` — it tracks the visible screen), then the dynamic
-   unit where the browser has it; never plain `vh`. Pinned by modal-phone-height.test.ts. */
+   unit where the browser has it; never plain `vh`. Pinned by modal-phone-height.test.ts.
+   AND IT RUNS UP TO A THIN STRIP AT THE TOP (owner, D537, the same day — "pretty ugly that there's a lot of space to the
+   top"): the limit was 90%, which left a tenth of the screen of dimmed page above a tall window. Now the visible screen
+   less 24px — the rounded top and a sliver of the page still show, so it still reads as a sheet. A short window is
+   untouched: it is as tall as its content, at the bottom. */
 @media(max-width:820px){
   .modal{align-items:flex-end;padding:0}
-  .modal-box{width:100%;max-width:100%;max-height:90%;max-height:90dvh;border-radius:16px 16px 0 0}
+  .modal-box{width:100%;max-width:100%;max-height:calc(100% - 24px);max-height:calc(100dvh - 24px - env(safe-area-inset-top));border-radius:16px 16px 0 0}
   .modal-foot{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 }
 /* ---- the Duty-templates editor (owner, 13 Aug 26) — the DutyTplModal ---- */

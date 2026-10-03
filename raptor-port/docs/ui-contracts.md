@@ -4803,8 +4803,13 @@ afresh when pressed (same formation, wording, view and sign-in; nobody else's an
 changed at AL*n* is outlined there as everywhere else. A role copied by a day template is named in History by its
 formation's callsign, the row id only when it has none (F3).
 **A pop-up window is never taller than the visible screen (D536, 3 Oct 26 — his find on his iPhone):** the phone bottom sheet's
-limit is `90%` of its fixed backdrop, then `90dvh`; never plain `vh`, which on an iPhone counts the screen without the
+limit is the visible screen less a thin 24 px strip at the top (D537, the same day — *"pretty ugly that there's a lot of space
+to the top"*: it was 90%) — `calc(100% - 24px)` of its fixed backdrop, then the same in `dvh`; never plain `vh`, which on an iPhone counts the screen without the
 browser's bars and pushed the Insights window's title bar and ✕ under the address bar (`modal-phone-height.test.ts`).
+**A window closes on its surround only when the press began on the surround (D538, `[MODAL-DRAG-CLOSE]`, 3 Oct 26):** selecting a
+box's text by dragging and letting go outside the window is one click on the surround to the browser, and closed the window
+under him. Every window that closes on a click outside asks ONE helper, `ui/outside.ts` `clickedOutside` (thirteen places —
+`outside.test.tsx` fails if a window keeps its own test); his 4 Sep 26 rule, a click outside closes, is unchanged.
 **A Blue/Red answer counts at once (D530):** on a published day too, it needs no amendment and does not touch the day's
 sign-offs — it is a label for the statistics, not part of the programme (as a Logic rule change is not, D482). This replaces
 "working answers on an issued day wait for AL" above and "new answers on issued days still wait for an amendment" below,

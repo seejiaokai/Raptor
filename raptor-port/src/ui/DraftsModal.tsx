@@ -23,6 +23,7 @@ import { useVersion } from './useStore'
 import { SESSION } from '../state/auth'
 import { isAdmin } from '../state/perms'
 import { CURPAGE } from '../state/view'
+import { clickedOutside } from './outside'
 
 export function DraftsModal() {
   useVersion()
@@ -78,7 +79,7 @@ export function DraftsModal() {
   }
 
   return (
-    <div className="modal" id="draftsModal" onClick={e => { if ((e.target as HTMLElement).id === 'draftsModal') close() }}>
+    <div className="modal" id="draftsModal" onClick={e => { if (clickedOutside(e, 'draftsModal')) close() }}>
       <div className="modal-box" style={{ width: 460 }}>
         <div className="modal-head"><b>Plans — {d ? d.dow : ''}</b><button className="x" id="draftsClose" onClick={close}>✕</button></div>
         <div className="modal-body">

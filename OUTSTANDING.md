@@ -116,7 +116,7 @@ and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 S
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
-[ALLAVAIL-OPEN-ROW] (investigate first), [VH-SHEETS-IPHONE] (low — other pop-ups sized by `vh`, his D536 find fixed for the windows), [MODAL-DRAG-CLOSE] (his report — a window closes when text is drag-selected and let go outside it; small, awaiting his word or the UI pass).
+[ALLAVAIL-OPEN-ROW] (investigate first), [VH-SHEETS-IPHONE] (low — other pop-ups sized by `vh`, his D536 find fixed for the windows), [MODAL-DRAG-CLOSE] (his report — a window closes when text is drag-selected and let go outside it; FIXED on the Insights branch, D538, awaiting the reads).
 Insights — [INSIGHTS-MISSION-MIX] (D512–D532 settled; built on the isolated branch, qualified FULL checks complete,
 fresh independent Astra R2 PASS; Opus interim code read (D533) found three small findings, fixed by Opus the same day (D534, D535);
 Claude's later read owed before main), with [INSIGHTS-BOARD-DOOR].
@@ -1462,7 +1462,10 @@ build as it stood BEFORE its fix, neither walker told what is wrong, and report 
 §4). **Its place:** `[WORKSPAN-NEGATIVE]`'s walk (the next chat, D483) — freeze the build before the fix for the two trial
 walkers. Then his answer to the second report is a new ruling. Until then nothing else goes to a cheaper model.
 
-### [MODAL-DRAG-CLOSE] A pop-up window closes when text is selected by dragging and the finger or mouse is let go outside it — found 3 Oct 26
+### [MODAL-DRAG-CLOSE] A pop-up window closes when text is selected by dragging and the finger or mouse is let go outside it — found 3 Oct 26; FIXED the same day on the Insights branch (D538), awaiting the reads and main
+**FIXED 3 Oct 26 (his "Fix it", D538):** one helper, `src/ui/outside.ts` `clickedOutside` — a window closes on its surround only
+when the press began on the surround; all thirteen windows that close that way use it; `outside.test.tsx` was red first and scans
+that none keeps its own test; re-tried in the running app. Fable and Astra read it after the reset. What follows is the find.
 **His report (3 Oct 26, the Duty templates window, "desktop mode"):** *"it seems like this page closes itself when I tried to type in
 a new row role. Something along that line. Seems like a bug."* **Reproduced on a desktop, on the Insights build and on the build
 before it:** press inside a box in the window, drag to select its text, let go on the dark surround — the window closes. The press

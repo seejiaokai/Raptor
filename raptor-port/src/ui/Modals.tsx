@@ -17,6 +17,7 @@ import { notify } from '../state/store'
 import { dayInfoHTML, issuedFaceVer, withChipWorld } from './html'
 import { DAYPOP, setDayPop, INSIGHTS, setInsights, INSIGHTS_ALL, setInsightsAll, AIRKEY, setAirKey } from './pops'
 import { useVersion } from './useStore'
+import { clickedOutside } from './outside'
 
 export function DayPop() {
   useVersion()
@@ -46,7 +47,7 @@ export function DayPop() {
     : dayDisplaysOfficial(di) ? withOfficialWarn(draw) : draw()
   const close = () => { setDayPop(null); notify() }
   return (
-    <div className="airpop" id="dayPop" onClick={e => { if ((e.target as HTMLElement).id === 'dayPop') close() }}>
+    <div className="airpop" id="dayPop" onClick={e => { if (clickedOutside(e, 'dayPop')) close() }}>
       <div className="airpop-box" style={{ width: 520 }}>
         <div className="airpop-head"><b id="dayPopTitle">{title}</b><button className="x" id="dayPopClose" onClick={close}>✕</button></div>
         {/* scroll the list INSIDE its own height (owner, 26 Aug 26 — the Close
@@ -170,7 +171,7 @@ export function AirPop() {
   const close = () => { setAirKey(null); notify() }
   const admin = isAdmin()
   return (
-    <div className="airpop" id="airpop" onClick={e => { if ((e.target as HTMLElement).id === 'airpop') close() }}>
+    <div className="airpop" id="airpop" onClick={e => { if (clickedOutside(e, 'airpop')) close() }}>
       <div className="airpop-box">
         <div className="airpop-head"><b id="airTitle">{`Traffic · ${g.label || ''}`}</b><button className="x" id="airClose" onClick={close}>✕</button></div>
         <div className="airpop-body" id="airBody" ref={bodyRef}
@@ -194,7 +195,7 @@ export function InsightsModal() {
   if (!INSIGHTS) return <div className="modal" id="insightModal" hidden />
   const close = () => { setInsights(false); notify() }
   return (
-    <div className="modal" id="insightModal" onClick={e => { if ((e.target as HTMLElement).id === 'insightModal') close() }}>
+    <div className="modal" id="insightModal" onClick={e => { if (clickedOutside(e, 'insightModal')) close() }}>
       <div className="modal-box" style={{ width: 600 }}>
         <div className="modal-head"><b>Week insights · {DAYS[0].dt} – {DAYS[DAYS.length - 1].dt}</b><button className="x" id="insightClose" onClick={close}>✕</button></div>
         <div className="modal-body" id="insightBody" onClick={e=>{if((e.target as HTMLElement).closest('[data-insights-all]')) {setInsightsAll(!INSIGHTS_ALL);notify()}}} dangerouslySetInnerHTML={{ __html: insightsHTML() }} />

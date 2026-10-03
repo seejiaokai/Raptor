@@ -51,6 +51,8 @@ for(const [name,viewport] of [['short phone',{width:390,height:560}],['phone',{w
         return {boxTop:box.top,boxBottom:box.bottom,headTop:head.top,headBottom:head.bottom,h:innerHeight,closeHit:hit===x||x.contains(hit)}
       })
       expect(m.boxTop,'the window starts on screen').toBeGreaterThanOrEqual(0)
+      // D537: on a phone a tall window runs up to a thin strip at the top — never a tenth of the screen of gap
+      if(viewport.width<821)expect(m.boxTop,'no large gap above a tall window').toBeLessThanOrEqual(26)
       expect(m.headTop,'its title bar is on screen').toBeGreaterThanOrEqual(0)
       expect(m.headBottom).toBeLessThanOrEqual(m.h)
       expect(m.boxBottom,'and it ends on screen').toBeLessThanOrEqual(m.h+0.5)

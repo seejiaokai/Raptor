@@ -14,6 +14,7 @@ import { notify, setPage, switchRoleView } from '../state/store'
 import { logOut } from './logout'
 import { DRAWER, setDrawer, setWeekCal, setInsights } from './pops'
 import { useVersion } from './useStore'
+import { clickedOutside } from './outside'
 
 export function Drawer() {
   useVersion()
@@ -57,7 +58,7 @@ export function Drawer() {
   }, [DRAWER])
   return (
     <div className={'drawer' + (DRAWER ? ' open' : '')} id="drawer"
-      onClick={e => { if ((e.target as HTMLElement).id === 'drawer') close() }}>
+      onClick={e => { if (clickedOutside(e, 'drawer')) close() }}>
       <div className="drawer-panel">
         <h4>Menu</h4>
         {/* role="button" + tabIndex + Enter/Space, same reason as the topbar nav

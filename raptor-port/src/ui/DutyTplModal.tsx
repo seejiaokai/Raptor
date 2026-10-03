@@ -18,6 +18,7 @@ import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { SESSION } from '../state/auth'
 import { isAdmin } from '../state/perms'
+import { clickedOutside } from './outside'
 
 /* what each "For wave" answer DOES, in the app's own words — instruction, not
    apology (owner, 25 Aug 26). Kept beside the control so a change to the rule
@@ -71,7 +72,7 @@ export function DutyTplModal() {
   }
 
   return (
-    <div className="modal" id="tplModal" onClick={e => { if ((e.target as HTMLElement).id === 'tplModal') close() }}>
+    <div className="modal" id="tplModal" onClick={e => { if (clickedOutside(e, 'tplModal')) close() }}>
       <div className="modal-box" style={{ width: 460 }}>
         <div className="modal-head"><b>Duty templates</b><button className="x" id="tplClose" onClick={close}>✕</button></div>
         <div className="modal-body">

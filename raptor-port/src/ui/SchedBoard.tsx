@@ -29,6 +29,7 @@ import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
 import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
 import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
+import { clickedOutside } from './outside'
 
 export function SchedBoard() {
   const version = useVersion()
@@ -627,7 +628,7 @@ export function CxDialog() {
   }
   return (
     <div className="airpop" id="cxPop" hidden={!open}
-      onClick={e => { if ((e.target as HTMLElement).id === 'cxPop') close() }}>
+      onClick={e => { if (clickedOutside(e, 'cxPop')) close() }}>
       <div className="airpop-box cxbox">
         <div className="airpop-head"><b id="cxTitle">{on ? (what.charAt(0).toUpperCase() + what.slice(1)) + ' is cancelled — reason' : 'Cancel ' + what}</b><button className="x" id="cxClose" aria-label="Close" onClick={close}>✕</button></div>
         <div className="cxbody">
@@ -695,7 +696,7 @@ export function SortAllDialog() {
   const close = () => cancelSortAll()
   return (
     <div className="airpop" id="sortAllPop" hidden={!open}
-      onClick={e => { if ((e.target as HTMLElement).id === 'sortAllPop') close() }}>
+      onClick={e => { if (clickedOutside(e, 'sortAllPop')) close() }}>
       <div className="airpop-box">
         <div className="airpop-head"><b id="sortAllTitle">Sort all — {d ? d.dow : ''}</b><button className="x" id="sortAllClose" aria-label="Close" onClick={close}>✕</button></div>
         <div className="airpop-body">
