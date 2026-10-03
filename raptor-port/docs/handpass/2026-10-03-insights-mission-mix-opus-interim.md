@@ -284,8 +284,9 @@ and the Duty templates closing, which had just been put to him; he was told so).
 - **Checks.** A third full gate run, PC lock taken and released, about 15 minutes: unit **7,652 / 0** (483 files) · build PASS · the
   original's assertions **728 / 0** · browser tests **523 passed, 0 failed, 49 skipped** · Tracker suite **445 / 0** · rule coverage
   OK · document check OK (the backlog's size marker is over, deferred — D29).
+- **His look, 3 Oct 26, on his iPhone, the preview of the final commit: "Looks good".** Not a "merge live".
 - **Not done:** the other twelve windows were not each dragged in a browser (the scan and the shared helper cover them;
-  two are driven in the mounted test); a real iPhone has not yet shown the new, smaller gap — his look.
+  two are driven in the mounted test).
 
 **Not done here, still owed:** the weekly editor's flows in a real browser, short-height layouts, a physical iPhone,
 the 33 scenarios, the two independent reads of these fixes and of the build (D534, D533).
