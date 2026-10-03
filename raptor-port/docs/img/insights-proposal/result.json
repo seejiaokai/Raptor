@@ -1,0 +1,187 @@
+{
+  "designOnly": true,
+  "splitsIllustrative": true,
+  "checks": [
+    {
+      "label": "desktop",
+      "kind": "illustrative-chart",
+      "rows": [
+        {
+          "name": "Relay",
+          "total": 4,
+          "blue": 2,
+          "red": 2
+        },
+        {
+          "name": "Echo",
+          "total": 3,
+          "blue": 0,
+          "red": 3
+        },
+        {
+          "name": "Hex",
+          "total": 3,
+          "blue": 3,
+          "red": 0
+        },
+        {
+          "name": "Static",
+          "total": 3,
+          "blue": 2,
+          "red": 1
+        },
+        {
+          "name": "Ace",
+          "total": 2,
+          "blue": 1,
+          "red": 1
+        },
+        {
+          "name": "Basher",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Drifter",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Gambit",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Outlaw",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Piston",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Pixel",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Ranger",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        }
+      ],
+      "scrollWidth": 598,
+      "clientWidth": 598
+    },
+    {
+      "label": "desktop",
+      "kind": "Board-opener-placement",
+      "button": {
+        "x": 1273.984375,
+        "y": 73.96468353271484,
+        "width": 72.015625,
+        "height": 28
+      }
+    },
+    {
+      "label": "phone",
+      "kind": "illustrative-chart",
+      "rows": [
+        {
+          "name": "Relay",
+          "total": 4,
+          "blue": 2,
+          "red": 2
+        },
+        {
+          "name": "Echo",
+          "total": 3,
+          "blue": 0,
+          "red": 3
+        },
+        {
+          "name": "Hex",
+          "total": 3,
+          "blue": 3,
+          "red": 0
+        },
+        {
+          "name": "Static",
+          "total": 3,
+          "blue": 2,
+          "red": 1
+        },
+        {
+          "name": "Ace",
+          "total": 2,
+          "blue": 1,
+          "red": 1
+        },
+        {
+          "name": "Basher",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Drifter",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Gambit",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Outlaw",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Piston",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Pixel",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        },
+        {
+          "name": "Ranger",
+          "total": 2,
+          "blue": 2,
+          "red": 0
+        }
+      ],
+      "scrollWidth": 388,
+      "clientWidth": 388
+    },
+    {
+      "label": "phone",
+      "kind": "Board-opener-placement",
+      "button": {
+        "x": 95,
+        "y": 155,
+        "width": 166,
+        "height": 38
+      }
+    }
+  ],
+  "errors": []
+}

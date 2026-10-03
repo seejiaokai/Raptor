@@ -3191,3 +3191,20 @@ Amendments panel that carries "Discard marks" is hidden under 820px, so on a pho
 be discarded by no control (desktop only). **To do:** give the phone a way in (the day's pending list, or the ⓘ day
 panel) — a mock-up first if it adds a control. LOOK / WALK tier. **Place:** low; any time, none blocking.
 
+
+*Moved here 2026-10-03 by backlog-archive.mjs ([INSIGHTS-WORKING-COPY]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [INSIGHTS-WORKING-COPY] Week Insights shows the working copy's week to everyone, members included — a question for him (filed 26 Sep 26)
+**ANSWERED/SUPERSEDED by D478 and the merged [INSIGHTS-WHICH-COPY] build (1 Oct 26, PR #479):** all pages use each day's
+latest issued copy, working only for an unpublished day. The historical question below is retained for archive; no new
+owner choice or build is owed. Lasting home: `raptor-port/docs/ui-contracts.md` §Week Insights (D478).
+Astra's second read of `[LEAVE-LATE-PUBLISHED]` (`raptor-port/docs/handpass/2026-09-26-late-pub-astra-read2.md` #2): the
+top bar's Insights (`raptor-port/src/engine/insights.ts computeInsights`, `raptor-port/src/ui/Modals.tsx insightsHTML`)
+validates and reads the WORKING week — its warnings, sorties and hours — for every role, while View-only Sched shows each
+published day as issued. So a member reading Insights sees the admin's unpublished edits (and, since that branch, a
+member's late input) counted in. The same on `main` (it always read the working copy); Fable's second read calls it the
+working copy "by design". **The question:** should Insights show the published schedule on View-only Sched / for a member,
+and the working copy on Edit Schedule? If yes, Astra's fix steps are in the read (a displayed-world model passed in; the
+issued days through `withChipWorld` / `faceWarn`). **Place:** a question for him; with the one changes window
+(`[DRAFT-PENDING]`, the next time the working-versus-published split is designed) or any time.
+

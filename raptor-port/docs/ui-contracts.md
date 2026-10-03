@@ -4750,6 +4750,23 @@ owner's ask). Each late input now carries its OWN control on the board.
 
 ## Week Insights: work hours (owner, 20 Aug 26)
 
+The older `[INSIGHTS-WORKING-COPY]` question is superseded by D478 below and the merged `[INSIGHTS-WHICH-COPY]` build;
+it is not an outstanding product choice.
+
+**SORTIE MISSION MIX (owner D512, 3 Oct 26 — approved categories, NOT YET BUILT).** Each person's existing weekly sortie
+bar splits into blue and red segments: missions named "Red" and "DS" count red; every other mission counts blue. A person
+with both kinds shows both segments within the one total bar. This adds the mission mix to the sortie count; it does not
+change work-hours bars, sortie eligibility or the latest-issued-day rule below. The proposed picture and remaining design
+choices live in `superpowers/specs/2026-10-03-insights-mission-mix.md`; build with `[INSIGHTS-BOARD-DOOR]` in the Insights batch.
+
+**LIST LENGTH (owner D513, 3 Oct 26 — approved, NOT YET BUILT):** show the first twelve flying people initially, with
+Show all for the rest; retain total-descending/callsign ordering. Work-hours list stays complete as below.
+
+**DIRECTION OF SUPPORT (owner D514, 3 Oct 26):** DS for another formation means our flight is red air for them; DS wording
+can instead describe support arriving from another formation. A bare DS mention in free-text Remarks therefore does not
+settle our flight's blue/red category. Whether an ACM/BFM mission may receive an explicit Blue/Red choice is pending;
+no remarks recognizer or override field is approved by this clarification.
+
 **WHICH SCHEDULE INSIGHTS COUNTS (owner, D477 and D478, 1 Oct 26 — BUILT 1 Oct 26, `[INSIGHTS-WHICH-COPY]`; rule id IN1).** *"It
 should show the latest copy, so if working copy is the only copy then it will use that, unless its published then use
 Original, if theres an AL1 then use AL1 etc."* (D478). Day by day, Insights counts that day's LATEST PUBLISHED version — the
