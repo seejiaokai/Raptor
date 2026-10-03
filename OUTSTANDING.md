@@ -1476,12 +1476,17 @@ that the window is topmost at its centre over the board at both widths. **Place:
 first; after `[WORKSPAN-NEGATIVE]`. Full row: `.claude/decisions-full/scheduler.md` D481.
 
 ### [INSIGHTS-MISSION-MIX] Split each person's weekly sortie bar into blue and red (D512, 3 Oct 26)
-**Approved categories; design/build pending:** "Red" and "DS" missions are red sorties; every other mission is blue.
+**Approved direction; lifecycle/design/build pending:** "Red", "DS" and "Red Air" missions count red automatically (D518).
+Other missions remain blue unless DS/RED in an aircraft's Remarks triggers a Blue/Red role question; its answer covers
+the whole formation (D517). No extra red indicator appears on schedule lines (D519).
 One person who flies both has both coloured segments in their existing total bar. His supplied phone picture names the
 target: Flying load · sorties this week. Continue this batch now while Claude's further review waits; no live merge.
 **D513:** initial twelve flying people, with Show all. **D514:** DS for another formation is our red air, but DS wording
-may describe external support for us instead. An explicit Blue/Red choice while retaining ACM/BFM is proposed and still
-awaits his answer; never infer the category from ambiguous remarks without a settled rule.
+may describe external support for us instead. D518 uses those words as a cue to ask, never to infer the role.
+D515: settle the firm plan and pictures in this chat, then build in a new chat. He asks to see a minimal Blue/Red choice
+before deciding and is concerned about disrupting scheduling; D518 subsequently chooses only a conditional question.
+D516 excludes SC/AVALON/BB
+standby duties from flying load and includes SC main in work hours.
 Preserve latest-issued-day counting (D478), cancellation/standalone exclusions, stable person identity and work hours.
 Design/picture: `raptor-port/docs/superpowers/specs/2026-10-03-insights-mission-mix.md`. **Place:** Insights, item 3 of
 `[FEATURE-WISHLIST]`, with `[INSIGHTS-BOARD-DOOR]`; product questions only after checking existing rulings. Claude's further

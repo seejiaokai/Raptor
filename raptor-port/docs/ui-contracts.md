@@ -4750,11 +4750,23 @@ owner's ask). Each late input now carries its OWN control on the board.
 
 ## Week Insights: work hours (owner, 20 Aug 26)
 
+**STANDBY ELIGIBILITY (owner D516, 3 Oct 26):** SC, AVALON and BB standby duties do not count as flying load. SC main
+counts towards work hours. The blue default for other mission names never turns these duties into sorties; retain the
+separate sortie-eligibility and work-hours calculations. This settles neither other duties' hours nor earned leave.
+
+**FORMATION ROLE AND CONDITIONAL QUESTION (owner D517–D519, 3 Oct 26 — approved direction, NOT YET BUILT):** the whole
+formation is on one side. Mission names DS, RED and RED AIR count red automatically, with no Blue/Red question. Other
+missions remain blue unless DS or RED in an aircraft's Remarks triggers a Blue/Red mission-role question; the answer,
+not free-text interpretation, decides the whole formation's role. No extra red indicator is drawn on schedule lines:
+the scheduler's Remarks are sufficient. Existing mission-type dots, scheduler red flags and warnings retain their
+meanings. Question timing, answer retention/reset and edit cancellation still need a firm plan before the new-chat build.
+
 The older `[INSIGHTS-WORKING-COPY]` question is superseded by D478 below and the merged `[INSIGHTS-WHICH-COPY]` build;
 it is not an outstanding product choice.
 
 **SORTIE MISSION MIX (owner D512, 3 Oct 26 — approved categories, NOT YET BUILT).** Each person's existing weekly sortie
-bar splits into blue and red segments: missions named "Red" and "DS" count red; every other mission counts blue. A person
+bar splits into blue and red segments: missions named "Red", "DS" and (D518) "Red Air" count red; other missions count blue
+except a role chosen through D518's conditional question above. A person
 with both kinds shows both segments within the one total bar. This adds the mission mix to the sortie count; it does not
 change work-hours bars, sortie eligibility or the latest-issued-day rule below. The proposed picture and remaining design
 choices live in `superpowers/specs/2026-10-03-insights-mission-mix.md`; build with `[INSIGHTS-BOARD-DOOR]` in the Insights batch.
@@ -4764,8 +4776,8 @@ Show all for the rest; retain total-descending/callsign ordering. Work-hours lis
 
 **DIRECTION OF SUPPORT (owner D514, 3 Oct 26):** DS for another formation means our flight is red air for them; DS wording
 can instead describe support arriving from another formation. A bare DS mention in free-text Remarks therefore does not
-settle our flight's blue/red category. Whether an ACM/BFM mission may receive an explicit Blue/Red choice is pending;
-no remarks recognizer or override field is approved by this clarification.
+settle our flight's blue/red category. D518 later approves recognizing DS/RED as a cue to ASK, never as the answer,
+for an otherwise non-red mission; it does not approve inferring the role from support wording.
 
 **WHICH SCHEDULE INSIGHTS COUNTS (owner, D477 and D478, 1 Oct 26 — BUILT 1 Oct 26, `[INSIGHTS-WHICH-COPY]`; rule id IN1).** *"It
 should show the latest copy, so if working copy is the only copy then it will use that, unless its published then use

@@ -53,7 +53,7 @@ async function run() {
     const checks = await page.evaluate(() => {
       const body = document.getElementById('insightBody')
       const heading = Array.from(body.querySelectorAll('.isec-h')).find(el => el.textContent.startsWith('Flying load'))
-      heading.insertAdjacentHTML('afterend', '<div class="mix-key"><span><i style="background:var(--flight)"></i>Blue · other missions</span><span><i style="background:var(--hard)"></i>Red · Red / DS</span></div>')
+      heading.insertAdjacentHTML('afterend', '<div class="mix-key"><span><i style="background:var(--flight)"></i>Blue</span><span><i style="background:var(--hard)"></i>Red</span></div>')
       let el = heading.nextElementSibling.nextElementSibling
       let i=0
       const mixes = [[2,2],[0,3],[3,0],[2,1],[1,1]]
