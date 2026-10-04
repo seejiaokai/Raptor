@@ -86,8 +86,12 @@ assets; unit7779, reference728, browser553+49existing skips, Tracker445,
 adapted6/perf4/rule/docs PASS; three intentional actual wire breaks RED then
 exact restored14PASS. Evidence `../../handpass/2026-10-04-schedule-insights-menu.md`.
 Fresh separate Astra final R1 PASS; complete immutable report beside evidence.
-Owner device/preview look and
-Monday Claude plan/code/scenarios/full phone+desktop app walk remain before
+**D559 owner preview look accepted,4Oct:** "Looks good" after the built preview
+https://raptor-irwn04ala-kai-e2f5.vercel.app, source2f7ad9b1311fdb15959ef398ee9cdc6f99e8b584.
+Continue further interface requirements in a new local chat on the same branch;
+next changes not yet specified. This is no physical Safari/hardware proof.
+Monday Claude plan/code/scenarios/full phone+desktop app walk remains before
 live. No main push/merge/merging PR or automation; pictures remain private.
 
-Rulings: D557 proposal; D558 picture/build acceptance filed before implementation; nextD559.
+Rulings: D557 proposal; D558 picture/build acceptance before implementation;
+D559 built preview accepted and new-chat continuation; nextD560.

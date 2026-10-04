@@ -1768,8 +1768,9 @@ menus/drawer removal: WALK12orders/15opened pictures/0errors on frozen853files,
 adapted6/perf4/rule/docs PASS; three intentional wire breaks RED then restored14PASS.
 Evidence: `raptor-port/docs/handpass/2026-10-04-schedule-insights-menu.md`.
 Fresh separate Astra final R1 PASS, complete immutable report beside evidence;
-owner device/preview look and Monday
-Claude plan/code/scenarios/full app walk remain before authorized live merge.
+Owner preview look accepted D559,4Oct, Ready https://raptor-irwn04ala-kai-e2f5.vercel.app;
+further interface requests continue in a new chat, details not yet specified.
+Monday Claude plan/code/scenarios/full app walk remains before authorized live merge.
 
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
 From Astra's tidiness read (its §3 — read it before building). The export / import workflow (about 730 lines) leaves

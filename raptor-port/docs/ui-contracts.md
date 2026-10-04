@@ -4853,6 +4853,9 @@ Insights-only new menus and preserved desktop/Board doors were accepted with the
 corrected picture D558. Branch WALK/gates and fresh independent R1 inspection
 passed; evidence `docs/handpass/2026-10-04-schedule-insights-menu.md`. This
 is not live approval. All existing Insights data/version/role semantics below still apply.
+Owner's built preview look accepted D559,4Oct26; new chat continues further
+interface requirements from source2f7ad9b1/Ready https://raptor-irwn04ala-kai-e2f5.vercel.app.
+Claude's post-reset read remains owed; no physical-device proof or live word inferred.
 
 **STANDBY ELIGIBILITY (owner D516, 3 Oct 26):** SC, AVALON and BB standby duties do not count as flying load. SC main
 counts towards work hours. The blue default for other mission names never turns these duties into sorties; retain the
