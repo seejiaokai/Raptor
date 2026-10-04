@@ -1,5 +1,15 @@
 # The file map — where each source file lives and what it does
 
+D558 phone schedule navigation: `src/ui/ScheduleInsightsMenu.tsx` is the local,
+live-context-aware shared ellipsis menu mounted in both Shell week filter strips;
+`src/ui/schedule-insights-menu.test.tsx` pins placement/lifecycle/silent state.
+Native menu/fit/calendar proof extends registered `e2e/insights.spec.ts`.
+`scripts/handpass/schedule-insights-{evidence,walk}.mjs` freezes source/bundle and
+drives named scenarios with private local pictures; the acceptance/scenario
+companion is `docs/superpowers/plans/2026-10-04-schedule-insights-menu-acceptance-scenarios.md`.
+The evidence sheet is `docs/handpass/2026-10-04-schedule-insights-menu.md`; owner
+photos, generated pictures, runtime originals and snapshots are not public assets.
+
 D496: `docs/codex-review-workflow.md` records the temporary Astra planning / Sol 6.1 building / independent
 review arrangement in Codex until Monday 5 Oct 26 at 19:00; Claude's final read remains owed.
 

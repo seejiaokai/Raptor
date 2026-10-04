@@ -39,6 +39,7 @@ import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
 import { setInsights, setDrawer, setWeekCal } from './pops'
 import { Drawer } from './Drawer'
+import { ScheduleInsightsMenu } from './ScheduleInsightsMenu'
 import { exportCSV, schedRows, publishedDays } from './export'
 import { printSchedPDF } from './printpdf'
 import { InputsPage } from './InputsPage'
@@ -484,6 +485,7 @@ export function Shell() {
           {/* the highlight groups are wrapped so the phone can drop them to their
               OWN row below the icons when expanded (owner, 26 Aug 26). On desktop
               .hlrow is display:contents, so the chips flow inline exactly as before. */}
+          <ScheduleInsightsMenu page="viewsched" id="viewSched" />
           <span className="hlrow"><HlChips /></span>
           <div className="right">
             <div className="searchbox"><SrchIcon /><input id="searchV" placeholder="name / callsign"
@@ -517,8 +519,8 @@ export function Shell() {
                 inside the filter row as .wkseg, so the desktop edit bar is one
                 line. Order is deliberate (owner): the phone calendar opener, then
                 the desktop week window, then the EXPORT icons right after the
-                dates, then the highlighter — the highlighter last of the fixed
-                icons so expanding its sub-menu pushes only the chips to its right,
+                dates, then the highlighter and phone-only More (D558), so
+                expanding Highlight pushes only the chips to its right,
                 never the exports. Phone hides .wkseg (uses .filt-cal + swipe). */}
             <button className="wknav-mbtn filt-cal" aria-label="Jump to a date" title="Jump to a date"
               onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
@@ -561,6 +563,7 @@ export function Shell() {
               onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
             {/* wrapped so the phone can drop the chips to their own row below the
                 icons when expanded (owner, 26 Aug 26); display:contents on desktop. */}
+            <ScheduleInsightsMenu page="editsched" id="editSched" />
             <span className="hlrow"><HlChips /></span>
             <div className="right"><div className="searchbox"><SrchIcon /><input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>

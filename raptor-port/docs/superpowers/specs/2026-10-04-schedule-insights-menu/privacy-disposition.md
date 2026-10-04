@@ -28,5 +28,6 @@ records are candidates for branch shipping under AGENTS' explicit instructions.
 If automatic approval review rejects this safer text-only action too, leave it
 local and ask the owner to approve publication; do not try another workaround.
 
-This records a tool approval limitation, not a new owner ruling. D557 remains
-a proposal awaiting picture/product look, not a build/live approval.
+This records a tool approval limitation, not a new owner ruling. D558 subsequently
+accepts the D557 pictured UI proposal and build, while this private-picture
+publication boundary remains. Build approval is not main/live approval.

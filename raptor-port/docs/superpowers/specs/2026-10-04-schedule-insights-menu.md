@@ -1,10 +1,19 @@
-# Schedule Insights menu — proposed phone navigation, 4 Oct 26
+# Schedule Insights menu — accepted phone navigation, 4 Oct 26
 
 **D557: new direction filed; design pictures precede production changes.**
 Owner proposes removing the phone side drawer's WEEK heading, Pick a date and
 Week insights, moving Insights into ellipsis menus in the circled schedule
 toolbar spaces. This is separate from the accepted/built D556 keyboard route.
-No unseen picture, application build or live merge is approved by this proposal.
+At proposal time no unseen picture, application build or live merge was approved.
+
+**D558: "Looks good" accepts the corrected pictured proposal and authorizes its
+build.** The phone-only820px boundary, Insights-only menus, surviving calendar
+date route and removal of the drawer shortcuts on every phone tab are accepted.
+The immutable Astra plan is `../plans/2026-10-04-schedule-insights-menu-plan.md`,
+SHA2569A2DC60275DEEA3A83ECC65A74A0C625C8604E933385632102DC324E490E7262;
+Sol's independent challenge is PASS. This acceptance fulfills its product/picture
+prerequisite without rewriting either review artifact. Source build is complete;
+no public picture publication or main/live approval follows.
 
 ## Photo mapping and concrete proposal
 
@@ -34,7 +43,7 @@ application-source/data proof. Original/correction prompts and v1 are preserved 
 Recommend phone-only additions at the existing820px breakpoint, keeping desktop
 Insights directly reachable as currently approved. Recommend only Insights in
 the two new menus; Board Sort all and Desktop layout belong to its own menu.
-These preservation choices are shown as the proposal, not fabricated owner answers.
+These preservation choices were shown together and accepted D558.
 Button dimensions follow the existing toolbar and D487; no unrelated resize.
 
 Date flow: schedule page → existing calendar icon → existing Jump to a date
@@ -71,10 +80,14 @@ complete candidate disposition is there. Generated mockups are illustrations, no
 app screenshots or saved-data proof. No application source/test/CSS/config
 changes in this proposal turn. The prior keyboard freeze/review remains intact.
 
-Next: owner picture/product look on the concrete proposal. Astra implementation/
-scenario plan and Sol independent challenge are complete, source build still pending.
-Apply the standing bug-check tier to the actual change; required gates/real
-menu actions/pictures/fresh independent final read and Monday Claude reads
-remain due before live. No main push/merge/merging PR or automation.
+Built on `codex/workflow-ui` after D558: shared phone ellipsis menus and drawer
+removal. WALK12orders/15opened originals/0errors on frozen853files/19served
+assets; unit7779, reference728, browser553+49existing skips, Tracker445,
+adapted6/perf4/rule/docs PASS; three intentional actual wire breaks RED then
+exact restored14PASS. Evidence `../../handpass/2026-10-04-schedule-insights-menu.md`.
+Fresh separate Astra final R1 PASS; complete immutable report beside evidence.
+Owner device/preview look and
+Monday Claude plan/code/scenarios/full phone+desktop app walk remain before
+live. No main push/merge/merging PR or automation; pictures remain private.
 
-Rulings: D557 filed before dependent design work; nextD558.
+Rulings: D557 proposal; D558 picture/build acceptance filed before implementation; nextD559.

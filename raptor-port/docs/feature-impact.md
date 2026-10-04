@@ -19,8 +19,18 @@ the existing scrollers. No engine arithmetic, signed-record schema, role gate,
 publication, earned-credit or crew-placement path changes. Timing/input edits
 retain their existing downstream relink, reporting, warnings and issued-copy
 flows; unchanged traversal writes nothing. Evidence: schedule-tab handpass.
-Two halves:
+**Phone schedule navigation,4 Oct26 (D558):** Shell's two week filter strips →
+shared local `ScheduleInsightsMenu` → existing `setInsights`/Week insights reader.
+The phone drawer's WEEK block is removed; dates retain the existing view calendar
+writer. GuestApp remains separate without Shell/Insights. Popup state subscribes
+to live page/week/session and Board versions, resets across context/desktop/drawer,
+and adds no saved flag, command or validation. Native editor blur remains the
+only writer before a menu tap. Desktop/Board doors, accounts, permissions, issued
+records and all calculations retain existing routes. Only the phone search may
+flex to preserve the first row; existing button dimensions remain. Checks/evidence:
+`docs/handpass/2026-10-04-schedule-insights-menu.md`.
 
+Two halves:
 1. **The surfaces** — every place a change can show up, and what feeds it.
 2. **The flows** — how a single edit travels from a keystroke to the screen,
    so you can trace where any change ripples.

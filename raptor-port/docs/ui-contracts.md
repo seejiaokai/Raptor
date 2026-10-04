@@ -4841,16 +4841,18 @@ Actual FULL checks, real-route scenario results and inspected running-bundle pic
 `docs/handpass/2026-10-03-insights-mission-mix.md`. The shared offer controller serves both editing routes and the
 latest-issued read-only Remarks door, without replacing the active field. It restores native keyboard selection
 after an explicit role action. Guarded annotations have their own history/Undo; no canonical programme role field.
-Phone Board Insights is in its More menu; phone week pages currently use the
-drawer's Week insights shortcut, while desktop keeps its direct action.
-**PROPOSED navigation, owner D557, 4 Oct26:** remove the phone drawer's WEEK
+Phone Board Insights is in its More menu; phone week pages use their own More
+menus (D558), while desktop keeps its direct action. GuestApp remains its separate
+published-only tree without these Shell controls or an Insights window.
+**ACCEPTED navigation, owner D557/D558, 4 Oct26; built on the branch:** remove the phone drawer's WEEK
 heading/Pick a date/Week insights block; add ellipsis → Insights in the circled
 Edit Schedule and View-only Sched filter strips, following the Board example.
 The existing schedule calendar retains Jump to a date. Concrete picture/design:
 `docs/superpowers/specs/2026-10-04-schedule-insights-menu.md`. Phone-only additions,
-Insights-only new menus and preserved desktop/Board doors are recommended in
-that picture proposal; no production implementation or unseen-picture approval
-is inferred. All existing Insights data/version/role semantics below still apply.
+Insights-only new menus and preserved desktop/Board doors were accepted with the
+corrected picture D558. Branch WALK/gates and fresh independent R1 inspection
+passed; evidence `docs/handpass/2026-10-04-schedule-insights-menu.md`. This
+is not live approval. All existing Insights data/version/role semantics below still apply.
 
 **STANDBY ELIGIBILITY (owner D516, 3 Oct 26):** SC, AVALON and BB standby duties do not count as flying load. SC main
 counts towards work hours. The blue default for other mission names never turns these duties into sorties; retain the

@@ -1,4 +1,4 @@
-/* The mobile drawer — burger menu, page nav (admin-gated Edit tab), week chips,
+/* The mobile drawer — burger menu, page nav (admin-gated Edit tab),
    the account and logout, markup 1:1 with the reference. The View-as chips are GONE
    ([ACCOUNTS], D166 (3), 26 Sep 26): signing in makes you your own callsign, and the Account
    row names him; under it, for a real admin, the switch to the member view and back
@@ -12,7 +12,7 @@ import { waitingCount } from '../state/accounts'
 import { CURPAGE } from '../state/view'
 import { notify, setPage, switchRoleView } from '../state/store'
 import { logOut } from './logout'
-import { DRAWER, setDrawer, setWeekCal, setInsights } from './pops'
+import { DRAWER, setDrawer } from './pops'
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
 
@@ -72,20 +72,7 @@ export function Drawer() {
               onClick={go} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } }}>{label}{p === 'admin' && waiting > 0 && <span className="navbadge" id="drawerWaitBadge">{waiting}</span>}</a>
           })}
         </nav>
-        {/* Week chips became a single calendar opener (owner, 22 Aug 26): the
-            phone jumps weeks from the month picker, and steps day-to-day by
-            swiping the schedule (continuous across weeks). */}
-        <h4>Week</h4>
-        <div className="drawer-row" id="drawerWeeks">
-          <button className="abtn" id="drawerPickWeek"
-            onClick={() => { setDrawer(false); setWeekCal('view'); notify() }}>Pick a date…</button>
-          {/* Insights lives here on a phone (owner, 24 Aug 26): the topbar dropped
-              its Insights + Logout buttons so the phone bar could be a clean,
-              non-scrolling row, and this is where the week-insights modal is
-              reached instead. On desktop the topbar button is untouched. */}
-          <button className="abtn" id="drawerInsights"
-            onClick={() => { setDrawer(false); setInsights(true); notify() }}>Week insights</button>
-        </div>
+        {/* D558: dates and Insights use the schedule toolbars; no duplicate WEEK block. */}
         <h4>Account</h4>
         {/* resetSession (state/store.ts) is the one session-change path — the
             Manage-users modal it used to close here moved onto the Admin PAGE
