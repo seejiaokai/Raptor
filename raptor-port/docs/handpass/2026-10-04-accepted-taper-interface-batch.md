@@ -164,3 +164,19 @@ requested. The report explains discarded detached-SVG/empty-HTTP-key diagnostics
 
 Closing-status notes corrected: gate intro/backlog updated to completed checks/R1PASS. Source freeze
 and independent report/brief unchanged. Branch push/Ready receipt follows host closing docsize.
+
+## Branch-only shipping receipt,5Oct2026
+
+Reviewed source/test/driver/records committed/pushed7f0b78bf4f4903b99deaee9d1774726394f12adf; closing
+docsizePASS111/homesOK before source commit,5116existing excess deferredD29. Current preview
+https://raptor-q27mo3zqg-kai-e2f5.vercel.app, deployment9ZKYvXmsMPbWpc3RkwppHcWKzqqN.
+Authenticated dashboard read showed Preview/domain/source7f0b78b during Building; exact-commit
+connected Vercel status subsequentlySUCCESS at same deployment target. This is completion provider
+proof, not a final Ready UI screenshot: stale CUA binding reset, then debugger unattached prevented
+UI reread. Safe connected status completed verification; no credential bypass/private API request.
+Private shipping-receipt.json records authority and limits. No old menu-only preview substituted.
+
+Final delivery-records commit changes only this sheet/own handoff/backlog, no frozen application,
+registered test, driver, built bundle, immutable brief or independent report. No application gates
+repeated without relevant change; final docsize follows new records. Owner look/Claude after-reset
+reads before main remain. Owned4220server closed at end; no unrelated process or data touched.
