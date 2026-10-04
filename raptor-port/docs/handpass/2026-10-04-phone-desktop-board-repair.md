@@ -163,3 +163,14 @@ plus4 inspected supplemental originals (26 total) ·5 surfaces ·9 orders ·MISS
 physical Safari/full-area touch, unseeded guest/issued/dedicated-scheduler states;
 explicitly qualified above. All retained repair gates/checks and fresh independent
 read PASS; owner look and Claude's Monday reads remain before any live merge.
+
+## Subsequent owner look — D549, 4 Oct 26
+
+Owner: "looks good, whats the next task", after the reviewed repair preview was
+delivered. Owner-look step passed. Ready deployment matches repair commit
+063806c7d2240322c1615c24a1635aa4177199ae:
+https://raptor-7q0tkgdev-kai-e2f5.vercel.app. No device-specific Safari verification,
+broader UI approval, next-feature implementation, waived read or live merge is
+inferred. D547/D548's other-behaviour leave-it and D544/D545's pending keyboard
+choices remain. Claude's Monday reads and owner's explicit "merge live" still
+precede main. No source/test/driver/plan or immutable review artifact changed.

@@ -1257,7 +1257,9 @@ touch pan, independent crew/schedule scrolling and Phone return/Done. Normal pho
 and desktop geometry unchanged. Five repair gates/relevant checks and fresh Astra
 read are in `raptor-port/docs/handpass/2026-10-04-phone-desktop-board-repair.md`.
 Physical Safari/full-area touch and absent guest/issued fixture remain qualified.
-Not main/live; item remains open for Claude's Monday read/owner look/authorized merge.
+**D549, 4 Oct:** owner accepts the delivered repair preview: "looks good, whats the next task".
+Owner-look step passed, without device-specific Safari verification or broader UI approval.
+Not main/live; item remains open for Claude's Monday read and authorized merge.
 
 ### [BUBBLE-SMALL-SEEN] Two small things about the message bubble, found by the change-recording walk (29 Sep 26)
 Both the same on `main` (the Phase A pictures, taken on `main`, show them): (1) **Unpublish says nothing** — pressed on a

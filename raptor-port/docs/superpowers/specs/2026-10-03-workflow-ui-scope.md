@@ -80,7 +80,7 @@ concrete design must still define rows in wrapped phone layouts, section boundar
 and focus after a commit, from the owner's answers. Preserve Enter/Escape, no-op
 derived values and D529's silence on unchanged Remarks. D546 defers the first two
 earlier priorities, not keyboard/Tab. These four questions remain unanswered;
-they can wait until the owner returns. D549 is next.
+they can wait until the owner returns. D550 is next after the repair look below.
 
 The wider scope discussion must carry the filed desktop crew-list/header overlap
 (`[PALETTE-WRAPPED-HEADER]`, assigned to this batch), blank phone Board in Desktop
@@ -114,6 +114,24 @@ single-property restoration is built and checked separately:
 `raptor-port/docs/handpass/2026-10-04-phone-desktop-board-repair.md`. Normal phone
 and desktop layout preserved; other two behaviours unchanged. Fresh independent
 code read/branch shipping status and physical-device limits are in that sheet.
+
+## Owner repair look — D549, 4 Oct 26
+
+Owner: "looks good, whats the next task", after the repair preview was delivered.
+The owner accepts the phone Desktop layout repair preview. Owner-look step passed;
+no device-specific Safari verification or broader UI approval is inferred.
+Preview: https://raptor-7q0tkgdev-kai-e2f5.vercel.app, Ready for the reviewed repair
+commit063806c7d2240322c1615c24a1635aa4177199ae. Claude's Monday read and an explicit
+"merge live" remain owed before main. D547/D548's other-behaviour leave-it and
+D544/D545's pending keyboard/Tab choices remain unchanged; asking what is next
+does not approve another feature's design or authorize its implementation.
+
+Subsequent task instruction: "ok shall we hand off to a next chat to build this?"
+Create a fresh local chat continuing `codex/workflow-ui`, without a new worktree.
+Its task is the pending D544/D545 keyboard/Tab flow: first settle the four unanswered
+product choices above, then plan and build from those answers under D496. This
+handoff request does not answer those choices or waive pictures/checks/reviews.
+Other behaviours left unchanged by D547/D548 remain so. No other batch starts.
 
 ## Heavy investigation — authorized and completed, 4 Oct 26
 
