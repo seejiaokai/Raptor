@@ -61,3 +61,16 @@ must not approve its own source. This challenge applies to the plan/picture
 proposal only. Any material plan correction is read before dependent source work.
 
 Rulings: D569–D580 already filed by host; none added by this challenge.
+
+## Round2 — historical range-tail find
+
+Sol found the plan's failing-first instruction could be read as removing a valid
+single-day till token. Source independently read: both current RangeCal callbacks
+always use withRemarksTail(...,'till'); the existing owner18Aug test explicitly
+requires a lone date to say till<thatday>. Backlog18→19→19 single19 with till19
+is therefore not itself a failure. Astra appended section9: characterize that
+sequence, fail only a tail outside the real final span, and make no helper/engine
+change if current behaviour passes. Original proposal remains historical.
+Disposition PASS with that correction; final plan SHA256
+`9fc82177ac817ebb0bb6a1b62298faaa67530c3f29ff7c26e352f0e53eb05a9f`.
+Actual browser characterization is still required; no defect closure inferred.
