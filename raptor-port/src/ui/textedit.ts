@@ -19,6 +19,7 @@ import { notify } from '../state/store'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { canEditSched } from '../state/auth'
 import { fmtTxt, intimeLineHTML, areaText, atimeText } from './html'
+import { routeScheduleTab } from './schedule-tab'
 
 let SCRATCH: any = null
 function sameInner(el: any, want: any) {
@@ -83,6 +84,11 @@ export function routeFocusOut(e: FocusEvent) {
   const tx = t.closest('[data-txt]') as HTMLElement | null
   if (tx) {
     const p = tx.dataset.txt!
+    // Traversing an untouched clock must not rewrite a stored 0745 as 07:45.
+    // Use the existing display reader, like the in-time and derived-cell guards.
+    if (TIME_TXT.test(p) && fmtTxt(tx.textContent).trim() === fmtTxt(txtGet(p)).trim()) {
+      heal(tx, fmtTxt(txtGet(p))); return
+    }
     /* [ARCH-STACK] follow-up #1 (R2-04): route the text change SYNCHRONOUSLY
        through a sched.text command the moment focus leaves. The mutation (txtSet)
        already ran; the lagging baseline captures it in the command, so wrapping
@@ -148,8 +154,15 @@ export function routeFocusOut(e: FocusEvent) {
       w.intimes = lines.filter((_: any, i: number) => i !== ix)
       commitText(`it:${di}.${gi}`, () => markEdit(`it:${di}.${gi}`, itWas, w.intimes.join(', ')))
       const btn = il.nextElementSibling
+      const block = il.parentElement
       if (btn && (btn as HTMLElement).matches && (btn as HTMLElement).matches('[data-itdel]')) btn.remove()
       il.remove()
+      // The surviving live lines can be edited before the deferred repaint.
+      block?.querySelectorAll<HTMLElement>('[data-itline]').forEach((line, index) => {
+        line.dataset.itline = `${di}|${gi}|${index}`
+        const del = line.nextElementSibling as HTMLElement | null
+        if (del?.matches('[data-itdel]')) del.dataset.itdel = `${di}|${gi}|${index}`
+      })
       if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).map(i=>i.msg).join(' ')
       txtCommit()
       return
@@ -245,7 +258,38 @@ export function routeFocusOut(e: FocusEvent) {
   }
 }
 
+function refreshTextDestination(el: HTMLElement) {
+  const d = el.dataset
+  let value: any
+  const key = d.txt || d.bfld
+  if (key) {
+    value = txtGet(key)
+    if (TIME_TXT.test(key)) value = fmtTxt(value)
+  } else if (d.inp || d.ifld) {
+    const [id, field] = (d.inp || d.ifld)!.split('.')
+    const inp = inpById(id)
+    if (!inp) return
+    value = field === 'rmks' ? inp.remarks || '' : inpTimeText(inp, field)
+  } else if (d.itline) {
+    const [di, gi, ix] = d.itline.split('|').map(Number)
+    value = DAYS[di]?.waves?.[gi]?.intimes?.[ix]
+    el.innerHTML = intimeLineHTML(value == null ? '' : value)
+    return
+  } else {
+    const address = d.bombs || d.area || d.atime
+    if (!address) return
+    const [di, gi, li, ai] = address.split('.').map(Number)
+    const f = DAYS[di]?.waves?.[gi]?.formations?.[li]
+    if (!f) return
+    value = d.bombs ? f.aircraft[ai]?.opts?.bombs || '' : d.area ? areaText(f) : atimeText(f)
+  }
+  const text = String(value == null ? '' : value)
+  if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) { if (el.value !== text) el.value = text }
+  else heal(el, text)
+}
+
 export function routeKeyDown(e: KeyboardEvent) {
+  if (routeScheduleTab(e, refreshTextDestination)) return
   const t = e.target as HTMLElement
   /* an input's cells get the same two keys as every other text cell — Enter
      commits (by blurring, which runs the branch above), Escape puts the model
@@ -353,5 +397,5 @@ export function routeKeyDown(e: KeyboardEvent) {
    under the caret (the reference's txtCommit guard, as a predicate) */
 export function editingText() {
   const a = document.activeElement as any
-  return !!(a && a.closest && (a.closest('[data-txt],[data-bfld],[data-inp],[data-role-remarks],[data-role-ui]') || a.isContentEditable))
+  return !!(a && a.closest && (a.closest('[data-txt],[data-bfld],[data-inp],[data-ifld],[data-role-remarks],[data-role-ui]') || a.isContentEditable))
 }

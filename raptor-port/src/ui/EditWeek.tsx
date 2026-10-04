@@ -4,13 +4,13 @@
    change (its scroll survives unchanged markup, as the reference's setHTML
    guarantee had it — the diff here is the innerHTML comparison). */
 import { wireHistBubble, refreshHistDots } from './histbubble'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { dayHTML, dayPreviewHTML } from './html'
 import { daySnapOf } from '../engine/publish'
 import { paletteHTML, paletteDay } from './palette-html'
-import { ARM, CARRYDAY, CURPAGE, DPREV, PEEKLAND, WEEKJUMP, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
+import { ARM, CARRYDAY, CURPAGE, DPREV, PEEKLAND, WEEKJUMP, navGen, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
 import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
 import { weekScrollMax, panHold } from './pan'
@@ -96,6 +96,25 @@ export function EditWeek() {
   /* which (desktop-ness × CURWEEK) key the trailing peek nodes currently
      reflect — '' means none are mounted. See ui/peek.ts:mountPeek. */
   const peekKeyRef = useRef<string>('')
+  const pendingPaint = useRef<number | null>(null)
+  const [settledPaint, setSettledPaint] = useState(0)
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const resume = () => {
+      if (pendingPaint.current == null) return
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        const pending = pendingPaint.current
+        if (pending == null) return
+        if (CURPAGE !== 'editsched' || navGen() !== pending) { pendingPaint.current = null; return }
+        if (editingText()) return
+        pendingPaint.current = null
+        setSettledPaint(n => n + 1) // Resume UI only, through the existing diff paint.
+      }, 0)
+    }
+    document.addEventListener('focusout', resume)
+    return () => { clearTimeout(timer); document.removeEventListener('focusout', resume) }
+  }, [])
 
   useEffect(() => {
     /* only the page on screen is rendered (as the reference's renderSchedule
@@ -103,11 +122,12 @@ export function EditWeek() {
        mutations because safety flows deliberately address that mounted DOM;
        boardTab's narrow notification lane prevents day-only swipes from
        reaching this effect at all. */
-    if (CURPAGE !== 'editsched') return
+    if (CURPAGE !== 'editsched') { pendingPaint.current = null; return }
     const root = ref.current!
     /* never repaint under the caret — the deferred commit repaints once focus
        has left every text field (the reference's txtCommit guarantee) */
-    if (editingText()) return
+    if (editingText()) { pendingPaint.current = navGen(); return }
+    pendingPaint.current = null
     const ed = HOOKS.editMode()
     const html = editDayStrings(ed)
     const p = prev.current
@@ -183,7 +203,7 @@ export function EditWeek() {
     refreshHistDots(root)
     /* now the new week is written and landed on its near edge — slide it in */
     if (runGlide) runGlide()
-  }, [version])
+  }, [version, settledPaint])
 
   /* drag-to-reorder, attached ONCE and delegated on the week root so it survives
      every per-day repaint underneath it (same reason as the board's wiring). On

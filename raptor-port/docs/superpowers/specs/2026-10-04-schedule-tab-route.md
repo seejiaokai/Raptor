@@ -1,6 +1,9 @@
 # Schedule Tab route — proposal for the owner, 4 Oct 26
 
 **Status: product choices settled — B, D554; supporting headings/notes, D555.**
+**D556, 4 Oct:** owner accepts the full numbered week/Board pictures, "Ok looks good
+u can build". Implement the agreed route under the independently challenged R2 plan;
+FULL checks and a fresh independent final read follow. No broader layout or main approval.
 Owner, 4 Oct 26: "lets do B flow". B now governs the existing flight details on both
 screens: Callsign → Mission → Brief → Take-off → Landing → Remarks → stores text.
 Shift+Tab reverses B. This is a route choice after the shown comparison, not code
@@ -96,7 +99,8 @@ The full editable-field manifest, originals and browser annotation scripts are
 retained in that folder. The host inspected both final posters and phone originals;
 Astra inspected all fifteen desktop originals and both posters, asking for the
 week Ground notes to be recaptured above the fixed bar. That capture was corrected
-and the final week poster reopened. Design examples only: the new Tab route is unbuilt.
+and the final week poster reopened. These are pre-build design examples; current
+implementation proof is recorded separately below.
 
 Use the captured real editable two-aircraft formation with its empty Brief: mark the
 editable dash distinctly from the blue suggested time. Keep original labels/values and
@@ -157,5 +161,18 @@ B on both surfaces, so an allowlisted, day/surface-scoped collector is the small
 candidate; no geometry sort or extra builder ordering attributes are proposed.
 The supporting-text answer is now accepted, D555. Astra independently plans the build
 and scenarios, followed by Sol's independent challenge before source changes.
+Implementation status after D556: agreed route built with existing native writers,
+shifted in-time addresses repaired, destination freshness and deferred Board paint
+settlement; no-op formatted clock writes suppressed and covered focus revealed.
+Fresh Astra R1 found week exit stale paint and two required proof gaps; week
+settlement and blur-established focus protection added, distinct input durable
+lifecycle and accurate context cancellation checked. FULL7765/current affected
+browser168 and frozen21-step corrected Chromium walk PASS, with explicit
+role/device omissions in `docs/handpass/2026-10-04-schedule-tab.md`. Fresh Astra
+final inspection R2 PASS for exact freeze18, independently of planner/author;
+full immutable report is retained beside the evidence sheet. R1 findings and
+correction proof remain intact. No code approval inferred from picture acceptance.
+Original source-risk prose above records design orientation, not current unbuilt
+status. R2 plan remains frozen; no source/test/driver edits after final PASS.
 Claude's plan/code/scenario/app reads after Monday
 5 Oct 2026 at 19:00 Singapore remain owed before main. No main push, merge or merging PR.

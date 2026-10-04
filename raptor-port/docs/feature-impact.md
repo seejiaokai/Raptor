@@ -7,6 +7,18 @@ things out."*
 
 This file is that record. It is not a list of features — it is the **map you
 check a feature against before you build it and again before you call it done.**
+
+**Schedule keyboard flow,4 Oct26 (D550–D556):** week contenteditable and Board
+native/shared text boxes → gesture-time current-day DOM route → native blur/change
+→ existing schedule/input command writers, validation, marks and persistence.
+Only the unfocused next box reads current saved/derived text before focus; a
+week/Board paint skipped under a caret resumes after all typing ends, guarded by
+current navigation and lifecycle; focus established during blur is preserved. Hidden folds,
+readonly/preview/OIL/role UI remain outside the route. Covered focus reveals in
+the existing scrollers. No engine arithmetic, signed-record schema, role gate,
+publication, earned-credit or crew-placement path changes. Timing/input edits
+retain their existing downstream relink, reporting, warnings and issued-copy
+flows; unchanged traversal writes nothing. Evidence: schedule-tab handpass.
 Two halves:
 
 1. **The surfaces** — every place a change can show up, and what feeds it.

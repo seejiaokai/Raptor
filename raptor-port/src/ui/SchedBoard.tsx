@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { SBDAY, CURPAGE, DPREV, HISTMODE, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch, ARM } from '../state/view'
+import { SBDAY, CURPAGE, DPREV, HISTMODE, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch, ARM, navGen } from '../state/view'
 import { toggleChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
@@ -211,6 +211,27 @@ export function SchedBoard() {
      unrelated panel's change and keeps a board edit inside the phone
      budget. */
   const panelPrev = useRef<any>({})
+  const pendingPaint = useRef<{ di: number; nav: number } | null>(null)
+  const [settledPaint, setSettledPaint] = useState(0)
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const resume = () => {
+      if (!pendingPaint.current) return
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        const pending = pendingPaint.current
+        if (!pending) return
+        if (CURPAGE !== 'editsched' || SBDAY !== pending.di || navGen() !== pending.nav) {
+          pendingPaint.current = null; return
+        }
+        if (editingText()) return
+        pendingPaint.current = null
+        setSettledPaint(n => n + 1) // UI only: no mutation, history or validation.
+      }, 0)
+    }
+    document.addEventListener('focusout', resume)
+    return () => { clearTimeout(timer); document.removeEventListener('focusout', resume) }
+  }, [])
   useEffect(() => {
     /* Still keyed on a bare `SBDAY == null`, not `!open` (considered and
        reverted, 9 Aug 26 — reviewer had asked for `!open` here as a
@@ -236,8 +257,9 @@ export function SchedBoard() {
        by the setPage fix above, and this guard's ONE job is deciding
        whether the panels have a day to render, which SBDAY alone answers
        correctly. */
-    if (SBDAY == null) { panelPrev.current = {}; return }
-    if (editingText()) return
+    if (SBDAY == null) { panelPrev.current = {}; pendingPaint.current = null; return }
+    if (editingText()) { pendingPaint.current = { di: SBDAY, nav: navGen() }; return }
+    pendingPaint.current = null
     const di = SBDAY
     const set = (el: HTMLElement, key: string, html: string) => {
       if (panelPrev.current[key] === html) return
@@ -298,7 +320,7 @@ export function SchedBoard() {
        the next scroll, so a pinned bubble could go on telling a deleted row's
        story from stale coordinates. */
     histBubRecheck()
-  }, [version, boardVersion])
+  }, [version, boardVersion, settledPaint])
 
   const d = open ? DAYS[SBDAY] : null
 

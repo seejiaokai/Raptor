@@ -521,6 +521,37 @@ The BOARD's own boxes get the same two keys — see the wrapping contract
 above; before 20 Aug 26 they had Enter only, and only because they were
 `<input>`s.
 
+**Schedule Tab route — D550–D556, 4 Oct 26.** On Edit Schedule week and Board,
+Tab visits the already-available typing boxes in the live day's displayed section
+order; Shift+Tab reverses it. Flying uses Callsign → Mission → Brief → Take-off →
+Landing → each aircraft's Remarks/stores → Area/time. Shared week details occur once;
+Board repeats every displayed aircraft row's flight boxes. Include open headings,
+in-time/Rally and notes, empty boxes included. Closed sections/popups, suggestions,
+crew, buttons/selects, readonly/disabled/issued/peek/OIL content are not text stops.
+At either end, focus an eligible ordinary same-day control in that direction,
+otherwise blur; never loop, activate, change day or enter a hidden drawer. Subsequent
+non-text Tab is normal browser navigation. Enter/Escape and D529 remain unchanged.
+
+`schedule-tab.ts` collects at each gesture, shares ancestor visibility reads within
+that gesture only, then native blur/change saves through existing writers. After
+commit it rechecks current context and preserves any new focus established by a blur
+handler (such as a dialog), then refreshes only the unfocused destination
+through existing readers, keeping repeated/derived boxes current without a write.
+If fixed arrows/bars cover the destination, reveal it in existing scroll containers;
+nearest inline alignment preserves unrelated day pan. For a phone Desktop box wider
+than the viewport, assess its visible portion rather than its offscreen centre.
+Untouched displayed clock formatting stays a no-op. Clearing an in-time immediately
+readdresses surviving live lines/buttons. `editingText()` adds Board input-owned
+native fields to its existing contenteditable predicate; skipped week/Board paint
+resumes on text exit with page/nav checks (Board also checks day) and a UI-only tick.
+Leaving an unchanged box or pressing Enter after a saved edit therefore settles
+dependent display even when Tab never visited the derived box. Pending ticks cancel
+on context loss/unmount and never force a repaint beneath a later text caret.
+No second commit, validation/history step or durable state.
+Mounted wiring/caret/commit/break regressions: `schedule-tab.test.tsx`; native browser
+order/no-op/boundary/change checks: `e2e/schedule-tab.spec.ts`. Physical Safari keyboard
+behaviour is not proved by Chromium phone emulation.
+
 Most strings commit through `[data-txt]` → `txtSet` (the funnel). FOUR
 fields live outside that grammar and each need their own focusout branch —
 all four were missed in the port at some point and silently discarded
