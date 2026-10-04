@@ -127,7 +127,7 @@ phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Cod
 
 **From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION]. **D493 (2 Oct 26):** the tidiness read is answered — three tidy-ups approved, each with its area's batch: [LW-ROWS-SPLIT] (the next Leave War batch), [CSS-SPLIT-BY-SCREEN] (first step of the workflow UI pass), [TRK-FILE-TRANSFER-SPLIT] (the Tracker batch); two not now (in [CODE-TIDY-AUDIT]).
 
-**The feature batches — HIS ORDER, D495 (2 Oct 26); Astra plans/reviews, Sol 6.1 builds in Codex until the reset (D496), Claude reviews after it (D494):** [DISCARD-MARKS-REMOVE] (the small first job) → [WORKSPAN-NEGATIVE] → Insights ([INSIGHTS-MISSION-MIX], with [INSIGHTS-BOARD-DOOR]) → the workflow UI pass ([CSS-SPLIT-BY-SCREEN] first) → Inputs → the Tracker (with [TRK-FILE-TRANSFER-SPLIT]) → caps and ops limits → one whole-app check — the list: [FEATURE-WISHLIST].
+**Current direction — D580, 5 Oct 26:** [SANS-COMMITMENT-CALENDAR] is authorized to build from delegated recommendations while the owner sleeps; includes Member Inputs calendar and secondary List. Initial D569 scope: monthly SANS demand/shortage calendar, shared day commitments and existing Custom timing form with no Remarks placeholder. Caps/ops new-chat handoff remains cancelled D568; no new chat created. Caps/ops, other Inputs work and Tracker remain outstanding. Earlier builds/every owed read unchanged; agent settles product choices with reasons and pictures before source work; independent review/required checks and Claude before main remain.
 **Timing follow-up:** [REST-FIRST-CREW-HINT] — existing empty-formation predictive-rest gap, filed with caps and ops limits; committed placement still validates. Current Rally evidence declares this limitation; no owner approval inferred.
 **Availability follow-up:** [SANS-PREVIOUS-REPORT-OFFER] — previous-date offers are not combined with target-date half-days for a previous-evening report; characterized in this round's actual picker/placement, with caps and ops limits. No new availability policy or owner waiver inferred.
 **Workflow UI follow-up:** [PALETTE-WRAPPED-HEADER] — inherited sticky-palette overlap under a wrapped desktop account bar; with the UI pass after [CSS-SPLIT-BY-SCREEN]. Current Rally and baseline reproduce it; not dismissed as a helper-only failure.
@@ -1656,7 +1656,7 @@ says what it changes (before the features that would sit on the screens it moves
 end.** **Item 5, in his words the same day:** *"how the UI flows, to make it more efficient for the user, how does the keyboard
 interact, how the mobile usage is done, moving of buttons etc."* — it crosses every screen, so it is planned as its own pass
 with pictures first; where it moves a screen's controls, that screen's feature batch comes after it or carries it.
-**THE ORDER — D495 (2 Oct 26, "the batch order looks ok"):** (1) `[WORKSPAN-NEGATIVE]`; (2) Insights — item 3, with
+**ORIGINAL ORDER — D495 (2 Oct 26, "the batch order looks ok"); the D567 narrowing below is CANCELLED by D568:** (1) `[WORKSPAN-NEGATIVE]`; (2) Insights — item 3, with
 `[INSIGHTS-BOARD-DOOR]`; (3) the workflow UI pass — item 5, `[CSS-SPLIT-BY-SCREEN]` its first step (D493); (4) Inputs — item 1,
 with `[INP-TILL-STALE]`; (5) the Tracker — item 4, with `[TRK-FILE-TRANSFER-SPLIT]` and its small finds; (6) the rules —
 item 2, caps and ops limits, FULL tier; (7) one whole-app check. **Who builds — D494:** until the reset (Monday 5 Oct 26,
@@ -1665,6 +1665,41 @@ after the reset, before any "merge live". Insights is built. D546 (4 Oct 26) def
 (D542/D543: build/correct a day first, phone quick checks/small edits first); he will introduce ideas during building.
 D544's times/notes keyboard entry keeping Enter/Escape stays pending. The usability/file-split distinction has been explained;
 no layout is approved. D545 adds [SCHEDULE-TAB-ROW-FLOW]; D550–D553 settle both surfaces, available boxes only, reverse Shift+Tab and final-day exit; D554 chooses B flight sequence after the shown comparison. D555 includes open headings/notes through displayed section order. Product scope settled; independent plan/challenge precedes source work. The other feature batches' questions wait.
+
+**CANCELLED PRIORITY — D567, cancelled D568, 5 Oct 26:** owner requests a new chat for caps and ops limits,
+ahead of Inputs and Tracker. The remaining order is caps/ops → Inputs → Tracker →
+one whole-app check. This chooses the next batch; its policies and design still
+need the owner. See [CAPS-OPS-LIMITS]; it does not accept the latest UI preview,
+waive owed reads or authorize a live merge.
+
+### [SANS-COMMITMENT-CALENDAR] Inputs and SANS calendars — BUILD authorized D580 (5 Oct 26)
+D570–D572 settle flying-only demand, deficit-based admin-editable red/amber baselines and one count/person with hours visible. D573 initially deferred placement; D574 asks for recommendations, D575 requests app-style pictures/Claude review, D576 considers secondary List, D577 sun/day and moon/night flying. D578 held build; D579/D580 supersede that hold and delegate choices/build now. Monthly calendar shows the resulting flying-offer shortage.
+Members open a day to see others' commitments and add their own. Form follows the
+fourth private reference/current app availability controls, with Custom start/end;
+Remarks has no faded placeholder. References1/2 supply month/day direction,3 is
+contrast only. Remaining numbers/boundaries/config scope and day-list/navigation choices are delegated by D580; explain them in the plan rather than waiting for another answer. Existing timing/edit/delete/overlap
+behaviour retained, not re-asked. One short offer counts once, not full-day coverage.
+**Home:** `raptor-port/docs/superpowers/specs/2026-10-05-sans-commitment-calendar.md`.
+**Independent initial read:** `raptor-port/docs/superpowers/plans/2026-10-05-sans-calendar-initial-read.md`; first round answered D570–D573 (flying demand, deficit colours, unique people with hours, location deferred). Concrete Astra plan and pictures next; host Sol challenges before source work. No new unseen picture acceptance is inferred; D580 supplies recommendation-based build authority.
+**Place:** replacement current build task after D568 cancels caps/ops handoff;
+no new chat requested. Other feature batches remain outstanding. Picture/plan and
+independent challenge precede source work; calendar request/count/permission and
+published consequences retain applicable FULL checks. All old Claude reads owed.
+
+### [CAPS-OPS-LIMITS] Caps and ops limits — handoff CANCELLED D568, remains unbuilt (5 Oct 26)
+**Current — D568:** "nvm i will do something else." Stop the immediate handoff; no new chat created, no replacement task chosen. Wait for the owner. The following D567 design-start draft is cancelled history, not current authority.
+
+His words: "lets handoff to a new chat and i want to do the caps and ops limits".
+Move this batch ahead of Inputs and Tracker; both remain outstanding. Begin with
+his meaning and examples, after searching existing rules, in product-question
+rounds of at most four with recommendations. No cap value, counting period,
+applicability, exceptions, severity or publication policy is yet chosen by D567.
+**Home/design start:** `raptor-port/docs/superpowers/specs/2026-10-05-caps-ops-limits.md`;
+entry and all previous checks/owed reads in own `HANDOFF.md` workflow block.
+**With this batch:** [REST-FIRST-CREW-HINT] and [SANS-PREVIOUS-REPORT-OFFER], retaining
+their unresolved policy/repair boundaries. Source work waits for agreed product
+scope and an independently challenged plan; rules changes are FULL tier.
+**Place:** unbuilt backlog under original D495; immediate D567 priority/handoff cancelled D568. No batch starts automatically. Previous builds remain separate for review; no main/live authority.
 
 ### [SKILL-FUSION] Fuse the harder questioning into the planning step — and three proposals from the same read (D486, 2 Oct 26)
 From the article he sent (codelynx.dev — five recommended skills): none is installed whole (D486). To build, documents only: the

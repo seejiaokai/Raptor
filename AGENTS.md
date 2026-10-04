@@ -73,6 +73,14 @@ for you. Open what is named here, with your own reads, before you plan or change
 
 ## The order of work (D495) and how to plan it with him
 
+**Current owner direction — D568/D580, 5 Oct 26:** the immediate D567 caps/ops
+new-chat handoff is cancelled; no new chat was created. The replacement task is
+[SANS-COMMITMENT-CALENDAR] Inputs/SANS build is authorized from delegated recommendations
+under D580 while the owner sleeps. Caps/ops, other Inputs work
+and Tracker remain outstanding. All hard limits, checks and owed reads remain.
+See `OUTSTANDING.md` and the D569 SANS design-start note linked there.
+
+**Original D495 order (reference; no automatic start under D568):**
 After a small first job to prove the loop — `[DISCARD-MARKS-REMOVE]` — the batches run: the negative work-hours fix
 (`[WORKSPAN-NEGATIVE]`) → Insights (mission types per person, with `[INSIGHTS-BOARD-DOOR]`) → the workflow UI pass
 (`[CSS-SPLIT-BY-SCREEN]` first) → how inputs show on the calendar → the Tracker's progress graph (with

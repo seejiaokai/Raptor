@@ -371,7 +371,15 @@ report is `docs/handpass/2026-10-03-insights-mission-mix-review-r2.md`, covering
 804 matching hashes, eleven independently opened existing pictures and explicit limits. Required gate and comparison logs are retained in
 `docs/handpass/insights-gates/`, including the unchanged planning snapshot's three existing adapted audit failures.
 
+D569 SANS calendar design start: `docs/superpowers/specs/2026-10-05-sans-commitment-calendar.md` records the requested month/day/form behaviour, private reference mapping and unsettled product choices; no calendar source built.
+Initial independent read/full dispositions: `docs/superpowers/plans/2026-10-05-sans-calendar-initial-read.md`.
+
+D567 design-start draft, cancelled D568: `docs/superpowers/specs/2026-10-05-caps-ops-limits.md` retains the cancelled caps/ops priority, baseline and policy boundaries; no new chat created. `docs/handpass/2026-10-05-caps-ops-handoff-meaning-read.md` preserves the independent priority/handoff read and correction dispositions; application unchanged.
+
 D566 implementation addendum/challenge: `docs/superpowers/plans/2026-10-04-flight-taper-{implementation-addendum,plan-challenge}.md`.
 Current accepted-build evidence: `docs/handpass/2026-10-04-accepted-taper-interface-batch.md`; earlier rejected build proof remains historical.
 
 Fresh accepted-batch R1 inspector: immutable `docs/superpowers/briefs/2026-10-04-accepted-taper-interface-astra-final-r1.md`; complete PASS/report `docs/handpass/2026-10-04-accepted-taper-interface-astra-final-r1.md`. Source freeze unchanged; closing status only afterward.
+
+D580 Inputs/SANS calendar proposed build plan and independent scenario proposal: docs/superpowers/plans/2026-10-05-inputs-sans-calendar.md (Astra; corrected plan independently challenged by Sol PASS; private synthetic design pictures separate).
+D580 independent Sol plan/picture challenge: `docs/superpowers/plans/2026-10-05-inputs-sans-plan-challenge.md`; corrected plan PASS, source/review authority qualified.
