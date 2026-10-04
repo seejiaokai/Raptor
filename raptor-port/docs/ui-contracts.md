@@ -7979,6 +7979,16 @@ moves the OPENING figure — `+`/`−` are entries on top of it), the manning ro
 the month strip, the window engine, the frozen-names mechanics, the quick-flick
 swipe, and everything a member sees.
 
+## Logic search and controls
+
+**D561, 4 Oct 26 — requested, not yet designed or built:** keep the search box in view while scrolling,
+alongside the controls already kept visible: All, Warnings, Advisories, Notes, Fired this week, Edit rules
+and rule count. Pack the buttons closer together so the strip uses fewer vertical rows. Preserve their
+actions, filtering, permissions and all rule values/calculations. This is a local compactness request,
+not global button resizing; exact spacing and dimensions await numbered phone/desktop pictures.
+The owner confirms he is still adding tasks: hold design, mockups, source work and app checks.
+Both reference photos remain private. Filed as [LOGIC-STICKY-SEARCH-COMPACT] in the workflow UI batch.
+
 ## The Tracker tab (7 Sep 26)
 
 **D560, 4 Oct 26 — requested, not yet designed or built:** the owner finds the text inside the blue flight

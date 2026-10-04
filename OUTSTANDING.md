@@ -131,7 +131,7 @@ phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Cod
 **Timing follow-up:** [REST-FIRST-CREW-HINT] — existing empty-formation predictive-rest gap, filed with caps and ops limits; committed placement still validates. Current Rally evidence declares this limitation; no owner approval inferred.
 **Availability follow-up:** [SANS-PREVIOUS-REPORT-OFFER] — previous-date offers are not combined with target-date half-days for a previous-evening report; characterized in this round's actual picker/placement, with caps and ops limits. No new availability policy or owner waiver inferred.
 **Workflow UI follow-up:** [PALETTE-WRAPPED-HEADER] — inherited sticky-palette overlap under a wrapped desktop account bar; with the UI pass after [CSS-SPLIT-BY-SCREEN]. Current Rally and baseline reproduce it; not dismissed as a helper-only failure.
-**Owner's current workflow UI requests — held while he supplies the rest, D560 (4 Oct 26):** [TRK-FLIGHT-LABEL-READABILITY] — clearer words inside the Tracker's blue flight balls; a wider wing label area is proposed, no design or build started. This does not start the Tracker progress-graph batch or change D495's order.
+**Owner's current workflow UI requests — held while he supplies the rest, D560-D561 (4 Oct 26):** [TRK-FLIGHT-LABEL-READABILITY] — clearer words inside blue flight balls, wider wing label area proposed; [LOGIC-STICKY-SEARCH-COMPACT] — keep search visible while scrolling and pack existing controls into fewer rows. No design or build started. This does not start the Tracker progress-graph batch or change D495's order.
 
 **Waiting on him — no order exists:**
 [LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
@@ -1772,6 +1772,17 @@ Fresh separate Astra final R1 PASS, complete immutable report beside evidence;
 Owner preview look accepted D559,4Oct, Ready https://raptor-irwn04ala-kai-e2f5.vercel.app;
 further interface requests continue in a new chat, details not yet specified.
 Monday Claude plan/code/scenarios/full app walk remains before authorized live merge.
+
+### [LOGIC-STICKY-SEARCH-COMPACT] Keep Logic search visible while scrolling and pack its controls closer — D561, 4 Oct 26
+Owner's two private phone photos show existing filter/edit controls staying visible after search has left the screen.
+He asks to keep search there too and pack the buttons together into fewer vertical rows. **Status:** request recorded;
+owner confirms he is still adding more tasks, so design, pictures, source work and app checks remain held.
+Keep All, Warnings, Advisories, Notes, Fired this week, Edit rules and rule count with their existing actions;
+preserve filtering, permissions and rule values/calculations. Exact spacing, dimensions and arrangement await
+numbered affected-page phone/desktop pictures; no global button resizing is implied. Both photos stay private.
+**Home:** `raptor-port/docs/ui-contracts.md` Logic search and controls (D561); short/full Scheduler ruling.
+**Place:** current workflow UI batch alongside [TRK-FLIGHT-LABEL-READABILITY], held for the remaining requests;
+exact design/build order awaits that batch. No change to D495's later feature order.
 
 ### [TRK-FLIGHT-LABEL-READABILITY] Make the words inside blue flight balls easier to read — D560, 4 Oct 26
 Owner's private Photo 1 shows the Tracker Flow chart's blue flight symbols with text hard to read inside the narrow
