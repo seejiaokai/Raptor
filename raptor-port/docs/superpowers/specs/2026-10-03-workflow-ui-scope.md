@@ -45,7 +45,8 @@ batch remains; no broader layout or reduced phone feature set is approved.
 D544: faster keyboard entry of times and notes, keeping existing Enter/Escape.
 D545: while typing on the schedule, forward Tab moves to the next open text box
 on the right; at the rightmost, to the leftmost open text box in the next row.
-Shift+Tab, final-row exit, opening closed cells and exact surfaces remain unsettled.
+D550–D553 now settle both surfaces, available text only, reverse Shift+Tab and
+the final-day exit. Exact row/header/footer/section ordering remains to be shown.
 
 The owner then asked whether options 1/2 meant splitting long files and whether
 the recommendations came from the backlog. They are usability priorities suggested
@@ -58,12 +59,14 @@ approved. Start from the backlog and these priorities, include filed UI faults i
 the scope discussion, ask remaining product questions at most four at a time with
 recommendations, and show phone/desktop pictures before any visual source change.
 
-## Proposed Tab round — retained for later, 4 Oct 26
+## Tab round — answered D550–D553, 4 Oct 26
 
 The usability/file-splitting distinction above has been explained in the new chat.
 Astra proposes settling the concrete Tab request before wider layout choices; Sol's
 independent challenge clarified the closed-editor boundary and the final-day exit.
-These are recommendations only, not owner answers or an implementation plan:
+The retained recommendations below are now accepted by the owner, "all four
+recommended", after the closed-editor boundary was explained. They settle these
+four choices, not a complete implementation plan:
 
 1. Cover both Edit Schedule's week view and the Scheduler Board. Recommended: both.
 2. May Tab open a currently closed text editor? Recommended: no; traverse only
@@ -79,8 +82,28 @@ caret rather than opening an editor. The Board uses already-present boxes. The
 concrete design must still define rows in wrapped phone layouts, section boundaries
 and focus after a commit, from the owner's answers. Preserve Enter/Escape, no-op
 derived values and D529's silence on unchanged Remarks. D546 defers the first two
-earlier priorities, not keyboard/Tab. These four questions remain unanswered;
-they can wait until the owner returns. D550 is next after the repair look below.
+earlier priorities, not keyboard/Tab. Answers: D550 covers both surfaces; D551
+uses only text boxes already available for typing, including empty ones, leaving
+closed editors, folded sections and popups closed; D552 reverses the route with
+Shift+Tab; D553 exits the day's last box to the next ordinary button/control
+without looping or changing day. Enter/Escape and D529 remain binding. D554 is next.
+
+Read-only Astra orientation found a remaining product ambiguity: the week stacks
+Callsign/Mission in one column and Brief/Take-off in another, whereas the Board
+runs those fields across a strip and moves some fields below it on a phone.
+The four answers do not decide Callsign→Brief versus Callsign→Mission, header and
+footer placement in the route, section transitions or reverse entry at the first
+box. Show a small annotated route on the actual existing layouts before deciding
+those boundaries; do not silently substitute DOM order for "right, then next row".
+Section order is user-controlled and must follow the displayed arrangement.
+This is source orientation, not new runtime proof or an agreed route.
+The concrete unanswered candidates and preservation detail are in
+`raptor-port/docs/superpowers/specs/2026-10-04-schedule-tab-route.md`.
+
+The owner's subsequent `/impeccable` and "u can use impeccable to help think of
+this too" authorize using the installed guide for this keyboard design work.
+They do not authorize changing working guides, button sizes, other UI behaviours
+or the accepted phone Desktop repair. No skill update or broad redesign is implied.
 
 The wider scope discussion must carry the filed desktop crew-list/header overlap
 (`[PALETTE-WRAPPED-HEADER]`, assigned to this batch), blank phone Board in Desktop
@@ -123,14 +146,16 @@ no device-specific Safari verification or broader UI approval is inferred.
 Preview: https://raptor-7q0tkgdev-kai-e2f5.vercel.app, Ready for the reviewed repair
 commit063806c7d2240322c1615c24a1635aa4177199ae. Claude's Monday read and an explicit
 "merge live" remain owed before main. D547/D548's other-behaviour leave-it and
-D544/D545's pending keyboard/Tab choices remain unchanged; asking what is next
+D544/D545's keyboard task remains pending (four choices later settled by
+D550–D553); asking what is next
 does not approve another feature's design or authorize its implementation.
 
 Subsequent task instruction: "ok shall we hand off to a next chat to build this?"
 Create a fresh local chat continuing `codex/workflow-ui`, without a new worktree.
-Its task is the pending D544/D545 keyboard/Tab flow: first settle the four unanswered
-product choices above, then plan and build from those answers under D496. This
-handoff request does not answer those choices or waive pictures/checks/reviews.
+Its task is the pending D544/D545 keyboard/Tab flow. The four product choices
+were unanswered at handoff and have since been settled by D550–D553; finish the
+concrete routing discussion, then plan and build under D496. The handoff request
+itself did not answer the choices or waive pictures/checks/reviews.
 Other behaviours left unchanged by D547/D548 remain so. No other batch starts.
 
 ## Heavy investigation — authorized and completed, 4 Oct 26
