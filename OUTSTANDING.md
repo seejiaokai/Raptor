@@ -1663,7 +1663,7 @@ item 2, caps and ops limits, FULL tier; (7) one whole-app check. **Who builds �
 after the reset, before any "merge live". Insights is built. D546 (4 Oct 26) defers the first two workflow recommendations
 (D542/D543: build/correct a day first, phone quick checks/small edits first); he will introduce ideas during building.
 D544's times/notes keyboard entry keeping Enter/Escape stays pending. The usability/file-split distinction has been explained;
-no layout is approved. D545 adds [SCHEDULE-TAB-ROW-FLOW]; D550–D553 settle both surfaces, available boxes only, reverse Shift+Tab and final-day exit. Concrete row/section routing still needs its picture discussion. The other feature batches' questions wait.
+no layout is approved. D545 adds [SCHEDULE-TAB-ROW-FLOW]; D550–D553 settle both surfaces, available boxes only, reverse Shift+Tab and final-day exit; D554 chooses B flight sequence after the shown comparison. Supporting headings/notes/section coverage remains unanswered. The other feature batches' questions wait.
 
 ### [SKILL-FUSION] Fuse the harder questioning into the planning step — and three proposals from the same read (D486, 2 Oct 26)
 From the article he sent (codelynx.dev — five recommended skills): none is installed whole (D486). To build, documents only: the
@@ -1736,14 +1736,14 @@ evidence: `raptor-port/docs/handpass/2026-10-03-css-split.md`. Claude's full rea
 item stays here until the required reads and owner's live word. Continue from D544–D546 and the filed UI faults;
 usability versus file splitting explained, first two priorities deferred. No further UI design or source change inferred.
 
-### [SCHEDULE-TAB-ROW-FLOW] Tab follows the open schedule text boxes across the row, then to the next row — D545, 4 Oct 26
+### [SCHEDULE-TAB-ROW-FLOW] Tab follows the chosen B flight sequence through the open schedule text boxes — D545/D554, 4 Oct 26
 His report/request: while the scheduler types, Tab currently does not go to the next open text box on the right.
 At the rightmost open text box, Tab should go to the leftmost open text box in the next row.
 **Not built. Place:** workflow UI pass, after the completed stylesheet split; product planning with D544/D546 (first two earlier priorities deferred).
-Forward Tab between open text boxes is settled. **D550–D553, 4 Oct, "all four recommended":** both Edit Schedule week and Board; only boxes already available for typing (empty ones included), no closed-editor/section/popup opening; reverse Shift+Tab; last box exits to the next ordinary control without loop/day change. Exact row/header/footer/section ordering and first-box reverse entry still need an annotated picture on the actual layouts before implementation; stacked week fields differ from the Board strip and phone wrap. Owner also authorizes using Impeccable to help think through this task, not a broader redesign or skill update.
+Forward Tab between open text boxes is settled. **D550–D553, 4 Oct, "all four recommended":** both Edit Schedule week and Board; only boxes already available for typing (empty ones included), no closed-editor/section/popup opening; reverse Shift+Tab; last box exits to the next ordinary control without loop/day change. D554 settles the flight sequence after the annotated actual-layout comparison: B on week and Board, even where phone text wraps. Supporting headings/notes/section coverage and first-box reverse exit remain to be answered; the retained question recommends inclusion in displayed order and symmetric ordinary-control exit. Owner also authorizes using Impeccable to help think through this task, not a broader redesign or skill update.
 Keep Enter commits/Escape restores; unchanged Remarks traversal never asks the mission-role question (D529).
 Scope/home: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md` (D545); picture before any visual change.
-Unanswered concrete route proposal: `raptor-port/docs/superpowers/specs/2026-10-04-schedule-tab-route.md` — across-first versus flight-detail sequence, then supporting text/section boundaries. Annotated unchanged-app comparison shown before the next owner round; no implementation approval inferred.
+Concrete route: `raptor-port/docs/superpowers/specs/2026-10-04-schedule-tab-route.md` — D554 chooses B after the comparison: Callsign → Mission → Brief → Take-off → Landing → Remarks/stores; Shift+Tab reverses B. D545/D552's literal spatial reading narrowed. Supporting headings/notes/section boundaries remain unanswered; do independent implementation preparation while awaiting that answer. No broader redesign or code approval inferred.
 
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
 From Astra's tidiness read (its §3 — read it before building). The export / import workflow (about 730 lines) leaves

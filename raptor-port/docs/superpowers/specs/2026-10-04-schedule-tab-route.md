@@ -1,27 +1,31 @@
 # Schedule Tab route — proposal for the owner, 4 Oct 26
 
-**Status: the next product round, UNANSWERED. Not an implementation plan or approval.**
+**Status: owner chose B, D554. Supporting headings/notes choice remains unanswered.**
+Owner, 4 Oct 26: "lets do B flow". B now governs the existing flight details on both
+screens: Callsign → Mission → Brief → Take-off → Landing → Remarks → stores text.
+Shift+Tab reverses B. This is a route choice after the shown comparison, not code
+approval or a broader layout change. The candidates below remain as the design record.
 Read-only source findings below are not proof of a working new route. The host captured
 the unchanged app at desktop/phone sizes; Astra opened both week-formation crops and
 read their measured geometry. Numbered annotations show proposals before owner choice.
 Picture: [unchanged-screen route comparison](2026-10-04-schedule-tab-route.png).
-Sol recommends the across-first candidate to preserve the owner's original intent;
-Astra prefers the shared flight sequence for familiarity. This is a product tradeoff,
-not approval by either writer. The owner chooses before implementation planning.
+Sol recommended across-first to preserve the original right-first intent; Astra
+recommended B for familiarity. The owner settled that tradeoff by choosing B (D554).
 
 ## Settled scope
 
 D550–D553 accept both Edit Schedule's week and the Scheduler Board; text boxes already
 available for typing, empty ones included; reverse Shift+Tab; and leaving the day's last
-box for ordinary controls without looping or changing day. D545 supplies the rightward,
-then next-row intent. D544 keeps Enter/Escape. D529 keeps unchanged Remarks silent.
+box for ordinary controls without looping or changing day. D554 narrows D545's original
+rightward/next-row intent to B, even when it first moves down on the week view.
+D544 keeps Enter/Escape. D529 keeps unchanged Remarks silent.
 
 The job is faster schedule entry by a scheduler already working in the dense day view.
 Impeccable's Shape/Operate guidance is used for task order and familiar controls. The
 existing app is the visual authority. No layout, button-size, popup, crew-header, or
 phone Desktop repair change is proposed (D487, D547–D549). No skill/configuration edit.
 
-## Choice 1 — what a row means where the week stacks fields
+## Choice 1 — B chosen, D554; comparison retained
 
 The week stacks Callsign above Mission, and Brief above Take-off. Landing and Remarks
 are in columns to their right. The Board places the five flight fields across one strip.
@@ -45,7 +49,7 @@ Two concrete readings must be shown, not silently conflated:
   the flight details together even when a pair is stacked or Remarks wraps below.
   This moves DOWN from week Callsign to Mission, not to the next box on the right.
   Benefit: a stable entry sequence shared with the Board, unaffected by text wrapping.
-  Cost: it is not the week's literal visual row-reading order. Do not call it approved.
+  Cost: it is not the week's literal visual row-reading order. Now chosen under D554.
 
 For the task-sequence proposal, the week visits its shared formation fields once,
 then each aircraft's Remarks/stores in displayed order, then Area → Area time.
@@ -117,9 +121,13 @@ Area/time sit outside the Board row: use the appropriate live surface's
   `board-html.ts:273`, `html.ts:780`; Board duty labels/rows: `board-html.ts:415–445`.
 - Existing write/commit protections: `textedit.ts:31–45,73–246,248–356`,
   `board.ts:1114–1212`, `EditWeek.tsx:110`, `SchedBoard.tsx:209–244`.
-  Week defers repaint under the next caret; Board changes may replace destination
-  markup; empty in-time deletion removes its node immediately. New focus movement
-  must retain those semantics, no-op derived values, real save/history/Undo and refusals.
+  Both effects defer repaint under `editingText()`. Board input-owned `data-ifld`
+  boxes are missing from that guard; final unchanged Board blur may not request the
+  deferred repaint. Empty in-time deletion removes its node immediately while later
+  live nodes retain old indices. These are source risks to pin with failing-first
+  mounted checks, not verified runtime failures. Native focus/blur/change should
+  retain existing writes; do not duplicate commits or add a permanent focus registry.
+  Preserve no-op derived values, real save/history/Undo and refused-edit healing.
 - Eligibility: preserve `HOOKS.editMode()`, effective editing permission, protected-week,
   issued-preview and OIL-mode gates. Exclude disabled/read-only/hidden/folded content,
   next-week peek and the mounted week behind Board. Latest-published Remarks access
@@ -131,6 +139,9 @@ Area/time sit outside the Board row: use the appropriate live surface's
   stored route state, schema, engine rule, component conversion or DOM expansion is proposed.
 
 Executor, performance Part 1 and relevant guide detail were read for this proposal.
-Implementation/check planning remains after the owner's route answer and picture look,
+The owner selected B after the picture, D554. Existing DOM field order already matches
+B on both surfaces, so an allowlisted, day/surface-scoped collector is the smallest
+candidate; no geometry sort or extra builder ordering attributes are proposed.
+Independent implementation/check planning waits only for the supporting-text answer,
 then Sol's independent challenge. Claude's plan/code/scenario/app reads after Monday
 5 Oct 2026 at 19:00 Singapore remain owed before main. No main push, merge or merging PR.

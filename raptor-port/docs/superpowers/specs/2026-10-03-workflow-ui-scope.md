@@ -46,7 +46,8 @@ D544: faster keyboard entry of times and notes, keeping existing Enter/Escape.
 D545: while typing on the schedule, forward Tab moves to the next open text box
 on the right; at the rightmost, to the leftmost open text box in the next row.
 D550–D553 now settle both surfaces, available text only, reverse Shift+Tab and
-the final-day exit. Exact row/header/footer/section ordering remains to be shown.
+the final-day exit. D554 later selects B for flight details; supporting headings,
+notes and section coverage remain to be answered.
 
 The owner then asked whether options 1/2 meant splitting long files and whether
 the recommendations came from the backlog. They are usability priorities suggested
@@ -91,14 +92,21 @@ without looping or changing day. Enter/Escape and D529 remain binding. D554 is n
 Read-only Astra orientation found a remaining product ambiguity: the week stacks
 Callsign/Mission in one column and Brief/Take-off in another, whereas the Board
 runs those fields across a strip and moves some fields below it on a phone.
-The four answers do not decide Callsign→Brief versus Callsign→Mission, header and
-footer placement in the route, section transitions or reverse entry at the first
-box. Show a small annotated route on the actual existing layouts before deciding
-those boundaries; do not silently substitute DOM order for "right, then next row".
+The four answers did not decide Callsign→Brief versus Callsign→Mission. The shown
+comparison and subsequent D554 now settle that flight sequence as B. Header/notes
+coverage, section transitions and reverse entry at the first box remain unanswered.
+The retained question recommends including supporting text in displayed order with
+the symmetric ordinary-control reverse exit; do not claim it answered by choosing B.
 Section order is user-controlled and must follow the displayed arrangement.
 This is source orientation, not new runtime proof or an agreed route.
-The concrete unanswered candidates and preservation detail are in
+The concrete candidates and preservation detail are in
 `raptor-port/docs/superpowers/specs/2026-10-04-schedule-tab-route.md`.
+**D554, 4 Oct:** owner says "lets do B flow" after seeing the comparison. Use Callsign
+→ Mission → Brief → Take-off → Landing → Remarks → stores text on both screens,
+with Shift+Tab in reverse. This narrows D545/D552's literal spatial reading: the week
+goes down to Mission first. Shared week formation details occur once; existing Board
+aircraft-row boxes are all visited. Supporting headings/notes/section boundaries are
+still unanswered. D550–D553's other boundaries and the accepted repair remain binding.
 
 The owner's subsequent `/impeccable` and "u can use impeccable to help think of
 this too" authorize using the installed guide for this keyboard design work.
