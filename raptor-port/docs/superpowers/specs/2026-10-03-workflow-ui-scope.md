@@ -46,8 +46,8 @@ D544: faster keyboard entry of times and notes, keeping existing Enter/Escape.
 D545: while typing on the schedule, forward Tab moves to the next open text box
 on the right; at the rightmost, to the leftmost open text box in the next row.
 D550–D553 now settle both surfaces, available text only, reverse Shift+Tab and
-the final-day exit. D554 later selects B for flight details; supporting headings,
-notes and section coverage remain to be answered.
+the final-day exit. D554 selects B for flight details; D555 settles open headings,
+notes and continuation through the displayed section order.
 
 The owner then asked whether options 1/2 meant splitting long files and whether
 the recommendations came from the backlog. They are usability priorities suggested
@@ -87,16 +87,17 @@ earlier priorities, not keyboard/Tab. Answers: D550 covers both surfaces; D551
 uses only text boxes already available for typing, including empty ones, leaving
 closed editors, folded sections and popups closed; D552 reverses the route with
 Shift+Tab; D553 exits the day's last box to the next ordinary button/control
-without looping or changing day. Enter/Escape and D529 remain binding. D554 is next.
+without looping or changing day. Enter/Escape and D529 remain binding. The later
+D554/D555 answers below complete the product scope.
 
 Read-only Astra orientation found a remaining product ambiguity: the week stacks
 Callsign/Mission in one column and Brief/Take-off in another, whereas the Board
 runs those fields across a strip and moves some fields below it on a phone.
 The four answers did not decide Callsign→Brief versus Callsign→Mission. The shown
-comparison and subsequent D554 now settle that flight sequence as B. Header/notes
-coverage, section transitions and reverse entry at the first box remain unanswered.
-The retained question recommends including supporting text in displayed order with
-the symmetric ordinary-control reverse exit; do not claim it answered by choosing B.
+comparison and subsequent D554 settle that flight sequence as B. D555's subsequent
+"Yes" settles the supporting text and displayed section continuation. The retained
+recommendation includes the symmetric ordinary-control reverse exit; this was not
+inferred from B selection alone.
 Section order is user-controlled and must follow the displayed arrangement.
 This is source orientation, not new runtime proof or an agreed route.
 The concrete candidates and preservation detail are in
@@ -106,7 +107,16 @@ The concrete candidates and preservation detail are in
 with Shift+Tab in reverse. This narrows D545/D552's literal spatial reading: the week
 goes down to Mission first. Shared week formation details occur once; existing Board
 aircraft-row boxes are all visited. Supporting headings/notes/section boundaries are
-still unanswered. D550–D553's other boundaries and the accepted repair remain binding.
+settled by D555: owner says "Yes" to including open headings and notes through the
+displayed section order. D550–D553's other boundaries and the accepted repair remain
+binding. Product scope is complete; independent plan/challenge precedes the build.
+
+**Owner picture request, 4 Oct:** numbered actual-app examples now show every affected
+open section on both pages. [Week sequence](2026-10-04-tab-flow-pictures/week-flow.png)
+and [Board sequence](2026-10-04-tab-flow-pictures/board-flow.png); the flying examples
+also have phone variants in that folder. Numbers restart per section; other rows
+repeat before the final section notes. These are design pictures, not proof of the
+new keyboard behaviour. No source/test change is made in this picture turn.
 
 The owner's subsequent `/impeccable` and "u can use impeccable to help think of
 this too" authorize using the installed guide for this keyboard design work.

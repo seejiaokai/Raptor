@@ -1,6 +1,6 @@
 # Schedule Tab route — proposal for the owner, 4 Oct 26
 
-**Status: owner chose B, D554. Supporting headings/notes choice remains unanswered.**
+**Status: product choices settled — B, D554; supporting headings/notes, D555.**
 Owner, 4 Oct 26: "lets do B flow". B now governs the existing flight details on both
 screens: Callsign → Mission → Brief → Take-off → Landing → Remarks → stores text.
 Shift+Tab reverses B. This is a route choice after the shown comparison, not code
@@ -58,9 +58,9 @@ fields, before Area → Area time. Do not silently deduplicate Board boxes. A st
 wave visits only the fields it actually shows; do not add the Board's SC report box
 to the week. Shift+Tab is the exact reverse of the selected route.
 
-## Choice 2 — supporting text and section boundaries
+## Choice 2 — supporting text and section boundaries accepted, D555
 
-**Recommendation, still unanswered:** include each already-available text heading,
+**Owner answered "Yes", D555:** include each already-available text heading,
 in-time/Rally line, row and notes box in its displayed position within the day:
 heading/intro text → rows → notes below those rows → next open section. Follow the
 owner's current section arrangement, not a fixed canonical list. An empty or folded
@@ -73,7 +73,7 @@ are not text stops. Focusing a text box must not simulate a click to open its pi
 Normal phone wrapping changes where a box sits, not which logical item owns it; under
 the task-sequence choice, finish the wrapped item's Remarks before the next item.
 
-Forward day exit is already settled by D553. Recommend the symmetric reverse exit:
+Forward day exit is already settled by D553. D555 also accepts the symmetric reverse exit:
 Shift+Tab from the first text box leaves to the preceding ordinary control without
 looping or changing day. Keep the end caption "Leave text entry; stay on this day".
 Ordinary-control destinations are a focus-preservation detail, not a new product
@@ -84,6 +84,19 @@ day has its own controls. Ordinary exit must not focus the hidden week behind Bo
 enter a different day's text route, activate a control, or open anything automatically.
 
 ## Annotation data for the unchanged app
+
+**Complete numbered examples requested by the owner, 4 Oct:**
+[Edit Schedule week](2026-10-04-tab-flow-pictures/week-flow.png) and
+[Scheduler Board](2026-10-04-tab-flow-pictures/board-flow.png).
+Each displayed section has one representative row/formation, with repeated rows
+and final notes stated explicitly. Numbers restart in each section; actual section
+order remains user-controlled. [Phone week flying](2026-10-04-tab-flow-pictures/phone/week-flow.png)
+and [phone Board flying](2026-10-04-tab-flow-pictures/phone/board-flow.png) show wrapping.
+The full editable-field manifest, originals and browser annotation scripts are
+retained in that folder. The host inspected both final posters and phone originals;
+Astra inspected all fifteen desktop originals and both posters, asking for the
+week Ground notes to be recaptured above the fixed bar. That capture was corrected
+and the final week poster reopened. Design examples only: the new Tab route is unbuilt.
 
 Use the captured real editable two-aircraft formation with its empty Brief: mark the
 editable dash distinctly from the blue suggested time. Keep original labels/values and
@@ -142,6 +155,7 @@ Executor, performance Part 1 and relevant guide detail were read for this propos
 The owner selected B after the picture, D554. Existing DOM field order already matches
 B on both surfaces, so an allowlisted, day/surface-scoped collector is the smallest
 candidate; no geometry sort or extra builder ordering attributes are proposed.
-Independent implementation/check planning waits only for the supporting-text answer,
-then Sol's independent challenge. Claude's plan/code/scenario/app reads after Monday
+The supporting-text answer is now accepted, D555. Astra independently plans the build
+and scenarios, followed by Sol's independent challenge before source changes.
+Claude's plan/code/scenario/app reads after Monday
 5 Oct 2026 at 19:00 Singapore remain owed before main. No main push, merge or merging PR.
