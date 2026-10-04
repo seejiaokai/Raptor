@@ -6,6 +6,30 @@ schedule sections. The smallest repair candidates are below. No repair is built
 or approved. The tested panel footers recover through scrolling; actual iPhone
 browser bars and keyboard remain unverified.
 
+## Subsequent owner phone check — D547, 4 Oct 26
+
+After seeing picture 3 and the agent's pinned-title/footer proposal, the owner said:
+"It's not a problem on the iPhone I could still scroll to reach it". The New input
+popup's existing scrolling recovery is acceptable on his iPhone. Withdraw that
+proposal and leave the popup unchanged. This owner observation supplements the
+original Chromium evidence; it does not assert every keyboard/browser-bar state
+or clear the other panels. The two confirmed crew-list/Board faults remain separate.
+
+Independent Astra read of D547's generated short line against its full row and
+scope home, complete response (no edits):
+
+> **PASS.** D547's short line faithfully matches the full row and scope note: accept the owner's iPhone scroll recovery, withdraw our proposed popup change, and leave it unchanged.
+>
+> No broader panel clearance, keyboard/browser-bar coverage, build authorization, or replacement of an earlier owner ruling is implied. No edits made.
+
+Host disposition: accept the bounded correction; no app build or new walk.
+
+**Selected repair — D548:** owner then said "Just fix the desktop layout on a phone.
+The rest don't fix it it's fine". Only the phone Board's blank Desktop layout is
+selected. Crew-list/header overlap and popup behaviours stay unchanged. Candidate
+phone/desktop pictures and an independent plan challenge precede source edits;
+this report remains original diagnostic evidence, not a completed repair check.
+
 ## Authority, identity and check boundary
 
 After deferring the earlier options1/2 (D546), the owner accepted the proposed
@@ -106,7 +130,7 @@ visible-area guarantee. Raw JSON retains both requested states and actual geomet
 | Surface | Actual route and unit family | What the run establishes |
 |---|---|---|
 | Traffic | Board Traffic; shared80vh outer box | Opens/resizes/reopens; close receives its own hit at all three sizes. Short body needs no scroll. |
-| Schedule input | Board Ground + Add; shared80vh | Portrait Cancel reachable. Landscape footer initially clipped; native outer scroll134px makes it hit itself. Ordinary locator click closes it. |
+| Schedule input | Board Ground Programme + Inputs; shared80vh | Portrait Cancel reachable. Landscape footer initially clipped; native outer scroll134px makes it hit itself. Ordinary locator click closes it. Subsequent owner iPhone scroll recovery is acceptable (D547). |
 | Week calendar | Board calendar; shared80vh | Close reachable; short-height reopening works. This is not a separate calc100vh panel. |
 | Day details | View-only day's heading;80vh plus inner62vh | Portrait body scroll0→700, footer stays visible. Landscape inner scroll alone does not move outer box; wheel over its header scrolls outer32px, then Close works. |
 | Medical document | Inputs Medical, existing Grit ATT C card; outer80vh/media58vh | Existing document rendered. Portrait Close reachable; landscape native outer scroll66px reveals Close and closes. No medical Next claim. |
@@ -171,8 +195,12 @@ plan/code/scenario/walk reads remain owed after Monday5Oct2026,19:00; likewise t
 three earlier build branches. Investigation does not spend or replace them.
 
 Rulings: D546 recorded before dependent work; no new standing ruling inferred from
-the instruction to run this task. D547 remains next. D544/D545 and D529 remain.
+the instruction to run this task. Subsequent D547 accepts the owner's New input
+scroll recovery and withdraws the popup proposal. D548 selects only the phone Board
+Desktop-layout repair. D549 is next. D544/D545 and D529 remain.
 
 Walk: docs/handpass/2026-10-04-workflow-ui-investigation.md ·34 inspected pictures
 ·11 walked surfaces ·16 sequences ·MISSING: availability runtime and physical
-iPhone bars/keyboard unverified; two confirmed faults remain filed, no repairs.
+iPhone bars/keyboard unverified; two confirmed faults filed, no repairs in this
+investigation. Subsequent D548 phone-only repair is recorded separately in
+`2026-10-04-phone-desktop-board-repair.md`; this original run's evidence is unchanged.

@@ -1,0 +1,16 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: #sbRoster .rcol:nth-child(2) .rpuck receives its own visible hit {"text":"CVectorC","rect":{"x":165,"y":343.453125,"width":74,"height":15,"top":343.453125,"right":239,"bottom":358.453125,"left":165},"visible":true,"own":false,"hit":"DIV"}
+    at hit (file:///C:/Users/User/.codex/visualizations/2026/10/03/01a103a4-fe5a-7480-a6df-6c25f1000766/phone-desktop-walk.mjs:23:574)
+    at async file:///C:/Users/User/.codex/visualizations/2026/10/03/01a103a4-fe5a-7480-a6df-6c25f1000766/phone-desktop-walk.mjs:49:541 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.21.0

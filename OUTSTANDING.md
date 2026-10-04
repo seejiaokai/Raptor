@@ -1243,9 +1243,21 @@ medium; any time, none blocking.
 4 Oct diagnostic on the unchanged workflow bundle confirms the first cause: phone
 `display:contents` on the board wrapper survives Desktop layout's horizontal parent.
 All ten sections are0px at390/820,832px at821/844 landscape; Phone layout restores346px.
-Candidate: restore the wide wrapper's flex column, then verify widths, actual panning
-and return/Done. No repair built or picture approved. Evidence:
+At that diagnostic, candidate only: restore the wide wrapper's flex column, then
+verify widths, actual panning and return/Done. No repair built or picture approved
+in that investigation. Evidence:
 `raptor-port/docs/handpass/2026-10-04-workflow-ui-investigation.md` §Phone Desktop layout.
+**D548, 4 Oct:** owner selected this repair only: "Just fix the desktop layout on
+a phone. The rest don't fix it it's fine". Retain the existing Desktop layout,
+sideways navigation, Phone return and Done. Candidate pictures and independent
+plan challenge preceded the source edit. Repair built: only wide wrapper's
+`display:flex`; original regression red then green; WALK26 inspected final originals,
+10 section headers/8 real-row hits plus Available/SANS grid proof, native toolbar
+touch pan, independent crew/schedule scrolling and Phone return/Done. Normal phone
+and desktop geometry unchanged. Five repair gates/relevant checks and fresh Astra
+read are in `raptor-port/docs/handpass/2026-10-04-phone-desktop-board-repair.md`.
+Physical Safari/full-area touch and absent guest/issued fixture remain qualified.
+Not main/live; item remains open for Claude's Monday read/owner look/authorized merge.
 
 ### [BUBBLE-SMALL-SEEN] Two small things about the message bubble, found by the change-recording walk (29 Sep 26)
 Both the same on `main` (the Phase A pictures, taken on `main`, show them): (1) **Unpublish says nothing** — pressed on a
@@ -1508,6 +1520,12 @@ Availability lacks an existing count-chip fixture. Type-help60vh card has awkwar
 absolute placement; page/inner scrolling reaches its last text and outside closes,
 so no trapped-panel claim. Keep open; change only a demonstrated problem after the
 owner's picture look. Evidence: `raptor-port/docs/handpass/2026-10-04-workflow-ui-investigation.md`.
+**D547, owner iPhone check, 4 Oct:** picture 3's New input popup is not a problem;
+he can scroll to its buttons. Withdraw the agent's pinned-title/footer proposal
+and leave that popup unchanged. This does not clear other panels or unspecified
+keyboard/browser-bar states; no app repair is filed for that recovered behaviour.
+**D548:** leave these popup behaviours unchanged in this repair; only the phone
+Board's blank Desktop layout is selected. The original observations are retained.
 
 ### [INSIGHTS-BOARD-DOOR] The Scheduler Board gets a way to open Insights — BUILT on the Insights branch, awaiting reads/main
 Built with `[INSIGHTS-MISSION-MIX]` after D532 picture agreement: desktop beside the bell; phone in More only.
@@ -1788,6 +1806,9 @@ and1440×480 header58px and those hits work; return to1280 covers them again. Ca
 remains actual-header clearance plus available-height update, not raised stacking or
 hard-coded104px. Still open, no repair/picture approval. Evidence:
 `raptor-port/docs/handpass/2026-10-04-workflow-ui-investigation.md` §Desktop crew list.
+**D548, 4 Oct:** owner says leave this behaviour unchanged; only the phone Board's
+blank Desktop layout is selected for repair. Retain the finding as history,
+outside the current repair scope; no crew-list/header change is authorized here.
 
 ### [REST-FIRST-CREW-HINT] Empty formation gives no predictive crew-rest hint for its first occupant (found 2 Oct 26)
 Rally runtime evidence: an empty Wednesday formation resolves reporting to Tuesday11:00, but Ranger gets no pre-placement rest hint. First assignment correctly raises9h crew rest against Monday's overnight endingTuesday02:00. A different remaining crew member supplies a sibling and Ranger's hypothetical placement then correctly gives clearance14:00. Removal restores the missing-first-hint condition. Baseline query contract and a dedicated test explicitly return null for an empty formation; this is existing behaviour, not a new Rally regression, and is not exempted as stored-demo-only harm. The broad guide claim that the query never disagrees has been qualified in `raptor-port/docs/engine-rules.md`.

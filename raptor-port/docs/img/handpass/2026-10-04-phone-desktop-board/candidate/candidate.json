@@ -1,0 +1,345 @@
+{
+  "scope": "Candidate only: frozen diagnostic bundle plus browser-only display:flex override, no source edit or completed repair proof",
+  "errors": [],
+  "states": [
+    {
+      "name": "phone-wide-before",
+      "facts": {
+        "wide": true,
+        "wrapper": "contents",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 0
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 0
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 0
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 0
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 0
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 0
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 0
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 0
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 0
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 0
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 77,
+          "width": 816,
+          "height": 767,
+          "top": 77,
+          "right": 816,
+          "bottom": 844,
+          "left": 0
+        },
+        "board": {
+          "x": 816,
+          "y": 77,
+          "width": 44,
+          "height": 767,
+          "top": 77,
+          "right": 860,
+          "bottom": 844,
+          "left": 816
+        }
+      }
+    },
+    {
+      "name": "phone-candidate",
+      "baseline": {
+        "wide": false,
+        "wrapper": "contents",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 346
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 346
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 346
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 346
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 346
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 346
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 346
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 346
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 346
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 346
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 75,
+          "width": 390,
+          "height": 155,
+          "top": 75,
+          "right": 390,
+          "bottom": 230,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 275,
+          "width": 390,
+          "height": 6616.4375,
+          "top": 275,
+          "right": 390,
+          "bottom": 6891.4375,
+          "left": 0
+        }
+      },
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 860,
+          "bottom": 232,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 232,
+          "width": 860,
+          "height": 612,
+          "top": 232,
+          "right": 860,
+          "bottom": 844,
+          "left": 0
+        }
+      }
+    },
+    {
+      "name": "desktop-candidate",
+      "baseline": {
+        "wide": false,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 932
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 932
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 932
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 932
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 932
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 932
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 932
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 932
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 932
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 932
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 106,
+          "width": 960,
+          "height": 136,
+          "top": 106,
+          "right": 960,
+          "bottom": 242,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 242,
+          "width": 960,
+          "height": 3612.5625,
+          "top": 242,
+          "right": 960,
+          "bottom": 3854.5625,
+          "left": 0
+        }
+      },
+      "facts": {
+        "wide": false,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 932
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 932
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 932
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 932
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 932
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 932
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 932
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 932
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 932
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 932
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 106,
+          "width": 960,
+          "height": 136,
+          "top": 106,
+          "right": 960,
+          "bottom": 242,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 242,
+          "width": 960,
+          "height": 3612.5625,
+          "top": 242,
+          "right": 960,
+          "bottom": 3854.5625,
+          "left": 0
+        }
+      }
+    }
+  ]
+}

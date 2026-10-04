@@ -1,0 +1,414 @@
+{
+  "errors": [],
+  "assets": [
+    {
+      "path": "dist/assets/html-DvP4ZE4p.js",
+      "bytes": 58067,
+      "sha256": "d7439df34e23fa4e6682329a1b83024c4a685d080b3d1865a944aa2fcc81f502"
+    },
+    {
+      "path": "dist/assets/idle-BfPG9c67.css",
+      "bytes": 3445,
+      "sha256": "176e470cd66a93432185177d4c272e833fb7e446397c573ed2db74b37e04602d"
+    },
+    {
+      "path": "dist/assets/idle-uKU43X6z.js",
+      "bytes": 433,
+      "sha256": "5b4a1b28b787e1eaac493846bbedf983ece1490f4026213da82d7be3872286c6"
+    },
+    {
+      "path": "dist/assets/index-CreJrFUc.js",
+      "bytes": 624346,
+      "sha256": "5c8f2e5d00decd72027c03a99c488b2642843b1c2380c10e59e9b46c86e59d33"
+    },
+    {
+      "path": "dist/assets/index-ulUtUKKl.css",
+      "bytes": 218755,
+      "sha256": "dcba9100679f1b5f333b6429af2a7c99e260072f581484d4c1084b84884485e7"
+    },
+    {
+      "path": "dist/assets/inputedit-DgwrjY5a.js",
+      "bytes": 90155,
+      "sha256": "dfb7639225c2492fe0edfb6206572dd24b074152c35190449afe5afa4f0b743c"
+    },
+    {
+      "path": "dist/assets/jsx-runtime-B-hcVAMW.js",
+      "bytes": 8557,
+      "sha256": "6eab4df858048a4840a5d08754d84773f3f0de0ea0c4bb58e0e0abca99d1d973"
+    },
+    {
+      "path": "dist/assets/LeaveWarPage-C7jiJ1U2.css",
+      "bytes": 76185,
+      "sha256": "95e685e697906db21920f8f72b0be2dea17f755dd108d56d1ac2f8ae3cbdc00f"
+    },
+    {
+      "path": "dist/assets/LeaveWarPage-z5-AAJbu.js",
+      "bytes": 195263,
+      "sha256": "a44d154dbf93f9aba3e4729fb1a48ad946bc65121395a15f0f1f30e51a8791a6"
+    },
+    {
+      "path": "dist/assets/oilmode-CqbsTo16.js",
+      "bytes": 12306,
+      "sha256": "daffd4688c0a79771315b322897cbac18d65264cfcd6a126d7a469cd63110381"
+    },
+    {
+      "path": "dist/assets/sched-commit-DkN8S9q8.js",
+      "bytes": 318291,
+      "sha256": "2f67c247f7e0b9852a4595c98932aa3623b49a1513d115b8fd8cdff495bb7a97"
+    },
+    {
+      "path": "dist/assets/store-Dhw1hb2v.js",
+      "bytes": 146823,
+      "sha256": "32dfe95cf2ef62ced7c1089b80cc859f6ee5dc72b02aca052d92e24716c7d343"
+    },
+    {
+      "path": "dist/assets/TrackerPage-RlgGU7Bu.css",
+      "bytes": 32016,
+      "sha256": "73472c1eda19949dc6645986d7de877892f7cc86b49f1fa9cf1dfe0d61f31baf"
+    },
+    {
+      "path": "dist/assets/TrackerPage-vULOqoTG.js",
+      "bytes": 413184,
+      "sha256": "ea245d17f2e612d511c0d0fd3b595aa1707eff42bc8a79e855f8f4d0a37e6b94"
+    },
+    {
+      "path": "dist/assets/undo-DPMBoZSA.js",
+      "bytes": 35,
+      "sha256": "7536ea7da6f5b811d563ad58cbe742681f4cf09fa18a2ea089d37d342fba4f92"
+    },
+    {
+      "path": "dist/assets/wavetpl-DeZHH-ii.js",
+      "bytes": 14290,
+      "sha256": "97bdfd9ac055193c604fa66645fc3e3f38df64704f063d4cf2db0278fa581a76"
+    },
+    {
+      "path": "dist/assets/weeknav-DEdR3eQ_.js",
+      "bytes": 904,
+      "sha256": "afd50dd7ecb97b2d617500072303df33f086eb8131de00f5f1cc01e39adcae18"
+    },
+    {
+      "path": "dist/favicon.svg",
+      "bytes": 1586,
+      "sha256": "69418c3fad9142001a02ba99b8a381411288280344f87e0a6b690a38d71c881f"
+    },
+    {
+      "path": "dist/index.html",
+      "bytes": 3026,
+      "sha256": "ffcf7087a7d8f898913822005118550f86f08fe9137c8eebb846a09e5546a7bf"
+    }
+  ],
+  "sections": [
+    {
+      "key": "0.notes",
+      "header": {
+        "text": "⠿Overall notes shown at the head of the day+ Note",
+        "rect": {
+          "x": 17,
+          "y": 296.5,
+          "width": 812,
+          "height": 47,
+          "top": 296.5,
+          "right": 829,
+          "bottom": 343.5,
+          "left": 17
+        },
+        "own": true,
+        "hit": "sub"
+      },
+      "content": {
+        "text": "⠿1.EP: ENGINE FIRE ON TAKE OFF✕",
+        "rect": {
+          "x": 28,
+          "y": 351.5,
+          "width": 790,
+          "height": 24,
+          "top": 351.5,
+          "right": 818,
+          "bottom": 375.5,
+          "left": 28
+        },
+        "own": true,
+        "hit": "nin"
+      }
+    },
+    {
+      "key": "0.prog",
+      "header": {
+        "text": "⠿Common Programme squadron-wide — affects all⇅ Auto sort+ Item",
+        "rect": {
+          "x": 17,
+          "y": 433.5,
+          "width": 812,
+          "height": 47,
+          "top": 433.5,
+          "right": 829,
+          "bottom": 480.5,
+          "left": 17
+        },
+        "own": true,
+        "hit": "sub"
+      },
+      "content": {
+        "text": "⠿SODB+ addCXⓘ■✕",
+        "rect": {
+          "x": 28,
+          "y": 508.5,
+          "width": 790,
+          "height": 34,
+          "top": 508.5,
+          "right": 818,
+          "bottom": 542.5,
+          "left": 28
+        },
+        "own": true,
+        "hit": "sb-arow c6r"
+      }
+    },
+    {
+      "key": "0.waves",
+      "header": {
+        "text": "⠿Flying waves go times, formations, crews+ Wave",
+        "rect": {
+          "x": 17,
+          "y": 247.21875,
+          "width": 812,
+          "height": 47,
+          "top": 247.21875,
+          "right": 829,
+          "bottom": 294.21875,
+          "left": 17
+        },
+        "own": true,
+        "hit": "sub"
+      },
+      "content": {
+        "text": "⠿\n        VL\n        BFM\n        10:20\n        \n        \n        CSaberIPDTEchoIW\n        \n          \n          1B: BFM-6\n          TPOD2 TKSC\n        \n        ",
+        "rect": {
+          "x": 17,
+          "y": 442.71875,
+          "width": 812,
+          "height": 65,
+          "top": 442.71875,
+          "right": 829,
+          "bottom": 507.71875,
+          "left": 17
+        },
+        "own": true,
+        "hit": "sb-line"
+      }
+    },
+    {
+      "key": "0.duty",
+      "header": {
+        "text": "⠿Duties SDO / SXO / ops desk, by block+ Block",
+        "rect": {
+          "x": 17,
+          "y": 246.78125,
+          "width": 812,
+          "height": 47,
+          "top": 246.78125,
+          "right": 829,
+          "bottom": 293.78125,
+          "left": 17
+        },
+        "own": true,
+        "hit": "sub"
+      },
+      "content": {
+        "text": "⠿SDOSidewinderIP+ addCX■✕",
+        "rect": {
+          "x": 28,
+          "y": 373.28125,
+          "width": 790,
+          "height": 34,
+          "top": 373.28125,
+          "right": 818,
+          "bottom": 407.28125,
+          "left": 28
+        },
+        "own": true,
+        "hit": "sb-arow c6r"
+      }
+    },
+    {
+      "key": "0.sims",
+      "header": {
+        "text": "⠿Sims AMT and OFT rows",
+        "rect": {
+          "x": 17,
+          "y": 246.5,
+          "width": 812,
+          "height": 47,
+          "top": 246.5,
+          "right": 829,
+          "bottom": 293.5,
+          "left": 17
+        },
+        "own": true,
+        "hit": "sb-ph"
+      },
+      "content": {
+        "text": "⠿BRIEFALL 8 PAX @ AMT BLDGCX■✕",
+        "rect": {
+          "x": 28,
+          "y": 363,
+          "width": 790,
+          "height": 34,
+          "top": 363,
+          "right": 818,
+          "bottom": 397,
+          "left": 28
+        },
+        "own": true,
+        "hit": "sb-arow c6r"
+      }
+    },
+    {
+      "key": "0.ground",
+      "header": {
+        "text": "⠿Ground Programme briefs, reviews, admin+ Inputs⇅ Auto sort+ Item",
+        "rect": {
+          "x": 17,
+          "y": 247.21875,
+          "width": 812,
+          "height": 75,
+          "top": 247.21875,
+          "right": 829,
+          "bottom": 322.21875,
+          "left": 17
+        },
+        "own": true,
+        "hit": "sb-ph"
+      },
+      "content": {
+        "text": "⠿HQ ENGAGEMENTAceA+ addCXⓘ■✕",
+        "rect": {
+          "x": 28,
+          "y": 350.21875,
+          "width": 790,
+          "height": 34,
+          "top": 350.21875,
+          "right": 818,
+          "bottom": 384.21875,
+          "left": 28
+        },
+        "own": true,
+        "hit": "sb-arow c6r"
+      }
+    },
+    {
+      "key": "0.inputs",
+      "header": {
+        "text": "⠿Personal Inputs 3 inputs · 3 on programme · show ⌄",
+        "rect": {
+          "x": 17,
+          "y": 246.9375,
+          "width": 812,
+          "height": 47,
+          "top": 246.9375,
+          "right": 829,
+          "bottom": 293.9375,
+          "left": 17
+        },
+        "own": true,
+        "hit": "sb-ph pl-fold"
+      },
+      "content": {
+        "text": "⠿Fly withCGambitCKeen for any waveUndo",
+        "rect": {
+          "x": 11,
+          "y": 353.9375,
+          "width": 790,
+          "height": 34,
+          "top": 353.9375,
+          "right": 801,
+          "bottom": 387.9375,
+          "left": 11
+        },
+        "own": true,
+        "hit": "atm"
+      }
+    },
+    {
+      "key": "0.avail",
+      "header": {
+        "text": "⠿Available crewby wave · close ⌃",
+        "rect": {
+          "x": 0,
+          "y": 479.9375,
+          "width": 812,
+          "height": 27,
+          "top": 479.9375,
+          "right": 812,
+          "bottom": 506.9375,
+          "left": 0
+        },
+        "own": true,
+        "hit": "ap-h"
+      },
+      "content": "Existing folded/grid section; header hit and readable width retained"
+    },
+    {
+      "key": "0.sans",
+      "header": {
+        "text": "⠿SANS Avail what SANS aircrew are offering — press a card to edit+ Add",
+        "rect": {
+          "x": 0,
+          "y": 351.9375,
+          "width": 812,
+          "height": 47,
+          "top": 351.9375,
+          "right": 812,
+          "bottom": 398.9375,
+          "left": 0
+        },
+        "own": true,
+        "hit": "sub"
+      },
+      "content": "Existing folded/grid section; header hit and readable width retained"
+    },
+    {
+      "key": "0.unav",
+      "header": {
+        "text": "⠿Unavailable leave, medical and overseas duty — times and remarks type in place, clear a time for all day+ Add",
+        "rect": {
+          "x": 0,
+          "y": 485.9375,
+          "width": 812,
+          "height": 47,
+          "top": 485.9375,
+          "right": 812,
+          "bottom": 532.9375,
+          "left": 0
+        },
+        "own": true,
+        "hit": "sub"
+      },
+      "content": {
+        "text": "⠿OMLCVectorCMedical leave 13 Jul",
+        "rect": {
+          "x": 11,
+          "y": 560.9375,
+          "width": 790,
+          "height": 34,
+          "top": 560.9375,
+          "right": 801,
+          "bottom": 594.9375,
+          "left": 11
+        },
+        "own": true,
+        "hit": "atm"
+      }
+    }
+  ],
+  "pictures": [
+    "section-2.png",
+    "section-4.png",
+    "section-5.png",
+    "section-8.png"
+  ],
+  "scope": "Supplemental native all-section roll-call and nonvacuous all-dist HTTP byte proof; unchanged final source/build",
+  "workingView": "SIGN-OFF\nCUR CK\n— name —\n— name —\nAce\nAnvil\nBasher\nBlade\nBolt\nCinch\nCinder\nCobra\nComet\nCotter\nCutter\nDash\nDiesel\nDrifter\nEcho\nFable\nForge\nGambit\nGhost\nGrit\nHavoc\nHex\nHunter\nJester\nKraken\nLedger\nMarlin\nNomad\nOtter\nOutlaw\nPiston\nPixel\nQuill\nRanger\nRatchet\nReaper\nRebel\nRecon\nRelay\nRidge\nRune\nRyder\nSaber\nSaint\nScope\nScribe\nSidewinder\nStatic\nTalisman\nTally\nTorch\nTrident\nVandal\nVapor\nVector\nWarden\nWidget\nWildcard\nWisp\nZenith\nZulu\nSKED CK\n— name —\n— name —\nAnvil\nBasher\nBolt\nCinch\nDrifter\nEcho\nForge\nPiston\nRanger\nReaper\nRidge\nSaber\nSidewinder\nStatic\nTrident\nWarden\nPLANNED BY\n— name —\n— name —\nAnvil\nBasher\nBolt\nCinch\nDrifter\nEcho\nForge\nPiston\nRanger\nReaper\nRidge\nSaber\nSidewinder\nStatic\nTrident\nWarden\nAPPROVED BY\n— name —\n— name —\nAnvil\nBasher\nBolt\nCinch\nDrifter\nEcho\nForge\nPiston\nRanger\nReaper\nRidge\nSaber\nSidewinder\nStatic\nTrident\nWarden\n4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\nLive working copy\n▾\nDRAFT\ni\nPublish day",
+  "warningText": "⚠ 17 issues\n· 6 warnings ·\ntap to review\nSaber — OPS SHARING + NAV SYS BRIEF & VL BFM clash✕\nRanger — VL BFM & Sim EP-4 clash✕\nPiston — RU BFM & STANDARDISATION MEETING clash✕\nVector — Downchit but planned to fly RU BFM — reason: Medical leave 13 Jul✕\nGambit — Fly with but tasked — Sim BOX — reason: Keen for any wave✕\nGrit — Downchit but tasked — Sim EP-6N — reason: Medically down till 17 Jul✕\nSaber — No time for the VL BFM flight brief — OPS SHARING + NAV SYS BRIEF sits inside 17:25–19:45 (brief 17:25)✕\nRanger — No time for the VL BFM flight brief — Sim EP-4 sits inside 10:20–12:40 (brief 10:20)✕\nPiston — No time for the RU BFM flight brief — STANDARDISATION MEETING sits inside 11:20–13:40 (brief 11:20)✕\nRanger — No time for the OFT EP-4 brief — VL BFM sits inside 11:30–12:00✕\nRanger — No time for the OFT EP-4 debrief — VL BFM sits inside 13:30–14:00✕\nSaber, Echo, Piston, Relay — 4 people are double turning: Saber, Echo, Piston, Relay✕\nWildcard, Tally — Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus✕\nSaber — Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)✕\nEcho — Echo has a long work day: 13h30, 09:40 → 23:10 (last landing 21:10 + 2h debrief assumed)✕\nPiston — Piston has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)✕\nRelay — Relay has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)✕",
+  "pass": true
+}

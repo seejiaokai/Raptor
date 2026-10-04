@@ -13,6 +13,38 @@ import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, sett
 const PHONE = { width: 390, height: 844 }
 const DESK = { width: 1500, height: 950 }
 
+/* D548: a real section can collapse even when the Desktop toggle and title work.
+   Use the ordinary Board door and measure every section, not the mode class. */
+test('phone Desktop layout keeps every schedule section usable below sign-off', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await page.locator('#burger').click()
+  await page.locator('#drawerNav [data-page="editsched"]').click()
+  await page.locator('#eWeek [data-sbday="0"]:visible').click()
+  await page.locator('#sbBoard .sb-sec').first().waitFor({ state: 'attached' })
+  await page.locator('#sbMore').click()
+  await page.locator('#sbMoreWide').click()
+
+  const widths = await page.locator('#sbBoard .sb-sec').evaluateAll(elements =>
+    elements.map(element => ({
+      name: element.textContent!.trim().slice(0, 48),
+      width: element.getBoundingClientRect().width,
+    })))
+  expect(widths, 'all ten existing section kinds are drawn').toHaveLength(10)
+  for (const section of widths)
+    expect(section.width, `${section.name}: a readable section, not a zero-width shell`).toBeGreaterThan(300)
+
+  const flow = await page.evaluate(() => {
+    const sign = document.querySelector('#sbSign')!.getBoundingClientRect()
+    const board = document.querySelector('#sbBoard')!.getBoundingClientRect()
+    const row = document.querySelector('#sbBoard .sb-nrow')!.getBoundingClientRect()
+    return { signBottom: sign.bottom, boardTop: board.top, rowWidth: row.width }
+  })
+  expect(flow.boardTop, 'sign-off stays above the schedule').toBeGreaterThanOrEqual(flow.signBottom - 1)
+  expect(flow.rowWidth, 'an actual populated note row retains usable width').toBeGreaterThan(300)
+  await expect(page.locator('#sbBoard .sb-nrow').first()).toBeVisible()
+})
+
 /* every free-text cell on the dense surfaces: these must WRAP (grow taller),
    never widen their column or spill over the neighbour */
 const FREETEXT = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .ppl .itxt, .areacell'

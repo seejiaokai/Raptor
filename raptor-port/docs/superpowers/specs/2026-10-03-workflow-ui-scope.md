@@ -80,7 +80,7 @@ concrete design must still define rows in wrapped phone layouts, section boundar
 and focus after a commit, from the owner's answers. Preserve Enter/Escape, no-op
 derived values and D529's silence on unchanged Remarks. D546 defers the first two
 earlier priorities, not keyboard/Tab. These four questions remain unanswered;
-they can wait until the owner returns. D547 is next.
+they can wait until the owner returns. D549 is next.
 
 The wider scope discussion must carry the filed desktop crew-list/header overlap
 (`[PALETTE-WRAPPED-HEADER]`, assigned to this batch), blank phone Board in Desktop
@@ -89,6 +89,31 @@ phone panels (`[VH-SHEETS-IPHONE]`, low, repair only demonstrated cutoff). These
 are existing backlog items; inclusion is not repair or picture approval. No visual
 source change before the owner's phone/desktop picture look. Earlier split evidence
 remains qualified; the authorized focused diagnostics below do not repeat its gates.
+
+## Owner phone check — D547, 4 Oct 26
+
+After seeing picture 3's New input popup and the proposed pinned title/action row,
+the owner said: "It's not a problem on the iPhone I could still scroll to reach it".
+The existing scrolling recovery is acceptable on his iPhone. Withdraw this popup's
+proposed change and leave it as it is. This is an owner device observation, not an
+agent-run check of every keyboard/browser-bar state or clearance for other panels.
+The wider phone-panel item retains its bounded scope and remains open for other
+demonstrated problems; the two confirmed crew-list/Board faults remain separate.
+
+## Selected repair — D548, 4 Oct 26
+
+Owner: "Just fix the desktop layout on a phone. The rest don't fix it it's fine".
+Only `[PHONE-WIDE-BOARD-BLANK]` is selected for repair. Leave the crew-list/header
+overlap and popup behaviour unchanged; D547's New input scrolling is acceptable.
+This is the scope of the three investigated behaviours, not cancellation of all
+earlier keyboard/backlog work. Restore the existing Desktop layout's schedule
+content on a phone, preserving sideways navigation, return to Phone layout and
+Done. No redesign or picture-gate waiver inferred: candidate phone/desktop pictures
+and independent plan challenge preceded visual source changes. The selected
+single-property restoration is built and checked separately:
+`raptor-port/docs/handpass/2026-10-04-phone-desktop-board-repair.md`. Normal phone
+and desktop layout preserved; other two behaviours unchanged. Fresh independent
+code read/branch shipping status and physical-device limits are in that sheet.
 
 ## Heavy investigation — authorized and completed, 4 Oct 26
 

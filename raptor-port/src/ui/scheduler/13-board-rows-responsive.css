@@ -852,7 +852,8 @@
 .schedboard.sb-wide{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
 .schedboard.sb-wide>*{min-width:1180px}
 .schedboard.sb-wide .sb-main{flex-direction:row;overflow-y:hidden;overflow-x:visible;min-height:0}
-.schedboard.sb-wide .sb-boardwrap{flex:1 1 auto;min-width:0;min-height:0}
+/* Restore the column that normal-phone display:contents flattens (D548). */
+.schedboard.sb-wide .sb-boardwrap{display:flex;flex:1 1 auto;min-width:0;min-height:0}
 .schedboard.sb-wide .sb-board{flex:1;overflow:auto}
 .schedboard.sb-wide .sb-inputs{max-height:36%;overflow:auto}
 .schedboard.sb-wide .sb-side{position:static;width:320px;flex:0 0 320px;max-height:none;
@@ -919,4 +920,3 @@
 .schedboard.sb-wide .sb-acols.c6r>:nth-child(2){grid-column:auto}
 .schedboard.sb-wide .sbi-row{grid-template-columns:96px var(--puck-w) 112px 1fr;gap:9px}
 .schedboard.sb-wide .sbi-row .sbi-rm{grid-column:auto;font-size:11px}
-

@@ -1,0 +1,31 @@
+
+Running 1 test using 1 worker
+
+
+
+(node:44632) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[1/1] [raptor] › e2e\geometry.spec.ts:18:5 › phone Desktop layout keeps every schedule section usable below sign-off
+  1) [raptor] › e2e\geometry.spec.ts:18:5 › phone Desktop layout keeps every schedule section usable below sign-off 
+
+    Error: ⠿Overall notes shown at the head of the day+ Not: a readable section, not a zero-width shell
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 300
+    Received:   0
+
+      33 |   expect(widths, 'all ten existing section kinds are drawn').toHaveLength(10)
+      34 |   for (const section of widths)
+    > 35 |     expect(section.width, `${section.name}: a readable section, not a zero-width shell`).toBeGreaterThan(300)
+         |                                                                                          ^
+      36 |
+      37 |   const flow = await page.evaluate(() => {
+      38 |     const sign = document.querySelector('#sbSign')!.getBoundingClientRect()
+        at C:\Users\User\projects\Raptor\raptor-port\e2e\geometry.spec.ts:35:90
+
+    Error Context: test-results\geometry-phone-Desktop-lay-81228-ction-usable-below-sign-off-raptor\error-context.md
+
+
+  1 failed
+    [raptor] › e2e\geometry.spec.ts:18:5 › phone Desktop layout keeps every schedule section usable below sign-off 
