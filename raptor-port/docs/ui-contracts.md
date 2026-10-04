@@ -7981,6 +7981,13 @@ swipe, and everything a member sees.
 
 ## The Tracker tab (7 Sep 26)
 
+**D560, 4 Oct 26 — requested, not yet designed or built:** the owner finds the text inside the blue flight
+balls hard to read and proposes reshaping the wing to give its label more area and stronger contrast.
+Hold design, mockups, source work and application checks while he supplies the remaining tasks; no final
+shape or whole-ball size is approved. Impeccable is advisory when work resumes. Preserve D157's Raptor palette,
+D464's authored charts/details and existing chart behaviour. The supplied photo remains private.
+Filed in `OUTSTANDING.md` as [TRK-FLIGHT-LABEL-READABILITY] within the current workflow UI batch.
+
 The vendored OCU Progress Tracker (`src/tracker/`, from `seejiaokai/Tracker`
 at `bf9a47a`) is the eighth tab, after Leave War, for everyone. What holds on
 screen:

@@ -131,6 +131,7 @@ phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Cod
 **Timing follow-up:** [REST-FIRST-CREW-HINT] — existing empty-formation predictive-rest gap, filed with caps and ops limits; committed placement still validates. Current Rally evidence declares this limitation; no owner approval inferred.
 **Availability follow-up:** [SANS-PREVIOUS-REPORT-OFFER] — previous-date offers are not combined with target-date half-days for a previous-evening report; characterized in this round's actual picker/placement, with caps and ops limits. No new availability policy or owner waiver inferred.
 **Workflow UI follow-up:** [PALETTE-WRAPPED-HEADER] — inherited sticky-palette overlap under a wrapped desktop account bar; with the UI pass after [CSS-SPLIT-BY-SCREEN]. Current Rally and baseline reproduce it; not dismissed as a helper-only failure.
+**Owner's current workflow UI requests — held while he supplies the rest, D560 (4 Oct 26):** [TRK-FLIGHT-LABEL-READABILITY] — clearer words inside the Tracker's blue flight balls; a wider wing label area is proposed, no design or build started. This does not start the Tracker progress-graph batch or change D495's order.
 
 **Waiting on him — no order exists:**
 [LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
@@ -1771,6 +1772,17 @@ Fresh separate Astra final R1 PASS, complete immutable report beside evidence;
 Owner preview look accepted D559,4Oct, Ready https://raptor-irwn04ala-kai-e2f5.vercel.app;
 further interface requests continue in a new chat, details not yet specified.
 Monday Claude plan/code/scenarios/full app walk remains before authorized live merge.
+
+### [TRK-FLIGHT-LABEL-READABILITY] Make the words inside blue flight balls easier to read — D560, 4 Oct 26
+Owner's private Photo 1 shows the Tracker Flow chart's blue flight symbols with text hard to read inside the narrow
+wing. He asks for a shape redesign, suggests more wing surface for the label and contrast, invokes Impeccable, then
+says he has more tasks and to hold on. **Status:** request recorded; design, pictures, source work and app checks held
+until the remaining requests arrive. No final shape, dimensions, whole-ball size or colour change approved.
+**Home:** `raptor-port/docs/ui-contracts.md` The Tracker tab (D560); short/full Tracker ruling.
+**Place:** current workflow UI pass, collected with the owner's next requests; exact design/build order awaits that
+batch. Preserve authored charts/details (D464), Raptor palette (D157) and existing chart behaviour. Private photo stays
+outside the repo; no student names, marks or dates copied into records. Numbered phone/desktop pictures before build.
+This is separate from [TRK-KEY-NAME-CLIP] and [TRK-FLEXBAR-INK], and does not start the progress graph or file split.
 
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
 From Astra's tidiness read (its §3 — read it before building). The export / import workflow (about 730 lines) leaves
