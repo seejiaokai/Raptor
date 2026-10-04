@@ -27,6 +27,18 @@ one** (`raptor-port/CLAUDE.md` §Coding conventions). Moved WHOLE from `HANDOFF.
 (D138, D140) — it was two thirds of the handoff every chat read at its start, and a chat needs it only when it
 is looking for a file. Paths in the Tooling table are relative to `raptor-port/`, as they were in `HANDOFF.md`; the rows moved byte for byte and the few that had gone stale were corrected the same day, each marked.
 
+D560-D563 interface readability/scroll batch: `scripts/handpass/interface-readability-scroll.mjs`
+drives the real built Tracker, Logic and every Insights door with private local pictures and native actions.
+Logic's local topbar size observer is in `src/ui/LogicPage.tsx`; compact controls are scoped to
+`src/ui/scheduler/01-logic.css`. Insights' header alone sticks in `21-insights.css`. The D566 accepted flight path
+in `src/tracker/app/core.js` widens inside the unchanged ring. Painted/hit geometry lives in
+`e2e/geometry.spec.ts`; observer lifetime in `src/ui/logic.test.tsx`. No model/schema/engine writer changes.
+`scripts/tracker/smoke.mjs` retains Last Flown assertions; its flight finder uses the rounded-join wing instead of old polygon point count.
+D564 replacement choices: `docs/superpowers/specs/2026-10-04-flight-centre-options.md`; picture read/dispositions
+in `docs/handpass/2026-10-04-flight-centre-options-picture-read.md`. Private mocks remain outside public repo.
+D565 annotated taper: `docs/superpowers/specs/2026-10-04-flight-leading-edge-taper.md`; specific picture/challenge
+in `docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`; old options preserved.
+
 ## File map
 
 ### `raptor-port/src/engine/` — the rules engine (DOM-free)
@@ -358,3 +370,8 @@ record is `docs/img/insights-build-editing/inspection.json`. The fresh second in
 report is `docs/handpass/2026-10-03-insights-mission-mix-review-r2.md`, covering exact freeze5, all33 qualified routes,
 804 matching hashes, eleven independently opened existing pictures and explicit limits. Required gate and comparison logs are retained in
 `docs/handpass/insights-gates/`, including the unchanged planning snapshot's three existing adapted audit failures.
+
+D566 implementation addendum/challenge: `docs/superpowers/plans/2026-10-04-flight-taper-{implementation-addendum,plan-challenge}.md`.
+Current accepted-build evidence: `docs/handpass/2026-10-04-accepted-taper-interface-batch.md`; earlier rejected build proof remains historical.
+
+Fresh accepted-batch R1 inspector: immutable `docs/superpowers/briefs/2026-10-04-accepted-taper-interface-astra-final-r1.md`; complete PASS/report `docs/handpass/2026-10-04-accepted-taper-interface-astra-final-r1.md`. Source freeze unchanged; closing status only afterward.

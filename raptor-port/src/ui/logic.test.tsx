@@ -232,3 +232,21 @@ describe('the stamp does not need the Logic page (audit2 #6)', () => {
     expect(document.body.classList.contains('page-rules-off')).toBe(false)
   })
 })
+
+/* D561: local clearance updates without recreating search; listeners stop on leave. */
+it('D561 observes the topbar size and releases its observer/listener on leaving Logic', async () => {
+  await click($$('.nav a[data-page]').find(a=>a.dataset.page==='viewsched')!)
+  const top=$('.topbar'), old=top.getBoundingClientRect, original=globalThis.ResizeObserver
+  let height=61, resize:()=>void=()=>{}, disconnected=false, observed:Element|null=null
+  top.getBoundingClientRect=()=>({height} as DOMRect)
+  globalThis.ResizeObserver=class { constructor(callback:()=>void){resize=callback} observe(e:Element){observed=e} disconnect(){disconnected=true} unobserve(){} } as any
+  try {
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
+    const bar=$('.lgbar'), search=$('#lgSearch')
+    expect(observed).toBe(top);expect(bar.style.top).toBe('61px')
+    height=93;resize();expect(bar.style.top).toBe('93px');expect($('#lgSearch')).toBe(search)
+    height=75;window.dispatchEvent(new Event('resize'));expect(bar.style.top).toBe('75px')
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='viewsched')!)
+    expect(disconnected).toBe(true);height=120;window.dispatchEvent(new Event('resize'));expect(bar.style.top).toBe('75px')
+  } finally {globalThis.ResizeObserver=original;top.getBoundingClientRect=old}
+})

@@ -1,5 +1,9 @@
 /* D515/D524/D532 Insights: one shared modal and temporary controls below AREA. */
 #insightModal{z-index:471}
+/* D562: one scrolling window, with its existing close control always on top. */
+#insightModal .modal-head{position:sticky;top:0;z-index:1;background:var(--panel)}
+#insightModal .modal-head b{min-width:0;overflow-wrap:anywhere}
+#insightModal .modal-head .x{flex-shrink:0}
 .lg-insights{margin:12px 0;border:1px solid var(--edge);border-radius:10px;padding:12px 14px}
 .lg-insights-row{display:flex;align-items:center;gap:16px;margin-top:10px;font-size:13px}
 .lg-insights-row>span:first-child{flex:1}.lg-insights-row small{display:block;color:var(--ink-3);margin-top:4px;font-size:11px}

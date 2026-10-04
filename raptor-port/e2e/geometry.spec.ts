@@ -5388,3 +5388,56 @@ for (const [label, size, pages] of [
     }
   })
 }
+
+/* D560-D562: actual painted geometry, native doors and scroll ownership. */
+for (const width of [320,390,821,1440]) {
+  test('D561 Logic search and compact controls stay below app bar at '+width, async ({page}) => {
+    await page.setViewportSize({width,height:844}); await login(page); await go(page,'logic')
+    await page.evaluate(()=>window.scrollTo(0,650))
+    const read=()=>page.locator('.lgbar').evaluate(bar=>{
+      const top=document.querySelector('.topbar')!.getBoundingClientRect(),b=bar.getBoundingClientRect()
+      return {top:top.bottom,y:b.y,h:b.height, controls:[...bar.querySelectorAll('input,button')].filter(e=>e.getClientRects().length).map(e=>{
+        const r=e.getBoundingClientRect(),hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)
+        return {name:e.id || e.textContent,y:r.y,right:r.right,own:hit===e || e.contains(hit)}
+      }),overflow:document.documentElement.scrollWidth>window.innerWidth}
+    })
+    const r=await read();expect(r.y).toBeGreaterThanOrEqual(r.top-1);expect(r.overflow).toBe(false)
+    for(const c of r.controls){expect(c.y,c.name!).toBeGreaterThanOrEqual(r.top-1);expect(c.right).toBeLessThanOrEqual(width);expect(c.own,c.name!).toBe(true)}
+    if(width===390)expect(r.h,'three compact normal rows instead of174px').toBeLessThanOrEqual(115)
+    await page.locator('#lgSearch').fill('crew rest');await expect(page.locator('#lgBody')).toContainText('crew rest')
+    await page.locator('#lgSearch').fill('');await page.locator('#lgEdit').click()
+    const field=page.locator('[data-lgset="step"]');await field.first().fill('1h10');await field.first().press('Tab')
+    await expect(page.locator('#lgReset')).toBeVisible();for(const c of (await read()).controls)expect(c.own,c.name!).toBe(true)
+    await page.locator('#lgReset').click();await page.locator('#lgDone').click()
+    await page.setViewportSize({width:390,height:568});const small=await read();expect(small.y).toBeGreaterThanOrEqual(small.top-1)
+  })
+}
+for(const width of [390,1440]) {
+  test('D562 Insights cross owns its hit target after modal scroll at '+width,async({page})=>{
+    await page.setViewportSize({width,height:700});await login(page)
+    if(width<=820){await page.locator('#viewSchedMore').click();await page.locator('#viewSchedMoreInsights').click()}
+    else await page.locator('#insightBtn').click()
+    const box=page.locator('#insightModal .modal-box');await box.evaluate(e=>e.scrollTop=500)
+    const r=await page.locator('#insightClose').evaluate(e=>{const r=e.getBoundingClientRect(),b=e.closest('.modal-box')!.getBoundingClientRect(),hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);return {y:r.y,bottom:r.bottom,boxTop:b.top,own:hit===e || e.contains(hit)}})
+    expect(r.y).toBeGreaterThanOrEqual(r.boxTop);expect(r.bottom).toBeLessThan(700);expect(r.own).toBe(true)
+    await page.locator('#insightClose').click();await expect(page.locator('#insightModal')).toBeHidden()
+  })
+  test('D566 tapered flight wing and blue label backing at '+width,async({page})=>{
+    await page.setViewportSize({width,height:844});await login(page);await go(page,'tracker');await page.waitForSelector('#flowSvg .ball')
+    const readCoverage=()=>page.locator('#flowSvg .core').evaluateAll(cores=>{
+      const result: {label:string,misses:number,ink:number,centre:boolean,shoulders:boolean[]}[]=[]
+      for(const core of cores){const wing=core.querySelector('[stroke-linejoin="round"]') as SVGGeometryElement|null,text=core.querySelector('text') as SVGTextContentElement|null;if(!wing || !text)continue
+        const canvas=document.createElement('canvas');canvas.width=116;canvas.height=116;const ctx=canvas.getContext('2d')!,style=getComputedStyle(text)
+        ctx.scale(2,2);ctx.font=style.fontWeight+' '+style.fontSize+' '+style.fontFamily;ctx.textAlign='center';ctx.fillText(text.textContent!,29,32)
+        const pixels=ctx.getImageData(0,0,116,116).data;let misses=0,ink=0
+        for(let y=0;y<116;y++)for(let x=0;x<116;x++)if(pixels[(y*116+x)*4+3]>128){ink++;if(!wing.isPointInFill(new DOMPoint((x+.5)/2,(y+.5)/2)))misses++}
+        result.push({label:text.textContent!,misses,ink,centre:wing.isPointInFill(new DOMPoint(29,29)),shoulders:[19,39].map(x=>wing.isPointInFill(new DOMPoint(x,23)))})
+      }return result
+    })
+    for(const mode of ['flow','details','edit']) {
+      if(mode==='details'){await page.locator('#detailsBtn').click();await page.locator('#detailsHint').waitFor({state:'visible'})}
+      if(mode==='edit'){await page.locator('#detailsBtn').click();await page.locator('#sylMenuBtn').click();await page.locator('#arrangeBtn').click();await page.locator('#fontIn').waitFor({state:'visible'})}
+      const coverage=await readCoverage();expect(coverage).toHaveLength(41);for(const r of coverage){expect(r.ink,mode+' '+r.label+' has painted text').toBeGreaterThan(0);expect(r.centre,mode+' '+r.label+' blue centre').toBe(true);expect(r.shoulders,mode+' '+r.label+' accepted tapered upper shoulders').toEqual([false,false]);expect(r.misses,mode+' '+r.label).toBe(0)}
+    }
+  })
+}

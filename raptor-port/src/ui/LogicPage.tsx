@@ -2,7 +2,7 @@
    objects at render time (renderLogic's row/group strings kept verbatim), with
    the admin edit mode: thresholds parsed + bounded + applied live, the clash
    matrix toggles, Reset to standard, and the RULES MODIFIED stamp. */
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse, ruleOff, kindOff, rulesOffCount, rulesSave, rulesReset } from '../engine/rules'
 import { WARN, validate, lgFired } from '../engine/validate'
 import { dowShort } from '../engine/publish'
@@ -80,6 +80,20 @@ export function LogicPage() {
   const [LGQ, setLGQ] = useState('')
   const [LGF, setLGF] = useState('all')
   const bodyRef = useRef<HTMLDivElement>(null)
+  const barRef = useRef<HTMLDivElement>(null)
+
+  /* D561: the page scrolls under Shell's sticky bar. Measure only its size,
+     on mount/resize, without repainting the rules or following each scroll. */
+  useLayoutEffect(() => {
+    const bar = barRef.current, top = document.querySelector('.topbar')
+    if (!bar || !top) return
+    const place = () => { bar.style.top = `${top.getBoundingClientRect().height}px` }
+    place()
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(place)
+    observer?.observe(top)
+    window.addEventListener('resize', place)
+    return () => { observer?.disconnect(); window.removeEventListener('resize', place) }
+  }, [])
 
   const admin = isAdmin()
   const b = logicBody(LGQ, LGF)
@@ -155,7 +169,7 @@ export function LogicPage() {
             what the READER can do, the same split the off-standard note below
             already makes. */}
         <span className="sub">every rule the engine applies{admin ? ' — “Edit rules” to change a threshold' : ' — read-only'}</span></div>
-      <div className="lgbar">
+      <div className="lgbar" ref={barRef}>
         <div className="searchbox">🔍<input id="lgSearch" placeholder="search the rules — “crew rest”, “brief”, “spare”"
           value={LGQ} onChange={e => setLGQ(e.target.value)} /></div>
         <span className="lgfilters" id="lgFilters">

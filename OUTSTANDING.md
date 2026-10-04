@@ -131,7 +131,7 @@ phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Cod
 **Timing follow-up:** [REST-FIRST-CREW-HINT] — existing empty-formation predictive-rest gap, filed with caps and ops limits; committed placement still validates. Current Rally evidence declares this limitation; no owner approval inferred.
 **Availability follow-up:** [SANS-PREVIOUS-REPORT-OFFER] — previous-date offers are not combined with target-date half-days for a previous-evening report; characterized in this round's actual picker/placement, with caps and ops limits. No new availability policy or owner waiver inferred.
 **Workflow UI follow-up:** [PALETTE-WRAPPED-HEADER] — inherited sticky-palette overlap under a wrapped desktop account bar; with the UI pass after [CSS-SPLIT-BY-SCREEN]. Current Rally and baseline reproduce it; not dismissed as a helper-only failure.
-**Owner's current workflow UI requests — held while he supplies the rest, D560-D562 (4 Oct 26):** [TRK-FLIGHT-LABEL-READABILITY] — clearer words inside blue flight balls, wider wing label area proposed; [LOGIC-STICKY-SEARCH-COMPACT] — keep search visible while scrolling and pack existing controls into fewer rows; [INSIGHTS-CLOSE-STAYS-VISIBLE] — keep the close cross at the top while scrolling Insights. No design or build started. This does not start the Tracker progress-graph batch or change D495's order.
+**Owner's current workflow UI requests — collection complete, build authorized D563 (4 Oct 26):** [TRK-FLIGHT-LABEL-READABILITY] — clearer words inside blue flight balls, wider wing label area proposed; [LOGIC-STICKY-SEARCH-COMPACT] — keep search visible while scrolling and pack existing controls into fewer rows; [INSIGHTS-CLOSE-STAYS-VISIBLE] — keep the close cross at the top while scrolling Insights. Built on codex/workflow-ui after numbered candidates and independent plan challenge; combined first-build checks passed; D564 rejects the first flight shape, D565 steers to a tapered leading edge via his annotation. Specific tapered redraw with native sizes accepted D566; finish checks and fresh inspection of implemented chosen replacement, affected checks/fresh final read/current preview next. Logic/Insights retained. This does not start the Tracker progress-graph batch or change D495's order.
 
 **Waiting on him — no order exists:**
 [LOAD-MSG-SHORT] (a question for him, low — the long line after "Load onto working copy"),
@@ -1775,35 +1775,42 @@ Monday Claude plan/code/scenarios/full app walk remains before authorized live m
 
 ### [INSIGHTS-CLOSE-STAYS-VISIBLE] Keep the Insights close cross at the top while scrolling — D562, 4 Oct 26
 Owner's two private phone photos show the Week insights title/cross at the top initially, then out of view after
-scrolling. He asks for the existing cross to remain at the top. **Status:** request recorded; the confirmed hold for
-remaining tasks continues, so no design, pictures, source work or app checks started. Exact placement and any header
-arrangement await numbered affected-page phone/desktop pictures. Preserve dismissal, D536/D537 window height/top
+scrolling. He asks for the existing cross to remain at the top. **Status:** built on codex/workflow-ui under D563 after numbered pictures/independent plan challenge; all normal gates and fresh independent Astra R1PASS, owner look and Claude reads pending.
+Built on codex/workflow-ui after numbered candidates and independent plan challenge; normal refreshed gates underway; fresh final read and owner look pending. Chosen sticky header placement
+was pictured before source and has current phone/desktop native proof. Preserve dismissal, D536/D537 window height/top
 strip and all Insights data/permissions. No whole-popup-family redesign. Both reference photos remain private.
 **Home:** `raptor-port/docs/ui-contracts.md` Week Insights (D562); short/full Scheduler ruling.
-**Place:** current workflow UI batch beside the Tracker/Logic requests; exact order awaits the remaining tasks.
+**Place:** current workflow UI batch with the Tracker/Logic requests, authorized together by D563.
 Separate from the earlier D536 phone-top clipping repair and [MODAL-DRAG-CLOSE] accidental dismissal fix.
+
+**Insights close design:** `raptor-port/docs/superpowers/specs/2026-10-04-interface-readability-scroll.md`; **build plan:** `raptor-port/docs/superpowers/plans/2026-10-04-interface-readability-scroll-build-plan.md` (Astra plan; independent Sol challenge PASS; runtime/final read in the combined handpass).
 
 ### [LOGIC-STICKY-SEARCH-COMPACT] Keep Logic search visible while scrolling and pack its controls closer — D561, 4 Oct 26
 Owner's two private phone photos show existing filter/edit controls staying visible after search has left the screen.
-He asks to keep search there too and pack the buttons together into fewer vertical rows. **Status:** request recorded;
-owner confirms he is still adding more tasks, so design, pictures, source work and app checks remain held.
+He asks to keep search there too and pack the buttons together into fewer vertical rows. **Status:** built on codex/workflow-ui under D563 after numbered pictures/independent plan challenge; all normal gates and fresh independent Astra R1PASS, owner look and Claude reads pending.
 Keep All, Warnings, Advisories, Notes, Fired this week, Edit rules and rule count with their existing actions;
-preserve filtering, permissions and rule values/calculations. Exact spacing, dimensions and arrangement await
-numbered affected-page phone/desktop pictures; no global button resizing is implied. Both photos stay private.
+preserve filtering, permissions and rule values/calculations. Chosen local layout108px tall at390px keeps
+search/controls visible below the actual header; narrow modified actions wrap. No global button resizing. Both photos stay private.
 **Home:** `raptor-port/docs/ui-contracts.md` Logic search and controls (D561); short/full Scheduler ruling.
-**Place:** current workflow UI batch alongside [TRK-FLIGHT-LABEL-READABILITY], held for the remaining requests;
-exact design/build order awaits that batch. No change to D495's later feature order.
+**Place:** current workflow UI batch with Tracker/Insights, authorized together by D563. No change to D495's later feature order.
+
+**Logic controls design:** `raptor-port/docs/superpowers/specs/2026-10-04-interface-readability-scroll.md`; **build plan:** `raptor-port/docs/superpowers/plans/2026-10-04-interface-readability-scroll-build-plan.md` (Astra plan; independent Sol challenge PASS; runtime/final read in the combined handpass).
 
 ### [TRK-FLIGHT-LABEL-READABILITY] Make the words inside blue flight balls easier to read — D560, 4 Oct 26
 Owner's private Photo 1 shows the Tracker Flow chart's blue flight symbols with text hard to read inside the narrow
 wing. He asks for a shape redesign, suggests more wing surface for the label and contrast, invokes Impeccable, then
-says he has more tasks and to hold on. **Status:** request recorded; design, pictures, source work and app checks held
-until the remaining requests arrive. No final shape, dimensions, whole-ball size or colour change approved.
+says he has more tasks and to hold on. **Status:** first build checked; D564 rejects its blocky wide-wing design and asks for better numbered options. D565 tapered redraw accepted D566 "Yes, use this tapered wing"; chosen replacement built, current native walk29PASS/18opened/0errors; all normal gates and independent final R1PASS. Completed Logic/Insights fixes retained. Branch preview shipping follows completed fresh read.
+Rejected first wing/evidence retained privately. D566 chosen tapered wing implemented; retain historical alternatives privately. No whole-ball size, palette or font-scope extension approved.
 **Home:** `raptor-port/docs/ui-contracts.md` The Tracker tab (D560); short/full Tracker ruling.
-**Place:** current workflow UI pass, collected with the owner's next requests; exact design/build order awaits that
-batch. Preserve authored charts/details (D464), Raptor palette (D157) and existing chart behaviour. Private photo stays
+**Place:** current workflow UI pass, together with Logic/Insights under D563. Preserve authored charts/details (D464), Raptor palette (D157) and existing chart behaviour. Private photo stays
 outside the repo; no student names, marks or dates copied into records. Numbered phone/desktop pictures before build.
 This is separate from [TRK-KEY-NAME-CLIP] and [TRK-FLEXBAR-INK], and does not start the progress graph or file split.
+
+**Tracker wing design:** `raptor-port/docs/superpowers/specs/2026-10-04-interface-readability-scroll.md`; **build plan:** `raptor-port/docs/superpowers/plans/2026-10-04-interface-readability-scroll-build-plan.md` (Astra plan; independent Sol challenge PASS; runtime/final read in the combined handpass).
+
+**D564 replacement options:** `raptor-port/docs/superpowers/specs/2026-10-04-flight-centre-options.md`; private pictured host variants and independent corrected-font confirmation in `raptor-port/docs/handpass/2026-10-04-flight-centre-options-picture-read.md`. D565 now proposes a tapered leading-edge wing based on an annotated smooth-wing picture; original host recommendation3 is superseded. D566 subsequently accepts the exact final redraw; earlier options remain historical.
+
+**D565 tapered redraw:** `raptor-port/docs/superpowers/specs/2026-10-04-flight-leading-edge-taper.md`; independent Sol challenge/picture read in `raptor-port/docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`. Both-size specific picture shown and accepted D566; chosen replacement implemented; refreshed gates and separate fresh final R1PASS. No further shape-choice question pending.
 
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
 From Astra's tidiness read (its §3 — read it before building). The export / import workflow (about 730 lines) leaves
@@ -1930,3 +1937,5 @@ a real-touch browser test (`e2e/availwin.spec.ts` "phone, by finger") and re-wal
 (on his look card: tap a count under ALL AVAIL on View-only Sched). (2) A question for him if it is still fiddly there: the
 count is 20 × 14 px; Astra proposed a 28 × 28 px target on the phone's week, which costs a line of height on rows that carry
 one (a measured layout — a picture first). **Place:** his look; then close, or the bigger target as its own small job.
+
+**Current D566 batch evidence:** `raptor-port/docs/handpass/2026-10-04-accepted-taper-interface-batch.md`; accepted taper addendum and independent challenge linked there. All three scoped items built/checked with fresh independent R1PASS; owner look/Claude reads/authorized merge remain outstanding.

@@ -2284,9 +2284,10 @@ function innerShape(type, cx, cy) {
     return `<polygon points="${pts}" fill="${f}" ${st}/>`;
   }
   if (type === 'flight') {
-    const pj = [[0, -16], [2.6, -6], [15, 1.5], [4, 5], [7.5, 13], [0, 9.5], [-7.5, 13], [-4, 5], [-15, 1.5], [-2.6, -6]]
-      .map(q => (cx + q[0]) + ',' + (cy + q[1])).join(' ');
-    return `<polygon points="${pj}" fill="${f}" ${st} stroke-linejoin="round"/>`;
+    /* D566: the accepted tapered leading edges and curved lower wings. */
+    const xy = (x, y) => `${cx + x} ${cy + y}`;
+    const d = `M${xy(0, -18)} L${xy(4, -7)} L${xy(18, -3)} Q${xy(19, 0)} ${xy(18, 3)} C${xy(14, 5)} ${xy(10, 6)} ${xy(5, 6)} L${xy(8, 15)} L${xy(0, 11)} L${xy(-8, 15)} L${xy(-5, 6)} C${xy(-10, 6)} ${xy(-14, 5)} ${xy(-18, 3)} Q${xy(-19, 0)} ${xy(-18, -3)} L${xy(-4, -7)} Z`;
+    return `<path d="${d}" fill="${f}" ${st} stroke-linejoin="round"/>`;
   }
   /* acad + test: rectangle */
   return `<rect x="${cx - 16}" y="${cy - 9}" width="32" height="18" rx="2.5" fill="${f}" ${st}/>`;

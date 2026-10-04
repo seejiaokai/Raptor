@@ -4,10 +4,11 @@
    SHIFT_HARD, RANK, WCODE, the SC window, the leave taxonomy — so the page can
    never drift from the engine it is describing. If you change a threshold in the
    code, this page changes with it; there is no second copy to forget. */
-.lgbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 20px;
-  border-bottom:1px solid var(--edge);background:rgba(20,24,29,.4);position:sticky;top:0;z-index:20;
+.lgbar{display:flex;gap:4px 6px;align-items:center;flex-wrap:wrap;padding:8px 12px;
+  border-bottom:1px solid var(--edge);background:var(--panel);position:sticky;top:0;z-index:20;
   backdrop-filter:blur(10px)}
 .lgbar .searchbox{min-width:260px}
+.lgbar .fchip,.lgbar .abtn{padding:4px 8px;min-height:28px}
 .lgfilters{display:flex;gap:4px;flex-wrap:wrap}
 .lgnote{margin-left:auto;font-size:11px;color:var(--ink-3)}
 .lgwrap{padding:14px 20px 40px;max-width:1080px}
@@ -79,12 +80,11 @@
   margin-left:8px;white-space:nowrap}
 @media (max-width:820px){ .lgoff{margin:10px 12px 0} .lgin{width:58px} }
 @media (max-width:820px){
-  .lgbar{padding:10px 12px;gap:7px}
+  .lgbar .lgfilters,.lgbar .lgedit{display:contents}
   .lgbar .searchbox{min-width:0;flex:1 1 100%}
-  .lgnote{margin-left:0;flex:1 1 100%}
+  .lgbar .lgnote{margin-left:0;flex:1 1 240px}
   .lgwrap{padding:12px 12px 34px}
   .lgrule{grid-template-columns:64px 1fr;gap:9px;padding:9px 10px}
   .lgsrc{grid-column:2;text-align:left;opacity:.6}
   .lgmatrix{grid-template-columns:minmax(0,1fr)}
 }
-

@@ -4857,11 +4857,11 @@ Owner's built preview look accepted D559,4Oct26; new chat continues further
 interface requirements from source2f7ad9b1/Ready https://raptor-irwn04ala-kai-e2f5.vercel.app.
 Claude's post-reset read remains owed; no physical-device proof or live word inferred.
 
-**D562, 4 Oct 26 — requested, not yet designed or built:** keep the existing close cross visible and reachable
-at the top while scrolling the Week insights window. Exact placement and any header arrangement await numbered
-phone/desktop pictures. Preserve dismissal behaviour, D536/D537 phone-window height/thin top strip and existing
-Insights data/permissions. This request applies to Insights, not every popup. The owner is still supplying tasks:
-design, mockups, source work and app checks remain held. Both reference photos stay private.
+**D562/D563, 4 Oct 26 — built on codex/workflow-ui, owner look and remaining reads pending:** keep the existing close cross visible and reachable
+at the top while scrolling the Week insights window. The existing title/cross stick inside the same scroller,
+with opaque matching background and the cross protected from shrinking. Numbered phone/desktop candidates preceded source edits. Preserve dismissal behaviour, D536/D537 phone-window height/thin top strip and existing
+Insights data/permissions. This request applies to Insights, not every popup. D563 ends collection and authorizes this three-request batch;
+numbered pictures precede visual source changes. Both reference photos stay private.
 Filed as [INSIGHTS-CLOSE-STAYS-VISIBLE] in the current workflow UI batch.
 
 **STANDBY ELIGIBILITY (owner D516, 3 Oct 26):** SC, AVALON and BB standby duties do not count as flying load. SC main
@@ -7988,20 +7988,43 @@ swipe, and everything a member sees.
 
 ## Logic search and controls
 
-**D561, 4 Oct 26 — requested, not yet designed or built:** keep the search box in view while scrolling,
+**D561/D563, 4 Oct 26 — built on codex/workflow-ui, owner look and remaining reads pending:** keep the search box in view while scrolling,
 alongside the controls already kept visible: All, Warnings, Advisories, Notes, Fired this week, Edit rules
 and rule count. Pack the buttons closer together so the strip uses fewer vertical rows. Preserve their
 actions, filtering, permissions and all rule values/calculations. This is a local compactness request,
-not global button resizing; exact spacing and dimensions await numbered phone/desktop pictures.
-The owner confirms he is still adding tasks: hold design, mockups, source work and app checks.
+not global button resizing. The local bar observes Shell height on mount/resize and disconnects on leave; no scroll loop.
+Scoped spacing keeps the normal390px strip at108px versus174px before, with all actions visible; modified/narrow layouts wrap.
+D563 ends collection and authorizes this three-request batch; numbered pictures precede visual source changes.
 Both reference photos remain private. Filed as [LOGIC-STICKY-SEARCH-COMPACT] in the workflow UI batch.
 
 ## The Tracker tab (7 Sep 26)
 
-**D560, 4 Oct 26 — requested, not yet designed or built:** the owner finds the text inside the blue flight
+**D566, 4 Oct 26 — chosen picture accepted:** "Yes, use this tapered wing" selects the specifically
+shown D565 option4, with tapered straight leading edges, curved lower wings and existing nose/tail. Implement it
+with clear label backing and all existing size/palette/font/chart/data/hit constraints. Current implementation uses the exact centre-relative SVG path; combined current evidence is
+`docs/handpass/2026-10-04-accepted-taper-interface-batch.md`. Other options
+remain historical proposals; no acceptance of the rejected first wing or live/main authority follows.
+
+**D565, 4 Oct 26 — tapered leading-edge direction:** the owner draws lines on the smooth-wing option
+and proposes a leading edge sloping from the body down toward each wingtip. Redraw that exact direction
+with the clear blue text area retained; the previous three-option question is superseded. No unseen final
+picture accepted, no separate jet-and-pill selection. Existing size/palette/fonts/hits/data constraints stand.
+D565 exact proposal `docs/superpowers/specs/2026-10-04-flight-leading-edge-taper.md`; independent picture/challenge
+record `docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`. Both-size redraw shown and accepted D566; affected checks/fresh final code read and current preview still required.
+
+**D564, 4 Oct 26 — first broad-wing design rejected:** the owner finds the flat-centred silhouette ugly
+and asks for better design options. Keep the clearer-label goal, present cleaner numbered alternatives,
+and obtain his replacement choice before its source changes. The completed Logic/Insights fixes continue;
+current broad-wing source/evidence is a checked but rejected design, not an accepted result. Private close-up stays outside repo.
+D564 alternatives are in `docs/superpowers/specs/2026-10-04-flight-centre-options.md`; pictured host variants
+and independent font-repair confirmation in `docs/handpass/2026-10-04-flight-centre-options-picture-read.md`.
+D564 host recommendation3 was advisory only; D565 now steers to a tapered-wing variant, superseding that choice question.
+
+**D560/D563, 4 Oct 26 — first build rejected D564; chosen taper accepted D566:** the owner finds the text inside the blue flight
 balls hard to read and proposes reshaping the wing to give its label more area and stronger contrast.
-Hold design, mockups, source work and application checks while he supplies the remaining tasks; no final
-shape or whole-ball size is approved. Impeccable is advisory when work resumes. Preserve D157's Raptor palette,
+D563 ends collection and authorizes this three-request batch; numbered pictures precede visual source changes.
+Numbered candidates preceded source edits. A wider blue wing with continuous label backing replaces only the
+flight shape within the existing58-unit ball/ring; authored fonts, other symbols and hits remain. Impeccable remains advisory. Preserve D157's Raptor palette,
 D464's authored charts/details and existing chart behaviour. The supplied photo remains private.
 Filed in `OUTSTANDING.md` as [TRK-FLIGHT-LABEL-READABILITY] within the current workflow UI batch.
 
