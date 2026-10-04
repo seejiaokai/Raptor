@@ -4857,6 +4857,13 @@ Owner's built preview look accepted D559,4Oct26; new chat continues further
 interface requirements from source2f7ad9b1/Ready https://raptor-irwn04ala-kai-e2f5.vercel.app.
 Claude's post-reset read remains owed; no physical-device proof or live word inferred.
 
+**D562, 4 Oct 26 — requested, not yet designed or built:** keep the existing close cross visible and reachable
+at the top while scrolling the Week insights window. Exact placement and any header arrangement await numbered
+phone/desktop pictures. Preserve dismissal behaviour, D536/D537 phone-window height/thin top strip and existing
+Insights data/permissions. This request applies to Insights, not every popup. The owner is still supplying tasks:
+design, mockups, source work and app checks remain held. Both reference photos stay private.
+Filed as [INSIGHTS-CLOSE-STAYS-VISIBLE] in the current workflow UI batch.
+
 **STANDBY ELIGIBILITY (owner D516, 3 Oct 26):** SC, AVALON and BB standby duties do not count as flying load. SC main
 counts towards work hours. The blue default for other mission names never turns these duties into sorties; retain the
 separate sortie-eligibility and work-hours calculations. This settles neither other duties' hours nor earned leave.
