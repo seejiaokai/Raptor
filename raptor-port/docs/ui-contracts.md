@@ -4841,7 +4841,16 @@ Actual FULL checks, real-route scenario results and inspected running-bundle pic
 `docs/handpass/2026-10-03-insights-mission-mix.md`. The shared offer controller serves both editing routes and the
 latest-issued read-only Remarks door, without replacing the active field. It restores native keyboard selection
 after an explicit role action. Guarded annotations have their own history/Undo; no canonical programme role field.
-Phone Insights exists only in the Board's More menu; the desktop action remains beside the bell.
+Phone Board Insights is in its More menu; phone week pages currently use the
+drawer's Week insights shortcut, while desktop keeps its direct action.
+**PROPOSED navigation, owner D557, 4 Oct26:** remove the phone drawer's WEEK
+heading/Pick a date/Week insights block; add ellipsis → Insights in the circled
+Edit Schedule and View-only Sched filter strips, following the Board example.
+The existing schedule calendar retains Jump to a date. Concrete picture/design:
+`docs/superpowers/specs/2026-10-04-schedule-insights-menu.md`. Phone-only additions,
+Insights-only new menus and preserved desktop/Board doors are recommended in
+that picture proposal; no production implementation or unseen-picture approval
+is inferred. All existing Insights data/version/role semantics below still apply.
 
 **STANDBY ELIGIBILITY (owner D516, 3 Oct 26):** SC, AVALON and BB standby duties do not count as flying load. SC main
 counts towards work hours. The blue default for other mission names never turns these duties into sorties; retain the

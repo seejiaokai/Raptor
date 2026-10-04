@@ -1746,6 +1746,25 @@ Scope/home: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md`
 Concrete route: `raptor-port/docs/superpowers/specs/2026-10-04-schedule-tab-route.md` — D554 chooses B after the comparison: Callsign → Mission → Brief → Take-off → Landing → Remarks/stores; Shift+Tab reverses B. D545/D552's literal spatial reading narrowed. D555 includes open headings/notes through the displayed section order. Product scope complete: Astra implementation/scenario plan, Sol independent challenge then build and FULL checks, fresh Astra code read. No broader redesign or code approval inferred.
 Numbered design pictures requested/shown and accepted D556, 4 Oct: `raptor-port/docs/superpowers/specs/2026-10-04-tab-flow-pictures/{week,board}-flow.png`, representative row/formation in every affected section, repeats explicitly labelled; phone flying variants and full live-field capture manifest retained. Plan: `raptor-port/docs/superpowers/plans/2026-10-04-schedule-tab-build-plan.md`; independent challenge/dispositions beside it. Design-picture evidence remains distinct from subsequent frozen working-Tab app proof; no main/merging PR authority.
 
+### [SCHEDULE-INSIGHTS-MENU] Phone schedule Insights moves into ellipsis menus — D557, 4 Oct26
+Owner's four photos: Photo1 existing Board menu is the reference; add ellipsis → Insights
+in the circled Edit Schedule (Photo2) and View-only Sched (Photo3) toolbar spaces;
+remove WEEK/Pick a date/Week insights from the drawer (Photo4). **Place:** workflow
+UI pass, after the built D556 Tab route, before the later Inputs batch. New direction
+filed for design/picture look; no unseen picture/build approval. Existing calendar
+already opens the date picker. Recommend phone-only new menus with Insights alone,
+preserving desktop direct entry and Board's existing menu. Other tabs lose the
+drawer shortcuts and use the schedule page; no extra replacement inferred.
+Design/home: `raptor-port/docs/superpowers/specs/2026-10-04-schedule-insights-menu.md`.
+Selected navigation illustration `phone-proposal-v2.png` and4 originals/prompts
+retained privately in the task's local visualizations folder, excluded from the
+public branch after automatic approval review rejected that image upload;
+privacy disposition beside spec. Synthetic unrelated schedule drift
+excluded. Independent Astra D557 meaning/target-picture read matches; Astra plan
+and Sol technical challenge PASS, proposal still awaits owner's picture/product
+look. Current Insights calculations/versions/roles unchanged; build/checks/fresh
+final read and Monday Claude reads remain before live.
+
 ### [TRK-FILE-TRANSFER-SPLIT] The Tracker's file save and load move out of its main file — APPROVED D493 (2 Oct 26), to build with the Tracker batch
 From Astra's tidiness read (its §3 — read it before building). The export / import workflow (about 730 lines) leaves
 `src/tracker/app/core.js` for one module beside `fileFormat.js` and `fileStore.js`; the menus keep calling what they call now.
