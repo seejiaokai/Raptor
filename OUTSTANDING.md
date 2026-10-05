@@ -1941,8 +1941,8 @@ Edit Schedule's week: from the day's last open text box (on the demo Monday, the
 caret is nowhere; the next Tab goes to the NEXT day's Templates button. D553 ruled "Tab continues to the next normal button or control
 without looping or changing day" and its full row adds "it does not approve moving to the next day" — and here the only next button is
 the next day's. Codex's browser test (`raptor-port/e2e/schedule-tab.spec.ts`, "D553 first/last exits remain on the day") pins "no pan,
-focus on the page or in the day". **Parked for his answer (D596) — the check's sheet §12, question 1; recommended: the caret stays in
-that last box.** On the board the exit lands on the first control after the boxes (walked: the ✕ of a warning line) — as ruled.
+focus on the page or in the day". **ANSWERED 6 Oct 26 (D597): the caret stays in that last box** — the week, and the phone's board, where no button follows the
+last box either. Parked until then under D596 (the check's sheet §12, question 1). On the board the exit lands on the first control after the boxes (walked: the ✕ of a warning line) — as ruled.
 **Place (the agent's line):** with the next change to the Tab route, once he answers.
 
 ### [ROLE-QUESTION-SECOND] A second formation's Blue/Red question replaces the first formation's open one (found 6 Oct 26 by Astra and Sol 6.1, the side-by-side read — a question for him)
@@ -1951,14 +1951,15 @@ leave it: B's question opens and A's is removed without an answer (`raptor-port/
 has one slot, newest wins). D535 lists when an open question goes (Blue, Red, Later, its own wording, the formation gone, another day /
 week / version / sign-in) and a second formation's edit is not in the list; D523 says not many questions at once; D529 says ask straight
 after his own edit. A's "Choose mission role" button still works when its Remarks is selected (W9, fixed 6 Oct 26), and an unanswered
-formation keeps the ordinary total bar. **Parked for his answer (D596) — the sheet §12, question 2; recommended: show both, each under
-its own formation.** The reports: `raptor-port/docs/superpowers/briefs/2026-10-06-insights-fixes-read-astra.md`, `-sol.md`.
+formation keeps the ordinary total bar. **ANSWERED 6 Oct 26 (D598): show both, each under its own formation; a newer question never removes an older one.** Parked
+until then under D596 (the sheet §12, question 2). The reports: `raptor-port/docs/superpowers/briefs/2026-10-06-insights-fixes-read-astra.md`, `-sol.md`.
 **Place (the agent's line):** with the next change to Insights' mission mix, once he answers.
 
 ### [ROLE-QUESTION-WEEK-DAY] On Edit Schedule's week, going to another day does not end an open Blue/Red question (found 6 Oct 26 by Astra and Sol 6.1 — a question for him)
 D535: an open question ends when he "moves to another day". On the Scheduler Board it does. On the week — several days on screen at
 once on a desktop, one per swipe on a phone — the question stays on its day until answered or Later; since W9's fix it blocks nothing
-(every other formation's button shows). **Parked for his answer (D596) — the sheet §12, question 3; recommended: leave it.**
+(every other formation's button shows). **ANSWERED 6 Oct 26 (D599): leave it — on the week the question waits on its day; the board still ends it on a day change.
+Nothing to build.** Parked until then under D596 (the sheet §12, question 3).
 **Place (the agent's line):** low; with [ROLE-QUESTION-SECOND].
 
 ### [REQ-ROW-OWN-BOXES] Typing in the programme row of an accepted request changes the row, not the request (both walks of the Codex stack check, 5–6 Oct 26 — a question for him)

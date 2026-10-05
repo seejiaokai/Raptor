@@ -531,6 +531,11 @@ crew, buttons/selects, readonly/disabled/issued/peek/OIL content are not text st
 At either end, focus an eligible ordinary same-day control in that direction,
 otherwise blur; never loop, activate, change day or enter a hidden drawer. Subsequent
 non-text Tab is normal browser navigation. Enter/Escape and D529 remain unchanged.
+**The end of a day with no button below its last box (owner, D597, 6 Oct 26 — narrows D553):** forward Tab from the
+day's last open text box, where that day has no ordinary control after it, KEEPS THE CARET IN THAT BOX — never a blur
+onto nothing, never the next day's first button. Edit Schedule's week and the phone's Scheduler Board (no button follows
+its last box); the desktop board still goes on to the first ✕ of its warning list. Shift+Tab is unchanged. The build:
+`OUTSTANDING.md` `[TAB-DAY-END]`.
 
 **While the caret is in a text box, everything that does not hold it keeps up (the Codex stack check, 6 Oct 26 — W15,
 W16, W12, W11).** "Never repaint under the caret" used to mean nothing was redrawn until the caret left text; on the Tab
@@ -3534,6 +3539,15 @@ and the adapted `wrap` probe are what hold them.
 
 ## Three crew-rest rings, and the day that caused the breach (owner, 6 Aug 26)
 
+**6 Oct 26 ([PUCK-DOT-ZOOM] — his find: "i cant see the red crew rest warning, over the amber line … its when im at
+default zoom", on a screen at Windows' 125%): the DOTTED ring is two screen pixels thick on a screen whose scaling is
+not a whole number** (125%, a browser zoomed to 110% or 80%) — there the browser drew it one screen pixel thick and hard
+against an advisory's amber ring, where it read as that ring's edge. `ui/dotring.ts` works the width out and hands it to
+the stylesheet as `--dot-w`; on an unscaled, 2x or 3x screen (his phone) it hands over nothing and the ring is the
+1.5px it always was. The offset, the colour and the other two rings are untouched. Pins: `ui/dotring.test.ts`,
+`e2e/puck-dot.spec.ts` (each scaling in a browser started at it — Playwright's own picture scaling cannot show the
+fault). Pictures: `docs/img/handpass/2026-10-06-puck-dot/before-after.png`.
+
 **25 Sep 26 (D94): the scheduler BOARD draws all three as the week does** — its flying, duty / sim and programme
 seats read `html.ts puckMarks`, the week's one reading of a puck's severity, printed flag (the trace's CR / 7
 caption), dash and trace. OIL-mode and exempt-seat pucks keep their own rules — **the exempt FLYING seat too, since
@@ -4919,9 +4933,11 @@ button; the formation whose question is open gets no button beside it; pressing 
 one question there. **In the changes window an answer is filed under its formation** ("Flying · RU ACM", detail
 "Mission role" — the same item as that line's other changes; its recorded callsign when the line has gone), never
 under a hidden row id (W7, `changesmodel.ts roleItem`). **An answer on a built-in demo day nobody has saved survives a
-reload** because the two built-in weeks carry repeatable row ids (W8, `data-schema.md`). **Open (his answers awaited):**
-`[ROLE-QUESTION-SECOND]` — a second formation's automatic question replaces the first one's; `[ROLE-QUESTION-WEEK-DAY]`
-— on the week, going to another day does not end an open question.
+reload** because the two built-in weeks carry repeatable row ids (W8, `data-schema.md`). **His answers (6 Oct 26):** a second formation's question never
+removes the first one's — BOTH show, each under its own formation, each ending by its own rules (D598, narrowing
+D523; one gesture that leaves several formations needing answers still asks none — D529; the build:
+`[ROLE-QUESTION-SECOND]`); and on Edit Schedule's week an open question WAITS on its day — swiping or stepping to
+another day does not end it, while on the Scheduler Board moving to another day still does (D599, narrowing D535; as built).
 Offer Change mission role temporarily while editing relevant Remarks (D527), reusing the formation question and edit
 permission; no permanent line marker. Named red Missions remain automatic, without overrides/questions. Recheck live
 formation identity/context/permission when answering; never apply an old popup's answer to a changed formation.

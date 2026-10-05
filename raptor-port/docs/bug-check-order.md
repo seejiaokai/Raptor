@@ -222,6 +222,8 @@ same kinds of thing — a weaker pair than Fable and Astra — so the walk of th
 **One side-by-side, once:** on the first high-consequence change Opus wrote, Astra, Sol AND Fable each read it; the
 report to him says what each found, each one's false alarms, and Fable's cost in his weekly allowance (read before and
 after). His answer is a new ruling on whether Sol keeps the seat.
+**Done, and answered (owner, D601, 6 Oct 26 — "ok sol can be a 2nd reviewer"):** the side-by-side ran once, on the Insights
+fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 keeps the second seat.** It is not repeated.
 
 **Do NOT spend them on:**
 

@@ -248,7 +248,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   reads as a positive overlap before the named actual duty-end day. The add
   button retains an existing report; without one it uses earliest uncancelled
   valid take-off minus reportLead (D510), followed by the configured reportText
-  (D511). No valid take-off keeps a text-only line. Band boundaries alone clip to [0,1440].
+  (D511). Retaining an existing report means a SECOND press on a wave that already has a line copies that line's clock,
+  never take-off minus reportLead again — left as built on his answer (D600, 6 Oct 26, narrowing D510). No valid take-off keeps a text-only line. Band boundaries alone clip to [0,1440].
   A bucket made empty by previous-day boundaries carries `priorEmpty` and has
   no available members or wave-specific all-day total; the global Available
   all day list remains. This includes a negative-origin first band ending

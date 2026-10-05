@@ -378,6 +378,7 @@ real things), Astra and Sol TOGETHER found everything Fable found except a clean
 Fable did not; Fable alone would have missed W7 and both new ones. No one reviewer found everything: the three known
 faults were each missed by at least one of them. The pair from one maker did not miss the same things here. One sample
 of three small commits is thin evidence — the recommendation is in §12.
+**His ruling (D601, 6 Oct 26 — "ok sol can be a 2nd reviewer"): Sol 6.1 keeps the second reviewer's seat.**
 
 **The two new finds** are real gaps against D535's own words; both are choices about what he wants to see, so they are
 parked, not guessed: §12, questions 2 and 3.
@@ -448,6 +449,11 @@ list.
 ## 12. His look — four questions first, then the "look here" card
 
 ### Questions waiting for him (D596 — nothing below was guessed; only these pieces are left as built)
+
+**ANSWERED 6 Oct 26 — "yes all 4 as recommended":** question 1 → (A) the caret stays in that last box (**D597**; the build
+`[TAB-DAY-END]`); question 2 → (A) both questions show, each under its own formation (**D598**; the build
+`[ROLE-QUESTION-SECOND]`); question 3 → (A) leave it, the question waits on its day (**D599**; nothing to build);
+question 4 → (A) leave it, the second press copies the line's clock (**D600**; nothing to build). The questions as put:
 
 1. **Tab after the last text box of a day (W14).** On Edit Schedule's week, when the day has no button below its last
    text box, Tab leaves the caret on nothing. You ruled "Tab goes on to the next normal button, without looping or
