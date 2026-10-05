@@ -55,7 +55,11 @@ changes (today it moves at once). Proposed: its own job, straight after the stac
 check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip over a phone request card's date), [BOARD-TIME-ESCAPE]
 (Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
 changed text box on Edit Schedule, the first click into another box lands on the page and a second is needed; the same on the live
-app; with the next change to the schedule's text boxes).
+app; with the next change to the schedule's text boxes). **From the same check's fix round (6 Oct 26) — three questions waiting for him,
+each parked with a recommended answer in the check's sheet (`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md` §12):**
+[TAB-DAY-END] (where Tab goes after a day's last text box when no button follows — D553), [ROLE-QUESTION-SECOND] (a second formation's
+Blue/Red question replaces the first one's — D535, D523), [ROLE-QUESTION-WEEK-DAY] (does moving to another day on the week end an open
+question — D535). Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights).
 
 **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
 are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
@@ -1931,6 +1935,37 @@ box then saves it; the week's time boxes and the board's text boxes restore the 
 stack — the host ran walker D's probe (`raptor-port/scripts/handpass/stk-D-1b.mjs`) on both builds, box for box. D544 kept "the existing
 Enter and Escape meanings", so the Tab route did not change it. Not ruled. **Place (the agent's line):** low — a question for him with
 the next change to the board's boxes: should Escape restore there as it does on the week?
+
+### [TAB-DAY-END] After the last text box of a day with no button below it, Tab leaves the caret on nothing (the Codex stack check's W14, 5–6 Oct 26 — a question for him)
+Edit Schedule's week: from the day's last open text box (on the demo Monday, the last Unavailable remark) Tab blurs the box and the
+caret is nowhere; the next Tab goes to the NEXT day's Templates button. D553 ruled "Tab continues to the next normal button or control
+without looping or changing day" and its full row adds "it does not approve moving to the next day" — and here the only next button is
+the next day's. Codex's browser test (`raptor-port/e2e/schedule-tab.spec.ts`, "D553 first/last exits remain on the day") pins "no pan,
+focus on the page or in the day". **Parked for his answer (D596) — the check's sheet §12, question 1; recommended: the caret stays in
+that last box.** On the board the exit lands on the first control after the boxes (walked: the ✕ of a warning line) — as ruled.
+**Place (the agent's line):** with the next change to the Tab route, once he answers.
+
+### [ROLE-QUESTION-SECOND] A second formation's Blue/Red question replaces the first formation's open one (found 6 Oct 26 by Astra and Sol 6.1, the side-by-side read — a question for him)
+Tracking On. Type a DS / RED cue in formation A's Remarks and leave its question unanswered; type one in formation B's Remarks and
+leave it: B's question opens and A's is removed without an answer (`raptor-port/src/ui/mission-role-offer.ts` — the automatic question
+has one slot, newest wins). D535 lists when an open question goes (Blue, Red, Later, its own wording, the formation gone, another day /
+week / version / sign-in) and a second formation's edit is not in the list; D523 says not many questions at once; D529 says ask straight
+after his own edit. A's "Choose mission role" button still works when its Remarks is selected (W9, fixed 6 Oct 26), and an unanswered
+formation keeps the ordinary total bar. **Parked for his answer (D596) — the sheet §12, question 2; recommended: show both, each under
+its own formation.** The reports: `raptor-port/docs/superpowers/briefs/2026-10-06-insights-fixes-read-astra.md`, `-sol.md`.
+**Place (the agent's line):** with the next change to Insights' mission mix, once he answers.
+
+### [ROLE-QUESTION-WEEK-DAY] On Edit Schedule's week, going to another day does not end an open Blue/Red question (found 6 Oct 26 by Astra and Sol 6.1 — a question for him)
+D535: an open question ends when he "moves to another day". On the Scheduler Board it does. On the week — several days on screen at
+once on a desktop, one per swipe on a phone — the question stays on its day until answered or Later; since W9's fix it blocks nothing
+(every other formation's button shows). **Parked for his answer (D596) — the sheet §12, question 3; recommended: leave it.**
+**Place (the agent's line):** low; with [ROLE-QUESTION-SECOND].
+
+### [INSIGHTS-EMPTY-LINE-COUNT] A flying line with nobody on it counts as a sortie and a formation in Insights (the Codex stack check's W17, 5 Oct 26 — a question for him)
+"+ Line" on a flying wave, no crew: Insights' SORTIES tile goes up by one and FORMATIONS by one; the per-person bars are right. The
+same on `main` (`de470db5`) — `raptor-port/src/engine/insights.ts` counts every line and jet that is not cancelled, crewed or not, as
+the day's own "4 X 4 X 0" count does (`waves.ts dayCount`, the precedent its comment names). Not ruled. **Place (the agent's line):**
+low — ask him whether an uncrewed line is a planned sortie (as now) or should wait for its crew; with the next change to Insights.
 
 ### [EDIT-SECOND-CLICK] After a changed text box on Edit Schedule, the first click into another box does not take the caret (found 5 Oct 26, the Codex stack check)
 On Edit Schedule's week: type a new value in a text box (a take-off, a mission), then click ONCE into another text box. The day

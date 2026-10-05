@@ -8,7 +8,9 @@ the Logic search and the Insights cross) · **the failed-save warning's band** (
 (`codex/inputs-sans-calendar`) is on hold and outside this check.
 
 **STATE OF THIS SHEET: IN PROGRESS.** It is written as the check goes (order §9). A section that says "to come" has not
-been done; nothing here is a result until its section is filled.
+been done; nothing here is a result until its section is filled. **6 Oct 26: the fix round is done (§5.3 — sixteen
+findings fixed, each with a test that was red first), the host has looked at the fixes in a real browser (§5.4), the
+re-walk is under way (§5.5), and three questions wait for him at the head of §12.**
 
 **Every read the Codex blocks of `HANDOFF.md` list as owed to Claude is paid by this check** (D589) — §10 names each.
 
@@ -161,10 +163,141 @@ look card as a reminder that the question is his.
 **THE WALK IS COMPLETE — eight walkers back, 5 Oct 26.** 1,471 pictures saved by the walkers; the host opened 16, each one
 behind a finding or a high-consequence PASS. The PC lock was released when the last walker returned.
 
+### 5.3 The fix round (6 Oct 26) — what was done about each finding
+Built by the host (Opus 5.5) on this branch, each with a test that FAILED first; the app code of the fixed build is
+commit `b1632e32`. "Old" = the same on `main` (`de470db5`), read off its code.
+
+| # | Disposition | What was done, and the test that pins it |
+|---|---|---|
+| W1 | FILED, not fixed here — `OUTSTANDING.md` `[OIL-WORK-START]` (D591, D592) | Older than the stack; its own job after the stack is live. |
+| W2 | FIXED `29c68485` | The stamp and Logic's strip count only settings a check reads (`engine/rules.ts rulesCheckedOffCount`); the count, the cell's tag and Reset still know the words. `ui/logic.test.tsx` "W2". |
+| W3 | FIXED `29c68485` | "RALLY AFTER IN TIME" with a clock is a rally line only (`engine/reporting.ts`). `engine/rally-workspan.test.ts` "W3", both orders. |
+| W4 | FIXED `29c68485` — old on `main` (its event builder and `workSpan` are the same there) | `engine/validate.ts workSpan` ignores a line with no times. `engine/insights.test.ts` "W4". |
+| W5 | FIXED `29c68485` | `engine/events.ts waveInTime` reads a formation with no take-off as the day's checks do. `engine/intimes.test.ts` "W5". The joined spelling `0800IN TIME` is told "no recognised clock" (W19). |
+| W6 | FIXED `c4fb74af` | One name, `REPORTING_LABEL`, in the changes window, the pending list, the change record and the ✕ toast. `ui/intimesadd.test.tsx` "W6" draws each place and scans the shipped strings. |
+| W7 | FIXED `c4fb74af` | A Blue/Red answer is filed under its formation — the same item as that line's other changes (`ui/changesmodel.ts roleItem`). `ui/changesmodel.test.ts` "W7", both groupings. The lines of an undone template staying listed is how the history works for every change (an "Undo — …" line is added; nothing is erased) — not a fault. |
+| W8 | FIXED `c4fb74af` | The two built-in weeks carry repeatable hidden row ids (`engine/weeks-data.ts seedRids`; the boot seeds the same). `state/mission-role-seedweek.test.ts` (the real save and a fresh boot; a week switch), `engine/rowids.test.ts` "W8". |
+| W9 | FIXED `2893c5a1` | Two slots: the one open question, and the button under the Remarks he is in (`ui/mission-role-offer.ts`). `ui/mission-role-interim-fixes.test.tsx` "W9". |
+| W10 | FIXED `2893c5a1` — old on `main` | `ui/outside.ts clickedSurround` in the four windows; the guard test now refuses a surround test by class too. `ui/outside.test.tsx` "W10", all four. |
+| W11 | FIXED `5b55e1c1` — old on `main` (a click-through did the same) | `engine/slots.ts txtSet` folds the stored words before calling a text change. `ui/schedule-tab.test.tsx` "W11". |
+| W12 | FIXED `5b55e1c1` | The Tab route stops when its save asks for a window and declines while one is up (`ui/pops.ts windowOverSchedule`); the four question sheets take the keyboard on opening (`ui/sheetfocus.ts`). `ui/schedule-tab.test.tsx` "W12". |
+| W13 | FIXED `5b55e1c1` | The band is pinned to the screen in the phone board's Desktop layout (`ui/scheduler/17-save-status.css`). `e2e/save-note.spec.ts`, three pans, two phone sizes. |
+| W14 | **(a) PARKED on his answer — §12, question 1.** (b) not reproduced after W15 | (a) After a day's last box with no button below it, Tab leaves the caret on nothing — D553 says "the next normal button" and "without changing day"; the browser's own next stop is the NEXT day's Templates button, which D553 does not approve. (b) The reader's "the control Tab lands on is redrawn a moment later": on the fixed build the host's run landed on the ✕ of a warning line and stayed there (§5.4). |
+| W15 | FIXED `b1632e32` | Everything that does not hold the caret is redrawn at once: on the week `ui/dayswap.ts swapDayAround`, on the board every panel but the caret's. `ui/dayswap.test.ts`, `ui/schedule-tab.test.tsx` "W15" (week and board). **Still held by design: the puck rings and marks INSIDE the section the caret is in — they catch up when the caret leaves that section (his look card).** |
+| W16 | FIXED `b1632e32` | The wave header's clock is corrected in place (`ui/html.ts refreshWaveReports`, text only — the edit week stays byte-identical with the reference). `ui/schedule-tab.test.tsx` "W16". New in the stack (`main`'s week header shows no clock). |
+| W17 | FILED low — old on `main` (the same counting line) | `OUTSTANDING.md` `[INSIGHTS-EMPTY-LINE-COUNT]`: an uncrewed line counts as a sortie and a formation, as the day's own "4 X 4" count does. A question for him, not a fault of the stack. |
+| W18 | FIXED `5b55e1c1` | The board's ⋯ menu hangs from the button's right edge when it would pass the screen's. `e2e/geometry.spec.ts`. |
+| W19 | FIXED `29c68485` | `8h00`, `8.00`, `0800IN` get the "no recognised clock" line; `FL240`, `2 SHIPS`, `2.5 HRS` do not. `engine/rally-workspan.test.ts` "W19". |
+
+After the round: unit **7805 / 7805** (492 files), tfin **728 / 0** — watched 6 Oct 26 under the PC lock. The full
+check set is §9.
+
+### 5.4 The host's own look at the fixes, in a real browser (6 Oct 26)
+`scripts/handpass/stk-host-fix.mjs` on the fixed build (`dist-fix`, port 4233), the real keyboard throughout; results
+`parts/stk2-host.json`; 9 pictures in `../img/handpass/2026-10-06-codex-stack-fix/host/`, **all opened by the host**.
+
+| Step | What the screen said | Verdict |
+|---|---|---|
+| W15, week | Mon, list open; line 1 retyped `12:40H: VL IN TIME`, Tab: the caret in the next line; the list gains "VL: in-time 12:40 is later than suggested brief 10:20." and the bar goes 6 → 7 warnings at once; `ZZ` typed straight after lands in the box that has the caret | PASS |
+| W16 | Mon 20 Jul, wave 1's line set to 23:30H, Tab: the header reads "WAVE 1 · In-time / Rally 23:30 (prev day)" with the caret still in a text box | PASS |
+| W15, board | Tue; line 1 retyped `08:40H: VL IN TIME`, Tab: the list goes "4 issues · 2 warnings" → "5 issues · 3 warnings" and names it, the caret in the next line; the header note follows ("In-time / Rally 07:00 · 4 ac") | PASS (seen) |
+| W14 (b), board | after a saved line in the run, Tab from the last open box: focus on the ✕ of a warning line at once and 0.7 s later | not reproduced |
+| W13 | phone, board in Desktop layout, a failed save, panned 0 / 395 / 790 px: words at 14–220 px, Retry at 314–376 px of 390, a finger on Retry lands on Retry — every pan | PASS (seen) |
+| W18 | the ⋯ button 10 px and 350 px from the left: the menu at 10–186 px and 204–380 px, Insights · Sort all · Phone layout whole | PASS (seen) |
+| errors | none in either run | PASS |
+
+### 5.5 The re-walk (6 Oct 26) — IN PROGRESS
+Four Sonnet 5.5 walkers (D588; Trial 1's conditions, §11) on the frozen fixed build `raptor-port/dist-fix` (app code
+`b1632e32`), ports 4231 / 4232, under the PC lock; brief `…/2026-10-06-codex-stack-rewalk-brief.md`, added scenarios
+`…-rewalk-additions.md` (R-01, R-03, R-04, R-11); each starts from the first walk's scripts as a recipe, never a
+verdict, into its own folder.
+
+| Walker | Share | Table |
+|---|---|---|
+| M | L-02…L-08, R-11, the stale-header steps, P1-01…06, P2-08/09/11/12/13, L-01 (record) | `parts/stk2-M.md` |
+| N | L-09…L-16, R-03, R-04, the ⋯ menu steps, P5-01…08, X-06, X-07 | `parts/stk2-N.md` |
+| P | P4c-01…16, H-04, P4d-01…06, P4e-06/07/08, ten Tabs in a row (caret never replaced, no jump, one saved change) | `parts/stk2-P.md` |
+| Q | R-01, P3-01/02/04/05/07/08/16/18, H-02, H-03, H-07, X-01/03/04/05/09, the two-formation question steps | `parts/stk2-Q.md` |
+
 ## 6. The break tests — to come
 ## 7. Errors seen — to come
 ## 8. What was NOT walked, and why — to come
 ## 9. The gates — to come
-## 10. The reads, and each owed read paid — to come
-## 11. Trial 1 (the walkers) and Trial 2 (the builder) — to come
+## 10. The reads, and each owed read paid — IN PROGRESS
+
+### 10.1 The one side-by-side (D590 (5)) — Astra, Sol 6.1 and Fable 5.1 on the Insights fixes of 3 Oct
+One brief, word for word (`../superpowers/briefs/2026-10-06-insights-fixes-side-by-side-brief.md`); each read apart, in
+a checkout frozen at `9e8ed334` — the tree as it stood straight after the three commits, so none could see what this
+check found later. Reports as returned: `…-insights-fixes-read-astra.md`, `-sol.md`, `-fable.md`. Three real faults of
+those commits were already known from this check's walk (W7, W9, W10) — the reviewers were not told.
+
+| What there was to find | Astra | Sol 6.1 | Fable 5.1 |
+|---|---|---|---|
+| W10 — four confirmation windows still close on a drag-out (the fix's roll-call missed them) | MISSED — wrote "I checked all thirteen changed callers" as sound | FOUND, all four, with the fix | FOUND, all four, with the fix |
+| W9 — no Choose / Change button for another formation while a question is open | IN PART — named the line that blocks it, inside another finding | not found | FOUND, with the two-slot fix this check built |
+| W7 — an answer filed under "Leave War · (a hidden code)" in the changes window | not found | FOUND, with the fix | MISSED — judged that fix sound |
+| NEW — typing a cue on a second formation REPLACES the first formation's open question (D535 lists no such ending) | FOUND | FOUND | noted in one sentence, not raised |
+| NEW — on Edit Schedule's week, moving to another day does not end the question (D535 says it does; the board does) | FOUND | FOUND | not found |
+| Sort all ends an open question | — | — | raised as low, "a judgement call" — D535's full row says a structural move does end it: as ruled |
+| False alarms | none | none | none |
+| Said plainly what it did not check | yes | yes | yes |
+| Cost | his ChatGPT account | his ChatGPT account | 216,000 tokens, 8½ minutes; **his week 7% → 8%, his Fable week 0% → 1%** (5-hour window 8% → 10%), read with nothing else of Claude's running |
+
+**What it shows, for his ruling on whether Sol keeps the second seat:** on this one sample Sol found the most (four
+real things), Astra and Sol TOGETHER found everything Fable found except a clean statement of W9 — and found two things
+Fable did not; Fable alone would have missed W7 and both new ones. No one reviewer found everything: the three known
+faults were each missed by at least one of them. The pair from one maker did not miss the same things here. One sample
+of three small commits is thin evidence — the recommendation is in §12.
+
+**The two new finds** are real gaps against D535's own words; both are choices about what he wants to see, so they are
+parked, not guessed: §12, questions 2 and 3.
+
+### 10.2 The fix round's own reads — to come
+Astra and Sol 6.1, apart, on the five fix commits (brief `…/2026-10-06-codex-stack-fix-read-brief.md`).
+### 10.3 The four Opus readers' second pass on Codex's code — to come
+### 10.4 Each read the Codex blocks listed as owed to Claude — to come
+
+## 11. Trial 1 (the walkers) and Trial 2 (the builder)
+
+### Trial 1 — DONE, decided (D588 (3), D480, D595): walking the app stays with Sonnet 5.5
+The whole record is `parts/stk-trial-1.md`. In short: one Opus and one Sonnet walker, the same brief and the same Rally
+scenarios, on the Rally build as it stood before its review fixes (`786d2b2c`), neither told what was wrong. Five known
+faults were in it. The Opus walker caught all five; the Sonnet walker caught four fully and the fifth in part (it did
+not raise the missing "previous day" wording as a finding, but it alone caught the negative rest figure). Both found the
+same fault off the list ("NaN min"), the Sonnet walker with the sharper control. No false alarm from either. The Sonnet
+walker took 31 minutes and about 446,000 tokens for eleven scenarios; the Opus walker 54 minutes and about 627,000 for
+twelve — about 70% of the tokens at a lower price each, roughly half the cost. Its weaknesses: it opened about a third of
+its pictures (38 of 117; the Opus walker 136 of 136), and it marked two scenarios "recorded" where a verdict was due.
+**The decision (the agent's, D595; told to him the same night — "ok so sonnet is good for this"):** every walk goes to
+Sonnet walkers, with no Opus walker beside them, on three conditions now written into the walk brief and used on this
+re-walk: the host opens the pictures behind every FAIL and every high-consequence PASS; a scenario with an expected
+result is judged PASS or FAIL; a walker's conclusion is a finding only once the host has reproduced it. Unchanged
+(D588 (5)): Sonnet never reads code for bugs, never decides a finding, never writes a plan, a roll-call or a scenario
+list.
+
+### Trial 2 — the builder — to come (after the check: one small low-risk fix, `[OG-TAG-OVER-COUNT]`, built by a Sonnet helper to a precise spec, read by Opus)
+
 ## 12. His look — the "look here" card — to come
+
+### Questions waiting for him (D596 — nothing below was guessed; only these pieces are left as built)
+
+1. **Tab after the last text box of a day (W14).** On Edit Schedule's week, when the day has no button below its last
+   text box, Tab leaves the caret on nothing. You ruled "Tab goes on to the next normal button, without looping or
+   changing day" (D553) — here the next button belongs to the NEXT day. Which do you want?
+   **(A, recommended) the caret stays in that last box** — nothing vanishes, nothing jumps; Shift+Tab goes back.
+   (B) Tab goes on to the next day's first button (the week pans to that day). (C) leave it as built.
+   *Parked on it: W14 (a) only. Everything else about the Tab route is fixed and re-walked.*
+2. **A second formation asks while the first one's Blue/Red question is still open.** You type "DS FOR RU" on VL and
+   leave its question unanswered, then type a DS / RED remark on another formation. Today the new question REPLACES
+   VL's (VL's goes without an answer; its "Choose mission role" button still works when you select its Remarks). You
+   ruled a question stays until answered, Later, or its own wording changes (D535), and "not many questions at once"
+   (D523). Which do you want?
+   **(A, recommended) show both, each under its own formation** — they only ever arise one at a time, from your own
+   typing. (B) keep the first, show nothing for the second until you select its Remarks. (C) leave it as built — the
+   newest replaces the older.
+   *Parked on it: this one behaviour — found by Astra and Sol (§10.1). The button for another formation (W9) is fixed.*
+3. **On Edit Schedule's week, does going to another day end an open Blue/Red question?** On the Scheduler Board it
+   does (D535). On the week several days are on screen at once on a desktop, and on a phone you swipe between them;
+   today the question waits on its day until you answer it or press Later, and nothing else is blocked by it.
+   **(A, recommended) leave it — it waits where you left it.** (B) end it when you swipe or step to another day.
+   *Parked on it: nothing else.*
