@@ -56,7 +56,7 @@ check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip
 (Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
 changed text box on Edit Schedule, the first click into another box lands on the page and a second is needed; the same on the live
 app; with the next change to the schedule's text boxes). **The same check's three parked questions were answered on 6 Oct 26 (D597–D599) and built on the stack branch** — the items
-are in `OUTSTANDING-ARCHIVE.md`; the sheet's §13 has the walk. Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; the same on the live app; **fixed FIRST after the stack, in a new chat — D602**, with [OIL-WORK-START]), then [START-CONTEXT-AUDIT] (what a new chat loads at its start, measured and cut to what a job needs, never at the cost of quality — D602), (the two small Blue/Red fixes that stood here were built in the check's third round, 6 Oct 26, and archived; `[ROLE-NOT-CHOSEN]` was answered "leave it" — D603), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
+are in `OUTSTANDING-ARCHIVE.md`; the sheet's §13 has the walk. Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; the same on the live app; **fixed FIRST after the stack, in a new chat — D602**, with [OIL-WORK-START]), then [START-CONTEXT-AUDIT] (what a new chat loads at its start, measured and cut to what a job needs, never at the cost of quality — D602; its first step is [STACK-MERGED-TIDY] — the stack went live as PR #481 on 6 Oct 26 and its finished items and handoff blocks still stand), [R3-OWED-READS] (two small reads, with the crew-rest fix's first read), (the two small Blue/Red fixes that stood here were built in the check's third round, 6 Oct 26, and archived; `[ROLE-NOT-CHOSEN]` was answered "leave it" — D603), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
 
 **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
 are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
@@ -1944,6 +1944,29 @@ that code (the row's boxes are the scheduler's own layer over the request — `r
 scheduler re-time the row on the programme and leave the member's request as filed (as now)? With the next change to requests on the
 programme.
 
+### [STACK-MERGED-TIDY] The Codex stack is live (PR #481, 6 Oct 26) — its finished items still stand in the backlog and its branches' blocks in the handoff (filed 6 Oct 26)
+Documents only. (1) The stack's own backlog items are built, checked and merged and still read as open — among them
+`[DISCARD-MARKS-REMOVE]`, `[WORKSPAN-NEGATIVE]`, `[RALLY-TIME]`, `[RALLY-REVIEW-FIXES]`, `[INSIGHTS-MISSION-MIX]`, `[INSIGHTS-BOARD-DOOR]`,
+`[CSS-SPLIT-BY-SCREEN]`, `[SCHEDULE-TAB-ROW-FLOW]`, `[SCHEDULE-INSIGHTS-MENU]`, `[SAVE-NOTE-COVERS]`, `[SONNET-WALKER-TRIAL]` (Trial 1 is decided —
+the check's sheet §11): each leaves by `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>` after EVERY deliverable it
+ever named is walked — done, filed as its own item, or dropped by a ruling (the handoff guide, Step 3) — and the priority list's
+sentences about them are brought up to date. (2) `HANDOFF.md` `## Now` still carries seven blocks of branches that merged with
+PR #481 (named in the `claude/rest-blank-line` block): each is removed once its residue is confirmed filed. (3) The D496 banners
+("until Monday 5 Oct 26, 19:00 …") at the head of `raptor-port/CLAUDE.md`, in `AGENTS.md` and in `raptor-port/docs/codex-review-workflow.md`
+are expired — a working-guide change, so read by Astra and Sol before he approves it (D70). (4) Six files stand over their size markers
+(6 Oct 26: `OUTSTANDING.md` by 409 lines, `HANDOFF.md` by 8, `.claude/rules/bug-check.md` by 2; the rulings of How we work by about 4,100
+bytes, the scheduler's by 5,700, the Tracker's by 440) — put off while every branch carried code (D29); on a documents-only change the
+document check FAILS on them, and this pass is where they are answered: move what does not belong, split an area, or raise a marker
+with its reason (D141, D136) — never trim a ruling. **Place:** the first step of
+`[START-CONTEXT-AUDIT]` — the same pass, since both are about what a new chat is made to read.
+
+### [R3-OWED-READS] Two small reads the stack check's third round still owes (filed 6 Oct 26)
+(1) The last fix of the round had no independent read of its own — the cap of two reads: `raptor-port/src/ui/schedule-tab.ts`, where
+the Tab that keeps the caret in a day's last box looks its day up again when the redraw replaced it (it is the fix both readers
+specified; its test is in `raptor-port/src/ui/schedule-tab.test.tsx`, "D597 when the redraw at that Tab replaces the whole day …").
+(2) The short lines of D602, D603 and D604 have not been read against their full rows by a reviewer who did not write them (D138).
+**Place:** in the brief of the next read Astra is given — the crew-rest fix's (`[REST-BLANK-LINE]`).
+
 ### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
 His words: *"why I am at 30% context the moment I start a new chat? Is it required? Is there a way we can optimise how the repo is
 structured so that we only read what's required? Or summarise it. Or u suggest. A lot of tokens are wasted if we carry on like this.
@@ -2112,7 +2135,8 @@ a question for him first.
 Walker A's O3 (pictures `…/2026-10-01-dbr-phase7/a/R4b-*.png`, `R4-1.png`): on the member's View-only Sched, the dotted "OG" tag on
 a changed seat overlaps the count chip's top edge; the number stays legible close up, crowded at normal size. The admin's view
 is clean. Cosmetic, older than phase 7 (D172's tag, D37's chip). **Place:** low — with the next change to the tag or the chip;
-measure both at phone width.
+measure both at phone width. **It is also Trial 2 of D588 (not started):** ONE Sonnet 5.5 helper builds this fix to a precise spec; Opus reads
+its diff and tests, decides what that model takes, and tells him what it decided and why (D595).
 
 ### [MEMBER-EDITPAGE-CHECK] A member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons — a check (walk note, 1 Oct 26)
 Walker A's O5 (picture `…/2026-10-01-dbr-phase7/a/R4-4.png`). No control leads a member to Edit Schedule; reached through the
