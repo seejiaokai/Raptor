@@ -1,0 +1,62 @@
+# Walker C — Codex stack walk (D589), 5 Oct 26 — P3-01 to P3-18, H-02, H-03
+
+Frozen build at http://localhost:4221, scripted Chromium, one fresh world per scenario (own storage), admin `ad`, member `us`.
+Every fixture through the app's own controls (Logic switch, Mission / Remarks boxes, Choose / Change mission role, Later / Blue / Red,
+version menu, Publish / Publish AL / Unpublish, + Alt Plan, Templates, + Wave menu, board Undo / Redo, Admin → Users). The probe bridge was
+used only to get places and to read. Scripts: `raptor-port/scripts/handpass/stk-C-*.mjs`. Results: `stk-C.json`. Pictures: `…/2026-10-05-codex-stack/C/`.
+Insights figures are read for named crew: Saber / Echo (VL, Mon), Ranger, Drifter / Vector (RU), Outlaw / Wisp. "xb/yr/total" = Blue / Red / total sorties.
+
+## 1. The table
+
+| # | What I did | What the screen said | Verdict | Pictures |
+|---|---|---|---|---|
+| P3-01 | Mon VL ACM "DS FOR RU", unanswered; signed 4 + Publish; working Remarks → "DS FROM RU" (1 pending); on the version menu's latest-published view pressed Choose → Red; back to Live copy → Blue; then signed again + Publish AL1 | Before: Saber/Echo total-only (-/-/2, -/-/3). After Red on the published view: Saber 1b/1r/2, Echo 2b/1r/3, immediately. Pending count stayed 1, sign-off line unchanged, days and sign-off book byte-identical after Red and after Blue. While AL1 pending, Insights still Red (Echo 2b/1r/3). After Publish AL1: Saber 2b/0r/2, Echo 3b/0r/3 (working Blue) | PASS | a-02, a-04, a-05, a-06 (opened), a-08, a-09, a-11, a-13 (opened) |
+| P3-02 | Published Original and AL1 (changed cue wording) | Original preview: 0 role boxes, no door, no question. AL1 (latest) preview: 2 read-only Remarks boxes, readonly, "Choose mission role" door appears on click | PASS | a-14, a-15 (opened), a-16 |
+| P3-03 | Opened a Published question; Live; Unpublish (armed + confirm); re-signed + Publish; back to the preview | Question gone after leaving the preview and after the reissue (same label ORIG); a new Choose gave a fresh "Published · Original" question; Red → Saber 1b/1r, Echo 2b/1r | PASS | a-17 … a-22 |
+| P3-04 | Mon VL ACM "DS FOR RU" Red saved as a day template; applied to Tue; crew placed by hand; Tue answer → Blue; looked at Mon; board Undo ×4, Redo ×4; Changes window | Tue after apply: copied answer Red (Saber 1b/2r). Tue → Blue: Saber 2b/1r; Monday untouched (door "Change mission role", Red still counted). Undo1 "Undid: the mission role for VL — Blue"; Undo2–3 took back the two crew placements; Undo4 put Tue back to BFM (VL/BFM, Saber 1b/1r, no orphan answer). Redo1–3 brought template + crew back with the copied Red (Saber 1b/2r, Echo 2b/2r); Redo4 Blue again. **Changes window groups the two role lines under "Leave War · rmuv81tx8fpu0be · 2"** (see F1) | FAIL (F1 only) | b-04, b-07, b-08, b-10-changes (opened), b-15, b-20 (opened) |
+| P3-05 | Plan A = Mon "DS FOR RU" Red; + Alt Plan (A parked, B live); B wording "DS FROM RU" → Blue; switched A→B→A; reload; B | A: Saber 1b/1r, Echo 2b/1r, door "Change mission role"; B: Saber 2b/0r, Echo 3b/0r. Every switch: 0 questions on arrival, matching text + answer. After reload A and B the same | PASS | b-19 … b-33 |
+| P3-06 | Board and week, desktop and phone 390: answered Red; typed "DS FROM RU" without leaving the box; pressed "Change mission role" | Door says "Change mission role"; text saved first (command 5→6, Remarks "DS FROM RU"); caret still in the box; Blue → Saber 2b/0r, Echo 3b/0r; typing continued in the same box ("DS FROM RU // X"); old wording put back → no question, Red returns (1b/1r) — the answer belongs to the wording. Phone: all three buttons land (centre hit-test ok) | PASS (4 runs) | c-02, c-11, cph2-02 (opened), cph2-07 (opened) |
+| P3-07 | Question open on VL; edited RU's take-off (13:50), then VL's own take-off (12:45); Red | Same question present after each edit; Red counted: Saber 1b/1r, Echo 2b/1r; board + week, desktop + phone | PASS (4 runs) | c-06, c-07, c-09, c-15 … cph-18 |
+| P3-08 | Question opened by own edit, then each action in turn | Question count 1 → 0 after: wording changed to no-cue; Undo; (Redo: still 0); day change Mon→Tue→Mon (0, 0); tracking Off→On (0, 0); week change via the board Calendar and back (0, 0); sign-out and in (0); formation removed line by line; wave dragged below the other; Back to live copy from a Published question. Week: wording, Undo/Redo, tracking, week change, sign-out all 0. Manual door after sign-in: "Choose mission role" | PASS | d-01 … d-17 |
+| P3-09 | Missions DS, RED, RED AIR typed on three Mon formations | 0 questions, no manual door on any of their Remarks; counted Red at once: Saber/Ranger 1b/1r, Echo 2b/1r, Drifter/Vector 1b/1r, Outlaw/Wisp 1b/1r | PASS | e-03 |
+| P3-10 | Blanked Remarks, typed DS-2, RED AIR 2, ACM/DS one at a time; Later on each | One question per edit (VL, RU, RU); with all three on Later every crew was total-only (-/-/2 …) | PASS | e-05 … e-07 |
+| P3-11 | Two ACM formations: "DS FOR RU" answered Blue, "DS FROM RU" answered Red | Both questions offered Blue/Red/Later, nothing pre-chosen; VL crew Saber 2b/0r, RU crew Drifter/Vector 1b/1r — the chosen side governs | PASS | e-10, e-11 |
+| P3-12 | Later; five click-in/Tab-out passes; Tab through nine boxes; then "Choose mission role" → Red (board and week) | Text kept "DS FOR RU"; every pass door "Choose mission role", 0 questions; 0 commands written in the quiet part; manual door opened the question; Red → Saber 1b/1r, Echo 2b/1r | PASS (2 runs) | e-13 … e-17 |
+| P3-13 | VL, 2 aircraft / 4 crew, only aircraft 2 Remarks "DS FOR RU"; Red; Ranger replaced by Comet by dragging from the crew list; take-off 12:50 | After Red: Saber 1b/1r, Echo 2b/1r, Ranger 1b/1r (aircraft 1 counted too). After replace: Ranger 1b/0r/1, Comet 0b/1r/1; after time change: unchanged, 0 questions | PASS | e-02, e-06 |
+| P3-14 | Two aircraft, cues "DS FOR RU" / "DS FROM RU"; removed aircraft two with ✕; variant with the remaining cue unanswered; template of three unresolved formations applied to Wed | Removing when the remaining wording was already answered: 0 questions (the Red for "DS FOR RU" came back, Saber 1b/1r). Variant (remaining cue unanswered): exactly 1 question. Template to Wed: 0 questions on arrival; Wed VL#1 "Change mission role" (copied Red), the other three "Choose mission role" | PASS | f-01, f-03, f-05, f-06 (opened) |
+| P3-15 | Saber/Echo night VL ACM "DS FROM RU" Later; CX on one RU aircraft (reason pop-up → Cancel line); "+ Line" empty formation; SC, AVALON, BB waves from + Wave with Comet / Havoc / Nomad dragged in; then resolved | Only Saber/Echo total-only; Ranger/Piston/Relay split. CX: Sorties 32→31, Piston 1b, Relay 3b. SC/AVALON/BB with crew: tiles unchanged (32 / 17 / 38), Comet and Havoc absent from flying load, Nomad stayed 1. Resolving Saber's formation Red: Saber 1b/1r, Echo 2b/1r (O1: empty formation counted as a sortie) | PASS (+O1) | f-09 … f-15 |
+| P3-16 | 38 flying people already in the demo week, 17 with total 1, 17 with total 2 (ties). Six doors: desktop Insights (Edit Schedule, View-only Sched), Board desktop button; at 390×844 the Edit Schedule ⋯, the View-only Sched ⋯, the Board ⋯ More | Every door: tiles 32 / 16 / 38 / 36·13; 12 rows then "Show all 38 ↓" → 38 rows → "Show less" → 12 rows; identical lists in every door; order count descending then callsign ascending; close cross is what a finger lands on | PASS | h-01 … h-11 (h-07 opened) |
+| P3-17 | Fresh world: Logic; admin On; admin-as-member; member `us`; Admin → Users guest viewing On, unknown sign-in; second unknown sign-in | Fresh: switch Off, Insights as before (no Blue/Red rows). Admin On → mix rows. Admin-as-member (badge "SABER · MEMBER", no Edit Schedule/Admin): switch On but read-only, Edit button not visible, same Insights. Real member: same; clicking the switch changes nothing; the setting survived the account change. Unknown identity → request card; after request "View the schedule" (guest, read only, 0 editable, no Insights button); no-access identity stays on "Your request is with the admins", no app, no nav | PARTIAL (guest: no Insights door on desktop — host to judge against P4d-01; guest on a phone not walked) | i-01, i-03, i-05, i-07, i-09 … i-13 |
+| P3-18 | Admin A: Red → Blue, Undo/Redo ×2; Admin → Users gave Anvil a sign-in as Admin; signed in as Anvil, answered Red; back as A | History names Saber and Anvil on each change; Anvil's Red saved (Saber 1b/1r after reload); A's top-bar Undo disabled ("Undo") after sign-in again, so B's work could not be undone; B's fresh Undo read "Undo — the mission role for VL — Red". Same group-heading defect F1 | PASS (+F1) | g-03, g-12, g-13, g-15, g-16 (opened) |
+| H-02 | One formation taken unanswered → Red → Blue; Board wave, Edit Schedule day, View-only Sched day captured each time (HTML + picture); three formations Red / Blue / unanswered side by side; Mon published; Export as PDF read | Board HTML identical in the three states. Week and View-only differ only in the day chip "N changes" (2→3→4) — a count, not a mark on a line; no red/blue class, tag or outline follows an answer; print sheet has no Blue/Red/role word or attribute | PASS (+O2) | j-01 … j-13 (j-01, j-04, j-10, j-13 opened) |
+| H-03 | Admin: tracking On, one formation unanswered, one answered Red; member filed a Meeting request 10:00–11:00 on Mon from Inputs; View-only Sched, Inputs, Leave War doors, phone ⋯ | 0 question, 0 Choose/Change button, 0 Red/Blue/Later buttons, 0 Published-Remarks doors anywhere (Inputs, View-only, Insights); clicking and typing on the Remarks text changed nothing. Insights = admin's (rows and tiles identical on 3 desktop doors); phone ⋯ → Insights same first rows (12 of 38); no Insights item in the drawer | PASS | k-02, k-03, k-07 … k-09 |
+| extra | 844×390: the question on the Board and Edit Schedule week; Insights Show all scrolled to the bottom | Buttons land (centre hit-test ok) after scrolling the question into view; close cross on top and on screen (top 47px) | PASS | l-01, l-02 (opened), l-03 |
+
+## 2. Findings
+
+**F1 (defect) — the Changes window files role answers under "Leave War · <opaque id>".** Steps: fresh world, Logic → Track Blue/RED sorties On;
+Scheduler Board Monday; Mission box VL → ACM; Remarks → "DS FOR RU"; press Red; press History; tab "All changes". Expected (P3-04 / P3-18, D530):
+history names the formation and no opaque identifier. Saw: a group headed "Leave War · rmuv8roh4keqidw · 2" holding "VL · mission role · Working copy Unresolved → Red"
+(the other group correctly reads "Flying · VL ACM"). The id changes per run, the group says Leave War, and it is shown on every role line, for Saber and Anvil alike.
+Pictures: b-10-changes, g-16-changes (both opened).
+
+**O1 (observation, P3-15) — an empty formation counts as a sortie in the week tiles.** "+ Line" on Go 1 with no crew moved SORTIES 31→32 and FORMATIONS 16→17;
+the per-person bars did not change. Not in any ruling; reported for the host.
+
+**O2 (observation, H-02) — the day's "N changes" chip counts each role answer** (Mon: 2 → 3 → 4 after unanswered → Red → Blue); shown on the week and View-only day head.
+It is a count, not a mark on a formation; it agrees with the Changes window.
+
+**O3 (observation, P3-14) — removing the cue-bearing aircraft when the remaining wording already has an answer asks nothing** (the earlier Red returns). Asking once happened in the variant with an unanswered remainder.
+
+## 3. Errors seen
+None: no console error, page error, native dialog or 4xx in any run (the error list was empty in every script).
+
+## 4. Not walked / limits
+- P3-08: the version-change, delete and drag cases were walked on the Board only; the week got wording, Undo/Redo, tracking, week change and sign-out.
+- P3-17: guest was walked on a desktop only; no guest phone door looked at.
+- P3-16 at 390×844 only for the phone doors (also 844×390 for the Insights close cross, not for every door).
+- H-02's print sheet was read from the hidden print frame (the print dialog itself is not drivable); View-only Sched's Export buttons are `visibility:hidden` on that page at 1440 wide, so the Edit Schedule button was used.
+- Chromium emulation, not a real iPhone.
+
+## 5. Pictures
+301 files sit in the folder (about 120 are referenced by the final table; the rest are earlier runs of the same scripts, error shots and probe pictures). I opened about 25 of them (the decisive ones named above); the remainder I did not open.

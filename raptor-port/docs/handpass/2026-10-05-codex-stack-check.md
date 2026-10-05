@@ -66,7 +66,7 @@ walkers (D588), each a fresh browser world per scenario, on the frozen build, un
 |---|---|---|---|---|
 | A | P1-01…06, P2-01…08 | 4221 | `parts/stk-A.md` | BACK — 91 pictures, 22 opened by the walker; Discard marks six of six PASS (guest not walked); P2-04 to P2-07 PASS; P2-01 FAIL (W1); P2-02, P2-03, P2-08 RECORDED |
 | B | P2-09…18, H-01, H-05…H-08 | 4222 | `parts/stk-B.md` | out |
-| C | P3-01…18, H-02, H-03 | 4221 | `parts/stk-C.md` | out |
+| C | P3-01…18, H-02, H-03 | 4221 | `parts/stk-C.md` | BACK — 301 pictures (about 119 behind the final table), about 25 opened by the walker; the host opened 2. 19 PASS, 1 FAIL (P3-04 — W7 again, the changes-window heading), 1 PARTIAL (P3-17: the guest on a phone not walked). PASS on the high-consequence lines: an answer on a published day counts at once with the pending count, the sign-offs and the day's stored record byte-identical (P3-01, seen by the host: the issued Original with its Remarks, and the split bars); an older version offers no way to answer (P3-02); saved plans and day templates carry their own answers and Undo leaves no orphan (P3-04, P3-05); the question stays through an unrelated edit and goes on each of ten context changes (P3-07, P3-08); another person's answer is not undone (P3-18); no mark on any schedule line (H-02); a member never meets a question or a button and sees the admin's bars (H-03); the same twelve rows and Show all from all six doors (P3-16) |
 | D | P4c-01…16, P4d-01…06, H-04 | 4222 | `parts/stk-D.md` | BACK — 111 pictures, 31 opened by the walker. The Tab route: 13 of 16 PASS (the order on week and board, reordered sections, folded sections, standby rows, no loop, no write on an unchanged pass through a signed published day, short screens, other apps' own Tab); the phone ⋯ menu 5 of 6 PASS; H-04 PASS — a Tab pass through a published Saturday left "0 pending", the four sign-offs and every Leave War cell as they were |
 | E | P4a, P4b, P4e, and one picture of every screen at two sizes | 4221 | `parts/stk-E.md` | out |
 | F | P5-01…08, X-01…12 | 4222 | `parts/stk-F.md` | out |
@@ -132,7 +132,11 @@ Also recorded by walker D: after Enter in a time box the caret is dropped and th
 (with W14 at the fix round); the board draws a Brief box on SC / AVALON / BB rows, which the route visits (as built — on SC it is
 the in-time, the settled 24 Aug 26 rule).
 
-**Still out:** walkers B, C, E, F.
+| W17 | An empty formation — "+ Line", nobody on it — raises Insights' SORTIES tile (31 → 32) and FORMATIONS tile (16 → 17); the per-person bars are right. | walker C (its own observation O1) | to reproduce | not yet compared | reproduce, compare with `main`; if old, file low |
+
+*(W17 is listed here, out of the table above, because it arrived after it; the fix round renumbers nothing.)*
+
+**Still out:** walkers B, E, F.
 
 ## 6. The break tests — to come
 ## 7. Errors seen — to come
