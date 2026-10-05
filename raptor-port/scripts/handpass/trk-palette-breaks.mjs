@@ -29,7 +29,7 @@ const BREAKS = [
   ['tracker.css: the bubble falls back to a colour that is not Raptor\'s', 'src/tracker/tracker.css', 'background:var(--panel,#14181D)', 'background:var(--panel,#101010)'],
   ['tracker.css: tick boxes back to the browser\'s own colour', 'src/tracker/tracker.css', 'input[type=checkbox]{accent-color:var(--accent)}', 'input[type=checkbox]{accent-color:auto}'],
   ['SidePanel.jsx: the lull calendar\'s start day back to the old teal', 'src/tracker/components/SidePanel.jsx', "cols.push('var(--on)')", "cols.push('#16584a')"],
-  ['scheduler.css: RAPTOR\'s amber changes and the Tracker is left behind', 'src/ui/scheduler.css', '--adv:#E5A83B;', '--adv:#E0A030;'],
+  ['scheduler.css: RAPTOR\'s amber changes and the Tracker is left behind', 'src/ui/scheduler/00-foundation-login.css', '--adv:#E5A83B;', '--adv:#E0A030;'],
 ]
 
 const rows = []

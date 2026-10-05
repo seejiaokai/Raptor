@@ -1,0 +1,29 @@
+<div id="rally-day-automatic" class="viz-dotted-background">
+  <section class="ra-app" aria-label="Proposed compact reporting box">
+    <header><span>WAVE 1 · 3 OCT</span><span>Draft · proposed display</span></header>
+    <div class="ra-flight"><strong>VL</strong><span>Take-off <strong>01:00</strong></span></div>
+    <label for="ra-line">In-time / Rally</label>
+    <textarea id="ra-line" rows="2" readonly>23:00H: FIRST WAVE VL IN TIME + WX/NOTAMS</textarea>
+  </section>
+</div>
+<style>
+#rally-day-automatic { padding: 20px 12px; }
+#rally-day-automatic .ra-app {
+  --ra-bg: light-dark(#ffffff, #14252c);
+  --ra-fg: light-dark(#17333e, #edf5f7);
+  --ra-muted: light-dark(#49616b, #b3c9d0);
+  --ra-line: light-dark(#c9d9de, #415b65);
+  --ra-field: light-dark(#fffbed, #29362b);
+  --ra-field-text: light-dark(#614b13, #ffdf83);
+  background: var(--ra-bg); color: var(--ra-fg); border: 1px solid var(--ra-line);
+  border-radius: 8px; padding: 16px; max-width: 650px; margin: auto;
+  font: 14px/1.45 Arial, sans-serif; box-sizing: border-box;
+}
+#rally-day-automatic .ra-app * { box-sizing: border-box; }
+#rally-day-automatic header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; color: var(--ra-muted); font-size: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--ra-line); }
+#rally-day-automatic .ra-flight { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding: 14px 0; }
+#rally-day-automatic strong { font-weight: 500; }
+#rally-day-automatic label { display: block; font-weight: 500; margin-bottom: 6px; }
+#rally-day-automatic textarea { display: block; width: 100%; resize: none; border: 1px solid var(--ra-line); border-radius: 4px; background: var(--ra-field); color: var(--ra-field-text); font: 16px/1.5 Arial, sans-serif; padding: 10px; }
+@media (max-width: 400px) { #rally-day-automatic { padding: 12px 4px; } #rally-day-automatic .ra-app { padding: 12px; } }
+</style>

@@ -1,0 +1,42 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/ui/mission-role-offer.test.tsx (4 tests | 1 failed) 3518ms
+   × removing one aircraft through the real Board route asks for the remaining formation changed context 822ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > removing one aircraft through the real Board route asks for the remaining formation changed context
+AssertionError: expected  to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/ui/mission-role-offer.test.tsx:77:63
+     75|   await click(q('#sbBoard [data-ldel="0.0.0.0"]'));await settle()
+     76|   expect(DAYS[0].waves[0]!.formations[0]!.aircraft.length).toBe(f.airc…
+     77|   expect(document.querySelectorAll('.mission-role-question')).toHaveLe…
+       |                                                               ^
+     78| })
+     79|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  15:14:59
+   Duration  8.20s (transform 3.37s, setup 58ms, import 3.64s, tests 3.52s, environment 790ms)
+

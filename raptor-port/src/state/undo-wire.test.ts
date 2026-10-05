@@ -30,6 +30,7 @@ import { installGlobalUndo, _snapView } from './undo-wire'
 import { setDayRemark } from './plan'
 import { HIST } from './history'
 
+
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }

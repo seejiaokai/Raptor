@@ -1,0 +1,609 @@
+/* ============ WEEK / DAY ============ */
+.week{display:flex;gap:14px;padding:2px 20px 30px;overflow-x:auto;align-items:flex-start;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+/* floating left/right arrows to pan the week horizontally (desktop) */
+.week-nav{position:fixed;top:52%;transform:translateY(-50%);z-index:150;width:38px;height:70px;border:1px solid var(--edge);background:rgba(20,24,29,.82);backdrop-filter:blur(5px);color:var(--ink-2);font-size:26px;font-weight:700;line-height:1;cursor:pointer;border-radius:12px;display:flex;align-items:center;justify-content:center;opacity:.75;transition:opacity .15s,border-color .15s,color .15s}
+.week-nav:hover{opacity:1;border-color:var(--accent);color:var(--accent)}
+.week-nav.prev{left:8px}
+.week-nav.next{right:8px}
+.week-nav[hidden]{display:none}
+@media (max-width:820px){.week-nav{display:none!important}}
+/* ---- sticky horizontal scroll bar, tagged to the bottom of the viewport (desktop) ---- */
+.hscroll{position:fixed;left:0;bottom:0;z-index:185;display:none;align-items:center;gap:8px;
+  padding:6px 10px;background:rgba(11,13,16,.93);backdrop-filter:blur(7px);border-top:1px solid var(--edge);
+  border-radius:12px 12px 0 0;box-shadow:0 -6px 18px rgba(0,0,0,.45)}
+.hscroll.on{display:flex}
+/* it is a live scrollbar, so it must stay clickable when idle — but while a drag
+   is running it is a 35px dead strip across the bottom of the window */
+body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
+.hs-arrow{flex:0 0 auto;width:26px;height:22px;border:1px solid var(--edge);background:var(--panel-2);color:var(--ink-2);
+  font-size:16px;font-weight:700;line-height:1;cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;padding:0}
+.hs-arrow:hover{border-color:var(--accent);color:var(--accent);background:rgba(59,198,232,.10)}
+.hs-track{flex:1 1 auto;min-width:0;overflow-x:scroll;overflow-y:hidden;height:16px;background:var(--panel-2);border:1px solid var(--edge);border-radius:8px}
+.hs-in{height:1px}
+.hs-track::-webkit-scrollbar{height:14px}
+.hs-track::-webkit-scrollbar-track{background:transparent}
+.hs-track::-webkit-scrollbar-thumb{background:var(--edge-2);border-radius:7px;border:3px solid var(--panel-2)}
+.hs-track::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+.hs-track{scrollbar-color:var(--edge-2) var(--panel-2);scrollbar-width:auto}
+.hs-lbl{flex:0 0 auto;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.07em;
+  font-size:9px;font-weight:700;color:var(--ink-3);min-width:74px;text-align:right}
+@media (max-width:820px){.hscroll{display:none!important}}
+/* On desktop the pinned bar above IS the week's scrollbar, so the week must not
+   draw a second one of its own — it still scrolls, it just has no chrome. */
+@media (min-width:821px){
+  .week{scrollbar-width:none;-ms-overflow-style:none}
+  .week::-webkit-scrollbar{height:0;width:0;display:none}
+}
+/* edit-schedule board + right roster palette */
+.edit-board{display:flex;align-items:flex-start;gap:0}
+.edit-board .week{flex:1 1 auto;min-width:0}
+/* NOTE: the aside carries BOTH .sb-roster and .eroster, and .sb-roster{flex:1}
+   is declared later in this sheet — so every geometry rule here needs the
+   extra .edit-board specificity or the palette balloons to half the page. */
+/* z-index:5 (5 Sep 26, measured — docs/performance.md ledger 22): a sticky
+   aside is composited, and everything the week paints ABOVE it in z-order —
+   the selected / me pucks and the SAN stripe at z 2–4 — was "assumed to
+   overlap" its scroll range and lifted onto a layer of its own (44 of the
+   desktop week's 261). Nothing inside the week strip can reach the aside
+   (the strip clips its own box), so stacking the aside above those pucks
+   changes no pixel. Keep it under the fixed chrome (week-nav 150, rail 151,
+   hscroll 185); the narrow-screen drawer below sets its own 190. */
+.edit-board .eroster{flex:0 0 auto;width:max-content;align-self:stretch;position:sticky;top:8px;z-index:5;
+  max-height:calc(100vh - 118px);overflow-y:auto;overflow-x:hidden;
+  border:1px solid var(--edge);border-right:none;border-radius:11px 0 0 11px;
+  background:var(--panel);margin:2px 0 0 4px;padding:8px 8px 10px}
+.edit-board .week{padding-right:8px}
+.eroster .er-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:11px;font-weight:700;color:var(--accent);padding:2px 2px 6px;border-bottom:1px solid var(--edge);margin-bottom:6px;white-space:nowrap}
+/* the panel's day-stepper arrows (owner, 15 Aug 26) — reach a day the week
+   cannot scroll to the left edge. Sit inline in the header, one puck-tall tap
+   target, disabled and dimmed at the week's two ends. */
+.eroster .er-h .er-daynav{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;padding:0;margin:0 1px;vertical-align:middle;border:1px solid var(--edge);border-radius:4px;background:transparent;color:var(--accent);font-size:13px;line-height:1;cursor:pointer}
+.eroster .er-h .er-daynav:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.eroster .er-h .er-daynav:disabled{opacity:.3;cursor:default;background:transparent;color:var(--ink-3);border-color:var(--edge)}
+.eroster .er-h .er-dayname{margin:0 2px}
+/* the edge hint — a fixed bubble over the aircrew panel, shown once a session
+   when the week jams against its right end with days still off the front. */
+/* two vertical columns: pilots left, WSOs right — each exactly one puck wide */
+.edit-board .eroster .rcols{display:flex;gap:7px;align-items:flex-start}
+.edit-board .eroster .rcol{flex:0 0 var(--puck-w);width:var(--puck-w);display:flex;flex-direction:column;gap:3px;min-width:0}
+.eroster .rcol .rh{display:block;margin:2px 0 3px;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:9px;font-weight:700;color:var(--ink-3)}
+/* KEEP THE DAY'S HEADINGS IN VIEW WHILE THE ROSTER SCROLLS (owner, 23 Aug 26 —
+   "when I scroll down the top of the day is hidden. keep it such that I always
+   see it"). The desktop palette is its own tall scroll box; the "Aircrew · <day>"
+   line (with the ‹ › day arrows) and the "Pilots/WSOs/Personnel · N free" column
+   labels used to scroll off the top, so a scheduler deep in a long pilot list
+   lost both which day he was on and which column was which. Pinning them:
+   the day line sticks at the very top, the column labels stick just under it
+   (27px = the day line's measured box height) — each carries the panel colour so
+   pucks pass behind, not through. Desktop only: the phone palette is a short
+   pull-out drawer that never needed it, and its .er-h/.rh stay as they were.
+   The column label is a flex child of its own .rcol, so it releases when that
+   column's own pucks run out — the longest column (pilots) holds its label
+   longest, which reads correctly rather than stranding an empty heading.
+   Desktop only (min-width:821px): below that the palette is a short fixed
+   pull-out drawer scrolling inside .ros-body, a different box with its own
+   header height, and the owner's ask was for the desktop panel. */
+@media (min-width:821px){
+  /* the box-shadow is an opaque cap painted 10px ABOVE the stuck header — the
+     panel's 8px top padding used to leave a sliver there where the first pucks
+     showed through as you scrolled ("this bleeding of the pucks behind the day …
+     opaque it", owner 26 Aug 26). A shadow (not extra padding) keeps the header's
+     box height fixed, so the column labels' 27px sticky offset below stays exact;
+     the panel's overflow clips the cap to its rounded top edge. */
+  .edit-board .eroster .er-h{position:sticky;top:0;z-index:4;background:var(--bg);
+    box-shadow:0 -10px 0 0 var(--bg)}
+  .edit-board .eroster .rcol .rh{position:sticky;top:27px;z-index:3;background:var(--bg);padding-bottom:1px}
+}
+/* HIDE THE AIRCREW COLUMN ON THE EDIT SCHEDULER (owner, 26 Aug 26 — "hide the
+   placeholders list on the right of edit scheduler and it just animates to the
+   right side"). Desktop only; the phone palette is already a pull-out drawer.
+   A rail pinned at the viewport's RIGHT edge toggles body.ros-collapsed; the
+   column then slides off to the right on a transform transition and the week
+   (flex:1) reclaims the freed width. The rail is position:fixed so it never
+   rides the roster's own vertical scroll, and it lives in #page-editsched so it
+   is gone on every other page. */
+.ros-rail{display:none}
+@media (min-width:821px){
+  /* reserve the rail's lane at the right; position:relative makes .edit-board the
+     containing block for the collapsed (absolute) roster, so right:0 lands on the
+     board's own right edge rather than the viewport's */
+  .edit-board{padding-right:26px;position:relative}
+  /* OPEN = a clean, full-height TRUE-BLACK opaque side panel (owner, 26 Aug 26
+     follow-up — "I can see the bleeding of it behind … make it a full black
+     opaque side panel"). The old panel used var(--panel) #14181d, the SAME tone
+     as the day blocks beside it, so the schedule read as bleeding into it; and
+     max-height:calc(100vh - 118px) left a ~110px black gap below the panel when
+     scrolled. Now it is var(--bg) (near-black, plainly a separate surface) and
+     fills down to just above the board's bottom scroll bar, so it reads as one
+     solid opaque panel top-to-bottom with nothing showing through beside it. */
+  .edit-board .eroster{transition:transform .24s ease;background:var(--bg);
+    max-height:calc(100vh - 44px);box-shadow:-16px 0 34px -22px rgba(0,0,0,.92)}
+  /* a slim BLUE "CREW" tab, styled off the phone drawer's accent tab and sat
+     HIGH on the right edge rather than mid-height (owner, 26 Aug 26 — "make it
+     like a blue side panel similar to the mobile one, labeled as crew … put it
+     higher … doesn't block much of the view"). It rides the reserved right lane,
+     so it never overlaps a day column's controls. */
+  .ros-rail{position:fixed;top:150px;right:0;z-index:151;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:8px;width:26px;padding:13px 0;
+    border:1px solid rgba(59,198,232,.5);border-right:none;border-radius:11px 0 0 11px;
+    background:rgba(59,198,232,.14);color:var(--accent);cursor:pointer;
+    box-shadow:-10px 0 24px -16px rgba(0,0,0,.9)}
+  .ros-rail:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .ros-rail b{writing-mode:vertical-rl;text-orientation:mixed;text-transform:uppercase;
+    letter-spacing:.16em;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:11px;font-weight:800}
+  /* a small chevron above the label — points RIGHT ("push it away") when open,
+     LEFT ("pull it back") when collapsed */
+  .ros-rail-chev{width:7px;height:7px;border-right:2px solid currentColor;
+    border-bottom:2px solid currentColor;transform:rotate(-45deg);flex:0 0 auto;
+    transition:transform .2s ease}
+  body.ros-collapsed .ros-rail-chev{transform:rotate(135deg)}
+  /* collapsed: the column leaves the flow (week reclaims) and slides off to the
+     right past the rail. position:ABSOLUTE with top:auto is the whole trick — it
+     keeps the column at its STATIC vertical position (no top:8px yank), so only
+     the horizontal transform animates and the panel slides straight sideways
+     instead of flying up-then-across. An earlier position:fixed;top:8px snapped
+     the panel ~300px UP to the viewport top before sliding, and back DOWN on
+     expand — the "flying above then below" the owner flagged (26 Aug 26). Absolute
+     also scrolls with the board like the in-flow column did, so a collapse while
+     scrolled stays put too.
+     z-index sits UNDER the topbar (.topbar is z-index:60). The panel's own top
+     tucks at top:8px, inside the sticky topbar's band, so while collapsed AND
+     scrolled the sliding column crosses that band — at the old z-index:150 its
+     opaque body painted OVER the blue bar for the length of the slide ("when I
+     close the crew panel it appears on top of the top blue bar", owner 26 Aug 26).
+     40 keeps it above the week (its sticky section heads are z-index:20) so it
+     still slides cleanly over the reclaiming week, but behind the bar, so the
+     bar stays whole and only the part below it is seen to slide away. */
+  body.ros-collapsed .edit-board .eroster{position:absolute;right:0;top:auto;
+    transform:translateX(calc(100% + 6px));z-index:40}
+}
+.eroster .rpuck{display:flex;flex:0 0 auto;cursor:grab}
+/* the grab tab — the only part on screen when the drawer is parked. 30px:
+   an honest thumb width with NO invisible extension (an earlier ::before
+   reached 14px past the edge and sat over the ends of full-width inputs —
+   owner critique, 8 Aug 26) */
+.eroster .ros-tab{display:none;flex:0 0 30px;align-items:center;justify-content:center;gap:8px;
+  cursor:pointer;background:var(--panel-2);border-right:1px solid var(--edge);border-radius:12px 0 0 12px;
+  writing-mode:vertical-rl;text-orientation:mixed;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:700;color:var(--accent);
+  -webkit-user-select:none;user-select:none;touch-action:manipulation}
+.eroster .ros-tab b{font-weight:700}
+body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink);border-right-color:var(--accent)}
+/* ---- the aircrew palette as a right-edge pull-out drawer (mobile) ----------
+   It used to be hidden outright below 820px, which left a phone with no palette
+   at all — the only way to crew a slot was a name dropdown. The drawer parks
+   against the right edge with a grab tab showing, pulls out over the schedule,
+   and stays put while the week pans underneath it. Pinch out and it sits beside
+   the day block just like the reference tool. */
+@media (max-width:820px){
+  .edit-board{display:block}
+  /* PARKED = a centred grab-handle, not a full-height wall (owner critique,
+     8 Aug 26): the old top:0/bottom:0 sliver covered the topbar's right edge
+     and stole its taps. clamp() per the spec; OPEN restates full height as
+     it slides out. */
+  .edit-board .eroster{position:fixed;right:0;top:50%;bottom:auto;
+    height:clamp(180px,55vh,440px);z-index:190;
+    width:max-content;max-width:78vw;max-height:none;align-self:auto;margin:0;
+    padding:8px 8px 12px 0;border:1px solid var(--edge);border-right:none;border-radius:12px 0 0 12px;
+    background:rgba(11,13,16,.965);backdrop-filter:blur(8px);box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);
+    overflow:visible;transform:translate(calc(100% - 30px),-50%);transition:transform .2s ease;
+    display:flex;align-items:stretch}
+  body.ros-open .edit-board .eroster{top:0;bottom:0;height:auto;transform:translateX(0)}
+  .eroster .ros-tab{display:flex}
+  /* same iOS reasoning as the board drawer's ros-body: flex stretch bounds
+     the height to the drawer's real extent (100vh over-measures under
+     Safari's toolbars), and overscroll containment keeps an end-of-list
+     swipe from scrolling the week underneath (owner, 8 Aug 26) */
+  .eroster .ros-body{flex:1 1 auto;min-height:0;overflow-y:auto;
+    overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-right:2px}
+  /* KEEP THE DAY LINE IN VIEW ON THE PHONE PALETTE TOO (owner, 24 Aug 26 — "I
+     just need the placeholder date to be shown when I scroll down so that I
+     know who I'm selected to"). The DESKTOP panel got this on 23 Aug (the
+     min-width:821px block above), but that scrolls .eroster itself; the phone
+     drawer scrolls its inner .ros-body and never pinned anything, so a
+     scheduler deep in a long crew list lost which DAY he was crewing. Same two
+     pins as the desktop panel — the "Aircrew · <day>" line (with its ‹ › day
+     arrows) at the very top, the "Pilots/WSOs · N free" column labels just
+     under it — painted the drawer's own near-black (--bg) so the pucks pass
+     behind them rather than through, and so the header reads as the drawer, not
+     a lighter patch. The board's own roster draws no .er-h (head:false), so it
+     is untouched. */
+  .eroster .ros-body .er-h{position:sticky;top:0;z-index:4;background:var(--bg)}
+  .edit-board .eroster .ros-body .rcol .rh{position:sticky;top:27px;z-index:3;
+    background:var(--bg);padding-bottom:1px}
+  .edit-board .week{padding-right:0}
+}
+/* ---- who may be planned where ----------------------------------------------
+   .standby — on an SC SPARE line: free for anything else, so barely marked
+   .busy    — already tasked that day, but still perfectly legal to plan
+   .no      — may NOT be planned into the armed slot, or is on leave / downchit
+   The first two used to sit at .36 and .20 opacity, which on a phone read as
+   the same grey — so anyone already tasked looked un-selectable. They are now
+   told apart by KIND of mark, not by a shade: busy wears a left bar, barred is
+   struck through. BOTH keep their seat colour (owner, 1 Sep 26 — "can I still
+   see pilot and wso colours of the pucks?"): the barred puck used to be fully
+   grayscaled, which washed olive FCP and green RCP into one grey so a barred
+   pilot and a barred WSO were indistinguishable. It now keeps its hue (a light
+   desaturation only) and rides a fainter-but-visible opacity; the STRIKE and
+   the not-allowed cursor still say "can't plan this one", so busy and barred
+   stay distinct by mark, not by colour loss. */
+.rpuck.standby{opacity:.82}
+.rpuck.standby .puck{box-shadow:inset 2px 0 0 var(--ok)}
+/* The light desaturation is a SATURATION BLEND of a translucent grey over the
+   seat colour, not filter:saturate() (5 Sep 26, measured — docs/performance.md
+   ledger 22): a filtered element can never share a compositor layer with
+   anything it overlaps, so every faded palette puck was a layer of its own —
+   59 of the desktop week's 261 — and each pointer move re-decided all of them
+   (Layerize ~13ms a move at 4×). A grey at alpha a blended in 'saturation'
+   mode keeps the hue and the luminance and scales the saturation by (1−a):
+   .45 ≈ saturate(.55), .3 ≈ saturate(.7). The blend is paint-only — no
+   stacking context, no layer. Only the puck's background is desaturated now
+   (the filter also touched its text and chip), which reads the same at 9px. */
+.rpuck.busy{opacity:.62}
+.rpuck.busy .puck{background-image:linear-gradient(rgba(128,128,128,.45),rgba(128,128,128,.45));background-blend-mode:saturation;box-shadow:inset 2px 0 0 var(--ink-3)}
+.rpuck.no{opacity:.5;position:relative}
+.rpuck.no .puck{background-image:linear-gradient(rgba(128,128,128,.3),rgba(128,128,128,.3));background-blend-mode:saturation}
+.rpuck.no::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:1px;
+  background:var(--ink-3);transform:translateY(-.5px);pointer-events:none}
+.rpuck.no,.rpuck.no:active{cursor:not-allowed}
+/* An ARMED list prints the reason under a crossed-out name (owner, 13 Aug 26
+   — a phone has no hover, and the rule is the scheduler sees the problem
+   BEFORE the tap, never by planting). The entry becomes a little column: the
+   strike is pinned to the puck's own height, the whole-entry fade is lifted
+   so the words stay legible, and the puck alone keeps the dimming. The tap
+   still plants (the reason then repeats as the warn toast), so the
+   not-allowed cursor comes off with the refusal it used to describe. */
+.rpuck.no.haswhy{opacity:1;flex-direction:column;align-items:stretch;gap:1px}
+/* the shared `.rpuck .puck` rule pins flex:0 0 var(--puck-w) for the ROW
+   containers every other entry lives in. THIS entry is a COLUMN, where
+   flex-basis governs the main axis — HEIGHT — and beats the height rule, so
+   the puck drew as a 74x74 grey slab (owner, 14 Aug 26). In a column the
+   basis must be the puck's height; width still comes from align-items:
+   stretch against the puck-wide column, clamped by the shared max-width. */
+.rpuck.no.haswhy .puck{opacity:.45;flex:0 0 var(--puck-h)!important}
+.rpuck.no.haswhy::after{top:calc(var(--puck-h)/2)}
+.rpuck.no.haswhy,.rpuck.no.haswhy:active{cursor:pointer}
+/* the reason line lives under a single name OR once under a column header,
+   whichever paletteHTML decided — same look either way */
+.eroster .rwhy{font-size:8.5px;color:var(--ink-2);opacity:.75;line-height:1.2;padding:0 1px 1px}
+/* the slot waiting for a name */
+.seat.armed,.sb-slot.armed,[data-fill].armed{outline:2px dashed var(--accent);outline-offset:-2px;
+  border-radius:7px;background:rgba(59,198,232,.10)}
+/* GREEN IS ELIGIBILITY, never a severity (comp approved by the owner, 13 Aug
+   26): with a person selected, a slot he could take rings solid green —
+   bright with a glow when EMPTY, dimmed with a soft tint where he would take
+   over from the man in it. Solid on purpose: the armed ring owns dashed, and
+   red/amber/grey stay the warning tiers. Outline + shadow only — no nodes,
+   no layout, so the "screen holds still" contract is untouched. */
+.oktake{outline:2px solid var(--ok);outline-offset:1px;border-radius:4px;
+  box-shadow:0 0 8px 1px rgba(87,201,122,.75)}
+.oktake-f{outline:2px solid rgba(87,201,122,.55);outline-offset:1px;border-radius:4px;
+  background:rgba(87,201,122,.14)}
+.eroster .ros-arm,.sb-roster .ros-arm{display:flex;align-items:center;gap:7px;margin:0 0 7px;padding:5px 7px;
+  border:1px solid var(--accent);border-radius:8px;background:rgba(59,198,232,.12);
+  font-size:10.5px;line-height:1.35;color:var(--ink)}
+.eroster .ros-arm .x,.sb-roster .ros-arm .x{margin-left:auto;flex:0 0 auto;background:none;border:none;
+  color:var(--ink-3);font-size:13px;cursor:pointer;padding:0 2px}
+.eroster .ros-arm b,.sb-roster .ros-arm b{color:var(--accent);font-weight:700}
+/* the second line of the arm strip when an SC slot is armed: the shift window and
+   the currency the list has been cut down to */
+.eroster .ros-arm .scnote,.sb-roster .ros-arm .scnote{display:block;color:var(--ink-3);font-size:9.5px;
+  letter-spacing:.02em;margin-top:1px}
+.day{flex:0 0 620px;border-radius:var(--r);overflow:hidden;scroll-snap-align:start;
+  background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,0)),var(--panel);
+  border:1px solid var(--edge);box-shadow:0 24px 60px -34px rgba(0,0,0,.9)}
+.day.today{border-color:rgba(59,198,232,.45);box-shadow:0 24px 60px -30px rgba(59,198,232,.35)}
+.day-head{display:flex;align-items:baseline;gap:9px;padding:13px 15px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--edge)}
+.day-head .dow{font-size:16px;font-weight:700}
+.day-head .dt{color:var(--ink-3);font-size:12px}
+/* the badge no longer carries the right-push (margin-left:auto) — the version tag
+   (.dhver) does now, so the tag sits IMMEDIATELY left of the badge, both pushed to
+   the right together (owner, 15 Sep 26 — item 4; Codex PSF-003 / Fable #2). */
+.day-head .badge{font-size:10.5px;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--edge);padding:2px 8px;border-radius:6px}
+/* Templates + Drafts moved into the day-head, between the date and the 4x4
+   badge (owner, 24 Aug 26). A touch smaller than the sign-off strip's own
+   .dbeak so the two solid pills read as a header control; centred against the
+   head's baseline-aligned text. The badge keeps margin-left:auto, so it floats
+   to the right edge and these sit just past the date — spatially between the
+   two, as asked. */
+.day-head .dhtpl{display:inline-flex;gap:5px;align-self:center;margin-left:4px}
+/* .dhbtn, NOT .dbeak: the publish button and the version tag in .dstat are also
+   .dbeak, and several tests read the day's FIRST .dbeak as the publish control
+   (pubsweep) — these header buttons come before it in the day, so they carry
+   their own class and wear the .dbeak look here instead of borrowing the name. */
+.day-head .dhtpl .dhbtn{font-family:inherit;font-size:10.5px;font-weight:700;letter-spacing:.02em;cursor:pointer;
+  color:var(--accent-ink);background:var(--accent);border:1px solid var(--accent);
+  padding:3px 9px;border-radius:8px;white-space:nowrap}
+.day-head .dhtpl .dhbtn:hover{filter:brightness(1.07)}
+/* THE PLANS SELECTOR (owner, 15 Sep 26) — the ONE white button per day. It reads
+   as a quiet PANEL control, not the accent primary the Templates button is: it is
+   a picker/navigation, not the day's primary action. Amber (.pv) while previewing
+   an issued version, matching the "👁 AL2" label. The label is clamped so a long
+   plan name can't wrap the day head (A8 — MAX_DRAFT_NAME is 24 chars); the full
+   name is in the button's title. Shared by the week head (.dhtpl) and the board
+   sign strip (.sb-pub), one look. */
+.day-head .dhtpl .planselbtn,.sb-pub .planselbtn{font-family:inherit;font-size:10.5px;font-weight:700;letter-spacing:.02em;cursor:pointer;
+  color:var(--ink);background:var(--panel-2);border:1px solid var(--edge-2);
+  padding:3px 8px;border-radius:8px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;max-width:180px}
+.day-head .dhtpl .planselbtn:hover,.sb-pub .planselbtn:hover{border-color:var(--accent);color:var(--accent)}
+.planselbtn .psl{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.planselbtn .psc{font-size:8px;color:var(--ink-3)}
+.planselbtn.pv{color:#F2D699;background:rgba(229,194,74,.12);border-color:rgba(229,194,74,.5)}
+.planselbtn.pv:hover{color:#F2D699;border-color:rgba(229,194,74,.85)}
+/* THE GREEN TITLE TAG (owner, 15 Sep 26) — names the issued version beside the
+   day title (ORIG/ALn) once published; a dashed grey DRAFT tag while it is not.
+   It REPLACED the "✓ Published · ALn" stamp. Rides the excised .dhtpl on the week
+   and the board's own sign strip. Green = issued (which version is in the label). */
+.day-head .verchip,.sb-pub .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:.06em;padding:1px 6px;border-radius:5px;white-space:nowrap;align-self:center}
+/* the tag rides its own .dhver span now (owner, 15 Sep 26 — item 4), immediately
+   LEFT of the .badge on every surface (item 5). It carries the right-push so the
+   free space lands BEFORE the tag, keeping tag+badge adjacent (an empty .dhver — the
+   cv==null case — still pushes the badge right, so nothing regresses). */
+.day-head .dhver{display:inline-flex;align-items:center;margin-left:auto}
+/* COLOURED BY AL NUMBER (item 3): --alc comes from the shared [data-alc] palette
+   (AL1 cyan · AL2 amber · AL3 green · …), so the tag and the amendment marks read
+   the same ramp. ORIG grey, DRAFT dashed — unchanged. */
+.verchip[data-alc]{color:#08131b;background:var(--alc,#57C97A)}
+/* ORIG — THE SEAL (owner, D111, 25 Sep 26 — "A1"; html.ts verChipHTML): a faint white wash, a thin light outline, a
+   drawn tick in a white disc. No colour, so it never reads as an AL (AL4 is white — the wash is faint and the ink is
+   light, where AL4's tag is solid white with dark ink) or as a warning; replaces the grey that read as "not
+   published" (D108). */
+.verchip.orig{color:#F1F4F7;background:rgba(241,244,247,.10);box-shadow:inset 0 0 0 1px rgba(241,244,247,.85);
+  display:inline-flex;align-items:center;gap:4px;padding:1px 6px 1px 3px}
+.verchip.orig .vtick{flex:0 0 auto;display:block}
+.verchip.orig .vtick circle{fill:#F1F4F7}
+.verchip.orig .vtick path{fill:none;stroke:#0B0D10;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+/* THE "SIGNED ALn" LINE (owner, D95 + D102; html.ts signedLineHTML) — the approved mock-up's option A
+   (docs/mock/amend-answers.html §Question 3): one slim line under the day head, the role before each name on a
+   desktop, names only on a phone. On the board it heads the sign strip. */
+.signedln{display:flex;flex-wrap:wrap;align-items:center;gap:3px 10px;padding:5px 15px 6px;font-size:11px;line-height:1.3;
+  color:var(--ink-3);border-bottom:1px solid var(--edge);background:rgba(255,255,255,.012)}
+.board-sign .signedln{padding:0 0 7px;margin-bottom:7px;background:none}
+.signedln .sl-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-weight:700;font-size:10px}
+.signedln .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;letter-spacing:.06em;
+  padding:1px 6px;border-radius:5px;white-space:nowrap}
+.signedln .verchip.orig{padding:1px 6px 1px 3px}
+.signedln .sl-n{color:var(--ink-2);font-weight:600;white-space:nowrap}
+.signedln .sl-n i{font-style:normal;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-weight:700;font-size:9.5px;
+  letter-spacing:.06em;color:var(--ink-3);margin-right:4px}
+@media (max-width:820px){.signedln .sl-n i{display:none}.signedln{gap:3px 7px}}
+.verchip.draft{color:var(--ink-3);background:transparent;border:1px dashed var(--edge-2);font-weight:700}
+/* THE "NOT YET SIGNED" MARKER (published-schedule flagging, §6): a small amber pill
+   in the day head, shown to EVERYONE on a published day whose live working copy
+   diverges from its signed version. Rides the .dhver span beside the version tag. */
+.day-head .dhver{gap:5px}
+.nysmark{font-size:9.5px;font-weight:700;letter-spacing:.03em;padding:1px 6px;border-radius:5px;white-space:nowrap;
+  color:#08131b;background:var(--adv);align-self:center}
+/* the in-list "goes away / new once signed" tags on the working view (§6): NEW is
+   amber like the marker; GONE is a struck, muted row it will clear once signed. */
+.witem .wsig{font-size:9.5px;font-weight:700;letter-spacing:.02em;padding:0 5px;border-radius:4px;margin-left:6px;white-space:nowrap}
+.witem .wsig.new{color:#08131b;background:var(--adv)}
+.witem .wsig.gone{color:var(--ink-2);background:var(--panel-2);border:1px solid var(--edge)}
+.witem.gone{opacity:.72}
+.witem.gone s{text-decoration-color:var(--ink-3)}
+/* ---- per-day approval strip in the day head -------------------------------
+   Approval is per day, so the publish control lives on the day itself rather than
+   on the week banner. `.dstat` wraps onto its own line when the head is narrow
+   (mobile day columns are ~364px), hence flex-wrap on .day-head plus a 100%
+   flex-basis fallback — the chips must never push the date off the row. */
+.day-head{flex-wrap:wrap;row-gap:7px}
+.day-head .dstat{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-left:8px}
+/* .dal/.dpend also drawn by the board's sign-off panel (board.ts's
+   boardSignHTML, via html.ts's shared dayStatHTML) — same chips, so the
+   selector list grows instead of a second copy of the rule. */
+.day-head .dal,.sb-pub .dal{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:.06em;color:#08131b;background:var(--alc,var(--accent));padding:1px 6px;border-radius:5px}
+/* a day rolled back to the Original — grey on purpose: the bare .dal fallback
+   is --accent, which is AL1's cyan, and ORIG must never read as AL1 */
+.day-head .dal.orig,.sb-pub .dal.orig{background:var(--ink-3)}
+.day-head .dpend,.sb-pub .dpend{font-size:10px;font-weight:700;color:#F2D699;background:rgba(229,194,74,.12);
+  border:1px solid rgba(229,194,74,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
+/* "N pending ▾" — the same chip, as the button that opens the list of what will go out (owner, D99 + D100,
+   25 Sep 26; ui/pendlist.ts). A button's own font and box are reset so it reads exactly as the chip did, plus
+   the caret that says it opens. */
+.day-head .dpendbtn,.sb-pub .dpendbtn{font-family:inherit;line-height:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
+.dpendbtn:hover{background:rgba(229,194,74,.22);border-color:rgba(229,194,74,.7)}
+/* the caret is drawn, not written, so the chip still reads "N pending" to everything that reads its words */
+.dpendbtn::after{content:'▾';font-size:8px;line-height:1}
+/* THE PENDING LIST'S LINES — the approved mock-up's look (docs/mock/pending-list.html, D100), now the changes window's
+   "To go out" tab ([DRAFT-PENDING], D168 — the pop-up under the chip is gone; its lines are the same). */
+.cw-out .pl-head{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);margin:0 2px 8px;flex:0 0 auto}
+.cw-out .pl-head .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;letter-spacing:.06em;padding:1px 6px;border-radius:5px}
+.cw-out .pl-list{overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1 1 auto}
+.cw-out .pl-item{display:grid;grid-template-columns:1fr auto;gap:1px 10px;width:100%;text-align:left;
+  padding:7px 8px;border-radius:7px;background:none;border:0;font:inherit;color:inherit}
+.cw-out button.pl-item{cursor:pointer}
+.cw-out button.pl-item:hover,.cw-out button.pl-item:focus-visible{background:rgba(229,194,74,.10);outline:none}
+.cw-out .pl-item+.pl-item{border-top:1px solid var(--edge)}
+.cw-out .pl-item.still{opacity:.82}
+/* several placeholders' crowds in the one change: each row its own line, its own tap (Astra's code read, 25 Sep 26) */
+.cw-out .pl-item.pl-multi{opacity:1}
+.cw-out .pl-sub{grid-column:1/-1;display:grid;gap:1px;width:100%;text-align:left;background:none;border:0;border-left:2px solid var(--edge-2);
+  margin:4px 0 0;padding:3px 0 3px 8px;font:inherit;color:inherit;cursor:pointer;border-radius:0 5px 5px 0}
+.cw-out .pl-sub:hover,.cw-out .pl-sub:focus-visible{background:rgba(229,194,74,.10);outline:none}
+.cw-out .pl-sub:disabled{cursor:default}
+.cw-out .pl-where{font-weight:600;color:var(--ink)}
+.cw-out .pl-chg{grid-column:1/2;color:var(--ink-2)}
+.cw-out .pl-chg s{color:var(--ink-3)}
+.cw-out .pl-chg b{color:#F2D699;font-weight:600}
+.cw-out .pl-who{grid-column:2/3;grid-row:1/3;align-self:center;text-align:right;font-size:11px;color:var(--ink-3);white-space:nowrap}
+.cw-out .pl-none{color:var(--ink-3);padding:6px 8px}
+.cw-out .pl-foot{font-size:10.5px;color:var(--ink-3);margin:8px 4px 0;flex:0 0 auto}
+.cw-out .pl-foot:empty{display:none}
+/* THE BRIEF MARK a jump leaves on the change it lands on (D99, D107 — the one "take me to this change",
+   interactions.ts): a ring in the colour of the AL the day's changes go out as, fading, then gone. */
+.chgflash{animation:chgflash 1.4s ease-out 1;border-radius:5px}
+@keyframes chgflash{0%{box-shadow:0 0 0 3px var(--chgc,#E5C24A)}70%{box-shadow:0 0 0 3px var(--chgc,#E5C24A)}100%{box-shadow:0 0 0 3px transparent}}
+@media (prefers-reduced-motion:reduce){.chgflash{animation-duration:1.4s;animation-timing-function:steps(1,end)}}
+/* PUBLISH DAY is the primary action on a day, so it wears the same blue as the
+   banner buttons rather than looking like one more grey chip. Published flips it
+   green (and it is then the reopen control); unsigned darkens it — see the
+   [disabled] rule further down. The view-only page keeps a plain chip: it is a
+   status, not a button. */
+.dbeak{font-family:inherit;font-size:11.5px;font-weight:700;letter-spacing:.02em;cursor:pointer;
+  color:var(--accent-ink);background:var(--accent);border:1px solid var(--accent);
+  padding:4px 11px;border-radius:8px;white-space:nowrap}
+/* ---- the view-only week's version picker + published-version preview ---- */
+/* .dstat .dver is the VIEW page's own select (viewDraftSelHTML / viewVerSelHTML);
+   the edit surfaces no longer carry a select (the plans selector replaced it,
+   15 Sep 26). */
+.dstat .dver{font-family:inherit;font-size:11px;font-weight:600;color:var(--ink);
+  background:var(--panel-2);border:1px solid var(--edge-2);border-radius:8px;padding:3px 6px;cursor:pointer}
+/* the whole day wears the version's colour while previewing, dashed — the same
+   dashed-vs-solid grammar the pending marks use: dashed means "not the issued
+   live document" */
+.day.preview{outline:2px dashed var(--alc,var(--edge-2));outline-offset:-2px}
+.dprev-bar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 10px 6px;padding:6px 10px;
+  border:1px solid var(--alc,var(--edge-2));border-radius:9px;font-size:11.5px;font-weight:600;color:var(--ink-2);
+  background:rgba(0,0,0,.25)}
+.dprev-bar b{color:var(--alc,var(--ink))}
+.dprev-bar .dprev-restore{margin-left:auto;font-size:10.5px;padding:3px 9px}
+/* the view page's WORKING-DRAFT face (owner, 15 Aug 26): the pending marks'
+   own amber, dashed — the "not the issued document" grammar — so live but
+   unissued content can never read as the published schedule. Its sibling
+   .day.issued (the same page's frozen DEFAULT) deliberately has no rule at
+   all: it is the page's normal answer, not a preview the viewer chose, so
+   it must not wear the preview outline or any dimming. */
+.dprev-bar.work{border-style:dashed;border-color:rgba(229,194,74,.55)}
+.dprev-bar.work b{color:#F2D699}
+.dbeak.ro.work{color:#F2D699;background:rgba(229,194,74,.12);border-color:rgba(229,194,74,.5);border-style:dashed}
+/* board fields frozen by a preview: visibly dimmed, not just unresponsive */
+#schedBoard .pv-frozen input[disabled],#schedBoard .pv-frozen textarea[disabled],#schedBoard .pv-frozen select[disabled]{opacity:.55}
+.dbeak:hover{filter:brightness(1.07)}
+.dbeak.ok{color:#A8E6BC;background:rgba(87,201,122,.16);border-color:rgba(87,201,122,.55)}
+.dbeak.ok:hover{filter:none;border-color:rgba(87,201,122,.85)}
+.dbeak.ro{cursor:default;font-size:10.5px;font-weight:600;padding:3px 9px;
+  background:transparent;color:var(--ink-2);border-color:var(--edge-2)}
+.dbeak.ro:hover{filter:none;color:var(--ink-2);border-color:var(--edge-2)}
+.dbeak.ro.ok{color:#A8E6BC;background:rgba(87,201,122,.16);border-color:rgba(87,201,122,.55)}
+.dbeak.ro.ok:hover{border-color:rgba(87,201,122,.55)}
+/* the issued-version tag now rides INSIDE the published stamp (owner, 16 Aug
+   26) — "✓ Published · AL1". Slightly smaller than the stamp text and nudged to
+   sit on its baseline; keeps its own AL colour (data-alc) / grey ORIG. */
+.dbeak .dal{font-size:9.5px;padding:0 5px;vertical-align:baseline;margin-left:1px}
+/* ← Back to live copy lives in the read-only preview bar on both surfaces now
+   (owner, 15 Sep 26 — the green "Live copy" pill is gone). */
+.dprev-bar .dprev-back{color:var(--accent);background:rgba(59,198,232,.12);border-color:rgba(59,198,232,.55);font-size:10.5px;padding:3px 9px}
+.dprev-bar .dprev-back:hover{filter:none;border-color:var(--accent)}
+/* the armed "Load onto working copy" confirm — amber, because it will discard
+   the day's unpublished edits; the plain state stays the accent primary */
+.dbeak.dprev-restore.warn{color:#20180a;background:#E5B34A;border-color:#E5B34A}
+.dbeak.dprev-restore.warn:hover{filter:brightness(1.05)}
+.dprev-bar .dprev-cancel{margin-left:6px}
+/* [GLOBAL-UNDO] §6.4 — the Unpublish button reads as a QUIET secondary action, not
+   a primary publish: transparent, muted ink, plain edge — pulling a day back is a
+   correction, not the headline control beside it. Its confirm face (§6.6, OIL
+   credits bid against) borrows the same amber as the Load confirm. */
+.dbeak.dunpub{background:transparent;color:var(--ink-2);border-color:var(--edge-2);font-size:10.5px;font-weight:600;padding:3px 9px}
+.dbeak.dunpub:hover{filter:none;color:var(--ink);border-color:var(--edge)}
+.dbeak.dunpub.warn{color:#20180a;background:#E5B34A;border-color:#E5B34A;font-weight:700}
+.dbeak.dunpub.warn:hover{filter:brightness(1.05)}
+.dprev-bar .dprev-switch{margin-left:auto}
+.dver option{color:var(--ink);font-weight:600}
+.day.dok{border-color:rgba(87,201,122,.34)}
+.day.dok .day-head{background:rgba(87,201,122,.055);border-bottom-color:rgba(87,201,122,.3)}
+
+.go{margin:10px 10px 4px;border:1px solid var(--edge);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.014);border-left:3px solid var(--flight)}
+.go-tab{display:flex;align-items:center;gap:8px;padding:6px 11px;font-size:11px;color:var(--ink-2);border-bottom:1px solid var(--edge);flex-wrap:wrap}
+.go-tab .asd{font-weight:700;color:var(--ink);white-space:nowrap}
+.airbtn{background:var(--panel-2);border:1px solid var(--edge);color:var(--accent);cursor:pointer;font-size:10px;font-weight:600;padding:3px 10px;border-radius:7px;letter-spacing:.03em}
+.airbtn:hover{border-color:var(--accent);background:rgba(59,198,232,.10)}
+
+/* 5 columns: CS/MSN | B/TO | LD | FCP/RCP | RMKS.
+   AREA + TIME used to be columns 6 and 7, which squeezed RMKS down to ~60px. They now
+   sit in a full-width horizontal strip under each formation (.form-area), so the five
+   columns above get all the room back. */
+.form{display:grid;grid-template-columns:76px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);align-items:stretch;border-bottom:1px solid rgba(42,49,58,.55)}
+.form:last-child{border-bottom:none}
+.form:hover{background:rgba(255,255,255,.018)}
+.form.cx{opacity:.5}
+.fcell{display:flex;flex-direction:column;justify-content:flex-start;padding:4px 3px;border-right:1px solid rgba(42,49,58,.4);overflow:hidden}
+/* placement comes from the custom properties the renderer stamps on each cell, so
+   the phone block can re-map the same markup onto a taller row grid */
+.fcell.csmsn{grid-column:1;grid-row:1/span var(--gs)}
+.fcell.bto{grid-column:2;grid-row:1/span var(--gs)}
+.fcell.ld{grid-column:3;grid-row:1/span var(--gs)}
+.form .csmsn{overflow:hidden}
+.form .bto,.form .ld{white-space:nowrap;overflow:hidden}
+.form .csmsn b{display:block;font-size:10px;font-weight:700;color:var(--ink);white-space:normal;overflow-wrap:anywhere;line-height:1.15}
+/* A FLYING LINE'S CALLSIGN WRAPS AND GROWS — THE WHOLE NAME, NEVER "…" (owner, D367, 29 Sep 26: "Why don't it wrap
+   text? So excess the text grows vertically" — on his iPhone the one-line name below was cut, W6LINE "W6LI…", because the
+   app loads no font of its own and his phone draws a wider one than the PC it was measured on, [APP-FONTS-NOT-LOADED]).
+   So the name is no longer one line: it wraps, a word too long for the line breaking inside it (overflow-wrap:anywhere,
+   as the board's boxes do, 20 Aug 26), and the cell grows down into the room a flying line always has (two puck rows at
+   least; the name and the mission use the top two lines). The widths below stay as measured, so the remarks keep theirs.
+   The history, kept for the measurements: SIX LETTERS WHOLE, A LONGER ONE CUT TO "…" ([AMEND-SMALL-SEEN] 3 +
+   [ABSENCE-SMALL-SEEN] 3, 28 Sep 26 — VIPER and COBRA drawn "…" on the edit week, W6LINE "…" on View-only Sched).
+   Two faults, both fixed here. (1) The name sat in the editable INLINE-BLOCK `.ntx` (min-width 30px): an inline-block
+   is one unbreakable piece, so one pixel over and the WHOLE name went to "…" — the dot alone was left. As an ordinary
+   inline run the ellipsis cuts letters instead ("MAGN…"); an empty box still keeps a tappable width while editing.
+   (2) The column was sized for a five-letter name at best. Measured (the walk scripts/handpass/sf/sf-d3-callsigns.mjs,
+   bold Inter at the week's own sizes, plus the mission dot's 7px): desktop 12.5px — W6LINE 47, RANGER 51, WARDEN 55,
+   HAMMER 57, MAGNUM 60 → 76px (content 68: every one whole); phone 9.5px — W6LINE 35, RANGER 38 → 50px (content 46:
+   a wide six like HAMMER ends in "…"); ≤374px 9px → 48px. The room comes from REMARKS (the 1fr track): desktop
+   214 → 190, 390 phone 73 → 61; B/TO and LD are left exactly as measured for a time (below). */
+.form .csmsn b .ntx,.page.editing .form .csmsn b .ntx{display:inline;min-width:0}
+.page.editing .form .csmsn b .ntx:empty{display:inline-block;min-width:14px}
+.form .csmsn i{display:block;font-style:normal;font-size:8.5px;color:var(--ink-3);font-weight:600}
+.form .csmsn .mdot{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:2px;vertical-align:middle}
+.form .bto{font-family:'JetBrains Mono',monospace;text-align:center;line-height:1.25}
+.form .bto b{font-size:9px;color:#F2D699;font-weight:600}
+/* :not(.bsug) — the B suggestion ghost (below) is also a bare child of .bto
+   and would otherwise pick up the TO span's colour/size through this same
+   tag selector. Narrowed the selector rather than the measurements, which
+   is what the reference's TO box still wants unchanged. */
+.form .bto span:not(.bsug){font-size:9px;color:var(--ink-2)}
+/* the calculated brief, offered above the (blank) B box — a click accepts it
+   into f.br. Small and dim until hovered so it doesn't outweigh the box it
+   is a suggestion for. */
+.form .bto .bsug{display:block;font-size:7.5px;font-weight:700;color:var(--accent);cursor:pointer;line-height:1.2;letter-spacing:.02em}
+.form .bto .bsug:hover{text-decoration:underline}
+.form .ld{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-2);text-align:center;justify-content:flex-start}
+/* min-height is load-bearing, not cosmetic: CS/MSN and B/TO are stacks in cells
+   that span the formation, so a single-aircraft row has to be tall enough to
+   hold every line on its own or the last one gets clipped by .fcell's
+   overflow:hidden. B/TO grew a third (short) line — the accept-suggestion
+   ghost above a blank B box — so the budget grew with it. Derived from the
+   puck so it tracks any resize. */
+.acrow{display:flex;flex-direction:column;gap:2px;padding:3px 4px;min-width:0;grid-column:4;grid-row:var(--gr);min-height:calc(var(--puck-h) + 20px);border-top:1px solid rgba(42,49,58,.28)}
+.acrow .pucks{display:flex;gap:3px}
+.acrow.r1,.rmkcell.r1{border-top:none}
+.rmkcell{font-size:8.5px;color:var(--ink-2);line-height:1.25;padding:4px 5px;min-width:0;grid-column:5;grid-row:var(--gr);border-top:1px solid rgba(42,49,58,.28);border-left:1px solid rgba(42,49,58,.4);display:flex;flex-direction:column;justify-content:flex-start;gap:2px;overflow-wrap:anywhere;white-space:normal}
+/* AREA strip — one per formation, full width under that formation's aircraft rows.
+   Reads horizontally: AREA  <airspace>  ·  <time block>.  Both halves stay separately
+   editable and separately amendment-highlightable, hence the two class names. */
+.form-area{grid-column:1/-1;grid-row:var(--ga);display:flex;align-items:baseline;gap:8px;padding:3px 8px;
+  border-top:1px solid rgba(59,198,232,.18);background:rgba(59,198,232,.045)}
+.form-area .fa-lb{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;font-weight:700;
+  letter-spacing:.09em;color:var(--accent);flex:0 0 auto;opacity:.85}
+.areacell{min-width:0;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);font-weight:700;
+  line-height:1.35;overflow-wrap:anywhere;white-space:normal;flex:0 1 auto}
+/* area and time sit side by side at the left, so both are readable without swiping
+   on a phone — no margin-left:auto pushing the time off the end of the strip */
+.timecell{min-width:0;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-2);font-weight:600;
+  line-height:1.35;letter-spacing:-.01em;white-space:nowrap;flex:0 0 auto;padding-left:8px;
+  border-left:1px solid rgba(59,198,232,.18)}
+.areacell[contenteditable],.timecell[contenteditable]{outline:none}
+.areacell[contenteditable]:focus,.timecell[contenteditable]:focus{background:rgba(59,198,232,.10)}
+/* in edit mode an empty half still needs something to click on */
+.page.editing .areacell:empty::before,.page.editing .timecell:empty::before{content:'—';color:var(--ink-3);font-weight:600}
+.seat{display:flex}
+.acrow .seat .puck{width:var(--puck-w);flex:0 0 var(--puck-w)}
+.acrow .seat.empty-slot{width:var(--puck-w);flex:0 0 var(--puck-w);height:var(--puck-h);border:1px dashed var(--edge-2);border-radius:3px;align-items:center;justify-content:center;
+  color:var(--ink-3);font-size:9px;font-weight:700;letter-spacing:.05em;cursor:pointer;background:rgba(255,255,255,.02)}
+/* The cell hover highlights are OFF while a puck is in flight (`body:not(.tdrag)`,
+   6 Sep 26, traced at 4×): under a dragged ghost the cursor crosses a cell
+   every few moves, each hover flip repainted the page and re-layerised it
+   (~30ms a move on the slow laptop) for a highlight the drag never needs —
+   the `.dragover` cell mark is the drag's own feedback. `body:not(.tdrag)` is
+   a descendant-named rule, so toggling the marker restyles nothing itself
+   (css-invalidation.test.ts). */
+body:not(.tdrag) .acrow .seat.empty-slot:hover{border-color:var(--accent);color:var(--accent)}
+.page.editing .acrow .seat[data-slot]{cursor:pointer}
+body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px solid var(--accent);outline-offset:1px}
+.cols.formcols{display:grid;grid-template-columns:76px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);background:var(--panel-2);border-bottom:1px solid var(--edge);
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:8.5px;font-weight:700;color:var(--ink-2)}
+.cols.formcols span{text-align:left;white-space:nowrap;overflow:hidden;padding:3px 5px;border-right:1px solid rgba(42,49,58,.4)}
+.cols.formcols .c-c{text-align:center}
+

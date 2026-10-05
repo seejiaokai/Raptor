@@ -21,6 +21,7 @@ import { viewerId, roleOf } from '../state/perms'
 import { setPage, BACKPROMPT } from '../state/view'
 import { setDayApproved, setSign, dayApproved } from '../engine/publish'
 
+
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]

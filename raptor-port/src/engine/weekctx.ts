@@ -208,6 +208,15 @@ export function prevSundaySeed(curWeek:any){
   return {events:built.events,input:built.input,dow:built.dow,di:null};
 }
 
+/* Authored date relative to the loaded Monday. Kept inside the existing
+   bundle/world window; off-week indices never address the loaded WARN/REST. */
+export function datedRestSeed(curWeek:any,index:number){
+  const offset=Math.floor(index/7), targetDi=((index%7)+7)%7;
+  const targetWeek=shiftWeekKey(curWeek,offset), b=bundle(targetWeek);
+  const built=buildDay(b.days[targetDi],targetDi,null,null,true);
+  return {...built,di:null,restIndex:index,targetDi,targetWeek};
+}
+
 /* NEXT WEEK'S MONDAY AS A PHANTOM "TODAY" for the forward crew-rest trace
    (validate.ts's crewRestDay phantom pass — owner, 23 Aug 26: planning a
    late Sunday must draw the same "Breaks Monday" box the within-week edge

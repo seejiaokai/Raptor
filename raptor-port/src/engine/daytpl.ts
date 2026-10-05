@@ -1,7 +1,9 @@
 import { DAYS } from './data'
 import { SCHED, dayApproved, protectedWeek } from './publish'
 import { keyDay } from './keys'
-import { store } from './hooks'
+import { store, HOOKS } from './hooks'
+import { validRoleSeeds } from './mission-role'
+import type { RoleSeeds } from './mission-role'
 import { SECTIONS } from './order'
 import { stripRowIds } from './rowids'
 import { noteText } from './note'
@@ -60,7 +62,7 @@ export type DayTplBlob = {
      nothing extra. It is display order only, never crew or content. */
   secOrder?: string[]
 }
-export type DayTpl = { id: string; title: string; d: DayTplBlob }
+export type DayTpl = { id: string; title: string; d: DayTplBlob; missionRoleSeeds?: RoleSeeds }
 
 export const MAX_DAYTPL = 24, MAX_DAYTPL_TITLE = 24
 
@@ -176,7 +178,8 @@ function mintBlob(d: any): DayTplBlob {
    without also being forced to grow the list. */
 export function tplFromDay(di: number, title: string): DayTpl {
   const d = DAYS[+di] || {}
-  return { id: newId(), title: String(title).slice(0, MAX_DAYTPL_TITLE) || 'Template', d: mintBlob(d) }
+  const blob=mintBlob(d), seeds=validRoleSeeds(HOOKS.captureMissionRoleSeeds(+di,blob),blob)
+  return { id: newId(), title: String(title).slice(0, MAX_DAYTPL_TITLE) || 'Template', d: blob, ...(seeds?{missionRoleSeeds:seeds}:{}) }
 }
 
 export function addDayTpl(di: number, title?: string): DayTpl | null {
@@ -268,6 +271,8 @@ export function applyDayTpl(di: number, id: string): boolean {
   Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.pending[k] })
   Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
   Object.keys(SCHED.changes).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.changes[k] })
+  const seeds=validRoleSeeds(t.missionRoleSeeds,nd)
+  if(seeds) HOOKS.applyMissionRoleSeeds(di,seeds)
   return true
 }
 
@@ -333,7 +338,8 @@ export function dayTplLoad() {
     if (!t || typeof t !== 'object' || !t.d || typeof t.d !== 'object') continue
     const id = typeof (t as any).id === 'string' && (t as any).id ? (t as any).id : newId()
     const title = typeof (t as any).title === 'string' ? (t as any).title.slice(0, MAX_DAYTPL_TITLE) : ''
-    out.push({ id, title, d: sanitiseBlob((t as any).d) })
+    const d=sanitiseBlob((t as any).d), seeds=validRoleSeeds((t as any).missionRoleSeeds,d)
+    out.push({ id, title, d, ...(seeds?{missionRoleSeeds:seeds}:{}) })
   }
   DAYTPL_CFG = out
 }

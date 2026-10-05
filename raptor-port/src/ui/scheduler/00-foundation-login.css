@@ -1,0 +1,208 @@
+:root{
+  /* CANONICAL PUCK SIZE — every puck (flying, programme, avail, duties, roster, future) uses this.
+     Measured off the reference squadron tool's own flight line, pixel-scanned from a
+     402pt iPhone screenshot at 3x: their puck body is 222 x 43 device px = 74 x 14.3
+     CSS px, and the name inside it has a 19px cap height = 6.3 CSS px, i.e. a ~9px
+     font. So: 74 x 15 (15 rather than 14.3 so 9px type and a square qual chip both
+     clear the 1px border), with the type set in .puck below.
+     ONE size everywhere, desktop included — there is deliberately no per-breakpoint
+     override, because two pucks + remarks have to fit on one row at every width. */
+  --puck-w:74px; --puck-h:15px;
+  /* the puck's corner, named once so the things that wrap a puck exactly — the
+     finger's seat-clone ghost, a landed grid seat's flash — can hug the same
+     curve (owner, 7 Sep 26: the ring round a carried puck "should follow the
+     shape of the curved edges of the puck") */
+  --puck-r:3px;
+  --san:#B24DEA;   /* SANS (staff-assigned & NS aircrew) purple */
+  --bg:#0B0D10; --panel:#14181D; --panel-2:#1A1F26; --raised:#20262E;
+  /* the top bar's two stops, opaque — see the .topbar rule */
+  --topbar-a:#0E1116; --topbar-b:#090B0E;
+  /* the filters row is a translucent rgba(--panel,.35) over --bg; this is the
+     OPAQUE colour that composite resolves to (0.35·#14181D over #0B0D10). The
+     row now paints it directly, and the mobile sticky pins (the highlight fold
+     toggle's left gutter, the search box's backdrop) paint the SAME token — so
+     an opaque pin over the scroller reads as the row it sits on, not a lighter
+     --panel patch beside it (owner, 24 Aug 26 — "the buttons … some weird
+     shade"). */
+  --filters-bg:#0E1115;
+  --edge:#2A313A; --edge-2:#39424D; --ink:#F1F4F7; --ink-2:#B6C0CB; --ink-3:#8A96A3;
+  --accent:#3BC6E8; --accent-ink:#052A34;
+  /* THE PICKED-UP LOOK, one recipe for every drag in the app (owner, 6 Sep 26 —
+     the "Soft, inside the line" he picked off the mock he dragged on his phone).
+     A CONSTANT, never toggled: a custom property that changes on a grid ancestor
+     re-resolves every descendant's style (the Leave War column window's standing
+     rule). Every layer is INSET so nothing of it can be clipped — see the .lift
+     block near .sb-fresh for the whole story. */
+  --lift-box:inset 0 0 0 2px var(--accent), inset 0 0 12px rgba(59,198,232,.30);
+  --hard:#F0555F; --adv:#E5A83B; --ok:#57C97A;
+  --flight:#3BC6E8;
+  /* seat colours (kept from the working file) */
+  --fcp:#6E6A2E; --fcp-ink:#FBFAF0; --rcp:#1F6E52; --rcp-ink:#EAFBF3;
+  /* personnel (ground crew) puck: white, dark ink, a muted line so it reads as
+     a defined chip against the dark board — they hold no seat colour */
+  --pers:#FFFFFF; --pers-ink:#18202C; --pers-line:#7C8AA0;
+  /* qual-ladder chip colours: OCU→D→C→B→A cool→hot, instructors share slate.
+     The white-text fills (OCU/D/A/ins) were deepened one shade to clear the
+     4.5:1 AA contrast floor (owner, 15 Aug 26); C and B keep their pale fills
+     because they carry DARK text. Kept in lockstep with engine/people.ts QCOLOR
+     (the Quals table reads that) and refwin.ts's remap. */
+  --q-ocu:#7F65BF; --q-d:#3673DD; --q-c:#3BC6E8; --q-b:#E5A83B; --q-a:#CA4750; --q-ins:#9F4ADF;
+  /* highlight states */
+  --me:#9B2FAE;
+  --r:16px;
+}
+*{box-sizing:border-box}
+/* an author `display` beats the UA `[hidden]{display:none}` rule, so two
+   admin-only blocks (.qadd, .airpop-foot) stayed visible for members even
+   though applyRole() had set el.hidden. Make hidden mean hidden. */
+[hidden]{display:none!important}
+html,body{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;color-scheme:dark}
+select option,select optgroup{background:#1A1F26;color:#F1F4F7}
+select{color-scheme:dark}
+body{
+  background:
+    radial-gradient(900px 420px at 12% -8%,rgba(59,198,232,.09),transparent 62%),
+    radial-gradient(760px 380px at 98% -6%,rgba(87,201,122,.05),transparent 58%),
+    var(--bg);
+  color:var(--ink); font-family:'Inter Tight',system-ui,sans-serif;
+  font-size:13px;-webkit-font-smoothing:antialiased;letter-spacing:-.005em;padding-bottom:120px;
+}
+.mono{font-family:'JetBrains Mono',monospace}
+button{font-family:'Inter Tight',sans-serif}
+a{color:var(--accent)}
+
+/* ── Text selection (owner, 2 Sep 26) ───────────────────────────────────────
+   RAPTOR is a touch-first ops tool, not a document. Selecting the label on a
+   button, a nav tab, a grid cell, a puck or a chip is never useful, and on a
+   phone a tap-hold paints a blue text range constantly — the nav tab and the
+   Leave War grid both did it. So native selection is OFF everywhere by default
+   and handed back only where text is genuinely typed or edited (form fields and
+   anything contenteditable). `-webkit-touch-callout:none` also kills the iOS
+   long-press copy/define bubble on that same chrome, and is handed back on the
+   fields so paste still works. Leave War is inside this same document, so this
+   one rule covers it too; its own scoped opt-ins for editable cells keep text
+   selection there (higher specificity wins). If a block of real content ever
+   needs to be copyable, add a specific `user-select:text` opt-in for it. */
+html{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select,[contenteditable]{
+  -webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+/* NO NATIVE DRAG ANYWHERE (4th cut, belt 2). Removing draggable="true" stops
+   the browser dragging our pucks, but a browser can still start a native drag —
+   and paint the white drag-image card the MINDEF secured browser drew — off an
+   <img>, an <a href>, or computed draggability, none of which a JS handler can
+   veto on a browser that ignores dragstart preventDefault. -webkit-user-drag is
+   read at drag INITIATION from computed style, BEFORE any JS event, so it holds
+   where setDragImage and a dragstart handler do not. Blink accepts `none` (it
+   rejects only `element`). Belt-and-braces with the document-level backstop in
+   drag.ts and the ghost's own opt-out. */
+.puck,.puck *,.rpuck,.rpuck *,[data-drag],[data-drag] *,.dragimg,.tdghost,
+img,a{-webkit-user-drag:none;user-drag:none}
+
+/* ============ LOGIN · RAPTOR ============ */
+/* The app is RAPTOR — Readiness, Availability, Planning, Tracking & Ops
+   Reporting. One centred column: the mark, the name, the line it stands for,
+   and the two fields. Nothing else. The build note is folded away behind its
+   own stamp — it is a changelog, not part of the page. */
+.login{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;
+  padding:24px;overflow:auto;
+  background:
+    radial-gradient(760px 420px at 50% 6%,rgba(59,198,232,.13),transparent 62%),
+    var(--bg)}
+.login[hidden]{display:none}
+.login-wrap{width:100%;max-width:352px;display:flex;flex-direction:column;align-items:stretch}
+
+/* ---- the mark ---- */
+/* the squadron, once, quietly */
+.lb-unit{text-align:center;font-size:9px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--ink-3);opacity:.6;margin-bottom:14px}
+.lb-mark{display:flex;align-items:center;justify-content:center;gap:13px;margin-bottom:12px}
+/* the mark: three talon rakes, nothing else. No badge to hold them — the claws
+   ARE the mark, tapered to a point at both ends and hooked the way a real one
+   drags. Sized off the type it sits beside so the two always agree. */
+.lb-glyph{flex:0 0 auto;width:42px;height:42px;display:block;fill:var(--accent);
+  filter:drop-shadow(0 0 16px rgba(59,198,232,.55))}
+.rglyph{flex:0 0 auto;width:1.55em;height:1.55em;display:block;fill:var(--accent)}
+.lb-word{font-size:38px;font-weight:800;letter-spacing:.19em;line-height:1;color:var(--ink);
+  padding-left:.19em}
+.lb-sub{text-align:center;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink-3);line-height:2;margin-bottom:26px}
+.lb-sub b{color:var(--accent);font-weight:700}
+
+/* ---- the card ---- */
+.login-card{width:100%;box-sizing:border-box;
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0)),var(--panel);
+  border:1px solid var(--edge);border-radius:16px;padding:22px 20px;
+  box-shadow:0 40px 90px -40px rgba(0,0,0,.9)}
+.login label{display:block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 5px}
+.login input{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--edge);color:var(--ink);
+  font-family:'Inter Tight',sans-serif;font-size:14px;padding:11px 12px;border-radius:10px;margin-bottom:13px}
+.login input:focus{outline:2px solid var(--accent);outline-offset:0}
+/* the sign-up's two picks (pilot / WSO / personnel, CAT — [ACCOUNTS-NEW-PERSON], D214) wear the
+   boxes' own look, as the approved mock-up drew them (D224); the browser's own face is taken off
+   so a select is the same box as an input on every engine, with the caret drawn in */
+.login select{display:block;width:100%;box-sizing:border-box;-webkit-appearance:none;appearance:none;
+  background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%239aa4b1' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 13px center/10px 6px;
+  border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:14px;line-height:normal;
+  padding:11px 32px 11px 12px;border-radius:10px;margin:0 0 13px;cursor:pointer}
+.login select:focus{outline:2px solid var(--accent);outline-offset:0}
+/* a callsign/name past 14 letters says so at once (D226 — never quietly cut) */
+.login .cs-long{color:#FBB4B9;font-size:12px;margin:-7px 0 11px}
+.login .go{display:block;width:100%;box-sizing:border-box;-webkit-appearance:none;appearance:none;
+  background:var(--accent);color:var(--accent-ink);border:none;font-size:14px;font-weight:700;
+  padding:12px;border-radius:10px;cursor:pointer;margin:5px 0 0;letter-spacing:.04em}   /* margin in full: the schedule's `.go` (a flying-wave block) gives 10px sides, which pushed this button 10px right and past the card's edge — on the sign-in and Request access cards alike (26 Sep 26) */
+.login .go:hover{filter:brightness(1.06)}
+/* the error line takes no room until there is one to print */
+.login .err{color:#FBB4B9;font-size:12px;margin:0 0 8px}
+.login .err:empty{display:none;margin:0}
+.login .hint{margin-top:14px;font-size:10.5px;color:var(--ink-3);line-height:1.7;
+  border-top:1px solid var(--edge);padding-top:11px}
+.login .hint b{color:var(--ink-2);font-weight:600}
+
+/* ---- the build note, folded ---- */
+.login-build{margin-top:14px;font-size:10px;line-height:1.7;color:var(--ink-3);letter-spacing:.01em}
+.login-build>summary{list-style:none;cursor:pointer;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;
+  color:var(--ink-3);opacity:.75;padding:4px}
+.login-build>summary::-webkit-details-marker{display:none}
+.login-build>summary:hover{opacity:1;color:var(--ink-2)}
+.login-build>summary::after{content:' ▸';color:var(--edge-2)}
+.login-build[open]>summary::after{content:' ▾'}
+.login-build .bt{border-top:1px solid var(--edge);padding-top:10px;margin-top:2px}
+.login-build b{color:var(--ink-2);font-weight:600}
+
+@media (max-width:480px){
+  .login{align-items:flex-start;padding:44px 18px 28px}
+  .lb-word{font-size:32px}
+  .lb-glyph{width:32px;height:32px}
+}
+
+/* ---- the access screens ([ACCOUNTS], D204): request access, waiting, switched off —
+   the sign-in card's siblings, so a person signed in without access stays on the same
+   quiet page. Sign out is a plain text button under the card's main action. ---- */
+.acc-card{margin-top:14px}
+.acc-h{margin:0 0 6px;font-size:17px;font-weight:700;color:var(--ink);letter-spacing:.01em}
+.acc-who{margin:0 0 12px;font-size:12px;color:var(--ink-3);overflow-wrap:anywhere}
+.acc-who b{color:var(--ink-2);font-weight:600}
+.acc-p{margin:0 0 16px;font-size:13px;line-height:1.55;color:var(--ink-2)}
+.acc-p b{color:var(--ink)}
+.acc-out{display:block;width:100%;margin-top:12px;padding:10px;border-radius:10px;
+  background:transparent;border:1px solid var(--edge);color:var(--ink-2);font-size:13px;font-weight:600;cursor:pointer}
+.acc-out:hover{color:var(--ink);border-color:var(--edge-2)}
+/* the guest view's slim bar: the mark, the note, Sign out — and the week window stays
+   on a phone too (the member's phone reaches weeks from the calendar, which a guest
+   does not mount) */
+.guestbar{gap:12px}
+.guest-note{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.guestbar .right{margin-left:auto}
+#guestApp .guest-wks{display:inline-flex;flex-wrap:wrap}
+/* the Admin tab's count of access requests waiting (D204 "a badge on the Admin tab") —
+   the top nav and the phone drawer; admins only */
+.navbadge{display:inline-block;min-width:16px;height:16px;padding:0 4px;margin-left:6px;border-radius:8px;
+  background:var(--accent);color:var(--accent-ink);font-size:10px;font-weight:700;line-height:16px;
+  text-align:center;vertical-align:1px;box-sizing:border-box}
+/* the drawer's Account line — who is signed in (D166 (3)) */
+.drawer-acct{margin:0 0 8px;font-size:12.5px;color:var(--ink-3)}
+.drawer-acct b{color:var(--ink);font-weight:600}
+
+

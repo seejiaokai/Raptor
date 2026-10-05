@@ -1,0 +1,6182 @@
+{
+  "scope": "Final production build; native UI doors and scrolling; only disposable break uses a labelled style override",
+  "errors": [],
+  "states": [
+    {
+      "name": "01-phone-normal",
+      "facts": {
+        "wide": false,
+        "wrapper": "contents",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 346
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 346
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 346
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 346
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 346
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 346
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 346
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 346
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 346
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 346
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 75,
+          "width": 390,
+          "height": 155,
+          "top": 75,
+          "right": 390,
+          "bottom": 230,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 275,
+          "width": 390,
+          "height": 6616.4375,
+          "top": 275,
+          "right": 390,
+          "bottom": 6891.4375,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 390,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 769,
+            "scrollWidth": 390,
+            "scrollHeight": 6816
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 6616,
+            "scrollWidth": 390,
+            "scrollHeight": 6616
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 254,
+            "clientHeight": 908,
+            "scrollWidth": 254,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "02-phone-desktop-restored",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 860,
+          "bottom": 232,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 232,
+          "width": 860,
+          "height": 612,
+          "top": 232,
+          "right": 860,
+          "bottom": 844,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 1180,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 767,
+            "scrollWidth": 1180,
+            "scrollHeight": 767
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 612,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 476,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "03-disposable-break-zero-width",
+      "facts": {
+        "wide": true,
+        "wrapper": "contents",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 0
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 0
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 0
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 0
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 0
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 0
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 0
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 0
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 0
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 0
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 77,
+          "width": 816,
+          "height": 767,
+          "top": 77,
+          "right": 816,
+          "bottom": 844,
+          "left": 0
+        },
+        "board": {
+          "x": 816,
+          "y": 77,
+          "width": 44,
+          "height": 767,
+          "top": 77,
+          "right": 860,
+          "bottom": 844,
+          "left": 816
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 1180,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 767,
+            "scrollWidth": 1180,
+            "scrollHeight": 767
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 44,
+            "clientHeight": 767,
+            "scrollWidth": 46,
+            "scrollHeight": 7378
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 476,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "04-short-phone",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 860,
+          "bottom": 232,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 232,
+          "width": 860,
+          "height": 336,
+          "top": 232,
+          "right": 860,
+          "bottom": 568,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 568,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 568,
+            "scrollWidth": 1180,
+            "scrollHeight": 568
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 491,
+            "scrollWidth": 1180,
+            "scrollHeight": 491
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 336,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 304,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "05-wide-at820",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 860,
+          "bottom": 232,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 232,
+          "width": 860,
+          "height": 468,
+          "top": 232,
+          "right": 860,
+          "bottom": 700,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 820,
+          "innerHeight": 700,
+          "visualWidth": 820,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 820,
+            "clientHeight": 700,
+            "scrollWidth": 1180,
+            "scrollHeight": 700
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 623,
+            "scrollWidth": 1180,
+            "scrollHeight": 623
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 468,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 386,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "06-wide-at821",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 832
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 832
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 832
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 832
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 832
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 832
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 832
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 832
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 832
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 832
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 145,
+          "width": 860,
+          "height": 136,
+          "top": 145,
+          "right": 860,
+          "bottom": 281,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 281,
+          "width": 860,
+          "height": 582,
+          "top": 281,
+          "right": 860,
+          "bottom": 863,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 1012,
+          "innerHeight": 863,
+          "visualWidth": 1012,
+          "scale": 0.8112648129463196
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1012,
+            "clientHeight": 863,
+            "scrollWidth": 1180,
+            "scrollHeight": 863
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 718,
+            "scrollWidth": 1180,
+            "scrollHeight": 718
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 582,
+            "scrollWidth": 860,
+            "scrollHeight": 3734
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 438,
+            "scrollWidth": 319,
+            "scrollHeight": 898
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "07-wide-landscape",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 832
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 832
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 832
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 832
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 832
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 832
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 832
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 832
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 832
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 832
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 145,
+          "width": 860,
+          "height": 136,
+          "top": 145,
+          "right": 860,
+          "bottom": 281,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 281,
+          "width": 860,
+          "height": 109,
+          "top": 281,
+          "right": 860,
+          "bottom": 390,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 844,
+          "innerHeight": 390,
+          "visualWidth": 844,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 844,
+            "clientHeight": 390,
+            "scrollWidth": 1180,
+            "scrollHeight": 390
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 245,
+            "scrollWidth": 1180,
+            "scrollHeight": 245
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 109,
+            "scrollWidth": 860,
+            "scrollHeight": 3734
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 145,
+            "scrollWidth": 319,
+            "scrollHeight": 898
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "08-wide-desktop",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 932
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 932
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 932
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 932
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 932
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 932
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 932
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 932
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 932
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 932
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 106,
+          "width": 960,
+          "height": 136,
+          "top": 106,
+          "right": 960,
+          "bottom": 242,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 242,
+          "width": 960,
+          "height": 458,
+          "top": 242,
+          "right": 960,
+          "bottom": 700,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 1280,
+          "innerHeight": 700,
+          "visualWidth": 1280,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1280,
+            "clientHeight": 700,
+            "scrollWidth": 1280,
+            "scrollHeight": 700
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1280,
+            "clientHeight": 594,
+            "scrollWidth": 1280,
+            "scrollHeight": 594
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 960,
+            "clientHeight": 458,
+            "scrollWidth": 960,
+            "scrollHeight": 3715
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 361,
+            "scrollWidth": 319,
+            "scrollHeight": 898
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "09-wide-back821",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 832
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 832
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 832
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 832
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 832
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 832
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 832
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 832
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 832
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 832
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 145,
+          "width": 860,
+          "height": 136,
+          "top": 145,
+          "right": 860,
+          "bottom": 281,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 281,
+          "width": 860,
+          "height": 419,
+          "top": 281,
+          "right": 860,
+          "bottom": 700,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 821,
+          "innerHeight": 700,
+          "visualWidth": 821,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 821,
+            "clientHeight": 700,
+            "scrollWidth": 1180,
+            "scrollHeight": 700
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 555,
+            "scrollWidth": 1180,
+            "scrollHeight": 555
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 419,
+            "scrollWidth": 860,
+            "scrollHeight": 3734
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 337,
+            "scrollWidth": 319,
+            "scrollHeight": 898
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "10-wide-back820",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 860,
+          "bottom": 232,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 232,
+          "width": 860,
+          "height": 468,
+          "top": 232,
+          "right": 860,
+          "bottom": 700,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 820,
+          "innerHeight": 700,
+          "visualWidth": 820,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 820,
+            "clientHeight": 700,
+            "scrollWidth": 1180,
+            "scrollHeight": 700
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 623,
+            "scrollWidth": 1180,
+            "scrollHeight": 623
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 468,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 386,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "11-wide-backphone",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 860,
+          "bottom": 232,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 232,
+          "width": 860,
+          "height": 612,
+          "top": 232,
+          "right": 860,
+          "bottom": 844,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 1180,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 767,
+            "scrollWidth": 1180,
+            "scrollHeight": 767
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 612,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 476,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "12-touch-pan",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 860,
+          "bottom": 232,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 232,
+          "width": 860,
+          "height": 612,
+          "top": 232,
+          "right": 860,
+          "bottom": 844,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 1180,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 767,
+            "scrollWidth": 1180,
+            "scrollHeight": 767
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 612,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 476,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "13-side-column-panned-right",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": -790,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 70,
+          "bottom": 232,
+          "left": -790
+        },
+        "board": {
+          "x": -790,
+          "y": 232,
+          "width": 860,
+          "height": 612,
+          "top": 232,
+          "right": 70,
+          "bottom": 844,
+          "left": -790
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 790,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 1180,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 767,
+            "scrollWidth": 1180,
+            "scrollHeight": 767
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 612,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 476,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "14-crew-final-column1",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": -790,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 70,
+          "bottom": 232,
+          "left": -790
+        },
+        "board": {
+          "x": -790,
+          "y": 232,
+          "width": 860,
+          "height": 612,
+          "top": 232,
+          "right": 70,
+          "bottom": 844,
+          "left": -790
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 790,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 1180,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 767,
+            "scrollWidth": 1180,
+            "scrollHeight": 767
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 612,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 432,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 476,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "14-crew-final-column2",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": -790,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 70,
+          "bottom": 232,
+          "left": -790
+        },
+        "board": {
+          "x": -790,
+          "y": 232,
+          "width": 860,
+          "height": 612,
+          "top": 232,
+          "right": 70,
+          "bottom": 844,
+          "left": -790
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 790,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 1180,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 767,
+            "scrollWidth": 1180,
+            "scrollHeight": 767
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 612,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 282,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 476,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "15-schedule-final-independent",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 860,
+          "bottom": 232,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 232,
+          "width": 860,
+          "height": 612,
+          "top": 232,
+          "right": 860,
+          "bottom": 844,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 1180,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 767,
+            "scrollWidth": 1180,
+            "scrollHeight": 767
+          },
+          {
+            "name": "sbBoard",
+            "top": 3342,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 612,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 282,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 476,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "16-next-day-after-switch",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 1 input · 1 on programm",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": -790,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 70,
+          "bottom": 232,
+          "left": -790
+        },
+        "board": {
+          "x": -790,
+          "y": 232,
+          "width": 860,
+          "height": 612,
+          "top": 232,
+          "right": 70,
+          "bottom": 844,
+          "left": -790
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 790,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 1180,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 767,
+            "scrollWidth": 1180,
+            "scrollHeight": 767
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 612,
+            "scrollWidth": 860,
+            "scrollHeight": 3286
+          },
+          {
+            "name": "sbRoster",
+            "top": 282,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 495,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "17-phone-return",
+      "facts": {
+        "wide": false,
+        "wrapper": "contents",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 346
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 346
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 346
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 346
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 346
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 346
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 346
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 346
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 346
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 346
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 75,
+          "width": 390,
+          "height": 155,
+          "top": 75,
+          "right": 390,
+          "bottom": 230,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 275,
+          "width": 390,
+          "height": 6616.4375,
+          "top": 275,
+          "right": 390,
+          "bottom": 6891.4375,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 390,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 769,
+            "scrollWidth": 390,
+            "scrollHeight": 6816
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 6616,
+            "scrollWidth": 390,
+            "scrollHeight": 6616
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 254,
+            "clientHeight": 908,
+            "scrollWidth": 254,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "18-desktop-normal-unchanged",
+      "facts": {
+        "wide": false,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 932
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 932
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 932
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 932
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 932
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 932
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 932
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 932
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 932
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 932
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 106,
+          "width": 960,
+          "height": 136,
+          "top": 106,
+          "right": 960,
+          "bottom": 242,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 242,
+          "width": 960,
+          "height": 3612.5625,
+          "top": 242,
+          "right": 960,
+          "bottom": 3854.5625,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 1280,
+          "innerHeight": 700,
+          "visualWidth": 1280,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1280,
+            "clientHeight": 700,
+            "scrollWidth": 1280,
+            "scrollHeight": 700
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1280,
+            "clientHeight": 594,
+            "scrollWidth": 1280,
+            "scrollHeight": 594
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 960,
+            "clientHeight": 3613,
+            "scrollWidth": 960,
+            "scrollHeight": 3613
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 361,
+            "scrollWidth": 319,
+            "scrollHeight": 898
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "20-desktop-input-wheel-right",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": -790,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 70,
+          "bottom": 232,
+          "left": -790
+        },
+        "board": {
+          "x": -790,
+          "y": 232,
+          "width": 860,
+          "height": 612,
+          "top": 232,
+          "right": 70,
+          "bottom": 844,
+          "left": -790
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 790,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 1180,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 767,
+            "scrollWidth": 1180,
+            "scrollHeight": 767
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 612,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 476,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "21-desktop-input-wheel-left",
+      "facts": {
+        "wide": true,
+        "wrapper": "flex",
+        "sections": [
+          {
+            "title": "⠿Overall notes shown at the head of the ",
+            "width": 816
+          },
+          {
+            "title": "⠿Common Programme squadron-wide — affect",
+            "width": 816
+          },
+          {
+            "title": "⠿Flying waves go times, formations, crew",
+            "width": 816
+          },
+          {
+            "title": "⠿Duties SDO / SXO / ops desk, by block+ ",
+            "width": 816
+          },
+          {
+            "title": "⠿Sims AMT and OFT rowsAMT⇅ Auto sort+ Bl",
+            "width": 816
+          },
+          {
+            "title": "⠿Ground Programme briefs, reviews, admin",
+            "width": 816
+          },
+          {
+            "title": "⠿Personal Inputs 3 inputs · 3 on program",
+            "width": 816
+          },
+          {
+            "title": "⠿Available crewby wave · close ⌃1st wave",
+            "width": 816
+          },
+          {
+            "title": "⠿SANS Avail what SANS aircrew are offeri",
+            "width": 816
+          },
+          {
+            "title": "⠿Unavailable leave, medical and overseas",
+            "width": 816
+          }
+        ],
+        "sign": {
+          "x": 0,
+          "y": 77,
+          "width": 860,
+          "height": 155,
+          "top": 77,
+          "right": 860,
+          "bottom": 232,
+          "left": 0
+        },
+        "board": {
+          "x": 0,
+          "y": 232,
+          "width": 860,
+          "height": 612,
+          "top": 232,
+          "right": 860,
+          "bottom": 844,
+          "left": 0
+        },
+        "viewport": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "visualWidth": 390,
+          "scale": 1
+        },
+        "scroll": [
+          {
+            "name": "schedBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 390,
+            "clientHeight": 844,
+            "scrollWidth": 1180,
+            "scrollHeight": 844
+          },
+          {
+            "name": "sb-main",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 1180,
+            "clientHeight": 767,
+            "scrollWidth": 1180,
+            "scrollHeight": 767
+          },
+          {
+            "name": "sbBoard",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 860,
+            "clientHeight": 612,
+            "scrollWidth": 860,
+            "scrollHeight": 3954
+          },
+          {
+            "name": "sbRoster",
+            "top": 0,
+            "left": 0,
+            "clientWidth": 319,
+            "clientHeight": 476,
+            "scrollWidth": 319,
+            "scrollHeight": 908
+          }
+        ],
+        "day": "‹Mon 13Tue 14Wed 15Thu 16Fri 17Sat 18Sun 19›",
+        "warningChips": 0,
+        "versionChoices": [
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Ace",
+              "Anvil",
+              "Basher",
+              "Blade",
+              "Bolt",
+              "Cinch",
+              "Cinder",
+              "Cobra",
+              "Comet",
+              "Cotter",
+              "Cutter",
+              "Dash",
+              "Diesel",
+              "Drifter",
+              "Echo",
+              "Fable",
+              "Forge",
+              "Gambit",
+              "Ghost",
+              "Grit",
+              "Havoc",
+              "Hex",
+              "Hunter",
+              "Jester",
+              "Kraken",
+              "Ledger",
+              "Marlin",
+              "Nomad",
+              "Otter",
+              "Outlaw",
+              "Piston",
+              "Pixel",
+              "Quill",
+              "Ranger",
+              "Ratchet",
+              "Reaper",
+              "Rebel",
+              "Recon",
+              "Relay",
+              "Ridge",
+              "Rune",
+              "Ryder",
+              "Saber",
+              "Saint",
+              "Scope",
+              "Scribe",
+              "Sidewinder",
+              "Static",
+              "Talisman",
+              "Tally",
+              "Torch",
+              "Trident",
+              "Vandal",
+              "Vapor",
+              "Vector",
+              "Warden",
+              "Widget",
+              "Wildcard",
+              "Wisp",
+              "Zenith",
+              "Zulu"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "— name —",
+              "Anvil",
+              "Basher",
+              "Bolt",
+              "Cinch",
+              "Drifter",
+              "Echo",
+              "Forge",
+              "Piston",
+              "Ranger",
+              "Reaper",
+              "Ridge",
+              "Saber",
+              "Sidewinder",
+              "Static",
+              "Trident",
+              "Warden"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          },
+          {
+            "id": "",
+            "choices": [
+              "1st wave",
+              "2nd wave",
+              "3rd wave",
+              "4th wave",
+              "5th wave",
+              "Night wave",
+              "SC",
+              "AVALON"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "19-member-exclusion",
+      "facts": {
+        "editScheduleDoor": false,
+        "visibleBoard": 0
+      }
+    }
+  ],
+  "actions": [
+    "Previous/next day native controls, Monday → Tuesday → Monday, before switch",
+    {
+      "break": "display:contents only in disposable browser style",
+      "widths": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expectedFailure": "⠿Overall notes shown at the head of the  usable width 0"
+    },
+    {
+      "touchPan": {
+        "before": 0,
+        "after": 0,
+        "targetBefore": {
+          "x": 861,
+          "y": 368.453125,
+          "width": 319,
+          "height": 475.546875
+        },
+        "targetAfter": {
+          "x": 861,
+          "y": 368.453125,
+          "width": 319,
+          "height": 475.546875
+        },
+        "disposition": "MISSING: no root movement from this emulated touch attempt"
+      },
+      "qualification": "Chromium touch emulation only; physical iPhone Safari untested"
+    },
+    {
+      "toolbarTouch": {
+        "scrollLeft": 240,
+        "target": {
+          "x": 621,
+          "y": 368.453125,
+          "width": 319,
+          "height": 475.546875
+        }
+      }
+    },
+    {
+      "nativeToolbarTouchPan": {
+        "delta": 5000,
+        "before": 240,
+        "after": 790
+      }
+    },
+    {
+      "panRight": {
+        "before": {
+          "x": 861,
+          "y": 368.453125,
+          "width": 319,
+          "height": 475.546875
+        },
+        "visibleTarget": {
+          "text": "Placeholders · drag inALL AVAILALLPilots · 6 freeCometIPHavocIPNomadCReaperIRSaintBVandalI",
+          "rect": {
+            "x": 71,
+            "y": 368.453125,
+            "width": 319,
+            "height": 475.546875,
+            "top": 368.453125,
+            "right": 390,
+            "bottom": 844,
+            "left": 71
+          },
+          "visible": true,
+          "own": true,
+          "hit": "SPAN"
+        }
+      }
+    },
+    {
+      "verticalNativeScroll": {
+        "selector": "#sbRoster",
+        "delta": 10000,
+        "before": 0,
+        "after": 432
+      }
+    },
+    {
+      "verticalNativeScroll": {
+        "selector": "#sbRoster",
+        "delta": -150,
+        "before": 432,
+        "after": 282
+      }
+    },
+    {
+      "crewScroll": {
+        "top": 432,
+        "max": 432
+      },
+      "rosterHeld": 282,
+      "lastCrew": [
+        {
+          "text": "CGambitC",
+          "rect": {
+            "x": 83,
+            "y": 541.453125,
+            "width": 74,
+            "height": 15,
+            "top": 541.453125,
+            "right": 157,
+            "bottom": 556.453125,
+            "left": 83
+          },
+          "visible": true,
+          "own": true,
+          "hit": "SPAN"
+        },
+        {
+          "text": "CVectorC",
+          "rect": {
+            "x": 165,
+            "y": 493.453125,
+            "width": 74,
+            "height": 15,
+            "top": 493.453125,
+            "right": 239,
+            "bottom": 508.453125,
+            "left": 165
+          },
+          "visible": true,
+          "own": true,
+          "hit": "SPAN"
+        }
+      ],
+      "scheduleUnmoved": true
+    },
+    {
+      "nativeToolbarTouchPan": {
+        "delta": -5000,
+        "before": 790,
+        "after": 0
+      }
+    },
+    {
+      "panLeft": {
+        "visibleTarget": {
+          "text": "⠿1.EP: ENGINE FIRE ON TAKE OFF✕",
+          "rect": {
+            "x": 28,
+            "y": 351.5,
+            "width": 790,
+            "height": 24,
+            "top": 351.5,
+            "right": 818,
+            "bottom": 375.5,
+            "left": 28
+          },
+          "visible": true,
+          "own": true,
+          "hit": "TEXTAREA"
+        }
+      }
+    },
+    {
+      "verticalNativeScroll": {
+        "selector": "#sbBoard",
+        "delta": 15000,
+        "before": 0,
+        "after": 3342
+      }
+    },
+    {
+      "scheduleScroll": {
+        "top": 3342,
+        "max": 3342
+      },
+      "lastActualRow": {
+        "text": "⠿ATT CCGritCMedically down till 17 Jul",
+        "rect": {
+          "x": 28,
+          "y": 774.9375,
+          "width": 790,
+          "height": 34,
+          "top": 774.9375,
+          "right": 818,
+          "bottom": 808.9375,
+          "left": 28
+        },
+        "visible": true,
+        "own": true,
+        "hit": "DIV"
+      },
+      "crewUnmoved": true
+    },
+    {
+      "verticalNativeScroll": {
+        "selector": "#sbBoard",
+        "delta": -15000,
+        "before": 3342,
+        "after": 0
+      }
+    },
+    {
+      "nativeToolbarTouchPan": {
+        "delta": 350,
+        "before": 0,
+        "after": 490
+      }
+    },
+    {
+      "nativeToolbarTouchPan": {
+        "delta": 350,
+        "before": 490,
+        "after": 790
+      }
+    },
+    {
+      "nativeControl": "#sbNextDay",
+      "target": {
+        "text": "› Next day",
+        "rect": {
+          "x": 342,
+          "y": 43,
+          "width": 40,
+          "height": 26,
+          "top": 43,
+          "right": 382,
+          "bottom": 69,
+          "left": 342
+        },
+        "visible": true,
+        "own": true,
+        "hit": "SPAN"
+      }
+    },
+    {
+      "nativeToolbarTouchPan": {
+        "delta": -350,
+        "before": 790,
+        "after": 300
+      }
+    },
+    {
+      "nativeToolbarTouchPan": {
+        "delta": -350,
+        "before": 300,
+        "after": 0
+      }
+    },
+    {
+      "nativeControl": "#sbPrevDay",
+      "target": {
+        "text": "‹ Previous day",
+        "rect": {
+          "x": 8,
+          "y": 43,
+          "width": 40,
+          "height": 26,
+          "top": 43,
+          "right": 48,
+          "bottom": 69,
+          "left": 8
+        },
+        "visible": true,
+        "own": true,
+        "hit": "SPAN"
+      }
+    },
+    {
+      "nativeToolbarTouchPan": {
+        "delta": 350,
+        "before": 0,
+        "after": 490
+      }
+    },
+    {
+      "nativeControl": "#sbMore",
+      "target": {
+        "text": "⋯",
+        "rect": {
+          "x": 120.265625,
+          "y": 43,
+          "width": 30,
+          "height": 26,
+          "top": 43,
+          "right": 150.265625,
+          "bottom": 69,
+          "left": 120.265625
+        },
+        "visible": true,
+        "own": true,
+        "hit": "BUTTON"
+      }
+    },
+    {
+      "nativeControl": "#sbDone",
+      "target": {
+        "text": "✓ Done",
+        "rect": {
+          "x": 352,
+          "y": 6,
+          "width": 30,
+          "height": 30,
+          "top": 6,
+          "right": 382,
+          "bottom": 36,
+          "left": 352
+        },
+        "visible": true,
+        "own": true,
+        "hit": "SPAN"
+      }
+    },
+    "More → Phone layout → Done → ordinary Edit Schedule",
+    {
+      "desktopInputWheel": {
+        "right": 790,
+        "left": 0,
+        "side": {
+          "text": "Placeholders · drag inALL AVAILALLPilots · 6 freeCometIPHavocIPNomadCReaperIRSaintBVandalI",
+          "rect": {
+            "x": 71,
+            "y": 368.453125,
+            "width": 319,
+            "height": 475.546875,
+            "top": 368.453125,
+            "right": 390,
+            "bottom": 844,
+            "left": 71
+          },
+          "visible": true,
+          "own": true,
+          "hit": "SPAN"
+        },
+        "schedule": {
+          "text": "⠿1.EP: ENGINE FIRE ON TAKE OFF✕",
+          "rect": {
+            "x": 28,
+            "y": 351.5,
+            "width": 790,
+            "height": 24,
+            "top": 351.5,
+            "right": 818,
+            "bottom": 375.5,
+            "left": 28
+          },
+          "visible": true,
+          "own": true,
+          "hit": "TEXTAREA"
+        }
+      },
+      "qualification": "390px phone CSS with desktop mouse input, separate from emulated touch context"
+    }
+  ],
+  "assets": [],
+  "omissions": [
+    {
+      "issued": "No production publishing or fixture mutation for this CSS repair; see existing version choices in states",
+      "roles": "Admin is the scheduler-capable role. There is no separate scheduler account fixture."
+    },
+    {
+      "guest": "Guest access off in the fresh fixture; no guest setting mutation or permission bypass. CSS selector only affects existing editor Board."
+    }
+  ],
+  "source": {
+    "src/ui/scheduler/13-board-rows-responsive.css": "a4b9cc3f0b6f08f0921ef30cf21f762425f39764f2c2dbbabcd035fbacd5f459",
+    "e2e/geometry.spec.ts": "8f0b46d7a744abb5ab616c8d5c521aaf47c3915251de782a3f55e39494fabdef"
+  },
+  "pass": true
+}

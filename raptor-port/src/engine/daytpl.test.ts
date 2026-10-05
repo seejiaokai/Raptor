@@ -13,6 +13,7 @@ import {
 } from './daytpl'
 import { ensureRowIds } from './rowids'
 
+
 /* templates are minted off DAYS[0] and applyDayTpl overwrites it wholesale —
    every test starts from the pristine day, same discipline restore.test.ts uses */
 const D0 = JSON.parse(JSON.stringify(DAYS[0]))

@@ -116,3 +116,72 @@ export function swapDay(live: Element, html: string, prev: DayChunks | null): Da
   })
   return chunks
 }
+
+/* THE BLOCK HOLDING THE CARET IS LEFT STANDING — EVERY OTHER BLOCK IS WRITTEN (W15, the Codex stack check, 5 Oct 26).
+   "Never repaint under the caret" was kept by repainting nothing at all while a text box had it. That was a moment
+   when Tab left the text boxes after two or three of them; with the Tab route a scheduler can type through a whole day,
+   and for all of that time the day's warning list, its count, "N pending" and the sign-off strip stood still — a
+   warning made by a Tab commit was not in the list (D509 says it is).
+   Same comparison, same grain, as swapDay above; the one difference is `keep`, the element with the caret: a block
+   that contains it is not replaced, and the chunk handed back for it is the PREVIOUS one — so what comes back still
+   describes what is on screen, and the ordinary swap that runs when the caret leaves finds that block different and
+   writes it then. A change that would need the whole day replaced (a shape mismatch — swapDay's fallback) writes
+   nothing while the caret is in that day: `held` says something is still owed, either way. A day that does not hold
+   the caret is swapped the ordinary way. */
+export function swapDayAround(live: Element, html: string, prev: DayChunks | null, keep: Element): { chunks: DayChunks | null; held: boolean } {
+  const holds = (el: Element) => el === keep || el.contains(keep)
+  if (!holds(live)) return { chunks: swapDay(live, html, prev), held: false }
+  const next = parseDay(html)
+  if (!next || !prev) return { chunks: prev, held: true }
+  const chunks = chunksOf(next)
+  /* THE WARNINGS BOX COMES AND GOES (the Tab-route reader's second pass, 6 Oct 26). A day with nothing to warn about
+     draws no box, so its FIRST warning — and the clearing of its last — changes the day's block count; that sent the
+     whole day to the hold below, the very case this function exists for. The box is always the day-body's first block
+     and never holds a caret: put it in (a copy of the freshly parsed one) or take it out, tell `prev` the same, and
+     the ordinary block-for-block pass then sees a day that lines up. */
+  const bodyOf = (el: Element) => kidsOf(el).find(c => c.classList.contains('day-body')) || null
+  const boxOf = (b: Element | null) => (b && b.firstElementChild && b.firstElementChild.classList.contains('dwbox')) ? b.firstElementChild : null
+  const lb = bodyOf(live), nb = bodyOf(next), lw = boxOf(lb), nw = boxOf(nb)
+  if (lb && nb && !!lw !== !!nw && !(lw && holds(lw))) {
+    const at = kidsOf(live).indexOf(lb), pb = prev.kids[at]
+    if (pb && typeof pb !== 'string' && pb.kids.length === lb.children.length) {
+      if (nw) { lb.prepend(nw.cloneNode(true)); prev = { attrs: prev.attrs, kids: prev.kids.map((k, i) => i === at ? { attrs: pb.attrs, kids: [nw.outerHTML, ...pb.kids] } : k) } }
+      else { lw!.remove(); prev = { attrs: prev.attrs, kids: prev.kids.map((k, i) => i === at ? { attrs: pb.attrs, kids: pb.kids.slice(1) } : k) } }
+    }
+  }
+  if (!fits(live, next, prev, chunks)) return { chunks: prev, held: true }
+  if (chunks.attrs !== prev.attrs) syncAttrs(live, next)
+  let held = false
+  const lk = kidsOf(live), nk = kidsOf(next)
+  const shown: DayChunks = { attrs: chunks.attrs, kids: [] }
+  chunks.kids.forEach((k, i) => {
+    const p = prev.kids[i]!, l = lk[i]!, n = nk[i]!
+    if (typeof k === 'string') {
+      if (k === p) { shown.kids.push(k); return }
+      if (holds(l)) { held = true; shown.kids.push(p); return }
+      l.replaceWith(n); shown.kids.push(k); return
+    }
+    const pb = p as BodyChunk
+    if (k.attrs !== pb.attrs) syncAttrs(l, n)
+    const lb = kidsOf(l), nb = kidsOf(n)
+    shown.kids.push({ attrs: k.attrs, kids: k.kids.map((s, j) => {
+      if (s === pb.kids[j]) return s
+      if (holds(lb[j]!)) { held = true; return pb.kids[j]! }
+      lb[j]!.replaceWith(nb[j]!); return s
+    }) })
+  })
+  return { chunks: shown, held }
+}
+/* run a write that may move things above the caret, and put the page back so the box he is typing in stays where it
+   was on screen (Chromium's own scroll anchoring usually has already; Safari has none) */
+export function holdingPlace(caret: Element, write: () => void): void {
+  const y0 = caret.getBoundingClientRect().top
+  write()
+  if (!caret.isConnected) return
+  const dy = caret.getBoundingClientRect().top - y0
+  if (!dy) return
+  let sc: Element | null = caret.parentElement
+  while (sc && !(sc.scrollHeight > sc.clientHeight && /auto|scroll/.test(getComputedStyle(sc).overflowY))) sc = sc.parentElement
+  const owner = sc || document.scrollingElement
+  if (owner && typeof (owner as any).scrollBy === 'function') owner.scrollBy({ top: dy, behavior: 'instant' as ScrollBehavior })
+}

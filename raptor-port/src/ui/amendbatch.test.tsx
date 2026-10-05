@@ -22,6 +22,7 @@ import { PEOPLE } from '../engine/people'
 import { boardSignHTML, boardHTML } from './board'
 import { ALPanel } from './ALPanel'
 
+
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const MON = 0

@@ -1,0 +1,33 @@
+{
+  "results": [
+    {
+      "label": "Add is operated in the formerly clipped header and Undo restores its exact data",
+      "status": "PASS"
+    },
+    {
+      "label": "Line is operated and Undo restores the exact formations",
+      "status": "PASS"
+    },
+    {
+      "label": "Wave is operated and Undo restores the entire isolated fixture wave",
+      "status": "PASS"
+    },
+    {
+      "label": "ordinary same-day header keeps its clock without a previous-day cue",
+      "status": "PASS"
+    },
+    {
+      "label": "issued readonly header keeps the previous-day cue and no edit controls",
+      "status": "PASS"
+    },
+    {
+      "label": "console/page/HTTP errors",
+      "status": "PASS"
+    }
+  ],
+  "pictures": [
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-actions/same-day-header.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-actions/issued-previous-day-header.png"
+  ],
+  "failure": null
+}

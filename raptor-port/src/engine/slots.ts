@@ -336,6 +336,13 @@ export function txtSet(path:any,v:any){
   }
   const was=String(r.o[r.k]==null?'':r.o[r.k]);
   if(was===v)return false;
+  /* SPACING ALONE IS NO CHANGE (W11, the Codex stack check, 5 Oct 26; D103). `v` is folded above; `was` is whatever a
+     writer left — and not every writer folds (a request's remark as filed, a duty or wave template's text keep an inner
+     doubled space). Passing through such a box, by a click or on the Tab route, read back the same words, folded them,
+     found them "different" and wrote them: a history line with identical before and after, and on a published day a
+     pending change that takes the four sign-offs. Fold the stored side the same way before calling it a change. A time
+     box is left to the line above — its own display guard (ui/textedit.ts) already covers the pass-through. */
+  if(!TIME_TXT.test(String(path))&&was.replace(/\s+/g,' ').trim()===v)return false;
   /* A BRIEF LATER THAN ITS OWN TAKE-OFF IS REFUSED (owner, 12 Aug 26 — "u can
      put guard rails to deny such inputs", after the audit found what one does).
      The brief window runs brief..T/O, so a B typed after T/O inverts it and the

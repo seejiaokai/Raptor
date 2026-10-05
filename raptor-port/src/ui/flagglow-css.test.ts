@@ -1,4 +1,5 @@
 // @vitest-environment node — reads a stylesheet off disk (the lift-css.test.ts shape)
+import { readSchedulerCss } from '../testing/scheduler-css'
 /* THE RINGS ON A PUCK — two of his rulings, one witness. jsdom paints nothing, so the stylesheet is read and the cascade
    worked out by hand for the rules that sit on the puck itself.
 
@@ -24,10 +25,9 @@
    ghost, the board, a published look, the ALL AVAIL window) are the walk's to see (the evidence sheet §3a, W1); and the
    focus is kept off the purple by ORDER in highlights.ts (it returns before adding "you"), pinned in interact.test.tsx
    "a focused warning takes the purple…". */
-import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
 
-const css = readFileSync(new URL('./scheduler.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
+const css = readSchedulerCss().replace(/\/\*[\s\S]*?\*\//g, '')
 const RULES = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
   .map((m, order) => ({ order, sels: m[1]!.split(',').map(s => s.trim().replace(/\s+/g, ' ')), body: m[2]!.replace(/\s+/g, ' ') }))
 /** box-shadow layers: split on the commas that are not inside rgba(...) */
@@ -112,7 +112,9 @@ describe('D270 / D272 — on his own puck, any other ring wins over the purple "
     expect(shadowWin(['boxred'])).toBe('0 0 0 2px var(--hard)')
     expect(shadowWin(['warn'])).toBe('0 0 0 1.5px var(--adv)')
     expect(shadowWin(['me'])).toBe(PURPLE)
-    expect(outlineWin(['boxdot'])).toBe('1.5px dotted var(--hard)')
+    /* the width is `--dot-w`, falling back to the 1.5px it always was ([PUCK-DOT-ZOOM], 6 Oct 26 — ui/dotring.ts hands
+       in two screen pixels on a scaled screen only); still the hard red, still dotted */
+    expect(outlineWin(['boxdot'])).toBe('var(--dot-w,1.5px) dotted var(--hard)')
   })
   it('flagged or earning, his puck wears exactly the ring another man\'s puck wears — every set of ring classes on the puck itself', () => {
     const sets = SETS.filter(RINGED)
@@ -128,7 +130,7 @@ describe('D270 / D272 — on his own puck, any other ring wins over the purple "
     expect(shadowWin(['me', 'warn', 'hard'])).toBe('0 0 0 1.5px var(--hard)')
     expect(shadowWin(['me', 'warn', 'note'])).toBe('0 0 0 1.5px #8A96A3')
     expect(shadowWin(['me', 'boxdot']), 'the dotted ring alone, nothing purple behind it').toBe('none')
-    expect(outlineWin(['me', 'boxdot'])).toBe('1.5px dotted var(--hard)')
+    expect(outlineWin(['me', 'boxdot'])).toBe('var(--dot-w,1.5px) dotted var(--hard)')
     expect(shadowWin(['me', 'warn', 'hard', 'boxred'])).toBe('0 0 0 2px var(--hard)')
     expect(shadowWin(['me', 'oilglow'])).toBe('0 0 0 2px var(--oil),0 0 8px rgba(47,166,92,.5)')
     expect(shadowWin(['me', 'oilglow', 'half'])).toBe('0 0 0 2px var(--oil)')

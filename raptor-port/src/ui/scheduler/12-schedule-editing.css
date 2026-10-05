@@ -1,0 +1,358 @@
+/* =====================================================================
+   B9 — EDITABLE TEXT · CANCELLED LINES · RED FLAGS · BOARD PANELS
+   ===================================================================== */
+/* ---- inline editable text (edit-schedule mode) --------------------------
+   Every string in the day model is reachable through data-txt, so one class
+   styles them all. Kept deliberately quiet until hover/focus — a board full
+   of boxed inputs is unreadable at a glance, which is the one thing a flying
+   programme must stay. */
+.txed{outline:none;cursor:text;border-radius:3px;transition:background .12s}
+.txed:hover{background:rgba(59,198,232,.09);box-shadow:inset 0 -1px 0 rgba(59,198,232,.4)}
+.txed:focus{background:rgba(59,198,232,.14);box-shadow:inset 0 0 0 1px var(--accent)}
+.txed:empty::before{content:'—';color:var(--ink-3);opacity:.55}
+/* …unless the cell has ghost text of its own to say instead (owner, 10 Aug 26
+   — MAIN/SPARE on a standalone line, ui/html.ts's ted()). MUST sit AFTER the
+   em-dash rule above: the two selectors have identical specificity, so source
+   order is the whole of what decides it, and written the other way round the
+   dash silently won and no ghost text ever appeared. Found in the live pass,
+   not by a test — jsdom loads no stylesheet, so nothing in `npm test` can see
+   which of two equal rules wins. */
+[data-ph]:empty::before{content:attr(data-ph);color:var(--ink-3);opacity:.55;pointer-events:none}
+.page.editing .go-tab .asd.txed,.page.editing .fcell .txed{min-width:14px;display:inline-block}
+/* FREE TEXT WRAPS, ALWAYS.
+   Every one of these cells sits in a grid track next to the START and END times.
+   A run of characters with no space in it — a callsign mashed together, a pasted
+   string, someone leaning on the keyboard — has no break opportunity, so it does
+   not wrap: it runs straight out of its own track and paints over the time beside
+   it, which is how a programme item ends up hiding the one thing the squadron
+   needs off that row. `anywhere` lets the break happen mid-token, and min-width:0
+   lets the cell actually shrink to its track instead of forcing its own width.
+   Both are needed; either alone leaves the overflow. */
+.ntx{display:inline-block;min-width:30px;overflow-wrap:anywhere}
+/* `.sbi-rmk` used to sit in this list and matched nothing — the board's
+   inputs-band remarks cell is `.sbi-rm` (board-html.ts), a typo carried over
+   verbatim from the original page. Corrected 9 Aug 26 by DELETING the dead
+   name rather than fixing its spelling, because the fix was measured in a
+   real browser first and does nothing: `.sbi-row .sbi-rm` is deliberately
+   `white-space:nowrap` + `text-overflow:ellipsis`, so there are no soft wrap
+   opportunities for `overflow-wrap` to act on — at 1500px and at 390px, with
+   an 80-character unbreakable remark, the cell's width, height, scrollWidth
+   and its row's width were byte-identical with the property applied and
+   without it. That cell is a ONE-LINE truncated summary whose full text
+   lives in its `title` tooltip; the other names here are genuinely wrapping
+   prose. Pinned by "a long unbreakable remark stays one clipped line" in
+   e2e/geometry.spec.ts, so re-adding the property (or losing the nowrap) is
+   caught rather than re-argued. */
+.itxt,.blknote,.ah-note,.wln,.pl-nil{overflow-wrap:anywhere}
+/* A FORCED BREAK SHOWS A HYPHEN, SO IT READS AS A WRAP AND NOT AS A TYPO
+   (owner, 12 Aug 26 — UI sweep). `overflow-wrap:anywhere` above is
+   load-bearing and stays: it is what keeps a long unbreakable word from
+   widening its column, which is the contract e2e/geometry.spec.ts's PROSE
+   set measures. What it cannot do is break TIDILY — it cuts at whatever
+   character lands on the edge, so the week's Common Programme read
+   "STANDARDISATIO / N MEETING", which a reader parses as a spelling mistake
+   before they parse it as a wrap.
+   `hyphens:auto` is tried FIRST by the line-breaker, so a word that has a
+   legal hyphenation point breaks there with a visible hyphen, and
+   `overflow-wrap` stays as the last resort for the words that have none
+   (callsigns, `EAST`, run-together codes). Nothing about the box changes:
+   the column cannot widen either way, so no measured contract moves.
+   `-webkit-` is not optional — Safari, the phone this was reported on, still
+   needs it, and the page carries `lang="en"` for the dictionary to load. */
+.allhands .ah-row>.nm,.allhands .ah-row>.nm .sub,.ah-note,
+.plist .pl-row>.nm,.plist .pl-row .rmk,.rmkcell,.areacell{
+  -webkit-hyphens:auto;hyphens:auto}
+.plist .pl-row .ppl,.allhands .ah-row .ppl,.sb-arow .ppl{min-width:0}
+.pl-nil{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-3);padding:3px 8px 5px;letter-spacing:.04em}
+.allhands .ah-empty{font-size:10.5px;color:var(--ink-3);font-style:italic;padding:4px 10px 6px}
+.dinfobtn{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-weight:800;font-size:10px;
+  line-height:1;width:16px;height:16px;border-radius:50%;cursor:pointer;flex:0 0 auto;
+  color:var(--ink-2);background:var(--raised);border:1px solid var(--edge-2)}
+.dinfobtn:hover{color:#0B0D10;background:var(--accent);border-color:var(--accent)}
+.di-open{cursor:pointer}
+.di-open:hover{color:var(--accent)}
+.page.editing .pl-row .t.txed,.page.editing .ah-row .t.txed{display:inline-block;min-width:28px}
+
+/* ---- cancelled (CX) rows ------------------------------------------------
+   "greyed out faded with a line striking through it" — the fade is opacity on
+   the row (grayscale is NOT on the row any more, so crew pucks keep their
+   pilot/RCP colour — see the .cx .puck note below), the strike is a
+   text-decoration on the words. Store pills carry their own grayscale. */
+/* ---- cancelled (CX) ----------------------------------------------------------
+   ONE mechanism, not three. A cancelled row used to get a strike-through on the
+   row box AND a 1px rule drawn edge-to-edge at 50% of its height: on a wrapped
+   name the rule landed in the gap between the two lines, on a flight line it
+   floated under the pucks pointing at nothing, and the row-level strike painted
+   straight across the crew pucks and the rounded 2TK / TPOD / NAV pills.
+
+   Now the line is drawn through the WORDS only — the leaf text cells — so it
+   wraps with them and stops where they stop. Pucks and pills are greyed rather
+   than crossed out (a line through a rounded pill reads as a rendering fault),
+   and the row carries a red left edge and a faint wash so it is unmistakably
+   cancelled even where there is no text to strike. */
+/* a ground row that came from a personal input (owner, Aug 26 — activity inputs
+   auto-land on the programme now). A faint accent rail + wash tells it apart
+   from a hand-authored programme item without shouting. Deliberately BEFORE the
+   .cx block below so a cancelled input-derived row still reads cancelled (red
+   wins the cascade). */
+.pl-row.gr-frominput,.sb-arow.gr-frominput{
+  box-shadow:inset 2px 0 0 rgba(59,198,232,.42);background:rgba(59,198,232,.05)}
+.form.cx,.acrow.cx,.rmkcell.cx,.pl-row.cx,.ah-row.cx,.sb-line.cx,.sb-arow.cx{
+  position:relative;opacity:.55}
+.pl-row.cx,.ah-row.cx,.sb-line.cx,.sb-arow.cx,.form.cx{
+  box-shadow:inset 2px 0 0 rgba(240,85,95,.55);background:rgba(240,85,95,.045)}
+.acrow.cx,.rmkcell.cx{background:rgba(240,85,95,.045)}
+/* the strike, on leaf text only */
+.cx .ntx,.cx .t,.cx .itxt,.cx .sub,.cx .rmk,.cx .areacell,.cx .timecell,
+.cx .ah-note,.cx .nts,
+.form.cx .fcell i,.form.cx .fcell b{
+  text-decoration:line-through;text-decoration-color:rgba(240,85,95,.85);
+  text-decoration-thickness:1px;text-decoration-skip-ink:none}
+/* boxes keep their shape — they read as cancelled by being greyed back. The
+   fade above is now opacity ONLY (no row-level grayscale), so the CREW PUCKS
+   keep their pilot/RCP hue on a cancelled line (owner, 1 Sep 26 — "can I still
+   see pilot and wso colours of the pucks?"): olive FCP vs green RCP are the
+   whole reason to grey the seat, not hide it, and grayscale washed them into
+   one grey. The row still reads cancelled by the red left rail, the struck
+   words and the .55 fade — the pucks just carry their colour through it, so a
+   scheduler can still read WHO was crewed where. The store pills keep the old
+   desaturated look by carrying their OWN grayscale (below), the one place it
+   still belongs. */
+.cx .puck{opacity:1}
+.cx .stores,.cx .stchip,.cx .bombs{opacity:.5;filter:grayscale(.7)}
+.form.cx .fcell b .mdot{text-decoration:none}
+.airpop-box.cxbox{width:min(94vw,420px)}
+.cxbody{padding:13px 15px 4px}
+.cxlead{display:block;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.1em;font-size:11px;font-weight:800;color:var(--hard);margin-bottom:6px}
+#cxReason{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--edge-2);
+  border-radius:9px;color:var(--ink);font:600 14px inherit;padding:10px 11px;text-transform:uppercase}
+#cxReason:focus{outline:none;border-color:var(--accent)}
+.cxhint{font-size:10.5px;color:var(--ink-3);margin-top:7px;line-height:1.4}
+.cxquick{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.cxquick button{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:999px;
+  padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer}
+.cxquick button:hover{border-color:var(--hard);color:#FBB4B9}
+/* the ✎ Edit chip sits apart from the reason chips — dashed, muted, so it does
+   not read as one more preset to pick */
+.cxquick .cxq-edit{border-style:dashed;border-color:var(--edge-2);color:var(--ink-3);margin-left:auto}
+.cxquick .cxq-edit:hover{border-color:var(--accent);color:var(--accent)}
+/* the inline template editor (add / rename / reorder / delete / reset) */
+.abtn.sm{padding:4px 9px;font-size:11px}
+.cxedit{margin-top:9px;border:1px solid var(--edge);border-radius:10px;padding:9px 10px;background:var(--bg)}
+.cxedit-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.cxedit-h b{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--ink-2)}
+.cxedit-list{display:flex;flex-direction:column;gap:5px;max-height:200px;overflow:auto}
+.cxedit-row{display:flex;align-items:center;gap:4px}
+.cxedit-name{flex:1 1 auto;min-width:0;background:var(--panel-2);border:1px solid var(--edge);border-radius:7px;
+  color:var(--ink);font:600 12px inherit;padding:5px 8px}
+.cxedit-name:focus{outline:none;border-color:var(--accent)}
+.cxedit-mv,.cxedit-del{flex:0 0 auto;width:24px;height:26px;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--panel-2);border:1px solid var(--edge);border-radius:7px;color:var(--ink-2);font-size:11px;cursor:pointer}
+.cxedit-mv:hover{border-color:var(--accent);color:var(--accent)}
+.cxedit-del:hover{border-color:var(--hard);color:#FBB4B9}
+.cxedit-mv[disabled]{opacity:.35;cursor:not-allowed}
+.cxedit-add{display:flex;gap:5px;margin-top:8px}
+.cxedit-foot{margin-top:8px;display:flex}
+.cxedit-empty{font-size:11px;color:var(--ink-3);padding:4px 2px}
+.cxtag{display:inline-block;vertical-align:middle;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;font-weight:800;
+  letter-spacing:.06em;color:#fff;background:var(--hard);border-radius:3px;padding:0 4px;margin-right:5px;
+  text-decoration:none;position:relative;z-index:2;
+  /* the reason rides in the badge, so it has to wrap rather than push the row wide */
+  white-space:normal;overflow-wrap:anywhere;max-width:100%;line-height:1.35}
+
+/* ---- MAIN/SPARE badge on a standalone line (owner, 24 Aug 26) -----------
+   Replaces the faded role placeholder that used to live INSIDE the remarks
+   box (and vanished once anything was typed). One rule set serves the week's
+   .rmkcell and the board's .sb-rcell — both are flex columns, so the badge
+   sits as its own small row above the remarks box. As a <button> (edit mode)
+   it flips the line MAIN<->SPARE; as a .ro span (view / read-only board) it
+   is the same chip without the affordance. */
+.sarole{display:inline-block;align-self:flex-start;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  font-size:8.5px;font-weight:800;letter-spacing:.08em;line-height:1.35;padding:0 5px;border-radius:3px;
+  color:var(--ink-2);background:rgba(105,190,180,.16);border:1px solid rgba(105,190,180,.35);cursor:pointer}
+.sarole.sp{background:transparent;border-style:dashed;border-color:var(--edge);color:var(--ink-3,var(--ink-2));opacity:.85}
+button.sarole:hover{border-color:var(--accent);color:var(--accent);opacity:1}
+.sarole.ro{cursor:default}
+
+/* ---- red box: "look at this" flag for the next scheduler ---------------- */
+.redbox{box-shadow:inset 0 0 0 2px var(--hard);border-radius:5px;background:rgba(240,85,95,.09)}
+.pl-row.redbox,.ah-row.redbox,.sb-line.redbox{box-shadow:inset 0 0 0 2px var(--hard)}
+.flagtag{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;font-weight:800;
+  letter-spacing:.08em;color:#fff;background:var(--hard);border-radius:3px;padding:0 4px;margin-right:4px;text-decoration:none}
+
+/* ---- ⓘ info-only item (owner, 1 Sep 26) --------------------------------
+   A ground / Common Programme item flagged ⓘ is shown on the programme but
+   never checked against the rules (skipped in events.ts/avail.ts/oil.ts).
+   The look says "passive, still readable": a mild fade — clearly quieter
+   than a live item, clearly livelier than cancelled (.cx sits at .55) — and
+   NO strikethrough, which is cancel's language. The chip is the mark's
+   read-only voice; the board's .mbtn.nfo button is its live voice. On the
+   week (and the peek) the chip rides in the REMARKS cell, floated left like
+   the late mark (owner, 1 Sep 26 — one column, out of the name); on the
+   read-only board it stays in the row's control column beside CX/flag, whose
+   remarks is a bare input with nowhere to nest a chip. A cancelled info item
+   keeps the cx fade. */
+.sb-arow.fyi,.ah-row.fyi,.pl-row.fyi{opacity:.75}
+.sb-arow.fyi.cx,.ah-row.fyi.cx,.pl-row.fyi.cx{opacity:.55}
+.fyitag{display:inline-block;vertical-align:middle;font-size:11px;font-weight:700;line-height:1.3;
+  color:var(--accent);margin-right:4px;text-decoration:none;white-space:nowrap;flex:none}
+.mbtn.nfo{font-size:11px;line-height:1;padding-top:2px;padding-bottom:2px}
+.mbtn.nfo.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+/* ---- LATE INPUT (owner, 9 Aug 26) --------------------------------------
+   An input last changed after the week's deadline. Same shape as .flagtag so
+   the two read as one family, but AMBER: it is an advisory about paperwork,
+   not a flying fault, and it sits in rows that may also carry a red CX badge
+   or a crew-rest ring it must not shout over. The badge itself never wraps,
+   and the full sentence lives in the title tooltip rather than in the badge,
+   so it stays one short token wherever it lands. It rides in the REMARKS cell
+   on every surface (owner, 9 Aug 26) — which does wrap, so on the week it can
+   cost a long remark one extra line; see .rmk.has-late above for the numbers
+   and why a float is the cheapest way to carry it. */
+.latetag{display:inline-block;vertical-align:middle;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  font-size:8.5px;font-weight:800;letter-spacing:.08em;color:#1B1305;background:var(--adv);
+  border-radius:3px;padding:0 4px;margin-right:4px;text-decoration:none;white-space:nowrap;flex:none}
+/* the SANS availability badge — same prefix idiom as .latetag just above
+   (nested ahead of the remarks text, or beside the puck where remarks is a
+   bare input — see inpRmkCell/sbInpRow), same SANS purple the rest of the
+   app already uses for this crew group (--san). */
+.sansb{display:inline-block;vertical-align:middle;font-family:'JetBrains Mono',monospace;
+  font-size:8.5px;font-weight:600;color:var(--san);white-space:nowrap;margin-right:4px}
+/* the board's promoted ground row cannot take a chip without adding an eighth
+   grid item to a seven-track template (see lateRowCls in ui/html.ts), so it
+   wears an inset amber edge instead — the .redbox idiom, no node, no track. */
+.sb-arow.lateinp{box-shadow:inset 3px 0 0 var(--adv)}
+/* D49's MARK ON THE LINE (owner, 22 Sep 26; the walk's rules-sweep FAIL 3): the
+   take-off and landing boxes of a line typed with the SAME time for both. The
+   line still earns — that is the ruling — so this is the advisory colour and an
+   EDGE, never a refusal: it says one of the two numbers must be wrong and leaves
+   the scheduler to say which. The .redbox idiom again (an inset shadow, no node,
+   no grid track), so it costs nothing on a row whose columns are already counted
+   to the pixel on a phone. Both surfaces wear it: the week's cell is a div, the
+   board's box is the typed input itself. */
+.badtm{box-shadow:inset 0 0 0 1px var(--adv);border-radius:4px}
+input.tm.badtm{border-color:var(--adv)}
+/* and when the warning in the list is the one being read, the box it names
+   lights — the same `wfoc`/`advf` vocabulary a clicked warning uses on a puck,
+   because it is the same gesture. Without it a tap on a line already on screen
+   had nothing to show: the scroll had nowhere to go. Stronger than the resting
+   mark and in the same colour, so it reads as "this one" rather than as a
+   different kind of problem. */
+.badtm.wfoc{box-shadow:inset 0 0 0 2px var(--hard),0 0 10px rgba(240,85,95,.45)}
+.badtm.wfoc.advf{box-shadow:inset 0 0 0 2px var(--adv),0 0 10px rgba(229,168,59,.45)}
+/* THE CLICKABLE LATE CHIP on a live board input row (owner, 21 Aug 26). It
+   rides the ITEM cell beside the type label, wrapped in `.itemcell` so it does
+   not add an eighth c6r grid track (see lateChip in board-html.ts). Solid amber
+   = the mark is showing; `.off` = the scheduler has dropped it, drawn as a dim
+   hollow ghost that keeps the exact same footprint so the spot stays tappable
+   to bring it back. Borrows `.latetag`'s amber and metrics; a real button, so
+   it gets a tap target and answers a press. */
+.itemcell{display:flex;align-items:center;gap:5px;min-width:0}
+.itemcell>.sbi-ty{min-width:0}
+.latechip{flex:none;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;
+  font-weight:800;letter-spacing:.08em;line-height:1;color:#1B1305;background:var(--adv);
+  border:1px solid var(--adv);border-radius:3px;padding:2px 5px;cursor:pointer;white-space:nowrap;
+  text-transform:uppercase}
+.latechip:hover{filter:brightness(1.08)}
+.latechip:active{transform:translateY(1px)}
+.latechip.off{color:var(--adv);background:transparent;opacity:.6}
+.latechip.off:hover{opacity:.9}
+
+/* ---- ALL AVAIL puck ----------------------------------------------------
+   A sentinel body, not a person: it says "whoever is free covers this". Styled
+   apart from every crew puck so nobody mistakes it for a callsign, but it is
+   the same canonical puck size as every other puck in the app. */
+.puck.allavail{background:repeating-linear-gradient(135deg,rgba(87,201,122,.30) 0 6px,rgba(59,198,232,.26) 6px 12px);
+  border-color:var(--ok);color:#DFF6E7}
+.puck.allavail .nm{font-family:'Barlow Condensed','Inter Tight',sans-serif;letter-spacing:.04em;
+  font-weight:800;font-size:10px;justify-content:center;padding:0 2px}
+.puck.allavail .role{display:none}
+.puck.allavail::after{display:none}
+.rall{display:flex;flex-direction:column;gap:4px;margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid var(--edge)}
+.rall .rh2{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
+  letter-spacing:.07em;font-size:9px;font-weight:700;color:var(--ok)}
+.rall .rpuck{cursor:grab}
+/* SANS Availability — one full-width band replacing the old per-column
+   sub-bands (owner, 14 Aug 26). Header wears the same purple the app already
+   reads as "SANS" (--san, e.g. .sanscard-l, .puck.san) — that accent used to
+   live on the removed .rh.sans rules, reused here rather than left dead. */
+.rall.rsans .rh2{color:var(--san)}
+/* PERSONNEL as a full-width band (owner swap, 24 Aug 26) — ground crew left the
+   narrow seat-column grid for their own band under SANS Avail. .rall is a
+   column (header on top), so the pucks live in their own row-wrapping strip
+   below the header instead of stacking one-per-line down a puck-wide column. */
+.rall.rpers .rpers-pucks{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-start}
+.rsans-row{display:flex;align-items:center;gap:6px}
+/* a SIBLING of .rpuck, never nested inside it — nesting the badge into the
+   puck's own flex column re-triggers the 74×74 flex-basis trap a struck
+   .rpuck.no.haswhy entry already fell into once (scheduler.css, see that
+   rule's own comment): the badge would compete for the puck's own basis
+   instead of sitting beside it. */
+.rsans-b{font-size:8.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+/* the record's remarks (owner, 14 Aug 26) — same sibling-of-.rpuck shape and
+   same clipped, muted look as .rsans-b beside it; min-width:0 is required for
+   the ellipsis to actually clip inside a flex row rather than pushing it wide. */
+.rsans-r{font-size:8.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 auto}
+
+/* ---- SANS AVAILABILITY CARD GRID (owner rework, 14 Aug 26) ---------------
+   Shared by the week's SANS group (.sec-sans, ui/html.ts's sansSectionHTML)
+   and the board's SANS panel (.sb-panel.sansav, board-html.ts's sbSansPanel)
+   — sansCardsHTML is the one builder behind both, so this is the one place
+   their geometry is set. Sized so a 390px phone still shows two cards to a
+   row and a wider surface at least three (owner spec: 26 SANS in 2–3 rows of
+   CARDS, not 26 full-width rows) — auto-fill does the counting; the minmax
+   floor below is the only number that decides it. */
+.sanscards{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:6px;padding:6px}
+.sanscard{display:flex;flex-direction:column;gap:3px;min-width:0;padding:6px 8px;
+  border:1px solid var(--edge);border-radius:8px;background:var(--panel);
+  text-align:left;font:inherit;color:inherit}
+button.sanscard{appearance:none;cursor:pointer}
+button.sanscard:hover{border-color:var(--accent)}
+/* the puck lives in its OWN row-direction flex span, never as a direct child
+   of .sanscard's own column flex — a puck whose direct parent runs
+   column-wise reads its `flex:0 0 var(--puck-w)` as a HEIGHT, the same
+   74×74 trap `.rpuck.no.haswhy .puck`'s own comment above explains in full. */
+.sanscard-top{display:flex;align-items:center;gap:6px}
+.sanscard-l{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
+  color:var(--san);white-space:nowrap}
+.sanscard-t{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--ink-3)}
+/* the remark WRAPS and the card grows (owner, 26 Aug 26 — "remarks are cut
+   off for sans availability. Could u wrap text and let the text grow
+   vertical in terms of row/space. Apply this to scheduler board as well"):
+   it launched nowrap+ellipsis like a table cell, but a card is not a row —
+   its grid column is fixed and its height is free, so the full remark is
+   cheaper shown than hovered. One rule serves both surfaces: the board's
+   SANS panel renders the same sansCardsHTML cards (board-html.ts).
+   overflow-wrap:anywhere so an unspaced string still breaks instead of
+   widening the column. */
+.sanscard-r{font-size:9.5px;line-height:1.35;color:var(--ink-2);white-space:normal;
+  overflow-wrap:anywhere;min-width:0}
+
+/* ---- block notes (sims / any section) ---------------------------------- */
+.blknote-h{display:flex;align-items:center;gap:7px;margin:8px 6px 3px;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.08em;
+  font-size:9px;font-weight:700;color:var(--ink-3)}
+.blknote-h::after{content:'';flex:1;height:1px;background:var(--edge)}
+.blknote{margin:0 6px 4px;padding:5px 8px;border:1px solid var(--edge);border-radius:7px;
+  font-size:11px;line-height:1.45;color:#F2D699;background:rgba(229,194,74,.06);
+  white-space:pre-wrap;min-height:15px}
+.blknote.ed{border-style:dashed;border-color:var(--edge-2);cursor:text}
+.blknote.ed:hover{border-color:rgba(59,198,232,.55);background:rgba(59,198,232,.07)}
+.blknote.ed:focus{outline:none;border-color:var(--accent);background:rgba(59,198,232,.10);color:var(--ink)}
+.blknote:empty::before{content:'No notes yet.';color:var(--ink-3);font-style:italic}
+/* the show-on-view-only toggle riding a scheduler-note header (owner, Aug 26).
+   margin-left:auto parks it at the right of the header row; the .blknote-h ::after
+   divider only draws when there is no button, so a header reads either
+   "SCHEDULER NOTES ————" or "PUBLIC NOTES        [On view-only]". */
+.notepub{margin-left:auto;flex:none;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  text-transform:uppercase;letter-spacing:.05em;font-size:8.5px;font-weight:700;
+  padding:3px 8px;border-radius:999px;border:1px solid var(--edge-2);
+  background:transparent;color:var(--ink-3);cursor:pointer;white-space:nowrap;line-height:1.35}
+.notepub:hover{border-color:rgba(59,198,232,.55);color:var(--ink-2)}
+.notepub.on{border-color:rgba(59,198,232,.55);background:rgba(59,198,232,.12);color:var(--accent)}
+/* the Personal Inputs housekeeping reminder (owner, Aug 26), on the board panel
+   and the edit-week group */
+.sb-pinote,.pl-inpnote{font-size:10.5px;color:var(--ink-3);font-style:italic;
+  padding:1px 8px 5px;letter-spacing:.01em}
+

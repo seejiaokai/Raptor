@@ -1,3 +1,4 @@
+import { parseReportingLines, resolveReporting, flightBrief, type ReportingLine } from './reporting'
 import { DAYS } from './data'
 import { INPUTS, inputsOn, inputOn, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, isDownchit, isUpchit } from './inputs'
 import { fileAcc, filingActive } from './world'
@@ -198,86 +199,13 @@ function standaloneHits(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly
       hits.push({label,role:'DUTY',what:label,s:w2[0],e:w2[1],key:k});});});
   return hits;
 }
-/* The time WRITTEN in an in-time line (owner, 21 Aug 26 — "can u accept any
-   form of combination"): 0900 · 09:00 · 0900H · 09:00H · 0900L · 09:00L, any
-   case on the suffix. The FIRST token that reads as a real clock time wins;
-   a token glued to letters (FL240, R15W) never matches, and out-of-range
-   digits (2590) are skipped rather than misread. Shared by intimeMap and
-   waveInTime so the report time and the wave windows can never read one line
-   two ways. */
-export function intimeTime(s:any){
-  const re=/(?:^|[^A-Za-z0-9])(?:(\d{1,2}):(\d{2})|(\d{3,4}))\s*[HL]?(?![A-Za-z0-9])/gi;
-  let m:any;
-  while((m=re.exec(String(s||'')))){
-    const h=m[1]!=null?+m[1]:+m[3].slice(0,m[3].length-2);
-    const mi=m[1]!=null?+m[2]:+m[3].slice(-2);
-    if(h<24&&mi<60)return h*60+mi;
-  }
-  return null;
-}
-/* THE SAME grammar, folding instead of reading (owner, 30 Aug 26 — every time
-   reads 08:00, and a hand-typed line auto-gains the colon). Rewrites each token
-   the reader above would accept into hh:mm, keeping any H/L suffix ("0900H" →
-   "09:00H") and every other word exactly as typed; a token the reader skips
-   (2590, FL240) is left alone, so the fold can never change what the line MEANS
-   — the two must share one grammar or a fold could create/destroy a report
-   time. Applied only where an edited line COMMITS (textedit.ts) and where the
-   "+ In time" button mints one (interactions.ts) — never to stored lines at
-   render, so the seed week's model text stays byte-identical for parity. */
-export function intimeFold(s:any){
-  return String(s==null?'':s).replace(
-    /(^|[^A-Za-z0-9])(?:(\d{1,2}):(\d{2})|(\d{3,4}))(\s*[HLhl]?)(?![A-Za-z0-9])/g,
-    (all,lead,ch,cm,d4,suf)=>{
-      const h=ch!=null?+ch:+d4.slice(0,d4.length-2);
-      const mi=ch!=null?+cm:+d4.slice(-2);
-      if(!(h<24&&mi<60))return all;
-      return lead+String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0')+suf;
-    });
-}
-/* WHICH formations a line's time applies to (owner, 21 Aug 26): a line that
-   names one of THIS WAVE's formation callsigns is that formation's in-time;
-   a line naming none is the WHOLE WAVE's, standing in for every formation
-   that has no line of its own (a specific line always beats a wide one,
-   whatever order they were typed). The callsign match is against the wave's
-   OWN formations — never a fixed phrase — so "0900H: RU IN TIME",
-   "RU 0900" and "0900 RU show" all reach the RU line, and a bare
-   "0900H: IN TIME + WX/NOTAMS" reaches everyone. The reference's stricter
-   "<CS> IN TIME" grammar reads every SEED line identically (each seed line
-   names its formation), so parity is untouched where data exercises it. */
-export function intimeMap(w:any){
-  const m:any={}; let wide:any=null;
-  const rx=(cs:any)=>new RegExp(`(^|[^A-Za-z0-9])${String(cs).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}([^A-Za-z0-9]|$)`,'i');
-  /* keyed by the formation's cs AS TYPED (events.ts looks up im[f.cs]);
-     the match itself trims and ignores case */
-  const css=(w.formations||[]).map((f:any)=>String(f.cs==null?'':f.cs)).filter((c:any)=>c.trim());
-  (w.intimes||[]).forEach((line:any)=>{
-    const t=intimeTime(line); if(t==null)return;
-    const hits=css.filter((cs:any)=>rx(cs.trim()).test(String(line)));
-    if(hits.length)hits.forEach((cs:any)=>m[cs]=t);
-    else if(wide==null||t<wide)wide=t;                 // several wide lines: the earliest is the show
-  });
-  if(wide!=null)css.forEach((cs:any)=>{ if(m[cs]==null)m[cs]=wide; });
-  return m;
-}
-/* THE SEAT'S OWN IN-TIME — one body, two callers (owner, 26 Aug 26: "SANS
-   should consider IN TIME till land plus 30 minutes for availability").
-   collectEvents feeds this into every fly event's `intime`, and slotRules
-   (avail.ts) asks it for the SANS window's front edge, so the two readings
-   of "when is this crew told to report" cannot drift — the second copy
-   would be exactly the seam the one-gate doctrine exists to prevent.
-   A typed SC B outranks the wave's published in-time lines (the 24 Aug 26
-   repurposing; AVALON/BB never carry kind 'sc', so that equality is the
-   whole guard), and either clock rolls back a day when the configured
-   report lead already crosses midnight — the same limited roll
-   collectEvents' preflight applies to a typed B. `im` is the wave's parsed
-   in-time map when the caller already holds one (collectEvents builds it
-   once per wave); left out, it is derived here. */
-export function seatIntime(w:any,f:any,toM:any,im?:any){
-  const pre=(t:any)=>t!=null&&toM-VCONF.reportLead<0&&t>toM?t-1440:t;
+/* D503: flight reporting resolves against each formation's take-off; SC's
+   existing typed-B priority and bounded shift-date rule remain separate. */
+export { intimeTime, intimeFold } from './reporting'
+export function seatIntime(w:any,f:any,toM:any,parsed?:ReportingLine[]){
   const scIn=(w&&w.kind==='sc')?parseHM(f.br):null;
-  if(scIn!=null)return pre(scIn);
-  const m=im||intimeMap(w);
-  return m[f.cs]!=null?pre(m[f.cs]):null;
+  if(scIn!=null)return toM-VCONF.reportLead<0&&scIn>toM?scIn-1440:scIn;
+  return resolveReporting(w,f,toM,parsed).report;
 }
 /* "BRIEF 30 PRIOR", "brief 30", "30 mins prior" — an OFT remark that names its
    own brief lead overrides VCONF.epBrief for that line only (owner, 5 Aug 26);
@@ -309,7 +237,7 @@ export const lateShowOf=(rmks:any)=>/\b(?:late\s*show|show\s*(?:at|@)\s*brief|br
 export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
     const fly:any[]=[],forms:any[]=[],events:any[]=[],simcrew:any[]=[],sacrew:any[]=[];
     (d.waves||[]).forEach((w:any,gi:any)=>{
-      const im=intimeMap(w);
+      const im=parseReportingLines(w);
       w.formations.forEach((f:any,li:any)=>{
         if(f.cx)return;                                        // cancelled line — nothing to check
         if(saExempt(w,f,null)){                                // AVALON / BB — outside the conflict engine
@@ -353,18 +281,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
            nobody has confirmed never goes silently unchecked. A standalone
            wave is a shift, not a sortie: it briefs nothing, and a value typed
            on one stays inert because every consumer gates on shift first. */
-        /* A clock printed before a small-hours T/O belongs to the PREVIOUS
-           evening. Blank briefs already went negative through subtraction,
-           but typed B and published in-times stayed at +22:10 / +21:30 and
-           were therefore read as nearly a day AFTER a 00:30 launch. Roll any
-           stated pre-flight clock later than T/O back one day, the same
-           timeline the default brief already uses. The roll is limited to a
-           T/O whose configured brief/report lead already crosses midnight;
-           a later clock typed against an ordinary daytime sortie remains a
-           visible bad time rather than silently becoming nearly 24h early. */
-        const preflight=(t:any,lead:any)=>t!=null&&toM-lead<0&&t>toM?t-1440:t;
-        const brTyped=shiftLine?null:parseHM(f.br);
-        const briefM=shiftLine?null:(brTyped!=null?preflight(brTyped,VCONF.briefLead):toM-VCONF.briefLead);
+        /* Typed B retains the existing briefLead-bounded small-hours roll.
+           D503 broadens only ordinary flight IN/RALLY: a reporting clock
+           later than its own take-off belongs to the immediately prior day.
+           Keep both interpretations shared with the pure chronology check. */
+        const briefM=shiftLine?null:flightBrief(f,toM);
         const stepM=shiftLine?toM:toM-VCONF.step;               // sortie: step 1h pre-T/O
         const dekitM=shiftLine?ldM:ldM+VCONF.dekit;             // sortie: land + 30m dekit
         /* intime is the in-time the wave actually PUBLISHED (null when none is
@@ -579,7 +500,18 @@ export function collectEvents(){
 /* earliest IN-TIME of a wave (from the wave's in-time lines; fallback = earliest TO) */
 export function waveInTime(w:any){
   let best:any=null;
-  (w.intimes||[]).forEach((s:any)=>{const t=intimeTime(s); if(t!=null&&(best==null||t<best))best=t;});
+  const parsed=parseReportingLines(w);
+  (w.formations||[]).forEach((f:any)=>{
+    if(f.cx)return;
+    /* W5 (5 Oct 26): a formation with no take-off yet still reads its reporting line — with no take-off the clock
+       stays on its own day, exactly as buildDay's seatIntime reads it — so the header, the Available-crew band and
+       the day's checks never give two readings of one line. */
+    const to=parseHM(f.to);
+    const t=resolveReporting(w,f,to==null?NaN:to,parsed).report;
+    if(t!=null&&(best==null||t<best))best=t;
+  });
+  /* lines, but no formation left to read them (none yet, or every one cancelled): the earliest typed clock, as before D497 */
+  if(best==null&&!(w.formations||[]).some((f:any)=>!f.cx))parsed.forEach(p=>{if(p.clock!=null&&(best==null||p.clock<best))best=p.clock;});
   if(best==null)(w.formations||[]).forEach((f:any)=>{const to=parseHM(f.to); if(to!=null&&(best==null||to<best))best=to;});
   return best;
 }
@@ -589,5 +521,9 @@ export function waveInTime(w:any){
 export function waveWindows(d:any){
   const ws=(d.waves||[]).map((w:any)=>({label:w.label,night:!!w.night,in:waveInTime(w)})).filter((w:any)=>w.in!=null)
           .sort((a:any,b:any)=>a.in-b.in);
-  return ws.map((w:any,i:any)=>({label:w.label,night:w.night,in:w.in,s:(i===0?0:w.in),e:(i<ws.length-1?ws[i+1].in:1440)}));
+  return ws.map((w:any,i:any)=>{
+    const start=i===0?0:w.in, end=i<ws.length-1?ws[i+1].in:1440;
+    return {label:w.label,night:w.night,in:w.in,s:Math.max(0,start),e:Math.max(0,end),
+      ...(end<0||w.in<0&&end<=0?{priorEmpty:true}:{})};
+  });
 }

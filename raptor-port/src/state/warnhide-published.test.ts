@@ -54,6 +54,7 @@ import { nextMondayHides } from '../engine/weekctx'
 import { elogWho } from '../engine/editlog'
 import { ensureRowIds } from '../engine/rowids'
 
+
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
 const DSNAP = JSON.stringify(DAYS)
@@ -470,6 +471,7 @@ describe("the marks that cross the week's edge follow next Monday's own hide (As
 
   it('WH12 — when next Monday is PUBLISHED, a hide made there since waits for its amendment here too (D471)', async () => {
     await boot(new MemoryBackend())
+    loadWeek(W2); loadWeek(W1) // valid new-week publication setup before the tested Sunday edit
     schedWrite(SCHED_TYPES.mutate, () => { (DAYS[SUN] as any).dutywaves[0].rows.push({ role: 'Duty', id: 'bane', str: '1300', end: '2300' }); view.afterSchedMutate() })
     loadWeek(W2)
     publish(MON)                                   // goes out with the breach flagged

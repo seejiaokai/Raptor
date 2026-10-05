@@ -8,6 +8,11 @@
    assigns real implementations.
    --------------------------------------------------------------------------- */
 export const HOOKS = {
+  captureMissionRoleSeeds: (_di:number,_blob:unknown): unknown => undefined,
+  applyMissionRoleSeeds: (_di:number,_seeds:unknown): void => {},
+  /* Insights-only annotations stay outside every signed day/snapshot. A read-only lookup is acquired once per pass. */
+  missionRoleEnabled: (): boolean => false,
+  missionRoleReader: (): ((week: string, date: string, rid: string, context: string) => unknown) => () => undefined,
   toast: (..._a: any[]): any => undefined,
   /* ONE PRESS, ONE MESSAGE ([AMEND-SMALL-SEEN] 1, 28 Sep 26): run `fn`, and every toast raised inside it is said as ONE
      line, in order, when it returns (ui/toast.ts toastBatch). The toast is a single element whose text is replaced, so a

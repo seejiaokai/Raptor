@@ -1,5 +1,7 @@
 # RAPTOR — 142 Flying Programme (React app)
 
+**D496 temporary Codex model mapping (2 Oct 26):** until Monday 5 Oct 26, 19:00, Astra plans/coordinates, Sol 6.1 challenges plans and builds/fixes, and a fresh Astra inspector reads Sol code. This narrows the model/count mapping below only; Claude's further read remains owed before main. Exact roles: `docs/codex-review-workflow.md`.
+
 A flying-schedule planner for a fighter squadron: a week of flying waves,
 duty crews, sims, ground events and personal inputs, with a validation
 engine that flags crew-rest breaches, double bookings, missing briefs and
@@ -24,7 +26,8 @@ load in every chat. Map: §Where things live, at the end.
 **Reach 95% confidence before building.** If the request could reasonably
 mean two different things, or a choice would materially change the result,
 ask follow-up questions until it wouldn't. Small, unambiguous asks clear
-that bar on their own — don't manufacture questions for them.
+that bar on their own — don't manufacture questions for them. During an unattended run (D596): leave only the work
+that needs his choice undone, park the choice in the run's one list, carry on with the rest — never guess his answer.
 
 **STANDING ORDER — weigh the whole ecosystem** (owner, 28 Aug 26): on every feature change, before building and before done, reason how it lands across the app (`docs/feature-impact.md`); tell him the ripples, risks and assumptions, ask where a question is genuinely his — the technical how stays yours; in doubt, a one-line heads-up with your call · full text: docs/guide-full.md §Weigh the whole ecosystem
 
@@ -40,9 +43,9 @@ that bar on their own — don't manufacture questions for them.
 
 - **The owner is non-technical** (6–10 Aug 26): what he reads is plain, complete and short — no raw output, what it means for him first, the app's own names; vocabulary, not depth — never hide a limitation; technical decisions are yours to make and explain, product direction stays his (`../.claude/rules/plain-language.md`, every session) · full text: docs/guide-full.md §The owner is non-technical
 - **Shipping — tell him when you are DONE, ship ONCE per session, NO AUTO-MERGE** (10 Aug – 2 Sep 26) — the live rules, with "done" now meaning live on Vercel (D143), are `../.claude/rules/shipping.md` (loaded in every chat); this Pages-era wording moved 24 Sep 26, whole, to `docs/archive/raptor-claude-md-2026-09-24.md`.
-- **MODELS — D67 (23 Sep 26): Opus 5.5 PLANS and BUILDS; Fable 5.1 and Astra REVIEW plan and code, never the model that wrote it (both on money, published records, permissions, persistence); when ASTRA builds, Opus 5.5 reviews; a bug Opus 5.5 cannot crack goes to Fable 5.1.** The 7 Sep text below is history; the 17 Sep 26 no-cheaper-model rule stands · full text: docs/guide-full.md §Models
+- **MODELS — D67, D590: Opus 5.5 PLANS and BUILDS; Astra REVIEWS it, Sol 6.1 second where two readers are required (earned leave, published records, permissions, saved data, an important plan, a changed guide); Fable 5.1 on call only; what CODEX plans or builds, Opus 5.5 reviews; never the writer.** Sonnet 5.5 only for D588's jobs, no haiku · full text: docs/guide-full.md §Models
 - **Always hand him the Vercel preview link** (24 Aug 26) — now in `../.claude/rules/shipping.md`; this wording, with its superseded auto-merge clause, moved 24 Sep 26, whole, to `docs/archive/raptor-claude-md-2026-09-24.md`.
-- **Delegate frugally, by judgment:** the main session plans, reviews diffs and runs the gates; no haiku or sonnet (17 Sep 26) — a subagent inherits Opus, takes read-only sweeps, and the implementation never leaves the main session; a delegate gets a precise spec and returns diffs and conclusions, never file dumps · full text: docs/guide-full.md §Delegate frugally
+- **Delegate frugally, by judgment:** the main session plans, builds and reviews diffs; Sonnet 5.5 helpers walk the app, run the checks, do document chores and build D588's ONE trial fix (read by Opus), never read code for bugs; other helpers inherit Opus; no haiku; a delegate gets a precise spec and returns diffs and conclusions, never file dumps · full text: docs/guide-full.md §Delegate frugally
 - **Token discipline:** send a long run to a file, keep its exit code, read the file; never read `reference/` or any file over ~300 lines whole — grep it or read a slice; while iterating run only the affected test file, the full gate set ONCE before the PR; prefer a fresh session per task · full text: docs/guide-full.md §Token discipline
 
 **The rules-engine robustness doctrine** (owner, 21 Aug 26): an engine change is ~95% sure to break nothing, tested and walked EVERY time through his five gotcha families — people not following the format, missing input, user errors, deletions and edits from another page, sync between copies; prefer a `VCONF` + `RULE_SPEC` setting to a fixed number · full text: docs/guide-full.md §The rules-engine robustness doctrine

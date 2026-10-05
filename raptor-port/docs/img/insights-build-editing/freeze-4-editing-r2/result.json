@@ -1,0 +1,195 @@
+{
+  "base": "http://localhost:4199",
+  "results": [
+    {
+      "id": "desktop-S27-Off",
+      "status": "PASS",
+      "facts": "real default-Off setting and edit gate"
+    },
+    {
+      "id": "desktop-R1-dirty-Board",
+      "status": "PASS",
+      "facts": "Choose, Change, already-open question, Later, cue removal and exact DS all commit through the real editor before a fresh role target; identical node/selection and separate command order"
+    },
+    {
+      "id": "desktop-S01-S03-S07",
+      "status": "PASS",
+      "facts": "exact/cue boundaries operated via native Mission and Remarks fields"
+    },
+    {
+      "id": "desktop-S08-S11-S12",
+      "status": "PASS",
+      "facts": "text persisted first, Later saves no answer, unchanged Tab never reopens, manual Choose and Change survive pointer blur"
+    },
+    {
+      "id": "desktop-S09-S22-S23",
+      "status": "PASS",
+      "facts": "strict native node/selection preserved through Choose and answer, continued typing works; separate timing clause no question"
+    },
+    {
+      "id": "desktop-S06-S08-answered",
+      "status": "PASS",
+      "facts": "answered BFM Remarks then Mission ACM asks once; answered Red retained across // and ; separate timing edits without annotation/history write"
+    },
+    {
+      "id": "desktop-S24-S29-S30",
+      "status": "PASS",
+      "facts": "real Board opener, topmost modal, twelve/all/reopen, short window and keyboard-height scroll reachability"
+    },
+    {
+      "id": "desktop-S25-S27-S31",
+      "status": "PASS",
+      "facts": {
+        "before": 40,
+        "afterEdits": 48,
+        "cpuRate": 4,
+        "board": 1112,
+        "week": 6753,
+        "offers": 0,
+        "offNodes": {
+          "board": 1112,
+          "week": 6753
+        },
+        "budgetScope": "separate long stress fixture, bounded On/Off growth; recorded demo ceiling enforced by npm perf"
+      }
+    },
+    {
+      "id": "desktop-S10-structural",
+      "status": "PASS",
+      "facts": "add a distinct-cue aircraft then remove it through the actual structural door: remaining single context asks once"
+    },
+    {
+      "id": "desktop-week-editor",
+      "status": "PASS",
+      "facts": "contenteditable route also saves text and answers through actual controls"
+    },
+    {
+      "id": "desktop-week-S06-S22-S23",
+      "status": "PASS",
+      "facts": "both house separators preserve answered role in contenteditable; real keyboard Enter returns to identical node and exact selection"
+    },
+    {
+      "id": "desktop-R1-dirty-week",
+      "status": "PASS",
+      "facts": "Choose, Change, already-open question, Later, cue removal and exact DS all commit through the real editor before a fresh role target; identical node/selection and separate command order"
+    },
+    {
+      "id": "phone-S27-Off",
+      "status": "PASS",
+      "facts": "real default-Off setting and edit gate"
+    },
+    {
+      "id": "phone-R1-dirty-Board",
+      "status": "PASS",
+      "facts": "Choose, Change, already-open question, Later, cue removal and exact DS all commit through the real editor before a fresh role target; identical node/selection and separate command order"
+    },
+    {
+      "id": "phone-S01-S03-S07",
+      "status": "PASS",
+      "facts": "exact/cue boundaries operated via native Mission and Remarks fields"
+    },
+    {
+      "id": "phone-S08-S11-S12",
+      "status": "PASS",
+      "facts": "text persisted first, Later saves no answer, unchanged Tab never reopens, manual Choose and Change survive pointer blur"
+    },
+    {
+      "id": "phone-S09-S22-S23",
+      "status": "PASS",
+      "facts": "strict native node/selection preserved through Choose and answer, continued typing works; separate timing clause no question"
+    },
+    {
+      "id": "phone-S06-S08-answered",
+      "status": "PASS",
+      "facts": "answered BFM Remarks then Mission ACM asks once; answered Red retained across // and ; separate timing edits without annotation/history write"
+    },
+    {
+      "id": "phone-S24-S29-S30",
+      "status": "PASS",
+      "facts": "real Board opener, topmost modal, twelve/all/reopen, short window and keyboard-height scroll reachability"
+    },
+    {
+      "id": "phone-S25-S27-S31",
+      "status": "PASS",
+      "facts": {
+        "before": 40,
+        "afterEdits": 48,
+        "cpuRate": 4,
+        "board": 1112,
+        "week": 5631,
+        "offers": 0,
+        "offNodes": {
+          "board": 1112,
+          "week": 5631
+        },
+        "budgetScope": "separate long stress fixture, bounded On/Off growth; recorded demo ceiling enforced by npm perf"
+      }
+    },
+    {
+      "id": "phone-S10-structural",
+      "status": "PASS",
+      "facts": "add a distinct-cue aircraft then remove it through the actual structural door: remaining single context asks once"
+    },
+    {
+      "id": "phone-week-editor",
+      "status": "PASS",
+      "facts": "contenteditable route also saves text and answers through actual controls"
+    },
+    {
+      "id": "phone-week-S06-S22-S23",
+      "status": "PASS",
+      "facts": "both house separators preserve answered role in contenteditable; real keyboard Enter returns to identical node and exact selection"
+    },
+    {
+      "id": "phone-R1-dirty-week",
+      "status": "PASS",
+      "facts": "Choose, Change, already-open question, Later, cue removal and exact DS all commit through the real editor before a fresh role target; identical node/selection and separate command order"
+    }
+  ],
+  "pictures": [
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-logic-off.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-logic-on.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-Board-dirty-choose.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-Board-dirty-open-answer.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-Board-dirty-exact-DS.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-mission-question.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-remarks-question.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-change-action.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-insights-twelve.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-insights-all.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-height-700.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-height-700.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-everything-board.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-structural-question.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-week-question.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-week-answered.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-week-keyboard-selection.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-week-dirty-choose.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-week-dirty-open-answer.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/desktop-week-dirty-exact-DS.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-logic-off.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-logic-on.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-Board-dirty-choose.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-Board-dirty-open-answer.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-Board-dirty-exact-DS.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-mission-question.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-remarks-question.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-change-action.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-insights-twelve.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-insights-all.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-height-568.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-height-430.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-everything-board.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-structural-question.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-week-question.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-week-answered.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-week-keyboard-selection.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-week-dirty-choose.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-week-dirty-open-answer.png",
+    "docs/img/insights-build-editing/freeze-4-editing-r2/phone-week-dirty-exact-DS.png"
+  ],
+  "errors": [],
+  "limitations": [
+    "Chromium emulation, not physical iPhone/iOS keyboard."
+  ]
+}

@@ -108,7 +108,7 @@ export function availByWave(d:any){
     const away=aw.tw[id]||[];
     if(!eng.has(id)&&(!away.length||!wins.length)){anyWave.push(id);return;}
     const busy=personBusy(d,id).concat(away);
-    wins.forEach((w:any,i:any)=>{ if(!busy.some(([bs,be]:any)=>bs<w.e&&be>w.s))byWave[i].push(id); });
+    wins.forEach((w:any,i:any)=>{ if(!w.priorEmpty&&!busy.some(([bs,be]:any)=>bs<w.e&&be>w.s))byWave[i].push(id); });
   });
   byWave.forEach((a:any)=>a.sort(bySort)); anyWave.sort(bySort);
   return {wins,byWave,anyWave};

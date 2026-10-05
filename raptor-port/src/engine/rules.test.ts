@@ -1,13 +1,13 @@
 /* Ported from reference/tfin.js — the B50/B52 editable-rules group and the
    B53 #7 / #22 guards. DOM evals over the Logic page are re-expressed
    against the live engine objects wherever the contract is the engine's. */
-import { afterEach, describe, expect, it } from 'vitest'
-import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, ruleOff, kindOff, rulesOffCount, rulesLoad, rulesReset } from './rules'
+import { afterEach, describe, expect, it,vi } from 'vitest'
+import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse,ruleFmt,rulesSave,rulesResetMem, ruleOff, kindOff, rulesOffCount, rulesLoad, rulesReset } from './rules'
 import { RANK, CHIP_LABEL, wlbl } from './validate'
 import { validate } from './validate'
 import { store } from './hooks'
 
-afterEach(() => { rulesReset() })
+afterEach(() => { rulesReset();vi.restoreAllMocks() })
 
 describe('editable rules (tfin B52)', () => {
   it('the squadron standard is captured before anything can touch it', () => {
@@ -19,7 +19,7 @@ describe('editable rules (tfin B52)', () => {
   it('every editable setting is bounded and named', () => {
     const k = Object.keys(RULE_SPEC)
     expect(k.length).toBeGreaterThanOrEqual(14)
-    expect(k.every(x => RULE_SPEC[x].t && isFinite(RULE_SPEC[x].lo) && isFinite(RULE_SPEC[x].hi) && (x in VCONF))).toBe(true)
+    expect(k.every(x => RULE_SPEC[x].t && (RULE_SPEC[x].kind==='text'?RULE_SPEC[x].maxlen===60:isFinite(RULE_SPEC[x].lo) && isFinite(RULE_SPEC[x].hi)) && (x in VCONF))).toBe(true)
   })
 
   it('and every VCONF setting is editable — none is stranded', () => {
@@ -66,6 +66,24 @@ describe('editable rules (tfin B52)', () => {
 })
 
 describe('a stored override is untrusted input (tfin B53 #22)', () => {
+  it('review D2 normalizes text and keeps it in the existing rules record through save, load and reset',()=>{
+    let persisted:any=null;
+    vi.spyOn(store,'get').mockImplementation((k:any,d:any)=>k==='rules'?persisted:d);
+    vi.spyOn(store,'set').mockImplementation((k:any,v:any)=>{if(k==='rules')persisted=v;});
+    expect(VCONF.reportText).toBe('IN TIME + WX/NOTAMS');
+    expect(RULE_SPEC.reportText).toMatchObject({kind:'text',maxlen:60});
+    expect(ruleParse('reportText','  RALLY\r\n 13:00  ')).toBe('RALLY  13:00');
+    expect(ruleParse('reportText',' \r\n ')).toBe('IN TIME + WX/NOTAMS');
+    expect(ruleParse('reportText','a'.repeat(61))).toBe('a'.repeat(60));
+    const literal='<b>RALLY</b> "&';
+    expect(ruleFmt('reportText',literal)).toBe(literal);
+    VCONF.reportText=literal;VCONF.reportLead=120;rulesSave();
+    expect(store.get('rules',null)).toMatchObject({v:{reportText:literal,reportLead:120}});
+    rulesResetMem();rulesLoad();expect(VCONF.reportText).toBe(literal);expect(VCONF.reportLead).toBe(120);
+    store.set('rules',{v:{reportText:42,reportLead:'120'}});rulesResetMem();rulesLoad();
+    expect(VCONF.reportText).toBe('IN TIME + WX/NOTAMS');expect(VCONF.reportLead).toBe(180);
+    rulesReset();expect(store.get('rules',null)).toBeNull();
+  })
   it('a hand-edited string never reaches VCONF', () => {
     const was = VCONF.crewRest, wasB = VCONF.briefLead, g = store.get
     ;(store as any).get = (k: any, d: any) => k === 'rules' ? { v: { crewRest: '840', briefLead: 99999, dekit: 20 }, s: {} } : g(k, d)

@@ -1,0 +1,20 @@
+PASS everything-day
+PASS desktop-S27-Off
+PASS desktop-S01-S03-S07
+PASS desktop-S08-S11-S12
+PASS desktop-S09-S22-S23
+PASS desktop-S24-S29-S30
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert.ok(nodes.week<=5450)
+
+    at file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-editing.mjs:67:242
+    at async check (file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-editing.mjs:13:50)
+    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-editing.mjs:61:3 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}

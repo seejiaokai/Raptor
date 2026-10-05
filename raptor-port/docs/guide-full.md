@@ -1,5 +1,7 @@
 # The project guide — full text (D391, 28 Sep 26)
 
+**D496 temporary Codex model mapping (2 Oct 26):** until Monday 5 Oct 26, 19:00, Astra plans/coordinates, Sol 6.1 challenges plans and builds/fixes, and a fresh Astra inspector reads Sol code. This narrows the model/count mapping below only; Claude's further read remains owed before main. Exact roles: `codex-review-workflow.md`.
+
 **Never loaded by itself; searched, or read at the heading you need.** The project guide, `raptor-port/CLAUDE.md`,
 holds each of these rules as ONE line — its short form — ending `· full text: docs/guide-full.md §<heading>`; the text
 under that heading here is what stood in the guide until 28 Sep 26, moved whole, byte for byte, by
@@ -195,6 +197,13 @@ barely more than one.
 
 ### Models
 
+- **NARROWED 5 Oct 26 by D590 — who reviews what Opus writes:** Astra reviews it, and Sol 6.1 is the second reader where
+  two are required (the code reads on earned leave, published records, permissions or saved data; an important plan's red
+  team; a changed working guide). Fable 5.1 is on call only — a bug Opus 5.5 cannot crack, or a big open-ended plan, on his
+  word each time. Opus 5.5 still plans and builds, and still reviews what Codex plans or builds; the writer never reviews
+  its own work. On the first high-consequence change Opus wrote, Fable reads beside Astra and Sol, once, and the three
+  reads and Fable's cost go to him (`docs/bug-check-order.md` §4). Wherever the text below says "Fable and Astra review",
+  read it this way.
 - **MODELS — SUPERSEDED 23 Sep 26 by D67: Opus 5.5 PLANS and BUILDS; Fable 5.1 and Astra REVIEW the plan and the code, never the model that wrote it (both on money / published records / permissions / persistence); when ASTRA builds, Opus 5.5 reviews; a bug Opus 5.5 cannot crack escalates to Fable 5.1. The 7 Sep 26 text below is history.** (Was: MODELS (owner, 7 Sep 26) — heavy work runs on Opus 4.8; Fable 5.1 is
   budget-limited.** The owner prefers Opus 4.8 and Fable 5.1 for work ("they
   hallucinate less and are more correct"); he has plenty of Opus tokens and a
@@ -219,6 +228,10 @@ barely more than one.
   **One trial, 1 Oct 26 (D476): on the next walk ONE extra walker runs on Sonnet 5.5 beside the Opus ones, on the
   same scenarios, and the two are compared for him (`docs/bug-check-order.md` §4). Everything else in this rule
   stands until he rules on the result.**
+  **NARROWED 5 Oct 26 (D588): Sonnet 5.5 helpers walk the app, run the check set and do documents-only chores; they
+  never read code to find bugs, decide a finding, write the roll-call or a plan. ONE small low-risk fix is built by a
+  Sonnet helper as a trial, read by Opus — the only build that leaves the main session. Haiku stays closed; every
+  other part of this rule stands until he rules on the reports (`docs/bug-check-order.md` §4).**
 
 ### Delegate frugally
 
@@ -230,6 +243,9 @@ barely more than one.
   code-writing on sonnet — stands only if he later reopens cheaper helpers.
   *(1 Oct 26, D476: he has opened ONE trial — a Sonnet 5.5 walker beside the Opus ones on the next walk; nothing
   else moves until he rules on its result.)*
+  *(5 Oct 26, D588: he has reopened cheaper helpers in part — Sonnet 5.5 walks the app, runs the check set and does
+  documents-only chores, and builds ONE small low-risk fix as a trial, read by Opus. Reading code to find bugs,
+  every other build, and haiku stay as the 17 Sep 26 rule has them.)*
   Whoever is delegated to is handed a precise spec (files, expected
   shape, which tests to run) so it never explores. Agents return diffs
   and conclusions, never file dumps. Small precise work stays inline —

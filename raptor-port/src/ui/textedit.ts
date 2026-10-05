@@ -10,6 +10,7 @@ import { setInpField } from './inputedit'
 import { markEdit } from '../engine/publish'
 import { reconcileIssuedMarks } from '../engine/drafts'
 import { intimeFold } from '../engine/events'
+import { reportingIssuesForWave } from '../engine/reporting'
 import { storesText } from '../engine/stores'
 import { validate } from '../engine/validate'
 import { afterSchedMutate } from '../state/view'
@@ -18,6 +19,7 @@ import { notify } from '../state/store'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { canEditSched } from '../state/auth'
 import { fmtTxt, intimeLineHTML, areaText, atimeText } from './html'
+import { routeScheduleTab } from './schedule-tab'
 
 let SCRATCH: any = null
 function sameInner(el: any, want: any) {
@@ -37,12 +39,26 @@ function txtCommit() {
   setTimeout(() => {
     TXTQ = 0
     const a = document.activeElement as any
-    if (a && a.closest && (a.closest('[data-txt]') || a.isContentEditable)) return
+    if (editingText()) return
     afterSchedMutate()
   }, 0)
 }
 
 const heal = (el: any, want: any) => { if (el.children.length || el.textContent !== want) el.textContent = want }
+
+/* D502: preview the active text without writing a keystroke to history or
+   repainting the editable span. The ordinary blur/Enter path still commits. */
+export function routeReportingInput(e:Event){
+  if(!canEditSched())return;
+  const target=e.target as HTMLElement;
+  const line=target?.closest?.('[data-itline]') as HTMLElement|null;
+  if(!line)return;
+  const [di,gi,ix]=line.dataset.itline!.split('|').map(Number);
+  const w=DAYS[di]?.waves?.[gi], feedback=line.closest('.intimes')?.querySelector('[data-reporting-feedback]');
+  if(!w||!feedback)return;
+  const intimes=[...(w.intimes||[])];intimes[ix]=line.textContent||'';
+  feedback.textContent=reportingIssuesForWave({...w,intimes},gi).map(i=>i.msg).join(' ');
+}
 
 /* [ARCH-STACK] f/u#1 (F-05): a text mutation records SYNCHRONOUSLY through a
    sched.text command, reconciling issued marks INSIDE the command (as
@@ -68,6 +84,11 @@ export function routeFocusOut(e: FocusEvent) {
   const tx = t.closest('[data-txt]') as HTMLElement | null
   if (tx) {
     const p = tx.dataset.txt!
+    // Traversing an untouched clock must not rewrite a stored 0745 as 07:45.
+    // Use the existing display reader, like the in-time and derived-cell guards.
+    if (TIME_TXT.test(p) && fmtTxt(tx.textContent).trim() === fmtTxt(txtGet(p)).trim()) {
+      heal(tx, fmtTxt(txtGet(p))); return
+    }
     /* [ARCH-STACK] follow-up #1 (R2-04): route the text change SYNCHRONOUSLY
        through a sched.text command the moment focus leaves. The mutation (txtSet)
        already ran; the lagging baseline captures it in the command, so wrapping
@@ -116,6 +137,7 @@ export function routeFocusOut(e: FocusEvent) {
   const il = t.closest('[data-itline]') as HTMLElement | null
   if (il) {
     const [di, gi, ixs] = il.dataset.itline!.split('|'); const ix = +ixs!
+    const feedback = il.closest('.intimes')?.querySelector('[data-reporting-feedback]')
     const w = DAYS[+di!].waves[+gi!]
     const lines = w.intimes || []
     if (lines[ix] == null) return              // deleted or undone from under the caret
@@ -132,8 +154,16 @@ export function routeFocusOut(e: FocusEvent) {
       w.intimes = lines.filter((_: any, i: number) => i !== ix)
       commitText(`it:${di}.${gi}`, () => markEdit(`it:${di}.${gi}`, itWas, w.intimes.join(', ')))
       const btn = il.nextElementSibling
+      const block = il.parentElement
       if (btn && (btn as HTMLElement).matches && (btn as HTMLElement).matches('[data-itdel]')) btn.remove()
       il.remove()
+      // The surviving live lines can be edited before the deferred repaint.
+      block?.querySelectorAll<HTMLElement>('[data-itline]').forEach((line, index) => {
+        line.dataset.itline = `${di}|${gi}|${index}`
+        const del = line.nextElementSibling as HTMLElement | null
+        if (del?.matches('[data-itdel]')) del.dataset.itdel = `${di}|${gi}|${index}`
+      })
+      if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).map(i=>i.msg).join(' ')
       txtCommit()
       return
     }
@@ -149,6 +179,8 @@ export function routeFocusOut(e: FocusEvent) {
       txtCommit()
     }
     const want = intimeLineHTML(nv); if (!sameInner(il, want)) il.innerHTML = want
+    // Escape/no-op blur must also discard any unsaved preview diagnostic.
+    if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).map(i=>i.msg).join(' ')
     return
   }
   /* the typed stores text ("bombs…") — opts.bombs lives outside the txt-key
@@ -226,7 +258,54 @@ export function routeFocusOut(e: FocusEvent) {
   }
 }
 
+function refreshTextDestination(el: HTMLElement) {
+  const d = el.dataset
+  let value: any
+  const key = d.txt || d.bfld
+  if (key) {
+    value = txtGet(key)
+    if (TIME_TXT.test(key)) value = fmtTxt(value)
+  } else if (d.inp || d.ifld) {
+    const [id, field] = (d.inp || d.ifld)!.split('.')
+    const inp = inpById(id)
+    if (!inp) return
+    value = field === 'rmks' ? inp.remarks || '' : inpTimeText(inp, field)
+  } else if (d.itline) {
+    const [di, gi, ix] = d.itline.split('|').map(Number)
+    value = DAYS[di]?.waves?.[gi]?.intimes?.[ix]
+    /* only when it differs: a rewrite moves the caret, and a click's own caret must stay where he put it */
+    const want = intimeLineHTML(value == null ? '' : value)
+    if (!sameInner(el, want)) el.innerHTML = want
+    return
+  } else {
+    const address = d.bombs || d.area || d.atime
+    if (!address) return
+    const [di, gi, li, ai] = address.split('.').map(Number)
+    const f = DAYS[di]?.waves?.[gi]?.formations?.[li]
+    if (!f) return
+    value = d.bombs ? f.aircraft[ai]?.opts?.bombs || '' : d.area ? areaText(f) : atimeText(f)
+  }
+  const text = String(value == null ? '' : value)
+  if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) { if (el.value !== text) el.value = text }
+  else heal(el, text)
+}
+
+/* EVERY ARRIVAL IN A TEXT BOX BRINGS IT UP TO DATE — BY A CLICK TOO (the Tab-route reader's second pass, 6 Oct 26; the
+   first pass's lead 1, by the route the walk did not take). The Tab route refreshed the box it landed in; a click did
+   not. After a take-off saved by Tab the formation's block is held for the caret, so its Area-time cell still showed
+   the OLD derived window — and a click into it and away stored that as a typed override: the window frozen and
+   wrong, a history line, a pending change on a published day. On focus, the box is rewritten from the model by the
+   same reader the Tab route uses — only where it differs, never a write. */
+const ARRIVALS = '[data-txt],[data-bfld],[data-inp],[data-ifld],[data-itline],[data-bombs],[data-area],[data-atime]'
+export function routeFocusIn(e: FocusEvent) {
+  if (!canEditSched() || view.CURPAGE !== 'editsched') return
+  const t = e.target as HTMLElement
+  const el = t && t.closest ? t.closest(ARRIVALS) as HTMLElement | null : null
+  if (el && !el.closest('[data-role-ui],.pv-frozen')) refreshTextDestination(el)
+}
+
 export function routeKeyDown(e: KeyboardEvent) {
+  if (routeScheduleTab(e, refreshTextDestination)) return
   const t = e.target as HTMLElement
   /* an input's cells get the same two keys as every other text cell — Enter
      commits (by blurring, which runs the branch above), Escape puts the model
@@ -334,5 +413,5 @@ export function routeKeyDown(e: KeyboardEvent) {
    under the caret (the reference's txtCommit guard, as a predicate) */
 export function editingText() {
   const a = document.activeElement as any
-  return !!(a && a.closest && (a.closest('[data-txt]') || a.closest('[data-inp]') || a.isContentEditable))
+  return !!(a && a.closest && (a.closest('[data-txt],[data-bfld],[data-inp],[data-ifld],[data-role-remarks],[data-role-ui]') || a.isContentEditable))
 }

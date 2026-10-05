@@ -1,0 +1,15 @@
+import * as S from './stk-TS-lib.mjs'
+const { L, W, world, pic } = S
+const { browser, p, errors } = await world({ phone: true })
+await L.go(p, 'editsched')
+await S.sleep(600)
+console.log('toolbar', await p.evaluate(() => [...document.querySelectorAll('#page-editsched button, .toolbar button, #weekbar button, #eBar button')].filter(b => b.offsetParent && b.getBoundingClientRect().top < 200).map(b => (b.id || '') + '|' + b.innerText.trim().slice(0, 20) + '|' + (b.title || b.getAttribute('aria-label') || '') + '|' + Math.round(b.getBoundingClientRect().left) + ',' + Math.round(b.getBoundingClientRect().top)).slice(0, 40)))
+console.log('all top buttons', await p.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.offsetParent && b.getBoundingClientRect().top < 160).map(b => (b.id || '') + '|' + b.innerText.trim().slice(0, 20) + '|' + (b.title || b.getAttribute('aria-label') || '') + '|' + Math.round(b.getBoundingClientRect().left) + ',' + Math.round(b.getBoundingClientRect().top)).slice(0, 40)))
+await pic(p, 'probe-phone-week')
+await W.boardOn(p, 0)
+console.log('board top', await p.evaluate(() => [...document.querySelectorAll('#schedBoard button')].filter(b => b.offsetParent && b.getBoundingClientRect().top < 140).map(b => (b.id || '') + '|' + b.innerText.trim().slice(0, 20) + '|' + Math.round(b.getBoundingClientRect().left) + ',' + Math.round(b.getBoundingClientRect().top)).slice(0, 40)))
+await p.locator('#sbMore').click(); await S.sleep(300)
+console.log('more menu', await p.evaluate(() => [...document.querySelectorAll('#sbMoreMenu *, [id^=sbMore]')].map(b => b.id + '|' + b.innerText.trim().slice(0, 25) + '|vis=' + (b.offsetParent !== null)).slice(0, 20)))
+await pic(p, 'probe-phone-more')
+console.log('errors', errors)
+await browser.close()

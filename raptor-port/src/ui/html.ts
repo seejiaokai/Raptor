@@ -5,13 +5,15 @@ import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
 import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
+import { reportingIssuesForWave,stated,REPORTING_LABEL } from '../engine/reporting'
+import { waveInTime } from '../engine/events'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, acceptedDay } from '../engine/slots'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS, versionFaceWarn, withVersionWarn } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, FLT_NO_LEN_SAYS, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -862,7 +864,7 @@ export function availHTML(d:any,di:any,ed:any){
   let h=`<div class="availpuck sec sec-avail"><div class="ap-h" data-avtog="${di}">`
     +`<span>Available crew</span><span class="n">by wave · close ⌃</span></div>`;
   if(A.wins.length){
-    A.wins.forEach((w:any,i:any)=>{const ids=active(A.byWave[i]), total=ids.length+allA.length;
+    A.wins.forEach((w:any,i:any)=>{const ids=active(A.byWave[i]), total=w.priorEmpty?0:ids.length+allA.length;
       h+=`<div class="ap-grp">${ORD[i]||(i+1)+'th'} wave${w.night?' · night':''} <span style="color:var(--ink-3);font-weight:500">${bandTxt(w)}</span> · ${total} can fly</div>`;
       h+=ids.length?grid(ids):(total?`<div class="ap-empty">all of them are under Available all day ↓</div>`:`<div class="ap-empty">— none free —</div>`);});
     h+=`<div class="ap-grp">Available all day · ${allA.length}</div>`+grid(allA);
@@ -987,7 +989,7 @@ function dayTraceHTML(di:any,pf:any){
     .filter(({id}:any)=>!pf||id===pf)
     .flatMap(({id,t}:any)=>[
       /* under a face or a look (PV + OFW) the breach's day resolves in ITS displayed list — the one its tap reads */
-      ...(t.leaveBy!=null?[{id,t,kind:'CR',tdi:t.di,ix:t.di==null?-1:traceIx(t,id,undefined,PV&&OFW?displayedBundle(t.di):undefined)}]:[]),
+      ...restTraceEntries(t).map((entry:any)=>({id,t:entry,kind:'CR',tdi:entry.di,ix:entry.di==null?-1:traceIx(entry,id,undefined,PV&&OFW?displayedBundle(entry.di):undefined)})),
       ...(t.run?[{id,t,kind:'RUN',tdi:t.run.di,ix:t.run.di==null?-1:traceIx(t,id,'RUN',PV&&OFW?displayedBundle(t.run.di):undefined)}]:[]),
     ])
     /* tdi==null is the FORWARD trace across the week edge (validate.ts's
@@ -1036,7 +1038,7 @@ function dayTraceHTML(di:any,pf:any){
        misfire. The breach itself appears on Monday when next week loads. */
     const addr=t.di!=null&&ix>=0?` data-wdi="${t.di}" data-wix="${ix}"${pan} title="Jump to the line on this day that caused it"`
       :t.di!=null?` title="As published — that day has changed since"`
-                         :` title="Next week's Monday — load it to see the breach itself"`;
+                         :` title="Next week's ${esc(t.dow||'Monday')} — load it to see the breach itself"`;
     return `<div class="witem hard wtr${on?' on':''}"${addr}>`
       +`<span class="wbar"></span><span><span class="wcode">Breaks ${esc(t.dow||'the next day')}</span>`
       +`<b>${esc(cs)}</b> — had to leave by <b>${esc(t.leaveBy)}</b>. ${esc(t.msg||'')}</span></div>`;
@@ -1180,6 +1182,52 @@ export function dayWarnHTML(di:any){
    stored lines byte-identical for parity (the html.test dayHTML compare
    folds the reference's own <b>NNNNH</b> the same way before comparing —
    its noItTime normaliser, a no-op on the port's already-folded output). */
+/* THE WAVE HEADER'S IN-TIME / RALLY CLOCK, AND ITS REFRESH IN PLACE (W16, the Codex stack check, 5 Oct 26). The header
+   sits in the same block as the wave's own text boxes, so while the caret is in one of them that block is not redrawn
+   (ui/dayswap.ts swapDayAround) — and the header went on showing the clock from before the line was edited ("21:30
+   (prev day)" beside a line reading 22:30H). refreshWaveReports rewrites the header's WORDS from the model: text
+   nodes only, no element replaced, nothing near the caret — and no new markup (the edit week is compared byte for
+   byte with the reference, html.test.ts). One body each for the builder and the refresh, so the two cannot drift:
+   on the week, what follows the wave's label (" · NIGHT", and the clock only when it falls on the previous day, as
+   before); on the board, the whole header note. Waves are found by the drag address every edit-mode wave carries. */
+export function waveHeadTail(w:any):string{
+  const sa=isStandalone(w);
+  const night=!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':'';
+  const r=sa?null:waveInTime(w);
+  return night+(r!=null&&r<0?` · ${REPORTING_LABEL} ${stated(r,true)}`:'');
+}
+export function waveHeadBoard(w:any):string{
+  const t=waveInTime(w), n=(w.formations||[]).reduce((k:number,f:any)=>k+f.aircraft.length,0);
+  return `${REPORTING_LABEL} ${t!=null?stated(t,true):'—'} · ${n} ac`;
+}
+export function refreshWaveReports(root:ParentNode|null|undefined):void{
+  if(!root)return;
+  /* …and the red explanation under a wave's lines (the Rally reader's second pass, 6 Oct 26; D509 "explained while
+     editing"): it was rewritten only by its block's redraw or by typing in a LINE, so a take-off or brief committed by
+     Tab left it stale beside a correct warning list. Text only; never the block the caret is typing in. */
+  root.querySelectorAll<HTMLElement>('.intimes[data-intimes]').forEach(blk=>{
+    if(blk.contains(document.activeElement))return;
+    const [di,gi]=String(blk.dataset.intimes).split('|').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
+    const note=blk.querySelector('[data-reporting-feedback]');
+    if(!w||!note)return;
+    const want=reportingIssuesForWave(w,gi).map(i=>i.msg).join(' ');
+    if(note.textContent!==want)note.textContent=want;
+  });
+  root.querySelectorAll<HTMLElement>('[data-move^="mv:w."]').forEach(go=>{
+    const [di,gi]=String(go.dataset.move).slice(5).split('.').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
+    if(!w)return;
+    if(go.classList.contains('sb-go')){
+      const note=go.querySelector(':scope > .sb-go-h > .asd'), want=waveHeadBoard(w);
+      if(note&&note.textContent!==want)note.textContent=want;
+      return;
+    }
+    const head=go.querySelector(':scope > .go-tab > .asd'); if(!head)return;
+    const want=waveHeadTail(w), texts=[...head.childNodes].filter(n=>n.nodeType===3);
+    if(texts.map(n=>n.nodeValue).join('')===want)return;
+    texts.forEach(n=>n.remove());
+    if(want){ const label=head.firstElementChild, node=document.createTextNode(want); if(label)label.after(node); else head.prepend(node); }
+  });
+}
 export function intimeLineHTML(t:any){
   return esc(t).replace(/^(\s*)((?:\d{1,2}:\d{2}|\d{3,4})\s*[HL]?)(?![0-9A-Za-z])/i,
     (_,sp,tok)=>`${sp}<b>${intimeFold(tok)}</b>`);}
@@ -1193,8 +1241,9 @@ export function intimeLineHTML(t:any){
 export function intimesInner(w:any,ek?:any){
   return ((w&&w.intimes)||[]).map((t:any,i:number)=> ek
     ? `<span class="itline" contenteditable="true" spellcheck="false" data-itline="${ek}|${i}">${intimeLineHTML(t)}</span>`
-      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this in-time line" aria-label="Remove this in-time line">✕</button>`
-    : `<span>${intimeLineHTML(t)}</span>`).join('');}
+      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this ${REPORTING_LABEL} line" aria-label="Remove this ${REPORTING_LABEL} line">✕</button>`
+    : `<span>${intimeLineHTML(t)}</span>`).join('')
+    + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).map(i=>i.msg).join(' '))}</span>`:'');}
 /* AREA and TIME are not the model fields they are edited through. Until a
    scheduler types over them they READ OFF THE AIRCRAFT: the distinct area codes on
    the formation, and the formation's own TO–LD. Both surfaces have to agree on that
@@ -1663,16 +1712,16 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       const sa=isStandalone(w);
       const edge=sa?'var(--san)':`var(--${mColor(f0?f0.msn:'')})`;
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
-        <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
+        <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${waveHeadTail(w)}`
         +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
-        ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}</div>`;
+        ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
          add control is the fix for the old trap where deleting the last line
          dropped the whole block with no way back (owner, 21 Aug 26). Standalone
          waves are excluded: a shift briefs nothing, and a typed in-time there
          would silently move waveWindows. interactions.ts owns the click. */
       if(w.intimes&&w.intimes.length)
-        h+=`<div class="intimes${ed?' iedit':''}"${alAttr(`it:${di}.${gi}`)} ${ed?`data-intimes="${di}|${gi}"`:''}>${intimesInner(w,ed?`${di}|${gi}`:null)}</div>`;
+        h+=`<div class="intimes${ed?' iedit':''}" data-warnkey="it:${di}.${gi}"${alAttr(`it:${di}.${gi}`)} ${ed?`data-intimes="${di}|${gi}"`:''}>${intimesInner(w,ed?`${di}|${gi}`:null)}</div>`;
       h+=sa
         ? `<div class="cols formcols"><span>${esc(w.label||'')}<br>SHIFT</span><span class="c-c">START</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
         : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">B<br>TO</span><span class="c-c">LD</span><span>FCP / RCP</span><span>RMKS</span></div>`;
@@ -1737,7 +1786,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            broke both — a focused live warning lit a box inside last week's
            paper, and the tap could scroll into one. */
         const badAtt=noLen?`${PV?'':` data-warnkey="${fp}.ld"`} title="${esc((f.cs||w.label||'A flying line')+' '+FLT_NO_LEN_SAYS(parseHM(f.to),sa))}"`:'';
-        h+=`<div class="form${rowCls(f)}">
+        h+=`<div class="form${rowCls(f)}"${HOOKS.missionRoleEnabled()?` data-role-formation="${esc(f.rid||'')}" data-role-day="${di}"`:''}>
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa
             ? `<div class="fcell bto${badCls}"${badAtt} style="${spans}">${ted(fp+'.to',f.to,ed,'ntx','span')}</div>`

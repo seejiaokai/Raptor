@@ -1,0 +1,1493 @@
+{
+  "kind": "runtime walk, not final inspection",
+  "base": "http://localhost:4199",
+  "run": "freeze-1-publication-r2",
+  "freeze": "docs/img/insights-build-freeze-1.json",
+  "started": "2026-10-03T07:55:41.012Z",
+  "steps": [
+    {
+      "scene": "published-working",
+      "id": "publish-A",
+      "ids": [
+        "S13",
+        "S14"
+      ],
+      "status": "PASS",
+      "detail": {
+        "orig": "2026-07-13#0",
+        "pending": {
+          "week": "13/07/2026",
+          "day": 0,
+          "days": "[{\"dow\":\"Monday\",\"dt\":\"Jul 13\",\"wc\":\"4 X 4 X 0\",\"today\":true,\"notes\":[{\"t\":\"EP: ENGINE FIRE ON TAKE OFF\",\"rid\":\"rmus3ksh4uwrexe\"},{\"t\":\"ORDERS: FLYING ORDERS SECTION 2\",\"rid\":\"rmus3ksh47uo0f1\"}],\"allhands\":[{\"prog\":\"SODB\",\"str\":\"0745\",\"end\":\"0815\",\"rid\":\"rmus3ksh4jywlua\"},{\"prog\":\"MET + NOTAM BRIEF\",\"str\":\"0815\",\"end\":\"0830\",\"who\":\"nact\",\"rid\":\"rmus3ksh4t34ihs\"},{\"prog\":\"FLIGHT SAFETY STAND-DOWN\",\"str\":\"0830\",\"end\":\"0900\",\"who\":\"bane\",\"rid\":\"rmus3ksh48buxep\"},{\"prog\":\"WPNS & TACTICS SYNC\",\"str\":\"1130\",\"end\":\"1200\",\"who\":\"harpoon\",\"rid\":\"rmus3ksh40o4ytb\"},{\"prog\":\"STANDARDISATION MEETING\",\"str\":\"1330\",\"end\":\"1430\",\"who\":\"pump\",\"rid\":\"rmus3ksh49j9rdf\"},{\"prog\":\"OCU PROGRESS REVIEW\",\"str\":\"1445\",\"end\":\"1530\",\"who\":\"bapster\",\"rid\":\"rmus3ksh4l5snm9\"},{\"prog\":\"INTEL UPDATE\",\"str\":\"1600\",\"end\":\"1620\",\"who\":\"romeo\",\"rid\":\"rmus3ksh4a1xt5o\"},{\"prog\":\"OPS SHARING + NAV SYS BRIEF\",\"str\":\"1755\",\"end\":\"\",\"who\":\"stiff\",\"rid\":\"rmus3ksh43q58vy\"},{\"prog\":\"DINNER WITH CMD\",\"str\":\"1830\",\"end\":\"\",\"rid\":\"rmus3ksh4ch3fx4\"},{\"prog\":\"CMD ENGAGEMENT @ CREW ROOM (ALL)\",\"str\":\"2130\",\"end\":\"\",\"rid\":\"rmus3ksh485u37f\"}],\"waves\":[{\"label\":\"WAVE 1\",\"night\":false,\"intimes\":[\"1200H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"1300H: FIRST WAVE RU IN TIME + WX/NOTAMS\"],\"traffic\":[\"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\"],\"formations\":[{\"cs\":\"VL\",\"msn\":\"ACM\",\"to\":\"12:40\",\"ld\":\"14:05\",\"aircraft\":[{\"p\":\"stiff\",\"w\":\"freak\",\"area\":\"NORTH\",\"rmks\":\"DS FROM RU\",\"opts\":{\"tk2\":true,\"tpod\":true,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh48liuct\"},{\"p\":\"bane\",\"w\":\"wolf\",\"area\":\"SOUTH\",\"rmks\":\"2A: BFM-5\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh43a59ec\"}],\"rid\":\"rmus3ksh4zmu19u\"},{\"cs\":\"RU\",\"msn\":\"BFM\",\"to\":\"13:40\",\"ld\":\"15:05\",\"aircraft\":[{\"p\":\"slipway\",\"w\":\"divot\",\"area\":\"NORTH\",\"rmks\":\"PRI LSR\",\"opts\":{\"tk2\":true,\"tpod\":true,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4da3ve6\"},{\"p\":\"pump\",\"w\":\"dirty\",\"area\":\"SOUTH\",\"rmks\":\"2A: BFM-ADD\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4m5rgph\"}],\"rid\":\"rmus3ksh4yf2hca\"}],\"rid\":\"rmus3ksh4p6ke60\"},{\"label\":\"WAVE 2\",\"night\":true,\"intimes\":[\"1900H: NIGHT WAVE VL IN TIME + WX/NOTAMS\",\"1920H: NIGHT WAVE RU IN TIME + WX/NOTAMS\"],\"traffic\":[],\"formations\":[{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"19:45\",\"ld\":\"21:10\",\"aircraft\":[{\"p\":\"stiff\",\"w\":\"freak\",\"area\":\"WEST\",\"rmks\":\"1B: NIGHT BFM\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh4g7t2s7\"},{\"p\":\"bapster\",\"w\":\"nick\",\"area\":\"SOUTH\",\"rmks\":\"2A: DT / OCU\",\"opts\":{\"tk2\":false,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh41s7tyh\"}],\"rid\":\"rmus3ksh4auxwf1\"},{\"cs\":\"RU\",\"msn\":\"BFM\",\"to\":\"19:20\",\"ld\":\"20:45\",\"aircraft\":[{\"p\":\"pump\",\"w\":\"dirty\",\"area\":\"WEST\",\"rmks\":\"1A: NIGHT\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh42qd8ey\"},{\"p\":\"casper\",\"w\":\"shrek\",\"area\":\"SOUTH\",\"rmks\":\"2A: NIGHT BFM\",\"opts\":{\"tk2\":false,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh4t60745\"}],\"rid\":\"rmus3ksh4odnl12\"}],\"rid\":\"rmus3ksh4vofl6i\"}],\"sims\":{\"amt\":[{\"label\":\"BRIEF\",\"str\":\"1100\",\"end\":\"\",\"rmks\":\"ALL 8 PAX @ AMT BLDG\",\"rid\":\"rmus3ksh4l9lah5\"},{\"label\":\"BOX\",\"str\":\"1130\",\"end\":\"1230\",\"pax\":[\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\"],\"rmks\":\"2 X 4-SHIP // 2TK TPOD 9X\",\"rid\":\"rmus3ksh4dugu1a\"},{\"label\":\"DEBRIEF\",\"str\":\"1230\",\"end\":\"\",\"rmks\":\"\",\"rid\":\"rmus3ksh4tv8snp\"}],\"oft\":[{\"label\":\"EP-4\",\"str\":\"0800\",\"end\":\"0930\",\"p\":\"haowen\",\"w\":\"stiff\",\"rmks\":\"A: IEPE / EP-3N // BRIEF 30 PRIOR\",\"rid\":\"rmus3ksh49f3uym\"},{\"label\":\"EP-4\",\"str\":\"1200\",\"end\":\"1330\",\"p\":\"bane\",\"w\":\"snap\",\"rmks\":\"A: SA(S)-3 // BRIEF 30 PRIOR\",\"rid\":\"rmus3ksh4a05g6p\"},{\"label\":\"SIMS (EXT SQN)\",\"str\":\"1330\",\"end\":\"1500\",\"who\":\"EXT SQN\",\"rmks\":\"EXT SQN SLOT\",\"rid\":\"rmus3ksh4mc0tsk\"},{\"label\":\"EP-6\",\"str\":\"1500\",\"end\":\"1630\",\"p\":\"prism\",\"rmks\":\"B: SEFE\",\"rid\":\"rmus3ksh4e3kr3c\"},{\"label\":\"EP-6N\",\"str\":\"1700\",\"end\":\"1830\",\"pax\":[\"shaft\",\"riddler\",\"sufa\"],\"rmks\":\"NIGHT EP // 3RD BODY = OBSERVER\",\"rid\":\"rmus3ksh45j41by\"}]},\"dutywaves\":[{\"label\":\"1st wave\",\"rows\":[{\"role\":\"SDO\",\"id\":\"mamba\",\"str\":\"0700\",\"end\":\"1300\",\"rid\":\"rmus3ksh4xd7cdc\"},{\"role\":\"SXO\",\"id\":\"razer\",\"str\":\"0600\",\"end\":\"1300\",\"rid\":\"rmus3ksh43uo4xo\"},{\"role\":\"OPS-O\",\"id\":\"glass\",\"str\":\"0600\",\"end\":\"1400\",\"rid\":\"rmus3ksh4zwz5lm\"}],\"rid\":\"rmus3ksh4i4i780\"},{\"label\":\"2nd wave\",\"rows\":[{\"role\":\"SDO\",\"id\":\"chaps\",\"str\":\"1300\",\"end\":\"2130\",\"rid\":\"rmus3ksh4bjcmas\"},{\"role\":\"SXO\",\"id\":\"yeti\",\"str\":\"1300\",\"end\":\"2130\",\"rid\":\"rmus3ksh4uk4e91\"},{\"role\":\"OPS-O\",\"id\":\"stuff\",\"str\":\"1400\",\"end\":\"2130\",\"rid\":\"rmus3ksh4xb67mc\"}],\"rid\":\"rmus3ksh4p9x0pa\"}],\"ground\":[{\"prog\":\"HQ ENGAGEMENT\",\"str\":\"0845\",\"end\":\"1630\",\"who\":\"dj\",\"rid\":\"rmus3ksh473ni35\"},{\"prog\":\"STAFF MTG @ HQ\",\"str\":\"0930\",\"end\":\"1100\",\"who\":\"vegas\",\"rid\":\"rmus3ksh4zqxw5d\"},{\"prog\":\"MEDICAL APPT\",\"str\":\"1030\",\"end\":\"1230\",\"who\":\"fantom\",\"rid\":\"rmus3ksh4vngl4j\"},{\"prog\":\"DENTAL APPT\",\"str\":\"1200\",\"end\":\"1330\",\"who\":\"krait\",\"rid\":\"rmus3ksh4okmbco\"},{\"prog\":\"TRAINING CMD VISIT\",\"str\":\"1630\",\"end\":\"1800\",\"who\":\"dj\",\"rid\":\"rmus3ksh4p95epo\"},{\"prog\":\"OPS/LOGS @ EXT SQN\",\"str\":\"1400\",\"end\":\"1530\",\"who\":\"slash\",\"rid\":\"rmus3ksh4npf8un\"},{\"prog\":\"APPOINTMENT\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"yeti\",\"rmks\":\"HSP blood panel\",\"srcType\":\"Appointment\",\"src\":\"imus3ksh4tckjbp\",\"srcv\":\"1nm88s0\",\"rid\":\"rimus3ksh4tckjbp\"},{\"prog\":\"MEETING\",\"str\":\"09:00\",\"end\":\"17:00\",\"who\":\"vinci\",\"rmks\":\"Desk / staff work\",\"srcType\":\"Meeting\",\"src\":\"imus3ksh4t5vqcd\",\"srcv\":\"tq0gks\",\"rid\":\"rimus3ksh4t5vqcd\"},{\"prog\":\"FLY WITH\",\"str\":\"\",\"end\":\"\",\"who\":\"bruise\",\"rmks\":\"Keen for any wave\",\"srcType\":\"Fly with\",\"src\":\"imus3ksh421nxyf\",\"srcv\":\"akyi7a\",\"rid\":\"rimus3ksh421nxyf\"}]},{\"dow\":\"Tuesday\",\"dt\":\"Jul 14\",\"wc\":\"4 X 4 X 0\",\"notes\":[{\"t\":\"ORDERS: FLYING ORDERS SECTION 3\",\"rid\":\"rmus3ksh47v5gjw\"}],\"allhands\":[{\"prog\":\"SODB\",\"str\":\"0545\",\"end\":\"0600\",\"rid\":\"rmus3ksh4htayqj\"},{\"prog\":\"MASS BRIEF\",\"str\":\"0600\",\"end\":\"0630\",\"rid\":\"rmus3ksh43xeol0\"}],\"waves\":[{\"label\":\"WAVE 1\",\"night\":false,\"intimes\":[\"0600H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"0700H: FIRST WAVE RU IN TIME + WX/NOTAMS\"],\"traffic\":[],\"formations\":[{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"08:40\",\"ld\":\"10:05\",\"aircraft\":[{\"p\":\"nact\",\"w\":\"glass\",\"area\":\"EAST\",\"rmks\":\"1B: BFM-3\",\"opts\":{\"tk2\":true,\"tpod\":true,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4jgl4uy\"},{\"p\":\"casper\",\"w\":\"rocky\",\"area\":\"SOUTH\",\"rmks\":\"2A: BFM-6\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4jcp8t5\"}],\"rid\":\"rmus3ksh4al9hux\"},{\"cs\":\"RU\",\"msn\":\"BFM\",\"to\":\"09:40\",\"ld\":\"11:05\",\"aircraft\":[{\"p\":\"slipway\",\"w\":\"divot\",\"area\":\"EAST\",\"rmks\":\"1A: NO AAR\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4eh2qwo\"},{\"p\":\"bruise\",\"w\":\"spaceman\",\"area\":\"SOUTH\",\"rmks\":\"PRI LSR\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh488o4og\"}],\"rid\":\"rmus3ksh42xj3je\"}],\"rid\":\"rmus3ksh4qq92kl\"},{\"label\":\"WAVE 2\",\"night\":false,\"intimes\":[\"1200H: SECOND WAVE VL IN TIME + WX/NOTAMS\",\"1300H: SECOND WAVE RU IN TIME + WX/NOTAMS\"],\"traffic\":[],\"formations\":[{\"cs\":\"VL\",\"msn\":\"SAT\",\"to\":\"14:40\",\"ld\":\"16:05\",\"aircraft\":[{\"p\":\"dj\",\"w\":\"wolf\",\"area\":\"NORTH+EAST\",\"rmks\":\"SAT 2VX\",\"opts\":{\"tk2\":true,\"tpod\":true,\"nav\":false,\"bombs\":\"2 X GBU-12\"},\"rid\":\"rmus3ksh4if2il3\"},{\"p\":\"salsa\",\"w\":\"pain\",\"area\":\"SOUTH\",\"rmks\":\"2A: SAT-REF\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4rr5e77\"}],\"rid\":\"rmus3ksh4f1nx8b\"},{\"cs\":\"RU\",\"msn\":\"ACM\",\"to\":\"14:40\",\"ld\":\"16:05\",\"aircraft\":[{\"p\":\"romeo\",\"w\":\"ammo\",\"area\":\"NORTH+EAST\",\"rmks\":\"RED AIR\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4q9yt78\"},{\"p\":\"vegas\",\"w\":\"cards\",\"area\":\"SOUTH\",\"rmks\":\"2A: ACM-2\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4mc8ise\"}],\"rid\":\"rmus3ksh4xcqdvr\"}],\"rid\":\"rmus3ksh4r6d7dp\"}],\"sims\":{\"amt\":[{\"label\":\"BRIEF\",\"str\":\"1400\",\"end\":\"\",\"rid\":\"rmus3ksh4aknd0s\"},{\"label\":\"BOX\",\"str\":\"1430\",\"end\":\"1530\",\"rid\":\"rmus3ksh4zoctu2\"},{\"label\":\"DEBRIEF\",\"str\":\"1530\",\"end\":\"\",\"rid\":\"rmus3ksh4nw8b1m\"}],\"oft\":[{\"label\":\"EP-5\",\"str\":\"0930\",\"end\":\"1100\",\"p\":\"haowen\",\"w\":\"freak\",\"rid\":\"rmus3ksh4ewh530\"},{\"label\":\"SIMS (EXT SQN)\",\"str\":\"1200\",\"end\":\"1330\",\"who\":\"EXT SQN\",\"rid\":\"rmus3ksh4pyo6i4\"}]},\"dutywaves\":[{\"label\":\"1st wave\",\"rows\":[{\"role\":\"SDO\",\"id\":\"boosh\",\"str\":\"0530\",\"end\":\"1200\",\"rid\":\"rmus3ksh4zravr9\"},{\"role\":\"SXO\",\"id\":\"snap\",\"str\":\"0500\",\"end\":\"1200\",\"rid\":\"rmus3ksh43f6y4r\"},{\"role\":\"OPS-O\",\"id\":\"wolf\",\"str\":\"0500\",\"end\":\"1200\",\"rid\":\"rmus3ksh4pfbne2\"}],\"rid\":\"rmus3ksh4tadzfy\"},{\"label\":\"2nd wave\",\"rows\":[{\"role\":\"SDO\",\"id\":\"beams\",\"str\":\"1200\",\"end\":\"1700\",\"rid\":\"rmus3ksh4wc4l4a\"},{\"role\":\"SXO\",\"id\":\"razer\",\"str\":\"1200\",\"end\":\"1700\",\"rid\":\"rmus3ksh483qgnz\"},{\"role\":\"OPS-O\",\"id\":\"stuff\",\"str\":\"1200\",\"end\":\"1700\",\"rid\":\"rmus3ksh4f7ls2r\"}],\"rid\":\"rmus3ksh4xjiiey\"}],\"ground\":[{\"prog\":\"OPS BRIEFER / EP SUP\",\"str\":\"0500\",\"end\":\"\",\"who\":\"dice\",\"rid\":\"rmus3ksh40p4u44\"},{\"prog\":\"FLY W EXT SQN\",\"str\":\"0845\",\"end\":\"\",\"who\":\"ipman\",\"rid\":\"rmus3ksh4qhcriv\"},{\"prog\":\"MEDICAL APPT\",\"str\":\"1330\",\"end\":\"1500\",\"who\":\"yeti\",\"rid\":\"rmus3ksh4c993en\"},{\"prog\":\"APPOINTMENT\",\"str\":\"14:00\",\"end\":\"16:00\",\"who\":\"salsa\",\"rmks\":\"Dental appt\",\"srcType\":\"Appointment\",\"src\":\"imus3ksh4x8oh4b\",\"srcv\":\"1jyn25c\",\"rid\":\"rimus3ksh4x8oh4b\"}]},{\"dow\":\"Wednesday\",\"dt\":\"Jul 15\",\"wc\":\"4 X 4 X 0\",\"notes\":[{\"t\":\"ORDERS: FLYING ORDERS SECTION 2\",\"rid\":\"rmus3ksh4hh3yfh\"}],\"allhands\":[{\"prog\":\"SODB\",\"str\":\"0745\",\"end\":\"0800\",\"rid\":\"rmus3ksh4xayi1e\"}],\"waves\":[{\"label\":\"WAVE 1\",\"night\":false,\"intimes\":[\"1000H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"1000H: FIRST WAVE RU IN TIME + WX/NOTAMS\"],\"traffic\":[],\"formations\":[{\"cs\":\"VL\",\"msn\":\"ACM\",\"to\":\"10:35\",\"ld\":\"12:00\",\"aircraft\":[{\"p\":\"harpoon\",\"w\":\"dirty\",\"area\":\"EAST\",\"rmks\":\"1B: ACM-4\",\"opts\":{\"tk2\":true,\"tpod\":true,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh42ppx3b\"},{\"p\":\"bruise\",\"w\":\"rocky\",\"area\":\"SOUTH\",\"rmks\":\"2A: ACM ADD\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4bmzimh\"}],\"rid\":\"rmus3ksh4a3ofbf\"},{\"cs\":\"RU\",\"msn\":\"ACM\",\"to\":\"10:35\",\"ld\":\"12:00\",\"aircraft\":[{\"p\":\"ignite\",\"w\":\"psy\",\"area\":\"EAST\",\"rmks\":\"RED AIR\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh49yhfnx\"},{\"p\":\"krait\",\"w\":\"wrangler\",\"area\":\"SOUTH\",\"rmks\":\"2A: ACM-8\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh40o8rj6\"}],\"rid\":\"rmus3ksh4iebmzf\"}],\"rid\":\"rmus3ksh4ig0a9g\"},{\"label\":\"WAVE 2\",\"night\":false,\"intimes\":[\"1200H: SECOND WAVE VL IN TIME + WX/NOTAMS\",\"1200H: SECOND WAVE RU IN TIME + WX/NOTAMS\"],\"traffic\":[],\"formations\":[{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"14:25\",\"aircraft\":[{\"p\":\"harpoon\",\"w\":\"dirty\",\"area\":\"NORTH+EAST\",\"rmks\":\"1B: BFM-4 // TIGHT TURN\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4nuk0sg\"},{\"p\":\"yeti\",\"w\":\"shrek\",\"area\":\"SOUTH\",\"rmks\":\"2A: BFM ADD\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4vyt237\"}],\"rid\":\"rmus3ksh4398ixi\"},{\"cs\":\"RU\",\"msn\":\"BFM\",\"to\":\"13:00\",\"ld\":\"14:25\",\"aircraft\":[{\"p\":\"vinci\",\"w\":\"plasma\",\"area\":\"NORTH+EAST\",\"rmks\":\"PRI LSR\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh49g3qx1\"},{\"p\":\"pike\",\"w\":\"badger\",\"area\":\"SOUTH\",\"rmks\":\"2A: BFM-8\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4kj9omh\"}],\"rid\":\"rmus3ksh4akrzv3\"}],\"rid\":\"rmus3ksh4jcipi0\"}],\"sims\":{\"amt\":[{\"label\":\"BRIEF\",\"str\":\"1100\",\"end\":\"\",\"rid\":\"rmus3ksh4786y0k\"},{\"label\":\"BOX\",\"str\":\"1130\",\"end\":\"1230\",\"rid\":\"rmus3ksh4xwrkcw\"},{\"label\":\"DEBRIEF\",\"str\":\"1230\",\"end\":\"\",\"rid\":\"rmus3ksh46ramur\"}],\"oft\":[{\"label\":\"EP-4\",\"str\":\"0900\",\"end\":\"1030\",\"pax\":[\"boosh\",\"xray\",\"waldo\"],\"rid\":\"rmus3ksh4yxgyk9\"},{\"label\":\"IAT-3\",\"str\":\"1500\",\"end\":\"1630\",\"p\":\"prism\",\"w\":\"nasty\",\"rid\":\"rmus3ksh4odzk50\"}]},\"dutywaves\":[{\"label\":\"1st wave\",\"rows\":[{\"role\":\"SDO\",\"id\":\"mamba\",\"str\":\"0800\",\"end\":\"1400\",\"rid\":\"rmus3ksh4pzgj56\"},{\"role\":\"SXO\",\"id\":\"shaft\",\"str\":\"0800\",\"end\":\"1400\",\"rid\":\"rmus3ksh4d0xj4i\"},{\"role\":\"OPS-O\",\"id\":\"divot\",\"str\":\"0800\",\"end\":\"1400\",\"rid\":\"rmus3ksh4kz3mkp\"}],\"rid\":\"rmus3ksh43v8xox\"}],\"ground\":[{\"prog\":\"MAINT CONF @ ENG WING\",\"str\":\"1400\",\"end\":\"1630\",\"who\":\"dj\",\"rid\":\"rmus3ksh4ldu2ho\"},{\"prog\":\"NAV-SYS TRIAL PREP\",\"str\":\"1400\",\"end\":\"\",\"who\":\"vegas\",\"rid\":\"rmus3ksh4301a15\"}]},{\"dow\":\"Thursday\",\"dt\":\"Jul 16\",\"wc\":\"4 X 4 X 0\",\"notes\":[{\"t\":\"EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H\",\"rid\":\"rmus3ksh5omed4k\"},{\"t\":\"ORDERS: FLYING ORDERS SECTION 4\",\"rid\":\"rmus3ksh5gwxt9o\"}],\"allhands\":[{\"prog\":\"SODB\",\"str\":\"0745\",\"end\":\"0800\",\"rid\":\"rmus3ksh4u9fwkm\"},{\"prog\":\"HQ ENGAGEMENT\",\"str\":\"0845\",\"end\":\"1630\",\"who\":\"dj\",\"rid\":\"rmus3ksh4ky74or\"}],\"waves\":[{\"label\":\"WAVE 1\",\"night\":false,\"intimes\":[\"1200H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"1200H: FIRST WAVE RU IN TIME + WX/NOTAMS\"],\"traffic\":[],\"formations\":[{\"cs\":\"VL\",\"msn\":\"SAT\",\"to\":\"12:45\",\"ld\":\"14:10\",\"aircraft\":[{\"p\":\"slash\",\"w\":\"glass\",\"area\":\"WEST\",\"rmks\":\"1B: SAT-REF\",\"opts\":{\"tk2\":true,\"tpod\":true,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4ybuhom\"},{\"p\":\"salsa\",\"w\":\"stuff\",\"area\":\"SOUTH\",\"rmks\":\"2A: SAT-2\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4qgu9ni\"}],\"rid\":\"rmus3ksh43mtq1z\"},{\"cs\":\"RU\",\"msn\":\"AD\",\"to\":\"12:45\",\"ld\":\"14:10\",\"aircraft\":[{\"p\":\"dj\",\"w\":\"wolf\",\"area\":\"WEST\",\"rmks\":\"DS FOR VL\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh48rwswt\"},{\"p\":\"bapster\",\"w\":\"badger\",\"area\":\"SOUTH\",\"rmks\":\"2A: AD-1 / CX M1\",\"opts\":{\"tk2\":false,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh5p3qfew\"}],\"rid\":\"rmus3ksh4pr2zwq\"}],\"rid\":\"rmus3ksh4cbqu66\"},{\"label\":\"WAVE 2\",\"night\":true,\"intimes\":[\"1615H: NIGHT WAVE VL IN TIME + WX/NOTAMS\",\"1615H: NIGHT WAVE RU IN TIME + WX/NOTAMS\"],\"traffic\":[],\"formations\":[{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"16:45\",\"ld\":\"18:10\",\"aircraft\":[{\"p\":\"nact\",\"w\":\"freak\",\"area\":\"WEST\",\"rmks\":\"1A: D-N CURRENCY\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh5l4blqb\"},{\"p\":\"ignite\",\"w\":\"nasty\",\"area\":\"SOUTH\",\"rmks\":\"2A: BFM-ADD\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh52h3t00\"}],\"rid\":\"rmus3ksh5xhwmeh\"},{\"cs\":\"RU\",\"msn\":\"BFM\",\"to\":\"16:45\",\"ld\":\"18:10\",\"aircraft\":[{\"p\":\"bane\",\"w\":\"rocky\",\"area\":\"WEST\",\"rmks\":\"1B: NIGHT\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh5x2gg37\"},{\"p\":\"vinci\",\"w\":\"drill\",\"area\":\"SOUTH\",\"rmks\":\"2A: BFM-8X / OC CHK\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh52lr7mk\"}],\"rid\":\"rmus3ksh58zj4tk\"}],\"rid\":\"rmus3ksh5mlt5q2\"}],\"sims\":{\"amt\":[{\"label\":\"BRIEF\",\"str\":\"1100\",\"end\":\"\",\"rid\":\"rmus3ksh5h1yj44\"},{\"label\":\"BOX\",\"str\":\"1130\",\"end\":\"1230\",\"rid\":\"rmus3ksh5k1djcb\"},{\"label\":\"DEBRIEF\",\"str\":\"1230\",\"end\":\"\",\"rid\":\"rmus3ksh5q5hpc6\"}],\"oft\":[{\"label\":\"EP-4\",\"str\":\"0900\",\"end\":\"1030\",\"p\":\"haowen\",\"w\":\"plasma\",\"rid\":\"rmus3ksh5lj8gw9\"},{\"label\":\"SIMS (EXT SQN)\",\"str\":\"1200\",\"end\":\"1330\",\"who\":\"EXT SQN\",\"rid\":\"rmus3ksh598kzz6\"}]},\"dutywaves\":[{\"label\":\"1st wave\",\"rows\":[{\"role\":\"SDO\",\"id\":\"razer\",\"str\":\"0800\",\"end\":\"1400\",\"rid\":\"rmus3ksh574biql\"},{\"role\":\"SXO\",\"id\":\"shaft\",\"str\":\"0800\",\"end\":\"1400\",\"rid\":\"rmus3ksh5g1wlxz\"},{\"role\":\"OPS-O\",\"id\":\"divot\",\"str\":\"0800\",\"end\":\"1400\",\"rid\":\"rmus3ksh5j4xrm0\"}],\"rid\":\"rmus3ksh5lxnt5c\"},{\"label\":\"2nd wave\",\"rows\":[{\"role\":\"SDO\",\"id\":\"beams\",\"str\":\"1400\",\"end\":\"1900\",\"rid\":\"rmus3ksh5h4rgqt\"},{\"role\":\"SXO\",\"id\":\"chaps\",\"str\":\"1400\",\"end\":\"1900\",\"rid\":\"rmus3ksh5qfpj8n\"},{\"role\":\"OPS-O\",\"id\":\"spaceman\",\"str\":\"1400\",\"end\":\"1900\",\"rid\":\"rmus3ksh58d9bmz\"}],\"rid\":\"rmus3ksh54x7lyr\"}],\"ground\":[{\"prog\":\"MEDICAL APPT\",\"str\":\"1030\",\"end\":\"1230\",\"who\":\"fantom\",\"rid\":\"rmus3ksh5022ptm\"},{\"prog\":\"DENTAL APPT\",\"str\":\"1200\",\"end\":\"1330\",\"who\":\"krait\",\"rid\":\"rmus3ksh5d9slwe\"},{\"prog\":\"APPOINTMENT\",\"str\":\"17:00\",\"end\":\"18:30\",\"who\":\"bane\",\"rmks\":\"Medical / PHA\",\"srcType\":\"Appointment\",\"src\":\"imus3ksh4syc9rz\",\"srcv\":\"1bq9n8u\",\"rid\":\"rimus3ksh4syc9rz\"}]},{\"dow\":\"Friday\",\"dt\":\"Jul 17\",\"wc\":\"0 X 0 X 0\",\"notes\":[{\"t\":\"NO FLYING - GROUND TRAINING DAY\",\"rid\":\"rmus3ksh5qrmjz7\"},{\"t\":\"ORDERS: FLYING ORDERS SECTION 5\",\"rid\":\"rmus3ksh57zafkg\"}],\"allhands\":[{\"prog\":\"SODB\",\"str\":\"0745\",\"end\":\"0800\",\"rid\":\"rmus3ksh5iliuka\"},{\"prog\":\"SQN PT\",\"str\":\"1500\",\"end\":\"1630\",\"rid\":\"rmus3ksh54e4e28\"},{\"prog\":\"MASS DEBRIEF + BEER CALL\",\"str\":\"1700\",\"end\":\"\",\"rid\":\"rmus3ksh53bdjvn\"}],\"waves\":[],\"sims\":{\"amt\":[],\"oft\":[{\"label\":\"SIMS (EXT SQN)\",\"str\":\"0900\",\"end\":\"1030\",\"who\":\"EXT SQN\",\"rid\":\"rmus3ksh5mnhpv9\"},{\"label\":\"EP-6\",\"str\":\"1400\",\"end\":\"1530\",\"p\":\"bapster\",\"w\":\"shaft\",\"rid\":\"rmus3ksh5usvugq\"}]},\"dutywaves\":[{\"label\":\"Duty\",\"rows\":[{\"role\":\"SDO\",\"id\":\"yeti\",\"str\":\"0730\",\"end\":\"1730\",\"rid\":\"rmus3ksh5buzrsg\"},{\"role\":\"SXO\",\"id\":\"razer\",\"str\":\"0730\",\"end\":\"1730\",\"rid\":\"rmus3ksh5fhudvp\"}],\"rid\":\"rmus3ksh5azx5t6\"}],\"ground\":[{\"prog\":\"GROUND SCHOOL - EW\",\"str\":\"0900\",\"end\":\"1100\",\"who\":\"stiff\",\"rid\":\"rmus3ksh5vn6phe\"},{\"prog\":\"AIRCREW ADMIN\",\"str\":\"1100\",\"end\":\"1200\",\"rid\":\"rmus3ksh54kx2js\"}]},{\"dow\":\"Saturday\",\"dt\":\"Jul 18\",\"wc\":\"0 X 0 X 0\",\"notes\":[{\"t\":\"WEEKEND - NO FLYING\",\"rid\":\"rmus3ksh5ow3wro\"},{\"t\":\"DUTY CREW ON CALL\",\"rid\":\"rmus3ksh5q8oeb3\"}],\"allhands\":[],\"waves\":[],\"sims\":{\"amt\":[],\"oft\":[]},\"dutywaves\":[{\"label\":\"Duty\",\"rows\":[{\"role\":\"SDO\",\"id\":\"plasma\",\"str\":\"0800\",\"end\":\"1800\",\"rid\":\"rmus3ksh5td9g7k\"}],\"rid\":\"rmus3ksh52zwkgm\"}],\"ground\":[]},{\"dow\":\"Sunday\",\"dt\":\"Jul 19\",\"wc\":\"0 X 0 X 0\",\"notes\":[{\"t\":\"WEEKEND - NO FLYING\",\"rid\":\"rmus3ksh53lg4zx\"},{\"t\":\"DUTY CREW ON CALL\",\"rid\":\"rmus3ksh59px7we\"}],\"allhands\":[],\"waves\":[],\"sims\":{\"amt\":[],\"oft\":[]},\"dutywaves\":[{\"label\":\"Duty\",\"rows\":[{\"role\":\"SDO\",\"id\":\"spaceman\",\"str\":\"0800\",\"end\":\"1800\",\"rid\":\"rmus3ksh513623n\"}],\"rid\":\"rmus3ksh5igxyor\"}],\"ground\":[]}]",
+          "book": "{\"al\":0,\"pending\":{\"fr:0.rmus3ksh4p6ke60.rmus3ksh4zmu19u.rmus3ksh48liuct\":1},\"changes\":{},\"added\":{},\"als\":[],\"dayOK\":{\"0\":1},\"sign\":{\"0\":{\"cur\":\"\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}},\"signBind\":{\"0\":{}},\"orig\":{\"0\":{\"id\":\"2026-07-13#0\",\"d\":{\"dow\":\"Monday\",\"dt\":\"Jul 13\",\"wc\":\"4 X 4 X 0\",\"today\":true,\"notes\":[{\"t\":\"EP: ENGINE FIRE ON TAKE OFF\",\"rid\":\"rmus3ksh4uwrexe\"},{\"t\":\"ORDERS: FLYING ORDERS SECTION 2\",\"rid\":\"rmus3ksh47uo0f1\"}],\"allhands\":[{\"prog\":\"SODB\",\"str\":\"0745\",\"end\":\"0815\",\"rid\":\"rmus3ksh4jywlua\"},{\"prog\":\"MET + NOTAM BRIEF\",\"str\":\"0815\",\"end\":\"0830\",\"who\":\"nact\",\"rid\":\"rmus3ksh4t34ihs\"},{\"prog\":\"FLIGHT SAFETY STAND-DOWN\",\"str\":\"0830\",\"end\":\"0900\",\"who\":\"bane\",\"rid\":\"rmus3ksh48buxep\"},{\"prog\":\"WPNS & TACTICS SYNC\",\"str\":\"1130\",\"end\":\"1200\",\"who\":\"harpoon\",\"rid\":\"rmus3ksh40o4ytb\"},{\"prog\":\"STANDARDISATION MEETING\",\"str\":\"1330\",\"end\":\"1430\",\"who\":\"pump\",\"rid\":\"rmus3ksh49j9rdf\"},{\"prog\":\"OCU PROGRESS REVIEW\",\"str\":\"1445\",\"end\":\"1530\",\"who\":\"bapster\",\"rid\":\"rmus3ksh4l5snm9\"},{\"prog\":\"INTEL UPDATE\",\"str\":\"1600\",\"end\":\"1620\",\"who\":\"romeo\",\"rid\":\"rmus3ksh4a1xt5o\"},{\"prog\":\"OPS SHARING + NAV SYS BRIEF\",\"str\":\"1755\",\"end\":\"\",\"who\":\"stiff\",\"rid\":\"rmus3ksh43q58vy\"},{\"prog\":\"DINNER WITH CMD\",\"str\":\"1830\",\"end\":\"\",\"rid\":\"rmus3ksh4ch3fx4\"},{\"prog\":\"CMD ENGAGEMENT @ CREW ROOM (ALL)\",\"str\":\"2130\",\"end\":\"\",\"rid\":\"rmus3ksh485u37f\"}],\"waves\":[{\"label\":\"WAVE 1\",\"night\":false,\"intimes\":[\"1200H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"1300H: FIRST WAVE RU IN TIME + WX/NOTAMS\"],\"traffic\":[\"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\"],\"formations\":[{\"cs\":\"VL\",\"msn\":\"ACM\",\"to\":\"12:40\",\"ld\":\"14:05\",\"aircraft\":[{\"p\":\"stiff\",\"w\":\"freak\",\"area\":\"NORTH\",\"rmks\":\"DS FOR VL\",\"opts\":{\"tk2\":true,\"tpod\":true,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh48liuct\"},{\"p\":\"bane\",\"w\":\"wolf\",\"area\":\"SOUTH\",\"rmks\":\"2A: BFM-5\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh43a59ec\"}],\"rid\":\"rmus3ksh4zmu19u\"},{\"cs\":\"RU\",\"msn\":\"BFM\",\"to\":\"13:40\",\"ld\":\"15:05\",\"aircraft\":[{\"p\":\"slipway\",\"w\":\"divot\",\"area\":\"NORTH\",\"rmks\":\"PRI LSR\",\"opts\":{\"tk2\":true,\"tpod\":true,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4da3ve6\"},{\"p\":\"pump\",\"w\":\"dirty\",\"area\":\"SOUTH\",\"rmks\":\"2A: BFM-ADD\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":false,\"bombs\":\"\"},\"rid\":\"rmus3ksh4m5rgph\"}],\"rid\":\"rmus3ksh4yf2hca\"}],\"rid\":\"rmus3ksh4p6ke60\"},{\"label\":\"WAVE 2\",\"night\":true,\"intimes\":[\"1900H: NIGHT WAVE VL IN TIME + WX/NOTAMS\",\"1920H: NIGHT WAVE RU IN TIME + WX/NOTAMS\"],\"traffic\":[],\"formations\":[{\"cs\":\"VL\",\"msn\":\"BFM\",\"to\":\"19:45\",\"ld\":\"21:10\",\"aircraft\":[{\"p\":\"stiff\",\"w\":\"freak\",\"area\":\"WEST\",\"rmks\":\"1B: NIGHT BFM\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh4g7t2s7\"},{\"p\":\"bapster\",\"w\":\"nick\",\"area\":\"SOUTH\",\"rmks\":\"2A: DT / OCU\",\"opts\":{\"tk2\":false,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh41s7tyh\"}],\"rid\":\"rmus3ksh4auxwf1\"},{\"cs\":\"RU\",\"msn\":\"BFM\",\"to\":\"19:20\",\"ld\":\"20:45\",\"aircraft\":[{\"p\":\"pump\",\"w\":\"dirty\",\"area\":\"WEST\",\"rmks\":\"1A: NIGHT\",\"opts\":{\"tk2\":true,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh42qd8ey\"},{\"p\":\"casper\",\"w\":\"shrek\",\"area\":\"SOUTH\",\"rmks\":\"2A: NIGHT BFM\",\"opts\":{\"tk2\":false,\"tpod\":false,\"nav\":true,\"bombs\":\"\"},\"rid\":\"rmus3ksh4t60745\"}],\"rid\":\"rmus3ksh4odnl12\"}],\"rid\":\"rmus3ksh4vofl6i\"}],\"sims\":{\"amt\":[{\"label\":\"BRIEF\",\"str\":\"1100\",\"end\":\"\",\"rmks\":\"ALL 8 PAX @ AMT BLDG\",\"rid\":\"rmus3ksh4l9lah5\"},{\"label\":\"BOX\",\"str\":\"1130\",\"end\":\"1230\",\"pax\":[\"prowler\",\"drill\",\"taipan\",\"nasty\",\"ignite\",\"rocky\",\"bruise\",\"psy\"],\"rmks\":\"2 X 4-SHIP // 2TK TPOD 9X\",\"rid\":\"rmus3ksh4dugu1a\"},{\"label\":\"DEBRIEF\",\"str\":\"1230\",\"end\":\"\",\"rmks\":\"\",\"rid\":\"rmus3ksh4tv8snp\"}],\"oft\":[{\"label\":\"EP-4\",\"str\":\"0800\",\"end\":\"0930\",\"p\":\"haowen\",\"w\":\"stiff\",\"rmks\":\"A: IEPE / EP-3N // BRIEF 30 PRIOR\",\"rid\":\"rmus3ksh49f3uym\"},{\"label\":\"EP-4\",\"str\":\"1200\",\"end\":\"1330\",\"p\":\"bane\",\"w\":\"snap\",\"rmks\":\"A: SA(S)-3 // BRIEF 30 PRIOR\",\"rid\":\"rmus3ksh4a05g6p\"},{\"label\":\"SIMS (EXT SQN)\",\"str\":\"1330\",\"end\":\"1500\",\"who\":\"EXT SQN\",\"rmks\":\"EXT SQN SLOT\",\"rid\":\"rmus3ksh4mc0tsk\"},{\"label\":\"EP-6\",\"str\":\"1500\",\"end\":\"1630\",\"p\":\"prism\",\"rmks\":\"B: SEFE\",\"rid\":\"rmus3ksh4e3kr3c\"},{\"label\":\"EP-6N\",\"str\":\"1700\",\"end\":\"1830\",\"pax\":[\"shaft\",\"riddler\",\"sufa\"],\"rmks\":\"NIGHT EP // 3RD BODY = OBSERVER\",\"rid\":\"rmus3ksh45j41by\"}]},\"dutywaves\":[{\"label\":\"1st wave\",\"rows\":[{\"role\":\"SDO\",\"id\":\"mamba\",\"str\":\"0700\",\"end\":\"1300\",\"rid\":\"rmus3ksh4xd7cdc\"},{\"role\":\"SXO\",\"id\":\"razer\",\"str\":\"0600\",\"end\":\"1300\",\"rid\":\"rmus3ksh43uo4xo\"},{\"role\":\"OPS-O\",\"id\":\"glass\",\"str\":\"0600\",\"end\":\"1400\",\"rid\":\"rmus3ksh4zwz5lm\"}],\"rid\":\"rmus3ksh4i4i780\"},{\"label\":\"2nd wave\",\"rows\":[{\"role\":\"SDO\",\"id\":\"chaps\",\"str\":\"1300\",\"end\":\"2130\",\"rid\":\"rmus3ksh4bjcmas\"},{\"role\":\"SXO\",\"id\":\"yeti\",\"str\":\"1300\",\"end\":\"2130\",\"rid\":\"rmus3ksh4uk4e91\"},{\"role\":\"OPS-O\",\"id\":\"stuff\",\"str\":\"1400\",\"end\":\"2130\",\"rid\":\"rmus3ksh4xb67mc\"}],\"rid\":\"rmus3ksh4p9x0pa\"}],\"ground\":[{\"prog\":\"HQ ENGAGEMENT\",\"str\":\"0845\",\"end\":\"1630\",\"who\":\"dj\",\"rid\":\"rmus3ksh473ni35\"},{\"prog\":\"STAFF MTG @ HQ\",\"str\":\"0930\",\"end\":\"1100\",\"who\":\"vegas\",\"rid\":\"rmus3ksh4zqxw5d\"},{\"prog\":\"MEDICAL APPT\",\"str\":\"1030\",\"end\":\"1230\",\"who\":\"fantom\",\"rid\":\"rmus3ksh4vngl4j\"},{\"prog\":\"DENTAL APPT\",\"str\":\"1200\",\"end\":\"1330\",\"who\":\"krait\",\"rid\":\"rmus3ksh4okmbco\"},{\"prog\":\"TRAINING CMD VISIT\",\"str\":\"1630\",\"end\":\"1800\",\"who\":\"dj\",\"rid\":\"rmus3ksh4p95epo\"},{\"prog\":\"OPS/LOGS @ EXT SQN\",\"str\":\"1400\",\"end\":\"1530\",\"who\":\"slash\",\"rid\":\"rmus3ksh4npf8un\"},{\"prog\":\"APPOINTMENT\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"yeti\",\"rmks\":\"HSP blood panel\",\"srcType\":\"Appointment\",\"src\":\"imus3ksh4tckjbp\",\"srcv\":\"1nm88s0\",\"rid\":\"rimus3ksh4tckjbp\"},{\"prog\":\"MEETING\",\"str\":\"09:00\",\"end\":\"17:00\",\"who\":\"vinci\",\"rmks\":\"Desk / staff work\",\"srcType\":\"Meeting\",\"src\":\"imus3ksh4t5vqcd\",\"srcv\":\"tq0gks\",\"rid\":\"rimus3ksh4t5vqcd\"},{\"prog\":\"FLY WITH\",\"str\":\"\",\"end\":\"\",\"who\":\"bruise\",\"rmks\":\"Keen for any wave\",\"srcType\":\"Fly with\",\"src\":\"imus3ksh421nxyf\",\"srcv\":\"akyi7a\",\"rid\":\"rimus3ksh421nxyf\"}],\"oilev\":{\"iso\":\"2026-07-13\",\"earns\":false,\"d\":{},\"inputs\":[],\"sent\":{},\"mem\":1}},\"c\":{},\"fil\":{\"imus3ksh4uozd04\":\"\",\"imus3ksh4m0yqkp\":\"\",\"imus3ksh421nxyf\":\"g\",\"imus3ksh4t5vqcd\":\"g\",\"imus3ksh4tckjbp\":\"g\",\"imus3ksh46nfgwd\":\"\"},\"inp\":{\"imus3ksh4uozd04\":{\"person\":\"divot\",\"date\":\"Jul 13\",\"allday\":true,\"type\":\"OML\",\"remarks\":\"Medical leave 13 Jul\",\"mod\":\"2026-07-12\",\"docId\":\"doc-19d984ee-4a6c-426c-a6eb-79a4e97ae778\",\"yr\":2026,\"iid\":\"imus3ksh4uozd04\",\"ord\":1024},\"imus3ksh4m0yqkp\":{\"person\":\"sufa\",\"date\":\"Jul 13\",\"endDate\":\"Jul 17\",\"allday\":true,\"type\":\"ATT C\",\"remarks\":\"Medically down till 17 Jul\",\"mod\":\"2026-07-12\",\"docId\":\"doc-4a7f1fd6-2a13-48c3-8afa-ed0bda519770\",\"yr\":2026,\"iid\":\"imus3ksh4m0yqkp\",\"ord\":7168},\"imus3ksh421nxyf\":{\"person\":\"bruise\",\"date\":\"Jul 13\",\"allday\":true,\"type\":\"Fly with\",\"remarks\":\"Keen for any wave\",\"mod\":\"2026-06-20\",\"yr\":2026,\"iid\":\"imus3ksh421nxyf\",\"ord\":8192,\"acc\":\"g\"},\"imus3ksh4t5vqcd\":{\"person\":\"vinci\",\"date\":\"Jul 13\",\"allday\":false,\"s\":540,\"e\":1020,\"type\":\"Meeting\",\"remarks\":\"Desk / staff work\",\"mod\":\"2026-06-26\",\"yr\":2026,\"iid\":\"imus3ksh4t5vqcd\",\"ord\":9216,\"acc\":\"g\"},\"imus3ksh4tckjbp\":{\"person\":\"yeti\",\"date\":\"Jul 13\",\"allday\":false,\"s\":600,\"e\":660,\"type\":\"Appointment\",\"remarks\":\"HSP blood panel\",\"mod\":\"2026-07-06\",\"yr\":2026,\"iid\":\"imus3ksh4tckjbp\",\"ord\":11264,\"acc\":\"g\"},\"imus3ksh46nfgwd\":{\"person\":\"nick\",\"date\":\"Jul 13\",\"allday\":false,\"half\":\"pm\",\"s\":721,\"e\":1439,\"type\":\"SANS Availability\",\"sans\":{\"f\":true},\"mod\":\"2026-06-20\",\"yr\":2026,\"iid\":\"imus3ksh46nfgwd\",\"ord\":15360}},\"sign\":{\"0\":{\"cur\":\"Ace\",\"sked\":\"Basher\",\"plan\":\"Bolt\",\"appr\":\"Cinch\"}},\"w\":{\"byDay\":{\"di\":0,\"dow\":\"Monday\",\"warns\":[{\"sev\":\"hard\",\"code\":\"DOUBLE_BOOK\",\"who\":[\"stiff\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"OPS SHARING + NAV SYS BRIEF & VL BFM clash\",\"key\":\"a:0.7\"},{\"sev\":\"hard\",\"code\":\"DOUBLE_BOOK\",\"who\":[\"bane\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"VL ACM & Sim EP-4 clash\",\"key\":\"0.0.0.1.p\"},{\"sev\":\"hard\",\"code\":\"DOUBLE_BOOK\",\"who\":[\"pump\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"RU BFM & STANDARDISATION MEETING clash\",\"key\":\"0.0.1.1.p\"},{\"sev\":\"hard\",\"code\":\"DNIF_FLY\",\"who\":[\"divot\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"Downchit but planned to fly RU BFM — reason: Medical leave 13 Jul\",\"key\":\"0.0.1.0.w\"},{\"sev\":\"hard\",\"code\":\"INPUT_FLY\",\"who\":[\"bruise\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"Fly with but tasked — Sim BOX — reason: Keen for any wave\",\"key\":\"s:0.amt.1\"},{\"sev\":\"hard\",\"code\":\"DNIF_FLY\",\"who\":[\"sufa\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"Downchit but tasked — Sim EP-6N — reason: Medically down till 17 Jul\",\"key\":\"s:0.oft.4\"},{\"sev\":\"adv\",\"code\":\"NO_BRIEF\",\"who\":[\"stiff\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"No time for the VL BFM flight brief — OPS SHARING + NAV SYS BRIEF sits inside 17:25–19:45 (brief 17:25)\",\"key\":\"0.1.0.0.p\"},{\"sev\":\"adv\",\"code\":\"NO_BRIEF\",\"who\":[\"bane\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"No time for the VL ACM flight brief — Sim EP-4 sits inside 10:20–12:40 (brief 10:20)\",\"key\":\"0.0.0.1.p\"},{\"sev\":\"adv\",\"code\":\"NO_BRIEF\",\"who\":[\"pump\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"No time for the RU BFM flight brief — STANDARDISATION MEETING sits inside 11:20–13:40 (brief 11:20)\",\"key\":\"0.0.1.1.p\"},{\"sev\":\"adv\",\"code\":\"SIM_BRIEF\",\"who\":[\"bane\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"No time for the OFT EP-4 brief — VL ACM sits inside 11:30–12:00\",\"key\":\"s:0.oft.1\"},{\"sev\":\"adv\",\"code\":\"SIM_DEBRIEF\",\"who\":[\"bane\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"No time for the OFT EP-4 debrief — VL ACM sits inside 13:30–14:00\",\"key\":\"s:0.oft.1\"},{\"sev\":\"adv\",\"code\":\"DT_SUM\",\"who\":[\"stiff\",\"freak\",\"pump\",\"dirty\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"4 people are double turning: Saber, Echo, Piston, Relay\"},{\"sev\":\"adv\",\"code\":\"CREW_SOLO\",\"who\":[\"bapster\",\"nick\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus\",\"key\":\"0.1.0.1\"},{\"sev\":\"note\",\"code\":\"LONGDAY\",\"who\":[\"stiff\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)\"}]},\"sev\":{\"stiff\":\"hard\",\"bane\":\"hard\",\"pump\":\"hard\",\"divot\":\"hard\",\"bruise\":\"hard\",\"sufa\":\"hard\",\"bapster\":\"adv\",\"nick\":\"adv\"},\"chip\":{\"stiff\":\"C\",\"freak\":\"DT\",\"pump\":\"C\",\"dirty\":\"DT\",\"bane\":\"C\",\"divot\":\"C\",\"bruise\":\"C\",\"sufa\":\"C\",\"bapster\":\"CP\",\"nick\":\"CP\"},\"dash\":null,\"trace\":null,\"face\":{\"warns\":[{\"sev\":\"hard\",\"code\":\"DOUBLE_BOOK\",\"who\":[\"stiff\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"OPS SHARING + NAV SYS BRIEF & VL BFM clash\",\"key\":\"a:0.7\"},{\"sev\":\"hard\",\"code\":\"DOUBLE_BOOK\",\"who\":[\"bane\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"VL ACM & Sim EP-4 clash\",\"key\":\"0.0.0.1.p\"},{\"sev\":\"hard\",\"code\":\"DOUBLE_BOOK\",\"who\":[\"pump\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"RU BFM & STANDARDISATION MEETING clash\",\"key\":\"0.0.1.1.p\"},{\"sev\":\"hard\",\"code\":\"DNIF_FLY\",\"who\":[\"divot\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"Downchit but planned to fly RU BFM — reason: Medical leave 13 Jul\",\"key\":\"0.0.1.0.w\"},{\"sev\":\"hard\",\"code\":\"INPUT_FLY\",\"who\":[\"bruise\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"Fly with but tasked — Sim BOX — reason: Keen for any wave\",\"key\":\"s:0.amt.1\"},{\"sev\":\"hard\",\"code\":\"DNIF_FLY\",\"who\":[\"sufa\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"Downchit but tasked — Sim EP-6N — reason: Medically down till 17 Jul\",\"key\":\"s:0.oft.4\"},{\"sev\":\"adv\",\"code\":\"NO_BRIEF\",\"who\":[\"stiff\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"No time for the VL BFM flight brief — OPS SHARING + NAV SYS BRIEF sits inside 17:25–19:45 (brief 17:25)\",\"key\":\"0.1.0.0.p\"},{\"sev\":\"adv\",\"code\":\"NO_BRIEF\",\"who\":[\"bane\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"No time for the VL ACM flight brief — Sim EP-4 sits inside 10:20–12:40 (brief 10:20)\",\"key\":\"0.0.0.1.p\"},{\"sev\":\"adv\",\"code\":\"NO_BRIEF\",\"who\":[\"pump\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"No time for the RU BFM flight brief — STANDARDISATION MEETING sits inside 11:20–13:40 (brief 11:20)\",\"key\":\"0.0.1.1.p\"},{\"sev\":\"adv\",\"code\":\"SIM_BRIEF\",\"who\":[\"bane\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"No time for the OFT EP-4 brief — VL ACM sits inside 11:30–12:00\",\"key\":\"s:0.oft.1\"},{\"sev\":\"adv\",\"code\":\"SIM_DEBRIEF\",\"who\":[\"bane\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"No time for the OFT EP-4 debrief — VL ACM sits inside 13:30–14:00\",\"key\":\"s:0.oft.1\"},{\"sev\":\"adv\",\"code\":\"DT_SUM\",\"who\":[\"stiff\",\"freak\",\"pump\",\"dirty\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"4 people are double turning: Saber, Echo, Piston, Relay\"},{\"sev\":\"adv\",\"code\":\"CREW_SOLO\",\"who\":[\"bapster\",\"nick\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus\",\"key\":\"0.1.0.1\"},{\"sev\":\"note\",\"code\":\"LONGDAY\",\"who\":[\"stiff\"],\"day\":\"Monday\",\"di\":0,\"msg\":\"Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)\"}],\"sev\":{\"stiff\":\"hard\",\"bane\":\"hard\",\"pump\":\"hard\",\"divot\":\"hard\",\"bruise\":\"hard\",\"sufa\":\"hard\",\"bapster\":\"adv\",\"nick\":\"adv\"},\"chip\":{\"stiff\":\"C\",\"freak\":\"DT\",\"pump\":\"C\",\"dirty\":\"DT\",\"bane\":\"C\",\"divot\":\"C\",\"bruise\":\"C\",\"sufa\":\"C\",\"bapster\":\"CP\",\"nick\":\"CP\"},\"dash\":null,\"cs\":{\"stiff\":\"Saber\",\"bane\":\"Ranger\",\"pump\":\"Piston\",\"divot\":\"Vector\",\"bruise\":\"Gambit\",\"sufa\":\"Grit\",\"freak\":\"Echo\",\"dirty\":\"Relay\",\"bapster\":\"Wildcard\",\"nick\":\"Tally\"}},\"cs\":{\"stiff\":\"Saber\",\"bane\":\"Ranger\",\"pump\":\"Piston\",\"divot\":\"Vector\",\"bruise\":\"Gambit\",\"sufa\":\"Grit\",\"freak\":\"Echo\",\"dirty\":\"Relay\",\"bapster\":\"Wildcard\",\"nick\":\"Tally\"}},\"pa\":{\"nact\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":true,\"archived\":false},\"bane\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":true,\"archived\":false},\"harpoon\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"pump\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":true,\"archived\":false},\"bapster\":{\"q\":\"OCU\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"romeo\":{\"q\":\"B\",\"seat\":\"FCP\",\"pers\":false,\"san\":true,\"sxo\":false,\"archived\":false},\"stiff\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":true,\"archived\":false},\"freak\":{\"q\":\"IW\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":true,\"archived\":false},\"wolf\":{\"q\":\"IW\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"slipway\":{\"q\":\"A\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":true,\"archived\":false},\"divot\":{\"q\":\"C\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"dirty\":{\"q\":\"IW\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"nick\":{\"q\":\"OCU\",\"seat\":\"RCP\",\"pers\":false,\"san\":true,\"sxo\":false,\"archived\":false},\"casper\":{\"q\":\"C\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"shrek\":{\"q\":\"C\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"prowler\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"drill\":{\"q\":\"IW\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"taipan\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"nasty\":{\"q\":\"IW\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"ignite\":{\"q\":\"C\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"rocky\":{\"q\":\"C\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"bruise\":{\"q\":\"C\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"psy\":{\"q\":\"C\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"haowen\":{\"q\":\"OCU\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"snap\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":true,\"archived\":false},\"prism\":{\"q\":\"OCU\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"shaft\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":true,\"archived\":false},\"riddler\":{\"q\":\"C\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"sufa\":{\"q\":\"C\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"mamba\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":true,\"archived\":false},\"razer\":{\"q\":\"C\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":true,\"archived\":false},\"glass\":{\"q\":\"IW\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":true,\"archived\":false},\"chaps\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"yeti\":{\"q\":\"C\",\"seat\":\"FCP\",\"pers\":false,\"san\":true,\"sxo\":false,\"archived\":false},\"stuff\":{\"q\":\"IW\",\"seat\":\"RCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"dj\":{\"q\":\"A\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"vegas\":{\"q\":\"D\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"fantom\":{\"q\":\"D\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"krait\":{\"q\":\"D\",\"seat\":\"FCP\",\"pers\":false,\"san\":true,\"sxo\":false,\"archived\":false},\"slash\":{\"q\":\"IP\",\"seat\":\"FCP\",\"pers\":false,\"san\":false,\"sxo\":false,\"archived\":false},\"vinci\":{\"q\":\"C\",\"seat\":\"FCP\",\"pers\":false,\"san\":true,\"sxo\":false,\"archived\":false}},\"rv\":{\"briefLead\":140},\"ros\":[\"ammo\",\"badger\",\"bane\",\"bapster\",\"beams\",\"boosh\",\"bruise\",\"bullet\",\"cards\",\"casper\",\"chaps\",\"dice\",\"dirty\",\"divot\",\"dj\",\"drill\",\"fantom\",\"freak\",\"glass\",\"haowen\",\"harpoon\",\"ignite\",\"ipman\",\"krait\",\"mamba\",\"nact\",\"nasty\",\"nick\",\"pain\",\"pike\",\"plasma\",\"prism\",\"prowler\",\"psy\",\"pump\",\"razer\",\"riddler\",\"rocky\",\"romeo\",\"salsa\",\"shaft\",\"shrek\",\"slash\",\"slipway\",\"snap\",\"spaceman\",\"split\",\"stiff\",\"stuff\",\"sufa\",\"taipan\",\"vegas\",\"vinci\",\"waldo\",\"wolf\",\"wrangler\",\"xray\",\"yeti\"]}},\"cur\":{\"0\":\"2026-07-13#0\"},\"ridV\":2,\"amV\":1,\"retired\":{},\"correcting\":{},\"drafts\":{},\"curDraft\":{}}",
+          "current": "2026-07-13#0",
+          "seq": 10,
+          "last": {
+            "seq": 9,
+            "at": "2026-10-03T07:55:45.383Z",
+            "actor": {
+              "id": "acad",
+              "role": "admin",
+              "personId": "stiff",
+              "principal": "ad",
+              "session": {
+                "user": "acad",
+                "role": "admin",
+                "pid": "stiff",
+                "name": "ad",
+                "acct": "admin"
+              }
+            },
+            "origin": "user",
+            "scope": {
+              "module": "sched",
+              "weekId": "13/07/2026"
+            },
+            "type": "sched.mutate",
+            "changes": [
+              {
+                "op": "put",
+                "collection": "days",
+                "id": "13/07/2026#0",
+                "before": {
+                  "dow": "Monday",
+                  "dt": "Jul 13",
+                  "wc": "4 X 4 X 0",
+                  "today": true,
+                  "notes": [
+                    {
+                      "t": "EP: ENGINE FIRE ON TAKE OFF",
+                      "rid": "rmus3ksh4uwrexe"
+                    },
+                    {
+                      "t": "ORDERS: FLYING ORDERS SECTION 2",
+                      "rid": "rmus3ksh47uo0f1"
+                    }
+                  ],
+                  "allhands": [
+                    {
+                      "prog": "SODB",
+                      "str": "0745",
+                      "end": "0815",
+                      "rid": "rmus3ksh4jywlua"
+                    },
+                    {
+                      "prog": "MET + NOTAM BRIEF",
+                      "str": "0815",
+                      "end": "0830",
+                      "who": "nact",
+                      "rid": "rmus3ksh4t34ihs"
+                    },
+                    {
+                      "prog": "FLIGHT SAFETY STAND-DOWN",
+                      "str": "0830",
+                      "end": "0900",
+                      "who": "bane",
+                      "rid": "rmus3ksh48buxep"
+                    },
+                    {
+                      "prog": "WPNS & TACTICS SYNC",
+                      "str": "1130",
+                      "end": "1200",
+                      "who": "harpoon",
+                      "rid": "rmus3ksh40o4ytb"
+                    },
+                    {
+                      "prog": "STANDARDISATION MEETING",
+                      "str": "1330",
+                      "end": "1430",
+                      "who": "pump",
+                      "rid": "rmus3ksh49j9rdf"
+                    },
+                    {
+                      "prog": "OCU PROGRESS REVIEW",
+                      "str": "1445",
+                      "end": "1530",
+                      "who": "bapster",
+                      "rid": "rmus3ksh4l5snm9"
+                    },
+                    {
+                      "prog": "INTEL UPDATE",
+                      "str": "1600",
+                      "end": "1620",
+                      "who": "romeo",
+                      "rid": "rmus3ksh4a1xt5o"
+                    },
+                    {
+                      "prog": "OPS SHARING + NAV SYS BRIEF",
+                      "str": "1755",
+                      "end": "",
+                      "who": "stiff",
+                      "rid": "rmus3ksh43q58vy"
+                    },
+                    {
+                      "prog": "DINNER WITH CMD",
+                      "str": "1830",
+                      "end": "",
+                      "rid": "rmus3ksh4ch3fx4"
+                    },
+                    {
+                      "prog": "CMD ENGAGEMENT @ CREW ROOM (ALL)",
+                      "str": "2130",
+                      "end": "",
+                      "rid": "rmus3ksh485u37f"
+                    }
+                  ],
+                  "waves": [
+                    {
+                      "label": "WAVE 1",
+                      "night": false,
+                      "intimes": [
+                        "1200H: FIRST WAVE VL IN TIME + WX/NOTAMS",
+                        "1300H: FIRST WAVE RU IN TIME + WX/NOTAMS"
+                      ],
+                      "traffic": [
+                        "1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H"
+                      ],
+                      "formations": [
+                        {
+                          "cs": "VL",
+                          "msn": "ACM",
+                          "to": "12:40",
+                          "ld": "14:05",
+                          "aircraft": [
+                            {
+                              "p": "stiff",
+                              "w": "freak",
+                              "area": "NORTH",
+                              "rmks": "DS FOR VL",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": true,
+                                "nav": false,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh48liuct"
+                            },
+                            {
+                              "p": "bane",
+                              "w": "wolf",
+                              "area": "SOUTH",
+                              "rmks": "2A: BFM-5",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": false,
+                                "nav": false,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh43a59ec"
+                            }
+                          ],
+                          "rid": "rmus3ksh4zmu19u"
+                        },
+                        {
+                          "cs": "RU",
+                          "msn": "BFM",
+                          "to": "13:40",
+                          "ld": "15:05",
+                          "aircraft": [
+                            {
+                              "p": "slipway",
+                              "w": "divot",
+                              "area": "NORTH",
+                              "rmks": "PRI LSR",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": true,
+                                "nav": false,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh4da3ve6"
+                            },
+                            {
+                              "p": "pump",
+                              "w": "dirty",
+                              "area": "SOUTH",
+                              "rmks": "2A: BFM-ADD",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": false,
+                                "nav": false,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh4m5rgph"
+                            }
+                          ],
+                          "rid": "rmus3ksh4yf2hca"
+                        }
+                      ],
+                      "rid": "rmus3ksh4p6ke60"
+                    },
+                    {
+                      "label": "WAVE 2",
+                      "night": true,
+                      "intimes": [
+                        "1900H: NIGHT WAVE VL IN TIME + WX/NOTAMS",
+                        "1920H: NIGHT WAVE RU IN TIME + WX/NOTAMS"
+                      ],
+                      "traffic": [],
+                      "formations": [
+                        {
+                          "cs": "VL",
+                          "msn": "BFM",
+                          "to": "19:45",
+                          "ld": "21:10",
+                          "aircraft": [
+                            {
+                              "p": "stiff",
+                              "w": "freak",
+                              "area": "WEST",
+                              "rmks": "1B: NIGHT BFM",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": false,
+                                "nav": true,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh4g7t2s7"
+                            },
+                            {
+                              "p": "bapster",
+                              "w": "nick",
+                              "area": "SOUTH",
+                              "rmks": "2A: DT / OCU",
+                              "opts": {
+                                "tk2": false,
+                                "tpod": false,
+                                "nav": true,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh41s7tyh"
+                            }
+                          ],
+                          "rid": "rmus3ksh4auxwf1"
+                        },
+                        {
+                          "cs": "RU",
+                          "msn": "BFM",
+                          "to": "19:20",
+                          "ld": "20:45",
+                          "aircraft": [
+                            {
+                              "p": "pump",
+                              "w": "dirty",
+                              "area": "WEST",
+                              "rmks": "1A: NIGHT",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": false,
+                                "nav": true,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh42qd8ey"
+                            },
+                            {
+                              "p": "casper",
+                              "w": "shrek",
+                              "area": "SOUTH",
+                              "rmks": "2A: NIGHT BFM",
+                              "opts": {
+                                "tk2": false,
+                                "tpod": false,
+                                "nav": true,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh4t60745"
+                            }
+                          ],
+                          "rid": "rmus3ksh4odnl12"
+                        }
+                      ],
+                      "rid": "rmus3ksh4vofl6i"
+                    }
+                  ],
+                  "sims": {
+                    "amt": [
+                      {
+                        "label": "BRIEF",
+                        "str": "1100",
+                        "end": "",
+                        "rmks": "ALL 8 PAX @ AMT BLDG",
+                        "rid": "rmus3ksh4l9lah5"
+                      },
+                      {
+                        "label": "BOX",
+                        "str": "1130",
+                        "end": "1230",
+                        "pax": [
+                          "prowler",
+                          "drill",
+                          "taipan",
+                          "nasty",
+                          "ignite",
+                          "rocky",
+                          "bruise",
+                          "psy"
+                        ],
+                        "rmks": "2 X 4-SHIP // 2TK TPOD 9X",
+                        "rid": "rmus3ksh4dugu1a"
+                      },
+                      {
+                        "label": "DEBRIEF",
+                        "str": "1230",
+                        "end": "",
+                        "rmks": "",
+                        "rid": "rmus3ksh4tv8snp"
+                      }
+                    ],
+                    "oft": [
+                      {
+                        "label": "EP-4",
+                        "str": "0800",
+                        "end": "0930",
+                        "p": "haowen",
+                        "w": "stiff",
+                        "rmks": "A: IEPE / EP-3N // BRIEF 30 PRIOR",
+                        "rid": "rmus3ksh49f3uym"
+                      },
+                      {
+                        "label": "EP-4",
+                        "str": "1200",
+                        "end": "1330",
+                        "p": "bane",
+                        "w": "snap",
+                        "rmks": "A: SA(S)-3 // BRIEF 30 PRIOR",
+                        "rid": "rmus3ksh4a05g6p"
+                      },
+                      {
+                        "label": "SIMS (EXT SQN)",
+                        "str": "1330",
+                        "end": "1500",
+                        "who": "EXT SQN",
+                        "rmks": "EXT SQN SLOT",
+                        "rid": "rmus3ksh4mc0tsk"
+                      },
+                      {
+                        "label": "EP-6",
+                        "str": "1500",
+                        "end": "1630",
+                        "p": "prism",
+                        "rmks": "B: SEFE",
+                        "rid": "rmus3ksh4e3kr3c"
+                      },
+                      {
+                        "label": "EP-6N",
+                        "str": "1700",
+                        "end": "1830",
+                        "pax": [
+                          "shaft",
+                          "riddler",
+                          "sufa"
+                        ],
+                        "rmks": "NIGHT EP // 3RD BODY = OBSERVER",
+                        "rid": "rmus3ksh45j41by"
+                      }
+                    ]
+                  },
+                  "dutywaves": [
+                    {
+                      "label": "1st wave",
+                      "rows": [
+                        {
+                          "role": "SDO",
+                          "id": "mamba",
+                          "str": "0700",
+                          "end": "1300",
+                          "rid": "rmus3ksh4xd7cdc"
+                        },
+                        {
+                          "role": "SXO",
+                          "id": "razer",
+                          "str": "0600",
+                          "end": "1300",
+                          "rid": "rmus3ksh43uo4xo"
+                        },
+                        {
+                          "role": "OPS-O",
+                          "id": "glass",
+                          "str": "0600",
+                          "end": "1400",
+                          "rid": "rmus3ksh4zwz5lm"
+                        }
+                      ],
+                      "rid": "rmus3ksh4i4i780"
+                    },
+                    {
+                      "label": "2nd wave",
+                      "rows": [
+                        {
+                          "role": "SDO",
+                          "id": "chaps",
+                          "str": "1300",
+                          "end": "2130",
+                          "rid": "rmus3ksh4bjcmas"
+                        },
+                        {
+                          "role": "SXO",
+                          "id": "yeti",
+                          "str": "1300",
+                          "end": "2130",
+                          "rid": "rmus3ksh4uk4e91"
+                        },
+                        {
+                          "role": "OPS-O",
+                          "id": "stuff",
+                          "str": "1400",
+                          "end": "2130",
+                          "rid": "rmus3ksh4xb67mc"
+                        }
+                      ],
+                      "rid": "rmus3ksh4p9x0pa"
+                    }
+                  ],
+                  "ground": [
+                    {
+                      "prog": "HQ ENGAGEMENT",
+                      "str": "0845",
+                      "end": "1630",
+                      "who": "dj",
+                      "rid": "rmus3ksh473ni35"
+                    },
+                    {
+                      "prog": "STAFF MTG @ HQ",
+                      "str": "0930",
+                      "end": "1100",
+                      "who": "vegas",
+                      "rid": "rmus3ksh4zqxw5d"
+                    },
+                    {
+                      "prog": "MEDICAL APPT",
+                      "str": "1030",
+                      "end": "1230",
+                      "who": "fantom",
+                      "rid": "rmus3ksh4vngl4j"
+                    },
+                    {
+                      "prog": "DENTAL APPT",
+                      "str": "1200",
+                      "end": "1330",
+                      "who": "krait",
+                      "rid": "rmus3ksh4okmbco"
+                    },
+                    {
+                      "prog": "TRAINING CMD VISIT",
+                      "str": "1630",
+                      "end": "1800",
+                      "who": "dj",
+                      "rid": "rmus3ksh4p95epo"
+                    },
+                    {
+                      "prog": "OPS/LOGS @ EXT SQN",
+                      "str": "1400",
+                      "end": "1530",
+                      "who": "slash",
+                      "rid": "rmus3ksh4npf8un"
+                    },
+                    {
+                      "prog": "APPOINTMENT",
+                      "str": "10:00",
+                      "end": "11:00",
+                      "who": "yeti",
+                      "rmks": "HSP blood panel",
+                      "srcType": "Appointment",
+                      "src": "imus3ksh4tckjbp",
+                      "srcv": "1nm88s0",
+                      "rid": "rimus3ksh4tckjbp"
+                    },
+                    {
+                      "prog": "MEETING",
+                      "str": "09:00",
+                      "end": "17:00",
+                      "who": "vinci",
+                      "rmks": "Desk / staff work",
+                      "srcType": "Meeting",
+                      "src": "imus3ksh4t5vqcd",
+                      "srcv": "tq0gks",
+                      "rid": "rimus3ksh4t5vqcd"
+                    },
+                    {
+                      "prog": "FLY WITH",
+                      "str": "",
+                      "end": "",
+                      "who": "bruise",
+                      "rmks": "Keen for any wave",
+                      "srcType": "Fly with",
+                      "src": "imus3ksh421nxyf",
+                      "srcv": "akyi7a",
+                      "rid": "rimus3ksh421nxyf"
+                    }
+                  ]
+                },
+                "after": {
+                  "dow": "Monday",
+                  "dt": "Jul 13",
+                  "wc": "4 X 4 X 0",
+                  "today": true,
+                  "notes": [
+                    {
+                      "t": "EP: ENGINE FIRE ON TAKE OFF",
+                      "rid": "rmus3ksh4uwrexe"
+                    },
+                    {
+                      "t": "ORDERS: FLYING ORDERS SECTION 2",
+                      "rid": "rmus3ksh47uo0f1"
+                    }
+                  ],
+                  "allhands": [
+                    {
+                      "prog": "SODB",
+                      "str": "0745",
+                      "end": "0815",
+                      "rid": "rmus3ksh4jywlua"
+                    },
+                    {
+                      "prog": "MET + NOTAM BRIEF",
+                      "str": "0815",
+                      "end": "0830",
+                      "who": "nact",
+                      "rid": "rmus3ksh4t34ihs"
+                    },
+                    {
+                      "prog": "FLIGHT SAFETY STAND-DOWN",
+                      "str": "0830",
+                      "end": "0900",
+                      "who": "bane",
+                      "rid": "rmus3ksh48buxep"
+                    },
+                    {
+                      "prog": "WPNS & TACTICS SYNC",
+                      "str": "1130",
+                      "end": "1200",
+                      "who": "harpoon",
+                      "rid": "rmus3ksh40o4ytb"
+                    },
+                    {
+                      "prog": "STANDARDISATION MEETING",
+                      "str": "1330",
+                      "end": "1430",
+                      "who": "pump",
+                      "rid": "rmus3ksh49j9rdf"
+                    },
+                    {
+                      "prog": "OCU PROGRESS REVIEW",
+                      "str": "1445",
+                      "end": "1530",
+                      "who": "bapster",
+                      "rid": "rmus3ksh4l5snm9"
+                    },
+                    {
+                      "prog": "INTEL UPDATE",
+                      "str": "1600",
+                      "end": "1620",
+                      "who": "romeo",
+                      "rid": "rmus3ksh4a1xt5o"
+                    },
+                    {
+                      "prog": "OPS SHARING + NAV SYS BRIEF",
+                      "str": "1755",
+                      "end": "",
+                      "who": "stiff",
+                      "rid": "rmus3ksh43q58vy"
+                    },
+                    {
+                      "prog": "DINNER WITH CMD",
+                      "str": "1830",
+                      "end": "",
+                      "rid": "rmus3ksh4ch3fx4"
+                    },
+                    {
+                      "prog": "CMD ENGAGEMENT @ CREW ROOM (ALL)",
+                      "str": "2130",
+                      "end": "",
+                      "rid": "rmus3ksh485u37f"
+                    }
+                  ],
+                  "waves": [
+                    {
+                      "label": "WAVE 1",
+                      "night": false,
+                      "intimes": [
+                        "1200H: FIRST WAVE VL IN TIME + WX/NOTAMS",
+                        "1300H: FIRST WAVE RU IN TIME + WX/NOTAMS"
+                      ],
+                      "traffic": [
+                        "1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H"
+                      ],
+                      "formations": [
+                        {
+                          "cs": "VL",
+                          "msn": "ACM",
+                          "to": "12:40",
+                          "ld": "14:05",
+                          "aircraft": [
+                            {
+                              "p": "stiff",
+                              "w": "freak",
+                              "area": "NORTH",
+                              "rmks": "DS FROM RU",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": true,
+                                "nav": false,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh48liuct"
+                            },
+                            {
+                              "p": "bane",
+                              "w": "wolf",
+                              "area": "SOUTH",
+                              "rmks": "2A: BFM-5",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": false,
+                                "nav": false,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh43a59ec"
+                            }
+                          ],
+                          "rid": "rmus3ksh4zmu19u"
+                        },
+                        {
+                          "cs": "RU",
+                          "msn": "BFM",
+                          "to": "13:40",
+                          "ld": "15:05",
+                          "aircraft": [
+                            {
+                              "p": "slipway",
+                              "w": "divot",
+                              "area": "NORTH",
+                              "rmks": "PRI LSR",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": true,
+                                "nav": false,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh4da3ve6"
+                            },
+                            {
+                              "p": "pump",
+                              "w": "dirty",
+                              "area": "SOUTH",
+                              "rmks": "2A: BFM-ADD",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": false,
+                                "nav": false,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh4m5rgph"
+                            }
+                          ],
+                          "rid": "rmus3ksh4yf2hca"
+                        }
+                      ],
+                      "rid": "rmus3ksh4p6ke60"
+                    },
+                    {
+                      "label": "WAVE 2",
+                      "night": true,
+                      "intimes": [
+                        "1900H: NIGHT WAVE VL IN TIME + WX/NOTAMS",
+                        "1920H: NIGHT WAVE RU IN TIME + WX/NOTAMS"
+                      ],
+                      "traffic": [],
+                      "formations": [
+                        {
+                          "cs": "VL",
+                          "msn": "BFM",
+                          "to": "19:45",
+                          "ld": "21:10",
+                          "aircraft": [
+                            {
+                              "p": "stiff",
+                              "w": "freak",
+                              "area": "WEST",
+                              "rmks": "1B: NIGHT BFM",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": false,
+                                "nav": true,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh4g7t2s7"
+                            },
+                            {
+                              "p": "bapster",
+                              "w": "nick",
+                              "area": "SOUTH",
+                              "rmks": "2A: DT / OCU",
+                              "opts": {
+                                "tk2": false,
+                                "tpod": false,
+                                "nav": true,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh41s7tyh"
+                            }
+                          ],
+                          "rid": "rmus3ksh4auxwf1"
+                        },
+                        {
+                          "cs": "RU",
+                          "msn": "BFM",
+                          "to": "19:20",
+                          "ld": "20:45",
+                          "aircraft": [
+                            {
+                              "p": "pump",
+                              "w": "dirty",
+                              "area": "WEST",
+                              "rmks": "1A: NIGHT",
+                              "opts": {
+                                "tk2": true,
+                                "tpod": false,
+                                "nav": true,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh42qd8ey"
+                            },
+                            {
+                              "p": "casper",
+                              "w": "shrek",
+                              "area": "SOUTH",
+                              "rmks": "2A: NIGHT BFM",
+                              "opts": {
+                                "tk2": false,
+                                "tpod": false,
+                                "nav": true,
+                                "bombs": ""
+                              },
+                              "rid": "rmus3ksh4t60745"
+                            }
+                          ],
+                          "rid": "rmus3ksh4odnl12"
+                        }
+                      ],
+                      "rid": "rmus3ksh4vofl6i"
+                    }
+                  ],
+                  "sims": {
+                    "amt": [
+                      {
+                        "label": "BRIEF",
+                        "str": "1100",
+                        "end": "",
+                        "rmks": "ALL 8 PAX @ AMT BLDG",
+                        "rid": "rmus3ksh4l9lah5"
+                      },
+                      {
+                        "label": "BOX",
+                        "str": "1130",
+                        "end": "1230",
+                        "pax": [
+                          "prowler",
+                          "drill",
+                          "taipan",
+                          "nasty",
+                          "ignite",
+                          "rocky",
+                          "bruise",
+                          "psy"
+                        ],
+                        "rmks": "2 X 4-SHIP // 2TK TPOD 9X",
+                        "rid": "rmus3ksh4dugu1a"
+                      },
+                      {
+                        "label": "DEBRIEF",
+                        "str": "1230",
+                        "end": "",
+                        "rmks": "",
+                        "rid": "rmus3ksh4tv8snp"
+                      }
+                    ],
+                    "oft": [
+                      {
+                        "label": "EP-4",
+                        "str": "0800",
+                        "end": "0930",
+                        "p": "haowen",
+                        "w": "stiff",
+                        "rmks": "A: IEPE / EP-3N // BRIEF 30 PRIOR",
+                        "rid": "rmus3ksh49f3uym"
+                      },
+                      {
+                        "label": "EP-4",
+                        "str": "1200",
+                        "end": "1330",
+                        "p": "bane",
+                        "w": "snap",
+                        "rmks": "A: SA(S)-3 // BRIEF 30 PRIOR",
+                        "rid": "rmus3ksh4a05g6p"
+                      },
+                      {
+                        "label": "SIMS (EXT SQN)",
+                        "str": "1330",
+                        "end": "1500",
+                        "who": "EXT SQN",
+                        "rmks": "EXT SQN SLOT",
+                        "rid": "rmus3ksh4mc0tsk"
+                      },
+                      {
+                        "label": "EP-6",
+                        "str": "1500",
+                        "end": "1630",
+                        "p": "prism",
+                        "rmks": "B: SEFE",
+                        "rid": "rmus3ksh4e3kr3c"
+                      },
+                      {
+                        "label": "EP-6N",
+                        "str": "1700",
+                        "end": "1830",
+                        "pax": [
+                          "shaft",
+                          "riddler",
+                          "sufa"
+                        ],
+                        "rmks": "NIGHT EP // 3RD BODY = OBSERVER",
+                        "rid": "rmus3ksh45j41by"
+                      }
+                    ]
+                  },
+                  "dutywaves": [
+                    {
+                      "label": "1st wave",
+                      "rows": [
+                        {
+                          "role": "SDO",
+                          "id": "mamba",
+                          "str": "0700",
+                          "end": "1300",
+                          "rid": "rmus3ksh4xd7cdc"
+                        },
+                        {
+                          "role": "SXO",
+                          "id": "razer",
+                          "str": "0600",
+                          "end": "1300",
+                          "rid": "rmus3ksh43uo4xo"
+                        },
+                        {
+                          "role": "OPS-O",
+                          "id": "glass",
+                          "str": "0600",
+                          "end": "1400",
+                          "rid": "rmus3ksh4zwz5lm"
+                        }
+                      ],
+                      "rid": "rmus3ksh4i4i780"
+                    },
+                    {
+                      "label": "2nd wave",
+                      "rows": [
+                        {
+                          "role": "SDO",
+                          "id": "chaps",
+                          "str": "1300",
+                          "end": "2130",
+                          "rid": "rmus3ksh4bjcmas"
+                        },
+                        {
+                          "role": "SXO",
+                          "id": "yeti",
+                          "str": "1300",
+                          "end": "2130",
+                          "rid": "rmus3ksh4uk4e91"
+                        },
+                        {
+                          "role": "OPS-O",
+                          "id": "stuff",
+                          "str": "1400",
+                          "end": "2130",
+                          "rid": "rmus3ksh4xb67mc"
+                        }
+                      ],
+                      "rid": "rmus3ksh4p9x0pa"
+                    }
+                  ],
+                  "ground": [
+                    {
+                      "prog": "HQ ENGAGEMENT",
+                      "str": "0845",
+                      "end": "1630",
+                      "who": "dj",
+                      "rid": "rmus3ksh473ni35"
+                    },
+                    {
+                      "prog": "STAFF MTG @ HQ",
+                      "str": "0930",
+                      "end": "1100",
+                      "who": "vegas",
+                      "rid": "rmus3ksh4zqxw5d"
+                    },
+                    {
+                      "prog": "MEDICAL APPT",
+                      "str": "1030",
+                      "end": "1230",
+                      "who": "fantom",
+                      "rid": "rmus3ksh4vngl4j"
+                    },
+                    {
+                      "prog": "DENTAL APPT",
+                      "str": "1200",
+                      "end": "1330",
+                      "who": "krait",
+                      "rid": "rmus3ksh4okmbco"
+                    },
+                    {
+                      "prog": "TRAINING CMD VISIT",
+                      "str": "1630",
+                      "end": "1800",
+                      "who": "dj",
+                      "rid": "rmus3ksh4p95epo"
+                    },
+                    {
+                      "prog": "OPS/LOGS @ EXT SQN",
+                      "str": "1400",
+                      "end": "1530",
+                      "who": "slash",
+                      "rid": "rmus3ksh4npf8un"
+                    },
+                    {
+                      "prog": "APPOINTMENT",
+                      "str": "10:00",
+                      "end": "11:00",
+                      "who": "yeti",
+                      "rmks": "HSP blood panel",
+                      "srcType": "Appointment",
+                      "src": "imus3ksh4tckjbp",
+                      "srcv": "1nm88s0",
+                      "rid": "rimus3ksh4tckjbp"
+                    },
+                    {
+                      "prog": "MEETING",
+                      "str": "09:00",
+                      "end": "17:00",
+                      "who": "vinci",
+                      "rmks": "Desk / staff work",
+                      "srcType": "Meeting",
+                      "src": "imus3ksh4t5vqcd",
+                      "srcv": "tq0gks",
+                      "rid": "rimus3ksh4t5vqcd"
+                    },
+                    {
+                      "prog": "FLY WITH",
+                      "str": "",
+                      "end": "",
+                      "who": "bruise",
+                      "rmks": "Keen for any wave",
+                      "srcType": "Fly with",
+                      "src": "imus3ksh421nxyf",
+                      "srcv": "akyi7a",
+                      "rid": "rimus3ksh421nxyf"
+                    }
+                  ]
+                }
+              },
+              {
+                "op": "put",
+                "collection": "sched.book",
+                "id": "13/07/2026#0",
+                "before": {
+                  "ok": 1,
+                  "sg": {
+                    "cur": "",
+                    "sked": "",
+                    "plan": "",
+                    "appr": ""
+                  },
+                  "sb": {},
+                  "cv": "2026-07-13#0"
+                },
+                "after": {
+                  "p": {
+                    "fr:0.rmus3ksh4p6ke60.rmus3ksh4zmu19u.rmus3ksh48liuct": 1
+                  },
+                  "ok": 1,
+                  "sg": {
+                    "cur": "",
+                    "sked": "",
+                    "plan": "",
+                    "appr": ""
+                  },
+                  "sb": {},
+                  "cv": "2026-07-13#0"
+                }
+              }
+            ],
+            "emit": true,
+            "revs": {
+              "days/13/07/2026#0": 3,
+              "sched.book/13/07/2026#0": 8
+            }
+          },
+          "history": [
+            {
+              "t": 1791014143874,
+              "who": "Saber",
+              "pid": "stiff",
+              "di": 0,
+              "date": "2026-07-13",
+              "key": "ff:0.rmus3ksh4p6ke60.rmus3ksh4zmu19u.msn",
+              "lbl": "VL · mission",
+              "from": "BFM",
+              "to": "ACM",
+              "lineId": "mus3ksg8d9pu.000001",
+              "seq": 1
+            },
+            {
+              "t": 1791014144105,
+              "who": "Saber",
+              "pid": "stiff",
+              "di": 0,
+              "date": "2026-07-13",
+              "key": "fr:0.rmus3ksh4p6ke60.rmus3ksh4zmu19u.rmus3ksh48liuct",
+              "lbl": "VL · #1 remarks",
+              "from": "1B: BFM-6",
+              "to": "DS FOR VL",
+              "lineId": "mus3ksg8d9pu.000002",
+              "seq": 2
+            },
+            {
+              "t": 1791014144485,
+              "who": "Saber",
+              "pid": "stiff",
+              "di": 0,
+              "date": "2026-07-13",
+              "key": "",
+              "lbl": "Signed · CUR CK · Ace",
+              "from": "",
+              "to": "",
+              "sect": "day",
+              "lineId": "mus3ksg8d9pu.000003",
+              "seq": 3
+            },
+            {
+              "t": 1791014144630,
+              "who": "Saber",
+              "pid": "stiff",
+              "di": 0,
+              "date": "2026-07-13",
+              "key": "",
+              "lbl": "Signed · SKED CK · Basher",
+              "from": "",
+              "to": "",
+              "sect": "day",
+              "lineId": "mus3ksg8d9pu.000004",
+              "seq": 4
+            },
+            {
+              "t": 1791014144783,
+              "who": "Saber",
+              "pid": "stiff",
+              "di": 0,
+              "date": "2026-07-13",
+              "key": "",
+              "lbl": "Signed · PLANNED BY · Bolt",
+              "from": "",
+              "to": "",
+              "sect": "day",
+              "lineId": "mus3ksg8d9pu.000005",
+              "seq": 5
+            },
+            {
+              "t": 1791014144933,
+              "who": "Saber",
+              "pid": "stiff",
+              "di": 0,
+              "date": "2026-07-13",
+              "key": "",
+              "lbl": "Signed · APPROVED BY · Cinch",
+              "from": "",
+              "to": "",
+              "sect": "day",
+              "lineId": "mus3ksg8d9pu.000006",
+              "seq": 6
+            },
+            {
+              "t": 1791014145154,
+              "who": "Saber",
+              "pid": "stiff",
+              "di": null,
+              "date": "2026-07-13",
+              "key": "",
+              "lbl": "Published — the Original",
+              "from": "",
+              "to": "",
+              "sect": "day",
+              "lineId": "mus3ksg8d9pu.000007",
+              "seq": 7
+            },
+            {
+              "t": 1791014145375,
+              "who": "Saber",
+              "pid": "stiff",
+              "di": 0,
+              "date": "2026-07-13",
+              "key": "fr:0.rmus3ksh4p6ke60.rmus3ksh4zmu19u.rmus3ksh48liuct",
+              "lbl": "VL · #1 remarks",
+              "from": "DS FOR VL",
+              "to": "DS FROM RU",
+              "lineId": "mus3ksg8d9pu.000008",
+              "seq": 8
+            }
+          ]
+        }
+      }
+    },
+    {
+      "scene": "published-working",
+      "id": "published-A-answer",
+      "ids": [
+        "S13",
+        "S14",
+        "S17",
+        "S32"
+      ],
+      "status": "FAIL",
+      "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.mission-role-question').filter({ visible: true }).first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 5000ms\n  - waiting for locator('.mission-role-question').filter({ visible: true }).first()\n\n    at captureRawStack (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright-core\\lib\\coreBundle.js:9681:17)\n    at callMatcherAsStep (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright\\lib\\matchers\\expect.js:13310:57)\n    at Object.toBeVisible (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright\\lib\\matchers\\expect.js:13300:23)\n    at role (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:49:47)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:102:245\n    at async step (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:39:49)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:100:2\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:24)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:97:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\published-working-FAIL-published-A-answer.png"
+    },
+    {
+      "scene": "published-working",
+      "id": "world-stopped",
+      "status": "FAIL",
+      "error": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('.mission-role-question').filter({ visible: true }).first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"to.be.visible\" with timeout 5000ms\n  - waiting for locator('.mission-role-question').filter({ visible: true }).first()\n\n    at captureRawStack (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright-core\\lib\\coreBundle.js:9681:17)\n    at callMatcherAsStep (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright\\lib\\matchers\\expect.js:13310:57)\n    at Object.toBeVisible (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright\\lib\\matchers\\expect.js:13300:23)\n    at role (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:49:47)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:102:245\n    at async step (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:39:49)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:100:2\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:24)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:97:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\published-working-world-stopped.png"
+    },
+    {
+      "scene": "published-working",
+      "id": "dependent-remainder",
+      "status": "NOT RUN",
+      "reason": "Earlier prerequisite failed; see failure evidence"
+    },
+    {
+      "scene": "plans-history",
+      "id": "text-answer-separate-history",
+      "ids": [
+        "S16",
+        "S17"
+      ],
+      "status": "PASS",
+      "detail": {
+        "aId": "%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus3l0hhkf08pq%22%2C%22%5B1%2C%5C%22ACM%5C%22%2C%5B%5C%22DS%20FOR%20VL%5C%22%5D%5D%22%5D",
+        "bId": "%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus3l0hhkf08pq%22%2C%22%5B1%2C%5C%22ACM%5C%22%2C%5B%5C%22DS%20FROM%20RU%5C%22%5D%5D%22%5D",
+        "history": [
+          {
+            "t": 1791014154439,
+            "who": "Saber",
+            "pid": "stiff",
+            "di": 0,
+            "date": "2026-07-13",
+            "key": "fr:0.rmus3l0hh84h43e.rmus3l0hhkf08pq.rmus3l0hh7u9mpf",
+            "lbl": "VL · #1 remarks",
+            "from": "1B: BFM-6",
+            "to": "DS FOR VL",
+            "lineId": "mus3l0go3jqz.000002",
+            "seq": 2
+          },
+          {
+            "t": 1791014155101,
+            "who": "Saber",
+            "pid": "stiff",
+            "di": null,
+            "date": "2026-07-13",
+            "key": "",
+            "lbl": "VL · mission role · Working copy",
+            "from": "Unresolved",
+            "to": "Red",
+            "sect": "day",
+            "sub": "rmus3l0hhkf08pq",
+            "fld": "mission-role",
+            "lineId": "mus3l0go3jqz.000003",
+            "seq": 3
+          },
+          {
+            "t": 1791014155270,
+            "who": "Saber",
+            "pid": "stiff",
+            "di": 0,
+            "date": "2026-07-13",
+            "key": "fr:0.rmus3l0hh84h43e.rmus3l0hhkf08pq.rmus3l0hh7u9mpf",
+            "lbl": "VL · #1 remarks",
+            "from": "DS FOR VL",
+            "to": "DS FROM RU",
+            "lineId": "mus3l0go3jqz.000004",
+            "seq": 4
+          },
+          {
+            "t": 1791014155600,
+            "who": "Saber",
+            "pid": "stiff",
+            "di": null,
+            "date": "2026-07-13",
+            "key": "",
+            "lbl": "VL · mission role · Working copy",
+            "from": "Unresolved",
+            "to": "Blue",
+            "sect": "day",
+            "sub": "rmus3l0hhkf08pq",
+            "fld": "mission-role",
+            "lineId": "mus3l0go3jqz.000005",
+            "seq": 5
+          },
+          {
+            "t": 1791014155782,
+            "who": "Saber",
+            "pid": "stiff",
+            "di": null,
+            "date": "2026-07-13",
+            "key": "",
+            "lbl": "Undo — the mission role for VL — Blue",
+            "from": "",
+            "to": "",
+            "sect": "day",
+            "lineId": "mus3l0go3jqz.000006",
+            "seq": 6
+          },
+          {
+            "t": 1791014156000,
+            "who": "Saber",
+            "pid": "stiff",
+            "di": null,
+            "date": "2026-07-13",
+            "key": "",
+            "lbl": "Undo — a change to the schedule",
+            "from": "",
+            "to": "",
+            "sect": "day",
+            "lineId": "mus3l0go3jqz.000007",
+            "seq": 7
+          },
+          {
+            "t": 1791014156255,
+            "who": "Saber",
+            "pid": "stiff",
+            "di": null,
+            "date": "2026-07-13",
+            "key": "",
+            "lbl": "Redo — a change to the schedule",
+            "from": "",
+            "to": "",
+            "sect": "day",
+            "lineId": "mus3l0go3jqz.000008",
+            "seq": 8
+          },
+          {
+            "t": 1791014156485,
+            "who": "Saber",
+            "pid": "stiff",
+            "di": null,
+            "date": "2026-07-13",
+            "key": "",
+            "lbl": "Redo — the mission role for VL — Blue",
+            "from": "",
+            "to": "",
+            "sect": "day",
+            "lineId": "mus3l0go3jqz.000009",
+            "seq": 9
+          }
+        ]
+      }
+    },
+    {
+      "scene": "plans-history",
+      "id": "same-rid-plan-copy-correction",
+      "ids": [
+        "S18"
+      ],
+      "status": "PASS",
+      "detail": {
+        "rid": "rmus3l0hhkf08pq",
+        "corrected": "%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus3l0hhkf08pq%22%2C%22%5B1%2C%5C%22ACM%5C%22%2C%5B%5C%22DS%20FROM%20RU%5C%22%5D%5D%22%5D"
+      }
+    },
+    {
+      "scene": "plans-history",
+      "id": "parked-plan-different-context-roundtrip",
+      "ids": [
+        "S18",
+        "S25"
+      ],
+      "status": "PASS",
+      "detail": {
+        "aId": "%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus3l0hhkf08pq%22%2C%22%5B1%2C%5C%22ACM%5C%22%2C%5B%5C%22DS%20FOR%20VL%5C%22%5D%5D%22%5D",
+        "bId": "%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus3l0hhkf08pq%22%2C%22%5B1%2C%5C%22ACM%5C%22%2C%5B%5C%22DS%20FROM%20RU%5C%22%5D%5D%22%5D"
+      }
+    },
+    {
+      "scene": "templates",
+      "id": "save-template-and-reload",
+      "ids": [
+        "S19"
+      ],
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard [data-daytpladd=\"0\"]').filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:141:10\n    at async step (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:39:49)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:139:2\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:24)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:137:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\templates-FAIL-save-template-and-reload.png"
+    },
+    {
+      "scene": "templates",
+      "id": "world-stopped",
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard [data-daytpladd=\"0\"]').filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:141:10\n    at async step (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:39:49)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:139:2\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:24)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:137:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\templates-world-stopped.png"
+    },
+    {
+      "scene": "templates",
+      "id": "dependent-remainder",
+      "status": "NOT RUN",
+      "reason": "Earlier prerequisite failed; see failure evidence"
+    },
+    {
+      "scene": "off-week",
+      "id": "role-undo-lands-on-origin-week",
+      "ids": [
+        "S28"
+      ],
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard:visible').getByRole('button', { name: /Close/ }).filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at closeBoard (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:41:35)\n    at C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:152:60\n    at async step (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:39:49)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:151:2\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:24)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:150:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\off-week-FAIL-role-undo-lands-on-origin-week.png"
+    },
+    {
+      "scene": "off-week",
+      "id": "world-stopped",
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard:visible').getByRole('button', { name: /Close/ }).filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at closeBoard (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:41:35)\n    at C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:152:60\n    at async step (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:39:49)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:151:2\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:24)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:150:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\off-week-world-stopped.png"
+    },
+    {
+      "scene": "off-week",
+      "id": "dependent-remainder",
+      "status": "NOT RUN",
+      "reason": "Earlier prerequisite failed; see failure evidence"
+    },
+    {
+      "scene": "logic-isolation",
+      "id": "setting-undo-redo-reset-reload",
+      "ids": [
+        "S27"
+      ],
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard:visible').getByRole('button', { name: /Close/ }).filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at closeBoard (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:41:35)\n    at nav (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:40:59)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:157:4\n    at async step (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:39:49)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:156:2\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:24)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:155:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\logic-isolation-FAIL-setting-undo-redo-reset-reload.png"
+    },
+    {
+      "scene": "logic-isolation",
+      "id": "world-stopped",
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard:visible').getByRole('button', { name: /Close/ }).filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at closeBoard (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:41:35)\n    at nav (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:40:59)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:157:4\n    at async step (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:39:49)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:156:2\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:24)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:155:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\logic-isolation-world-stopped.png"
+    },
+    {
+      "scene": "logic-isolation",
+      "id": "dependent-remainder",
+      "status": "NOT RUN",
+      "reason": "Earlier prerequisite failed; see failure evidence"
+    },
+    {
+      "scene": "member-read",
+      "id": "member-shared-figures-readonly-setting",
+      "ids": [
+        "S26",
+        "S29",
+        "S30"
+      ],
+      "status": "FAIL",
+      "error": "Error: expect(locator).toBeEnabled() failed\n\nLocator:  locator('#schedBoard [data-beak=\"0\"]:visible, #schedBoard [data-alpub=\"0\"]:visible').first()\nExpected: enabled\nReceived: disabled\nTimeout:  5000ms\n\nCall log:\n  - Expect \"to.be.enabled\" with timeout 5000ms\n  - waiting for locator('#schedBoard [data-beak=\"0\"]:visible, #schedBoard [data-alpub=\"0\"]:visible').first()\n    13 × locator resolved to <button disabled data-beak=\"0\" class=\"dbeak locked\" title=\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Monday\">Publish day</button>\n       - unexpected value \"disabled\"\n\n    at captureRawStack (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright-core\\lib\\coreBundle.js:9681:17)\n    at callMatcherAsStep (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright\\lib\\matchers\\expect.js:13310:57)\n    at Object.toBeEnabled (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright\\lib\\matchers\\expect.js:13300:23)\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:113)\n    at async publish (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:59:119)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:171:24\n    at async step (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:39:49)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:170:2\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:24)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:169:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\member-read-FAIL-member-shared-figures-readonly-setting.png"
+    },
+    {
+      "scene": "member-read",
+      "id": "world-stopped",
+      "status": "FAIL",
+      "error": "Error: expect(locator).toBeEnabled() failed\n\nLocator:  locator('#schedBoard [data-beak=\"0\"]:visible, #schedBoard [data-alpub=\"0\"]:visible').first()\nExpected: enabled\nReceived: disabled\nTimeout:  5000ms\n\nCall log:\n  - Expect \"to.be.enabled\" with timeout 5000ms\n  - waiting for locator('#schedBoard [data-beak=\"0\"]:visible, #schedBoard [data-alpub=\"0\"]:visible').first()\n    13 × locator resolved to <button disabled data-beak=\"0\" class=\"dbeak locked\" title=\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Monday\">Publish day</button>\n       - unexpected value \"disabled\"\n\n    at captureRawStack (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright-core\\lib\\coreBundle.js:9681:17)\n    at callMatcherAsStep (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright\\lib\\matchers\\expect.js:13310:57)\n    at Object.toBeEnabled (C:\\Users\\User\\projects\\Raptor\\raptor-port\\node_modules\\playwright\\lib\\matchers\\expect.js:13300:23)\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:113)\n    at async publish (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:59:119)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:171:24\n    at async step (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:39:49)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:170:2\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:24)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:169:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\member-read-world-stopped.png"
+    },
+    {
+      "scene": "member-read",
+      "id": "dependent-remainder",
+      "status": "NOT RUN",
+      "reason": "Earlier prerequisite failed; see failure evidence"
+    }
+  ],
+  "images": [
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\published-working-FAIL-published-A-answer.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\published-working-world-stopped.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\plans-history-plan-current-correction.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\plans-history-parked-B-keeps-corrected-role.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\templates-FAIL-save-template-and-reload.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\templates-world-stopped.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\off-week-FAIL-role-undo-lands-on-origin-week.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\off-week-world-stopped.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\logic-isolation-FAIL-setting-undo-redo-reset-reload.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\logic-isolation-world-stopped.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\member-read-FAIL-member-shared-figures-readonly-setting.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication-r2\\member-read-world-stopped.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Plan pictures show corrected contexts and intact Board. Published refusal is missing refocus in driver; template/Done failures old driver selectors. Member picture shows all four signatures blank; rerun uses explicit focus and value assertion."
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "No direct model, command, storage or fixture writes from page.evaluate.",
+    "S20 collision/second-store rollback and S21 failure injection belong to production integration tests; runtime covers supported template travel only.",
+    "Retained stale DOM event delivery is explicitly marked; it supplements actual-control navigation.",
+    "Desktop/phone emulation does not prove physical Safari."
+  ],
+  "finished": "2026-10-03T07:56:48.525Z",
+  "summary": {
+    "pass": 4,
+    "fail": 10,
+    "notRun": 5,
+    "errors": 0
+  }
+}

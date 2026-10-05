@@ -121,7 +121,9 @@ describe('the board issue list is a navigation surface', () => {
   it('board pucks light under the focus, and the palette does not', async () => {
     const di = warnDay()
     await act(async () => { openScheduler(di); notify() })
-    await click($('#sbWarn .wln[data-wix]'))
+    const personIssue=$$('#sbWarn .wln[data-wix]').find(x=>(WARN.byDay[di].warns[+x.dataset.wix!].who||[]).length)!
+    expect(personIssue,'crew focus requires a warning about a person').toBeTruthy()
+    await click(personIssue)
     await flush()
     expect($$('.sb-boardwrap .puck.wfoc').length).toBeGreaterThan(0)
     expect($$('#sbRoster .puck.wfoc').length, 'the palette keeps its normal look').toBe(0)

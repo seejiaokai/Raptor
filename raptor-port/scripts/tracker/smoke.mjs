@@ -4082,14 +4082,14 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
 /* ---- the most recent flight always wins (user's rule, 2 Sep) ----
    Marking an OLDER sortie after a newer one used to drag Last Flown back to the
    older day: "days since" jumped, and the currency and flex bars went red for a
-   flight that had happened since. Flights are the balls drawn with the jet (a
-   ten-point polygon); the type is not written into the page anywhere else. */
+   flight that had happened since. Flights are the balls drawn with the jet (the
+   rounded-join wing polygon); the type is not written into the page anywhere else. */
 {
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(300);
   /* the date boxes only exist while someone is on the roster */
   if (!(await pg.locator('#lastCurr').count())) { await addStudent('STUDENT FLOWN'); await pg.waitForSelector('#lastCurr'); }
   const flights = await pg.evaluate(() => [...document.querySelectorAll('#flowSvg .ball')]
-    .filter(g => { const p = g.querySelector('polygon'); return p && p.getAttribute('points').split(' ').length === 10; })
+    .filter(g => !!g.querySelector('.core [stroke-linejoin="round"]'))
     .map(g => g.dataset.id).slice(0, 2));
   ok('two flight events found to test Last Flown with', flights.length === 2, flights.join(', '));
   const grade = async (id, iso, what) => {

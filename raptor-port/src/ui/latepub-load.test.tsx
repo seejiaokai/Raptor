@@ -21,6 +21,7 @@ import { DPREV, VWORK, setDayPreview } from '../state/view'
 import { HOOKS } from '../engine/hooks'
 import { commitNewInput } from './inputedit'
 
+
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement

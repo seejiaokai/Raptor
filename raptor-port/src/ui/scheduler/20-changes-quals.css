@@ -1,0 +1,162 @@
+/* D149 ([ACCOUNTS], 26 Sep 26): with editing on, a member's OWN Quals row is editable and
+   the others read as plain text — their tick cells lose the editing hover so nothing
+   looks tappable that is not his */
+.qtbl.editing tr.qro .qcell{cursor:default}
+.qtbl.editing tr.qro .qcell:hover{background:none}
+
+/* ============================================================================================================
+   THE ONE CHANGES WINDOW ([DRAFT-PENDING], 28 Sep 26 — the owner's D167, D168, D170; the design of record
+   docs/mock/changes-window.html, option A). The ALL AVAIL window's frame (the grip, the corner, the phone panel —
+   ui/floatwin.ts), wider: a line carries who and when on the right. Scoped under .chgwin.
+   ============================================================================================================ */
+.chgwin{position:fixed;z-index:410;right:16px;top:96px;width:380px;height:560px;
+  min-width:280px;min-height:240px;max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);
+  background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;
+  box-shadow:0 18px 44px rgba(0,0,0,.62);display:flex;flex-direction:column;overflow:hidden;resize:both}
+.chgwin[hidden]{display:none}
+/* WHICH WINDOW IS IN FRONT (Astra DP-10): the one pressed last — 411 in front, 410 behind; both stay under the bubble
+   (430), the input calendar (420), a drawer (440) and a modal (470) */
+.availwin.front,.chgwin.front{z-index:411}
+.chgwin .win-bar{display:flex;align-items:center;gap:7px;padding:8px;cursor:grab;
+  background:var(--raised);border-bottom:1px solid var(--edge);touch-action:none;flex:0 0 auto}
+.chgwin .win-bar:active{cursor:grabbing}
+.chgwin .win-grip{color:var(--ink-3);font-size:16px;line-height:1;flex:0 0 auto}
+.chgwin .win-ttl{flex:1;min-width:0;font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chgwin .win-ttl small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-3)}
+.chgwin .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);border-radius:5px;width:25px;height:25px;
+  font-size:12px;line-height:1;cursor:pointer;flex:0 0 auto;font-family:inherit}
+.chgwin .win-x:hover{border-color:#F0555F;color:var(--ink)}
+.chgwin .win-tabs{display:flex;background:var(--panel-2);border-bottom:1px solid var(--edge);flex:0 0 auto}
+.chgwin .win-tab{flex:1;min-width:0;padding:8px 5px;font-size:11px;font-weight:700;color:var(--ink-3);background:none;border:none;
+  border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;line-height:1.25}
+.chgwin .win-tab:hover{color:var(--ink-2)}
+.chgwin .win-tab.on{color:var(--ink);border-bottom-color:var(--accent);background:var(--panel)}
+.chgwin .win-tab .c{color:var(--ink-3);font-weight:600}
+.chgwin .win-tab.on .c{color:var(--accent)}
+.chgwin .cw-days{display:flex;flex-wrap:wrap;gap:4px;padding:8px 8px 4px;flex:0 0 auto}
+.chgwin .cw-day{position:relative;font:inherit;font-size:11px;font-weight:700;color:var(--ink-2);background:var(--panel-2);
+  border:1px solid var(--edge-2);border-radius:7px;padding:3px 8px;cursor:pointer}
+.chgwin .cw-day.on{color:var(--ink);border-color:var(--accent);background:rgba(59,198,232,.10)}
+/* a day with something new to you wears the gold dot (the mock-up's day picker) */
+.chgwin .cw-day.nd::after{content:'';position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:#E5C24A}
+.chgwin .cw-grp{display:flex;align-items:center;gap:4px;padding:4px 8px 8px;border-bottom:1px solid var(--edge);flex:0 0 auto}
+.chgwin .cw-grpl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-right:4px}
+.chgwin .cw-g-btn{font:inherit;font-size:11px;font-weight:700;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--edge-2);
+  padding:3px 10px;cursor:pointer}
+.chgwin .cw-g-btn:first-of-type{border-radius:7px 0 0 7px}
+.chgwin .cw-g-btn:last-of-type{border-radius:0 7px 7px 0;border-left:0}
+.chgwin .cw-g-btn.on{color:#0B1419;background:var(--accent);border-color:var(--accent)}
+.chgwin .cw-body{flex:1;min-height:0;overflow:auto;padding:8px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.chgwin .cw-g{border:1px solid var(--edge);border-radius:8px;margin:0 0 8px;background:var(--panel-2);overflow:hidden}
+.chgwin .cw-gh{display:flex;align-items:center;gap:6px;width:100%;text-align:left;font:inherit;font-size:12px;font-weight:700;
+  color:var(--ink);background:none;border:0;padding:8px 9px;cursor:pointer}
+.chgwin .cw-caret{color:var(--ink-3);font-size:10px;width:10px}
+.chgwin .cw-ghname{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chgwin .cw-new{font-size:9.5px;font-weight:800;letter-spacing:.06em;color:#1A1405;background:#E5C24A;border-radius:4px;padding:1px 5px}
+.chgwin .cw-ghwhen{font-size:10.5px;font-weight:500;color:var(--ink-3);white-space:nowrap}
+.chgwin .cw-gl{border-top:1px solid var(--edge)}
+.chgwin .cw-l{display:block;width:100%;text-align:left;font:inherit;font-size:12px;color:var(--ink-2);background:var(--panel);
+  border:0;border-top:1px solid var(--edge);padding:7px 9px;cursor:pointer}
+.chgwin .cw-l:first-child{border-top:0}
+.chgwin div.cw-l.still{cursor:default}
+.chgwin .cw-l:hover,.chgwin .cw-l:focus-visible{background:rgba(229,194,74,.08);outline:none}
+.chgwin .cw-top{display:flex;align-items:baseline;gap:6px}
+.chgwin .cw-dot{flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:#E5C24A;align-self:center}
+.chgwin .cw-what{flex:1;min-width:0;color:var(--ink);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chgwin .cw-who{flex:0 0 auto;font-size:10.5px;color:var(--ink-3);white-space:nowrap}
+.chgwin .cw-txt{display:block;margin-top:2px;color:var(--ink-2);overflow-wrap:anywhere}
+.chgwin .cw-txt s{color:var(--ink-3)}
+.chgwin .cw-txt b{color:#F2D699;font-weight:600}
+.chgwin .cw-none{color:var(--ink-3);font-size:12px;padding:10px 6px;font-style:italic}
+.chgwin .cw-out{font-size:12px}
+.chgwin .cw-out .pl-head{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);margin:0 2px 8px}
+.chgwin .cw-outday{display:block;width:100%;text-align:left;font:inherit;font-size:12px;color:var(--ink-2);background:var(--panel-2);
+  border:1px solid var(--edge);border-radius:7px;padding:8px 9px;margin:0 0 6px;cursor:pointer}
+.chgwin .cw-outday b{color:var(--ink)}
+.chgwin .win-foot{flex:0 0 auto;border-top:1px solid var(--edge);background:var(--panel-2);padding:8px;font-size:11px}
+.chgwin .win-foot .hint{color:var(--ink-3)}
+.chgwin .cw-seen{width:100%;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink);background:var(--panel);
+  border:1px solid var(--edge-2);border-radius:8px;padding:8px;cursor:pointer}
+.chgwin .cw-seen:hover{border-color:var(--accent)}
+.chgwin .cw-seen:disabled{opacity:.45;cursor:default}
+/* THE PHONE: the ALL AVAIL window's bottom panel (D77 — moves, does not resize); after a tap took the schedule to a
+   change it shrinks to a slim bar (D167 (2)) so the change is in view; a tap on the bar brings the panel back */
+@media (max-width:620px){
+  .chgwin{left:12px;right:12px;width:auto;top:auto;bottom:12px;height:62vh;max-height:62vh;max-width:calc(100vw - 24px);resize:none}
+  .chgwin.bar{height:auto;min-height:0;flex-direction:row;align-items:center;gap:8px;padding:6px 8px}
+  /* HIDDEN TO THE BAR, it sits one layer above both floating windows ([HIST-PHONE-HIDE], Astra's plan read 07): on a phone
+     the ALL AVAIL window takes the same bottom panel, and opened after Hide it covered the bar and its Show and ✕.
+     Still under the bubble (430), a drawer (440) and a modal (470) */
+  .chgwin.bar,.chgwin.bar.front{z-index:412}
+}
+.chgwin.bar .cw-barbtn{flex:1;display:flex;align-items:center;min-width:0;text-align:left;font:inherit;font-size:13px;font-weight:700;color:var(--ink);background:none;border:0;padding:6px 4px;cursor:pointer}
+.chgwin.bar .cw-barn{color:var(--ink-3);font-weight:600;white-space:nowrap}
+/* "Show ▴" — a word on a pill, not the arrow alone (D339: "how does one know that the action is to minimise?") */
+.chgwin.bar .cw-show{margin-left:auto;padding:3px 10px;border:1px solid var(--edge-2);border-radius:7px;white-space:nowrap}
+/* "Hide ▾" beside ✕ on a phone ([HIST-PHONE-HIDE], D339 — spelled out) */
+.chgwin .win-hide{background:none;border:1px solid var(--edge-2);color:var(--ink-2);border-radius:5px;height:25px;padding:0 9px;
+  font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;flex:0 0 auto;white-space:nowrap}
+/* the hint, in his words (D344), on a phone where the dots are — the gold of the dots it points to */
+.chgwin .cw-hint{flex:0 0 auto;margin:6px 8px 0;padding:6px 10px;border-radius:8px;background:rgba(229,194,74,.12);
+  border:1px solid rgba(229,194,74,.4);color:#F2D699;font-size:12.5px}
+/* GROUP BY ITEM ([CHG-BY-ITEM], D340, D345): a detail's tag ("#1 FCP", "Start") before its change; the item's count in grey */
+.chgwin .cw-det{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.2px;color:#9fb3c6;border:1px solid #33475a;
+  border-radius:6px;padding:0 6px;margin-right:7px;vertical-align:1px}
+.chgwin .cw-ghn{color:var(--ink-3);font-weight:600}
+.chgwin .cw-g.cw-one{border:0;background:none}
+.chgwin .cw-sub .cw-txt{margin:0;flex:1;min-width:0}
+.chgwin.bar .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);border-radius:5px;width:28px;height:28px;font-size:12px;font-family:inherit}
+
+/* THE DAY'S CHIP ([DRAFT-PENDING] — D168, D171 (3)): "N new" gold, "N changes" quiet; a gold dot on "N pending" when
+   something on the day is new to you. The chip is the per-day door into the changes window, for admins and members. */
+.day-head .dpend.dnew,.sb-pub .dpend.dnew{color:#1A1405;background:#E5C24A;border-color:#E5C24A}
+.day-head .dpend.dchg,.sb-pub .dpend.dchg{color:var(--ink-2);background:var(--panel-2);border-color:var(--edge-2)}
+.dpendbtn.dchg:hover{background:var(--raised);border-color:var(--ink-3)}
+.dpend .dnewdot{width:6px;height:6px;border-radius:50%;background:#E5C24A;box-shadow:0 0 0 1px var(--panel);display:inline-block}
+
+/* THE ADMIN'S CHANGES DOOR ([DRAFT-PENDING] — D171): the clock icon alone, with a gold number for what is new to him
+   across the loaded week */
+.chgbtn{position:relative}
+.chgbtn .chgnum{margin-left:4px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#E5C24A;color:#1A1405;
+  font-size:10px;font-weight:800;line-height:16px;display:inline-block;text-align:center}
+.chgbtn.on{border-color:var(--accent)}
+/* on the phone bar the trio's buttons are 30px squares (.tb-hist .abtn): the number rides the icon's top-right corner
+   as a small badge instead of sitting beside it, where it spilled past the button ([DRAFT-PENDING], Fable P2) */
+@media (max-width:820px){
+  .tb-hist .chgbtn .chgnum{position:absolute;top:-5px;right:-6px;margin:0;min-width:15px;height:15px;padding:0 3px;
+    font-size:9.5px;line-height:15px;box-shadow:0 0 0 1.5px var(--panel);pointer-events:none}
+}
+
+/* THE OG TAG ([DRAFT-PENDING] — the owner's D172: "OG makes sense, maintain the header"): on a day NOT yet published,
+   a puck whose place holds a change NEW TO YOU wears a hollow, dotted "OG" in the plain white outline, in the corner a
+   waiting AL tag uses on a published day. Never gold or amber (a warning colour). Marking seen takes it away. Only
+   pucks; a day's headings unchanged. */
+.seat[data-og]{position:relative}   /* the tag sits on the puck's own corner, as .seat[data-alp] does */
+.seat[data-og]::after{content:'OG';position:absolute;top:-5px;right:-3px;z-index:4;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7.5px;font-weight:800;letter-spacing:.02em;line-height:1;
+  padding:0 2px;border-radius:4px;background:var(--panel);color:#E6EAEE;border:1px dotted #E6EAEE;pointer-events:none}
+
+/* THE GOLD DOT ([HIST-PHONE-HIDE], 28 Sep 26 — D339, D345: "a small gold dot on every detail with a history while History
+   is on", desktop too): `data-histdot`, set after each repaint on exactly the details the history bubble answers for
+   (ui/histbubble.ts refreshHistDots). The app's gold (#E5C24A, the new-to-you dots) — a DOT, never a ring round the
+   detail (D92), and never pressable (the tap goes to the detail, which raises its bubble and still edits). Where:
+   · a SEAT (and the board's empty seat, `.sb-slot`): 8px with a 2px ring of the page colour, just OUTSIDE its bottom-right
+     corner, clear of the OG / AL tags at the top right. `::before` — a seat's `::after` is those tags; a drag CLONE keeps
+     its `::before` for the lift veil (.tdghost / .dragimg), so never there.
+   · A TEXT DETAIL WITH TEXT IN IT (a time, a label, a remark, a store chip, the area — a span): just OUTSIDE its
+     bottom-right corner too, by its `::before`. Drawn inside the corner, as first built, it sat on the text's last
+     character ("05:5●", "1300-14●0" — the walk's pictures, both widths). Its `::after` is never used: on a published
+     day that IS its AL badge (Fable's plan read, F1); its `::before` is free while it has text — every placeholder there
+     is `:empty`-only ("—", "Config…"). Such a cell already becomes a positioned box when it wears an AL badge.
+   · EVERYTHING ELSE — a typed box (input, textarea, the wave-title select: no pseudo-element possible, and padding
+     round the text), a whole row (an Unavailable row), an EMPTY detail (no text to cover): INSIDE its bottom-right
+     corner as a background image, over the cell's own colour. */
+.seat[data-histdot]:not(.tdghost):not(.dragimg),.sb-slot[data-histdot]{position:relative}
+.seat[data-histdot]:not(.tdghost):not(.dragimg)::before,.sb-slot[data-histdot]::before{content:'';position:absolute;right:-4px;bottom:-4px;
+  width:8px;height:8px;border-radius:50%;background:#E5C24A;box-shadow:0 0 0 2px var(--bg);z-index:5;pointer-events:none}
+[data-histdot]:not(.seat):not(.sb-slot){background-image:radial-gradient(circle,#E5C24A 0 3.5px,transparent 4px);
+  background-repeat:no-repeat;background-position:right 2px bottom 2px;background-size:10px 10px}
+:is(span,b,i)[data-histdot]:not(.seat):not(.sb-slot):not(:empty){position:relative;background-image:none}
+:is(span,b,i)[data-histdot]:not(.seat):not(.sb-slot):not(:empty)::before{content:'';position:absolute;right:-6px;bottom:-3px;width:7px;height:7px;
+  border-radius:50%;background:#E5C24A;box-shadow:0 0 0 2px var(--bg);z-index:5;pointer-events:none}
+

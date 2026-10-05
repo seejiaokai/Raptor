@@ -1,0 +1,2007 @@
+{
+ "base": "http://localhost:4173",
+ "css": true,
+ "results": [
+  {
+   "size": "phone-390",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "editsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "editsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "admin",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "admin",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "presses": []
+  },
+  {
+   "size": "phone-320",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "editsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "editsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "admin",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "admin",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    320,
+    36
+   ],
+   "retry": [
+    244,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "presses": []
+  },
+  {
+   "size": "desk-1200",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "editsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    103,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    109,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 140,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "editsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    103,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    109,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 140,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "admin",
+   "scrolled": 0,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "admin",
+   "scrolled": 320,
+   "note": [
+    0,
+    102,
+    1200,
+    36
+   ],
+   "retry": [
+    1118,
+    108,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 139,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "presses": []
+  },
+  {
+   "size": "desk-1366",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "editsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    103,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    109,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 140,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "editsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    103,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    109,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 140,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "admin",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "admin",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "presses": []
+  },
+  {
+   "size": "desk-1440",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "editsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    57,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    63,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 94,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "editsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    57,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    63,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 94,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "admin",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "admin",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1440,
+    36
+   ],
+   "retry": [
+    1358,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠  Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "presses": []
+  }
+ ],
+ "errors": []
+}

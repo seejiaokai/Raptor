@@ -1,0 +1,92 @@
+[
+  {
+    "width": "desktop",
+    "label": "no Discard marks control on the edit week",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "draft editing retains a pending mark and its history",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "Undo then Redo preserves the ordinary draft edit",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "draft-only panel has guidance and no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "reload before publication keeps the draft note and marks",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "first publish clears this day’s marks and keeps its note",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "Undo and Redo of first publication preserve the edited days",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "an amendment clears the four sign-offs and cannot publish unsigned",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "publishing draft A keeps draft B and published C pending",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "reload keeps the mixed-day marks and notes",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "leaving and returning to the week keeps the mixed-day marks",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "published day still offers its amendment with no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "view-only schedule still shows the original before AL1",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "AL1 retains the change in the issued record",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "view-only schedule shows the amendment only after AL1",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "reload retains the issued amendment and no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "member view has no clearing or amendment-publish control",
+    "status": "PASS"
+  },
+  {
+    "width": "desktop",
+    "label": "browser errors",
+    "status": "PASS"
+  }
+]

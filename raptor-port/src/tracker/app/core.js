@@ -2284,9 +2284,10 @@ function innerShape(type, cx, cy) {
     return `<polygon points="${pts}" fill="${f}" ${st}/>`;
   }
   if (type === 'flight') {
-    const pj = [[0, -16], [2.6, -6], [15, 1.5], [4, 5], [7.5, 13], [0, 9.5], [-7.5, 13], [-4, 5], [-15, 1.5], [-2.6, -6]]
-      .map(q => (cx + q[0]) + ',' + (cy + q[1])).join(' ');
-    return `<polygon points="${pj}" fill="${f}" ${st} stroke-linejoin="round"/>`;
+    /* D566: the accepted tapered leading edges and curved lower wings. */
+    const xy = (x, y) => `${cx + x} ${cy + y}`;
+    const d = `M${xy(0, -18)} L${xy(4, -7)} L${xy(18, -3)} Q${xy(19, 0)} ${xy(18, 3)} C${xy(14, 5)} ${xy(10, 6)} ${xy(5, 6)} L${xy(8, 15)} L${xy(0, 11)} L${xy(-8, 15)} L${xy(-5, 6)} C${xy(-10, 6)} ${xy(-14, 5)} ${xy(-18, 3)} Q${xy(-19, 0)} ${xy(-18, -3)} L${xy(-4, -7)} Z`;
+    return `<path d="${d}" fill="${f}" ${st} stroke-linejoin="round"/>`;
   }
   /* acad + test: rectangle */
   return `<rect x="${cx - 16}" y="${cy - 9}" width="32" height="18" rx="2.5" fill="${f}" ${st}/>`;
@@ -6611,7 +6612,7 @@ export async function init() {
     let t = null;
     /* while editing: the canvas follows the new shape, the middle kept (F1); the Tools set shuts (F5) */
     let ta = null, lastW = window.innerWidth;
-    window.addEventListener('resize', () => {
+    window.addEventListener('resize', e => {
       if (!arrangeMode) return;
       /* a phone's keyboard opening for a box inside the Tools set makes the window shorter,
          not narrower: that is not a turn, and shutting the set would drop the box and its
@@ -6620,7 +6621,11 @@ export async function init() {
       const typing = a && a.matches && a.matches('input, textarea') && a.closest && a.closest('#arrTools, #arrFold');
       if (w === lastW && typing) return;
       lastW = w;
-      if (toolsOpen) { toolsOpen = false; notify(); }
+      /* …but not when Raptor's top bar has only gained or lost its failed-save warning (ui/Shell.tsx marks that
+         resize `saveBand`): the screen did not turn, and a person choosing a tool would lose the set when a save
+         failed or landed behind them. The canvas still re-fits below — its room did change. ([SAVE-NOTE-COVERS],
+         Astra's second read R2-1) */
+      if (toolsOpen && !(e && e.saveBand)) { toolsOpen = false; notify(); }
       clearTimeout(ta);
       ta = setTimeout(refitArrange, 150);
     });

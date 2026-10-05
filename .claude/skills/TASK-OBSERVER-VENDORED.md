@@ -72,7 +72,8 @@ where that procedure's defaults do not fit a git repo with vendored skills:
   skills, until the owner approves. Installing = copying the approved drafts over
   the live files on the review branch; going live = his "merge live" (D60).
 - **Who reads the drafts (owner, D70):** Fable AND Astra, one round each, before
-  he approves — never the model that wrote them.
+  he approves — never the model that wrote them. *(D590, 5 Oct 26: the two readers
+  are now Astra and Sol 6.1 — Fable's round went to Sol.)*
 - **Clean up when the review ends (owner, D69):** after installing, delete the
   holding folder (git keeps the drafts), move the resolved entries to
   `archive/` the same day, and delete the review's handoff note once merged.

@@ -19,6 +19,7 @@ import { isMe } from '../state/perms'
 import { notify } from '../state/store'
 import { DOCVIEW, setDocView, setInpEdit } from './pops'
 import { useVersion } from './useStore'
+import { clickedOutside } from './outside'
 
 export function DocViewer() {
   useVersion()
@@ -85,7 +86,7 @@ export function DocViewer() {
 
   return (
     <div className="airpop" id="docViewPop" hidden={!r}
-      onClick={e => { if ((e.target as HTMLElement).id === 'docViewPop') close() }}>
+      onClick={e => { if (clickedOutside(e, 'docViewPop')) close() }}>
       <div className="airpop-box docviewbox">
         <div className="airpop-head">
           <b id="docViewTitle">{who}{r ? ` · ${r.type} · ${when}` : ''}</b>

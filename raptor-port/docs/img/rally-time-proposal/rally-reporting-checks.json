@@ -1,0 +1,7 @@
+[
+  "PASS: rally only, immediate rally and both timed stages",
+  "PASS: earliest operative clock independent of row order; clocks in remarks ignored; earlier event is person-specific",
+  "PASS: reviewer-found INTIME spelling fixed; reversed sequence, late report, missing in-time and invalid time rejected; draft save enabled",
+  "PASS: explicit previous-day clock precedes schedule-day clock; collapse and reopen",
+  "PASS: desktop, phone, 320px and dark appearance; no overflow or JavaScript errors"
+]

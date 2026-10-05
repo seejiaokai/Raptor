@@ -1,0 +1,186 @@
+{
+  "designOnly": true,
+  "defaultOff": true,
+  "checks": [
+    {
+      "label": "phone",
+      "kind": "mock Logic switch",
+      "width": 366,
+      "scrollWidth": 364,
+      "clientWidth": 364,
+      "buttonsDOMOnly": true
+    },
+    {
+      "label": "phone",
+      "kind": "illustrative unanswered Relay bar",
+      "total": 4,
+      "rows": 12,
+      "segments": [
+        {
+          "name": "Echo",
+          "width": 168,
+          "segments": [
+            {
+              "width": 0,
+              "percent": 0
+            },
+            {
+              "width": 168,
+              "percent": 100
+            }
+          ]
+        },
+        {
+          "name": "Hex",
+          "width": 168,
+          "segments": [
+            {
+              "width": 168,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "name": "Static",
+          "width": 168,
+          "segments": [
+            {
+              "width": 112,
+              "percent": 66.6667
+            },
+            {
+              "width": 55.984375,
+              "percent": 33.3333
+            }
+          ]
+        },
+        {
+          "name": "Ace",
+          "width": 112,
+          "segments": [
+            {
+              "width": 56,
+              "percent": 50
+            },
+            {
+              "width": 56,
+              "percent": 50
+            }
+          ]
+        },
+        {
+          "name": "Basher",
+          "width": 112,
+          "segments": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "name": "Drifter",
+          "width": 112,
+          "segments": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "name": "Gambit",
+          "width": 112,
+          "segments": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "name": "Outlaw",
+          "width": 112,
+          "segments": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "name": "Piston",
+          "width": 112,
+          "segments": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "name": "Pixel",
+          "width": 112,
+          "segments": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        },
+        {
+          "name": "Ranger",
+          "width": 112,
+          "segments": [
+            {
+              "width": 112,
+              "percent": 100
+            },
+            {
+              "width": 0,
+              "percent": 0
+            }
+          ]
+        }
+      ],
+      "countsGuessed": false
+    },
+    {
+      "label": "desktop",
+      "kind": "mock Logic switch",
+      "width": 600,
+      "scrollWidth": 598,
+      "clientWidth": 598,
+      "buttonsDOMOnly": true
+    }
+  ],
+  "errors": []
+}

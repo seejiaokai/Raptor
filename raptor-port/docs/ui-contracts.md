@@ -521,6 +521,67 @@ The BOARD's own boxes get the same two keys — see the wrapping contract
 above; before 20 Aug 26 they had Enter only, and only because they were
 `<input>`s.
 
+**Schedule Tab route — D550–D556, 4 Oct 26.** On Edit Schedule week and Board,
+Tab visits the already-available typing boxes in the live day's displayed section
+order; Shift+Tab reverses it. Flying uses Callsign → Mission → Brief → Take-off →
+Landing → each aircraft's Remarks/stores → Area/time. Shared week details occur once;
+Board repeats every displayed aircraft row's flight boxes. Include open headings,
+in-time/Rally and notes, empty boxes included. Closed sections/popups, suggestions,
+crew, buttons/selects, readonly/disabled/issued/peek/OIL content are not text stops.
+At either end, focus an eligible ordinary same-day control in that direction,
+otherwise blur; never loop, activate, change day or enter a hidden drawer. Subsequent
+non-text Tab is normal browser navigation. Enter/Escape and D529 remain unchanged.
+**The end of a day with no button below its last box (owner, D597, 6 Oct 26 — narrows D553):** forward Tab from the
+day's last open text box, where that day has no ordinary control after it, KEEPS THE CARET IN THAT BOX — never a blur
+onto nothing, never the next day's first button. Edit Schedule's week and the phone's Scheduler Board (no button follows
+its last box); the desktop board still goes on to the first ✕ of its warning list. Shift+Tab is unchanged. **Built 6 Oct 26**
+(`ui/schedule-tab.ts`): the box is saved by its blur, as on every Tab, and the caret is put back at the end of its text —
+in its twin if the save redrew it. **The day still catches up at that Tab:** it used to take the caret out of text, the
+moment everything held for the caret was redrawn (a line's worked-out area time after a typed take-off), so the route
+carries that redraw through itself — the store's "look again", flushed at once — BEFORE the caret goes back. After was
+not enough: the week writes all but the caret's block, but the board holds its whole day panel for a caret inside it
+(Astra's and Sol's reads, 6 Oct 26, the same finding apart). Pins: `e2e/schedule-tab.spec.ts` "D597 …" (three; the
+phone board's catch-up among them), `ui/schedule-tab.test.tsx` (the week, and Flying dragged to the foot of the day).
+
+**While the caret is in a text box, everything that does not hold it keeps up (the Codex stack check, 6 Oct 26 — W15,
+W16, W12, W11).** "Never repaint under the caret" used to mean nothing was redrawn until the caret left text; on the Tab
+route that is a whole day. Now, after each commit: on the WEEK every changed block of every day is written except the
+one block (a `.dsec` section, the day head, the sign-off strip, the warnings box) that contains the caret
+(`dayswap.ts swapDayAround` — it hands back chunks that still describe what is on screen, so the ordinary paint writes
+the held block when the caret leaves; a change needing the whole day replaced waits whole); on the BOARD every panel
+but the caret's own (`SchedBoard.tsx`). So the day's warning list and count (D509), "N pending", "Not yet signed" and
+the sign-off strip are current while he types on. **Held by design until the caret leaves its section:** the puck rings
+and marks inside that section. Inside the held block the wave header's In-time / Rally clock is corrected in place —
+text nodes only, no new markup (`html.ts refreshWaveReports`; `waveHeadTail` / `waveHeadBoard` are the one body for the
+builder and the refresh). `dayswap.ts holdingPlace` keeps the box he is typing in where it was on screen.
+**A save that opens a window stops the route:** `pops.ts windowOverSchedule()` — true from the moment a gesture asks for
+any window over the schedule — is asked straight after the route's blur, and the route declines while one is up; the
+four question sheets (OIL, upchit, "covers other days", "no medical document") take the keyboard when they open and
+give it back when they close (`sheetfocus.ts`). **Spacing alone is no change** (`engine/slots.ts txtSet` folds the
+stored words too): a box whose stored words hold a doubled space is not written by a click or a Tab through it.
+**After a day's last box with no button below it** the caret stays in that box (D597 — the paragraph above; it ended on
+nothing until 6 Oct 26, the stack check's W14).
+
+`schedule-tab.ts` collects at each gesture, shares ancestor visibility reads within
+that gesture only, then native blur/change saves through existing writers. After
+commit it rechecks current context and preserves any new focus established by a blur
+handler (such as a dialog), then refreshes only the unfocused destination
+through existing readers, keeping repeated/derived boxes current without a write.
+If fixed arrows/bars cover the destination, reveal it in existing scroll containers;
+nearest inline alignment preserves unrelated day pan. For a phone Desktop box wider
+than the viewport, assess its visible portion rather than its offscreen centre.
+Untouched displayed clock formatting stays a no-op. Clearing an in-time immediately
+readdresses surviving live lines/buttons. `editingText()` adds Board input-owned
+native fields to its existing contenteditable predicate; skipped week/Board paint
+resumes on text exit with page/nav checks (Board also checks day) and a UI-only tick.
+Leaving an unchanged box or pressing Enter after a saved edit therefore settles
+dependent display even when Tab never visited the derived box. Pending ticks cancel
+on context loss/unmount and never force a repaint beneath a later text caret.
+No second commit, validation/history step or durable state.
+Mounted wiring/caret/commit/break regressions: `schedule-tab.test.tsx`; native browser
+order/no-op/boundary/change checks: `e2e/schedule-tab.spec.ts`. Physical Safari keyboard
+behaviour is not proved by Chromium phone emulation.
+
 Most strings commit through `[data-txt]` → `txtSet` (the funnel). FOUR
 fields live outside that grammar and each need their own focusout branch —
 all four were missed in the port at some point and silently discarded
@@ -559,6 +620,13 @@ a real edit still commits, and an emptied cell still stores the blank.
 
 ## In-time lines: added and removed per wave (owner, 21 Aug 26)
 
+**RULED 5 Oct 26 (D593) — NOT YET BUILT.** On the Scheduler Board a wave's In-time / Rally lines are to be draggable into a new
+order, and Auto sort is to put them in order too. The detail (D594, the same day): the board ONLY — Edit Schedule's week gets no
+drag for these lines and shows them in the order the board left them; Auto sort orders them by time, earliest first (a
+previous-evening clock first, a line with no clock last), from the wave's own Auto sort and from Sort all; a new order on a
+published day is a pending change. Until it is built, the lines stay in the order they were added, as this section describes.
+The build: `OUTSTANDING.md` `[INTIME-LINES-DRAG]`.
+
 "Allow me to input lines at the top of each wave where I can reflect the in
 time likewise to be able to edit or delete it." Before this, the in-time
 block could only be TYPED IN: deleting the last line dropped the whole box
@@ -593,7 +661,7 @@ span could never be minted from inside the contenteditable.
   `interactions.ts`, guarded `canEditSched() && HOOKS.editMode()` like every
   model-writing branch): `markEdit('it:di.gi', was, now)` — so the AL diff,
   the changes list, undo and the issued-mark reconcile read exactly as a
-  typed edit does. The engine needed no wiring: `intimeMap`/`waveInTime`
+  typed edit does. The engine reads the same strings: `resolveReporting`/`waveInTime`
   parse the `w.intimes` strings themselves, so a line is registered the
   moment it carries a time.
 - **The minted line is engine-neutral**: it seeds with the wave's own
@@ -602,7 +670,7 @@ span could never be minted from inside the contenteditable.
   the one the engine already assumes; a wave with no derivable time seeds
   the bare phrase, which parses as nothing until a time is typed. NO
   callsign, deliberately: `<CS> IN TIME` is the phrase that sets a
-  formation's report time (`intimeMap`), and the button must not pick a
+  formation's report time (`resolveReporting`), and the button must not pick a
   jet nobody chose. After the repaint the caret lands at the end of the
   new line (the LogicPage deferred-focus idiom), scoped to the surface the
   button was tapped on.
@@ -614,7 +682,46 @@ Pinned in `intimesadd.test.tsx`; the reference-parity divergence is lifted
 by `noItCtl` in `html.test.ts` (all three additions are edit-mode-only, so
 the read-only compare needed nothing).
 
+**In-time / Rally extension (D497–D507, 2 Oct 26):** the existing position,
+per-line editor, add/delete doors and string storage remain. Both flying-wave
+add buttons and the board's derived header now say **In-time / Rally**.
+Formation names select scope; no person/role targeting or compulsory delimiter
+is added. Remarks remain free text. The engine's first-valid clock and separate
+IN/RALLY scope precedence are documented in `engine-rules.md`.
+
+An editable block has one empty-when-clear `reporting-feedback` status span.
+The document input listener previews the active line in a cloned wave only:
+it updates this span, without storing, marking history, repainting the week
+or moving the caret. It names an actual wrong pair while typing. Blur/Enter
+commit through the existing writer; Escape, deletion and a no-op restore the
+feedback from saved content. Draft conflicts remain saveable; **D509 supersedes
+the timing refusal:** first publish, AL and correcting reissue remain allowed
+with the reversed pair and freeze its red warning like any other. The warning
+wrapper's `data-warnkey="it:di.gi"` lets list clicks reach the reporting block,
+including read-only rendering. Read-only/version looks have no editor, add,
+delete or preview-feedback controls. No routine previous-day explanation row
+or date control appears. Source-positive tests: `rally-feedback.test.tsx`;
+running-app order/geometry proof is recorded in the Rally FULL evidence sheet.
+
+**Review fixes D509–D511 (3 Oct26):** blank B is named as suggested brief in
+timing messages. Both headers label a previous-day report `(prev day)`; the
+week adds only that exceptional marker beside the wave label, with no routine
+interpretation row. Detailed rest/trace/pre-drop and long-day start use
+`(previous day)`. An overlap reads as a positive duration before his named
+actual duty-end day. Header controls keep their established size and hit areas.
+The add button preserves an existing resolved report; otherwise earliest
+uncancelled valid take-off minus reportLead supplies its clock. Its words are
+reportText, beside the nominal time in Logic, max60 characters, escaped as
+literal text. CR/LF becomes spaces, trim/cap applies, blank restores the standard.
+The first clock wins if words include another clock. Only admins edit this
+setting; existing settings reset, persistence, snapshot/export and Undo apply.
+Existing reporting strings never change when either default changes.
+
 ## Amendment marks on screen
+
+**D488 (2 Oct 26):** the Amendments box has no Discard marks button; there is no substitute on the phone.
+Draft marks stay until first publication. Published changes use the existing AL / load doors.
+Regression: `src/ui/amendretest.test.tsx`; runtime: `docs/handpass/2026-10-02-discard-marks-remove.md`.
 
 **An amendment mark is a PUBLISHED-day thing — a draft day shows none** (owner,
 25 Aug 26 — "if I have not published the schedule yet, don't show all the orange
@@ -3438,6 +3545,15 @@ and the adapted `wrap` probe are what hold them.
 
 ## Three crew-rest rings, and the day that caused the breach (owner, 6 Aug 26)
 
+**6 Oct 26 ([PUCK-DOT-ZOOM] — his find: "i cant see the red crew rest warning, over the amber line … its when im at
+default zoom", on a screen at Windows' 125%): the DOTTED ring is two screen pixels thick on a screen whose scaling is
+not a whole number** (125%, a browser zoomed to 110% or 80%) — there the browser drew it one screen pixel thick and hard
+against an advisory's amber ring, where it read as that ring's edge. `ui/dotring.ts` works the width out and hands it to
+the stylesheet as `--dot-w`; on an unscaled, 2x or 3x screen (his phone) it hands over nothing and the ring is the
+1.5px it always was. The offset, the colour and the other two rings are untouched. Pins: `ui/dotring.test.ts`,
+`e2e/puck-dot.spec.ts` (each scaling in a browser started at it — Playwright's own picture scaling cannot show the
+fault). Pictures: `docs/img/handpass/2026-10-06-puck-dot/before-after.png`.
+
 **25 Sep 26 (D94): the scheduler BOARD draws all three as the week does** — its flying, duty / sim and programme
 seats read `html.ts puckMarks`, the week's one reading of a puck's severity, printed flag (the trace's CR / 7
 caption), dash and trace. OIL-mode and exempt-seat pucks keep their own rules — **the exempt FLYING seat too, since
@@ -3583,11 +3699,22 @@ takes `warnTarget`'s document-order heuristic **within the causing day**; and
 the override is read only off the board, since `dayTraceHTML` is a `html.ts`
 builder the board never calls.
 
-**One rendering coupling follows from this**, and it is the only one: an edit
-on day N that changes its crew-rest picture rewrites day N−1 too. The
-day-isolation assertion in `probes/perf-port.cjs` names that exemption
-precisely — any OTHER day changing is still the bug that probe was written
-for.
+**Rendering coupling:** an edit on day N rewrites the actual earlier source
+day whose end governs crew rest. The original ordinary fixture still changes
+only N−1, as the day-isolation assertion in `probes/perf-port.cjs` requires.
+Signed reporting, overnight ends and empty dates can instead govern from up
+to four authored dates earlier; an unrelated day changing remains a defect.
+The Rally dated-rest tests pin actual source identity rather than inventing
+an adjacent-day trace.
+
+**Rally dated-rest extension (2 Oct 26):** one source can carry several
+crew-rest target rows alongside its run row. Every distinct target renders,
+with its own warning address and hide state. The compatible puck fields
+retain the earliest target. Off-week targets reach Monday–Thursday, retain
+no loaded-week navigation attributes, and name the actual day in the title.
+A Tuesday hide removes Tuesday's row only, using Tuesday's working or issued
+hide keys; it cannot hide Monday or Thursday. The old Monday-only description
+below is the original single-target case, preserved by the expanded lookup.
 
 ### The forward trace across the week edge — a phantom row (owner, 23 Aug 26)
 
@@ -4750,6 +4877,165 @@ owner's ask). Each late input now carries its OWN control on the board.
 
 ## Week Insights: work hours (owner, 20 Aug 26)
 
+**FINAL LOOK APPROVED (owner D532, 3 Oct 26):** final inspected phone/desktop pictures approve temporary Choose/Change
+mission role below AREA, Working copy / Published · version wording, latest-published read-only Remarks access,
+split/total-only chart with initial twelve plus Show all, desktop Board Insights beside the bell and phone entry in ⋯.
+The revised plan is implemented on `codex/insights-mission-mix`, awaiting independent code approval and Claude's
+post-reset read before main. Earlier final-picture pending statements below are fulfilled by D532; their settled
+behaviour remains binding. Final gallery/evidence: `docs/superpowers/plans/2026-10-03-insights-final-look.md`.
+Actual FULL checks, real-route scenario results and inspected running-bundle pictures:
+`docs/handpass/2026-10-03-insights-mission-mix.md`. The shared offer controller serves both editing routes and the
+latest-issued read-only Remarks door, without replacing the active field. It restores native keyboard selection
+after an explicit role action. Guarded annotations have their own history/Undo; no canonical programme role field.
+Phone Board Insights is in its More menu; phone week pages use their own More
+menus (D558), while desktop keeps its direct action. GuestApp remains its separate
+published-only tree without these Shell controls or an Insights window.
+**ACCEPTED navigation, owner D557/D558, 4 Oct26; built on the branch:** remove the phone drawer's WEEK
+heading/Pick a date/Week insights block; add ellipsis → Insights in the circled
+Edit Schedule and View-only Sched filter strips, following the Board example.
+The existing schedule calendar retains Jump to a date. Concrete picture/design:
+`docs/superpowers/specs/2026-10-04-schedule-insights-menu.md`. Phone-only additions,
+Insights-only new menus and preserved desktop/Board doors were accepted with the
+corrected picture D558. Branch WALK/gates and fresh independent R1 inspection
+passed; evidence `docs/handpass/2026-10-04-schedule-insights-menu.md`. This
+is not live approval. All existing Insights data/version/role semantics below still apply.
+Owner's built preview look accepted D559,4Oct26; new chat continues further
+interface requirements from source2f7ad9b1/Ready https://raptor-irwn04ala-kai-e2f5.vercel.app.
+Claude's post-reset read remains owed; no physical-device proof or live word inferred.
+
+**D562/D563, 4 Oct 26 — built on codex/workflow-ui, owner look and remaining reads pending:** keep the existing close cross visible and reachable
+at the top while scrolling the Week insights window. The existing title/cross stick inside the same scroller,
+with opaque matching background and the cross protected from shrinking. Numbered phone/desktop candidates preceded source edits. Preserve dismissal behaviour, D536/D537 phone-window height/thin top strip and existing
+Insights data/permissions. This request applies to Insights, not every popup. D563 ends collection and authorizes this three-request batch;
+numbered pictures precede visual source changes. Both reference photos stay private.
+Filed as [INSIGHTS-CLOSE-STAYS-VISIBLE] in the current workflow UI batch.
+
+**STANDBY ELIGIBILITY (owner D516, 3 Oct 26):** SC, AVALON and BB standby duties do not count as flying load. SC main
+counts towards work hours. The blue default for other mission names never turns these duties into sorties; retain the
+separate sortie-eligibility and work-hours calculations. This settles neither other duties' hours nor earned leave.
+
+**FORMATION ROLE AND CONDITIONAL QUESTION (owner D517–D519, 3 Oct 26 — built on the branch):** the whole
+formation is on one side. With blue/red tracking enabled (D521), Mission names DS, RED and RED AIR count red automatically, with no Blue/Red question. Other
+missions remain blue unless DS or RED in aircraft Remarks or in a non-exact Mission name cues the question (D531); the answer,
+not free-text interpretation, decides the whole formation's role. No extra red indicator is drawn on schedule lines:
+the scheduler's Remarks are sufficient. Existing mission-type dots, scheduler red flags and warnings retain their
+meanings. **D520 approves the shown after-edit question below the formation's AREA strip:** D529 gates it on a qualifying
+own-edit transition, including Remarks/Mission or a single-target structural edit; unchanged focus/Tab never asks.
+Keep Remarks visible; either answer removes its temporary space. Wait for the tap/Tab transition to finish,
+preserving next focus. D525–D527 below settle retention, saved unanswered edits and correction; the approved revised
+plan and D532 pictures are the basis of the branch implementation.
+
+**QUESTION LIFECYCLE (owner D525–D527, 3 Oct 26 — built on the branch):** remember the chosen formation role until
+Mission or relevant DS/RED support wording changes; crew/time changes do not ask again (D525). Save completed Remarks
+normally even if the question is left unanswered; derive whether the saved answer still applies after the relevant edit, leaving the
+role unresolved and the affected person's ordinary total bar intact (D526). Later choosing a role is a separate saved
+action and Undo step. Apply this to every forward writer; unresolved saved roles are legitimate, no guessed colour,
+answer-before-creation requirement or new publication block. Working wording edits on an issued day still wait for AL;
+role answers alone count at once without changing signs/pending/amendments (D530).
+**The questions and the button are two things (the Codex stack check, 6 Oct 26 — W9; D598):** `mission-role-offer.ts`
+holds every open question — at most ONE PER FORMATION, each drawn under its own formation — and, separately, the one
+temporary Choose / Change button under the Remarks he is in. So with a formation's question open (it stays through
+other edits, D535) every other formation's Remarks still shows its button; a formation whose question is open gets no
+button beside it; and a second formation's question — from a cue typed there, or its button pressed — opens BESIDE the
+first, never in its place (until D598 there was one slot, newest wins). Each ends by its own rules, alone; tracking Off,
+another week, version or sign-in end them all. **After Blue, Red or Later the button is back at once while the caret is
+still in that Remarks box** — "Change mission role" after an answer, "Choose mission role" after Later — so a mis-press is
+corrected from where he stands (`offerForFocus`, `[ROLE-BUTTON-AFTER-ANSWER]`, 6 Oct 26; D527, D529). **A line with no
+callsign is "Line"** in the question, in Undo and in History, never its row code (`[ROLE-BLANK-CALLSIGN]`; D340). **An answer
+can be changed to the other colour, never put back to "not chosen", once the sign-in has ended** — left as built on his word
+(D603, 6 Oct 26); Undo clears it during the same sign-in. **In the changes window an answer is filed under its formation** ("Flying · RU ACM", detail
+"Mission role" — the same item as that line's other changes; its recorded callsign when the line has gone), never
+under a hidden row id (W7, `changesmodel.ts roleItem`). **An answer on a built-in demo day nobody has saved survives a
+reload** because the two built-in weeks carry repeatable row ids (W8, `data-schema.md`). **His answers (6 Oct 26):** a second formation's question never
+removes the first one's — BOTH show, each under its own formation, each ending by its own rules (D598, narrowing
+D523; one gesture that leaves several formations needing answers still asks none — D529; built 6 Oct 26, pins in
+`ui/mission-role-interim-fixes.test.tsx` "D598 …"); and on Edit Schedule's week an open question WAITS on its day — swiping or stepping to
+another day does not end it, while on the Scheduler Board moving to another day still does (D599, narrowing D535; as built).
+Offer Change mission role temporarily while editing relevant Remarks (D527), reusing the formation question and edit
+permission; no permanent line marker. Named red Missions remain automatic, without overrides/questions. Recheck live
+formation identity/context/permission when answering; never apply an old popup's answer to a changed formation.
+
+**HIS ANSWERS TO THE OPUS 5.5 PLAN REVIEW (owner D529–D531, 3 Oct 26 — built on the branch; they change parts of the
+three paragraphs around this one, and win where they differ).**
+**When the question is asked (D529):** automatically only straight after the scheduler's own edit — to Remarks OR to the
+Mission — leaves a formation needing an answer. Passing through an unchanged Remarks box never asks, and Later is not
+asked again on the next pass; while the Remarks box of a formation with no chosen role is being edited, the same temporary
+control as D527's shows, worded **Choose mission role**. A Mission change that drops a chosen answer (D525) therefore asks.
+One gesture that leaves several formations needing answers asks for none (no burst, D523). Placement stays D520's.
+**An open question stays (D535, 3 Oct 26):** until Blue, Red or Later is pressed, the formation's own Mission or cue wording
+changes, the formation goes, tracking is turned Off, an Undo/Redo runs, or he moves to another day, week, version or sign-in.
+An unrelated edit on the same day — a time, a crew seat, another line — does not remove it. The answer is still checked
+afresh when pressed (same formation, wording, view and sign-in; nobody else's answer in between).
+**The read-only published Remarks door keeps its amendment mark (D534's fix F1):** it drops only the schedule-edit key; a box
+changed at AL*n* is outlined there as everywhere else. A role copied by a day template is named in History by its
+formation's callsign, the row id only when it has none (F3).
+**A pop-up window is never taller than the visible screen (D536, 3 Oct 26 — his find on his iPhone):** the phone bottom sheet's
+limit is the visible screen less a thin 24 px strip at the top (D537, the same day — *"pretty ugly that there's a lot of space
+to the top"*: it was 90%) — `calc(100% - 24px)` of its fixed backdrop, then the same in `dvh`; never plain `vh`, which on an iPhone counts the screen without the
+browser's bars and pushed the Insights window's title bar and ✕ under the address bar (`modal-phone-height.test.ts`).
+**A window closes on its surround only when the press began on the surround (D538, `[MODAL-DRAG-CLOSE]`, 3 Oct 26):** selecting a
+box's text by dragging and letting go outside the window is one click on the surround to the browser, and closed the window
+under him. Every window that closes on a click outside asks ONE helper, `ui/outside.ts` `clickedOutside` (thirteen places —
+`outside.test.tsx` fails if a window keeps its own test); his 4 Sep 26 rule, a click outside closes, is unchanged.
+*Four more since 6 Oct 26 (the Codex stack check, W10):* the OIL question, the upchit confirm, "covers other days" and
+"no medical document" know their surround by a class, not an id, and were left out of the thirteen — they ask the same
+rule through `clickedSurround`, and the guard test refuses a surround test by class too.
+**A Blue/Red answer counts at once (D530):** on a published day too, it needs no amendment and does not touch the day's
+sign-offs — it is a label for the statistics, not part of the programme (as a Logic rule change is not, D482). This replaces
+"working answers on an issued day wait for AL" above and "new answers on issued days still wait for an amendment" below,
+for the ANSWER only: a change to Mission or Remarks wording on a published day still waits for its amendment (D478). The
+answer is still saved, shown in the change history with who made it, and undoable. Wording changed on the working copy
+and not yet out means the published and the working copy can need different answers — the plan must hold both.
+**A Mission box containing DS or RED that is not exactly DS / RED / RED AIR (D531)** — `DS-2`, `RED AIR 2`, `ACM/DS` —
+asks the question; it is never counted blue or red by guessing. The three exact names stay automatic red.
+
+**REVISED PLAN BINDING (3 Oct 26 — technical read PASS, final picture agreement D532):** the NEW Astra plan
+`docs/superpowers/plans/2026-10-03-insights-mission-mix-build-plan-revised.md` keeps per-context role annotations outside
+day/issued/signature content, with their own guarded actor-history/Undo command. Unmatched old contexts remain saved;
+same-context saved-plan/version loading does not replay an old answer over a later correction. Published and working
+wording resolve separately. House `//` and `;` delimit context clauses; ordinary `/` remains support wording. Temporary
+actions insert without replacing the focused editor.
+Before Choose/Change or a question action, any dirty active Mission/Remarks for that formation commits through its
+existing editor writer without moving focus. The action then resolves the freshly saved context; no cached wording is
+answered. Later saves the text but no answer, and cue removal/exact automatic Mission retires the question. Published
+read-only Remarks never enter a programme writer. Text and role remain separate history/Undo commands.
+For published A while working B differs, the approved built door uses the Board's latest-published view and focusable
+read-only Remarks, with Published · version in the question;
+working access says Working copy when needed. No published programme edit or permanent marker. This door and text
+received D532 picture agreement before implementation. Complete plan findings/dispositions and Astra's independent
+D529–D531 meaning PASS are in `docs/superpowers/plans/2026-10-03-insights-revised-plan-review.md`; runtime proof is in the FULL sheet.
+
+**OPTIONAL SQUADRON TRACKING (owner D521, 3 Oct 26 — built on the branch):** the Logic page provides a
+squadron-wide on/off setting for blue/red sortie tracking. D512's split and D518's questions apply when tracking is on;
+**D524 approves the shown Logic Insights control, labelled Track blue/red sorties and shown Off.**
+this does not turn off ordinary Insights, sortie totals or work hours. **D522: start Off at first squadron setup; enable
+when wanted. D523: on enabling, a person with unanswered ambiguous flight roles keeps an ordinary total bar until those
+roles are chosen; no guessed colours or burst of questions.** Reuse applicable answers and named-Mission automatic roles;
+no third category is added. Existing explicit settings survive loading. No per-user preference or data deletion is approved.
+Retaining valid answers while off is the proposed reversible behaviour; changed context cannot reuse stale answers.
+New role answers count at once under D530; changed issued-day wording still waits under D478. Exact incomplete-breakdown wording/resolution access
+are now approved by D532; D525–D527 above settle the save/repeat/correction lifecycle.
+
+The older `[INSIGHTS-WORKING-COPY]` question is superseded by D478 below and the merged `[INSIGHTS-WHICH-COPY]` build;
+it is not an outstanding product choice.
+
+**SORTIE MISSION MIX (owner D512, 3 Oct 26 — built on the branch).** Each person's existing weekly sortie
+bar splits into blue and red segments WHEN tracking is enabled and ALL their eligible roles are resolved (D521/D523):
+missions named "Red", "DS" and (D518) "Red Air" count red; other missions count blue
+except a role chosen through D518's conditional question above. A person
+with both kinds shows both segments within the one total bar. If any eligible role is unanswered, D523 keeps that person's
+ordinary total bar until resolved. This adds the mission mix to the sortie count; it does not
+change work-hours bars, sortie eligibility or the latest-issued-day rule below. The approved design and history
+live in `superpowers/specs/2026-10-03-insights-mission-mix.md`; built with `[INSIGHTS-BOARD-DOOR]` in the Insights batch.
+
+**LIST LENGTH (owner D513, 3 Oct 26 — built on the branch):** show the first twelve flying people initially, with
+Show all for the rest; retain total-descending/callsign ordering. Work-hours list stays complete as below.
+
+**DIRECTION OF SUPPORT (owner D514, 3 Oct 26):** DS for another formation means our flight is red air for them; DS wording
+can instead describe support arriving from another formation. A bare DS mention in free-text Remarks therefore does not
+settle our flight's blue/red category. D518 later approves recognizing DS/RED as a cue to ASK, never as the answer,
+for an otherwise non-red mission; it does not approve inferring the role from support wording.
+
 **WHICH SCHEDULE INSIGHTS COUNTS (owner, D477 and D478, 1 Oct 26 — BUILT 1 Oct 26, `[INSIGHTS-WHICH-COPY]`; rule id IN1).** *"It
 should show the latest copy, so if working copy is the only copy then it will use that, unless its published then use
 Original, if theres an AL1 then use AL1 etc."* (D478). Day by day, Insights counts that day's LATEST PUBLISHED version — the
@@ -4758,6 +5044,8 @@ day are not counted until they go out; a hidden warning is not counted (D472), b
 (D477: 4 issues with 1 hidden read 3). One rule on EVERY page — Edit Schedule and the Scheduler Board included, and the
 pages with no schedule on them — and for every figure of the window, not only the issue counts. *(D477's first reading, "the
 schedule the page is showing", with Edit Schedule counting the working copy, was set aside by D478 the same evening.)*
+*(One exception, approved and built on the branch 3 Oct 26 — D530: a Blue/Red mission-role answer is not "a change waiting on the
+day"; it counts at once, published days included, with no amendment. Wording changes still wait. See the D529–D531 paragraph above.)*
 **As built:** every figure of the window — the four tiles, the flying load, the work hours, who is not flying, conflicts by
 type, by day — comes from ONE computation (`engine/insights.ts computeInsights`), which reads ONE world
 (`engine/validate.ts issuedWorld`): the days as the published-schedule pass installs them (each published day its current
@@ -4772,9 +5060,9 @@ published neighbours as published — the same judgement View-only Sched draws. 
 **A rule changed on the Logic page moves the work hours at once, published days included — as built, and ruled so (owner,
 D482, 1 Oct 26: "A rule change logic page should move the mentioned work hours").** A rule is not a change to a day: the
 app keeps no versions of its rules, and hours are worked out from the published day's content by today's rules.
-**The Scheduler Board gets a way to open the window (owner, D481, 1 Oct 26 — "Yes, give me an insights button") — NOT YET
-BUILT, `[INSIGHTS-BOARD-DOOR]`:** proposed to him — a button in the board's bar beside the bell on a desktop; inside the
-bar's ⋯ menu on a phone, whose bar is one row and full.
+**The Scheduler Board gets a way to open the window (owner, D481, 1 Oct 26 — "Yes, give me an insights button") — BUILT
+on `codex/insights-mission-mix`, `[INSIGHTS-BOARD-DOOR]`:** a button in the board's bar beside the bell on a desktop; inside
+the bar's ⋯ menu on a phone, whose bar stays one row. Both use the existing shared window and preserve the Board on close.
 *Before this build* every figure was worked out from the working copy on every page, so a change waiting on a published
 day — a hide included — already moved it.
 
@@ -7766,7 +8054,47 @@ moves the OPENING figure — `+`/`−` are entries on top of it), the manning ro
 the month strip, the window engine, the frozen-names mechanics, the quick-flick
 swipe, and everything a member sees.
 
+## Logic search and controls
+
+**D561/D563, 4 Oct 26 — built on codex/workflow-ui, owner look and remaining reads pending:** keep the search box in view while scrolling,
+alongside the controls already kept visible: All, Warnings, Advisories, Notes, Fired this week, Edit rules
+and rule count. Pack the buttons closer together so the strip uses fewer vertical rows. Preserve their
+actions, filtering, permissions and all rule values/calculations. This is a local compactness request,
+not global button resizing. The local bar observes Shell height on mount/resize and disconnects on leave; no scroll loop.
+Scoped spacing keeps the normal390px strip at108px versus174px before, with all actions visible; modified/narrow layouts wrap.
+D563 ends collection and authorizes this three-request batch; numbered pictures precede visual source changes.
+Both reference photos remain private. Filed as [LOGIC-STICKY-SEARCH-COMPACT] in the workflow UI batch.
+
 ## The Tracker tab (7 Sep 26)
+
+**D566, 4 Oct 26 — chosen picture accepted:** "Yes, use this tapered wing" selects the specifically
+shown D565 option4, with tapered straight leading edges, curved lower wings and existing nose/tail. Implement it
+with clear label backing and all existing size/palette/font/chart/data/hit constraints. Current implementation uses the exact centre-relative SVG path; combined current evidence is
+`docs/handpass/2026-10-04-accepted-taper-interface-batch.md`. Other options
+remain historical proposals; no acceptance of the rejected first wing or live/main authority follows.
+
+**D565, 4 Oct 26 — tapered leading-edge direction:** the owner draws lines on the smooth-wing option
+and proposes a leading edge sloping from the body down toward each wingtip. Redraw that exact direction
+with the clear blue text area retained; the previous three-option question is superseded. No unseen final
+picture accepted, no separate jet-and-pill selection. Existing size/palette/fonts/hits/data constraints stand.
+D565 exact proposal `docs/superpowers/specs/2026-10-04-flight-leading-edge-taper.md`; independent picture/challenge
+record `docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`. Both-size redraw shown and accepted D566; affected checks/fresh final code read and current preview still required.
+
+**D564, 4 Oct 26 — first broad-wing design rejected:** the owner finds the flat-centred silhouette ugly
+and asks for better design options. Keep the clearer-label goal, present cleaner numbered alternatives,
+and obtain his replacement choice before its source changes. The completed Logic/Insights fixes continue;
+current broad-wing source/evidence is a checked but rejected design, not an accepted result. Private close-up stays outside repo.
+D564 alternatives are in `docs/superpowers/specs/2026-10-04-flight-centre-options.md`; pictured host variants
+and independent font-repair confirmation in `docs/handpass/2026-10-04-flight-centre-options-picture-read.md`.
+D564 host recommendation3 was advisory only; D565 now steers to a tapered-wing variant, superseding that choice question.
+
+**D560/D563, 4 Oct 26 — first build rejected D564; chosen taper accepted D566:** the owner finds the text inside the blue flight
+balls hard to read and proposes reshaping the wing to give its label more area and stronger contrast.
+D563 ends collection and authorizes this three-request batch; numbered pictures precede visual source changes.
+Numbered candidates preceded source edits. A wider blue wing with continuous label backing replaces only the
+flight shape within the existing58-unit ball/ring; authored fonts, other symbols and hits remain. Impeccable remains advisory. Preserve D157's Raptor palette,
+D464's authored charts/details and existing chart behaviour. The supplied photo remains private.
+Filed in `OUTSTANDING.md` as [TRK-FLIGHT-LABEL-READABILITY] within the current workflow UI batch.
 
 The vendored OCU Progress Tracker (`src/tracker/`, from `seejiaokai/Tracker`
 at `bf9a47a`) is the eighth tab, after Leave War, for everyone. What holds on
@@ -8529,3 +8857,68 @@ A shared store starts with nothing demo (`src/bootpolicy.ts`), so two tabs must 
   course yet" with two full-size buttons — **+ Add a course** (the Course menu's own prompt) and **⇪ Import a file…** (the
   File menu's Import — his charts and students reach the database by his own Export → Import, D120); the dialog box rides
   along. The first course brings the usual Tracker back and draws the board. Pin: `tracker/trk-nocourse.test.tsx`.
+
+## The failed-save warning has a band of its own (owner, 5 Oct 26 — D586, D587; `[SAVE-NOTE-COVERS]`)
+
+**The rule (D587):** when a save has failed, the warning — "⚠ Not saved — keep this page open" and **Retry** — fills a
+line of its own along the BOTTOM OF THE TOP BAR, edge to edge. The top bar is one line (36px, `--save-band`) taller
+while it shows, so the page moves down and **nothing is under the warning, on any page, at any size**. It goes when the
+save lands. The passing "Saving…" note is unchanged: it floats under the bar's right end, takes no press, and never
+moves the bar (`[LW-FIGSEL-FLAKE]`, 28 Sep 26).
+**On a phone, in the Scheduler Board's Desktop layout (6 Oct 26, the Codex stack check — W13):** that layout is 1180px
+wide and pans, so the band is pinned to the SCREEN there (sticky at the board's left edge, one screen wide) — the words
+and Retry together at any pan (`17-save-status.css`; `e2e/save-note.spec.ts` walks three pans). In the same layout the
+board's ⋯ menu hangs from its button's right edge when the left-hung menu would pass the screen's edge (W18,
+`SchedBoard.tsx`, `e2e/geometry.spec.ts`).
+
+- **Why not floating, as it was:** it sat for as long as the save kept failing on whatever each page keeps under the
+  bar's right end — the name search box on both schedule pages (a phone tap on the box pressed Retry), the Tracker's
+  ✓ Save changes (a click on it pressed Retry) and its syllabus edit button, Quals' filter, the Leave War's "+ New".
+- **Where it is drawn** (`ui/SaveStatus.tsx`, styles `ui/scheduler/17-save-status.css`): `SaveStatus` in the top bar;
+  `Shell` puts `.save-failed` on the bar (from `useSaveFailed`) to make the room. The note stays `position:fixed` (the
+  phone bar is a sideways scroll box) and its top is MEASURED — the bar's bottom less the band — when it comes up, on a
+  window resize, and whenever the bar's own height changes (a page change takes the bar from one line to two with no
+  resize; the old note stayed at the old height, on the account button and Logout at 1366 wide).
+- **A full-screen surface that lies over the top bar carries the same warning under its own bar** (`SaveBand`, in the
+  flow): the scheduler board (inside `.sb-top`, last, so `--sb-topH` follows it), the Inputs calendar and the Medical
+  view (between the head and the body), and the Leave War's full-screen OIL tracker — its grid and its settings (under
+  the sheet's head). There the bar's own warning cannot be seen. A window, a sheet or the phone's menu is a short visit
+  and has none — the bar's is there when it closes. **What decides it is the surface, not its component's name:** full
+  screen and worked in (the OIL tracker is a `Sheet`) carries the band.
+- **One warning at a time for a screen reader and the keyboard:** while a `SaveBand` shows, the bar's copy beneath it is
+  `inert` and `aria-hidden` (it keeps its room, so nothing moves when the surface closes). The board passes
+  `active={open}`, because it stays in the page while closed.
+- **When the warning comes or goes, the page is told the way a window resize tells it:** `Shell` fires one `resize`
+  on the window, MARKED `saveBand` — because to some listeners a resize also means "the screen turned": the Tracker
+  shuts its open Tools set on one, and must not when only the warning came or went (it still re-fits its canvas). A
+  listener that only re-measures needs no change; one that CLOSES something on a resize must check the mark. A Quals or Leave War header ALREADY frozen, the Tracker's full-height column, its open menus and Find
+  strip all measured the bar before it changed and re-measure on a resize — without it the frozen header sat 36px off
+  and the Tracker's foot fell 36px below a screen that does not scroll.
+- **What follows the bar already follows this** — it is one line or two by page and width: Quals' and the Leave War's
+  frozen headers (measured live), Logic's pinned search (its own size observer). (A Leave War sheet anchored above a
+  phone keyboard reads the bar only when the visible screen changes — it lies over the shell and keeps its own cap.) **Two things
+  float at a FIXED height above the bar's layer and move down by the band with the page:** the week's two side arrows
+  (`.week-nav`) and Edit Schedule's blue CREW tab (`.ros-rail`) — where the bar is three lines (a phone on its side) the
+  taller bar would otherwise reach them, and the right-hand arrow would lie on Retry. **So does the spot the two movable
+  windows open at** (the changes window and the ALL AVAIL window, 96px down the right edge — they stay open while a
+  person works, and under a two-line bar would open on Retry); they are drawn beside the shell, so `#shell` carries
+  `.save-failed` too. DESKTOP ONLY (621px and wider) — on a phone both are bottom panels and the rule must not reach
+  them — and shorter by the band, so the foot stays on a short screen. ONLY A WINDOW STILL AT ITS DEFAULT SPOT: one a
+  person has moved or resized carries `data-placed` (`ui/floatwin.ts`) and keeps its own box — capped by the stylesheet,
+  its shrunken height would be recorded as the size he chose. Where he puts it is his, over the warning included. **A new thing pinned at a fixed height near
+  the top must do the same**, or be measured from the bar.
+- **The cost, accepted:** the page shifts down one line ONCE, at the moment a save fails, and back when it lands. A
+  failed save stays failed until it lands (`storage/postman.ts`), so this is not a per-change twitch; the top bar's own
+  buttons do not move.
+- **Pins:** `e2e/save-note.spec.ts` — at six sizes (phones 390 and 320, a phone on its side, desktops 1200, 1366×700,
+  1440), on all nine pages, at the top and scrolled: the warning seen whole and nothing a person can press under it;
+  real presses reach the name search box and the Tracker's ✓ Save changes; Retry, pressed for real, saves and the bar
+  returns to its height; the board, the Inputs calendar, the Medical view and the OIL tracker each show it and their
+  Retry works; one warning exposed at a time; a frozen header and the Tracker's column follow the bar when the warning
+  comes and goes, and the Tracker's open Tools set stays open; with the changes window open Retry still takes the press,
+  its foot stays on a 600-tall screen, on a phone it stays a bottom panel, and one he has moved keeps its box. Every
+  press on Retry is proven to try to save ITSELF, apart from the app's automatic retry. `ui/SaveStatus.test.tsx`
+  (the states). The walk's driver: `scripts/handpass/sn-cover.mjs`, `sn-board.mjs`.
+- **Device caveat:** on an iPhone, pulling the page down past its top lets the bar bounce while a fixed note stays —
+  the band may part from the bar for the length of the bounce (the floating note did the same). Not measured on his
+  phone.

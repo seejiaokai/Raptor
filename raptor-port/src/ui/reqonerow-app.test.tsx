@@ -18,6 +18,7 @@ import { elogClear, elogRows } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 
+
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const $$ = (s: string) => [...document.querySelectorAll(s)] as HTMLElement[]

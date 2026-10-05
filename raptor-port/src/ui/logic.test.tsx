@@ -155,6 +155,16 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
     expect(VCONF.crewRest).toBe(600)         // unchanged — refused, not written
     expect(RULE_SPEC.crewRest.lo).toBeGreaterThan(180)
   })
+  it('review D2 offers an adjacent bounded text setting and displays markup literally',async()=>{
+    const field=()=>$('#lgBody input[data-lgset="reportText"]') as HTMLInputElement;
+    expect(field()).toBeTruthy();expect(field().maxLength).toBe(60);
+    expect(field().closest('.lgmatrix')!.querySelector('[data-lgset="reportLead"]')).toBeTruthy();
+    await setField(field(),'<b>RALLY</b> "&');
+    expect(VCONF.reportText).toBe('<b>RALLY</b> "&');expect(field().value).toBe(VCONF.reportText);
+    expect(field().closest('.lgmatrix')!.querySelector('b')).toBeNull();
+    expect(field().getAttribute('value')).toBe('<b>RALLY</b> "&');
+    await setField(field(),'   ');expect(VCONF.reportText).toBe('IN TIME + WX/NOTAMS');
+  })
 
   it('a setting quoted on two rows edits from either box — the circled CREW_TIGHT row included', async () => {
     /* the owner circled the CREW_TIGHT advisory asking "is this editable as
@@ -212,6 +222,33 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
   })
 })
 
+/* W2 (the Codex stack check, 5 Oct 26): the button's WORDS are a squadron's wording preference (D511), not a rule
+   any check reads — so they never light the RULES MODIFIED stamp or the "schedule is being checked against these
+   values" strip; the count, the cell's own tag and Reset to standard still know them. */
+describe('W2 the words the + In-time / Rally button fills in are not a modified RULE', () => {
+  it('words alone: no stamp, no strip, Reset still offered; a number brings both back', async () => {
+    const { VCONF, rulesReset } = await import('../engine/rules')
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
+    await act(async () => { rulesReset(); VCONF.reportText = 'RALLY'; notify() })
+    expect(document.body.classList.contains('page-rules-off')).toBe(false)
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
+    expect(($('#lgReset') as HTMLElement).hidden).toBe(false)
+    expect($('#lgCount').textContent).toContain('1 off standard')
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='viewsched')!)
+    expect(document.body.classList.contains('page-rules-off')).toBe(false)
+    expect($('#vBanner').classList.contains('rules-off')).toBe(false)
+    await act(async () => { VCONF.crewRest = 600; notify() })
+    expect(document.body.classList.contains('page-rules-off')).toBe(true)
+    expect($('#vBanner').classList.contains('rules-off')).toBe(true)
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(false)
+    expect($('#lgOff').textContent).toContain('1 rule changed')
+    expect($('#lgCount').textContent).toContain('2 off standard')
+    await act(async () => { rulesReset(); notify() })
+    expect(document.body.classList.contains('page-rules-off')).toBe(false)
+  })
+})
+
 describe('the stamp does not need the Logic page (audit2 #6)', () => {
   it('a modified rule stamps the body from the banner path, on any page', async () => {
     const { VCONF } = await import('../engine/rules')
@@ -221,4 +258,22 @@ describe('the stamp does not need the Logic page (audit2 #6)', () => {
     await act(async () => { VCONF.crewRest = was; notify() })
     expect(document.body.classList.contains('page-rules-off')).toBe(false)
   })
+})
+
+/* D561: local clearance updates without recreating search; listeners stop on leave. */
+it('D561 observes the topbar size and releases its observer/listener on leaving Logic', async () => {
+  await click($$('.nav a[data-page]').find(a=>a.dataset.page==='viewsched')!)
+  const top=$('.topbar'), old=top.getBoundingClientRect, original=globalThis.ResizeObserver
+  let height=61, resize:()=>void=()=>{}, disconnected=false, observed:Element|null=null
+  top.getBoundingClientRect=()=>({height} as DOMRect)
+  globalThis.ResizeObserver=class { constructor(callback:()=>void){resize=callback} observe(e:Element){observed=e} disconnect(){disconnected=true} unobserve(){} } as any
+  try {
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
+    const bar=$('.lgbar'), search=$('#lgSearch')
+    expect(observed).toBe(top);expect(bar.style.top).toBe('61px')
+    height=93;resize();expect(bar.style.top).toBe('93px');expect($('#lgSearch')).toBe(search)
+    height=75;window.dispatchEvent(new Event('resize'));expect(bar.style.top).toBe('75px')
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='viewsched')!)
+    expect(disconnected).toBe(true);height=120;window.dispatchEvent(new Event('resize'));expect(bar.style.top).toBe('75px')
+  } finally {globalThis.ResizeObserver=original;top.getBoundingClientRect=old}
 })

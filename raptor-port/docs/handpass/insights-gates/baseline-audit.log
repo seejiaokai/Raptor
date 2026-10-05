@@ -1,0 +1,36 @@
+ ok   1 · overnight duty does not bar the 07-13 shift          want CLEAR · got CLEAR
+ ok   1b · tomorrow inside the night tail DOES bar             want BAR · got BAR
+ ok   2 · a meeting inside the brief window raises NO_BRIEF    want NO_BRIEF · got NO_BRIEF
+   3 · subject input type: Fly with
+ ok   3 · an un-accepted personal input clashes at once (owner, 10 Aug 26) want C/hard · got C/hard
+ ok   3 · and accepting it puts it on the programme            want on the programme · got on the programme
+ ok   4 · a 2300-0100 sim is stored rolled, not inverted       want 1380-1500 · got 1380-1500
+ ok   4 · and it clashes with the duty inside it               want DOUBLE_BOOK · got DOUBLE_BOOK
+ ok   5 · a sim extra is seen by the engine                    want DOUBLE_BOOK · got DOUBLE_BOOK
+ ok   6 · a late desk duty raises the crew-rest breach (owner, 21 Aug 26) want CREW_REST · got CREW_REST
+ ok   6 · and the picker agrees with the engine                want barred · got barred
+ ok   7 · a man on a row twice does not clash with himself     want none · got none
+ ok   8 · slotRules reads a sim front seat                     want p · got p
+ ok   8 · a WSO is barred from it                              want BAR · got BAR
+ ok   8 · but not from a pax place                             want null · got null
+ ok   11 · nobody on leave is drawn as available               want 0 · got 0
+ ok   11 · and the free counts are numbers                     want ok · got ok
+ ok   15 · undo disarms                                        want disarmed · got disarmed
+ ok   15 · and the wave really went                            want gone · got gone
+FAIL  13 · the AL mark follows the row it marked               want 1 · got lost
+ ok   13 · and no mark is left on the dead address             want gone · got gone
+FAIL  13 · the issued AL is rewritten too                      want dn:0.1 · got 
+   9 · armed 0.0.0.0.p, then switched to day 3
+ ok   9 · changing day puts the armed slot down                want null · got null
+   12 · inputs 46/46 → 47/47 → 46/0
+ ok   12 · the added row really appears                        want 47 · got 47
+ ok   12 · undo takes it back out of the model                 want 46 · got 46
+FAIL  12 · and the table follows the model                     want 46 · got 0
+   14 · traffic add — history 26 → 27 · key tr:0.rmus3w2id6mwehc
+ ok   14 · a traffic add is undoable                           want stepped · got stepped
+ ok   14 · and lands in the next AL as a tr: key               want marked · got marked
+
+no runtime errors
+
+24 passed · 3 failed
+audit-async done

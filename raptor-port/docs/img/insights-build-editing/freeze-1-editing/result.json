@@ -1,0 +1,61 @@
+{
+  "base": "http://localhost:4199",
+  "results": [
+    {
+      "id": "everything-day",
+      "status": "PASS",
+      "facts": [
+        "VIPER bane",
+        "VIPER freak",
+        "COBRA razer",
+        "COBRA sufa",
+        "SC MAIN pump",
+        "SC MAIN glass",
+        "SC SPARE taipan",
+        "SC SPARE drill",
+        "AVALON prowler",
+        "AVALON nasty",
+        "SXO blind nact",
+        "OPS DESK 0-len casper",
+        "AVALON desk salsa",
+        "SC desk slipway",
+        "OFT dice",
+        "OFT glass",
+        "AMT BOX snap",
+        "AMT BOX ammo",
+        "OCU REVIEW stiff",
+        "ADMIN split",
+        "FAMILY DAY allavail",
+        "MASS BRIEF stiff",
+        "MASS BRIEF ignite"
+      ]
+    },
+    {
+      "id": "desktop-S27-Off",
+      "status": "PASS",
+      "facts": "real default-Off setting and edit gate"
+    },
+    {
+      "id": "desktop-S01-S03-S07",
+      "status": "PASS",
+      "facts": "exact/cue boundaries operated via native Mission and Remarks fields"
+    },
+    {
+      "id": "desktop-S08-S11-S12",
+      "status": "FAIL",
+      "error": "TimeoutError: locator.textContent: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-role-choose]')\u001b[22m\n"
+    }
+  ],
+  "pictures": [
+    "docs/img/insights-build-editing/freeze-1-editing/desktop-logic-off.png",
+    "docs/img/insights-build-editing/freeze-1-editing/desktop-logic-on.png",
+    "docs/img/insights-build-editing/freeze-1-editing/desktop-mission-question.png",
+    "docs/img/insights-build-editing/freeze-1-editing/desktop-remarks-question.png",
+    "docs/img/insights-build-editing/freeze-1-editing/desktop-S08-S11-S12-failure.png"
+  ],
+  "errors": [],
+  "limitations": [
+    "Chromium emulation, not physical iPhone/iOS keyboard."
+  ],
+  "error": "TimeoutError: locator.textContent: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-role-choose]')\u001b[22m\n"
+}

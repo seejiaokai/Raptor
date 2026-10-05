@@ -1,0 +1,57 @@
+[
+  {
+    "width": "phone",
+    "label": "no Discard marks control on the edit week",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "draft editing retains a pending mark and its history",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "Undo then Redo preserves the ordinary draft edit",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "draft-only panel has guidance and no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "reload before publication keeps the draft note and marks",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "first publish clears this day’s marks and keeps its note",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "published day still offers its amendment with no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "AL1 retains the change in the issued record",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "reload retains the issued amendment and no clearing door",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "member view has no clearing or amendment-publish control",
+    "status": "PASS"
+  },
+  {
+    "width": "phone",
+    "label": "browser errors",
+    "status": "PASS"
+  }
+]

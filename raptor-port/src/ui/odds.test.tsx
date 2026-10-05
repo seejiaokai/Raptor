@@ -81,11 +81,13 @@ describe('the mobile drawer', () => {
     expect(DAYS[0].dt).toBe('Jul 13')
   })
 
-  it('the drawer offers a calendar opener in place of week chips', async () => {
+  it('D558 removes drawer Week shortcuts; the View-only calendar still opens and cancels', async () => {
     await click($('#burger'))
-    expect($('#drawerPickWeek')).toBeTruthy()
-    expect($('#drawerWeeks [data-wk]')).toBeFalsy()
-    await click($('#drawerPickWeek'))
+    expect($('#drawerPickWeek')).toBeFalsy()
+    expect($('#drawerWeeks')).toBeFalsy()
+    expect($('#drawerInsights')).toBeFalsy()
+    await click($('#drawer'))
+    await click($('#page-viewsched .filt-cal'))
     expect($('#drawer').classList.contains('open')).toBe(false)
     expect($('#weekCal') && !($('#weekCal') as HTMLElement).hasAttribute('hidden')).toBe(true)
     /* close it again for the rest of the suite */
@@ -95,8 +97,7 @@ describe('the mobile drawer', () => {
   it('the calendar header carries a Today button that jumps to the notional today and closes', async () => {
     /* page a fortnight away so "today" is a real jump, then open the picker */
     await act(async () => { loadWeek('27/07/2026') })
-    await click($('#burger'))
-    await click($('#drawerPickWeek'))
+    await click($('#page-viewsched .filt-cal'))
     expect($('#weekCal').hasAttribute('hidden')).toBe(false)
     const today = $('#weekCal .wc-today')
     expect(today).toBeTruthy()

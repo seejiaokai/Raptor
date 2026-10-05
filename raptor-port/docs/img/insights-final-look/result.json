@@ -1,0 +1,265 @@
+{
+  "designOnly": true,
+  "applicationSourceUnchanged": true,
+  "checks": [
+    {
+      "label": "phone",
+      "chartTotals": [
+        {
+          "name": "Relay",
+          "total": 4,
+          "mix": [
+            2,
+            2
+          ]
+        },
+        {
+          "name": "Echo",
+          "total": 3,
+          "mix": [
+            0,
+            3
+          ]
+        },
+        {
+          "name": "Hex",
+          "total": 3,
+          "mix": [
+            3,
+            0
+          ]
+        },
+        {
+          "name": "Static",
+          "total": 3,
+          "mix": null
+        },
+        {
+          "name": "Ace",
+          "total": 2,
+          "mix": [
+            1,
+            1
+          ]
+        },
+        {
+          "name": "Basher",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Drifter",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Gambit",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Outlaw",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Piston",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Pixel",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Ranger",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        }
+      ],
+      "chartOverflow": false,
+      "mockShowAll": "12 → 38 → 12",
+      "splitsIllustrative": true
+    },
+    {
+      "label": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "missionAndRowGeometryUnchanged": true,
+      "mockFocusNodeAndRangePreserved": true,
+      "mockLaterRetainsTextAndPriorAnswer": true,
+      "publishedRemarksReadOnly": true,
+      "applicationTriggerStorageUndoUnbuilt": true
+    },
+    {
+      "label": "desktop",
+      "chartTotals": [
+        {
+          "name": "Relay",
+          "total": 4,
+          "mix": [
+            2,
+            2
+          ]
+        },
+        {
+          "name": "Echo",
+          "total": 3,
+          "mix": [
+            0,
+            3
+          ]
+        },
+        {
+          "name": "Hex",
+          "total": 3,
+          "mix": [
+            3,
+            0
+          ]
+        },
+        {
+          "name": "Static",
+          "total": 3,
+          "mix": null
+        },
+        {
+          "name": "Ace",
+          "total": 2,
+          "mix": [
+            1,
+            1
+          ]
+        },
+        {
+          "name": "Basher",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Drifter",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Gambit",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Outlaw",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Piston",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Pixel",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        },
+        {
+          "name": "Ranger",
+          "total": 2,
+          "mix": [
+            2,
+            0
+          ]
+        }
+      ],
+      "chartOverflow": false,
+      "mockShowAll": "12 → 38 → 12",
+      "splitsIllustrative": true
+    },
+    {
+      "label": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "missionAndRowGeometryUnchanged": true,
+      "mockFocusNodeAndRangePreserved": true,
+      "mockLaterRetainsTextAndPriorAnswer": true,
+      "publishedRemarksReadOnly": true,
+      "applicationTriggerStorageUndoUnbuilt": true
+    },
+    {
+      "label": "short",
+      "viewport": {
+        "width": 390,
+        "height": 568
+      },
+      "missionAndRowGeometryUnchanged": true,
+      "mockFocusNodeAndRangePreserved": true,
+      "mockLaterRetainsTextAndPriorAnswer": true,
+      "publishedRemarksReadOnly": true,
+      "applicationTriggerStorageUndoUnbuilt": true
+    }
+  ],
+  "errors": [],
+  "pictures": [
+    "chart-phone.png",
+    "board-phone.png",
+    "working-choose-phone.png",
+    "working-question-phone.png",
+    "working-change-phone.png",
+    "published-view-phone.png",
+    "published-change-phone.png",
+    "published-question-phone.png",
+    "chart-desktop.png",
+    "board-desktop.png",
+    "working-choose-desktop.png",
+    "working-question-desktop.png",
+    "working-change-desktop.png",
+    "published-view-desktop.png",
+    "published-change-desktop.png",
+    "published-question-desktop.png",
+    "working-question-short.png",
+    "published-question-short.png"
+  ]
+}

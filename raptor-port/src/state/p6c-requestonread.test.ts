@@ -44,6 +44,7 @@ import * as view from './view'
 import { commitNewInput, commitInputEdit, draftOf, removeInput } from '../ui/inputedit'
 import { deletePerson } from './person-delete'
 
+
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
 const DSNAP = JSON.stringify(DAYS)

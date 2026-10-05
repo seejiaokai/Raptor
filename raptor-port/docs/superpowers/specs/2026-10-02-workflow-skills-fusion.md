@@ -111,6 +111,14 @@ sounds:
   only on files that keep being changed — which is why the audit ranks by change count.
 - **The cheap, lasting half is the guard in §3**, not the audit.
 
+**The audit ran, and his answers — D493 (2 Oct 26, "as recommended").** Astra's report:
+`raptor-port/docs/superpowers/briefs/2026-10-03-code-tidy-audit-astra.md` — five separations, none a fault. **Approved, each
+built with its area's feature batch (D485, D490):** (1) the Leave War's row drawing out of its grid file — `[LW-ROWS-SPLIT]`;
+(2) the scheduler's stylesheet split by screen, as the FIRST step of the workflow UI pass — `[CSS-SPLIT-BY-SCREEN]`; (3) the
+Tracker's file save and load out of its main file, stopping if it cannot be lifted cleanly — `[TRK-FILE-TRANSFER-SPLIT]`.
+**Not now:** (4) the Leave War's saved-data reading — looked at again at `[DB-STEP]`, which replaces it; (5) the Leave War's
+link to the schedule — not split unless a later feature has to work heavily inside it (a new question for him then).
+
 ## 3. PROPOSAL — the same rubric as a standing guard on every change (not yet ruled)
 
 The source is built for this, and it costs almost nothing: the final code read is already reading the change. Three
@@ -182,6 +190,41 @@ and the smallest safe fix; a style preference or a guess is not a finding. It cu
 **HIS ANSWER (D489, 2 Oct 26 — "1. yes"):** the guard as Astra rewrote it, the narrowed look-and-feel checks, and Astra's
 "what counts as a finding" rule are APPROVED — what goes in; the wording is still read by Fable and Astra and approved by him
 (D70). The evidence rules (§5) are not added. §3 and §4 above are as first proposed: build from this section and Astra's report.
+
+## 8. The rest of `mattpocock/skills`, read 3 Oct 26 — PROPOSALS, not ruled until he says so
+
+He sent the whole collection (github.com/mattpocock/skills — MIT, about 30 skills) and asked whether to implement it. Read at
+the source that day, the skill's own text: `grilling`, `grill-me`, `grill-with-docs`, `domain-modeling`, `to-spec`,
+`to-tickets`, `triage`, `diagnosing-bugs`, `improve-codebase-architecture`, `wait-what`, `handoff`, `retro`,
+`setup-matt-pocock-skills`, `implement`, `code-review`, the git guard's script, and the head of `to-questionnaire`. **NOT
+read:** `tdd`, `codebase-design`, `prototype`, `research`, `wizard`, `wayfinder`, `teach`, `writing-for-agents`, `pr`,
+`implement-spec`, `ask-matt`, the in-progress and deprecated folders, and each skill's side files (the glossary and ADR
+formats, the triage brief) — read one before fusing anything from it.
+
+**The host's verdict: not installed whole — D486's reasoning holds for the whole collection.** It is built around three things
+this repo already has in a stricter form, and installing it would make a second of each: an issue tracker with labels
+(`to-spec`, `to-tickets`, `triage`, `wayfinder`, the setup skill) against the ONE backlog; a handoff written to a temporary
+folder against `HANDOFF.md`; decision records (ADRs) against the rulings. Its `implement` and `code-review` end a build on a
+code read and the tests — exactly what the bug-check order says is not a bug check.
+
+**Proposed to take — three small pieces, documents only, riding with `[SKILL-FUSION]`:**
+1. **A word list** (their `GLOSSARY.md`, from `domain-modeling`): one page — the name a thing has on screen, what it means in
+   a sentence, and the name it has in the code. Theirs forbids the code name; ours keeps it, because the translation is the
+   point here: it is what the plain-language rule keeps failing at, and what a brief to Astra needs. A reference doc under
+   `raptor-port/docs/`, searched when writing to him or briefing a reviewer — never loaded in every chat. A term settled in a
+   planning round is added the moment it is settled.
+2. **Two lines for the debugging guide** (`.claude/skills/systematic-debugging/SKILL.md`, from `diagnosing-bugs`): before any
+   theory, build ONE quick check that fails on this exact fault, and name it; and write three to five ranked guesses, each
+   with what it predicts, before testing any — ours says "form a single hypothesis", which anchors on the first idea.
+3. **One line for `[CODE-TIDY-AUDIT]`'s brief** (from `improve-codebase-architecture`): the deletion test — would removing
+   this piece gather the complexity in one place, or only move it; report it only if it gathers.
+
+**HIS ANSWER (D491, 3 Oct 26 — "Yes for all"):** the three pieces are APPROVED — what goes in; the wording of a changed guide
+is still read before he approves it (D70). Astra drafts the word list (`[WORD-LIST]`) and runs its tidiness read before the reset.
+
+**Looked at, not proposed:** the git guard refuses every push, which breaks "push a branch freely" (D60); `wait-what` is one
+sentence the plain-language rule already says; `retro` is what the task observer does; `to-questionnaire` is a fair shape for
+`[IT-QUESTIONS]` and needs no install to copy.
 
 **Other corrections from the review:** the source asks for equal-width digits only on numbers that CHANGE (extending it to
 every column was this spec's); APEX has a fourth label, "untrusted", that §5 left out. Every measurement in §2 was re-checked

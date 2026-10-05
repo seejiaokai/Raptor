@@ -1,0 +1,37 @@
+
+> raptor-port@0.0.0 docsize
+> node scripts/docsize.mjs
+
+docsize — measured against de470db5 · this change touches raptor-port/src
+
+  note: HANDOFF.md ## Now still has a block for claude/ai-workflow-skills-review-87bf52, which is merged into main — the next handoff removes it once its open residue is filed
+  file                                   tier  lines   ceiling
+  raptor-port/CLAUDE.md                  0     292     340
+  .claude/rules/raptor-executor.md       0     108     108
+  .claude/rules/bug-check.md             0     76      76
+  .claude/rules/record-decisions.md      0     152     160
+  .claude/rules/plain-language.md        0     60      60
+  .claude/rules/doc-structure.md         0     81      100
+  .claude/rules/shipping.md              0     99      110
+  HANDOFF.md                             1     196     250
+  HANDOFF-NEXT.md                        1     5       12
+  OUTSTANDING.md                         1     1710    1750
+  DECISIONS.md                           1     83      90
+
+  tier 0, always loaded: 868 lines (no target — D141)
+
+  rulings file (loaded)                        tier  bytes    ~tokens  tripwire
+  .claude/rules/decisions/how-we-work.md       0     20366    ~5504    22000
+  .claude/rules/decisions/people-accounts.md   2     13921    ~3762    22000
+  .claude/rules/decisions/scheduler.md         2     61356    ~16583   62000
+  .claude/rules/decisions/oil.md               2     8828     ~2386    12000
+  .claude/rules/decisions/leave-war.md         2     27406    ~7407    32000
+  .claude/rules/decisions/tracker.md           2     17834    ~4820    18000
+  .claude/rules/decisions/it-flow-guide.md     2     3991     ~1079    5000
+
+  always-loaded rulings: 20366 bytes (~5504 tokens); the full text, searched: 506799 bytes
+
+Docs: OUTSTANDING 100 items (+6 −2, −2 all in ARCHIVE) · DECISIONS D1–D532 (new: D491, D492, D493, D494, D495, D496, D497, D498, D499, D500, D501, D502, D503, D504, D505, D506, D507, D512, D513, D514, D515, D516, D517, D518, D519, D520, D521, D522, D523, D524, D525, D526, D527, D528, D529, D530, D531, D532) · homes OK
+docsize: OK
+
+docsize OK — every record accounted for.

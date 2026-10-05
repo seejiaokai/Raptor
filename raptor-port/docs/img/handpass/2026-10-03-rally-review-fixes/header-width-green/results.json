@@ -1,0 +1,211 @@
+{
+  "results": [
+    {
+      "name": "desktop",
+      "status": "PASS",
+      "measured": {
+        "text": "In-time / Rally 22:00 (prev day) · 4 ac",
+        "width": 233.34375,
+        "height": 13,
+        "line": 13.2,
+        "buttons": [
+          {
+            "text": "Traffic",
+            "width": 54.125,
+            "height": 19,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "⇅ Auto sort",
+            "width": 76.4375,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "+ In-time / Rally",
+            "width": 100.9375,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "+ Line",
+            "width": 46.46875,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "✕ Wave",
+            "width": 53.1875,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          }
+        ],
+        "headerWidth": 1088,
+        "scrollWidth": 1088,
+        "clientWidth": 1088
+      }
+    },
+    {
+      "name": "phone",
+      "status": "PASS",
+      "measured": {
+        "text": "In-time / Rally 22:00 (prev day) · 4 ac",
+        "width": 233.34375,
+        "height": 13,
+        "line": 13.2,
+        "buttons": [
+          {
+            "text": "Traffic",
+            "width": 54.125,
+            "height": 19,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "⇅ Auto sort",
+            "width": 76.4375,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "+ In-time / Rally",
+            "width": 100.9375,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "+ Line",
+            "width": 46.46875,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "✕ Wave",
+            "width": 53.1875,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          }
+        ],
+        "headerWidth": 342,
+        "scrollWidth": 342,
+        "clientWidth": 342
+      }
+    },
+    {
+      "name": "landscape",
+      "status": "PASS",
+      "measured": {
+        "text": "In-time / Rally 22:00 (prev day) · 4 ac",
+        "width": 233.34375,
+        "height": 13,
+        "line": 13.2,
+        "buttons": [
+          {
+            "text": "Traffic",
+            "width": 54.125,
+            "height": 19,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "⇅ Auto sort",
+            "width": 76.4375,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "+ In-time / Rally",
+            "width": 100.9375,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "+ Line",
+            "width": 46.46875,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "✕ Wave",
+            "width": 53.1875,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          }
+        ],
+        "headerWidth": 492,
+        "scrollWidth": 492,
+        "clientWidth": 492
+      }
+    },
+    {
+      "name": "tablet",
+      "status": "PASS",
+      "measured": {
+        "text": "In-time / Rally 22:00 (prev day) · 4 ac",
+        "width": 233.34375,
+        "height": 13,
+        "line": 13.2,
+        "buttons": [
+          {
+            "text": "Traffic",
+            "width": 54.125,
+            "height": 19,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "⇅ Auto sort",
+            "width": 76.4375,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "+ In-time / Rally",
+            "width": 100.9375,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "+ Line",
+            "width": 46.46875,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          },
+          {
+            "text": "✕ Wave",
+            "width": 53.1875,
+            "height": 17.5,
+            "inside": true,
+            "hit": true
+          }
+        ],
+        "headerWidth": 672,
+        "scrollWidth": 672,
+        "clientWidth": 672
+      }
+    }
+  ],
+  "pictures": [
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-green/desktop-previous-day-header.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-green/phone-previous-day-header.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-green/landscape-previous-day-header.png",
+    "C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-green/tablet-previous-day-header.png"
+  ],
+  "failures": 0
+}

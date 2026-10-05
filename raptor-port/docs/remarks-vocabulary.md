@@ -70,36 +70,61 @@ Rules: `docs/engine-rules.md` §AAR, and who may teach it.
 
 ---
 
-## The in-time lines — at the top of a wave
+## The In-time / Rally lines — at the top of a wave
 
-Each line the wave publishes is read for a **time** and, optionally, a
-**callsign** (21 Aug 26):
+Each free-text line carries its **first valid clock** and its activity. These
+rules include the original in-time spellings and the approved Rally extension
+(D497–D507, narrowed for publication by D509). Words and remarks stay as typed.
 
 | Typed | Means |
 |---|---|
-| `0900` `09:00` `0900H` `09:00H` `0900L` `09:00L` | the show time — the FIRST valid clock time in the line is the one that counts |
-| a formation's callsign anywhere in the line (`RU 0900`, `0900H: RU IN TIME`) | this line is that formation's in-time only |
-| no callsign in the line (`0900H: IN TIME + WX/NOTAMS`) | the whole wave's — every formation without a line of its own |
+| `0900 IN TIME`, `09:00 IN-TIME`, `0900H INTIME` | in-time at 09:00; labels, callsigns and H/L suffix are case-insensitive |
+| `0900 RALLY` | rally at 09:00; rally supplies the report when no in-time applies |
+| `0900 IN TIME + RALLY` | both activities at the same first valid clock |
+| `RALLY AFTER IN TIME` or `RALLY AFTER IN`, with no clock | immediate rally at its applicable in-time; it never adds another minute |
+| `0830H: VL RALLY AFTER IN TIME` — the same words WITH a clock | VL's rally at 08:30 and nothing else: it is never a second in-time, so the whole-wave in-time still starts VL's day (D505; the Codex stack check's W3, 5 Oct 26) |
+| `0900` `09:00` `0900H` `09:00H` `0900L` `09:00L` without a recognised activity | the legacy unlabelled in-time |
+| `0900 RALLYING` | also legacy unlabelled in-time: RALLYING is not the bounded word RALLY |
+| `0900H: RU RALLY`, or a formation name in remarks | that activity applies to this wave's named formation; only its own formation callsigns are recognised |
+| no recognised formation name (`0900H: IN TIME + WX/NOTAMS`) | wave-wide fallback for that activity |
 
-Case is free on the callsign and the H/L suffix. A specific line always beats
-a wave-wide one, whatever order they were typed; with several wave-wide
-lines, the earliest time is the show. A number glued to letters (`FL240`)
-never reads as a time, and an impossible clock (`2590`) is skipped.
+Formation recognition scans the whole line, including remarks, with word
+boundaries; personal callsigns and role names never select people. A formation
+line overrides wave-wide lines **separately for each activity** (D505): specific
+RALLY does not erase wide IN TIME, and specific IN TIME does not erase wide
+RALLY. Several applicable lines of the same activity choose the **earliest
+resolved instant**, including specific duplicates, whatever the row order
+(D506). The first valid clock wins even if a later clock appears in remarks;
+`FL240` and `1330Z` are glued tokens, and impossible `2590` is skipped.
 
-The published in-time moves the formation's **report time**, which feeds crew
-rest (the anchor is the EARLIER of in-time and brief — and, since 21 Aug 26,
-anything scheduled even earlier that day starts the clock instead: an 08:00
-meeting ahead of a 10:00 in-time is what the 12 hours are measured to. That
-includes a duty-and-commitments INPUT with typed times — but never the
-Personal or SANS Availability types, leave, medical, or an all-day record),
-the long-work-day note, and the wave windows. A line with no readable time is
-inert until a time is typed into it.
+**Reporting day (D503):** a reporting clock later than that formation's take-off
+means the immediately **previous day**, at most one day back. For take-off01:00,
+`2200 RALLY` means22:00 the previous evening. Each formation resolves against
+its own take-off before duplicate minima are compared. The earliest applicable
+IN TIME/RALLY supplies report; an earlier qualifying commitment can still start
+that person's working day/rest anchor. With neither instruction, the existing
+step fallback stays. Crew rest, actual work hours and long-day notes read that
+report; busy windows and nominal OIL retain their separate timing meanings.
+Typed qualifying commitments count, but Personal/SANS offers, leave, medical
+and all-day inputs do not become earlier rest commitments through these words.
+
+**Feedback and warnings:** present stages run IN TIME → RALLY → brief → take-off
+→ landing; equality is legal. `REPORT_ORDER` names an actual reversed pair as
+a red warning; a blank B is checked and named as the **suggested brief**.
+`REPORT_UNRESOLVED` is an advisory for a completed malformed clock or immediate
+rally lacking an applicable in-time. A clock attempted in a spelling the reader does not
+take — `8h00`, `8.00`, `08.00`, or digits glued to the words (`0800IN TIME`) — is a malformed
+clock too and gets the same line (W19, 5 Oct 26); digits that are plainly not a clock
+(`FL240`, `2 SHIPS`, `2.5 HRS`) do not. Other clockless notes remain inert.
+Drafts save and first publication, amendments and correcting reissues all remain
+allowed with a timing warning (D509); issued copies keep the warning normally.
+The add button's nominal lead and words are both set in Logic (D510/D511).
 
 ## Late show — in a flying line's RMKS
 
 | Typed | Means |
 |---|---|
-| `LATE SHOW` `SHOW AT BRIEF` `SHOW @ BRIEF` `BRIEF SHOW` | this crew is not needed at the published in-time, only from the brief |
+| `LATE SHOW` `SHOW AT BRIEF` `SHOW @ BRIEF` `BRIEF SHOW` | changes the crew-rest ring only: dashed while he still makes step, solid once he cannot |
 
 Case and spacing are free. **Unlike AAR, no seat tag is read** — a late show on
 a line applies to the whole aircraft, both seats.
@@ -107,7 +132,8 @@ a line applies to the whole aircraft, both seats.
 It does **not** remove a crew-rest breach or move the anchor. It changes the
 RING: dashed while the man can still make the jet by step (the step setting
 on the Rules tab — the same one that pads a sortie's busy window), solid
-once he cannot. Rule: `engine/events.ts` `lateShowOf`.
+once he cannot. It does not alter reporting chronology, `REPORT_ORDER` or
+publication. Rule: `engine/events.ts` `lateShowOf`.
 
 ---
 
@@ -144,6 +170,24 @@ Cancelling asks for a reason, and the reason is printed on the line as
 day knows why it went. Free text; nothing parses it.
 
 ---
+
+## Mission role for Insights — when squadron tracking is On (D512–D532)
+
+The exact Mission names `DS`, `RED`, `RED AIR` (also `REDAIR` / `RED-AIR`, ignoring case and extra spaces) count Red.
+Other Mission names normally count Blue. A bounded DS/RED cue in a non-exact Mission or any aircraft Remarks asks
+the scheduler to choose Blue or Red for the whole formation; FOR/FROM and an external unit never guess the answer.
+`DS2`, `DS-2`, `RED AIR 2` and `ACM/DS` are cues; `DSFOR`, `REDS` and `CREDIBLE` are not.
+
+The question follows a qualifying own edit after the text is saved. Later keeps unanswered text valid. Focus Remarks
+to reveal temporary Choose/Change mission role below AREA. Answers are separate Insights annotations with actor history
+and Undo; they update published Insights immediately without changing signed programme wording. Latest published Remarks
+is read-only and labelled Published; the working copy is separate. Tracking starts Off and does not change totals or hours.
+
+Only `;` and `//` split support clauses: `DS FOR VL // BRIEF 30 PRIOR` and `DS FOR VL; REJOIN 1430` retain the answer
+when only the separate time changes. A single slash, comma or undelimited time stays inside its cue clause; changing that
+clause or Mission can require a different answer. Standby waves remain outside flying load.
+
+Rule: `engine/mission-role.ts`, `state/mission-roles.ts`; full context definition in the frozen revised Insights plan.
 
 ## What is NOT text
 

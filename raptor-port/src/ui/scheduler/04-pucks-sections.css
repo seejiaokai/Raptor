@@ -1,0 +1,776 @@
+/* ============ PUCK ============ */
+/* 9px is not arbitrary: it is the reference tool's own puck type, back-computed from a
+   19-device-px cap height on a 3x screen. Same size on desktop — see the note in :root. */
+.puck{display:inline-flex;align-items:stretch;border-radius:var(--puck-r);overflow:hidden;font-size:9px;font-weight:600;cursor:pointer;line-height:1;border:1px solid transparent;height:var(--puck-h);width:var(--puck-w);max-width:var(--puck-w);flex:0 0 var(--puck-w)}
+/* every puck, anywhere, is exactly the flying-puck size */
+.seat .puck,.ppl .seat .puck,.ap-grid .seat .puck,.rpuck .puck,.sb-slot .seat .puck{width:var(--puck-w)!important;max-width:var(--puck-w)!important;flex:0 0 var(--puck-w)!important;height:var(--puck-h)!important}
+/* SANS: bright purple line down the right edge of the puck (deliberately the
+   brightest thing on the puck so SANS read at a glance across the whole week) */
+.puck.san{position:relative}
+.puck.san::after{content:'';position:absolute;top:-1px;bottom:-1px;right:0;width:4px;
+  background:linear-gradient(180deg,#F2C8FF 0%,#D98CFF 45%,#B24DEA 100%);
+  box-shadow:0 0 5px 1px rgba(214,124,255,.95),0 0 12px rgba(178,77,234,.6),inset 0 0 1px #fff;
+  z-index:4}
+/* left flag chip: DT/TT double/tight turn (orange), C conflict (strong orange), CR crew-rest (red) */
+/* the chip is its own click target — it jumps to the warning behind it, while
+   the puck body around it still selects the person */
+.puck .lchip{display:flex;align-items:center;justify-content:center;padding:0 3px;font-size:8px;font-weight:800;letter-spacing:.02em;color:#12100a;min-width:14px;cursor:pointer}
+.puck .lchip.l-dt{background:#E5A83B}
+.puck .lchip.l-tt{background:#E5A83B}
+.puck .lchip.l-c{background:#F0555F;color:#fff}
+.puck .lchip.l-cr{background:#F0555F;color:#fff}
+.puck .lchip.l-q{background:#F0555F;color:#fff}
+/* NB/SB = no time for the brief · DB/SD = no time for the debrief. All four are
+   ADVISORIES (owner, 4 Aug 26 — the clash itself carries the red; the eaten
+   window is advice on top of it), so all four are amber. NB/SB were red until
+   10 Aug 26, which put a red chip and a red box over an amber ring and made
+   the puck contradict the checks list beside it. */
+.puck .lchip.l-nb{background:#E5A83B}
+.puck .lchip.l-sb{background:#E5A83B}
+.puck .lchip.l-db{background:#E5A83B}
+.puck .lchip.l-sd{background:#E5A83B}
+/* A = advisory — on shift AND down for a ground event or a programme item.
+   It used to borrow the conflict chip: a red C on the puck with an amber line in
+   the notes, which read as a hard clash at a glance. Its own amber letter now. */
+.puck .lchip.l-a{background:#E5A83B}
+/* RUN = no break day, too many days in a row. A HARD warning, so red — and it
+   had NO RULE AT ALL until 10 Aug 26, which left the 7 with the base chip's
+   dark text on no background: near invisible on a puck. Never seen because the
+   demo week does not trip it. */
+.puck .lchip.l-run{background:#F0555F;color:#fff}
+/* LD = long work day — a grey note, not a warning */
+.puck .lchip.l-ld{background:#8A96A3;color:#0B0D10}
+/* CP = crew pairing (renamed from CC, owner ask 5 Aug 26) — the pairing rules.
+   Two classes for one printed flag: amber where the pairing needs approval
+   (crew solo, CO approval, OCU with no IP), red where it is not authorised at
+   all (illegal crew, IRT with no IR examiner). The letters stay CP either way
+   — the colour is the severity, exactly as the ring behind it. */
+.puck .lchip.l-cp{background:#E5A83B}
+.puck .lchip.l-cph{background:#F0555F;color:#fff}
+/* conflict / crew rest → red box around the whole puck */
+.puck.boxred{box-shadow:0 0 0 2px var(--hard)!important;border-color:var(--hard)!important}
+/* The DASHED red box (owner, 6 Aug 26): same colour and same weight as the
+   solid one — it is the same red warning, and downgrading the colour would
+   read as "less of a problem" — but broken stroke, for the two cases where a
+   human deliberately put it there: a crew-rest breach sanctioned by a `late
+   show` remark, and the previous day traced from a clicked crew-rest warning.
+   box-shadow cannot dash, so it is an outline: same 2px, drawn outside the
+   border box like the shadow it replaces, so the puck's own 74×15 geometry is
+   untouched (e2e/geometry.spec.ts measures it). */
+/* box-shadow:none is what makes the dash a DASH (owner, 6 Aug 26). The puck
+   already carries a solid 1.5px red ring from `.puck.warn.hard` — that rule is
+   about severity and knows nothing about strokes — and this class only ADDED
+   an outline on top of it, so the solid ring filled in every gap from behind
+   and a sanctioned late show rendered as a fat solid red box. Clearing the
+   shadow leaves the dashed outline alone in the frame, which is the whole
+   point of it. !important because `.puck.warn.hard` and the AL marks
+   (`.seat[data-alc] .puck`, a ring until D92 took it off, 25 Sep 26) both out-specified a two-class selector — exactly
+   the reason .boxred carries one too, so the two rings keep the same
+   precedence over everything they sit on. */
+.puck.boxdash{outline:2px dashed var(--hard);outline-offset:0;border-color:var(--hard)!important;box-shadow:none!important}
+/* The DOTTED red ring (owner, 6 Aug 26): this day is the CAUSE, not the
+   breach. The man flew a legal day here — the warning is raised tomorrow,
+   where he is told to report short of rest — so the stroke is the lightest of
+   the three (dotted under dashed under solid) while the colour stays the same
+   red, because it is the same problem seen one day upstream. Like .boxdash it
+   is an outline rather than a box-shadow: a shadow cannot dot, and an outline
+   is drawn outside the border box so the puck's measured 74×15 is untouched.
+   Being an outline it also STACKS with .boxred's shadow, which is the point —
+   a man can carry a conflict of his own here AND wreck tomorrow's rest, and
+   both rings have to be readable at once. The 2px OFFSET is what buys that:
+   .boxred's shadow spreads 2px, so dots any closer are drawn inside the solid
+   band and vanish entirely — measured, not guessed. Total reach stays 3px,
+   the same as the dashed ring's, so it still clears the 3px gap between two
+   pucks in a crew pair.
+   1.5px, not 2: `dotted` at 2px draws SQUARE dots, which around a 74×15 puck
+   is very nearly the dashed stroke above it — three meanings and two of them
+   looking alike is worse than having only two. Dropping half a pixel rounds
+   the dots and reads distinctly lighter, which is also the right weight for
+   the lightest of the three claims.
+   ON A SCALED SCREEN THE WIDTH IS HANDED IN ([PUCK-DOT-ZOOM], owner, 6 Oct 26 — his screen runs at 125%): there the
+   browser still draws this ring one screen pixel thick, but hard against an advisory's amber ring, where it reads as
+   that ring's edge and cannot be seen. ui/dotring.ts sets `--dot-w` to two whole screen pixels where the screen's
+   scaling is not a whole number, and to NOTHING on an unscaled, 2x or 3x screen — the 1.5px above stands there. */
+.puck.boxdot{outline:var(--dot-w,1.5px) dotted var(--hard);outline-offset:2px}
+/* THE DROP-DELTA PULSE (state/dropflag.ts, 5 Sep 26): a puck a drop has just
+   flagged blinks twice on its own day. Opacity only — it composites, it never
+   relayouts, and it leaves every ring (boxred's !important shadow, boxdot's
+   outline) to its own rule. The reduced-motion blanket at the end of this
+   file kills it; the chip and the toast still say what happened. */
+.puck.flagnew{animation:flagnew .45s ease-in-out 2}
+@keyframes flagnew{0%,100%{opacity:1}50%{opacity:.25}}
+/* THE HOVER REASON under a dragged puck (drag.ts hoverWhy, 5 Sep 26): a child
+   of the ghost, absolutely placed below it, so it rides the ghost's one
+   transform — no second moving layer. The ghost is a puck clone and pucks
+   clip their overflow, so the caption needs the clip lifted while it shows.
+   Amber like the fallback drop toast: allowed, not right. */
+.dragimg.haswhy,.tdghost.haswhy{overflow:visible!important}
+.dragimg .dwhy,.tdghost .dwhy{position:absolute;top:calc(100% + 5px);left:0;background:var(--panel-2);color:var(--adv);
+  border:1px solid var(--adv);border-radius:4px;padding:3px 6px;font-size:10px;font-weight:600;line-height:1.2;
+  white-space:nowrap;max-width:62vw;overflow:hidden;text-overflow:ellipsis;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.dragover.dragover-why{outline-color:var(--adv)!important}
+/* A CUT CALLSIGN HAS TO LOOK CUT (owner sweep, 6 Aug 26). This rule carried
+   `text-overflow:ellipsis` and never got one: the property has no effect on a
+   flex container, because the text becomes an anonymous flex item. So the
+   browser hard-clipped instead, and "Wrangler" came out as "Wrangl" — a
+   plausible-looking callsign that is not the man's, running under the qual
+   chip. In a flying programme a misread name is worth more than a tidy box.
+   Pucks never wrap and never grow (a stable decision), so long names WILL be
+   cut; the only question is whether the reader can tell.
+   A FADE rather than an ellipsis, having looked at both: `Wra…` is honest but
+   throws away three legible characters out of a 74px box, while the fade
+   keeps every character the width allows and still reads as "there is more".
+   It costs nothing on names that fit — the masked strip holds no ink, so a
+   short name is pixel-identical to before.
+   display:block is what the fix needs (a flex container would ignore an
+   ellipsis and does not need the mask either way), and line-height replaces
+   the `align-items:center` that block display gives up: the content box is
+   --puck-h less the 1px border top and bottom, so a line box of exactly that
+   height centres the text on the baseline it already had. Measured, not
+   assumed — e2e/geometry.spec.ts holds the 74x15 box, the descender ink and
+   this fade itself. */
+.puck .nm{display:block;line-height:calc(var(--puck-h) - 2px);padding:0 4px;white-space:nowrap;flex:1;min-width:0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 7px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 7px),transparent)}
+/* the reference's qual chip is deliberately CHUNKIER than the name it sits next to —
+   its glyph measures a 23px cap against the name's 19px — and it is a full-height
+   square, so the chip tracks --puck-h rather than a fixed width */
+.puck .role{display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;min-width:var(--puck-h);padding:0 2px;color:#fff}
+.puck{background:var(--fcp);color:var(--fcp-ink)}
+.puck.r{background:var(--rcp);color:var(--rcp-ink)}
+.puck.pers{background:var(--pers);color:var(--pers-ink);border-color:var(--pers-line)}
+/* qual chip colours */
+.puck .role.q-ocu{background:var(--q-ocu);color:#fff}
+.puck .role.q-d{background:var(--q-d);color:#fff}
+.puck .role.q-c{background:var(--q-c);color:#04222b}
+.puck .role.q-b{background:var(--q-b);color:#2a1e02}
+.puck .role.q-a{background:var(--q-a);color:#fff}
+.puck .role.q-ins{background:var(--q-ins);color:#fff}/* patch (no qual) chip grey *//* neutral / duty */
+.puck.duty{background:rgba(150,120,220,.16);border-color:rgba(150,120,220,.45);color:#DAD1F2}
+.puck.duty .role{display:none}
+/* warnings */
+.puck.warn{box-shadow:0 0 0 1.5px var(--adv);border-color:var(--adv)}
+.puck.warn.hard{box-shadow:0 0 0 1.5px var(--hard);border-color:var(--hard)}
+/* the third, gentlest tier: a grey ring means "worth knowing", not "fix this" */
+.puck.warn.note{box-shadow:0 0 0 1.5px #8A96A3;border-color:#8A96A3}
+.puck.warn .flag{display:flex;align-items:center;padding:0 3px;background:rgba(0,0,0,.35);color:#FFD9D0;font-weight:800;font-size:10px}
+/* .sm is only a label for "puck outside the flying grid" — it must NOT change the
+   geometry. Height/width always come from --puck-h/--puck-w so every puck in the
+   app (now and in future) is exactly one size. */
+/* .sm is a historical marker for pucks rendered inside list cells. It must NOT resize
+   or restyle the type: one canonical puck everywhere. It used to force font-size:11px,
+   which in a 15px box pushed the line box to 13px and sliced the descenders off every
+   name with a g/j/p/q/y in the sims, duties and programme tables. */
+/* (.puck.sm carried height+padding identical to .puck's own defaults — a
+   no-op left over from when small pucks were a separate size. Removed; the
+   class is still applied and still means "in a list", it just styles nothing.) */
+.puck:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+/* highlight states — me (purple) wins over sel (blue) */
+/* Selection is the BLUE FILL and nothing else (owner, 7 Aug 26). It used to
+   add a 2px #BFE0FF ring + glow with !important, which read as a white halo
+   AND silently buried the red/amber severity ring a selected puck was
+   carrying — the one thing a scheduler must not lose sight of while looking
+   at that person. So sel deliberately touches no box-shadow, no outline and
+   no border-color: warn/boxred/boxdash/boxdot keep their own strokes over
+   the blue. The blue is #1E86FF everywhere it appears — the legend swatch in
+   html.ts prints the same literal and is byte-compared to the reference. */
+.puck.sel{background:#1E86FF!important;color:#fff!important;z-index:2;position:relative}
+.puck.sel .nm{color:#fff;font-weight:700}
+/* background-COLOR, not the `background` shorthand (walk find, 22 Sep 26 —
+   hand-pass finding 9). The shorthand resets background-image, and with
+   !important on it no later rule could put one back — so the OIL stripe
+   (.puck.oilbar-fo/-ho, which IS a background-image) was wiped on exactly
+   one puck: the one belonging to whoever you are viewing as. Measured on the
+   built board: the classes were all present (`puck sm oilbar oilbar-ho me`)
+   and the computed background-image was `none`, while every other earning
+   puck showed its gradient. The scheduler's own row is the one he is most
+   likely to check. The !important stays — it is what makes the View-as ring
+   and fill beat the other state rules (see the drag-ghost note below) — it
+   just no longer claims the image layer.
+   KNOWN AND WANTED CONSEQUENCE: a `me` puck in the crew palette that is busy
+   or unavailable now shows the grey blend (.rpuck.busy/.no .puck), which it
+   previously hid. The palette telling you you are busy is honest. */
+.puck.me{background-color:var(--me)!important;color:#fff!important;z-index:2;position:relative}
+/* THE "THIS IS YOU" RING STEPS ASIDE FOR ANY OTHER RING (owner, D270 and D272, 27 Sep 26 — "Q2 yes", "question 2 yes").
+   The purple FILL above always says "you"; the purple RING and its glow are drawn only while his puck has nothing else
+   to say. Flagged — the amber advisory, thin red or grey note ring, a solid or dashed red box, the dotted "causes
+   tomorrow's breach" ring — or earning in OIL Earn mode (the green OIL ring), his puck wears exactly the ring anyone
+   else's puck wears there, and wears it through the SAME rules, because this one no longer competes. Until D270 it did,
+   with !important on every "you" puck: it hid the three severity rings (only the letter chip showed the flag), drew its
+   glow round the dotted ring, and buried the OIL ring (the five-flags walk, 26 Sep 26, `w1/D1-*`, `w1/F9-*`); the
+   `.puck.me.boxred` / `.boxdash` / `.boxdot` / `.warn` rules D164 needed to fight it went with it — a flagged puck
+   never glows (D164) because no flag ring here draws a glow. Earning NOTHING in OIL Earn mode (`.oildim`, not in the
+   list) his puck keeps this ring, faded with it — his "Keep", D277. Pinned by flagglow-css.test.ts, which resolves the
+   winning ring for his puck and for another man's, flag by flag, and requires them equal. */
+.puck.me:not(.warn):not(.boxred):not(.boxdash):not(.boxdot):not(.oilglow){box-shadow:0 0 0 2px #F0B6FF,0 0 12px 1px rgba(155,47,174,.7)!important}
+.puck.me .nm{color:#fff;font-weight:700}
+.puck.hl{box-shadow:0 0 0 2px var(--accent),0 0 10px -1px rgba(59,198,232,.7);border-color:var(--accent)}
+/* half-visible, not gone (owner, 7 Aug 26 — was .18, which made the rest
+   of the week unreadable while anything was selected) */
+.puck.dim{opacity:.5}
+
+.nobox{margin:3px 10px 9px;font-size:11px;padding:6px 10px;line-height:1.4;background:rgba(229,168,59,.10);border:1px solid rgba(229,168,59,.22);border-left:2px solid var(--adv);border-radius:8px;color:#F2D699}
+/* all-hands header */
+.allhands{margin:8px 10px;border:1px solid var(--edge);border-radius:10px;background:rgba(59,198,232,.05)}
+.allhands .ah-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:10px;font-weight:700;color:var(--accent);padding:5px 10px;border-bottom:1px solid var(--edge)}
+.allhands .ah-note{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#F2D699;padding:3px 10px 0;overflow-wrap:anywhere}
+.allhands .ah-cols,.allhands .ah-row{display:grid;grid-template-columns:minmax(0,1fr) 42px 42px minmax(112px,232px) minmax(0,1.25fr);gap:8px;padding:5px 10px}
+.allhands .ah-cols{align-items:center;border-bottom:1px solid var(--edge);font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.07em;font-size:9px;font-weight:700;color:var(--ink-3)}
+.allhands .ah-row{align-items:start;font-size:11px;border-top:1px solid rgba(255,255,255,.035)}
+/* direct child: '.nm' is ALSO the class on a puck's name span, so a descendant
+   selector here would restyle every puck inside the row. */
+.allhands .ah-row>.nm{line-height:1.25;padding-top:3px;min-width:0;overflow-wrap:anywhere}
+.allhands .ah-row>.nm .sub{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-3);margin-top:2px;overflow-wrap:anywhere}
+.allhands .ah-row .t{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);padding-top:4px}
+.allhands .ah-row .ppl{display:flex;flex-wrap:wrap;gap:4px;align-content:start}
+.allhands .ah-row .ppl .seat{display:flex;flex:0 0 auto}
+/* Common Programme grew a Rmks column (owner, 16 Aug 26) — the same fifth cell
+   the duties / sims / ground lists (.pl-row) already carry, so it reads and
+   edits identically, and a remark typed on the board shows here too. */
+.allhands .ah-row .rmk{grid-column:5;font-size:9.5px;color:var(--ink-2);line-height:1.3;padding-top:3px;min-width:0;overflow-wrap:anywhere}
+.allhands .ah-row .rmk .ntx{display:block}
+.allhands .ah-row .rmk.has-late{display:flow-root}
+.allhands .ah-row .rmk.has-late .latetag,.allhands .ah-row .rmk.has-late .fyitag{float:left}
+.allhands .ah-row:last-child{padding-bottom:6px}
+/* All-available pucks */
+.availpuck{margin:8px 10px;border:1px solid var(--edge);border-radius:10px;background:rgba(87,201,122,.05);overflow:hidden}
+.availpuck .ap-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:10px;font-weight:700;color:var(--ok);padding:5px 10px;border-bottom:1px solid var(--edge);display:flex;justify-content:space-between;align-items:center;gap:10px}
+/* the header is the fold/unfold control (owner, 13 Aug 26); collapsed, the
+   panel is just this line, so its border-bottom would draw a stray rule */
+.availpuck .ap-h[data-avtog]{cursor:pointer}
+/* Personal Inputs fold header — the whole header is the toggle, on the week
+   (.sub-h) and the board (.sb-ph). The summary count rides the block's own
+   hint span, right-aligned like the Available-crew one-liner. */
+.sub-h.pl-fold,.sb-ph.pl-fold{cursor:pointer;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.sub-h.pl-fold .pl-hint,.sb-ph.pl-fold .sub{margin-left:auto}
+.availpuck .ap-h:last-child{border-bottom:none}
+.availpuck .ap-h .n{color:var(--ink-3);font-weight:600;font-size:9px}
+.availpuck .ap-grp{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:9px;font-weight:700;color:var(--ink-3);padding:6px 10px 2px}
+.availpuck .ap-grid{display:flex;flex-wrap:wrap;gap:4px;padding:2px 10px 4px}
+.availpuck .ap-grid .seat{display:flex;flex:0 0 auto}
+.availpuck .ap-empty{color:var(--ink-3);font-size:11px;padding:4px 10px 8px}
+.availpuck:last-child{margin-bottom:10px}
+/* columnar list (duties / sims / ground / inputs) — NAME | START | END | PEOPLE | RMKS.
+   NAME is clamped instead of 1fr so START/END sit hard left next to it; the people
+   column is derived from the canonical puck so TWO pucks always sit side by side
+   (an 8-crew AMT box therefore reads as four rows of two, not eight rows of one),
+   and everything left over goes to RMKS on the right of the pucks. */
+.plist{margin:10px}
+.plist .sub-h{padding:4px 6px 5px}
+.plist .pl-cols,.plist .pl-row{display:grid;grid-template-columns:minmax(64px,1fr) 44px 44px calc(var(--puck-w)*2 + 10px) minmax(0,1.25fr);gap:8px;padding:4px 6px}
+.plist .pl-cols{align-items:center;border-bottom:1px solid var(--edge);font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.07em;font-size:9px;font-weight:700;color:var(--ink-3)}
+.plist .pl-sub{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:9px;font-weight:700;color:var(--accent);padding:6px 6px 1px}
+.plist .pl-row{align-items:start;font-size:11px;border-top:1px solid rgba(255,255,255,.03)}
+/* direct child on purpose — see the note on .ah-row>.nm above */
+.plist .pl-row>.nm{line-height:1.25;padding-top:3px;color:var(--ink-2);min-width:0;overflow-wrap:anywhere}
+/* ---- single-puck blocks -------------------------------------------------------
+   Ground programme (scheduler AND personal inputs), Available, Office, Leave and
+   Downchit only ever carry ONE puck on a row, so the two-puck PEOPLE column was
+   holding 80px of empty space while NAME — which carries things like
+   "CAF ENGAGEMENT @ MINDEF HQ" — wrapped over the TIME column. The people track
+   drops to a single puck (still derived from --puck-w; the puck itself never
+   changes size, see §1.2) and every pixel that frees goes to NAME.            */
+.plist.one .pl-cols,.plist.one .pl-row{grid-template-columns:minmax(96px,1.4fr) 44px 44px var(--puck-w) minmax(0,1fr)}
+.plist .pl-row .t{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);padding-top:4px}
+.plist .pl-row .t.allday{grid-column:2/span 2;letter-spacing:-.02em}
+.plist .pl-row .ppl{display:flex;flex-wrap:wrap;gap:4px;align-content:start}
+.plist .pl-row .ppl .seat{display:flex;flex:0 0 auto}
+.plist .pl-row .ppl .itxt{color:var(--ink-3);font-size:10px;padding-top:3px}
+/* "N pax" count chip — shown when a sim row carries more than a 2-seat crew, so an
+   AMT box with 8 aircrew reads its headcount at a glance without counting pucks.
+   flex-basis:100% puts it on its own line above the pucks, which keeps the pucks
+   themselves on a clean 2-per-row grid at the canonical puck width. */
+/* the "drop here to add" strip — see lCell() */
+.ppl .addz{flex:0 0 100%;height:13px;margin-top:2px;border:1px dashed transparent;border-radius:4px;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;color:transparent;
+  display:flex;align-items:center;justify-content:center;pointer-events:none;transition:none}
+body.dnd .ppl[data-fill] .addz{border-color:var(--edge-2);color:var(--ink-3)}
+body.dnd .ppl[data-fill].dragover .addz{border-color:var(--accent);color:var(--accent);background:rgba(59,198,232,.07)}
+/* On the dense scheduler BOARD the strip is a TRAILING drop zone that grows to
+   eat the row's leftover width and wraps to its own line only once the pucks
+   pack the row — so the pucks never fill the full width (there is always a bare
+   patch to drop onto) and a full row shows a fresh empty line below, WITHOUT the
+   strip toggling height when a drag starts (which grew every people cell at once
+   and jumped the whole board out from under the finger). Owner, 26 Aug 26 —
+   "can the screen be stable when I try to add in more pucks … the puck will not
+   fill up the entire width … there's always an empty space to drop the pucks".
+   Its height never depends on drag state, so nothing reflows on grab; the "+ add"
+   text stays hidden (transparent) throughout — only a dashed edge marks it, faint
+   while a drag/arm is live and bright on the hovered cell. The week keeps its own
+   always-present full-width strip (rules above). Flex basis var(--puck-w): once a
+   whole puck no longer fits on the line, the zone wraps and reserves a new one. */
+.schedboard .ppl[data-fill] .addz{flex:1 1 var(--puck-w);min-width:calc(var(--puck-w)*.55);
+  min-height:var(--puck-h);height:auto;margin:0;align-self:stretch;color:transparent;
+  border:1px dashed transparent}
+body.dnd .schedboard .ppl[data-fill] .addz,
+body.arming .schedboard .ppl[data-fill] .addz{border-color:var(--edge-2);color:transparent}
+body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);color:transparent;
+  background:rgba(59,198,232,.09)}
+/* an EMPTY board people cell shows the standing dashed drop box at rest (owner,
+   14 Aug 26 — a scheduler sees where to tap or drop), drawn by its trailing zone.
+   The box carries NO "+ add" text (owner, 26 Aug 26 — "instead of having the
+   +ADD showing") — a bare dashed outline, like an empty flying seat. A cell that
+   already holds a puck keeps its zone bare; the affordance is only where needed. */
+.schedboard .ppl[data-fill]:not(:has(.puck)):not(:has(.itxt)) .addz{border-color:var(--edge-2)}
+/* the seat grid (.fcprcp — sims, and the flying-seat pairs) needs no trailing
+   zone: a full-width one would cost EVERY seat cell a permanent row, where the
+   grid can carry its own door for nothing on the rows that need one.
+   CORRECTED 22 Sep 26 (D50). This said the grid "auto-adds rows as pucks land,
+   so it never packs edge-to-edge and swaps". That was true of an ODD number of
+   people and FALSE of an even one: a full sim row showed no spare seat and no
+   strip, so the drag a scheduler would make landed on a seated man and replaced
+   him silently. The door is now the grid's own — board-html.ts `simSpare` opens
+   a spare pair whenever no empty seat is left — which is why this rule stands
+   rather than being lifted. */
+.schedboard .ppl.fcprcp .addz{display:none}
+/* the WEEK seat grid still spans its always-present strip across both columns */
+.ppl.fcprcp .addz{grid-column:1/-1}
+/* remarks, to the RIGHT of the pucks (column 5 on desktop, its own strip on a phone) */
+.plist .pl-row .rmk{grid-column:5;font-size:9.5px;color:var(--ink-2);line-height:1.3;padding-top:3px;min-width:0;overflow-wrap:anywhere}
+.plist .pl-row .rmk .ntx{display:block}
+/* the LATE badge FLOATS in this cell rather than sitting in a flex track beside
+   the text. `.ntx` above is display:block — it has to be, so the editable box
+   fills the cell and is clickable — so an inline-block badge in front of it
+   takes a line of its OWN, and a flex track next to it costs the badge's width
+   on EVERY line of a wrapping remark. A float costs it on the first line only,
+   which is the cheapest of the three.
+   Measured, and not free: the seed's longest remark ("OIL — CO approved,
+   post-detachment") is 39px unmarked and 53px marked at desktop width — one
+   extra line, because 36px of a narrow column goes to the badge and a word
+   drops. That is inherent to putting a badge in a wrapping column, not a
+   layout fault, and the block it sits in already has rows of unequal height.
+   flow-root is what contains the float when the remark is empty and the badge
+   is the cell's only content — without it the badge escapes a zero-height cell. */
+.plist .pl-row .rmk.has-late{display:flow-root}
+.plist .pl-row .rmk.has-late .latetag,.plist .pl-row .rmk.has-late .fyitag{float:left}
+/* wave in-times note block */
+.intimes{margin:0;padding:5px 11px;border-bottom:1px solid var(--edge);background:rgba(229,201,74,.05);display:flex;flex-direction:column;gap:2px}
+.intimes span{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#F2D699;line-height:1.4;display:block}
+.intimes span b{font-weight:800;color:#FFDF9E}
+.intimes[contenteditable]{outline:none}
+.intimes[contenteditable]:focus{background:rgba(229,201,74,.10)}
+/* edit mode interleaves line,✕ pairs — the grid pairs them back into rows
+   (line | its ✕). Each LINE is its own contenteditable span and the ✕ is an
+   ordinary button outside any editable region (iOS will not reliably tap a
+   button inside one — owner's phone, 21 Aug 26). */
+.intimes.iedit{display:grid;grid-template-columns:1fr auto;gap:2px 6px;align-items:center}
+.intimes .itline{outline:none;border-radius:3px;padding:1px 2px;margin:-1px -2px}
+.intimes .itline:focus{background:rgba(229,201,74,.12)}
+.intimes .reporting-feedback{grid-column:1 / -1;font-family:inherit;color:var(--hard);overflow-wrap:anywhere}
+.intimes .reporting-feedback:empty{display:none}
+.itx{background:none;border:0;color:var(--ink-3);cursor:pointer;font-size:11px;line-height:1;padding:2px 6px;border-radius:4px;user-select:none}
+.itx:hover{color:var(--hard);background:rgba(240,85,95,.12)}
+.go.night{background:rgba(240,85,95,.04)}
+.go.night .go-tab .asd{color:#FBB4B9}/* sims sub-blocks */
+/* duties by wave */
+/* stores (NAV / N/C / 2 TKS / 3 TKS / TPOD / CL configs via the C popup, + bombs) */
+.stores{display:inline-flex;flex-wrap:wrap;gap:2px;margin-left:4px;vertical-align:middle}
+.stchip{font-size:7.5px;font-weight:800;letter-spacing:.02em;padding:1px 3px;border-radius:4px;border:1px solid var(--edge-2);color:var(--ink-3);cursor:default}
+.stchip.on{background:rgba(59,198,232,.16);border-color:rgba(59,198,232,.5);color:var(--accent)}
+.stchip.bomb{background:rgba(217,121,31,.16);border-color:rgba(217,121,31,.5);color:#F2B980}
+/* "a chip is clickable" used to be expressed twice and disagree: this rule
+   used to key off .page.editing (the edit page, with no role test) while
+   the board's own rule below keyed off data-store, the attribute a chip
+   only carries when it is genuinely wired to the click handler
+   (interactions.ts's routeClick, gated on HOOKS.editMode() —
+   canEditSched() included). A view-only-role scheduler on Edit Schedule
+   got a pointer cursor over chips that could never actually remove
+   anything, since html.ts renders those as storesView()'s read-only markup
+   with no data-store at all. Converged on the attribute form below, which
+   is correct for both surfaces — see the module note there. */
+/* the C config button and its picker popup (shares .wavemenu look) */
+.stcfg{font-size:8px;font-weight:800;line-height:1;padding:1px 4px;border-radius:4px;border:1px dashed var(--edge-2);background:transparent;color:var(--ink-3);cursor:pointer}
+.stcfg:hover{border-color:var(--accent);color:var(--accent)}
+.stmenu{min-width:150px}
+.stmenu button.wm{padding:6px 10px;font-size:11.5px}
+/* header with a top-right pencil — the stores Config popup, and (owner, 26 Aug
+   26) the flying-wave and duty-block popups, which moved their template editor
+   up here from a bottom link. .wm-hpen tags the one header that carries it. */
+.stmenu h5,.wavemenu h5.wm-hpen{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.st-pen,.wm-pen{font-size:11px;line-height:1;padding:2px 5px;border-radius:4px;border:1px solid var(--edge-2);background:transparent;color:var(--ink-3);cursor:pointer}
+.st-pen:hover,.st-pen.on,.wm-pen:hover{border-color:var(--accent);color:var(--accent)}
+.st-elist{display:flex;flex-direction:column;gap:3px;margin:4px 0}
+.st-erow{display:grid;grid-template-columns:1fr 22px 22px 22px;gap:3px;align-items:center}
+.st-erow .st-lab{background:var(--bg);border:1px solid var(--edge);border-radius:5px;color:var(--ink);font-size:11px;padding:4px 6px;width:100%;box-sizing:border-box}
+.st-erow button{font-size:10px;line-height:1;padding:4px 0;border-radius:4px;border:1px solid var(--edge-2);background:transparent;color:var(--ink-3);cursor:pointer}
+.st-erow button:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.st-erow button:disabled{opacity:.3;cursor:default}
+.st-addrow{display:grid;grid-template-columns:1fr auto;gap:3px;margin-top:5px}
+.st-addrow .st-new{background:var(--bg);border:1px solid var(--edge);border-radius:5px;color:var(--ink);font-size:11px;padding:4px 6px;width:100%;box-sizing:border-box}
+.st-addrow .st-add{font-size:10px;font-weight:800;padding:4px 9px;border-radius:4px;border:1px solid var(--edge-2);background:transparent;color:var(--ink-2);cursor:pointer}
+.st-addrow .st-add:hover{border-color:var(--accent);color:var(--accent)}
+.bombs{font-size:8px;color:var(--ink-2);min-width:34px;border-bottom:1px dashed var(--edge-2);outline:none;padding:0 2px;border-radius:3px}
+/* the box confirms its save (owner, 26 Aug 26 — "no indication or feedback
+   that when I type in free text on config that it's accepting my input…
+   idk if it's saved or not. But it's actually saved"): the free text
+   commits on leaving the box with nothing shown, so a commit that CHANGED
+   the load pulses the box green for a beat — colour, not copy, at chip
+   scale. textedit.ts flashes the live node and records the address in
+   STSAVED (state/view.ts); the builders re-add the class inside that short
+   window so the repaint that follows the commit cannot swallow the pulse.
+   Ends fully transparent so the box settles back to its resting dashes.
+   Reduced motion: the global animation:none rule below leaves it settled. */
+@keyframes stsaved{
+  0%{background:rgba(87,201,122,.30);box-shadow:0 0 0 1px var(--ok);border-bottom-color:var(--ok)}
+  100%{background:rgba(87,201,122,0);box-shadow:0 0 0 1px rgba(87,201,122,0);border-bottom-color:var(--edge-2)}
+}
+.bombs.stsaved{animation:stsaved 1.2s ease-out 1}
+/* the visible word is "Config" (owner, 24 Aug 26 — the field takes any
+   loadout note, not only bombs); the class and the opts.bombs key stay put so
+   no saved jet config is disturbed — only the placeholder the user reads. */
+.bombs:empty::before{content:'Config…';color:var(--ink-3)}
+/* approval / amendment banner */
+/* ---- sign-off strip ----------------------------------------------------------
+   Four names have to be on an amendment before it goes out: who checked the
+   current programme, who checked the schedule, who planned it and who approved
+   it. Each is a native <select> so it drops down properly on a phone. The
+   Publish buttons stay disabled until all four are filled, and publishing
+   clears them again — the next AL is signed for on its own merits. */
+.signoff{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:0 20px 8px;padding:8px 11px;
+  border-radius:10px;background:var(--panel);border:1px solid var(--edge)}
+.signoff .so-h{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-right:2px}
+.sgn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--edge-2);border-radius:999px;
+  background:var(--panel-2);padding:3px 4px 3px 10px;position:relative}
+.sgn>.k{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.07em;
+  font-size:10px;font-weight:800;color:var(--ink-3);white-space:nowrap}
+/* the select is stretched invisibly over the WHOLE pill: iOS Safari does not
+   open a select from a tap on its wrapping label, so with the visible select
+   only covering the name, the role label was dead space on the phone (owner
+   report, Aug 26). The .v span underneath is the visible value; it mirrors the
+   old select's text metrics exactly so pill geometry (and the 820px wrap) is
+   unchanged. font-size 16px on the control stops iOS zooming on focus — the
+   control is invisible, so its own text size is otherwise irrelevant. */
+.sgn>select{position:absolute;inset:0;width:100%;height:100%;opacity:0;appearance:none;
+  -webkit-appearance:none;border:0;margin:0;padding:0;cursor:pointer;font-size:16px;outline:none}
+.sgn>.v{font-family:inherit;font-size:11.5px;font-weight:700;color:var(--ink-3);
+  padding:2px 18px 2px 4px;min-width:74px;white-space:nowrap}
+.sgn:focus-within{border-color:var(--accent)}
+.sgn::after{content:'▾';position:absolute;right:9px;font-size:9px;color:var(--ink-3);pointer-events:none}
+.sgn.sch>.k::after{content:'✦';margin-left:3px;color:var(--san);font-size:8px;vertical-align:top}
+.sgn.on{border-color:rgba(87,201,122,.6);background:rgba(87,201,122,.12)}
+.sgn.on>.k{color:#A8E6BC}
+.sgn.on>.v{color:#DFF6E7}
+.sgn.on::after{color:#A8E6BC}
+.signoff .so-state{margin-left:auto;font-size:10.5px;font-weight:700;white-space:nowrap}
+.signoff .so-state.no{color:var(--adv)}
+.signoff .so-state.yes{color:var(--ok)}
+.signoff button.so-clear{background:transparent;border:1px dashed var(--edge-2);color:var(--ink-3);
+  border-radius:8px;padding:4px 8px;font-size:10.5px;font-weight:600;cursor:pointer}
+.signoff button.so-clear:hover{border-color:var(--accent);color:var(--accent)}
+.abtn[disabled]{opacity:.42;cursor:not-allowed}
+@media (max-width:820px){
+  .signoff{margin:0 12px 8px;padding:7px 9px;gap:5px}
+  .signoff .so-state{margin-left:0;flex:0 0 100%}
+}
+#sbSignBar{margin:0 0 10px}
+.signoff.board-sign{position:static}
+/* the publish strip (version chip, pending count, ⓘ, Publish day / AL) as its
+   own row under the sign-off names, so a narrow board (phone width, same
+   ~364px the day column wraps at) never squeezes the Publish button against
+   a name pill — .signoff itself already flex-wraps, but a shared row let a
+   long-titled Publish AL button crowd the last sign-off pill onto a half
+   line rather than wrapping cleanly under it. */
+.sb-pub{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:0 0 100%;margin-top:4px}
+/* the per-day strip, in the day's own header. Four names, two rows on a phone,
+   and the day's Publish button stays locked until all four carry one.
+   The scheduler board's sign-off (`.board-sign`) shares this same compact,
+   two-up grid (owner, 22 Aug 26 — "make the board sign-off similar to the one
+   in edit schedule"): the pills flex-grow and wrap two per row instead of each
+   taking a full-width line of its own. Only the INNER layout is shared — the
+   board keeps its own container (`#sbSignBar` margin, `position:static`, the
+   `.sb-pub` publish strip on its own row below). */
+.signoff.day-sign{margin:8px 10px 0;padding:6px 8px;gap:4px;background:var(--panel-2);border-color:var(--edge)}
+.signoff.day-sign .so-h,.signoff.board-sign .so-h{font-size:8.5px;letter-spacing:.08em;flex:0 0 100%;margin:0 0 1px}
+.signoff.day-sign .sgn,.signoff.board-sign .sgn{padding:2px 3px 2px 7px;gap:4px;flex:1 1 auto;min-width:0}
+.signoff.day-sign .sgn>.k,.signoff.board-sign .sgn>.k{font-size:9px}
+.signoff.day-sign .sgn>.v,.signoff.board-sign .sgn>.v{font-size:10.5px;min-width:52px;padding:1px 15px 1px 3px}
+.signoff.day-sign .sgn::after,.signoff.board-sign .sgn::after{right:6px;font-size:8px}
+.signoff.day-sign .so-state,.signoff.board-sign .so-state{flex:0 0 100%;margin-left:0;font-size:9.5px;padding-top:1px}
+.signoff.day-sign button.so-clear,.signoff.board-sign button.so-clear{padding:2px 6px;font-size:9.5px}
+/* DESKTOP: all four role pills on ONE row (owner, 22 Aug 26 — "align all these
+   into 1 row. so 4 in 1 row"). The day column is only ~530px, too narrow for
+   four horizontal "LABEL — name —" pills (they wrap 3 + 1), and squeezing them
+   would clip the names to a few characters. So on the DAY sign-off each pill
+   stacks its label over its value: the pill needs only the name's width, the
+   four share the row equally, and every name stays fully readable. The header
+   and the "N to sign" state keep their own full-width lines. Scoped to
+   `.day-sign` — the board's own sign-off is ~1400px and already fits four
+   across as horizontal pills, so it is left alone (and the board-sign share
+   above is phone-shaped: its own desktop row is untouched by this block). */
+@media (min-width:821px){
+  .signoff.day-sign{flex-wrap:wrap}
+  /* The header row carries the label and the "N to sign" state together —
+     "SIGN-OFF" at the left, the count at the far right, in line with it
+     (owner, 24 Aug 26 — "put the 4 to sign word on the top right row in line
+     with the word Sign-off"). The state span is last in the DOM, so `order`
+     pulls it up beside the header, and a zero-height full-width break
+     (`::before`, ordered between them) drops the four role pills onto their
+     own line underneath — where, with the state no longer sharing the row,
+     they stretch to fill the whole day width. */
+  .signoff.day-sign .so-h{flex:0 0 auto;order:0;margin:0}
+  .signoff.day-sign .so-state{flex:0 0 auto;order:1;margin-left:auto;padding-top:0}
+  .signoff.day-sign::before{content:'';order:2;flex:0 0 100%;height:0}
+  .signoff.day-sign .sgn{order:3;flex:1 1 0;min-width:0;flex-direction:column;align-items:stretch;
+    gap:1px;border-radius:10px;padding:4px 10px 5px}
+  .signoff.day-sign .sgn>.v{min-width:0;padding:0 15px 0 0;overflow:hidden;text-overflow:ellipsis}
+  .signoff.day-sign .sgn::after{top:auto;bottom:6px}
+  .signoff.day-sign button.so-clear{order:4;flex:0 0 auto}
+}
+/* Force EXACTLY two pills per row on the board ON A PHONE. The edit-schedule
+   strip lands its 2x2 by content width alone — its day card is ~14px wider than
+   the board's sign panel, just enough that the longer PLANNED BY / APPROVED BY
+   labels fit two-up. The board's panel is that bit narrower, so on auto basis
+   those two wrap one-per-line. Pinning a 50% flex-basis makes the grid
+   width-independent: two pills fill a row, the rest wrap in pairs. Phone-scoped
+   so the desktop board keeps the content-width row the edit week also shows. */
+@media (max-width:820px){
+  .signoff.board-sign .sgn{flex:1 1 calc(50% - 3px)}
+}
+/* not yet signed off — the same button, darkened. Deliberately not `opacity`:
+   a half-transparent cyan over a dark panel reads as a rendering fault, a solid
+   dim blue reads as "this button is not live yet". */
+.dbeak[disabled]{cursor:not-allowed;opacity:1;
+  background:rgba(59,198,232,.16);color:rgba(59,198,232,.62);border-color:rgba(59,198,232,.3)}
+.dbeak.locked{border-style:dashed}
+.dbeak.locked::before{content:'🔒 ';font-size:9px}
+/* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2): no status text, no AL roll.
+   The #vBanner/#eBanner elements survive ONLY to host the RULES MODIFIED stamp
+   (::after above), so the banner is display:none unless rules are modified, when
+   `.rules-off` reveals just that stamp. */
+.schedbanner{margin:0 20px 8px;display:none}
+.schedbanner.rules-off{display:block;margin-bottom:8px}
+/* ---- AL amendment marks: ONLY the changed item is coloured ----
+   Keep in step with AL_COLORS in engine/publish.ts — the banner reads its tint
+   from there, everything else from these rules, and the two drifting apart shows
+   up as one AL wearing two colours on the same screen.
+   The catch-all goes FIRST on purpose: `[data-alc]` and `[data-alc="5"]` have
+   identical specificity, so source order is the only thing that decides. The
+   numbered rules used to be listed above it and lost, which is why they were
+   pasted a second time underneath — one colour, two places to edit.
+   data-aln (a pending edit previewing the AL it will go out as) resolves
+   through the SAME rules, so published marks and their preview can never
+   disagree about what colour an AL is. */
+[data-alc],[data-aln]{--alc:#E5872B}       /* any AL past the palette — a visible mark beats an unset var */
+[data-alc="1"],[data-aln="1"]{--alc:#3BC6E8}   /* AL1 · cyan blue */
+[data-alc="2"],[data-aln="2"]{--alc:#E5C24A}   /* AL2 · amber */
+[data-alc="3"],[data-aln="3"]{--alc:#3DE86B}   /* AL3 · bright green */
+[data-alc="4"],[data-aln="4"]{--alc:#FFFFFF}   /* AL4 · white */
+[data-alc="5"],[data-aln="5"]{--alc:#B388FF}   /* AL5 · purple */
+[data-alc="6"],[data-aln="6"]{--alc:#FF7FC4}   /* AL6 · pink */
+[data-alc="7"],[data-aln="7"]{--alc:#E5872B}   /* AL7 · orange — off green so it can't be read as AL3 */
+/* A CHANGED PUCK GETS A TAG, NEVER A RING (owner, D92 + D93, 24 Sep 26 — "why dont u just a do solid AL3 chip and
+   not box up the whole puck? people might think that behind the AL3 green ring there is a hidden warning"). A
+   puck's EDGE carries only its warnings (the amber, grey and red rings, the dashed late show, the dotted crew-rest
+   cause); the amendment is the tag in the seat's corner — SOLID once it has gone out (this rule), HOLLOW and dotted
+   while it waits (the data-aln rule below). The AL-coloured ring that used to sit here out-ranked the thin amber,
+   grey and red rings and hid them (measured: Tally at AL3, 24 Sep 26). Every surface: the edit week, the board and
+   View-only Sched. Times, areas and remarks keep their own marks (the cell rules below). */
+.seat[data-alc]{position:relative}
+.seat[data-alc]::after{content:'AL' attr(data-alc);position:absolute;top:-5px;right:-3px;z-index:4;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7.5px;font-weight:800;letter-spacing:.02em;line-height:1;
+  padding:1px 3px;border-radius:4px;background:var(--alc);color:#08131b;pointer-events:none}
+.areacell[data-alc],.timecell[data-alc],.rmkcell[data-alc],.intimes[data-alc],.sb-rcell[data-alc]{position:relative;
+  outline:1px solid var(--alc);outline-offset:-1px;border-radius:4px}
+.areacell[data-alc]::after,.timecell[data-alc]::after,.rmkcell[data-alc]::after,.intimes[data-alc]::after,.sb-rcell[data-alc]::after{
+  content:'AL' attr(data-alc);position:absolute;top:0;right:1px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  font-size:7px;font-weight:800;letter-spacing:.02em;color:var(--alc);pointer-events:none;opacity:.95}
+/* inside the horizontal AREA strip the halves are only one line tall, so the AL tag
+   trails the text inline instead of floating over it */
+.form-area .areacell[data-alc]::after,.form-area .timecell[data-alc]::after{position:static;margin-left:4px}
+/* edited but not published yet — neutral dashed hint, no AL colour. .sb-rcell
+   joins this set (regression, final review 8 Aug 26): the week put
+   alAttr('st:'+key) on .rmkcell for a stores edit, and the board's .sb-rcell
+   carried neither the attribute nor a matching rule, so the SAME edit made
+   from the board showed the "edited, not published" hint on the week only —
+   a scheduler working the board never saw it where they were actually
+   working. board.ts now emits the attribute on .sb-rcell too; this is its
+   other half. */
+.seat[data-alp]{position:relative}
+/* the view page's neutral pending hint sits on the SEAT, around the puck ([HUMAN-RETEST] the
+   amendment re-test, 24 Sep 26; register AM19 "the view-only page keeps the neutral DASHED hint").
+   Drawn on the puck it always lost to a warning ring: as a box-shadow it vanished under the red
+   ring's !important shadow (walk W2-F6), and as an outline it then out-ranked the sanctioned-late
+   (dashed) and crew-rest (dotted) rings, which are outlines too, and hid THEM (the final read,
+   Fable #3). On the seat, no ring competes. The view page only: the edit surfaces draw their own
+   AL-coloured mark on the puck (below). */
+/* …SUPERSEDED 25 Sep 26 by D93 (View-only Sched included): the dashed outline on the seat is gone with the rings; a
+   waiting change on the view page's working-draft face wears the same hollow ALn tag as the edit surfaces (below).
+   Astra's scenario read (25 Sep 26) named the outline this batch had meant to keep as the one ring left. */
+.areacell[data-alp],.timecell[data-alp],.rmkcell[data-alp],.intimes[data-alp],.sb-rcell[data-alp]{
+  outline:1px dashed rgba(242,214,153,.6);outline-offset:-1px;border-radius:4px}
+/* ---- the AL preview (data-aln): pending edits on a PUBLISHED day, painted in
+   the colour of the AL they will go out as — dotted, where the issued mark is
+   solid, so "coming in ALn" and "went out in ALn" never read the same.
+   Owner request (Aug 26). Scoped to the edit surfaces (#eWeek + #schedBoard)
+   by id on purpose: the same builders feed #vWeek, and the view-only page must
+   NOT see these — read-only users see issued amendments only. The id prefix is
+   also what outranks the neutral [data-alp] hints above, which stay as-is for
+   draft-day edits everywhere and for all pending marks on the view page. */
+/* A PUCK WAITING TO GO OUT: a HOLLOW, dotted ALn tag in the seat's corner — no line round the puck (owner, D92 +
+   D93: the approved mock-up docs/mock/amend-seat-marks.html, its C_CSS). Solid = out, hollow = waiting. Unscoped:
+   data-aln is emitted only on a published day's working copy, which is the edit week, the board and View-only
+   Sched's working-draft face — never the issued face (its pending marks are zeroed by the snapshot swap). */
+.seat[data-aln]::after{content:'AL' attr(data-aln);position:absolute;top:-5px;right:-3px;z-index:4;
+  font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7.5px;font-weight:800;letter-spacing:.02em;line-height:1;
+  padding:0 2px;border-radius:4px;background:var(--panel);color:var(--alc);border:1px dotted var(--alc);pointer-events:none}
+#eWeek :is(.areacell,.timecell,.rmkcell,.intimes)[data-aln],
+#schedBoard :is(.areacell,.timecell,.rmkcell,.intimes,.sb-rcell)[data-aln],
+#schedBoard :is(input,textarea)[data-aln]{
+  outline:1px dotted var(--alc);outline-offset:-1px}
+/* the board's fields are <input>/<textarea> — no ::after on replaced elements,
+   so the outline and the title are the whole mark: solid = issued, dotted =
+   coming in the next AL. (The board gained amendment marks with the preview;
+   its seats reuse the generic .seat[data-alc]/[data-aln] rules.) */
+#schedBoard :is(input,textarea)[data-alc]{outline:1px solid var(--alc);outline-offset:-1px}
+#eWeek :is(span,b,i,div)[data-aln]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes),
+#schedBoard :is(span,b,i,div)[data-aln]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell){
+  text-decoration:underline dotted var(--alc);text-decoration-thickness:1px;text-underline-offset:2px}
+/* every OTHER inline-edited string (timings, labels, remarks, notes, list-row
+   fields): once PUBLISHED, the mark rides on the text itself — underlined in
+   the AL colour with a trailing ALn tag. Pending edits show no text-level
+   mark on the VIEW page (the Amendments panel count and the puck/cell hints
+   cover pending there); on the edit surfaces the data-aln preview above now
+   carries it — the owner asked for it (Aug 26), superseding the earlier call
+   that any pending underline was noise while editing.
+   Post-port enhancement: the reference marked only pucks and the cells above. */
+/* .verchip is excluded: the version tag (item 3) uses --alc for its BACKGROUND and
+   already reads "ALn" as its own text, so the generic underline + "ALn" ::after
+   badge would double it up. */
+:is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip){
+  text-decoration:underline solid var(--alc);text-decoration-thickness:1px;text-underline-offset:2px}
+:is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip)::after{
+  content:'AL' attr(data-alc);font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7px;font-weight:800;
+  letter-spacing:.02em;color:var(--alc);margin-left:3px;vertical-align:top;pointer-events:none}
+/* A CHANGED TIME'S TAG SITS UNDER THE TIME, NOT AFTER IT ([AMEND-SMALL-SEEN] 4, 28 Sep 26 — the re-test's W1: at 390px
+   "AL1" beside a time was cut to "AL"). A time lives in a narrow box: a flying line's B/TO and LD (38 / 32px on a phone,
+   48 on a desktop, `overflow:hidden`) and a list row's start / end (`.t`). Trailing the digits, the tag needs 13–15px
+   more than the box has — measured (scripts/handpass/sf/sf-d4-altag.mjs): cut by the flying line's box at 390 AND on a
+   desktop (LD: 10:45 + AL1 ends 4px past it), and on a duty's start run over the people column beside it. On its own
+   line under the time it is whole in every box at every width, and it never covers a digit; the time keeps its
+   underline in the AL's colour. Only where a time was changed and issued does the row gain the tag's line. The chain
+   of :not()s is the generic rule's own, so this one outweighs it. */
+.form :is(.bto,.ld) :is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip)::after,
+:is(.ah-row,.pl-row) .t[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip)::after{
+  display:block;margin-left:0;line-height:1;margin-top:1px}
+/* amendment-level panel (edit page) */
+.alpanel{margin:0 20px 8px;border:1px solid var(--edge);border-radius:10px;background:var(--panel);padding:7px 11px}
+.alpanel .al-h{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:9.5px;font-weight:700;color:var(--ink-3);margin-bottom:5px}
+.alpanel .al-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-2)}
+.alpanel .al-pend{font-weight:700;color:var(--ink-3)}
+/* each day with changes waiting is its own line, laid out like the row above: the label ran straight
+   into its own "Publish ALn" button with no gap ([HUMAN-RETEST] walk W1, 24 Sep 26) */
+.alpanel .al-pubdays{display:flex;flex-direction:column;gap:5px;margin-top:6px}
+.alpanel .al-pubday{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-2)}
+.alpanel .al-pend.on{color:#F2D699}
+.alpanel select{background:var(--panel-2);border:1px solid var(--edge);color:var(--ink);border-radius:6px;padding:3px 6px;font-size:11.5px;font-family:inherit}
+.alpanel .al-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.alpanel .al-tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink-2);
+  border:1px solid var(--alc);background:rgba(255,255,255,.03);border-radius:999px;padding:2px 4px 2px 9px}
+.alpanel .al-tag b{color:var(--alc);font-weight:800}
+.alpanel .al-tag .al-days{font-style:normal;color:var(--ink);font-weight:600}
+/* per-day breakdown of pending edits: green = day is published so these go out,
+   amber = day is still draft so they are held back out of the next AL */
+.alpanel .al-brk{display:flex;flex-wrap:wrap;gap:5px}
+.alpanel .al-d{font-size:10px;font-weight:700;letter-spacing:.03em;padding:1px 7px;border-radius:999px;white-space:nowrap}
+.alpanel .al-d.ok{color:#A8E6BC;background:rgba(87,201,122,.14);border:1px solid rgba(87,201,122,.45)}
+.alpanel .al-d.held{color:#F2D699;background:rgba(229,168,59,.12);border:1px solid rgba(229,168,59,.42)}
+.alpanel .al-un{background:transparent;border:none;color:var(--ink-3);cursor:pointer;font-size:11px;line-height:1;padding:2px 5px;border-radius:999px}
+.alpanel .al-un:hover{color:var(--hard);background:rgba(240,85,95,.14)}
+.alpanel .al-none,.alpanel .al-note{font-size:11px;color:var(--ink-3)}
+.alpanel .abtn[disabled]{opacity:.4;cursor:not-allowed}
+.abtn.hbtn{min-width:76px}
+.abtn.hbtn[disabled]{opacity:.35;cursor:not-allowed}
+@media (max-width:820px){.alpanel{display:none}}
+/* ============ SECTION COLOUR CODES (left bar + tinted header per block) ============ */
+.sec{position:relative;border-left:3px solid var(--sec);border-radius:0 9px 9px 0;background:var(--secbg);padding-left:6px}
+.sec>.sub-h{color:var(--sec)}
+.sec .pl-sub{color:var(--sec)}
+
+.sec .pl-cols{border-bottom-color:var(--secln)}
+/* Common Programme reads PERIWINKLE, not the flight cyan (owner, 26 Aug 26 —
+   "common programme and flying waves are the same colours, can there be some
+   difference in colour distinction"). --accent and --flight are the same cyan,
+   so the squadron-wide programme and the flying waves were indistinguishable;
+   the waves keep the flight cyan (their identity) and the programme takes a
+   calm blue-violet that no other section uses. Board twin: .sb-panel.prog. */
+.sec-prog{--sec:#7C8CF0;--secbg:rgba(124,140,240,.06);--secln:rgba(124,140,240,.3)}
+.sec-duty{--sec:#57C97A;--secbg:rgba(87,201,122,.05);--secln:rgba(87,201,122,.28)}
+.sec-sim{--sec:#B24DEA;--secbg:rgba(178,77,234,.055);--secln:rgba(178,77,234,.3)}
+.sec-grnd{--sec:#E5A83B;--secbg:rgba(229,168,59,.05);--secln:rgba(229,168,59,.28)}
+.sec-inp{--sec:#F08A4A;--secbg:rgba(240,138,74,.05);--secln:rgba(240,138,74,.28)}
+.sec-avail{--sec:#35D6A4;--secbg:rgba(53,214,164,.05);--secln:rgba(53,214,164,.28)}
+/* SANS Availability wears the same purple the rest of the app already reads
+   as "SANS" (--san, e.g. .sanscard-l, .puck.san) — a positive record, so
+   it gets its own colour rather than borrowing Unavailable's red below. */
+.sec-sans{--sec:#B24DEA;--secbg:rgba(178,77,234,.05);--secln:rgba(178,77,234,.28)}
+/* Unavailable took over from the separate Leave, Downchit and Office blocks,
+   so it carries the red the squadron already reads as "this man is closed".
+   Those three blocks' own colours went with them — this port never builds
+   them (`html.test.ts` asserts their markup is absent from every mode). */
+.sec-unav{--sec:#F0555F;--secbg:rgba(240,85,95,.055);--secln:rgba(240,85,95,.3)}
+/* an accepted personal input stays visible so the scheduler can see what they
+   have dealt with and undo it — faded, because the live copy is now the ground
+   programme row above, not this one */
+/* .45 was right while these rows were read-only text: an accepted input is
+   dealt with, and it faded into the background. They are fields now (owner,
+   10 Aug 26), and .45 on a box you are meant to type into is a box you cannot
+   read. .62 still reads as "handled" next to its neighbours, and the row also
+   says so twice over — `· accepted` after the type, and UNDO where ACCEPT was. */
+.pl-row.accd{opacity:.62}
+.sb-arow.inprow.accd{opacity:.62}
+.pl-row.accd .ntx::after{content:' · accepted';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
+.sbi-row.accd{opacity:.62}
+/* a REMOVED (dormant) input reads visibly parked — it flags NOTHING until
+   accepted again (26 Aug 26 bug pass: a dormant row printed identical to a
+   fresh counting one beside it). Fainter than .accd (silent, not handled),
+   and it says so after the type the same way accepted rows do. */
+.pl-row.inp-dorm,.sb-arow.inprow.inp-dorm,.sbi-row.inp-dorm{opacity:.5}
+.pl-row.inp-dorm .ntx::after{content:' · removed';font-size:8px;letter-spacing:.06em;color:var(--ink-3)}
+.accs{display:inline-flex;gap:4px;align-items:center;margin-left:6px}
+.accb{font:inherit;font-size:9px;letter-spacing:.05em;text-transform:uppercase;
+  padding:2px 7px;border-radius:6px;cursor:pointer;white-space:nowrap;
+  color:#9BE3B4;border:1px solid rgba(87,201,122,.45);background:rgba(87,201,122,.10)}
+.accb:hover{border-color:rgba(87,201,122,.8);background:rgba(87,201,122,.2)}
+.accb.undo{color:var(--ink-3);border-color:var(--edge-2);background:transparent}
+.accb.undo:hover{color:var(--ink);border-color:var(--edge)}
+/* [REQ-ORPHAN-ROW] (28 Sep 26): a request whose one row stands on ANOTHER week says where, in place of Accept — a note,
+   not a control (its title says to load that week) */
+.accs .acc-away{font-size:9.5px;color:var(--ink-3);white-space:nowrap;letter-spacing:.02em}
+/* the framed blocks (Programme / Available crew) get the same left bar */
+.allhands.sec,.availpuck.sec{border-left:3px solid var(--sec);background:var(--secbg)}
+.allhands.sec .ah-h{color:var(--sec)}
+.availpuck.sec .ap-h{color:var(--sec)}
+/* ON THE BOARD ONLY, Available crew drops its green-tinted card and wears the
+   sb-panel chrome, so it reads as one more section between the Personal Inputs
+   and SANS panels it sits between rather than a highlighted block (owner,
+   25 Aug 26 — "design it to match the scheduler board … make it blend in").
+   The week keeps the tinted .plist.sec card, which matches ITS neighbours
+   (the tinted Personal-Inputs / SANS groups) — so the blend-in is scoped to
+   #schedBoard. Green survives only as the 3px left tab, the same category tab
+   every sibling board panel carries. The id-scoped selectors outrank the
+   generic `.sec` block and the `.availpuck.sec` rules above. */
+#schedBoard .availpuck{margin:0 0 12px}
+#schedBoard .availpuck.sec-avail{border-left:3px solid var(--sec);background:var(--panel);border-radius:10px;padding-left:0}
+#schedBoard .availpuck .ap-h{color:var(--ink);background:var(--panel-2);font-size:11px;letter-spacing:.09em;padding:7px 11px}
+#schedBoard .availpuck .ap-h .n{font-family:'JetBrains Mono',monospace;text-transform:none;letter-spacing:0;color:var(--ink-3);font-weight:500;font-size:10px}
+/* The reference's edit footer (.schedfoot / .sf-box / .sf-h / .sf-body — SANS
+   REQ CAA, SAF100A, VERIFIED BY) was hand-written static markup in the
+   original page; nothing in this port ever builds it, so its rules were
+   deleted 9 Aug 26 rather than left as a selector nothing can match. Same
+   for .sb-hint, which the reference's sim-notes block emitted and this
+   port's placeholder text replaced. Checked against the built bundle, not
+   just the source: neither class appears in dist/. */
+details.gp[open]>summary::before{content:'▾ '}
+details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
+
+.sub{margin:10px}
+.sub-h{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2);padding:4px 4px 5px;font-weight:600}/* sub-section rows: fixed-size pucks (same as flying) + timings shifted left, right after the puck */
+/* (removed: .puck.sm used to add 2px/8px padding here, which ate the name column
+   and clipped the callsign vertically. Geometry lives on .puck only.) */
+
+/* daydots */
+.daydots{display:none;justify-content:center;gap:7px;padding:8px 0 4px}
+.daydots button{width:8px;height:8px;border-radius:50%;border:none;padding:0;cursor:pointer;background:var(--edge-2)}
+.daydots button.on{background:var(--accent);width:22px;border-radius:4px}
+

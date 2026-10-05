@@ -139,11 +139,20 @@ describe('WH3 (D469) — a hidden warning flags no puck', () => {
     expect(dt.who.length).toBeGreaterThan(1)
     const before = dt.who.map((id: string) => chipOf(MON, id))
     expect(before.includes('DT'), 'at least one of them wears the DT chip').toBe(true)
+    for (const id of ['freak','dirty']) {
+      expect(find(MON,'LONGDAY',id), 'the earlier report leaves a competing long-day note').toBeTruthy()
+      expect(chipOf(MON,id)).toBe('DT')
+    }
     hide(dt)
     dt.who.forEach((id: string, i: number) => {
-      if (before[i] === 'DT') expect(chipOf(MON, id), `${id}'s DT chip goes`).toBeFalsy()
+      if (before[i] === 'DT' && ['freak','dirty'].includes(id)) {
+        expect(chipOf(MON,id), `${id}'s remaining long-day note shows`).toBe('LD')
+        expect(sevOf(MON,id)).toBe('note')
+      } else if (before[i] === 'DT') expect(chipOf(MON, id), `${id}'s DT chip goes`).toBeFalsy()
       else expect(chipOf(MON, id), `${id} keeps the higher chip of his other warning`).toBe(before[i])
     })
+    expect(workingWarn().byDay[MON].warns.find((w:any)=>w.code==='DT_SUM').off).toBe(true)
+    flagAgain(dt);expect(dt.who.map((id:string)=>chipOf(MON,id))).toEqual(before)
   })
 
   it("a hidden crew-rest breach drops its ring on the day AND the dotted mark on the day before (D475)", () => {

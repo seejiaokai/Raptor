@@ -1,0 +1,23 @@
+import * as S from './stk-A-lib.mjs'
+const { world, L, W, pic, sleep } = S
+const { browser, p, errors } = await world()
+await L.go(p, 'editsched'); await sleep(400)
+const log = (...a) => console.log(...a)
+const w = await S.addFlyingWave(p, 5, { cs: 'VIPER', to: '12:00', ld: '13:00', p1: 'stiff' })
+log('wave', JSON.stringify(w))
+log('sat waves', await p.evaluate(() => JSON.stringify(window.DAYS[5].waves.map(w => ({ label: w.label, it: w.intimes, f: w.formations.map(f => ({ cs: f.cs, to: f.to, ld: f.ld, ac: f.aircraft.map(a => a.p + '/' + a.w) })) })))))
+await pic(p, 'probe-sat-board')
+const pub = await S.publishNew(p, 5)
+log('pub', JSON.stringify(pub.head), pub.s)
+await S.closeBoard(p)
+await S.lwOpenMonth(p, 'JUL')
+log('cell', JSON.stringify(await S.lwCellOf(p, 'stiff', S.SAT)))
+await pic(p, 'probe-lw')
+log('oil row', await S.oilRow(p, 'stiff'))
+await pic(p, 'probe-oil')
+// insights
+await L.go(p, 'editsched'); await sleep(500)
+const ins = await S.insightsOf(p, 'probe-insights')
+log('insights', JSON.stringify(ins).slice(0, 1500))
+log(errors)
+await browser.close()

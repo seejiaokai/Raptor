@@ -1,0 +1,177 @@
+{
+  "inspectedBy": "Sol host, individual original view_image calls",
+  "scope": "Named proof pictures only; retained partial and failed images excluded from clearance",
+  "count": 34,
+  "pictures": [
+    {
+      "path": "desktop-initial.png",
+      "sha256": "3e468799f565f8e4665dbd80a379cc2dee172223d771ba6667affa747217ddc2",
+      "opened": true
+    },
+    {
+      "path": "desktop-native-scroll.png",
+      "sha256": "01ad61e70223fcaa66f3428e53d3bacf521bce962d2ca3f1fd046ed71d73b43d",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/palette-1280x560.png",
+      "sha256": "01ad61e70223fcaa66f3428e53d3bacf521bce962d2ca3f1fd046ed71d73b43d",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/palette-1600x900.png",
+      "sha256": "0d75f28231cefe346d65058596dbc9049981270d4e80e783bd75490b0d34f4b0",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/palette-1440x480.png",
+      "sha256": "0657d0338ff2559c54285f35fafe210f363c9fbf0a5f9bbd64bc383e7ed5aa27",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/palette-1280x560-return.png",
+      "sha256": "01ad61e70223fcaa66f3428e53d3bacf521bce962d2ca3f1fd046ed71d73b43d",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/board-phone-normal.png",
+      "sha256": "3c0149b277f97eccccd7b1438b06906acfec640a19032931a8a895fe641779d3",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/board-phone-wide.png",
+      "sha256": "3109d9099dbe22d7af6c364d07f7a1a01cb18570cc40f95693219f16e9f59d1c",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/board-phone-wide-pan.png",
+      "sha256": "3109d9099dbe22d7af6c364d07f7a1a01cb18570cc40f95693219f16e9f59d1c",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/board-phone-normal-recovery.png",
+      "sha256": "a0f7f0bf04e069657b54b4022e8f028df9eadf559bdd79d7641df712cd0d2c1c",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/board-wide-820x700.png",
+      "sha256": "fe764e796ffb4463f6a906a0edc2172b0af3ffd7297c94e642618fd287e5ce70",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/board-wide-821x700.png",
+      "sha256": "9cf3bfffb0a966f18ad00cd8fe4d871b32cc9a3f77ef0fe5d0f3398e7e75c40d",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/board-wide-844x390.png",
+      "sha256": "5c94f2db57242871ac59ec02054f75d6571745c60fd4743d9e387b43fb0cf3c2",
+      "opened": true
+    },
+    {
+      "path": "layout-complete/board-wide-390x844.png",
+      "sha256": "d5e85e746b0893ad1f03d7833a4aff987da91f186edba1ac681ef61ad270492a",
+      "opened": true
+    },
+    {
+      "path": "panels/traffic-390x568.png",
+      "sha256": "08f41621aed2e61707b06dd9c510008a8724ceac8ce7878b3713698e0768c1ba",
+      "opened": true
+    },
+    {
+      "path": "panels/input-editor-390x568.png",
+      "sha256": "cd5c1b5021d50d183bd8290c0b16baa0c9ecd3d3a2e8d2e50e6dd41b6d16f847",
+      "opened": true
+    },
+    {
+      "path": "panels/week-calendar-390x568.png",
+      "sha256": "f697fe9d4babb394d8ea5af8477c55367127d62766d3f11aabef18a0f18a7475",
+      "opened": true
+    },
+    {
+      "path": "panels/day-details-390x568.png",
+      "sha256": "179282e57e7816bd6713af8c17e997fa88f1cf3554a1a160d3e8a7762de9db59",
+      "opened": true
+    },
+    {
+      "path": "panels/medical-document-390x568.png",
+      "sha256": "9950ead6c4aaffb342f59be90295a49cb67f8b6c27869a5b1b759ac6e60e7fc7",
+      "opened": true
+    },
+    {
+      "path": "panels-followup/inputs-calendar-day-390x568.png",
+      "sha256": "f3d4f5ca422e41f583c812cc2db5a328cf53248fecfec03c2c1b2b15d76f74b3",
+      "opened": true
+    },
+    {
+      "path": "panels-followup/inputs-people-picker-390x844.png",
+      "sha256": "bfcf1c493746f9170a7ecff41bc68608f3faeb800a3ac0073906348913df3bb7",
+      "opened": true
+    },
+    {
+      "path": "panels-followup/inputs-people-picker-390x568.png",
+      "sha256": "a7bdff05bb15883a344a7c5cf4e99133ba456ac5c87ed912ba73c8d5b9ac49e1",
+      "opened": true
+    },
+    {
+      "path": "panels-followup/changes-390x568.png",
+      "sha256": "a89b9d054ee0c9baaf5450abd8af2c22421027467066d64e7c4448a065a74baa",
+      "opened": true
+    },
+    {
+      "path": "reachability-final/input-editor-landscape-before-scroll.png",
+      "sha256": "ee800180adf0723b19537e4cb0cedb5c131368abbdd89348d3fca4f83d59b123",
+      "opened": true
+    },
+    {
+      "path": "reachability-final/input-editor-landscape-after-scroll.png",
+      "sha256": "3828b83ed0f11c068790456453c0b56b1de54948996343691dc0e80d00cdde83",
+      "opened": true
+    },
+    {
+      "path": "reachability-final/day-details-landscape-before-scroll.png",
+      "sha256": "69137c26e1362ef403d1bd409504d0f43e30cd8f507a23a17b8b9fd893991b24",
+      "opened": true
+    },
+    {
+      "path": "reachability-final/day-details-landscape-after-scroll.png",
+      "sha256": "4158899459a2520ab55caf33b007958e6eb163bea6ee39350dff567a51a152af",
+      "opened": true
+    },
+    {
+      "path": "reachability-final/medical-document-landscape-before-scroll.png",
+      "sha256": "3fd0e72e40b97d70ba2a07c1f5b481c39d17ad47f857fc654bfb021e1afbd0bf",
+      "opened": true
+    },
+    {
+      "path": "reachability-final/medical-document-landscape-after-scroll.png",
+      "sha256": "d67c3d09eb3ccdef9f8db25019f66a09850399efd5f898e43c4eb44fab9cffa1",
+      "opened": true
+    },
+    {
+      "path": "reachability-final/legend-short-initial.png",
+      "sha256": "6f15a6467b61c0ddd30c640a94325b224a5226e907e7ad87e52e72b842a53a6e",
+      "opened": true
+    },
+    {
+      "path": "reachability-final/legend-short-page-scroll.png",
+      "sha256": "e56ff07a23b1efd05b61551e3539aa9fabe5d5ba2d5aa7a8aedc44d6075dd04b",
+      "opened": true
+    },
+    {
+      "path": "reachability-final/legend-short-inner-scroll.png",
+      "sha256": "468d7789e049ee51dca676a6b0286e29ab10be4718f334031cae96c38bead729",
+      "opened": true
+    },
+    {
+      "path": "reachability-final/board-wide-native-touch-pan.png",
+      "sha256": "f1b47877dd056ad2199c5a329751cc4d81ed0e6a073bb468a492f4a566a23542",
+      "opened": true
+    },
+    {
+      "path": "editor-control/input-editor-landscape-cancel-closed.png",
+      "sha256": "6229f3017beac09a4e6006132c21fed74ae7fe6af6bedb61d06e091c58cc8abd",
+      "opened": true
+    }
+  ]
+}

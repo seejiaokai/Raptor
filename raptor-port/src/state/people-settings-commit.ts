@@ -53,6 +53,7 @@ import {
 import { mintOrd, byOrd } from '../command/ord'
 import { accountsLoad, ACCOUNT_TYPES } from './accounts'
 import { changesLoad, CHANGES_TYPES } from './changes'
+import { insightsLoad } from '../engine/insights-config'
 
 /* ---- the SETTINGS EnlistableStore ---------------------------------------- */
 /* the 11 durable settings keys (design §3.1). `wavetpl` + `wavehide` are two
@@ -63,7 +64,7 @@ export const SETTINGS_KEYS = [
   'qualcols', 'lookahead', 'secdefault', 'wavedefault',
   /* [ACCOUNTS] (D166, D204, 26 Sep 26): the guest switch — one `Setting` (data-model §3, §11). Written ONLY by
      state/accounts.ts, through its intent commands. */
-  'guestview',
+  'guestview', 'insights',
 ] as const
 /* THE SETTINGS RECORDS KEPT ONE ROW PER THING ([DB-READINESS] group A, phase 4 — plan §2.5's matrix, §2.9: the command
    layer's records follow the storage grain). Each row is its own record, `settings/<prefix><id>`, found by its prefix:
@@ -86,7 +87,7 @@ function settingsRecordKeys(): string[] {
    rollback — deduped (waveTplLoad rebuilds both wavetpl + wavehide). */
 const SETTINGS_LOADERS: Array<() => void> = [
   rulesLoad, storesLoad, cxReasonsLoad, dayTplLoad, dutyTplLoad, waveTplLoad,
-  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad, accountsLoad, changesLoad,
+  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad, accountsLoad, changesLoad, insightsLoad,
 ]
 function settingsRecords(): Map<string, RecordEntry> {
   const m = new Map<string, RecordEntry>()
@@ -318,6 +319,7 @@ export function registerPeopleSettingsCommandLayer(): void {
   // Inside a running command (a rollback, or a save nested in another command)
   // or for an unknown key, write raw so nothing nests or is refused-and-lost.
   setSettingsWriteHook((k, v, raw) => {
+    if (k.startsWith('missionrole:')) throw new Error('Mission-role rows require the typed annotation command')
     if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(k, v); return }
     commitSettings(settingsType(k), () => raw(k, v))
   })

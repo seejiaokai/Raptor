@@ -26,6 +26,7 @@ import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { ridKey } from '../engine/rowids'
 
+
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const rk = (k: string) => ridKey(k, DAYS)

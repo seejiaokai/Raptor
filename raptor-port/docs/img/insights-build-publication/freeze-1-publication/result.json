@@ -1,0 +1,133 @@
+{
+  "kind": "runtime walk, not final inspection",
+  "base": "http://localhost:4199",
+  "run": "freeze-1-publication",
+  "freeze": "docs/img/insights-build-freeze-1.json",
+  "started": "2026-10-03T07:54:40.85Z",
+  "steps": [
+    {
+      "scene": "published-working",
+      "id": "world-stopped",
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard').getByRole('button', { name: /Close/ }).filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at closeBoard (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:41:35)\n    at nav (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:40:59)\n    at async setup (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:89:3)\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:6)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:97:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\published-working-world-stopped.png"
+    },
+    {
+      "scene": "published-working",
+      "id": "dependent-remainder",
+      "status": "NOT RUN",
+      "reason": "Earlier prerequisite failed; see failure evidence"
+    },
+    {
+      "scene": "plans-history",
+      "id": "world-stopped",
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard').getByRole('button', { name: /Close/ }).filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at closeBoard (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:41:35)\n    at nav (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:40:59)\n    at async setup (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:89:3)\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:6)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:125:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\plans-history-world-stopped.png"
+    },
+    {
+      "scene": "plans-history",
+      "id": "dependent-remainder",
+      "status": "NOT RUN",
+      "reason": "Earlier prerequisite failed; see failure evidence"
+    },
+    {
+      "scene": "templates",
+      "id": "world-stopped",
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard').getByRole('button', { name: /Close/ }).filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at closeBoard (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:41:35)\n    at nav (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:40:59)\n    at async setup (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:89:3)\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:6)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:137:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\templates-world-stopped.png"
+    },
+    {
+      "scene": "templates",
+      "id": "dependent-remainder",
+      "status": "NOT RUN",
+      "reason": "Earlier prerequisite failed; see failure evidence"
+    },
+    {
+      "scene": "off-week",
+      "id": "world-stopped",
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard').getByRole('button', { name: /Close/ }).filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at closeBoard (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:41:35)\n    at nav (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:40:59)\n    at async setup (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:89:3)\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:6)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:150:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\off-week-world-stopped.png"
+    },
+    {
+      "scene": "off-week",
+      "id": "dependent-remainder",
+      "status": "NOT RUN",
+      "reason": "Earlier prerequisite failed; see failure evidence"
+    },
+    {
+      "scene": "logic-isolation",
+      "id": "world-stopped",
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard').getByRole('button', { name: /Close/ }).filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at closeBoard (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:41:35)\n    at nav (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:40:59)\n    at async setup (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:89:3)\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:6)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:155:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\logic-isolation-world-stopped.png"
+    },
+    {
+      "scene": "logic-isolation",
+      "id": "dependent-remainder",
+      "status": "NOT RUN",
+      "reason": "Earlier prerequisite failed; see failure evidence"
+    },
+    {
+      "scene": "member-read",
+      "id": "world-stopped",
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard').getByRole('button', { name: /Close/ }).filter({ visible: true }).first() to be visible\u001b[22m\n\n    at click (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:34:35)\n    at closeBoard (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:41:35)\n    at nav (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:40:59)\n    at async setup (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:89:3)\n    at async world (C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\scripts\\handpass\\insights-publication.mjs:94:6)\n    at async file:///C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port/scripts/handpass/insights-publication.mjs:169:1",
+      "image": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\member-read-world-stopped.png"
+    },
+    {
+      "scene": "member-read",
+      "id": "dependent-remainder",
+      "status": "NOT RUN",
+      "reason": "Earlier prerequisite failed; see failure evidence"
+    }
+  ],
+  "images": [
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\published-working-world-stopped.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Default View-only schedule visible; Board not open. Supports hidden-container driver setup failure, no feature conclusion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\plans-history-world-stopped.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Default View-only schedule visible; Board not open. Supports hidden-container driver setup failure, no feature conclusion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\templates-world-stopped.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Default View-only schedule visible; Board not open. Supports hidden-container driver setup failure, no feature conclusion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\off-week-world-stopped.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Default View-only schedule visible; Board not open. Supports hidden-container driver setup failure, no feature conclusion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\logic-isolation-world-stopped.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Default View-only schedule visible; Board not open. Supports hidden-container driver setup failure, no feature conclusion."
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-1-publication\\member-read-world-stopped.png",
+      "inspected": true,
+      "inspection": "Opened by independent Astra. Default View-only schedule visible; Board not open. Supports hidden-container driver setup failure, no feature conclusion."
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "No direct model, command, storage or fixture writes from page.evaluate.",
+    "S20 collision/second-store rollback and S21 failure injection belong to production integration tests; runtime covers supported template travel only.",
+    "Retained stale DOM event delivery is explicitly marked; it supplements actual-control navigation.",
+    "Desktop/phone emulation does not prove physical Safari."
+  ],
+  "finished": "2026-10-03T07:55:29.516Z",
+  "summary": {
+    "pass": 0,
+    "fail": 6,
+    "notRun": 6,
+    "errors": 0
+  }
+}

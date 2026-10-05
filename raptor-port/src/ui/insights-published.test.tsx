@@ -29,6 +29,7 @@ import { commitNewInput } from './inputedit'
 import { addPersonAndAccount } from '../state/accounts'
 import { archivePerson } from '../leavewar/sync'
 
+
 const TUE = 1, WED = 2, TUE_ISO = '2026-07-14'
 let pristine: any[], inputs0: string, people0: string
 const FOUR: Array<[string, string]> = [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']]

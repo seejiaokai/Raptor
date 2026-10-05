@@ -1,5 +1,11 @@
 # HOW THIS PROJECT BUG-CHECKS — the standing order
 
+**Temporary Codex mapping — D496 (2 Oct 26), until Monday 5 Oct 26 at 19:00:** Astra plans and designs scenarios;
+Sol 6.1 challenges Astra's plans and builds; a fresh independent Astra inspector reads Sol's final code.
+The temporary same-provider reads replace the model/count mapping only, preserve every applicable check below,
+and do not count as cross-provider approval. Claude's further reads are owed before main (D494).
+Exact roles and bounded review/fix loop: `codex-review-workflow.md`. Existing Claude skills remain unchanged.
+
 Adopted 21 Sep 26, after the OIL build. Merged from two independent proposals written by models
 that did not build the code: Fable 5.1 and Astra/Codex (D8). Both are kept verbatim beside this file
 (`superpowers/briefs/2026-09-21-bugcheck-method-fable.md`, `…-codex.md`) so the reasoning behind
@@ -206,6 +212,19 @@ red team of an important plan (rank 3) — BOTH; the code reads on high-conseque
 28 Sep 26: three Fable runs cost ~1.4M Claude tokens and found the serious issues; the doubled scenario and side-question
 runs mostly repeated each other.
 
+**WHO THE TWO ARE NOW (owner, D590, 5 Oct 26 — "A").** Wherever this section says "Fable", "both" or "the other
+providers" about work OPUS wrote: **Astra reviews it, and Sol 6.1 is the second reader where two are required** — the
+code reads on high-consequence work (rank 2), an important plan's red team (rank 3), a changed working guide (D70).
+They read independently and blind to each other; where Astra is unavailable Sol takes the one-reviewer jobs. **Fable is
+on call only:** a bug Opus cannot crack, or a big open-ended plan, on his word each time. What Codex planned or built is
+read by Opus 5.5 (D67 (3)), unchanged. The price he was told: Astra and Sol come from one maker and tend to miss the
+same kinds of thing — a weaker pair than Fable and Astra — so the walk of the running app carries more, never less.
+**One side-by-side, once:** on the first high-consequence change Opus wrote, Astra, Sol AND Fable each read it; the
+report to him says what each found, each one's false alarms, and Fable's cost in his weekly allowance (read before and
+after). His answer is a new ruling on whether Sol keeps the seat.
+**Done, and answered (owner, D601, 6 Oct 26 — "ok sol can be a 2nd reviewer"):** the side-by-side ran once, on the Insights
+fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 keeps the second seat.** It is not repeated.
+
 **Do NOT spend them on:**
 
 - **Another code review when the missing evidence is runtime.** This is the trap that was actually
@@ -261,7 +280,7 @@ an area the other found a defect in is the cheapest possible pointer to a real b
 7. Every confirmed defect gets a regression test and a row in the roll-call.
 
 **A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
-helpers are Opus agents, and each walks its own WORLD — its own port, its own fresh browser context, its own
+helpers are Opus agents (Sonnet 5.5 since D588, 5 Oct 26 — the paragraph at the end of this block), and each walks its own WORLD — its own port, its own fresh browser context, its own
 copy of the demo data — so no two share a fixture; each is handed the fixture recipe rather than left to
 rediscover it. The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
 so each returns PICTURES and a filled table, and the host REPRODUCES every finding before it enters the
@@ -284,6 +303,26 @@ So on the NEXT walk one Sonnet 5.5 walker runs beside an Opus walker again, the 
 defects**: the build as it stood BEFORE its fix (or an earlier commit whose walk found real ones), neither walker told
 what is wrong, and the report says what each CAUGHT apart from whether each followed the brief. Until he rules on that
 second report nothing else goes to a cheaper model.
+**ONE EXCEPTION, ONCE (owner, D508, 3 Oct 26 — his allowance at 94% before the reset).** For the two Codex builds
+(`codex/discard-marks-remove`, `codex/rally-workspan`) Opus 5.5 plans a small, targeted check and Sonnet 5.5 does the
+reading and the walking, with no Fable; the host reproduces every find. It is an early signal on Codex's reliability,
+NOT a bug check: the full check, this second trial and the second reads stay owed after the reset, before "merge live".
+**FROM 5 OCT 26 THE WALKERS ARE SONNET 5.5 (owner, D588 — "Walk, checks, chores + one trial fix").** A walk's helpers
+are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
+chores, may go to a Sonnet helper too. Unchanged, and the price of it: each walker returns PICTURES and a filled table,
+and the host opens the pictures and REPRODUCES every finding before it enters the evidence sheet. **Sonnet never reads
+code to find bugs** (in one outside code-review test it caught 6 of 13 known bugs where Opus caught 8 to 10, with more
+false alarms), never decides whether a finding is real, never writes the roll-call, a plan or a scenario list. The
+second trial above still runs — in the check of the Codex stack (D589): one Opus walker and one Sonnet walker on the same
+scenarios, on the frozen Rally build as it stood before its review fixes, neither told what is wrong — and its report
+adds his weekly allowance, read before and after each walker. One building trial rides with it: ONE small low-risk fix
+(`[OG-TAG-OVER-COUNT]`) built by a Sonnet helper to a precise spec, its diff and tests read by Opus, checked as its tier
+requires, and touching nothing of earned leave, permissions, the published record, saved data or the rules engine. The host
+also checks what a check run or a document chore hands back before accepting it (D588). **Since D595 (the same night — "make a
+smaller comparison to make a decision from there yourself"): a trial of a cheaper model is kept SMALL — a handful of scenarios, never a
+full share walked twice — and the AGENT decides from the comparison what that model takes, writes the decision and its reasons in the
+evidence sheet and here, and tells him; he can overrule.** His answer to each
+report was to be a new ruling (D588); until then no other build or fix leaves Opus, and haiku stays closed.
 
 **The owner's trigger rule, in one line:**
 
@@ -299,14 +338,14 @@ second report nothing else goes to a cheaper model.
 ## 4a. How this fits the Claudex loop
 
 They do not compete. **Claudex covers the plan and the code; this order covers the running app** (D11).
-Claudex's own rules stand unchanged — in particular *the provider that built never inspects*, and
+Claudex's own rules stand unchanged — in particular *the provider that built never inspects* (one exception: D588's ONE Sonnet trial fix, whose diff and tests Opus reads), and
 *never disable or bypass the workflow's independent reviewer* (`.claude/rules/raptor-executor.md`).
 This order adds checks; it never removes one of Claudex's.
 
 | Claudex stage | What it is | What this order says about it |
 |---|---|---|
 | **Plan review** — the host plans, the other provider attacks the plan before any code | The pre-build red team | This IS §4 rank 3, and Claudex is the machinery for it. The owner's cap of about three rounds still applies; after that, findings fold into the build. |
-| **Build** — one provider implements | — | Unchanged. The implementation stays in the main session (the executor rule). |
+| **Build** — one provider implements | — | Unchanged. The implementation stays in the main session (the executor rule) — one exception: D588's one Sonnet trial fix, its diff and tests read by Opus. |
 | **Final inspection** — a fresh session of the provider that did NOT build reads the finished code | The post-build code read | This is §4 rank 2 — but with two changes, below. |
 | *(nothing)* | — | **Claudex has no step that runs the app.** That is the gap this order fills, and it is where every defect the owner found tonight lived. |
 
@@ -318,7 +357,8 @@ This order adds checks; it never removes one of Claudex's.
    ran first, passed, and three unwired surfaces went out behind it.
 2. **On FULL-tier work, one inspector is not enough.** Claudex's default is a single fresh session
    of the other provider. Where money, entitlement, published records, permissions or persistence
-   are touched, run **both** providers independently and blind to each other (§4 rank 2). That is
+   are touched, run **two** readers independently and blind to each other (§4 rank 2 — for work Opus wrote
+   they are Astra and Sol 6.1, D590; what Codex built, Opus reads beside Codex's own inspector). That is
    what found five money defects here that driving the app would not have.
 3. **The inspection brief gets the finder wording from §4.** Claudex's inspector is asked whether
    the code is wrong. Add the sentence that asks what is MISSING, or it will answer only the first
@@ -329,7 +369,7 @@ bug check never re-opens an approved plan. If the walk finds behaviour the plan 
 that is a question for the owner (§11), not a change made under cover of a fix.
 
 **In one line:** run Claudex to harden the plan, build, then **walk the app**, then run Claudex's
-inspection — both providers if the change touches money — and only then report, with the `Walk:`
+inspection — two independent readers if the change touches money (§4, D590) — and only then report, with the `Walk:`
 line.
 
 ---

@@ -1,0 +1,38 @@
+{
+  "pictures": [
+    "docs/handpass/css-split/extras-after-01/desktop-rally-and-role.png"
+  ],
+  "operations": [
+    {
+      "name": "dense Saturday via actual controls",
+      "facts": [
+        "VIPER bane",
+        "VIPER freak",
+        "COBRA razer",
+        "COBRA sufa",
+        "SC MAIN pump",
+        "SC MAIN glass",
+        "SC SPARE taipan",
+        "SC SPARE drill",
+        "AVALON prowler",
+        "AVALON nasty",
+        "SXO blind nact",
+        "OPS DESK 0-len casper",
+        "AVALON desk salsa",
+        "SC desk slipway",
+        "OFT dice",
+        "OFT glass",
+        "AMT BOX snap",
+        "AMT BOX ammo",
+        "OCU REVIEW stiff",
+        "ADMIN split",
+        "FAMILY DAY allavail",
+        "MASS BRIEF stiff",
+        "MASS BRIEF ignite"
+      ]
+    }
+  ],
+  "errors": [],
+  "status": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: Wrong Rally is visibly warned"
+}

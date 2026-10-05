@@ -9,6 +9,11 @@ The repo already had ceilings — `HANDOFF.md` says inside itself that it must s
 and it had reached 961. **The ceilings were never wrong; nothing failed when they were breached.**
 So this file adds the forcing function, not a new opinion.
 
+**Owed (owner, D602, 6 Oct 26 — "why I am at 30% context the moment I start a new chat? Is it required? … we should not
+cut down at the expense of losing the quality of work"):** an audit of what a new chat loads at its start —
+`OUTSTANDING.md` `[START-CONTEXT-AUDIT]`, the job after the crew-rest fix. It measures first, brings him options, and
+trims nothing before he rules; D68, D136, D138 and D141 are the test of every option.
+
 ## 1. Tiers, by how often a document must be READ
 
 | Tier | What is in it | Budget |

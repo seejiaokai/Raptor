@@ -57,6 +57,9 @@ half).
   `gh api repos/<owner>/<repo>/deployments?environment=Production`, then its statuses) → ONE notification, with
   the link. **His look on his phone replaces the live-page look** the agent used to do on GitHub Pages (gone
   since D59; D343): the live app sits behind his sign-in, and the agent is never given a login to it (D143).
+- **During an unattended run (D596, 5 Oct 26)** a question is not a reason to stop or to notify: park it in the run's
+  one list and carry on with everything else; preview links and questions go in the closing report; ONE notification,
+  when the run ends or when nothing authorised can continue.
 - The only reasons to come back sooner: a red check you cannot fix, a genuine question, or a merge he has told
   you to hold. Waiting is not a reason — schedule a check-in and let it fire, rather than reporting "still
   building".

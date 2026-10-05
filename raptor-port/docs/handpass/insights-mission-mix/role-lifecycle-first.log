@@ -1,0 +1,42 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/state/mission-roles.test.ts (9 tests | 1 failed) 282ms
+   × published A and pending B have independent immediate answers, preserved through AL and withdrawal 94ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/state/mission-roles.test.ts > published A and pending B have independent immediate answers, preserved through AL and withdrawal
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/state/mission-roles.test.ts:85:67
+     83|   expect(isOk(setMissionRole(a,'red'))).toBe(true)
+     84|   expect(JSON.stringify(SCHED)).toBe(book);expect(JSON.stringify(DAYS)…
+     85|   expect(crewMix().red).toBeGreaterThan(0);expect(crewMix().blue).toBe…
+       |                                                                   ^
+     86|   setDayPreview(0,null);const rows=roleStore.signature!()
+     87|   signAll();commitPublishALDay(0);expect(dayCurVer(0)).not.toBe(ver)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  15:20:15
+   Duration  4.01s (transform 2.47s, setup 56ms, import 2.66s, tests 282ms, environment 812ms)
+

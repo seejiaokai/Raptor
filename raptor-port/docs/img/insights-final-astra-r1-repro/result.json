@@ -1,0 +1,122 @@
+[
+  {
+    "surface": "board",
+    "before": {
+      "saved": "DS FOR ALPHA",
+      "seq": 3
+    },
+    "afterAnswer": {
+      "saved": "DS FOR ALPHA",
+      "last": {
+        "seq": 3,
+        "at": "2026-10-03T08:31:44.267Z",
+        "actor": {
+          "id": "acad",
+          "role": "admin",
+          "personId": "stiff",
+          "principal": "ad",
+          "session": {
+            "user": "acad",
+            "role": "admin",
+            "pid": "stiff",
+            "name": "ad",
+            "acct": "admin"
+          }
+        },
+        "origin": "user",
+        "scope": {
+          "module": "insights",
+          "weekId": "13/07/2026"
+        },
+        "type": "insights.role.set",
+        "changes": [
+          {
+            "op": "put",
+            "collection": "insights.role",
+            "id": "%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus4v25mdfmjob%22%2C%22%5B1%2C%5C%22BFM%5C%22%2C%5B%5C%22DS%20FOR%20ALPHA%5C%22%5D%5D%22%5D",
+            "after": {
+              "format": 1,
+              "contextVersion": 1,
+              "weekKey": "13/07/2026",
+              "dayISO": "2026-07-13",
+              "formationRid": "rmus4v25mdfmjob",
+              "context": "[1,\"BFM\",[\"DS FOR ALPHA\"]]",
+              "side": "red"
+            }
+          }
+        ],
+        "emit": true,
+        "detail": "{\"name\":\"VL\",\"origin\":\"Working copy\"}",
+        "revs": {
+          "insights.role/%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus4v25mdfmjob%22%2C%22%5B1%2C%5C%22BFM%5C%22%2C%5B%5C%22DS%20FOR%20ALPHA%5C%22%5D%5D%22%5D": 1
+        }
+      }
+    },
+    "afterBlur": {
+      "saved": "DS FROM BRAVO",
+      "question": true
+    },
+    "errors": [],
+    "picture": "docs/img/insights-final-astra-r1-repro/board.png"
+  },
+  {
+    "surface": "week",
+    "before": {
+      "saved": "DS FOR ALPHA",
+      "seq": 3
+    },
+    "afterAnswer": {
+      "saved": "DS FOR ALPHA",
+      "last": {
+        "seq": 3,
+        "at": "2026-10-03T08:31:47.414Z",
+        "actor": {
+          "id": "acad",
+          "role": "admin",
+          "personId": "stiff",
+          "principal": "ad",
+          "session": {
+            "user": "acad",
+            "role": "admin",
+            "pid": "stiff",
+            "name": "ad",
+            "acct": "admin"
+          }
+        },
+        "origin": "user",
+        "scope": {
+          "module": "insights",
+          "weekId": "13/07/2026"
+        },
+        "type": "insights.role.set",
+        "changes": [
+          {
+            "op": "put",
+            "collection": "insights.role",
+            "id": "%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus4v5ka7wt0ul%22%2C%22%5B1%2C%5C%22BFM%5C%22%2C%5B%5C%22DS%20FOR%20ALPHA%5C%22%5D%5D%22%5D",
+            "after": {
+              "format": 1,
+              "contextVersion": 1,
+              "weekKey": "13/07/2026",
+              "dayISO": "2026-07-13",
+              "formationRid": "rmus4v5ka7wt0ul",
+              "context": "[1,\"BFM\",[\"DS FOR ALPHA\"]]",
+              "side": "red"
+            }
+          }
+        ],
+        "emit": true,
+        "detail": "{\"name\":\"VL\",\"origin\":\"Working copy\"}",
+        "revs": {
+          "insights.role/%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus4v5ka7wt0ul%22%2C%22%5B1%2C%5C%22BFM%5C%22%2C%5B%5C%22DS%20FOR%20ALPHA%5C%22%5D%5D%22%5D": 1
+        }
+      }
+    },
+    "afterBlur": {
+      "saved": "DS FROM BRAVO",
+      "question": true
+    },
+    "errors": [],
+    "picture": "docs/img/insights-final-astra-r1-repro/week.png"
+  }
+]

@@ -1,0 +1,1963 @@
+{
+  "inventory": [
+    {
+      "di": 0,
+      "date": "Jul 13",
+      "published": false,
+      "waves": [
+        {
+          "gi": 0,
+          "label": "WAVE 1",
+          "intimes": [
+            "1200H: FIRST WAVE VL IN TIME + WX/NOTAMS",
+            "1300H: FIRST WAVE RU IN TIME + WX/NOTAMS"
+          ],
+          "formations": [
+            {
+              "cs": "VL",
+              "to": "12:40",
+              "ld": "14:05",
+              "crew": [
+                [
+                  "stiff",
+                  "freak"
+                ],
+                [
+                  "bane",
+                  "wolf"
+                ]
+              ]
+            },
+            {
+              "cs": "RU",
+              "to": "13:40",
+              "ld": "15:05",
+              "crew": [
+                [
+                  "slipway",
+                  "divot"
+                ],
+                [
+                  "pump",
+                  "dirty"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "gi": 1,
+          "label": "WAVE 2",
+          "intimes": [
+            "1900H: NIGHT WAVE VL IN TIME + WX/NOTAMS",
+            "1920H: NIGHT WAVE RU IN TIME + WX/NOTAMS"
+          ],
+          "formations": [
+            {
+              "cs": "VL",
+              "to": "19:45",
+              "ld": "21:10",
+              "crew": [
+                [
+                  "stiff",
+                  "freak"
+                ],
+                [
+                  "bapster",
+                  "nick"
+                ]
+              ]
+            },
+            {
+              "cs": "RU",
+              "to": "19:20",
+              "ld": "20:45",
+              "crew": [
+                [
+                  "pump",
+                  "dirty"
+                ],
+                [
+                  "casper",
+                  "shrek"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "di": 1,
+      "date": "Jul 14",
+      "published": false,
+      "waves": [
+        {
+          "gi": 0,
+          "label": "WAVE 1",
+          "intimes": [
+            "0600H: FIRST WAVE VL IN TIME + WX/NOTAMS",
+            "0700H: FIRST WAVE RU IN TIME + WX/NOTAMS"
+          ],
+          "formations": [
+            {
+              "cs": "VL",
+              "to": "08:40",
+              "ld": "10:05",
+              "crew": [
+                [
+                  "nact",
+                  "glass"
+                ],
+                [
+                  "casper",
+                  "rocky"
+                ]
+              ]
+            },
+            {
+              "cs": "RU",
+              "to": "09:40",
+              "ld": "11:05",
+              "crew": [
+                [
+                  "slipway",
+                  "divot"
+                ],
+                [
+                  "bruise",
+                  "spaceman"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "gi": 1,
+          "label": "WAVE 2",
+          "intimes": [
+            "1200H: SECOND WAVE VL IN TIME + WX/NOTAMS",
+            "1300H: SECOND WAVE RU IN TIME + WX/NOTAMS"
+          ],
+          "formations": [
+            {
+              "cs": "VL",
+              "to": "14:40",
+              "ld": "16:05",
+              "crew": [
+                [
+                  "dj",
+                  "wolf"
+                ],
+                [
+                  "salsa",
+                  "pain"
+                ]
+              ]
+            },
+            {
+              "cs": "RU",
+              "to": "14:40",
+              "ld": "16:05",
+              "crew": [
+                [
+                  "romeo",
+                  "ammo"
+                ],
+                [
+                  "vegas",
+                  "cards"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "di": 2,
+      "date": "Jul 15",
+      "published": false,
+      "waves": [
+        {
+          "gi": 0,
+          "label": "WAVE 1",
+          "intimes": [
+            "1000H: FIRST WAVE VL IN TIME + WX/NOTAMS",
+            "1000H: FIRST WAVE RU IN TIME + WX/NOTAMS"
+          ],
+          "formations": [
+            {
+              "cs": "VL",
+              "to": "10:35",
+              "ld": "12:00",
+              "crew": [
+                [
+                  "harpoon",
+                  "dirty"
+                ],
+                [
+                  "bruise",
+                  "rocky"
+                ]
+              ]
+            },
+            {
+              "cs": "RU",
+              "to": "10:35",
+              "ld": "12:00",
+              "crew": [
+                [
+                  "ignite",
+                  "psy"
+                ],
+                [
+                  "krait",
+                  "wrangler"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "gi": 1,
+          "label": "WAVE 2",
+          "intimes": [
+            "1200H: SECOND WAVE VL IN TIME + WX/NOTAMS",
+            "1200H: SECOND WAVE RU IN TIME + WX/NOTAMS"
+          ],
+          "formations": [
+            {
+              "cs": "VL",
+              "to": "13:00",
+              "ld": "14:25",
+              "crew": [
+                [
+                  "harpoon",
+                  "dirty"
+                ],
+                [
+                  "yeti",
+                  "shrek"
+                ]
+              ]
+            },
+            {
+              "cs": "RU",
+              "to": "13:00",
+              "ld": "14:25",
+              "crew": [
+                [
+                  "vinci",
+                  "plasma"
+                ],
+                [
+                  "pike",
+                  "badger"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "di": 3,
+      "date": "Jul 16",
+      "published": false,
+      "waves": [
+        {
+          "gi": 0,
+          "label": "WAVE 1",
+          "intimes": [
+            "1200H: FIRST WAVE VL IN TIME + WX/NOTAMS",
+            "1200H: FIRST WAVE RU IN TIME + WX/NOTAMS"
+          ],
+          "formations": [
+            {
+              "cs": "VL",
+              "to": "12:45",
+              "ld": "14:10",
+              "crew": [
+                [
+                  "slash",
+                  "glass"
+                ],
+                [
+                  "salsa",
+                  "stuff"
+                ]
+              ]
+            },
+            {
+              "cs": "RU",
+              "to": "12:45",
+              "ld": "14:10",
+              "crew": [
+                [
+                  "dj",
+                  "wolf"
+                ],
+                [
+                  "bapster",
+                  "badger"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "gi": 1,
+          "label": "WAVE 2",
+          "intimes": [
+            "1615H: NIGHT WAVE VL IN TIME + WX/NOTAMS",
+            "1615H: NIGHT WAVE RU IN TIME + WX/NOTAMS"
+          ],
+          "formations": [
+            {
+              "cs": "VL",
+              "to": "16:45",
+              "ld": "18:10",
+              "crew": [
+                [
+                  "nact",
+                  "freak"
+                ],
+                [
+                  "ignite",
+                  "nasty"
+                ]
+              ]
+            },
+            {
+              "cs": "RU",
+              "to": "16:45",
+              "ld": "18:10",
+              "crew": [
+                [
+                  "bane",
+                  "rocky"
+                ],
+                [
+                  "vinci",
+                  "drill"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "di": 4,
+      "date": "Jul 17",
+      "published": false,
+      "waves": []
+    },
+    {
+      "di": 5,
+      "date": "Jul 18",
+      "published": false,
+      "waves": []
+    },
+    {
+      "di": 6,
+      "date": "Jul 19",
+      "published": false,
+      "waves": []
+    }
+  ],
+  "controls": [
+    {
+      "id": "sbCal",
+      "text": " Calendar",
+      "attrs": []
+    },
+    {
+      "id": "sbHl",
+      "text": "",
+      "attrs": []
+    },
+    {
+      "id": "sbTpl",
+      "text": "▤ Templates",
+      "attrs": []
+    },
+    {
+      "id": "sbSortAll",
+      "text": "⇅ Sort all",
+      "attrs": []
+    },
+    {
+      "id": "sbUndo",
+      "text": "↶ Undo",
+      "attrs": []
+    },
+    {
+      "id": "sbRedo",
+      "text": "↷ Redo",
+      "attrs": []
+    },
+    {
+      "id": "sbHist",
+      "text": " History",
+      "attrs": []
+    },
+    {
+      "id": "sbSync",
+      "text": "Sync · slow",
+      "attrs": []
+    },
+    {
+      "id": "sbBell",
+      "text": "",
+      "attrs": []
+    },
+    {
+      "id": "sbDone",
+      "text": "✓ Done",
+      "attrs": []
+    },
+    {
+      "id": "",
+      "text": "CAT",
+      "attrs": [
+        [
+          "data-hlgrp-btn",
+          "cat"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "Type",
+      "attrs": [
+        [
+          "data-hlgrp-btn",
+          "type"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "Quals",
+      "attrs": [
+        [
+          "data-hlgrp-btn",
+          "quals"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "Live working copy▾",
+      "attrs": [
+        [
+          "data-planmenu",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "i",
+      "attrs": [
+        [
+          "data-dayinfo",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "Publish day",
+      "attrs": [
+        [
+          "data-beak",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Note",
+      "attrs": [
+        [
+          "data-nadd",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-ndel",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "⇅ Auto sort",
+      "attrs": [
+        [
+          "data-sortsec",
+          "p.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Item",
+      "attrs": [
+        [
+          "data-padd",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-pcx",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "ⓘ",
+      "attrs": [
+        [
+          "data-pinfo",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-pflag",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-pdel",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-pcx",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "ⓘ",
+      "attrs": [
+        [
+          "data-pinfo",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-pflag",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-pdel",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "Make public",
+      "attrs": [
+        [
+          "data-notepub",
+          "pn:1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Wave",
+      "attrs": [
+        [
+          "data-wvadd",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "Traffic",
+      "attrs": [
+        [
+          "data-air",
+          "1|0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "⇅ Auto sort",
+      "attrs": [
+        [
+          "data-sortsec",
+          "w.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ In time",
+      "attrs": [
+        [
+          "data-itadd",
+          "1|0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Line",
+      "attrs": [
+        [
+          "data-gline",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕ Wave",
+      "attrs": [
+        [
+          "data-gdel",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-itdel",
+          "1|0|0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-itdel",
+          "1|0|1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "C",
+      "attrs": [
+        [
+          "data-stcfg",
+          "1.0.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-lcx",
+          "1.0.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-lflag",
+          "1.0.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+",
+      "attrs": [
+        [
+          "data-lac",
+          "1.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-ldel",
+          "1.0.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "C",
+      "attrs": [
+        [
+          "data-stcfg",
+          "1.0.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-lcx",
+          "1.0.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-lflag",
+          "1.0.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+",
+      "attrs": [
+        [
+          "data-lac",
+          "1.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-ldel",
+          "1.0.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "C",
+      "attrs": [
+        [
+          "data-stcfg",
+          "1.0.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-lcx",
+          "1.0.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-lflag",
+          "1.0.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+",
+      "attrs": [
+        [
+          "data-lac",
+          "1.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-ldel",
+          "1.0.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "C",
+      "attrs": [
+        [
+          "data-stcfg",
+          "1.0.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-lcx",
+          "1.0.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-lflag",
+          "1.0.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+",
+      "attrs": [
+        [
+          "data-lac",
+          "1.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-ldel",
+          "1.0.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "Traffic",
+      "attrs": [
+        [
+          "data-air",
+          "1|1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "⇅ Auto sort",
+      "attrs": [
+        [
+          "data-sortsec",
+          "w.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ In time",
+      "attrs": [
+        [
+          "data-itadd",
+          "1|1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Line",
+      "attrs": [
+        [
+          "data-gline",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕ Wave",
+      "attrs": [
+        [
+          "data-gdel",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-itdel",
+          "1|1|0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-itdel",
+          "1|1|1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "C",
+      "attrs": [
+        [
+          "data-stcfg",
+          "1.1.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-lcx",
+          "1.1.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-lflag",
+          "1.1.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+",
+      "attrs": [
+        [
+          "data-lac",
+          "1.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-ldel",
+          "1.1.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "C",
+      "attrs": [
+        [
+          "data-stcfg",
+          "1.1.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-lcx",
+          "1.1.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-lflag",
+          "1.1.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+",
+      "attrs": [
+        [
+          "data-lac",
+          "1.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-ldel",
+          "1.1.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "C",
+      "attrs": [
+        [
+          "data-stcfg",
+          "1.1.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-lcx",
+          "1.1.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-lflag",
+          "1.1.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+",
+      "attrs": [
+        [
+          "data-lac",
+          "1.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-ldel",
+          "1.1.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "C",
+      "attrs": [
+        [
+          "data-stcfg",
+          "1.1.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-lcx",
+          "1.1.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-lflag",
+          "1.1.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+",
+      "attrs": [
+        [
+          "data-lac",
+          "1.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-ldel",
+          "1.1.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Block",
+      "attrs": [
+        [
+          "data-dwadd",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "⇅ Auto sort",
+      "attrs": [
+        [
+          "data-sortsec",
+          "d.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Row",
+      "attrs": [
+        [
+          "data-dradd",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕ Block",
+      "attrs": [
+        [
+          "data-dwdel",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-drcx",
+          "1.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-drflag",
+          "1.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-drdel",
+          "1.0.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-drcx",
+          "1.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-drflag",
+          "1.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-drdel",
+          "1.0.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-drcx",
+          "1.0.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-drflag",
+          "1.0.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-drdel",
+          "1.0.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "⇅ Auto sort",
+      "attrs": [
+        [
+          "data-sortsec",
+          "d.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Row",
+      "attrs": [
+        [
+          "data-dradd",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕ Block",
+      "attrs": [
+        [
+          "data-dwdel",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-drcx",
+          "1.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-drflag",
+          "1.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-drdel",
+          "1.1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-drcx",
+          "1.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-drflag",
+          "1.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-drdel",
+          "1.1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-drcx",
+          "1.1.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-drflag",
+          "1.1.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-drdel",
+          "1.1.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "Make public",
+      "attrs": [
+        [
+          "data-notepub",
+          "dtn:1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "⇅ Auto sort",
+      "attrs": [
+        [
+          "data-sortsec",
+          "s.1.amt"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Block",
+      "attrs": [
+        [
+          "data-sblkadd",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Row",
+      "attrs": [
+        [
+          "data-sradd",
+          "1.amt"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-srcx",
+          "1.amt.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-srflag",
+          "1.amt.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-srdel",
+          "1.amt.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-srcx",
+          "1.amt.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-srflag",
+          "1.amt.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-srdel",
+          "1.amt.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-srcx",
+          "1.amt.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-srflag",
+          "1.amt.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-srdel",
+          "1.amt.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "⇅ Auto sort",
+      "attrs": [
+        [
+          "data-sortsec",
+          "s.1.oft"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Row",
+      "attrs": [
+        [
+          "data-sradd",
+          "1.oft"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-srcx",
+          "1.oft.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-srflag",
+          "1.oft.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-srdel",
+          "1.oft.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-srcx",
+          "1.oft.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-srflag",
+          "1.oft.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-srdel",
+          "1.oft.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "Make public",
+      "attrs": [
+        [
+          "data-notepub",
+          "sn:1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Inputs",
+      "attrs": [
+        [
+          "data-inpadd",
+          "1.g"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "⇅ Auto sort",
+      "attrs": [
+        [
+          "data-sortsec",
+          "g.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Item",
+      "attrs": [
+        [
+          "data-gradd",
+          "1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-grcx",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "ⓘ",
+      "attrs": [
+        [
+          "data-grinfo",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-grflag",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-grdel",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-grcx",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "ⓘ",
+      "attrs": [
+        [
+          "data-grinfo",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-grflag",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-grdel",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-grcx",
+          "1.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "ⓘ",
+      "attrs": [
+        [
+          "data-grinfo",
+          "1.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-grflag",
+          "1.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-grdel",
+          "1.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "CX",
+      "attrs": [
+        [
+          "data-grcx",
+          "1.3"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "ⓘ",
+      "attrs": [
+        [
+          "data-grinfo",
+          "1.3"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "■",
+      "attrs": [
+        [
+          "data-grflag",
+          "1.3"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-grdel",
+          "1.3"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "Make public",
+      "attrs": [
+        [
+          "data-notepub",
+          "gn:1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Add",
+      "attrs": [
+        [
+          "data-inpadd",
+          "1.s"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "ZuluOF/O/Aall day",
+      "attrs": [
+        [
+          "data-inpedit",
+          "imuqkdbzziocxi3"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "RebelBFall day",
+      "attrs": [
+        [
+          "data-inpedit",
+          "imuqkdbzys6ycfd"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "+ Add",
+      "attrs": [
+        [
+          "data-inpadd",
+          "1.u"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "LL",
+      "attrs": [
+        [
+          "data-inpedit",
+          "imuqkdbzyyxvsk2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "LATE",
+      "attrs": [
+        [
+          "data-lateoff",
+          "imuqkdbzyyxvsk2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "OIL",
+      "attrs": [
+        [
+          "data-inpedit",
+          "imuqkdbzyyeet1g"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "LATE",
+      "attrs": [
+        [
+          "data-lateoff",
+          "imuqkdbzyyeet1g"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "ATT C",
+      "attrs": [
+        [
+          "data-inpedit",
+          "imuqkdbzylto75x"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-woff",
+          "1.0"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-woff",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-woff",
+          "1.2"
+        ]
+      ]
+    },
+    {
+      "id": "",
+      "text": "✕",
+      "attrs": [
+        [
+          "data-woff",
+          "1.3"
+        ]
+      ]
+    }
+  ],
+  "errors": []
+}

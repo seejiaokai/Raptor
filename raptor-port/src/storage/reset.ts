@@ -58,6 +58,7 @@ export const SCHEMA_VERSION = 5
    `changes` joins at group A (F3-05): the change log names rows in the collections a wipe clears, so
    it is cleared with them. */
 export const RESET: Collection[] = ['inputs', 'weeks', 'leavewar', 'changes']
+export const resetEntry = (collection: Collection, id: string) => RESET.includes(collection) || (collection==='settings' && id.startsWith('missionrole:'))
 
 /** the wipe is due on this snapshot (below the current format — the reset below will run) */
 export function wipeDue(snap: Snapshot): boolean { return storedFormat(snap) < SCHEMA_VERSION }
@@ -85,10 +86,12 @@ export async function resetPreSchema(backend: Backend, snap: Snapshot): Promise<
   if (!wipeDue(snap)) return
   const pending: Array<[Collection, string]> = []
   for (const c of RESET) { for (const id of Object.keys(snap[c] || {})) pending.push([c, id]); snap[c] = {} }
+  for (const id of Object.keys(snap.settings || {})) if (resetEntry('settings',id)) { pending.push(['settings',id]); delete snap.settings![id] }
   // a fresh/empty store has nothing to clear: just stamp it so later boots skip.
   if (pending.length === 0) { await writeStamp(backend, snap); return }
   for (const [c, id] of pending) await backend.remove(c, id)   // awaited durable deletes
   const after = await backend.loadAll()                        // verify gone, THEN stamp
   if (!RESET.every(c => Object.keys(after[c] || {}).length === 0)) throw new Error('storage reset: cleanup not durable')
+  if (Object.keys(after.settings || {}).some(id=>resetEntry('settings',id))) throw new Error('storage reset: annotation cleanup not durable')
   await writeStamp(backend, snap)
 }

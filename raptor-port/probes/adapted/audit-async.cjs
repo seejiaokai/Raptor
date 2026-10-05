@@ -235,33 +235,93 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
   T('15 · undo disarms', R.i15a, 'disarmed')
   T('15 · and the wave really went', R.i15b, 'gone')
 
-  /* ---- 13 · a splice moves the amendment marks with it ------------------- */
-  await p.evaluate(() => {
-    const d = DAYS[0]; d.notes = ['ALPHA', 'BRAVO', 'CHARLIE']
-    SCHED.pending = {}; SCHED.changes = { 'dn:0.2': 1 }; SCHED.als = [{ n: 1, keys: ['dn:0.2'], sign: {} }]
-    openScheduler(0)
-  })
-  await p.waitForTimeout(800)
+  /* ---- 13 · deletion preserves live attribution and immutable issuance ---
+     A current AL is frozen snap/diff, not a fabricated legacy keys array.
+     This isolated note-only day uses the actual controls and has no timing
+     stages to invalidate publication. Notes retain positional canonical
+     addresses; their stored rid is an object-identity check, not a new grammar. */
   {
-    const r = await p.evaluate(() => {
-      /* the delete handler is delegated off the board and keyed on .mbtn */
-      const del = document.createElement('span')
-      del.className = 'mbtn'; del.dataset.ndel = '0.0'
-      document.getElementById('sbBoard').appendChild(del)
-      del.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-      const out = {
-        moved: SCHED.changes['dn:0.1'] || 'lost',
-        dead: SCHED.changes['dn:0.2'] || 'gone',
-        al: (SCHED.als[0] || { keys: [] }).keys.join(','),
+    const nc = await b.newContext({ viewport: { width: 1600, height: 1000 } })
+    const np = await nc.newPage(); np.setDefaultTimeout(15000)
+    np.on('pageerror', e => errs.push('NOTE PAGEERR ' + e.message))
+    await np.goto(URL); await np.fill('#luser', 'ad'); await np.fill('#lpass', 'a')
+    await np.click('#loginForm button[type=submit]')
+    await np.waitForFunction(() => typeof window.loadWeek === 'function')
+    await np.evaluate(() => { loadWeek('04/01/2027'); go('editsched'); openScheduler(0) })
+    await np.locator('#sbBoard [data-nadd="0"]').waitFor({ state: 'visible' })
+    T('13 · note fixture starts with no flight stages or notes',
+      await np.evaluate(() => DAYS[0].waves.length + DAYS[0].notes.length), 0)
+    const text = async (ix, value) => {
+      const el = np.locator(`#sbBoard [data-bfld="dn:0.${ix}"]`)
+      await el.fill(value); await el.blur()
+      await np.waitForFunction(([i,v]) => DAYS[0].notes[i]?.t === v, [ix,value])
+    }
+    for (const [ix,value] of ['ALPHA','BRAVO','CHARLIE'].entries()) {
+      await np.click('#sbBoard [data-nadd="0"]'); await text(ix,value)
+    }
+    const publish = async () => {
+      const before = await np.evaluate(() => dayCurVer(0))
+      for (const role of ['cur','sked','plan','appr']) {
+        const el = np.locator(`#schedBoard select[data-sign="${role}"][data-signday="0"]`)
+        const options = await el.locator('option').evaluateAll(os => os.map(o => o.value).filter(Boolean))
+        if (!options.length) throw new Error('No eligible signature for ' + role)
+        await el.selectOption(options[0])
       }
-      del.remove(); return out
-    })
-    T('13 · the AL mark follows the row it marked', r.moved, 1)
-    T('13 · and no mark is left on the dead address', r.dead, 'gone')
-    T('13 · the issued AL is rewritten too', r.al, 'dn:0.1')
+      await np.locator('#schedBoard [data-beak="0"], #schedBoard [data-alpub="0"]').first().click()
+      await np.waitForFunction(was => dayCurVer(0) !== was, before)
+    }
+    const read = () => np.evaluate(() => ({
+      notes: JSON.parse(JSON.stringify(DAYS[0].notes)), changes: { ...SCHED.changes },
+      pending: { ...SCHED.pending }, issue: JSON.stringify(SCHED.als.find(a => a.di === 0 && a.seq === 1)),
+      cells: [...document.querySelectorAll('#sbBoard [data-bfld^="dn:"]')].map(e => ({ text: e.value, alc: e.dataset.alc || '' })),
+    }))
+    await publish(); await text(2,'CHARLIE EDIT'); await publish()
+    const issued = await read(), charlieId = issued.notes[2].rid
+    T('13 · a complete current-format AL1 exists', !!issued.issue && !!JSON.parse(issued.issue).snap && Array.isArray(JSON.parse(issued.issue).diff), true)
+    T('13 · the actual CHARLIE edit was issued as AL1', issued.cells[2].alc, 1)
+    await np.click('#sbBoard [data-ndel="0.0"]')
+    await np.waitForFunction(() => DAYS[0].notes.length === 2)
+    const deleted = await read()
+    console.log('   13 · actual post-delete marks ' + JSON.stringify({ changes: deleted.changes, pending: deleted.pending }))
+    T('13 · the AL mark follows the row it marked', deleted.cells[1].alc, 1)
+    T('13 · BRAVO did not inherit CHARLIE amendment', deleted.cells[0].alc, '')
+    T('13 · and no mark is left on the dead address', deleted.changes['dn:0.2'] || 'gone', 'gone')
+    T('13 · surviving notes keep their order', deleted.notes.map(n => n.t).join('|'), 'BRAVO|CHARLIE EDIT')
+    T('13 · CHARLIE remains the same note object', deleted.notes[1].rid, charlieId)
+    T('13 · the complete issued AL1 remains frozen', deleted.issue, issued.issue)
+    T('13 · deletion is pending against the issued day',
+      await np.locator('#schedBoard [data-pendlist="0"]').first().innerText().then(s => parseInt(s,10) > 0), true)
+    await np.click('#sbUndo'); await np.waitForFunction(() => DAYS[0].notes.length === 3)
+    const undone = await read()
+    T('13 · Undo restores the live note order', undone.notes.map(n => n.t).join('|'), 'ALPHA|BRAVO|CHARLIE EDIT')
+    T('13 · Undo restores CHARLIE attribution', undone.cells[2].alc, 1)
+    T('13 · Undo keeps AL1 frozen', undone.issue, issued.issue)
+    await np.click('#sbRedo'); await np.waitForFunction(() => DAYS[0].notes.length === 2)
+    const redone = await read()
+    T('13 · Redo restores deletion and CHARLIE identity', JSON.stringify(redone.notes), JSON.stringify(deleted.notes))
+    T('13 · Redo keeps AL1 frozen', redone.issue, issued.issue)
+    await np.click('#schedBoard [data-planmenu="0"]')
+    const preview = await np.locator('[data-planpv]:visible').evaluateAll(es => es.map(e => ({ key: e.dataset.planpv,
+      label: [...e.childNodes].filter(n => n.nodeType === Node.TEXT_NODE).map(n => n.textContent).join('').trim() })))
+    const al1Door = preview.find(x => x.label === 'AL1')
+    if (!al1Door) throw new Error('Actual AL1 preview door missing')
+    await np.locator(`[data-planpv="${al1Door.key}"]:visible`).click()
+    await np.waitForFunction(() => document.querySelectorAll('#sbBoard [data-bfld^="dn:"]').length === 3)
+    T('13 · AL1 preview still shows its original note ordering',
+      await np.locator('#sbBoard [data-bfld^="dn:"]').evaluateAll(es => es.map(e => e.value).join('|')), 'ALPHA|BRAVO|CHARLIE EDIT')
+    T('13 · the issued preview cannot edit those notes',
+      await np.locator('#sbBoard [data-bfld^="dn:"]').evaluateAll(es => es.every(e => e.disabled)), true)
+    await np.click('#schedBoard [data-planmenu="0"]'); await np.click('[data-plangolive="0"]:visible')
+    await np.waitForFunction(() => document.querySelectorAll('#sbBoard [data-bfld^="dn:"]').length === 2)
+    T('13 · returning from preview keeps the live deletion', (await read()).notes.map(n => n.t).join('|'), 'BRAVO|CHARLIE EDIT')
+    await publish()
+    T('13 · deletion issues AL2 without rewriting AL1', await np.evaluate(() => SCHED.als.find(a => a.di === 0 && a.seq === 2)?.snap.d.notes.map(n => n.t).join('|')), 'BRAVO|CHARLIE EDIT')
+    T('13 · AL2 issuance keeps the complete AL1 frozen', (await read()).issue, issued.issue)
+    await nc.close()
   }
 
   /* ---- 9 · the board's day tab puts down the armed slot ------------------ */
+  await p.evaluate(() => openScheduler(0)); await p.waitForTimeout(400)
   {
     const armed = await p.evaluate(() => {
       const cell = document.querySelector('#sbBoard [data-slot]')
@@ -289,18 +349,38 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
   {
     const rows = () => p.evaluate(() => document.querySelectorAll('#inBody [data-inx]').length)
     const n0 = await p.evaluate(() => INPUTS.length), r0 = await rows()
-    await p.evaluate(() => {
-      INPUTS.unshift({ person: 'bane', date: 'Jul 13', allday: true, type: 'LL', remarks: 'probe', mod: '2026-07-28' })
-      afterSchedMutate()   // [GLOBAL-UNDO] route the add through the command layer so the ONE timeline records it
-    })
-    await p.waitForTimeout(400)
+    const marker = 'audit Inputs scope / Undo'
+    const filters = () => p.evaluate(() => ({ page: CURPAGE, range: document.querySelector('#inRangeBtn')?.textContent,
+      person: document.querySelector('#inFPerson')?.value, type: document.querySelector('#inFType')?.value,
+      search: document.querySelector('#inFSearch')?.value }))
+    const f0 = await filters()
+    const added = await p.evaluate(remarks => {
+      // Supported localhost bridge invokes the SAME Inputs-scoped writer as
+      // the production form. It assigns iid through the normal write funnel.
+      fileInput({ person: 'bane', date: 'Jan 1', yr: 2027, allday: true, type: 'Personal', remarks })
+      return { id: INPUTS.find(i => i.remarks === remarks)?.iid, scope: lastEnvelope()?.scope }
+    }, marker)
+    await p.waitForFunction(want => document.querySelectorAll('#inBody [data-inx]').length === want, r0 + 1)
     const r1 = await rows()
-    await p.evaluate(() => undo()); await p.waitForTimeout(400)   // production undo (globalUndo) removes it
+    const matching = () => p.locator('#inBody tr').filter({ hasText: marker }).count()
+    T('12 · the input has a stable id', !!added.id, true)
+    T('12 · the command owns the Inputs screen', added.scope?.module, 'inputs')
+    T('12 · exactly the matching row appears', await matching(), 1)
+    await p.evaluate(() => undo())
+    await p.waitForFunction(want => CURPAGE === 'inputs' && document.querySelectorAll('#inBody [data-inx]').length === want, r0)
     const n2 = await p.evaluate(() => INPUTS.length), r2 = await rows()
     console.log(`   12 · inputs ${n0}/${r0} → ${n0 + 1}/${r1} → ${n2}/${r2}`)
     T('12 · the added row really appears', r1, r0 + 1)
     T('12 · undo takes it back out of the model', n2, n0)
     T('12 · and the table follows the model', r2, n2)
+    T('12 · Undo removed the same stable id', await p.evaluate(id => INPUTS.some(i => i.iid === id), added.id), false)
+    T('12 · Undo removed the matching row', await matching(), 0)
+    T('12 · Undo kept page, All range and filters', JSON.stringify(await filters()), JSON.stringify(f0))
+    await p.evaluate(() => redo())
+    await p.waitForFunction(want => document.querySelectorAll('#inBody [data-inx]').length === want, r1)
+    T('12 · Redo restores the same stable id', await p.evaluate(id => INPUTS.some(i => i.iid === id), added.id), true)
+    T('12 · Redo restores exactly the matching row', await matching(), 1)
+    T('12 · Redo keeps page, All range and filters', JSON.stringify(await filters()), JSON.stringify(f0))
   }
 
   /* ---- 14 · a traffic edit earns a history step and an amendment mark ---- */

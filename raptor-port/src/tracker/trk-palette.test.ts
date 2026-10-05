@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { readSchedulerCss } from '../testing/scheduler-css'
 /* The Tracker wears RAPTOR'S colours, fully — backgrounds, text and the event
    colours (owner, D157, 24 Sep 26: "7 c", the third of three pictures of the
    real chart). The colours live in two places that cannot share one variable:
@@ -25,7 +26,7 @@ const hex = (c: string) => {
 }
 const rgbOf = (c: string) => [0, 2, 4].map(i => parseInt(hex(c).slice(1 + i, 3 + i), 16))
 
-const schedCss = readFileSync(join(__dirname, '..', 'ui', 'scheduler.css'), 'utf8')
+const schedCss = readSchedulerCss()
 const RAPTOR = vars(schedCss.slice(schedCss.indexOf(':root{'), schedCss.indexOf('\n}', schedCss.indexOf(':root{'))))
 const trkCss = readFileSync(join(__dirname, 'tracker.css'), 'utf8')
 const at = trkCss.indexOf("THE PALETTE IS RAPTOR'S")

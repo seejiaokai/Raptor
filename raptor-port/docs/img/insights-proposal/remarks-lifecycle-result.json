@@ -1,0 +1,140 @@
+{
+  "designOnly": true,
+  "placement": "after formation AREA",
+  "savingLifecycleUnbuilt": true,
+  "checks": [
+    {
+      "label": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "before": {
+        "text": "BFM",
+        "width": 66,
+        "height": 24,
+        "rowHeight": 123.5
+      },
+      "after": {
+        "text": "BFM",
+        "width": 66,
+        "height": 24,
+        "rowHeight": 123.5
+      },
+      "row": {
+        "x": 17,
+        "y": 428.71875,
+        "width": 342,
+        "height": 123.5
+      },
+      "remarks": {
+        "x": 194,
+        "y": 479.71875,
+        "width": 154,
+        "height": 24
+      },
+      "question": {
+        "x": 27,
+        "y": 709.859375,
+        "width": 322,
+        "height": 75.78125
+      },
+      "focusPreserved": true,
+      "nextFocus": {
+        "tag": "BUTTON",
+        "roleQuestionFocus": false
+      },
+      "buttonsRemoveTemporarySpace": true,
+      "virtualKeyboardNotSimulated": true
+    },
+    {
+      "label": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "before": {
+        "text": "BFM",
+        "width": 74,
+        "height": 24,
+        "rowHeight": 51
+      },
+      "after": {
+        "text": "BFM",
+        "width": 74,
+        "height": 24,
+        "rowHeight": 51
+      },
+      "row": {
+        "x": 17,
+        "y": 526.71875,
+        "width": 1088,
+        "height": 51
+      },
+      "remarks": {
+        "x": 772.75,
+        "y": 532.71875,
+        "width": 221.25,
+        "height": 24
+      },
+      "question": {
+        "x": 27,
+        "y": 663.890625,
+        "width": 440,
+        "height": 62
+      },
+      "focusPreserved": true,
+      "nextFocus": {
+        "tag": "BUTTON",
+        "roleQuestionFocus": false
+      },
+      "buttonsRemoveTemporarySpace": true,
+      "virtualKeyboardNotSimulated": true
+    },
+    {
+      "label": "short",
+      "viewport": {
+        "width": 390,
+        "height": 568
+      },
+      "before": {
+        "text": "BFM",
+        "width": 66,
+        "height": 24,
+        "rowHeight": 123.5
+      },
+      "after": {
+        "text": "BFM",
+        "width": 66,
+        "height": 24,
+        "rowHeight": 123.5
+      },
+      "row": {
+        "x": 17,
+        "y": 109.71875,
+        "width": 342,
+        "height": 123.5
+      },
+      "remarks": {
+        "x": 194,
+        "y": 160.71875,
+        "width": 154,
+        "height": 24
+      },
+      "question": {
+        "x": 27,
+        "y": 390.859375,
+        "width": 322,
+        "height": 75.78125
+      },
+      "focusPreserved": true,
+      "nextFocus": {
+        "tag": "BUTTON",
+        "roleQuestionFocus": false
+      },
+      "buttonsRemoveTemporarySpace": true,
+      "virtualKeyboardNotSimulated": true
+    }
+  ],
+  "errors": []
+}

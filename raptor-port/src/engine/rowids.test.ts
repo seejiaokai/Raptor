@@ -10,6 +10,7 @@ import { dayKeys } from './restore'
 import { keyDay } from './keys'
 import { WEEKS, CURWEEK } from './waves'
 
+
 const clone = (v: any) => JSON.parse(JSON.stringify(v))
 
 describe('ensureRowIds', () => {
@@ -524,5 +525,26 @@ describe('identity rules — a copy is a new row, a move/undo/restore is the sam
     /* Phase 2 removed restoreDayVersion (the in-place rollback), so the old
        "restore twice returns the same backfilled ids" tail is no longer reachable
        from a legacy record and is dropped. */
+  })
+})
+
+/* W8 (the Codex stack check, 5 Oct 26): the two built-in demo weeks hand out the SAME hidden id for the same row every
+   time, so a record keyed by one (a Blue/Red answer) still finds its line on a day nobody has saved. */
+describe('W8 the built-in weeks carry repeatable row ids', () => {
+  it('the same row, the same id, on every hand-out — and no id twice across both weeks', async () => {
+    const { weekBundle, emptyWeek } = await import('./weeks-data')
+    const ids = (days: any[]) => days.flatMap(d => [...rowsOf(d), ...(d.notes || []).filter((n: any) => n && typeof n === 'object')].map((r: any) => r.rid))
+    const all: string[] = []
+    for (const wk of ['13/07/2026', '20/07/2026']) {
+      const a = ids(weekBundle(wk).days), b = ids(weekBundle(wk).days)
+      expect(a.length).toBeGreaterThan(50)
+      expect(a.every(x => typeof x === 'string' && !!x), wk).toBe(true)
+      expect(a, wk).toEqual(b)
+      all.push(...a)
+    }
+    expect(new Set(all).size, 'unique across both weeks').toBe(all.length)
+    const twice = weekBundle('13/07/2026').days
+    expect(ensureRowIds(twice), 'nothing left to mint, nothing re-minted').toBe(0)
+    expect(ids(emptyWeek('27/07/2026').days), 'a blank week has no rows to name').toEqual([])
   })
 })

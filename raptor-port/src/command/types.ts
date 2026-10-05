@@ -33,7 +33,7 @@ export type LogicalCollection =
   // withdrawals before it went out), and every Unpublish beside it; an Unpublish never touches the issuance (R2-04)
   | 'sched.issuance' | 'sched.retraction'
   // the other scheduler-side stores
-  | 'inputs' | 'plan' | 'people' | 'settings'
+  | 'inputs' | 'plan' | 'people' | 'settings' | 'insights.role'
   // off-week session memory (the weekstash) — one record per stashed week, so a
   // protected-week clear that drops it rolls back atomically ([CMDL-FINISH] §6)
   | 'weekstash'
@@ -45,13 +45,14 @@ export type LogicalCollection =
   | 'trk.marks' | 'trk.dates' | 'trk.roster' | 'trk.layout' | 'trk.syls'
   | 'trk.plan' | 'trk.pace' | 'trk.lulls' | 'trk.eventinfo' | 'trk.catalogue' | 'trk.courses'
 
-export type Module = 'sched' | 'inputs' | 'plan' | 'people' | 'settings' | 'lw' | 'trk'
+export type Module = 'sched' | 'inputs' | 'plan' | 'people' | 'settings' | 'lw' | 'trk' | 'insights'
 
 /* The undo-scope key (design §3.7). Step 3 keys the retiring snapshot stacks on
    scope.module + origin so a foreign module's command never pushes another's
    stack; Step 2 only records it. */
 export type Scope =
   | { module: 'sched'; weekId: string }
+  | { module: 'insights'; weekId: string }
   | { module: 'inputs' }
   | { module: 'plan' }
   | { module: 'people' }

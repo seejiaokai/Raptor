@@ -10,6 +10,7 @@
        and build it; cross-week persistence is the later, server-side step).
    A leaf module: imports data/inputs/week2 only, so it introduces no cycle. */
 import { WEEK1_DAYS_SNAP } from './data'
+import { rowsOf } from './rowids'
 import { WEEK1_INPUTS_SNAP, WEEK1_DATES, baseYear } from './inputs'
 import { WEEK2_DAYS, WEEK2_DATES, WEEK2_INPUTS } from './week2'
 
@@ -111,10 +112,30 @@ export function emptyWeek(v:any){
    content. On by default: every test, the dev server and his preview see them as always. */
 let AUTHORED=true;
 export function setAuthoredWeeks(on:any){ AUTHORED=!!on; }
+/* THE BUILT-IN WEEKS' ROWS CARRY REPEATABLE HIDDEN IDS (W8, the Codex stack check, 5 Oct 26; D530). A day nobody has
+   saved is read from the built-in week every time (state/weekrows.ts rowsToParts — a week's first save writes only the
+   days a command changed), and its rows used to take a fresh RANDOM id on every load (rowids.ts ensureRowIds). That was
+   harmless until something durable was keyed by a row's id without saving its day: a Blue/Red answer (D530 — it writes
+   no day) on an unedited demo line matched nothing after a reload, a sign-in or a week switch. So each row of the two
+   authored weeks gets the same id on every hand-out — by its week, its day and its place in the day's own walk
+   (rowsOf, then the note lines; the walk ensureRowIds makes). A row that already has an id keeps it; a blank week has
+   no rows; a saved day keeps whatever it was saved with. Never printed, like every rid. */
+const AUTHORED_WEEKS=new Set(['13/07/2026','20/07/2026']);
+export function seedRids(days:any[],v:any){
+  if(!AUTHORED||!AUTHORED_WEEKS.has(String(v)))return days;
+  const wk=String(v).replace(/[^0-9]/g,'');
+  (days||[]).forEach((d:any,di:number)=>{
+    let n=0;
+    const give=(r:any)=>{ if(!r||typeof r!=='object')return; const id='rs'+wk+di+'x'+(n++).toString(36); if(typeof r.rid!=='string'||!r.rid)r.rid=id; };
+    rowsOf(d||{}).forEach(give);
+    (d&&Array.isArray(d.notes)?d.notes:[]).forEach(give);
+  });
+  return days;
+}
 export function weekBundle(v:any){
   if(!AUTHORED) return emptyWeek(v);
-  if(v==='13/07/2026') return {days:JSON.parse(WEEK1_DAYS_SNAP), dates:WEEK1_DATES.slice(), inputs:JSON.parse(WEEK1_INPUTS_SNAP), seedSans:true};
-  if(v==='20/07/2026') return {days:JSON.parse(JSON.stringify(WEEK2_DAYS)), dates:WEEK2_DATES.slice(), inputs:JSON.parse(JSON.stringify(WEEK2_INPUTS)), seedSans:false};
+  if(v==='13/07/2026') return {days:seedRids(JSON.parse(WEEK1_DAYS_SNAP),v), dates:WEEK1_DATES.slice(), inputs:JSON.parse(WEEK1_INPUTS_SNAP), seedSans:true};
+  if(v==='20/07/2026') return {days:seedRids(JSON.parse(JSON.stringify(WEEK2_DAYS)),v), dates:WEEK2_DATES.slice(), inputs:JSON.parse(JSON.stringify(WEEK2_INPUTS)), seedSans:false};
   return emptyWeek(v);
 }
 /* PERSONAL INPUTS ARE GLOBAL, NOT WEEK-SCOPED (owner, 22 Aug 26 — "show all

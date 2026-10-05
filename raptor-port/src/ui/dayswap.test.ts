@@ -3,7 +3,7 @@
    blocks whose markup changed, keeps every other node, and falls back to the
    whole-node replacement on any shape mismatch. */
 import { describe, it, expect, beforeEach } from 'vitest'
-import { swapDay, chunksOf, chunksOfHTML } from './dayswap'
+import { swapDay, swapDayAround, chunksOf, chunksOfHTML } from './dayswap'
 
 const day = (opts: { warn?: string; a?: string; b?: string; cls?: string; sign?: boolean; extra?: string } = {}) =>
   `<section class="day ${opts.cls || ''}" data-day="0"><div class="day-head"><span class="dow">Mon</span></div>`
@@ -104,5 +104,82 @@ describe('swapDay', () => {
     const sec = mount(day())
     swapDay(sec, '<div class="other">x</div>', chunksOf(sec))
     expect(root.firstElementChild!.className).toBe('other')
+  })
+})
+
+/* W15 (the Codex stack check, 5 Oct 26): while a text box holds the caret, everything that does NOT hold it is still
+   brought up to date — the block with the caret is the one thing left standing, and it is caught up the moment the
+   caret leaves. */
+describe('swapDayAround — the block holding the caret is left standing, every other block is written', () => {
+  it('the warnings box and the other sections change; the block holding the caret keeps its node', () => {
+    const sec = mount(day({ b: '<span class="box" tabindex="0">typing</span>' }))
+    const prev = chunksOf(sec)
+    const caret = sec.querySelector('.box')!, held = sec.querySelector('[data-secmove="0.waves"]')!
+    const next = day({ warn: '1 issue', a: 'A2', b: '<span class="box" tabindex="0">typing</span> ring', cls: 'dok' })
+    const r = swapDayAround(sec, next, prev, caret)
+    expect(r.held, 'something was held back').toBe(true)
+    expect(sec.querySelector('.dwbox')!.textContent, 'the warnings box is up to date').toBe('1 issue')
+    expect(sec.querySelector('[data-secmove="0.prog"]')!.textContent, 'the other section is up to date').toBe('A2')
+    expect(sec.classList.contains('dok'), 'the section attributes are synced').toBe(true)
+    expect(sec.querySelector('[data-secmove="0.waves"]'), 'the block with the caret is the same node').toBe(held)
+    expect(sec.querySelector('.box')).toBe(caret)
+    expect(held.textContent, 'and still shows what it showed').toBe('typing')
+    /* what came back describes what is ON SCREEN, so the next ordinary swap writes exactly the held block */
+    const body = sec.querySelector('.day-body')!, box = sec.querySelector('.dwbox')!, a = sec.querySelector('[data-secmove="0.prog"]')!
+    const after = swapDay(sec, next, r.chunks)
+    expect(sec.querySelector('.day-body')).toBe(body)
+    expect(sec.querySelector('.dwbox')).toBe(box)
+    expect(sec.querySelector('[data-secmove="0.prog"]')).toBe(a)
+    expect(sec.querySelector('[data-secmove="0.waves"]')).not.toBe(held)
+    expect(sec.querySelector('[data-secmove="0.waves"]')!.textContent).toBe('typing ring')
+    expect(after).toEqual(chunksOfHTML(next))
+  })
+  it('a change that needs the whole day replaced writes NOTHING while the caret is in that day', () => {
+    const sec = mount(day({ b: '<span class="box" tabindex="0">typing</span>' }))
+    const prev = chunksOf(sec), caret = sec.querySelector('.box')!, before = sec.outerHTML
+    const r = swapDayAround(sec, day({ sign: true, warn: 'x' }), prev, caret)
+    expect(r.held).toBe(true)
+    expect(root.firstElementChild).toBe(sec)
+    expect(sec.outerHTML).toBe(before)
+    expect(r.chunks).toEqual(prev)
+  })
+  it('a day that does not hold the caret is swapped the ordinary way', () => {
+    const sec = mount(day()), prev = chunksOf(sec)
+    const elsewhere = document.createElement('span'); document.body.append(elsewhere)
+    const r = swapDayAround(sec, day({ b: 'B2' }), prev, elsewhere)
+    expect(r.held).toBe(false)
+    expect(sec.querySelector('[data-secmove="0.waves"]')!.textContent).toBe('B2')
+    expect(r.chunks).toEqual(chunksOfHTML(day({ b: 'B2' })))
+  })
+})
+
+/* P2-F1 (the Tab-route reader's second pass, 6 Oct 26): a day with nothing to warn about draws NO warnings box, so its
+   first warning adds a block — a shape change, which held the whole day back while the caret was in it: the one case
+   W15 most needed. The box coming and going is handled on its own; everything else still lines up block for block. */
+describe('swapDayAround — a day gains its first warning, or loses its last, with the caret in it', () => {
+  const bare = (html: string) => html.replace('<div class="dwbox"></div>', '')
+  it('the first warning: the box appears, the other blocks follow, the block with the caret stands', () => {
+    const sec = mount(bare(day({ b: '<span class="box" tabindex="0">typing</span>' })))
+    expect(sec.querySelector('.dwbox')).toBeNull()
+    const prev = chunksOf(sec), caret = sec.querySelector('.box')!, held = sec.querySelector('[data-secmove="0.waves"]')!
+    const next = day({ warn: '1 issue', a: 'A2', b: '<span class="box" tabindex="0">typing</span> ring' })
+    const r = swapDayAround(sec, next, prev, caret)
+    expect(sec.querySelector('.dwbox')?.textContent, 'the warnings box is on screen').toBe('1 issue')
+    expect(sec.querySelector('.day-body')!.firstElementChild!.classList.contains('dwbox'), 'at the head of the day').toBe(true)
+    expect(sec.querySelector('[data-secmove="0.prog"]')!.textContent).toBe('A2')
+    expect(sec.querySelector('[data-secmove="0.waves"]'), 'the caret block is the same node').toBe(held)
+    expect(r.held).toBe(true)
+    expect(swapDay(sec, next, r.chunks)).toEqual(chunksOfHTML(next))
+    expect(sec.querySelector('[data-secmove="0.waves"]')!.textContent).toBe('typing ring')
+  })
+  it('the last warning cleared: the box goes, the block with the caret stands', () => {
+    const sec = mount(day({ warn: '1 issue', b: '<span class="box" tabindex="0">typing</span>' }))
+    const prev = chunksOf(sec), caret = sec.querySelector('.box')!, held = sec.querySelector('[data-secmove="0.waves"]')!
+    const next = bare(day({ a: 'A2', b: '<span class="box" tabindex="0">typing</span>' }))
+    const r = swapDayAround(sec, next, prev, caret)
+    expect(sec.querySelector('.dwbox'), 'no warnings box left standing').toBeNull()
+    expect(sec.querySelector('[data-secmove="0.prog"]')!.textContent).toBe('A2')
+    expect(sec.querySelector('[data-secmove="0.waves"]')).toBe(held)
+    expect(r.chunks).toEqual(chunksOfHTML(next))
   })
 })

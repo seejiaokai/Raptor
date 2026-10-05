@@ -4,13 +4,14 @@
    change (its scroll survives unchanged markup, as the reference's setHTML
    guarantee had it — the diff here is the innerHTML comparison). */
 import { wireHistBubble, refreshHistDots } from './histbubble'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { dayHTML, dayPreviewHTML } from './html'
+import { dayHTML, dayPreviewHTML, refreshWaveReports } from './html'
+import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { daySnapOf } from '../engine/publish'
 import { paletteHTML, paletteDay } from './palette-html'
-import { ARM, CARRYDAY, CURPAGE, DPREV, PEEKLAND, WEEKJUMP, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
+import { ARM, CARRYDAY, CURPAGE, DPREV, PEEKLAND, WEEKJUMP, navGen, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
 import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
 import { weekScrollMax, panHold } from './pan'
@@ -19,10 +20,12 @@ import { editingText } from './textedit'
 import { wireRowDrag } from './rowdrag'
 import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
-import { swapDay, chunksOfHTML, type DayChunks } from './dayswap'
+import { swapDay, swapDayAround, holdingPlace, chunksOfHTML, type DayChunks } from './dayswap'
 
 /* the seven day strings of the edit week — ONE body for the live repaint and
    the idle warm build below, so the two can never draw a different week */
+/* the mark on a day's remembered string while one of its blocks is still owed to the caret (W15) — no real markup starts with it */
+const HELD = '\u0000held:'
 function editDayStrings(ed: boolean): string[] {
   return DAYS.map((_: any, di: number) => {
     /* lazy orphan prune: the previewed AL may have been unpublished or
@@ -96,6 +99,25 @@ export function EditWeek() {
   /* which (desktop-ness × CURWEEK) key the trailing peek nodes currently
      reflect — '' means none are mounted. See ui/peek.ts:mountPeek. */
   const peekKeyRef = useRef<string>('')
+  const pendingPaint = useRef<number | null>(null)
+  const [settledPaint, setSettledPaint] = useState(0)
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const resume = () => {
+      if (pendingPaint.current == null) return
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        const pending = pendingPaint.current
+        if (pending == null) return
+        if (CURPAGE !== 'editsched' || navGen() !== pending) { pendingPaint.current = null; return }
+        if (editingText()) return
+        pendingPaint.current = null
+        setSettledPaint(n => n + 1) // Resume UI only, through the existing diff paint.
+      }, 0)
+    }
+    document.addEventListener('focusout', resume)
+    return () => { clearTimeout(timer); document.removeEventListener('focusout', resume) }
+  }, [])
 
   useEffect(() => {
     /* only the page on screen is rendered (as the reference's renderSchedule
@@ -103,11 +125,45 @@ export function EditWeek() {
        mutations because safety flows deliberately address that mounted DOM;
        boardTab's narrow notification lane prevents day-only swipes from
        reaching this effect at all. */
-    if (CURPAGE !== 'editsched') return
+    if (CURPAGE !== 'editsched') { pendingPaint.current = null; return }
     const root = ref.current!
     /* never repaint under the caret — the deferred commit repaints once focus
        has left every text field (the reference's txtCommit guarantee) */
-    if (editingText()) return
+    if (editingText()) {
+      pendingPaint.current = navGen()
+      /* …BUT EVERYTHING THAT DOES NOT HOLD THE CARET IS WRITTEN NOW (W15, the Codex stack check, 5 Oct 26; D509). With
+         the Tab route a whole day can be typed without the caret ever leaving text, and until it did the day's warning
+         list, its count, "N pending" and the sign-off strip stood still. Only the block the caret is in waits (the
+         ordinary paint above catches it up when the caret leaves — pendingPaint stays set); inside that block the wave
+         header's clock is corrected in place (W16). Kept narrow on purpose: the caret must be in THIS week (a caret in
+         the board over it leaves the hidden week to its one repaint afterwards, as before), nothing about the week's
+         shape may have changed, and no landing is waiting — any of those is the ordinary paint's job. */
+      const caret = document.activeElement as HTMLElement | null
+      const was = prev.current, edit = HOOKS.editMode()
+      if (!caret || !was || was.ed !== edit || !root.contains(caret) || WEEKJUMP != null || PEEKLAND != null || CARRYDAY != null) return
+      const now = editDayStrings(edit)
+      if (was.html.length !== now.length || root.children.length < now.length) return
+      const days = [...root.children] as HTMLElement[]
+      const shown = was.html.slice(), kept = was.chunks.slice()
+      let any = false
+      holdingPlace(caret, () => {
+        now.forEach((h, i) => {
+          if (h === was.html[i]) return
+          const r = swapDayAround(days[i]!, h, was.chunks[i] || chunksOfHTML(was.html[i]!), caret)
+          any = true; kept[i] = r.chunks
+          /* a day with a block still owed is never "unchanged" to the next paint: its string is kept unequal to any real one */
+          shown[i] = r.held ? HELD + h : h
+        })
+        if (any) refreshWaveReports(root)
+      })
+      if (!any) return
+      prev.current = { ed: edit, html: shown, chunks: kept }
+      refreshHighlights()
+      refreshHistDots(root)
+      reconcileMissionRoleOffer()
+      return
+    }
+    pendingPaint.current = null
     const ed = HOOKS.editMode()
     const html = editDayStrings(ed)
     const p = prev.current
@@ -181,9 +237,12 @@ export function EditWeek() {
     /* the gold dots on every detail with a history, while History is on ([HIST-PHONE-HIDE], D345) — after the swap, as the
        highlights are: a rewritten block is fresh nodes */
     refreshHistDots(root)
+    /* an open Blue/Red question hangs inside the flying block: a block rewritten here took it along, and nothing but a
+       store change put it back — the catch-up paint after the caret leaves text is no store change (P2-F3, D535) */
+    reconcileMissionRoleOffer()
     /* now the new week is written and landed on its near edge — slide it in */
     if (runGlide) runGlide()
-  }, [version])
+  }, [version, settledPaint])
 
   /* drag-to-reorder, attached ONCE and delegated on the week root so it survives
      every per-day repaint underneath it (same reason as the board's wiring). On

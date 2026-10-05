@@ -432,7 +432,9 @@ a later change to the standard is picked up rather than frozen in a browser.
 
 | Key | Value | Record |
 |---|---|---|
-| `daytpl` | `DayTpl[]` | `{ id, title, d: DayTplBlob }` — a whole saved day (the day shape above, minus date fields) |
+| `daytpl` | `DayTpl[]` | `{ id, title, d: DayTplBlob, missionRoleSeeds? }` — whole saved day, minus dates/crew/row IDs; optional `{ format:1, seeds:[{ path:[wave,formation], context, side }] }` outside `d`, validated against conditional context v1; applying creates fresh annotation IDs in the same structure transaction (D529–D531) |
+| `insights` | `{ trackBlueRedSorties:true }` or null | squadron Insights tracking; absent/malformed is Off; independently loaded, saved and undone; warning rules/search/reset/count/stamp do not consume it (D512, D524) |
+| `missionrole:<encoded-id>` | `MissionRoleAnswer` | one guarded row: `{ format:1, contextVersion:1, weekKey, dayISO, formationRid, context, side:'blue'\|'red' }`; ID = URI-encoded JSON tuple `[1,weekKey,dayISO,formationRid,context]`. Week is a real Monday, day within it. Unsupported or mismatched records remain stored and inert. Mapper alone writes these rows; raw settings writes refuse. Existing schema wipe removes these rows and filters them from an unfinished reset journal, without a schema bump (D530) |
 | `wavetpl` | `WaveTpl[]` | `{ id, title, kind: 'fly' \| 'sc' \| 'avalon' \| 'bb', lines: [{ cs, msn, to, ld, spare }] }` |
 | `wavehide` | `string[]` | hidden wave-template ids |
 | `wavedefault` | `string[]` | house wave order |
@@ -447,7 +449,7 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `reqseen:<accountId>` | `{ userId, seenRequestIds }` | each admin's own row of the requests he has had on screen — his bell (D216, D227); written only by `access.seen`, his own row; removed with his account (data-model `AccessRequestSeen`, R3-04) |
 | `seen:<pid>` | `{ upto, extra }` | each person's own "seen" for the change history — §The change history above (was one `changeseen` record) |
 | `guestview` | `true` or null | the admin's switch letting people waiting for access read the published week as a guest — OFF (null) by default (D204) |
-| `rules` | `{ v: { rule: number }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin`), `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`) |
+| `rules` | `{ v: { numericRule?: number, reportText?: string }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin`), plus D511 text `reportText` (default `IN TIME + WX/NOTAMS`, trim/CR-LF-to-space, max60, empty falls back); `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`). Numeric keys remain numbers; text travels with the same rules record/reset/snapshot/export/Undo |
 
 ---
 
@@ -737,6 +739,11 @@ Listed in the order they would bite.
    rewrite is the next step. *(Corrected 24 Sep 26: that rewrite SHIPPED 11 Sep 26 — the amendment
    book now resolves rows by `rid`, translated at the screen boundary; `raptor-port/CLAUDE.md` §The
    slot-key grammar.)*
+   *(6 Oct 26, the Codex stack check's W8: the rows of the two BUILT-IN demo weeks carry REPEATABLE ids — the same id
+   for the same row on every load (`engine/weeks-data.ts seedRids`: its week, its day and its place in the day's walk;
+   the boot seeds the module's own literal the same way). A day nobody has saved is read from the built-in week every
+   time, and its random ids changed on every load, which lost any record keyed by a row id that does not save its day —
+   a Blue/Red answer (D530). Every other row — a blank week's, anything added — is still minted at random.)*
 4. **The demo seed is code.** PEOPLE, DAYS and INPUTS are literals in
    `people.ts` / `data.ts` / `inputs.ts`. A database replaces the seed; the
    seed then becomes test fixtures only. The repository is public: no real

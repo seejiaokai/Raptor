@@ -8,7 +8,7 @@ import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
-import { rulesOffCount } from '../engine/rules'
+import { rulesCheckedOffCount } from '../engine/rules'
 import { isAdmin, me, mayViewAsMember } from '../state/perms'
 import { toggleChanges } from './changesopen'
 import { weekNew } from './changesmodel'
@@ -34,11 +34,12 @@ import { useVersion, useUndoVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
 import { routeClick } from './interactions'
-import { routeFocusOut, routeKeyDown } from './textedit'
+import { routeFocusOut, routeFocusIn, routeKeyDown, routeReportingInput } from './textedit'
 import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
 import { setInsights, setDrawer, setWeekCal } from './pops'
 import { Drawer } from './Drawer'
+import { ScheduleInsightsMenu } from './ScheduleInsightsMenu'
 import { exportCSV, schedRows, publishedDays } from './export'
 import { printSchedPDF } from './printpdf'
 import { InputsPage } from './InputsPage'
@@ -65,7 +66,7 @@ import { installIdleTracking, msSinceInput } from '../state/idle'
 import { oilPendingFor } from '../leavewar/sync'
 import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
-import { SaveStatus } from './SaveStatus'
+import { SaveStatus, useSaveFailed } from './SaveStatus'
 import { bugAlert } from '../state/reports'
 import { UndoPair, SyncChip, BellButton, globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topbits'
 
@@ -233,6 +234,8 @@ export function Shell() {
     document.addEventListener('change', onChange)
     document.addEventListener('contextmenu', onCtx)
     document.addEventListener('focusout', routeFocusOut)
+    document.addEventListener('focusin', routeFocusIn)
+    document.addEventListener('input', routeReportingInput)
     document.addEventListener('keydown', routeKeyDown)
     const dragOff = initDrag()
     const panOff = initPan()
@@ -242,7 +245,9 @@ export function Shell() {
       document.removeEventListener('change', onChange)
       document.removeEventListener('contextmenu', onCtx)
       document.removeEventListener('focusout', routeFocusOut)
+      document.removeEventListener('input', routeReportingInput)
       document.removeEventListener('keydown', routeKeyDown)
+      document.removeEventListener('focusin', routeFocusIn)
       dragOff()
     }
   }, [])
@@ -254,7 +259,7 @@ export function Shell() {
      the reference's renderStatus comment records the bug: "the stamp used to
      be set only by renderLogic(), so a reload with saved overrides showed a
      clean banner until someone happened to open Logic" (audit2 probe #6) */
-  useEffect(() => { document.body.classList.toggle('page-rules-off', !!rulesOffCount()) })
+  useEffect(() => { document.body.classList.toggle('page-rules-off', !!rulesCheckedOffCount()) })
   /* NO validate() here: the reference never validates during a repaint — every
      mutation path has already validated, and a second engine pass per paint is
      what blew the phone budget */
@@ -292,7 +297,7 @@ export function Shell() {
      so a memoized parent never starves them. */
   const legend = legendHTML()
   const hlSig = [...HLSET].sort().join(',')
-  const rulesOff = rulesOffCount()
+  const rulesOff = rulesCheckedOffCount()
 
   /* computed ONCE per render — the bell's class and the memo deps both read
      it (bug pass, 28 Aug 26: two full INPUTS scans per render was waste);
@@ -300,11 +305,27 @@ export function Shell() {
   const oilPend = mine ? oilPendingFor(mine).length : 0
   /* D216, D227 — an access request this admin has not had on screen yet (his own bell) */
   const accAlert = accessAlert()
+  /* a failed save's warning has a line of its own along the bar's bottom ([SAVE-NOTE-COVERS], D587): the bar makes room */
+  const saveFailed = useSaveFailed()
+  /* THE ROOM UNDER THE BAR HAS JUST CHANGED BY ONE LINE WITH NO WINDOW RESIZE (Astra's read, F3 and F4). Whatever on a
+     page measured itself against the bar keeps its old figure unless told: a Quals or Leave War header ALREADY frozen
+     sat 36px off (under the band, or a gap above it); the Tracker's full-height column kept its old height, its foot
+     36px below a screen that does not scroll. Each of them already re-measures on a window resize — so they are told
+     the one way they all listen for, once, when the warning comes and once when it goes. Not on the first draw.
+     THE EVENT SAYS WHY (`saveBand`), because a resize also means "the screen turned" to some listeners: the Tracker
+     shuts its open Tools set on one, and a person choosing a tool would lose it when a save failed or landed behind
+     them (Astra's second read, R2-1). A listener that only re-measures needs no change. */
+  const saveFailedWas = useRef(saveFailed)
+  useEffect(() => {
+    if (saveFailedWas.current === saveFailed) return
+    saveFailedWas.current = saveFailed
+    window.dispatchEvent(Object.assign(new Event('resize'), { saveBand: true }))
+  }, [saveFailed])
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
          at a glance — both widths; View-only keeps the neutral dark. */
-      <div className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '')}>
+      <div className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '') + (saveFailed ? ' save-failed' : '')}>
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
         <div className="mark">
           <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
@@ -439,7 +460,7 @@ export function Shell() {
   /* the changes clock's number and its open state are read inside the memo, so they are its deps too (the gate found it,
      29 Sep 26: "Mark all as seen" used to be an Undo step, and the undo version's bump was what repainted this bar — once
      a seen mark stopped being a step, the clock kept its stale number) */
-  ), [page, admin, mine, mineCs, canSwitch, waiting, fastSync(), uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellLit(), bugAlert(), oilPend, accAlert, clockNew, !!CHGWIN])
+  ), [page, admin, mine, mineCs, canSwitch, waiting, fastSync(), uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellLit(), bugAlert(), oilPend, accAlert, clockNew, !!CHGWIN, saveFailed])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">
@@ -482,13 +503,14 @@ export function Shell() {
           {/* the highlight groups are wrapped so the phone can drop them to their
               OWN row below the icons when expanded (owner, 26 Aug 26). On desktop
               .hlrow is display:contents, so the chips flow inline exactly as before. */}
+          <ScheduleInsightsMenu page="viewsched" id="viewSched" />
           <span className="hlrow"><HlChips /></span>
           <div className="right">
             <div className="searchbox"><SrchIcon /><input id="searchV" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           </div>
         </div>
-        <div className={'schedbanner' + (rulesOffCount() ? ' rules-off' : '')} id="vBanner" />
+        <div className={'schedbanner' + (rulesCheckedOffCount() ? ' rules-off' : '')} id="vBanner" />
         <details className="legendbox" id="vLegendBox">
           <summary className="legend-sum">Legend — colours &amp; flags</summary>
           <div className="legend" id="vLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
@@ -515,8 +537,8 @@ export function Shell() {
                 inside the filter row as .wkseg, so the desktop edit bar is one
                 line. Order is deliberate (owner): the phone calendar opener, then
                 the desktop week window, then the EXPORT icons right after the
-                dates, then the highlighter — the highlighter last of the fixed
-                icons so expanding its sub-menu pushes only the chips to its right,
+                dates, then the highlighter and phone-only More (D558), so
+                expanding Highlight pushes only the chips to its right,
                 never the exports. Phone hides .wkseg (uses .filt-cal + swipe). */}
             <button className="wknav-mbtn filt-cal" aria-label="Jump to a date" title="Jump to a date"
               onClick={() => { setWeekCal('view'); notify() }}><CalIcon /></button>
@@ -559,6 +581,7 @@ export function Shell() {
               onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
             {/* wrapped so the phone can drop the chips to their own row below the
                 icons when expanded (owner, 26 Aug 26); display:contents on desktop. */}
+            <ScheduleInsightsMenu page="editsched" id="editSched" />
             <span className="hlrow"><HlChips /></span>
             <div className="right"><div className="searchbox"><SrchIcon /><input id="searchE" placeholder="name / callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
@@ -567,7 +590,7 @@ export function Shell() {
               to this prototype" title was removed (owner, 22 Aug 26) on both
               widths — it carried a stale hardcoded date and being on Edit
               Schedule already says it is the edit surface. */}
-          <div className={'schedbanner' + (rulesOffCount() ? ' rules-off' : '')} id="eBanner" />
+          <div className={'schedbanner' + (rulesCheckedOffCount() ? ' rules-off' : '')} id="eBanner" />
           <ALPanel />
           <details className="legendbox" id="eLegendBox">
             <summary className="legend-sum">Legend — colours &amp; flags</summary>
@@ -598,7 +621,9 @@ export function Shell() {
   ), [page, rulesOff, HIST.ix, HIST.stack.length, hlSig, HLOPEN, HLGROUP, SEARCH, legend, CURWEEK])
 
   return (
-    <div id="shell">
+    /* .save-failed here as well as on the bar: the two movable windows are drawn OUTSIDE the shell (ui/App.tsx), and their
+       opening spot moves down with the band too (17-save-status.css) */
+    <div id="shell" className={saveFailed ? 'save-failed' : undefined}>
       {topbar}
       {/* [ONE-DOOR] (D305): his own "Welcome back — check your quals and CAT", after a Restore */}
       <WelcomeBack />

@@ -1,0 +1,16 @@
+import * as S from './stk-TS-lib.mjs'
+const { L, W, world, pic } = S
+const { browser, p, errors } = await world()
+await L.go(p, 'editsched')
+console.log('form keys', await p.evaluate(() => JSON.stringify(window.DAYS[1].waves[0].formations[0])))
+console.log('wave keys', await p.evaluate(() => JSON.stringify(Object.keys(window.DAYS[1].waves[0]))))
+console.log('insights btn', await p.evaluate(() => [...document.querySelectorAll('button')].filter(b => /^Insights/.test(b.innerText.trim())).map(b => b.id + '|' + b.className + '|' + b.offsetParent + '|' + b.getAttribute('data-act'))))
+console.log('tue wave0 data attrs', await p.evaluate(() => [...document.querySelectorAll('#eWeek .day[data-day="1"] [data-txt]')].slice(0, 60).map(e => e.dataset.txt + '=' + e.innerText.trim().slice(0, 20)).join(' ; ')))
+console.log('tue itline', await S.weekLines(p, 1, 0))
+await L.go(p, 'logic')
+await p.locator('#lgEdit').click(); await S.sleep(400)
+console.log('logic edit inputs', JSON.stringify(await p.evaluate(() => [...document.querySelectorAll('#page-logic input, #page-logic textarea, #page-logic select')].filter(e => e.offsetParent).map(e => ({ id: e.id, set: e.dataset.lgset, kind: e.dataset.lgkind, v: e.value, t: e.type, chk: e.checked, ph: e.placeholder, aria: e.getAttribute('aria-checked') })).filter(x => x.set || x.id || /report|word|Rally/i.test(x.ph)).slice(0, 80))))
+console.log('logic group text', await p.evaluate(() => { const e = [...document.querySelectorAll('#page-logic *')].find(x => /In-time \/ Rally/.test(x.innerText || '') && x.children.length > 3); return e ? e.innerText.slice(0, 1500) : 'none' }))
+await pic(p, 'survey-logic-edit')
+console.log('errors', errors)
+await browser.close()

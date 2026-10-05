@@ -5,17 +5,15 @@
    exactly that day (publishALDay). The issued-AL list below is READ-ONLY
    history (no unpublish ✕ — take-backs are gone), its counts from the frozen
    diff. The week-wide AL-number dropdown is gone. */
-import { SCHED, pendingPublishDays, discardableCount, nextSeq, daySigned, signMissing, dowShort, diffCounts, dayPendingItems, itemCounts, verLabel, alCount, SIGN_ROLES } from '../engine/publish'
+import { SCHED, pendingPublishDays, pendDays, dayApproved, nextSeq, daySigned, signMissing, dowShort, diffCounts, dayPendingItems, itemCounts, verLabel, alCount, SIGN_ROLES } from '../engine/publish'
 import { esc, DPREV } from '../state/view'
-import { notify, commitPublishALDay, commitDiscardPending } from '../state/store'
+import { notify, commitPublishALDay } from '../state/store'
 import { useVersion } from './useStore'
 
 export function ALPanel() {
   useVersion()
-  /* only the marks Discard can actually clear — those on days never published (walk S2,
-     24 Sep 26: counted from every pending mark, the button was offered, and "cleared", when
-     every mark sat on a published day and nothing could be touched) */
-  const np = discardableCount()
+  // D488: draft work keeps its marks until first publication; there is no separate clearing action.
+  const hasDraftChanges = pendDays().some((di: number) => !dayApproved(di))
   const pubDays = pendingPublishDays()   // published days with a real delta to issue
 
   return (
@@ -25,9 +23,8 @@ export function ALPanel() {
         <span className={'al-pend' + (pubDays.length ? ' on' : '')}>
           {pubDays.length
             ? `${pubDays.length} day${pubDays.length > 1 ? 's' : ''} with changes to publish`
-            : (np ? 'Changes are on unpublished days — publish the day first' : 'No pending changes')}
+            : (hasDraftChanges ? 'Changes are on unpublished days — publish the day first' : 'No pending changes')}
         </span>
-        <button className="abtn ghost" id="alDrop" disabled={!np} title={np ? `Clear the marks on days not yet published (${np})` : "Nothing to clear — a published day’s changes stay until you publish them or put them back"} onClick={() => { commitDiscardPending(); notify() }}>Discard marks</button>
       </div>
       {pubDays.length
         ? <div className="al-pubdays">

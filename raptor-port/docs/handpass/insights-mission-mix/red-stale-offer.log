@@ -1,0 +1,85 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/.claude/worktrees/codex-insights-mission-mix/raptor-port
+
+ ❯ |raptor| src/ui/mission-role-offer.test.tsx (5 tests | 1 failed) 4576ms
+   × a reset between text commit and delayed offer invalidates the queued question 749ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/ui/mission-role-offer.test.tsx > a reset between text commit and delayed offer invalidates the queued question
+AssertionError: expected <section …(3)>…(2)</section> to be null
+
+- Expected:
+null
+
++ Received:
+<section
+  aria-label="Mission role for VL"
+  class="mission-role-question"
+  data-role-ui=""
+>
+  <div
+    class="words"
+  >
+    <span
+      class="context"
+    >
+      Working copy
+    </span>
+    <strong>
+      VL: Blue or Red?
+    </strong>
+    <p>
+      Mission or remarks mention DS or RED.
+    </p>
+  </div>
+  <div
+    class="choices"
+  >
+    <button
+      data-role-side="blue"
+      type="button"
+    >
+      Blue
+    </button>
+    <button
+      data-role-side="red"
+      type="button"
+    >
+      Red
+    </button>
+    <button
+      class="later"
+      data-role-side="later"
+      type="button"
+    >
+      Later
+    </button>
+  </div>
+</section>
+
+ ❯ src/ui/mission-role-offer.test.tsx:86:60
+     84|   await settle()
+     85|   expect(txtGet('fr:0.0.0.0')).toBe('DS FOR EAGLE')
+     86|   expect(document.querySelector('.mission-role-question')).toBeNull()
+       |                                                            ^
+     87| })
+     88|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  15:23:45
+   Duration  9.50s (transform 3.53s, setup 59ms, import 3.80s, tests 4.58s, environment 869ms)
+

@@ -18,12 +18,14 @@ import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
+import { insightsLoad } from '../engine/insights-config'
+import { registerMissionRoles } from './mission-roles'
 import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
-import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
+import { weekBundle, otherWeekInputs, seedRids } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
@@ -700,6 +702,7 @@ export function wireStore() {
   /* phase 3: the PEOPLE + SETTINGS command layer (their own enlistable stores,
      record registry, permissions). Idempotent. */
   registerPeopleSettingsCommandLayer()
+  registerMissionRoles()
   /* [ACCOUNTS] D200 (3): the command gate's authority is the ONE permissions matrix
      (state/perms.ts, which mirrors data-model.md §11). From here on every non-system
      command — the scheduler's, the roster's, the settings', undo's, the Leave War's
@@ -817,6 +820,7 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
      against the real roster, not the seed. */
   resyncPeopleBaseline()
   rulesLoad()
+  insightsLoad()
   storesLoad()
   lookaheadLoad()
   cxReasonsLoad()
@@ -915,6 +919,9 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
      (no ridV) has inconsistent identities, so strip them first (gated on the
      version), then rebuild one id-space via ensureRowIds + backfill. */
   const wasLegacy = migrateLegacyIds(SCHED, DAYS)
+  /* the boot reads the built-in week from the module's own literal, not from weekBundle — give its rows the same
+     repeatable ids weekBundle hands out (W8; engine/weeks-data.ts seedRids), before the random mint below */
+  if (!stashHas(CURWEEK)) seedRids(DAYS, CURWEEK)
   ensureRowIds(DAYS)
   /* THE BACKFILL — same reasoning as loadWeek's own call just above this
      comment's twin: SCHED can arrive here already carrying an amendment book
@@ -940,10 +947,10 @@ wireStore()
    actions and the history verbs, re-exported so the UI has one import.
    markEdit stays the raw engine action; the publish verbs the UI calls are the
    command-routed wrappers (phase 2b — additive: they run the SAME engine
-   setDayApproved/publishALDay/discardPending inside commit()). */
+   setDayApproved/publishALDay inside commit()). */
 export { markEdit } from '../engine/publish'
 export {
-  commitSetDayApproved, commitPublishALDay, commitDiscardPending,
+  commitSetDayApproved, commitPublishALDay,
 } from './sched-commit'
 /* the quarantine classifier lives in the engine (so the engine's filing
    primitives share it) but the UI imports it from here, its established home.

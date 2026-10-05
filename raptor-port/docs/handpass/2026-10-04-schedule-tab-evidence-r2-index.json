@@ -1,0 +1,3660 @@
+{
+  "archive": "2026-10-04-schedule-tab-evidence-r2.zip",
+  "sha256": "85FEBB4AF1803491E20543C74ADD653074E142028695D929FF5F3BFA24290C44",
+  "bytes": 11098920,
+  "entries": 912,
+  "freeze": "freeze-18.json",
+  "freezeSha256": "C53CCB9B270A5B8A617362E1E22AA7CC5D0E76AB72A27835D1C90C099A3CEF8B",
+  "previousArchive": "2026-10-04-schedule-tab-evidence.zip",
+  "previousArchiveSha256": "AFC8FF2E8D8D12034FC8E9B3D1D9A53B38DB2399AE9E233A59DE33BE3985DA80",
+  "files": [
+    {
+      "path": "raptor-port/src/boot-walk.test.tsx",
+      "sha256": "03137D2FF585FCD6CEF867F4F4BD64DF4FBC53646556FEEF52C90A2F29BED59F"
+    },
+    {
+      "path": "raptor-port/src/boot.test.ts",
+      "sha256": "BABED84B69EC309120496D7BDB0B8C05F4D81F7290C820094D5FB906B046E53C"
+    },
+    {
+      "path": "raptor-port/src/boot.ts",
+      "sha256": "4376422D7C0B15B3587BD45985E549F60825D284784ACAA87E840A13A4259EC0"
+    },
+    {
+      "path": "raptor-port/src/bootpolicy.ts",
+      "sha256": "04EC5CBAF8600CED5735EDB8B5C618FF9EB9F0EB733B009AFCCA0B67FE074753"
+    },
+    {
+      "path": "raptor-port/src/command/actor.ts",
+      "sha256": "F3AE6CDB490F15EB46E385858F562B0C1C02D2A9F6257F3D7EBE8FA437D83537"
+    },
+    {
+      "path": "raptor-port/src/command/command-auth.test.ts",
+      "sha256": "068937B54BB3EDBBEB4DE4D029C9DA1766239FFE5272C7A6D0EC47311677E4F6"
+    },
+    {
+      "path": "raptor-port/src/command/command-core.test.ts",
+      "sha256": "7FBBCEB17A03B36AA3148BC35CFEAAFDB2442B1817E3EFF79EE4CC98E7058293"
+    },
+    {
+      "path": "raptor-port/src/command/command-door.test.ts",
+      "sha256": "164B8995E30BBFE11AFEB3AAD46ED7484490704E3ADE5061A54013E0D96EEC4F"
+    },
+    {
+      "path": "raptor-port/src/command/command-registry.test.ts",
+      "sha256": "DA5DDECC26D48FC8F2570AD61752D433E42FC545539CD7CF2F3B26171BFF1497"
+    },
+    {
+      "path": "raptor-port/src/command/command-txn.test.ts",
+      "sha256": "13869F2C7D8E6B7FFC4DD4E7B2602CD3FD62F4CDC4E4282F56B63F9823544D98"
+    },
+    {
+      "path": "raptor-port/src/command/commit.ts",
+      "sha256": "2647541A994A322F0A5777B059CFA35B77C4DE902AA093D0AD8F11F57A82E39E"
+    },
+    {
+      "path": "raptor-port/src/command/door.ts",
+      "sha256": "3D6026854C2F401D7CB2113FBB783F593DFFA078F2ECC01860E82F45121AA7D5"
+    },
+    {
+      "path": "raptor-port/src/command/harness.ts",
+      "sha256": "9073C023816D0CD1FD702EDB65121794C0AB8FBAE2299C3B8706F9DE5623ECE6"
+    },
+    {
+      "path": "raptor-port/src/command/index.ts",
+      "sha256": "7A9430533876F30724C1F96A7D1AB5A8A61BD63361583FACDD99F465E35EBD68"
+    },
+    {
+      "path": "raptor-port/src/command/latch.ts",
+      "sha256": "5B702C339751A75C33BDC990018C01F5F1EBEE787D0020E2FEBDB36C10986D97"
+    },
+    {
+      "path": "raptor-port/src/command/ord.test.ts",
+      "sha256": "5C2A37B9BB198B3AAF550F768A278F533E521EB87B7AABBA79247327442ADA53"
+    },
+    {
+      "path": "raptor-port/src/command/ord.ts",
+      "sha256": "D62BCBB594AA78451D5F7A473F64E1DAF3C9C03D1C699B40513113130FD51B73"
+    },
+    {
+      "path": "raptor-port/src/command/permissions.ts",
+      "sha256": "F4B8E5D18B4E1204A66ECF093D2573294A2BA3EF33C3773A61993B74B02D112A"
+    },
+    {
+      "path": "raptor-port/src/command/registry.ts",
+      "sha256": "CD6A201E02FE4718726554CB779DC65734058CD6939CBB22CAD89310345ADD46"
+    },
+    {
+      "path": "raptor-port/src/command/types.ts",
+      "sha256": "92EABE7C1A676D43EEB0785B1DE90F462A34A9A4C25FFD5D354680B3C7331EA9"
+    },
+    {
+      "path": "raptor-port/src/command/util.ts",
+      "sha256": "79221465D9011DC1352F2DBD1415CCAB2CD1D1D8110D2183B84518FFAEC57CCE"
+    },
+    {
+      "path": "raptor-port/src/command/_fake.ts",
+      "sha256": "5179796EFAA3F61DE1FC9A6151C3663F58ACFCA5FCED4B9678DA02B23B24A9BC"
+    },
+    {
+      "path": "raptor-port/src/engine/aar.test.ts",
+      "sha256": "9CABE37AC8333F0FABF7D79327CAA841391770A6DCB0FD1DA52F4BF407D5D123"
+    },
+    {
+      "path": "raptor-port/src/engine/aarinstr.test.ts",
+      "sha256": "96A66122F1E6723515D618D9C9DF4881502B0E67CB3FE737CDF14AE03060AB89"
+    },
+    {
+      "path": "raptor-port/src/engine/accept.test.ts",
+      "sha256": "AB33CC5C81600594D992F0D56899774306D49AB34E88A2DED981D22928C780EF"
+    },
+    {
+      "path": "raptor-port/src/engine/amformat.test.ts",
+      "sha256": "5C9BAA079C0679BC517A55846D65BBA09F05FB89E9B60FDE0123EB833971B268"
+    },
+    {
+      "path": "raptor-port/src/engine/arrdefaults.test.ts",
+      "sha256": "D74F4059BDC746E017F67F1E27E05D64F59B7B1E8A8A8554F99410DBE488F168"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-a-editlog.test.ts",
+      "sha256": "144A8C217DCD09165E0C4397D9873B1BF8882FA0E9E652D93822BFC29E42D337"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-c-acceptspan.test.ts",
+      "sha256": "C32C6E57F5493ED007813AC104550C5286087BC407D4D74A03FF946660CD577C"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-c-briefguard.test.ts",
+      "sha256": "42BA2F5C6372983E14092F5FE4BEAA708BE3B304C6A01814F28049D8A177BF85"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-c-clash.test.ts",
+      "sha256": "967F6738F20AFD076142C8E390D76C42993A3A03EE7B55DD854FA158B8E0D660"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-c-crossday.test.ts",
+      "sha256": "C8DD5BC8D546BE3097DEAE8F449A7D53B68940B304EB94FE20D460B3236848B7"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-c-exempt.test.ts",
+      "sha256": "D37189E73DB0D04BD607F8DA106F224B675E6D4B19E5E0B65E500C97D22B76D6"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-c-gaps.test.ts",
+      "sha256": "B2346BCB5C919B6062A02F270BD827CC4C1EA922D71A46AD581874BEED738E4B"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-c-tail.test.ts",
+      "sha256": "0A155FB890831780D188A8CA40A9108908057A7DB130362BD683AA1AF960F9AD"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-c-times.test.ts",
+      "sha256": "26212913B43D4B3B40D9BF0311572C9CC204BE6EFF41899FDD709C8DFCDD9AD4"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-d-applymove.test.ts",
+      "sha256": "C5B7F6B8E2F3694E10DF047134A29F2DADC5F2CF306B6BE8CDA50F24DC4279CD"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-d-keyspace.test.ts",
+      "sha256": "0BE95DCC2E51E00C3689DC316B2FE85711126FD16FFD56111208D08E97BA5D6A"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-d-published.test.ts",
+      "sha256": "E0F95EC9347B6BEC350667C2E3E25E37B0FA0BDE11ED7BDBD74119ADA8862138"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-guards.test.ts",
+      "sha256": "DC2A5A5DCEB8C0AB63345640EF71516B196DF8B7B20842FF5F42BD3859153F70"
+    },
+    {
+      "path": "raptor-port/src/engine/audit-thinwin.test.ts",
+      "sha256": "4C0EED8D7E1B355347879DF08666C6AE019B5D4044039347EF795D138B3470D2"
+    },
+    {
+      "path": "raptor-port/src/engine/avail.test.ts",
+      "sha256": "4B72CBB8037D6014E531DAB56A9978F9B17F9A9F131BE6733B18DA6E83763AFE"
+    },
+    {
+      "path": "raptor-port/src/engine/avail.ts",
+      "sha256": "6AA80660CE49D4D0652AED63AC4E564B48D8150CB4F348EA3494B94125EE495B"
+    },
+    {
+      "path": "raptor-port/src/engine/avalon-rules.test.ts",
+      "sha256": "885094CBE1AE6261FB02E2B053B76DF757BAB515FE8A407F3FE15F438263B01A"
+    },
+    {
+      "path": "raptor-port/src/engine/brieftime.test.ts",
+      "sha256": "135CC4E8E3B37E0C517DE8483814140E9AD7F2440B0FCD288185E4A4FD7EC0D6"
+    },
+    {
+      "path": "raptor-port/src/engine/canonical.test.ts",
+      "sha256": "0F4FCFBF1B943778C4211155E00AD9AAD7A09C193912ABBEF22B5C332D65B1E0"
+    },
+    {
+      "path": "raptor-port/src/engine/canonical.ts",
+      "sha256": "6C7CE2E711F2AA86317584C8FC17F9EAE07BA0AF6D2424F50D5508EE5C6FC921"
+    },
+    {
+      "path": "raptor-port/src/engine/crossweek.test.ts",
+      "sha256": "498D65DFD66C16686FF0674A66BCC4DC270FF376F44526FCDAE37BC2DED6821C"
+    },
+    {
+      "path": "raptor-port/src/engine/crossyear.test.ts",
+      "sha256": "91E75D8E618C2209EB25741E5EC9A0D35C0913F102CBDD03A5E5AEE14959E55C"
+    },
+    {
+      "path": "raptor-port/src/engine/crowdself.test.ts",
+      "sha256": "D3B83E9F1AF72A2C196E64CF24AB40A8D1ACD6037E6E0869DC4171717CEE5B42"
+    },
+    {
+      "path": "raptor-port/src/engine/crowdsim.test.ts",
+      "sha256": "2CD0634DFB0AB03573B0528BD47D5875E6B64E2C340492BB040739B8D01ED9DE"
+    },
+    {
+      "path": "raptor-port/src/engine/cxreasons.test.ts",
+      "sha256": "E0FD9E24E1E59680D0AAF37F0879F8785C1723790D8108C0940D84F4F380BD2F"
+    },
+    {
+      "path": "raptor-port/src/engine/cxreasons.ts",
+      "sha256": "72756E3BF8DE2B8AA2F7A0F486BBF7FA392A77C711C6A325EBD98A683B7B0220"
+    },
+    {
+      "path": "raptor-port/src/engine/data.ts",
+      "sha256": "9448534B9C7824C4608A50B0132426CCD1A158FC959A6E0F49507021AC8119CC"
+    },
+    {
+      "path": "raptor-port/src/engine/daydelta.test.ts",
+      "sha256": "8ED6379C62867DB9977049A98E6B3CF72BBE06521F71C6A5A29F30CD7213D030"
+    },
+    {
+      "path": "raptor-port/src/engine/daysrun.test.ts",
+      "sha256": "B18A3CB9709D05F5118B428B66D367FD451D38B2FCE348FB902DD098386CBA6E"
+    },
+    {
+      "path": "raptor-port/src/engine/daytpl.test.ts",
+      "sha256": "FA959A8DEFA229D0D2FF0D2F0091BFF1A585394769B6DF32BA2923E6973F135E"
+    },
+    {
+      "path": "raptor-port/src/engine/daytpl.ts",
+      "sha256": "DCD4ADB68B56E5E4E095D7FA79E0450834DEB410B8BE29631458D8A1C4F80404"
+    },
+    {
+      "path": "raptor-port/src/engine/drafts.test.ts",
+      "sha256": "AF0AEC73EFADF7955C1E739049B5998749DBDCB7063877369CFDFB849CEBE498"
+    },
+    {
+      "path": "raptor-port/src/engine/drafts.ts",
+      "sha256": "2EDBAE81EC5718FB3F28C5B6895A5531A8F31E461092115DF2277ADCCBDB9C2C"
+    },
+    {
+      "path": "raptor-port/src/engine/dutyrest.test.ts",
+      "sha256": "F9BE0A3837C91A38404A01B0F8711252F30CEC38D16B9872D7725D11A68B1E56"
+    },
+    {
+      "path": "raptor-port/src/engine/dutytpl.test.ts",
+      "sha256": "2EACE42EF2E927A1FDE7A9157D8EAA324B7D562A6D6B54202E8042AF67C4D174"
+    },
+    {
+      "path": "raptor-port/src/engine/dutytpl.ts",
+      "sha256": "AB18837969690F3A7335A6FA140D6793C024EFF03DB13350CFA4905265B9CBD9"
+    },
+    {
+      "path": "raptor-port/src/engine/editlog.test.ts",
+      "sha256": "223AC397B79AAA6D75536D6F05804C082EF88290E544FA91B4A8AF9C2B250FF2"
+    },
+    {
+      "path": "raptor-port/src/engine/editlog.ts",
+      "sha256": "64ECDC40522A546A5ABC0BC5A09571568091265190754BA508D60D9BBBDD0974"
+    },
+    {
+      "path": "raptor-port/src/engine/elog-durable.test.ts",
+      "sha256": "BC5E74080114B3F4A945AC5FC44405DB6B590F16526B207A7836C809321B62BD"
+    },
+    {
+      "path": "raptor-port/src/engine/elogwho.test.ts",
+      "sha256": "CC4A23107F21856253AA00B46DF8869D92D37AD0376B885C12C585E0A81FB2C6"
+    },
+    {
+      "path": "raptor-port/src/engine/events.ts",
+      "sha256": "EF43A7C8B53C23ED10929A0C6917D7680964E460A2BE33B82C4B4928B555BC53"
+    },
+    {
+      "path": "raptor-port/src/engine/faceattrs.ts",
+      "sha256": "D5DE3FD3B4366A6E32CBC43A933E75A5EAE592D574A2F714D56F90B231009DA7"
+    },
+    {
+      "path": "raptor-port/src/engine/hidedetail.ts",
+      "sha256": "C7071D2DACCC8F0F3437E8CB7F515054ED27126BFE1EA569C681797AF2898023"
+    },
+    {
+      "path": "raptor-port/src/engine/hooks.ts",
+      "sha256": "A41C31191033079B2A966E0014A6DFC47B0822B52946BA5776584A9A3A603FC9"
+    },
+    {
+      "path": "raptor-port/src/engine/index.ts",
+      "sha256": "DBC2B8003221D0FA6F6A4F4BB62DF5C23210C8AC8689023E9AF955B1E1EB23D1"
+    },
+    {
+      "path": "raptor-port/src/engine/infoflag.test.ts",
+      "sha256": "B40095557C8FF728283F2FBE883BAEA581F5982A8A361B9A587BACB814BB1772"
+    },
+    {
+      "path": "raptor-port/src/engine/inputground.test.ts",
+      "sha256": "8D01E4770021CAC4D70340459074C6993E86484201F0774943FB39664C60BC4F"
+    },
+    {
+      "path": "raptor-port/src/engine/inputs.ts",
+      "sha256": "9D7D7C63399D51B00B211520A21AF97B7C46808276DD4D0069BD3F74828F7197"
+    },
+    {
+      "path": "raptor-port/src/engine/insights-config.ts",
+      "sha256": "AA432A718FAD36BD1D1FEB512156CCDE85BA2B430B235DB330DD75C0EFA156A4"
+    },
+    {
+      "path": "raptor-port/src/engine/insights-mission-mix.test.ts",
+      "sha256": "FAD1918A9107982798594642F4358C076488AE0B7C548B70F1CC0B102017DB72"
+    },
+    {
+      "path": "raptor-port/src/engine/insights.test.ts",
+      "sha256": "78CE72EF866B55D49A9C5A4A0A5D0A999FDCB02A44F367D131DD72BBD6791D33"
+    },
+    {
+      "path": "raptor-port/src/engine/insights.ts",
+      "sha256": "65BAEF1CAA91124DFB047FC8208F54D88287FE9DADE089EFF8367A1F11521F5C"
+    },
+    {
+      "path": "raptor-port/src/engine/intimes.test.ts",
+      "sha256": "3B1B678B43247345905C5FFE8156BDA494B899138F50D0155309BD5A184E3511"
+    },
+    {
+      "path": "raptor-port/src/engine/keys.test.ts",
+      "sha256": "316F93259DFDE813A1B712454726AD24122D66A192F736DE064C2A1A8BF79F9A"
+    },
+    {
+      "path": "raptor-port/src/engine/keys.ts",
+      "sha256": "A8C94564F701F048A4060AA7F1D90E1143D18D8F3FAFA3BBD52315F0AA9F7921"
+    },
+    {
+      "path": "raptor-port/src/engine/lateinput.test.ts",
+      "sha256": "4DFEB9775F75911BC9B2F2965C0CBF682C1D960CE3509618F279E48A0EBC59DC"
+    },
+    {
+      "path": "raptor-port/src/engine/latestamp.test.ts",
+      "sha256": "7BE3A8EF824925F9278694A8642370E06E2153A74E5780CC305870FF709BFA1F"
+    },
+    {
+      "path": "raptor-port/src/engine/leave.test.ts",
+      "sha256": "C25E267742492C1365174E139D156DCDEAB52DC304CB2362DE212971A7AE9F40"
+    },
+    {
+      "path": "raptor-port/src/engine/liveface-marks.test.ts",
+      "sha256": "E803D59F59E628A9E4D4AC69D7F58D499E8C1CA2B6F82776A86B2D64DFE46427"
+    },
+    {
+      "path": "raptor-port/src/engine/longday-msg.test.ts",
+      "sha256": "C8E8797D7617468C77707C849098921FCE55E1FE8D32AFA2EB18D2183653A1EF"
+    },
+    {
+      "path": "raptor-port/src/engine/lookahead.test.ts",
+      "sha256": "8A5EB0B2266337F607D9D4C6E2A66B3ACB33B71758A41B1395F42996F9AF5928"
+    },
+    {
+      "path": "raptor-port/src/engine/lookahead.ts",
+      "sha256": "23F30CF637B496679B4303067BA4A124B7D60161FD8ECC5751D4FCB2DA2FE682"
+    },
+    {
+      "path": "raptor-port/src/engine/markcheck.ts",
+      "sha256": "1689804915F46052173E3EF1E0B2953BF28979F93042015ACD802CDAD7042E87"
+    },
+    {
+      "path": "raptor-port/src/engine/medical.test.ts",
+      "sha256": "316AF965DD031D0D91C7165A1190A5E16B8ADFF80FAB06CA8E6C94D1C621C0CB"
+    },
+    {
+      "path": "raptor-port/src/engine/medical.ts",
+      "sha256": "2FD4BB5E944B19AE6B60A165791C2CA8E5DC7292FCDF93A7FEDC8DCC4733C3DF"
+    },
+    {
+      "path": "raptor-port/src/engine/mission-role.test.ts",
+      "sha256": "7F7F69F4EA6F1FD6076122F514EABD0B838704D8889B68AA40A16594B0D3D572"
+    },
+    {
+      "path": "raptor-port/src/engine/mission-role.ts",
+      "sha256": "8E40B1BB8865F77C414E76A2C838F71E940C59877046C18530C33806705F5CD6"
+    },
+    {
+      "path": "raptor-port/src/engine/newid.ts",
+      "sha256": "F08705089C315CADEC94791ABBE42D34416BDA62BAF0125296181E94C550CB9F"
+    },
+    {
+      "path": "raptor-port/src/engine/note.ts",
+      "sha256": "F2100A87D3054FB415FBD3AAC42BC907668CE9A2E3767C9299EB0BF87CBF0A4D"
+    },
+    {
+      "path": "raptor-port/src/engine/official-flags.test.ts",
+      "sha256": "84D9E78876749BF0F5C1E84547866A0ECFA676F3637D14914602719C05E3019D"
+    },
+    {
+      "path": "raptor-port/src/engine/oil.test.ts",
+      "sha256": "25A62D8E39A51426FF2E9D582EEAD9D708C8FC092D8186613BAE10DDBB4DA22E"
+    },
+    {
+      "path": "raptor-port/src/engine/oil.ts",
+      "sha256": "AA94D8BD3A2A44E6A7D51CA42F04EC7A6E5298AF54BF63032766E78D509D0F7F"
+    },
+    {
+      "path": "raptor-port/src/engine/oilclaimcrowd.test.ts",
+      "sha256": "7B1A1BC7AAF5B8C4056EED8B882C877C4BC7F712B6A9087CC9CAE263529D8DDA"
+    },
+    {
+      "path": "raptor-port/src/engine/oilev.test.ts",
+      "sha256": "1634074837D0369B6D28650418CF2F1B982E89165BD4A97752B06EC29EB23CBE"
+    },
+    {
+      "path": "raptor-port/src/engine/oilev.ts",
+      "sha256": "0571C1316D9218A257E8DE6F91CB7C3EE348CD898478912DDC2261D7AF6505E6"
+    },
+    {
+      "path": "raptor-port/src/engine/oilexempt.test.ts",
+      "sha256": "238493D7F6FD41642A02F6AC36369FFE7C39395976F3C698F7EB1E09A329499E"
+    },
+    {
+      "path": "raptor-port/src/engine/oilexpand.test.ts",
+      "sha256": "1007C40CDAC073CB2E1FB293C8BF53AF9806175DF36FC3604B5A1801B1FAFDBE"
+    },
+    {
+      "path": "raptor-port/src/engine/oilflighttimes.test.ts",
+      "sha256": "A05D37E244487FB81998C2DA15852B1A8BE393258AEBD8FE3D0D9D1271A40D07"
+    },
+    {
+      "path": "raptor-port/src/engine/oilmembership.test.ts",
+      "sha256": "D327769C8EE8B560F94F008184E888BD75DEC695ECE83E7A625296A700851DD2"
+    },
+    {
+      "path": "raptor-port/src/engine/oilnamebox.test.ts",
+      "sha256": "D036B21E59DCF1850B4C4519D300BBFF02D1B4A027275590EF0C981BA7FF8741"
+    },
+    {
+      "path": "raptor-port/src/engine/oilopenrow.test.ts",
+      "sha256": "65EB88FF41FF23320CA1A0080737EA61C5F5E84F16A1081FAF2C87FB4F6E285A"
+    },
+    {
+      "path": "raptor-port/src/engine/oilperiod.test.ts",
+      "sha256": "2306A152770FEC45A137A6202B71B9C81E39E220272F293BEA5CF3F450F56D56"
+    },
+    {
+      "path": "raptor-port/src/engine/oilpersonalcrowd.test.ts",
+      "sha256": "523BB8AC808CABDB12C139EB2A8040D5D5273CADAAA3926A0E72C810F066E1FD"
+    },
+    {
+      "path": "raptor-port/src/engine/oilseat-refusal.test.ts",
+      "sha256": "EC1D1D3DA240FA67E76EE29B5D1D009EDB07B61717B53E45F0757857783F9C56"
+    },
+    {
+      "path": "raptor-port/src/engine/oilsent.test.ts",
+      "sha256": "75AAE9BDD0F0B345D596DE952747D136E8DAFB7DC6B77FF19CC4B58DBA7EED08"
+    },
+    {
+      "path": "raptor-port/src/engine/oilspandefault.test.ts",
+      "sha256": "FC9E9BF97D0104DD2D87FA412E8036F43DF6F844BAC752CA4D8ACBFA529299A5"
+    },
+    {
+      "path": "raptor-port/src/engine/order.test.ts",
+      "sha256": "EA7A6B20EB0731778D0568FC46D8E6DF2FD295822C5B5875DD5E737BF5B5757D"
+    },
+    {
+      "path": "raptor-port/src/engine/order.ts",
+      "sha256": "614EC445BEA66BD5540C5C87A16364B500424736BFAD2AD23D566E1EFD5DE972"
+    },
+    {
+      "path": "raptor-port/src/engine/overlay.test.ts",
+      "sha256": "5B64B00FFCF2E1ED211F865ECC9E25E148D90FB91D3B0AC238AA62E2C26FBBF4"
+    },
+    {
+      "path": "raptor-port/src/engine/overlay.ts",
+      "sha256": "D1423063126681B5C7603E528F1709E3E2A1E4F36E7D47C188999FE9DC251712"
+    },
+    {
+      "path": "raptor-port/src/engine/overnight.test.ts",
+      "sha256": "281AFDAE7E198A83849047B2A43425340808AABED3FBBFE11F821C33775344AA"
+    },
+    {
+      "path": "raptor-port/src/engine/parity.test.ts",
+      "sha256": "F89927569C75543EA91AD2D743783BB64FCC955DBB95C2916D37BF7F994EA33F"
+    },
+    {
+      "path": "raptor-port/src/engine/pendunits.test.ts",
+      "sha256": "509DB08030B6FB381F24980A44C7543FD00F64D11A029A979C12157C3F49A119"
+    },
+    {
+      "path": "raptor-port/src/engine/people.ts",
+      "sha256": "BCCDD762E91BFAB82162316EB6F94E6424D1C8A253F9C9B732BE8B5F7BD1119F"
+    },
+    {
+      "path": "raptor-port/src/engine/personid.test.ts",
+      "sha256": "C622D37D73510A8921A2303035071737A687388350AA9D4E86270D84748CF883"
+    },
+    {
+      "path": "raptor-port/src/engine/personnel.test.ts",
+      "sha256": "3E36EF38DD01368EBE0A0C979621EFCB4AA2E76D1C95657CE0EB548E078DEA65"
+    },
+    {
+      "path": "raptor-port/src/engine/publish.test.ts",
+      "sha256": "7A2B70EC698DA2F84249C23C749B919516D2960A9B455BD1E242F7E457784056"
+    },
+    {
+      "path": "raptor-port/src/engine/publish.ts",
+      "sha256": "4AEEA771A67085A520E3BBDC6B594BD4B9FA81CC171AD3ED16581BC1B2E097D2"
+    },
+    {
+      "path": "raptor-port/src/engine/qualcols.test.ts",
+      "sha256": "DA458074EA25B58622AE5B90703BE10AB7D9F5167A57F71906B04D776611E22A"
+    },
+    {
+      "path": "raptor-port/src/engine/qualcols.ts",
+      "sha256": "36F25D1E6D639F573D7C33D7235810579ACEF34530BFB8A79BB8548DA1A52B42"
+    },
+    {
+      "path": "raptor-port/src/engine/quarantine-schedule.test.tsx",
+      "sha256": "89B5677E2FEFC0515E47A91693FF23061F8F68CF64C5BF07A84EF7402E828D86"
+    },
+    {
+      "path": "raptor-port/src/engine/quarantine.test.ts",
+      "sha256": "AF697A1263611D3C63C55D52F0B95E349D22844CFCDEDA12B01039BC9F5A2B81"
+    },
+    {
+      "path": "raptor-port/src/engine/quarantine.ts",
+      "sha256": "C3BBC1D78A42F4D76CEC6E423A9A88E12D803A4856EF0AC608526D893ABE9A13"
+    },
+    {
+      "path": "raptor-port/src/engine/rally-consumers.test.ts",
+      "sha256": "72177CD8069C0242A3BCC6B1C0CC32C8B9988041D8BF684DE0C34882991EA2B5"
+    },
+    {
+      "path": "raptor-port/src/engine/rally-dated-rest.test.ts",
+      "sha256": "EDB6CC444B42038B9E32127618B937D65E868489813B5BA207CE61298FDA6CC6"
+    },
+    {
+      "path": "raptor-port/src/engine/rally-workspan.test.ts",
+      "sha256": "464F96BBFE61B89E9A1D3918810446FEA147020541FFCCADCC518D8BAF48213F"
+    },
+    {
+      "path": "raptor-port/src/engine/reorder.test.ts",
+      "sha256": "D232E06CB6135F7B679F911ADFEF450DDE97FB36461D9E994AB88FCC4E4F0F3F"
+    },
+    {
+      "path": "raptor-port/src/engine/reorder.ts",
+      "sha256": "464EA109BAF1EE6021660DDDA2CB57A4F37562BE525171B622BB37BDFD3FE058"
+    },
+    {
+      "path": "raptor-port/src/engine/reporting.ts",
+      "sha256": "D34C57B9CC48A4ED44635978411463A592B896F3672FF503EB1768894A3B46A3"
+    },
+    {
+      "path": "raptor-port/src/engine/restore.test.ts",
+      "sha256": "50A9D6DDC56BEE58779B6F2E661ADB2E43CE64D5B5B5FAFC771F86D308BEFA0F"
+    },
+    {
+      "path": "raptor-port/src/engine/restore.ts",
+      "sha256": "D4E0B1449CE55DB0165B20521B9277253A39BF535641A8E3A0B10454701D4D93"
+    },
+    {
+      "path": "raptor-port/src/engine/rowids.test.ts",
+      "sha256": "F1052DB320F7D29DED91D36BE7383C357F4107AFEDACCB4A2D27FFF18F7E3E25"
+    },
+    {
+      "path": "raptor-port/src/engine/rowids.ts",
+      "sha256": "36C90E5F76DF95536ACF817679B067A8122D2A4063A981AAB8A52B75FE75F088"
+    },
+    {
+      "path": "raptor-port/src/engine/ruleflex.test.ts",
+      "sha256": "AB807978A857BB44E65C175DE243FC3C818F8D531228783ED6DECFFF80EC6BF0"
+    },
+    {
+      "path": "raptor-port/src/engine/rules.test.ts",
+      "sha256": "DB19FBFEAC5087202F1E2ABAB0B7CDD3ABD783E404D446F3E4E1BE07F3C66F72"
+    },
+    {
+      "path": "raptor-port/src/engine/rules.ts",
+      "sha256": "D05068DD8F7EC71787FFC53AEFEBFE2ACC716B71AFB9B104B29F44E22879F37A"
+    },
+    {
+      "path": "raptor-port/src/engine/runtrace.test.ts",
+      "sha256": "B4F4901B9AC9979D2A1EC1772A9A8EAF9FF2639AC880534931EA36C31DAFBED9"
+    },
+    {
+      "path": "raptor-port/src/engine/sans.test.ts",
+      "sha256": "8188742354E57346F65A5A7D18EE1E03F0BAA20FCA45F5892890B131864330AF"
+    },
+    {
+      "path": "raptor-port/src/engine/sansavail.test.ts",
+      "sha256": "36B1296D03F71D54A4648068BD6CD6EEE3426A200C740D99CA507E2181E76685"
+    },
+    {
+      "path": "raptor-port/src/engine/schema.test.ts",
+      "sha256": "45092467F58C606EC4D9685AD50F2FA76FCE72A840E1FB7CF6194FA919D23466"
+    },
+    {
+      "path": "raptor-port/src/engine/schema.ts",
+      "sha256": "2C7446EF7BF449164B7CE0B9074E18ED5305053FAF53679FAC9B20D50ED56115"
+    },
+    {
+      "path": "raptor-port/src/engine/scintime.test.ts",
+      "sha256": "0060D6196972E9F28C40F12D4258A1458342F0483938952CFE267F1FA0A99F34"
+    },
+    {
+      "path": "raptor-port/src/engine/scrole-rules.test.ts",
+      "sha256": "9E1E0DE48141BF11F1ABB58AEB2E5E76E116329D057CBB408925CC288F7D7036"
+    },
+    {
+      "path": "raptor-port/src/engine/scrub.test.ts",
+      "sha256": "0ED24EDA1197F1BEF061DC99E0F2876C70C8405C3940D3311AD8ECB0FF8FF73E"
+    },
+    {
+      "path": "raptor-port/src/engine/scshift-inputs.test.ts",
+      "sha256": "BA704D12780A18CD0BF50D7390A11EA6067F9C2C3255129DA1016E5606E1CA12"
+    },
+    {
+      "path": "raptor-port/src/engine/scspare-rules.test.ts",
+      "sha256": "834A178B99B01B9C2A2700485BD2984704EA923F37173E3533ABC1E8BE0E9960"
+    },
+    {
+      "path": "raptor-port/src/engine/secorder.test.ts",
+      "sha256": "EE67317CD8DAF236DD4A585348F6FB701CB6662AB31A1C57D8693FB42FEB0508"
+    },
+    {
+      "path": "raptor-port/src/engine/signbind.test.ts",
+      "sha256": "942BD1E880ECBB43E6B4AD119F8C47DDB6B4D99E737EFB7BB7E98115A2600B5C"
+    },
+    {
+      "path": "raptor-port/src/engine/signsort.test.ts",
+      "sha256": "C7F14D1BF0F365B0E7DCD66F1334FEC0C219E8D339C2012A2E96447408952CFE"
+    },
+    {
+      "path": "raptor-port/src/engine/slotrules.test.ts",
+      "sha256": "A381BC203A501A8932D2A150AEEDB1079CF2E9AA19B6C4AF5E2C084B916CB850"
+    },
+    {
+      "path": "raptor-port/src/engine/slots.test.ts",
+      "sha256": "D7B578A96E34A24BD943CA5F62257F31E7CCDFAA8E2C63420BB2D44DA3FBBB1A"
+    },
+    {
+      "path": "raptor-port/src/engine/slots.ts",
+      "sha256": "70916141FCDC5FBDFAC4B73A892EAEA2558637FCC8CA48FA4B5B8D7B81CCFEDF"
+    },
+    {
+      "path": "raptor-port/src/engine/sort.test.ts",
+      "sha256": "53F889E8ACB0B79D3EC70541BDC7E8E906B4D205E745404BAD61B053DA8FE7C7"
+    },
+    {
+      "path": "raptor-port/src/engine/stores.test.ts",
+      "sha256": "EC1A0003FD61B6447ABAC092AC3CD9B25C66C0D199D393C769E5D248A688B0ED"
+    },
+    {
+      "path": "raptor-port/src/engine/stores.ts",
+      "sha256": "E46AA2B7439F98A951F3774B12E32A1908D4F33C535C32FECFAFDF3C5215B33F"
+    },
+    {
+      "path": "raptor-port/src/engine/time.test.ts",
+      "sha256": "59F53A0F6CD21329E071AB2FBBAB692A9F5A41CBF9F8013272C0F1656FB34FDE"
+    },
+    {
+      "path": "raptor-port/src/engine/time.ts",
+      "sha256": "622AD40858B80E190291911E3078C8A2BCF3E419DF612EA82D6908AD3AE74FFB"
+    },
+    {
+      "path": "raptor-port/src/engine/turnring.test.ts",
+      "sha256": "9184B85D33AF36EE0B189BB5342935C5AD7912B2F8DC5A40A75448F023A4D564"
+    },
+    {
+      "path": "raptor-port/src/engine/validate.test.ts",
+      "sha256": "92B7D40173E2A2F00119ED595E0E517BA95312A61EC7D06D673602171132C2C6"
+    },
+    {
+      "path": "raptor-port/src/engine/validate.ts",
+      "sha256": "28E8A4FB0E7D15E4DA869B3E799C3D37C5C97D2C555EB4EF6C8DF8963795A5A4"
+    },
+    {
+      "path": "raptor-port/src/engine/verid.test.ts",
+      "sha256": "42EAC6D389E1EC0BA81E13108429B6F66C100503CF1EEA22CA75D92DFEEB6A55"
+    },
+    {
+      "path": "raptor-port/src/engine/verid.ts",
+      "sha256": "CAE7DD1680D6B44E91443C3FA3BD85DBAD23D46C629D9C623ECFCDD912DC1EF5"
+    },
+    {
+      "path": "raptor-port/src/engine/warnhide.test.ts",
+      "sha256": "F6861C8AF5C2B6C6221AB828D8086F4265788716906ADB5782E35B239F2F5B74"
+    },
+    {
+      "path": "raptor-port/src/engine/warnhide.ts",
+      "sha256": "832BABED4A89063449499F50D65522114F7C7A4957B6FC0764B2BA705F02D0B6"
+    },
+    {
+      "path": "raptor-port/src/engine/waves.test.ts",
+      "sha256": "37695B13D48D26B8EA640D17DA1C6505124347D339F8ED1344228C52B1988126"
+    },
+    {
+      "path": "raptor-port/src/engine/waves.ts",
+      "sha256": "2BB1A583CED2120A2FAD19F678AE035E9703F2934F34E7BB3157AD2E78A09455"
+    },
+    {
+      "path": "raptor-port/src/engine/wavetpl.test.ts",
+      "sha256": "A0ED6398F37C069C7EC6BEB494E1BD005EDFDDA24F5F3779DE188B91B5278246"
+    },
+    {
+      "path": "raptor-port/src/engine/wavetpl.ts",
+      "sha256": "AF91CB603E5FCF95BE6B2B9F48FA277ADA5733F597FA9EC1F2B51E3468D5DA28"
+    },
+    {
+      "path": "raptor-port/src/engine/week2.ts",
+      "sha256": "CC93E4DFB7479FE3F12D4F27C72C83B4D12CC3DA64865ACB69EBB35A81579E08"
+    },
+    {
+      "path": "raptor-port/src/engine/weekctx.test.ts",
+      "sha256": "D9FB6CAD19D99EA29E6CF0C4225381FE447CCAB7D64251BBB2246357D8740886"
+    },
+    {
+      "path": "raptor-port/src/engine/weekctx.ts",
+      "sha256": "5DE9F44981CCCCC82C7D17B3AFA814D5D2D4E841C052A69DF78EFFFDC015342D"
+    },
+    {
+      "path": "raptor-port/src/engine/weeks-data.ts",
+      "sha256": "D0F60492A19E727CA39B64AE8195B8768DA8CC833666B0C523053FB075E7A758"
+    },
+    {
+      "path": "raptor-port/src/engine/weekstash.ts",
+      "sha256": "D5B423495F32657EC77AD77EC9A7FD9E83ABC20549E461A86E7DF0DF0EB514A5"
+    },
+    {
+      "path": "raptor-port/src/engine/world.ts",
+      "sha256": "42AE5E67F85DB2ED7CB4F3B70E56CC28577D45DAEACE494FB8D2CA0241827930"
+    },
+    {
+      "path": "raptor-port/src/leavewar/absences.test.ts",
+      "sha256": "A79FB84B5550DF57549CB00F47C32EC50E4A0E37AFAE1C30DCF7F5C531213E39"
+    },
+    {
+      "path": "raptor-port/src/leavewar/absences.ts",
+      "sha256": "54C87810442DC8C2EE64802553BEB456E907A2AE786F88B526EE272ED5C6F575"
+    },
+    {
+      "path": "raptor-port/src/leavewar/amendretest-lw.test.ts",
+      "sha256": "AD42DC29176A2F1AB3287D96C41338A9686C7CAC16C2DC432692D0DB080AAC60"
+    },
+    {
+      "path": "raptor-port/src/leavewar/bootseal.test.ts",
+      "sha256": "D5DF952139BE0B33EE84A08D422885EF30EA8C82AB894B4735550C1F2AF12560"
+    },
+    {
+      "path": "raptor-port/src/leavewar/causal-envelope.test.ts",
+      "sha256": "18F92E731121ABCB46FC7D8C49960C5AAAF49C8ECE54E48C352E6637AD1DBA19"
+    },
+    {
+      "path": "raptor-port/src/leavewar/changelines-lw.test.ts",
+      "sha256": "3FA9E80C2BA0C92AE75E81D4F950E118EE3B7563BC431123ECD1CF7A797EA61B"
+    },
+    {
+      "path": "raptor-port/src/leavewar/clashwayout.test.tsx",
+      "sha256": "59815D32D6DAD6891751D11377A1BFB8B43EF71906D8002E678A59B445CCBE28"
+    },
+    {
+      "path": "raptor-port/src/leavewar/demoworld-stored.test.ts",
+      "sha256": "C20BB33F7F89B86CA229D7A19C151B3FC2DC227CEEC8F32E55081020611BAD76"
+    },
+    {
+      "path": "raptor-port/src/leavewar/emptywar.test.tsx",
+      "sha256": "A92C9D2B28D1309EA2EB6F76608728F616544EC4DEFE855D9F630EEA792C6275"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/availability.test.ts",
+      "sha256": "C380F580BB04D40647B8F8A4FFDCBE67547E04E69C69440E1AC0008D6EF7F79D"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/availability.ts",
+      "sha256": "85FA398E3BF19FF8BD83D9CC338C7B3688BDFD428BFA5CE0129C1984A2CB2B1C"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/bids.test.ts",
+      "sha256": "40C92C0A8A143FC4F9209D8D7A29F4CE817B25DB517E865B286ABA38CCB3927F"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/bids.ts",
+      "sha256": "F6414F2B1F7F9D1095B22737E1FC53C09C80DB8CDC10FB3CA0C8A32E098423B9"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/charge.test.ts",
+      "sha256": "2EF61445FEB10952FB27389C7818C245EB064C00A96CD606535FE1522F750D3A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/charge.ts",
+      "sha256": "E62B64DF83970F781BD34719D3F34E9FA7F7425F05D26545AFB40B5B7217FFC9"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/codes.test.ts",
+      "sha256": "DA439C7534FC69BA2A683CD5FAFD11391ABF69F00A1998A377F144EE740F7763"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/codes.ts",
+      "sha256": "C6ACBF1975CCD3C7D65EB0A31E2473226585D62918D9B49DC5274416DD51BC0B"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/counterrules.test.ts",
+      "sha256": "22F768C534566F1B423647CEEFB8C8C2F8288C82816796FB413E419EBCB516F4"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/counters.test.ts",
+      "sha256": "7491AB21D58374B2535FDD941D27AD0CC14A51C771B39D6E9F929052397C0098"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/counters.ts",
+      "sha256": "AEAFAC19398D4BE21BE65D787D01C4630B112B686443221B5607D3918915D98C"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/credit.ts",
+      "sha256": "219DADCF81D104F0DC4B5E29D567CE47E95FB5737C947B8F725E194376DA0A86"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/dayview.test.ts",
+      "sha256": "BD327AF1D511310D7BA55BA9BB7F0D809CBB91A7099A884ADD69DF79474CEDE4"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/dayview.ts",
+      "sha256": "C69E822A6A1EE23FBFC9397D9B880F1C8DEA6BB4C3FD9D44D9B9F222CB998255"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/evaluate.test.ts",
+      "sha256": "29997697A2DC7ED69555A81CBEB8EEB1DFB6C3391493154E0DA2D4429F78B20D"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/evaluate.ts",
+      "sha256": "40C69160C4E4F692B4B8A36B14012749974E68280E3DF40D53BAF124A8D97629"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/eventdefs.test.ts",
+      "sha256": "81EA9CCEE229A11B7FE14E99FDBF1DA4264C5E1DD76DC3FD751B18602822E26F"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/eventdefs.ts",
+      "sha256": "3D7AC4342A986DB4BAD57D1140268CB6C5E54121F0FE452E32072DACE49FA4A8"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/groups.test.ts",
+      "sha256": "F19C676C83394F9C9EF7F2570DA1B61EFC5F995CA3246D7A3EFCAF7B9A20BBC0"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/groups.ts",
+      "sha256": "447FB8EEC37B301ED6433B730E3C8997ADF5C7E8C1B8F42C00E14E0FFC5413BA"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/index.ts",
+      "sha256": "F3FA3CC53B5D5EDC4ED7E0FD51FD02CD0E4912E947AAC473810CD1E6945959EA"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/months.test.ts",
+      "sha256": "CA1002BD853ACDE34890301B99A199C963F2B50B55BC819F812270D6C7AA0A5A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/months.ts",
+      "sha256": "50C15E97FB1E9FD64118F0D082676AEE3D2512215FCB8F7C7CEE5A216995CAFD"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/oiltracker.test.ts",
+      "sha256": "8D4A7287BC60D5D7835688CA73DDD34D63115AAA97F570520E08A6783E199A02"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/oiltracker.ts",
+      "sha256": "07CCFFFDB8300BBC0A4876FE92CBE141BECF0A9709B8F9FCE210A66BC8C55B86"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/people.test.ts",
+      "sha256": "A48D5750ACCFD2F55A3C11DA20E84D2AEAFAE3B1579D59DB1EA5074A5E5D7608"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/people.ts",
+      "sha256": "57BF2539D64547CAEB26D6C54806AF11BD64C84F8EEEAC17FBB1F568F1929901"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/period.test.ts",
+      "sha256": "09DCD9673A5E31F0257BDEBB6E833BF853C10199F8B39870ADFFFDEA5FBAF598"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/period.ts",
+      "sha256": "3313E2C9792693BF3666DB0306DAA89E89A0A155D11A2F46607AA5F227A64CEF"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/requirements.test.ts",
+      "sha256": "D7A3D1638DBC2993234A88BA1C0EB21AE0676DFF4F6C0C3D3E37D6A49521CE90"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/requirements.ts",
+      "sha256": "E208A0AFA5D4064FDB079CC52B64430D1340FCE1A6566A3CDDFCFEEC702E3B09"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/seed.test.ts",
+      "sha256": "AC3A58192F846A5488D09CE5800A5B29C2671348F6FC2BED528BAB65559E8CBF"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/seed.ts",
+      "sha256": "D75906653E3A1C1F3B27ABADBFD26A83E87A31423496E39E1EEA1AF5A8B6E43C"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/stages.test.ts",
+      "sha256": "22BD91B8C6BC414F17F2199AEEFAF3385A985B574E67F617CB928C93041B5089"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/stages.ts",
+      "sha256": "33A457651A616092880B109CFC2EA6E01650105FA9FF7D8C030158769D25F33C"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/warrecs.ts",
+      "sha256": "44CC6C61426441C93A33FBCC222D4C3DF9013506AE0E15E4BEE3ED2979134934"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/wars.test.ts",
+      "sha256": "C9B1C5A9EDDBF3F60341A5F0A9AAA42EAA52D2E0EA2EC507CF7E1E47D162A417"
+    },
+    {
+      "path": "raptor-port/src/leavewar/engine/wars.ts",
+      "sha256": "C108B7A47C8D9EAB8B68CCB0D9402DB7B6490D298CDA82DE3FA56CAA75EBDF58"
+    },
+    {
+      "path": "raptor-port/src/leavewar/inputgate.test.ts",
+      "sha256": "E88C01997D2FFCBDE01491B56244760260872F504CCBF35E227F2B520E8B6917"
+    },
+    {
+      "path": "raptor-port/src/leavewar/inputgate.ts",
+      "sha256": "F7318DC0E04591C69DB2C6A5F8C959DBE3282299BDCA3213EA700C6AD41CB5FF"
+    },
+    {
+      "path": "raptor-port/src/leavewar/leavewarpage.test.tsx",
+      "sha256": "8420089E2969C5EDED023DFC3EB66D18985BB1352CE268B4BB6BA1DCCDA459A2"
+    },
+    {
+      "path": "raptor-port/src/leavewar/LeaveWarPage.tsx",
+      "sha256": "F6E303888071CA7A3AF6DAF537D99F163D7F74BA676B207D1F6050E220BC3ED9"
+    },
+    {
+      "path": "raptor-port/src/leavewar/movestandard.test.ts",
+      "sha256": "8613782003DC14845061FB3DF4856FD55E452A0AC04F09ABA48B716F2259FDB3"
+    },
+    {
+      "path": "raptor-port/src/leavewar/oil-award-add.test.ts",
+      "sha256": "E78334D4B2D639B9A80769A9BD88BAFE7C946F620BF9758148399AAD508E5FAC"
+    },
+    {
+      "path": "raptor-port/src/leavewar/oil-bidagainst.test.ts",
+      "sha256": "6C471C1B0FA28DBBB9841284A6A94F580EB725D47E2BEDB7CDAA96F6FCCE4087"
+    },
+    {
+      "path": "raptor-port/src/leavewar/oilaward-baseline.test.ts",
+      "sha256": "01A37C3D8D6750AD52CF7FDA6ADEC71202AE9BC4027DA8429544F1E849CC4A92"
+    },
+    {
+      "path": "raptor-port/src/leavewar/oilaward-finalreads.test.ts",
+      "sha256": "6F3F12C87684A28375328DB205A563185C094BBD485B4EA040FBAE7399D980CD"
+    },
+    {
+      "path": "raptor-port/src/leavewar/oilaward-onekind.test.ts",
+      "sha256": "32E9C11DE74D1C83CA6CD6A20A529EF64C31454A3BCD28917CBF4C769FD97C8B"
+    },
+    {
+      "path": "raptor-port/src/leavewar/oilsync.test.ts",
+      "sha256": "6B166B9C4587A8B4559E7C23CFC736ECBC5BFD2EDDE94F678A9785816EF9410A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/onedoor.test.ts",
+      "sha256": "3D262B5B3A64385870B5A00B89BA4468F339D55246E0D82E2117969F0E5A5964"
+    },
+    {
+      "path": "raptor-port/src/leavewar/permsparity.test.ts",
+      "sha256": "78B1A3C4CC5F5CF3E444F00E27FB7FC3C1DD818EF94BF7DE7D31FC097D28B74E"
+    },
+    {
+      "path": "raptor-port/src/leavewar/poarchive.test.ts",
+      "sha256": "EB7FA77265FB5C9411972BBC4CD0367BB2B9D0729214BB3B2C51A71194F49B69"
+    },
+    {
+      "path": "raptor-port/src/leavewar/postout-outcomes.test.ts",
+      "sha256": "35438FE06371B659202BE16DD1C5993C94D5DB7F1049AFCE759E8BC6C3F39C74"
+    },
+    {
+      "path": "raptor-port/src/leavewar/postout-persist.test.ts",
+      "sha256": "358AB2BDB8508911232163ED35348A9607AA1894F5733C08AEA9352CEB95443A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/publishdoor.test.ts",
+      "sha256": "A8C16075B34110DB91949AF9C608DA6433F57B7EC75833B7BDC41F517C671790"
+    },
+    {
+      "path": "raptor-port/src/leavewar/quarantine-medical-ui-pile1.test.tsx",
+      "sha256": "A7A4AA68585D10D075755EB96E1AC2D73B6529E28D2932EBD47C363B7F885379"
+    },
+    {
+      "path": "raptor-port/src/leavewar/quarantine-pile1.test.ts",
+      "sha256": "0292B78F6E16A7A6C05E755042A82ADCB61E7A314A54F5A917992E0A3475B5BA"
+    },
+    {
+      "path": "raptor-port/src/leavewar/review-fixes.test.ts",
+      "sha256": "CD3ECDD23F4070816B4FCC2AA6E40D258EEFA6ECF785F43614BA756FA519FDFF"
+    },
+    {
+      "path": "raptor-port/src/leavewar/roster.test.ts",
+      "sha256": "CB24BE6B21FDFD84E02112FB9C5DF08E3DA0225BABAF7468F4E821005FC36693"
+    },
+    {
+      "path": "raptor-port/src/leavewar/rows.test.ts",
+      "sha256": "58AFE65D3A24CBA08A4E4ADB822959DEFD229B44BA96449CCE6426B6FD521C56"
+    },
+    {
+      "path": "raptor-port/src/leavewar/rowspan.test.ts",
+      "sha256": "EDB0128704667BDE182F2F22757E9FF9325D53539CC5E6110D9EC475F5BBD155"
+    },
+    {
+      "path": "raptor-port/src/leavewar/scenarios-bughunt.test.ts",
+      "sha256": "F15594B1B4930124BF22A6B3AE6A8E0F4B637CF0BA35559DE433CB266E6D8A96"
+    },
+    {
+      "path": "raptor-port/src/leavewar/scenarios-corners.test.ts",
+      "sha256": "CD31CD6F550BCB3E865F2EA9FA98E8DFCC4A23056C860DB2C34A5DB777CF1A64"
+    },
+    {
+      "path": "raptor-port/src/leavewar/scenarios-doors.test.ts",
+      "sha256": "B89228C59FAB4461B4C6121B808557DE8B19C0A4BC683410228F5F4E77C267C7"
+    },
+    {
+      "path": "raptor-port/src/leavewar/scenarios-rules.test.ts",
+      "sha256": "CE2B8754420C5B5E962BF6E9227C483AD048B2F2FD1E610552650D06A1442D0A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/stage-undo.test.ts",
+      "sha256": "02FB4181E764C13CE63C6A5B0CC0D1A6FDBC8A06391203F752B1884ADB90710C"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/balanceafter.test.ts",
+      "sha256": "DFFCE70B9A8142DC4B33AB54698B73678728CA1FB1EDA93ACB8A65EB363EC325"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/bootprune.test.ts",
+      "sha256": "95F23EF7BD32139D0BC3A7D1F65026092CE45CE3462E4167F13896830E6B5F08"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/demoworld.ts",
+      "sha256": "AE8A82DFD716E2798EA8DEE4247159D21E30F681C1AF8C2AFB39072E25337905"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/groupcolors.test.ts",
+      "sha256": "1744F9B17033353B4BACFD0398290E2BC8170835FBFD657A2A2DAD63DE197339"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/lw-commit.test.ts",
+      "sha256": "E9FB04D4AA0C776D9AF56EE6FD3FDE81268AF5DE54B39E83F067A21EB6CD0FF4"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/merge.ts",
+      "sha256": "A4098B30F476915FC91FE1EE5DED363E98B9CB7C211CDF05A25B4A0B6B6E72AA"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/raptorRoster.test.ts",
+      "sha256": "E592BF5D88D7E87742D65ECAB490EA9E5901C6E2C5F0176E4A3EB0A4A965E916"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/raptorRoster.ts",
+      "sha256": "62AC904DC6B2D2889352331B97C6762C714B52D490E879B64240996D115984B8"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/rows.ts",
+      "sha256": "176B50412A15A9390DAFCEDB7DA5EAC994A82D8BE63806A3B2099E90B444ABD1"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/screen.ts",
+      "sha256": "8D1BCE526C701D9F147BCD0729AB9D80D155AA0D2A77CA38F09F320106F66487"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/storage.ts",
+      "sha256": "03FF760086907A424D632A8F064270F502A292AA77176121A336A902C13FDC03"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/store.test.ts",
+      "sha256": "2EFAF4EDEDAC0587EEB4B07F524E6E54CF3A6C27C694FE0051FF6DA3379517C2"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/store.ts",
+      "sha256": "8BAD1F4AA8F5E359AD3862FAE47D6B9F8A5B76F425F6573300C9E528A8F2CC27"
+    },
+    {
+      "path": "raptor-port/src/leavewar/state/write-seam.test.ts",
+      "sha256": "024A5C548E8BCAB7CF53A32A6F4E0C057AA29199F7B2ED3BA39E8FFAE7E4FDF7"
+    },
+    {
+      "path": "raptor-port/src/leavewar/stints.test.ts",
+      "sha256": "FD92351FA73AC94146F1AA2A981CFDCEC5695F5303D61CCE755F9E23D5BADC12"
+    },
+    {
+      "path": "raptor-port/src/leavewar/storage-door.test.ts",
+      "sha256": "C8F65220FF62E586F1A40F23D0182FFE97E807422D57F84390FBA7E19D3E1205"
+    },
+    {
+      "path": "raptor-port/src/leavewar/storage-seam.test.ts",
+      "sha256": "110B35F41E71E9EDBE535270D3848BA18E1511B6694284049DDAAAA20539A62E"
+    },
+    {
+      "path": "raptor-port/src/leavewar/sync.test.ts",
+      "sha256": "80CFDB6A96ADE2CD84376C85071B70FDC3BD34C66D94EC2F6745F0C576C2E481"
+    },
+    {
+      "path": "raptor-port/src/leavewar/sync.ts",
+      "sha256": "F09AE99C330A3EBFC2BEF0B547A766648D00B67A14B61D49D02BC19167364312"
+    },
+    {
+      "path": "raptor-port/src/leavewar/test-setup.ts",
+      "sha256": "DAE7E6747F996F9315171D7A9B069EA1B8A32B4B709F3BE8B31B3AA79C6AB0B5"
+    },
+    {
+      "path": "raptor-port/src/leavewar/testkit.ts",
+      "sha256": "3DEE166F75BAC7177DE0D9DB561B821399C42B9A1DD399BB5C3A2D559A5B255A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/archivewire.test.tsx",
+      "sha256": "C7FE5DB6FD630DEB4FCA079A479326C9A41158DEB23D93C1E29EAD0F814CCA09"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/arrangepaint.test.ts",
+      "sha256": "9CC55E57744CA8001C687A393D41F0445BEC99E40EB47549D6CB7A33D72C4F87"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/awardclear.test.tsx",
+      "sha256": "35D46F1A45F14026207C444F48F76489468B69F7F1F575A91E9CF1DC813A64B4"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/awardwords.ts",
+      "sha256": "670F420817FBDF32D506AF1F9877C6ED0D53C0DABBA3400B57FFE854107F2303"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/balancebar.test.tsx",
+      "sha256": "0CBAA675D874EEE8041BBD7179191D7BDD31B732B2B5F58A1DB69983E62C919A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/BalanceBar.tsx",
+      "sha256": "5A40F9E9F41C5942AFC836BC6D260746FD0DCF3091E87EE80B8B3C1D623563CC"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/belowzero.ts",
+      "sha256": "A55FB9E3DF1E688CEC10B622E6DEBF844B7FCB524E57F63DFEB139D69378A640"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/bidding.test.tsx",
+      "sha256": "1E854666AE2CFC835805A4C571378703836C17183FC50DB20791B02E2948B879"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/bidpicker.css",
+      "sha256": "A0A23029D073160E5BE6F000F3A8CB8C3DE1EE8A8DC7FA86DF89208B20337B25"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/BidPicker.tsx",
+      "sha256": "3A816D5EA6749882867E29EC792EC10F6EF150D5C31489C57ADD4776AB6F8B87"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/chrome.css",
+      "sha256": "36892E3E742C179C398F15AE21FF0274E63D06A8CDE303323B6BC377C56D4960"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/chrome.test.tsx",
+      "sha256": "A5B167C36188750D3445428172A4190D09E467E33C03C9819324818943255DB3"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/Chrome.tsx",
+      "sha256": "B0E8F6C9DEFFABA27F8AB016E3AE63E1ED1E23F1AAE17FEBA74B517DF6206717"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/colwindow.test.ts",
+      "sha256": "FF888B0614C42B82E45E81A1F973446F185B68735113C35686CAB45E2BD88FE5"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/colwindow.ts",
+      "sha256": "BC0F21AC5A162BA2610402D0DEDC01C83370378576FD533C7C2FB16664DD3557"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/counterform.test.tsx",
+      "sha256": "9EA601B7C4286A5011E7888E5639E4B7A6745F9496FF35C6B6F1F10F12F79D06"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/CounterForm.tsx",
+      "sha256": "FF11DA3B810574FB87C98188A53B4366575F3FC7CA36DFDCBBFA3990E4531758"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/counters.test.tsx",
+      "sha256": "58B72AE9BAE3963A3E4260002F12E5E624154666B4F3EDC40ECAD361AF8FD578"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/CounterSheet.tsx",
+      "sha256": "7E2C8E0C7E1F0AF0441D9AC7D298023797BB309BC53674A324E9EC3841009751"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/CountRows.tsx",
+      "sha256": "1D0332E7FB623EFFE3F9C18E06A04470742994D9FBC65D0EC27DAAF9E7E30115"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/counts.test.tsx",
+      "sha256": "575A1D0258608025C64A35F4E53CB890B2F2B7A0900F219BE16798691A55E132"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/creditdays.test.tsx",
+      "sha256": "97EB9D527D891E491E29D0FC49452C373E8CF721929DEE2521BA63481A98DF11"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/creditdoor.test.tsx",
+      "sha256": "DAB3AAEEA88556EE115C238BB9F15DD9A3432B33F0A3674C3761617ECE42F7B6"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/CreditForm.tsx",
+      "sha256": "99DEC1B996BA0748B8D82E74A72A7BE47248CBAF7BC7B41A5C01B1284C11A0CD"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/dates.test.ts",
+      "sha256": "28FD7F8925513DBBED75E1B0094E6931954A12E38891CFFCB52F49323A9DB020"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/dates.ts",
+      "sha256": "981E9BEFE7C36965A9B79B2EB4BEA02548F16BD75935919F3A8988BD969850D8"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/daylist.test.tsx",
+      "sha256": "04CD20F7B0B70A4437C11400FAE474026BB2BDF2C7E03F63CFBA264B22435ECC"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/DayList.tsx",
+      "sha256": "A4952D6A9E6D5D5AE741177294D4CE0BFE5438878055947498696565C500C38B"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/deciding.test.tsx",
+      "sha256": "B4F37BC3863EC95BE7FAB01B06126C9C78AE82808B25DF6FBA7F4F97B4F5C651"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/EventRows.tsx",
+      "sha256": "D79EBD4CC10E0CEDFA65F4206D925DB57D4343F1A86B404D0AEE39FE29D25E3E"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/events.test.tsx",
+      "sha256": "3DB36A81BA2BA282056156D36D92DAA07C9AE41E28809F2CEE7D1D0249EFA3B4"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/eventsheet.css",
+      "sha256": "EA13C8AF6FD8BD0081E620B5F86E30F3B9B0A5688D7FF4AE7545E3411697905D"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/eventsheet.test.tsx",
+      "sha256": "AF5804ADFD5D2B56A42ACFBD0ED1120A09E988057CD68F4343D970DF98EE9A0E"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/EventSheet.tsx",
+      "sha256": "D122A206CE23D925D83EA066220C1E14D65CA876D02C0451E839FCC6A8FD107C"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/figdrawer.test.tsx",
+      "sha256": "2ED352203AA34F1146FEDF45A028B23A9DC2280D6B8E1F608F589006B23EB234"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/figselect.test.tsx",
+      "sha256": "6FF452E1BCE94545E4DF2DBD45199B043CBA9F37D46C75EB96BE6CE1A49AD5BE"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/FigureCell.tsx",
+      "sha256": "41E85A58AFC1345682F2CE5FC78344EF278C9B1763735D88FBA7222C87826A1C"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/FiguresDrawer.tsx",
+      "sha256": "0238808AE85B273DF7D14F6612E3A7FD3677D9A4ABF789BF6BAF5246AFFB66C2"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/freehalf.test.tsx",
+      "sha256": "1EFEAC7760DF9900C3C5C9643BF6A5B8A22A43AA0E0BCEA4A33F81A513AC8F80"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/frozencols.test.tsx",
+      "sha256": "3F9C468A94B42B872187E09EC1CAE6CE91407AD2BB9B4594E71DE25CFC02BFAC"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/groupColor.test.ts",
+      "sha256": "250BC490C2B4238D5BFB2DB8CEEFD2500B2BB6F117B03CE3E48C1799F7DC3737"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/groupColor.ts",
+      "sha256": "353D977B0883B689A28CE9A0E1E004DEC0C563675BF8000A9766294A4A626552"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/holdsheet.test.tsx",
+      "sha256": "31496B5FF8ECEC2F5BFC1190C27B6F35FF23CDFAF02A087C3DBB051E1A6B941A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/isodates.test.tsx",
+      "sha256": "A550596AD2B8D09436FAE77EB48BD2C436E4FF2F812022389125F676B9DB5196"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/manningsheet.test.tsx",
+      "sha256": "CE83A78B64B7F48F81DABFF4C252EFF437173D121B18AD1649B33E9102BC902D"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/ManningSheet.tsx",
+      "sha256": "98A3CB5777D1185F7A3FCA8D803F153B7F9BBFFFCD87034D013CA85D519FA5CE"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/matrix.css",
+      "sha256": "C65C7970480B91074498B7E79DAA512037FFECA2F4068A7983610700123568DC"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/matrix.test.tsx",
+      "sha256": "D43EA1FE6639EAE253711AB3F822CB51ADBECA6309AB47F665F88F64098063EF"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/Matrix.tsx",
+      "sha256": "B950D2CFF0EF0DCD5ACF2CF00DBC2B37E26DAA9D903C9279FBF09CED2263CE5E"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/memberclash.test.tsx",
+      "sha256": "27D19DC89086B66A51B526005494110DFF75317A29AA18F5A6A90245B2E5F79A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/monthstrip.test.tsx",
+      "sha256": "0A910A69CF471A49D3995DB3A72BAE3E6F4E22EE5F6AA891E7963A3962AF27F2"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/monthview.test.ts",
+      "sha256": "6EA66E814693ED42EA6F1FF5EF45A5C234DF435568680A0CF4B9EBCBEBB8B8F3"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/monthview.ts",
+      "sha256": "60EE342A91DE4D3CB1A05F8BE904CDE03EE8E325F121F6DBD570E0EF66B3DF4D"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/moveone.test.tsx",
+      "sha256": "7E9F5A647A5705A1DB837DD2E7B366578935A12E8D78CE6B206EE108E727F946"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/movestandard-synced.test.tsx",
+      "sha256": "AB95DC4E6869FFCE028C5E29B068F95B720C28DA85ACBC9E0BAE7FBD92E8B02A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/movestandard.test.tsx",
+      "sha256": "D404AC83057F20C0F968E9A7E9EB517F1088C94717FF95549C9108CAB642F25B"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/movewire.test.ts",
+      "sha256": "AAB33D6A36D1746E5E48C9EEA94D9D2D00FFC5FC1FFA71E9A89E8ADC6AADDDDE"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/oiltracker.css",
+      "sha256": "947C36FD174ED92F69BF7E640782B066F895E1F25D8D07759BF2856AD885BBEB"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/oiltracker.test.tsx",
+      "sha256": "9DDDD3D9DA6C8D738BBF5E32D8E207627326383C92B1C970EDA71F7232C45A8F"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/OilTracker.tsx",
+      "sha256": "46A0BBE2A61309755E95DFDAE2608ED2AADE0832B99C9F5D5A5AE6964A70DFC0"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/onedoor-sheets.test.tsx",
+      "sha256": "1ED869F4831190B6795E0ABB527FEFAE22052AC5C8DC694E78EC60CC1B2DBF5B"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/OutcomeChips.tsx",
+      "sha256": "A5F7CE7995DBC1914C986853E1F17E4531EF19DE5F1289CBE1D82F5457A3244A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/ownaward.test.tsx",
+      "sha256": "B62A76EB5931DB3F44D16AC0FEFAA1EF430D92127C733BFD6864C927954462C3"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/person.test.tsx",
+      "sha256": "76AC5BE1980F6EA309DB4E2642893D34D668529A1B0BCEFF2709F42F2A90DE7A"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/pi.test.tsx",
+      "sha256": "D8FBC14370A4F203C9BC9580A15749B552712687934DFF1786A5BB5E79D35D30"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/po.test.tsx",
+      "sha256": "FE38A1E43F9C385F278463C712A436CD2D17974708CC8B0469D8CCB6934156E3"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/popat.ts",
+      "sha256": "9D9AE1A624ADF8E8EBDE37DDAF1C74D89C190027036F9D992497CD3C50E9335E"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/rangeclear.test.tsx",
+      "sha256": "2375CAE82481A73A53509061FF7B09CFFD32AFD0E211B8ACD9E2C7ED2F53B4ED"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/rangepicker.css",
+      "sha256": "D977F18611D215712A958B97FD850F3C14980722A4AF897122874ADF152606B4"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/rangepicker.test.tsx",
+      "sha256": "BE8F5F228846D84A433BD8376C5589F58234554BCB56526983D7C7A74FBE6A4D"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/RangePicker.tsx",
+      "sha256": "D5EE37273D753BC3C044718DBB2121830C9923E0ACABC21DEC3A68E3FC357F6D"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/raptorsheet.test.tsx",
+      "sha256": "9BC9F9270157DE511CF97FE733361B8552E37B967C419A160E3BDB50A3CDDE48"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/remarks.test.tsx",
+      "sha256": "061548FB516FE62B7D433BDEE31181BEB45591AE1EDE5A47275989652A2EB974"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/RemarksSheet.tsx",
+      "sha256": "AD503E30E50BF27494CED082D066925EAC448E4258244414F11C0A048FAA633B"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/repaint.test.tsx",
+      "sha256": "287B3F43258C8DE72EF2E2ADE2BE6C96459D2B0671B35AC8E5A59753E21567C3"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/rowglow.test.ts",
+      "sha256": "585654360EA202BC94BDE2EBF0415BBA6C614AA6971C1EB06997B76D3C95FCF1"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/scrim.test.tsx",
+      "sha256": "560A7F377A898179ED9F598D28AB90EA38F2EC13B68E536434991895C5F5E007"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/select.test.ts",
+      "sha256": "2E629361AF4D6E4351CC30DD2342076D089C1885F90335824FF1F700C8D98AD5"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/select.ts",
+      "sha256": "BF84D8E0FA3D8F9DB0F4DF0768FDBFCBAD26E9A41564E7871461B1FCE6D267E2"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/selectsheet.test.tsx",
+      "sha256": "155E1AB17DAB83C89DAA2386D164DFDA1BF112651CEC9CC1CC007B252CDA5592"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/SelectSheet.tsx",
+      "sha256": "7176D3C2CA54FC398BD07960661ACB82DAA087E2E328DC8DE9D15E45172A1CAE"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/selecttap.test.ts",
+      "sha256": "5B83C8D06D5F4DF3AA4C9AABE82B87F918251891FFF1976929822B5E3D17142E"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/settingssheet.test.tsx",
+      "sha256": "B9B31FA4A03F00045545BF19EE0A2FB63ED1E936CFBF6AE16684A5539A37B1BE"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/SettingsSheet.tsx",
+      "sha256": "6D4EC9B755A3C98E371B410C2A6424379A6B06407EB3CB77BB38D1A869E49C8E"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/sheet-keyboard.test.tsx",
+      "sha256": "19D0F3B524ACBB382D25298BC011F397FA16D19A17B67DA0C76D0CB00E93E8BB"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/Sheet.tsx",
+      "sha256": "8C328DBE462F4F4424DACC737B5C0D4A948FBC12AC8B635184F435D84D69753E"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/SheetActions.tsx",
+      "sha256": "C802B63654EB85C2A686E7458953490A13BC9415CD758A2A7A256E6861E0A951"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/sheetfocus.test.tsx",
+      "sha256": "2B5C7A16ADA36FD1E78D6017C76D82FD94510D5E722007B4C2B31D4D31CDD0A0"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/undermanned.test.tsx",
+      "sha256": "2A1BED25178DE02CFBF1B585D00D845378F29CBAB2A9D521413527A72FBEEBC4"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/useStore.ts",
+      "sha256": "05738BF7C518EC5FFE9A033AA21866808637307B593E52229D53F6E968F5FA06"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/wars.test.tsx",
+      "sha256": "5EA03DD71B52CAF5F150EB589E343396723BC5F505F19D74AFCA109BBA222798"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/WarSheet.tsx",
+      "sha256": "F2E93F4838FAA4D2F7F538BC06FEFC908D58BEE06012D7D883961DD4ED6BEC38"
+    },
+    {
+      "path": "raptor-port/src/leavewar/ui/window.test.tsx",
+      "sha256": "B8292608CDAB5B003DCE635F182F43551432D98817CC76409B3CEEEB9E9AE2FC"
+    },
+    {
+      "path": "raptor-port/src/leavewar/undoaudit.test.ts",
+      "sha256": "8BE452AC44EA56B378DEB91EC78F071779903DCA6A85D840CD43016F75F4AF8D"
+    },
+    {
+      "path": "raptor-port/src/leavewar/viewer.test.ts",
+      "sha256": "7A2999CDDE0C331B413FF8F3391923D1326395451CF9EBB2E63D842A5A938867"
+    },
+    {
+      "path": "raptor-port/src/leavewar/viewerpin.test.ts",
+      "sha256": "26BD28BFC6A85FDAF70B5BAC29D363625037C3F9396F01694C334A2B9BE8D3D6"
+    },
+    {
+      "path": "raptor-port/src/main.tsx",
+      "sha256": "45374FD5A6717090A9A7BC8E9BBAEFB7EBD3B0FF8A85E385CD13A28919B58343"
+    },
+    {
+      "path": "raptor-port/src/probe-bridge-offhost.test.ts",
+      "sha256": "6688C9A91B0F1435CF9C30289437245AF8ED16D5FBCB4197A1BD08C6080A5DE7"
+    },
+    {
+      "path": "raptor-port/src/probe-bridge.ts",
+      "sha256": "0076B0415571C3DE5229D045245D63815AF91CD45D2B01C37E21B2167EFCEF57"
+    },
+    {
+      "path": "raptor-port/src/scaffold.test.ts",
+      "sha256": "AD5F8CBAE62381D27637219F0359251426B4DE98D01197A95F98A3FDBB885E77"
+    },
+    {
+      "path": "raptor-port/src/state/accounts-rows.test.ts",
+      "sha256": "146F9727E7E3F7EFA81F7739A10139E6A06EE546488F96ACF24234E5FEEC0F07"
+    },
+    {
+      "path": "raptor-port/src/state/accounts.test.ts",
+      "sha256": "87978FCD2B2DD209C6028134FA9340A9652ABE3159D91B40030844EE7C823433"
+    },
+    {
+      "path": "raptor-port/src/state/accounts.ts",
+      "sha256": "5984B3F09D16F0576FC1A7652D2094A594CC8A6E56A61B7CC88251263533847A"
+    },
+    {
+      "path": "raptor-port/src/state/auth.ts",
+      "sha256": "1A2B1156729D63027C784511988E97DF6376A40B29A62B111E2BDFD4ABB3D448"
+    },
+    {
+      "path": "raptor-port/src/state/bell.test.ts",
+      "sha256": "4D3B0E83DE9E2A28796899B60E34073966D8FC2BC9380DAE2576963163B3F176"
+    },
+    {
+      "path": "raptor-port/src/state/bootinit.test.ts",
+      "sha256": "6DD473BD9CCA52914BBF77AD088C6C0978E1FB1963FB9919360924BB525D0975"
+    },
+    {
+      "path": "raptor-port/src/state/callsign.test.ts",
+      "sha256": "994AC437EFAFF8E6CC72D16F760C04CC85FF3E4FF049E97FD75C19B54F709395"
+    },
+    {
+      "path": "raptor-port/src/state/carryday.test.ts",
+      "sha256": "21BBB2116A648764EC4BCC91342FC0311CD2F6EF927BD2C84D0BA927A4B5E2FC"
+    },
+    {
+      "path": "raptor-port/src/state/changebatch-rollcall.test.ts",
+      "sha256": "1BE73A440A002337EE1E95E62A972A324367545297459DAB87F3097F0E1F42D6"
+    },
+    {
+      "path": "raptor-port/src/state/changebatch.test.ts",
+      "sha256": "D4B1C7CF95AA2AA98DB87D06E6799E0F4FB7E780A943E219E2D8ADF215C6C993"
+    },
+    {
+      "path": "raptor-port/src/state/changebatch.ts",
+      "sha256": "C1E106623115325858CF7DCF0A6D47308B24FC14F5CB354B29C8DA30EC4C92A5"
+    },
+    {
+      "path": "raptor-port/src/state/changelines.test.ts",
+      "sha256": "16FB8408CFCD48EE93B522C17B490E716E0DC8C00801698699BB2E757BB9A978"
+    },
+    {
+      "path": "raptor-port/src/state/changelines.ts",
+      "sha256": "F2A3505C396CE6503AF4C11DE9936924FBC0D03B27C8A2C01D035AAED96DBD87"
+    },
+    {
+      "path": "raptor-port/src/state/changes.test.ts",
+      "sha256": "BF27A0D5C682C313B1663169F65482C93F43A5EFA493719A0A8F0177DBFF911F"
+    },
+    {
+      "path": "raptor-port/src/state/changes.ts",
+      "sha256": "D1A817082EA2A70ED652F7558F332AFCBCD6F64DF817A016F1116927989A891D"
+    },
+    {
+      "path": "raptor-port/src/state/command-write-seam.test.ts",
+      "sha256": "843B10103DA1D581CF7702D40CE02B5D3DC019F6EB4467772A2B3F776B7B5E61"
+    },
+    {
+      "path": "raptor-port/src/state/demomed.test.ts",
+      "sha256": "B8088C2222C0A086AFDFF4C4513030D6D01A44ECA9C89F407651E7EB06BDB141"
+    },
+    {
+      "path": "raptor-port/src/state/demosans.test.ts",
+      "sha256": "9A3636D16F14E00BC5D659BB9A0EB1113D1DB338B75E7E5718E70EF44117BA02"
+    },
+    {
+      "path": "raptor-port/src/state/demoseed.ts",
+      "sha256": "5875D02D60CBE9A2EA03DFC417BCD33CEB3059D4790290BC102F94CA68B779E3"
+    },
+    {
+      "path": "raptor-port/src/state/disclosure.ts",
+      "sha256": "E9759270109D1B0DCDE37474ACD4AFA602A70F54D914AFF920322D2A44EDF6FA"
+    },
+    {
+      "path": "raptor-port/src/state/docs.test.ts",
+      "sha256": "D3A9D8142F0E946F8D0A1BCB8AF72C6624AC0B0B7722F764B83DCD1E046A3157"
+    },
+    {
+      "path": "raptor-port/src/state/docs.ts",
+      "sha256": "294A5F4B8B7C0D460CD83BA425CE074E4C6F1C2A9328EFB0D750E101A76ECBE6"
+    },
+    {
+      "path": "raptor-port/src/state/dropflag.test.ts",
+      "sha256": "5FD0A0BAD4A701C7F434F79E65ADBC5C006BE2A036FD07190D2D4A4AA2EB82A0"
+    },
+    {
+      "path": "raptor-port/src/state/dropflag.ts",
+      "sha256": "44087EA14DEEBE1CFCC7D3328A5FC56155E0849CFF4EAE81A76A48346BB96F77"
+    },
+    {
+      "path": "raptor-port/src/state/elog-rows.test.ts",
+      "sha256": "30375DF03608D8891180DB824CB39E68A6EA2292B25A748C14B6F9B106AFF11D"
+    },
+    {
+      "path": "raptor-port/src/state/elog-session.test.ts",
+      "sha256": "308C082D9B8541CEF6CA6535274EFA7AF644B2D9CB8AA9BEF0B49CA5AB7A5923"
+    },
+    {
+      "path": "raptor-port/src/state/freshflash.test.ts",
+      "sha256": "54F83F773E196C1502B69A09601FEC41FAA310B3E79C3F0B82F2AFD244C9F962"
+    },
+    {
+      "path": "raptor-port/src/state/history.ts",
+      "sha256": "612E4C892EA640A363A76EA409FF91A88076ED56593BBED0CD895F07E65E4CED"
+    },
+    {
+      "path": "raptor-port/src/state/holderbase.ts",
+      "sha256": "DBC4A22B38B5CEA59CB0696FA797E86118F6E8D3028CE8DB351CABDECE2CA505"
+    },
+    {
+      "path": "raptor-port/src/state/idle.ts",
+      "sha256": "BE7D92310F102E154B2887834C1046A96BA6983E29253870AFC31DC7984CFE10"
+    },
+    {
+      "path": "raptor-port/src/state/inputgate-hook.ts",
+      "sha256": "5BCBA41D134C2D534E8803A1815B0A33533A09DF7A5560A0FD55A3FAD69E4107"
+    },
+    {
+      "path": "raptor-port/src/state/loadweek.test.ts",
+      "sha256": "3D8DB3222EB75611292AF03881462CAE67AF7E815862145E6CF18A0AC839699C"
+    },
+    {
+      "path": "raptor-port/src/state/mission-role-persist.test.ts",
+      "sha256": "3D97E42965200B21742ECBF73702FD80770561A4CD8A49D69067F240217FE656"
+    },
+    {
+      "path": "raptor-port/src/state/mission-roles.test.ts",
+      "sha256": "0F6A0E0740AA2154714F9C2F1F28CCE705324A606934F116F32F4CB4AB4C9C53"
+    },
+    {
+      "path": "raptor-port/src/state/mission-roles.ts",
+      "sha256": "F124E2B6CAA3332B16BC42046C4588C20A1B4CC0DF8891310BF03EB2344190EF"
+    },
+    {
+      "path": "raptor-port/src/state/navtoken.test.ts",
+      "sha256": "2C76829BAD0892BD92B3EBBDD6B8A29A4C6C3F80D2F9D78DCBB927CA95181872"
+    },
+    {
+      "path": "raptor-port/src/state/p6a-oilstamp.test.ts",
+      "sha256": "E6A64C9669962A47A0038E77000AB0B550CD4DD670330C7AF8568E55AF389D51"
+    },
+    {
+      "path": "raptor-port/src/state/p6b-filingmarks.test.ts",
+      "sha256": "533A55817F27C37F5D9D80A9D261279DE46A3F39EADF62E041DDABF166F57E97"
+    },
+    {
+      "path": "raptor-port/src/state/p6c-requestonread.test.ts",
+      "sha256": "A9E5145AECE2BE22C470F257A28EF124391562B5C1AAD619F6FDCFD81EE83F5D"
+    },
+    {
+      "path": "raptor-port/src/state/p6d-deleteonread.test.ts",
+      "sha256": "3D1066C058EBD4EF0F7DC92FED7A186AF0F8898BF541CA8EDDCFF77140C8DB94"
+    },
+    {
+      "path": "raptor-port/src/state/people-settings-commit.test.ts",
+      "sha256": "53772C87A31DCE05067EE79FBDF8C47B60B7AFD07D6E4E65A2185DCA305930E9"
+    },
+    {
+      "path": "raptor-port/src/state/people-settings-commit.ts",
+      "sha256": "03FC01EA9381AE86403C8206D07B2DDA93BBD58C5A81316134958C09A3E8FBA6"
+    },
+    {
+      "path": "raptor-port/src/state/perms-scan.test.ts",
+      "sha256": "85EE9CC0AEA83DC6F096F51C43CB56B2A7FB4E72FF99D1BED9A39F0AB85F3E55"
+    },
+    {
+      "path": "raptor-port/src/state/perms.test.ts",
+      "sha256": "EA8F0C52DB938195BE2A986F4CB89493D29D6879E43F97B6202225A44AB79398"
+    },
+    {
+      "path": "raptor-port/src/state/perms.ts",
+      "sha256": "5E4D324C50265D791C933667AFC5F6629567F6692174D7802448C00AF706CE28"
+    },
+    {
+      "path": "raptor-port/src/state/persist.test.ts",
+      "sha256": "02B1A454D6175D05C345DA849EB6F1D9C8E2DF1CB5A2AF6A61E0A3DFDDEC1DDC"
+    },
+    {
+      "path": "raptor-port/src/state/persist.ts",
+      "sha256": "17F2732F3B01D0F4B259DCD9B38B6468ABC9F4848C1AA3DFB6BA3B77E713C50D"
+    },
+    {
+      "path": "raptor-port/src/state/person-delete.test.ts",
+      "sha256": "AFE6D36C35F2892BDED88EED1E8E5A39159C649DAFBD6BC78AF365D76DD5A4D1"
+    },
+    {
+      "path": "raptor-port/src/state/person-delete.ts",
+      "sha256": "061BD32776709897268B7AA73C6FE6908F19ECF2EE4783FB30C074C954F0120C"
+    },
+    {
+      "path": "raptor-port/src/state/plan.test.ts",
+      "sha256": "557BA96C08C8DF2E146A23DFA93B701CAD1BB1522C1507DFB3A58B4842AD0C66"
+    },
+    {
+      "path": "raptor-port/src/state/plan.ts",
+      "sha256": "ABC9EE358A12D8DB4042E0BDAC8119BD76485DD744FFEE23AB9D934959CBFF8E"
+    },
+    {
+      "path": "raptor-port/src/state/publish-commit.test.ts",
+      "sha256": "4B70E2BB32AD577611AF43A7D12C2A03C4F971387565A37CBC79CA95C6BE7A39"
+    },
+    {
+      "path": "raptor-port/src/state/quals-write.test.ts",
+      "sha256": "E902F787CB97FD8030C05299370E050FD6206F2AD811DBFE8D73E1D536135AF1"
+    },
+    {
+      "path": "raptor-port/src/state/quals-write.ts",
+      "sha256": "06151DBD9417D35933D73B4A6F6FA3189A155B07C6B0294D05CBD83F35D03F8B"
+    },
+    {
+      "path": "raptor-port/src/state/quarantine-filing-pile1.test.ts",
+      "sha256": "14FDE091C7C56BB281520A65B3DB264F316EE0E8318F2F38F0765CAC4238155C"
+    },
+    {
+      "path": "raptor-port/src/state/quarantine-funnel.test.ts",
+      "sha256": "20319DB1BC55DC482D02F967BF38B7001F2C37296E827042D205ED65523DF203"
+    },
+    {
+      "path": "raptor-port/src/state/rally-publish.test.ts",
+      "sha256": "94A8B263EEB2F7FEE0E96DBB39CAF07771E8C0C08C9AB81749F35B2947256E41"
+    },
+    {
+      "path": "raptor-port/src/state/reports.ts",
+      "sha256": "D09890BDC80F6D8168ECCE387C299DF271D45DEE0D21C9D721D0C04B6D7C397B"
+    },
+    {
+      "path": "raptor-port/src/state/reqorphan.test.ts",
+      "sha256": "BBE2A5F6586BDE52D9B8BEA421C4DECFD441841EA8CF46118C84C1B86AADD2E0"
+    },
+    {
+      "path": "raptor-port/src/state/roster-add.test.ts",
+      "sha256": "15EE1BC3CA511DE3FF0DC33984F2DB6C91F864D5A7ABD0D6DFC51649371EE675"
+    },
+    {
+      "path": "raptor-port/src/state/roster-add.ts",
+      "sha256": "C7945649AEF669D54139F6AF254243476B6529E60779EC042049F1A1F30750E4"
+    },
+    {
+      "path": "raptor-port/src/state/roster-restore.test.ts",
+      "sha256": "C33B46B0863A20538FB377AD9F778C731C23977E139AC7C92B208B084EDBAF21"
+    },
+    {
+      "path": "raptor-port/src/state/roster-restore.ts",
+      "sha256": "05FFDEA1886FFADB8D0E1505A14E500B71194C26F8866C692FD31E993D6BAE32"
+    },
+    {
+      "path": "raptor-port/src/state/rowmap.test.ts",
+      "sha256": "1E4E4EFD52CB9012D2BAA8F98FF625FB6A825C03CBFFCCD6263DB121096155A2"
+    },
+    {
+      "path": "raptor-port/src/state/rowmap.ts",
+      "sha256": "DAD1A2CB2C044B8C0D519C5A4E930BDE3E7485AC363AE8BC87EA65AF0E256672"
+    },
+    {
+      "path": "raptor-port/src/state/rows-roster-inputs.test.ts",
+      "sha256": "37966F05104C9A9549494BBE84D9E96DD702B04B1F44B78069545B0C8509416F"
+    },
+    {
+      "path": "raptor-port/src/state/sched-commit.ts",
+      "sha256": "2BA375086FFE1177582F9652F9E82AA36589E1489C25829545E30C26E0A0CECC"
+    },
+    {
+      "path": "raptor-port/src/state/sched-dayrecords.test.ts",
+      "sha256": "4CBFF91694F1BE4DD6E91EB52FE69E4CC983252C0677A8BDCB3596B2F452FF83"
+    },
+    {
+      "path": "raptor-port/src/state/sched-routing.test.ts",
+      "sha256": "5210E555F3A98125A62EBDD3B08C57DFC8137032854ECD829ED3527FB7016D29"
+    },
+    {
+      "path": "raptor-port/src/state/scheduler-commit.test.ts",
+      "sha256": "705F395AFF1BBB8E5BCCA6A6BCA2E75CC1E54A4EAF9A7B0DF0D132E86C021071"
+    },
+    {
+      "path": "raptor-port/src/state/seeds.ts",
+      "sha256": "C58CBD4985667AFD3E1880FAA121F849E221F187B759DE3ED6CC888C64289E98"
+    },
+    {
+      "path": "raptor-port/src/state/session-undo.test.ts",
+      "sha256": "C8824B0C437E7E4A53C480379F9CD3CC844A0202DBBF3C3161B88EA1DFE53466"
+    },
+    {
+      "path": "raptor-port/src/state/session.test.ts",
+      "sha256": "2614D3148DE18A996920C1AECC2727932BD82292DBD2F82FA1960A68A7A66305"
+    },
+    {
+      "path": "raptor-port/src/state/settingsrows.test.ts",
+      "sha256": "10F9E8822C02C6C9019A8EF0754875FF74D97EF621DE93235617421728B319FD"
+    },
+    {
+      "path": "raptor-port/src/state/settingsrows.ts",
+      "sha256": "B308F41B5B25B50BEEB4A2E536D7B1EC3CBFC8FD2F5808CF346181A8A4D60BA8"
+    },
+    {
+      "path": "raptor-port/src/state/store.test.ts",
+      "sha256": "1CB19EBD636A68548FFC2524D0352F03211A7FE745884BB377D108F8AB4BEC0E"
+    },
+    {
+      "path": "raptor-port/src/state/store.ts",
+      "sha256": "1221E9DAC06F2A807062892507519C9204A3220E87FF2DAB1A9530F6F3DB0DC6"
+    },
+    {
+      "path": "raptor-port/src/state/stores-boot.test.ts",
+      "sha256": "9E207C0484644063612F9E368BDD1B70484BE8F94675F3ED7A3BC1386545ABD9"
+    },
+    {
+      "path": "raptor-port/src/state/txn-wiring.test.ts",
+      "sha256": "71211D11DBB8BF88BF98FA2A20393A0380BC98FA785E13C07C4AE570EBD63E21"
+    },
+    {
+      "path": "raptor-port/src/state/undo-offweek.test.ts",
+      "sha256": "96AFB85E0ABDE311AFD2F6BBE6BB1ABB428F49554C211647BBC98C1B28E58516"
+    },
+    {
+      "path": "raptor-port/src/state/undo-wire.test.ts",
+      "sha256": "A8B8ADCE3B3B0C3ADEB2EBA5A5B1504CA94B30B6876A400D35941130BF26D675"
+    },
+    {
+      "path": "raptor-port/src/state/undo-wire.ts",
+      "sha256": "E05D20CC541DAF1CD12DBD8FE5EA3161CDD627F33953C308A346296583CAFC88"
+    },
+    {
+      "path": "raptor-port/src/state/unpublish-commit.test.ts",
+      "sha256": "8E5471B5DCD702E9735EF9BF51403A58346E3CB99D72A4AA7E9CDA5EFCFB9A90"
+    },
+    {
+      "path": "raptor-port/src/state/view-reset.test.ts",
+      "sha256": "F2A2B8161B4E659C73C03A989163CD22CBAF3BF0BE275008027D97CE1313A512"
+    },
+    {
+      "path": "raptor-port/src/state/view.ts",
+      "sha256": "A397008D7C729CA902D18EE53BF600E4A16AA80B9EFEDFD2BF4187A69CE9EE40"
+    },
+    {
+      "path": "raptor-port/src/state/warnhide-kept.test.ts",
+      "sha256": "9969B3AF4331A73981CBB3D29EABA408AC59C2FDC5FD188D474E7761CA7F1EF0"
+    },
+    {
+      "path": "raptor-port/src/state/warnhide-published.test.ts",
+      "sha256": "506D2C0564EB370A2A751CD717C10F9C758BFF80B32FF719F83D3F4108F23613"
+    },
+    {
+      "path": "raptor-port/src/state/warnmute.test.ts",
+      "sha256": "EA7FA4D5B68F265A8C84333C1C3DC653B7D871423828A6EB9E3D06845B00A325"
+    },
+    {
+      "path": "raptor-port/src/state/weekrows-store.test.ts",
+      "sha256": "0436BE870697483EBA832B2F566D965F77F2A69F2AD14DDD7A1622380A330491"
+    },
+    {
+      "path": "raptor-port/src/state/weekrows.test.ts",
+      "sha256": "DB13021B9BC0333366981E5F3A5D96C130AF0CA703B496B0553A6BBEDCE0DC3A"
+    },
+    {
+      "path": "raptor-port/src/state/weekrows.ts",
+      "sha256": "A31147F21ED78C86DAEB3692F1FE25438729400A04B40E80F2CAB1A257001676"
+    },
+    {
+      "path": "raptor-port/src/state/weekstash-atomic.test.ts",
+      "sha256": "7E60BD68079525D38C0E96A39F393EE28268882641F687F641B186C94F7DF4A1"
+    },
+    {
+      "path": "raptor-port/src/state/weekstash.test.ts",
+      "sha256": "0FB61DD3A3DD3626005DC679D7504427EBD384EEBA6B99CF6303E389053B64FB"
+    },
+    {
+      "path": "raptor-port/src/storage/adapters.test.ts",
+      "sha256": "4800AC0C155F9C8ED0CA9345C5B8E211F3FF2D4C7232D98C92A0E3489CD50252"
+    },
+    {
+      "path": "raptor-port/src/storage/adapters.ts",
+      "sha256": "311389C41DF410FB859D8D0C52FE654A92CAE2E5147120EDACE4B444F25773C8"
+    },
+    {
+      "path": "raptor-port/src/storage/backend.ts",
+      "sha256": "C73CE7C53378344E3FB1A2DC8869E6D5A9030D0A5D975D249F2CF87F54585365"
+    },
+    {
+      "path": "raptor-port/src/storage/boot.test.ts",
+      "sha256": "FC7CA19C695A39AE9202D12F6FEA91A742A99C9CE07F5A57CE82B65237AA60B7"
+    },
+    {
+      "path": "raptor-port/src/storage/boot.ts",
+      "sha256": "580A4953AC79210C0FB155330B36922EAE3445833964F9C5A0D40A56F99445FF"
+    },
+    {
+      "path": "raptor-port/src/storage/browser.test.ts",
+      "sha256": "6A7A98E84881030E8ECF5C7586B6C96755B6A701D80FB02D36A6D9EAD3C09B86"
+    },
+    {
+      "path": "raptor-port/src/storage/browser.ts",
+      "sha256": "6F340FB9FEC7AE396084D3504213810094748518FC4D7B143658B5CBAE77A915"
+    },
+    {
+      "path": "raptor-port/src/storage/client.ts",
+      "sha256": "B52B8C85F892E0FA52E909D9E79F323C89AA27139D91100216EF15B4F614BF5F"
+    },
+    {
+      "path": "raptor-port/src/storage/contract.test.ts",
+      "sha256": "6B056343434F20A0A28896CEBB6D67F72B8B8EDA23AD7B9B771307AD60EC29F4"
+    },
+    {
+      "path": "raptor-port/src/storage/dbreadiness.test.ts",
+      "sha256": "04FBF8E640B53EF2200664B64659005911E5D56919F3CC5647769EC0DADE9614"
+    },
+    {
+      "path": "raptor-port/src/storage/docstore.ts",
+      "sha256": "7D5972B861C7645654232AF5DE4FD36302387DA416776C4AE2E53A1351E96130"
+    },
+    {
+      "path": "raptor-port/src/storage/fold.test.ts",
+      "sha256": "E1D3404B64AAA5FFB8D40BDFCA60EB7EB7BBEA8A9FC184DCFEDE753D56243037"
+    },
+    {
+      "path": "raptor-port/src/storage/fold.ts",
+      "sha256": "49ABACC655E9D7A8B80F6FB2D5CB398E5C759A848EF91128DA97FB1B54E6BF3F"
+    },
+    {
+      "path": "raptor-port/src/storage/memory.test.ts",
+      "sha256": "C4978A1AE0AD70A877182BF1BCE975BEDD9EE4B93E29C6122AAC3EC2C57DD29E"
+    },
+    {
+      "path": "raptor-port/src/storage/memory.ts",
+      "sha256": "E43C07C3D54F0113EC12652DD53F9FECB73D78A27DD8501CCCF64ABFAE29F16C"
+    },
+    {
+      "path": "raptor-port/src/storage/postman.test.ts",
+      "sha256": "F5FD9B7A561D6342E77A7797419DAFB47F49773861251431A3A160D9196686C3"
+    },
+    {
+      "path": "raptor-port/src/storage/postman.ts",
+      "sha256": "2C25DBBC28D745BF384BA3F88732613FC91A7815F7C3F687D4152E1010F400E4"
+    },
+    {
+      "path": "raptor-port/src/storage/reset.test.ts",
+      "sha256": "7056DC25D3803D6DFEFFCF784197068BFEA01321F133DB1E499B06750D0E0C99"
+    },
+    {
+      "path": "raptor-port/src/storage/reset.ts",
+      "sha256": "76E35D9B312E46C301C98E3107DA21F990DB3A59A92ECE442E0A7C18E38E4031"
+    },
+    {
+      "path": "raptor-port/src/storage/schema.test.ts",
+      "sha256": "3DDEFF986CBC34F2F8F8D35E925742A06D923333520D71AD7C9053BEEBA8BE41"
+    },
+    {
+      "path": "raptor-port/src/storage/schema.ts",
+      "sha256": "5A869A73FE57C20C69FB36E99693F925B6380FBA75B8F0A2C1AAFEE7072CEDF7"
+    },
+    {
+      "path": "raptor-port/src/storage/seal.test.ts",
+      "sha256": "301FD97266793ACD55562DE26C8282E9F17D4B1C97315A542D745B769EDB3BC6"
+    },
+    {
+      "path": "raptor-port/src/storage/tables.ts",
+      "sha256": "77F39C5093EEA8BD6F0DA111359B1D87CC8DDAC8D8BF0ED0967744631C98F7D4"
+    },
+    {
+      "path": "raptor-port/src/storage/whiteboard.test.ts",
+      "sha256": "39660BEECEE3A31B0895702EB0E3172E0DD72E5ABEADF73E76A66552CE5D8A6D"
+    },
+    {
+      "path": "raptor-port/src/storage/whiteboard.ts",
+      "sha256": "BC46FB7D96A512AC1371F9577E53B034E488674E2FDA797FC96EFE0402026B2A"
+    },
+    {
+      "path": "raptor-port/src/testing/marks-guard.ts",
+      "sha256": "3CB980BA3608BF17EBA16F8ECF4112C2DB85ADBD7C192AF96DF2E5D32892B5A1"
+    },
+    {
+      "path": "raptor-port/src/testing/refwin.ts",
+      "sha256": "AD4FC13C69577F457C5BC1445866ECCC25A045C07BADAA956D7CF466B9690A11"
+    },
+    {
+      "path": "raptor-port/src/testing/reporting-fixture.ts",
+      "sha256": "B7181F866A994E24E32BCAD79B5B0AC939286EAA2D6D5B559101F570E78809D1"
+    },
+    {
+      "path": "raptor-port/src/testing/scheduler-css.ts",
+      "sha256": "D9FC6D4E0FD267D6026C097A202422816BFC7FBDC9FA5EBE8995A765978F377A"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/core.js",
+      "sha256": "FF22F9414CDFD4AB1964A4118686C9EB2B01B3CEA478187A9E8E5CEE544C65FB"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/courseIds.js",
+      "sha256": "39360C089F405B8298942D46A89740E0C85B8954A89B7CDD5EF34A40B8C205C9"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/courseIds.test.ts",
+      "sha256": "23A79B6EFF2BD2E0B4E14F7F8BEA114A35CACC0C394D8C4F4205BC3CD2A90F49"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/eventDetails.js",
+      "sha256": "1ADF7CC3C226160FF11C0BBF80FC03657B34388751E8996910EC8A202F976D0D"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/eventOrder.js",
+      "sha256": "9A984643BCC24BF362C8A59FD701AC825E151A00B6C03EEE5EF942C01944A3A7"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/fileFormat.js",
+      "sha256": "7C7119ECE89C1BFB77F672ECED64E7B525E9E821A5B38E9F7AE3F97714E2D74D"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/fileFormat.test.ts",
+      "sha256": "9996DB4352F12C59E55DDE12B31F6BBD6F815416A81106C9018B9AA5D72DEFB2"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/fileStore.js",
+      "sha256": "4BA42B7C921C33645FB99D3B033E932FBE27B21EDC74A94C33ED50B0CF97BF17"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/ids.js",
+      "sha256": "B043F41816589003667F482CEB5E416FD2DEE7F0157A7050C9287D8E75E0ED98"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/ids.test.ts",
+      "sha256": "FC19068E79343167E7222E2498E27B20CD647735160969930C137AAD004BC735"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/rows.js",
+      "sha256": "8BF3114906EA3862CBEC3EC944234FBA636133D21C3050330414A418970040BA"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/rows.test.ts",
+      "sha256": "8BDDF63C9E4538C7A8FCA641803FC46806E083577BC5E3DD25505DC67E3E44B7"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/sylIds.js",
+      "sha256": "939286C435C9C84A39DB5EED86D80F9B0FC2D764EFFC09A83F78255C94E88E33"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/sylIds.migration.test.ts",
+      "sha256": "2662933BA23FD27DDB56F6F97735072798EDFC2DD0343BD7A5ADB5CF44FF4BD0"
+    },
+    {
+      "path": "raptor-port/src/tracker/app/sylIds.test.ts",
+      "sha256": "B08D8D4F4E961BE275460FED0064871B3B42CD2AF6CD2F99C49CFC65CB09DE70"
+    },
+    {
+      "path": "raptor-port/src/tracker/App.jsx",
+      "sha256": "A4243C7C4CDA69CB2344F069325355698C377EA230CC30D0D9FD6F552173A34D"
+    },
+    {
+      "path": "raptor-port/src/tracker/components/ArrangeTools.jsx",
+      "sha256": "8016922A62BC8138E87D940D99F1CB5778F6AA250AD9DA19EEF67DCDADD5DBE8"
+    },
+    {
+      "path": "raptor-port/src/tracker/components/DateBox.jsx",
+      "sha256": "9A7F3D210DF6ABD553FABA86614306F1AB86A815B31D078261E9982BEE15B2A2"
+    },
+    {
+      "path": "raptor-port/src/tracker/components/Header.jsx",
+      "sha256": "30C0FB55129296D1D3750E896EE5544588354651B4CAE4F5B2DD79F14653EB60"
+    },
+    {
+      "path": "raptor-port/src/tracker/components/keys.js",
+      "sha256": "01F1258112AAFDC03B474A96869B9784FD90B18F37F300371F0E480A6071F686"
+    },
+    {
+      "path": "raptor-port/src/tracker/components/Legend.jsx",
+      "sha256": "C614BD522B8E5091C83C6928EABBB04D919944FB17DD78D01663F3A6C87884F0"
+    },
+    {
+      "path": "raptor-port/src/tracker/components/Modals.jsx",
+      "sha256": "3DE742A5F9026979E5EA36F25DFC6A3CD9D6F7FA0D816D7EB707C261E150C6AB"
+    },
+    {
+      "path": "raptor-port/src/tracker/components/Pop.jsx",
+      "sha256": "A1E130B757C7DBA19258E6C690E8CFEB1B53035A4F3D08B7F59A124C3B02BA26"
+    },
+    {
+      "path": "raptor-port/src/tracker/components/ShowAllPanel.jsx",
+      "sha256": "CD680CC62D9B322AD361C0710B44F4AC2732CF0912A06BC88F19441419EDFD47"
+    },
+    {
+      "path": "raptor-port/src/tracker/components/SidePanel.jsx",
+      "sha256": "F2848418B0E41157B7ED162F2142D7AF7B8F07B485A688435EF3CE03B0E5D8F8"
+    },
+    {
+      "path": "raptor-port/src/tracker/components/ZoomControls.jsx",
+      "sha256": "9A859DFB2E54A0D18DD03FDED0135271CE550F9103829B4D8EC5C3B1E16EDE77"
+    },
+    {
+      "path": "raptor-port/src/tracker/data/eventInfo.js",
+      "sha256": "AA4D50AA48777AB19728FDEFC5EA1F8EE8AA5391CD2D78A044D0CC435327EB54"
+    },
+    {
+      "path": "raptor-port/src/tracker/data/layouts.js",
+      "sha256": "A15529E1E67AD9D4A4A8F3F66C2E6D148D402DE6863F6F2E86183C340D55F0AB"
+    },
+    {
+      "path": "raptor-port/src/tracker/data/seedState.js",
+      "sha256": "D8B6B3C8949C4E00376B7717DAB3FE60DE030D164C95C15429F936E8CA0A3ECB"
+    },
+    {
+      "path": "raptor-port/src/tracker/data/syllabi.js",
+      "sha256": "98408E88CD7D9BD01B3A9413661E0F688928A1060AB87D38DBF1FA7D0803D76D"
+    },
+    {
+      "path": "raptor-port/src/tracker/eventDetails.test.tsx",
+      "sha256": "C87AB2B3F4533175831B06750B2DE291304902E3677948803B269AE5334C3156"
+    },
+    {
+      "path": "raptor-port/src/tracker/fold.ts",
+      "sha256": "E6BCC9152A189E1B8AF7A5BF72EC926DB72937849AFE34E58898AFA10F2F2946"
+    },
+    {
+      "path": "raptor-port/src/tracker/leftovers.test.tsx",
+      "sha256": "7C58BF2564B26645E6A54DE5567508C8C75B7FBFC0FAACF051DF80BD41C9FA53"
+    },
+    {
+      "path": "raptor-port/src/tracker/people.js",
+      "sha256": "4EC8BBFB76DDC7BA924ED51D5D01EE53CC6A210FB107B77638BEA5F07EAC1674"
+    },
+    {
+      "path": "raptor-port/src/tracker/people.test.ts",
+      "sha256": "875B4ADBA1116CB3E88171D5C335B7F60DF9CE6B33EBA5916FF3746DC61DE7A2"
+    },
+    {
+      "path": "raptor-port/src/tracker/peoplewire.ts",
+      "sha256": "847F435C451392D5CEA98E06EC2302663AF89F0803598E2ABB660358896516FC"
+    },
+    {
+      "path": "raptor-port/src/tracker/retest.test.tsx",
+      "sha256": "97050F183C51549654EA21D3E5A75C1C6B1CFD6C2D7E3E7C0B3664114C70C0BE"
+    },
+    {
+      "path": "raptor-port/src/tracker/role.js",
+      "sha256": "064A2B475AA6E3F170C4ADCC95E326AF116F78FB6383DC861CDBCBDD8B82A0E5"
+    },
+    {
+      "path": "raptor-port/src/tracker/storage.js",
+      "sha256": "E3E389D40420353D513C8FB9B313DD4070AA3281B73E0D397C780AD282C7D5AD"
+    },
+    {
+      "path": "raptor-port/src/tracker/storage.test.ts",
+      "sha256": "EDF8E8DD51921BC59D77E015BD0C7483E11EECDF957C6F9B16FB92D6A62A04A5"
+    },
+    {
+      "path": "raptor-port/src/tracker/tracker.css",
+      "sha256": "B472FA01AE02810431D65D631A2F138912D56DA79BF30AA066F31175044C7E7A"
+    },
+    {
+      "path": "raptor-port/src/tracker/tracker.test.tsx",
+      "sha256": "C460EE415480363D8D73005979F0D77656B1F9BE83F1FC4799AB955A9034A31F"
+    },
+    {
+      "path": "raptor-port/src/tracker/TrackerPage.tsx",
+      "sha256": "A4E9D413D740B77C829C1134CFD5DCEA9ADA85265FE223CB6D85124E3E65C23D"
+    },
+    {
+      "path": "raptor-port/src/tracker/trk-commit.test.ts",
+      "sha256": "8756D539925FEA324E287673C88AACD067CEE82A4975075CFCAB1F7683F55F8E"
+    },
+    {
+      "path": "raptor-port/src/tracker/trk-nocourse.test.tsx",
+      "sha256": "BAB7B9B6FDEB01F17FAF9A5BD6810810D1ABA9C6BE1DCF8F7E8B7C69BC9FC37B"
+    },
+    {
+      "path": "raptor-port/src/tracker/trk-palette.test.ts",
+      "sha256": "0A20450AC132989A9C5F7A38B2BF0B6E6B3F5EF217A114BD3D95F058BD4A9554"
+    },
+    {
+      "path": "raptor-port/src/tracker/trk-restore.test.ts",
+      "sha256": "0E3B1AE0D00E97AAF9597EA1F19CA957872BBBD39F2A8E08357841ADAF1C05A6"
+    },
+    {
+      "path": "raptor-port/src/tracker/trk-rows.test.ts",
+      "sha256": "FE6D816807A652F967F1BCE60F39EBE028471CA011864F03AEFF48E8FA3FDAC6"
+    },
+    {
+      "path": "raptor-port/src/tracker/trk-write-seam.test.ts",
+      "sha256": "6ED5470AA4D9D1BD7D286D0C9C286044A8E0A3785B26A0D687EE42C374BB7D0D"
+    },
+    {
+      "path": "raptor-port/src/tracker/undo-bridge.js",
+      "sha256": "312DD37BBB2CB2E8E8CA80E01EA9991D42B432671027280D3B7B2F99D9BAADCC"
+    },
+    {
+      "path": "raptor-port/src/ui/AccessScreen.tsx",
+      "sha256": "80C0801ED194659EFAFA56B232182FB641BB46EF9F4951A123E2AD4D1095DA3F"
+    },
+    {
+      "path": "raptor-port/src/ui/accounts-newperson.test.tsx",
+      "sha256": "9D30EDE9925FCA74B6479DF030E136861F011821AD1728EAA03262019735D33D"
+    },
+    {
+      "path": "raptor-port/src/ui/accounts-ui.test.tsx",
+      "sha256": "229B5E94AF6B7895E14F2A53BEED2F894261D7868113BE357F6030E387B14980"
+    },
+    {
+      "path": "raptor-port/src/ui/admin.test.tsx",
+      "sha256": "FD7543695F27D71BC4EDDE54F725F3D38E69836B301273A564DA5EA6B90E5740"
+    },
+    {
+      "path": "raptor-port/src/ui/adminopen.ts",
+      "sha256": "92C1BE743D18256D2B7AA5A45BEF0829883A169165283F930C8A3D7C99D4A3BD"
+    },
+    {
+      "path": "raptor-port/src/ui/AdminPage.tsx",
+      "sha256": "40DE1BAFF664791E26BBF1817CFB4659D4B48005E8773B4E9955553D68FFF05A"
+    },
+    {
+      "path": "raptor-port/src/ui/ALPanel.test.tsx",
+      "sha256": "EBC451B889CE4BDBB1CA18D350A2B61798C347081D5B68006DC7BCF16249C19E"
+    },
+    {
+      "path": "raptor-port/src/ui/ALPanel.tsx",
+      "sha256": "354C9D9BC2293A30ACFA0340CE136AFB751DAFD3E822BA324A496BAC192D44CC"
+    },
+    {
+      "path": "raptor-port/src/ui/amendbatch-app.test.tsx",
+      "sha256": "87ECF6E70EFA400256F13EEC629A46B792385D5230154F865D5EB79596E0DABE"
+    },
+    {
+      "path": "raptor-port/src/ui/amendbatch.test.tsx",
+      "sha256": "03863E44BCC329598EA447ED8623229CE45F16AB18C9D53EE9EABB1866130B00"
+    },
+    {
+      "path": "raptor-port/src/ui/amendretest.test.tsx",
+      "sha256": "2881DC1817FC294F27A41CD149C9324EBE8FA9B3A61DC1A681D422E5978D16C4"
+    },
+    {
+      "path": "raptor-port/src/ui/app.test.tsx",
+      "sha256": "620D60A53EF04BFAFDDCEACA5B65EAC06E53DB15151EE14A46B94C9915FAAEB9"
+    },
+    {
+      "path": "raptor-port/src/ui/App.tsx",
+      "sha256": "0092840D6E659B62D4FB74413D28C34155C5E4024B26D800EA5A34DFF36109F0"
+    },
+    {
+      "path": "raptor-port/src/ui/audit-a-hist.test.tsx",
+      "sha256": "358700054C6692C6C6B1F7D08EAFB93C86F84E520DB1D5CD65708BACB14605B4"
+    },
+    {
+      "path": "raptor-port/src/ui/audit-b-bugs.test.tsx",
+      "sha256": "8874588D66D681FCEAA19CD461CB25F501436CC0AD8B8E010BC64743DB08F5AC"
+    },
+    {
+      "path": "raptor-port/src/ui/audit-b-daystep.test.tsx",
+      "sha256": "EA8803088F73C3D940CBA09301568F080A559E54E66FF1AF31FEDEDEF12EA454"
+    },
+    {
+      "path": "raptor-port/src/ui/audit-d-rowdrag-stale.test.tsx",
+      "sha256": "E2F2E859D19584089B1CB5AED97780E3692BD39AB1DA84B1AF6A1E92BFDF1860"
+    },
+    {
+      "path": "raptor-port/src/ui/audit-d-sortall-undo.test.tsx",
+      "sha256": "690393E0FA9EA349F25C13E88B99DBECEF6A3A50C454A630F34B60ED256D206E"
+    },
+    {
+      "path": "raptor-port/src/ui/audit-e-commit-relink.test.tsx",
+      "sha256": "4FB832EB3735911626DFC8B31B837E584C1D2463C2717D117F86CEFFAA9D5105"
+    },
+    {
+      "path": "raptor-port/src/ui/audit-e-halfday-surfaces.test.tsx",
+      "sha256": "8095C8217C812083569DE20024B6FF19A81FB27C108D222D50202A8DF2EB8A95"
+    },
+    {
+      "path": "raptor-port/src/ui/audit-e-rangecal.test.tsx",
+      "sha256": "1B4CA672680FA59282F4F4A4F7DECD40E5F6A8ED7B585E616664B595707B8B68"
+    },
+    {
+      "path": "raptor-port/src/ui/audit-e-window-sort.test.tsx",
+      "sha256": "AC6AA16AEE5B9EB2DFBE79DFB06ED012724F3CAD4B111587A583B6C30D070EFF"
+    },
+    {
+      "path": "raptor-port/src/ui/audit-gesture-bubble.test.tsx",
+      "sha256": "83C236E7FA41F964DEAEC0B1A34C0531517E03B16CD700F0E1112003FB452091"
+    },
+    {
+      "path": "raptor-port/src/ui/audit-guards-inputs.test.tsx",
+      "sha256": "95633FDDD12305425CC62120B4F667B8DFFE26DA053E20D3D420F57A7D2D5BA5"
+    },
+    {
+      "path": "raptor-port/src/ui/availopenrow.test.tsx",
+      "sha256": "7938EC8B02437210F377D69F060E639CA4844905A23B16998260F3C6FFD65403"
+    },
+    {
+      "path": "raptor-port/src/ui/availwin.test.tsx",
+      "sha256": "2DB4F5F654CD8645E64EE294FBB7094D3A48E8773F6509A8CA025BE462B6139E"
+    },
+    {
+      "path": "raptor-port/src/ui/AvailWindow.tsx",
+      "sha256": "1945AE7EC70B9A3342A432C9F9F41CAB9D80F3AD61E0575197F60CFADEA81461"
+    },
+    {
+      "path": "raptor-port/src/ui/board-html.ts",
+      "sha256": "36F76CB4CA42E6007C33F27F927270CD501A93AFA528B0FD6971A88457A891AC"
+    },
+    {
+      "path": "raptor-port/src/ui/board-stores.test.tsx",
+      "sha256": "47ABDCDCF1BA501BD8498DC4B77C7258424E346EBF1459D3ACC8730D5285D2AB"
+    },
+    {
+      "path": "raptor-port/src/ui/board.test.tsx",
+      "sha256": "FE0525266B24A43B39C39072682E4C545C4556D02FE3A1959A4F34E05C60AE88"
+    },
+    {
+      "path": "raptor-port/src/ui/board.ts",
+      "sha256": "5681597617DF9DBF3E0DF755DC909D71532900245012D15F95374FE345D3FE31"
+    },
+    {
+      "path": "raptor-port/src/ui/boardaddinput.test.tsx",
+      "sha256": "ABFEE931212B931EF615257595BCA9E49AA59F6A1D6C0AF006E0CC464A267CAA"
+    },
+    {
+      "path": "raptor-port/src/ui/boardbackground.test.tsx",
+      "sha256": "873ABAD9C85E8A799A018679F809C905CF1CC10F97EA0601E86E41BA816E2FF5"
+    },
+    {
+      "path": "raptor-port/src/ui/boardcrew.test.tsx",
+      "sha256": "C5C7D79470A18C5B03A0A7F3FF50A0D3F0CBB17A0621094C981A81BA48ECB607"
+    },
+    {
+      "path": "raptor-port/src/ui/boardnav.test.tsx",
+      "sha256": "C9D2FE0A14E5893776720DF9AA89ABE0CCB703F76CFBC55E0B560225839BD06E"
+    },
+    {
+      "path": "raptor-port/src/ui/boardrmk.test.tsx",
+      "sha256": "07BFF6B321EE5B3DC46A0FB331319DF205388349F7C7D32260D7C039343D59F9"
+    },
+    {
+      "path": "raptor-port/src/ui/boardtabs.test.ts",
+      "sha256": "9FE4FCF60705456DE71B0FFF502410295C17ACE858679775D5D54739A5B728B7"
+    },
+    {
+      "path": "raptor-port/src/ui/boardwrap.test.tsx",
+      "sha256": "A7D1D65212741CA608C708D55EFED4F95BDF91EC27AFC5F9503686DD2F8F51E9"
+    },
+    {
+      "path": "raptor-port/src/ui/brieftime-ui.test.tsx",
+      "sha256": "40B56786E8AF836969B74086977281502B07FDB1115F7B2294F94919CF842C9A"
+    },
+    {
+      "path": "raptor-port/src/ui/caldrag.test.tsx",
+      "sha256": "AFBE69AB9C2FD056750AA94E2C6E2CF262DF0187B60864E5C85972CA4FB98E7E"
+    },
+    {
+      "path": "raptor-port/src/ui/caldrag.ts",
+      "sha256": "F07ED7C907F952C6DD70008E51A3D803925FB9B3259C17BF0704F40706479123"
+    },
+    {
+      "path": "raptor-port/src/ui/caltouch.test.tsx",
+      "sha256": "25D0188298A7908EC935AD48437F21B868586D2DD1AD01DC67C51CA95EB736C0"
+    },
+    {
+      "path": "raptor-port/src/ui/changesmodel.test.ts",
+      "sha256": "EA4CD6B1345D215262D7C5124C91CEB8B77B602BE4FDBBBA878CBF00121CF35B"
+    },
+    {
+      "path": "raptor-port/src/ui/changesmodel.ts",
+      "sha256": "119CA9B9CF2D4DEC5BF640B0C4F0361A6AC1FCB656651E7B270CFA4830B1235E"
+    },
+    {
+      "path": "raptor-port/src/ui/changesopen.ts",
+      "sha256": "5EF57E058EB15490F735E5DCBCB938BAF4E4021C4B9FF18E545D86CC490195BB"
+    },
+    {
+      "path": "raptor-port/src/ui/ChangesWindow.tsx",
+      "sha256": "90A0DC032F07EDA647644902D9A0114CBE27234DA820D793580CF99EBA315F96"
+    },
+    {
+      "path": "raptor-port/src/ui/crewrest-ui.test.ts",
+      "sha256": "0FCC61E4E0B288F39F75F01CD83DEFF9104459F97839D34EC9F19B7306FBD5B5"
+    },
+    {
+      "path": "raptor-port/src/ui/css-invalidation.test.ts",
+      "sha256": "63AC044E5A40AA8F71802C9DDA98CDFD5444D1B836D04655891C95713152D562"
+    },
+    {
+      "path": "raptor-port/src/ui/dayswap.test.ts",
+      "sha256": "B6EF268B00BAC10B5BF3C2C26763EDBFAA1DA84F0D1C093E13EE162D4E2D0614"
+    },
+    {
+      "path": "raptor-port/src/ui/dayswap.ts",
+      "sha256": "3B3BD6A6D065E8699CD71E0646478CB04819232CE9936257D01843019B02F0A6"
+    },
+    {
+      "path": "raptor-port/src/ui/DayTplModal.tsx",
+      "sha256": "9EC655CEA24E0E9113C3C542232F019757C515293455BCBED11BFD955C1B60BC"
+    },
+    {
+      "path": "raptor-port/src/ui/daytplui.test.tsx",
+      "sha256": "88EB863A20C68738EF0E9D49AE95569AABD1B9AFDA05F2584A3170068C9A91FD"
+    },
+    {
+      "path": "raptor-port/src/ui/docconfirm.test.tsx",
+      "sha256": "17C7DA3E343A69CE0A17F2D7548FD601EDF86086A984D5EA62F85E86A6EE7BEB"
+    },
+    {
+      "path": "raptor-port/src/ui/DocConfirm.tsx",
+      "sha256": "53D777B2A962525450AD0582F9FE126D068D208B9ECE4136C429B8FAA49EBB89"
+    },
+    {
+      "path": "raptor-port/src/ui/docviewer.test.tsx",
+      "sha256": "6D3C67EDC5371127F0F04F73067AE6DBCE13A601F5C41402B3874BE250F22D1E"
+    },
+    {
+      "path": "raptor-port/src/ui/DocViewer.tsx",
+      "sha256": "113BE5D96ED5A294D981BD582009A8428856314E98331AAD07B15B44FDC18678"
+    },
+    {
+      "path": "raptor-port/src/ui/dpfixes.test.tsx",
+      "sha256": "76C4AB1359751C45ADD79BB68C57CCC49583100D2035DB12EB2548F68CC031F8"
+    },
+    {
+      "path": "raptor-port/src/ui/DraftsModal.tsx",
+      "sha256": "2480AEF60B7CED4E7151ADC9E85BE21070B08E81C4721FFB1E376813C7AA78C6"
+    },
+    {
+      "path": "raptor-port/src/ui/draftsui.test.tsx",
+      "sha256": "BCF84C66C217590354E5741D9110F39566583C811B1CD9D907EF5D45691CBE9F"
+    },
+    {
+      "path": "raptor-port/src/ui/drag.test.tsx",
+      "sha256": "09861FA3A68BB93E9460598C19356CBB7985CE484FA165BD309246799BF6F8EA"
+    },
+    {
+      "path": "raptor-port/src/ui/drag.ts",
+      "sha256": "4E45DADED1A5B17F684C1823FC8A3E1F80B89AA815155E3C753C9A44F0E0157C"
+    },
+    {
+      "path": "raptor-port/src/ui/dragdbg.test.tsx",
+      "sha256": "6B0A5A1B93ECE7DA8E07A172F6F50F26D293399BBDE4D195758AEA3D8D3E94BE"
+    },
+    {
+      "path": "raptor-port/src/ui/dragdbg.ts",
+      "sha256": "DD893BF995424C7E3320F5E71CA89541094031815638A7475F8E65D475BFD8CF"
+    },
+    {
+      "path": "raptor-port/src/ui/Drawer.tsx",
+      "sha256": "A2318B2611342CAA82A6C6809427E7377167D5079C203704FA890A2D40763F59"
+    },
+    {
+      "path": "raptor-port/src/ui/drawerlock.test.ts",
+      "sha256": "13DCE12B30B9B02635CD5B00B76D4A5EDFC239AA9CEC7A02983D8379122EF5B2"
+    },
+    {
+      "path": "raptor-port/src/ui/dropvalidate.test.tsx",
+      "sha256": "6C7B90A01AAE31991311EC7906717EB66C8CC025E93C0D5C10F3257335DFBF12"
+    },
+    {
+      "path": "raptor-port/src/ui/DutyTplModal.test.tsx",
+      "sha256": "57C01728061792991EB716365104A4333B8AA588BE6B59898502E7B3182F978A"
+    },
+    {
+      "path": "raptor-port/src/ui/DutyTplModal.tsx",
+      "sha256": "EC2C019A9F7E2E5D4B6E50E6DB38B88040B653FB0D79F44DA18AF2249918751F"
+    },
+    {
+      "path": "raptor-port/src/ui/editlog-writers.test.tsx",
+      "sha256": "E096659FE983C6D1738760617083636BDC7D97BFBCDF3DE3BD135C98DE315DD3"
+    },
+    {
+      "path": "raptor-port/src/ui/editwarm.test.tsx",
+      "sha256": "8167157F48E338D5F5662D7202A6AD54625DDE2910F5183B9368B24A187E4AD0"
+    },
+    {
+      "path": "raptor-port/src/ui/editweek.test.tsx",
+      "sha256": "8423B7245BA04EB62432BFD9F17800E2A389F23304E81B6DA6835A69EF15132C"
+    },
+    {
+      "path": "raptor-port/src/ui/EditWeek.tsx",
+      "sha256": "42410925F108FF468F9A1380166D64777A7C9F7717A08A74DF7F622A99A58E64"
+    },
+    {
+      "path": "raptor-port/src/ui/export-published.test.ts",
+      "sha256": "E38F705A69DD756C14EFDA055BAF727C580FB77339B5C38C4B34CC18B01C5180"
+    },
+    {
+      "path": "raptor-port/src/ui/export.test.ts",
+      "sha256": "3C2ABA22A4BE70EADDAE56E6267D20EEAE9CD411ACB9C096458235F204E851B7"
+    },
+    {
+      "path": "raptor-port/src/ui/export.ts",
+      "sha256": "28BF2FF225A03AC1857463E17A4E022CC282F6B55BEC258BA337B106018584B2"
+    },
+    {
+      "path": "raptor-port/src/ui/flagglow-css.test.ts",
+      "sha256": "A8294AFC5D574448DDC568F6CD78E9797E4356D422AB6F2B8ACAD4B63BB7491C"
+    },
+    {
+      "path": "raptor-port/src/ui/floatwin.ts",
+      "sha256": "6403193C38D94189B5C2DE2A5CE6A5F55FC36A86C89EBDCED6AB93D3397CC47B"
+    },
+    {
+      "path": "raptor-port/src/ui/fltnolen-mark.test.tsx",
+      "sha256": "B517E5E08F306974C9D5F0BBE0EFECCAA7DDEFF38AA62A8049F472181ED5E9A2"
+    },
+    {
+      "path": "raptor-port/src/ui/GuestApp.tsx",
+      "sha256": "3EA6C37C7B3E12279E6486D465FCF3B2A646C0267DF2A826C4E56517C3357626"
+    },
+    {
+      "path": "raptor-port/src/ui/help.test.tsx",
+      "sha256": "993ACC621AF51FC9EEAFA2DCAD3FF8C59FB7CA44CE29FCA01EB975C0828155D5"
+    },
+    {
+      "path": "raptor-port/src/ui/HelpPage.tsx",
+      "sha256": "971947EEA306A6120A3D389297464AB172CF856EB9922E73A261DD721518084E"
+    },
+    {
+      "path": "raptor-port/src/ui/highlights.ts",
+      "sha256": "AD031E7928B7E07314014358D83A4D541746C96BFB58C8DD5B1F84485A324B9C"
+    },
+    {
+      "path": "raptor-port/src/ui/histbubble.test.tsx",
+      "sha256": "1330B8D29A75DD5C1C26B8DF3A0FC0BCF0D6E2EA3CE390BE1B78464B15F0AE98"
+    },
+    {
+      "path": "raptor-port/src/ui/histbubble.ts",
+      "sha256": "D582C936BE127840A913665BEDF0377AEED385C9346F84126C819D2266E1F286"
+    },
+    {
+      "path": "raptor-port/src/ui/histlist.test.tsx",
+      "sha256": "CE8D675FD99ED824599C297BC79256CDCC4CED602A0D5E93D0AAE978A9BB8C52"
+    },
+    {
+      "path": "raptor-port/src/ui/hlchips.tsx",
+      "sha256": "326DBBF938DFAB83963DA09094871764C444608446A27A9FC1D85EB1B4115CD0"
+    },
+    {
+      "path": "raptor-port/src/ui/hlfold.test.tsx",
+      "sha256": "5661236B030C67AC9ECF4268319D314530A3ABA1B18ED058E90CAB125DC9BF9F"
+    },
+    {
+      "path": "raptor-port/src/ui/html.test.ts",
+      "sha256": "EE2678B0E4B2A9806464DCEF8C1B877C5A15E586A824DB690299C6BB55B0B0C4"
+    },
+    {
+      "path": "raptor-port/src/ui/html.ts",
+      "sha256": "65D8C6FE48FEE730FE2B9DA2CBF83C4A02A00BC81F745011D024252A70784AA5"
+    },
+    {
+      "path": "raptor-port/src/ui/icons.tsx",
+      "sha256": "28C1429BE6A607EDE339703C03630ED6D6B8AAABD53628B008308F3CDF3CC33E"
+    },
+    {
+      "path": "raptor-port/src/ui/inputedit.test.tsx",
+      "sha256": "EFBBCCDE3EE595FA0E57EBF64F341AF6788FDFE576FDCB87B63C3FFBD129DFB0"
+    },
+    {
+      "path": "raptor-port/src/ui/inputedit.tsx",
+      "sha256": "9F19C73DED43109986D6982AAE7F90825A8079BEBB292A2895A3D2E3C20EF254"
+    },
+    {
+      "path": "raptor-port/src/ui/inputs.test.tsx",
+      "sha256": "48E13E996D1D90E0E21FD58E9E51F770FC7A0680BD6AC21843476B49A3273D8C"
+    },
+    {
+      "path": "raptor-port/src/ui/inputscal.test.tsx",
+      "sha256": "20DDB8C846D54F2C37552B5025B424C95E7875948A84F7B371A9620A934CA650"
+    },
+    {
+      "path": "raptor-port/src/ui/InputsCal.tsx",
+      "sha256": "C9A532A54FCC4EC8333BAA6E576860A91518F793D6B3F5B6EC528BB17FDA45B7"
+    },
+    {
+      "path": "raptor-port/src/ui/inputsfmt.test.tsx",
+      "sha256": "FF591AB2C86EEF66A02EC35034A9BC1242CBA7D7848E0B74FEEF8520543D3B27"
+    },
+    {
+      "path": "raptor-port/src/ui/InputsPage.tsx",
+      "sha256": "4292510AE1C1C79CDFAFA7DB48754B29F24F401D56B7121BC291719471F42968"
+    },
+    {
+      "path": "raptor-port/src/ui/insights-mix.test.tsx",
+      "sha256": "5B3FB14691D589A36EFF609EB5546F5B6D0806490FBA0C6A4FD71A5851467039"
+    },
+    {
+      "path": "raptor-port/src/ui/insights-published.test.tsx",
+      "sha256": "87D02C62EC56D46106FAC54CAA23A9C150F568314F3F3FBC777B7F646C8D565F"
+    },
+    {
+      "path": "raptor-port/src/ui/interact.test.tsx",
+      "sha256": "5BDC48F83AD546CB249061031F76249F3899FDFFCAB286C9A352DD693BDD0B80"
+    },
+    {
+      "path": "raptor-port/src/ui/interactions.ts",
+      "sha256": "F49154B27C98D7118AC76280A29285773DCD3311102F7183AAB6FD7B43FFDCC5"
+    },
+    {
+      "path": "raptor-port/src/ui/intimesadd.test.tsx",
+      "sha256": "0A14035142F3B429669BBFC8DDA63AC0BF2E6D1C18BF4A321A0FFE6B5A3D0E44"
+    },
+    {
+      "path": "raptor-port/src/ui/lateinput-ui.test.ts",
+      "sha256": "323D2D6CC44977A7855893639F7DD77C37B4D8BF820AC68DBB86EEE9DCD61963"
+    },
+    {
+      "path": "raptor-port/src/ui/latemark.test.tsx",
+      "sha256": "6C7E44B057C66ECA5F594B3DBF38C700F38B31DAE36160403EB97C7C518D60F1"
+    },
+    {
+      "path": "raptor-port/src/ui/latepub-load.test.tsx",
+      "sha256": "1FD222378A12F003526474CF388448F947EF70D865CA290FB5BA6DFBA3C705B3"
+    },
+    {
+      "path": "raptor-port/src/ui/latepub.test.tsx",
+      "sha256": "9E01A4D86BC803EE9AF429A0EBBAAFC0292906F69DCF2446186ABBEEC05121B6"
+    },
+    {
+      "path": "raptor-port/src/ui/layers.test.ts",
+      "sha256": "95A56ED1AD30EF4ACB6DBCBEDD5878DA5C302CA4A2B4525C58B5EBAF4FA7030D"
+    },
+    {
+      "path": "raptor-port/src/ui/lift-css.test.ts",
+      "sha256": "EC505A36DF1596C4B033337E32F41B7E2A64AF04019C79A43F3F71394FF2BE3F"
+    },
+    {
+      "path": "raptor-port/src/ui/lift.test.ts",
+      "sha256": "20F73813DB7EC1BF3444F052A16179C28107A5DE4BCE3585A67969DACA25D6A1"
+    },
+    {
+      "path": "raptor-port/src/ui/lift.ts",
+      "sha256": "C39BE61E93CCB672DFD9C8BE38E7F16768E66461C1DFBD9E5323C2C6851E72DA"
+    },
+    {
+      "path": "raptor-port/src/ui/logic-html.ts",
+      "sha256": "1B1ABB6C1E7017563549CB99D68AFDE2CDB0BA94E92876BB1BA84385075FA148"
+    },
+    {
+      "path": "raptor-port/src/ui/logic.test.tsx",
+      "sha256": "C1AB9A020CD74C2095E7AF3E91537AF283EB509D5EBED5B448E3A989171B3F74"
+    },
+    {
+      "path": "raptor-port/src/ui/LogicPage.tsx",
+      "sha256": "CB370B72D29DB4808E88868745A41C25CDEAB7505061D39E6DA7D51EB201AF7E"
+    },
+    {
+      "path": "raptor-port/src/ui/Login.tsx",
+      "sha256": "79C0DA8D72A89EB0084ADDF7F79A321E502B3C4A7375F5AB9DF8430338882714"
+    },
+    {
+      "path": "raptor-port/src/ui/logout.ts",
+      "sha256": "DB2A0C2B04A9467F8CDF6B5FFFFB739B9C9EA3EF898FF459079C78870847EE52"
+    },
+    {
+      "path": "raptor-port/src/ui/lwkeepalive.test.tsx",
+      "sha256": "B82DB66063489DB2F0F271454CD87A45E1EB7669463626A022238DB6163047EE"
+    },
+    {
+      "path": "raptor-port/src/ui/medclash.test.tsx",
+      "sha256": "D229520E3CB282693B703D49BEFAAC478A3AAE817374B26916E7A1E09E35AA88"
+    },
+    {
+      "path": "raptor-port/src/ui/MedClashConfirm.tsx",
+      "sha256": "4B4D18B7DEBC4C9A9A8134792ED5A997408C6534A7DAABD74056DE7309D64BAD"
+    },
+    {
+      "path": "raptor-port/src/ui/medicalview.test.tsx",
+      "sha256": "DF0F7235B43A6E60E9981A2482F530859E534354025BA573FC1D280B49793053"
+    },
+    {
+      "path": "raptor-port/src/ui/MedicalView.tsx",
+      "sha256": "B561C32C5F7ACCBB04BA696F20A4834F0BDEA3408B052013DB8BD253E7F857C6"
+    },
+    {
+      "path": "raptor-port/src/ui/medmove.test.tsx",
+      "sha256": "A297157D966662793DEA32FC3749832FE82FBD85213A2F3A43BB41188D2A43B6"
+    },
+    {
+      "path": "raptor-port/src/ui/MedMoveConfirm.tsx",
+      "sha256": "9DBC4F91AFA0D51E08BAD5B9116546A3E4E273108E2BC29821E8D39FDA7AAADB"
+    },
+    {
+      "path": "raptor-port/src/ui/medwrite.test.ts",
+      "sha256": "12868D0F13843284E914DFC2081E16D26AAF6391AB08609A0320A9F362644EC8"
+    },
+    {
+      "path": "raptor-port/src/ui/memberinput.test.tsx",
+      "sha256": "00CADF194C3D18FE2B40D59A4ABA24A7ADD6D6FBFD7FCCCB90A804A811A772BB"
+    },
+    {
+      "path": "raptor-port/src/ui/memberview.test.tsx",
+      "sha256": "105F13B50D658AD507B70C18A959303FDBE08AF4A8FC995C90B1E6B2AC19B0B1"
+    },
+    {
+      "path": "raptor-port/src/ui/mission-role-interim-fixes.test.tsx",
+      "sha256": "B18587311CC75975564705BC5D389676A55A11FFE9153F7D633BAE9B46B08C3C"
+    },
+    {
+      "path": "raptor-port/src/ui/mission-role-offer.test.tsx",
+      "sha256": "28FAD098D42E87342EC55704847C3E372AE91C7E03861747FA69B4C7C3E63C1A"
+    },
+    {
+      "path": "raptor-port/src/ui/mission-role-offer.ts",
+      "sha256": "4F03869ED818A70B2C0078E5D3BE28512FF02090D472504C8C6F9626AEB0A646"
+    },
+    {
+      "path": "raptor-port/src/ui/modal-phone-height.test.ts",
+      "sha256": "00CBC3AE7AE7045B140512CA6D2CF97B3C12F897DF4F477F9E215E157E4B9D3E"
+    },
+    {
+      "path": "raptor-port/src/ui/Modals.tsx",
+      "sha256": "8D9DA340FA804E109E8187CA73FF66C9AA704D88E44F9A6DEA11CBF889A2E0F2"
+    },
+    {
+      "path": "raptor-port/src/ui/notepub.test.tsx",
+      "sha256": "95DD046EF0634A6E70E68F943947072F9D163B666200F4B9614154166BE464A1"
+    },
+    {
+      "path": "raptor-port/src/ui/odds.test.tsx",
+      "sha256": "9404A9F880C3CFA3115CD6ECFAAAAAD17FF5EA399EE3293DDB1F84C89F3DF520"
+    },
+    {
+      "path": "raptor-port/src/ui/oilclaimcrowd.test.tsx",
+      "sha256": "A5C3DE15CA5D18516038A8FE61A3770FA2E22D01C188B11C9329D3696D3E36E1"
+    },
+    {
+      "path": "raptor-port/src/ui/oilclaimrow.test.tsx",
+      "sha256": "580F3E8F45AFE1BDDB77D74AFD077829B6607E89A4B789286D2643914DF3D652"
+    },
+    {
+      "path": "raptor-port/src/ui/oilconfirm.test.tsx",
+      "sha256": "99061778D3FB16A619A1A40A20956EF5342BBCA155291EBC44B74773C9702205"
+    },
+    {
+      "path": "raptor-port/src/ui/OilConfirm.tsx",
+      "sha256": "26EC86F34976100D88F6AD0CAB8B6BCA038175B1C70A5EEAF6F6D6B53FC685C7"
+    },
+    {
+      "path": "raptor-port/src/ui/oilcount.test.tsx",
+      "sha256": "32D0421B3871AFB798A6658E60E1F69340D1B6958DE7FCD8E2599D45A436468D"
+    },
+    {
+      "path": "raptor-port/src/ui/oilmode.test.tsx",
+      "sha256": "DCE604C1D013BF9FDAE20127B18B3C82F6D90951E750512128BCF60B9E4095FD"
+    },
+    {
+      "path": "raptor-port/src/ui/oilmode.ts",
+      "sha256": "4AC2DFF55C940B48F896396646F0053D9A5DC5E192917E93BC183767BB9F3CB9"
+    },
+    {
+      "path": "raptor-port/src/ui/oilnoperiod-board.test.tsx",
+      "sha256": "E3FDB14AF739424DE80553F1C5D4AD06EED42E5154568BA8F0BD630437800089"
+    },
+    {
+      "path": "raptor-port/src/ui/oilperiod-offer.test.tsx",
+      "sha256": "FFEB4292F25A2B4215D2555D7F328E1806185D3773F60A8565EA50BD8DB2940D"
+    },
+    {
+      "path": "raptor-port/src/ui/oilpersonalcrowd.test.tsx",
+      "sha256": "FBB47D91503A2305550737D3A74445CEA451E20F75A6469247ECF4DC93C7D47B"
+    },
+    {
+      "path": "raptor-port/src/ui/oilrowpucks.test.tsx",
+      "sha256": "7B344BD54A825D71AFF75F942D4765075220E6D403CCA92D7E2F7F687DA7C719"
+    },
+    {
+      "path": "raptor-port/src/ui/oilscreenwords.test.ts",
+      "sha256": "A0C6A2D373FF9FB6F1868ACB36A5AFDF1F766C91188CB236DEEE40964713B756"
+    },
+    {
+      "path": "raptor-port/src/ui/oilseat-refusal.test.tsx",
+      "sha256": "7A4A10435FAA5450871279FE1A00723E8308D86FE966994D61E487539C25463C"
+    },
+    {
+      "path": "raptor-port/src/ui/oilswitch.test.tsx",
+      "sha256": "A4ACE315B37378419374BB5A4F004143552957C875A126BEDC276D612D917488"
+    },
+    {
+      "path": "raptor-port/src/ui/oilundo-button.test.tsx",
+      "sha256": "A3A8FA37EF95303059F1598BA2122770FAD7466B5B25B7DC4FEFF05D1647F836"
+    },
+    {
+      "path": "raptor-port/src/ui/oilundo.test.tsx",
+      "sha256": "4BD04B8C4E3CBE72246471C68F32193FA156A0008344D31D63151253FB40349C"
+    },
+    {
+      "path": "raptor-port/src/ui/oilwalkwords.test.tsx",
+      "sha256": "A5A26EF2FDC2370A98A8CA6BEAC107283716D7791CB3AA38543667E467D2B91B"
+    },
+    {
+      "path": "raptor-port/src/ui/oilwords.test.tsx",
+      "sha256": "FB8C3421DF0F35CCECB3ACA10DCA5F36585197DAD19A76B33E53BA40B9000512"
+    },
+    {
+      "path": "raptor-port/src/ui/onedoor-users.test.tsx",
+      "sha256": "674F5E3496D176B24EBE80C0A8A4548374DBEE95685492659570BD58F9F6120B"
+    },
+    {
+      "path": "raptor-port/src/ui/outside.test.tsx",
+      "sha256": "C20A751491626C6656C5A0101502F0DEAD1FE40D9C974362C441AE8894D97EFE"
+    },
+    {
+      "path": "raptor-port/src/ui/outside.ts",
+      "sha256": "5BA57D34A3BE35A20EFE5335356C7580644DF9A96B2DC993602873A00F2D544B"
+    },
+    {
+      "path": "raptor-port/src/ui/palette-html.ts",
+      "sha256": "E7BF55EE9AA2BF969326709937157CE13EF41AD0A35FCCC90E6CF0958464B2E9"
+    },
+    {
+      "path": "raptor-port/src/ui/palette.test.ts",
+      "sha256": "2960881D6CED8B3747766D509DFDC122507B497F2517FB2B500660EB3B9C2FAA"
+    },
+    {
+      "path": "raptor-port/src/ui/pan.test.tsx",
+      "sha256": "F0CA9ED5F1ADDA8925298661B50F150C09CBD0AC27E9A67E0D8FE2706FF6BF6E"
+    },
+    {
+      "path": "raptor-port/src/ui/pan.ts",
+      "sha256": "26AD148347A6D71CDE9B53254F0CE98807F62BC7084F88142E2AC74BB18DEA72"
+    },
+    {
+      "path": "raptor-port/src/ui/peek.test.tsx",
+      "sha256": "81C5B07000D78164D04574885A421B8B254C4F4A37E8224CE909DE2AE489C213"
+    },
+    {
+      "path": "raptor-port/src/ui/peek.ts",
+      "sha256": "F6F431ED9BF29EB1D99AFA20CA72D309358AD8ED30D665E6EBA3F317815A0E09"
+    },
+    {
+      "path": "raptor-port/src/ui/pendcrowd-request.test.ts",
+      "sha256": "2A5316393002EE19594C52A873C2B0545CDD87DB80539628DC12F61B8EB97BE2"
+    },
+    {
+      "path": "raptor-port/src/ui/pendlist.ts",
+      "sha256": "9234BE63D7BC119467584D77BD46C84AA53217A708D84DA799A09430E706C6D1"
+    },
+    {
+      "path": "raptor-port/src/ui/planselector.test.tsx",
+      "sha256": "9F3F8CBB7D7D92548A0FD357B17F79CC2A8673E4D2744AC98BD4460CAAFA5EEB"
+    },
+    {
+      "path": "raptor-port/src/ui/pops.test.ts",
+      "sha256": "7176E16E0ACDBEE6ABF3B70156F6E283F539A27234C50C06E7947BFCBF565CA9"
+    },
+    {
+      "path": "raptor-port/src/ui/pops.ts",
+      "sha256": "AA234CD29A0D27747D009FAD43304F4AB515319A5642A78B1E7A609EA045860D"
+    },
+    {
+      "path": "raptor-port/src/ui/postout.css",
+      "sha256": "6AE7FAD6340B1A940D691C9A7A505A7D65D7E00CBE6B4AEF5124FF3F4EEB1773"
+    },
+    {
+      "path": "raptor-port/src/ui/printpdf.test.ts",
+      "sha256": "F438E77A24B9412CF5C135F6F82757F7C060B3F14C555DF02BA1A67A30E2FE98"
+    },
+    {
+      "path": "raptor-port/src/ui/printpdf.ts",
+      "sha256": "E88011F4943A10D61E21D7B21053496146D59AC24BC87D66CFDE1E625706FD37"
+    },
+    {
+      "path": "raptor-port/src/ui/pubsweep.test.tsx",
+      "sha256": "35BB37019BE22C8C529648B9933990145649CF8D250CA12D8F56401FB26EF1D3"
+    },
+    {
+      "path": "raptor-port/src/ui/quals.test.tsx",
+      "sha256": "498C4F866118B7DCCE3633E76D33EC11840D0B029D9E162726194118481A4D8F"
+    },
+    {
+      "path": "raptor-port/src/ui/QualsPage.tsx",
+      "sha256": "3F25CFE3317BBDA065692454FCB14ECAAF51EA79CAE6F2054DD4C446D2920938"
+    },
+    {
+      "path": "raptor-port/src/ui/rally-feedback.test.tsx",
+      "sha256": "6A3B4AD0E344526A5F77822075118048724A4E8277E2045C8EB2B45756930A9F"
+    },
+    {
+      "path": "raptor-port/src/ui/RangeCal.tsx",
+      "sha256": "CFF1FAF881CED40DBEAFAD59EB8B9FE04A11BC8F7B51A71368ECBF285EE0DDFE"
+    },
+    {
+      "path": "raptor-port/src/ui/render-safety.test.ts",
+      "sha256": "E6802380D5C101E82A50231259D812AFC34D95AD0E81269D30AE2D1333D2D843"
+    },
+    {
+      "path": "raptor-port/src/ui/reqonerow-app.test.tsx",
+      "sha256": "F11336B2E5A29F18915801B1884CF7DE751B83A3C1C3105DB9D94FA470B42A29"
+    },
+    {
+      "path": "raptor-port/src/ui/reqonerow.test.tsx",
+      "sha256": "CA930DDF1ACA62C302CC4C529CFFA070D250E65A2B42887801E759A2800C80EF"
+    },
+    {
+      "path": "raptor-port/src/ui/rowdrag.test.tsx",
+      "sha256": "EA8184F0B8CCF9AB5B8EBA8FD32FE54ED7827BE077CE843040C56071AD219DA2"
+    },
+    {
+      "path": "raptor-port/src/ui/rowdrag.ts",
+      "sha256": "5DDFD1FA6B781EB2DAC0F3C9F0368478E6B7C8E359F08D4D1A2AE440DEE8C10F"
+    },
+    {
+      "path": "raptor-port/src/ui/rowtwice-refusal.test.tsx",
+      "sha256": "85E624AFAF6FBDDDDE81ACE59111D4A3FEAD3857D03BCEF703C99003164661DB"
+    },
+    {
+      "path": "raptor-port/src/ui/runtrace-ui.test.ts",
+      "sha256": "B710D0D0FC7EE68E5F705916A330F6D5981BF43FD4698C9A04B0BBCA8B4DA3A3"
+    },
+    {
+      "path": "raptor-port/src/ui/sanscards.test.tsx",
+      "sha256": "5248F53951ECE0D8B740893E439BB507E01A78EFCC7FFD0FACC99240904D06BD"
+    },
+    {
+      "path": "raptor-port/src/ui/sarole.test.tsx",
+      "sha256": "866B871B56EFCA5384B685F4589A4F116FEF3E477E47D181E1E5AD445B39DF46"
+    },
+    {
+      "path": "raptor-port/src/ui/SaveStatus.test.tsx",
+      "sha256": "E4D8DC5D35AAC5D18A16C86B09917B4218870204A1E952B2422C6C74D3568312"
+    },
+    {
+      "path": "raptor-port/src/ui/SaveStatus.tsx",
+      "sha256": "7BA841B8A00EF50CAD9B0A38841F61517C19FC9B9F3CFB0E6A49D332524B64A1"
+    },
+    {
+      "path": "raptor-port/src/ui/scboard.test.tsx",
+      "sha256": "24CC449D40B21E9DA4082D1100A45350AB2CE6CA8575509660D02E68B8EB4896"
+    },
+    {
+      "path": "raptor-port/src/ui/SchedBoard.tsx",
+      "sha256": "90DAD849D78ABBA34BC693D1665E075C7DA0CED1B10EDC3ABB435DC9A7FB5588"
+    },
+    {
+      "path": "raptor-port/src/ui/schedule-tab.test.tsx",
+      "sha256": "6D15E910913B68AA9834B30E71D16C5D3FFEDC33D3FA641AFEB7ACF67852ED6A"
+    },
+    {
+      "path": "raptor-port/src/ui/schedule-tab.ts",
+      "sha256": "44B7DF357F29872B1F405C13273952623511090ABF49180598062D141D0CADC3"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/00-foundation-login.css",
+      "sha256": "EBBC4CEA6418701D9724CFBA5274B0C7D2A71AFA0D2D4B7FEC5F1AF2BBD05231"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/01-logic.css",
+      "sha256": "8CE69D081820B8D68F690DD181F3FA0BFB592DAB9D993045FB8CE2DA8FE37269"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/02-shell.css",
+      "sha256": "80EB246A906A4D7187D0353E653F79296293D095A37EE731DDF0A2D3A226FA4C"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/03-week.css",
+      "sha256": "AA6ECEAF574D7EEF7D6C55D4178771EFD0CE91B1D25D3F1F1FFA3CEA48E8E5A5"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/04-pucks-sections.css",
+      "sha256": "DB216A5A2D09ABC4A661F0A24189A17EC6ADB52004247E2BD7C62A01A536DF56"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/05-quals.css",
+      "sha256": "70B74E0EC94D7A0386965C7C85879DA3338BF39B971A5DD6A4C13C7248AD429C"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/06-inputs.css",
+      "sha256": "7A53930A87CFF060A9B2B9A33F6D5BAD655227CBCACE306638245018C554264B"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/07-inputs-calendar.css",
+      "sha256": "D5830889B2EA5B92942892C83AD2A7B7B2FDD88AD439E3A91770FE81286470DD"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/08-windows-tools.css",
+      "sha256": "4A888668F45E4C639E7E55FC7744B0424B3E31761C4E7DDD331FEF43131602C8"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/09-week-responsive.css",
+      "sha256": "C969C00549CFF345332C3DD52B605D0CE44CB7364C25A4E34C159EC59264C025"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/10-board-history.css",
+      "sha256": "4D2D9D5229BD6BBF4D66F9CB1BAD942C376C6891A72197519C164DA5F4483155"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/11-drag.css",
+      "sha256": "85C5F84D14342BCDA18E88ADEA03368DB8616D3D8939668ACF53C2DBDCC7D97C"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/12-schedule-editing.css",
+      "sha256": "08836BF6B47B23B436B65A386BB51B1DA55E937B4CB67F3BF8B97CD183C49736"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/13-board-rows-responsive.css",
+      "sha256": "A4B9CC3F0B6F08F0921EF30CF21F762425F39764F2C2DBBABCD035FBACD5F459"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/14-input-editors.css",
+      "sha256": "53754C01A7379759889E413F9464371821DF94F5C78335A7600970C71114E976"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/15-admin-help.css",
+      "sha256": "99C99492A8BEF5CE27C1EEABBFF2ABFEE4ADB52A285F3E8C5D987060C7892B80"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/16-medical.css",
+      "sha256": "310B259AC0FB34599315B6E4CC45F3DD495E91DB6B3B68A1091184DF2C84CEBF"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/17-save-status.css",
+      "sha256": "1A7820C1ECF89B73D0741BCB6E7EEB448C26B57917047F9B64D44C34F172973A"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/18-oil-board.css",
+      "sha256": "7FE7909768B726690EDEA1DA738BC55FC94EE82600526785AEEC36FD123C9148"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/19-availability.css",
+      "sha256": "C5D317621069C5E2F5F5B546F5B8A35FA89F8740654E914E524DDDB9B5508D41"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/20-changes-quals.css",
+      "sha256": "4DFE893DE5DEFB60982CCD034AF7D7955EA99BDE295BB693370D2ADFC0510FA8"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler/21-insights.css",
+      "sha256": "BF04E0F818976FEFA59B85334A1B48DD6615D80CAF1E9ED6A571384DFE18C440"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler-css-order.test.ts",
+      "sha256": "3D0CC0C852602BDB918978EFA36E4C32E1776C992C8A63C4919AB1D36400F341"
+    },
+    {
+      "path": "raptor-port/src/ui/scheduler.css",
+      "sha256": "55239DC5C8D75DA8A82B10040977E94D0C5676B6EAEB814CF01059E371F98F8B"
+    },
+    {
+      "path": "raptor-port/src/ui/SecDefaultSnackbar.test.tsx",
+      "sha256": "997B8D8A90048A9CB9F16E0632E1BAC2072F5BC1812AEC783F4BE70B0E5E8B72"
+    },
+    {
+      "path": "raptor-port/src/ui/SecDefaultSnackbar.tsx",
+      "sha256": "5481C65DD8282756726738E9A5398C597DD8EE9C6616EDFCC0ECA1A07B43081F"
+    },
+    {
+      "path": "raptor-port/src/ui/selrings.test.tsx",
+      "sha256": "57BB00F8F0BD7B9C7348018716A4D412AA5B0F8EC2ADCDB2E80CCB553719B3A1"
+    },
+    {
+      "path": "raptor-port/src/ui/Shell.tsx",
+      "sha256": "79DA190E33DF7C79D81D467D54A7F9ED063AF3A7C8F8E484F1FA8040CF645B2D"
+    },
+    {
+      "path": "raptor-port/src/ui/simspare.test.tsx",
+      "sha256": "D5DBDF2E4136164270EB08ACCA0808C9DABFC7CA954D5730C4CE1A5C9F776D49"
+    },
+    {
+      "path": "raptor-port/src/ui/snaphold.test.tsx",
+      "sha256": "09AD506894B6CE3B2B67BBEEC6F2F8408D263965D572D2496AD9B793F9981ED5"
+    },
+    {
+      "path": "raptor-port/src/ui/stores-edit.test.tsx",
+      "sha256": "F61DFBF403327851F3E3FE17A3C5370F94C9A8FE68086E55D2C0FA7D6D425303"
+    },
+    {
+      "path": "raptor-port/src/ui/stsaved.test.tsx",
+      "sha256": "11FE7DA46B857A64562757DFA38E165FD089765940C31EEE4F89FD828FD53037"
+    },
+    {
+      "path": "raptor-port/src/ui/swipeweeks.test.tsx",
+      "sha256": "29C644814CEF0687B99EFDDAEC92D88D9451AE42CBC8E44AECD8D54666921286"
+    },
+    {
+      "path": "raptor-port/src/ui/textedit.test.tsx",
+      "sha256": "AED34C8DB0BFA467D999C9D438944A77C47DFE393987881A59AC0A8C5B57C517"
+    },
+    {
+      "path": "raptor-port/src/ui/textedit.ts",
+      "sha256": "0583C0AC54C89205FA32B0D8602EC16DC3DB5E8C0FACD7AEF45719783F6C3C64"
+    },
+    {
+      "path": "raptor-port/src/ui/toast.ts",
+      "sha256": "A1152BAED2574D29875C554533CEEEDD64DCB0AE80497D07DFF6250B8B27B8DD"
+    },
+    {
+      "path": "raptor-port/src/ui/toastbatch.test.ts",
+      "sha256": "3024E12B14FB57DD51D9AA760731FA233CDC6E907629DF63005E9883833FFF19"
+    },
+    {
+      "path": "raptor-port/src/ui/topbar-css.test.ts",
+      "sha256": "9C4A3A5A6E1A560EE5EA9376299E753E867C394968C181C5F32DBCEF0C6C3D68"
+    },
+    {
+      "path": "raptor-port/src/ui/topbar-pair.test.tsx",
+      "sha256": "CBCB9CCE463C8D544D7E759E06C81F495B84F16B3F85BE200B6AB0F33AAA22A7"
+    },
+    {
+      "path": "raptor-port/src/ui/topbits.tsx",
+      "sha256": "1B7580D81DADBFF934B5A1336625DC1A796F709BEE0954D0BC2210327574136C"
+    },
+    {
+      "path": "raptor-port/src/ui/unavailedit.test.tsx",
+      "sha256": "928708511D48AA49E319F5A06C01922E54432308A6D09B236397DC034830B720"
+    },
+    {
+      "path": "raptor-port/src/ui/unpublish-button.test.tsx",
+      "sha256": "4B7051E9D12207D22F86A270B6226454BB965E64F0F6804771B0CCEEFBBA2336"
+    },
+    {
+      "path": "raptor-port/src/ui/upchit.test.ts",
+      "sha256": "258BB16FB0C505BF1063809A3141B481D58471DD46181A8F706669B2A03B235D"
+    },
+    {
+      "path": "raptor-port/src/ui/UpchitConfirm.tsx",
+      "sha256": "65DFB41A4DFAF0059CDAEB67BEEE61B819586A29DA861DF3894870C3DD2C542D"
+    },
+    {
+      "path": "raptor-port/src/ui/upconfirm.test.tsx",
+      "sha256": "EB91F1C1DF738833114B6F9243BA36F68258BDA0EDC5BDC2BE8596088EC259C0"
+    },
+    {
+      "path": "raptor-port/src/ui/UsersPanel.tsx",
+      "sha256": "F9102868BDAB84233C3DCA10E5B3C9206D4C78CCA30BEC0FBCE0A75CF5069CE7"
+    },
+    {
+      "path": "raptor-port/src/ui/useStore.ts",
+      "sha256": "84E023F69150AF11F1FE50410BD6501C240CB9555D913E08668E0C2DE71E2B5A"
+    },
+    {
+      "path": "raptor-port/src/ui/viewrun.test.tsx",
+      "sha256": "8BC38926099BEBD7C0088A1FDB595C12F675664044C3DF9D3AF4255F0851F5D8"
+    },
+    {
+      "path": "raptor-port/src/ui/ViewWeek.tsx",
+      "sha256": "82EC4D4DADB4387D120BDF3401CECDA6D28B4C60F56AF626ECED91259071D1A9"
+    },
+    {
+      "path": "raptor-port/src/ui/warnhide-readers.test.tsx",
+      "sha256": "61DB7FE7FEF0C3F2566058FFF675B5A578A7A89DF0D95136ECC17E037417C399"
+    },
+    {
+      "path": "raptor-port/src/ui/warnjump.test.tsx",
+      "sha256": "7E39373682A0EFD4D93905C23E1CEE1F952E3A153B3E6F9329B7377E45B5D430"
+    },
+    {
+      "path": "raptor-port/src/ui/warnmute-week.test.ts",
+      "sha256": "2D98160455D6098F1D7F479DCE72D66783F522FADD1CF52D2A9D4CFFF67806ED"
+    },
+    {
+      "path": "raptor-port/src/ui/wavedefault-add.test.tsx",
+      "sha256": "AF2F3B69571A2BF84AA85AD3E14D5D74C24A94B181DFE88764077C7715677094"
+    },
+    {
+      "path": "raptor-port/src/ui/wavepicker.test.tsx",
+      "sha256": "54A830C7917FEC48417DA1C3714EB05290B5FDF0BD988ECA6DEE2772E63DAA94"
+    },
+    {
+      "path": "raptor-port/src/ui/WaveTplModal.test.tsx",
+      "sha256": "CDFC9896E5DEA9FF9A854B0A2C65E730B4E91D5DEE28FE7883CF6EB98B9ABBBA"
+    },
+    {
+      "path": "raptor-port/src/ui/WaveTplModal.tsx",
+      "sha256": "3BF5C91CBC287490C5EEB3C8ADAE8CA41EECB8542732686A6AF1AB15BC765969"
+    },
+    {
+      "path": "raptor-port/src/ui/WeekCal.tsx",
+      "sha256": "C916682AD88E367C143E547861206C71DDF631146E17B9E665806A1598DE705D"
+    },
+    {
+      "path": "raptor-port/src/ui/weekglide.test.ts",
+      "sha256": "D3B66DDBF0532351A9943BA58F429792BE21C307383CF7284141953E3F5E1FC6"
+    },
+    {
+      "path": "raptor-port/src/ui/weekglide.ts",
+      "sha256": "5CA27CBF6EF154AAF7F62FE40893CAC17EEF03058E3E27C7A18AC5A84043832C"
+    },
+    {
+      "path": "raptor-port/src/ui/weeknav.test.ts",
+      "sha256": "B3AE9F8BE11A3AC0C3AA408945E8A7642DAE8099D8F4512F8C471DC655B22826"
+    },
+    {
+      "path": "raptor-port/src/ui/weeknav.ts",
+      "sha256": "D0C7A7417ED068A37F96F5F761DDA71C104C2EF080F395012E88F4E103568A45"
+    },
+    {
+      "path": "raptor-port/src/ui/welcomeback.test.tsx",
+      "sha256": "36E0B5FD6B3EA228062B5C7AF800B55816A61833E99812FE261CE29C362ABF07"
+    },
+    {
+      "path": "raptor-port/src/ui/WelcomeBack.tsx",
+      "sha256": "6529D48EFD3D53388A826E3C48BF288C6776484333F0603B27701AD853AB959E"
+    },
+    {
+      "path": "raptor-port/src/ui/wipe.test.tsx",
+      "sha256": "670297E99B536D2A60439160A3B14DACA2788B02FE39B9060E4B23B8C5C3BE57"
+    },
+    {
+      "path": "raptor-port/src/undo/derive.test.ts",
+      "sha256": "4E8112E31C9705EF0840BEDF0574ACE79F5FA3B5186329EB1A63F66B92DE7BE0"
+    },
+    {
+      "path": "raptor-port/src/undo/derive.ts",
+      "sha256": "1E8CC9DB8DF75BBE3F60E29AAB0AF49ED951BEB20D7F8B498B9375FF33DB5CBB"
+    },
+    {
+      "path": "raptor-port/src/undo/describe.ts",
+      "sha256": "DE19554253B3BD614FFF32287AC181FADCB2FDBCC4D769F10D91FF6D6186CECB"
+    },
+    {
+      "path": "raptor-port/src/undo/index.ts",
+      "sha256": "60A3CF0D1B5C876D2E21A2C5E812A08B26D6864ABA331C2F58AF981DB8E7C5EC"
+    },
+    {
+      "path": "raptor-port/src/undo/integration.test.ts",
+      "sha256": "A6D72839AD9D09F2838DD0719AE211903588DB24742A301C6B7FDB5AC641BA54"
+    },
+    {
+      "path": "raptor-port/src/undo/oilundo.test.ts",
+      "sha256": "67741FA0A2CC85CF75784573342228054EAC05498B40D1C448EA6D4357699C0E"
+    },
+    {
+      "path": "raptor-port/src/undo/timeline-cr.test.ts",
+      "sha256": "2EF736F150B1967A18A7027EFD2F0B5BC6E4D1710578ED1D58AC4185A5FFF457"
+    },
+    {
+      "path": "raptor-port/src/undo/timeline.test.ts",
+      "sha256": "365824ED1D6264B78420B62E36B0E7F0E2AB8F5FF5F572AFFBB8D8DAE499A1D5"
+    },
+    {
+      "path": "raptor-port/src/undo/timeline.ts",
+      "sha256": "B7BED3E0C01A623A8F4DA14BC95B7E67D897B28CBA0FC4F1C5FA67236797E488"
+    },
+    {
+      "path": "raptor-port/src/undo/types.ts",
+      "sha256": "D0FB534E85C1F8807B10C7C049633CEC454E9F879F2154365AE9EEA2F500B268"
+    },
+    {
+      "path": "raptor-port/src/vite-env.d.ts",
+      "sha256": "65996936FBB042915F7B74A200FCDDE7E410F32A669B1AB9597CFAA4B0FADDB5"
+    },
+    {
+      "path": "raptor-port/e2e/amendbatch.spec.ts",
+      "sha256": "500C061ED1D81C0AB412015DA7CD86EBD2DB72B5519C6376F8E717F6CAD4037C"
+    },
+    {
+      "path": "raptor-port/e2e/app.ts",
+      "sha256": "EDD2EC6041F82CD7157A0D7A7AECD4410CD8F87BA8EDD7DFE6A5991BD25FBA45"
+    },
+    {
+      "path": "raptor-port/e2e/availwin.spec.ts",
+      "sha256": "428BD7E7C5BF3176B68857B4C977182622057503AA263D0CA8EF281E12AFE20E"
+    },
+    {
+      "path": "raptor-port/e2e/changeswin.spec.ts",
+      "sha256": "BC3C8CC6DA9C44D6A883A3FAFACE4B88B552D4E8C6731E3E9F4D45FD3B9657E5"
+    },
+    {
+      "path": "raptor-port/e2e/geometry.spec.ts",
+      "sha256": "8F0B46D7A744ABB5AB616C8D5C521AAF47C3915251DE782A3F55E39494FABDEF"
+    },
+    {
+      "path": "raptor-port/e2e/insights.spec.ts",
+      "sha256": "EF6F5A4085E1A9AFF1A3D3C61427D04438942AE8B5E53BF0FC6525248CCFD349"
+    },
+    {
+      "path": "raptor-port/e2e/leavewar.spec.ts",
+      "sha256": "B4DCA6EF89E65EB94905E1C761063E640F838786CD967D0F01F909A81B5405F3"
+    },
+    {
+      "path": "raptor-port/e2e/medical.spec.ts",
+      "sha256": "DE70393D31006EE9BC45B7F64D9F330C3604EE87DF2F723A233AB599DAC75DCF"
+    },
+    {
+      "path": "raptor-port/e2e/onedoor.spec.ts",
+      "sha256": "AA341F384FEE7CC1E92CA8B071BAAE887E31F1A11E04B96380CD9470D2EBC7B9"
+    },
+    {
+      "path": "raptor-port/e2e/schedule-tab.spec.ts",
+      "sha256": "CAAB860733A02745F679DCAB9954668DCF8670048256F2F7886F556141D0B3F7"
+    },
+    {
+      "path": "raptor-port/e2e/step4-leavewar.spec.ts",
+      "sha256": "B5DA14960306472FC10EC8899BD243A100F570A08E3FDB8405D611BDDE7B352E"
+    },
+    {
+      "path": "raptor-port/e2e/warnhide.spec.ts",
+      "sha256": "C2F97C6A0C705EA9DCF3A6D43E82B7EEE71736A5766DC0D6788F2B97E8D35C8B"
+    },
+    {
+      "path": "raptor-port/dist/assets/html-DvP4ZE4p.js",
+      "sha256": "D7439DF34E23FA4E6682329A1B83024C4A685D080B3D1865A944AA2FCC81F502"
+    },
+    {
+      "path": "raptor-port/dist/assets/idle-BfPG9c67.css",
+      "sha256": "176E470CD66A93432185177D4C272E833FB7E446397C573ED2DB74B37E04602D"
+    },
+    {
+      "path": "raptor-port/dist/assets/idle-uKU43X6z.js",
+      "sha256": "5B4A1B28B787E1EAAC493846BBEDF983ECE1490F4026213DA82D7BE3872286C6"
+    },
+    {
+      "path": "raptor-port/dist/assets/index-Cpr5wuSx.js",
+      "sha256": "87F63D5443893E1B36A8753F169ABAEBB7C8978757FDCD5BF5E1A5ECEE6BA54F"
+    },
+    {
+      "path": "raptor-port/dist/assets/index-ulUtUKKl.css",
+      "sha256": "DCBA9100679F1B5F333B6429AF2A7C99E260072F581484D4C1084B84884485E7"
+    },
+    {
+      "path": "raptor-port/dist/assets/inputedit-DgwrjY5a.js",
+      "sha256": "DFB7639225C2492FE0EDFB6206572DD24B074152C35190449AFE5AFA4F0B743C"
+    },
+    {
+      "path": "raptor-port/dist/assets/jsx-runtime-B-hcVAMW.js",
+      "sha256": "6EAB4DF858048A4840A5D08754D84773F3F0DE0EA0C4BB58E0E0ABCA99D1D973"
+    },
+    {
+      "path": "raptor-port/dist/assets/LeaveWarPage-C7jiJ1U2.css",
+      "sha256": "95E685E697906DB21920F8F72B0BE2DEA17F755DD108D56D1AC2F8AE3CBDC00F"
+    },
+    {
+      "path": "raptor-port/dist/assets/LeaveWarPage-z5-AAJbu.js",
+      "sha256": "A44D154DBF93F9ABA3E4729FB1A48AD946BC65121395A15F0F1F30E51A8791A6"
+    },
+    {
+      "path": "raptor-port/dist/assets/oilmode-CqbsTo16.js",
+      "sha256": "DAFFD4688C0A79771315B322897CBAC18D65264CFCD6A126D7A469CD63110381"
+    },
+    {
+      "path": "raptor-port/dist/assets/sched-commit-DkN8S9q8.js",
+      "sha256": "2F67C247F7E0B9852A4595C98932AA3623B49A1513D115B8FD8CDFF495BB7A97"
+    },
+    {
+      "path": "raptor-port/dist/assets/store-Dhw1hb2v.js",
+      "sha256": "32DFE95CF2EF62CED7C1089B80CC859F6EE5DC72B02ACA052D92E24716C7D343"
+    },
+    {
+      "path": "raptor-port/dist/assets/TrackerPage-Bw2nXY_Q.js",
+      "sha256": "190A59F7AA6F9FDB497B8E2DD8A12B891C83FFDBCA9201FDCE0900847472BBC2"
+    },
+    {
+      "path": "raptor-port/dist/assets/TrackerPage-RlgGU7Bu.css",
+      "sha256": "73472C1EDA19949DC6645986D7DE877892F7CC86B49F1FA9CF1DFE0D61F31BAF"
+    },
+    {
+      "path": "raptor-port/dist/assets/undo-DPMBoZSA.js",
+      "sha256": "7536EA7DA6F5B811D563AD58CBE742681F4CF09FA18A2EA089D37D342FBA4F92"
+    },
+    {
+      "path": "raptor-port/dist/assets/wavetpl-DeZHH-ii.js",
+      "sha256": "97BDFD9AC055193C604FA66645FC3E3F38DF64704F063D4CF2DB0278FA581A76"
+    },
+    {
+      "path": "raptor-port/dist/assets/weeknav-DEdR3eQ_.js",
+      "sha256": "AFD50DD7ECB97B2D617500072303DF33F086EB8131DE00F5F1CC01E39ADCAE18"
+    },
+    {
+      "path": "raptor-port/dist/favicon.svg",
+      "sha256": "69418C3FAD9142001A02BA99B8A381411288280344F87E0A6B690A38D71C881F"
+    },
+    {
+      "path": "raptor-port/dist/index.html",
+      "sha256": "14093598BF5C153767402F4C4D3BE32E043E7813033FADBB0B1CC184EC1DFB63"
+    },
+    {
+      "path": "raptor-port/package.json",
+      "sha256": "8611B33721FEF223D518EE6C4B668201C8075EEAFAF6FE1B824A185F8EB8FB40"
+    },
+    {
+      "path": "raptor-port/package-lock.json",
+      "sha256": "F00133BB8D1F11957547E986BA506C3FE6D7D480E80A04506B4DD64E68C24990"
+    },
+    {
+      "path": "raptor-port/playwright.config.ts",
+      "sha256": "A0D889495FD5FDD0D4AA0441243FC557E0591001E040F7BB67003ED65E565CD2"
+    },
+    {
+      "path": "raptor-port/vite.config.ts",
+      "sha256": "49E129C222207FC11D7CE47569D184DE1F850EC474F9E5BE54BCDD3B17244ECB"
+    },
+    {
+      "path": "raptor-port/docs/superpowers/plans/2026-10-04-schedule-tab-build-plan.md",
+      "sha256": "13626097C62ECD5D8B5D57C74EA85C32CD99F26BFFA709619B849F6555F66BA8"
+    },
+    {
+      "path": "raptor-port/scripts/handpass/schedule-tab-evidence.mjs",
+      "sha256": "BA3695BAB86BF0A34115E60CC6427AA70546D23654C767E71B7B42B48621F2D8"
+    },
+    {
+      "path": "raptor-port/scripts/handpass/schedule-tab-walk.mjs",
+      "sha256": "2465DB32FC6D4EFD7D89206BBCA382FDE7496B61B30A13CB70B344C87CA3368A"
+    },
+    {
+      "path": "raptor-port/scripts/handpass/schedule-tab-role-picture.mjs",
+      "sha256": "306E012FDCCFCFB09626849A97E8ED7770494829C195CADE49F58BA6702AF53D"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-14/desktop-board-reloaded.png",
+      "sha256": "80FEBEC6FFB5BD67CC1F3E634BF40B60FEE52F32C7D3CF249BD5C42CB79FA52F"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-14/desktop-board-typing.png",
+      "sha256": "CD267ABB67AEF406BF55A25AB69E003A047E88BF67DE5A5D6B71469A06B18E38"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-14/desktop-FAIL-input-owned-ground-time-remarks-undo-redo-reload.png",
+      "sha256": "C81547AB0760A0BB8B39C054F981D428E4F7330F50EE5A70DAF605E0A8E0D2D7"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-14/desktop-week-derived-settled.png",
+      "sha256": "4120DE744DDCAB5B97316AC5750F56E970646DCDB07DDE0D34641C4436B24343"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-14/desktop-week-typing.png",
+      "sha256": "AE2885487493286DFCD4A679F16B35EED40843B22EC138390D8098998D9D5FA7"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-14/desktop-week-writer-saved.png",
+      "sha256": "69244662092836F277D238057882294A461553C6D7A1F20B6695BD0970EE0413"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-14/result.json",
+      "sha256": "4EC727D9A1F58E2AF7087B5D6E50306E5C80B87FD09AF8835C3628EA0930F180"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-14/walk.log",
+      "sha256": "EAAA7785AFFC42D4CD535F3B4E308F5C81079F02BBF6FC7746057E2BE9C5477D"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-15/desktop-board-reloaded.png",
+      "sha256": "80FEBEC6FFB5BD67CC1F3E634BF40B60FEE52F32C7D3CF249BD5C42CB79FA52F"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-15/desktop-board-typing.png",
+      "sha256": "6CA67516B72CD3150C53D33E9C5ED7F77E0B11AE3CED6CAB8A6246C2453E6797"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-15/desktop-FAIL-input-owned-ground-time-remarks-undo-redo-reload.png",
+      "sha256": "C81547AB0760A0BB8B39C054F981D428E4F7330F50EE5A70DAF605E0A8E0D2D7"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-15/desktop-week-derived-settled.png",
+      "sha256": "4120DE744DDCAB5B97316AC5750F56E970646DCDB07DDE0D34641C4436B24343"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-15/desktop-week-typing.png",
+      "sha256": "057D10E5EB765E45B1B5DAEEEA0FDF26A590EC0E2E657C8025970D9E6BA4B5B0"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-15/desktop-week-writer-saved.png",
+      "sha256": "43D512FB359FCC886B7B885895AF7202C29A9339377D84A153781B55C339D04D"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-15/result.json",
+      "sha256": "56E33751D0794E755F9E02CA6A0852475AC479BE20F985AD3D7C603E3451B48B"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-15/walk.log",
+      "sha256": "75165D0225B545F2E5D963A601878363132589734451AF1C9216AFCA87E0FAA6"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/desktop-board-reloaded.png",
+      "sha256": "80FEBEC6FFB5BD67CC1F3E634BF40B60FEE52F32C7D3CF249BD5C42CB79FA52F"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/desktop-board-reordered.png",
+      "sha256": "0BF74E3BBCB87DFDA99B83C74C4C37C8E408018FEF7B0AABEF2083C21F83CD08"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/desktop-board-typing.png",
+      "sha256": "E6FBDB4EEE146AA980F106F3794C60A37CB0E7CB73A952A0D29FB5F80D03DA0B"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/desktop-input-durable-ground-echo.png",
+      "sha256": "8E534B0601540813D2FDFB16635CAC76064111B7B624C5369A13D8239D5F8026"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/desktop-input-refusal-and-save.png",
+      "sha256": "85BC79DF25C15487D7DBECB003B9502A6CECC22A42DDEC52CA5706315303EBC5"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/desktop-role-offer-caret.png",
+      "sha256": "E6C45B27081EF46EB22F57C111301A3514C885FC6397562E30CC45D7A38E4FBD"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/desktop-short-desktop.png",
+      "sha256": "5C81DF5D0FC8936B241334BF7B9299D75E9A4268454C14096B0953AB4C2690B6"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/desktop-week-derived-settled.png",
+      "sha256": "4120DE744DDCAB5B97316AC5750F56E970646DCDB07DDE0D34641C4436B24343"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/desktop-week-typing.png",
+      "sha256": "2195AA6DA937695DDFF58FF6C460A7C54D76C068CE88C43D45CF018C936C3DD4"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/desktop-week-writer-saved.png",
+      "sha256": "69244662092836F277D238057882294A461553C6D7A1F20B6695BD0970EE0413"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/member-readonly.png",
+      "sha256": "A5FACF8E777E6036671B55528F64B0325C8A81D622AF3D0528B85EC79C6FD939"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/phone-board-typing.png",
+      "sha256": "80AAA6AA59C42D2CF76F82AFBFCBA6605DC4B6AE6DB1D419AD52F5B496BD70A6"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/phone-board-wrap.png",
+      "sha256": "BD4AC71F2B4347814E9043A638A135A848E1FFA2632658ED2DF6824C21ADF574"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/phone-landscape.png",
+      "sha256": "4C8A67A38E07E104DCD06586FF28D5CF9800A2D6863AD9F4FC2FFFD5C0C74A91"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/phone-last-box-exit.png",
+      "sha256": "0961F0C98196E0C95DB9B4748874E4257D429D6473DC44E142259F2DF007DECC"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/phone-short-phone.png",
+      "sha256": "288D3C17B0C5F34EA62061EDEB52B8C3E68E910CCB8A89D2EFB51B9731A87119"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/phone-week-typing.png",
+      "sha256": "7F30F160ABC3EC1919FD6068D7051556D72E7BD87D24EB6D8BF633946A2CBF11"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/phone-wide-typing.png",
+      "sha256": "DEA48A6F818FB9DD18A309E3164FB01CA59F66A9EA566B1A3DEF82C962B22BAA"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/published-amendment.png",
+      "sha256": "2AFAF25BB32B1B6FBF4791B19FEC19A29E1F735DDFAB2A9C658DE9F1A2A2F6FC"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/published-everything-day.png",
+      "sha256": "999877AB41D544C7036400BC3BD334EB94FD5DF30D1D979BA491051862554303"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/published-issued-readonly.png",
+      "sha256": "B267D973A9ACA3D003454197150D78942C57063DCEB8B49CB617CE4303B8053B"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/published-oil-readonly.png",
+      "sha256": "D81F111FEF8AEFB858F198CA9AB2E213C647ABF2F9ACE5328E3D7D00E9507235"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/result.json",
+      "sha256": "0D697C6088DFE4B9F3507AFB38D9A8254748124321F20616F0021013374BF7FF"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16/walk.log",
+      "sha256": "2577AFE4C222B47515A9F954FDE8B3CC2D256A56C22B3C8791F2C5268DF4C4C1"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/role-picture-2/result.json",
+      "sha256": "EA1C4A67B9EE087DDF471E2AA266FCF198F59E6E0C3D7B259CBBE9D8D6FC6D89"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/role-picture-2/role-question-and-next-caret.png",
+      "sha256": "3BC9888503BB04344687BDA723CA63844245B6B65F30356A5FC6E3DA5D3DFB78"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/final-identity-r2.json",
+      "sha256": "A9E0016AB4D0EAD72AE38332A19ADF6B77CA75E126C0C0FF5D80FB3FDD8C1CA3"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/freeze-16.json",
+      "sha256": "A3DC5462CCE175D0B1CEC7D1BA5AD3ACE6F8727F2761E00A016E2646EDB05A7B"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/freeze-17.json",
+      "sha256": "E7F922F7F6F18FC4833520562B8ABFCB74193B1671D0C8D241F326A8B43F8871"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/freeze-18.json",
+      "sha256": "C53CCB9B270A5B8A617362E1E22AA7CC5D0E76AB72A27835D1C90C099A3CEF8B"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/opened-pictures-r2.json",
+      "sha256": "B90ECC1875B58DF1A07AB2CEF857CF198B89C60E19D8BFC99E785D30618AAF63"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/r1-adapted-final.log",
+      "sha256": "3C48DF240670A50A1D73B6E44130B4245B8A1B8EB82E7061DC2EEF736FEC1825"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/r1-browser-final.log",
+      "sha256": "4B11F6317F8F65EB357EEB5B950BBC5D6CFFBB2021CD6A2AAAF01AF1632A38C5"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/r1-browser-red.log",
+      "sha256": "46EBEAA3189EC51A1484186FBE2F21FE432CF161CF1D61E5968CDC5355D89EA5"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/r1-build-final.log",
+      "sha256": "CFE48CB11B5AF9EEE8CE4933EF12D1E62365A67742CD4CB3F2CAA3989876615B"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/r1-perf-final.log",
+      "sha256": "8488E3909C0079C7505174A0E59E7289DB982C0ACAD1E22C07A7FF94E231FDCB"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/r1-regression-green.log",
+      "sha256": "754A36242B6F014E5081B7FF30B24A61085A7803C91F972B220ADE7359EE7F36"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/r1-regression-red.log",
+      "sha256": "E8EF3A9E73969D51E05BA5F6DC267680CC5F5E86B5EF94F268BA317F4FAA3F3C"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/r1-unit-final.log",
+      "sha256": "D40551FCCA46C685CF82DB9A46CBA43FC8050A46537C3856684A292C67CA4F3A"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-14-console.log",
+      "sha256": "8814F5EAE1101B8DB7250BBD3CC2193E5E4A2AA8065733A54D6172FB5A3A2718"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-15-console.log",
+      "sha256": "12B57D3FAB7E3794673AAF69222440A3D4F5B157A738771E3E7C79FA4A82187D"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-04-schedule-tab/walk-16-console.log",
+      "sha256": "43F7C0D7DA08572491C124D417B47D158E0F800F8FDA43DD6FCDFC2D4DED96AA"
+    },
+    {
+      "path": "raptor-port/docs/handpass/2026-10-04-schedule-tab.md",
+      "sha256": "40E748C4A43C002A95520B5D77195AC9F5A6AEF8319FC78F8BFBD866759FB5F7"
+    },
+    {
+      "path": "raptor-port/docs/handpass/2026-10-04-schedule-tab-coordination.md",
+      "sha256": "949271972CB0101BA1508ACBAD79CAE1F0E1C891419E501CF095E2537AFAFF37"
+    },
+    {
+      "path": "raptor-port/docs/handpass/2026-10-04-schedule-tab-astra-final-r1.md",
+      "sha256": "938682DAF8AE8247C24B824ECA22A854B4E059DAA3011520E3CFB084EB8AD39E"
+    },
+    {
+      "path": "raptor-port/docs/superpowers/briefs/2026-10-04-schedule-tab-astra-final-r1.md",
+      "sha256": "73EBE1FB3B3C42A0081EB655A0B4E2FF7A53B04899D0F1132A4B376434130336"
+    }
+  ]
+}

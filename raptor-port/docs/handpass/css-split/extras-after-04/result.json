@@ -1,0 +1,51 @@
+{
+  "pictures": [
+    "docs/handpass/css-split/extras-after-04/desktop-board-availability.png",
+    "docs/handpass/css-split/extras-after-04/desktop-plans-menu.png",
+    "docs/handpass/css-split/extras-after-04/desktop-plans-manager.png",
+    "docs/handpass/css-split/extras-after-04/desktop-week-availability.png",
+    "docs/handpass/css-split/extras-after-04/desktop-calendar-previous-month.png",
+    "docs/handpass/css-split/extras-after-04/desktop-medical-document.png",
+    "docs/handpass/css-split/extras-after-04/phone-board-availability.png",
+    "docs/handpass/css-split/extras-after-04/phone-plans-menu.png",
+    "docs/handpass/css-split/extras-after-04/phone-plans-manager.png",
+    "docs/handpass/css-split/extras-after-04/phone-board-wide-content.png",
+    "docs/handpass/css-split/extras-after-04/phone-week-availability.png",
+    "docs/handpass/css-split/extras-after-04/phone-calendar-previous-month.png",
+    "docs/handpass/css-split/extras-after-04/phone-medical-document.png"
+  ],
+  "operations": [
+    {
+      "name": "dense Saturday via actual controls",
+      "facts": [
+        "VIPER bane",
+        "VIPER freak",
+        "COBRA razer",
+        "COBRA sufa",
+        "SC MAIN pump",
+        "SC MAIN glass",
+        "SC SPARE taipan",
+        "SC SPARE drill",
+        "AVALON prowler",
+        "AVALON nasty",
+        "SXO blind nact",
+        "OPS DESK 0-len casper",
+        "AVALON desk salsa",
+        "SC desk slipway",
+        "OFT dice",
+        "OFT glass",
+        "AMT BOX snap",
+        "AMT BOX ammo",
+        "OCU REVIEW stiff",
+        "ADMIN split",
+        "FAMILY DAY allavail",
+        "MASS BRIEF stiff",
+        "MASS BRIEF ignite"
+      ]
+    },
+    "desktop shared windows opened/closed via their own controls",
+    "phone shared windows opened/closed via their own controls"
+  ],
+  "errors": [],
+  "status": "PASS"
+}

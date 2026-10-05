@@ -1,0 +1,423 @@
+{
+  "kind": "runtime walk, not final inspection",
+  "base": "http://localhost:4199",
+  "run": "freeze-5-publication-door-locked",
+  "freeze": "docs/img/insights-build-freeze-5.json",
+  "started": "2026-10-03T09:17:32.979Z",
+  "steps": [
+    {
+      "scene": "board-door",
+      "id": "desktop-direct-door",
+      "ids": [
+        "S24"
+      ],
+      "status": "PASS",
+      "detail": {
+        "before": {
+          "day": 1,
+          "scroll": [
+            0,
+            0
+          ]
+        },
+        "hit": {
+          "closeHit": true,
+          "modalHit": true,
+          "closeVisible": true
+        },
+        "tiles": [
+          "32Sorties",
+          "16Formations",
+          "38Aircrew flying",
+          "3313 warning"
+        ]
+      }
+    },
+    {
+      "scene": "board-door",
+      "id": "phone-more-door-and-toolbar",
+      "ids": [
+        "S24",
+        "S30"
+      ],
+      "status": "PASS",
+      "detail": {
+        "before": {
+          "day": 1,
+          "scroll": [
+            0,
+            0
+          ]
+        },
+        "geometry": {
+          "controls": [
+            {
+              "id": "sbUndo",
+              "width": 30,
+              "top": 6
+            },
+            {
+              "id": "sbRedo",
+              "width": 30,
+              "top": 6
+            },
+            {
+              "id": "sbHist",
+              "width": 30,
+              "top": 6
+            },
+            {
+              "id": "sbSync",
+              "width": 30,
+              "top": 6
+            },
+            {
+              "id": "sbBell",
+              "width": 30,
+              "top": 6
+            },
+            {
+              "id": "sbDone",
+              "width": 30,
+              "top": 6
+            }
+          ],
+          "rows": 1,
+          "smallest": 30,
+          "barH": 75,
+          "overflow": 0,
+          "pageOverflow": 0,
+          "labelsHidden": true
+        },
+        "after": {
+          "controls": [
+            {
+              "id": "sbUndo",
+              "width": 30,
+              "top": 6
+            },
+            {
+              "id": "sbRedo",
+              "width": 30,
+              "top": 6
+            },
+            {
+              "id": "sbHist",
+              "width": 30,
+              "top": 6
+            },
+            {
+              "id": "sbSync",
+              "width": 30,
+              "top": 6
+            },
+            {
+              "id": "sbBell",
+              "width": 30,
+              "top": 6
+            },
+            {
+              "id": "sbDone",
+              "width": 30,
+              "top": 6
+            }
+          ],
+          "rows": 1,
+          "smallest": 30,
+          "barH": 75,
+          "overflow": 0,
+          "pageOverflow": 0,
+          "labelsHidden": true
+        },
+        "hit": {
+          "closeHit": true,
+          "modalHit": true,
+          "closeVisible": true
+        },
+        "tiles": [
+          "32Sorties",
+          "16Formations",
+          "38Aircrew flying",
+          "3313 warning"
+        ],
+        "controlRoute": "Actual desktop button; phone touch More then Insights; no direct opener invocation"
+      }
+    },
+    {
+      "scene": "published-phone",
+      "id": "phone-fixture-and-issued-entry",
+      "ids": [
+        "S13",
+        "S14",
+        "S24",
+        "S32"
+      ],
+      "status": "PASS",
+      "detail": {
+        "preparation": "Actual desktop controls, then touch phone390x844 before issued preview",
+        "orig": "2026-07-13#0",
+        "geometry": {
+          "x": 218.34375,
+          "y": 618.984375,
+          "width": 119.65625,
+          "height": 30,
+          "viewportWidth": 390,
+          "viewportHeight": 844,
+          "hit": true
+        }
+      }
+    },
+    {
+      "scene": "published-phone",
+      "id": "phone-choose-and-correct",
+      "ids": [
+        "S13",
+        "S14",
+        "S22",
+        "S24",
+        "S32"
+      ],
+      "status": "PASS",
+      "detail": {
+        "geometry": {
+          "blue": {
+            "x": 38,
+            "y": 677.984375,
+            "width": 96,
+            "height": 30,
+            "viewportWidth": 390,
+            "viewportHeight": 844,
+            "hit": true
+          },
+          "red": {
+            "x": 140,
+            "y": 677.984375,
+            "width": 96,
+            "height": 30,
+            "viewportWidth": 390,
+            "viewportHeight": 844,
+            "hit": true
+          },
+          "later": {
+            "x": 242,
+            "y": 677.984375,
+            "width": 96,
+            "height": 30,
+            "viewportWidth": 390,
+            "viewportHeight": 844,
+            "hit": true
+          }
+        },
+        "red": {
+          "seq": 10,
+          "at": "2026-10-03T09:17:47.452Z",
+          "actor": {
+            "id": "acad",
+            "role": "admin",
+            "personId": "stiff",
+            "principal": "ad",
+            "session": {
+              "user": "acad",
+              "role": "admin",
+              "pid": "stiff",
+              "name": "ad",
+              "acct": "admin"
+            }
+          },
+          "origin": "user",
+          "scope": {
+            "module": "insights",
+            "weekId": "13/07/2026"
+          },
+          "type": "insights.role.set",
+          "changes": [
+            {
+              "op": "put",
+              "collection": "insights.role",
+              "id": "%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus6i7hxo3sk0c%22%2C%22%5B1%2C%5C%22ACM%5C%22%2C%5B%5C%22DS%20FOR%20VL%5C%22%5D%5D%22%5D",
+              "after": {
+                "format": 1,
+                "contextVersion": 1,
+                "weekKey": "13/07/2026",
+                "dayISO": "2026-07-13",
+                "formationRid": "rmus6i7hxo3sk0c",
+                "context": "[1,\"ACM\",[\"DS FOR VL\"]]",
+                "side": "red"
+              }
+            }
+          ],
+          "emit": true,
+          "detail": "{\"name\":\"VL\",\"origin\":\"Published · Original\"}",
+          "revs": {
+            "insights.role/%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus6i7hxo3sk0c%22%2C%22%5B1%2C%5C%22ACM%5C%22%2C%5B%5C%22DS%20FOR%20VL%5C%22%5D%5D%22%5D": 1
+          }
+        },
+        "blue": {
+          "seq": 11,
+          "at": "2026-10-03T09:17:48.518Z",
+          "actor": {
+            "id": "acad",
+            "role": "admin",
+            "personId": "stiff",
+            "principal": "ad",
+            "session": {
+              "user": "acad",
+              "role": "admin",
+              "pid": "stiff",
+              "name": "ad",
+              "acct": "admin"
+            }
+          },
+          "origin": "user",
+          "scope": {
+            "module": "insights",
+            "weekId": "13/07/2026"
+          },
+          "type": "insights.role.set",
+          "changes": [
+            {
+              "op": "put",
+              "collection": "insights.role",
+              "id": "%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus6i7hxo3sk0c%22%2C%22%5B1%2C%5C%22ACM%5C%22%2C%5B%5C%22DS%20FOR%20VL%5C%22%5D%5D%22%5D",
+              "before": {
+                "format": 1,
+                "contextVersion": 1,
+                "weekKey": "13/07/2026",
+                "dayISO": "2026-07-13",
+                "formationRid": "rmus6i7hxo3sk0c",
+                "context": "[1,\"ACM\",[\"DS FOR VL\"]]",
+                "side": "red"
+              },
+              "after": {
+                "format": 1,
+                "contextVersion": 1,
+                "weekKey": "13/07/2026",
+                "dayISO": "2026-07-13",
+                "formationRid": "rmus6i7hxo3sk0c",
+                "context": "[1,\"ACM\",[\"DS FOR VL\"]]",
+                "side": "blue"
+              }
+            }
+          ],
+          "emit": true,
+          "detail": "{\"name\":\"VL\",\"origin\":\"Published · Original\"}",
+          "revs": {
+            "insights.role/%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-13%22%2C%22rmus6i7hxo3sk0c%22%2C%22%5B1%2C%5C%22ACM%5C%22%2C%5B%5C%22DS%20FOR%20VL%5C%22%5D%5D%22%5D": 2
+          }
+        }
+      }
+    },
+    {
+      "scene": "published-phone",
+      "id": "phone-overflow-insights-and-short-later",
+      "ids": [
+        "S24",
+        "S30",
+        "S32"
+      ],
+      "status": "PASS",
+      "detail": {
+        "figures": [
+          "32Sorties",
+          "16Formations",
+          "38Aircrew flying",
+          "3313 warning"
+        ],
+        "geometry": {
+          "blue": {
+            "x": 38,
+            "y": 365.984375,
+            "width": 96,
+            "height": 30,
+            "viewportWidth": 390,
+            "viewportHeight": 568,
+            "hit": true
+          },
+          "red": {
+            "x": 140,
+            "y": 365.984375,
+            "width": 96,
+            "height": 30,
+            "viewportWidth": 390,
+            "viewportHeight": 568,
+            "hit": true
+          },
+          "later": {
+            "x": 242,
+            "y": 365.984375,
+            "width": 96,
+            "height": 30,
+            "viewportWidth": 390,
+            "viewportHeight": 568,
+            "hit": true
+          }
+        },
+        "viewports": [
+          "390x844",
+          "390x568"
+        ],
+        "focusLimit": "Chromium touch emulation; no physical Safari keyboard or native touch-selection proof"
+      }
+    }
+  ],
+  "images": [
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-5-publication-door-locked\\board-door-desktop-button.png",
+      "inspected": true,
+      "inspectedBy": "Sol host — opened each saved PNG at original resolution after coordinating Astra usage-limit interruption"
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-5-publication-door-locked\\board-door-desktop-modal.png",
+      "inspected": true,
+      "inspectedBy": "Sol host — opened each saved PNG at original resolution after coordinating Astra usage-limit interruption"
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-5-publication-door-locked\\board-door-phone-more.png",
+      "inspected": true,
+      "inspectedBy": "Sol host — opened each saved PNG at original resolution after coordinating Astra usage-limit interruption"
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-5-publication-door-locked\\board-door-phone-modal.png",
+      "inspected": true,
+      "inspectedBy": "Sol host — opened each saved PNG at original resolution after coordinating Astra usage-limit interruption"
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-5-publication-door-locked\\published-phone-normal-choose.png",
+      "inspected": true,
+      "inspectedBy": "Sol host — opened each saved PNG at original resolution after coordinating Astra usage-limit interruption"
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-5-publication-door-locked\\published-phone-normal-question.png",
+      "inspected": true,
+      "inspectedBy": "Sol host — opened each saved PNG at original resolution after coordinating Astra usage-limit interruption"
+    },
+    {
+      "file": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\codex-insights-mission-mix\\raptor-port\\docs\\img\\insights-build-publication\\freeze-5-publication-door-locked\\published-phone-short-question.png",
+      "inspected": true,
+      "inspectedBy": "Sol host — opened each saved PNG at original resolution after coordinating Astra usage-limit interruption"
+    }
+  ],
+  "errors": [],
+  "limits": [
+    "No direct model, command, storage or fixture writes from page.evaluate.",
+    "S20 collision/second-store rollback and S21 failure injection belong to production integration tests; runtime covers supported template travel only.",
+    "Retained stale DOM event delivery is explicitly marked; it supplements actual-control navigation.",
+    "Desktop/phone emulation does not prove physical Safari."
+  ],
+  "finished": "2026-10-03T09:17:50.433Z",
+  "summary": {
+    "pass": 5,
+    "fail": 0,
+    "notRun": 0,
+    "errors": 0
+  },
+  "inspection": {
+    "opened": 7,
+    "viewer": "view_image original",
+    "reviewer": "Sol host",
+    "result": "No blocking overlap or clipping in these pictures. Desktop opener beside bell, phone More only, visible published context and all three answer buttons at both phone heights. Modal work-hours continuation below viewport uses existing scroll.",
+    "scope": "Runtime picture inspection only, not independent final code approval",
+    "pcLock": "Successful take before browser launch; released in finally immediately after exit0. Qualified final evidence.",
+    "physicalDevice": "Physical Safari/iPhone keyboard unverified"
+  }
+}

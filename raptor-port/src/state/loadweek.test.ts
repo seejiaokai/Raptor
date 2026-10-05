@@ -23,6 +23,7 @@ import { HIST } from './history'
 import { commitInputEdit, removeInput, draftOf } from '../ui/inputedit'
 import { HOOKS } from '../engine/hooks'
 
+
 /* is this input's ground row currently sitting on some day of the loaded week? */
 const landed = (inp: any) =>
   DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === inpId(inp)))

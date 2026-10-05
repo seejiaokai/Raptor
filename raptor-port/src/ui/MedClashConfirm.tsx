@@ -33,8 +33,10 @@
    resolve through medKeptSegments / mintMedSegments / the newMedTrimPlan
    keepTail list (ui/inputedit.tsx). Reuses the upconf-* recipe: one visual
    language for the two medical confirms. */
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { ordLabel, medTailBeyond } from '../engine/medical'
+import { clickedSurround } from './outside'
+import { useSheetFocus } from './sheetfocus'
 
 export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSave, onCancel }: {
   who: string
@@ -76,10 +78,13 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
     /* the rows the filer chose to KEEP the tail for — everything else has its
        leftover removed (the default), so keepTail carries only the exceptions */
     clashes.filter((c: any, i: number) => leftover(c, i) && (tail[i] || 'remove') === 'keep').map((c: any) => c.row))
+  /* the sheet takes the keyboard when it opens (W12 — ui/sheetfocus.ts) */
+  const boxRef = useRef<HTMLDivElement>(null)
+  useSheetFocus(boxRef)
   return (
     <div className="airpop upconf-pop" data-testid="medclash"
-      onClick={e => { if ((e.target as HTMLElement).classList.contains('upconf-pop')) onCancel() }}>
-      <div className="airpop-box upconf-box">
+      onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
+      <div className="airpop-box upconf-box" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b>{newType} — {who}, {span}</b>
           <button className="x" aria-label="Close" onClick={onCancel}>✕</button></div>
         <div className="airpop-body upconf-body">

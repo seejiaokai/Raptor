@@ -1,0 +1,281 @@
+{
+  "scope": "native scroll and actual-control qualification of landscape footer misses, legend and wide-board recovery",
+  "errors": [],
+  "cases": [
+    {
+      "name": "input-editor",
+      "observations": [
+        {
+          "state": "landscape-initial",
+          "facts": {
+            "viewport": {
+              "w": 1035,
+              "h": 479,
+              "vv": 478.25830078125
+            },
+            "scrollY": 0,
+            "documentHeight": 4094,
+            "elements": [
+              {
+                "sel": "#inpEditPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 302.5,
+                  "y": 83.5,
+                  "width": 430,
+                  "height": 312,
+                  "top": 83.5,
+                  "right": 732.5,
+                  "bottom": 395.5,
+                  "left": 302.5
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 428,
+                "scrollHeight": 444,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "inpEditType"
+              },
+              {
+                "sel": "#inpEditCancel",
+                "id": "inpEditCancel",
+                "rect": {
+                  "x": 593.8125,
+                  "y": 490.875,
+                  "width": 65.359375,
+                  "height": 28,
+                  "top": 490.875,
+                  "right": 659.171875,
+                  "bottom": 518.875,
+                  "left": 593.8125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 63,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false
+              }
+            ]
+          }
+        },
+        {
+          "state": "native-box-scroll",
+          "facts": {
+            "viewport": {
+              "w": 1035,
+              "h": 479,
+              "vv": 478.25830078125
+            },
+            "scrollY": 0,
+            "documentHeight": 4094,
+            "elements": [
+              {
+                "sel": "#inpEditPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 302.5,
+                  "y": 83.5,
+                  "width": 430,
+                  "height": 312,
+                  "top": 83.5,
+                  "right": 732.5,
+                  "bottom": 395.5,
+                  "left": 302.5
+                },
+                "scrollTop": 134,
+                "scrollLeft": 0,
+                "scrollWidth": 428,
+                "scrollHeight": 444,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "airpop-body inped-body"
+              },
+              {
+                "sel": "#inpEditCancel",
+                "id": "inpEditCancel",
+                "rect": {
+                  "x": 593.8125,
+                  "y": 356.875,
+                  "width": 65.359375,
+                  "height": 28,
+                  "top": 356.875,
+                  "right": 659.171875,
+                  "bottom": 384.875,
+                  "left": 593.8125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 63,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": true,
+                "hit": "inpEditCancel"
+              }
+            ]
+          }
+        }
+      ],
+      "closed": false,
+      "status": "COMPLETE"
+    },
+    {
+      "name": "day-details",
+      "observations": [
+        {
+          "state": "landscape-initial",
+          "facts": {
+            "viewport": {
+              "w": 844,
+              "h": 390,
+              "vv": 390
+            },
+            "scrollY": 0,
+            "documentHeight": 2723,
+            "elements": [
+              {
+                "sel": "#dayPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 162,
+                  "y": 39,
+                  "width": 520,
+                  "height": 312,
+                  "top": 39,
+                  "right": 682,
+                  "bottom": 351,
+                  "left": 162
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 518,
+                "scrollHeight": 342,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "dayPopBody"
+              },
+              {
+                "sel": "#dayPopDone",
+                "id": "dayPopDone",
+                "rect": {
+                  "x": 607.3125,
+                  "y": 343.796875,
+                  "width": 58.6875,
+                  "height": 28,
+                  "top": 343.796875,
+                  "right": 666,
+                  "bottom": 371.796875,
+                  "left": 607.3125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 57,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false,
+                "hit": "dayPop"
+              }
+            ]
+          }
+        },
+        {
+          "state": "native-box-scroll",
+          "facts": {
+            "viewport": {
+              "w": 844,
+              "h": 390,
+              "vv": 390
+            },
+            "scrollY": 0,
+            "documentHeight": 2723,
+            "elements": [
+              {
+                "sel": "#dayPop .airpop-box",
+                "id": "",
+                "rect": {
+                  "x": 162,
+                  "y": 39,
+                  "width": 520,
+                  "height": 312,
+                  "top": 39,
+                  "right": 682,
+                  "bottom": 351,
+                  "left": 162
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 518,
+                "scrollHeight": 342,
+                "clientHeight": 310,
+                "display": "block",
+                "overflowY": "auto",
+                "position": "static",
+                "maxHeight": "312px",
+                "ownHit": true,
+                "hit": "witem note"
+              },
+              {
+                "sel": "#dayPopDone",
+                "id": "dayPopDone",
+                "rect": {
+                  "x": 607.3125,
+                  "y": 343.796875,
+                  "width": 58.6875,
+                  "height": 28,
+                  "top": 343.796875,
+                  "right": 666,
+                  "bottom": 371.796875,
+                  "left": 607.3125
+                },
+                "scrollTop": 0,
+                "scrollLeft": 0,
+                "scrollWidth": 57,
+                "scrollHeight": 26,
+                "clientHeight": 26,
+                "display": "block",
+                "overflowY": "visible",
+                "position": "static",
+                "maxHeight": "none",
+                "ownHit": false,
+                "hit": "dayPop"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "pictures": [
+    "input-editor-landscape-before-scroll.png",
+    "input-editor-landscape-after-scroll.png",
+    "day-details-landscape-before-scroll.png",
+    "day-details-landscape-after-scroll.png"
+  ],
+  "status": "HARNESS-FAIL",
+  "failure": "Error: Normal pointer target remains covered: #dayPopDone"
+}

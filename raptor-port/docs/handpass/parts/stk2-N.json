@@ -1,0 +1,995 @@
+{
+ "letter": "N",
+ "build": "dist-fix @ http://localhost:4232",
+ "rows": [
+  {
+   "id": "L-09",
+   "part": "oil-desk",
+   "did": "Inputs form: {\"person\":\"Ace\",\"type\":\"Duty\",\"iso\":\"2026-07-18\",\"remarks\":\"L09 weekend duty\"}; pressed at (531,325) on header text \"OIL — Ace, Duty ✕\", dragged to surround (250,149), released",
+   "saw": "window \"OIL — Ace, Duty ✕\"; box [500,298,440,304]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "PASS(drag)",
+   "pics": [
+    "dk-01-L09-desk-oil-open.png",
+    "dk-02-L09-desk-oil-afterdrag.png",
+    "dk-03-L09-desk-oil-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "upchit-desk",
+   "did": "Inputs form: {\"person\":\"Grit\",\"type\":\"Upchit\",\"iso\":\"2026-07-15\",\"remarks\":\"L09 upchit\"}; pressed at (531,367) on header text \"Upchit — Grit, Jul 15 ✕\", dragged to surround (250,170), released",
+   "saw": "window \"Upchit — Grit, Jul 15 ✕\"; box [500,340,440,220]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "PASS(drag)",
+   "pics": [
+    "dk-04-L09-desk-upchit-open.png",
+    "dk-05-L09-desk-upchit-afterdrag.png",
+    "dk-06-L09-desk-upchit-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "medclash-desk",
+   "did": "Inputs form: {\"person\":\"Grit\",\"type\":\"ATT B\",\"iso\":\"2026-07-16\",\"toIso\":\"2026-07-19\",\"remarks\":\"L09 clash\"}; pressed at (531,333) on header text \"ATT B — Grit, Jul 16 – Jul 19 ✕\", dragged to surround (250,153), released",
+   "saw": "window \"ATT B — Grit, Jul 16 – Jul 19 ✕\"; box [500,306,440,289]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "PASS(drag)",
+   "pics": [
+    "dk-07-L09-desk-medclash-open.png",
+    "dk-08-L09-desk-medclash-afterdrag.png",
+    "dk-09-L09-desk-medclash-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "nodoc-desk",
+   "did": "Inputs form: {\"person\":\"Basher\",\"type\":\"ATT B\",\"iso\":\"2026-07-21\",\"remarks\":\"L09 nodoc\"}; pressed at (531,386) on header text \"No medical document — Basher, ATT B ✕\", dragged to surround (250,180), released",
+   "saw": "window \"No medical document — Basher, ATT B ✕\"; box [500,359,440,182]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "PASS(drag)",
+   "pics": [
+    "dk-10-L09-desk-nodoc-open.png",
+    "dk-11-L09-desk-nodoc-afterdrag.png",
+    "dk-12-L09-desk-nodoc-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "oil-phone",
+   "did": "Inputs form: {\"person\":\"Ace\",\"type\":\"Duty\",\"iso\":\"2026-07-18\",\"remarks\":\"L09 weekend duty\"}; pressed at (53,297) on header text \"OIL — Ace, Duty ✕\", dragged to surround (379,135), released",
+   "saw": "window \"OIL — Ace, Duty ✕\"; box [22,270,346,304]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "PASS(drag)",
+   "pics": [
+    "dk-01-L09-phone-oil-open.png",
+    "dk-02-L09-phone-oil-afterdrag.png",
+    "dk-03-L09-phone-oil-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "upchit-phone",
+   "did": "Inputs form: {\"person\":\"Grit\",\"type\":\"Upchit\",\"iso\":\"2026-07-15\",\"remarks\":\"L09 upchit\"}; pressed at (53,339) on header text \"Upchit — Grit, Jul 15 ✕\", dragged to surround (379,156), released",
+   "saw": "window \"Upchit — Grit, Jul 15 ✕\"; box [22,312,346,220]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "PASS(drag)",
+   "pics": [
+    "dk-04-L09-phone-upchit-open.png",
+    "dk-05-L09-phone-upchit-afterdrag.png",
+    "dk-06-L09-phone-upchit-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "medclash-phone",
+   "did": "Inputs form: {\"person\":\"Grit\",\"type\":\"ATT B\",\"iso\":\"2026-07-16\",\"toIso\":\"2026-07-19\",\"remarks\":\"L09 clash\"}; pressed at (53,297) on header text \"ATT B — Grit, Jul 16 – Jul 19 ✕\", dragged to surround (379,135), released",
+   "saw": "window \"ATT B — Grit, Jul 16 – Jul 19 ✕\"; box [22,270,346,305]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "PASS(drag)",
+   "pics": [
+    "dk-07-L09-phone-medclash-open.png",
+    "dk-08-L09-phone-medclash-afterdrag.png",
+    "dk-09-L09-phone-medclash-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "nodoc-phone",
+   "did": "Inputs form: {\"person\":\"Basher\",\"type\":\"ATT B\",\"iso\":\"2026-07-21\",\"remarks\":\"L09 nodoc\"}; pressed at (53,358) on header text \"No medical document — Basher, ATT B ✕\", dragged to surround (379,166), released",
+   "saw": "window \"No medical document — Basher, ATT B ✕\"; box [22,331,346,182]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "PASS(drag)",
+   "pics": [
+    "dk-10-L09-phone-nodoc-open.png",
+    "dk-11-L09-phone-nodoc-afterdrag.png",
+    "dk-12-L09-phone-nodoc-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "a-unpublished",
+   "did": "Edit Schedule Mon, VL formation: clicked take-off (12:40), Ctrl+A, typed 1255, real click on its Area time box, then real click on empty page",
+   "saw": "before: take-off 12:40, area time 1240-1405; while in area box: take-off 12:55, area 1255-1405, caret in BODY; after click away: take-off 12:55, area time 1255-1405, stored area time override null; edit-history rows 0->1, command stream 1->2; new history rows: {\"t\":1791218564914,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":0,\"date\":\"2026-07-13\",\"key\":\"ff:0.rs130720260xa.rs130720260xb.to\",\"lbl\":\"VL · take-off\",\"from\":\"12:40\",\"to\":\"12:55\",\"lineId\":\"muvha7uwnuhc.000001\",\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-L10a-in-area-box.png",
+    "dk-02-L10a-after-click-away.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "a-published",
+   "did": "Monday signed (four names) and published; then control: wave 2 formation 1 take-off 19:45 -> 2000 left by blur; then formation 2 take-off 13:40 -> 1355 and a real click straight into its Area time box, then click on empty page",
+   "saw": "after publish head: {\"tag\":\"ORIG\",\"pending\":\"5 changes\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"}; after the control change: pending \"1 pending\"; while in the area box: pending \"2 pending\", area time \"1355-1505\"; after click away: pending \"2 pending\", take-off 13:55, area time 1355-1505, stored area override null; sign-off line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\", signs [\"— name —\",\"— name —\",\"— name —\",\"— name —\"]; history rows 5->6->7; changes window (To go out): [\"Waiting to go out as\",\"AL1\",\"· 2 changes\",\"RU · take-off\",\"Saber\",\"6/10 00:42\",\"13:40 → 13:55\",\"VL · take-off\",\"Saber\",\"6/10 00:42\",\"19:45 → 20:00\",\"Tap a change to go to it.\"]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-03-L10a-published-after.png",
+    "dk-04-L10a-published-changes.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "b-two-days",
+   "did": "pike OD Jul 15-17 shown on Wed, Thu, Fri: Wed's remark box typed \"NEW REMARK b1\" (was \"Overseas duty — exercise, off island\"), real click straight into Thu's remark box, then click on empty page",
+   "saw": "while in Thu's box: Wed shows \"NEW REMARK b1\", Thu shows \"NEW REMARK b1\"; after click away: Wed \"NEW REMARK b1\", Thu \"NEW REMARK b1\", Fri \"NEW REMARK b1\", stored remark \"NEW REMARK b1\"; history rows 0->1, commands 1->2",
+   "verdict": "PASS",
+   "pics": [
+    "dk-05-L10b-into-second.png",
+    "dk-06-L10b-after.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "b-variant",
+   "did": "same again: Thu typed \"NEW REMARK b2\", click straight into Fri, click away",
+   "saw": "Wed \"NEW REMARK b2\", Thu \"NEW REMARK b2\", Fri \"NEW REMARK b2\", stored \"NEW REMARK b2\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-07-L10b-variant-after.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "c-ground",
+   "did": "salsa's Appointment (Tue 14 Jul, accepted to Ground, also in Personal Inputs): Personal Inputs remark typed \"NEW REMARK c1\" (was \"Dental appt\"; ground row showed \"Dental appt\"), real click straight into the Ground row's Remarks, then click on empty page",
+   "saw": "while in the Ground box: Personal Inputs shows \"NEW REMARK c1\", Ground shows \"NEW REMARK c1\"; after click away: Personal Inputs \"NEW REMARK c1\", Ground \"NEW REMARK c1\", stored request remark \"NEW REMARK c1\", stored ground row remark \"NEW REMARK c1\"; history rows 0->1, commands 1->2",
+   "verdict": "PASS",
+   "pics": [
+    "dk-08-L10c-into-ground.png",
+    "dk-09-L10c-after.png"
+   ]
+  },
+  {
+   "id": "L-11",
+   "part": "tab-day",
+   "did": "Inputs: filed Ace Appointment Tue 14 Jul 10:00-11:00, remark typed with two spaces; accepted to Ground on the board; signed four names; published Tue; then Edit Schedule, real click into the day's first box (dn:1.0) and 146 Tabs, nothing typed",
+   "saw": "stored request remark \"Dental review.  Back by 1400\"; ground row \"Dental review.  Back by 1400\"; after publish head: pending \"6 changes\", tag \"ORIG\", sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"; after Tab run: pending \"6 changes\", tag \"ORIG\", sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\", Publish-AL button \"\"; stored remark now \"Dental review.  Back by 1400\", ground \"Dental review.  Back by 1400\"; edit-history rows 6->6 new: {\"t\":1791218590826,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":null,\"date\":\"2026-07-14\",\"key\":\"\",\"lbl\":\"Ace · Appointment added · 14 Jul (on the programme)\",\"from\":\"\",\"to\":\"\",\"iid\":\"imuvhau6xukex6j\",\"itype\":\"Appointment\",\"sect\":\"ab || {\"t\":1791218593554,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":1,\"date\":\"2026-07-14\",\"key\":\"\",\"lbl\":\"Signed · CUR CK · Ace\",\"from\":\"\",\"to\":\"\",\"sect\":\"day\",\"lineId\":\"muvhasn098a4.000002\",\"seq\":2} || {\"t\":1791218593885,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":1,\"date\":\"2026-07-14\",\"key\":\"\",\"lbl\":\"Signed · SKED CK · Anvil\",\"from\":\"\",\"to\":\"\",\"sect\":\"day\",\"lineId\":\"muvhasn098a4.000003\",\"seq\":3} || {\"t\":1791218594238,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":1,\"date\":\"2026-07-14\",\"key\":\"\",\"lbl\":\"Signed · PLANNED BY · Anvil\",\"from\":\"\",\"to\":\"\",\"sect\":\"day\",\"lineId\":\"muvhasn098a4.000004\",\"seq\":4} || {\"t\":1791218594566,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":1,\"date\":\"2026-07-14\",\"key\":\"\",\"lbl\":\"Signed · APPROVED BY · Anvil\",\"from\":\"\",\"to\":\"\",\"sect\":\"day\",\"lineId\":\"muvhasn098a4.000005\",\"seq\":5} || {\"t\":1791218594959,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":null,\"date\":\"2026-07-14\",\"key\":\"\",\"lbl\":\"Published — the Original\",\"from\":\"\",\"to\":\"\",\"sect\":\"day\",\"lineId\":\"muvhasn098a4.000006\",\"seq\":6}; changes window: [\"Waiting to go out as\",\"AL1\",\"· 0 changes\",\"Nothing is waiting to go out.\"]; the history row first appeared at Tab number null (focus then on null, having just left null); stops (147): dn:1.0 > ap:1.0.prog > ap:1.0.sub > ap:1.0.str > ap:1.0.end > ap:1.0.rmks > ap:1.1.prog > ap:1.1.sub > ap:1.1.str > ap:1.1.end > ap:1.1.rmks > pn:1 > wl:1.0 > 1|0|0 ... imuvhasonpy7obx.str > imuvhasonpy7obx.end > imuvhasonpy7obx.rmks > BODY",
+   "verdict": "FAIL",
+   "pics": [
+    "dk-01-L11-filed.png",
+    "dk-02-L11-after-tab.png",
+    "dk-03-L11-changes-window-open.png",
+    "dk-04-L11-changes.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "a-week-desk",
+   "did": "Edit Schedule, Monday (206 open boxes; last is imuvhb8xvgr4kk1.rmks), nothing changed: real click into the last box, Tab, half a second later, Tab again",
+   "saw": "last box focused: {\"kind\":\"span\",\"key\":\"imuvhb8xvgr4kk1.rmks\",\"words\":\"Medically down till 17 Jul\",\"cls\":\"ntx txed inpt\",\"inDay\":\"0\",\"inBoard\":false,\"top\":710,\"left\":424}; after the Tab: {\"kind\":\"nothing - the page body\"}; half a second later: {\"kind\":\"nothing - the page body\"}; after another Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":223,\"left\":706}, then {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":223,\"left\":706}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-01-L12a-desk-last-box-focused.png",
+    "dk-02-L12a-desk-after-first-tab.png",
+    "dk-03-L12a-desk-after-second-tab.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "d-week-desk",
+   "did": "Edit Schedule, Monday: real click into the day's first box (dn:0.0), Shift+Tab, then once more",
+   "saw": "first box focused: {\"kind\":\"div\",\"key\":\"dn:0.0\",\"words\":\"EP: ENGINE FIRE ON TAKE OFF\",\"cls\":\"ah-note txed\",\"inDay\":\"0\",\"inBoard\":false,\"top\":440,\"left\":40}; after Shift+Tab: {\"kind\":\"select:select-one\",\"key\":\"\",\"words\":\"— name — Anvil Basher Bolt Cinch Drifter\",\"cls\":\"\",\"inDay\":\"0\",\"inBoard\":false,\"top\":324,\"left\":428} then {\"kind\":\"select:select-one\",\"key\":\"\",\"words\":\"— name — Anvil Basher Bolt Cinch Drifter\",\"cls\":\"\",\"inDay\":\"0\",\"inBoard\":false,\"top\":324,\"left\":428}; after a second Shift+Tab: {\"kind\":\"select:select-one\",\"key\":\"\",\"words\":\"— name — Anvil Basher Bolt Cinch Drifter\",\"cls\":\"\",\"inDay\":\"0\",\"inBoard\":false,\"top\":324,\"left\":299}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-04-L12d-desk-after-shift-tab.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "b-week-desk",
+   "did": "Edit Schedule, Monday: changed the first formation's callsign VL -> VK, then Tab 150 times to the end of the day (nothing else typed)",
+   "saw": "focus at the end of the run: {\"kind\":\"nothing - the page body\"}; half a second later: {\"kind\":\"nothing - the page body\"}; callsign now VK; edit-history rows 0->1; one more Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":223,\"left\":706} / {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":223,\"left\":706}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-05-L12b-desk-after-end.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "c-board-nochange-desk",
+   "did": "Scheduler Board (Mon): 214 open boxes; real click into the last (imuvhb8xvgr4kk1.rmks), Tab, half a second later, Tab again",
+   "saw": "last focused: {\"kind\":\"textarea:textarea\",\"key\":\"\",\"words\":\"Medically down till 17 Jul\",\"cls\":\"ain rmkin\",\"inDay\":null,\"inBoard\":true,\"top\":836,\"left\":764}; after Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"✕\",\"cls\":\"wln-mute\",\"inDay\":null,\"inBoard\":true,\"top\":152,\"left\":1405}; half a second later: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"✕\",\"cls\":\"wln-mute\",\"inDay\":null,\"inBoard\":true,\"top\":152,\"left\":1405}; after another Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"✕\",\"cls\":\"wln-mute\",\"inDay\":null,\"inBoard\":true,\"top\":196,\"left\":1405} / {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"✕\",\"cls\":\"wln-mute\",\"inDay\":null,\"inBoard\":true,\"top\":196,\"left\":1405}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-06-L12c-desk-board-last-box.png",
+    "dk-07-L12c-desk-board-after-tab.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "c-board-change-desk",
+   "did": "Scheduler Board (Mon): changed the first formation's callsign VK -> VL, then Tab 249 times to the end",
+   "saw": "focus at the end: {\"kind\":\"nothing - the page body\"}; half a second later: {\"kind\":\"nothing - the page body\"}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-08-L12c-desk-board-change-end.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "d-board-desk",
+   "did": "Scheduler Board (Mon): real click into the first box (dn:0.0), Shift+Tab",
+   "saw": "first focused: {\"kind\":\"textarea:textarea\",\"key\":\"dn:0.0\",\"words\":\"EP: ENGINE FIRE ON TAKE OFF\",\"cls\":\"nin\",\"inDay\":null,\"inBoard\":true,\"top\":310,\"left\":82}; after Shift+Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"+ Note\",\"cls\":\"mbtn add\",\"inDay\":null,\"inBoard\":true,\"top\":269,\"left\":1045} then {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"+ Note\",\"cls\":\"mbtn add\",\"inDay\":null,\"inBoard\":true,\"top\":269,\"left\":1045}",
+   "verdict": "RECORD",
+   "pics": []
+  },
+  {
+   "id": "L-12",
+   "part": "a-week-phone",
+   "did": "Edit Schedule, Monday (206 open boxes; last is imuvhbv073ya89l.rmks), nothing changed: real click into the last box, Tab, half a second later, Tab again",
+   "saw": "last box focused: {\"kind\":\"span\",\"key\":\"imuvhbv073ya89l.rmks\",\"words\":\"Medically down till 17 Jul\",\"cls\":\"ntx txed inpt\",\"inDay\":\"0\",\"inBoard\":false,\"top\":650,\"left\":283}; after the Tab: {\"kind\":\"nothing - the page body\"}; half a second later: {\"kind\":\"nothing - the page body\"}; after another Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":174,\"left\":16}, then {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":174,\"left\":16}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-01-L12a-phone-last-box-focused.png",
+    "dk-02-L12a-phone-after-first-tab.png",
+    "dk-03-L12a-phone-after-second-tab.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "d-week-phone",
+   "did": "Edit Schedule, Monday: real click into the day's first box (dn:0.0), Shift+Tab, then once more",
+   "saw": "first box focused: {\"kind\":\"div\",\"key\":\"dn:0.0\",\"words\":\"EP: ENGINE FIRE ON TAKE OFF\",\"cls\":\"ah-note txed\",\"inDay\":\"0\",\"inBoard\":false,\"top\":409,\"left\":20}; after Shift+Tab: {\"kind\":\"select:select-one\",\"key\":\"\",\"words\":\"— name — Anvil Basher Bolt Cinch Drifter\",\"cls\":\"\",\"inDay\":\"0\",\"inBoard\":false,\"top\":293,\"left\":21} then {\"kind\":\"select:select-one\",\"key\":\"\",\"words\":\"— name — Anvil Basher Bolt Cinch Drifter\",\"cls\":\"\",\"inDay\":\"0\",\"inBoard\":false,\"top\":293,\"left\":21}; after a second Shift+Tab: {\"kind\":\"select:select-one\",\"key\":\"\",\"words\":\"— name — Anvil Basher Bolt Cinch Drifter\",\"cls\":\"\",\"inDay\":\"0\",\"inBoard\":false,\"top\":267,\"left\":21}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-04-L12d-phone-after-shift-tab.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "b-week-phone",
+   "did": "Edit Schedule, Monday: changed the first formation's callsign VL -> VK, then Tab 150 times to the end of the day (nothing else typed)",
+   "saw": "focus at the end of the run: {\"kind\":\"nothing - the page body\"}; half a second later: {\"kind\":\"nothing - the page body\"}; callsign now VK; edit-history rows 0->1; one more Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":174,\"left\":16} / {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":174,\"left\":16}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-05-L12b-phone-after-end.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "c-board-nochange-phone",
+   "did": "Scheduler Board (Mon): 214 open boxes; real click into the last (imuvhbv073ya89l.rmks), Tab, half a second later, Tab again",
+   "saw": "last focused: {\"kind\":\"textarea:textarea\",\"key\":\"\",\"words\":\"Medically down till 17 Jul\",\"cls\":\"ain rmkin\",\"inDay\":null,\"inBoard\":true,\"top\":775,\"left\":194}; after Tab: {\"kind\":\"nothing - the page body\"}; half a second later: {\"kind\":\"nothing - the page body\"}; after another Tab: {\"kind\":\"span\",\"key\":\"\",\"words\":\"ALL AVAIL\",\"cls\":\"puck allavail sm\",\"inDay\":null,\"inBoard\":true,\"top\":235,\"left\":403} / {\"kind\":\"span\",\"key\":\"\",\"words\":\"ALL AVAIL\",\"cls\":\"puck allavail sm\",\"inDay\":null,\"inBoard\":true,\"top\":235,\"left\":403}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-06-L12c-phone-board-last-box.png",
+    "dk-07-L12c-phone-board-after-tab.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "c-board-change-phone",
+   "did": "Scheduler Board (Mon): changed the first formation's callsign VK -> VL, then Tab 169 times to the end",
+   "saw": "focus at the end: {\"kind\":\"nothing - the page body\"}; half a second later: {\"kind\":\"nothing - the page body\"}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-08-L12c-phone-board-change-end.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "d-board-phone",
+   "did": "Scheduler Board (Mon): real click into the first box (dn:0.0), Shift+Tab",
+   "saw": "first focused: {\"kind\":\"textarea:textarea\",\"key\":\"dn:0.0\",\"words\":\"EP: ENGINE FIRE ON TAKE OFF\",\"cls\":\"nin\",\"inDay\":null,\"inBoard\":true,\"top\":435,\"left\":84}; after Shift+Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"+ Note\",\"cls\":\"mbtn add\",\"inDay\":null,\"inBoard\":true,\"top\":388,\"left\":299} then {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"+ Note\",\"cls\":\"mbtn add\",\"inDay\":null,\"inBoard\":true,\"top\":388,\"left\":299}",
+   "verdict": "RECORD",
+   "pics": []
+  },
+  {
+   "id": "L-13",
+   "part": "tue-clean-unpublished",
+   "did": "Tuesday 14 Jul: via the board RU take-off 09:40 -> 10:30 and nact (VL 08:40-10:05) put on RU's first seat; day's list open; then on the week RU take-off typed 0940, Tab 1, 3, then 7 times (never a click); Escape; then click on empty page",
+   "saw": "[before] focus BODY; day bar \"⚠ 6 issues · 2 warning · tap to collapse ▲\" (6 lines in the open list, mine: [\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 6 warnings, nact's: [\"Tight turn VL BFM→RU BFM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step \",\"1 person is double turning: Warden\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other chip TT\"]; chip \"2 changes\"; sign line \"\"  ||  [tab 1] focus ff:1.0.1.ld; day bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" (5 lines in the open list, mine: [\"hard: Conflict — two events at once Warden — VL BFM & RU BFM clash ✕\",\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other hard chip C red-ring\"]; chip \"3 changes\"; sign line \"\"  ||  [tab 3] focus 1.0.1.0; day bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" (5 lines in the open list, mine: [\"hard: Conflict — two events at once Warden — VL BFM & RU BFM clash ✕\",\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other hard chip C red-ring\"]; chip \"3 changes\"; sign line \"\"  ||  [tab 7] focus 1.0.1; day bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" (5 lines in the open list, mine: [\"hard: Conflict — two events at once Warden — VL BFM & RU BFM clash ✕\",\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other hard chip C red-ring\"]; chip \"3 changes\"; sign line \"\"  ||  [after Escape] focus BODY; day bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" (5 lines in the open list, mine: [\"hard: Conflict — two events at once Warden — VL BFM & RU BFM clash ✕\",\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line hard chip C red-ring\",\"flying line hard chip C red-ring\",\"other hard chip C red-ring\"]; chip \"3 changes\"; sign line \"\"  ||  [after click away] focus BODY; day bar \"⚠ 5 issues · 3 warning · tap to review ▼\" (0 lines in the open list); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line hard chip C red-ring\",\"flying line hard chip C red-ring\",\"other hard chip C red-ring\"]; chip \"3 changes\"; sign line \"\"; stored RU take-off 09:40; handPut said {\"took\":true,\"msg\":\"dragged from the crew list\"}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-01-L13t-unpublished-tab1.png",
+    "dk-02-L13t-unpublished-tab7.png",
+    "dk-03-L13t-unpublished-escape.png",
+    "dk-04-L13t-unpublished-clickaway.png"
+   ]
+  },
+  {
+   "id": "L-13",
+   "part": "tue-clean-published",
+   "did": "Tuesday 14 Jul (signed four names and published first): via the board RU take-off 09:40 -> 10:30 and nact (VL 08:40-10:05) put on RU's first seat; day's list open; then on the week RU take-off typed 0940, Tab 1, 3, then 7 times (never a click); Escape; then click on empty page",
+   "saw": "[before] focus BODY; day bar \"⚠ 6 issues · 2 warning · tap to collapse ▲\" (6 lines in the open list, mine: [\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 6 warnings, nact's: [\"Tight turn VL BFM→RU BFM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step \",\"1 person is double turning: Warden\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other chip TT\"]; chip \"7 changes\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [tab 1] focus ff:1.0.1.ld; day bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" (5 lines in the open list, mine: [\"hard: Conflict — two events at once Warden — VL BFM & RU BFM clashnew once signed ✕\",\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other hard chip C red-ring\"]; chip \"1 pending\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [tab 3] focus 1.0.1.0; day bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" (5 lines in the open list, mine: [\"hard: Conflict — two events at once Warden — VL BFM & RU BFM clashnew once signed ✕\",\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other hard chip C red-ring\"]; chip \"1 pending\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [tab 7] focus 1.0.1; day bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" (5 lines in the open list, mine: [\"hard: Conflict — two events at once Warden — VL BFM & RU BFM clashnew once signed ✕\",\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other hard chip C red-ring\"]; chip \"1 pending\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [after Escape] focus BODY; day bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" (5 lines in the open list, mine: [\"hard: Conflict — two events at once Warden — VL BFM & RU BFM clashnew once signed ✕\",\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line hard chip C red-ring\",\"flying line hard chip C red-ring\",\"other hard chip C red-ring\"]; chip \"1 pending\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [after click away] focus BODY; day bar \"⚠ 5 issues · 3 warning · tap to review ▼\" (0 lines in the open list); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line hard chip C red-ring\",\"flying line hard chip C red-ring\",\"other hard chip C red-ring\"]; chip \"1 pending\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"; stored RU take-off 09:40; handPut said {\"took\":true,\"msg\":\"dragged from the crew list\"}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-05-L13t-published-tab1.png",
+    "dk-06-L13t-published-tab7.png",
+    "dk-07-L13t-published-escape.png",
+    "dk-08-L13t-published-clickaway.png"
+   ]
+  },
+  {
+   "id": "L-14",
+   "part": "tab-start-0900-type-X",
+   "did": "Duty (Ace, Sat 18 Jul, was {\"type\":\"Duty\",\"date\":\"Jul 18\",\"acc\":\"g\",\"oil\":{\"2026-07-18\":1}}) filed through Inputs, OIL asked Yes; Edit Schedule Sat, Personal Inputs: start-time box (was 08:00) clicked, typed 0900, Tab; then typed X, Tab, Tab",
+   "saw": "after the first Tab: OIL window did not open; focus: span imuvhd3jgk9avw8.end \"16:00\" (in the page, behind any window); after typing X: focus span imuvhd3jgk9avw8.end \"X16:00\" (in the page, behind any window); Tab -> span imuvhd3jgk9avw8.rmks \"L14 duty\" (in the page, behind any window); Tab -> BODY (nothing focused); window still open: false; behind the window: schedule days and requests unchanged since the first Tab; start-time box now \"09:00\", stored {\"rmks\":\"L14 duty\"}; the request afterwards: {\"person\":\"dj\",\"date\":\"Jul 18\",\"allday\":false,\"s\":540,\"e\":960,\"yr\":2026,\"type\":\"Duty\",\"remarks\":\"L14 duty\",\"mod\":\"2026-10-06\",\"iid\":\"imuvhd3jgk9avw8\",\"oil\":{\"2026-07-18\":1},\"ord\":0,\"acc\":\"g\"}; the end-time box now reads \"16:00\"; edit-history rows 1->2->2; boxes ending in X on the page: [\"sr:0.amt.1.label=BOX\",\"fr:1.1.0.0=SAT 2VX\",\"sr:1.amt.1.label=BOX\",\"sr:2.amt.1.label=BOX\",\"sr:3.amt.1.label=BOX\"]",
+   "verdict": "NOT WALKED (window did not open)",
+   "pics": [
+    "dk-01-L14-0900-after-tab.png",
+    "dk-02-L14-0900-after-X-and-two-tabs.png"
+   ]
+  },
+  {
+   "id": "L-15",
+   "part": "callsign-desk",
+   "did": "Edit Schedule Mon at 1440x900: formation 0.0.0 callsign typed long (VIPERLEADERWRAPTEST); real click on the box before it (SPAN), then Tab into the callsign box",
+   "saw": "target box: {\"text\":\"VIPERLEADERWRAPTEST\",\"x\":38,\"y\":457,\"w\":65,\"h\":45,\"lines\":3.1,\"wraps\":true} (wraps: true, 3.1 lines); in plain view before Tab: true; before Tab: page scroll [0,882], scrolling parents [\"#eWeek.week [0,0]\"], target box at (38,510) 65x45; after Tab: focus on ff:0.0.0.cs, page scroll [0,882], scrolling parents [\"#eWeek.week [0,0]\"], target box at (38,510); page scroll moved by [0,0], box moved on screen by [0,0]",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-01-L15-desk-callsign-before.png",
+    "dk-02-L15-desk-callsign-after.png"
+   ]
+  },
+  {
+   "id": "L-15",
+   "part": "remarks-desk",
+   "did": "Edit Schedule Mon at 1440x900: formation 0.0.0 remarks typed long (1B: BFM-6 with a very long rem...); real click on the box before it (ff:0.0.0.ld), then Tab into the remarks box",
+   "saw": "target box: {\"text\":\"1B: BFM-6 with a very long remark so that it has to wrap over two lines on the week\",\"x\":377,\"y\":497,\"w\":177,\"h\":38,\"lines\":3,\"wraps\":true} (wraps: true, 3 lines); in plain view before Tab: true; before Tab: page scroll [0,935], scrolling parents [\"#eWeek.week [0,0]\"], target box at (377,444) 177x38; after Tab: focus on fr:0.0.0.0, page scroll [0,935], scrolling parents [\"#eWeek.week [0,0]\"], target box at (377,444); page scroll moved by [0,0], box moved on screen by [0,0]",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-03-L15-desk-remarks-before.png",
+    "dk-04-L15-desk-remarks-after.png"
+   ]
+  },
+  {
+   "id": "L-15",
+   "part": "callsign-phone",
+   "did": "Edit Schedule Mon at 390x844: formation 0.0.0 callsign typed long (VIPERLEADERWRAPTEST); real click on the box before it (SPAN), then Tab into the callsign box",
+   "saw": "target box: {\"text\":\"VIPERLEADERWRAPTEST\",\"x\":16,\"y\":426,\"w\":43,\"h\":34,\"lines\":3.1,\"wraps\":true} (wraps: true, 3.1 lines); in plain view before Tab: true; before Tab: page scroll [0,776], scrolling parents [\"#eWeek.week [12,0]\"], target box at (16,475) 43x34; after Tab: focus on ff:0.0.0.cs, page scroll [0,776], scrolling parents [\"#eWeek.week [12,0]\"], target box at (16,475); page scroll moved by [0,0], box moved on screen by [0,0]",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-01-L15-phone-callsign-before.png",
+    "dk-02-L15-phone-callsign-after.png"
+   ]
+  },
+  {
+   "id": "L-15",
+   "part": "remarks-phone",
+   "did": "Edit Schedule Mon at 390x844: formation 0.0.0 remarks typed long (1B: BFM-6 with a very long rem...); real click on the box before it (ff:0.0.0.ld), then Tab into the remarks box",
+   "saw": "target box: {\"text\":\"1B: BFM-6 with a very long remark so that it has to wrap over two lines on the week\",\"x\":298,\"y\":465,\"w\":52,\"h\":74,\"lines\":7,\"wraps\":true} (wraps: true, 7 lines); in plain view before Tab: true; before Tab: page scroll [0,824], scrolling parents [\"#eWeek.week [12,0]\"], target box at (298,417) 52x74; after Tab: focus on fr:0.0.0.0, page scroll [0,824], scrolling parents [\"#eWeek.week [12,0]\"], target box at (298,417); page scroll moved by [0,0], box moved on screen by [0,0]",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-03-L15-phone-remarks-before.png",
+    "dk-04-L15-phone-remarks-after.png"
+   ]
+  },
+  {
+   "id": "L-16",
+   "part": "phone-desktop-layout",
+   "did": "Phone 390x844: Edit Schedule -> Mon on the Scheduler Board (tap) -> more menu -> Desktop layout; typed into the first overall note (real write), made storage refuse writes, typed in the second note; then looked, panned the board to its left edge and to its right edge, and tapped Retry",
+   "saw": "AS IT APPEARED (screen 390 wide, page 390 wide): board scrolled 82 of 1180: [savestat.failed] \"⚠Not saved — keep this page open\" spans 14..220 (w 206) at y 59-75, seen on top: false; Retry 314..376 (w 62) at y 54-80; a finger at its middle lands on: SPAN.sbday; ancestors: .savestat fixed < .topbar sticky < #shell.save-failed static < #root. static < .sb-lock static ## [saveband] \"⚠Not saved — keep this page open\" spans 14..220 (w 206) at y 89-105, seen on top: true; Retry 314..376 (w 62) at y 84-110; a finger at its middle lands on: the Retry button; ancestors: .saveband sticky < .sb-top static < #schedBoard.schedboard fixed < #root. static < .sb-lock static  ||| BOARD PANNED TO LEFT EDGE: board scrolled 0 of 1180: [savestat.failed] \"⚠Not saved — keep this page open\" spans 14..220 (w 206) at y 59-75, seen on top: false; Retry 314..376 (w 62) at y 54-80; a finger at its middle lands on: SPAN.sbday; ancestors: .savestat fixed < .topbar sticky < #shell.save-failed static < #root. static < .sb-lock static ## [saveband] \"⚠Not saved — keep this page open\" spans 14..220 (w 206) at y 89-105, seen on top: true; Retry 314..376 (w 62) at y 84-110; a finger at its middle lands on: the Retry button; ancestors: .saveband sticky < .sb-top static < #schedBoard.schedboard fixed < #root. static < .sb-lock static  ||| BOARD PANNED TO RIGHT EDGE: board scrolled 790 of 1180: [savestat.failed] \"⚠Not saved — keep this page open\" spans 14..220 (w 206) at y 59-75, seen on top: false; Retry 314..376 (w 62) at y 54-80; a finger at its middle lands on: #sbNextDay; ancestors: .savestat fixed < .topbar sticky < #shell.save-failed static < #root. static < .sb-lock static ## [saveband] \"⚠Not saved — keep this page open\" spans 14..220 (w 206) at y 89-105, seen on top: true; Retry 314..376 (w 62) at y 84-110; a finger at its middle lands on: the Retry button; ancestors: .saveband sticky < .sb-top static < #schedBoard.schedboard fixed < #root. static < .sb-lock static  ||| panning was done by setting the board scroll position directly (a wheel turn did not move it)  ||| then tapped Retry at (345,97) with the board scrolled to 790; afterwards the note is GONE (saved)",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-L16-desktop-layout-before-fail.png",
+    "dk-02-L16-failed-save-as-it-appeared.png",
+    "dk-03-L16-board-at-left-edge.png",
+    "dk-04-L16-board-at-right-edge.png",
+    "dk-05-L16-after-retry.png"
+   ]
+  },
+  {
+   "id": "L-14",
+   "part": "tab-start-1300-type-X",
+   "did": "Duty (Ace, Sat 18 Jul, was {\"type\":\"Duty\",\"date\":\"Jul 18\",\"acc\":\"g\",\"oil\":{\"2026-07-18\":1}}) filed through Inputs, OIL asked Yes; Edit Schedule Sat, Personal Inputs: start-time box (was 08:00) clicked, typed 1300, Tab; then typed X, Tab, Tab",
+   "saw": "after the first Tab: OIL window OPEN: OIL — Ace, Duty ✕ | THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to; focus: div  \"OIL — Ace, Duty ✕ THIS INPUT F\" INSIDE window oilconf; after typing X: focus div  \"OIL — Ace, Duty ✕ THIS INPUT F\" INSIDE window oilconf; Tab -> button  \"✕\" INSIDE window oilconf; Tab -> button  \"Yes — credit HO\" INSIDE window oil-yes; window still open: true; behind the window: schedule days and requests unchanged since the first Tab; start-time box now \"13:00\", stored {\"rmks\":\"L14 duty\"}; the request afterwards: {\"person\":\"dj\",\"date\":\"Jul 18\",\"allday\":false,\"s\":780,\"e\":960,\"yr\":2026,\"type\":\"Duty\",\"remarks\":\"L14 duty\",\"mod\":\"2026-10-06\",\"iid\":\"imuvhha6t3gw0ss\",\"ord\":0,\"acc\":\"g\"}; the end-time box now reads \"16:00\"; edit-history rows 1->3->3; boxes ending in X on the page: [\"sr:0.amt.1.label=BOX\",\"fr:1.1.0.0=SAT 2VX\",\"sr:1.amt.1.label=BOX\",\"sr:2.amt.1.label=BOX\",\"sr:3.amt.1.label=BOX\"]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-L14-1300-after-tab.png",
+    "dk-02-L14-1300-after-X-and-two-tabs.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "a",
+   "did": "Edit Schedule Sat, Personal Inputs, START box clicked, 0900 typed, Tab; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-12:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=720; after the save: s=540 e=720; OIL window did not open; caret after the Tab: {\"txt\":\"span imuvhbtsqrwa4mb.end \\\"12:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[612,441]}; after typing XYZ: {\"txt\":\"span imuvhbtsqrwa4mb.end \\\"XYZ12:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[612,441]}; Tab -> {\"txt\":\"span imuvhbtsqrwa4mb.rmks \\\"R03 duty\\\"\",\"inWin\":false,\"win\":null,\"at\":[746,444]}; Tab -> {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; window still open after those: false; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: true; toasts: [\"That is not a time — try 0900 or 09:00\"]; request after the keys s=540 e=720; after ✕: window no ✕ found, request s=540 e=720, days equal to start: false, requests changed vs start: true; edit-history rows 1->2->2",
+   "verdict": "NOT WALKED (window did not open)",
+   "pics": [
+    "dk-01-R03a-0-before.png",
+    "dk-02-R03a-1-window.png",
+    "dk-03-R03a-2-after-XYZ-and-tabs.png",
+    "dk-04-R03a-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "b",
+   "did": "Scheduler Board Sat, Personal Inputs, START box clicked, 0900 typed, Tab; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-12:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=720; after the save: s=540 e=720; OIL window did not open; caret after the Tab: {\"txt\":\"input imuvhc0qbtqtwck.end \\\"12:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[421,498]}; after typing XYZ: {\"txt\":\"input imuvhc0qbtqtwck.end \\\"XYZ12:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[421,498]}; Tab -> {\"txt\":\"textarea imuvhc0qbtqtwck.rmks \\\"R03 duty\\\"\",\"inWin\":false,\"win\":null,\"at\":[764,498]}; Tab -> {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; window still open after those: false; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: true; toasts: [\"That is not a time — try 0900 or 09:00\"]; request after the keys s=540 e=720; after ✕: window no ✕ found, request s=540 e=720, days equal to start: false, requests changed vs start: true; edit-history rows 1->2->2",
+   "verdict": "NOT WALKED (window did not open)",
+   "pics": [
+    "dk-05-R03b-0-before.png",
+    "dk-06-R03b-1-window.png",
+    "dk-07-R03b-2-after-XYZ-and-tabs.png",
+    "dk-08-R03b-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "c",
+   "did": "Edit Schedule Sat, START box typed 0900, CLICK on empty page; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-12:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=720; after the save: s=540 e=720; OIL window did not open; caret after the click: {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; after typing XYZ: {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; Tab -> {\"txt\":\"span sr:4.oft.0.label \\\"SIMS (EXT SQN)\\\"\",\"inWin\":false,\"win\":null,\"at\":[581,357]}; Tab -> {\"txt\":\"span sr:4.oft.0.str \\\"09:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[692,354]}; window still open after those: false; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: false; toasts: []; request after the keys s=540 e=720; after ✕: window no ✕ found, request s=540 e=720, days equal to start: false, requests changed vs start: true; edit-history rows 1->2->2",
+   "verdict": "NOT WALKED (window did not open)",
+   "pics": [
+    "dk-09-R03c-0-before.png",
+    "dk-10-R03c-1-window.png",
+    "dk-11-R03c-2-after-XYZ-and-tabs.png",
+    "dk-12-R03c-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "a-8h",
+   "did": "Edit Schedule Sat, Personal Inputs, START box clicked, 0900 typed, Tab; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-16:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=960; after the save: s=540 e=960; OIL window did not open; caret after the Tab: {\"txt\":\"span imuvhcqnmppzntu.end \\\"16:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[612,441]}; after typing XYZ: {\"txt\":\"span imuvhcqnmppzntu.end \\\"XYZ16:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[612,441]}; Tab -> {\"txt\":\"span imuvhcqnmppzntu.rmks \\\"R03 duty\\\"\",\"inWin\":false,\"win\":null,\"at\":[746,444]}; Tab -> {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; window still open after those: false; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: true; toasts: [\"That is not a time — try 0900 or 09:00\"]; request after the keys s=540 e=960; after ✕: window no ✕ found, request s=540 e=960, days equal to start: false, requests changed vs start: true; edit-history rows 1->2->2",
+   "verdict": "NOT WALKED (window did not open)",
+   "pics": [
+    "dk-01-R03a-0-before.png",
+    "dk-02-R03a-1-window.png",
+    "dk-03-R03a-2-after-XYZ-and-tabs.png",
+    "dk-04-R03a-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "b-8h",
+   "did": "Scheduler Board Sat, Personal Inputs, START box clicked, 0900 typed, Tab; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-16:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=960; after the save: s=540 e=960; OIL window did not open; caret after the Tab: {\"txt\":\"input imuvhcxk62x8mao.end \\\"16:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[421,498]}; after typing XYZ: {\"txt\":\"input imuvhcxk62x8mao.end \\\"XYZ16:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[421,498]}; Tab -> {\"txt\":\"textarea imuvhcxk62x8mao.rmks \\\"R03 duty\\\"\",\"inWin\":false,\"win\":null,\"at\":[764,498]}; Tab -> {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; window still open after those: false; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: true; toasts: [\"That is not a time — try 0900 or 09:00\"]; request after the keys s=540 e=960; after ✕: window no ✕ found, request s=540 e=960, days equal to start: false, requests changed vs start: true; edit-history rows 1->2->2",
+   "verdict": "NOT WALKED (window did not open)",
+   "pics": [
+    "dk-05-R03b-0-before.png",
+    "dk-06-R03b-1-window.png",
+    "dk-07-R03b-2-after-XYZ-and-tabs.png",
+    "dk-08-R03b-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "c-8h",
+   "did": "Edit Schedule Sat, START box typed 0900, CLICK on empty page; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-16:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=960; after the save: s=540 e=960; OIL window did not open; caret after the click: {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; after typing XYZ: {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; Tab -> {\"txt\":\"span sr:4.oft.0.label \\\"SIMS (EXT SQN)\\\"\",\"inWin\":false,\"win\":null,\"at\":[581,357]}; Tab -> {\"txt\":\"span sr:4.oft.0.str \\\"09:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[692,354]}; window still open after those: false; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: false; toasts: []; request after the keys s=540 e=960; after ✕: window no ✕ found, request s=540 e=960, days equal to start: false, requests changed vs start: true; edit-history rows 1->2->2",
+   "verdict": "NOT WALKED (window did not open)",
+   "pics": [
+    "dk-09-R03c-0-before.png",
+    "dk-10-R03c-1-window.png",
+    "dk-11-R03c-2-after-XYZ-and-tabs.png",
+    "dk-12-R03c-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "a-1300",
+   "did": "Edit Schedule Sat, Personal Inputs, START box clicked, 1300 typed, Tab; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-16:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=960; after the save: s=780 e=960; OIL window OPEN: {\"head\":\"OIL — Ranger, Duty ✕\",\"body\":\"THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. \",\"buttons\":[\"✕\",\"Yes — credit H\",\"No OIL\",\"Cancel\",\"Save\"]}; caret after the Tab: {\"txt\":\"div  \\\"OIL — Ranger, Duty ✕ THIS INPU\\\"\",\"inWin\":true,\"win\":\"oilconf\",\"at\":[500,298]}; after typing XYZ: {\"txt\":\"div  \\\"OIL — Ranger, Duty ✕ THIS INPU\\\"\",\"inWin\":true,\"win\":\"oilconf\",\"at\":[500,298]}; Tab -> {\"txt\":\"button  \\\"✕\\\"\",\"inWin\":true,\"win\":\"oilconf\",\"at\":[653,311]}; Tab -> {\"txt\":\"button  \\\"Yes — credit HO\\\"\",\"inWin\":true,\"win\":\"oil-yes\",\"at\":[546,443]}; window still open after those: true; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: false; toasts: []; request after the keys s=780 e=960; after ✕: window closed, request s=780 e=960, days equal to start: false, requests changed vs start: true; edit-history rows 1->3->3",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-R03a-0-before.png",
+    "dk-02-R03a-1-window.png",
+    "dk-03-R03a-2-after-XYZ-and-tabs.png",
+    "dk-04-R03a-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "b-1300",
+   "did": "Scheduler Board Sat, Personal Inputs, START box clicked, 0900 typed, Tab; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-16:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=960; after the save: s=780 e=960; OIL window OPEN: {\"head\":\"OIL — Ranger, Duty ✕\",\"body\":\"THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. \",\"buttons\":[\"✕\",\"Yes — credit H\",\"No OIL\",\"Cancel\",\"Save\"]}; caret after the Tab: {\"txt\":\"div  \\\"OIL — Ranger, Duty ✕ THIS INPU\\\"\",\"inWin\":true,\"win\":\"oilconf\",\"at\":[500,298]}; after typing XYZ: {\"txt\":\"div  \\\"OIL — Ranger, Duty ✕ THIS INPU\\\"\",\"inWin\":true,\"win\":\"oilconf\",\"at\":[500,298]}; Tab -> {\"txt\":\"button  \\\"✕\\\"\",\"inWin\":true,\"win\":\"oilconf\",\"at\":[653,311]}; Tab -> {\"txt\":\"button  \\\"Yes — credit HO\\\"\",\"inWin\":true,\"win\":\"oil-yes\",\"at\":[546,443]}; window still open after those: true; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: false; toasts: []; request after the keys s=780 e=960; after ✕: window closed, request s=780 e=960, days equal to start: false, requests changed vs start: true; edit-history rows 1->3->3",
+   "verdict": "PASS",
+   "pics": [
+    "dk-05-R03b-0-before.png",
+    "dk-06-R03b-1-window.png",
+    "dk-07-R03b-2-after-XYZ-and-tabs.png",
+    "dk-08-R03b-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "c-1300",
+   "did": "Edit Schedule Sat, START box typed 0900, CLICK on empty page; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-16:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=960; after the save: s=780 e=960; OIL window OPEN: {\"head\":\"OIL — Ranger, Duty ✕\",\"body\":\"THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. \",\"buttons\":[\"✕\",\"Yes — credit H\",\"No OIL\",\"Cancel\",\"Save\"]}; caret after the click: {\"txt\":\"div  \\\"OIL — Ranger, Duty ✕ THIS INPU\\\"\",\"inWin\":true,\"win\":\"oilconf\",\"at\":[500,298]}; after typing XYZ: {\"txt\":\"div  \\\"OIL — Ranger, Duty ✕ THIS INPU\\\"\",\"inWin\":true,\"win\":\"oilconf\",\"at\":[500,298]}; Tab -> {\"txt\":\"button  \\\"✕\\\"\",\"inWin\":true,\"win\":\"oilconf\",\"at\":[653,311]}; Tab -> {\"txt\":\"button  \\\"Yes — credit HO\\\"\",\"inWin\":true,\"win\":\"oil-yes\",\"at\":[546,443]}; window still open after those: true; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: false; toasts: []; request after the keys s=780 e=960; after ✕: window closed, request s=780 e=960, days equal to start: false, requests changed vs start: true; edit-history rows 1->3->3",
+   "verdict": "PASS",
+   "pics": [
+    "dk-09-R03c-0-before.png",
+    "dk-10-R03c-1-window.png",
+    "dk-11-R03c-2-after-XYZ-and-tabs.png",
+    "dk-12-R03c-3-after-close.png"
+   ]
+  },
+  {
+   "id": "H-F2",
+   "part": "phone-390",
+   "did": "Phone 390x844: Edit Schedule -> Monday on the Scheduler Board -> ⋯ -> Desktop layout; board panned by setting its own scroll position so ⋯ sits near the left / middle / hard against the right edge (wholly on screen); at each ⋯ pressed with a finger tap and the menu measured",
+   "saw": "[a-near-left] ⋯ at 8..38 (board scrolled 602 of 790), a finger on ⋯ lands on it: true; menu box [8,75,184,199] on a 390x844 screen, whole on screen: true; items: Insights box [13,80,179,118] lands:true whole:true | ⇅\nSort all box [13,118,179,156] lands:true whole:true | 📱\nPhone layout box [13,156,179,194] lands:true whole:true  ||  [b-middle] ⋯ at 170..200 (board scrolled 440 of 790), a finger on ⋯ lands on it: true; menu box [170,75,346,199] on a 390x844 screen, whole on screen: true; items: Insights box [175,80,341,118] lands:true whole:true | ⇅\nSort all box [175,118,341,156] lands:true whole:true | 📱\nPhone layout box [175,156,341,194] lands:true whole:true  ||  [c-right-edge] ⋯ at 358..388 (board scrolled 252 of 790), a finger on ⋯ lands on it: true; menu box [212,75,388,199] on a 390x844 screen, whole on screen: true; items: Insights box [217,80,383,118] lands:true whole:true | ⇅\nSort all box [217,118,383,156] lands:true whole:true | 📱\nPhone layout box [217,156,383,194] lands:true whole:true",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-HF2-0-desktop-layout.png",
+    "dk-02-HF2-a-near-left.png",
+    "dk-03-HF2-b-middle.png",
+    "dk-04-HF2-c-right-edge.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "x-week-day0",
+   "did": "fresh world, Edit Schedule, Mon, nothing changed: real click into the day's last open box (206 open boxes, last is imuvhgtfkkq5ac8.rmks), then Tab x4",
+   "saw": "last box: span \"Medically down till 17 Jul\" [imuvhgtfkkq5ac8.rmks] day 0  at (424,710); Tab 1 -> NOTHING (the page body); Tab 2 -> button:submit \"Templates\" [dhbtn] day 1  at (706,223); Tab 3 -> button:submit \"Live working copy ▾\" [planselbtn] day 1  at (783,223); Tab 4 -> button:submit \"i\" [dinfobtn] day 1  at (606,257)",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-01-L12x-week-day0.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "x-week-day2",
+   "did": "fresh world, Edit Schedule, Wed, nothing changed: real click into the day's last open box (113 open boxes, last is imuvhgtgb9h1w7g.rmks), then Tab x4",
+   "saw": "last box: span \"\" [imuvhgtgb9h1w7g.rmks] day 2  at (516,443); Tab 1 -> NOTHING (the page body); Tab 2 -> button:submit \"Templates\" [dhbtn] day 3  at (806,223); Tab 3 -> button:submit \"Live working copy ▾\" [planselbtn] day 3  at (883,223); Tab 4 -> button:submit \"i\" [dinfobtn] day 3  at (698,257)",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-02-L12x-week-day2.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "x-week-shift",
+   "did": "Monday: click into the first open box (206 open boxes, first is dn:0.0), Shift+Tab x3",
+   "saw": "first box: div \"EP: ENGINE FIRE ON TAKE OFF\" [dn:0.0] day 0  at (40,440); Shift+Tab 1 -> select:select-one \"— name — Anvil Basher Bolt Cin\" [] day 0  at (428,324); Shift+Tab 2 -> select:select-one \"— name — Anvil Basher Bolt Cin\" [] day 0  at (299,324); Shift+Tab 3 -> select:select-one \"— name — Anvil Basher Bolt Cin\" [] day 0  at (170,324)",
+   "verdict": "RECORD",
+   "pics": []
+  },
+  {
+   "id": "L-12",
+   "part": "x-board",
+   "did": "fresh world, Scheduler Board Monday, nothing changed: real click into the last open box (214 open boxes, last is imuvhgtfkkq5ac8.rmks), Tab x4",
+   "saw": "last box: textarea:textarea \"Medically down till 17 Jul\" [imuvhgtfkkq5ac8.rmks] day - in the board at (764,836); Tab 1 -> button:submit \"✕\" [wln-mute] day - in the board at (1405,152); Tab 2 -> button:submit \"✕\" [wln-mute] day - in the board at (1405,196); Tab 3 -> button:submit \"✕\" [wln-mute] day - in the board at (1405,222); Tab 4 -> button:submit \"✕\" [wln-mute] day - in the board at (1405,265)",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-03-L12x-board.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "a-aswritten",
+   "did": "Edit Schedule Sat, Personal Inputs, START box clicked, 0900 typed, Tab; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-12:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=720; after the save: s=540 e=720; OIL window did not open; caret after the Tab: {\"txt\":\"span imuvhhug04y680b.end \\\"12:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[612,441]}; after typing XYZ: {\"txt\":\"span imuvhhug04y680b.end \\\"XYZ12:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[612,441]}; Tab -> {\"txt\":\"span imuvhhug04y680b.rmks \\\"R03 duty\\\"\",\"inWin\":false,\"win\":null,\"at\":[746,444]}; Tab -> {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; window still open after those: false; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: true; toasts: [\"That is not a time — try 0900 or 09:00\"]; request after the keys s=540 e=720; after ✕: window no ✕ found, request s=540 e=720, days equal to start: false, requests changed vs start: true; edit-history rows 1->2->2",
+   "verdict": "NOT WALKED (window did not open)",
+   "pics": [
+    "dk-01-R03a-aswritten-0-before.png",
+    "dk-02-R03a-aswritten-1-window.png",
+    "dk-03-R03a-aswritten-2-after-XYZ-and-tabs.png",
+    "dk-04-R03a-aswritten-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "b-aswritten",
+   "did": "Scheduler Board Sat, Personal Inputs, START box clicked, 0900 typed, Tab; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-12:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=720; after the save: s=540 e=720; OIL window did not open; caret after the Tab: {\"txt\":\"input imuvhi17gely8l0.end \\\"12:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[421,498]}; after typing XYZ: {\"txt\":\"input imuvhi17gely8l0.end \\\"XYZ12:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[421,498]}; Tab -> {\"txt\":\"textarea imuvhi17gely8l0.rmks \\\"R03 duty\\\"\",\"inWin\":false,\"win\":null,\"at\":[764,498]}; Tab -> {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; window still open after those: false; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: true; toasts: [\"That is not a time — try 0900 or 09:00\"]; request after the keys s=540 e=720; after ✕: window no ✕ found, request s=540 e=720, days equal to start: false, requests changed vs start: true; edit-history rows 1->2->2",
+   "verdict": "NOT WALKED (window did not open)",
+   "pics": [
+    "dk-05-R03b-aswritten-0-before.png",
+    "dk-06-R03b-aswritten-1-window.png",
+    "dk-07-R03b-aswritten-2-after-XYZ-and-tabs.png",
+    "dk-08-R03b-aswritten-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "c-aswritten",
+   "did": "Edit Schedule Sat, START box typed 0900, CLICK on empty page; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-12:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=720; after the save: s=540 e=720; OIL window did not open; caret after the click: {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; after typing XYZ: {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; Tab -> {\"txt\":\"span sr:4.oft.0.label \\\"SIMS (EXT SQN)\\\"\",\"inWin\":false,\"win\":null,\"at\":[581,357]}; Tab -> {\"txt\":\"span sr:4.oft.0.str \\\"09:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[692,354]}; window still open after those: false; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: false; toasts: []; request after the keys s=540 e=720; after ✕: window no ✕ found, request s=540 e=720, days equal to start: false, requests changed vs start: true; edit-history rows 1->2->2",
+   "verdict": "NOT WALKED (window did not open)",
+   "pics": [
+    "dk-09-R03c-aswritten-0-before.png",
+    "dk-10-R03c-aswritten-1-window.png",
+    "dk-11-R03c-aswritten-2-after-XYZ-and-tabs.png",
+    "dk-12-R03c-aswritten-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-03",
+   "part": "a-aswritten-nooil",
+   "did": "Edit Schedule Sat, Personal Inputs, START box clicked, 0900 typed, Tab; then typed XYZ, Tab, Tab; then the window's own ✕. Request: Ranger Duty Sat 18 Jul 08:00-12:00 (OIL asked [\"oil\"])",
+   "saw": "request before s=480 e=720; after the save: s=540 e=720; OIL window did not open; caret after the Tab: {\"txt\":\"span imuvhilalbf3bud.end \\\"12:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[612,441]}; after typing XYZ: {\"txt\":\"span imuvhilalbf3bud.end \\\"XYZ12:00\\\"\",\"inWin\":false,\"win\":null,\"at\":[612,441]}; Tab -> {\"txt\":\"span imuvhilalbf3bud.rmks \\\"R03 duty\\\"\",\"inWin\":false,\"win\":null,\"at\":[746,444]}; Tab -> {\"txt\":\"BODY (nothing focused)\",\"inWin\":false}; window still open after those: false; behind the window: days and requests unchanged since the window opened; boxes holding X/Y/Z: []; \"not a time\" shown: true; toasts: [\"That is not a time — try 0900 or 09:00\"]; request after the keys s=540 e=720; after ✕: window no ✕ found, request s=540 e=720, days equal to start: false, requests changed vs start: true; edit-history rows 1->2->2",
+   "verdict": "NOT WALKED (window did not open)",
+   "pics": [
+    "dk-01-R03a-aswritten-nooil-0-before.png",
+    "dk-02-R03a-aswritten-nooil-1-window.png",
+    "dk-03-R03a-aswritten-nooil-2-after-XYZ-and-tabs.png",
+    "dk-04-R03a-aswritten-nooil-3-after-close.png"
+   ]
+  },
+  {
+   "id": "R-04",
+   "part": "a-week-desktop",
+   "did": "Edit Schedule week, Monday, issues list open: clicked the first In-time / Rally line, replaced with \"12:40H: VL IN TIME\", Tab ONCE, read the list at once; then Tab x3 changing nothing; typed Q; Escape; Undo from the top bar",
+   "saw": "start: bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\" (18 lines); straight after the one Tab (caret itline 0|0|1 \"10:40H: FIRST WAVE RU IN TIME + WX/NOTAMS\" at top 458.8): bar \"⚠ 17 issues · 7 warning · tap to collapse ▲\" (18 lines), new in-time/brief lines: [\"hard: In-time / Rally — timings out of order VL: in-time 12:40 is later than suggested brief 10:20. ✕\"]; next three Tabs reached ff:0.0.0.cs@529.3, ff:0.0.0.msn@544.7, ff:0.0.0.br@539.3, page scroll 1873/1873/1873/1873 (range 0px), the box left moved at most 0px on the next three Tabs, the typed in-time line's top 441.6->441.8 on the first Tab, list unchanged by them: true; typed Q into ff:0.0.0.br: read back \"Q\" (caret still on ff:0.0.0.br); after Escape: bar \"⚠ 17 issues · 7 warning · tap to collapse ▲\"; after 1 Undo press(es): bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\", list equal to the start: true",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-R04a-week-desktop-0-start.png",
+    "dk-02-R04a-week-desktop-1-after-one-tab.png",
+    "dk-03-R04a-week-desktop-2-after-Q.png",
+    "dk-04-R04a-week-desktop-3-after-undo.png"
+   ]
+  },
+  {
+   "id": "R-04",
+   "part": "c-board-desktop",
+   "did": "Scheduler Board, Monday, issues list open: clicked the first In-time / Rally line, replaced with \"12:40H: VL IN TIME\", Tab ONCE, read the list at once; then Tab x3 changing nothing; typed Q; Escape; Undo from the board's door",
+   "saw": "start: bar \"⚠ 17 issues · 6 warnings · tap to review\" (17 lines); straight after the one Tab (caret itline 0|0|1 \"10:40H: FIRST WAVE RU IN TIME + WX/NOTAMS\" at top 511.9): bar \"⚠ 17 issues · 7 warnings · tap to review\" (17 lines), new in-time/brief lines: [\"VL: in-time 12:40 is later than suggested brief 10:20. ✕\"]; next three Tabs reached ff:0.0.0.cs@585.4, ff:0.0.0.msn@585.4, ff:0.0.0.br@590.9, page scroll 0/0/0/0 (range 0px), the box left moved at most 0px on the next three Tabs, the typed in-time line's top 494.9->494.9 on the first Tab, list unchanged by them: true; typed Q into ff:0.0.0.br: read back \"Q\" (caret still on ff:0.0.0.br); after Escape: bar \"⚠ 17 issues · 7 warnings · tap to review\"; after 1 Undo press(es): bar \"⚠ 17 issues · 6 warnings · tap to review\", list equal to the start: true",
+   "verdict": "PASS",
+   "pics": [
+    "dk-05-R04c-board-desktop-0-start.png",
+    "dk-06-R04c-board-desktop-1-after-one-tab.png",
+    "dk-07-R04c-board-desktop-2-after-Q.png",
+    "dk-08-R04c-board-desktop-3-after-undo.png"
+   ]
+  },
+  {
+   "id": "R-04",
+   "part": "d-week-phone",
+   "did": "phone week (390), Monday, issues list open: clicked the first In-time / Rally line, replaced with \"12:40H: VL IN TIME\", Tab ONCE, read the list at once; then Tab x3 changing nothing; typed Q; Escape; Undo from the top bar",
+   "saw": "start: bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\" (18 lines); straight after the one Tab (caret itline 0|0|1 \"10:40H: FIRST WAVE RU IN TIME + WX/NOTAMS\" at top 431.9): bar \"⚠ 17 issues · 7 warning · tap to collapse ▲\" (18 lines), new in-time/brief lines: [\"hard: In-time / Rally — timings out of order VL: in-time 12:40 is later than suggested brief 10:20. ✕\"]; next three Tabs reached ff:0.0.0.cs@497.4, ff:0.0.0.msn@509.3, ff:0.0.0.br@507.4, page scroll 1959/1959/1959/1959 (range 0px), the box left moved at most 0px on the next three Tabs, the typed in-time line's top 414.8->414.9 on the first Tab, list unchanged by them: true; typed Q into ff:0.0.0.br: read back \"Q\" (caret still on ff:0.0.0.br); after Escape: bar \"⚠ 17 issues · 7 warning · tap to collapse ▲\"; after 1 Undo press(es): bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\", list equal to the start: true",
+   "verdict": "PASS",
+   "pics": [
+    "dk-09-R04d-week-phone-0-start.png",
+    "dk-10-R04d-week-phone-1-after-one-tab.png",
+    "dk-11-R04d-week-phone-2-after-Q.png",
+    "dk-12-R04d-week-phone-3-after-undo.png"
+   ]
+  },
+  {
+   "id": "R-04",
+   "part": "e-published",
+   "did": "Edit Schedule, Tuesday: signed four names, Publish day; then clicked Remarks of the first flying line (\"1B: BFM-3\"), typed \" walkword\", Tab once; read the day's heading without leaving the text boxes",
+   "saw": "after publish: {\"tag\":\"ORIG\",\"pending\":\"5 changes\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"}; straight after the Tab (caret 1.0.0.0): pending \"1 pending\", Not-yet-signed \"Not yet signed\", sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\", sign selects [\"— name —\",\"— name —\",\"— name —\",\"— name —\"], Publish AL button \"Publish AL1\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-13-R04e-0-published.png",
+    "dk-14-R04e-1-after-one-tab.png"
+   ]
+  }
+ ],
+ "parts": {
+  "p5a-a-dk": {
+   "at": "2026-10-05T16:43:35.102Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-01 (desk)",
+     "did": "broke storage, ordinary edit on Edit Schedule, opened Leave War → OIL tracker; scrolled, From first entry, Range, zoom ± ; Retry failing, then restoring",
+     "saw": "✓ the warning came up through an ordinary edit · ✓ one warning band is beneath the sheet’s own bar, seen whole and on top [[19,62,1402,36]] · ✓ it covers no control [] · ✓ every head control is its own target (a finger lands on it) [{\"oil-close\":{\"found\":true,\"own\":true,\"box\":[1402,28,19,17],\"top\":\"x\"},\"oil-range-first\":{\"found\":true,\"own\":true,\"box\":[63,106,109,30],\"top\":\"tchip on\"},\"oil-r] · ✓ exactly one Retry is reachable [topbar(under)(inert), band:oil, band:board(under)] · ✓ after scrolling the sheet the warning is still seen and covers nothing [{\"sc\":{\"cls\":\"oil-wrap\",\"top\":400},\"box\":[19,62,1402,36]}] · ✓ range controls worked (From first entry, Range pick pressed) with the warning still seen [{\"r1\":true,\"pickOpened\":true,\"seen\":[true,true]}] · ✓ zoom in / out pressed; zoom still its own target [{\"found\":true,\"own\":true,\"box\":[275,108,30,25],\"top\":\"tchip zoom\"}] · ✓ Retry pressed while storage still refuses: the warning stays (one band) [{\"pressed\":true,\"box\":[1339,68,62,26]}] · ✓ Retry with storage restored saves; every warning goes · ✓ the sheet’s close cross still closes it",
+     "verdict": "PASS",
+     "pics": [
+      "a-001-oil-open-desk.png",
+      "a-002-oil-range-desk.png",
+      "a-003-oil-after-retry-desk.png"
+     ]
+    },
+    {
+     "id": "P5-01 (phone)",
+     "did": "broke storage, ordinary edit on Edit Schedule, opened Leave War → OIL tracker; scrolled, From first entry, Range, zoom ± ; Retry failing, then restoring",
+     "saw": "✓ the warning came up through an ordinary edit · ✓ one warning band is beneath the sheet’s own bar, seen whole and on top [[8,51,374,36]] · ✓ it covers no control [] · ✓ every head control is its own target (a finger lands on it) [{\"oil-close\":{\"found\":true,\"own\":true,\"box\":[363,17,19,17],\"top\":\"x\"},\"oil-range-first\":{\"found\":true,\"own\":true,\"box\":[44,91,97,36],\"top\":\"tchip on\"},\"oil-rang] · ✓ exactly one Retry is reachable [topbar(under)(inert), band:oil, band:board(under)] · ✓ after scrolling the sheet the warning is still seen and covers nothing [{\"sc\":{\"cls\":\"oil-wrap\",\"top\":400},\"box\":[8,51,374,36]}] · ✓ range controls worked (From first entry, Range pick pressed) with the warning still seen [{\"r1\":true,\"pickOpened\":true,\"seen\":[true,true]}] · ✓ zoom in / out pressed; zoom still its own target [{\"found\":true,\"own\":true,\"box\":[229,91,26,36],\"top\":\"tchip zoom\"}] · ✓ Retry pressed while storage still refuses: the warning stays (one band) [{\"pressed\":true,\"box\":[306,57,62,26]}] · ✓ Retry with storage restored saves; every warning goes · ✓ the sheet’s close cross still closes it",
+     "verdict": "PASS",
+     "pics": [
+      "a-004-oil-open-phone.png",
+      "a-005-oil-range-phone.png",
+      "a-006-oil-after-retry-phone.png"
+     ]
+    },
+    {
+     "id": "P5-02 (844x390)",
+     "did": "Tracker → Edit chart layout, Tools ▾ open, + Test named, ✓ Save changes pressed with storage refusing, then Retry with storage restored",
+     "saw": "✓ an ordinary chart edit made (\"+ Test\" named F-WALK); \"✓ Save changes\" is showing [Tools open straight after choosing + Test: false] · ✓ Tools is open before the failure · ✓ the Save press (a tap outside Tools) closed Tools by D373’s rule, then Tools ▾ was tapped open again before the failure surfaced [closed by press: true; open again: true; bar note at that moment: savestat] · ✓ \"✓ Save changes\" pressed (a chart save made to fail) [[731,156]] · ✓ the warning band came up (top bar one line taller) [bar 149 → 185] · ✓ Tools STAYS open through the band appearing [open after fail: true] · ✓ the chart is still in Edit chart layout mode · ✓ Tools buttons are still what a finger lands on (not under the band) [19/19] · ✓ storage put back, the app’s own retry saves; the warning goes (bar back to 149px) [bar 149 → 149] · ✓ Tools STAYS open through the band going away [open after the band left: true]",
+     "verdict": "PASS",
+     "pics": [
+      "a-007-trk-tools-before.png",
+      "a-008-trk-tools-after-fail.png",
+      "a-009-trk-tools-after-autoretry.png"
+     ]
+    },
+    {
+     "id": "P5-03 (1440x900)",
+     "did": "ALL AVAIL (chip on Saturday) and Changes (clock) windows opened, each dragged and resized, then storage broken + ordinary edit, Retry, closed and reopened",
+     "saw": "✓ ALL AVAIL chip made through the board (put: allavail) · ✓ both windows open at their default places [{\"a0\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"c0\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656}}] · ✓ ALL AVAIL moved/resized by hand (placed mark on) [{\"a0\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"a1\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628}}] · ✓ Changes moved/resized by hand (placed mark on) [{\"c0\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656},\"c1\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✓ the warning is up · ✓ ALL AVAIL keeps the size/place chosen during the failure [{\"a1\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628},\"a2\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628}}] · ✓ Changes keeps the size/place chosen during the failure [{\"c1\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648},\"c2\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✓ Retry succeeded; both windows unchanged after the warning left [{\"a3\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628},\"c3\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✓ reopened (closing forgets a placement, by design — view.ts): both windows come back at their default places and FULL default size — not left shortened or displaced by the failed-save band — on screen [{\"a4\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"c4\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656}}]",
+     "verdict": "PASS",
+     "pics": [
+      "a-010-win-both-open.png",
+      "a-011-win-both-placed.png",
+      "a-012-win-during-fail.png",
+      "a-013-win-reopened.png"
+     ]
+    },
+    {
+     "id": "P5-03b (1440x900)",
+     "did": "both windows opened at their default places WHILE the warning is up",
+     "saw": "✓ warning up · ✓ ALL AVAIL opens below the enlarged bar, on screen [{\"x\":1212,\"y\":132,\"w\":212,\"h\":540,\"bottom\":672,\"placed\":false} bar 94] · ✓ Changes opens below the enlarged bar, on screen [{\"x\":1044,\"y\":132,\"w\":380,\"h\":560,\"bottom\":692,\"placed\":false}] · ✓ neither lies over Retry [[1358,63,1420,89]]",
+     "verdict": "PASS",
+     "pics": [
+      "a-014-win-default-during-fail.png"
+     ]
+    },
+    {
+     "id": "P5-04 (desk)",
+     "did": "warning up (ordinary edit), then opened the Board (day 2), Inputs calendar and Medical view through their doors; first control pressed, Retry pressed, closed",
+     "saw": "✓ warning up through an ordinary edit · ✓ Board: warning under the board’s own bar, seen, covering nothing [[0,109,1440,36] ] · ✓ Board: exactly one reachable Retry (the board’s); the top bar’s copy is inert [band:board topInert=true] · ✓ Board: the band’s Retry takes keyboard focus; the bar’s copy cannot [{\"bandFocus\":true,\"topbarFocusable\":false}] · ✓ Board: first control (#sbInsights) pressed for real — it took the press, not Retry [{\"clickAt\":\"sbInsights\",\"focus\":\"sbInsights\"} bar: sbCal | sbHl | sbTpl | sbSortAll | sbUndo | sbRedo | sbHist | sbSync | sbBell | sbInsights | sbDone | CAT | T] · ✓ Board: Retry (storage still refusing) — warning stays · ✓ Board closed: the main warning is back, seen, one reachable Retry, no longer inert [topbar [0,57,1440,36]] · ✓ inputs-calendar: warning under its head, seen, covers no control [[0,65,1440,36]] · ✓ inputs-calendar: exactly one reachable Retry (its own) [band:inputs-cal] · ✓ inputs-calendar: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"icPrev\",\"focus\":\"icPrev\"}] · ✓ medical-view: warning under its head, seen, covers no control [[0,65,1440,36]] · ✓ medical-view: exactly one reachable Retry (its own) [band:medical] · ✓ medical-view: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"medCalBtn\",\"focus\":\"medCalBtn\"}] · ✓ after both closed: the main warning is back and is the one reachable Retry [topbar {\"cur\":\"inputs\",\"med\":false,\"cal\":false,\"note\":\"savestat failed\",\"bands\":1,\"bar\":\"topbar has-undo save-failed\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "a-015-board-desk.png",
+      "a-016-inputs-calendar-desk.png",
+      "a-017-medical-view-desk.png",
+      "a-018-cover-end-desk.png"
+     ]
+    },
+    {
+     "id": "P5-04 (phone)",
+     "did": "warning up (ordinary edit), then opened the Board (day 2), Inputs calendar and Medical view through their doors; first control pressed, Retry pressed, closed",
+     "saw": "✓ warning up through an ordinary edit · ✓ Board: warning under the board’s own bar, seen, covering nothing [[0,76,390,36] ] · ✓ Board: exactly one reachable Retry (the board’s); the top bar’s copy is inert [band:board topInert=true] · ✓ Board: the band’s Retry takes keyboard focus; the bar’s copy cannot [{\"bandFocus\":true,\"topbarFocusable\":false}] · ✓ Board: first control (#sbMore) pressed for real — it took the press, not Retry [{\"clickAt\":\"sbMore\",\"focus\":\"sbMore\"} bar: sbCal | sbPrevDay | sbHl | sbMore | sbNextDay | sbUndo | sbRedo | sbHist | sbSync | sbBell | sbDone | Retry] · ✓ Board: Retry (storage still refusing) — warning stays · ✓ Board closed: the main warning is back, seen, one reachable Retry, no longer inert [topbar [0,48,390,36]] · ✓ inputs-calendar: warning under its head, seen, covers no control [[0,61,390,36]] · ✓ inputs-calendar: exactly one reachable Retry (its own) [band:inputs-cal] · ✓ inputs-calendar: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"icPrev\",\"focus\":\"icPrev\"}] · ✓ medical-view: warning under its head, seen, covers no control [[0,61,390,36]] · ✓ medical-view: exactly one reachable Retry (its own) [band:medical] · ✓ medical-view: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"medCalBtn\",\"focus\":\"medCalBtn\"}] · ✓ after both closed: the main warning is back and is the one reachable Retry [topbar {\"cur\":\"inputs\",\"med\":false,\"cal\":false,\"note\":\"savestat failed\",\"bands\":1,\"bar\":\"topbar has-undo save-failed\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "a-019-board-phone.png",
+      "a-020-inputs-calendar-phone.png",
+      "a-021-medical-view-phone.png",
+      "a-022-cover-end-phone.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "a-001-oil-open-desk.png",
+    "a-002-oil-range-desk.png",
+    "a-003-oil-after-retry-desk.png",
+    "a-004-oil-open-phone.png",
+    "a-005-oil-range-phone.png",
+    "a-006-oil-after-retry-phone.png",
+    "a-007-trk-tools-before.png",
+    "a-008-trk-tools-after-fail.png",
+    "a-009-trk-tools-after-autoretry.png",
+    "a-010-win-both-open.png",
+    "a-011-win-both-placed.png",
+    "a-012-win-during-fail.png",
+    "a-013-win-reopened.png",
+    "a-014-win-default-during-fail.png",
+    "a-015-board-desk.png",
+    "a-016-inputs-calendar-desk.png",
+    "a-017-medical-view-desk.png",
+    "a-018-cover-end-desk.png",
+    "a-019-board-phone.png",
+    "a-020-inputs-calendar-phone.png",
+    "a-021-medical-view-phone.png",
+    "a-022-cover-end-phone.png"
+   ]
+  },
+  "p5b-b-dk": {
+   "at": "2026-10-05T16:46:20.435Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-05 (desk)",
+     "did": "warning up (ordinary edit); every main page visited; at the top and scrolled 320px, the page’s topmost control pressed with a real mouse/touch press",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 93px, note bottom 92; first control [BUTTON] pressed for real → click went to [svg] [{\"page_top\":93,\"box\":[20,101,38,30]}] · ✓ viewsched scrolled: bar 93px, note bottom 92; first control [Traffic] pressed for real → click went to [Traffic] [{\"page_top\":93,\"box\":[1201,365,54,19]}] · ✓ editsched: bar 94px, note bottom 93; first control [BUTTON] pressed for real → click went to [svg] [{\"page_top\":94,\"box\":[20,102,38,30]}] · ✓ editsched scrolled: bar 94px, note bottom 93; first control [EP: ENGINE FIRE ON TAKE O] pressed for real → click went to [EP: ENGINE FIRE ON TAKE O] [{\"page_top\":94,\"box\":[20,156,520,14]}] · ✓ inputs: bar 93px, note bottom 92; first control [inCalBtn] pressed for real → click went to [inCalBtn] [{\"page_top\":93,\"box\":[199,109,141,37]}] · ✓ inputs scrolled: bar 93px, note bottom 92; first control [inCalBtn] pressed for real → click went to [inCalBtn] [{\"page_top\":93,\"box\":[199,109,141,37]}] · ✓ quals: bar 93px, note bottom 92; first control [qEdit] pressed for real → click went to [qEdit] [{\"page_top\":93,\"box\":[20,105,108,28]}] · ✓ quals scrolled: bar 93px, note bottom 92; first control [OCUDCBAIPIRFI] pressed for real → click went to [OCUDCBAIPIRFI] [{\"page_top\":93,\"box\":[453,119,55,20]}] · ✓ logic: bar 93px, note bottom 92; first control [All] pressed for real → click went to [All] [{\"page_top\":93,\"box\":[278,160,34,28]}] · ✓ logic scrolled: bar 93px, note bottom 92; first control [All] pressed for real → click went to [All] [{\"page_top\":93,\"box\":[278,101,34,28]}] · ✓ leavewar: bar 93px, note bottom 92; first control [→ BIDDING CLOSED] pressed for real → click went to [→ BIDDING CLOSED] [{\"page_top\":93,\"box\":[203,157,136,29]}] · ✓ leavewar scrolled: bar 93px, note bottom 92; first control [WM P] pressed for real → click went to [WM P] [{\"page_top\":93,\"box\":[33,96,103,14]}] · ✓ tracker: bar 93px, note bottom 92; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":93,\"box\":[46,103,111,30]}] · ✓ tracker scrolled: bar 93px, note bottom 92; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":93,\"box\":[46,103,111,30]}] · ✓ help: bar 93px, note bottom 92; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":93,\"box\":[397,239,646,35]}] · ✓ help scrolled: bar 93px, note bottom 92; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":93,\"box\":[397,239,646,35]}] · ✓ admin: bar 93px, note bottom 92; first control [UsersSign-in and roster›] pressed for real → click went to [UsersSign-in and roster] [{\"page_top\":93,\"box\":[280,155,244,58]}] · ✓ admin scrolled: bar 93px, note bottom 92; first control [Basherno sign-in · WSO · ] pressed for real → click went to [Basherno sign-in · WSO · ] [{\"page_top\":93,\"box\":[559,99,388,34]}]",
+     "verdict": "PASS",
+     "pics": [
+      "b-001-page-viewsched-desk.png",
+      "b-002-page-inputs-desk.png",
+      "b-003-page-logic-desk.png",
+      "b-004-page-tracker-desk.png"
+     ]
+    },
+    {
+     "id": "P5-05 (phone)",
+     "did": "warning up (ordinary edit); every main page visited; at the top and scrolled 320px, the page’s topmost control pressed with a real mouse/touch press",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 85px, note bottom 84; first control [BUTTON] pressed for real → click went to [svg] [{\"page_top\":85,\"box\":[12,92,34,26]}] · ✓ viewsched scrolled: bar 85px, note bottom 84; first control [Traffic] pressed for real → click went to [Traffic] [{\"page_top\":85,\"box\":[73,445,54,19]}] · ✓ editsched: bar 85px, note bottom 84; first control [exportSched] pressed for real → click went to [exportSched] [{\"page_top\":85,\"box\":[51,92,42,30]}] · ✓ editsched scrolled: bar 85px, note bottom 84; first control [EP: ENGINE FIRE ON TAKE O] pressed for real → click went to [EP: ENGINE FIRE ON TAKE O] [{\"page_top\":85,\"box\":[20,153,334,14]}] · ✓ inputs: bar 85px, note bottom 84; first control [inCalBtn] pressed for real → click went to [inCalBtn] [{\"page_top\":85,\"box\":[20,147,350,42]}] · ✓ inputs scrolled: bar 85px, note bottom 84; first control [6] pressed for real → click went to [6] [{\"page_top\":85,\"box\":[28,89,26,20]}] · ✓ quals: bar 85px, note bottom 84; first control [qEdit] pressed for real → click went to [qEdit] [{\"page_top\":85,\"box\":[20,97,108,28]}] · ✓ quals scrolled: bar 85px, note bottom 84; first control [INPUT] pressed for real → click went to [INPUT] [{\"page_top\":85,\"box\":[28,136,108,18]}] · ✓ logic: bar 85px, note bottom 84; first control [lgSearch] pressed for real → click went to [lgSearch] [{\"page_top\":85,\"box\":[47,200,150,16]}] · ✓ logic scrolled: bar 85px, note bottom 84; first control [lgSearch] pressed for real → click went to [lgSearch] [{\"page_top\":85,\"box\":[47,99,150,16]}] · ✓ leavewar: bar 85px, note bottom 84; first control [→ BIDDING CLOSED] pressed for real → click went to [→ BIDDING CLOSED] [{\"page_top\":85,\"box\":[168,174,125,25]}] · ✓ leavewar scrolled: bar 85px, note bottom 84; first control [JAN] pressed for real → click went to [JAN] [{\"page_top\":85,\"box\":[21,173,27,22]}] · ✓ tracker: bar 85px, note bottom 84; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":85,\"box\":[8,90,103,26]}] · ✓ tracker scrolled: bar 85px, note bottom 84; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":85,\"box\":[8,90,103,26]}] · ✓ help: bar 85px, note bottom 84; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":85,\"box\":[37,265,316,35]}] · ✓ help scrolled: bar 85px, note bottom 84; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":85,\"box\":[37,265,316,35]}] · ✓ admin: bar 85px, note bottom 84; first control [UsersSign-in and roster›] pressed for real → click went to [UsersSign-in and roster›] [{\"page_top\":85,\"box\":[20,147,350,58]}] · ✓ admin scrolled: bar 85px, note bottom 84; first control [Basherno sign-in · WSO · ] pressed for real → click went to [Basherno sign-in · WSO · ] [{\"page_top\":85,\"box\":[37,122,204,34]}]",
+     "verdict": "PASS",
+     "pics": [
+      "b-005-page-viewsched-phone.png",
+      "b-006-page-inputs-phone.png",
+      "b-007-page-logic-phone.png",
+      "b-008-page-tracker-phone.png"
+     ]
+    },
+    {
+     "id": "P5-06 (1366x800)",
+     "did": "warning up; the nine pages visited in turn, the warning’s place read against the bar’s bottom each time",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"viewsched\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\"] · ✓ viewsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows own, crew absent] · ✓ editsched: bar 140px (bottom 140); warning 103→139, follows the bar's bottom [{\"pg\":\"editsched\",\"barH\":140,\"barBottom\":140,\"noteTop\":103,\"noteBottom\":139,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"u] · ✓ editsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows own, crew own] · ✓ inputs: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"inputs\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"o] · ✓ inputs: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ quals: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"quals\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"ow] · ✓ quals: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ logic: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"logic\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"ow] · ✓ logic: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ leavewar: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"leavewar\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":] · ✓ leavewar: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ tracker: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"tracker\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"] · ✓ tracker: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows absent, crew absent] · ✓ help: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"help\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"abs] · ✓ help: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows absent, crew absent] · ✓ admin: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"admin\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"ow] · ✓ admin: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ the bar differs in height between pages (so the follow was really exercised) [bar heights seen: 93, 140]",
+     "verdict": "PASS",
+     "pics": [
+      "b-009-bar-viewsched-1366x800.png",
+      "b-010-bar-quals-1366x800.png",
+      "b-011-bar-leavewar-1366x800.png",
+      "b-012-bar-help-1366x800.png"
+     ]
+    },
+    {
+     "id": "P5-06 (844x390)",
+     "did": "warning up; the nine pages visited in turn, the warning’s place read against the bar’s bottom each time; the bar scrolled sideways with a wheel gesture",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"viewsched\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"un] · ✓ viewsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows own, crew absent] · ✓ editsched: bar 186px (bottom 186); warning 149→185, follows the bar's bottom [{\"pg\":\"editsched\",\"barH\":186,\"barBottom\":186,\"noteTop\":149,\"noteBottom\":185,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"un] · ✓ editsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows own, crew own] · ✓ inputs: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"inputs\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\"] · ✓ inputs: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ quals: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"quals\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":] · ✓ quals: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ logic: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"logic\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":] · ✓ logic: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ leavewar: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"leavewar\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"und] · ✓ leavewar: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ tracker: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"tracker\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo] · ✓ tracker: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows absent, crew absent] · ✓ help: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"help\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"] · ✓ help: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows absent, crew absent] · ✓ admin: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"admin\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":] · ✓ admin: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ the bar differs in height between pages (so the follow was really exercised) [bar heights seen: 185, 186] · ✓ phone bar scrolled sideways: the warning stays put (left 0, full width) and Retry is its own target [{\"scrollLeft\":0,\"scrollW\":844,\"clientW\":844,\"noteLeft\":0,\"noteW\":844,\"retryOwn\":true}] · ✓ controls on screen after the sideways scroll are their own targets (none covered) [#logout:own #roleBadge:own #undoBtn:absent #burger:offscreen-in-scroll]",
+     "verdict": "PASS",
+     "pics": [
+      "b-013-bar-viewsched-844x390.png",
+      "b-014-bar-quals-844x390.png",
+      "b-015-bar-leavewar-844x390.png",
+      "b-016-bar-help-844x390.png",
+      "b-017-bar-scrolled-844x390.png"
+     ]
+    },
+    {
+     "id": "P5-06 (390x844)",
+     "did": "warning up; the nine pages visited in turn, the warning’s place read against the bar’s bottom each time; the bar scrolled sideways with a wheel gesture",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"viewsched\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"] · ✓ viewsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo absent, arrows absent, crew absent] · ✓ editsched: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"editsched\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"] · ✓ editsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ inputs: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"inputs\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"und] · ✓ inputs: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ quals: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"quals\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"undo] · ✓ quals: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ logic: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"logic\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"undo] · ✓ logic: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ leavewar: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"leavewar\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"u] · ✓ leavewar: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ tracker: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"tracker\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"un] · ✓ tracker: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo absent, arrows absent, crew absent] · ✓ help: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"help\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"undo\"] · ✓ help: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo absent, arrows absent, crew absent] · ✓ admin: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"admin\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"undo] · ✓ admin: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ the bar differs in height between pages (so the follow was really exercised) [bar heights seen: 85] · ✓ phone bar scrolled sideways: the warning stays put (left 0, full width) and Retry is its own target [{\"scrollLeft\":0,\"scrollW\":390,\"clientW\":390,\"noteLeft\":0,\"noteW\":390,\"retryOwn\":true}] · ✓ controls on screen after the sideways scroll are their own targets (none covered) [#logout:offscreen-in-scroll #roleBadge:offscreen-in-scroll #undoBtn:absent #burger:own]",
+     "verdict": "PASS",
+     "pics": [
+      "b-018-bar-viewsched-390x844.png",
+      "b-019-bar-quals-390x844.png",
+      "b-020-bar-leavewar-390x844.png",
+      "b-021-bar-help-390x844.png",
+      "b-022-bar-scrolled-390x844.png"
+     ]
+    },
+    {
+     "id": "P5-07 (desk)",
+     "did": "warning up; Insights window, input sheet and the Changes window opened and closed, their buttons pressed",
+     "saw": "✓ warning up through an ordinary edit · ✓ insights-window: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 0 (none: the bar’s copy is under the surface, as the bar is); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,56,1440,36]}] · ✓ input-sheet: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 0 (none: the bar’s copy is under the surface, as the bar is); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,57,1440,36]}] · ✓ changes-window: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 1 (topbar); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,57,1440,36]}]",
+     "verdict": "PASS",
+     "pics": [
+      "b-023-short-insights-window-desk.png",
+      "b-024-short-input-sheet-desk.png",
+      "b-025-short-changes-window-desk.png"
+     ]
+    },
+    {
+     "id": "P5-07 (phone)",
+     "did": "warning up; Insights window, drawer, input sheet and the Changes window opened and closed, their buttons pressed",
+     "saw": "✓ warning up through an ordinary edit · ✓ insights-window: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 0 (none: the bar’s copy is under the surface, as the bar is); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,48,390,36]}] · ✓ drawer: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 0 (none: the bar’s copy is under the surface, as the bar is); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,48,390,36]}] · ✓ input-sheet: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 0 (none: the bar’s copy is under the surface, as the bar is); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,48,390,36]}]",
+     "verdict": "PASS",
+     "pics": [
+      "b-026-short-insights-window-phone.png",
+      "b-027-short-drawer-phone.png",
+      "b-028-short-input-sheet-phone.png"
+     ]
+    },
+    {
+     "id": "P5-08 (main, 1440x900)",
+     "did": "real edit with storage refusing: Saving… recorded, then the warning; Retry ×3 while failing; storage restored on the Retry press",
+     "saw": "✓ order seen: Saving… first, then the failed warning (never the reverse) [none → SAVING → FAILED] · ✓ Saving… keeps its floating look: a small note, not a full-width band (height 30, the bar unchanged at 58) [{\"cls\":\"savestat\",\"t\":\"Saving…\",\"top\":64,\"h\":30,\"bar\":58}] · ✓ failed: one line added (top bar 57 → 94px, +37) and the warning is seen [{\"bar\":94,\"box\":[0,57,1440,36]}] · ✓ Retry pressed 3 times with the failure persisting: still one warning, the bar never grows past one added line [{\"heights\":[94,94,94],\"topNotes\":1,\"drawnBands\":0}] · ✓ the warning stays up through the app’s own retries while storage still refuses · ✓ confirmed success: warning gone everywhere, bar back to 57px [bar 58 (was 57)] · ✓ the edit made while failing is in storage now",
+     "verdict": "PASS",
+     "pics": [
+      "b-029-states-failed-main.png",
+      "b-030-states-repeated-main.png",
+      "b-031-states-saved-main.png"
+     ]
+    },
+    {
+     "id": "P5-08 (board, 1440x900)",
+     "did": "real edit with storage refusing: Saving… recorded, then the warning; Retry ×3 while failing; storage restored on the Retry press",
+     "saw": "✓ order seen: Saving… first, then the failed warning (never the reverse) [none → SAVING → FAILED] · ✓ Saving… keeps its floating look: a small note, not a full-width band (height 30, the bar unchanged at 58) [{\"cls\":\"savestat\",\"t\":\"Saving…\",\"top\":64,\"h\":30,\"bar\":58}] · ✓ failed: one line added (top bar 57 → 94px, +37) and the warning is seen under the board’s own bar [{\"bar\":94,\"box\":[0,109,1440,36]}] · ✓ Retry pressed 3 times with the failure persisting: still one warning, the bar never grows past one added line [{\"heights\":[94,94,94],\"topNotes\":1,\"drawnBands\":1}] · ✓ the warning stays up through the app’s own retries while storage still refuses · ✓ confirmed success: warning gone everywhere, bar back to 57px [bar 58 (was 57)] · ✓ the edit made while failing is in storage now",
+     "verdict": "PASS",
+     "pics": [
+      "b-032-states-failed-board.png",
+      "b-033-states-repeated-board.png",
+      "b-034-states-saved-board.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "b-001-page-viewsched-desk.png",
+    "b-002-page-inputs-desk.png",
+    "b-003-page-logic-desk.png",
+    "b-004-page-tracker-desk.png",
+    "b-005-page-viewsched-phone.png",
+    "b-006-page-inputs-phone.png",
+    "b-007-page-logic-phone.png",
+    "b-008-page-tracker-phone.png",
+    "b-009-bar-viewsched-1366x800.png",
+    "b-010-bar-quals-1366x800.png",
+    "b-011-bar-leavewar-1366x800.png",
+    "b-012-bar-help-1366x800.png",
+    "b-013-bar-viewsched-844x390.png",
+    "b-014-bar-quals-844x390.png",
+    "b-015-bar-leavewar-844x390.png",
+    "b-016-bar-help-844x390.png",
+    "b-017-bar-scrolled-844x390.png",
+    "b-018-bar-viewsched-390x844.png",
+    "b-019-bar-quals-390x844.png",
+    "b-020-bar-leavewar-390x844.png",
+    "b-021-bar-help-390x844.png",
+    "b-022-bar-scrolled-390x844.png",
+    "b-023-short-insights-window-desk.png",
+    "b-024-short-input-sheet-desk.png",
+    "b-025-short-changes-window-desk.png",
+    "b-026-short-insights-window-phone.png",
+    "b-027-short-drawer-phone.png",
+    "b-028-short-input-sheet-phone.png",
+    "b-029-states-failed-main.png",
+    "b-030-states-repeated-main.png",
+    "b-031-states-saved-main.png",
+    "b-032-states-failed-board.png",
+    "b-033-states-repeated-board.png",
+    "b-034-states-saved-board.png"
+   ]
+  },
+  "x2-c-dk": {
+   "at": "2026-10-05T16:46:58.028Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-06 (phone)",
+     "did": "warning up; on View-only Sched and Edit Schedule: ⋯ More → Insights → Show all → scrolled to the bottom → ✕",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: More button took its press [viewSchedMore]; menu item Insights is own; Insights took its press [viewSchedMoreInsights] [{\"o1\":{\"label\":\"More\",\"found\":true,\"clickAt\":\"viewSchedMore\",\"focus\":\"viewSchedMore\"},\"menuOwn\":\"own\",\"o2\":{\"label\":\"Insights\",\"found\":true,\"clickAt\":\"viewSched] · ✓ viewsched: Show all took its press [Show all 38 ↓]; scrolled to the bottom the cross is on screen and its own target [{\"o3\":{\"label\":\"Show all\",\"found\":true,\"clickAt\":\"Show all 38 ↓\",\"focus\":\"BUTTON\"},\"cross\":{\"own\":true,\"box\":[346,40,27,20],\"inView\":true}}] · ✓ viewsched: the cross took its press [insightClose] and closed the window; the failed-save warning is still seen on the bar [{\"closed\":true,\"back\":[0,48,390,36]}] · ✓ editsched: More button took its press [editSchedMore]; menu item Insights is own; Insights took its press [editSchedMoreInsights] [{\"o1\":{\"label\":\"More\",\"found\":true,\"clickAt\":\"editSchedMore\",\"focus\":\"editSchedMore\"},\"menuOwn\":\"own\",\"o2\":{\"label\":\"Insights\",\"found\":true,\"clickAt\":\"editSched] · ✓ editsched: Show all took its press [Show all 38 ↓]; scrolled to the bottom the cross is on screen and its own target [{\"o3\":{\"label\":\"Show all\",\"found\":true,\"clickAt\":\"Show all 38 ↓\",\"focus\":\"BUTTON\"},\"cross\":{\"own\":true,\"box\":[346,40,27,20],\"inView\":true}}] · ✓ editsched: the cross took its press [insightClose] and closed the window; the failed-save warning is still seen on the bar [{\"closed\":true,\"back\":[0,48,390,36]}]",
+     "verdict": "PASS",
+     "pics": [
+      "c-001-x06-viewsched-menu-phone.png",
+      "c-002-x06-viewsched-insights-bottom-phone.png",
+      "c-003-x06-editsched-menu-phone.png",
+      "c-004-x06-editsched-insights-bottom-phone.png"
+     ]
+    },
+    {
+     "id": "X-06 (p320)",
+     "did": "warning up; on View-only Sched and Edit Schedule: ⋯ More → Insights → Show all → scrolled to the bottom → ✕",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: More button took its press [viewSchedMore]; menu item Insights is own; Insights took its press [viewSchedMoreInsights] [{\"o1\":{\"label\":\"More\",\"found\":true,\"clickAt\":\"viewSchedMore\",\"focus\":\"viewSchedMore\"},\"menuOwn\":\"own\",\"o2\":{\"label\":\"Insights\",\"found\":true,\"clickAt\":\"viewSched] · ✓ viewsched: Show all took its press [Show all 38 ↓]; scrolled to the bottom the cross is on screen and its own target [{\"o3\":{\"label\":\"Show all\",\"found\":true,\"clickAt\":\"Show all 38 ↓\",\"focus\":\"BUTTON\"},\"cross\":{\"own\":true,\"box\":[276,40,27,20],\"inView\":true}}] · ✓ viewsched: the cross took its press [insightClose] and closed the window; the failed-save warning is still seen on the bar [{\"closed\":true,\"back\":[0,48,320,36]}] · ✓ editsched: More button took its press [editSchedMore]; menu item Insights is own; Insights took its press [editSchedMoreInsights] [{\"o1\":{\"label\":\"More\",\"found\":true,\"clickAt\":\"editSchedMore\",\"focus\":\"editSchedMore\"},\"menuOwn\":\"own\",\"o2\":{\"label\":\"Insights\",\"found\":true,\"clickAt\":\"editSched] · ✓ editsched: Show all took its press [Show all 38 ↓]; scrolled to the bottom the cross is on screen and its own target [{\"o3\":{\"label\":\"Show all\",\"found\":true,\"clickAt\":\"Show all 38 ↓\",\"focus\":\"BUTTON\"},\"cross\":{\"own\":true,\"box\":[276,40,27,20],\"inView\":true}}] · ✓ editsched: the cross took its press [insightClose] and closed the window; the failed-save warning is still seen on the bar [{\"closed\":true,\"back\":[0,48,320,36]}]",
+     "verdict": "PASS",
+     "pics": [
+      "c-005-x06-viewsched-menu-p320.png",
+      "c-006-x06-viewsched-insights-bottom-p320.png",
+      "c-007-x06-editsched-menu-p320.png",
+      "c-008-x06-editsched-insights-bottom-p320.png"
+     ]
+    },
+    {
+     "id": "X-07 (desk)",
+     "did": "warning up; Logic scrolled; searched \"report\", filters pressed; Retry succeeded; scrolled and searched \"rest\"",
+     "saw": "✓ warning up through an ordinary edit · ✓ scrolled with the band up: the page really scrolled and the search bar sits right under the bar (gap 0px) [{\"barBottom\":93,\"lgTop\":93,\"gap\":0,\"scrollY\":1872,\"searchOwn\":true,\"failed\":true,\"barH\":93}] · ✓ typed \"report\": rows narrowed (count: 12 of 75 rules · 16 fired on this week's schedule); filter buttons pressed (hard:59 adv:59 note:59 fired:59 all:59); search stays the thing a finger lands on [{\"c1\":\"12 of 75 rules · 16 fired on this week's schedule\",\"body1\":\"HOW A DAY IS MEASURED\\n\\nBefore any rule can fire, the engine has to decide how mu\"}] · ✓ search cleared and the page scrolled down again with the band still up (gap 0px, scrollY 900) [{\"barBottom\":93,\"lgTop\":93,\"gap\":0,\"scrollY\":900,\"searchOwn\":true,\"failed\":true,\"barH\":93}] · ✓ Retry succeeded: the band is gone (bar 93 → 57px); the search bar follows the SHORTER bar without a return to the top (gap 0px, scrollY 864) [{\"barBottom\":57,\"lgTop\":57,\"gap\":0,\"scrollY\":864,\"searchOwn\":true,\"failed\":false,\"barH\":57}] · ✓ searched \"rest\" afterwards without scrolling back up: results 14 of 75 rules · 16 fired on this week's schedule, focus stayed in the search box (lgSearch), bar gap 0px [{\"barBottom\":57,\"lgTop\":57,\"gap\":0,\"scrollY\":1164,\"searchOwn\":true,\"failed\":false,\"barH\":57}]",
+     "verdict": "PASS",
+     "pics": [
+      "c-009-x07-scrolled-failed-desk.png",
+      "c-010-x07-after-retry-desk.png"
+     ]
+    },
+    {
+     "id": "X-07 (phone)",
+     "did": "warning up; Logic scrolled; searched \"report\", filters pressed; Retry succeeded; scrolled and searched \"rest\"",
+     "saw": "✓ warning up through an ordinary edit · ✓ scrolled with the band up: the page really scrolled and the search bar sits right under the bar (gap 0px) [{\"barBottom\":85,\"lgTop\":85,\"gap\":0,\"scrollY\":1760,\"searchOwn\":true,\"failed\":true,\"barH\":85}] · ✓ typed \"report\": rows narrowed (count: 12 of 75 rules · 16 fired on this week's schedule); filter buttons pressed (hard:0 adv:0 note:0 fired:0 all:0); search stays the thing a finger lands on [{\"c1\":\"12 of 75 rules · 16 fired on this week's schedule\",\"body1\":\"HOW A DAY IS MEASURED\\n\\nBefore any rule can fire, the engine has to decide how mu\"}] · ✓ search cleared and the page scrolled down again with the band still up (gap 0px, scrollY 1142) [{\"barBottom\":85,\"lgTop\":85,\"gap\":0,\"scrollY\":1142,\"searchOwn\":true,\"failed\":true,\"barH\":85}] · ✓ Retry succeeded: the band is gone (bar 85 → 49px); the search bar follows the SHORTER bar without a return to the top (gap 0px, scrollY 1106) [{\"barBottom\":49,\"lgTop\":49,\"gap\":0,\"scrollY\":1106,\"searchOwn\":true,\"failed\":false,\"barH\":49}] · ✓ searched \"rest\" afterwards without scrolling back up: results 14 of 75 rules · 16 fired on this week's schedule, focus stayed in the search box (lgSearch), bar gap 0px [{\"barBottom\":49,\"lgTop\":49,\"gap\":0,\"scrollY\":1406,\"searchOwn\":true,\"failed\":false,\"barH\":49}]",
+     "verdict": "PASS",
+     "pics": [
+      "c-011-x07-scrolled-failed-phone.png",
+      "c-012-x07-after-retry-phone.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "c-001-x06-viewsched-menu-phone.png",
+    "c-002-x06-viewsched-insights-bottom-phone.png",
+    "c-003-x06-editsched-menu-phone.png",
+    "c-004-x06-editsched-insights-bottom-phone.png",
+    "c-005-x06-viewsched-menu-p320.png",
+    "c-006-x06-viewsched-insights-bottom-p320.png",
+    "c-007-x06-editsched-menu-p320.png",
+    "c-008-x06-editsched-insights-bottom-p320.png",
+    "c-009-x07-scrolled-failed-desk.png",
+    "c-010-x07-after-retry-desk.png",
+    "c-011-x07-scrolled-failed-phone.png",
+    "c-012-x07-after-retry-phone.png"
+   ]
+  }
+ }
+}

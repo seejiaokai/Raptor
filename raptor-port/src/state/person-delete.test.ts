@@ -25,6 +25,7 @@ import { newPersonProblem } from './roster-add'
 import { deletePerson, deleteCutoff, personKeysOnDay, effectiveToday, deletedRestoreProblem } from './person-delete'
 import { loadVersionToWorkingCopy, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
 
+
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
 const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); notify() }

@@ -1,0 +1,1151 @@
+{
+  "pages": [
+    {
+      "surface": "week",
+      "sections": [
+        {
+          "surface": "week",
+          "key": "ground",
+          "title": "Ground Programme",
+          "width": 550,
+          "height": 489.40625,
+          "fields": [
+            {
+              "address": "gr:0.0.prog",
+              "attrs": {
+                "data-txt": "gr:0.0.prog"
+              },
+              "text": "HQ ENGAGEMENT",
+              "x": 25,
+              "y": 52,
+              "width": 97.21875,
+              "height": 15,
+              "footer": false,
+              "selected": true,
+              "number": 1
+            },
+            {
+              "address": "gr:0.0.str",
+              "attrs": {
+                "data-txt": "gr:0.0.str"
+              },
+              "text": "08:45",
+              "x": 135.65625,
+              "y": 49,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": true,
+              "number": 2
+            },
+            {
+              "address": "gr:0.0.end",
+              "attrs": {
+                "data-txt": "gr:0.0.end"
+              },
+              "text": "16:30",
+              "x": 187.65625,
+              "y": 49,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": true,
+              "number": 3
+            },
+            {
+              "address": "gr:0.0.rmks",
+              "attrs": {
+                "data-txt": "gr:0.0.rmks"
+              },
+              "text": "",
+              "x": 405.65625,
+              "y": 52,
+              "width": 128.34375,
+              "height": 13.640625,
+              "footer": false,
+              "selected": true,
+              "number": 4
+            },
+            {
+              "address": "gr:0.7.prog",
+              "attrs": {
+                "data-txt": "gr:0.7.prog"
+              },
+              "text": "MEETING",
+              "x": 25,
+              "y": 95,
+              "width": 49.15625,
+              "height": 15,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.7.str",
+              "attrs": {
+                "data-txt": "gr:0.7.str"
+              },
+              "text": "09:00",
+              "x": 135.65625,
+              "y": 92,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.7.end",
+              "attrs": {
+                "data-txt": "gr:0.7.end"
+              },
+              "text": "17:00",
+              "x": 187.65625,
+              "y": 92,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.7.rmks",
+              "attrs": {
+                "data-txt": "gr:0.7.rmks"
+              },
+              "text": "Desk / staff work",
+              "x": 405.65625,
+              "y": 95,
+              "width": 128.34375,
+              "height": 13.640625,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.1.prog",
+              "attrs": {
+                "data-txt": "gr:0.1.prog"
+              },
+              "text": "STAFF MTG @ HQ",
+              "x": 25,
+              "y": 138,
+              "width": 94.03125,
+              "height": 15,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.1.str",
+              "attrs": {
+                "data-txt": "gr:0.1.str"
+              },
+              "text": "09:30",
+              "x": 135.65625,
+              "y": 135,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.1.end",
+              "attrs": {
+                "data-txt": "gr:0.1.end"
+              },
+              "text": "11:00",
+              "x": 187.65625,
+              "y": 135,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.1.rmks",
+              "attrs": {
+                "data-txt": "gr:0.1.rmks"
+              },
+              "text": "",
+              "x": 405.65625,
+              "y": 138,
+              "width": 128.34375,
+              "height": 13.640625,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.6.prog",
+              "attrs": {
+                "data-txt": "gr:0.6.prog"
+              },
+              "text": "APPOINTMENT",
+              "x": 25,
+              "y": 181,
+              "width": 80.09375,
+              "height": 15,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.6.str",
+              "attrs": {
+                "data-txt": "gr:0.6.str"
+              },
+              "text": "10:00",
+              "x": 135.65625,
+              "y": 178,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.6.end",
+              "attrs": {
+                "data-txt": "gr:0.6.end"
+              },
+              "text": "11:00",
+              "x": 187.65625,
+              "y": 178,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.6.rmks",
+              "attrs": {
+                "data-txt": "gr:0.6.rmks"
+              },
+              "text": "HSP blood panel",
+              "x": 405.65625,
+              "y": 181,
+              "width": 128.34375,
+              "height": 13.640625,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.2.prog",
+              "attrs": {
+                "data-txt": "gr:0.2.prog"
+              },
+              "text": "MEDICAL APPT",
+              "x": 25,
+              "y": 224,
+              "width": 79.25,
+              "height": 15,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.2.str",
+              "attrs": {
+                "data-txt": "gr:0.2.str"
+              },
+              "text": "10:30",
+              "x": 135.65625,
+              "y": 221,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.2.end",
+              "attrs": {
+                "data-txt": "gr:0.2.end"
+              },
+              "text": "12:30",
+              "x": 187.65625,
+              "y": 221,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.2.rmks",
+              "attrs": {
+                "data-txt": "gr:0.2.rmks"
+              },
+              "text": "",
+              "x": 405.65625,
+              "y": 224,
+              "width": 128.34375,
+              "height": 13.640625,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.3.prog",
+              "attrs": {
+                "data-txt": "gr:0.3.prog"
+              },
+              "text": "DENTAL APPT",
+              "x": 25,
+              "y": 267,
+              "width": 72.359375,
+              "height": 15,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.3.str",
+              "attrs": {
+                "data-txt": "gr:0.3.str"
+              },
+              "text": "12:00",
+              "x": 135.65625,
+              "y": 264,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.3.end",
+              "attrs": {
+                "data-txt": "gr:0.3.end"
+              },
+              "text": "13:30",
+              "x": 187.65625,
+              "y": 264,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.3.rmks",
+              "attrs": {
+                "data-txt": "gr:0.3.rmks"
+              },
+              "text": "",
+              "x": 405.65625,
+              "y": 267,
+              "width": 128.34375,
+              "height": 13.640625,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.5.prog",
+              "attrs": {
+                "data-txt": "gr:0.5.prog"
+              },
+              "text": "OPS/LOGS @ EXT SQN",
+              "x": 25,
+              "y": 310,
+              "width": 102.65625,
+              "height": 30,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.5.str",
+              "attrs": {
+                "data-txt": "gr:0.5.str"
+              },
+              "text": "14:00",
+              "x": 135.65625,
+              "y": 307,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.5.end",
+              "attrs": {
+                "data-txt": "gr:0.5.end"
+              },
+              "text": "15:30",
+              "x": 187.65625,
+              "y": 307,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.5.rmks",
+              "attrs": {
+                "data-txt": "gr:0.5.rmks"
+              },
+              "text": "",
+              "x": 405.65625,
+              "y": 310,
+              "width": 128.34375,
+              "height": 13.640625,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.4.prog",
+              "attrs": {
+                "data-txt": "gr:0.4.prog"
+              },
+              "text": "TRAINING CMD VISIT",
+              "x": 25,
+              "y": 353,
+              "width": 102.65625,
+              "height": 30,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.4.str",
+              "attrs": {
+                "data-txt": "gr:0.4.str"
+              },
+              "text": "16:30",
+              "x": 135.65625,
+              "y": 350,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.4.end",
+              "attrs": {
+                "data-txt": "gr:0.4.end"
+              },
+              "text": "18:00",
+              "x": 187.65625,
+              "y": 350,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.4.rmks",
+              "attrs": {
+                "data-txt": "gr:0.4.rmks"
+              },
+              "text": "",
+              "x": 405.65625,
+              "y": 353,
+              "width": 128.34375,
+              "height": 13.640625,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.8.prog",
+              "attrs": {
+                "data-txt": "gr:0.8.prog"
+              },
+              "text": "FLY WITH",
+              "x": 25,
+              "y": 396,
+              "width": 49.421875,
+              "height": 15,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.8.str",
+              "attrs": {
+                "data-txt": "gr:0.8.str"
+              },
+              "text": "",
+              "x": 135.65625,
+              "y": 393,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.8.end",
+              "attrs": {
+                "data-txt": "gr:0.8.end"
+              },
+              "text": "",
+              "x": 187.65625,
+              "y": 393,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.8.rmks",
+              "attrs": {
+                "data-txt": "gr:0.8.rmks"
+              },
+              "text": "Keen for any wave",
+              "x": 405.65625,
+              "y": 396,
+              "width": 128.34375,
+              "height": 13.640625,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gn:0",
+              "attrs": {
+                "data-txt": "gn:0"
+              },
+              "text": "",
+              "x": 25,
+              "y": 461.46875,
+              "width": 509,
+              "height": 27.9375,
+              "footer": true,
+              "selected": true,
+              "number": 5
+            }
+          ],
+          "selected": [
+            {
+              "address": "gr:0.0.prog",
+              "attrs": {
+                "data-txt": "gr:0.0.prog"
+              },
+              "text": "HQ ENGAGEMENT",
+              "x": 25,
+              "y": 52,
+              "width": 97.21875,
+              "height": 15,
+              "footer": false,
+              "selected": true,
+              "number": 1
+            },
+            {
+              "address": "gr:0.0.str",
+              "attrs": {
+                "data-txt": "gr:0.0.str"
+              },
+              "text": "08:45",
+              "x": 135.65625,
+              "y": 49,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": true,
+              "number": 2
+            },
+            {
+              "address": "gr:0.0.end",
+              "attrs": {
+                "data-txt": "gr:0.0.end"
+              },
+              "text": "16:30",
+              "x": 187.65625,
+              "y": 49,
+              "width": 44,
+              "height": 17,
+              "footer": false,
+              "selected": true,
+              "number": 3
+            },
+            {
+              "address": "gr:0.0.rmks",
+              "attrs": {
+                "data-txt": "gr:0.0.rmks"
+              },
+              "text": "",
+              "x": 405.65625,
+              "y": 52,
+              "width": 128.34375,
+              "height": 13.640625,
+              "footer": false,
+              "selected": true,
+              "number": 4
+            },
+            {
+              "address": "gn:0",
+              "attrs": {
+                "data-txt": "gn:0"
+              },
+              "text": "",
+              "x": 25,
+              "y": 461.46875,
+              "width": 509,
+              "height": 27.9375,
+              "footer": true,
+              "selected": true,
+              "number": 5
+            }
+          ],
+          "original": "week-ground-original.png"
+        }
+      ]
+    },
+    {
+      "surface": "board",
+      "sections": [
+        {
+          "surface": "board",
+          "key": "ground",
+          "title": "Ground Programme briefs, reviews, admin+ Inputs⇅ Auto sort+ Item",
+          "width": 1092,
+          "height": 470.71875,
+          "fields": [
+            {
+              "address": "gr:0.0.prog",
+              "attrs": {
+                "data-bfld": "gr:0.0.prog"
+              },
+              "text": "HQ ENGAGEMENT",
+              "x": 40,
+              "y": 81.5,
+              "width": 298.625,
+              "height": 24,
+              "footer": false,
+              "selected": true,
+              "number": 1
+            },
+            {
+              "address": "gr:0.0.str",
+              "attrs": {
+                "data-bfld": "gr:0.0.str"
+              },
+              "text": "08:45",
+              "x": 346.625,
+              "y": 81,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": true,
+              "number": 2
+            },
+            {
+              "address": "gr:0.0.end",
+              "attrs": {
+                "data-bfld": "gr:0.0.end"
+              },
+              "text": "16:30",
+              "x": 406.625,
+              "y": 81,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": true,
+              "number": 3
+            },
+            {
+              "address": "gr:0.0.rmks",
+              "attrs": {
+                "data-bfld": "gr:0.0.rmks"
+              },
+              "text": "",
+              "x": 750.28125,
+              "y": 81.5,
+              "width": 229.703125,
+              "height": 24,
+              "footer": false,
+              "selected": true,
+              "number": 4
+            },
+            {
+              "address": "gr:0.7.prog",
+              "attrs": {
+                "data-bfld": "gr:0.7.prog"
+              },
+              "text": "MEETING",
+              "x": 40,
+              "y": 115.5,
+              "width": 298.625,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.7.str",
+              "attrs": {
+                "data-bfld": "gr:0.7.str"
+              },
+              "text": "09:00",
+              "x": 346.625,
+              "y": 115,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.7.end",
+              "attrs": {
+                "data-bfld": "gr:0.7.end"
+              },
+              "text": "17:00",
+              "x": 406.625,
+              "y": 115,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.7.rmks",
+              "attrs": {
+                "data-bfld": "gr:0.7.rmks"
+              },
+              "text": "Desk / staff work",
+              "x": 750.28125,
+              "y": 115.5,
+              "width": 229.703125,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.1.prog",
+              "attrs": {
+                "data-bfld": "gr:0.1.prog"
+              },
+              "text": "STAFF MTG @ HQ",
+              "x": 40,
+              "y": 149.5,
+              "width": 298.625,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.1.str",
+              "attrs": {
+                "data-bfld": "gr:0.1.str"
+              },
+              "text": "09:30",
+              "x": 346.625,
+              "y": 149,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.1.end",
+              "attrs": {
+                "data-bfld": "gr:0.1.end"
+              },
+              "text": "11:00",
+              "x": 406.625,
+              "y": 149,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.1.rmks",
+              "attrs": {
+                "data-bfld": "gr:0.1.rmks"
+              },
+              "text": "",
+              "x": 750.28125,
+              "y": 149.5,
+              "width": 229.703125,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.6.prog",
+              "attrs": {
+                "data-bfld": "gr:0.6.prog"
+              },
+              "text": "APPOINTMENT",
+              "x": 40,
+              "y": 183.5,
+              "width": 298.625,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.6.str",
+              "attrs": {
+                "data-bfld": "gr:0.6.str"
+              },
+              "text": "10:00",
+              "x": 346.625,
+              "y": 183,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.6.end",
+              "attrs": {
+                "data-bfld": "gr:0.6.end"
+              },
+              "text": "11:00",
+              "x": 406.625,
+              "y": 183,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.6.rmks",
+              "attrs": {
+                "data-bfld": "gr:0.6.rmks"
+              },
+              "text": "HSP blood panel",
+              "x": 750.28125,
+              "y": 183.5,
+              "width": 229.703125,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.2.prog",
+              "attrs": {
+                "data-bfld": "gr:0.2.prog"
+              },
+              "text": "MEDICAL APPT",
+              "x": 40,
+              "y": 217.5,
+              "width": 298.625,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.2.str",
+              "attrs": {
+                "data-bfld": "gr:0.2.str"
+              },
+              "text": "10:30",
+              "x": 346.625,
+              "y": 217,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.2.end",
+              "attrs": {
+                "data-bfld": "gr:0.2.end"
+              },
+              "text": "12:30",
+              "x": 406.625,
+              "y": 217,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.2.rmks",
+              "attrs": {
+                "data-bfld": "gr:0.2.rmks"
+              },
+              "text": "",
+              "x": 750.28125,
+              "y": 217.5,
+              "width": 229.703125,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.3.prog",
+              "attrs": {
+                "data-bfld": "gr:0.3.prog"
+              },
+              "text": "DENTAL APPT",
+              "x": 40,
+              "y": 251.5,
+              "width": 298.625,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.3.str",
+              "attrs": {
+                "data-bfld": "gr:0.3.str"
+              },
+              "text": "12:00",
+              "x": 346.625,
+              "y": 251,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.3.end",
+              "attrs": {
+                "data-bfld": "gr:0.3.end"
+              },
+              "text": "13:30",
+              "x": 406.625,
+              "y": 251,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.3.rmks",
+              "attrs": {
+                "data-bfld": "gr:0.3.rmks"
+              },
+              "text": "",
+              "x": 750.28125,
+              "y": 251.5,
+              "width": 229.703125,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.5.prog",
+              "attrs": {
+                "data-bfld": "gr:0.5.prog"
+              },
+              "text": "OPS/LOGS @ EXT SQN",
+              "x": 40,
+              "y": 285.5,
+              "width": 298.625,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.5.str",
+              "attrs": {
+                "data-bfld": "gr:0.5.str"
+              },
+              "text": "14:00",
+              "x": 346.625,
+              "y": 285,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.5.end",
+              "attrs": {
+                "data-bfld": "gr:0.5.end"
+              },
+              "text": "15:30",
+              "x": 406.625,
+              "y": 285,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.5.rmks",
+              "attrs": {
+                "data-bfld": "gr:0.5.rmks"
+              },
+              "text": "",
+              "x": 750.28125,
+              "y": 285.5,
+              "width": 229.703125,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.4.prog",
+              "attrs": {
+                "data-bfld": "gr:0.4.prog"
+              },
+              "text": "TRAINING CMD VISIT",
+              "x": 40,
+              "y": 319.5,
+              "width": 298.625,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.4.str",
+              "attrs": {
+                "data-bfld": "gr:0.4.str"
+              },
+              "text": "16:30",
+              "x": 346.625,
+              "y": 319,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.4.end",
+              "attrs": {
+                "data-bfld": "gr:0.4.end"
+              },
+              "text": "18:00",
+              "x": 406.625,
+              "y": 319,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.4.rmks",
+              "attrs": {
+                "data-bfld": "gr:0.4.rmks"
+              },
+              "text": "",
+              "x": 750.28125,
+              "y": 319.5,
+              "width": 229.703125,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.8.prog",
+              "attrs": {
+                "data-bfld": "gr:0.8.prog"
+              },
+              "text": "FLY WITH",
+              "x": 40,
+              "y": 353.5,
+              "width": 298.625,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.8.str",
+              "attrs": {
+                "data-bfld": "gr:0.8.str"
+              },
+              "text": "",
+              "x": 346.625,
+              "y": 353,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.8.end",
+              "attrs": {
+                "data-bfld": "gr:0.8.end"
+              },
+              "text": "",
+              "x": 406.625,
+              "y": 353,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gr:0.8.rmks",
+              "attrs": {
+                "data-bfld": "gr:0.8.rmks"
+              },
+              "text": "Keen for any wave",
+              "x": 750.28125,
+              "y": 353.5,
+              "width": 229.703125,
+              "height": 24,
+              "footer": false,
+              "selected": false
+            },
+            {
+              "address": "gn:0",
+              "attrs": {
+                "data-bfld": "gn:0"
+              },
+              "text": "",
+              "x": 14,
+              "y": 423.46875,
+              "width": 1066,
+              "height": 33.25,
+              "footer": true,
+              "selected": true,
+              "number": 5
+            }
+          ],
+          "selected": [
+            {
+              "address": "gr:0.0.prog",
+              "attrs": {
+                "data-bfld": "gr:0.0.prog"
+              },
+              "text": "HQ ENGAGEMENT",
+              "x": 40,
+              "y": 81.5,
+              "width": 298.625,
+              "height": 24,
+              "footer": false,
+              "selected": true,
+              "number": 1
+            },
+            {
+              "address": "gr:0.0.str",
+              "attrs": {
+                "data-bfld": "gr:0.0.str"
+              },
+              "text": "08:45",
+              "x": 346.625,
+              "y": 81,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": true,
+              "number": 2
+            },
+            {
+              "address": "gr:0.0.end",
+              "attrs": {
+                "data-bfld": "gr:0.0.end"
+              },
+              "text": "16:30",
+              "x": 406.625,
+              "y": 81,
+              "width": 52,
+              "height": 25,
+              "footer": false,
+              "selected": true,
+              "number": 3
+            },
+            {
+              "address": "gr:0.0.rmks",
+              "attrs": {
+                "data-bfld": "gr:0.0.rmks"
+              },
+              "text": "",
+              "x": 750.28125,
+              "y": 81.5,
+              "width": 229.703125,
+              "height": 24,
+              "footer": false,
+              "selected": true,
+              "number": 4
+            },
+            {
+              "address": "gn:0",
+              "attrs": {
+                "data-bfld": "gn:0"
+              },
+              "text": "",
+              "x": 14,
+              "y": 423.46875,
+              "width": 1066,
+              "height": 33.25,
+              "footer": true,
+              "selected": true,
+              "number": 5
+            }
+          ],
+          "original": "board-ground-original.png"
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,2634 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: geometry.spec.ts >> phone Desktop layout keeps every schedule section usable below sign-off
+- Location: e2e\geometry.spec.ts:18:5
+
+# Error details
+
+```
+Error: ⠿Overall notes shown at the head of the day+ Not: a readable section, not a zero-width shell
+
+expect(received).toBeGreaterThan(expected)
+
+Expected: > 300
+Received:   0
+```
+
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - button "Menu" [ref=e5] [cursor=pointer]
+        - generic [ref=e12]:
+          - generic [ref=e13]: "142"
+          - generic [ref=e14]: RAPTOR
+        - generic [ref=e15]:
+          - generic [ref=e16]:
+            - button "↶" [disabled] [ref=e17]
+            - button "↷" [disabled] [ref=e19]
+            - button "Changes" [ref=e21] [cursor=pointer]
+          - button "Toggle 1-second sync (for publishing / meetings)" [ref=e27] [cursor=pointer]
+          - button "Notifications" [ref=e29] [cursor=pointer]
+      - text: ▸ TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME TIME
+      - option "— name —" [selected]
+      - option "Ace"
+      - option "Anvil"
+      - option "Basher"
+      - option "Blade"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Cinder"
+      - option "Cobra"
+      - option "Comet"
+      - option "Cotter"
+      - option "Cutter"
+      - option "Dash"
+      - option "Diesel"
+      - option "Drifter"
+      - option "Echo"
+      - option "Fable"
+      - option "Forge"
+      - option "Gambit"
+      - option "Ghost"
+      - option "Grit"
+      - option "Havoc"
+      - option "Hex"
+      - option "Hunter"
+      - option "Jester"
+      - option "Kraken"
+      - option "Ledger"
+      - option "Marlin"
+      - option "Nomad"
+      - option "Otter"
+      - option "Outlaw"
+      - option "Piston"
+      - option "Pixel"
+      - option "Quill"
+      - option "Ranger"
+      - option "Ratchet"
+      - option "Reaper"
+      - option "Rebel"
+      - option "Recon"
+      - option "Relay"
+      - option "Ridge"
+      - option "Rune"
+      - option "Ryder"
+      - option "Saber"
+      - option "Saint"
+      - option "Scope"
+      - option "Scribe"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Talisman"
+      - option "Tally"
+      - option "Torch"
+      - option "Trident"
+      - option "Vandal"
+      - option "Vapor"
+      - option "Vector"
+      - option "Warden"
+      - option "Widget"
+      - option "Wildcard"
+      - option "Wisp"
+      - option "Zenith"
+      - option "Zulu"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Ace"
+      - option "Anvil"
+      - option "Basher"
+      - option "Blade"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Cinder"
+      - option "Cobra"
+      - option "Comet"
+      - option "Cotter"
+      - option "Cutter"
+      - option "Dash"
+      - option "Diesel"
+      - option "Drifter"
+      - option "Echo"
+      - option "Fable"
+      - option "Forge"
+      - option "Gambit"
+      - option "Ghost"
+      - option "Grit"
+      - option "Havoc"
+      - option "Hex"
+      - option "Hunter"
+      - option "Jester"
+      - option "Kraken"
+      - option "Ledger"
+      - option "Marlin"
+      - option "Nomad"
+      - option "Otter"
+      - option "Outlaw"
+      - option "Piston"
+      - option "Pixel"
+      - option "Quill"
+      - option "Ranger"
+      - option "Ratchet"
+      - option "Reaper"
+      - option "Rebel"
+      - option "Recon"
+      - option "Relay"
+      - option "Ridge"
+      - option "Rune"
+      - option "Ryder"
+      - option "Saber"
+      - option "Saint"
+      - option "Scope"
+      - option "Scribe"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Talisman"
+      - option "Tally"
+      - option "Torch"
+      - option "Trident"
+      - option "Vandal"
+      - option "Vapor"
+      - option "Vector"
+      - option "Warden"
+      - option "Widget"
+      - option "Wildcard"
+      - option "Wisp"
+      - option "Zenith"
+      - option "Zulu"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Ace"
+      - option "Anvil"
+      - option "Basher"
+      - option "Blade"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Cinder"
+      - option "Cobra"
+      - option "Comet"
+      - option "Cotter"
+      - option "Cutter"
+      - option "Dash"
+      - option "Diesel"
+      - option "Drifter"
+      - option "Echo"
+      - option "Fable"
+      - option "Forge"
+      - option "Gambit"
+      - option "Ghost"
+      - option "Grit"
+      - option "Havoc"
+      - option "Hex"
+      - option "Hunter"
+      - option "Jester"
+      - option "Kraken"
+      - option "Ledger"
+      - option "Marlin"
+      - option "Nomad"
+      - option "Otter"
+      - option "Outlaw"
+      - option "Piston"
+      - option "Pixel"
+      - option "Quill"
+      - option "Ranger"
+      - option "Ratchet"
+      - option "Reaper"
+      - option "Rebel"
+      - option "Recon"
+      - option "Relay"
+      - option "Ridge"
+      - option "Rune"
+      - option "Ryder"
+      - option "Saber"
+      - option "Saint"
+      - option "Scope"
+      - option "Scribe"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Talisman"
+      - option "Tally"
+      - option "Torch"
+      - option "Trident"
+      - option "Vandal"
+      - option "Vapor"
+      - option "Vector"
+      - option "Warden"
+      - option "Widget"
+      - option "Wildcard"
+      - option "Wisp"
+      - option "Zenith"
+      - option "Zulu"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Ace"
+      - option "Anvil"
+      - option "Basher"
+      - option "Blade"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Cinder"
+      - option "Cobra"
+      - option "Comet"
+      - option "Cotter"
+      - option "Cutter"
+      - option "Dash"
+      - option "Diesel"
+      - option "Drifter"
+      - option "Echo"
+      - option "Fable"
+      - option "Forge"
+      - option "Gambit"
+      - option "Ghost"
+      - option "Grit"
+      - option "Havoc"
+      - option "Hex"
+      - option "Hunter"
+      - option "Jester"
+      - option "Kraken"
+      - option "Ledger"
+      - option "Marlin"
+      - option "Nomad"
+      - option "Otter"
+      - option "Outlaw"
+      - option "Piston"
+      - option "Pixel"
+      - option "Quill"
+      - option "Ranger"
+      - option "Ratchet"
+      - option "Reaper"
+      - option "Rebel"
+      - option "Recon"
+      - option "Relay"
+      - option "Ridge"
+      - option "Rune"
+      - option "Ryder"
+      - option "Saber"
+      - option "Saint"
+      - option "Scope"
+      - option "Scribe"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Talisman"
+      - option "Tally"
+      - option "Torch"
+      - option "Trident"
+      - option "Vandal"
+      - option "Vapor"
+      - option "Vector"
+      - option "Warden"
+      - option "Widget"
+      - option "Wildcard"
+      - option "Wisp"
+      - option "Zenith"
+      - option "Zulu"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Ace"
+      - option "Anvil"
+      - option "Basher"
+      - option "Blade"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Cinder"
+      - option "Cobra"
+      - option "Comet"
+      - option "Cotter"
+      - option "Cutter"
+      - option "Dash"
+      - option "Diesel"
+      - option "Drifter"
+      - option "Echo"
+      - option "Fable"
+      - option "Forge"
+      - option "Gambit"
+      - option "Ghost"
+      - option "Grit"
+      - option "Havoc"
+      - option "Hex"
+      - option "Hunter"
+      - option "Jester"
+      - option "Kraken"
+      - option "Ledger"
+      - option "Marlin"
+      - option "Nomad"
+      - option "Otter"
+      - option "Outlaw"
+      - option "Piston"
+      - option "Pixel"
+      - option "Quill"
+      - option "Ranger"
+      - option "Ratchet"
+      - option "Reaper"
+      - option "Rebel"
+      - option "Recon"
+      - option "Relay"
+      - option "Ridge"
+      - option "Rune"
+      - option "Ryder"
+      - option "Saber"
+      - option "Saint"
+      - option "Scope"
+      - option "Scribe"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Talisman"
+      - option "Tally"
+      - option "Torch"
+      - option "Trident"
+      - option "Vandal"
+      - option "Vapor"
+      - option "Vector"
+      - option "Warden"
+      - option "Widget"
+      - option "Wildcard"
+      - option "Wisp"
+      - option "Zenith"
+      - option "Zulu"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Ace"
+      - option "Anvil"
+      - option "Basher"
+      - option "Blade"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Cinder"
+      - option "Cobra"
+      - option "Comet"
+      - option "Cotter"
+      - option "Cutter"
+      - option "Dash"
+      - option "Diesel"
+      - option "Drifter"
+      - option "Echo"
+      - option "Fable"
+      - option "Forge"
+      - option "Gambit"
+      - option "Ghost"
+      - option "Grit"
+      - option "Havoc"
+      - option "Hex"
+      - option "Hunter"
+      - option "Jester"
+      - option "Kraken"
+      - option "Ledger"
+      - option "Marlin"
+      - option "Nomad"
+      - option "Otter"
+      - option "Outlaw"
+      - option "Piston"
+      - option "Pixel"
+      - option "Quill"
+      - option "Ranger"
+      - option "Ratchet"
+      - option "Reaper"
+      - option "Rebel"
+      - option "Recon"
+      - option "Relay"
+      - option "Ridge"
+      - option "Rune"
+      - option "Ryder"
+      - option "Saber"
+      - option "Saint"
+      - option "Scope"
+      - option "Scribe"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Talisman"
+      - option "Tally"
+      - option "Torch"
+      - option "Trident"
+      - option "Vandal"
+      - option "Vapor"
+      - option "Vector"
+      - option "Warden"
+      - option "Widget"
+      - option "Wildcard"
+      - option "Wisp"
+      - option "Zenith"
+      - option "Zulu"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Ace"
+      - option "Anvil"
+      - option "Basher"
+      - option "Blade"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Cinder"
+      - option "Cobra"
+      - option "Comet"
+      - option "Cotter"
+      - option "Cutter"
+      - option "Dash"
+      - option "Diesel"
+      - option "Drifter"
+      - option "Echo"
+      - option "Fable"
+      - option "Forge"
+      - option "Gambit"
+      - option "Ghost"
+      - option "Grit"
+      - option "Havoc"
+      - option "Hex"
+      - option "Hunter"
+      - option "Jester"
+      - option "Kraken"
+      - option "Ledger"
+      - option "Marlin"
+      - option "Nomad"
+      - option "Otter"
+      - option "Outlaw"
+      - option "Piston"
+      - option "Pixel"
+      - option "Quill"
+      - option "Ranger"
+      - option "Ratchet"
+      - option "Reaper"
+      - option "Rebel"
+      - option "Recon"
+      - option "Relay"
+      - option "Ridge"
+      - option "Rune"
+      - option "Ryder"
+      - option "Saber"
+      - option "Saint"
+      - option "Scope"
+      - option "Scribe"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Talisman"
+      - option "Tally"
+      - option "Torch"
+      - option "Trident"
+      - option "Vandal"
+      - option "Vapor"
+      - option "Vector"
+      - option "Warden"
+      - option "Widget"
+      - option "Wildcard"
+      - option "Wisp"
+      - option "Zenith"
+      - option "Zulu"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+      - option "— name —" [selected]
+      - option "Anvil"
+      - option "Basher"
+      - option "Bolt"
+      - option "Cinch"
+      - option "Drifter"
+      - option "Echo"
+      - option "Forge"
+      - option "Piston"
+      - option "Ranger"
+      - option "Reaper"
+      - option "Ridge"
+      - option "Saber"
+      - option "Sidewinder"
+      - option "Static"
+      - option "Trident"
+      - option "Warden"
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - button "Jump to a date" [ref=e34] [cursor=pointer]
+        - generic [ref=e40]:
+          - generic [ref=e41]: Mon
+          - text: Jul 13
+          - generic "today" [ref=e42]
+        - generic [ref=e43]:
+          - button "‹" [ref=e44] [cursor=pointer]
+          - generic [ref=e46]:
+            - generic "Previous week" [ref=e47] [cursor=pointer]: ‹
+            - generic [ref=e48] [cursor=pointer]: Mon 13
+            - generic [ref=e49] [cursor=pointer]: Tue 14
+            - generic [ref=e50] [cursor=pointer]: Wed 15
+            - generic [ref=e51] [cursor=pointer]: Thu 16
+            - generic [ref=e52] [cursor=pointer]: Fri 17
+            - generic [ref=e53] [cursor=pointer]: Sat 18
+            - generic [ref=e54] [cursor=pointer]: Sun 19
+            - generic "Next week" [ref=e55] [cursor=pointer]: ›
+          - button "Highlight filters" [ref=e56] [cursor=pointer]
+          - button "More — Sort all and the layout" [ref=e61] [cursor=pointer]: ⋯
+          - generic [ref=e62]:
+            - text: 🔍
+            - textbox "name / callsign" [ref=e63]
+          - button "›" [ref=e64] [cursor=pointer]
+        - generic [ref=e66]:
+          - button "↶" [disabled] [ref=e67]
+          - button "↷" [disabled] [ref=e69]
+          - button "Show the changes, and who changed each detail — hover it, or tap it on a phone" [ref=e71] [cursor=pointer]
+          - button "Toggle 1-second sync (for publishing / meetings)" [ref=e77] [cursor=pointer]
+          - button "Notifications" [ref=e79] [cursor=pointer]
+          - button "✓" [ref=e82] [cursor=pointer]
+      - generic [ref=e84]:
+        - generic [ref=e85]:
+          - generic [ref=e87]:
+            - generic [ref=e88]: Sign-off
+            - generic "CUR CK" [ref=e89]:
+              - generic [ref=e91]: — name —
+              - combobox "CUR CK — Monday" [ref=e92] [cursor=pointer]:
+                - option "— name —" [selected]
+                - option "Ace"
+                - option "Anvil"
+                - option "Basher"
+                - option "Blade"
+                - option "Bolt"
+                - option "Cinch"
+                - option "Cinder"
+                - option "Cobra"
+                - option "Comet"
+                - option "Cotter"
+                - option "Cutter"
+                - option "Dash"
+                - option "Diesel"
+                - option "Drifter"
+                - option "Echo"
+                - option "Fable"
+                - option "Forge"
+                - option "Gambit"
+                - option "Ghost"
+                - option "Grit"
+                - option "Havoc"
+                - option "Hex"
+                - option "Hunter"
+                - option "Jester"
+                - option "Kraken"
+                - option "Ledger"
+                - option "Marlin"
+                - option "Nomad"
+                - option "Otter"
+                - option "Outlaw"
+                - option "Piston"
+                - option "Pixel"
+                - option "Quill"
+                - option "Ranger"
+                - option "Ratchet"
+                - option "Reaper"
+                - option "Rebel"
+                - option "Recon"
+                - option "Relay"
+                - option "Ridge"
+                - option "Rune"
+                - option "Ryder"
+                - option "Saber"
+                - option "Saint"
+                - option "Scope"
+                - option "Scribe"
+                - option "Sidewinder"
+                - option "Static"
+                - option "Talisman"
+                - option "Tally"
+                - option "Torch"
+                - option "Trident"
+                - option "Vandal"
+                - option "Vapor"
+                - option "Vector"
+                - option "Warden"
+                - option "Widget"
+                - option "Wildcard"
+                - option "Wisp"
+                - option "Zenith"
+                - option "Zulu"
+              - text: ▾
+            - generic "SKED CK — appointed schedulers only" [ref=e93]:
+              - generic [ref=e94]: SKED CK✦
+              - generic [ref=e95]: — name —
+              - combobox "SKED CK — Monday" [ref=e96] [cursor=pointer]:
+                - option "— name —" [selected]
+                - option "Anvil"
+                - option "Basher"
+                - option "Bolt"
+                - option "Cinch"
+                - option "Drifter"
+                - option "Echo"
+                - option "Forge"
+                - option "Piston"
+                - option "Ranger"
+                - option "Reaper"
+                - option "Ridge"
+                - option "Saber"
+                - option "Sidewinder"
+                - option "Static"
+                - option "Trident"
+                - option "Warden"
+              - text: ▾
+            - generic "PLANNED BY — appointed schedulers only" [ref=e97]:
+              - generic [ref=e98]: PLANNED BY✦
+              - generic [ref=e99]: — name —
+              - combobox "PLANNED BY — Monday" [ref=e100] [cursor=pointer]:
+                - option "— name —" [selected]
+                - option "Anvil"
+                - option "Basher"
+                - option "Bolt"
+                - option "Cinch"
+                - option "Drifter"
+                - option "Echo"
+                - option "Forge"
+                - option "Piston"
+                - option "Ranger"
+                - option "Reaper"
+                - option "Ridge"
+                - option "Saber"
+                - option "Sidewinder"
+                - option "Static"
+                - option "Trident"
+                - option "Warden"
+              - text: ▾
+            - generic "APPROVED BY — appointed schedulers only" [ref=e101]:
+              - generic [ref=e102]: APPROVED BY✦
+              - generic [ref=e103]: — name —
+              - combobox "APPROVED BY — Monday" [ref=e104] [cursor=pointer]:
+                - option "— name —" [selected]
+                - option "Anvil"
+                - option "Basher"
+                - option "Bolt"
+                - option "Cinch"
+                - option "Drifter"
+                - option "Echo"
+                - option "Forge"
+                - option "Piston"
+                - option "Ranger"
+                - option "Reaper"
+                - option "Ridge"
+                - option "Saber"
+                - option "Sidewinder"
+                - option "Static"
+                - option "Trident"
+                - option "Warden"
+              - text: ▾
+            - generic [ref=e105]: 4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY
+            - generic [ref=e106]:
+              - button "Live working copy ▾" [ref=e107] [cursor=pointer]:
+                - generic [ref=e108]: Live working copy
+                - generic [ref=e109]: ▾
+              - generic "Monday is still a working draft — not yet published" [ref=e110]: DRAFT
+              - button "i" [ref=e111] [cursor=pointer]
+              - button "🔒 Publish day" [disabled] [ref=e112]
+          - generic [ref=e113]:
+            - generic [ref=e115]:
+              - generic [ref=e116]: THIS DAY
+              - button "Templates" [ref=e118] [cursor=pointer]
+            - generic [ref=e119]:
+              - generic [ref=e120]:
+                - generic "Reorder this section" [ref=e121]: ⠿
+                - text: Overall notes
+                - generic [ref=e122]: shown at the head of the day
+                - button "+ Note" [ref=e124] [cursor=pointer]
+              - generic [ref=e125]:
+                - generic:
+                  - generic "Drag to move this row" [ref=e126]: ⠿
+                  - generic [ref=e127]: "1."
+                  - textbox "e.g. EP, ORDERS, NO FLY, SQN OFF" [ref=e128]: "EP: ENGINE FIRE ON TAKE OFF"
+                  - button "✕" [ref=e130] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e131]: ⠿
+                  - generic [ref=e132]: "2."
+                  - textbox "e.g. EP, ORDERS, NO FLY, SQN OFF" [ref=e133]: "ORDERS: FLYING ORDERS SECTION 2"
+                  - button "✕" [ref=e135] [cursor=pointer]
+            - generic [ref=e136]:
+              - generic [ref=e137]:
+                - generic "Reorder this section" [ref=e138]: ⠿
+                - text: Common Programme
+                - generic [ref=e139]: squadron-wide — affects all
+                - generic [ref=e140]:
+                  - button "⇅ Auto sort" [ref=e141] [cursor=pointer]
+                  - button "+ Item" [ref=e142] [cursor=pointer]
+              - generic [ref=e143]:
+                - generic:
+                  - generic [ref=e144]: Item
+                  - generic [ref=e145]: Start
+                  - generic [ref=e146]: End
+                  - generic [ref=e147]: People
+                  - generic [ref=e148]: Rmks
+                - generic:
+                  - generic "Drag to move this row" [ref=e149]: ⠿
+                  - textbox [ref=e150]: SODB
+                  - textbox [ref=e151]: 07:45
+                  - textbox [ref=e152]: 08:15
+                  - generic [ref=e153]: + add
+                  - textbox "Remarks" [ref=e154]
+                  - generic [ref=e155]:
+                    - button "CX" [ref=e156] [cursor=pointer]
+                    - button "ⓘ" [ref=e157] [cursor=pointer]
+                    - button "■" [ref=e158] [cursor=pointer]
+                    - button "✕" [ref=e159] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e160]: ⠿
+                  - textbox [ref=e161]: MET + NOTAM BRIEF
+                  - textbox [ref=e162]: 08:15
+                  - textbox [ref=e163]: 08:30
+                  - generic [ref=e164]:
+                    - generic "Warden · IP · instructor pilot · SXO" [ref=e166] [cursor=pointer]:
+                      - generic [ref=e167]: Warden
+                      - generic [ref=e168]: IP
+                    - generic: + add
+                  - textbox "Remarks" [ref=e169]
+                  - generic [ref=e170]:
+                    - button "CX" [ref=e171] [cursor=pointer]
+                    - button "ⓘ" [ref=e172] [cursor=pointer]
+                    - button "■" [ref=e173] [cursor=pointer]
+                    - button "✕" [ref=e174] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e175]: ⠿
+                  - textbox [ref=e176]: FLIGHT SAFETY STAND-DOWN
+                  - textbox [ref=e177]: 08:30
+                  - textbox [ref=e178]: 09:00
+                  - generic [ref=e179]:
+                    - generic "Ranger · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e181] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e182]: C
+                      - generic [ref=e183]: Ranger
+                      - generic [ref=e184]: IP
+                    - generic: + add
+                  - textbox "Remarks" [ref=e185]
+                  - generic [ref=e186]:
+                    - button "CX" [ref=e187] [cursor=pointer]
+                    - button "ⓘ" [ref=e188] [cursor=pointer]
+                    - button "■" [ref=e189] [cursor=pointer]
+                    - button "✕" [ref=e190] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e191]: ⠿
+                  - textbox [ref=e192]: WPNS & TACTICS SYNC
+                  - textbox [ref=e193]: 11:30
+                  - textbox [ref=e194]: 12:00
+                  - generic [ref=e195]:
+                    - generic "Trident · IP · instructor pilot" [ref=e197] [cursor=pointer]:
+                      - generic [ref=e198]: Trident
+                      - generic [ref=e199]: IP
+                    - generic: + add
+                  - textbox "Remarks" [ref=e200]
+                  - generic [ref=e201]:
+                    - button "CX" [ref=e202] [cursor=pointer]
+                    - button "ⓘ" [ref=e203] [cursor=pointer]
+                    - button "■" [ref=e204] [cursor=pointer]
+                    - button "✕" [ref=e205] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e206]: ⠿
+                  - textbox [ref=e207]: STANDARDISATION MEETING
+                  - textbox [ref=e208]: 13:30
+                  - textbox [ref=e209]: 14:30
+                  - generic [ref=e210]:
+                    - generic "Piston · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e212] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e213]: C
+                      - generic [ref=e214]: Piston
+                      - generic [ref=e215]: IP
+                    - generic: + add
+                  - textbox "Remarks" [ref=e216]
+                  - generic [ref=e217]:
+                    - button "CX" [ref=e218] [cursor=pointer]
+                    - button "ⓘ" [ref=e219] [cursor=pointer]
+                    - button "■" [ref=e220] [cursor=pointer]
+                    - button "✕" [ref=e221] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e222]: ⠿
+                  - textbox [ref=e223]: OCU PROGRESS REVIEW
+                  - textbox [ref=e224]: 14:45
+                  - textbox [ref=e225]: 15:30
+                  - generic [ref=e226]:
+                    - generic "Wildcard · OCU (ab-initio) · Crew pairing — this pairing needs approval" [ref=e228] [cursor=pointer]:
+                      - generic "Crew pairing — this pairing needs approval" [ref=e229]: CP
+                      - generic [ref=e230]: Wildcard
+                      - generic [ref=e231]: O
+                    - generic: + add
+                  - textbox "Remarks" [ref=e232]
+                  - generic [ref=e233]:
+                    - button "CX" [ref=e234] [cursor=pointer]
+                    - button "ⓘ" [ref=e235] [cursor=pointer]
+                    - button "■" [ref=e236] [cursor=pointer]
+                    - button "✕" [ref=e237] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e238]: ⠿
+                  - textbox [ref=e239]: INTEL UPDATE
+                  - textbox [ref=e240]: 16:00
+                  - textbox [ref=e241]: 16:20
+                  - generic [ref=e242]:
+                    - generic "Rebel · B · 2-ship FL · SANS" [ref=e244] [cursor=pointer]:
+                      - generic [ref=e245]: Rebel
+                      - generic [ref=e246]: B
+                    - generic: + add
+                  - textbox "Remarks" [ref=e247]
+                  - generic [ref=e248]:
+                    - button "CX" [ref=e249] [cursor=pointer]
+                    - button "ⓘ" [ref=e250] [cursor=pointer]
+                    - button "■" [ref=e251] [cursor=pointer]
+                    - button "✕" [ref=e252] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e253]: ⠿
+                  - textbox [ref=e254]: OPS SHARING + NAV SYS BRIEF
+                  - textbox [ref=e255]: 17:55
+                  - textbox [ref=e256]
+                  - generic [ref=e257]:
+                    - generic "Saber · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e259] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e260]: C
+                      - generic [ref=e261]: Saber
+                      - generic [ref=e262]: IP
+                    - generic: + add
+                  - textbox "Remarks" [ref=e263]
+                  - generic [ref=e264]:
+                    - button "CX" [ref=e265] [cursor=pointer]
+                    - button "ⓘ" [ref=e266] [cursor=pointer]
+                    - button "■" [ref=e267] [cursor=pointer]
+                    - button "✕" [ref=e268] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e269]: ⠿
+                  - textbox [ref=e270]: DINNER WITH CMD
+                  - textbox [ref=e271]: 18:30
+                  - textbox [ref=e272]
+                  - generic [ref=e273]: + add
+                  - textbox "Remarks" [ref=e274]
+                  - generic [ref=e275]:
+                    - button "CX" [ref=e276] [cursor=pointer]
+                    - button "ⓘ" [ref=e277] [cursor=pointer]
+                    - button "■" [ref=e278] [cursor=pointer]
+                    - button "✕" [ref=e279] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e280]: ⠿
+                  - textbox [ref=e281]: CMD ENGAGEMENT @ CREW ROOM (ALL)
+                  - textbox [ref=e282]: 21:30
+                  - textbox [ref=e283]
+                  - generic [ref=e284]: + add
+                  - textbox "Remarks" [ref=e285]
+                  - generic [ref=e286]:
+                    - button "CX" [ref=e287] [cursor=pointer]
+                    - button "ⓘ" [ref=e288] [cursor=pointer]
+                    - button "■" [ref=e289] [cursor=pointer]
+                    - button "✕" [ref=e290] [cursor=pointer]
+                - generic:
+                  - generic:
+                    - text: Scheduler notes
+                    - button "Make public" [ref=e291] [cursor=pointer]
+                  - textbox [ref=e292]
+            - generic:
+              - generic [ref=e294]:
+                - generic "Reorder this section" [ref=e295]: ⠿
+                - text: Flying waves
+                - generic [ref=e296]: go times, formations, crews
+                - button "+ Wave" [ref=e298] [cursor=pointer]
+              - generic [ref=e299]:
+                - generic [ref=e300]:
+                  - generic "Reorder this wave" [ref=e301]: ⠿
+                  - generic [ref=e302]: Go 1
+                  - combobox "Wave" [ref=e303] [cursor=pointer]:
+                    - option "1st wave" [selected]
+                    - option "2nd wave"
+                    - option "3rd wave"
+                    - option "4th wave"
+                    - option "5th wave"
+                    - option "Night wave"
+                    - option "SC"
+                    - option "AVALON"
+                  - button "Traffic" [ref=e304] [cursor=pointer]
+                  - generic: In-time / Rally 09:40 · 4 ac
+                  - generic [ref=e305]:
+                    - button "⇅ Auto sort" [ref=e306] [cursor=pointer]
+                    - button "+ In-time / Rally" [ref=e307] [cursor=pointer]
+                    - button "+ Line" [ref=e308] [cursor=pointer]
+                    - button "✕ Wave" [ref=e309] [cursor=pointer]
+                - generic [ref=e310]:
+                  - generic [ref=e311]: "09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS"
+                  - button "Remove this In-time / Rally line" [ref=e312] [cursor=pointer]: ✕
+                  - generic [ref=e313]: "10:40H: FIRST WAVE RU IN TIME + WX/NOTAMS"
+                  - button "Remove this In-time / Rally line" [ref=e314] [cursor=pointer]: ✕
+                - generic [ref=e315]:
+                  - generic [ref=e316]: CS
+                  - generic [ref=e317]: MSN
+                  - generic [ref=e318]: B
+                  - generic [ref=e319]: TO
+                  - generic [ref=e320]: LD
+                  - generic [ref=e321]: FCP
+                  - generic [ref=e322]: RCP
+                  - generic [ref=e323]: Notes
+                - generic [ref=e324]:
+                  - generic "Drag to move this row" [ref=e325]: ⠿
+                  - textbox [ref=e326]: VL
+                  - textbox [ref=e327]: BFM
+                  - generic [ref=e328]:
+                    - generic "Click to accept the suggested brief time" [ref=e329] [cursor=pointer]: 10:20
+                    - textbox [ref=e330]
+                  - textbox [ref=e331]: 12:40
+                  - textbox [ref=e332]: 14:05
+                  - generic [ref=e333]:
+                    - generic "Saber · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e336] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e337]: C
+                      - generic [ref=e338]: Saber
+                      - generic [ref=e339]: IP
+                    - generic "Echo · IW · instructor WSO · SXO · Double turn" [ref=e342] [cursor=pointer]:
+                      - generic "Double turn" [ref=e343]: DT
+                      - generic [ref=e344]: Echo
+                      - generic [ref=e345]: IW
+                  - generic [ref=e346]:
+                    - textbox "Remarks" [ref=e347]: "1B: BFM-6"
+                    - generic [ref=e348]:
+                      - generic "Remove TPOD" [ref=e349] [cursor=pointer]: TPOD
+                      - generic "Remove 2 TKS" [ref=e350] [cursor=pointer]: 2 TKS
+                      - button "C" [ref=e351] [cursor=pointer]
+                      - generic [ref=e352]: Config…
+                  - generic [ref=e353]:
+                    - button "CX" [ref=e354] [cursor=pointer]
+                    - button "■" [ref=e355] [cursor=pointer]
+                    - button "+" [ref=e356] [cursor=pointer]
+                    - button "✕" [ref=e357] [cursor=pointer]
+                - generic [ref=e358]:
+                  - generic "Drag to move this row" [ref=e359]: ⠿
+                  - textbox [ref=e360]: VL
+                  - textbox [ref=e361]: BFM
+                  - generic [ref=e362]:
+                    - generic "Click to accept the suggested brief time" [ref=e363] [cursor=pointer]: 10:20
+                    - textbox [ref=e364]
+                  - textbox [ref=e365]: 12:40
+                  - textbox [ref=e366]: 14:05
+                  - generic [ref=e367]:
+                    - generic "Ranger · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e370] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e371]: C
+                      - generic [ref=e372]: Ranger
+                      - generic [ref=e373]: IP
+                    - generic "Static · IW · instructor WSO" [ref=e376] [cursor=pointer]:
+                      - generic [ref=e377]: Static
+                      - generic [ref=e378]: IW
+                  - generic [ref=e379]:
+                    - textbox "Remarks" [ref=e380]: "2A: BFM-5"
+                    - generic [ref=e381]:
+                      - generic "Remove 2 TKS" [ref=e382] [cursor=pointer]: 2 TKS
+                      - button "C" [ref=e383] [cursor=pointer]
+                      - generic [ref=e384]: Config…
+                  - generic [ref=e385]:
+                    - button "CX" [ref=e386] [cursor=pointer]
+                    - button "■" [ref=e387] [cursor=pointer]
+                    - button "+" [ref=e388] [cursor=pointer]
+                    - button "✕" [ref=e389] [cursor=pointer]
+                - generic [ref=e390]:
+                  - generic [ref=e391]: AREA
+                  - generic: NORTH · SOUTH
+                  - generic [ref=e392]: 1240-1405
+                - generic [ref=e393]:
+                  - generic "Drag to move this row" [ref=e394]: ⠿
+                  - textbox [ref=e395]: RU
+                  - textbox [ref=e396]: BFM
+                  - generic [ref=e397]:
+                    - generic "Click to accept the suggested brief time" [ref=e398] [cursor=pointer]: 11:20
+                    - textbox [ref=e399]
+                  - textbox [ref=e400]: 13:40
+                  - textbox [ref=e401]: 15:05
+                  - generic [ref=e402]:
+                    - generic "Drifter · A · 4-ship FL · SXO" [ref=e405] [cursor=pointer]:
+                      - generic [ref=e406]: Drifter
+                      - generic [ref=e407]: A
+                    - generic "Vector · C · ops wingman · Conflict (two events at once)" [ref=e410] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e411]: C
+                      - generic [ref=e412]: Vector
+                      - generic [ref=e413]: C
+                  - generic [ref=e414]:
+                    - textbox "Remarks" [ref=e415]: PRI LSR
+                    - generic [ref=e416]:
+                      - generic "Remove TPOD" [ref=e417] [cursor=pointer]: TPOD
+                      - generic "Remove 2 TKS" [ref=e418] [cursor=pointer]: 2 TKS
+                      - button "C" [ref=e419] [cursor=pointer]
+                      - generic [ref=e420]: Config…
+                  - generic [ref=e421]:
+                    - button "CX" [ref=e422] [cursor=pointer]
+                    - button "■" [ref=e423] [cursor=pointer]
+                    - button "+" [ref=e424] [cursor=pointer]
+                    - button "✕" [ref=e425] [cursor=pointer]
+                - generic [ref=e426]:
+                  - generic "Drag to move this row" [ref=e427]: ⠿
+                  - textbox [ref=e428]: RU
+                  - textbox [ref=e429]: BFM
+                  - generic [ref=e430]:
+                    - generic "Click to accept the suggested brief time" [ref=e431] [cursor=pointer]: 11:20
+                    - textbox [ref=e432]
+                  - textbox [ref=e433]: 13:40
+                  - textbox [ref=e434]: 15:05
+                  - generic [ref=e435]:
+                    - generic "Piston · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e438] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e439]: C
+                      - generic [ref=e440]: Piston
+                      - generic [ref=e441]: IP
+                    - generic "Relay · IW · instructor WSO · Double turn" [ref=e444] [cursor=pointer]:
+                      - generic "Double turn" [ref=e445]: DT
+                      - generic [ref=e446]: Relay
+                      - generic [ref=e447]: IW
+                  - generic [ref=e448]:
+                    - textbox "Remarks" [ref=e449]: "2A: BFM-ADD"
+                    - generic [ref=e450]:
+                      - generic "Remove 2 TKS" [ref=e451] [cursor=pointer]: 2 TKS
+                      - button "C" [ref=e452] [cursor=pointer]
+                      - generic [ref=e453]: Config…
+                  - generic [ref=e454]:
+                    - button "CX" [ref=e455] [cursor=pointer]
+                    - button "■" [ref=e456] [cursor=pointer]
+                    - button "+" [ref=e457] [cursor=pointer]
+                    - button "✕" [ref=e458] [cursor=pointer]
+                - generic [ref=e459]:
+                  - generic [ref=e460]: AREA
+                  - generic: NORTH · SOUTH
+                  - generic [ref=e461]: 1340-1505
+              - generic [ref=e462]:
+                - generic [ref=e463]:
+                  - generic "Reorder this wave" [ref=e464]: ⠿
+                  - generic [ref=e465]: Go 2
+                  - combobox "Wave" [ref=e466] [cursor=pointer]:
+                    - option "1st wave"
+                    - option "2nd wave"
+                    - option "3rd wave"
+                    - option "4th wave"
+                    - option "5th wave"
+                    - option "Night wave" [selected]
+                    - option "SC"
+                    - option "AVALON"
+                  - generic [ref=e467]: · night
+                  - button "Traffic" [ref=e468] [cursor=pointer]
+                  - generic: In-time / Rally 16:20 · 4 ac
+                  - generic [ref=e469]:
+                    - button "⇅ Auto sort" [ref=e470] [cursor=pointer]
+                    - button "+ In-time / Rally" [ref=e471] [cursor=pointer]
+                    - button "+ Line" [ref=e472] [cursor=pointer]
+                    - button "✕ Wave" [ref=e473] [cursor=pointer]
+                - generic [ref=e474]:
+                  - generic [ref=e475]: "16:45H: NIGHT WAVE VL IN TIME + WX/NOTAMS"
+                  - button "Remove this In-time / Rally line" [ref=e476] [cursor=pointer]: ✕
+                  - generic [ref=e477]: "16:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS"
+                  - button "Remove this In-time / Rally line" [ref=e478] [cursor=pointer]: ✕
+                - generic [ref=e479]:
+                  - generic [ref=e480]: CS
+                  - generic [ref=e481]: MSN
+                  - generic [ref=e482]: B
+                  - generic [ref=e483]: TO
+                  - generic [ref=e484]: LD
+                  - generic [ref=e485]: FCP
+                  - generic [ref=e486]: RCP
+                  - generic [ref=e487]: Notes
+                - generic [ref=e488]:
+                  - generic "Drag to move this row" [ref=e489]: ⠿
+                  - textbox [ref=e490]: VL
+                  - textbox [ref=e491]: BFM
+                  - generic [ref=e492]:
+                    - generic "Click to accept the suggested brief time" [ref=e493] [cursor=pointer]: 17:25
+                    - textbox [ref=e494]
+                  - textbox [ref=e495]: 19:45
+                  - textbox [ref=e496]: 21:10
+                  - generic [ref=e497]:
+                    - generic "Saber · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e500] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e501]: C
+                      - generic [ref=e502]: Saber
+                      - generic [ref=e503]: IP
+                    - generic "Echo · IW · instructor WSO · SXO · Double turn" [ref=e506] [cursor=pointer]:
+                      - generic "Double turn" [ref=e507]: DT
+                      - generic [ref=e508]: Echo
+                      - generic [ref=e509]: IW
+                  - generic [ref=e510]:
+                    - textbox "Remarks" [ref=e511]: "1B: NIGHT BFM"
+                    - generic [ref=e512]:
+                      - generic "Remove 2 TKS" [ref=e513] [cursor=pointer]: 2 TKS
+                      - generic "Remove NAV" [ref=e514] [cursor=pointer]: NAV
+                      - button "C" [ref=e515] [cursor=pointer]
+                      - generic [ref=e516]: Config…
+                  - generic [ref=e517]:
+                    - button "CX" [ref=e518] [cursor=pointer]
+                    - button "■" [ref=e519] [cursor=pointer]
+                    - button "+" [ref=e520] [cursor=pointer]
+                    - button "✕" [ref=e521] [cursor=pointer]
+                - generic [ref=e522]:
+                  - generic "Drag to move this row" [ref=e523]: ⠿
+                  - textbox [ref=e524]: VL
+                  - textbox [ref=e525]: BFM
+                  - generic [ref=e526]:
+                    - generic "Click to accept the suggested brief time" [ref=e527] [cursor=pointer]: 17:25
+                    - textbox [ref=e528]
+                  - textbox [ref=e529]: 19:45
+                  - textbox [ref=e530]: 21:10
+                  - generic [ref=e531]:
+                    - generic "Wildcard · OCU (ab-initio) · Crew pairing — this pairing needs approval" [ref=e534] [cursor=pointer]:
+                      - generic "Crew pairing — this pairing needs approval" [ref=e535]: CP
+                      - generic [ref=e536]: Wildcard
+                      - generic [ref=e537]: O
+                    - generic "Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval" [ref=e540] [cursor=pointer]:
+                      - generic "Crew pairing — this pairing needs approval" [ref=e541]: CP
+                      - generic [ref=e542]: Tally
+                      - generic [ref=e543]: O
+                  - generic [ref=e544]:
+                    - textbox "Remarks" [ref=e545]: "2A: DT / OCU"
+                    - generic [ref=e546]:
+                      - generic "Remove NAV" [ref=e547] [cursor=pointer]: NAV
+                      - button "C" [ref=e548] [cursor=pointer]
+                      - generic [ref=e549]: Config…
+                  - generic [ref=e550]:
+                    - button "CX" [ref=e551] [cursor=pointer]
+                    - button "■" [ref=e552] [cursor=pointer]
+                    - button "+" [ref=e553] [cursor=pointer]
+                    - button "✕" [ref=e554] [cursor=pointer]
+                - generic [ref=e555]:
+                  - generic [ref=e556]: AREA
+                  - generic: WEST · SOUTH
+                  - generic [ref=e557]: 1945-2110
+                - generic [ref=e558]:
+                  - generic "Drag to move this row" [ref=e559]: ⠿
+                  - textbox [ref=e560]: RU
+                  - textbox [ref=e561]: BFM
+                  - generic [ref=e562]:
+                    - generic "Click to accept the suggested brief time" [ref=e563] [cursor=pointer]: 17:00
+                    - textbox [ref=e564]
+                  - textbox [ref=e565]: 19:20
+                  - textbox [ref=e566]: 20:45
+                  - generic [ref=e567]:
+                    - generic "Piston · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e570] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e571]: C
+                      - generic [ref=e572]: Piston
+                      - generic [ref=e573]: IP
+                    - generic "Relay · IW · instructor WSO · Double turn" [ref=e576] [cursor=pointer]:
+                      - generic "Double turn" [ref=e577]: DT
+                      - generic [ref=e578]: Relay
+                      - generic [ref=e579]: IW
+                  - generic [ref=e580]:
+                    - textbox "Remarks" [ref=e581]: "1A: NIGHT"
+                    - generic [ref=e582]:
+                      - generic "Remove 2 TKS" [ref=e583] [cursor=pointer]: 2 TKS
+                      - generic "Remove NAV" [ref=e584] [cursor=pointer]: NAV
+                      - button "C" [ref=e585] [cursor=pointer]
+                      - generic [ref=e586]: Config…
+                  - generic [ref=e587]:
+                    - button "CX" [ref=e588] [cursor=pointer]
+                    - button "■" [ref=e589] [cursor=pointer]
+                    - button "+" [ref=e590] [cursor=pointer]
+                    - button "✕" [ref=e591] [cursor=pointer]
+                - generic [ref=e592]:
+                  - generic "Drag to move this row" [ref=e593]: ⠿
+                  - textbox [ref=e594]: RU
+                  - textbox [ref=e595]: BFM
+                  - generic [ref=e596]:
+                    - generic "Click to accept the suggested brief time" [ref=e597] [cursor=pointer]: 17:00
+                    - textbox [ref=e598]
+                  - textbox [ref=e599]: 19:20
+                  - textbox [ref=e600]: 20:45
+                  - generic [ref=e601]:
+                    - 'generic "Outlaw · C · ops wingman · Crew rest — Tuesday is broken by this day: he had to leave by 18:00" [ref=e604] [cursor=pointer]':
+                      - 'generic "Crew rest — Tuesday is broken by this day: he had to leave by 18:00" [ref=e605]': R
+                      - generic [ref=e606]: Outlaw
+                      - generic [ref=e607]: C
+                    - generic "Wisp · C · ops wingman" [ref=e610] [cursor=pointer]:
+                      - generic [ref=e611]: Wisp
+                      - generic [ref=e612]: C
+                  - generic [ref=e613]:
+                    - textbox "Remarks" [ref=e614]: "2A: NIGHT BFM"
+                    - generic [ref=e615]:
+                      - generic "Remove NAV" [ref=e616] [cursor=pointer]: NAV
+                      - button "C" [ref=e617] [cursor=pointer]
+                      - generic [ref=e618]: Config…
+                  - generic [ref=e619]:
+                    - button "CX" [ref=e620] [cursor=pointer]
+                    - button "■" [ref=e621] [cursor=pointer]
+                    - button "+" [ref=e622] [cursor=pointer]
+                    - button "✕" [ref=e623] [cursor=pointer]
+                - generic [ref=e624]:
+                  - generic [ref=e625]: AREA
+                  - generic: WEST · SOUTH
+                  - generic [ref=e626]: 1920-2045
+            - generic [ref=e627]:
+              - generic [ref=e628]:
+                - generic "Reorder this section" [ref=e629]: ⠿
+                - text: Duties
+                - generic [ref=e630]: SDO / SXO / ops desk, by block
+                - button "+ Block" [ref=e632] [cursor=pointer]
+              - generic [ref=e633]:
+                - generic:
+                  - textbox "WAVE 1 DUTIES" [ref=e634]: 1st wave
+                  - generic [ref=e635]:
+                    - button "⇅ Auto sort" [ref=e636] [cursor=pointer]
+                    - button "+ Row" [ref=e637] [cursor=pointer]
+                    - button "✕ Block" [ref=e638] [cursor=pointer]
+                - generic:
+                  - generic [ref=e639]: Role
+                  - generic [ref=e640]: Start
+                  - generic [ref=e641]: End
+                  - generic [ref=e642]: People
+                  - generic [ref=e643]: Rmks
+                - generic:
+                  - generic "Drag to move this row" [ref=e644]: ⠿
+                  - textbox [ref=e645]: SDO
+                  - textbox [ref=e646]: 07:00
+                  - textbox [ref=e647]: 13:00
+                  - generic [ref=e648]:
+                    - generic "Sidewinder · IP · instructor pilot · SXO" [ref=e650] [cursor=pointer]:
+                      - generic [ref=e651]: Sidewinder
+                      - generic [ref=e652]: IP
+                    - generic: + add
+                  - textbox "Remarks" [ref=e653]
+                  - generic [ref=e654]:
+                    - button "CX" [ref=e655] [cursor=pointer]
+                    - button "■" [ref=e656] [cursor=pointer]
+                    - button "✕" [ref=e657] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e658]: ⠿
+                  - textbox [ref=e659]: SXO
+                  - textbox [ref=e660]: 06:00
+                  - textbox [ref=e661]: 13:00
+                  - generic [ref=e662]:
+                    - generic "Ridge · C · ops wingman · SXO" [ref=e664] [cursor=pointer]:
+                      - generic [ref=e665]: Ridge
+                      - generic [ref=e666]: C
+                    - generic: + add
+                  - textbox "Remarks" [ref=e667]
+                  - generic [ref=e668]:
+                    - button "CX" [ref=e669] [cursor=pointer]
+                    - button "■" [ref=e670] [cursor=pointer]
+                    - button "✕" [ref=e671] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e672]: ⠿
+                  - textbox [ref=e673]: OPS-O
+                  - textbox [ref=e674]: 06:00
+                  - textbox [ref=e675]: 14:00
+                  - generic [ref=e676]:
+                    - generic "Basher · IW · instructor WSO · SXO" [ref=e678] [cursor=pointer]:
+                      - generic [ref=e679]: Basher
+                      - generic [ref=e680]: IW
+                    - generic: + add
+                  - textbox "Remarks" [ref=e681]
+                  - generic [ref=e682]:
+                    - button "CX" [ref=e683] [cursor=pointer]
+                    - button "■" [ref=e684] [cursor=pointer]
+                    - button "✕" [ref=e685] [cursor=pointer]
+                - generic:
+                  - textbox "WAVE 1 DUTIES" [ref=e686]: 2nd wave
+                  - generic [ref=e687]:
+                    - button "⇅ Auto sort" [ref=e688] [cursor=pointer]
+                    - button "+ Row" [ref=e689] [cursor=pointer]
+                    - button "✕ Block" [ref=e690] [cursor=pointer]
+                - generic:
+                  - generic [ref=e691]: Role
+                  - generic [ref=e692]: Start
+                  - generic [ref=e693]: End
+                  - generic [ref=e694]: People
+                  - generic [ref=e695]: Rmks
+                - generic:
+                  - generic "Drag to move this row" [ref=e696]: ⠿
+                  - textbox [ref=e697]: SDO
+                  - textbox [ref=e698]: 13:00
+                  - textbox [ref=e699]: 21:30
+                  - generic [ref=e700]:
+                    - generic "Forge · IP · instructor pilot" [ref=e702] [cursor=pointer]:
+                      - generic [ref=e703]: Forge
+                      - generic [ref=e704]: IP
+                    - generic: + add
+                  - textbox "Remarks" [ref=e705]
+                  - generic [ref=e706]:
+                    - button "CX" [ref=e707] [cursor=pointer]
+                    - button "■" [ref=e708] [cursor=pointer]
+                    - button "✕" [ref=e709] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e710]: ⠿
+                  - textbox [ref=e711]: SXO
+                  - textbox [ref=e712]: 13:00
+                  - textbox [ref=e713]: 21:30
+                  - generic [ref=e714]:
+                    - generic "Bolt · C · ops wingman · SANS" [ref=e716] [cursor=pointer]:
+                      - generic [ref=e717]: Bolt
+                      - generic [ref=e718]: C
+                    - generic: + add
+                  - textbox "Remarks" [ref=e719]
+                  - generic [ref=e720]:
+                    - button "CX" [ref=e721] [cursor=pointer]
+                    - button "■" [ref=e722] [cursor=pointer]
+                    - button "✕" [ref=e723] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e724]: ⠿
+                  - textbox [ref=e725]: OPS-O
+                  - textbox [ref=e726]: 14:00
+                  - textbox [ref=e727]: 21:30
+                  - generic [ref=e728]:
+                    - generic "Scope · IW · instructor WSO" [ref=e730] [cursor=pointer]:
+                      - generic [ref=e731]: Scope
+                      - generic [ref=e732]: IW
+                    - generic: + add
+                  - textbox "Remarks" [ref=e733]
+                  - generic [ref=e734]:
+                    - button "CX" [ref=e735] [cursor=pointer]
+                    - button "■" [ref=e736] [cursor=pointer]
+                    - button "✕" [ref=e737] [cursor=pointer]
+                - generic:
+                  - generic:
+                    - text: Scheduler notes
+                    - button "Make public" [ref=e738] [cursor=pointer]
+                  - textbox [ref=e739]
+            - generic [ref=e740]:
+              - generic [ref=e741]:
+                - generic "Reorder this section" [ref=e742]: ⠿
+                - text: Sims
+                - generic [ref=e743]: AMT and OFT rows
+              - generic [ref=e744]:
+                - generic:
+                  - generic [ref=e745]: AMT
+                  - generic [ref=e746]:
+                    - button "⇅ Auto sort" [ref=e747] [cursor=pointer]
+                    - button "+ Block" [ref=e748] [cursor=pointer]
+                    - button "+ Row" [ref=e749] [cursor=pointer]
+                - generic:
+                  - generic [ref=e750]: Item
+                  - generic [ref=e751]: Start
+                  - generic [ref=e752]: End
+                  - generic [ref=e753]: People
+                  - generic [ref=e754]: Rmks
+                - generic:
+                  - generic "Drag to move this row" [ref=e755]: ⠿
+                  - textbox "EP SIM" [ref=e756]: BRIEF
+                  - textbox [ref=e757]: 11:00
+                  - textbox [ref=e758]
+                  - textbox "Remarks" [ref=e760]: ALL 8 PAX @ AMT BLDG
+                  - generic [ref=e761]:
+                    - button "CX" [ref=e762] [cursor=pointer]
+                    - button "■" [ref=e763] [cursor=pointer]
+                    - button "✕" [ref=e764] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e765]: ⠿
+                  - textbox "EP SIM" [ref=e766]: BOX
+                  - textbox [ref=e767]: 11:30
+                  - textbox [ref=e768]: 12:30
+                  - generic [ref=e769]:
+                    - generic "Hunter · IP · instructor pilot" [ref=e771] [cursor=pointer]:
+                      - generic [ref=e772]: Hunter
+                      - generic [ref=e773]: IP
+                    - generic "Ledger · IW · instructor WSO" [ref=e775] [cursor=pointer]:
+                      - generic [ref=e776]: Ledger
+                      - generic [ref=e777]: IW
+                    - generic "Cobra · IP · instructor pilot" [ref=e779] [cursor=pointer]:
+                      - generic [ref=e780]: Cobra
+                      - generic [ref=e781]: IP
+                    - generic "Quill · IW · instructor WSO" [ref=e783] [cursor=pointer]:
+                      - generic [ref=e784]: Quill
+                      - generic [ref=e785]: IW
+                    - generic "Torch · C · ops wingman" [ref=e787] [cursor=pointer]:
+                      - generic [ref=e788]: Torch
+                      - generic [ref=e789]: C
+                    - generic "Hex · C · ops wingman" [ref=e791] [cursor=pointer]:
+                      - generic [ref=e792]: Hex
+                      - generic [ref=e793]: C
+                    - generic "Gambit · C · ops wingman · Conflict (two events at once)" [ref=e795] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e796]: C
+                      - generic [ref=e797]: Gambit
+                      - generic [ref=e798]: C
+                    - generic "Cutter · C · ops wingman" [ref=e800] [cursor=pointer]:
+                      - generic [ref=e801]: Cutter
+                      - generic [ref=e802]: C
+                    - generic "Empty seat — tap or drop a puck to fill" [ref=e803] [cursor=pointer]: +
+                    - generic "Empty seat — tap or drop a puck to fill" [ref=e804] [cursor=pointer]: +
+                  - textbox "Remarks" [ref=e805]: 2 X 4-SHIP // 2TK TPOD 9X
+                  - generic [ref=e806]:
+                    - button "CX" [ref=e807] [cursor=pointer]
+                    - button "■" [ref=e808] [cursor=pointer]
+                    - button "✕" [ref=e809] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e810]: ⠿
+                  - textbox "EP SIM" [ref=e811]: DEBRIEF
+                  - textbox [ref=e812]: 12:30
+                  - textbox [ref=e813]
+                  - textbox "Remarks" [ref=e815]
+                  - generic [ref=e816]:
+                    - button "CX" [ref=e817] [cursor=pointer]
+                    - button "■" [ref=e818] [cursor=pointer]
+                    - button "✕" [ref=e819] [cursor=pointer]
+                - generic:
+                  - generic [ref=e820]: OFT
+                  - generic [ref=e821]:
+                    - button "⇅ Auto sort" [ref=e822] [cursor=pointer]
+                    - button "+ Row" [ref=e823] [cursor=pointer]
+                - generic:
+                  - generic [ref=e824]: Item
+                  - generic [ref=e825]: Start
+                  - generic [ref=e826]: End
+                  - generic [ref=e827]: People
+                  - generic [ref=e828]: Rmks
+                - generic:
+                  - generic "Drag to move this row" [ref=e829]: ⠿
+                  - textbox "EP SIM" [ref=e830]: EP-4
+                  - textbox [ref=e831]: 08:00
+                  - textbox [ref=e832]: 09:30
+                  - generic [ref=e833]:
+                    - generic "Talisman · OCU (ab-initio)" [ref=e835] [cursor=pointer]:
+                      - generic [ref=e836]: Talisman
+                      - generic [ref=e837]: O
+                    - generic "Saber · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e839] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e840]: C
+                      - generic [ref=e841]: Saber
+                      - generic [ref=e842]: IP
+                    - generic "Instructor / observer — tap or drop a puck to fill" [ref=e843] [cursor=pointer]: +
+                    - generic "Instructor / observer — tap or drop a puck to fill" [ref=e844] [cursor=pointer]: +
+                  - textbox "Remarks" [ref=e845]: "A: IEPE / EP-3N // BRIEF 30 PRIOR"
+                  - generic [ref=e846]:
+                    - button "CX" [ref=e847] [cursor=pointer]
+                    - button "■" [ref=e848] [cursor=pointer]
+                    - button "✕" [ref=e849] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e850]: ⠿
+                  - textbox "EP SIM" [ref=e851]: EP-4
+                  - textbox [ref=e852]: 12:00
+                  - textbox [ref=e853]: 13:30
+                  - generic [ref=e854]:
+                    - generic "Ranger · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e856] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e857]: C
+                      - generic [ref=e858]: Ranger
+                      - generic [ref=e859]: IP
+                    - generic "Cinch · IP · instructor pilot · SXO" [ref=e861] [cursor=pointer]:
+                      - generic [ref=e862]: Cinch
+                      - generic [ref=e863]: IP
+                    - generic "Instructor / observer — tap or drop a puck to fill" [ref=e864] [cursor=pointer]: +
+                    - generic "Instructor / observer — tap or drop a puck to fill" [ref=e865] [cursor=pointer]: +
+                  - textbox "Remarks" [ref=e866]: "A: SA(S)-3 // BRIEF 30 PRIOR"
+                  - generic [ref=e867]:
+                    - button "CX" [ref=e868] [cursor=pointer]
+                    - button "■" [ref=e869] [cursor=pointer]
+                    - button "✕" [ref=e870] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e871]: ⠿
+                  - textbox "EP SIM" [ref=e872]: SIMS (EXT SQN)
+                  - textbox [ref=e873]: 13:30
+                  - textbox [ref=e874]: 15:00
+                  - generic [ref=e875]:
+                    - generic [ref=e876]: EXT SQN
+                    - generic: + add
+                  - textbox "Remarks" [ref=e877]: EXT SQN SLOT
+                  - generic [ref=e878]:
+                    - button "CX" [ref=e879] [cursor=pointer]
+                    - button "■" [ref=e880] [cursor=pointer]
+                    - button "✕" [ref=e881] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e882]: ⠿
+                  - textbox "EP SIM" [ref=e883]: EP-6
+                  - textbox [ref=e884]: 15:00
+                  - textbox [ref=e885]: 16:30
+                  - generic [ref=e886]:
+                    - generic "Recon · OCU (ab-initio)" [ref=e888] [cursor=pointer]:
+                      - generic [ref=e889]: Recon
+                      - generic [ref=e890]: O
+                    - generic "RCP — tap or drop a puck to fill" [ref=e891] [cursor=pointer]: +
+                  - textbox "Remarks" [ref=e892]: "B: SEFE"
+                  - generic [ref=e893]:
+                    - button "CX" [ref=e894] [cursor=pointer]
+                    - button "■" [ref=e895] [cursor=pointer]
+                    - button "✕" [ref=e896] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e897]: ⠿
+                  - textbox "EP SIM" [ref=e898]: EP-6N
+                  - textbox [ref=e899]: 17:00
+                  - textbox [ref=e900]: 18:30
+                  - generic [ref=e901]:
+                    - generic "Anvil · IP · instructor pilot · SXO" [ref=e903] [cursor=pointer]:
+                      - generic [ref=e904]: Anvil
+                      - generic [ref=e905]: IP
+                    - generic "Ghost · C · ops wingman" [ref=e907] [cursor=pointer]:
+                      - generic [ref=e908]: Ghost
+                      - generic [ref=e909]: C
+                    - generic "Grit · C · ops wingman · Conflict (two events at once)" [ref=e911] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e912]: C
+                      - generic [ref=e913]: Grit
+                      - generic [ref=e914]: C
+                    - generic: + add
+                  - textbox "Remarks" [ref=e915]: NIGHT EP // 3RD BODY = OBSERVER
+                  - generic [ref=e916]:
+                    - button "CX" [ref=e917] [cursor=pointer]
+                    - button "■" [ref=e918] [cursor=pointer]
+                    - button "✕" [ref=e919] [cursor=pointer]
+                - generic:
+                  - generic:
+                    - text: Scheduler notes
+                    - button "Make public" [ref=e920] [cursor=pointer]
+                  - textbox [ref=e921]
+            - generic [ref=e922]:
+              - generic [ref=e923]:
+                - generic "Reorder this section" [ref=e924]: ⠿
+                - text: Ground Programme
+                - generic [ref=e925]: briefs, reviews, admin
+                - generic [ref=e926]:
+                  - button "+ Inputs" [ref=e927] [cursor=pointer]
+                  - button "⇅ Auto sort" [ref=e928] [cursor=pointer]
+                  - button "+ Item" [ref=e929] [cursor=pointer]
+              - generic [ref=e930]:
+                - generic:
+                  - generic [ref=e931]: Item
+                  - generic [ref=e932]: Start
+                  - generic [ref=e933]: End
+                  - generic [ref=e934]: People
+                  - generic [ref=e935]: Rmks
+                - generic:
+                  - generic "Drag to move this row" [ref=e936]: ⠿
+                  - textbox "OCU PROGRESS REVIEW" [ref=e937]: HQ ENGAGEMENT
+                  - textbox [ref=e938]: 08:45
+                  - textbox [ref=e939]: 16:30
+                  - generic [ref=e940]:
+                    - generic "Ace · A · 4-ship FL" [ref=e942] [cursor=pointer]:
+                      - generic [ref=e943]: Ace
+                      - generic [ref=e944]: A
+                    - generic: + add
+                  - textbox "Remarks" [ref=e945]
+                  - generic [ref=e946]:
+                    - button "CX" [ref=e947] [cursor=pointer]
+                    - button "ⓘ" [ref=e948] [cursor=pointer]
+                    - button "■" [ref=e949] [cursor=pointer]
+                    - button "✕" [ref=e950] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e951]: ⠿
+                  - textbox "OCU PROGRESS REVIEW" [ref=e952]: MEETING
+                  - textbox [ref=e953]: 09:00
+                  - textbox [ref=e954]: 17:00
+                  - generic [ref=e955]:
+                    - generic "Zenith · C · ops wingman · SANS" [ref=e957] [cursor=pointer]:
+                      - generic [ref=e958]: Zenith
+                      - generic [ref=e959]: C
+                    - generic: + add
+                  - textbox "Remarks" [ref=e960]: Desk / staff work
+                  - generic [ref=e961]:
+                    - button "CX" [ref=e962] [cursor=pointer]
+                    - button "ⓘ" [ref=e963] [cursor=pointer]
+                    - button "■" [ref=e964] [cursor=pointer]
+                    - button "✕" [ref=e965] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e966]: ⠿
+                  - textbox "OCU PROGRESS REVIEW" [ref=e967]: STAFF MTG @ HQ
+                  - textbox [ref=e968]: 09:30
+                  - textbox [ref=e969]: 11:00
+                  - generic [ref=e970]:
+                    - generic "Vapor · D · wingman" [ref=e972] [cursor=pointer]:
+                      - generic [ref=e973]: Vapor
+                      - generic [ref=e974]: D
+                    - generic: + add
+                  - textbox "Remarks" [ref=e975]
+                  - generic [ref=e976]:
+                    - button "CX" [ref=e977] [cursor=pointer]
+                    - button "ⓘ" [ref=e978] [cursor=pointer]
+                    - button "■" [ref=e979] [cursor=pointer]
+                    - button "✕" [ref=e980] [cursor=pointer]
+                - generic "Late input — last changed 6 Jul, after the 29 Jun deadline for its week of 13 Jul.":
+                  - generic "Drag to move this row" [ref=e981]: ⠿
+                  - textbox "OCU PROGRESS REVIEW" [ref=e982]: APPOINTMENT
+                  - textbox [ref=e983]: 10:00
+                  - textbox [ref=e984]: 11:00
+                  - generic [ref=e985]:
+                    - generic "Bolt · C · ops wingman · SANS" [ref=e987] [cursor=pointer]:
+                      - generic [ref=e988]: Bolt
+                      - generic [ref=e989]: C
+                    - generic: + add
+                  - textbox "Remarks" [ref=e990]: HSP blood panel
+                  - generic [ref=e991]:
+                    - button "CX" [ref=e992] [cursor=pointer]
+                    - button "ⓘ" [ref=e993] [cursor=pointer]
+                    - button "■" [ref=e994] [cursor=pointer]
+                    - button "✕" [ref=e995] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e996]: ⠿
+                  - textbox "OCU PROGRESS REVIEW" [ref=e997]: MEDICAL APPT
+                  - textbox [ref=e998]: 10:30
+                  - textbox [ref=e999]: 12:30
+                  - generic [ref=e1000]:
+                    - generic "Diesel · D · wingman" [ref=e1002] [cursor=pointer]:
+                      - generic [ref=e1003]: Diesel
+                      - generic [ref=e1004]: D
+                    - generic: + add
+                  - textbox "Remarks" [ref=e1005]
+                  - generic [ref=e1006]:
+                    - button "CX" [ref=e1007] [cursor=pointer]
+                    - button "ⓘ" [ref=e1008] [cursor=pointer]
+                    - button "■" [ref=e1009] [cursor=pointer]
+                    - button "✕" [ref=e1010] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e1011]: ⠿
+                  - textbox "OCU PROGRESS REVIEW" [ref=e1012]: DENTAL APPT
+                  - textbox [ref=e1013]: 12:00
+                  - textbox [ref=e1014]: 13:30
+                  - generic [ref=e1015]:
+                    - generic "Kraken · D · wingman · SANS" [ref=e1017] [cursor=pointer]:
+                      - generic [ref=e1018]: Kraken
+                      - generic [ref=e1019]: D
+                    - generic: + add
+                  - textbox "Remarks" [ref=e1020]
+                  - generic [ref=e1021]:
+                    - button "CX" [ref=e1022] [cursor=pointer]
+                    - button "ⓘ" [ref=e1023] [cursor=pointer]
+                    - button "■" [ref=e1024] [cursor=pointer]
+                    - button "✕" [ref=e1025] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e1026]: ⠿
+                  - textbox "OCU PROGRESS REVIEW" [ref=e1027]: OPS/LOGS @ EXT SQN
+                  - textbox [ref=e1028]: 14:00
+                  - textbox [ref=e1029]: 15:30
+                  - generic [ref=e1030]:
+                    - generic "Blade · IP · instructor pilot" [ref=e1032] [cursor=pointer]:
+                      - generic [ref=e1033]: Blade
+                      - generic [ref=e1034]: IP
+                    - generic: + add
+                  - textbox "Remarks" [ref=e1035]
+                  - generic [ref=e1036]:
+                    - button "CX" [ref=e1037] [cursor=pointer]
+                    - button "ⓘ" [ref=e1038] [cursor=pointer]
+                    - button "■" [ref=e1039] [cursor=pointer]
+                    - button "✕" [ref=e1040] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e1041]: ⠿
+                  - textbox "OCU PROGRESS REVIEW" [ref=e1042]: TRAINING CMD VISIT
+                  - textbox [ref=e1043]: 16:30
+                  - textbox [ref=e1044]: 18:00
+                  - generic [ref=e1045]:
+                    - generic "Ace · A · 4-ship FL" [ref=e1047] [cursor=pointer]:
+                      - generic [ref=e1048]: Ace
+                      - generic [ref=e1049]: A
+                    - generic: + add
+                  - textbox "Remarks" [ref=e1050]
+                  - generic [ref=e1051]:
+                    - button "CX" [ref=e1052] [cursor=pointer]
+                    - button "ⓘ" [ref=e1053] [cursor=pointer]
+                    - button "■" [ref=e1054] [cursor=pointer]
+                    - button "✕" [ref=e1055] [cursor=pointer]
+                - generic:
+                  - generic "Drag to move this row" [ref=e1056]: ⠿
+                  - textbox "OCU PROGRESS REVIEW" [ref=e1057]: FLY WITH
+                  - textbox [ref=e1058]
+                  - textbox [ref=e1059]
+                  - generic [ref=e1060]:
+                    - generic "Gambit · C · ops wingman · Conflict (two events at once)" [ref=e1062] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e1063]: C
+                      - generic [ref=e1064]: Gambit
+                      - generic [ref=e1065]: C
+                    - generic: + add
+                  - textbox "Remarks" [ref=e1066]: Keen for any wave
+                  - generic [ref=e1067]:
+                    - button "CX" [ref=e1068] [cursor=pointer]
+                    - button "ⓘ" [ref=e1069] [cursor=pointer]
+                    - button "■" [ref=e1070] [cursor=pointer]
+                    - button "✕" [ref=e1071] [cursor=pointer]
+                - generic:
+                  - generic:
+                    - text: Scheduler notes
+                    - button "Make public" [ref=e1072] [cursor=pointer]
+                  - textbox [ref=e1073]
+            - generic [ref=e1075] [cursor=pointer]:
+              - generic "Reorder this section" [ref=e1076]: ⠿
+              - text: Personal Inputs
+              - generic [ref=e1077]: 3 inputs · 3 on programme · show ⌄
+            - generic [ref=e1078]:
+              - generic [ref=e1079] [cursor=pointer]:
+                - generic "Reorder this section" [ref=e1080]: ⠿
+                - generic [ref=e1081]: Available crew
+                - generic [ref=e1082]: by wave · close ⌃
+              - generic [ref=e1083]: 1st wave AM–16:20 · 15 can fly
+              - generic [ref=e1084]:
+                - generic "Anvil · IP · instructor pilot · SXO" [ref=e1086] [cursor=pointer]:
+                  - generic [ref=e1087]: Anvil
+                  - generic [ref=e1088]: IP
+                - 'generic "Outlaw · C · ops wingman · Crew rest — Tuesday is broken by this day: he had to leave by 18:00" [ref=e1090] [cursor=pointer]':
+                  - 'generic "Crew rest — Tuesday is broken by this day: he had to leave by 18:00" [ref=e1091]': R
+                  - generic [ref=e1092]: Outlaw
+                  - generic [ref=e1093]: C
+                - generic "Ghost · C · ops wingman" [ref=e1095] [cursor=pointer]:
+                  - generic [ref=e1096]: Ghost
+                  - generic [ref=e1097]: C
+                - generic "Wisp · C · ops wingman" [ref=e1099] [cursor=pointer]:
+                  - generic [ref=e1100]: Wisp
+                  - generic [ref=e1101]: C
+              - generic [ref=e1102]: 2nd wave · night 16:20–end · 31 can fly
+              - generic [ref=e1103]:
+                - generic "Blade · IP · instructor pilot" [ref=e1105] [cursor=pointer]:
+                  - generic [ref=e1106]: Blade
+                  - generic [ref=e1107]: IP
+                - generic "Cinch · IP · instructor pilot · SXO" [ref=e1109] [cursor=pointer]:
+                  - generic [ref=e1110]: Cinch
+                  - generic [ref=e1111]: IP
+                - generic "Cobra · IP · instructor pilot" [ref=e1113] [cursor=pointer]:
+                  - generic [ref=e1114]: Cobra
+                  - generic [ref=e1115]: IP
+                - generic "Hunter · IP · instructor pilot" [ref=e1117] [cursor=pointer]:
+                  - generic [ref=e1118]: Hunter
+                  - generic [ref=e1119]: IP
+                - generic "Ranger · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e1121] [cursor=pointer]:
+                  - generic "Conflict (two events at once)" [ref=e1122]: C
+                  - generic [ref=e1123]: Ranger
+                  - generic [ref=e1124]: IP
+                - generic "Sidewinder · IP · instructor pilot · SXO" [ref=e1126] [cursor=pointer]:
+                  - generic [ref=e1127]: Sidewinder
+                  - generic [ref=e1128]: IP
+                - generic "Trident · IP · instructor pilot" [ref=e1130] [cursor=pointer]:
+                  - generic [ref=e1131]: Trident
+                  - generic [ref=e1132]: IP
+                - generic "Warden · IP · instructor pilot · SXO" [ref=e1134] [cursor=pointer]:
+                  - generic [ref=e1135]: Warden
+                  - generic [ref=e1136]: IP
+                - generic "Drifter · A · 4-ship FL · SXO" [ref=e1138] [cursor=pointer]:
+                  - generic [ref=e1139]: Drifter
+                  - generic [ref=e1140]: A
+                - generic "Ridge · C · ops wingman · SXO" [ref=e1142] [cursor=pointer]:
+                  - generic [ref=e1143]: Ridge
+                  - generic [ref=e1144]: C
+                - generic "Torch · C · ops wingman" [ref=e1146] [cursor=pointer]:
+                  - generic [ref=e1147]: Torch
+                  - generic [ref=e1148]: C
+                - generic "Diesel · D · wingman" [ref=e1150] [cursor=pointer]:
+                  - generic [ref=e1151]: Diesel
+                  - generic [ref=e1152]: D
+                - generic "Vapor · D · wingman" [ref=e1154] [cursor=pointer]:
+                  - generic [ref=e1155]: Vapor
+                  - generic [ref=e1156]: D
+                - generic "Talisman · OCU (ab-initio)" [ref=e1158] [cursor=pointer]:
+                  - generic [ref=e1159]: Talisman
+                  - generic [ref=e1160]: O
+                - generic "Basher · IW · instructor WSO · SXO" [ref=e1162] [cursor=pointer]:
+                  - generic [ref=e1163]: Basher
+                  - generic [ref=e1164]: IW
+                - generic "Ledger · IW · instructor WSO" [ref=e1166] [cursor=pointer]:
+                  - generic [ref=e1167]: Ledger
+                  - generic [ref=e1168]: IW
+                - generic "Quill · IW · instructor WSO" [ref=e1170] [cursor=pointer]:
+                  - generic [ref=e1171]: Quill
+                  - generic [ref=e1172]: IW
+                - generic "Static · IW · instructor WSO" [ref=e1174] [cursor=pointer]:
+                  - generic [ref=e1175]: Static
+                  - generic [ref=e1176]: IW
+                - generic "Cutter · C · ops wingman" [ref=e1178] [cursor=pointer]:
+                  - generic [ref=e1179]: Cutter
+                  - generic [ref=e1180]: C
+                - generic "Hex · C · ops wingman" [ref=e1182] [cursor=pointer]:
+                  - generic [ref=e1183]: Hex
+                  - generic [ref=e1184]: C
+              - generic [ref=e1185]: Available all day · 11
+              - generic [ref=e1186]:
+                - generic "Reaper · IR · instrument rating exmr · SXO" [ref=e1188] [cursor=pointer]:
+                  - generic [ref=e1189]: Reaper
+                  - generic [ref=e1190]: IR
+                - generic "Comet · IP · instructor pilot" [ref=e1192] [cursor=pointer]:
+                  - generic [ref=e1193]: Comet
+                  - generic [ref=e1194]: IP
+                - generic "Havoc · IP · instructor pilot" [ref=e1196] [cursor=pointer]:
+                  - generic [ref=e1197]: Havoc
+                  - generic [ref=e1198]: IP
+                - generic "Vandal · IP · instructor pilot" [ref=e1200] [cursor=pointer]:
+                  - generic [ref=e1201]: Vandal
+                  - generic [ref=e1202]: IP
+                - generic "Saint · B · 2-ship FL" [ref=e1204] [cursor=pointer]:
+                  - generic [ref=e1205]: Saint
+                  - generic [ref=e1206]: B
+                - generic "Nomad · C · ops wingman" [ref=e1208] [cursor=pointer]:
+                  - generic [ref=e1209]: Nomad
+                  - generic [ref=e1210]: C
+                - generic "Cinder · B · 2-ship FL" [ref=e1212] [cursor=pointer]:
+                  - generic [ref=e1213]: Cinder
+                  - generic [ref=e1214]: B
+                - generic "Rune · B · 2-ship FL" [ref=e1216] [cursor=pointer]:
+                  - generic [ref=e1217]: Rune
+                  - generic [ref=e1218]: B
+                - generic "Dash · C · ops wingman" [ref=e1220] [cursor=pointer]:
+                  - generic [ref=e1221]: Dash
+                  - generic [ref=e1222]: C
+                - generic "Fable · C · ops wingman" [ref=e1224] [cursor=pointer]:
+                  - generic [ref=e1225]: Fable
+                  - generic [ref=e1226]: C
+                - generic "Ryder · C · ops wingman" [ref=e1228] [cursor=pointer]:
+                  - generic [ref=e1229]: Ryder
+                  - generic [ref=e1230]: C
+            - generic [ref=e1231]:
+              - generic [ref=e1232]:
+                - generic "Reorder this section" [ref=e1233]: ⠿
+                - text: SANS Avail
+                - generic [ref=e1234]: what SANS aircrew are offering — press a card to edit
+                - button "+ Add" [ref=e1235] [cursor=pointer]
+              - button "CP Tally O F PM" [ref=e1238] [cursor=pointer]:
+                - generic [ref=e1239]:
+                  - generic "Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval" [ref=e1240]:
+                    - generic "Crew pairing — this pairing needs approval" [ref=e1241]: CP
+                    - generic [ref=e1242]: Tally
+                    - generic [ref=e1243]: O
+                  - generic [ref=e1244]: F
+                - generic [ref=e1245]: PM
+            - generic [ref=e1246]:
+              - generic [ref=e1247]:
+                - generic "Reorder this section" [ref=e1248]: ⠿
+                - text: Unavailable
+                - generic [ref=e1249]: leave, medical and overseas duty — times and remarks type in place, clear a time for all day
+                - button "+ Add" [ref=e1250] [cursor=pointer]
+              - generic [ref=e1251]:
+                - generic:
+                  - generic [ref=e1252]: Item
+                  - generic [ref=e1253]: Start
+                  - generic [ref=e1254]: End
+                  - generic [ref=e1255]: People
+                  - generic [ref=e1256]: Rmks
+                - generic:
+                  - button "OML" [ref=e1257] [cursor=pointer]
+                  - textbox "all day" [ref=e1258]
+                  - textbox [ref=e1259]
+                  - generic "Vector · C · ops wingman · Conflict (two events at once)" [ref=e1262] [cursor=pointer]:
+                    - generic "Conflict (two events at once)" [ref=e1263]: C
+                    - generic [ref=e1264]: Vector
+                    - generic [ref=e1265]: C
+                  - textbox "remarks" [ref=e1266]: Medical leave 13 Jul
+                - generic:
+                  - button "ATT C" [ref=e1267] [cursor=pointer]
+                  - textbox "all day" [ref=e1268]
+                  - textbox [ref=e1269]
+                  - generic "Grit · C · ops wingman · Conflict (two events at once)" [ref=e1272] [cursor=pointer]:
+                    - generic "Conflict (two events at once)" [ref=e1273]: C
+                    - generic [ref=e1274]: Grit
+                    - generic [ref=e1275]: C
+                  - textbox "remarks" [ref=e1276]: Medically down till 17 Jul
+        - generic [ref=e1277]:
+          - generic [ref=e1279]:
+            - generic "Show / hide the day's checks" [ref=e1280] [cursor=pointer]:
+              - generic [ref=e1281]: ⚠ 17 issues
+              - text: · 6 warnings ·
+              - generic [ref=e1282]: tap to review
+            - generic "Jump to the puck that caused this" [ref=e1283] [cursor=pointer]:
+              - text: Saber — OPS SHARING + NAV SYS BRIEF & VL BFM clash
+              - button "✕" [ref=e1284]
+            - generic "Jump to the puck that caused this" [ref=e1285] [cursor=pointer]:
+              - text: Ranger — VL BFM & Sim EP-4 clash
+              - button "✕" [ref=e1286]
+            - generic "Jump to the puck that caused this" [ref=e1287] [cursor=pointer]:
+              - text: Piston — RU BFM & STANDARDISATION MEETING clash
+              - button "✕" [ref=e1288]
+            - generic "Jump to the puck that caused this" [ref=e1289] [cursor=pointer]:
+              - text: "Vector — Downchit but planned to fly RU BFM — reason: Medical leave 13 Jul"
+              - button "✕" [ref=e1290]
+            - generic "Jump to the puck that caused this" [ref=e1291] [cursor=pointer]:
+              - text: "Gambit — Fly with but tasked — Sim BOX — reason: Keen for any wave"
+              - button "✕" [ref=e1292]
+            - generic "Jump to the puck that caused this" [ref=e1293] [cursor=pointer]:
+              - text: "Grit — Downchit but tasked — Sim EP-6N — reason: Medically down till 17 Jul"
+              - button "✕" [ref=e1294]
+            - generic "Jump to the puck that caused this" [ref=e1295] [cursor=pointer]:
+              - text: Saber — No time for the VL BFM flight brief — OPS SHARING + NAV SYS BRIEF sits inside 17:25–19:45 (brief 17:25)
+              - button "✕" [ref=e1296]
+            - generic "Jump to the puck that caused this" [ref=e1297] [cursor=pointer]:
+              - text: Ranger — No time for the VL BFM flight brief — Sim EP-4 sits inside 10:20–12:40 (brief 10:20)
+              - button "✕" [ref=e1298]
+            - generic "Jump to the puck that caused this" [ref=e1299] [cursor=pointer]:
+              - text: Piston — No time for the RU BFM flight brief — STANDARDISATION MEETING sits inside 11:20–13:40 (brief 11:20)
+              - button "✕" [ref=e1300]
+            - generic "Jump to the puck that caused this" [ref=e1301] [cursor=pointer]:
+              - text: Ranger — No time for the OFT EP-4 brief — VL BFM sits inside 11:30–12:00
+              - button "✕" [ref=e1302]
+            - generic "Jump to the puck that caused this" [ref=e1303] [cursor=pointer]:
+              - text: Ranger — No time for the OFT EP-4 debrief — VL BFM sits inside 13:30–14:00
+              - button "✕" [ref=e1304]
+            - generic "Jump to the puck that caused this" [ref=e1305] [cursor=pointer]:
+              - text: "Saber, Echo, Piston, Relay — 4 people are double turning: Saber, Echo, Piston, Relay"
+              - button "✕" [ref=e1306]
+            - generic "Jump to the puck that caused this" [ref=e1307] [cursor=pointer]:
+              - text: Wildcard, Tally — Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus
+              - button "✕" [ref=e1308]
+            - generic "Jump to the puck that caused this" [ref=e1309] [cursor=pointer]:
+              - text: "Saber — Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)"
+              - button "✕" [ref=e1310]
+            - generic "Jump to the puck that caused this" [ref=e1311] [cursor=pointer]:
+              - text: "Echo — Echo has a long work day: 13h30, 09:40 → 23:10 (last landing 21:10 + 2h debrief assumed)"
+              - button "✕" [ref=e1312]
+            - generic "Jump to the puck that caused this" [ref=e1313] [cursor=pointer]:
+              - text: "Piston — Piston has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)"
+              - button "✕" [ref=e1314]
+            - generic "Jump to the puck that caused this" [ref=e1315] [cursor=pointer]:
+              - text: "Relay — Relay has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)"
+              - button "✕" [ref=e1316]
+          - complementary [ref=e1317]:
+            - generic [ref=e1319]:
+              - generic [ref=e1320]:
+                - generic [ref=e1321]: Placeholders · drag in
+                - generic "ALL AVAIL — a placeholder, never validated" [ref=e1322]:
+                  - generic "ALL AVAIL" [ref=e1323] [cursor=pointer]
+                - generic "ALL — a placeholder, never validated" [ref=e1325]:
+                  - generic "ALL" [ref=e1326] [cursor=pointer]
+              - generic [ref=e1328]:
+                - generic [ref=e1329]:
+                  - generic [ref=e1330]: Pilots · 6 free
+                  - generic "Comet" [ref=e1331]:
+                    - generic "Comet · IP · instructor pilot" [ref=e1332] [cursor=pointer]:
+                      - generic [ref=e1333]: Comet
+                      - generic [ref=e1334]: IP
+                  - generic "Havoc" [ref=e1335]:
+                    - generic "Havoc · IP · instructor pilot" [ref=e1336] [cursor=pointer]:
+                      - generic [ref=e1337]: Havoc
+                      - generic [ref=e1338]: IP
+                  - generic "Nomad" [ref=e1339]:
+                    - generic "Nomad · C · ops wingman" [ref=e1340] [cursor=pointer]:
+                      - generic [ref=e1341]: Nomad
+                      - generic [ref=e1342]: C
+                  - generic "Reaper" [ref=e1343]:
+                    - generic "Reaper · IR · instrument rating exmr · SXO" [ref=e1344] [cursor=pointer]:
+                      - generic [ref=e1345]: Reaper
+                      - generic [ref=e1346]: IR
+                  - generic "Saint" [ref=e1347]:
+                    - generic "Saint · B · 2-ship FL" [ref=e1348] [cursor=pointer]:
+                      - generic [ref=e1349]: Saint
+                      - generic [ref=e1350]: B
+                  - generic "Vandal" [ref=e1351]:
+                    - generic "Vandal · IP · instructor pilot" [ref=e1352] [cursor=pointer]:
+                      - generic [ref=e1353]: Vandal
+                      - generic [ref=e1354]: IP
+                  - generic "Ace — already tasked today, but you can still plan him" [ref=e1355]:
+                    - generic "Ace · A · 4-ship FL" [ref=e1356] [cursor=pointer]:
+                      - generic [ref=e1357]: Ace
+                      - generic [ref=e1358]: A
+                  - generic "Anvil — already tasked today, but you can still plan him" [ref=e1359]:
+                    - generic "Anvil · IP · instructor pilot · SXO" [ref=e1360] [cursor=pointer]:
+                      - generic [ref=e1361]: Anvil
+                      - generic [ref=e1362]: IP
+                  - generic "Blade — already tasked today, but you can still plan him" [ref=e1363]:
+                    - generic "Blade · IP · instructor pilot" [ref=e1364] [cursor=pointer]:
+                      - generic [ref=e1365]: Blade
+                      - generic [ref=e1366]: IP
+                  - generic "Cinch — already tasked today, but you can still plan him" [ref=e1367]:
+                    - generic "Cinch · IP · instructor pilot · SXO" [ref=e1368] [cursor=pointer]:
+                      - generic [ref=e1369]: Cinch
+                      - generic [ref=e1370]: IP
+                  - generic "Cobra — already tasked today, but you can still plan him" [ref=e1371]:
+                    - generic "Cobra · IP · instructor pilot" [ref=e1372] [cursor=pointer]:
+                      - generic [ref=e1373]: Cobra
+                      - generic [ref=e1374]: IP
+                  - generic "Diesel — already tasked today, but you can still plan him" [ref=e1375]:
+                    - generic "Diesel · D · wingman" [ref=e1376] [cursor=pointer]:
+                      - generic [ref=e1377]: Diesel
+                      - generic [ref=e1378]: D
+                  - generic "Drifter — already tasked today, but you can still plan him" [ref=e1379]:
+                    - generic "Drifter · A · 4-ship FL · SXO" [ref=e1380] [cursor=pointer]:
+                      - generic [ref=e1381]: Drifter
+                      - generic [ref=e1382]: A
+                  - generic "Forge — already tasked today, but you can still plan him" [ref=e1383]:
+                    - generic "Forge · IP · instructor pilot" [ref=e1384] [cursor=pointer]:
+                      - generic [ref=e1385]: Forge
+                      - generic [ref=e1386]: IP
+                  - generic "Hunter — already tasked today, but you can still plan him" [ref=e1387]:
+                    - generic "Hunter · IP · instructor pilot" [ref=e1388] [cursor=pointer]:
+                      - generic [ref=e1389]: Hunter
+                      - generic [ref=e1390]: IP
+                  - generic "Outlaw — already tasked today, but you can still plan him" [ref=e1391]:
+                    - generic "Outlaw · C · ops wingman" [ref=e1392] [cursor=pointer]:
+                      - generic [ref=e1393]: Outlaw
+                      - generic [ref=e1394]: C
+                  - generic "Piston — already tasked today, but you can still plan him" [ref=e1395]:
+                    - generic "Piston · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e1396] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e1397]: C
+                      - generic [ref=e1398]: Piston
+                      - generic [ref=e1399]: IP
+                  - generic "Ranger — already tasked today, but you can still plan him" [ref=e1400]:
+                    - generic "Ranger · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e1401] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e1402]: C
+                      - generic [ref=e1403]: Ranger
+                      - generic [ref=e1404]: IP
+                  - generic "Recon — already tasked today, but you can still plan him" [ref=e1405]:
+                    - generic "Recon · OCU (ab-initio)" [ref=e1406] [cursor=pointer]:
+                      - generic [ref=e1407]: Recon
+                      - generic [ref=e1408]: O
+                  - generic "Ridge — already tasked today, but you can still plan him" [ref=e1409]:
+                    - generic "Ridge · C · ops wingman · SXO" [ref=e1410] [cursor=pointer]:
+                      - generic [ref=e1411]: Ridge
+                      - generic [ref=e1412]: C
+                  - generic "Saber — already tasked today, but you can still plan him" [ref=e1413]:
+                    - generic "Saber · IP · instructor pilot · SXO · Conflict (two events at once)" [ref=e1414] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e1415]: C
+                      - generic [ref=e1416]: Saber
+                      - generic [ref=e1417]: IP
+                  - generic "Sidewinder — already tasked today, but you can still plan him" [ref=e1418]:
+                    - generic "Sidewinder · IP · instructor pilot · SXO" [ref=e1419] [cursor=pointer]:
+                      - generic [ref=e1420]: Sidewinder
+                      - generic [ref=e1421]: IP
+                  - generic "Talisman — already tasked today, but you can still plan him" [ref=e1422]:
+                    - generic "Talisman · OCU (ab-initio)" [ref=e1423] [cursor=pointer]:
+                      - generic [ref=e1424]: Talisman
+                      - generic [ref=e1425]: O
+                  - generic "Torch — already tasked today, but you can still plan him" [ref=e1426]:
+                    - generic "Torch · C · ops wingman" [ref=e1427] [cursor=pointer]:
+                      - generic [ref=e1428]: Torch
+                      - generic [ref=e1429]: C
+                  - generic "Trident — already tasked today, but you can still plan him" [ref=e1430]:
+                    - generic "Trident · IP · instructor pilot" [ref=e1431] [cursor=pointer]:
+                      - generic [ref=e1432]: Trident
+                      - generic [ref=e1433]: IP
+                  - generic "Vapor — already tasked today, but you can still plan him" [ref=e1434]:
+                    - generic "Vapor · D · wingman" [ref=e1435] [cursor=pointer]:
+                      - generic [ref=e1436]: Vapor
+                      - generic [ref=e1437]: D
+                  - generic "Warden — already tasked today, but you can still plan him" [ref=e1438]:
+                    - generic "Warden · IP · instructor pilot · SXO" [ref=e1439] [cursor=pointer]:
+                      - generic [ref=e1440]: Warden
+                      - generic [ref=e1441]: IP
+                  - generic "Wildcard — already tasked today, but you can still plan him" [ref=e1442]:
+                    - generic "Wildcard · OCU (ab-initio) · Crew pairing — this pairing needs approval" [ref=e1443] [cursor=pointer]:
+                      - generic "Crew pairing — this pairing needs approval" [ref=e1444]: CP
+                      - generic [ref=e1445]: Wildcard
+                      - generic [ref=e1446]: O
+                  - generic "Gambit — flying with another squadron (Fly with) — Keen for any wave" [ref=e1447]:
+                    - generic "Gambit · C · ops wingman · Conflict (two events at once)" [ref=e1448] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e1449]: C
+                      - generic [ref=e1450]: Gambit
+                      - generic [ref=e1451]: C
+                - generic [ref=e1452]:
+                  - generic [ref=e1453]: WSOs · 5 free
+                  - generic "Cinder" [ref=e1454]:
+                    - generic "Cinder · B · 2-ship FL" [ref=e1455] [cursor=pointer]:
+                      - generic [ref=e1456]: Cinder
+                      - generic [ref=e1457]: B
+                  - generic "Dash" [ref=e1458]:
+                    - generic "Dash · C · ops wingman" [ref=e1459] [cursor=pointer]:
+                      - generic [ref=e1460]: Dash
+                      - generic [ref=e1461]: C
+                  - generic "Fable" [ref=e1462]:
+                    - generic "Fable · C · ops wingman" [ref=e1463] [cursor=pointer]:
+                      - generic [ref=e1464]: Fable
+                      - generic [ref=e1465]: C
+                  - generic "Rune" [ref=e1466]:
+                    - generic "Rune · B · 2-ship FL" [ref=e1467] [cursor=pointer]:
+                      - generic [ref=e1468]: Rune
+                      - generic [ref=e1469]: B
+                  - generic "Ryder" [ref=e1470]:
+                    - generic "Ryder · C · ops wingman" [ref=e1471] [cursor=pointer]:
+                      - generic [ref=e1472]: Ryder
+                      - generic [ref=e1473]: C
+                  - generic "Basher — already tasked today, but you can still plan him" [ref=e1474]:
+                    - generic "Basher · IW · instructor WSO · SXO" [ref=e1475] [cursor=pointer]:
+                      - generic [ref=e1476]: Basher
+                      - generic [ref=e1477]: IW
+                  - generic "Cutter — already tasked today, but you can still plan him" [ref=e1478]:
+                    - generic "Cutter · C · ops wingman" [ref=e1479] [cursor=pointer]:
+                      - generic [ref=e1480]: Cutter
+                      - generic [ref=e1481]: C
+                  - generic "Echo — already tasked today, but you can still plan him" [ref=e1482]:
+                    - generic "Echo · IW · instructor WSO · SXO · Double turn" [ref=e1483] [cursor=pointer]:
+                      - generic "Double turn" [ref=e1484]: DT
+                      - generic [ref=e1485]: Echo
+                      - generic [ref=e1486]: IW
+                  - generic "Ghost — already tasked today, but you can still plan him" [ref=e1487]:
+                    - generic "Ghost · C · ops wingman" [ref=e1488] [cursor=pointer]:
+                      - generic [ref=e1489]: Ghost
+                      - generic [ref=e1490]: C
+                  - generic "Hex — already tasked today, but you can still plan him" [ref=e1491]:
+                    - generic "Hex · C · ops wingman" [ref=e1492] [cursor=pointer]:
+                      - generic [ref=e1493]: Hex
+                      - generic [ref=e1494]: C
+                  - generic "Ledger — already tasked today, but you can still plan him" [ref=e1495]:
+                    - generic "Ledger · IW · instructor WSO" [ref=e1496] [cursor=pointer]:
+                      - generic [ref=e1497]: Ledger
+                      - generic [ref=e1498]: IW
+                  - generic "Quill — already tasked today, but you can still plan him" [ref=e1499]:
+                    - generic "Quill · IW · instructor WSO" [ref=e1500] [cursor=pointer]:
+                      - generic [ref=e1501]: Quill
+                      - generic [ref=e1502]: IW
+                  - generic "Relay — already tasked today, but you can still plan him" [ref=e1503]:
+                    - generic "Relay · IW · instructor WSO · Double turn" [ref=e1504] [cursor=pointer]:
+                      - generic "Double turn" [ref=e1505]: DT
+                      - generic [ref=e1506]: Relay
+                      - generic [ref=e1507]: IW
+                  - generic "Scope — already tasked today, but you can still plan him" [ref=e1508]:
+                    - generic "Scope · IW · instructor WSO" [ref=e1509] [cursor=pointer]:
+                      - generic [ref=e1510]: Scope
+                      - generic [ref=e1511]: IW
+                  - generic "Static — already tasked today, but you can still plan him" [ref=e1512]:
+                    - generic "Static · IW · instructor WSO" [ref=e1513] [cursor=pointer]:
+                      - generic [ref=e1514]: Static
+                      - generic [ref=e1515]: IW
+                  - generic "Wisp — already tasked today, but you can still plan him" [ref=e1516]:
+                    - generic "Wisp · C · ops wingman" [ref=e1517] [cursor=pointer]:
+                      - generic [ref=e1518]: Wisp
+                      - generic [ref=e1519]: C
+                  - generic "Grit — medically down — cannot report to work (ATT C) — Medically down till 17 Jul" [ref=e1520]:
+                    - generic "Grit · C · ops wingman · Conflict (two events at once)" [ref=e1521] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e1522]: C
+                      - generic [ref=e1523]: Grit
+                      - generic [ref=e1524]: C
+                  - generic "Vector — ordinary medical leave (OML) — Medical leave 13 Jul" [ref=e1525]:
+                    - generic "Vector · C · ops wingman · Conflict (two events at once)" [ref=e1526] [cursor=pointer]:
+                      - generic "Conflict (two events at once)" [ref=e1527]: C
+                      - generic [ref=e1528]: Vector
+                      - generic [ref=e1529]: C
+              - generic [ref=e1530]:
+                - generic [ref=e1531]: SANS Avail
+                - generic "Bolt — SANS — no availability filed for today" [ref=e1533]:
+                  - generic "Bolt · C · ops wingman · SANS" [ref=e1534] [cursor=pointer]:
+                    - generic [ref=e1535]: Bolt
+                    - generic [ref=e1536]: C
+                - generic "Jester — SANS — no availability filed for today" [ref=e1538]:
+                  - generic "Jester · B · 2-ship FL · SANS" [ref=e1539] [cursor=pointer]:
+                    - generic [ref=e1540]: Jester
+                    - generic [ref=e1541]: B
+                - generic "Kraken — SANS — no availability filed for today" [ref=e1543]:
+                  - generic "Kraken · D · wingman · SANS" [ref=e1544] [cursor=pointer]:
+                    - generic [ref=e1545]: Kraken
+                    - generic [ref=e1546]: D
+                - generic "Marlin — SANS — no availability filed for today" [ref=e1548]:
+                  - generic "Marlin · A · 4-ship FL · SANS" [ref=e1549] [cursor=pointer]:
+                    - generic [ref=e1550]: Marlin
+                    - generic [ref=e1551]: A
+                - generic "Otter — SANS — no availability filed for today" [ref=e1553]:
+                  - generic "Otter · D · wingman · SANS" [ref=e1554] [cursor=pointer]:
+                    - generic [ref=e1555]: Otter
+                    - generic [ref=e1556]: D
+                - generic "Pixel — SANS — no availability filed for today" [ref=e1558]:
+                  - generic "Pixel · D · wingman · SANS" [ref=e1559] [cursor=pointer]:
+                    - generic [ref=e1560]: Pixel
+                    - generic [ref=e1561]: D
+                - generic "Rebel — SANS — no availability filed for today" [ref=e1563]:
+                  - generic "Rebel · B · 2-ship FL · SANS" [ref=e1564] [cursor=pointer]:
+                    - generic [ref=e1565]: Rebel
+                    - generic [ref=e1566]: B
+                - generic "Scribe — SANS — no availability filed for today" [ref=e1568]:
+                  - generic "Scribe · D · wingman · SANS" [ref=e1569] [cursor=pointer]:
+                    - generic [ref=e1570]: Scribe
+                    - generic [ref=e1571]: D
+                - generic [ref=e1572]:
+                  - generic "Tally — already tasked today, but you can still plan him" [ref=e1573]:
+                    - generic "Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval" [ref=e1574] [cursor=pointer]:
+                      - generic "Crew pairing — this pairing needs approval" [ref=e1575]: CP
+                      - generic [ref=e1576]: Tally
+                      - generic [ref=e1577]: O
+                  - generic [ref=e1578]: F · PM
+                - generic "Zenith — SANS — no availability filed for today" [ref=e1580]:
+                  - generic "Zenith · C · ops wingman · SANS" [ref=e1581] [cursor=pointer]:
+                    - generic [ref=e1582]: Zenith
+                    - generic [ref=e1583]: C
+                - generic "Zulu — SANS — no availability filed for today" [ref=e1585]:
+                  - generic "Zulu · OCU (ab-initio) · SANS" [ref=e1586] [cursor=pointer]:
+                    - generic [ref=e1587]: Zulu
+                    - generic [ref=e1588]: O
+              - generic [ref=e1589]:
+                - generic [ref=e1590]: Personnel · 3 free
+                - generic [ref=e1591]:
+                  - generic "Cotter" [ref=e1592]:
+                    - generic "Cotter · Personnel · ground crew" [ref=e1593] [cursor=pointer]: Cotter
+                  - generic "Ratchet" [ref=e1595]:
+                    - generic "Ratchet · Personnel · ground crew" [ref=e1596] [cursor=pointer]: Ratchet
+                  - generic "Widget" [ref=e1598]:
+                    - generic "Widget · Personnel · ground crew" [ref=e1599] [cursor=pointer]: Widget
+  - generic: Desktop layout — pan sideways to read the whole day
+```
+
+# Test source
+
+```ts
+  1   | /* The measured layout contracts from docs/ui-contracts.md §Rendering.
+  2   | 
+  3   |    These are the ones the note in that file calls "measured, suite-enforced"
+  4   |    — and until now they were enforced only by hand, because jsdom has no
+  5   |    layout engine: every rect in Vitest is 0x0, so a puck that had silently
+  6   |    grown to 90px, or free text that had started overflowing its cell, would
+  7   |    pass `npm test` all day. Here they run in a real browser on the real
+  8   |    production build, so a CSS change that breaks one fails a gate. */
+  9   | import { expect, test } from '@playwright/test'
+  10  | import type { Page } from '@playwright/test'
+  11  | import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek } from './app'
+  12  | 
+  13  | const PHONE = { width: 390, height: 844 }
+  14  | const DESK = { width: 1500, height: 950 }
+  15  | 
+  16  | /* D548: a real section can collapse even when the Desktop toggle and title work.
+  17  |    Use the ordinary Board door and measure every section, not the mode class. */
+  18  | test('phone Desktop layout keeps every schedule section usable below sign-off', async ({ page }) => {
+  19  |   await page.setViewportSize(PHONE)
+  20  |   await login(page)
+  21  |   await page.locator('#burger').click()
+  22  |   await page.locator('#drawerNav [data-page="editsched"]').click()
+  23  |   await page.locator('#eWeek [data-sbday="0"]:visible').click()
+  24  |   await page.locator('#sbBoard .sb-sec').first().waitFor({ state: 'attached' })
+  25  |   await page.locator('#sbMore').click()
+  26  |   await page.locator('#sbMoreWide').click()
+  27  | 
+  28  |   const widths = await page.locator('#sbBoard .sb-sec').evaluateAll(elements =>
+  29  |     elements.map(element => ({
+  30  |       name: element.textContent!.trim().slice(0, 48),
+  31  |       width: element.getBoundingClientRect().width,
+  32  |     })))
+  33  |   expect(widths, 'all ten existing section kinds are drawn').toHaveLength(10)
+  34  |   for (const section of widths)
+> 35  |     expect(section.width, `${section.name}: a readable section, not a zero-width shell`).toBeGreaterThan(300)
+      |                                                                                          ^ Error: ⠿Overall notes shown at the head of the day+ Not: a readable section, not a zero-width shell
+  36  | 
+  37  |   const flow = await page.evaluate(() => {
+  38  |     const sign = document.querySelector('#sbSign')!.getBoundingClientRect()
+  39  |     const board = document.querySelector('#sbBoard')!.getBoundingClientRect()
+  40  |     const row = document.querySelector('#sbBoard .sb-nrow')!.getBoundingClientRect()
+  41  |     return { signBottom: sign.bottom, boardTop: board.top, rowWidth: row.width }
+  42  |   })
+  43  |   expect(flow.boardTop, 'sign-off stays above the schedule').toBeGreaterThanOrEqual(flow.signBottom - 1)
+  44  |   expect(flow.rowWidth, 'an actual populated note row retains usable width').toBeGreaterThan(300)
+  45  |   await expect(page.locator('#sbBoard .sb-nrow').first()).toBeVisible()
+  46  | })
+  47  | 
+  48  | /* every free-text cell on the dense surfaces: these must WRAP (grow taller),
+  49  |    never widen their column or spill over the neighbour */
+  50  | const FREETEXT = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .ppl .itxt, .areacell'
+  51  | /* the subset that owns a whole grid/flex column and holds prose. `.itxt` is
+  52  |    deliberately not here: it is an unresolved NAME sitting inline among the
+  53  |    pucks, sized by its content on purpose, and it takes the overflow check
+  54  |    above like everything else. */
+  55  | const PROSE = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .areacell'
+  56  | 
+  57  | test.describe('Rally previous-day Board header fits constrained content widths', () => {
+  58  |   for (const [name, viewport] of [
+  59  |     ['desktop', { width: 1440, height: 900 }], ['phone', PHONE],
+  60  |     ['landscape', { width: 844, height: 390 }], ['tablet', { width: 1024, height: 600 }],
+  61  |   ] as const) {
+  62  |     test(`date cue and every control remain readable and reachable on ${name}`, async ({ page }) => {
+  63  |       await page.setViewportSize(viewport)
+  64  |       await login(page); await go(page, 'editsched')
+  65  |       await page.locator('#eWeek [data-sbday="1"]:visible').click()
+  66  |       for (const li of [0, 1]) {
+  67  |         const field = page.locator(`#schedBoard [data-bfld="ff:1.0.${li}.to"]:visible`).first()
+  68  |         await field.fill('01:00'); await field.press('Tab')
+  69  |       }
+  70  |       while (await page.locator('#schedBoard [data-itdel^="1|0|"]:visible').count()) {
+  71  |         await page.locator('#schedBoard [data-itdel^="1|0|"]:visible').first().click()
+  72  |       }
+  73  |       await page.locator('#schedBoard [data-itadd="1|0"]:visible').click()
+  74  |       const line = page.locator('#schedBoard [data-itline="1|0|0"]:visible').first()
+  75  |       await line.fill('22:00 RALLY'); await line.press('Enter')
+  76  |       const header = page.locator('#schedBoard .sb-go-h:visible').first()
+  77  |       await expect(header.locator('.asd')).toContainText('22:00 (prev day)')
+  78  |       await header.scrollIntoViewIfNeeded()
+  79  |       const m = await header.evaluate(e => {
+  80  |         const summary = e.querySelector('.asd')!, r = summary.getBoundingClientRect(), h = e.getBoundingClientRect()
+  81  |         const style = getComputedStyle(summary), lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2
+  82  |         return { text: summary.textContent, width: r.width, height: r.height, lineHeight,
+  83  |           overflow: e.scrollWidth - e.clientWidth,
+  84  |           buttons: [...e.querySelectorAll('button')].map(b => {
+  85  |             const q = b.getBoundingClientRect(), hit = document.elementFromPoint(q.x + q.width / 2, q.y + q.height / 2)
+  86  |             return { label: b.textContent, inside: q.x >= h.x && q.right <= h.right + 1 && q.y >= h.y && q.bottom <= h.bottom + 1
+  87  |               && q.x >= 0 && q.right <= innerWidth && q.y >= 0 && q.bottom <= innerHeight,
+  88  |               hit: hit === b || b.contains(hit), width: q.width, height: q.height }
+  89  |           }) }
+  90  |       })
+  91  |       expect(m.text).toContain('22:00 (prev day)')
+  92  |       expect(m.width, 'the date cue has readable width').toBeGreaterThanOrEqual(120)
+  93  |       expect(m.height, 'the complete date cue fits within two lines').toBeLessThanOrEqual(m.lineHeight * 2.2)
+  94  |       expect(m.overflow, 'no wave-header horizontal overflow').toBeLessThanOrEqual(1)
+  95  |       expect(m.buttons.every(b => b.inside && b.hit && b.width >= 27 && b.height >= 14), JSON.stringify(m.buttons)).toBe(true)
+  96  |     })
+  97  |   }
+  98  | })
+  99  | 
+  100 | test.describe('the puck is one fixed size everywhere', () => {
+  101 |   for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
+  102 |     test(`74x15 on ${name}, on both week surfaces and in the palette`, async ({ page }) => {
+  103 |       await page.setViewportSize(viewport)
+  104 |       await login(page)
+  105 |       const want = await puckSize(page)
+  106 |       expect(want, 'the two custom properties every grid derives from').toEqual({ w: 74, h: 15 })
+  107 | 
+  108 |       for (const surface of ['viewsched', 'editsched'] as const) {
+  109 |         await go(page, surface)
+  110 |         const odd = await page.evaluate(([sel, w, h]) => {
+  111 |           const root = document.getElementById(sel === 'editsched' ? 'eWeek' : 'vWeek')!
+  112 |           return [...root.querySelectorAll('.puck')]
+  113 |             .map(el => { const r = el.getBoundingClientRect(); return { w: +r.width.toFixed(1), h: +r.height.toFixed(1) } })
+  114 |             .filter(r => r.w !== w || r.h !== h)
+  115 |             .slice(0, 4)
+  116 |         }, [surface, want.w, want.h] as const)
+  117 |         expect(odd, `${surface}: every puck is exactly --puck-w x --puck-h`).toEqual([])
+  118 |       }
+  119 | 
+  120 |       /* the palette is built by the same builders and must match */
+  121 |       const pal = await page.evaluate(() => [...document.querySelectorAll('#eRoster .rpuck .puck')]
+  122 |         .map(el => { const r = el.getBoundingClientRect(); return +r.width.toFixed(1) }))
+  123 |       expect(pal.length, 'the palette drew some pucks to measure').toBeGreaterThan(0)
+  124 |       expect([...new Set(pal)], 'palette pucks are the same width as week pucks').toEqual([want.w])
+  125 |     })
+  126 | 
+  127 |     test(`the ARMED palette's struck entries keep the puck 74x15 on ${name}`, async ({ page }) => {
+  128 |       /* .rpuck.no.haswhy is a COLUMN flex container (reason printed under the
+  129 |          name), and the shared `.rpuck .puck` rule pins flex-basis to --puck-w
+  130 |          — which in a column governs HEIGHT, so every struck entry drew a
+  131 |          74x74 grey slab (owner, 14 Aug 26). Only a real layout engine can see
+  132 |          it: jsdom proves which class was emitted, not what it painted. */
+  133 |       await page.setViewportSize(viewport)
+  134 |       await login(page)
+  135 |       await go(page, 'editsched')
+```

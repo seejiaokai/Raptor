@@ -1,0 +1,4987 @@
+[
+  {
+    "surface": "week",
+    "sections": [
+      {
+        "key": "0.prog",
+        "title": "⠿Common Programme",
+        "x": 2,
+        "y": 416,
+        "width": 550,
+        "height": 809.90625,
+        "fields": [
+          {
+            "tag": "DIV",
+            "text": "EP: ENGINE FIRE ON TAKE OFF",
+            "attrs": {
+              "data-txt": "dn:0.0"
+            },
+            "parents": [
+              "allhands sec sec-prog",
+              "dsec"
+            ]
+          },
+          {
+            "tag": "DIV",
+            "text": "ORDERS: FLYING ORDERS SECTION 2",
+            "attrs": {
+              "data-txt": "dn:0.1"
+            },
+            "parents": [
+              "allhands sec sec-prog",
+              "dsec"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "SODB",
+            "attrs": {
+              "data-txt": "ap:0.0.prog"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.0.sub"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "07:45",
+            "attrs": {
+              "data-txt": "ap:0.0.str"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "08:15",
+            "attrs": {
+              "data-txt": "ap:0.0.end"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.0.rmks"
+            },
+            "parents": [
+              "rmk",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "MET + NOTAM BRIEF",
+            "attrs": {
+              "data-txt": "ap:0.1.prog"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.1.sub"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "08:15",
+            "attrs": {
+              "data-txt": "ap:0.1.str"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "08:30",
+            "attrs": {
+              "data-txt": "ap:0.1.end"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.1.rmks"
+            },
+            "parents": [
+              "rmk",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "FLIGHT SAFETY STAND-DOWN",
+            "attrs": {
+              "data-txt": "ap:0.2.prog"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.2.sub"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "08:30",
+            "attrs": {
+              "data-txt": "ap:0.2.str"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "09:00",
+            "attrs": {
+              "data-txt": "ap:0.2.end"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.2.rmks"
+            },
+            "parents": [
+              "rmk",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "WPNS & TACTICS SYNC",
+            "attrs": {
+              "data-txt": "ap:0.3.prog"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.3.sub"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "11:30",
+            "attrs": {
+              "data-txt": "ap:0.3.str"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "12:00",
+            "attrs": {
+              "data-txt": "ap:0.3.end"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.3.rmks"
+            },
+            "parents": [
+              "rmk",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "STANDARDISATION MEETING",
+            "attrs": {
+              "data-txt": "ap:0.4.prog"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.4.sub"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "13:30",
+            "attrs": {
+              "data-txt": "ap:0.4.str"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "14:30",
+            "attrs": {
+              "data-txt": "ap:0.4.end"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.4.rmks"
+            },
+            "parents": [
+              "rmk",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "OCU PROGRESS REVIEW",
+            "attrs": {
+              "data-txt": "ap:0.5.prog"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.5.sub"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "14:45",
+            "attrs": {
+              "data-txt": "ap:0.5.str"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "15:30",
+            "attrs": {
+              "data-txt": "ap:0.5.end"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.5.rmks"
+            },
+            "parents": [
+              "rmk",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "INTEL UPDATE",
+            "attrs": {
+              "data-txt": "ap:0.6.prog"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.6.sub"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "16:00",
+            "attrs": {
+              "data-txt": "ap:0.6.str"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "16:20",
+            "attrs": {
+              "data-txt": "ap:0.6.end"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.6.rmks"
+            },
+            "parents": [
+              "rmk",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "OPS SHARING + NAV SYS BRIEF",
+            "attrs": {
+              "data-txt": "ap:0.7.prog"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.7.sub"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "17:55",
+            "attrs": {
+              "data-txt": "ap:0.7.str"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.7.end"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.7.rmks"
+            },
+            "parents": [
+              "rmk",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "DINNER WITH CMD",
+            "attrs": {
+              "data-txt": "ap:0.8.prog"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.8.sub"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "18:30",
+            "attrs": {
+              "data-txt": "ap:0.8.str"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.8.end"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.8.rmks"
+            },
+            "parents": [
+              "rmk",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "CMD ENGAGEMENT @ CREW ROOM (ALL)",
+            "attrs": {
+              "data-txt": "ap:0.9.prog"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.9.sub"
+            },
+            "parents": [
+              "nm",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "21:30",
+            "attrs": {
+              "data-txt": "ap:0.9.str"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.9.end"
+            },
+            "parents": [
+              "ah-row",
+              "allhands sec sec-prog"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "ap:0.9.rmks"
+            },
+            "parents": [
+              "rmk",
+              "ah-row"
+            ]
+          },
+          {
+            "tag": "DIV",
+            "text": "",
+            "attrs": {
+              "data-txt": "pn:0"
+            },
+            "parents": [
+              "allhands sec sec-prog",
+              "dsec"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "allhands sec sec-prog",
+            "height": 809.90625
+          }
+        ]
+      },
+      {
+        "key": "0.waves",
+        "title": "⠿Flying waves",
+        "x": 2,
+        "y": 1235.90625,
+        "width": 550,
+        "height": 656.6875,
+        "fields": [
+          {
+            "tag": "SPAN",
+            "text": "WAVE 1",
+            "attrs": {
+              "data-txt": "wl:0.0"
+            },
+            "parents": [
+              "asd",
+              "go-tab"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS",
+            "attrs": {
+              "data-itline": "0|0|0"
+            },
+            "parents": [
+              "intimes iedit",
+              "go  "
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "10:40H: FIRST WAVE RU IN TIME + WX/NOTAMS",
+            "attrs": {
+              "data-itline": "0|0|1"
+            },
+            "parents": [
+              "intimes iedit",
+              "go  "
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "VL",
+            "attrs": {
+              "data-txt": "ff:0.0.0.cs"
+            },
+            "parents": [
+              "",
+              "fcell csmsn"
+            ]
+          },
+          {
+            "tag": "I",
+            "text": "BFM",
+            "attrs": {
+              "data-txt": "ff:0.0.0.msn"
+            },
+            "parents": [
+              "fcell csmsn",
+              "form"
+            ]
+          },
+          {
+            "tag": "B",
+            "text": "",
+            "attrs": {
+              "data-txt": "ff:0.0.0.br"
+            },
+            "parents": [
+              "fcell bto",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "12:40",
+            "attrs": {
+              "data-txt": "ff:0.0.0.to"
+            },
+            "parents": [
+              "fcell bto",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "14:05",
+            "attrs": {
+              "data-txt": "ff:0.0.0.ld"
+            },
+            "parents": [
+              "fcell ld",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "1B: BFM-6",
+            "attrs": {
+              "data-txt": "fr:0.0.0.0",
+              "data-ph": "Remarks"
+            },
+            "parents": [
+              "rmkcell r1",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.0.0.0"
+            },
+            "parents": [
+              "stores",
+              "rmkcell r1"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "2A: BFM-5",
+            "attrs": {
+              "data-txt": "fr:0.0.0.1",
+              "data-ph": "Remarks"
+            },
+            "parents": [
+              "rmkcell",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.0.0.1"
+            },
+            "parents": [
+              "stores",
+              "rmkcell"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "NORTH  ·  SOUTH",
+            "attrs": {
+              "data-area": "0.0.0"
+            },
+            "parents": [
+              "form-area",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "1240-1405",
+            "attrs": {
+              "data-atime": "0.0.0"
+            },
+            "parents": [
+              "form-area",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "RU",
+            "attrs": {
+              "data-txt": "ff:0.0.1.cs"
+            },
+            "parents": [
+              "",
+              "fcell csmsn"
+            ]
+          },
+          {
+            "tag": "I",
+            "text": "BFM",
+            "attrs": {
+              "data-txt": "ff:0.0.1.msn"
+            },
+            "parents": [
+              "fcell csmsn",
+              "form"
+            ]
+          },
+          {
+            "tag": "B",
+            "text": "",
+            "attrs": {
+              "data-txt": "ff:0.0.1.br"
+            },
+            "parents": [
+              "fcell bto",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "13:40",
+            "attrs": {
+              "data-txt": "ff:0.0.1.to"
+            },
+            "parents": [
+              "fcell bto",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "15:05",
+            "attrs": {
+              "data-txt": "ff:0.0.1.ld"
+            },
+            "parents": [
+              "fcell ld",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "PRI LSR",
+            "attrs": {
+              "data-txt": "fr:0.0.1.0",
+              "data-ph": "Remarks"
+            },
+            "parents": [
+              "rmkcell r1",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.0.1.0"
+            },
+            "parents": [
+              "stores",
+              "rmkcell r1"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "2A: BFM-ADD",
+            "attrs": {
+              "data-txt": "fr:0.0.1.1",
+              "data-ph": "Remarks"
+            },
+            "parents": [
+              "rmkcell",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.0.1.1"
+            },
+            "parents": [
+              "stores",
+              "rmkcell"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "NORTH  ·  SOUTH",
+            "attrs": {
+              "data-area": "0.0.1"
+            },
+            "parents": [
+              "form-area",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "1340-1505",
+            "attrs": {
+              "data-atime": "0.0.1"
+            },
+            "parents": [
+              "form-area",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "WAVE 2",
+            "attrs": {
+              "data-txt": "wl:0.1"
+            },
+            "parents": [
+              "asd",
+              "go-tab"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "16:45H: NIGHT WAVE VL IN TIME + WX/NOTAMS",
+            "attrs": {
+              "data-itline": "0|1|0"
+            },
+            "parents": [
+              "intimes iedit",
+              "go night "
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "16:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS",
+            "attrs": {
+              "data-itline": "0|1|1"
+            },
+            "parents": [
+              "intimes iedit",
+              "go night "
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "VL",
+            "attrs": {
+              "data-txt": "ff:0.1.0.cs"
+            },
+            "parents": [
+              "",
+              "fcell csmsn"
+            ]
+          },
+          {
+            "tag": "I",
+            "text": "BFM",
+            "attrs": {
+              "data-txt": "ff:0.1.0.msn"
+            },
+            "parents": [
+              "fcell csmsn",
+              "form"
+            ]
+          },
+          {
+            "tag": "B",
+            "text": "",
+            "attrs": {
+              "data-txt": "ff:0.1.0.br"
+            },
+            "parents": [
+              "fcell bto",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "19:45",
+            "attrs": {
+              "data-txt": "ff:0.1.0.to"
+            },
+            "parents": [
+              "fcell bto",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "21:10",
+            "attrs": {
+              "data-txt": "ff:0.1.0.ld"
+            },
+            "parents": [
+              "fcell ld",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "1B: NIGHT BFM",
+            "attrs": {
+              "data-txt": "fr:0.1.0.0",
+              "data-ph": "Remarks"
+            },
+            "parents": [
+              "rmkcell r1",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.1.0.0"
+            },
+            "parents": [
+              "stores",
+              "rmkcell r1"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "2A: DT / OCU",
+            "attrs": {
+              "data-txt": "fr:0.1.0.1",
+              "data-ph": "Remarks"
+            },
+            "parents": [
+              "rmkcell",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.1.0.1"
+            },
+            "parents": [
+              "stores",
+              "rmkcell"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "WEST  ·  SOUTH",
+            "attrs": {
+              "data-area": "0.1.0"
+            },
+            "parents": [
+              "form-area",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "1945-2110",
+            "attrs": {
+              "data-atime": "0.1.0"
+            },
+            "parents": [
+              "form-area",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "RU",
+            "attrs": {
+              "data-txt": "ff:0.1.1.cs"
+            },
+            "parents": [
+              "",
+              "fcell csmsn"
+            ]
+          },
+          {
+            "tag": "I",
+            "text": "BFM",
+            "attrs": {
+              "data-txt": "ff:0.1.1.msn"
+            },
+            "parents": [
+              "fcell csmsn",
+              "form"
+            ]
+          },
+          {
+            "tag": "B",
+            "text": "",
+            "attrs": {
+              "data-txt": "ff:0.1.1.br"
+            },
+            "parents": [
+              "fcell bto",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "19:20",
+            "attrs": {
+              "data-txt": "ff:0.1.1.to"
+            },
+            "parents": [
+              "fcell bto",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "20:45",
+            "attrs": {
+              "data-txt": "ff:0.1.1.ld"
+            },
+            "parents": [
+              "fcell ld",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "1A: NIGHT",
+            "attrs": {
+              "data-txt": "fr:0.1.1.0",
+              "data-ph": "Remarks"
+            },
+            "parents": [
+              "rmkcell r1",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.1.1.0"
+            },
+            "parents": [
+              "stores",
+              "rmkcell r1"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "2A: NIGHT BFM",
+            "attrs": {
+              "data-txt": "fr:0.1.1.1",
+              "data-ph": "Remarks"
+            },
+            "parents": [
+              "rmkcell",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.1.1.1"
+            },
+            "parents": [
+              "stores",
+              "rmkcell"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "WEST  ·  SOUTH",
+            "attrs": {
+              "data-area": "0.1.1"
+            },
+            "parents": [
+              "form-area",
+              "form"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "1920-2045",
+            "attrs": {
+              "data-atime": "0.1.1"
+            },
+            "parents": [
+              "form-area",
+              "form"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sub-h wv-sech",
+            "height": 24
+          },
+          {
+            "tag": "DIV",
+            "cls": "go  ",
+            "height": 306.34375
+          },
+          {
+            "tag": "DIV",
+            "cls": "go night ",
+            "height": 306.34375
+          }
+        ]
+      },
+      {
+        "key": "0.duty",
+        "title": "⠿Duties",
+        "x": 2,
+        "y": 1902.59375,
+        "width": 550,
+        "height": 396.40625,
+        "fields": [
+          {
+            "tag": "SPAN",
+            "text": "1st wave",
+            "attrs": {
+              "data-txt": "dl:0.0"
+            },
+            "parents": [
+              "pl-sub",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "SDO",
+            "attrs": {
+              "data-txt": "dr:0.0.0.role"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "07:00",
+            "attrs": {
+              "data-txt": "dr:0.0.0.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "13:00",
+            "attrs": {
+              "data-txt": "dr:0.0.0.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "dr:0.0.0.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "SXO",
+            "attrs": {
+              "data-txt": "dr:0.0.1.role"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "06:00",
+            "attrs": {
+              "data-txt": "dr:0.0.1.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "13:00",
+            "attrs": {
+              "data-txt": "dr:0.0.1.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "dr:0.0.1.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "OPS-O",
+            "attrs": {
+              "data-txt": "dr:0.0.2.role"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "06:00",
+            "attrs": {
+              "data-txt": "dr:0.0.2.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "14:00",
+            "attrs": {
+              "data-txt": "dr:0.0.2.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "dr:0.0.2.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "2nd wave",
+            "attrs": {
+              "data-txt": "dl:0.1"
+            },
+            "parents": [
+              "pl-sub",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "SDO",
+            "attrs": {
+              "data-txt": "dr:0.1.0.role"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "13:00",
+            "attrs": {
+              "data-txt": "dr:0.1.0.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "21:30",
+            "attrs": {
+              "data-txt": "dr:0.1.0.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "dr:0.1.0.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "SXO",
+            "attrs": {
+              "data-txt": "dr:0.1.1.role"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "13:00",
+            "attrs": {
+              "data-txt": "dr:0.1.1.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "21:30",
+            "attrs": {
+              "data-txt": "dr:0.1.1.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "dr:0.1.1.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "OPS-O",
+            "attrs": {
+              "data-txt": "dr:0.1.2.role"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "14:00",
+            "attrs": {
+              "data-txt": "dr:0.1.2.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "21:30",
+            "attrs": {
+              "data-txt": "dr:0.1.2.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-duty"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "dr:0.1.2.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "DIV",
+            "text": "",
+            "attrs": {
+              "data-txt": "dtn:0"
+            },
+            "parents": [
+              "sub plist sec sec-duty",
+              "dsec"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sub plist sec sec-duty",
+            "height": 396.40625
+          }
+        ]
+      },
+      {
+        "key": "0.sims",
+        "title": "⠿Sims",
+        "x": 2,
+        "y": 2309,
+        "width": 550,
+        "height": 528.40625,
+        "fields": [
+          {
+            "tag": "SPAN",
+            "text": "BRIEF",
+            "attrs": {
+              "data-txt": "sr:0.amt.0.label"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "11:00",
+            "attrs": {
+              "data-txt": "sr:0.amt.0.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "sr:0.amt.0.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "ALL 8 PAX @ AMT BLDG",
+            "attrs": {
+              "data-txt": "sr:0.amt.0.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "BOX",
+            "attrs": {
+              "data-txt": "sr:0.amt.1.label"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "11:30",
+            "attrs": {
+              "data-txt": "sr:0.amt.1.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "12:30",
+            "attrs": {
+              "data-txt": "sr:0.amt.1.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "2 X 4-SHIP // 2TK TPOD 9X",
+            "attrs": {
+              "data-txt": "sr:0.amt.1.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "DEBRIEF",
+            "attrs": {
+              "data-txt": "sr:0.amt.2.label"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "12:30",
+            "attrs": {
+              "data-txt": "sr:0.amt.2.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "sr:0.amt.2.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "sr:0.amt.2.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "EP-4",
+            "attrs": {
+              "data-txt": "sr:0.oft.0.label"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "08:00",
+            "attrs": {
+              "data-txt": "sr:0.oft.0.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "09:30",
+            "attrs": {
+              "data-txt": "sr:0.oft.0.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "A: IEPE / EP-3N // BRIEF 30 PRIOR",
+            "attrs": {
+              "data-txt": "sr:0.oft.0.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "EP-4",
+            "attrs": {
+              "data-txt": "sr:0.oft.1.label"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "12:00",
+            "attrs": {
+              "data-txt": "sr:0.oft.1.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "13:30",
+            "attrs": {
+              "data-txt": "sr:0.oft.1.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "A: SA(S)-3 // BRIEF 30 PRIOR",
+            "attrs": {
+              "data-txt": "sr:0.oft.1.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "SIMS (EXT SQN)",
+            "attrs": {
+              "data-txt": "sr:0.oft.2.label"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "13:30",
+            "attrs": {
+              "data-txt": "sr:0.oft.2.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "15:00",
+            "attrs": {
+              "data-txt": "sr:0.oft.2.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "EXT SQN SLOT",
+            "attrs": {
+              "data-txt": "sr:0.oft.2.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "EP-6",
+            "attrs": {
+              "data-txt": "sr:0.oft.3.label"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "15:00",
+            "attrs": {
+              "data-txt": "sr:0.oft.3.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "16:30",
+            "attrs": {
+              "data-txt": "sr:0.oft.3.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "B: SEFE",
+            "attrs": {
+              "data-txt": "sr:0.oft.3.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "EP-6N",
+            "attrs": {
+              "data-txt": "sr:0.oft.4.label"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "17:00",
+            "attrs": {
+              "data-txt": "sr:0.oft.4.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "18:30",
+            "attrs": {
+              "data-txt": "sr:0.oft.4.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist sec sec-sim"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "NIGHT EP // 3RD BODY = OBSERVER",
+            "attrs": {
+              "data-txt": "sr:0.oft.4.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "DIV",
+            "text": "",
+            "attrs": {
+              "data-txt": "sn:0"
+            },
+            "parents": [
+              "sub plist sec sec-sim",
+              "dsec"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sub plist sec sec-sim",
+            "height": 528.40625
+          }
+        ]
+      },
+      {
+        "key": "0.ground",
+        "title": "⠿Ground Programme",
+        "x": 2,
+        "y": 2847.40625,
+        "width": 550,
+        "height": 489.40625,
+        "fields": [
+          {
+            "tag": "SPAN",
+            "text": "HQ ENGAGEMENT",
+            "attrs": {
+              "data-txt": "gr:0.0.prog"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "08:45",
+            "attrs": {
+              "data-txt": "gr:0.0.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "16:30",
+            "attrs": {
+              "data-txt": "gr:0.0.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "gr:0.0.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "MEETING",
+            "attrs": {
+              "data-txt": "gr:0.7.prog"
+            },
+            "parents": [
+              "nm",
+              "pl-row gr-frominput"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "09:00",
+            "attrs": {
+              "data-txt": "gr:0.7.str"
+            },
+            "parents": [
+              "pl-row gr-frominput",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "17:00",
+            "attrs": {
+              "data-txt": "gr:0.7.end"
+            },
+            "parents": [
+              "pl-row gr-frominput",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "Desk / staff work",
+            "attrs": {
+              "data-txt": "gr:0.7.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row gr-frominput"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "STAFF MTG @ HQ",
+            "attrs": {
+              "data-txt": "gr:0.1.prog"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "09:30",
+            "attrs": {
+              "data-txt": "gr:0.1.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "11:00",
+            "attrs": {
+              "data-txt": "gr:0.1.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "gr:0.1.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "APPOINTMENT",
+            "attrs": {
+              "data-txt": "gr:0.6.prog"
+            },
+            "parents": [
+              "nm",
+              "pl-row gr-frominput"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "10:00",
+            "attrs": {
+              "data-txt": "gr:0.6.str"
+            },
+            "parents": [
+              "pl-row gr-frominput",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "11:00",
+            "attrs": {
+              "data-txt": "gr:0.6.end"
+            },
+            "parents": [
+              "pl-row gr-frominput",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "HSP blood panel",
+            "attrs": {
+              "data-txt": "gr:0.6.rmks"
+            },
+            "parents": [
+              "rmk has-late",
+              "pl-row gr-frominput"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "MEDICAL APPT",
+            "attrs": {
+              "data-txt": "gr:0.2.prog"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "10:30",
+            "attrs": {
+              "data-txt": "gr:0.2.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "12:30",
+            "attrs": {
+              "data-txt": "gr:0.2.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "gr:0.2.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "DENTAL APPT",
+            "attrs": {
+              "data-txt": "gr:0.3.prog"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "12:00",
+            "attrs": {
+              "data-txt": "gr:0.3.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "13:30",
+            "attrs": {
+              "data-txt": "gr:0.3.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "gr:0.3.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "OPS/LOGS @ EXT SQN",
+            "attrs": {
+              "data-txt": "gr:0.5.prog"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "14:00",
+            "attrs": {
+              "data-txt": "gr:0.5.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "15:30",
+            "attrs": {
+              "data-txt": "gr:0.5.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "gr:0.5.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "TRAINING CMD VISIT",
+            "attrs": {
+              "data-txt": "gr:0.4.prog"
+            },
+            "parents": [
+              "nm",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "16:30",
+            "attrs": {
+              "data-txt": "gr:0.4.str"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "18:00",
+            "attrs": {
+              "data-txt": "gr:0.4.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "gr:0.4.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "FLY WITH",
+            "attrs": {
+              "data-txt": "gr:0.8.prog"
+            },
+            "parents": [
+              "nm",
+              "pl-row gr-frominput"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "gr:0.8.str"
+            },
+            "parents": [
+              "pl-row gr-frominput",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-txt": "gr:0.8.end"
+            },
+            "parents": [
+              "pl-row gr-frominput",
+              "sub plist one sec sec-grnd"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "Keen for any wave",
+            "attrs": {
+              "data-txt": "gr:0.8.rmks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row gr-frominput"
+            ]
+          },
+          {
+            "tag": "DIV",
+            "text": "",
+            "attrs": {
+              "data-txt": "gn:0"
+            },
+            "parents": [
+              "sub plist one sec sec-grnd",
+              "dsec"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sub plist one sec sec-grnd",
+            "height": 489.40625
+          }
+        ]
+      },
+      {
+        "key": "0.inputs",
+        "title": "⠿Personal Inputs3 inputs · 3 on programme · show ⌄",
+        "x": 2,
+        "y": 3346.8125,
+        "width": 550,
+        "height": 24,
+        "fields": [],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sub plist one sec sec-inp",
+            "height": 24
+          }
+        ]
+      },
+      {
+        "key": "0.avail",
+        "title": "⠿Available crewby wave · close ⌃",
+        "x": 2,
+        "y": 3380.8125,
+        "width": 550,
+        "height": 221,
+        "fields": [],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "availpuck sec sec-avail",
+            "height": 221
+          }
+        ]
+      },
+      {
+        "key": "0.sans",
+        "title": "⠿SANS Availpress a card to edit",
+        "x": 2,
+        "y": 3611.8125,
+        "width": 550,
+        "height": 79,
+        "fields": [],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sub plist one sec sec-sans",
+            "height": 79
+          }
+        ]
+      },
+      {
+        "key": "0.unav",
+        "title": "⠿Unavailabletimes and remarks type in place · clear a time for all day · press the type to change it",
+        "x": 2,
+        "y": 3700.8125,
+        "width": 550,
+        "height": 98,
+        "fields": [
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-inp": "imuthz5q6zbvq78.str",
+              "data-ph": "all day"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-unav"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-inp": "imuthz5q6zbvq78.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-unav"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "Medical leave 13 Jul",
+            "attrs": {
+              "data-inp": "imuthz5q6zbvq78.rmks",
+              "data-ph": "remarks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-inp": "imuthz5q6rrc9fa.str",
+              "data-ph": "all day"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-unav"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-inp": "imuthz5q6rrc9fa.end"
+            },
+            "parents": [
+              "pl-row",
+              "sub plist one sec sec-unav"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "Medically down till 17 Jul",
+            "attrs": {
+              "data-inp": "imuthz5q6rrc9fa.rmks",
+              "data-ph": "remarks"
+            },
+            "parents": [
+              "rmk",
+              "pl-row"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sub plist one sec sec-unav",
+            "height": 98
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "surface": "board",
+    "sections": [
+      {
+        "key": "0.notes",
+        "title": "⠿Overall notes shown at the head of the day+ Note",
+        "x": 14,
+        "y": 254,
+        "width": 1092,
+        "height": 125,
+        "fields": [
+          {
+            "tag": "TEXTAREA",
+            "text": "EP: ENGINE FIRE ON TAKE OFF",
+            "attrs": {
+              "data-bfld": "dn:0.0"
+            },
+            "parents": [
+              "sb-nrow",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "ORDERS: FLYING ORDERS SECTION 2",
+            "attrs": {
+              "data-bfld": "dn:0.1"
+            },
+            "parents": [
+              "sb-nrow",
+              "sb-pb"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sb-panel notes",
+            "height": 125
+          }
+        ]
+      },
+      {
+        "key": "0.prog",
+        "title": "⠿Common Programme squadron-wide — affects all⇅ Auto sort+ Item",
+        "x": 14,
+        "y": 391,
+        "width": 1092,
+        "height": 504.71875,
+        "fields": [
+          {
+            "tag": "TEXTAREA",
+            "text": "SODB",
+            "attrs": {
+              "data-bfld": "ap:0.0.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "07:45",
+            "attrs": {
+              "data-bfld": "ap:0.0.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "08:15",
+            "attrs": {
+              "data-bfld": "ap:0.0.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.0.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "MET + NOTAM BRIEF",
+            "attrs": {
+              "data-bfld": "ap:0.1.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "08:15",
+            "attrs": {
+              "data-bfld": "ap:0.1.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "08:30",
+            "attrs": {
+              "data-bfld": "ap:0.1.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.1.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "FLIGHT SAFETY STAND-DOWN",
+            "attrs": {
+              "data-bfld": "ap:0.2.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "08:30",
+            "attrs": {
+              "data-bfld": "ap:0.2.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "09:00",
+            "attrs": {
+              "data-bfld": "ap:0.2.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.2.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "WPNS & TACTICS SYNC",
+            "attrs": {
+              "data-bfld": "ap:0.3.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "11:30",
+            "attrs": {
+              "data-bfld": "ap:0.3.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "12:00",
+            "attrs": {
+              "data-bfld": "ap:0.3.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.3.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "STANDARDISATION MEETING",
+            "attrs": {
+              "data-bfld": "ap:0.4.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "13:30",
+            "attrs": {
+              "data-bfld": "ap:0.4.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "14:30",
+            "attrs": {
+              "data-bfld": "ap:0.4.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.4.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "OCU PROGRESS REVIEW",
+            "attrs": {
+              "data-bfld": "ap:0.5.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "14:45",
+            "attrs": {
+              "data-bfld": "ap:0.5.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "15:30",
+            "attrs": {
+              "data-bfld": "ap:0.5.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.5.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "INTEL UPDATE",
+            "attrs": {
+              "data-bfld": "ap:0.6.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "16:00",
+            "attrs": {
+              "data-bfld": "ap:0.6.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "16:20",
+            "attrs": {
+              "data-bfld": "ap:0.6.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.6.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "OPS SHARING + NAV SYS BRIEF",
+            "attrs": {
+              "data-bfld": "ap:0.7.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "17:55",
+            "attrs": {
+              "data-bfld": "ap:0.7.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.7.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.7.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "DINNER WITH CMD",
+            "attrs": {
+              "data-bfld": "ap:0.8.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "18:30",
+            "attrs": {
+              "data-bfld": "ap:0.8.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.8.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.8.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "CMD ENGAGEMENT @ CREW ROOM (ALL)",
+            "attrs": {
+              "data-bfld": "ap:0.9.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "21:30",
+            "attrs": {
+              "data-bfld": "ap:0.9.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.9.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ap:0.9.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "pn:0"
+            },
+            "parents": [
+              "sb-note",
+              "sb-pb"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sb-panel prog",
+            "height": 504.71875
+          }
+        ]
+      },
+      {
+        "key": "0.waves",
+        "title": "⠿Flying waves go times, formations, crews+ Wave",
+        "x": 14,
+        "y": 907.71875,
+        "width": 1092,
+        "height": 803.6875,
+        "fields": [
+          {
+            "tag": "SPAN",
+            "text": "09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS",
+            "attrs": {
+              "data-itline": "0|0|0"
+            },
+            "parents": [
+              "intimes iedit",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "10:40H: FIRST WAVE RU IN TIME + WX/NOTAMS",
+            "attrs": {
+              "data-itline": "0|0|1"
+            },
+            "parents": [
+              "intimes iedit",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "VL",
+            "attrs": {
+              "data-bfld": "ff:0.0.0.cs"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "BFM",
+            "attrs": {
+              "data-bfld": "ff:0.0.0.msn"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ff:0.0.0.br"
+            },
+            "parents": [
+              "sb-bcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "12:40",
+            "attrs": {
+              "data-bfld": "ff:0.0.0.to"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "14:05",
+            "attrs": {
+              "data-bfld": "ff:0.0.0.ld"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "1B: BFM-6",
+            "attrs": {
+              "data-bfld": "fr:0.0.0.0"
+            },
+            "parents": [
+              "sb-rcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.0.0.0"
+            },
+            "parents": [
+              "stores",
+              "sb-rcell"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "VL",
+            "attrs": {
+              "data-bfld": "ff:0.0.0.cs"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "BFM",
+            "attrs": {
+              "data-bfld": "ff:0.0.0.msn"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ff:0.0.0.br"
+            },
+            "parents": [
+              "sb-bcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "12:40",
+            "attrs": {
+              "data-bfld": "ff:0.0.0.to"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "14:05",
+            "attrs": {
+              "data-bfld": "ff:0.0.0.ld"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "2A: BFM-5",
+            "attrs": {
+              "data-bfld": "fr:0.0.0.1"
+            },
+            "parents": [
+              "sb-rcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.0.0.1"
+            },
+            "parents": [
+              "stores",
+              "sb-rcell"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "NORTH  ·  SOUTH",
+            "attrs": {
+              "data-area": "0.0.0"
+            },
+            "parents": [
+              "sb-area",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "1240-1405",
+            "attrs": {
+              "data-atime": "0.0.0"
+            },
+            "parents": [
+              "sb-area",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "RU",
+            "attrs": {
+              "data-bfld": "ff:0.0.1.cs"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "BFM",
+            "attrs": {
+              "data-bfld": "ff:0.0.1.msn"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ff:0.0.1.br"
+            },
+            "parents": [
+              "sb-bcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "13:40",
+            "attrs": {
+              "data-bfld": "ff:0.0.1.to"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "15:05",
+            "attrs": {
+              "data-bfld": "ff:0.0.1.ld"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "PRI LSR",
+            "attrs": {
+              "data-bfld": "fr:0.0.1.0"
+            },
+            "parents": [
+              "sb-rcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.0.1.0"
+            },
+            "parents": [
+              "stores",
+              "sb-rcell"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "RU",
+            "attrs": {
+              "data-bfld": "ff:0.0.1.cs"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "BFM",
+            "attrs": {
+              "data-bfld": "ff:0.0.1.msn"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ff:0.0.1.br"
+            },
+            "parents": [
+              "sb-bcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "13:40",
+            "attrs": {
+              "data-bfld": "ff:0.0.1.to"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "15:05",
+            "attrs": {
+              "data-bfld": "ff:0.0.1.ld"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "2A: BFM-ADD",
+            "attrs": {
+              "data-bfld": "fr:0.0.1.1"
+            },
+            "parents": [
+              "sb-rcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.0.1.1"
+            },
+            "parents": [
+              "stores",
+              "sb-rcell"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "NORTH  ·  SOUTH",
+            "attrs": {
+              "data-area": "0.0.1"
+            },
+            "parents": [
+              "sb-area",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "1340-1505",
+            "attrs": {
+              "data-atime": "0.0.1"
+            },
+            "parents": [
+              "sb-area",
+              "sb-go"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "16:45H: NIGHT WAVE VL IN TIME + WX/NOTAMS",
+            "attrs": {
+              "data-itline": "0|1|0"
+            },
+            "parents": [
+              "intimes iedit",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "16:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS",
+            "attrs": {
+              "data-itline": "0|1|1"
+            },
+            "parents": [
+              "intimes iedit",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "VL",
+            "attrs": {
+              "data-bfld": "ff:0.1.0.cs"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "BFM",
+            "attrs": {
+              "data-bfld": "ff:0.1.0.msn"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ff:0.1.0.br"
+            },
+            "parents": [
+              "sb-bcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "19:45",
+            "attrs": {
+              "data-bfld": "ff:0.1.0.to"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "21:10",
+            "attrs": {
+              "data-bfld": "ff:0.1.0.ld"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "1B: NIGHT BFM",
+            "attrs": {
+              "data-bfld": "fr:0.1.0.0"
+            },
+            "parents": [
+              "sb-rcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.1.0.0"
+            },
+            "parents": [
+              "stores",
+              "sb-rcell"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "VL",
+            "attrs": {
+              "data-bfld": "ff:0.1.0.cs"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "BFM",
+            "attrs": {
+              "data-bfld": "ff:0.1.0.msn"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ff:0.1.0.br"
+            },
+            "parents": [
+              "sb-bcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "19:45",
+            "attrs": {
+              "data-bfld": "ff:0.1.0.to"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "21:10",
+            "attrs": {
+              "data-bfld": "ff:0.1.0.ld"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "2A: DT / OCU",
+            "attrs": {
+              "data-bfld": "fr:0.1.0.1"
+            },
+            "parents": [
+              "sb-rcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.1.0.1"
+            },
+            "parents": [
+              "stores",
+              "sb-rcell"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "WEST  ·  SOUTH",
+            "attrs": {
+              "data-area": "0.1.0"
+            },
+            "parents": [
+              "sb-area",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "1945-2110",
+            "attrs": {
+              "data-atime": "0.1.0"
+            },
+            "parents": [
+              "sb-area",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "RU",
+            "attrs": {
+              "data-bfld": "ff:0.1.1.cs"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "BFM",
+            "attrs": {
+              "data-bfld": "ff:0.1.1.msn"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ff:0.1.1.br"
+            },
+            "parents": [
+              "sb-bcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "19:20",
+            "attrs": {
+              "data-bfld": "ff:0.1.1.to"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "20:45",
+            "attrs": {
+              "data-bfld": "ff:0.1.1.ld"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "1A: NIGHT",
+            "attrs": {
+              "data-bfld": "fr:0.1.1.0"
+            },
+            "parents": [
+              "sb-rcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.1.1.0"
+            },
+            "parents": [
+              "stores",
+              "sb-rcell"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "RU",
+            "attrs": {
+              "data-bfld": "ff:0.1.1.cs"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "BFM",
+            "attrs": {
+              "data-bfld": "ff:0.1.1.msn"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "ff:0.1.1.br"
+            },
+            "parents": [
+              "sb-bcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "19:20",
+            "attrs": {
+              "data-bfld": "ff:0.1.1.to"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "20:45",
+            "attrs": {
+              "data-bfld": "ff:0.1.1.ld"
+            },
+            "parents": [
+              "sb-line",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "2A: NIGHT BFM",
+            "attrs": {
+              "data-bfld": "fr:0.1.1.1"
+            },
+            "parents": [
+              "sb-rcell",
+              "sb-line"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "",
+            "attrs": {
+              "data-bombs": "0.1.1.1"
+            },
+            "parents": [
+              "stores",
+              "sb-rcell"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "WEST  ·  SOUTH",
+            "attrs": {
+              "data-area": "0.1.1"
+            },
+            "parents": [
+              "sb-area",
+              "sb-go night"
+            ]
+          },
+          {
+            "tag": "SPAN",
+            "text": "1920-2045",
+            "attrs": {
+              "data-atime": "0.1.1"
+            },
+            "parents": [
+              "sb-area",
+              "sb-go night"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sb-panel wv",
+            "height": 49
+          },
+          {
+            "tag": "DIV",
+            "cls": "sb-go",
+            "height": 365.34375
+          },
+          {
+            "tag": "DIV",
+            "cls": "sb-go night",
+            "height": 365.34375
+          }
+        ]
+      },
+      {
+        "key": "0.duty",
+        "title": "⠿Duties SDO / SXO / ops desk, by block+ Block",
+        "x": 14,
+        "y": 1723.40625,
+        "width": 1092,
+        "height": 458.71875,
+        "fields": [
+          {
+            "tag": "TEXTAREA",
+            "text": "1st wave",
+            "attrs": {
+              "data-bfld": "dl:0.0"
+            },
+            "parents": [
+              "sb-psub",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "SDO",
+            "attrs": {
+              "data-bfld": "dr:0.0.0.role",
+              "data-rolepick": "0.0.0"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "07:00",
+            "attrs": {
+              "data-bfld": "dr:0.0.0.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "13:00",
+            "attrs": {
+              "data-bfld": "dr:0.0.0.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "dr:0.0.0.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "SXO",
+            "attrs": {
+              "data-bfld": "dr:0.0.1.role",
+              "data-rolepick": "0.0.1"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "06:00",
+            "attrs": {
+              "data-bfld": "dr:0.0.1.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "13:00",
+            "attrs": {
+              "data-bfld": "dr:0.0.1.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "dr:0.0.1.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "OPS-O",
+            "attrs": {
+              "data-bfld": "dr:0.0.2.role",
+              "data-rolepick": "0.0.2"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "06:00",
+            "attrs": {
+              "data-bfld": "dr:0.0.2.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "14:00",
+            "attrs": {
+              "data-bfld": "dr:0.0.2.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "dr:0.0.2.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "2nd wave",
+            "attrs": {
+              "data-bfld": "dl:0.1"
+            },
+            "parents": [
+              "sb-psub",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "SDO",
+            "attrs": {
+              "data-bfld": "dr:0.1.0.role",
+              "data-rolepick": "0.1.0"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "13:00",
+            "attrs": {
+              "data-bfld": "dr:0.1.0.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "21:30",
+            "attrs": {
+              "data-bfld": "dr:0.1.0.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "dr:0.1.0.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "SXO",
+            "attrs": {
+              "data-bfld": "dr:0.1.1.role",
+              "data-rolepick": "0.1.1"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "13:00",
+            "attrs": {
+              "data-bfld": "dr:0.1.1.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "21:30",
+            "attrs": {
+              "data-bfld": "dr:0.1.1.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "dr:0.1.1.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "OPS-O",
+            "attrs": {
+              "data-bfld": "dr:0.1.2.role",
+              "data-rolepick": "0.1.2"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "14:00",
+            "attrs": {
+              "data-bfld": "dr:0.1.2.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "21:30",
+            "attrs": {
+              "data-bfld": "dr:0.1.2.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "dr:0.1.2.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "dtn:0"
+            },
+            "parents": [
+              "sb-note",
+              "sb-pb"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sb-panel duty",
+            "height": 458.71875
+          }
+        ]
+      },
+      {
+        "key": "0.sims",
+        "title": "⠿Sims AMT and OFT rows",
+        "x": 14,
+        "y": 2194.125,
+        "width": 1092,
+        "height": 609.71875,
+        "fields": [
+          {
+            "tag": "TEXTAREA",
+            "text": "BRIEF",
+            "attrs": {
+              "data-bfld": "sr:0.amt.0.label"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "11:00",
+            "attrs": {
+              "data-bfld": "sr:0.amt.0.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "sr:0.amt.0.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "ALL 8 PAX @ AMT BLDG",
+            "attrs": {
+              "data-bfld": "sr:0.amt.0.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "BOX",
+            "attrs": {
+              "data-bfld": "sr:0.amt.1.label"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "11:30",
+            "attrs": {
+              "data-bfld": "sr:0.amt.1.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "12:30",
+            "attrs": {
+              "data-bfld": "sr:0.amt.1.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "2 X 4-SHIP // 2TK TPOD 9X",
+            "attrs": {
+              "data-bfld": "sr:0.amt.1.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "DEBRIEF",
+            "attrs": {
+              "data-bfld": "sr:0.amt.2.label"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "12:30",
+            "attrs": {
+              "data-bfld": "sr:0.amt.2.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "sr:0.amt.2.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "sr:0.amt.2.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "EP-4",
+            "attrs": {
+              "data-bfld": "sr:0.oft.0.label"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "08:00",
+            "attrs": {
+              "data-bfld": "sr:0.oft.0.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "09:30",
+            "attrs": {
+              "data-bfld": "sr:0.oft.0.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "A: IEPE / EP-3N // BRIEF 30 PRIOR",
+            "attrs": {
+              "data-bfld": "sr:0.oft.0.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "EP-4",
+            "attrs": {
+              "data-bfld": "sr:0.oft.1.label"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "12:00",
+            "attrs": {
+              "data-bfld": "sr:0.oft.1.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "13:30",
+            "attrs": {
+              "data-bfld": "sr:0.oft.1.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "A: SA(S)-3 // BRIEF 30 PRIOR",
+            "attrs": {
+              "data-bfld": "sr:0.oft.1.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "SIMS (EXT SQN)",
+            "attrs": {
+              "data-bfld": "sr:0.oft.2.label"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "13:30",
+            "attrs": {
+              "data-bfld": "sr:0.oft.2.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "15:00",
+            "attrs": {
+              "data-bfld": "sr:0.oft.2.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "EXT SQN SLOT",
+            "attrs": {
+              "data-bfld": "sr:0.oft.2.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "EP-6",
+            "attrs": {
+              "data-bfld": "sr:0.oft.3.label"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "15:00",
+            "attrs": {
+              "data-bfld": "sr:0.oft.3.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "16:30",
+            "attrs": {
+              "data-bfld": "sr:0.oft.3.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "B: SEFE",
+            "attrs": {
+              "data-bfld": "sr:0.oft.3.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "EP-6N",
+            "attrs": {
+              "data-bfld": "sr:0.oft.4.label"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "17:00",
+            "attrs": {
+              "data-bfld": "sr:0.oft.4.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "18:30",
+            "attrs": {
+              "data-bfld": "sr:0.oft.4.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "NIGHT EP // 3RD BODY = OBSERVER",
+            "attrs": {
+              "data-bfld": "sr:0.oft.4.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "sn:0"
+            },
+            "parents": [
+              "sb-note",
+              "sb-pb"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sb-panel simr",
+            "height": 609.71875
+          }
+        ]
+      },
+      {
+        "key": "0.ground",
+        "title": "⠿Ground Programme briefs, reviews, admin+ Inputs⇅ Auto sort+ Item",
+        "x": 14,
+        "y": 2815.84375,
+        "width": 1092,
+        "height": 470.71875,
+        "fields": [
+          {
+            "tag": "TEXTAREA",
+            "text": "HQ ENGAGEMENT",
+            "attrs": {
+              "data-bfld": "gr:0.0.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "08:45",
+            "attrs": {
+              "data-bfld": "gr:0.0.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "16:30",
+            "attrs": {
+              "data-bfld": "gr:0.0.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "gr:0.0.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "MEETING",
+            "attrs": {
+              "data-bfld": "gr:0.7.prog"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "09:00",
+            "attrs": {
+              "data-bfld": "gr:0.7.str"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "17:00",
+            "attrs": {
+              "data-bfld": "gr:0.7.end"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "Desk / staff work",
+            "attrs": {
+              "data-bfld": "gr:0.7.rmks"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "STAFF MTG @ HQ",
+            "attrs": {
+              "data-bfld": "gr:0.1.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "09:30",
+            "attrs": {
+              "data-bfld": "gr:0.1.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "11:00",
+            "attrs": {
+              "data-bfld": "gr:0.1.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "gr:0.1.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "APPOINTMENT",
+            "attrs": {
+              "data-bfld": "gr:0.6.prog"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput lateinp",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "10:00",
+            "attrs": {
+              "data-bfld": "gr:0.6.str"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput lateinp",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "11:00",
+            "attrs": {
+              "data-bfld": "gr:0.6.end"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput lateinp",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "HSP blood panel",
+            "attrs": {
+              "data-bfld": "gr:0.6.rmks"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput lateinp",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "MEDICAL APPT",
+            "attrs": {
+              "data-bfld": "gr:0.2.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "10:30",
+            "attrs": {
+              "data-bfld": "gr:0.2.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "12:30",
+            "attrs": {
+              "data-bfld": "gr:0.2.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "gr:0.2.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "DENTAL APPT",
+            "attrs": {
+              "data-bfld": "gr:0.3.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "12:00",
+            "attrs": {
+              "data-bfld": "gr:0.3.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "13:30",
+            "attrs": {
+              "data-bfld": "gr:0.3.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "gr:0.3.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "OPS/LOGS @ EXT SQN",
+            "attrs": {
+              "data-bfld": "gr:0.5.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "14:00",
+            "attrs": {
+              "data-bfld": "gr:0.5.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "15:30",
+            "attrs": {
+              "data-bfld": "gr:0.5.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "gr:0.5.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "TRAINING CMD VISIT",
+            "attrs": {
+              "data-bfld": "gr:0.4.prog"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "16:30",
+            "attrs": {
+              "data-bfld": "gr:0.4.str"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "18:00",
+            "attrs": {
+              "data-bfld": "gr:0.4.end"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "gr:0.4.rmks"
+            },
+            "parents": [
+              "sb-arow c6r",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "FLY WITH",
+            "attrs": {
+              "data-bfld": "gr:0.8.prog"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "gr:0.8.str"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-bfld": "gr:0.8.end"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "Keen for any wave",
+            "attrs": {
+              "data-bfld": "gr:0.8.rmks"
+            },
+            "parents": [
+              "sb-arow c6r gr-frominput",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "",
+            "attrs": {
+              "data-bfld": "gn:0"
+            },
+            "parents": [
+              "sb-note",
+              "sb-pb"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sb-panel grnd",
+            "height": 470.71875
+          }
+        ]
+      },
+      {
+        "key": "0.inputs",
+        "title": "⠿Personal Inputs 3 inputs · 3 on programme · show ⌄",
+        "x": 14,
+        "y": 3298.5625,
+        "width": 1092,
+        "height": 49,
+        "fields": [],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sb-panel pinp",
+            "height": 49
+          }
+        ]
+      },
+      {
+        "key": "0.avail",
+        "title": "⠿Available crewby wave · close ⌃",
+        "x": 14,
+        "y": 3359.5625,
+        "width": 1092,
+        "height": 168,
+        "fields": [],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "availpuck sec sec-avail",
+            "height": 168
+          }
+        ]
+      },
+      {
+        "key": "0.sans",
+        "title": "⠿SANS Avail what SANS aircrew are offering — press a card to edit+ Add",
+        "x": 14,
+        "y": 3539.5625,
+        "width": 1092,
+        "height": 122,
+        "fields": [],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sb-panel sansav",
+            "height": 122
+          }
+        ]
+      },
+      {
+        "key": "0.unav",
+        "title": "⠿Unavailable leave, medical and overseas duty — times and remarks type in place, clear a time for all day+ Add",
+        "x": 14,
+        "y": 3673.5625,
+        "width": 1092,
+        "height": 155,
+        "fields": [
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-ifld": "imuthz5q6zbvq78.str"
+            },
+            "parents": [
+              "sb-arow c6r inprow",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-ifld": "imuthz5q6zbvq78.end"
+            },
+            "parents": [
+              "sb-arow c6r inprow",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "Medical leave 13 Jul",
+            "attrs": {
+              "data-ifld": "imuthz5q6zbvq78.rmks"
+            },
+            "parents": [
+              "sb-arow c6r inprow",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-ifld": "imuthz5q6rrc9fa.str"
+            },
+            "parents": [
+              "sb-arow c6r inprow",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "INPUT",
+            "text": "",
+            "attrs": {
+              "data-ifld": "imuthz5q6rrc9fa.end"
+            },
+            "parents": [
+              "sb-arow c6r inprow",
+              "sb-pb"
+            ]
+          },
+          {
+            "tag": "TEXTAREA",
+            "text": "Medically down till 17 Jul",
+            "attrs": {
+              "data-ifld": "imuthz5q6rrc9fa.rmks"
+            },
+            "parents": [
+              "sb-arow c6r inprow",
+              "sb-pb"
+            ]
+          }
+        ],
+        "children": [
+          {
+            "tag": "DIV",
+            "cls": "sb-panel unav",
+            "height": 155
+          }
+        ]
+      }
+    ]
+  }
+]

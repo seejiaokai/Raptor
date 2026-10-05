@@ -1,0 +1,72 @@
+{
+  "base": "http://localhost:4199",
+  "results": [
+    {
+      "id": "everything-day",
+      "status": "PASS",
+      "facts": [
+        "VIPER bane",
+        "VIPER freak",
+        "COBRA razer",
+        "COBRA sufa",
+        "SC MAIN pump",
+        "SC MAIN glass",
+        "SC SPARE taipan",
+        "SC SPARE drill",
+        "AVALON prowler",
+        "AVALON nasty",
+        "SXO blind nact",
+        "OPS DESK 0-len casper",
+        "AVALON desk salsa",
+        "SC desk slipway",
+        "OFT dice",
+        "OFT glass",
+        "AMT BOX snap",
+        "AMT BOX ammo",
+        "OCU REVIEW stiff",
+        "ADMIN split",
+        "FAMILY DAY allavail",
+        "MASS BRIEF stiff",
+        "MASS BRIEF ignite"
+      ]
+    },
+    {
+      "id": "desktop-S27-Off",
+      "status": "PASS",
+      "facts": "real default-Off setting and edit gate"
+    },
+    {
+      "id": "desktop-S01-S03-S07",
+      "status": "PASS",
+      "facts": "exact/cue boundaries operated via native Mission and Remarks fields"
+    },
+    {
+      "id": "desktop-S08-S11-S12",
+      "status": "PASS",
+      "facts": "text persisted first, Later saves no answer, unchanged Tab never reopens, manual Choose and Change survive pointer blur"
+    },
+    {
+      "id": "desktop-S09-S22-S23",
+      "status": "PASS",
+      "facts": "strict native node/selection preserved through Choose and answer, continued typing works; separate timing clause no question"
+    },
+    {
+      "id": "desktop-S06-S08-answered",
+      "status": "FAIL",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n"
+    }
+  ],
+  "pictures": [
+    "docs/img/insights-build-editing/freeze-1-editing-3/desktop-logic-off.png",
+    "docs/img/insights-build-editing/freeze-1-editing-3/desktop-logic-on.png",
+    "docs/img/insights-build-editing/freeze-1-editing-3/desktop-mission-question.png",
+    "docs/img/insights-build-editing/freeze-1-editing-3/desktop-remarks-question.png",
+    "docs/img/insights-build-editing/freeze-1-editing-3/desktop-change-action.png",
+    "docs/img/insights-build-editing/freeze-1-editing-3/desktop-S06-S08-answered-failure.png"
+  ],
+  "errors": [],
+  "limitations": [
+    "Chromium emulation, not physical iPhone/iOS keyboard."
+  ],
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n"
+}

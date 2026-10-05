@@ -18,3 +18,7 @@ raptor-port/probes/out/
 .superpowers/
 # the IT flow guide research probes — scratch, never committed
 raptor-port/scripts/itflow/tmp-*/
+dist-stack/
+dist-rallyold/
+dist-main/
+dist-fix/

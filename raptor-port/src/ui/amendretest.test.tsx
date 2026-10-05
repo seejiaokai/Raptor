@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { readSchedulerCss } from '../testing/scheduler-css'
 /* [HUMAN-RETEST] the amendment system (24 Sep 26) — the gaps the re-test found, each
    pinned through the production functions the screens call. The rules they enforce are
    lines of raptor-port/docs/superpowers/specs/2026-09-24-amendment-behaviour-register.md
@@ -13,9 +14,8 @@
      counted raw marks, so an OIL-only change read "nothing pending" there while "Publish
      AL1" was offered, and a mark left behind by a round trip read as an edit that is not
      there (walk S3; Fable 5-2, Astra F2).
-   · "Discard marks" only ever clears marks on days never published (F-01, Phase 2): it
-     was enabled — and said "Pending marks cleared" — when every mark sat on a published
-     day and nothing could be cleared (walk S2; Fable 5-1, Astra F3).
+   · D488 removes "Discard marks": draft marks stay until first publication, and a
+     published day's changes still wait for its amendment.
    · RESTARM / UNPUBARM are one-shot confirms that "any navigation clears": a page change
      (and so the admin's View-as-member flip, which changes page) left them armed, so the
      second tap after coming back skipped the warning (walk S13; Fable 5-8, Astra rank 33). */
@@ -53,6 +53,7 @@ import { routeClick } from './interactions'
 import { DraftsModal } from './DraftsModal'
 import { setDraftsEdit, setDayPop } from './pops'
 import { DayPop } from './Modals'
+
 /* the day's WAITING-TO-GO-OUT chip — since [DRAFT-PENDING] (28 Sep 26) the same `.dpend` class also carries the
    changes window's "N new" / "N changes" chip, which is not a pending count (D168) */
 const PEND_CHIP = '.dpend:not(.dnew):not(.dchg)'
@@ -182,30 +183,39 @@ describe('AM23 — every count of a day\'s unpublished changes agrees with the d
   })
 })
 
-describe('"Discard marks" offers only what it can clear (walk S2)', () => {
+describe('D488 — draft marks stay until publication, with no Discard marks door', () => {
   let host: HTMLDivElement, root: Root
   beforeAll(() => { host = document.createElement('div'); document.body.appendChild(host); root = createRoot(host) })
   afterAll(() => { act(() => root.unmount()); host.remove() })
   const render = () => act(() => { root.render(<ALPanel />); notify() })
-  const btn = () => host.querySelector('#alDrop') as HTMLButtonElement
-
-  it('is disabled when every mark sits on a published day — it cannot clear those', async () => {
+  it('has no discard door when every mark sits on a published day', async () => {
     publishDay(MON)
     writeText(`dn:${MON}.0`, 'A CHANGE AFTER PUBLISHING')
     await render()
-    expect(btn().disabled, 'nothing here is discardable: the change is ahead of an issued day').toBe(true)
+    expect(host.querySelector('#alDrop')).toBeNull()
+    expect(host.textContent).not.toContain('Discard marks')
     expect(host.querySelector('.al-pend')!.textContent).not.toMatch(/unpublished days/i)
   })
-  it('clears only the draft day\'s marks when both kinds exist, and says how many', async () => {
+  it('keeps both days\' marks when the panel opens; first publication clears only its draft day', async () => {
     publishDay(MON)
     writeText(`dn:${MON}.0`, 'A CHANGE AFTER PUBLISHING')
     writeText(`dn:2.0`, 'DRAFT WORK ON WEDNESDAY')   // Wednesday was never published
     await render()
-    expect(btn().disabled).toBe(false)
-    const said = withToasts(() => act(() => { btn().click() }))
-    expect(Object.keys(SCHED.pending).some(k => k.startsWith('dn:2.')), 'the draft mark is gone').toBe(false)
+    expect(host.querySelector('#alDrop')).toBeNull()
+    expect(Object.keys(SCHED.pending).some(k => k.startsWith('dn:2.')), 'opening the panel keeps the draft mark').toBe(true)
+    publishDay(2)
+    await render()
+    expect(Object.keys(SCHED.pending).some(k => k.startsWith('dn:2.')), 'first publication clears its draft mark').toBe(false)
     expect(Object.keys(SCHED.pending).some(k => k.startsWith(`dn:${MON}.`)), 'the published day keeps its change').toBe(true)
-    expect(said.join(' ')).toMatch(/1\b/)
+    expect(host.querySelector('.al-pubday')!.textContent).toContain('Publish AL1')
+  })
+  it('keeps the draft-only guidance without offering an amendment or a discard door', async () => {
+    writeText('dn:2.0', 'DRAFT WORK ON WEDNESDAY')
+    await render()
+    expect(host.querySelector('#alDrop')).toBeNull()
+    expect(host.querySelector('.al-pend')!.textContent).toContain('Changes are on unpublished days')
+    expect(host.querySelector('.al-pubday')).toBeNull()
+    expect(SCHED.pending['dn:2.0']).toBeTruthy()
   })
 })
 
@@ -511,7 +521,7 @@ describe('the ⓘ beside the issued face describes the issued version (Astra #2,
    drawn; the rings stay on the puck. A stylesheet guard, since the test browser paints nothing (AM19, AM51). */
 describe('the view page\'s pending hint never takes a warning ring\'s place (Fable final read #3, AM19)', () => {
   it('no rule draws it as an outline on the puck; it is the seat\'s', () => {
-    const css = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'scheduler.css'), 'utf8')
+    const css = readSchedulerCss()
     const rules = css.replace(/\/\*[\s\S]*?\*\//g, '').split('}')
     const onPuck = rules.filter((r) => /(^|,)\s*\.seat\[data-alp\]\s+\.puck\s*(,|\{)/.test(r) && /outline\s*:/.test(r))
     expect(onPuck, 'an outline on the puck hides the dashed and dotted rings').toEqual([])

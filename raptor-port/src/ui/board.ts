@@ -7,10 +7,10 @@ import { briefLeadShown } from '../engine/faceattrs'
 import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
-import { waveInTime } from '../engine/events'
+import { REPORTING_LABEL } from '../engine/reporting'
 import { WARN, validate, WCODE, wlbl, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { shownWarns } from '../engine/warnhide'
-import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
+import { hhmm, hm24, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
 import { standsOn } from '../engine/overlay'
@@ -21,10 +21,15 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
+import { waveHeadBoard, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
+import { commit, isOk } from '../command'
+import { schedStore, SCHED_TYPES } from '../state/sched-commit'
+import { withFreshMissionRoles } from '../state/mission-roles'
+import { missionTracking } from '../engine/insights-config'
+import { resolveMissionRole } from '../engine/mission-role'
 import { dayDrafts, curDraftId, draftDup, draftSelect, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { openAvailWinFrom } from './AvailWindow'
@@ -140,12 +145,10 @@ function boardHTMLBody(di: number, pv?: boolean) {
        "in-time · N ac" header note and the blue suggested-brief ghost that make
        sense only on a real sortie. AVALON/BB keep theirs. */
     const sc = w.kind === 'sc'
-    const asd = w.formations.reduce((n: number, f: any) => n + f.aircraft.length, 0)
     /* SC and AVALON after Night wave (owner, 10 Aug 26) — the same list the
        + Wave picker offers, reachable from a wave that already exists. */
     const opts = ['1st wave', '2nd wave', '3rd wave', '4th wave', '5th wave', 'Night wave', 'SC', 'AVALON']
     const cur = labelToTitle(w); if (!opts.includes(cur)) opts.unshift(cur)
-    const inT = waveInTime(w)
     /* mvRO, not pv (reviewer-found residual, 9 Aug 26): the wave header's
        own title select and its + Line / ✕ Wave pair were still pv-only,
        the same gap as everything else in this pass — a read-only board
@@ -166,8 +169,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
          data-air click is handled globally (interactions.ts setAirKey → AirPop),
          which already reaches the board, so no board-side wiring is needed. */
       + `${sa || mvRO ? '' : `<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}`
-      + (sc ? '' : `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`)
-      + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
+      + (sc ? '' : `<span class="asd">${waveHeadBoard(w)}</span>`)
+      + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     /* The IN TIME + WX/NOTAMS lines edit exactly as the week's do (html.ts):
        an editable .intimes block committing `it:` through the global
@@ -176,10 +179,12 @@ function boardHTMLBody(di: number, pv?: boolean) {
        before; this makes the published lines themselves editable here too
        (owner, 14 Aug 26 — the board should edit everything the week can). */
     if (w.intimes && w.intimes.length)
-      fly += `<div class="intimes${mvRO ? '' : ' iedit'}"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `data-intimes="${di}|${gi}"`}>${intimesInner(w, mvRO ? null : `${di}|${gi}`)}</div>`
+      fly += `<div class="intimes${mvRO ? '' : ' iedit'}" data-warnkey="it:${di}.${gi}"${alAttr(`it:${di}.${gi}`)} ${mvRO ? '' : `data-intimes="${di}|${gi}"`}>${intimesInner(w, mvRO ? null : `${di}|${gi}`)}</div>`
     fly += `<div class="sb-lcols"><span></span><span>CS</span><span>MSN</span><span>B</span><span>TO</span><span>LD</span><span>FCP</span><span>RCP</span><span>Notes</span><span></span></div>`
     if (!w.formations.length) fly += `<div class="sb-empty" style="padding:6px 11px">Empty wave — add a line, or remove the wave.</div>`
-    w.formations.forEach((f: any, li: number) => { f.aircraft.forEach((a: any, ai: number) => {
+    w.formations.forEach((f: any, li: number) => {
+      const roleAccess=pv && !sa && missionTracking() && canEditSched() && view.CURPAGE==='editsched' && !protectedWeek() && view.DPREV.get(di)===dayCurVer(di) && !f.cx && f.aircraft.some((a:any)=>!a.cx) && resolveMissionRole(f).conditional
+      f.aircraft.forEach((a: any, ai: number) => {
       const key = `${di}.${gi}.${li}.${ai}`, fp = `ff:${di}.${gi}.${li}`
       const cxOn = !!(a.cx || f.cx)
       /* stoRO, not pv alone — this was the last of the read-only gap left
@@ -288,7 +293,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
           ${sa ? saRoleHTML(key, a, !stoRO) : ''}
-          ${boxHTML('nts', `data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis}`, a.rmks || '', 'Remarks')}
+          ${boxHTML('nts', roleAccess ? `data-role-remarks="${esc(f.rid||'')}" data-role-day="${di}" readonly aria-label="Published Remarks — read only"${alAttr(`fr:${key}`)}` : `data-bfld="fr:${key}"${alAttr(`fr:${key}`)}${dis}`, a.rmks || '', 'Remarks')}
           ${sa ? '' : (stoRO
             ? storesView(a.opts)
             : `<span class="stores">`
@@ -320,8 +325,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
        row-drag machine steps right over it. */
     if (!sa) {
       const areaTxt = areaText(f), timeTxt = atimeText(f)
-      if (!(mvRO && !areaTxt && !timeTxt))
-        fly += `<div class="sb-area"><span class="fa-lb">AREA</span>`
+      if (roleAccess || !(mvRO && !areaTxt && !timeTxt))
+        fly += `<div class="sb-area"${missionTracking()?` data-role-formation="${esc(f.rid||'')}" data-role-day="${di}"`:''}><span class="fa-lb">AREA</span>`
           + `<span class="areacell"${alAttr(`ar:${di}.${gi}.${li}`)} ${mvRO ? '' : `contenteditable="true" spellcheck="false" data-area="${di}.${gi}.${li}"`}>${esc(areaTxt)}</span>`
           + `<span class="timecell"${alAttr(`at:${di}.${gi}.${li}`)} ${mvRO ? '' : `contenteditable="true" spellcheck="false" data-atime="${di}.${gi}.${li}"`}>${esc(timeTxt)}</span></div>`
     } })
@@ -660,9 +665,12 @@ export function pickDayTpl(di: any, id: any): 'armed' | 'applied' | 'noop' | 're
      "target gone?" disarm does not fire and a stale arm would plant into the
      replacement sortie (P2-IMPL-11). Mirrors the recovery / draft-switch paths. */
   if (view.ARM && view.ARM.di === di) view.disarmSlot()
-  if (!applyDayTpl(di, id)) return 'noop'
-  afterSchedMutate()
-  return 'applied'
+  let applied=false
+  const result=commit({type:SCHED_TYPES.mutate,scope:{module:'sched',weekId:CURWEEK},apply(txn){
+    txn.enlist(schedStore)
+    withFreshMissionRoles(txn,()=>{applied=applyDayTpl(di,id);if(applied)afterSchedMutate()})
+  }})
+  return isOk(result) && applied ? 'applied' : 'noop'
 }
 /* canEditSched() and the DPREV (frozen-preview) guard live HERE, not only on
    the button's render gate — a stale button left over from a role change, or

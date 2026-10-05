@@ -1,0 +1,27 @@
+{
+  "ref": "0804877ca099c844b77bfd8692cd2d055e5534c7",
+  "sourceHash": "0c16a9f046abaedb4f06e7876e2811a78e4695cf930fee884e3432d3c0f26fec",
+  "bytes": 506840,
+  "assets": [
+    {
+      "name": "LeaveWarPage-C7jiJ1U2.css",
+      "hash": "95e685e697906db21920f8f72b0be2dea17f755dd108d56d1ac2f8ae3cbdc00f",
+      "bytes": 76185
+    },
+    {
+      "name": "TrackerPage-RlgGU7Bu.css",
+      "hash": "73472c1eda19949dc6645986d7de877892f7cc86b49f1fa9cf1dfe0d61f31baf",
+      "bytes": 32016
+    },
+    {
+      "name": "idle-BfPG9c67.css",
+      "hash": "176e470cd66a93432185177d4c272e833fb7e446397c573ed2db74b37e04602d",
+      "bytes": 3445
+    },
+    {
+      "name": "index-CXdqUrrO.css",
+      "hash": "b8a917a4daa47210c57ea306d2dc4dab7e64e6267b0b5cfb24bb24a3e8166999",
+      "bytes": 218742
+    }
+  ]
+}

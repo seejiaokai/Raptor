@@ -1,0 +1,88 @@
+{
+  "designOnly": true,
+  "noLineIndicator": true,
+  "checks": [
+    {
+      "label": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "before": {
+        "text": "BFM",
+        "width": 66,
+        "height": 24,
+        "rowHeight": 123.5
+      },
+      "after": {
+        "text": "BFM",
+        "width": 66,
+        "height": 24,
+        "rowHeight": 123.5
+      },
+      "popup": {
+        "x": 120,
+        "y": 477.71875,
+        "width": 248,
+        "height": 124.875
+      },
+      "prototypeButtons": true,
+      "virtualKeyboardNotSimulated": true
+    },
+    {
+      "label": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "before": {
+        "text": "BFM",
+        "width": 74,
+        "height": 24,
+        "rowHeight": 51
+      },
+      "after": {
+        "text": "BFM",
+        "width": 74,
+        "height": 24,
+        "rowHeight": 51
+      },
+      "popup": {
+        "x": 126,
+        "y": 570.71875,
+        "width": 248,
+        "height": 124.875
+      },
+      "prototypeButtons": true,
+      "virtualKeyboardNotSimulated": true
+    },
+    {
+      "label": "short",
+      "viewport": {
+        "width": 390,
+        "height": 568
+      },
+      "before": {
+        "text": "BFM",
+        "width": 66,
+        "height": 24,
+        "rowHeight": 123.5
+      },
+      "after": {
+        "text": "BFM",
+        "width": 66,
+        "height": 24,
+        "rowHeight": 123.5
+      },
+      "popup": {
+        "x": 120,
+        "y": 339.71875,
+        "width": 248,
+        "height": 124.875
+      },
+      "prototypeButtons": true,
+      "virtualKeyboardNotSimulated": true
+    }
+  ],
+  "errors": []
+}

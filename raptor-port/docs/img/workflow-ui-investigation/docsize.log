@@ -1,0 +1,37 @@
+
+> raptor-port@0.0.0 docsize
+> node scripts/docsize.mjs
+
+docsize — measured against de470db5 · this change touches raptor-port/src
+
+  note: HANDOFF.md ## Now still has a block for claude/ai-workflow-skills-review-87bf52, which is merged into main — the next handoff removes it once its open residue is filed
+  file                                   tier  lines   ceiling
+  raptor-port/CLAUDE.md                  0     292     340
+  .claude/rules/raptor-executor.md       0     108     108
+  .claude/rules/bug-check.md             0     76      76
+  .claude/rules/record-decisions.md      0     152     160
+  .claude/rules/plain-language.md        0     60      60
+  .claude/rules/doc-structure.md         0     81      100
+  .claude/rules/shipping.md              0     99      110
+  HANDOFF.md                             1     245     250
+  HANDOFF-NEXT.md                        1     5       12
+  OUTSTANDING.md                         1     1848    1750   OVER by 98 — code change: do NOT trim here (D29); deferred to its own pass
+  DECISIONS.md                           1     83      90
+
+  tier 0, always loaded: 868 lines (no target — D141)
+
+  rulings file (loaded)                        tier  bytes    ~tokens  tripwire
+  .claude/rules/decisions/how-we-work.md       0     22870    ~6181    22000   OVER by 870 bytes — code change: deferred (D29)
+  .claude/rules/decisions/people-accounts.md   2     13921    ~3762    22000
+  .claude/rules/decisions/scheduler.md         2     63054    ~17042   62000   OVER by 1054 bytes — code change: deferred (D29)
+  .claude/rules/decisions/oil.md               2     8828     ~2386    12000
+  .claude/rules/decisions/leave-war.md         2     27406    ~7407    32000
+  .claude/rules/decisions/tracker.md           2     17834    ~4820    18000
+  .claude/rules/decisions/it-flow-guide.md     2     3991     ~1079    5000
+
+  always-loaded rulings: 22870 bytes (~6181 tokens); the full text, searched: 526807 bytes
+
+Docs: OUTSTANDING 107 items (+13 −2, −2 all in ARCHIVE) · DECISIONS D1–D546 (new: D491, D492, D493, D494, D495, D496, D497, D498, D499, D500, D501, D502, D503, D504, D505, D506, D507, D508, D509, D510, D511, D512, D513, D514, D515, D516, D517, D518, D519, D520, D521, D522, D523, D524, D525, D526, D527, D528, D529, D530, D531, D532, D533, D534, D535, D536, D537, D538, D539, D540, D541, D542, D543, D544, D545, D546) · homes OK
+docsize: OVER by 2022, deferred (D29)
+
+docsize OK — every record accounted for.

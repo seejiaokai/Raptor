@@ -13,6 +13,76 @@ import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, sett
 const PHONE = { width: 390, height: 844 }
 const DESK = { width: 1500, height: 950 }
 
+/* D548: a real section can collapse even when the Desktop toggle and title work.
+   Use the ordinary Board door and measure every section, not the mode class. */
+test('phone Desktop layout keeps every schedule section usable below sign-off', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await page.locator('#burger').click()
+  await page.locator('#drawerNav [data-page="editsched"]').click()
+  await page.locator('#eWeek [data-sbday="0"]:visible').click()
+  await page.locator('#sbBoard .sb-sec').first().waitFor({ state: 'attached' })
+  await page.locator('#sbMore').click()
+  await page.locator('#sbMoreWide').click()
+
+  const widths = await page.locator('#sbBoard .sb-sec').evaluateAll(elements =>
+    elements.map(element => ({
+      name: element.textContent!.trim().slice(0, 48),
+      width: element.getBoundingClientRect().width,
+    })))
+  expect(widths, 'all ten existing section kinds are drawn').toHaveLength(10)
+  for (const section of widths)
+    expect(section.width, `${section.name}: a readable section, not a zero-width shell`).toBeGreaterThan(300)
+
+  const flow = await page.evaluate(() => {
+    const sign = document.querySelector('#sbSign')!.getBoundingClientRect()
+    const board = document.querySelector('#sbBoard')!.getBoundingClientRect()
+    const row = document.querySelector('#sbBoard .sb-nrow')!.getBoundingClientRect()
+    return { signBottom: sign.bottom, boardTop: board.top, rowWidth: row.width }
+  })
+  expect(flow.boardTop, 'sign-off stays above the schedule').toBeGreaterThanOrEqual(flow.signBottom - 1)
+  expect(flow.rowWidth, 'an actual populated note row retains usable width').toBeGreaterThan(300)
+  await expect(page.locator('#sbBoard .sb-nrow').first()).toBeVisible()
+})
+
+/* W18 (the Codex stack check, 5 Oct 26): in that layout the board pans, and with the ⋯ button near the right edge of
+   the screen its menu opened past the edge — "Insights", Sort all and the layout switch cut off. The menu opens on
+   whichever side keeps it whole on screen, at every pan that leaves the button itself on screen. */
+test('phone Desktop layout: the board’s ⋯ menu opens whole on screen wherever the board is panned', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await page.locator('#burger').click()
+  await page.locator('#drawerNav [data-page="editsched"]').click()
+  await page.locator('#eWeek [data-sbday="0"]:visible').click()
+  await page.locator('#sbBoard .sb-sec').first().waitFor({ state: 'attached' })
+  await page.locator('#sbMore').click()
+  await page.locator('#sbMoreWide').click()
+  await expect(page.locator('#schedBoard')).toHaveClass(/sb-wide/)
+  const home = await page.locator('#sbMore').evaluate(b => { const board = document.querySelector('#schedBoard')!; return board.scrollLeft + b.getBoundingClientRect().left })
+  /* the button at the left of the screen, in the middle, and hard against the right edge */
+  let checked = 0
+  for (const left of [8, 180, PHONE.width - 34]) {
+    const want = Math.max(0, Math.round(home - left))
+    await page.locator('#schedBoard').evaluate((b, x) => { b.scrollLeft = x }, want)
+    const btn = await page.locator('#sbMore').boundingBox()
+    if (!btn || btn.x < 0 || btn.x + btn.width > PHONE.width) continue
+    await page.locator('#sbMore').click()
+    const menu = await page.evaluate(() => {
+      const m = document.querySelector('#sbMoreMenu')!.getBoundingClientRect()
+      const items = [...document.querySelectorAll('#sbMoreMenu .sb-moreitem')].map(i => { const r = i.getBoundingClientRect(); const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return r.left >= 0 && r.right <= innerWidth && (hit === i || i.contains(hit)) })
+      return { left: Math.round(m.left), right: Math.round(m.right), items }
+    })
+    expect(menu.left, `button at ${Math.round(btn.x)}px: the menu's left edge`).toBeGreaterThanOrEqual(0)
+    expect(menu.right, `button at ${Math.round(btn.x)}px: the menu's right edge`).toBeLessThanOrEqual(PHONE.width)
+    expect(menu.items.length, 'Insights and the layout switch at least').toBeGreaterThanOrEqual(2)
+    expect(menu.items.every(Boolean), `button at ${Math.round(btn.x)}px: every item whole and tappable`).toBe(true)
+    await page.keyboard.press('Escape')
+    await expect(page.locator('#sbMoreMenu')).toHaveCount(0)
+    checked++
+  }
+  expect(checked, 'at least the left and the right-edge positions were reachable').toBeGreaterThanOrEqual(2)
+})
+
 /* every free-text cell on the dense surfaces: these must WRAP (grow taller),
    never widen their column or spill over the neighbour */
 const FREETEXT = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .ppl .itxt, .areacell'
@@ -21,6 +91,49 @@ const FREETEXT = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .p
    pucks, sized by its content on purpose, and it takes the overflow check
    above like everything else. */
 const PROSE = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .areacell'
+
+test.describe('Rally previous-day Board header fits constrained content widths', () => {
+  for (const [name, viewport] of [
+    ['desktop', { width: 1440, height: 900 }], ['phone', PHONE],
+    ['landscape', { width: 844, height: 390 }], ['tablet', { width: 1024, height: 600 }],
+  ] as const) {
+    test(`date cue and every control remain readable and reachable on ${name}`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await login(page); await go(page, 'editsched')
+      await page.locator('#eWeek [data-sbday="1"]:visible').click()
+      for (const li of [0, 1]) {
+        const field = page.locator(`#schedBoard [data-bfld="ff:1.0.${li}.to"]:visible`).first()
+        await field.fill('01:00'); await field.press('Tab')
+      }
+      while (await page.locator('#schedBoard [data-itdel^="1|0|"]:visible').count()) {
+        await page.locator('#schedBoard [data-itdel^="1|0|"]:visible').first().click()
+      }
+      await page.locator('#schedBoard [data-itadd="1|0"]:visible').click()
+      const line = page.locator('#schedBoard [data-itline="1|0|0"]:visible').first()
+      await line.fill('22:00 RALLY'); await line.press('Enter')
+      const header = page.locator('#schedBoard .sb-go-h:visible').first()
+      await expect(header.locator('.asd')).toContainText('22:00 (prev day)')
+      await header.scrollIntoViewIfNeeded()
+      const m = await header.evaluate(e => {
+        const summary = e.querySelector('.asd')!, r = summary.getBoundingClientRect(), h = e.getBoundingClientRect()
+        const style = getComputedStyle(summary), lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2
+        return { text: summary.textContent, width: r.width, height: r.height, lineHeight,
+          overflow: e.scrollWidth - e.clientWidth,
+          buttons: [...e.querySelectorAll('button')].map(b => {
+            const q = b.getBoundingClientRect(), hit = document.elementFromPoint(q.x + q.width / 2, q.y + q.height / 2)
+            return { label: b.textContent, inside: q.x >= h.x && q.right <= h.right + 1 && q.y >= h.y && q.bottom <= h.bottom + 1
+              && q.x >= 0 && q.right <= innerWidth && q.y >= 0 && q.bottom <= innerHeight,
+              hit: hit === b || b.contains(hit), width: q.width, height: q.height }
+          }) }
+      })
+      expect(m.text).toContain('22:00 (prev day)')
+      expect(m.width, 'the date cue has readable width').toBeGreaterThanOrEqual(120)
+      expect(m.height, 'the complete date cue fits within two lines').toBeLessThanOrEqual(m.lineHeight * 2.2)
+      expect(m.overflow, 'no wave-header horizontal overflow').toBeLessThanOrEqual(1)
+      expect(m.buttons.every(b => b.inside && b.hit && b.width >= 27 && b.height >= 14), JSON.stringify(m.buttons)).toBe(true)
+    })
+  }
+})
 
 test.describe('the puck is one fixed size everywhere', () => {
   for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
@@ -1716,8 +1829,12 @@ test('the burger drawer at 390px scrolls only itself — the page behind it hold
      is now shorter than a 780px screen, so it no longer scrolled there and the first check
      below lost its premise. The rule is unchanged — a drawer taller than the screen scrolls
      itself and the page behind holds still — so the screen is made shorter than the
-     drawer, and the premise is asserted before the wheel. */
-  await page.setViewportSize({ width: 390, height: 460 })
+     drawer, and the premise is asserted before the wheel.
+     RE-MEASURED AGAIN 6 Oct 26 (the Codex stack's merge, PR #481): the drawer lost its Week section too (D558), and at
+     460px it is 525px tall on the owner's PC — 65 over — and less than the 40 the premise asks on GitHub's Linux
+     machine, where the same letters set a little smaller: red there, green here. 360px leaves it 165 over on the PC.
+     The scrim's presses move up with the shorter screen. Nothing about the rule or its assertions changes. */
+  await page.setViewportSize({ width: 390, height: 360 })
   await login(page); await go(page, 'viewsched')
   await page.evaluate(() => window.scrollTo(0, 300))
   await page.waitForTimeout(100)
@@ -1736,12 +1853,12 @@ test('the burger drawer at 390px scrolls only itself — the page behind it hold
   expect(panelScrolled, 'the panel itself scrolled').toBeGreaterThan(0)
   expect(await page.evaluate(() => window.scrollY), 'the page did not').toBe(y0)
   // wheel over the scrim (the dimmed area right of the panel)
-  await page.mouse.move(box.x + box.width + 20, 400)
+  await page.mouse.move(box.x + box.width + 20, 200)
   await page.mouse.wheel(0, 800); await page.mouse.wheel(0, -800)
   await page.waitForTimeout(150)
   expect(await page.evaluate(() => window.scrollY)).toBe(y0)
   // close by the scrim; the lock lifts and the page is where it was
-  await page.mouse.click(box.x + box.width + 20, 400)
+  await page.mouse.click(box.x + box.width + 20, 200)
   await expect(page.locator('#drawer')).not.toHaveClass(/open/)
   expect(await page.evaluate(() => document.body.classList.contains('dw-lock'))).toBe(false)
   expect(await page.evaluate(() => window.scrollY)).toBe(y0)
@@ -5310,6 +5427,59 @@ for (const [label, size, pages] of [
       expect(r.seen, `${pg}: the note came up`).toBe(true)
       expect(r.moved, `${pg}: nothing in the bar moved while it was up`).toEqual([])
       expect(r.noteOk, `${pg}: the note sat on screen under the bar, readable, on top`).toBe(true)
+    }
+  })
+}
+
+/* D560-D562: actual painted geometry, native doors and scroll ownership. */
+for (const width of [320,390,821,1440]) {
+  test('D561 Logic search and compact controls stay below app bar at '+width, async ({page}) => {
+    await page.setViewportSize({width,height:844}); await login(page); await go(page,'logic')
+    await page.evaluate(()=>window.scrollTo(0,650))
+    const read=()=>page.locator('.lgbar').evaluate(bar=>{
+      const top=document.querySelector('.topbar')!.getBoundingClientRect(),b=bar.getBoundingClientRect()
+      return {top:top.bottom,y:b.y,h:b.height, controls:[...bar.querySelectorAll('input,button')].filter(e=>e.getClientRects().length).map(e=>{
+        const r=e.getBoundingClientRect(),hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)
+        return {name:e.id || e.textContent,y:r.y,right:r.right,own:hit===e || e.contains(hit)}
+      }),overflow:document.documentElement.scrollWidth>window.innerWidth}
+    })
+    const r=await read();expect(r.y).toBeGreaterThanOrEqual(r.top-1);expect(r.overflow).toBe(false)
+    for(const c of r.controls){expect(c.y,c.name!).toBeGreaterThanOrEqual(r.top-1);expect(c.right).toBeLessThanOrEqual(width);expect(c.own,c.name!).toBe(true)}
+    if(width===390)expect(r.h,'three compact normal rows instead of174px').toBeLessThanOrEqual(115)
+    await page.locator('#lgSearch').fill('crew rest');await expect(page.locator('#lgBody')).toContainText('crew rest')
+    await page.locator('#lgSearch').fill('');await page.locator('#lgEdit').click()
+    const field=page.locator('[data-lgset="step"]');await field.first().fill('1h10');await field.first().press('Tab')
+    await expect(page.locator('#lgReset')).toBeVisible();for(const c of (await read()).controls)expect(c.own,c.name!).toBe(true)
+    await page.locator('#lgReset').click();await page.locator('#lgDone').click()
+    await page.setViewportSize({width:390,height:568});const small=await read();expect(small.y).toBeGreaterThanOrEqual(small.top-1)
+  })
+}
+for(const width of [390,1440]) {
+  test('D562 Insights cross owns its hit target after modal scroll at '+width,async({page})=>{
+    await page.setViewportSize({width,height:700});await login(page)
+    if(width<=820){await page.locator('#viewSchedMore').click();await page.locator('#viewSchedMoreInsights').click()}
+    else await page.locator('#insightBtn').click()
+    const box=page.locator('#insightModal .modal-box');await box.evaluate(e=>e.scrollTop=500)
+    const r=await page.locator('#insightClose').evaluate(e=>{const r=e.getBoundingClientRect(),b=e.closest('.modal-box')!.getBoundingClientRect(),hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);return {y:r.y,bottom:r.bottom,boxTop:b.top,own:hit===e || e.contains(hit)}})
+    expect(r.y).toBeGreaterThanOrEqual(r.boxTop);expect(r.bottom).toBeLessThan(700);expect(r.own).toBe(true)
+    await page.locator('#insightClose').click();await expect(page.locator('#insightModal')).toBeHidden()
+  })
+  test('D566 tapered flight wing and blue label backing at '+width,async({page})=>{
+    await page.setViewportSize({width,height:844});await login(page);await go(page,'tracker');await page.waitForSelector('#flowSvg .ball')
+    const readCoverage=()=>page.locator('#flowSvg .core').evaluateAll(cores=>{
+      const result: {label:string,misses:number,ink:number,centre:boolean,shoulders:boolean[]}[]=[]
+      for(const core of cores){const wing=core.querySelector('[stroke-linejoin="round"]') as SVGGeometryElement|null,text=core.querySelector('text') as SVGTextContentElement|null;if(!wing || !text)continue
+        const canvas=document.createElement('canvas');canvas.width=116;canvas.height=116;const ctx=canvas.getContext('2d')!,style=getComputedStyle(text)
+        ctx.scale(2,2);ctx.font=style.fontWeight+' '+style.fontSize+' '+style.fontFamily;ctx.textAlign='center';ctx.fillText(text.textContent!,29,32)
+        const pixels=ctx.getImageData(0,0,116,116).data;let misses=0,ink=0
+        for(let y=0;y<116;y++)for(let x=0;x<116;x++)if(pixels[(y*116+x)*4+3]>128){ink++;if(!wing.isPointInFill(new DOMPoint((x+.5)/2,(y+.5)/2)))misses++}
+        result.push({label:text.textContent!,misses,ink,centre:wing.isPointInFill(new DOMPoint(29,29)),shoulders:[19,39].map(x=>wing.isPointInFill(new DOMPoint(x,23)))})
+      }return result
+    })
+    for(const mode of ['flow','details','edit']) {
+      if(mode==='details'){await page.locator('#detailsBtn').click();await page.locator('#detailsHint').waitFor({state:'visible'})}
+      if(mode==='edit'){await page.locator('#detailsBtn').click();await page.locator('#sylMenuBtn').click();await page.locator('#arrangeBtn').click();await page.locator('#fontIn').waitFor({state:'visible'})}
+      const coverage=await readCoverage();expect(coverage).toHaveLength(41);for(const r of coverage){expect(r.ink,mode+' '+r.label+' has painted text').toBeGreaterThan(0);expect(r.centre,mode+' '+r.label+' blue centre').toBe(true);expect(r.shoulders,mode+' '+r.label+' accepted tapered upper shoulders').toEqual([false,false]);expect(r.misses,mode+' '+r.label).toBe(0)}
     }
   })
 }

@@ -714,7 +714,7 @@ export type RetractionRow = { at: string; by: string | null; restoreSeq?: number
 
 /** The editable rule thresholds (rules.ts VCONF). schema.test.ts pins this list against VCONF. */
 export const VCONF_KEYS = [
-  'briefLead', 'dur', 'step', 'dekit', 'minTurn', 'tightTurn', 'crewRest', 'debrief', 'reportLead',
+  'briefLead', 'dur', 'step', 'dekit', 'minTurn', 'tightTurn', 'crewRest', 'debrief', 'reportLead', 'reportText',
   'longDay', 'epBrief', 'simDebrief', 'amtDebrief', 'openEnd', 'maxRun', 'inputLead',
   'scDayFrom', 'scDayTo', 'simLen', 'oilFullMin',
 ] as const
@@ -730,7 +730,7 @@ export type SectionKey = (typeof SECTION_KEYS)[number]
 
 /** Overrides only — thresholds off the standard, and which kinds hard-clash a shift — engine (`rulesSave`). */
 export type RuleOverrides = {
-  v: Partial<Record<VConfKey, number>>
+  v: Partial<Record<Exclude<VConfKey,'reportText'>, number>> & { reportText?: string }
   s: Partial<Record<ShiftKind, boolean>>
 }
 /** The stores list, [key, label] pairs; keys are ^[a-z0-9]+$ — engine (stores.ts). */

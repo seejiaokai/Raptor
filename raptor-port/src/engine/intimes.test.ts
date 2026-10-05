@@ -17,7 +17,10 @@
        "<CS> IN TIME" grammar resolves them, which is what keeps parity
        untouched where data exercises it. */
 import { describe, expect, it } from 'vitest'
-import { intimeTime, intimeFold, intimeMap, waveInTime } from './events'
+import { intimeTime, intimeFold, waveInTime } from './events'
+import { resolveReporting } from './reporting'
+import { parseHM } from './time'
+const intimeMap=(w:any)=>Object.fromEntries((w.formations||[]).map((f:any)=>[f.cs,resolveReporting(w,f,parseHM(f.to)!).report]).filter(([,t]:any)=>t!=null))
 import { DAYS } from './data'
 
 const wave = (intimes: string[], css: string[] = ['VL', 'RU']) => ({
@@ -161,5 +164,27 @@ describe('intimeFold — the colon appears, the words stay', () => {
     expect(intimeFold('2400H: IN TIME')).toBe('2400H: IN TIME')
     expect(intimeFold('12345 block')).toBe('12345 block')
     expect(intimeFold('0800hrs report')).toBe('0800hrs report')
+  })
+})
+
+/* W5 (the Codex stack check, 5 Oct 26): a wave with a reporting line and no take-off yet. The day's checks already
+   read the typed clock (buildDay → seatIntime keeps it on its own day); the wave header and the Available-crew band
+   read waveInTime, which skipped every formation without a take-off and answered nothing — two readings of one line. */
+describe('W5 waveInTime — a reporting line on a wave with no take-off yet', () => {
+  const blank = (cs = '') => ({ cs, msn: '', to: '', ld: '', br: '', aircraft: [] as any[] })
+  it("reads the line's clock, as the day's checks do", () => {
+    const w: any = { intimes: ['08:00 IN TIME + WX/NOTAMS'], formations: [blank()] }
+    expect(waveInTime(w)).toBe(8 * 60)
+    expect(resolveReporting(w, w.formations[0], NaN).report).toBe(8 * 60)
+  })
+  it('a mix: the untimed formation counts beside the timed one, earliest wins', () => {
+    const w: any = { intimes: ['09:00 VL IN TIME', '07:30 RU IN TIME'], formations: [{ ...blank('VL'), to: '12:00', ld: '13:00' }, blank('RU')] }
+    expect(waveInTime(w)).toBe(7 * 60 + 30)
+  })
+  it('every formation cancelled or none yet: the earliest typed clock; no line and no take-off: nothing', () => {
+    expect(waveInTime({ intimes: ['10:00 RALLY', '08:15 IN TIME'], formations: [{ ...blank('VL'), cx: 'WX' }] })).toBe(8 * 60 + 15)
+    expect(waveInTime({ intimes: ['08:15 IN TIME'], formations: [] })).toBe(8 * 60 + 15)
+    expect(waveInTime({ intimes: [], formations: [blank()] })).toBe(null)
+    expect(waveInTime({ intimes: ['IN TIME + WX/NOTAMS'], formations: [blank()] })).toBe(null)
   })
 })

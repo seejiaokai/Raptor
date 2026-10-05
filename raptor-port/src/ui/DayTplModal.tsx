@@ -23,6 +23,7 @@ import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { SESSION } from '../state/auth'
 import { isAdmin } from '../state/perms'
+import { clickedOutside } from './outside'
 
 export function DayTplModal() {
   useVersion()
@@ -50,7 +51,7 @@ export function DayTplModal() {
   const save = () => { dayTplSave(); notify() }
 
   return (
-    <div className="modal" id="daytplModal" onClick={e => { if ((e.target as HTMLElement).id === 'daytplModal') close() }}>
+    <div className="modal" id="daytplModal" onClick={e => { if (clickedOutside(e, 'daytplModal')) close() }}>
       <div className="modal-box" style={{ width: 460 }}>
         <div className="modal-head"><b>Day templates</b><button className="x" id="daytplClose" onClick={close}>✕</button></div>
         <div className="modal-body">

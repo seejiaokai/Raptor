@@ -7,8 +7,30 @@ things out."*
 
 This file is that record. It is not a list of features — it is the **map you
 check a feature against before you build it and again before you call it done.**
-Two halves:
 
+**Schedule keyboard flow,4 Oct26 (D550–D556):** week contenteditable and Board
+native/shared text boxes → gesture-time current-day DOM route → native blur/change
+→ existing schedule/input command writers, validation, marks and persistence.
+Only the unfocused next box reads current saved/derived text before focus; a
+week/Board paint skipped under a caret resumes after all typing ends, guarded by
+current navigation and lifecycle; focus established during blur is preserved. Hidden folds,
+readonly/preview/OIL/role UI remain outside the route. Covered focus reveals in
+the existing scrollers. No engine arithmetic, signed-record schema, role gate,
+publication, earned-credit or crew-placement path changes. Timing/input edits
+retain their existing downstream relink, reporting, warnings and issued-copy
+flows; unchanged traversal writes nothing. Evidence: schedule-tab handpass.
+**Phone schedule navigation,4 Oct26 (D558):** Shell's two week filter strips →
+shared local `ScheduleInsightsMenu` → existing `setInsights`/Week insights reader.
+The phone drawer's WEEK block is removed; dates retain the existing view calendar
+writer. GuestApp remains separate without Shell/Insights. Popup state subscribes
+to live page/week/session and Board versions, resets across context/desktop/drawer,
+and adds no saved flag, command or validation. Native editor blur remains the
+only writer before a menu tap. Desktop/Board doors, accounts, permissions, issued
+records and all calculations retain existing routes. Only the phone search may
+flex to preserve the first row; existing button dimensions remain. Checks/evidence:
+`docs/handpass/2026-10-04-schedule-insights-menu.md`.
+
+Two halves:
 1. **The surfaces** — every place a change can show up, and what feeds it.
 2. **The flows** — how a single edit travels from a keystroke to the screen,
    so you can trace where any change ripples.
@@ -17,6 +39,41 @@ Then a **checklist** to run per feature, and a **robustness** section naming
 which joints are single-funnel (safe to build on) and which are drift-seams
 (where two copies of one rule can fall out of step — the bugs that keep
 recurring in this app).
+
+**Reporting flow added2 Oct26 (D497–D507):** existing `w.intimes` strings →
+`engine/reporting.ts` first-valid clock + own-wave formation/activity scope →
+per-formation signed actual report → `events.ts` → workSpan/LONGDAY/Insights,
+crew-rest and SANS. Ordinary busy remains step/dekit; OIL remains nominal
+reportLead/debrief. The same pure resolved stages feed draft inline preview,
+validator warnings. D509 supersedes the timing publication guard: first publish,
+AL and correcting issue proceed with a red timing warning, frozen normally;
+no timing check refuses the command or raw engine doors. Headers state previous
+day on signed negative times; detailed rest, trace, pre-drop and long-day text
+share that formatter, and negative rest names the positive duty overlap.
+Availability bands alone clip to today's domain;
+prior-created empty buckets stay empty, existing same-day ties are preserved.
+Storage/copies/templates retain plain strings and no schema migration. D478
+selects latest-issued content for published Insights, D482 keeps current Logic
+arithmetic, and D186 freezes printed blank B only. These are distinct drift seams:
+never feed frozen printed B into validation or working content into issued hours.
+Coverage: `docs/superpowers/specs/2026-10-02-rally-behaviour-register.md`.
+
+D510/D511 mint flow: existing resolved report, else earliest uncancelled valid
+take-off minus live reportLead → clock + live reportText → existing `it:` writer,
+marks/history and plain-string storage → same parser/consumer chain above.
+reportText adds a text-kind spec inside existing rules.v, one line/max60/default
+IN TIME + WX/NOTAMS. Logic escaping, normalisation, reset/load, snapshot/export
+and Undo use the established settings seam; numeric values and OIL remain separate.
+
+**Dated-rest extension,2 Oct26:** the report's resolved date feeds a shared lookup
+of up to four authored source dates, including existing adjacent-week issued/working
+worlds. Rest validation and hypothetical placement/removal use the same dated
+winner; forward probes cover four targets. Trace provenance retains the actual
+source date and every affected target; external trace hides use that target's
+week/day, and multiple crew-rest targets coexist with the running-away trace.
+The original one-day descriptions below are historical where this extension applies.
+Prior-origin bands ending at00:00 have zero members/total while the separate global
+all-day list is retained. Neither extension changes normal busy windows or OIL.
 
 **Keep this true in the same PR** (same rule as `HANDOFF.md`). A feature that
 adds a surface, a flow, or a new drift-seam adds a line here. Stale is worse
@@ -33,7 +90,7 @@ the rest are the ones the code actually has.
 | Surface | What it is | Where it lives | Fed by |
 |---|---|---|---|
 | **Warnings** | The day's checks list, the puck rings, the board issue list | `validate.ts` → `WARN`/`REST`/`EVD`; drawn in `html.ts` (day warnings), `board.ts` (issue list), `highlights.ts` (rings) | every `validate()` run; re-read, never cached. Since 23 Aug 26 the run counter and Monday's crew rest also seed from the adjacent week via `engine/weekctx.ts` (Flow F), and a loaded week's Sunday that busts NEXT week's Monday draws a forward "Breaks Monday" trace box on Sunday itself (`validate.ts`'s `crewRestDay` phantom pass, `weekctx.ts:nextMondaySeed`, rendered by `html.ts:dayTraceHTML`) — a pointer only, `di:null`, no click target; the real breach warning still lands on Monday when next week loads. Since 29 Aug 26 a scheduler can HIDE one warning from BOTH the board issue list and Edit Schedule's day list — the two share the working copy's one set of hides (`view.WARNOFF`, keyed by warning content, `engine/warnhide.ts hideKey`). **Since `[WARN-HIDE-KEPT]` (D469 / D471 / D472 / D475, 1 Oct 26) a hide is kept with its day for everyone, flags no puck, is not counted, and its line stays in the list struck out** — decided ONCE in the engine: `validate()` hands every surface the bundle AS SHOWN (`validate.ts shownOf` — a hidden warning carries `off`, and the rings / chips / dashes / next-day marks are replayed without its marks; every mark site names its warning's rule, checked after every validate of the test suite by `src/testing/marks-guard.ts`). Drift-seams: (a) **a reader that COUNTS warnings, picks a "worst colour", or works a flag out from the list itself** (an exempt desk row, an exempt flying line, the ALL AVAIL window's reasons, the names lit by an open day box, the drop toast, Insights) **must go through `shownWarns()`** — a direct `.warns.length` counts a hidden one; (b) **a renderer reads the warning's own `off`, never `WARNOFF`** — under a published face or a look the `off` is the ISSUED hide state (D471), and the working set would strike a published line before its amendment; (c) **an engine question about whether a breach already exists reads `rawWarn()`** (the pre-drop crew-rest probe), never the shown bundle; (d) **a new rule's mark names its warning's code** (`markRing(di,id,sev,'CODE')`) or the marks guard fails every test that raises it; (e) a mark drawn off a rule instead of the list (the nought-minute line's amber time box — `html.ts fltNoLenShown`, `ui/peek.ts`) asks whether that warning is hidden |
-| **Layout / geometry** | Row heights, column widths, board node count, overflow | `scheduler.css` (measured contracts), the string builders | gated by `e2e/geometry.spec.ts` + `perf-port.cjs` DOM ceilings |
+| **Layout / geometry** | Row heights, column widths, board node count, overflow | `scheduler.css` ordered manifest + contiguous `scheduler/*.css` screen/shared runs (D540/D541; original cascade unchanged; measured contracts), the string builders | gated by `e2e/geometry.spec.ts` + `perf-port.cjs` DOM ceilings |
 | **The one changes window + the change history** (`[DRAFT-PENDING]`, 28 Sep 26 — replaces "Edit history" and the pending pop-up) | The movable, non-blocking window of every change — New to you / All changes / To go out, by Item or Who (`[CHG-BY-ITEM]`), the week's day picker, Hide to a bar on a phone (`[HIST-PHONE-HIDE]`); the day's ONE chip (N pending / N new / N changes); the admin's clock icon with the week's new count; the OG tag on a changed puck of a day not yet published; History mode (the bubbles and a gold dot on every detail with a history, board and edit week) while it is open | `engine/editlog.ts` (the durable, week-safe history), `state/changes.ts` (new to you), `state/changelines.ts` (absence / Leave War / Quals / publish / undo lines), `ui/ChangesWindow.tsx`, `ui/changesmodel.ts`, `ui/changesopen.ts`, `ui/floatwin.ts`, `ui/histbubble.ts`, `html.ts dayStatHTML`, `publish.ts alAttr` (the OG hook), `Shell.tsx #histBtn`, `SchedBoard.tsx #sbHist` | Drift-seams: (a) a NEW writer of something a person would want to see must reach the history — through the cell funnels, a `logAction` with its `at` (days, input, section), or a `user` command whose records the subscriber reads; (b) a new surface that draws a day heading must call `dayStatHTML` (the chip) and a new one that draws a puck must go through `alAttr` (the OG tag); (c) the day chip, the icon and the window count LINES through one body (`changesmodel.linesFor`); (d) the window closes on page / week / session change (`setPage`, `VIEW_RESET`); (e) a NEW cell kind the bubble should answer joins `histbubble.ts CELL_SEL` + `keyOf` — the gold dot follows by itself (`storyOf`); a new keyless writer names its line's `iid` or `sub` + `sect` so Group by Item can file it (`changesmodel.itemOf`). Contract: `docs/ui-contracts.md` §The one changes window |
 | **Undo / redo** (corrected 28 Sep 26 — the change-recording re-test: this row still named the snapshot stack the one undo replaced on 18 Sep 26) | ONE timeline over every command — the schedule, inputs, the planning calendar, the Leave War and, since `[UNDO-ROSTER-SETTINGS]`, the roster (Quals) and the settings (Admin, Logic, accounts); each person's OWN steps only (D148), cleared at every sign-in; the pair in the top bar on every page where a change is made, the board's own, and the Tracker's separate history in the same place (D347–D349) | `undo/timeline.ts` (the dispatcher, conflicts, the barriers that name who), `undo/describe.ts` (the one vocabulary for hover, bubble and history line), `state/undo-wire.ts` (the stores, the page it lands on, the restore rules), `state/roster-restore.ts` + `accounts.ts accountsRestoreProblem` (what a roster / settings restore re-checks), `person-delete.ts deletedRestoreProblem` (a delete is final), `ui/topbits.tsx` (the pair, Sync, the bell); `docs/undo-contract.md` | every `user` command is a step unless it is navigation or a seen mark (`NOT_STEPS`); D350's five (adding / archiving / restoring / deleting a person, a posting) are never eligible. Drift-seams: (a) a NEW command type gets a generic label for free — add a phrase in `describe.ts` if a person would want the act named; (b) a new page that changes something wants the pair (`Shell.tsx pairOn`) and a landing (`undo-wire.ts landingOf`); (c) a new cross-record rule a restore could break joins `roster-restore.ts` (asked twice — before the snap and inside the restore); (d) a new "seen" / read-receipt command joins `NOT_STEPS` |
 | **Scheduler board** | The full-screen day board (desktop + phone); its bar carries search + the highlight fold since 23 Aug 26 (`#searchB`, `#sbHl`/`#sbHlStrip` — the same `HLSET`/`SEARCH` pair as the weeks, phone dots hidden to make the room) | `SchedBoard.tsx`, `board.ts`, `board-html.ts`; `hlchips.tsx` (the one chip definition) | global store lane + board-only view lane (`SBDAY`) |
@@ -64,6 +121,8 @@ history names an ACCOUNT, not a person). Both are the same server-shaped hole;
 `HANDOFF.md`'s first bullets carry it.
 
 ---
+
+- **The failed-save warning's band** (`[SAVE-NOTE-COVERS]`, 5 Oct 26 — D587): one line along the bottom of the top bar, and the same line under the bar of each full-screen surface that covers it — the scheduler board, the Inputs calendar, the Medical view, the Leave War's OIL tracker (`ui-contracts.md` §The failed-save warning has a band of its own). When the warning comes or goes `Shell` fires one window `resize`, so whatever measured itself against the bar re-measures: a NEW thing that measures the bar must listen for a resize too. A NEW full-screen surface carries `SaveBand` under its own bar; a NEW thing pinned at a fixed height near the top moves down with the band, as the week's side arrows and the CREW tab do; `e2e/save-note.spec.ts` walks every page.
 
 - **A shared store's empty pages** (`[DB-READINESS]` group A phase 5, 30 Sep 26): the Leave War's "No leave period yet" and the Tracker's "No course yet" (`ui-contracts.md` §A shared store's empty pages). A change to the war's or the Tracker's first screen, or to what an empty store starts with (`src/boot.ts`, `src/state/seeds.ts`), checks both under the blank policy — `src/boot-walk.test.tsx` walks every page of an empty store.
 
@@ -104,6 +163,20 @@ published day a move of an ISSUED row drops an inert `mov:` tombstone
 skips by name, so a move of two same-valued rows is no longer value-reconciled
 away; a draft-day move, or a move of a still-draft added row, keeps the ordinary
 field mark — see `docs/engine-rules.md` §Publishing.
+
+### Flow A1 — Insights mission-role annotation (D518, D524, D525, D529–D532)
+
+Qualifying own Mission/Remarks/structural edit → existing text/structure command saves first → shared transient
+offer adapter re-resolves formation/context → explicit Blue/Red → typed `insights.role.set` → guarded annotation
+store only → one role/history/change-log save group → latest-issued Insights redraw. Working and latest-published
+Remarks use distinct source contexts; historical preview/ordinary view/print/CSV expose no role writer. Focused
+Remarks offers temporary Choose/Change below AREA; Later has no command. No permanent formation field or marker.
+Off defaults to existing totals. Both editors and all Shell/Drawer/Board modal doors consume the same implementation.
+Template creation retains optional validated seeds outside day content; applying is a joined scheduler/annotation
+transaction. Same-RID alternate plans and version loads only select a context; they never replay annotations.
+Undo restores exact annotations and lands on their week/day without invoking scheduler restore side effects.
+Drift seams to pin: native Board `change` versus week `focusout`, stale queued callbacks, published/working origin,
+guarded physical settings namespace, atomic fresh-row copy, Show-all resets, and modal stacking above the Board.
 
 ### Flow B — a personal input added or edited (the owner's example)
 ```

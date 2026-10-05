@@ -296,10 +296,6 @@ export function dayPendingItems(di:any):PendItem[]{di=+di;return passMemo('pi',d
 export function itemCounts(items:any){const d=items||[];const by=(k:any)=>d.filter((e:any)=>e.kind===k).length;
   /* a hidden warning counts under "changes" (chg takes whatever no other word names) — `hide` says how many of them */
   return {total:d.length,add:by('add'),del:by('delete'),chg:d.length-by('add')-by('delete')-by('move')-by('input')-by('oil')-by('warn'),mov:by('move'),inp:by('input'),oil:by('oil'),warn:by('warn'),hide:by('hide')};}
-/* the marks "Discard marks" may clear: those on days never published (F-01 — a published day's
-   divergence is published or put back, never silently dropped). The Amendments panel enables
-   its button off this, so it is never offered when it could clear nothing (walk S2). */
-export function discardableCount(){const orig=SCHED.orig||{};return Object.keys(SCHED.pending).filter((k:any)=>!orig[keyDay(k)]).length;}
 export function pendDays(){return uniqDays(Object.keys(SCHED.pending));}
 /* pending edits only become publishable amendments once their day is published —
    changes to a day that is still draft are just draft work, not an amendment */
@@ -1170,21 +1166,6 @@ export function publishALDay(di:any){
   toast(`Published AL${seq} · ${count} item${count===1?'':'s'} on ${dowShort(di)} only`
     +(who.appr?` · approved by ${who.appr}`:'')
     +(held?` · ${held} day${held>1?'s':''} with changes still held`:''));
-}
-/* Restricted to NEVER-PUBLISHED days (Phase 2 lock, F-01). On a day that has
-   an issued Original, discarding its pending marks would silently drop a
-   live-vs-issued divergence — the only supported way to change a published day
-   is to publish it as the next AL. So keep pending on any day that carries an
-   Original, and clear only the draft-build marks on never-published days. */
-export function discardPending(){
-  const orig=SCHED.orig||{};
-  /* say what actually happened (walk S2, 24 Sep 26): it used to toast "Pending marks cleared"
-     even when every mark sat on a published day and nothing was touched. */
-  let n=0, kept=0;
-  Object.keys(SCHED.pending).forEach((k:any)=>{ if(!orig[keyDay(k)]){delete SCHED.pending[k]; n++;} else kept++; });
-  if(!n)return toast('Nothing to clear — the changes are on published days: publish them as an amendment, or put them back');
-  reflow(); histPush();
-  toast(`Cleared ${n} draft mark${n===1?'':'s'}`+(kept?' · published days keep their changes until you publish them or put them back':''));
 }
 /* ---- [GLOBAL-UNDO] §6.5 — UNPUBLISH: retract a published day to a working copy
    ---------------------------------------------------------------------------

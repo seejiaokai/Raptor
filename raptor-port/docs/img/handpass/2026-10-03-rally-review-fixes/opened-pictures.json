@@ -1,0 +1,421 @@
+{
+  "snapshot": "review-fix snapshot2",
+  "count": 69,
+  "note": "All images opened by Sol, including failed harness states. Astra records its own independent subset in each immutable report.",
+  "pictures": [
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-failure.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "276a2bce5c44f1b45a4b498dff72f413c89bf7c15ebf21d09cc6554629819ded"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-fresh-demo-published.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "385692c2d44f5cf8f63baaed446f1223ba278d13142f26b0cb5442a7b3e10fdb"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-hidden-warning-AL.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "577a41160010174ffd5e3ed6d6bf376263c01ff89ae6d5009193b1b9bcb2d7f2"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-logic-defaults.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "af2758ac1206333d1a944afe22b0473733d754d98f7bd2b6e3d2d54fa0a30842"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-published-warning.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "dfaefbd44318d5f19d00e2f4836dcdc838169121400d12b58d4725ccea361322"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/desktop-suggested-brief-mint.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "31c91fae15c035afc2a790a7edbd688d202ef6cdeed70b2539e11a07ea24cd71"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-01/I1-amended-work-hours.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "0acb462617475dd383edd51fe372695d9d1f68fc6c67de4e6f857fffadbebe10"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-01/I1-issued-work-hours.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "6d29cbdfdab782dd2c849b4d2ff4628887a75cdd6b95c1da8d25c0674e772d88"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-01/I2-failure.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "a01893107a1fb01445a5c8fe85e86f9e6eb94f9466f1899ea38d549021045990"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-02/I2-failure.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "a01893107a1fb01445a5c8fe85e86f9e6eb94f9466f1899ea38d549021045990"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-03/I2-failure.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "157a0d8533b792e64be66e66f26c93c32315324204f987dbc9bcc7163ea7bfb0"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-04/I2-failure.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "a01893107a1fb01445a5c8fe85e86f9e6eb94f9466f1899ea38d549021045990"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-05/I2-failure.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "38252fdc52de738a43c56baaf4b237494115df83e873932f9191476de7832766"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-05/I2-prior-date-picker.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "97d36dc9181b18ca5446b9be930047a9b469e48fdb895cb4d0646d7e0c9d126e"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-06/I2-failure.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "ce78a7ffea36b67314784c407af5389c8407c3dabb63d381416d146ca943a88c"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-06/I2-prior-date-picker.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "e6ad34af07e7a7fa880943fa5f3329d8aafc0d1d2857370c301e74a5e252303e"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-07/I2-prior-date-picker.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "52fe8305fc56f7ee2de834648880d9be5389020f077fdfecb06624b6144bb83c"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-07/I2-target-AM-picker.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "ee0b8bbfca13894ff8a049f0d51151445e1ef28628e86cca263befe49d088c81"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-07/I2-target-AM-placed.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "b95980c60df21d22e22d0686120a0270a7bb1714d499f68dfe2744fafcbbdb8f"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-07/I3-actual-report-credit-unchanged.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "6251064ba2eff1714becd55a98da323e67415c5d2b5c7254aa119fe1e5c3d11a"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-07/I3-earned-300.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "4807750335125485ea1327b84d136a2db76fc58da17156aee542ecced3cf65f0"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/downstream-07/I3-earned-360.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "6251064ba2eff1714becd55a98da323e67415c5d2b5c7254aa119fe1e5c3d11a"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-actions/issued-previous-day-header.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "12cd21db4a2ee4bcc0b538f2dda78157c3fc1c566b699be02b144dc90ce219c5"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-actions/same-day-header.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "0a2f4131369b7614769aba323f7932582be060699353c507de89bbcbe03eea78"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-green/desktop-previous-day-header.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "e13f802e25d2a3c9f8911332feac3b696948dc405806f20a9c032a7fa7865df3"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-green/landscape-previous-day-header.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "3ee9866ddb4dd503082ceb6a8a3d6aa395b0c82a3ec1ecd563c9fc39461f18d2"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-green/phone-previous-day-header.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "ebd9455a4ed05f57dc750398f909a3f02798b04238f430b19f79e7f584493301"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-green/tablet-previous-day-header.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "698f6b0a17f8380c5371902b0ee2de7d678e3e463ab6b032db55a5bd9d3d90c6"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-red/desktop-previous-day-header.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "e13f802e25d2a3c9f8911332feac3b696948dc405806f20a9c032a7fa7865df3"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-red/landscape-previous-day-header.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "18de0bb62ee032e2042289fd454e49cc9b32959f5d42637d0a32184621b20883"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-red/phone-previous-day-header.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "ebd9455a4ed05f57dc750398f909a3f02798b04238f430b19f79e7f584493301"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/header-width-red/tablet-previous-day-header.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "2f58b389a316c8c3911ba93ab17d46110efb2d22701b1ca39084dc6ee527dd84"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/logic-width-green/desktop-custom.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "5f1026cf3f178563f46d8ae1afdd21e4a3da9af679641dd2a286f035ba7c468e"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/logic-width-green/desktop-long-readonly.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "fb42289bff3fff4d330b504dd43799e3d14e6d1bfb62195b7af74520cdfc17f5"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/logic-width-green/desktop.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "5f0315f7a5fb25c21256fcdf9399b85d6822a85d0f80e816c0e59cd21046ce1a"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/logic-width-green/phone-custom.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "d829acb8a96aa895c108216c09ec3bf2a9dce46d802e1875f9f37abcbfa50173"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/logic-width-green/phone-long-readonly.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "62729073470b5651c903a514b11cb517f8ea1a5c48ca8aa306006bb50516ce15"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/logic-width-green/phone.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "c378c9ce2cf72426bed0b78e8950f8d8b8c4163b3ca9442b32fe51d1353e5136"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/logic-width-red/desktop.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "d208952328e542fa56db89d3604bac2e15cd9515aae215895c25a5f53cb7ca24"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/logic-width-red/phone.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "5ea82ed9b1b2ac651de9424ee6503cb1d14cd3d692f287d965a59667bbe565d4"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/supplement/desktop-old-version-reissued.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "a188402f0f8bc26bdc47bc371aca62296dd556ffe23bcdaf45cef4d4be8e0cd6"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/supplement/desktop-previous-day-short-screen.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "1ab1d68603bdd4bed69a4ce049c5062ada64bcd45d0d90127ad26409439ed926"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/supplement/issued-page-1.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "6fcab56d772159c5cfaa4094d581e91c8e342b99df7679fc67b9fb2137d7c013"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/supplement/issued-page-2.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "3ebf31ef73732cebfda6ebeb596faef352d82f8447a7f74edb2325d99b7bf800"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/supplement/phone-previous-day-short-screen.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "f4b8e6762365b5b44eb6a434152e1a358ab50274481c6bc2a030aed72b85cfaa"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-failure.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "b1cde6850ceead40b37b8eb08f5edbb3ac61b349e42011c2e720a58d7370b48e"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-fresh-demo-published.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "385692c2d44f5cf8f63baaed446f1223ba278d13142f26b0cb5442a7b3e10fdb"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-hidden-warning-AL.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "577a41160010174ffd5e3ed6d6bf376263c01ff89ae6d5009193b1b9bcb2d7f2"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-logic-defaults.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "d3f005d0eee7f98f4e783a548575eae01d2c74672ce3ba8011ddbcf74d21fa4d"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-published-warning.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "dfaefbd44318d5f19d00e2f4836dcdc838169121400d12b58d4725ccea361322"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-02/desktop-suggested-brief-mint.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "cb8517c023b0184ff8f1348613f2f1b7861864fd571a279837eb045743d3d3c0"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-03/desktop-failure.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "068a9dfd5ba4e02f498d4bc77527d4e02da4895cb3a1e2dd949cea03db9fcd58"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-03/desktop-hidden-warning-AL.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "56c929cc5ff41e370f72a0e3905f63705b9e80323fe453719cdc63abe8cb60c6"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-03/desktop-issued-wrong-pair-preview.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "3677c5382bb0741563824d2399d1510c8a797abe9001bac3bd1daa6a9619a2f6"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-03/desktop-logic-defaults.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "d3f005d0eee7f98f4e783a548575eae01d2c74672ce3ba8011ddbcf74d21fa4d"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-03/desktop-published-warning.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "e179e2f8277baa21d7434c2f5c0fbf4f58898cce94e02f3422f128c84d618147"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-03/desktop-suggested-brief-mint.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "80a664148fe4123302f1d467e27e8f05563ca9170299ac469e11fe693d60bf96"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/desktop-issued-print.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "7e13647bd0ffd2bdd52356431b03c4607bfd6e5bc3e0f6e120fe2787ae8685b0"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/desktop-late-show-dashed.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "b3cf9d7650d4f598e922644dbd5d890238a04188d1c20c968c2304f9a2bf4007"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/desktop-late-show-solid.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "8150d7e567b634cd15536263cce7c082c1130b45a50b7e77ebce695ff805af10"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/desktop-previous-day-board.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "19694fc883726d9c3d771a252b3e4cc286846f6537c04a7f18202652383b9650"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/desktop-previous-day-week.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "598e6d250d7df314e925dc675f92491823efcd3ce371526d28013e20654042b6"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/phone-hidden-warning-AL.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "f9a28be7525a2779a8c9ebbbd2139a792679af9d07115a411c3185337a5c9ca9"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/phone-issued-wrong-pair-preview.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "3ea5da1aaeba70cf2cd4712ea2c76f2d88afd4101bd9b492b9001fc2d4ffbdf2"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/phone-logic-defaults.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "4569f6369a575b710782ac8ff2aa2c881f225ad65d0bf26b8992e976404840ac"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/phone-previous-day-board.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "3a627596f53e606744d7d880799c5c4b70c035709e1ab95819499dc998efbd02"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/phone-previous-day-week.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "4cdb70cfdaf534496cf916f147fce869ad28e1e4affb4ca89444b0949d17d67b"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/phone-published-warning.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "260d0c9c1ddab02bc63c49b2ab5a40e9cc3a631cf070567686e8754ec2cb3033"
+    },
+    {
+      "path": "raptor-port/docs/img/handpass/2026-10-03-rally-review-fixes/walk-04/phone-suggested-brief-mint.png",
+      "openedBy": "Sol",
+      "status": "opened at full resolution",
+      "sha256": "af65ee62658b7e2e3e57a6fb4160d7b3a8c0194423aa72ebb45147d68c444bcc"
+    }
+  ]
+}

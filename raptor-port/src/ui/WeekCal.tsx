@@ -22,6 +22,7 @@ import { SBDAY, weekLeftDay, setWeekJump } from '../state/view'
 import { WEEKCAL, setWeekCal } from './pops'
 import { useVersion } from './useStore'
 import { mondayOf, keyToIso, dayIndexInWeek, TODAY } from './weeknav'
+import { clickedOutside } from './outside'
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const iso = (y: number, m: number, d: number) =>
@@ -114,7 +115,7 @@ export function WeekCal() {
   return (
     <div className="airpop" id="weekCal" role="dialog" aria-label="Jump to a date"
       onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); close() } }}
-      onClick={e => { if ((e.target as HTMLElement).id === 'weekCal') close() }}>
+      onClick={e => { if (clickedOutside(e, 'weekCal')) close() }}>
       <div className="airpop-box weekcal-box" ref={boxRef}>
         <div className="airpop-head"><b>Jump to a date</b>
           <button className="wc-today" aria-label="Go to today" title="Go to today"

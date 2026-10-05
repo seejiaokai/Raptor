@@ -2,8 +2,8 @@
    objects at render time (renderLogic's row/group strings kept verbatim), with
    the admin edit mode: thresholds parsed + bounded + applied live, the clash
    matrix toggles, Reset to standard, and the RULES MODIFIED stamp. */
-import { useEffect, useRef, useState } from 'react'
-import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse, ruleOff, kindOff, rulesOffCount, rulesSave, rulesReset } from '../engine/rules'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse, ruleOff, kindOff, rulesOffCount, rulesCheckedOffCount, rulesSave, rulesReset } from '../engine/rules'
 import { WARN, validate, lgFired } from '../engine/validate'
 import { dowShort } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
@@ -13,6 +13,7 @@ import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { useVersion } from './useStore'
 import { lgRules, LG_TIER } from './logic-html'
+import { missionTracking, setMissionTracking } from '../engine/insights-config'
 
 /* the reference's ruleApply: write, persist, re-run the engine, repaint */
 function ruleApply() {
@@ -50,9 +51,10 @@ function logicBody(LGQ: string, LGF: string) {
       const edited = keys.some(ruleOff) || (r.kinds && Object.keys(KIND_LABEL).some(kindOff))
       const fields = keys.length ? `<span class="lgmatrix">` + keys.map((k: any) => {
         const off = ruleOff(k)
-        return `<span class="lgcell ${off ? 'adv' : ''}"><span class="k">${esc(RULE_SPEC[k].t)}</span>`
+        return `<span class="lgcell ${off ? 'adv' : ''}${RULE_SPEC[k].kind==='text'?' lgcell-text':''}"><span class="k">${esc(RULE_SPEC[k].t)}</span>`
           + (lgCanEdit()
             ? `<input class="lgin" data-lgset="${k}" data-lgi="${lgi++}" value="${esc(ruleFmt(k, VCONF[k]))}"`
+            + (RULE_SPEC[k].kind==='text'?` maxlength="${RULE_SPEC[k].maxlen}"`:'')
             + ` aria-label="${esc(RULE_SPEC[k].t)}">`
             : `<span class="val">${esc(ruleFmt(k, VCONF[k]))}</span>`)
           + (off ? `<span class="lgstd">standard ${esc(ruleFmt(k, RULE_STD.v[k]))}</span>`
@@ -78,14 +80,30 @@ export function LogicPage() {
   const [LGQ, setLGQ] = useState('')
   const [LGF, setLGF] = useState('all')
   const bodyRef = useRef<HTMLDivElement>(null)
+  const barRef = useRef<HTMLDivElement>(null)
+
+  /* D561: the page scrolls under Shell's sticky bar. Measure only its size,
+     on mount/resize, without repainting the rules or following each scroll. */
+  useLayoutEffect(() => {
+    const bar = barRef.current, top = document.querySelector('.topbar')
+    if (!bar || !top) return
+    const place = () => { bar.style.top = `${top.getBoundingClientRect().height}px` }
+    place()
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(place)
+    observer?.observe(top)
+    window.addEventListener('resize', place)
+    return () => { observer?.disconnect(); window.removeEventListener('resize', place) }
+  }, [])
 
   const admin = isAdmin()
   const b = logicBody(LGQ, LGF)
   const off = rulesOffCount()
+  /* W2: the stamp and the strip speak of RULES — the settings a check reads; the count and Reset speak of every setting */
+  const checkedOff = rulesCheckedOffCount()
 
   /* a modified rule set is never silent: the body class drives the
      RULES MODIFIED stamp on the week banner */
-  useEffect(() => { document.body.classList.toggle('page-rules-off', !!off) })
+  useEffect(() => { document.body.classList.toggle('page-rules-off', !!checkedOff) })
 
   /* the reference's change/pointerdown listeners on #lgBody, verbatim logic —
      native listeners, since the fields live inside the built markup */
@@ -108,7 +126,7 @@ export function LogicPage() {
       if (i) {
         if (!isAdmin()) return
         const k = i.dataset.lgset!, spec = RULE_SPEC[k], v = ruleParse(k, i.value)
-        if (v == null || v < spec.lo || v > spec.hi) {
+        if (v == null || (spec.kind!=='text' && (v < spec.lo || v > spec.hi))) {
           /* put the LIVE value back, the way every other refusing path in the
              app does (txtSet's callers, setInpField, the stores pen). The box
              used to sit there still showing `abc` while the rule underneath
@@ -119,7 +137,7 @@ export function LogicPage() {
           i.value = ruleFmt(k, VCONF[k])
           return HOOKS.toast(`${spec.t} must be between ${ruleFmt(k, spec.lo)} and ${ruleFmt(k, spec.hi)}`, 'warn')
         }
-        if (v === VCONF[k]) { i.classList.remove('bad'); return }
+        if (v === VCONF[k]) { i.classList.remove('bad'); i.value=ruleFmt(k,v); return }
         VCONF[k] = v; lgReapply()
         HOOKS.toast(`${spec.t} → ${ruleFmt(k, v)}${v === RULE_STD.v[k] ? ' (standard)' : ''}`)
         return
@@ -153,7 +171,7 @@ export function LogicPage() {
             what the READER can do, the same split the off-standard note below
             already makes. */}
         <span className="sub">every rule the engine applies{admin ? ' — “Edit rules” to change a threshold' : ' — read-only'}</span></div>
-      <div className="lgbar">
+      <div className="lgbar" ref={barRef}>
         <div className="searchbox">🔍<input id="lgSearch" placeholder="search the rules — “crew rest”, “brief”, “spare”"
           value={LGQ} onChange={e => setLGQ(e.target.value)} /></div>
         <span className="lgfilters" id="lgFilters">
@@ -179,11 +197,19 @@ export function LogicPage() {
           {`${b.shown} of ${b.total} rules · ${b.firedN} fired on this week's schedule` + (off ? ` · ${off} off standard` : '')}
         </span>
       </div>
-      <div className="lgoff" id="lgOff" hidden={!off}>
-        {off ? <><b>{off} rule{off > 1 ? 's' : ''} changed from the squadron standard.</b>{' '}
+      <div className="lgoff" id="lgOff" hidden={!checkedOff}>
+        {checkedOff ? <><b>{checkedOff} rule{checkedOff > 1 ? 's' : ''} changed from the squadron standard.</b>{' '}
           The schedule is being checked against these values, not the published ones
           {admin ? ' — “Reset to standard” puts them all back.' : '. Only an admin can change them.'}</> : null}
       </div>
+      <section className="lg-insights" aria-labelledby="lgInsightsTitle">
+        <b id="lgInsightsTitle">Insights</b>
+        <label className="lg-insights-row"><span>Track Blue/Red sorties<small>Split flying load by mission role. Conditional DS or RED wording asks the scheduler.</small></span>
+          <span className="lg-insights-switch">{lgCanEdit()
+            ? <input id="lgMissionMix" type="checkbox" role="switch" checked={missionTracking()} onChange={e=>{if(lgCanEdit()) setMissionTracking(e.currentTarget.checked)}} aria-label="Track Blue/Red sorties" />
+            : <span id="lgMissionMix" className={'lg-switch-read'+(missionTracking()?' on':'')} role="switch" aria-checked={missionTracking()} aria-disabled="true" aria-label="Track Blue/Red sorties" />}{missionTracking()?'On':'Off'}</span>
+        </label>
+      </section>
       <div className="lgwrap" id="lgBody" ref={bodyRef} dangerouslySetInnerHTML={{ __html: b.html }} />
     </>
   )

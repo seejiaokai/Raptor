@@ -41,6 +41,7 @@ import { me, mayEditInputOf, mayDeleteInputOf } from '../state/perms'
 import { INPEDIT, setInpEdit, OILASK, setOilAsk, setMedMove } from './pops'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
+import { clickedOutside } from './outside'
 
 /* THE ROSTER LIST, one place — the Inputs page's add form, its own row
    editor and this dialog's new Person field must never disagree on who is
@@ -1719,7 +1720,7 @@ export function InputEditor() {
 
   return (
     <div className="airpop" id="inpEditPop" hidden={!open}
-      onClick={e => { if ((e.target as HTMLElement).id === 'inpEditPop') close() }}>
+      onClick={e => { if (clickedOutside(e, 'inpEditPop')) close() }}>
       <div className="airpop-box inpedbox" ref={box}>
         <div className="airpop-head">
           <b id="inpEditTitle">{isNew ? 'New input' : who}{when ? ' · ' + when : ''}</b>

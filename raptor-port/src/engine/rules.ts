@@ -20,6 +20,7 @@ import { store } from './hooks'
 export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, tightTurn:120, crewRest:720,
   debrief:120,      // land + 2h — the flight debrief window
   reportLead:180,   // report to squadron 3h before T/O
+  reportText:'IN TIME + WX/NOTAMS',
   longDay:720,      // more than 12h on the books = long work day
   epBrief:15,       // an EP sim briefs 15 min prior
   simDebrief:30,    // sim debrief runs 30 min after
@@ -100,7 +101,8 @@ export const RULE_SPEC:any={
   step:      {t:'Step before take-off',      u:'min', lo:0,  hi:240},
   dekit:     {t:'Dekit after landing',       u:'min', lo:0,  hi:240},
   briefLead: {t:'Flight brief before T/O',   u:'min', lo:0,  hi:480},
-  reportLead:{t:'Nominal report before T/O', u:'min', lo:0,  hi:480},
+  reportLead:{t:'Nominal report before T/O (also the time the + In-time / Rally button fills in)', u:'min', lo:0,  hi:480},
+  reportText:{t:'Words the + In-time / Rally button fills in (up to 60 characters)',kind:'text',u:'text',maxlen:60},
   debrief:   {t:'Flight debrief after land', u:'min', lo:0,  hi:480},
   crewRest:  {t:'Crew rest',                 u:'min', lo:240,hi:1440},
   tightTurn: {t:'Tight turn threshold',      u:'min', lo:0,  hi:480},
@@ -122,8 +124,9 @@ export const KIND_LABEL:any={fly:'a flight',sim:'a sim',duty:'a duty post',shift
   ground:'a ground event',prog:'a programme item'};
 /* a setting reads as a clock time or as a duration */
 export const ruleFmt=(k:any,v:any)=>{const u=RULE_SPEC[k]&&RULE_SPEC[k].u;
-  return u==='time'?hhmm(v):u==='days'?`${v} day${v===1?'':'s'}`:lgT(v);};
+  return u==='text'?v:u==='time'?hhmm(v):u==='days'?`${v} day${v===1?'':'s'}`:lgT(v);};
 export const ruleParse=(k:any,txt:any)=>{
+  if(RULE_SPEC[k]&&RULE_SPEC[k].kind==='text')return typeof txt==='string'?txt.replace(/[\r\n]+/g,' ').trim().slice(0,RULE_SPEC[k].maxlen)||RULE_STD.v[k]:null;
   const s=String(txt).trim();
   /* clock fields tolerate the squadron's own spellings — "1900", "19:00",
      "1900H", "19:00L" all mean the same time (owner, 21 Aug 26: "whats the
@@ -142,6 +145,13 @@ export function kindOff(k:any){return !!SHIFT_HARD[k]!==!!RULE_STD.s[k];}
 export function rulesOffCount(){
   return Object.keys(RULE_SPEC).filter(ruleOff).length
        + Object.keys(KIND_LABEL).filter(kindOff).length;}
+/* W2 (the Codex stack check, 5 Oct 26): the settings a CHECK reads. A text setting (D511 — the words the
+   "+ In-time / Rally" button fills in) is a wording preference no rule reads, so it must not light the RULES MODIFIED
+   stamp or the "checked against these values" strip — a squadron that says RALLY would wear the stamp for good and
+   could no longer tell when a real rule had changed. rulesOffCount() still counts it for "N off standard" and Reset. */
+export function rulesCheckedOffCount(){
+  return Object.keys(RULE_SPEC).filter((k:any)=>RULE_SPEC[k].kind!=='text'&&ruleOff(k)).length
+       + Object.keys(KIND_LABEL).filter(kindOff).length;}
 /* persistence — only what differs from standard is stored, so a later change to
    the standard is picked up rather than silently overridden by a stale copy */
 export function rulesSave(){
@@ -155,7 +165,9 @@ export function rulesLoad(){
      it became concatenation, poisoning REST[] and the crew-rest maths. Storage
      is editable by hand, so it is treated as untrusted input. */
   Object.keys(r.v||{}).forEach((k:any)=>{const sp=RULE_SPEC[k], n=r.v[k];
-    if(sp&&typeof n==='number'&&isFinite(n)&&n>=sp.lo&&n<=sp.hi)VCONF[k]=n;});
+    if(!Object.prototype.hasOwnProperty.call(RULE_SPEC,k))return;
+    if(sp.kind==='text'){const txt=ruleParse(k,n);if(txt!=null)VCONF[k]=txt;}
+    else if(typeof n==='number'&&isFinite(n)&&n>=sp.lo&&n<=sp.hi)VCONF[k]=n;});
   /* hasOwnProperty, not `in`: `in` walks the prototype chain, so a stored blob
      carrying "toString" or "constructor" as a key wrote those onto SHIFT_HARD
      as real own properties (audit, 12 Aug 26). Grading was unaffected — only
