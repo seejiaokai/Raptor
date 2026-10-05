@@ -418,7 +418,7 @@ list.
 
 ### Trial 2 — the builder — to come (after the check: one small low-risk fix, `[OG-TAG-OVER-COUNT]`, built by a Sonnet helper to a precise spec, read by Opus)
 
-## 12. His look — the "look here" card — to come
+## 12. His look — four questions first, then the "look here" card
 
 ### Questions waiting for him (D596 — nothing below was guessed; only these pieces are left as built)
 
@@ -451,3 +451,24 @@ list.
    **(A, recommended) leave it** — a second line is nearly always for the same report time with other words (a Rally
    after the in-time), and the clock is one edit away. (B) always take-off less the Logic time, whatever is there.
    *Parked on it: nothing — recorded by both walks (P2-08).*
+
+### The look card — five minutes on your phone and a desktop, on the preview
+1. **Edit Schedule, any day: type a time and press Tab, and keep pressing Tab.** The caret should run callsign,
+   mission, brief, take-off, landing, remarks; the day's warning list and its count should change as you go, without
+   you leaving the boxes. On a published day one typed word and one Tab should show "1 pending" and "Not yet signed"
+   at once.
+2. **A wave's "+ In-time / Rally"** should fill take-off less three hours with "IN TIME + WX/NOTAMS"; a line typed
+   later than its take-off should read "(prev day)" in the wave's header. Type `8h00 IN TIME`: the day should say it
+   cannot read that clock.
+3. **Logic → "Track Blue/Red sorties" On**, then type `DS FOR RU` in a formation's Remarks: the Blue / Red question
+   should open under that formation and stay there while you edit other things; Insights should split that crew's
+   bars as soon as you answer — on a published day too, with no amendment.
+4. **On your iPhone only** (the test browser cannot prove these): the Scheduler Board's ⋯ → Desktop layout, panned by
+   finger, and its ⋯ menu near the right edge; the keyboard's own next-field arrows on the schedule; the Insights
+   window's top against Safari's bars; the Tracker's flight symbol and its label at your size.
+5. **Nothing should look different anywhere else** — the stylesheet was only split into parts. If a screen looks
+   off, that is a finding.
+Known and filed, so you need not report them: a published weekend's OIL moving when a Logic time is changed
+(`[OIL-WORK-START]`, D591 — the next job); Escape in a time box on the board; the green OIL chip over a phone request
+card's date.
+
