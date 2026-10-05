@@ -1,0 +1,51 @@
+/* H-01 — no negative work hours (desktop) */
+import * as S from './stk-TS-lib.mjs'
+const { L, W, world, pic, row, judge, savePart } = S
+const { browser, p, errors } = await world()
+await L.go(p, 'editsched')
+await S.openBoard(p, 0)
+const model0 = await S.readDayModel(p, 0)
+const w2 = model0[1]
+const ids = [...new Set(w2.forms[0].ac.flatMap(a => [a.p, a.w]))]
+const names = []; for (const i of ids) names.push(await S.csOf(p, i))
+console.log('wave2 lines before', JSON.stringify(w2.intimes), 'VL crew', names.join(','), 'VL to/ld', w2.forms[0].to, w2.forms[0].ld)
+const bl0 = await S.boardLines(p, 0, 1)
+await S.openBoard(p, 0)
+await pic(p, 'h01-1-board-before')
+const hrs0 = await S.hoursMap(p, { shot: 'h01-2-insights-before' })
+await pic(p, 'h01-2b-after-close')
+const wh0 = await S.waveHead(p, 0, 1)
+const warn0 = await S.reportWarns(p, 0)
+console.log('before hours', names.map(n => n + '=' + hrs0.hours[n]).join(' '), 'warns', warn0.length)
+// the edit: take-off 10:00 and landing 11:25 of that formation, via the board's boxes
+await S.boardBox(p, 'ff:0.1.0.to', '10:00')
+await S.boardBox(p, 'ff:0.1.0.ld', '11:25')
+const m1 = await S.readDayModel(p, 0)
+console.log('after model', JSON.stringify(m1[1].forms[0]).slice(0, 200), JSON.stringify(m1[1].intimes))
+const wh1 = await S.waveHead(p, 0, 1)
+const bl1 = await S.boardLines(p, 0, 1)
+await S.openBoard(p, 0)
+await pic(p, 'h01-3-board-after')
+await S.boardOpenFold?.(p).catch?.(() => {})
+await L.sleep(200)
+await S.boardOpenFold(p)
+const warnPanel = await S.readBoard(p)
+await pic(p, 'h01-4-board-warnings')
+const warn1 = await S.reportWarns(p, 0); const longW = await S.warnTexts(p, 0, /long|LONG|rest|REST/); console.log('LONG/REST', JSON.stringify(longW))
+const hrs1 = await S.hoursMap(p, { shot: 'h01-5-insights-after' })
+console.log('after hours', names.map(n => n + '=' + hrs1.hours[n] + ' w=' + hrs1.widths[n] + ' t=' + hrs1.titles[n]).join(' | '))
+console.log('WH before', JSON.stringify(wh0), 'after', JSON.stringify(wh1))
+console.log('board panel', JSON.stringify(warnPanel).slice(0, 2500))
+console.log('report warns after', JSON.stringify(warn1))
+// who is the longest/any negative figure anywhere in the table?
+const neg = Object.entries(hrs1.hours).filter(([k, v]) => /^-|−/.test(v) || /-/.test(v))
+const full = Object.entries(hrs1.widths).filter(([k, v]) => v === '100%').map(([k]) => k)
+await pic(p, 'h01-6-end')
+const crewRows = names.map(n => `${n}: ${hrs0.hours[n]} → ${hrs1.hours[n]} (bar ${hrs0.widths[n]} → ${hrs1.widths[n]}; ${hrs1.titles[n]})`)
+const redLines = warn1.filter(w => w.sev === 'hard' || w.sev === 'warn' || true)
+row('H-01', 'Monday on the Scheduler Board: wave 2 (lines ' + JSON.stringify(w2.intimes) + ', formation VL, crew ' + names.join('/') + '); changed VL take-off 10:00 / landing 11:25 in the board boxes; opened Insights',
+  `crew Work hours before→after: ${crewRows.join(' ; ')}. Negative figures anywhere in Work hours: ${neg.length ? JSON.stringify(neg) : 'none'}. Full-width bars after: ${full.join(',') || 'none'}. Wave line text after: ${JSON.stringify(wh1 && wh1.lines)}; wave header: ${JSON.stringify(wh1 && wh1.asd)}. Long-day / rest warnings on Monday after: ${longW.map(w => w.sev + ': ' + w.msg).join(' | ') || 'none'}. Report-timing warnings on Monday after: ${warn1.map(w => w.sev + ': ' + w.msg).join(' | ') || 'none'}`,
+  'RECORDED', ['h01-1-board-before', 'h01-3-board-after', 'h01-5-insights-after'])
+console.log('errors', errors)
+S.savePart('h01', { errors, crew: names, hrs0: Object.fromEntries(names.map(n => [n, hrs0.hours[n]])), hrs1: Object.fromEntries(names.map(n => [n, hrs1.hours[n]])), warn1, panel: warnPanel, wh0, wh1 })
+await browser.close()

@@ -1,0 +1,980 @@
+{
+ "parts": {
+  "sP2-06-dk": {
+   "at": "2026-10-05T14:07:18.089Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-06.0",
+     "did": "SETUP — board (desktop) Monday: \"+ Wave\" → \"Flying wave\" (wave 3); VL typed 1200/1300, Comet and Cinder seated from the crew list; \"+ Line\"; RU typed 1200/1300, Havoc and Dash seated. No reporting line yet.",
+     "saw": "✓ the wave holds VL and RU, both 12:00–13:00, with the four people [VL 12:00-13:00 Comet/Cinder | RU 12:00-13:00 Havoc/Dash] · ✓ all four seats took [Comet:on Cinder:on Havoc:on Dash:on]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p206-0-hours-before.png",
+      "dk-02-p206-1-wave-built-board.png"
+     ]
+    },
+    {
+     "id": "P2-06.0h",
+     "did": "for the record: Insights Work hours BEFORE any reporting line is typed (take-off 12:00, landing 13:00, debrief 2h; Logic says the nominal report is 3h before take-off)",
+     "saw": "Comet 10h → 14h (+4h00) · Cinder 5h05 → 9h05 (+4h00) · Havoc 8h → 12h (+4h00) · Dash 21h05 → 25h05 (+4h00) — held: Comet: fly VL: s 11:00 e 13:30 report 11:00 (660) brief 09:40 || Cinder: fly VL: s 11:00 e 13:30 report 11:00 (660) brief 09:40 || Havoc: fly RU: s 11:00 e 13:30 report 11:00 (660) brief 09:40 || Dash: fly RU: s 11:00 e 13:30 report 11:00 (660) brief 09:40",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-06.1",
+     "did": "Edit Schedule's week, the new wave: \"+ In-time / Rally\" pressed (it filled \"12:00H: IN TIME + WX/NOTAMS\"), the line retyped \"08:00 IN TIME\" + Tab; pressed again (it filled \"08:00H: IN TIME + WX/NOTAMS\"), retyped \"08:30 VL RALLY\" + Tab. Then both crews inspected in Insights' Work hours.",
+     "saw": "✓ the week shows the two lines as typed [08:00 IN TIME / 08:30 VL RALLY] · ✓ the board shows the same two lines [08:00 IN TIME / 08:30 VL RALLY · header \"⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 08:00 · 2 ac\"] · ✓ EXPECTED: initially BOTH crews report at 08:00 — VL (Comet, Cinder) 08:00 → 15:00 = 7h [Comet 10h → 17h (+7h00) · Cinder 5h05 → 12h05 (+7h00)] · ✓ EXPECTED: RU (Havoc, Dash) 08:00 → 15:00 = 7h [Havoc 8h → 15h (+7h00) · Dash 21h05 → 28h05 (+7h00)] · ✓ no timing message under the lines (08:00 in-time, 08:30 Rally, suggested brief 09:40, T/O 12:00 are in order) [week \"\" board \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-p206-2-week-two-lines.png",
+      "dk-04-p206-3-board-two-lines.png",
+      "dk-05-p206-4-hours-both-0800.png",
+      "dk-06-p206-4b-hours-both-0800-havoc.png"
+     ]
+    },
+    {
+     "id": "P2-06.1h",
+     "did": "what the app holds for Monday after those two lines (read only, for the record)",
+     "saw": "Comet: fly VL: s 11:00 e 13:30 report 08:00 (480) brief 09:40 || Cinder: fly VL: s 11:00 e 13:30 report 08:00 (480) brief 09:40 || Havoc: fly RU: s 11:00 e 13:30 report 08:00 (480) brief 09:40 || Dash: fly RU: s 11:00 e 13:30 report 08:00 (480) brief 09:40",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-06.2",
+     "did": "The board, the same wave: \"+ In-time / Rally\" pressed (it filled \"08:00H: IN TIME + WX/NOTAMS\"), the line retyped \"09:00 VL IN TIME\" + Tab. Both crews inspected again.",
+     "saw": "✓ the board and the week show the three lines [08:00 IN TIME / 08:30 VL RALLY / 09:00 VL IN TIME] · ✓ EXPECTED: VL now starts at 08:30 (its own in-time 09:00 replaces the wave's 08:00; its Rally 08:30 is the earliest) — 08:30 → 15:00 = 6h30 [Comet 10h → 16h30 (+6h30) · Cinder 5h05 → 11h35 (+6h30)] · ✓ EXPECTED: RU still starts at 08:00 — 7h [Havoc 8h → 15h (+7h00) · Dash 21h05 → 28h05 (+7h00)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-p206-5-board-three-lines.png",
+      "dk-08-p206-6-week-three-lines.png",
+      "dk-09-p206-7-hours-vl-0830.png",
+      "dk-10-p206-7b-hours-ru-0800.png",
+      "dk-11-p206-8-monday-list.png"
+     ]
+    },
+    {
+     "id": "P2-06.2h",
+     "did": "for the record: what the board prints under the lines, Monday's list for this wave, and what the app holds",
+     "saw": "under the lines — board \"VL: in-time 09:00 is later than rally 08:30.\" · week \"VL: in-time 09:00 is later than rally 08:30.\" · board header \"⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 08:00 · 2 ac\" · Monday's bar \"⚠ 19 issues · 11 warning · tap to collapse ▲\" · list lines naming these clocks: RED In-time / Rally — timings out of order VL: in-time 09:00 is later than rally 08:30. ✕ · held: Comet: fly VL: s 11:00 e 13:30 report 08:30 (510) brief 09:40 || Cinder: fly VL: s 11:00 e 13:30 report 08:30 (510) brief 09:40 || Havoc: fly RU: s 11:00 e 13:30 report 08:00 (480) brief 09:40 || Dash: fly RU: s 11:00 e 13:30 report 08:00 (480) brief 09:40",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-06.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-06-ph": {
+   "at": "2026-10-05T14:10:27.283Z",
+   "base": "http://localhost:4226",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-06.0",
+     "did": "SETUP — board (phone layout) Monday: \"+ Wave\" → \"Flying wave\" (wave 3); VL typed 1200/1300, Comet and Cinder seated from the crew list; \"+ Line\"; RU typed 1200/1300, Havoc and Dash seated. No reporting line yet.",
+     "saw": "✓ the wave holds VL and RU, both 12:00–13:00, with the four people [VL 12:00-13:00 Comet/Cinder | RU 12:00-13:00 Havoc/Dash] · ✓ all four seats took [Comet:on Cinder:on Havoc:on Dash:on]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-p206-0-hours-before.png",
+      "ph-02-p206-1-wave-built-board.png"
+     ]
+    },
+    {
+     "id": "P2-06.0h",
+     "did": "for the record: Insights Work hours BEFORE any reporting line is typed (take-off 12:00, landing 13:00, debrief 2h; Logic says the nominal report is 3h before take-off)",
+     "saw": "Comet 10h → 14h (+4h00) · Cinder 5h05 → 9h05 (+4h00) · Havoc 8h → 12h (+4h00) · Dash 21h05 → 25h05 (+4h00) — held: Comet: fly VL: s 11:00 e 13:30 report 11:00 (660) brief 09:40 || Cinder: fly VL: s 11:00 e 13:30 report 11:00 (660) brief 09:40 || Havoc: fly RU: s 11:00 e 13:30 report 11:00 (660) brief 09:40 || Dash: fly RU: s 11:00 e 13:30 report 11:00 (660) brief 09:40",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-06.1",
+     "did": "Edit Schedule's week, the new wave: \"+ In-time / Rally\" pressed (it filled \"12:00H: IN TIME + WX/NOTAMS\"), the line retyped \"08:00 IN TIME\" + Tab; pressed again (it filled \"08:00H: IN TIME + WX/NOTAMS\"), retyped \"08:30 VL RALLY\" + Tab. Then both crews inspected in Insights' Work hours.",
+     "saw": "✓ the week shows the two lines as typed [08:00 IN TIME / 08:30 VL RALLY] · ✓ the board shows the same two lines [08:00 IN TIME / 08:30 VL RALLY · header \"In-time / Rally 08:00 · 2 ac\"] · ✓ EXPECTED: initially BOTH crews report at 08:00 — VL (Comet, Cinder) 08:00 → 15:00 = 7h [Comet 10h → 17h (+7h00) · Cinder 5h05 → 12h05 (+7h00)] · ✓ EXPECTED: RU (Havoc, Dash) 08:00 → 15:00 = 7h [Havoc 8h → 15h (+7h00) · Dash 21h05 → 28h05 (+7h00)] · ✓ no timing message under the lines (08:00 in-time, 08:30 Rally, suggested brief 09:40, T/O 12:00 are in order) [week \"\" board \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-p206-2-week-two-lines.png",
+      "ph-04-p206-3-board-two-lines.png",
+      "ph-05-p206-4-hours-both-0800.png",
+      "ph-06-p206-4b-hours-both-0800-havoc.png"
+     ]
+    },
+    {
+     "id": "P2-06.1h",
+     "did": "what the app holds for Monday after those two lines (read only, for the record)",
+     "saw": "Comet: fly VL: s 11:00 e 13:30 report 08:00 (480) brief 09:40 || Cinder: fly VL: s 11:00 e 13:30 report 08:00 (480) brief 09:40 || Havoc: fly RU: s 11:00 e 13:30 report 08:00 (480) brief 09:40 || Dash: fly RU: s 11:00 e 13:30 report 08:00 (480) brief 09:40",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-06.2",
+     "did": "The board, the same wave: \"+ In-time / Rally\" pressed (it filled \"08:00H: IN TIME + WX/NOTAMS\"), the line retyped \"09:00 VL IN TIME\" + Tab. Both crews inspected again.",
+     "saw": "✓ the board and the week show the three lines [08:00 IN TIME / 08:30 VL RALLY / 09:00 VL IN TIME] · ✓ EXPECTED: VL now starts at 08:30 (its own in-time 09:00 replaces the wave's 08:00; its Rally 08:30 is the earliest) — 08:30 → 15:00 = 6h30 [Comet 10h → 16h30 (+6h30) · Cinder 5h05 → 11h35 (+6h30)] · ✓ EXPECTED: RU still starts at 08:00 — 7h [Havoc 8h → 15h (+7h00) · Dash 21h05 → 28h05 (+7h00)]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-p206-5-board-three-lines.png",
+      "ph-08-p206-6-week-three-lines.png",
+      "ph-09-p206-7-hours-vl-0830.png",
+      "ph-10-p206-7b-hours-ru-0800.png",
+      "ph-11-p206-8-monday-list.png"
+     ]
+    },
+    {
+     "id": "P2-06.2h",
+     "did": "for the record: what the board prints under the lines, Monday's list for this wave, and what the app holds",
+     "saw": "under the lines — board \"VL: in-time 09:00 is later than rally 08:30.\" · week \"VL: in-time 09:00 is later than rally 08:30.\" · board header \"In-time / Rally 08:00 · 2 ac\" · Monday's bar \"⚠ 19 issues · 11 warning · tap to collapse ▲\" · list lines naming these clocks: RED In-time / Rally — timings out of order VL: in-time 09:00 is later than rally 08:30. ✕ · held: Comet: fly VL: s 11:00 e 13:30 report 08:30 (510) brief 09:40 || Cinder: fly VL: s 11:00 e 13:30 report 08:30 (510) brief 09:40 || Havoc: fly RU: s 11:00 e 13:30 report 08:00 (480) brief 09:40 || Dash: fly RU: s 11:00 e 13:30 report 08:00 (480) brief 09:40",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-06.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-07-dk": {
+   "at": "2026-10-05T14:12:05.835Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-07.0",
+     "did": "SETUP — board (desktop) Tuesday: \"+ Wave\" → \"Flying wave\" (wave 3); NX typed 0100 / 0200; Vandal and Ryder seated from the crew list.",
+     "saw": "✓ the wave holds NX 01:00–02:00 with Vandal / Ryder [NX 01:00-02:00 Vandal/Ryder] · ✓ both seats took [Vandal:on Ryder:on]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p207-0-wave-built-board.png"
+     ]
+    },
+    {
+     "id": "P2-07.1",
+     "did": "Edit Schedule's week, the new wave: \"+ In-time / Rally\" (it filled \"01:00H: IN TIME + WX/NOTAMS\"), retyped \"23:00 NX IN TIME\" + Tab; \"+ In-time / Rally\" again (it filled \"23:00H: IN TIME + WX/NOTAMS\"), retyped \"00:15 NX IN TIME\" + Tab. Insights opened (top bar Insights).",
+     "saw": "✓ the two lines show on the week in the order typed [23:00 NX IN TIME / 00:15 NX IN TIME] · ✓ the board shows the same [23:00 NX IN TIME / 00:15 NX IN TIME · header \"In-time / Rally 23:00 · 1 ac\"] · ✓ EXPECTED: the previous-day 23:00 is the earliest — Vandal and Ryder each 23:00 → 04:00 = 5h [Vandal (not listed) → 5h (+5h00) · Ryder 1h30 → 6h30 (+5h00)] · ✓ no negative figure anywhere in Work hours [none]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-p207-1-week-2300-then-0015.png",
+      "dk-03-p207-2-board-2300-then-0015.png",
+      "dk-04-p207-3-hours-2300-first.png"
+     ]
+    },
+    {
+     "id": "P2-07.2",
+     "did": "The board: line 1 retyped \"00:15 NX IN TIME\" + Tab, then line 2 retyped \"23:00 NX IN TIME\" + Tab — the same two instructions, their order reversed. Insights opened again.",
+     "saw": "✓ the lines now read 00:15 first, 23:00 second, on the board and the week [00:15 NX IN TIME / 23:00 NX IN TIME] · ✓ EXPECTED: previous-day 23:00 remains the earliest; work hours do not change — still 5h each [Vandal (not listed) → 5h (+5h00) (was 5h) · Ryder 1h30 → 6h30 (+5h00) (was 6h30)] · ✓ no negative figure anywhere in Work hours [none]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-p207-4-board-0015-then-2300.png",
+      "dk-06-p207-5-week-0015-then-2300.png",
+      "dk-07-p207-6-hours-0015-first.png",
+      "dk-08-p207-7-tuesday-list.png"
+     ]
+    },
+    {
+     "id": "P2-07.h",
+     "did": "for the record: the half-way state (both lines reading 00:15), what is printed beside the lines, Tuesday's list, and what the app holds",
+     "saw": "half-way (lines \"00:15 NX IN TIME / 00:15 NX IN TIME\"): Vandal 3h45 · Ryder 5h15 · under the lines after step 1: week \"NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\" board \"NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\"; after the swap: week \"NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\" board \"NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\" · board header after the swap \"In-time / Rally 23:00 · 1 ac\" · does any line or the header carry words for \"previous day\"? yes: 00:15 NX IN TIME ✕ 23:00 NX IN TIME ✕ NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day). · Tuesday's bar \"⚠ 6 issues · 4 warning · tap to collapse ▲\" · Tuesday lines naming NX / Vandal / Ryder: before the swap RED In-time / Rally — timings out of order NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day). ✕; after RED In-time / Rally — timings out of order NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day). ✕ · held for Vandal: step 1 \"fly NX: s 00:00 e 02:30 report prev-day 23:00 (-60) brief prev-day 22:40\"; after the swap \"fly NX: s 00:00 e 02:30 report prev-day 23:00 (-60) brief prev-day 22:40\"",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-07.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-07-ph": {
+   "at": "2026-10-05T14:12:41.878Z",
+   "base": "http://localhost:4226",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-07.0",
+     "did": "SETUP — board (phone layout) Tuesday: \"+ Wave\" → \"Flying wave\" (wave 3); NX typed 0100 / 0200; Vandal and Ryder seated from the crew list.",
+     "saw": "✓ the wave holds NX 01:00–02:00 with Vandal / Ryder [NX 01:00-02:00 Vandal/Ryder] · ✓ both seats took [Vandal:on Ryder:on]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-p207-0-wave-built-board.png"
+     ]
+    },
+    {
+     "id": "P2-07.1",
+     "did": "Edit Schedule's week, the new wave: \"+ In-time / Rally\" (it filled \"01:00H: IN TIME + WX/NOTAMS\"), retyped \"23:00 NX IN TIME\" + Tab; \"+ In-time / Rally\" again (it filled \"23:00H: IN TIME + WX/NOTAMS\"), retyped \"00:15 NX IN TIME\" + Tab. Insights opened (☰ → \"Week insights\").",
+     "saw": "✓ the two lines show on the week in the order typed [23:00 NX IN TIME / 00:15 NX IN TIME] · ✓ the board shows the same [23:00 NX IN TIME / 00:15 NX IN TIME · header \"In-time / Rally 23:00 · 1 ac\"] · ✓ EXPECTED: the previous-day 23:00 is the earliest — Vandal and Ryder each 23:00 → 04:00 = 5h [Vandal (not listed) → 5h (+5h00) · Ryder 1h30 → 6h30 (+5h00)] · ✓ no negative figure anywhere in Work hours [none]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-p207-1-week-2300-then-0015.png",
+      "ph-03-p207-2-board-2300-then-0015.png",
+      "ph-04-p207-3-hours-2300-first.png"
+     ]
+    },
+    {
+     "id": "P2-07.2",
+     "did": "The board: line 1 retyped \"00:15 NX IN TIME\" + Tab, then line 2 retyped \"23:00 NX IN TIME\" + Tab — the same two instructions, their order reversed. Insights opened again.",
+     "saw": "✓ the lines now read 00:15 first, 23:00 second, on the board and the week [00:15 NX IN TIME / 23:00 NX IN TIME] · ✓ EXPECTED: previous-day 23:00 remains the earliest; work hours do not change — still 5h each [Vandal (not listed) → 5h (+5h00) (was 5h) · Ryder 1h30 → 6h30 (+5h00) (was 6h30)] · ✓ no negative figure anywhere in Work hours [none]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-p207-4-board-0015-then-2300.png",
+      "ph-06-p207-5-week-0015-then-2300.png",
+      "ph-07-p207-6-hours-0015-first.png",
+      "ph-08-p207-7-tuesday-list.png"
+     ]
+    },
+    {
+     "id": "P2-07.h",
+     "did": "for the record: the half-way state (both lines reading 00:15), what is printed beside the lines, Tuesday's list, and what the app holds",
+     "saw": "half-way (lines \"00:15 NX IN TIME / 00:15 NX IN TIME\"): Vandal 3h45 · Ryder 5h15 · under the lines after step 1: week \"NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\" board \"NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\"; after the swap: week \"NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\" board \"NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\" · board header after the swap \"In-time / Rally 23:00 · 1 ac\" · does any line or the header carry words for \"previous day\"? yes: 00:15 NX IN TIME ✕ 23:00 NX IN TIME ✕ NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day). · Tuesday's bar \"⚠ 6 issues · 4 warning · tap to collapse ▲\" · Tuesday lines naming NX / Vandal / Ryder: before the swap RED In-time / Rally — timings out of order NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day). ✕; after RED In-time / Rally — timings out of order NX: in-time 23:00 (previous day) is later than brief 22:40 (previous day). ✕ · held for Vandal: step 1 \"fly NX: s 00:00 e 02:30 report prev-day 23:00 (-60) brief prev-day 22:40\"; after the swap \"fly NX: s 00:00 e 02:30 report prev-day 23:00 (-60) brief prev-day 22:40\"",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-07.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-08-dk": {
+   "at": "2026-10-05T14:14:39.776Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-08.week",
+     "did": "P2-08 with the WEEK's \"+ In-time / Rally\" (desktop): take-offs 12:00 and 13:00; add; change to 08:00; Logic lead to 2h; add again.",
+     "saw": "WEEK's button, wave 3 (VL 12:00-13:00 | RU 13:00-14:00; box before: no line): PRESS 1 with Logic \"Nominal report before T/O\" = 3h → filled \"12:00H: IN TIME + WX/NOTAMS\" (under it: \"VL: in-time 12:00 is later than brief 09:40. RU: in-time 12:00 is later than brief 10:40.\"; the caret is in the new line). Line retyped \"08:00H: IN TIME + WX/NOTAMS\" → shows \"08:00H: IN TIME + WX/NOTAMS\". Logic box typed \"2h\" (it read 3h → 2h); the page then shows 2h. PRESS 2 with Logic = 2h → filled \"08:00H: IN TIME + WX/NOTAMS\" (box now: 08:00H: IN TIME + WX/NOTAMS / 08:00H: IN TIME + WX/NOTAMS; under it \"\"). Extra, for the record: every line removed with ✕ (box: empty), PRESS 3 on the empty box with Logic = 2h → filled \"12:00H: IN TIME + WX/NOTAMS\". Logic put back: 2h → 3h.",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-p208-week-1-first-press.png",
+      "dk-02-p208-week-2-logic-2h.png",
+      "dk-03-p208-week-3-second-press.png",
+      "dk-04-p208-week-4-press-on-empty-at-2h.png"
+     ]
+    },
+    {
+     "id": "P2-08.board",
+     "did": "P2-08 with the BOARD's \"+ In-time / Rally\" (desktop): the same sequence on a second new wave.",
+     "saw": "BOARD's button, wave 4 (VL 12:00-13:00 | RU 13:00-14:00; box before: no line): PRESS 1 with Logic \"Nominal report before T/O\" = 3h → filled \"12:00H: IN TIME + WX/NOTAMS\" (under it: \"VL: in-time 12:00 is later than brief 09:40. RU: in-time 12:00 is later than brief 10:40.\"; the caret is in the new line). Line retyped \"08:00H: IN TIME + WX/NOTAMS\" → shows \"08:00H: IN TIME + WX/NOTAMS\". Logic box typed \"2h\" (it read 3h → 2h); the page then shows 2h. PRESS 2 with Logic = 2h → filled \"08:00H: IN TIME + WX/NOTAMS\" (box now: 08:00H: IN TIME + WX/NOTAMS / 08:00H: IN TIME + WX/NOTAMS; under it \"\"). Extra, for the record: every line removed with ✕ (box: empty), PRESS 3 on the empty box with Logic = 2h → filled \"12:00H: IN TIME + WX/NOTAMS\". Logic put back: 2h → 3h.",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-p208-board-1-first-press.png",
+      "dk-06-p208-board-2-logic-2h.png",
+      "dk-07-p208-board-3-second-press.png",
+      "dk-08-p208-board-4-press-on-empty-at-2h.png"
+     ]
+    },
+    {
+     "id": "P2-08.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-08-ph": {
+   "at": "2026-10-05T14:15:29.454Z",
+   "base": "http://localhost:4226",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-08.week",
+     "did": "P2-08 with the WEEK's \"+ In-time / Rally\" (phone): take-offs 12:00 and 13:00; add; change to 08:00; Logic lead to 2h; add again.",
+     "saw": "WEEK's button, wave 3 (VL 12:00-13:00 | RU 13:00-14:00; box before: no line): PRESS 1 with Logic \"Nominal report before T/O\" = 3h → filled \"12:00H: IN TIME + WX/NOTAMS\" (under it: \"VL: in-time 12:00 is later than brief 09:40. RU: in-time 12:00 is later than brief 10:40.\"; the caret is in the new line). Line retyped \"08:00H: IN TIME + WX/NOTAMS\" → shows \"08:00H: IN TIME + WX/NOTAMS\". Logic box typed \"2h\" (it read 3h → 2h); the page then shows 2h. PRESS 2 with Logic = 2h → filled \"08:00H: IN TIME + WX/NOTAMS\" (box now: 08:00H: IN TIME + WX/NOTAMS / 08:00H: IN TIME + WX/NOTAMS; under it \"\"). Extra, for the record: every line removed with ✕ (box: empty), PRESS 3 on the empty box with Logic = 2h → filled \"12:00H: IN TIME + WX/NOTAMS\". Logic put back: 2h → 3h.",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-p208-week-1-first-press.png",
+      "ph-02-p208-week-2-logic-2h.png",
+      "ph-03-p208-week-3-second-press.png",
+      "ph-04-p208-week-4-press-on-empty-at-2h.png"
+     ]
+    },
+    {
+     "id": "P2-08.board",
+     "did": "P2-08 with the BOARD's \"+ In-time / Rally\" (phone): the same sequence on a second new wave.",
+     "saw": "BOARD's button, wave 4 (VL 12:00-13:00 | RU 13:00-14:00; box before: no line): PRESS 1 with Logic \"Nominal report before T/O\" = 3h → filled \"12:00H: IN TIME + WX/NOTAMS\" (under it: \"VL: in-time 12:00 is later than brief 09:40. RU: in-time 12:00 is later than brief 10:40.\"; the caret is in the new line). Line retyped \"08:00H: IN TIME + WX/NOTAMS\" → shows \"08:00H: IN TIME + WX/NOTAMS\". Logic box typed \"2h\" (it read 3h → 2h); the page then shows 2h. PRESS 2 with Logic = 2h → filled \"08:00H: IN TIME + WX/NOTAMS\" (box now: 08:00H: IN TIME + WX/NOTAMS / 08:00H: IN TIME + WX/NOTAMS; under it \"\"). Extra, for the record: every line removed with ✕ (box: empty), PRESS 3 on the empty box with Logic = 2h → filled \"12:00H: IN TIME + WX/NOTAMS\". Logic put back: 2h → 3h.",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-05-p208-board-1-first-press.png",
+      "ph-06-p208-board-2-logic-2h.png",
+      "ph-07-p208-board-3-second-press.png",
+      "ph-08-p208-board-4-press-on-empty-at-2h.png"
+     ]
+    },
+    {
+     "id": "P2-08.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-09-dk": {
+   "at": "2026-10-05T14:19:29.517Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-09.0",
+     "did": "SETUP — Logic: the search box typed \"words\", \"wording\", \"default\", \"button\", \"WX/NOTAMS\", \"rally\" in turn; then \"Edit rules\" pressed and every box on the page listed, looking for the setting that holds the button's default words (the scenario: \"Set default words to RALLY\"; the brief: \"the words set beside it on Logic\").",
+     "saw": "✗ a box for the button's words exists on Logic [NONE. Every typing box in Edit rules (22): Step before take-off=1h · Dekit after landing=30 min · Flight brief before T/O=2h20 · Nominal report before T/O=3h · ]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-p209-0-logic-search-rally.png",
+      "dk-02-p209-1-logic-edit-nominal-report.png",
+      "dk-03-p209-2-logic-edit-intime-rally-section.png"
+     ]
+    },
+    {
+     "id": "P2-09.1",
+     "did": "Two new Monday waves without reporting lines (wave 3: VL 12:00–13:00 Comet / Cinder; wave 4: RU 12:00–13:00). \"+ In-time / Rally\" pressed on the BOARD for wave 4 and on the WEEK for wave 3, Logic untouched.",
+     "saw": "✓ the week's button and the board's button fill the same text (the scenario's \"week and Board differ\" would disprove) [week \"12:00H: IN TIME + WX/NOTAMS\" · board \"12:00H: IN TIME + WX/NOTAMS\"] · ✗ the clock filled is the earliest take-off less the nominal report (12:00 − 3h = 09:00) — the brief's item 2 [week \"12:00H: IN TIME + WX/NOTAMS\" · board \"12:00H: IN TIME + WX/NOTAMS\" — both carry the take-off's own clock, 12:00]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-04-p209-3-board-button.png",
+      "dk-05-p209-4-week-button.png"
+     ]
+    },
+    {
+     "id": "P2-09.2",
+     "did": "NOT the scenario's route (the Logic setting is absent) — the same three wordings typed BY HAND into the week's line for wave 3 (VL 12:00–13:00, Comet / Cinder; before any line Comet read 14h), Insights read after each",
+     "saw": "\"RALLY\": typed \"09:00 RALLY\" → line shows \"09:00 RALLY\", under it \"\", Comet 14h → 16h (+2h00); held: fly VL: s 11:00 e 13:30 report 09:00 (540) brief 09:40 ||| \"RALLY — check 13:00\": typed \"09:00 RALLY — check 13:00\" → line shows \"09:00 RALLY — check 13:00\", under it \"\", Comet 14h → 16h (+2h00); held: fly VL: s 11:00 e 13:30 report 09:00 (540) brief 09:40 ||| blank words (the clock alone): typed \"09:00\" → line shows \"09:00\", under it \"\", Comet 14h → 16h (+2h00); held: fly VL: s 11:00 e 13:30 report 09:00 (540) brief 09:40 — the prose clock 13:00 did NOT take over (same figure as \"RALLY\" alone); the clock-only line reads the same start.",
+     "verdict": "INFO",
+     "pics": [
+      "dk-06-p209-5-week-typed-rally.png",
+      "dk-07-p209-6-week-typed-rally-check-1300.png",
+      "dk-08-p209-7-week-typed-clock-only.png",
+      "dk-09-p209-8-hours-end.png"
+     ]
+    },
+    {
+     "id": "P2-09",
+     "did": "the scenario as written (set the default words on Logic to \"RALLY\", blank, \"RALLY — check 13:00\", and press Add on the week and the board each time)",
+     "saw": "NOT WALKED as written: Logic has no setting for the button's words in this build (P2-09.0). Walked instead: both buttons with the built-in words (P2-09.1) and the three wordings typed by hand (P2-09.2).",
+     "verdict": "NOT WALKED",
+     "pics": []
+    },
+    {
+     "id": "P2-09.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-10-dk": {
+   "at": "2026-10-05T14:21:57.207Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-10.1",
+     "did": "Friday, a new wave (VL 12:00–13:00, Vandal / Ryder, B box blank — above it the app prints \"09:40\"). Week: \"+ In-time / Rally\" (it filled \"12:00H: IN TIME + WX/NOTAMS\"), retyped \"10:00 RALLY\" + Tab. The message under the line, on the board, and Friday's warning list read.",
+     "saw": "✓ a message shows under the line on the week and on the board [week \"VL: rally 10:00 is later than brief 09:40.\" (painted rgb(240, 85, 95)) · board \"VL: rally 10:00 is later than brief 09:40.\"] · ✗ EXPECTED: the message says \"suggested brief\" [VL: rally 10:00 is later than brief 09:40.] · ✓ it is a RED line in Friday's warning list [RED In-time / Rally — timings out of order VL: rally 10:00 is later than brief 09:40. ✕ · bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\"]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-p210-1-week-rally-1000.png",
+      "dk-02-p210-2-friday-list.png",
+      "dk-03-p210-3-board-rally-1000.png"
+     ]
+    },
+    {
+     "id": "P2-10.2",
+     "did": "Friday: the four sign-offs chosen (Ace, Anvil, Anvil, Anvil), then \"Publish day\" pressed with the Rally warning still showing.",
+     "saw": "✗ EXPECTED: publication remains available after sign-off — the day is published [the day's tag reads \"DRAFT\", its Publish button is on; the app said: Cannot publish — VL: rally 10:00 is later than brief 09:40. Correct the timing first.]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-04-p210-4-after-publish-day.png"
+     ]
+    },
+    {
+     "id": "P2-10.2h",
+     "did": "for the record: the warning hidden with its own ✕ (pressed), then \"Publish day\" pressed again",
+     "saw": "bar \"✓ No issues · tap to collapse ▲\" · the day's tag \"DRAFT\", Publish button on · the app said: Cannot publish — VL: rally 10:00 is later than brief 09:40. Correct the timing first.",
+     "verdict": "INFO",
+     "pics": [
+      "dk-05-p210-5-hidden-then-publish.png"
+     ]
+    },
+    {
+     "id": "P2-10.3",
+     "did": "The amendment route (the day could not be published with the warning, so the Rally was first corrected to 09:00 and the day published; then Rally put back to 10:00 on the published day and \"Publish AL\" pressed after the four sign-offs).",
+     "saw": "✗ EXPECTED: the amendment can be issued while the warning remains [Rally retyped 09:00 (under the line: \"\") → sign-offs + \"Publish day\": tag \"ORIG\", the app said Friday published — APPROVED [published]. Rally retyped 10:00 on t]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-06-p210-6-published-after-correcting.png",
+      "dk-07-p210-7-publish-al-with-warning.png"
+     ]
+    },
+    {
+     "id": "P2-10.3h",
+     "did": "the amendment route, every figure",
+     "saw": "Rally retyped 09:00 (under the line: \"\") → sign-offs + \"Publish day\": tag \"ORIG\", the app said Friday published — APPROVED [published]. Rally retyped 10:00 on the published day (under the line: \"VL: rally 10:00 is later than brief 09:40.\"; the day's count \"1 pending\", button \"Publish AL1\") → sign-offs (Ace, Anvil, Anvil, Anvil) + \"Publish AL1\": tag \"ORIG\", count \"1 pending\", the app said: Cannot publish — VL: rally 10:00 is later than brief 09:40. Correct the timing first.",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-10.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-11-dk": {
+   "at": "2026-10-05T14:23:51.050Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-11.0",
+     "did": "Friday, a new wave: VL typed B 0940 (the box shows \"09:40\"), T/O 1200, landing 1300, Vandal / Ryder. Week: two lines typed — \"08:00 IN TIME\", \"09:40 RALLY\". Read: under the lines (week, board), Friday's warning list (week, board).",
+     "saw": "✓ the lines read In-time 08:00 and Rally 09:40 [08:00 IN TIME / 09:40 RALLY] · ✓ EXPECTED: equality produces no Rally-after-Brief warning — nothing under the lines, no timing line in Friday's list [week \"\" · board \"\" · bar \"(no bar)\" · list (none)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p211-0-board-equal.png",
+      "dk-02-p211-0-week-equal.png"
+     ]
+    },
+    {
+     "id": "P2-11.1",
+     "did": "Week: the Rally line retyped \"09:41 RALLY\" + Tab.",
+     "saw": "✓ EXPECTED: one minute later does warn — a message under the lines on both editors naming Rally 09:41 and brief 09:40 [week \"VL: rally 09:41 is later than brief 09:40.\" · board \"VL: rally 09:41 is later than brief 09:40.\"] · ✓ and a RED line in Friday's list (week and board) [week list RED In-time / Rally — timings out of order VL: rally 09:41 is later than brief 09:40. ✕ · bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\" · board list] · ✓ the message names a typed brief, not a suggested one (the B box was typed) [VL: rally 09:41 is later than brief 09:40.]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-p211-1-board-0941.png",
+      "dk-04-p211-1-week-0941-list.png"
+     ]
+    },
+    {
+     "id": "P2-11.2",
+     "did": "Week: the Rally line retyped \"09:40 RALLY\" + Tab.",
+     "saw": "✓ EXPECTED: correcting it removes the warning — nothing under the lines, no timing line left in either list [week \"\" · board \"\" · bar \"(no bar)\" · list (none) · board list (none)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-p211-2-board-back-0940.png",
+      "dk-06-p211-2-week-back-0940.png"
+     ]
+    },
+    {
+     "id": "P2-11.3",
+     "did": "Board: the Rally line retyped \"09:41 RALLY\" + Tab, read; then \"09:40 RALLY\" + Tab, read.",
+     "saw": "✓ 09:41 warns on both editors [board \"VL: rally 09:41 is later than brief 09:40.\" · week \"VL: rally 09:41 is later than brief 09:40.\" · list RED In-time / Rally — timings out of order VL: ral] · ✓ back at 09:40 nothing is left [board \"\" · week \"\" · bar \"(no bar)\" · list (none)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-p211-3-board-typed-0941.png",
+      "dk-08-p211-4-board-typed-back.png"
+     ]
+    },
+    {
+     "id": "P2-11.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-12-dk": {
+   "at": "2026-10-05T14:24:35.443Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-12.A",
+     "did": "Friday board: \"+ Wave\" → \"Flying wave\" (one formation, no callsign, no take-off, no crew). \"+ In-time / Rally\" pressed — with no take-off it filled \"IN TIME + WX/NOTAMS\" — and the line retyped \"RALLY AFTER IN TIME\" + Tab.",
+     "saw": "✓ the text is kept as typed and stays editable [line \"RALLY AFTER IN TIME\" · line box editable true · take-off box editable true] · ✗ EXPECTED: the missing data stays explainable — the app says something about the unresolved instruction (under the line or in Friday's list) [under the line: board \"\" week \"\" · bar \"(no bar)\" · list (none)] · ✓ no attendance invented: Vandal and Ryder unchanged, no negative figure [Vandal (not listed) → (not listed) (+0h00) · Ryder 1h30 → 1h30 (+0h00)]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-02-p212-A-board.png",
+      "dk-01-p212-A-hours.png"
+     ]
+    },
+    {
+     "id": "P2-12.B",
+     "did": "Vandal and Ryder seated on the formation (both took), still no take-off. \"+ In-time / Rally\" pressed again and the new line retyped \"25:70 IN TIME\" + Tab (an invalid clock).",
+     "saw": "✓ both lines are kept and shown [RALLY AFTER IN TIME / 25:70 IN TIME] · ✗ EXPECTED: no fabricated attendance — neither man gains a report at midnight or a long day: Work hours unchanged, nothing negative [Vandal (not listed) → NaN min · Ryder 1h30 → NaN min · negatives: none · held for Vandal: fly : s NaN:NaN e NaN:NaN report NaN:NaN (NaN) brief NaN:NaN] · ✗ the invalid clock is explained [under the lines: board \"\" · week \"\" · bar \"(no bar)\" · list (none)]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-04-p212-B-board.png",
+      "dk-03-p212-B-hours.png"
+     ]
+    },
+    {
+     "id": "P2-12.C",
+     "did": "The formation typed VL, take-off 1200, landing 1300; the invalid line retyped \"08:00 IN TIME\" + Tab. The lines now read \"RALLY AFTER IN TIME\" and \"08:00 IN TIME\".",
+     "saw": "✓ EXPECTED: valid data resolves — both men report at 08:00: 08:00 → landing 13:00 + 2h debrief = 7h [Vandal (not listed) → 7h (+7h00) · Ryder 1h30 → 8h30 (+7h00) · held for Vandal: fly VL: s 11:00 e 13:30 report 08:00 (480) brief 09:40] · ✓ nothing is left to explain (no message under the lines, no reporting line in Friday's list) [board \"\" · week \"\" · bar \"(no bar)\" · list (none) · board header \"In-time / Rally 08:00 · 1 ac\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-p212-C-board.png",
+      "dk-05-p212-C-hours.png"
+     ]
+    },
+    {
+     "id": "P2-12.D",
+     "did": "The formation's line cancelled with its CX (pressed: Cancel this line).",
+     "saw": "✓ EXPECTED: cancellation removes its work contribution — both men back to their figure before the wave [Vandal (not listed) → (not listed) (+0h00) · Ryder 1h30 → 1h30 (+0h00) · held for Vandal: (nothing)] · ✓ no negative figure anywhere in Work hours [none]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-p212-D-board.png",
+      "dk-07-p212-D-hours.png"
+     ]
+    },
+    {
+     "id": "P2-12.h",
+     "did": "for the record: the reporting lines and what is printed under them once the line is cancelled",
+     "saw": "lines \"RALLY AFTER IN TIME / 08:00 IN TIME\" · board \"\" · week \"\" · bar \"(no bar)\" · list (none)",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-12.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-12b-dk": {
+   "at": "2026-10-05T14:26:29.723Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-12.N",
+     "did": "Second pass, one change at a time on a new Friday wave with Vandal / Ryder; Insights' Work hours read after each (eight reads).",
+     "saw": "✗ a crew on a formation with no take-off never shows an invalid Work-hours figure [1: Ryder \"NaN min\" (bar 100% of the track), Vandal \"NaN min\" (bar 100% of the track) || 2: Ryder \"NaN min\" (bar 100% of the track), Vandal \"NaN min\" (bar 100% o] · ✓ with a take-off, an invalid clock or an unresolved \"RALLY AFTER IN TIME\" never shows an invalid figure [5: Vandal 4h · Ryder 5h30 || 6: Vandal 4h · Ryder 5h30 || 7: Vandal 4h · Ryder 5h30] · ✓ with a take-off, the invalid clock and the unresolved Rally are each explained on screen [6: under the line \"VL: reporting line 1 has no recognised clock. Check the time.\", list amber In-time / Rally — check the reporting instruction VL: reporting li]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-p212b-1-crew-no-takeoff-hours.png",
+      "dk-02-p212b-1-crew-no-takeoff-board.png",
+      "dk-03-p212b-6-invalid-clock-with-takeoff-hours.png",
+      "dk-04-p212b-6-invalid-clock-with-takeoff-board.png",
+      "dk-05-p212b-7-rally-after-with-takeoff-hours.png",
+      "dk-06-p212b-7-rally-after-with-takeoff-board.png",
+      "dk-07-p212b-8-takeoff-cleared-hours.png",
+      "dk-08-p212b-8-takeoff-cleared-board.png"
+     ]
+    },
+    {
+     "id": "P2-12.N1",
+     "did": "1 · Vandal / Ryder seated on a new formation with NO take-off and NO reporting line",
+     "saw": "1 · Vandal / Ryder seated on a new formation with NO take-off and NO reporting line: Work hours Vandal NaN min · Ryder NaN min — INVALID: Ryder \"NaN min\" (bar 100% of the track), Vandal \"NaN min\" (bar 100% of the track); top of the list: Ridge 28h 100%, Bolt 27h25 98%, Ace 25h35 91%; lines \"(no line)\"; under them \"\"; Friday's bar \"(no bar)\"; list (none); held for Vandal: fly : s NaN:NaN e NaN:NaN report NaN:NaN (NaN) brief NaN:NaN",
+     "verdict": "INFO",
+     "pics": [
+      "dk-01-p212b-1-crew-no-takeoff-hours.png",
+      "dk-02-p212b-1-crew-no-takeoff-board.png"
+     ]
+    },
+    {
+     "id": "P2-12.N2",
+     "did": "2 · the line \"RALLY AFTER IN TIME\" added (still no take-off)",
+     "saw": "2 · the line \"RALLY AFTER IN TIME\" added (still no take-off): Work hours Vandal NaN min · Ryder NaN min — INVALID: Ryder \"NaN min\" (bar 100% of the track), Vandal \"NaN min\" (bar 100% of the track); top of the list: Ridge 28h 100%, Bolt 27h25 98%, Ace 25h35 91%; lines \"RALLY AFTER IN TIME\"; under them \"\"; Friday's bar \"(no bar)\"; list (none); held for Vandal: fly : s NaN:NaN e NaN:NaN report NaN:NaN (NaN) brief NaN:NaN",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-12.N3",
+     "did": "3 · the line retyped \"25:70 IN TIME\" (still no take-off)",
+     "saw": "3 · the line retyped \"25:70 IN TIME\" (still no take-off): Work hours Vandal NaN min · Ryder NaN min — INVALID: Ryder \"NaN min\" (bar 100% of the track), Vandal \"NaN min\" (bar 100% of the track); top of the list: Ridge 28h 100%, Bolt 27h25 98%, Ace 25h35 91%; lines \"25:70 IN TIME\"; under them \"\"; Friday's bar \"(no bar)\"; list (none); held for Vandal: fly : s NaN:NaN e NaN:NaN report NaN:NaN (NaN) brief NaN:NaN",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-12.N4",
+     "did": "4 · no reporting line; landing typed 1300, take-off still blank",
+     "saw": "4 · no reporting line; landing typed 1300, take-off still blank: Work hours Vandal NaN min · Ryder NaN min — INVALID: Ryder \"NaN min\" (bar 100% of the track), Vandal \"NaN min\" (bar 100% of the track); top of the list: Ridge 28h 100%, Bolt 27h25 98%, Ace 25h35 91%; lines \"(no line)\"; under them \"\"; Friday's bar \"(no bar)\"; list (none); held for Vandal: fly : s NaN:NaN e 13:30 report NaN:NaN (NaN) brief NaN:NaN",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-12.N5",
+     "did": "5 · VL, take-off 1200, landing 1300, no reporting line",
+     "saw": "5 · VL, take-off 1200, landing 1300, no reporting line: Work hours Vandal 4h · Ryder 5h30; top of the list: Ridge 28h 100%, Bolt 27h25 98%, Ace 25h35 91%; lines \"(no line)\"; under them \"\"; Friday's bar \"(no bar)\"; list (none); held for Vandal: fly VL: s 11:00 e 13:30 report 11:00 (660) brief 09:40",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-12.N6",
+     "did": "6 · with the take-off in place, the line \"25:70 IN TIME\"",
+     "saw": "6 · with the take-off in place, the line \"25:70 IN TIME\": Work hours Vandal 4h · Ryder 5h30; top of the list: Ridge 28h 100%, Bolt 27h25 98%, Ace 25h35 91%; lines \"25:70 IN TIME\"; under them \"VL: reporting line 1 has no recognised clock. Check the time.\"; Friday's bar \"⚠ 1 issue · tap to collapse ▲\"; list amber In-time / Rally — check the reporting instruction VL: reporting line 1 has no recognised clock. Check the time. ✕; held for Vandal: fly VL: s 11:00 e 13:30 report 11:00 (660) brief 09:40",
+     "verdict": "INFO",
+     "pics": [
+      "dk-03-p212b-6-invalid-clock-with-takeoff-hours.png",
+      "dk-04-p212b-6-invalid-clock-with-takeoff-board.png"
+     ]
+    },
+    {
+     "id": "P2-12.N7",
+     "did": "7 · with the take-off in place, the only line \"RALLY AFTER IN TIME\" (no in-time anywhere)",
+     "saw": "7 · with the take-off in place, the only line \"RALLY AFTER IN TIME\" (no in-time anywhere): Work hours Vandal 4h · Ryder 5h30; top of the list: Ridge 28h 100%, Bolt 27h25 98%, Ace 25h35 91%; lines \"RALLY AFTER IN TIME\"; under them \"VL: rally after in-time has no applicable in-time clock.\"; Friday's bar \"⚠ 1 issue · tap to collapse ▲\"; list amber In-time / Rally — check the reporting instruction VL: rally after in-time has no applicable in-time clock. ✕; held for Vandal: fly VL: s 11:00 e 13:30 report 11:00 (660) brief 09:40",
+     "verdict": "INFO",
+     "pics": [
+      "dk-05-p212b-7-rally-after-with-takeoff-hours.png",
+      "dk-06-p212b-7-rally-after-with-takeoff-board.png"
+     ]
+    },
+    {
+     "id": "P2-12.N8",
+     "did": "8 · the take-off box cleared again (landing 13:00 left), no reporting line",
+     "saw": "8 · the take-off box cleared again (landing 13:00 left), no reporting line: Work hours Vandal NaN min · Ryder NaN min — INVALID: Ryder \"NaN min\" (bar 100% of the track), Vandal \"NaN min\" (bar 100% of the track); top of the list: Ridge 28h 100%, Bolt 27h25 98%, Ace 25h35 91%; lines \"(no line)\"; under them \"\"; Friday's bar \"(no bar)\"; list (none); held for Vandal: fly VL: s NaN:NaN e 13:30 report NaN:NaN (NaN) brief NaN:NaN",
+     "verdict": "INFO",
+     "pics": [
+      "dk-07-p212b-8-takeoff-cleared-hours.png",
+      "dk-08-p212b-8-takeoff-cleared-board.png"
+     ]
+    },
+    {
+     "id": "P2-12b.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-13-dk": {
+   "at": "2026-10-05T14:29:24.291Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-13.1",
+     "did": "Friday board, a new wave: VL 12:00-13:00 Vandal/Ryder | VL2 12:00-13:00 Nomad/Fable. With no reporting line the four read Vandal (not listed) → 4h (+4h00) · Ryder 1h30 → 5h30 (+4h00) · Nomad 4h25 → 8h25 (+4h00) · Fable 15h55 → 19h55 (+4h00). Then \"+ In-time / Rally\", the line retyped \"08:00 VL IN TIME\" + Tab.",
+     "saw": "✓ all four seats took [VL 12:00-13:00 Vandal/Ryder | VL2 12:00-13:00 Nomad/Fable] · ✓ VL's crew (Vandal, Ryder) report at 08:00: 08:00 → 15:00 = 7h [Vandal (not listed) → 7h (+7h00) · Ryder 1h30 → 8h30 (+7h00)] · ✓ EXPECTED: VL's line does not target VL2 — Nomad and Fable are where they were with no line at all [Nomad 4h25 → 8h25 (+4h00) (no line: 4h00) · Fable 15h55 → 19h55 (+4h00) (no line: 4h00) · under the lines \"\" · header \"In-time / Rally 08:00 · 2 ac\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p213-1-board-vl-0800.png"
+     ]
+    },
+    {
+     "id": "P2-13.2",
+     "did": "A second line holding a clock and only a crew member's name: \"07:00 NOMAD\" (Nomad flies in VL2) + Tab, read; then retyped \"07:00 RYDER\" (Ryder flies in VL) + Tab, read.",
+     "saw": "✓ EXPECTED: a personal name makes no rule for that one person — with \"07:00 NOMAD\", Nomad and his cockpit partner Fable read the same [Vandal (not listed) → 7h (+7h00) · Ryder 1h30 → 8h30 (+7h00) · Nomad 4h25 → 12h25 (+8h00) · Fable 15h55 → 23h55 (+8h00) · lines \"08:00 VL IN TIME / 07:00 NOMAD\"] · ✓ with \"07:00 RYDER\", Ryder and Vandal read the same, and Nomad and Fable read the same [Vandal (not listed) → 7h (+7h00) · Ryder 1h30 → 8h30 (+7h00) · Nomad 4h25 → 12h25 (+8h00) · Fable 15h55 → 23h55 (+8h00) · lines \"08:00 VL IN TIME / 07:00 RYDER\"] · ✓ the two wordings give the same four figures (the name changes nothing) [NOMAD: Vandal (not listed) → 7h (+7h00) · Ryder 1h30 → 8h30 (+7h00) · Nomad 4h25 → 12h25 (+8h00) · Fable 15h55 → 23h55 (+8h00) || RYDER: Vandal (not listed) → 7]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-p213-2-board-0700-nomad.png",
+      "dk-03-p213-3-board-0700-ryder.png"
+     ]
+    },
+    {
+     "id": "P2-13.3",
+     "did": "The VL line retyped with different clock spellings, one at a time, each left with Tab and Insights read: 0800 · 08:00H · 0800H: · 8:00 · 08.00 · 800.",
+     "saw": "✓ EXPECTED: accepted times normalise consistently — 0800, 08:00H, 0800H: and 8:00 each show as 08:00 and each give VL's crew the same 7h [\"0800 VL IN TIME\" → shows \"08:00 VL IN TIME\", VL crew 7h00/7h00 || \"08:00H VL IN TIME\" → shows \"08:00H VL IN TIME\", VL crew 7h00/7h00 || \"0800H: VL IN TIME\" → s]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-p213-4-board-last-spelling.png"
+     ]
+    },
+    {
+     "id": "P2-13.3h",
+     "did": "every spelling tried, as the screen showed it",
+     "saw": "\"0800 VL IN TIME\" → shows \"08:00 VL IN TIME\" · VL crew +7h00/7h00 · under the lines \"\" || \"08:00H VL IN TIME\" → shows \"08:00H VL IN TIME\" · VL crew +7h00/7h00 · under the lines \"\" || \"0800H: VL IN TIME\" → shows \"08:00H: VL IN TIME\" · VL crew +7h00/7h00 · under the lines \"\" || \"8:00 VL IN TIME\" → shows \"08:00 VL IN TIME\" · VL crew +7h00/7h00 · under the lines \"\" || \"08.00 VL IN TIME\" → shows \"08.00 VL IN TIME\" · VL crew +8h00/8h00 · under the lines \"\" || \"800 VL IN TIME\" → shows \"08:00 VL IN TIME\" · VL crew +7h00/7h00 · under the lines \"\"",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-13.4",
+     "did": "The second line retyped \"06:00 VL2 IN TIME\" + Tab (lines now: \"08:00 VL IN TIME\", \"06:00 VL2 IN TIME\").",
+     "saw": "✓ VL2's crew report at 06:00: 06:00 → 15:00 = 9h [Nomad 4h25 → 13h25 (+9h00) · Fable 15h55 → 24h55 (+9h00)] · ✓ EXPECTED: no partial callsign matching — VL's crew stay at 08:00 (7h) [Vandal (not listed) → 7h (+7h00) · Ryder 1h30 → 8h30 (+7h00) · under the lines \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-p213-5-board-vl2-0600.png",
+      "dk-06-p213-6-hours-end.png"
+     ]
+    },
+    {
+     "id": "P2-13.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sH-01-dk": {
+   "at": "2026-10-05T14:32:42.587Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-01",
+     "did": "Fresh world, nothing published. Monday on the Scheduler Board; wave 2 (night) reads \"19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS / 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS\". Its RU formation (RU 19:20-20:45: Piston/Relay, Outlaw/Wisp) retyped take-off 1000, landing 1125 (now RU 10:00-11:25); the reporting lines left as they are. Insights opened (top bar Insights).",
+     "saw": "✓ EXPECTED: no person's Work-hours figure is negative [56 people listed; negatives: none; unreadable: none] · ✓ EXPECTED: no bar runs full width for a short day — every bar is as long as its figure's share of the longest [longest: Relay 28h10 (100%), Ridge 28h (99%), Bolt 27h25 (97%), Ace 25h35 (91%); bars out of step: none] · ✗ EXPECTED: Monday's warning list says something about that formation's reporting time (a red line), or the reporting line now reads as the previous day [under the wave's lines \"VL: in-time 19:00 is later than brief 17:25.\" · Monday list lines for RU: RED In-time / Rally — timings out of order RU: in-time 13:00 i]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-h01-0-hours-before.png",
+      "dk-02-h01-1-board-before.png",
+      "dk-03-h01-2-board-after.png",
+      "dk-04-h01-3-hours-after-outlaw.png",
+      "dk-05-h01-4-hours-after-top.png",
+      "dk-06-h01-5-week-wave2-after.png",
+      "dk-07-h01-6-monday-list-long-day-lines.png"
+     ]
+    },
+    {
+     "id": "H-01.h",
+     "did": "every figure, for the record",
+     "saw": "Work hours before → after: Piston 9h45 → 21h45 (+12h00) · Relay 16h10 → 28h10 (+12h00) · Outlaw 9h30 → 24h10 (+14h40) · Wisp 7h50 → 22h30 (+14h40) · the reporting lines after the edit: \"19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS / 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS\" (week: \"19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS / 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS\") · board header before \"In-time / Rally 19:00 · 4 ac\" → after \"In-time / Rally 19:20 · 4 ac\" · under the lines before \"VL: in-time 19:00 is later than brief 17:25. RU: in-time 19:20 is later than brief 17:00.\" → after \"VL: in-time 19:00 is later than brief 17:25.\" · Monday's bar \"⚠ 21 issues · 9 warning · tap to collapse ▲\" · lines naming Outlaw / Wisp: note Long work day Outlaw — Outlaw has a long work day: 18h05, 19:20 → 13:25 (last landing 11:25 + 2h debrief assumed) ✕ | note Long work day Wisp — Wisp has a long work day: 18h05, 19:20 → 13:25 (last landing 11:25 + 2h debrief assumed) ✕ · held for Outlaw before \"fly RU BFM: s 18:20 e 21:15 report 19:20 (1160) brief 17:00\" → after \"fly RU BFM: s 09:00 e 11:55 report prev-day 19:20 (-280) brief 07:40\"",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "H-01.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sH-05-dk": {
+   "at": "2026-10-05T14:31:41.494Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-05",
+     "did": "Tuesday board: a new wave (wave 3) — NX typed take-off 0130, landing 0230, Vandal / Ryder seated (both took); Logic's \"Nominal report before T/O\" reads 3h. Week: \"+ In-time / Rally\" pressed once on that wave, then Tab. Read: the line, the board's wave header, Tuesday's warning list, Insights (top bar Insights).",
+     "saw": "✗ EXPECTED: the line reads 22:30 (01:30 less the 3h nominal report) [the button filled \"01:30H: IN TIME + WX/NOTAMS\"] · ✗ EXPECTED: every place that prints it says it is the previous day [the line on the week \"01:30H: IN TIME + WX/NOTAMS\" · the line on the board \"01:30H: IN TIME + WX/NOTAMS\" · the board's wave header \"In-time / Rally 01:30 · 1 ac] · ✗ EXPECTED: the work figure is about 4 hours plus the debrief (22:30 → 02:30 + 2h = 6h), never negative, never about 28 hours [Vandal (not listed) → 3h (+3h00) · Ryder 1h30 → 4h30 (+3h00) (with no reporting line they read 4h / 5h30) · negatives: none]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-h05-1-week-after-button.png",
+      "dk-02-h05-2-board-header-and-second-wave.png",
+      "dk-03-h05-3-hours.png",
+      "dk-04-h05-4-tuesday-list.png"
+     ]
+    },
+    {
+     "id": "H-05.h",
+     "did": "every figure, for the record",
+     "saw": "the line on the week \"01:30H: IN TIME + WX/NOTAMS\" · the line on the board \"01:30H: IN TIME + WX/NOTAMS\" · the board's wave header \"In-time / Rally 01:30 · 1 ac\" · under the line \"NX: in-time 01:30 is later than brief 23:10 (previous day).\" · Tuesday's list: RED In-time / Rally — timings out of order NX: in-time 01:30 is later than brief 23:10 (previous day). ✕ | RED In-time / Rally — timings out of order NY: in-time 01:30 is later than brief 23:10 (previous day). ✕ · Tuesday's bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · the BOARD's button on a second new wave (NY 01:30–02:30, no crew) filled \"01:30H: IN TIME + WX/NOTAMS\"; its header \"In-time / Rally 01:30 · 1 ac\"; under it \"NY: in-time 01:30 is later than brief 23:10 (previous day).\" · held for Vandal: fly NX: s 00:30 e 03:00 report 01:30 (90) brief prev-day 23:10",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "H-05.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-16-dk": {
+   "at": "2026-10-05T14:37:46.861Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-16.1",
+     "did": "SETUP through the board on each day (a new wave, VX, Vandal in the front seat): Mon 12:00-13:00 Vandal · Tue 12:00-13:00 Vandal · Wed 12:00-17:30 Vandal \"06:00 IN TIME\" · Thu 08:00-09:00 Vandal \"05:00 IN TIME\" · Fri 12:00-13:00 Vandal · Sat 12:00-13:00 Vandal · Sun 12:00-13:00 Vandal. Then every day's warning list read for lines naming Vandal, and Insights.",
+     "saw": "✓ Vandal is on the programme on seven consecutive days, 39h30 in all (4h ×5, Wed 13h30, Thu 6h) [Work hours (not listed) → 39h30 (+39h30) · the figure's hover text \"7 days on the programme\"] · ✓ a long-work-day line for Wednesday [Wed: note Long work day Vandal — Vandal has a long work day: 13h30, 06:00 → 19:30 (last landing 17:30 + 2h debrief assumed)] · ✓ a crew-rest line for the Wed → Thu gap [Wed: RED Breaks Thursday Vandal — had to leave by 17:00. Crew rest breach — Wednesday landed 17:30, +2h debrief assumed → ended 19:30 → crew rest clear at 07:30] · ✓ a days-in-a-row line [Mon: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Tue: RED Breaks Sunday Vandal — his 7th day in a row]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p216-1-hours-before.png"
+     ]
+    },
+    {
+     "id": "P2-16.1h",
+     "did": "every line naming Vandal, all seven days, before the change",
+     "saw": "Mon: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Tue: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Wed: RED Breaks Thursday Vandal — had to leave by 17:00. Crew rest breach — Wednesday landed 17:30, +2h debrief assumed → ended 19:30 → crew rest clear at 07:30, but told to report 05:00 — only 9h30 rest. || Wed: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Wed: note Long work day Vandal — Vandal has a long work day: 13h30, 06:00 → 19:30 (last landing 17:30 + 2h debrief assumed) || Thu: RED Crew rest (<12h) Vandal — Crew rest breach — Wednesday landed 17:30, +2h debrief assumed → ended 19:30 → crew rest clear at 07:30, but told to report 05:00 — only 9h30 rest. || Thu: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Sat: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Sun: RED No break day — too many days in a row Vandal — Vandal is on the programme 7 days in a row — 6 is the limit, so a break day is due",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-16.2",
+     "did": "Each of the three warnings tapped in its day's list on Edit Schedule (a tap on the line's words), and what the week lights read after each.",
+     "saw": "✓ EXPECTED: trace clicks identify the proper cause — each tap marks its own line and lights Vandal's pucks (and nobody else's) [long (Wed \"Long work day Vandal — Vandal has a long work day: 13h30, 06:00 → 19:3…\") → line marked: yes; lit pucks: Vandal@Mon, Vandal@Tue, Vandal@Wed, Vandal@T]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-p216-tap-long.png",
+      "dk-03-p216-tap-rest.png",
+      "dk-04-p216-tap-run.png"
+     ]
+    },
+    {
+     "id": "P2-16.3",
+     "did": "Wednesday's board: the reporting line retyped \"08:00 IN TIME\" + Tab (08:00 → 19:30 = 11h30; Wednesday is still worked). Every day's list and Insights read again.",
+     "saw": "✓ EXPECTED: hours and the long-day warning update together — Vandal 2h less (37h30) and the long-work-day line gone [Work hours 39h30 → 37h30 · long-day lines now: (none)] · ✓ EXPECTED: the seven-day warning remains [before: Mon: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Tue: RED Breaks Sunday Vandal — his 7th day ] · ✓ fixing the long day does not hide the rest warning (Wednesday still ends 19:30, Thursday still reports 05:00) [before: Wed: RED Breaks Thursday Vandal — had to leave by 17:00. Crew rest breach — Wednesday landed 17:30, +2h debrief assumed → ended 19:30 → crew rest clear ] · ✓ still seven days on the programme [hover text \"7 days on the programme\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-p216-3-wed-board-0800.png",
+      "dk-06-p216-4-hours-after.png",
+      "dk-07-p216-5-run-line-after.png"
+     ]
+    },
+    {
+     "id": "P2-16.3h",
+     "did": "every line naming Vandal, all seven days, after the change",
+     "saw": "Mon: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Tue: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Wed: RED Breaks Thursday Vandal — had to leave by 17:00. Crew rest breach — Wednesday landed 17:30, +2h debrief assumed → ended 19:30 → crew rest clear at 07:30, but told to report 05:00 — only 9h30 rest. || Wed: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Thu: RED Crew rest (<12h) Vandal — Crew rest breach — Wednesday landed 17:30, +2h debrief assumed → ended 19:30 → crew rest clear at 07:30, but told to report 05:00 — only 9h30 rest. || Thu: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Sat: RED Breaks Sunday Vandal — his 7th day in a row falls on Sunday; a break day before then clears it. || Sun: RED No break day — too many days in a row Vandal — Vandal is on the programme 7 days in a row — 6 is the limit, so a break day is due",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-16.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-17-dk": {
+   "at": "2026-10-05T14:45:57.962Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-17.0",
+     "did": "SETUP as written: Monday as the demo has it — 4 red reporting lines (RED In-time / Rally — timings out of order VL: in-time 12:00 is later than brief 10:20. ✕ | RED In-time / Rally — timings out of order RU: in-time 13:…). The four sign-offs (Ace, Anvil, Anvil, Anvil), then \"Publish day\".",
+     "saw": "✗ Monday is published with its reporting warning [the day's tag \"DRAFT\", Publish button on; the app said: Cannot publish — VL: in-time 12:00 is later than brief 10:20. Correct the timing first.]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-p217-0-publish-with-red-warning.png"
+     ]
+    },
+    {
+     "id": "P2-17.1",
+     "did": "SETUP that the app allows: the four demo lines retyped in order (10:00 / 11:00 on wave 1, 17:00 / 16:40 on wave 2), a third line added to wave 1 and retyped \"VL RALLY AT 25:70\" (the app cannot read a clock in it). Sign-offs + \"Publish day\".",
+     "saw": "✓ the working copy carries one reporting line in its list [under the lines \"VL: reporting line 3 has no recognised clock. Check the time.\" · list: amber In-time / Rally — check the reporting instruction VL: reporting li] · ✓ Monday is published with that reporting warning [tag \"ORIG\"; the app said: Monday published — APPROVED] · ✓ View-only Sched shows the issued wording and the warning [wave 1 reads \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS VL RALLY AT 25:70\" · list: amber In-time / Rally — check the r]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-p217-1-published-with-amber-reporting-line.png",
+      "dk-03-p217-1-view-issued.png"
+     ]
+    },
+    {
+     "id": "P2-17.2h",
+     "did": "the working copy after the correction, in full",
+     "saw": "wave 1 \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS / 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS / 10:10 VL RALLY\" · under it \"\" · list lines about reporting: amber In-time / Rally — check the reporting instruction goes away once signed · bar \"⚠ 15 issues · 6 warning · tap to collapse ▲\" · tag \"ORIG\" · count \"1 pending\" · button \"Publish AL1\" — before the correction: under the lines \"VL: reporting line 3 has no recognised clock. Check the time.\" · list amber In-time / Rally — check the reporting instruction VL: reporting line 3 has no recognised clock. Check the time. ✕ · bar \"⚠ 16 issues · 6 warning · tap to collapse ▲\"",
+     "verdict": "INFO",
+     "pics": [
+      "dk-04-p217-2-working-copy-list-after-correction.png"
+     ]
+    },
+    {
+     "id": "P2-17.2",
+     "did": "The working copy corrected, NOT amended: wave 1's third line retyped \"10:10 VL RALLY\" + Tab.",
+     "saw": "✓ the working copy shows the corrected line, no reporting line in its list, and the day waits for an amendment [wave 1 \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS / 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS / 10:10 VL RALLY\" · under it \"\" · list: amber In-time / Rally — ch]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-p217-2-working-copy-corrected.png"
+     ]
+    },
+    {
+     "id": "P2-17.3",
+     "did": "Every listed reader inspected with the correction pending: View-only Sched as the admin; as the member (reload, sign-in us); the issued version's read-only look from the day's version menu; the next-week peek (View-only Sched, week of 6 Jul); the printed sheet (\"Export as PDF (print)\" on Edit Schedule — the sheet the app hands the printer, read and re-drawn in a second tab for the picture); the CSV (\"Export to Excel (CSV)\" on Edit Schedule).",
+     "saw": "✓ View-only Sched (admin) keeps the issued wording and warning [tag \"ORIG\" · wave 1 \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS VL RALLY AT 25:70\" · list: amber In-time / Rally — chec] · ✓ View-only Sched (member) keeps the issued wording and warning [tag \"ORIG\" · wave 1 \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS VL RALLY AT 25:70\" · list: amber In-time / Rally — chec] · ✓ the issued version's look keeps its wording and is read-only [\"Original\" (menu: Original) · bar \"← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto workin] · ✓ the next-week peek shows no pending wording [\"NEXT WEEK — CLICK A DAY TO LOAD IT Monday Jul 13 4 X 4 COMMO…\" · any reporting line shown: none · \"25:70\" shown: false · \"10:10\" shown: false · warning lines s] · ✓ the printed sheet shows no pending wording [the app said \"Print dialog opened — choose \"Save as PDF\"\" · sheet 3252 characters, begins \"RESTRICTED · 142 — Flying Programme · Mon 13 Jul – Sun 19 Jul · Gener] · ✓ the CSV is unchanged by the pending correction and carries no pending wording [142-schedule.csv: 33 rows (8 for Monday), the same file as straight after publication (a41b2c4d/4400 = a41b2c4d/4400) · columns ﻿\"Day\",\"Date\",\"Wave\",\"CS\",\"Missi]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-p217-3a-view-admin-before-amend.png",
+      "dk-07-p217-3b-view-member-before-amend.png",
+      "dk-08-p217-3c-issued-version-look.png",
+      "dk-09-p217-3d-next-week-peek.png",
+      "dk-10-p217-3e-print-sheet-before-amend.png"
+     ]
+    },
+    {
+     "id": "P2-17.3h",
+     "did": "each reader before the amendment, in full",
+     "saw": "VIEW-ONLY (admin): tag \"ORIG\" · wave 1 \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS VL RALLY AT 25:70\" · reporting lines in its list: amber In-time / Rally — check the reporting instruction VL: reporting line 3 has no recognised clock. Check the time. · bar \"⚠ 16 issues · 6 warning · tap to collapse ▲\" ||| VIEW-ONLY (member): tag \"ORIG\" · wave 1 \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS VL RALLY AT 25:70\" · list: amber In-time / Rally — check the reporting instruction VL: reporting line 3 has no recognised clock. Check the time. · bar \"⚠ 16 issues · 6 warning · tap to collapse ▲\" ||| ISSUED LOOK: \"Original\" (menu: Original) · bar \"← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy\" · wave 1 \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS VL RALLY AT 25:70\" · its warning bar \"⚠ 16 issues · 6 warning · tap to review ▼\" · boxes open for typing 0 · back ||| PEEK: \"NEXT WEEK — CLICK A DAY TO LOAD IT Monday Jul 13 4 X 4 COMMO\" · reporting line shown: false · \"25:70\": false · \"10:10\": false · warning lines: 0 · WAVE 1 CS MSN B TO LD FCP / RCP RMKS VL BFM 10:20 12:40 14:05 Saber IP Echo IW 1B: BFM-6 TPOD 2 TKS Ranger IP Static IW 2A: BFM ||| PRINT: said \"Print dialog opened — choose \"Save as PDF\"\" · 3252 characters · begins \"RESTRICTED · 142 — Flying Programme · Mon 13 Jul – Sun 19 Jul · Generated 05 Oct 2026, 22:45 · published schedule · Monday Jul 13 · PUBLISHED — ORIGINAL\" · reporting lines on it: NONE · a warning on Monday's part: false ||| CSV: 142-schedule.csv 33 rows, 8 Monday rows, a41b2c4d/4400",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-17.4",
+     "did": "Then amend: the four sign-offs (Ace, Anvil, Anvil, Anvil) + \"Publish AL1\". The readers again.",
+     "saw": "✓ the amendment goes out [tag \"ORIG\" → \"AL1\", count \"21 changes\"; the app said: Published AL1 · 1 item on Mon only · approved by Anvil] · ✓ View-only Sched (admin, then member) now shows the corrected wording and no reporting line [admin: tag \"AL1\" · \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS 10:10 VL RALLY\" · list (none) || member: tag \"AL1\" · \"10] · ✓ EXPECTED: the historical preview retains its version — the older version's look still reads the old wording [\"Original\" (menu: Original, AL1) · bar \"← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto w] · ✓ the CSV is still the same file (it carries no reporting lines; nothing else changed) [a41b2c4d/4400 → a41b2c4d/4400 · 33 rows]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-p217-4-amended.png",
+      "dk-12-p217-4a-view-after-amend.png",
+      "dk-13-p217-4b-older-version-look.png",
+      "dk-14-p217-4c-print-sheet-after-amend.png",
+      "dk-15-p217-4d-view-member-after-amend.png"
+     ]
+    },
+    {
+     "id": "P2-17.4h",
+     "did": "each reader after the amendment, in full",
+     "saw": "the day: tag \"AL1\", count \"21 changes\", the app said Published AL1 · 1 item on Mon only · approved by Anvil ||| VIEW-ONLY (admin): tag \"AL1\" · wave 1 \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS 10:10 VL RALLY\" · list: (none) · bar \"⚠ 15 issues · 6 warning · tap to collapse ▲\" ||| VIEW-ONLY (member): tag \"AL1\" · wave 1 \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS 10:10 VL RALLY\" · list: (none) · bar \"⚠ 15 issues · 6 warning · tap to collapse ▲\" ||| OLDER VERSION LOOK: \"Original\" (menu: Original, AL1) · bar \"← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy\" · wave 1 \"10:00H: FIRST WAVE VL IN TIME + WX/NOTAMS 11:00H: FIRST WAVE RU IN TIME + WX/NOTAMS VL RALLY AT 25:70\" · its warning bar \"⚠ 16 issues · 6 warning · tap to collapse ▲\" · boxes open for typing 0",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-17.h",
+     "did": "for the record: the printed sheet and the CSV at each stage",
+     "saw": "print before the amendment: reporting lines \"none\", 25:70 false, 10:10 false · print after: reporting lines \"none\", 25:70 false, 10:10 false · CSV after publication a41b2c4d/4400, with the correction pending a41b2c4d/4400, after the amendment a41b2c4d/4400; its columns: ﻿\"Day\",\"Date\",\"Wave\",\"CS\",\"Mission\",\"Brief\",\"TO\",\"Land\",\"FCP\",\"FCP lvl\",\"RCP\",\"RCP lvl\",\"Area\",\"Area time\",\"Rmks\",\"Stores\"; first Monday row: \"Monday\",\"Jul 13\",\"WAVE 1\",\"VL\",\"BFM\",\"10:20\",\"12:40\",\"14:05\",\"Saber\",\"IP\",\"Echo\",\"IW\",\"NORTH\",\"1240-1405\",\"1B: BFM-6\",\"TPOD 2 TKS\"",
+     "verdict": "INFO",
+     "pics": []
+    },
+    {
+     "id": "P2-17.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "sP2-13b-dk": {
+   "at": "2026-10-05T14:48:12.042Z",
+   "base": "http://localhost:4226",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-13.5",
+     "did": "RECORD — a clock written with a dot. (1) the only line \"08.00 VL IN TIME\"; (2) a wave-wide \"07:00 IN TIME\" added beside it; (3) for comparison the first line retyped \"25:70 VL IN TIME\".",
+     "saw": "(1) lines \"08.00 VL IN TIME\" · under them \"\" · board header \"In-time / Rally 12:00 · 1 ac\" · Friday's bar \"(no bar)\" · reporting lines in the list: (none) · Vandal (not listed) → 4h (+4h00) · held: fly VL: s 11:00 e 13:30 report 11:00 (660) brief 09:40 ||| (2) lines \"08.00 VL IN TIME / 07:00 IN TIME\" · under them \"\" · board header \"In-time / Rally 07:00 · 1 ac\" · Friday's bar \"(no bar)\" · reporting lines in the list: (none) · Vandal (not listed) → 8h (+8h00) · held: fly VL: s 11:00 e 13:30 report 07:00 (420) brief 09:40 ||| (3) lines \"25:70 VL IN TIME / 07:00 IN TIME\" · under them \"VL: reporting line 1 has no recognised clock. Check the time.\" · board header \"In-time / Rally 07:00 · 1 ac\" · Friday's bar \"⚠ 1 issue · tap to collapse ▲\" · reporting lines in the list: amber In-time / Rally — check the reporting instruction VL: reporting line 1 has no recognised clock. Check the time. ✕ · Vandal (not listed) → 8h (+8h00) · held: fly VL: s 11:00 e 13:30 report 07:00 (420) brief 09:40",
+     "verdict": "INFO",
+     "pics": [
+      "dk-01-p213b-1-dotted-alone.png",
+      "dk-02-p213b-2-dotted-beside-wave-wide.png",
+      "dk-03-p213b-3-2570-beside-wave-wide.png"
+     ]
+    },
+    {
+     "id": "P2-13b.err",
+     "did": "the browser's error list through this scenario",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  }
+ }
+}

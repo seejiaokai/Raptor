@@ -1,0 +1,2049 @@
+{
+ "parts": {
+  "h01-dk": {
+   "at": "2026-10-05T14:57:07.020Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-01",
+     "did": "Monday on the Scheduler Board: wave 2 (lines [\"1900H: NIGHT WAVE VL IN TIME + WX/NOTAMS\",\"1920H: NIGHT WAVE RU IN TIME + WX/NOTAMS\"], formation VL, crew Saber/Echo/Wildcard/Tally); changed VL take-off 10:00 / landing 11:25 in the board boxes; opened Insights",
+     "saw": "crew Work hours before→after: Saber: 17h10 → 25h55 (bar 61% → 93%; 2 days on the programme) ; Echo: 16h35 → 26h30 (bar 59% → 95%; 3 days on the programme) ; Wildcard: 14h05 → 26h10 (bar 50% → 93%; 3 days on the programme) ; Tally: 4h10 → 18h25 (bar 15% → 66%; 1 day on the programme). Negative figures anywhere in Work hours: none. Full-width bars after: Ridge. Wave line text after: [\"19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS\",\"19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS\"]; wave header: [\"In-time / Rally 12:00 · 4 ac\",\"In-time / Rally 19:00 · 4 ac\"]. Long-day / rest warnings on Monday after: note: Saber has a long work day: 23h55, 19:00 → 18:55 | note: Echo has a long work day: 21h05, 19:00 → 16:05 (last landing 14:05 + 2h debrief assumed) | note: Wildcard has a long work day: 20h30, 19:00 → 15:30 | note: Tally has a long work day: 18h25, 19:00 → 13:25 (last landing 11:25 + 2h debrief assumed). Report-timing warnings on Monday after: hard: VL: in-time 12:00 is later than brief 10:20. | hard: RU: in-time 13:00 is later than brief 11:20. | hard: RU: in-time 19:20 is later than brief 17:00.",
+     "verdict": "RECORDED",
+     "pics": [
+      "h01-1-board-before",
+      "h01-3-board-after",
+      "h01-5-insights-after"
+     ]
+    }
+   ],
+   "errors": [],
+   "crew": [
+    "Saber",
+    "Echo",
+    "Wildcard",
+    "Tally"
+   ],
+   "hrs0": {
+    "Saber": "17h10",
+    "Echo": "16h35",
+    "Wildcard": "14h05",
+    "Tally": "4h10"
+   },
+   "hrs1": {
+    "Saber": "25h55",
+    "Echo": "26h30",
+    "Wildcard": "26h10",
+    "Tally": "18h25"
+   },
+   "warn1": [
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "VL: in-time 12:00 is later than brief 10:20.",
+     "off": false
+    },
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "RU: in-time 13:00 is later than brief 11:20.",
+     "off": false
+    },
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "RU: in-time 19:20 is later than brief 17:00.",
+     "off": false
+    }
+   ],
+   "panel": {
+    "head": "⚠ 24 issues · 9 warnings · tap to review",
+    "headCls": "wh hard",
+    "lines": [
+     {
+      "ix": 0,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": true,
+      "text": "VL: in-time 12:00 is later than brief 10:20. ✕"
+     },
+     {
+      "ix": 1,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": true,
+      "text": "RU: in-time 13:00 is later than brief 11:20. ✕"
+     },
+     {
+      "ix": 2,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": true,
+      "text": "RU: in-time 19:20 is later than brief 17:00. ✕"
+     },
+     {
+      "ix": 3,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": true,
+      "text": "Saber — Sim EP-4 & VL BFM clash ✕"
+     },
+     {
+      "ix": 4,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": true,
+      "text": "Ranger — VL BFM & Sim EP-4 clash ✕"
+     },
+     {
+      "ix": 5,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": true,
+      "text": "Piston — RU BFM & STANDARDISATION MEETING clash ✕"
+     },
+     {
+      "ix": 6,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": true,
+      "text": "Vector — Downchit but planned to fly RU BFM — reason: Medical leave 13 Jul ✕"
+     },
+     {
+      "ix": 7,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": true,
+      "text": "Gambit — Fly with but tasked — Sim BOX — reason: Keen for any wave ✕"
+     },
+     {
+      "ix": 8,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Grit — Downchit but tasked — Sim EP-6N — reason: Medically down till 17 Jul ✕"
+     },
+     {
+      "ix": 9,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Saber — Tight turn VL BFM→VL BFM: 75 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕"
+     },
+     {
+      "ix": 10,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Echo — Tight turn VL BFM→VL BFM: 75 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕"
+     },
+     {
+      "ix": 11,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Saber — No time for the VL BFM flight brief — Sim EP-4 sits inside 07:40–10:00 (brief 07:40) ✕"
+     },
+     {
+      "ix": 12,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Ranger — No time for the VL BFM flight brief — Sim EP-4 sits inside 10:20–12:40 (brief 10:20) ✕"
+     },
+     {
+      "ix": 13,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Piston — No time for the RU BFM flight brief — STANDARDISATION MEETING sits inside 11:20–13:40 (brief 11:20) ✕"
+     },
+     {
+      "ix": 14,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Saber — No time for the OFT EP-4 debrief — VL BFM sits inside 09:30–10:00 ✕"
+     },
+     {
+      "ix": 15,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Ranger — No time for the OFT EP-4 brief — VL BFM sits inside 11:30–12:00 ✕"
+     },
+     {
+      "ix": 16,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Ranger — No time for the OFT EP-4 debrief — VL BFM sits inside 13:30–14:00 ✕"
+     },
+     {
+      "ix": 17,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Saber, Echo, Piston, Relay — 4 people are double turning: Saber, Echo, Piston, Relay ✕"
+     },
+     {
+      "ix": 18,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Wildcard, Tally — Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Ba"
+     },
+     {
+      "ix": 19,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Tally — Tally planned for VL BFM — available 12:01–23:59 only ✕"
+     },
+     {
+      "ix": 20,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Saber — Saber has a long work day: 23h55, 19:00 → 18:55 ✕"
+     },
+     {
+      "ix": 21,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Echo — Echo has a long work day: 21h05, 19:00 → 16:05 (last landing 14:05 + 2h debrief assumed) ✕"
+     },
+     {
+      "ix": 22,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Wildcard — Wildcard has a long work day: 20h30, 19:00 → 15:30 ✕"
+     },
+     {
+      "ix": 23,
+      "hid": false,
+      "struck": false,
+      "shown": true,
+      "btn": "✕",
+      "btnTop": false,
+      "text": "Tally — Tally has a long work day: 18h25, 19:00 → 13:25 (last landing 11:25 + 2h debrief assumed) ✕"
+     }
+    ],
+    "other": []
+   },
+   "wh0": {
+    "lines": [
+     "19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS",
+     "19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS"
+    ],
+    "asd": [
+     "In-time / Rally 12:00 · 4 ac",
+     "In-time / Rally 19:00 · 4 ac"
+    ],
+    "near": [
+     "12:00H: FIRST WAVE VL IN TIME + WX/NOTAMS ✕ 13:00H: FIRST WAVE RU IN TIME + WX/NOTAMS ✕ VL: in-time 12:00 is later than brief 10:20. RU: in-time 13:00 is later than brief 11:20.",
+     "19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS ✕ 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS ✕ VL: in-time 19:00 is later than brief 17:25. RU: in-time 19:20 is later than brief 17:00."
+    ]
+   },
+   "wh1": {
+    "lines": [
+     "19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS",
+     "19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS"
+    ],
+    "asd": [
+     "In-time / Rally 12:00 · 4 ac",
+     "In-time / Rally 19:00 · 4 ac"
+    ],
+    "near": [
+     "12:00H: FIRST WAVE VL IN TIME + WX/NOTAMS ✕ 13:00H: FIRST WAVE RU IN TIME + WX/NOTAMS ✕ VL: in-time 12:00 is later than brief 10:20. RU: in-time 13:00 is later than brief 11:20.",
+     "19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS ✕ 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS ✕ RU: in-time 19:20 is later than brief 17:00."
+    ]
+   }
+  },
+  "p206-dk": {
+   "at": "2026-10-05T14:59:12.815Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-06",
+     "did": "Monday wave 1: both formations (VL, RU) take-off set to 12:00 in the boxes, lines cleared, then \"+ In-time / Rally\" pressed three times and typed: (A) general \"08:00H: IN TIME\" + \"08:30H: VL RALLY\"; (B) plus \"09:00H: VL IN TIME\". Work-hours read from Insights each time. (desktop)",
+     "saw": "Button fills: 12:00H: IN TIME + WX/NOTAMS | 08:00H: IN TIME + WX/NOTAMS | 08:00H: IN TIME + WX/NOTAMS. Work hours (week total) nominal→A→B: VL:Saber nominal 17h10 → A 17h10 → B 17h10 ; VL:Echo nominal 17h35 → A 20h35 → B 20h05 ; VL:Ranger nominal 11h30 → A 12h → B 11h30 ; VL:Static nominal 22h20 → A 25h20 → B 24h50 ; RU:Drifter nominal 12h10 → A 15h10 → B 15h10 ; RU:Vector nominal 24h10 → A 27h10 → B 27h10 ; RU:Piston nominal 11h45 → A 14h45 → B 14h45 ; RU:Relay nominal 18h10 → A 21h10 → B 21h10. Warnings on Monday after A: VL: in-time 19:00 is later than brief 17:25. | RU: in-time 19:20 is later than brief 17:00.; after B: VL: in-time 09:00 is later than rally 08:30. | VL: in-time 19:00 is later than brief 17:25. | RU: in-time 19:20 is later than brief 17:00.. Messages beside the wave after B: [\"08:00H: IN TIME ✕ 08:30H: VL RALLY ✕ 09:00H: VL IN TIME ✕ VL: in-time 09:00 is later than rally 08:30.\",\"19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS ✕ 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS ✕ VL: in-time 19:00 is later than brief 17:25. RU: in-time 19:20 is later than brief 17:00.\"]",
+     "verdict": "RECORDED-pending-judge",
+     "pics": [
+      "p206-2-general-in-time-plus-VL-rally-week",
+      "p206-3-state-A-insights",
+      "p206-5-state-B-insights"
+     ]
+    }
+   ],
+   "errors": [],
+   "names": {
+    "VL": [
+     "Saber",
+     "Echo",
+     "Ranger",
+     "Static"
+    ],
+    "RU": [
+     "Drifter",
+     "Vector",
+     "Piston",
+     "Relay"
+    ]
+   },
+   "states": {
+    "baseline": {
+     "Ridge": "28h",
+     "Bolt": "27h25",
+     "Ace": "25h35",
+     "Vector": "24h10",
+     "Static": "22h20",
+     "Dash": "21h05",
+     "Basher": "18h15",
+     "Relay": "18h10",
+     "Echo": "17h35",
+     "Saber": "17h10",
+     "Scope": "16h40",
+     "Zenith": "16h20",
+     "Fable": "15h55",
+     "Anvil": "15h",
+     "Hex": "15h",
+     "Wildcard": "14h05",
+     "Forge": "13h30",
+     "Drifter": "12h10",
+     "Sidewinder": "12h",
+     "Piston": "11h45",
+     "Ranger": "11h30",
+     "Gambit": "11h05",
+     "Saint": "10h15",
+     "Warden": "10h15",
+     "Comet": "10h",
+     "Outlaw": "9h30",
+     "Torch": "8h55",
+     "Pixel": "8h35",
+     "Cinch": "8h30",
+     "Havoc": "8h",
+     "Wisp": "7h50",
+     "Vapor": "7h35",
+     "Kraken": "7h",
+     "Trident": "6h55",
+     "Quill": "6h25",
+     "Rune": "6h05",
+     "Blade": "5h40",
+     "Rebel": "5h25",
+     "Cinder": "5h05",
+     "Marlin": "5h05",
+     "Cutter": "5h",
+     "Ledger": "4h55",
+     "Talisman": "4h30",
+     "Nomad": "4h25",
+     "Tally": "4h10",
+     "Diesel": "4h",
+     "Otter": "4h",
+     "Recon": "3h",
+     "Ghost": "1h30",
+     "Grit": "1h30",
+     "Ryder": "1h30",
+     "Scribe": "1h30",
+     "Cobra": "1h",
+     "Hunter": "1h",
+     "Jester": "1h",
+     "Reaper": "1h"
+    },
+    "A": {
+     "Ridge": "28h",
+     "Bolt": "27h25",
+     "Vector": "27h10",
+     "Ace": "25h35",
+     "Static": "25h20",
+     "Relay": "21h10",
+     "Dash": "21h05",
+     "Echo": "20h35",
+     "Basher": "18h15",
+     "Saber": "17h10",
+     "Scope": "16h40",
+     "Zenith": "16h20",
+     "Fable": "15h55",
+     "Drifter": "15h10",
+     "Anvil": "15h",
+     "Hex": "15h",
+     "Piston": "14h45",
+     "Wildcard": "14h05",
+     "Forge": "13h30",
+     "Ranger": "12h",
+     "Sidewinder": "12h",
+     "Gambit": "11h05",
+     "Saint": "10h15",
+     "Warden": "10h15",
+     "Comet": "10h",
+     "Outlaw": "9h30",
+     "Torch": "8h55",
+     "Pixel": "8h35",
+     "Cinch": "8h30",
+     "Havoc": "8h",
+     "Wisp": "7h50",
+     "Vapor": "7h35",
+     "Kraken": "7h",
+     "Trident": "6h55",
+     "Quill": "6h25",
+     "Rune": "6h05",
+     "Blade": "5h40",
+     "Rebel": "5h25",
+     "Cinder": "5h05",
+     "Marlin": "5h05",
+     "Cutter": "5h",
+     "Ledger": "4h55",
+     "Talisman": "4h30",
+     "Nomad": "4h25",
+     "Tally": "4h10",
+     "Diesel": "4h",
+     "Otter": "4h",
+     "Recon": "3h",
+     "Ghost": "1h30",
+     "Grit": "1h30",
+     "Ryder": "1h30",
+     "Scribe": "1h30",
+     "Cobra": "1h",
+     "Hunter": "1h",
+     "Jester": "1h",
+     "Reaper": "1h"
+    },
+    "B": {
+     "Ridge": "28h",
+     "Bolt": "27h25",
+     "Vector": "27h10",
+     "Ace": "25h35",
+     "Static": "24h50",
+     "Relay": "21h10",
+     "Dash": "21h05",
+     "Echo": "20h05",
+     "Basher": "18h15",
+     "Saber": "17h10",
+     "Scope": "16h40",
+     "Zenith": "16h20",
+     "Fable": "15h55",
+     "Drifter": "15h10",
+     "Anvil": "15h",
+     "Hex": "15h",
+     "Piston": "14h45",
+     "Wildcard": "14h05",
+     "Forge": "13h30",
+     "Sidewinder": "12h",
+     "Ranger": "11h30",
+     "Gambit": "11h05",
+     "Saint": "10h15",
+     "Warden": "10h15",
+     "Comet": "10h",
+     "Outlaw": "9h30",
+     "Torch": "8h55",
+     "Pixel": "8h35",
+     "Cinch": "8h30",
+     "Havoc": "8h",
+     "Wisp": "7h50",
+     "Vapor": "7h35",
+     "Kraken": "7h",
+     "Trident": "6h55",
+     "Quill": "6h25",
+     "Rune": "6h05",
+     "Blade": "5h40",
+     "Rebel": "5h25",
+     "Cinder": "5h05",
+     "Marlin": "5h05",
+     "Cutter": "5h",
+     "Ledger": "4h55",
+     "Talisman": "4h30",
+     "Nomad": "4h25",
+     "Tally": "4h10",
+     "Diesel": "4h",
+     "Otter": "4h",
+     "Recon": "3h",
+     "Ghost": "1h30",
+     "Grit": "1h30",
+     "Ryder": "1h30",
+     "Scribe": "1h30",
+     "Cobra": "1h",
+     "Hunter": "1h",
+     "Jester": "1h",
+     "Reaper": "1h"
+    }
+   },
+   "addTexts": [
+    {
+     "at": "0|0|0",
+     "text": "12:00H: IN TIME + WX/NOTAMS"
+    },
+    {
+     "at": "0|0|1",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    },
+    {
+     "at": "0|0|2",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    }
+   ],
+   "linesA": [
+    {
+     "at": "0|0|0",
+     "text": "08:00H: IN TIME"
+    },
+    {
+     "at": "0|0|1",
+     "text": "08:30H: VL RALLY"
+    }
+   ],
+   "linesB": [
+    {
+     "at": "0|0|0",
+     "text": "08:00H: IN TIME"
+    },
+    {
+     "at": "0|0|1",
+     "text": "08:30H: VL RALLY"
+    },
+    {
+     "at": "0|0|2",
+     "text": "09:00H: VL IN TIME"
+    }
+   ],
+   "warnA": [
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "VL: in-time 19:00 is later than brief 17:25.",
+     "off": false
+    },
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "RU: in-time 19:20 is later than brief 17:00.",
+     "off": false
+    }
+   ],
+   "warnB": [
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "VL: in-time 09:00 is later than rally 08:30.",
+     "off": false
+    },
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "VL: in-time 19:00 is later than brief 17:25.",
+     "off": false
+    },
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "RU: in-time 19:20 is later than brief 17:00.",
+     "off": false
+    }
+   ],
+   "wA": {
+    "lines": [
+     "08:00H: IN TIME",
+     "08:30H: VL RALLY"
+    ],
+    "asd": [
+     "WAVE 1",
+     "WAVE 2 · NIGHT"
+    ],
+    "near": [
+     "08:00H: IN TIME ✕ 08:30H: VL RALLY ✕",
+     "19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS ✕ 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS ✕ VL: in-time 19:00 is later than brief 17:25. RU: in-time 19:20 is later than brief 17:00."
+    ]
+   },
+   "wB": {
+    "lines": [
+     "08:00H: IN TIME",
+     "08:30H: VL RALLY",
+     "09:00H: VL IN TIME"
+    ],
+    "asd": [
+     "WAVE 1",
+     "WAVE 2 · NIGHT"
+    ],
+    "near": [
+     "08:00H: IN TIME ✕ 08:30H: VL RALLY ✕ 09:00H: VL IN TIME ✕ VL: in-time 09:00 is later than rally 08:30.",
+     "19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS ✕ 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS ✕ VL: in-time 19:00 is later than brief 17:25. RU: in-time 19:20 is later than brief 17:00."
+    ]
+   }
+  },
+  "p206-ph": {
+   "at": "2026-10-05T14:59:34.013Z",
+   "base": "http://localhost:4227",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-06",
+     "did": "Monday wave 1: both formations (VL, RU) take-off set to 12:00 in the boxes, lines cleared, then \"+ In-time / Rally\" pressed three times and typed: (A) general \"08:00H: IN TIME\" + \"08:30H: VL RALLY\"; (B) plus \"09:00H: VL IN TIME\". Work-hours read from Insights each time. (phone 390x844, Insights via the drawer)",
+     "saw": "Button fills: 12:00H: IN TIME + WX/NOTAMS | 08:00H: IN TIME + WX/NOTAMS | 08:00H: IN TIME + WX/NOTAMS. Work hours (week total) nominal→A→B: VL:Saber nominal 17h10 → A 17h10 → B 17h10 ; VL:Echo nominal 17h35 → A 20h35 → B 20h05 ; VL:Ranger nominal 11h30 → A 12h → B 11h30 ; VL:Static nominal 22h20 → A 25h20 → B 24h50 ; RU:Drifter nominal 12h10 → A 15h10 → B 15h10 ; RU:Vector nominal 24h10 → A 27h10 → B 27h10 ; RU:Piston nominal 11h45 → A 14h45 → B 14h45 ; RU:Relay nominal 18h10 → A 21h10 → B 21h10. Warnings on Monday after A: VL: in-time 19:00 is later than brief 17:25. | RU: in-time 19:20 is later than brief 17:00.; after B: VL: in-time 09:00 is later than rally 08:30. | VL: in-time 19:00 is later than brief 17:25. | RU: in-time 19:20 is later than brief 17:00.. Messages beside the wave after B: [\"08:00H: IN TIME ✕ 08:30H: VL RALLY ✕ 09:00H: VL IN TIME ✕ VL: in-time 09:00 is later than rally 08:30.\",\"19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS ✕ 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS ✕ VL: in-time 19:00 is later than brief 17:25. RU: in-time 19:20 is later than brief 17:00.\"]",
+     "verdict": "RECORDED-pending-judge",
+     "pics": [
+      "p206-2-general-in-time-plus-VL-rally-week",
+      "p206-3-state-A-insights",
+      "p206-5-state-B-insights"
+     ]
+    }
+   ],
+   "errors": [],
+   "names": {
+    "VL": [
+     "Saber",
+     "Echo",
+     "Ranger",
+     "Static"
+    ],
+    "RU": [
+     "Drifter",
+     "Vector",
+     "Piston",
+     "Relay"
+    ]
+   },
+   "states": {
+    "baseline": {
+     "Ridge": "28h",
+     "Bolt": "27h25",
+     "Ace": "25h35",
+     "Vector": "24h10",
+     "Static": "22h20",
+     "Dash": "21h05",
+     "Basher": "18h15",
+     "Relay": "18h10",
+     "Echo": "17h35",
+     "Saber": "17h10",
+     "Scope": "16h40",
+     "Zenith": "16h20",
+     "Fable": "15h55",
+     "Anvil": "15h",
+     "Hex": "15h",
+     "Wildcard": "14h05",
+     "Forge": "13h30",
+     "Drifter": "12h10",
+     "Sidewinder": "12h",
+     "Piston": "11h45",
+     "Ranger": "11h30",
+     "Gambit": "11h05",
+     "Saint": "10h15",
+     "Warden": "10h15",
+     "Comet": "10h",
+     "Outlaw": "9h30",
+     "Torch": "8h55",
+     "Pixel": "8h35",
+     "Cinch": "8h30",
+     "Havoc": "8h",
+     "Wisp": "7h50",
+     "Vapor": "7h35",
+     "Kraken": "7h",
+     "Trident": "6h55",
+     "Quill": "6h25",
+     "Rune": "6h05",
+     "Blade": "5h40",
+     "Rebel": "5h25",
+     "Cinder": "5h05",
+     "Marlin": "5h05",
+     "Cutter": "5h",
+     "Ledger": "4h55",
+     "Talisman": "4h30",
+     "Nomad": "4h25",
+     "Tally": "4h10",
+     "Diesel": "4h",
+     "Otter": "4h",
+     "Recon": "3h",
+     "Ghost": "1h30",
+     "Grit": "1h30",
+     "Ryder": "1h30",
+     "Scribe": "1h30",
+     "Cobra": "1h",
+     "Hunter": "1h",
+     "Jester": "1h",
+     "Reaper": "1h"
+    },
+    "A": {
+     "Ridge": "28h",
+     "Bolt": "27h25",
+     "Vector": "27h10",
+     "Ace": "25h35",
+     "Static": "25h20",
+     "Relay": "21h10",
+     "Dash": "21h05",
+     "Echo": "20h35",
+     "Basher": "18h15",
+     "Saber": "17h10",
+     "Scope": "16h40",
+     "Zenith": "16h20",
+     "Fable": "15h55",
+     "Drifter": "15h10",
+     "Anvil": "15h",
+     "Hex": "15h",
+     "Piston": "14h45",
+     "Wildcard": "14h05",
+     "Forge": "13h30",
+     "Ranger": "12h",
+     "Sidewinder": "12h",
+     "Gambit": "11h05",
+     "Saint": "10h15",
+     "Warden": "10h15",
+     "Comet": "10h",
+     "Outlaw": "9h30",
+     "Torch": "8h55",
+     "Pixel": "8h35",
+     "Cinch": "8h30",
+     "Havoc": "8h",
+     "Wisp": "7h50",
+     "Vapor": "7h35",
+     "Kraken": "7h",
+     "Trident": "6h55",
+     "Quill": "6h25",
+     "Rune": "6h05",
+     "Blade": "5h40",
+     "Rebel": "5h25",
+     "Cinder": "5h05",
+     "Marlin": "5h05",
+     "Cutter": "5h",
+     "Ledger": "4h55",
+     "Talisman": "4h30",
+     "Nomad": "4h25",
+     "Tally": "4h10",
+     "Diesel": "4h",
+     "Otter": "4h",
+     "Recon": "3h",
+     "Ghost": "1h30",
+     "Grit": "1h30",
+     "Ryder": "1h30",
+     "Scribe": "1h30",
+     "Cobra": "1h",
+     "Hunter": "1h",
+     "Jester": "1h",
+     "Reaper": "1h"
+    },
+    "B": {
+     "Ridge": "28h",
+     "Bolt": "27h25",
+     "Vector": "27h10",
+     "Ace": "25h35",
+     "Static": "24h50",
+     "Relay": "21h10",
+     "Dash": "21h05",
+     "Echo": "20h05",
+     "Basher": "18h15",
+     "Saber": "17h10",
+     "Scope": "16h40",
+     "Zenith": "16h20",
+     "Fable": "15h55",
+     "Drifter": "15h10",
+     "Anvil": "15h",
+     "Hex": "15h",
+     "Piston": "14h45",
+     "Wildcard": "14h05",
+     "Forge": "13h30",
+     "Sidewinder": "12h",
+     "Ranger": "11h30",
+     "Gambit": "11h05",
+     "Saint": "10h15",
+     "Warden": "10h15",
+     "Comet": "10h",
+     "Outlaw": "9h30",
+     "Torch": "8h55",
+     "Pixel": "8h35",
+     "Cinch": "8h30",
+     "Havoc": "8h",
+     "Wisp": "7h50",
+     "Vapor": "7h35",
+     "Kraken": "7h",
+     "Trident": "6h55",
+     "Quill": "6h25",
+     "Rune": "6h05",
+     "Blade": "5h40",
+     "Rebel": "5h25",
+     "Cinder": "5h05",
+     "Marlin": "5h05",
+     "Cutter": "5h",
+     "Ledger": "4h55",
+     "Talisman": "4h30",
+     "Nomad": "4h25",
+     "Tally": "4h10",
+     "Diesel": "4h",
+     "Otter": "4h",
+     "Recon": "3h",
+     "Ghost": "1h30",
+     "Grit": "1h30",
+     "Ryder": "1h30",
+     "Scribe": "1h30",
+     "Cobra": "1h",
+     "Hunter": "1h",
+     "Jester": "1h",
+     "Reaper": "1h"
+    }
+   },
+   "addTexts": [
+    {
+     "at": "0|0|0",
+     "text": "12:00H: IN TIME + WX/NOTAMS"
+    },
+    {
+     "at": "0|0|1",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    },
+    {
+     "at": "0|0|2",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    }
+   ],
+   "linesA": [
+    {
+     "at": "0|0|0",
+     "text": "08:00H: IN TIME"
+    },
+    {
+     "at": "0|0|1",
+     "text": "08:30H: VL RALLY"
+    }
+   ],
+   "linesB": [
+    {
+     "at": "0|0|0",
+     "text": "08:00H: IN TIME"
+    },
+    {
+     "at": "0|0|1",
+     "text": "08:30H: VL RALLY"
+    },
+    {
+     "at": "0|0|2",
+     "text": "09:00H: VL IN TIME"
+    }
+   ],
+   "warnA": [
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "VL: in-time 19:00 is later than brief 17:25.",
+     "off": false
+    },
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "RU: in-time 19:20 is later than brief 17:00.",
+     "off": false
+    }
+   ],
+   "warnB": [
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "VL: in-time 09:00 is later than rally 08:30.",
+     "off": false
+    },
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "VL: in-time 19:00 is later than brief 17:25.",
+     "off": false
+    },
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "RU: in-time 19:20 is later than brief 17:00.",
+     "off": false
+    }
+   ],
+   "wA": {
+    "lines": [
+     "08:00H: IN TIME",
+     "08:30H: VL RALLY"
+    ],
+    "asd": [
+     "WAVE 1",
+     "WAVE 2 · NIGHT"
+    ],
+    "near": [
+     "08:00H: IN TIME ✕ 08:30H: VL RALLY ✕",
+     "19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS ✕ 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS ✕ VL: in-time 19:00 is later than brief 17:25. RU: in-time 19:20 is later than brief 17:00."
+    ]
+   },
+   "wB": {
+    "lines": [
+     "08:00H: IN TIME",
+     "08:30H: VL RALLY",
+     "09:00H: VL IN TIME"
+    ],
+    "asd": [
+     "WAVE 1",
+     "WAVE 2 · NIGHT"
+    ],
+    "near": [
+     "08:00H: IN TIME ✕ 08:30H: VL RALLY ✕ 09:00H: VL IN TIME ✕ VL: in-time 09:00 is later than rally 08:30.",
+     "19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS ✕ 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS ✕ VL: in-time 19:00 is later than brief 17:25. RU: in-time 19:20 is later than brief 17:00."
+    ]
+   }
+  },
+  "p207-dk": {
+   "at": "2026-10-05T15:00:09.238Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-07",
+     "did": "Tuesday wave 1: VL take-off set to 01:00 in the box, lines cleared, two lines typed \"23:00H: VL IN TIME\" and \"00:15H: VL IN TIME\" (button then typing), then the two lines' texts swapped; Insights read each time. (desktop)",
+     "saw": "Crew Warden/Basher/Outlaw/Hex Work hours (week): none {\"Warden\":\"16h15\",\"Basher\":\"24h15\",\"Outlaw\":\"15h30\",\"Hex\":\"21h\"} → 23:00 first {\"Warden\":\"17h15\",\"Basher\":\"25h15\",\"Outlaw\":\"16h30\",\"Hex\":\"22h\"} → reversed {\"Warden\":\"17h15\",\"Basher\":\"25h15\",\"Outlaw\":\"16h30\",\"Hex\":\"22h\"}. Same figures before/after the swap: true. Lines as painted: [{\"at\":\"1|0|0\",\"text\":\"23:00H: VL IN TIME\"},{\"at\":\"1|0|1\",\"text\":\"00:15H: VL IN TIME\"}] / [{\"at\":\"1|0|0\",\"text\":\"00:15H: VL IN TIME\"},{\"at\":\"1|0|1\",\"text\":\"23:00H: VL IN TIME\"}]. Messages beside the wave: 23:00H: VL IN TIME ✕ 00:15H: VL IN TIME ✕ VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day). // 00:15H: VL IN TIME ✕ 23:00H: VL IN TIME ✕ VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).. Report warnings: [\"VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\",\"RU: in-time 13:00 is later than brief 12:20.\",\"Crew rest breach — Monday ended 14:00 → crew rest clear at 02:00, but told to report 22:40 — only 8h40 rest.\",\"Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 22:40 — only -0h05 rest.\",\"Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:40 — only 10h10 rest.\"] // [\"VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\",\"RU: in-time 13:00 is later than brief 12:20.\",\"Crew rest breach — Monday ended 14:00 → crew rest clear at 02:00, but told to report 22:40 — only 8h40 rest.\",\"Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 22:40 — only -0h05 rest.\",\"Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:40 — only 10h10 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "p207-2-23-then-0015-week",
+      "p207-2-23-then-0015-insights",
+      "p207-3-reversed-week",
+      "p207-3-reversed-insights"
+     ]
+    }
+   ],
+   "errors": [],
+   "s0": {
+    "tag": "no lines",
+    "lines": [],
+    "near": "12:00H: SECOND WAVE VL IN TIME + WX/NOTAMS ✕ 13:00H: SECOND WAVE RU IN TIME + WX/NOTAMS ✕ RU: in-time 13:00 is later than brief 12:20.",
+    "asd": [
+     "WAVE 1",
+     "WAVE 2"
+    ],
+    "warns": [
+     "RU: in-time 13:00 is later than brief 12:20.",
+     "Crew rest breach — Monday ended 14:00 → crew rest clear at 02:00, but told to report 22:40 — only 8h40 rest.",
+     "Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 22:40 — only -0h05 rest.",
+     "Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:40 — only 10h10 rest."
+    ],
+    "hrs": {
+     "Warden": "16h15",
+     "Basher": "24h15",
+     "Outlaw": "15h30",
+     "Hex": "21h"
+    },
+    "model": []
+   },
+   "s1": {
+    "tag": "23:00 then 00:15",
+    "lines": [
+     {
+      "at": "1|0|0",
+      "text": "23:00H: VL IN TIME"
+     },
+     {
+      "at": "1|0|1",
+      "text": "00:15H: VL IN TIME"
+     }
+    ],
+    "near": "23:00H: VL IN TIME ✕ 00:15H: VL IN TIME ✕ VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).",
+    "asd": [
+     "WAVE 1",
+     "WAVE 2"
+    ],
+    "warns": [
+     "VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).",
+     "RU: in-time 13:00 is later than brief 12:20.",
+     "Crew rest breach — Monday ended 14:00 → crew rest clear at 02:00, but told to report 22:40 — only 8h40 rest.",
+     "Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 22:40 — only -0h05 rest.",
+     "Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:40 — only 10h10 rest."
+    ],
+    "hrs": {
+     "Warden": "17h15",
+     "Basher": "25h15",
+     "Outlaw": "16h30",
+     "Hex": "22h"
+    },
+    "model": [
+     "23:00H: VL IN TIME",
+     "00:15H: VL IN TIME"
+    ]
+   },
+   "s2": {
+    "tag": "00:15 then 23:00",
+    "lines": [
+     {
+      "at": "1|0|0",
+      "text": "00:15H: VL IN TIME"
+     },
+     {
+      "at": "1|0|1",
+      "text": "23:00H: VL IN TIME"
+     }
+    ],
+    "near": "00:15H: VL IN TIME ✕ 23:00H: VL IN TIME ✕ VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).",
+    "asd": [
+     "WAVE 1",
+     "WAVE 2"
+    ],
+    "warns": [
+     "VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).",
+     "RU: in-time 13:00 is later than brief 12:20.",
+     "Crew rest breach — Monday ended 14:00 → crew rest clear at 02:00, but told to report 22:40 — only 8h40 rest.",
+     "Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 22:40 — only -0h05 rest.",
+     "Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:40 — only 10h10 rest."
+    ],
+    "hrs": {
+     "Warden": "17h15",
+     "Basher": "25h15",
+     "Outlaw": "16h30",
+     "Hex": "22h"
+    },
+    "model": [
+     "00:15H: VL IN TIME",
+     "23:00H: VL IN TIME"
+    ]
+   }
+  },
+  "p207-ph": {
+   "at": "2026-10-05T15:00:32.717Z",
+   "base": "http://localhost:4227",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-07",
+     "did": "Tuesday wave 1: VL take-off set to 01:00 in the box, lines cleared, two lines typed \"23:00H: VL IN TIME\" and \"00:15H: VL IN TIME\" (button then typing), then the two lines' texts swapped; Insights read each time. (phone)",
+     "saw": "Crew Warden/Basher/Outlaw/Hex Work hours (week): none {\"Warden\":\"16h15\",\"Basher\":\"24h15\",\"Outlaw\":\"15h30\",\"Hex\":\"21h\"} → 23:00 first {\"Warden\":\"17h15\",\"Basher\":\"25h15\",\"Outlaw\":\"16h30\",\"Hex\":\"22h\"} → reversed {\"Warden\":\"17h15\",\"Basher\":\"25h15\",\"Outlaw\":\"16h30\",\"Hex\":\"22h\"}. Same figures before/after the swap: true. Lines as painted: [{\"at\":\"1|0|0\",\"text\":\"23:00H: VL IN TIME\"},{\"at\":\"1|0|1\",\"text\":\"00:15H: VL IN TIME\"}] / [{\"at\":\"1|0|0\",\"text\":\"00:15H: VL IN TIME\"},{\"at\":\"1|0|1\",\"text\":\"23:00H: VL IN TIME\"}]. Messages beside the wave: 23:00H: VL IN TIME ✕ 00:15H: VL IN TIME ✕ VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day). // 00:15H: VL IN TIME ✕ 23:00H: VL IN TIME ✕ VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).. Report warnings: [\"VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\",\"RU: in-time 13:00 is later than brief 12:20.\",\"Crew rest breach — Monday ended 14:00 → crew rest clear at 02:00, but told to report 22:40 — only 8h40 rest.\",\"Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 22:40 — only -0h05 rest.\",\"Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:40 — only 10h10 rest.\"] // [\"VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).\",\"RU: in-time 13:00 is later than brief 12:20.\",\"Crew rest breach — Monday ended 14:00 → crew rest clear at 02:00, but told to report 22:40 — only 8h40 rest.\",\"Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 22:40 — only -0h05 rest.\",\"Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:40 — only 10h10 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "p207-2-23-then-0015-week",
+      "p207-2-23-then-0015-insights",
+      "p207-3-reversed-week",
+      "p207-3-reversed-insights"
+     ]
+    }
+   ],
+   "errors": [],
+   "s0": {
+    "tag": "no lines",
+    "lines": [],
+    "near": "12:00H: SECOND WAVE VL IN TIME + WX/NOTAMS ✕ 13:00H: SECOND WAVE RU IN TIME + WX/NOTAMS ✕ RU: in-time 13:00 is later than brief 12:20.",
+    "asd": [
+     "WAVE 1",
+     "WAVE 2"
+    ],
+    "warns": [
+     "RU: in-time 13:00 is later than brief 12:20.",
+     "Crew rest breach — Monday ended 14:00 → crew rest clear at 02:00, but told to report 22:40 — only 8h40 rest.",
+     "Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 22:40 — only -0h05 rest.",
+     "Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:40 — only 10h10 rest."
+    ],
+    "hrs": {
+     "Warden": "16h15",
+     "Basher": "24h15",
+     "Outlaw": "15h30",
+     "Hex": "21h"
+    },
+    "model": []
+   },
+   "s1": {
+    "tag": "23:00 then 00:15",
+    "lines": [
+     {
+      "at": "1|0|0",
+      "text": "23:00H: VL IN TIME"
+     },
+     {
+      "at": "1|0|1",
+      "text": "00:15H: VL IN TIME"
+     }
+    ],
+    "near": "23:00H: VL IN TIME ✕ 00:15H: VL IN TIME ✕ VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).",
+    "asd": [
+     "WAVE 1",
+     "WAVE 2"
+    ],
+    "warns": [
+     "VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).",
+     "RU: in-time 13:00 is later than brief 12:20.",
+     "Crew rest breach — Monday ended 14:00 → crew rest clear at 02:00, but told to report 22:40 — only 8h40 rest.",
+     "Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 22:40 — only -0h05 rest.",
+     "Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:40 — only 10h10 rest."
+    ],
+    "hrs": {
+     "Warden": "17h15",
+     "Basher": "25h15",
+     "Outlaw": "16h30",
+     "Hex": "22h"
+    },
+    "model": [
+     "23:00H: VL IN TIME",
+     "00:15H: VL IN TIME"
+    ]
+   },
+   "s2": {
+    "tag": "00:15 then 23:00",
+    "lines": [
+     {
+      "at": "1|0|0",
+      "text": "00:15H: VL IN TIME"
+     },
+     {
+      "at": "1|0|1",
+      "text": "23:00H: VL IN TIME"
+     }
+    ],
+    "near": "00:15H: VL IN TIME ✕ 23:00H: VL IN TIME ✕ VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).",
+    "asd": [
+     "WAVE 1",
+     "WAVE 2"
+    ],
+    "warns": [
+     "VL: in-time 23:00 (previous day) is later than brief 22:40 (previous day).",
+     "RU: in-time 13:00 is later than brief 12:20.",
+     "Crew rest breach — Monday ended 14:00 → crew rest clear at 02:00, but told to report 22:40 — only 8h40 rest.",
+     "Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 22:40 — only -0h05 rest.",
+     "Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:40 — only 10h10 rest."
+    ],
+    "hrs": {
+     "Warden": "17h15",
+     "Basher": "25h15",
+     "Outlaw": "16h30",
+     "Hex": "22h"
+    },
+    "model": [
+     "00:15H: VL IN TIME",
+     "23:00H: VL IN TIME"
+    ]
+   }
+  },
+  "p208-dk": {
+   "at": "2026-10-05T15:05:56.487Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-08",
+     "did": "Monday wave 1, take-offs 12:00 (VL) and 13:00 (RU) typed in the boxes, existing lines cleared; \"+ In-time / Rally\" pressed on the week (Logic nominal report = 3h), the line retyped 08:00H, Logic's \"Nominal report before T/O\" changed to 2h (read back 2h), pressed again on the week, then on the Board; then once on a brand-new Friday wave (callsign ZZ, take-off 14:00)",
+     "saw": "Press 1 (week, nominal 3h, no lines): \"12:00H: IN TIME + WX/NOTAMS\". After retyping line 1: [\"08:00H: IN TIME + WX/NOTAMS\"]. Press 2 (week, nominal 2h, one line 08:00 present): \"08:00H: IN TIME + WX/NOTAMS\" (all lines: [\"08:00H: IN TIME + WX/NOTAMS\",\"08:00H: IN TIME + WX/NOTAMS\"]). Press 3 (Board, nominal 2h): \"08:00H: IN TIME + WX/NOTAMS\" (all lines: [\"08:00H: IN TIME + WX/NOTAMS\",\"08:00H: IN TIME + WX/NOTAMS\",\"08:00H: IN TIME + WX/NOTAMS\"]). Press 4 (Board, fresh Friday wave TO 14:00, nominal 2h): [\"14:00H: IN TIME + WX/NOTAMS\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "p208-1-first-press-week",
+      "p208-4-second-press-week",
+      "p208-5-third-press-board",
+      "p208-6-fresh-wave-board"
+     ]
+    }
+   ],
+   "errors": [],
+   "lead0": "3h",
+   "lead1": "2h",
+   "t1": {
+    "at": "0|0|0",
+    "text": "12:00H: IN TIME + WX/NOTAMS"
+   },
+   "t2": {
+    "at": "0|0|1",
+    "text": "08:00H: IN TIME + WX/NOTAMS"
+   },
+   "t3": {
+    "at": "0|0|2",
+    "text": "08:00H: IN TIME + WX/NOTAMS"
+   },
+   "fLines": [
+    {
+     "at": "4|0|0",
+     "text": "14:00H: IN TIME + WX/NOTAMS"
+    }
+   ],
+   "r2": [
+    {
+     "at": "0|0|0",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    },
+    {
+     "at": "0|0|1",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    }
+   ],
+   "bAfter": [
+    {
+     "at": "0|0|0",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    },
+    {
+     "at": "0|0|1",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    },
+    {
+     "at": "0|0|2",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    }
+   ],
+   "asd": {
+    "lines": [
+     "08:00H: IN TIME + WX/NOTAMS",
+     "08:00H: IN TIME + WX/NOTAMS",
+     "08:00H: IN TIME + WX/NOTAMS"
+    ],
+    "asd": [
+     "In-time / Rally 08:00 · 4 ac",
+     "In-time / Rally 19:00 · 4 ac"
+    ],
+    "near": [
+     "08:00H: IN TIME + WX/NOTAMS ✕ 08:00H: IN TIME + WX/NOTAMS ✕ 08:00H: IN TIME + WX/NOTAMS ✕",
+     "19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS ✕ 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS ✕ VL: in-time 19:00 is later than brief 17:25. RU: in-time 19:20 is later than brief 17:00."
+    ]
+   }
+  },
+  "p208-ph": {
+   "at": "2026-10-05T15:06:25.533Z",
+   "base": "http://localhost:4227",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-08",
+     "did": "Monday wave 1, take-offs 12:00 (VL) and 13:00 (RU) typed in the boxes, existing lines cleared; \"+ In-time / Rally\" pressed on the week (Logic nominal report = 3h), the line retyped 08:00H, Logic's \"Nominal report before T/O\" changed to 2h (read back 2h), pressed again on the week, then on the Board; then once on a brand-new Friday wave (callsign ZZ, take-off 14:00)",
+     "saw": "Press 1 (week, nominal 3h, no lines): \"12:00H: IN TIME + WX/NOTAMS\". After retyping line 1: [\"08:00H: IN TIME + WX/NOTAMS\"]. Press 2 (week, nominal 2h, one line 08:00 present): \"08:00H: IN TIME + WX/NOTAMS\" (all lines: [\"08:00H: IN TIME + WX/NOTAMS\",\"08:00H: IN TIME + WX/NOTAMS\"]). Press 3 (Board, nominal 2h): \"08:00H: IN TIME + WX/NOTAMS\" (all lines: [\"08:00H: IN TIME + WX/NOTAMS\",\"08:00H: IN TIME + WX/NOTAMS\",\"08:00H: IN TIME + WX/NOTAMS\"]). Press 4 (Board, fresh Friday wave TO 14:00, nominal 2h): [\"14:00H: IN TIME + WX/NOTAMS\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "p208-1-first-press-week",
+      "p208-4-second-press-week",
+      "p208-5-third-press-board",
+      "p208-6-fresh-wave-board"
+     ]
+    }
+   ],
+   "errors": [],
+   "lead0": "3h",
+   "lead1": "2h",
+   "t1": {
+    "at": "0|0|0",
+    "text": "12:00H: IN TIME + WX/NOTAMS"
+   },
+   "t2": {
+    "at": "0|0|1",
+    "text": "08:00H: IN TIME + WX/NOTAMS"
+   },
+   "t3": {
+    "at": "0|0|2",
+    "text": "08:00H: IN TIME + WX/NOTAMS"
+   },
+   "fLines": [
+    {
+     "at": "4|0|0",
+     "text": "14:00H: IN TIME + WX/NOTAMS"
+    }
+   ],
+   "r2": [
+    {
+     "at": "0|0|0",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    },
+    {
+     "at": "0|0|1",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    }
+   ],
+   "bAfter": [
+    {
+     "at": "0|0|0",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    },
+    {
+     "at": "0|0|1",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    },
+    {
+     "at": "0|0|2",
+     "text": "08:00H: IN TIME + WX/NOTAMS"
+    }
+   ],
+   "asd": {
+    "lines": [
+     "08:00H: IN TIME + WX/NOTAMS",
+     "08:00H: IN TIME + WX/NOTAMS",
+     "08:00H: IN TIME + WX/NOTAMS"
+    ],
+    "asd": [
+     "In-time / Rally 08:00 · 4 ac",
+     "In-time / Rally 19:00 · 4 ac"
+    ],
+    "near": [
+     "08:00H: IN TIME + WX/NOTAMS ✕ 08:00H: IN TIME + WX/NOTAMS ✕ 08:00H: IN TIME + WX/NOTAMS ✕",
+     "19:00H: NIGHT WAVE VL IN TIME + WX/NOTAMS ✕ 19:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS ✕ VL: in-time 19:00 is later than brief 17:25. RU: in-time 19:20 is later than brief 17:00."
+    ]
+   }
+  },
+  "p209-dk": {
+   "at": "2026-10-05T15:06:49.608Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-09",
+     "did": "Logic page, Edit rules mode: read every box (labels, keys), read the page text for any words/wording setting, searched the rules for \"rally\", looked at the \"Nominal report before T/O\" row",
+     "saw": "The row beside the nominal report holds ONE box (Nominal report before T/O); there is no box for the words the button fills in. Labels containing word/text/rally/in-time/report: [\"Nominal report before T/O\"]. Setting keys on the page: step, dekit, briefLead, reportLead, debrief, minTurn, dur, openEnd, crewRest, tightTurn, longDay, maxRun, epBrief, simDebrief, amtDebrief, simLen, scDayFrom, scDayTo, inputLead, oilFullMin. Page lines mentioning the words setting: [\"With one overlay (26 Aug 26): a personal-input commitment across the shift is graded by its TYPE — Training, CSE, Fly with, Personal, Appointment, Duty, Other are a Warning, because the shift may launch him; a Meeting stays an Advisory. A type the engine does not recognise — a typo, or a record from an older store — reads as the Warning too, never the advisory: when in doubt the engine assumes the serious case. A ground row carrying one of those words — lifted from an input or typed by hand — grades as the commitment it is, not as academics. A programme item always stays advisory.\",\"The issued copy of a day is the squadron's word about what was worked, and it keeps crediting exactly what it credited — nothing moves on its own. But the men behind that puck earned nothing from that seat, because the app was not counting it when the day went out, and they should have. So the day raises the ordinary pending mark and waits for the scheduler to acknowledge it, which is what publishing again does. It says this in words rather than leaving a bare \\\"1 pending\\\" behind, because the copy that went out never wrote down who was behind the puck — so there is no cell to mark and nothing to show in History, and a scheduler would otherwise be republishing blind. One amendment per affected day, once.\",\"The sortie itself measures nothing, so on the face of it nobody should earn from it. They do, and deliberately: a flying day runs from the report three hours before take-off to the debrief two hours after landing, and the crew did both. They were in squadron whatever the times say, which is the squadron's own fact rather than anything the times can show. So the line is never refused and no credit is taken away — the warning exists because a nought-minute sortie is always a slip of the keyboard, and it is cheaper to fix while the day is being built than after it has gone out. It names the line, not the crew: the times are the scheduler's to correct. A line that has no readable times at all is a different problem and carries the other warning — that one really does earn nobody anything. A standby SHIFT is the other way round: SC, AVALON and BB have no report and no debrief, so their window is the written window and one typed to the same minute earns nobody anything at all. The warning says so in those words on a shift, and the day names it — as a shift, not as a desk — in the same list as a desk with no usable times.\"]. Search \"rally\" shows rules: [\"SETTING Each line uses its first recognised clock, such as 09:00H or 0900. Write IN TIME, RALLY, or both; an older clock-only instruction still means in-time. R\",\"SETTING For a flight, a reporting clock later than take-off means the immediately previous day. The earliest applicable in-time or rally starts the crew's repor\",\"WARNING REPORT_ORDER Present stages must run in-time → rally → brief → take-off → landing. Equal adjacent times are allowed. A reversed pair names the formation\",\"ADVISORY REPORT_UNRESOLVED An unrecognised reporting clock, or RALLY AFTER IN TIME with no applicable in-time. The button's own fill on this build is always \"<clock>H: IN TIME + WX/NOTAMS\" (P2-08).",
+     "verdict": "NOT WALKED (setting absent on this build — see findings)",
+     "pics": [
+      "p209-1-logic-nominal-report-row-edit-mode",
+      "p209-2-logic-search-rally"
+     ]
+    }
+   ],
+   "errors": [],
+   "labels": [
+    "Step before take-off",
+    "Dekit after landing",
+    "Flight brief before T/O",
+    "Nominal report before T/O",
+    "Flight debrief after land",
+    "Minimum turn (unused)",
+    "Default sortie length (unused)",
+    "Assumed length, no end time",
+    "Crew rest",
+    "Tight turn threshold",
+    "Long work day",
+    "Max days worked in a row",
+    "EP sim brief",
+    "Sim debrief",
+    "AMT debrief",
+    "Assumed sim length, no end time",
+    "SC day window opens",
+    "SC day window closes",
+    "Member input deadline before the week",
+    "Full-day OIL threshold (worked mins)"
+   ],
+   "sets": [
+    "step",
+    "dekit",
+    "briefLead",
+    "reportLead",
+    "debrief",
+    "minTurn",
+    "dur",
+    "openEnd",
+    "crewRest",
+    "tightTurn",
+    "longDay",
+    "maxRun",
+    "epBrief",
+    "simDebrief",
+    "amtDebrief",
+    "simLen",
+    "scDayFrom",
+    "scDayTo",
+    "inputLead",
+    "oilFullMin"
+   ],
+   "wordHits": [
+    "With one overlay (26 Aug 26): a personal-input commitment across the shift is graded by its TYPE — Training, CSE, Fly with, Personal, Appointment, Duty, Other are a Warning, because the shift may launch him; a Meeting stays an Advisory. A type the engine does not recognise — a typo, or a record from an older store — reads as the Warning too, never the advisory: when in doubt the engine assumes the serious case. A ground row carrying one of those words — lifted from an input or typed by hand — grades as the commitment it is, not as academics. A programme item always stays advisory.",
+    "The issued copy of a day is the squadron's word about what was worked, and it keeps crediting exactly what it credited — nothing moves on its own. But the men behind that puck earned nothing from that seat, because the app was not counting it when the day went out, and they should have. So the day raises the ordinary pending mark and waits for the scheduler to acknowledge it, which is what publishing again does. It says this in words rather than leaving a bare \"1 pending\" behind, because the copy that went out never wrote down who was behind the puck — so there is no cell to mark and nothing to show in History, and a scheduler would otherwise be republishing blind. One amendment per affected day, once.",
+    "The sortie itself measures nothing, so on the face of it nobody should earn from it. They do, and deliberately: a flying day runs from the report three hours before take-off to the debrief two hours after landing, and the crew did both. They were in squadron whatever the times say, which is the squadron's own fact rather than anything the times can show. So the line is never refused and no credit is taken away — the warning exists because a nought-minute sortie is always a slip of the keyboard, and it is cheaper to fix while the day is being built than after it has gone out. It names the line, not the crew: the times are the scheduler's to correct. A line that has no readable times at all is a different problem and carries the other warning — that one really does earn nobody anything. A standby SHIFT is the other way round: SC, AVALON and BB have no report and no debrief, so their window is the written window and one typed to the same minute earns nobody anything at all. The warning says so in those words on a shift, and the day names it — as a shift, not as a desk — in the same list as a desk with no usable times."
+   ],
+   "hits": [
+    "SETTING Each line uses its first recognised clock, such as 09:00H or 0900. Write IN TIME, RALLY, or both; an older clock-only instruction still means in-time. R",
+    "SETTING For a flight, a reporting clock later than take-off means the immediately previous day. The earliest applicable in-time or rally starts the crew's repor",
+    "WARNING REPORT_ORDER Present stages must run in-time → rally → brief → take-off → landing. Equal adjacent times are allowed. A reversed pair names the formation",
+    "ADVISORY REPORT_UNRESOLVED An unrecognised reporting clock, or RALLY AFTER IN TIME with no applicable in-time, asks you to check the instruction. This advisory "
+   ]
+  },
+  "p210-dk": {
+   "at": "2026-10-05T15:08:45.150Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-10",
+     "did": "New Friday wave on the Board: callsign VL, mission BFM, take-off 12:00, Brief left blank (suggested 09:40); \"+ In-time / Rally\" typed \"10:00H: VL RALLY\"; read the red line; signed the four names; pressed Publish day; then changed take-off to 12:05, signed again, pressed the amendment button while the warning stayed",
+     "saw": "Red line(s): [\"hard: VL: rally 10:00 is later than brief 09:40.\"]. Beside the wave: [\"10:00H: VL RALLY ✕ VL: rally 10:00 is later than brief 09:40.\"]. Day head before signing {\"tag\":\"DRAFT\",\"pending\":\"6 changes\",\"beak\":\"locked\",\"alpub\":\"\",\"unpub\":\"\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"\",\"nys\":\"\"}; after signing {\"tag\":\"DRAFT\",\"pending\":\"10 changes\",\"beak\":\"on\",\"alpub\":\"\",\"unpub\":\"\",\"signs\":[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"],\"signed\":\"\",\"nys\":\"\"}; Publish pressed -> {\"pressed\":true,\"label\":\"Publish day\"}; head after {\"tag\":\"DRAFT\",\"pending\":\"10 changes\",\"beak\":\"on\",\"alpub\":\"\",\"unpub\":\"\",\"signs\":[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"],\"signed\":\"\",\"nys\":\"\"} (toasts [\"Cannot publish — VL: rally 10:00 is later than brief 09:40. Correct the timing first.\"]). After the edit: {\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\"}; re-signed {\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"unpub\":\"Unpublish\",\"signs\":[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet published\"}; amendment press -> {\"pressed\":true,\"label\":\"Publish AL1\"}; head after {\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"unpub\":\"Unpublish\",\"signs\":[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet published\"}. Screen after the Publish-day press (warning present): {\"toast\":\"Cannot publish — VL: rally 10:00 is later than brief 09:40. Correct the timing first.\",\"op\":\"1\",\"modal\":[]}. CONTROL (rally corrected to 09:30): head before {\"tag\":\"DRAFT\",\"pending\":\"11 changes\",\"beak\":\"locked\",\"alpub\":\"\",\"unpub\":\"\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"\",\"nys\":\"\"}, Publish -> {\"pressed\":true,\"label\":\"Publish day\"}, head after {\"tag\":\"ORIG\",\"pending\":\"16 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}. Then rally set back to 10:00 on the published day: AL press toast \"Cannot publish — VL: rally 10:00 is later than brief 09:40. Correct the timing first.\". Warnings after AL: [\"VL: rally 10:00 is later than brief 09:40.\"]",
+     "verdict": "FAIL",
+     "pics": [
+      "p210-1-rally-1000-board",
+      "p210-3-after-publish",
+      "p210-5-after-AL"
+     ]
+    }
+   ],
+   "errors": [],
+   "msgAL": "Cannot publish — VL: rally 10:00 is later than brief 09:40. Correct the timing first.",
+   "hc0": {
+    "tag": "DRAFT",
+    "pending": "11 changes",
+    "beak": "locked",
+    "alpub": "",
+    "unpub": "",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "",
+    "nys": ""
+   },
+   "hc1": {
+    "tag": "ORIG",
+    "pending": "16 changes",
+    "beak": "none",
+    "alpub": "",
+    "unpub": "Unpublish",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": ""
+   },
+   "pubC": {
+    "pressed": true,
+    "label": "Publish day"
+   },
+   "msgScreen": {
+    "toast": "Cannot publish — VL: rally 10:00 is later than brief 09:40. Correct the timing first.",
+    "op": "1",
+    "modal": []
+   },
+   "warns": [
+    {
+     "sev": "hard",
+     "code": "REPORT_ORDER",
+     "msg": "VL: rally 10:00 is later than brief 09:40.",
+     "off": false
+    }
+   ],
+   "h0": {
+    "tag": "DRAFT",
+    "pending": "6 changes",
+    "beak": "locked",
+    "alpub": "",
+    "unpub": "",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "",
+    "nys": ""
+   },
+   "h1": {
+    "tag": "DRAFT",
+    "pending": "10 changes",
+    "beak": "on",
+    "alpub": "",
+    "unpub": "",
+    "signs": [
+     "Ace",
+     "Anvil",
+     "Anvil",
+     "Anvil"
+    ],
+    "signed": "",
+    "nys": ""
+   },
+   "h2": {
+    "tag": "DRAFT",
+    "pending": "10 changes",
+    "beak": "on",
+    "alpub": "",
+    "unpub": "",
+    "signs": [
+     "Ace",
+     "Anvil",
+     "Anvil",
+     "Anvil"
+    ],
+    "signed": "",
+    "nys": ""
+   },
+   "h3": {
+    "tag": "ORIG",
+    "pending": "1 pending",
+    "beak": "none",
+    "alpub": "Publish AL1",
+    "unpub": "Unpublish",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": "Not yet signed"
+   },
+   "h4": {
+    "tag": "ORIG",
+    "pending": "1 pending",
+    "beak": "none",
+    "alpub": "Publish AL1",
+    "unpub": "Unpublish",
+    "signs": [
+     "Ace",
+     "Anvil",
+     "Anvil",
+     "Anvil"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": "Not yet published"
+   },
+   "h5": {
+    "tag": "ORIG",
+    "pending": "1 pending",
+    "beak": "none",
+    "alpub": "Publish AL1",
+    "unpub": "Unpublish",
+    "signs": [
+     "Ace",
+     "Anvil",
+     "Anvil",
+     "Anvil"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": "Not yet published"
+   },
+   "pub": {
+    "pressed": true,
+    "label": "Publish day"
+   },
+   "al": {
+    "pressed": true,
+    "label": "Publish AL1"
+   },
+   "toasts1": [
+    "Cannot publish — VL: rally 10:00 is later than brief 09:40. Correct the timing first."
+   ]
+  },
+  "p211-dk": {
+   "at": "2026-10-05T15:09:14.726Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-11",
+     "did": "New Friday wave on the Board: VL, take-off 12:00, Brief typed 09:40; lines \"08:00H: IN TIME\" and \"09:40H: RALLY\" (button + typing); then Rally retyped 09:41, then 09:40 again",
+     "saw": "equal: warnings [] (beside wave: 08:00H: IN TIME ✕ 09:40H: RALLY ✕); rally 09:41: [\"hard: VL: rally 09:41 is later than brief 09:40.\"] (beside wave: 08:00H: IN TIME ✕ 09:41H: RALLY ✕ VL: rally 09:41 is later than brief 09:40.); back to 09:40: [] (beside wave: 08:00H: IN TIME ✕ 09:40H: RALLY ✕)",
+     "verdict": "PASS",
+     "pics": [
+      "p211-1-equal-rally-brief",
+      "p211-2-rally-0941",
+      "p211-3-rally-back-0940"
+     ]
+    }
+   ],
+   "errors": [],
+   "s1": {
+    "tag": "in-time 08:00, rally 09:40, brief 09:40, T/O 12:00",
+    "warns": [],
+    "near": "08:00H: IN TIME ✕ 09:40H: RALLY ✕",
+    "lines": [
+     "08:00H: IN TIME",
+     "09:40H: RALLY"
+    ]
+   },
+   "s2": {
+    "tag": "rally 09:41",
+    "warns": [
+     "hard: VL: rally 09:41 is later than brief 09:40."
+    ],
+    "near": "08:00H: IN TIME ✕ 09:41H: RALLY ✕ VL: rally 09:41 is later than brief 09:40.",
+    "lines": [
+     "08:00H: IN TIME",
+     "09:41H: RALLY"
+    ]
+   },
+   "s3": {
+    "tag": "rally back to 09:40",
+    "warns": [],
+    "near": "08:00H: IN TIME ✕ 09:40H: RALLY ✕",
+    "lines": [
+     "08:00H: IN TIME",
+     "09:40H: RALLY"
+    ]
+   }
+  },
+  "p212-dk": {
+   "at": "2026-10-05T15:12:48.899Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-12",
+     "did": "Friday, new wave on the Board: blank formation, Ace seated, line \"RALLY AFTER IN TIME\" typed; then \"25:99H: IN TIME\"; then callsign VL, mission BFM, take-off 12:00, line 1 \"08:00H: IN TIME\" and an added \"RALLY AFTER IN TIME\"; then the formation cancelled with its CX. Ace's Work hours read from Insights at each step.",
+     "saw": "Ace Work hours: before 25h35; no take-off+RALLY AFTER IN TIME NaN min; invalid clock NaN min; valid T/O+in-time 31h35; cancelled 25h35. Warnings: S1 []; S2 []; S3 []; S4 []. Beside the wave: S1 RALLY AFTER IN TIME ✕; S2 25:99H: IN TIME ✕; S3 08:00H: IN TIME ✕ RALLY AFTER IN TIME ✕; S4 08:00H: IN TIME ✕ RALLY AFTER IN TIME ✕. CX pressed: CX button on aircraft line 4.0.0.0 then Cancel line, formation cx flag after = true",
+     "verdict": "PASS",
+     "pics": [
+      "p212-1b-board-no-takeoff",
+      "p212-2b-board-invalid",
+      "p212-3b-board-valid",
+      "p212-4b-board-cancelled"
+     ]
+    }
+   ],
+   "errors": [],
+   "H0": {
+    "h": "25h35",
+    "w": "91%"
+   },
+   "S1": {
+    "tag": "no take-off, crew seated, line \"RALLY AFTER IN TIME\"",
+    "model": [
+     "RALLY AFTER IN TIME"
+    ],
+    "form": {
+     "cs": "",
+     "to": ""
+    },
+    "warns": [],
+    "near": "RALLY AFTER IN TIME ✕",
+    "hrs": {
+     "h": "NaN min",
+     "w": ""
+    }
+   },
+   "S2": {
+    "tag": "invalid clock \"25:99H: IN TIME\"",
+    "warns": [],
+    "near": "25:99H: IN TIME ✕",
+    "hrs": {
+     "h": "NaN min",
+     "w": ""
+    }
+   },
+   "S3": {
+    "tag": "T/O 12:00, in-time 08:00H, \"RALLY AFTER IN TIME\"",
+    "warns": [],
+    "near": "08:00H: IN TIME ✕ RALLY AFTER IN TIME ✕",
+    "hrs": {
+     "h": "31h35",
+     "w": "100%"
+    }
+   },
+   "S4": {
+    "tag": "formation cancelled (CX)",
+    "pressed": "CX button on aircraft line 4.0.0.0 then Cancel line",
+    "cx": true,
+    "warns": [],
+    "near": "08:00H: IN TIME ✕ RALLY AFTER IN TIME ✕",
+    "hrs": {
+     "h": "25h35",
+     "w": "91%"
+    }
+   }
+  },
+  "p212b-dk": {
+   "at": "2026-10-05T15:13:22.304Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-12-control",
+     "did": "Friday new blank wave, Ace seated, NO reporting line; then take-off 12:00 typed",
+     "saw": "Ace Work hours: no take-off NaN min (bar ); take-off only 28h35",
+     "verdict": "RECORDED",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "h": "NaN min",
+   "h2": "28h35"
+  },
+  "p213-dk": {
+   "at": "2026-10-05T15:15:54.399Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-13",
+     "did": "Friday new wave on the Board with two formations VL (Ace) and VL2 (Blade), both take-off 12:00; line \"08:00 VL IN TIME\"; then an unnamed line \"Blade\" (name only); then \"07:00 Blade IN TIME\"; then line 1 retyped in six clock spellings (0800, 8:00, 08:00H, 800, 8, 08.00); Work hours of both read each time",
+     "saw": "no lines: Ace 28h35, Blade 8h40, Basher (Blade's RCP in VL2) 21h15; painted []; warnings [] || \"08:00 VL IN TIME\": Ace 31h35, Blade 8h40, Basher (Blade's RCP in VL2) 21h15; painted [\"08:00 VL IN TIME\"]; warnings [] || plus unnamed line \"Blade\": Ace 31h35, Blade 8h40, Basher (Blade's RCP in VL2) 21h15; painted [\"08:00 VL IN TIME\",\"Blade\"]; warnings [] || line \"07:00 Blade IN TIME\": Ace 31h35, Blade 12h40, Basher (Blade's RCP in VL2) 25h15; painted [\"08:00 VL IN TIME\",\"07:00 Blade IN TIME\"]; warnings [] || spelling \"0800 VL IN TIME\": Ace 31h35, Blade 8h40, Basher (Blade's RCP in VL2) 21h15; painted [\"08:00 VL IN TIME\"]; warnings [] || spelling \"8:00 VL IN TIME\": Ace 31h35, Blade 8h40, Basher (Blade's RCP in VL2) 21h15; painted [\"08:00 VL IN TIME\"]; warnings [] || spelling \"08:00H VL IN TIME\": Ace 31h35, Blade 8h40, Basher (Blade's RCP in VL2) 21h15; painted [\"08:00H VL IN TIME\"]; warnings [] || spelling \"800 VL IN TIME\": Ace 31h35, Blade 8h40, Basher (Blade's RCP in VL2) 21h15; painted [\"08:00 VL IN TIME\"]; warnings [] || spelling \"8 VL IN TIME\": Ace 28h35, Blade 8h40, Basher (Blade's RCP in VL2) 21h15; painted [\"8 VL IN TIME\"]; warnings [] || spelling \"08.00 VL IN TIME\": Ace 28h35, Blade 8h40, Basher (Blade's RCP in VL2) 21h15; painted [\"08.00 VL IN TIME\"]; warnings []",
+     "verdict": "PASS",
+     "pics": [
+      "p213-1b-board-vl-line",
+      "p213-2b-board-name-only",
+      "p213-3b-board-name-clock",
+      "p213-5b-board-last-spelling"
+     ]
+    }
+   ],
+   "errors": [],
+   "R": [
+    {
+     "tag": "no lines",
+     "lines": [],
+     "warns": [],
+     "hrs": {
+      "Ace": "28h35",
+      "Blade": "8h40",
+      "Basher": "21h15"
+     }
+    },
+    {
+     "tag": "\"08:00 VL IN TIME\"",
+     "lines": [
+      "08:00 VL IN TIME"
+     ],
+     "near": "08:00 VL IN TIME ✕",
+     "warns": [],
+     "hrs": {
+      "Ace": "31h35",
+      "Blade": "8h40",
+      "Basher": "21h15"
+     }
+    },
+    {
+     "tag": "plus unnamed line \"Blade\"",
+     "lines": [
+      "08:00 VL IN TIME",
+      "Blade"
+     ],
+     "near": "08:00 VL IN TIME ✕ Blade ✕",
+     "warns": [],
+     "hrs": {
+      "Ace": "31h35",
+      "Blade": "8h40",
+      "Basher": "21h15"
+     }
+    },
+    {
+     "tag": "line \"07:00 Blade IN TIME\"",
+     "lines": [
+      "08:00 VL IN TIME",
+      "07:00 Blade IN TIME"
+     ],
+     "near": "08:00 VL IN TIME ✕ 07:00 Blade IN TIME ✕",
+     "warns": [],
+     "hrs": {
+      "Ace": "31h35",
+      "Blade": "12h40",
+      "Basher": "25h15"
+     }
+    },
+    {
+     "tag": "spelling \"0800 VL IN TIME\"",
+     "lines": [
+      "08:00 VL IN TIME"
+     ],
+     "near": "08:00 VL IN TIME ✕",
+     "warns": [],
+     "hrs": {
+      "Ace": "31h35",
+      "Blade": "8h40",
+      "Basher": "21h15"
+     }
+    },
+    {
+     "tag": "spelling \"8:00 VL IN TIME\"",
+     "lines": [
+      "08:00 VL IN TIME"
+     ],
+     "near": "08:00 VL IN TIME ✕",
+     "warns": [],
+     "hrs": {
+      "Ace": "31h35",
+      "Blade": "8h40",
+      "Basher": "21h15"
+     }
+    },
+    {
+     "tag": "spelling \"08:00H VL IN TIME\"",
+     "lines": [
+      "08:00H VL IN TIME"
+     ],
+     "near": "08:00H VL IN TIME ✕",
+     "warns": [],
+     "hrs": {
+      "Ace": "31h35",
+      "Blade": "8h40",
+      "Basher": "21h15"
+     }
+    },
+    {
+     "tag": "spelling \"800 VL IN TIME\"",
+     "lines": [
+      "08:00 VL IN TIME"
+     ],
+     "near": "08:00 VL IN TIME ✕",
+     "warns": [],
+     "hrs": {
+      "Ace": "31h35",
+      "Blade": "8h40",
+      "Basher": "21h15"
+     }
+    },
+    {
+     "tag": "spelling \"8 VL IN TIME\"",
+     "lines": [
+      "8 VL IN TIME"
+     ],
+     "near": "8 VL IN TIME ✕",
+     "warns": [],
+     "hrs": {
+      "Ace": "28h35",
+      "Blade": "8h40",
+      "Basher": "21h15"
+     }
+    },
+    {
+     "tag": "spelling \"08.00 VL IN TIME\"",
+     "lines": [
+      "08.00 VL IN TIME"
+     ],
+     "near": "08.00 VL IN TIME ✕",
+     "warns": [],
+     "hrs": {
+      "Ace": "28h35",
+      "Blade": "8h40",
+      "Basher": "21h15"
+     }
+    }
+   ]
+  },
+  "p216-dk": {
+   "at": "2026-10-05T15:20:41.674Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-16",
+     "did": "Static: given a wave on every day Mon-Sun (new waves on Wed/Fri/Sat/Sun), a 03:00H in-time on Monday's wave and 03:30H on Tuesday's (long day + short rest), each warning that names him clicked in the day's list, then Monday's in-time moved to 07:00H; Work hours read from Insights",
+     "saw": "Static flies on each day: [true,true,true,true,true,true,true] -> after: [true,true,true,true,true,true,true]. Warnings naming him: seven days {\"Tue\":[\"note LONGDAY: Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)\"],\"Sun\":[\"hard DAYS_RUN: Static is on the programme 7 days in a row — 6 is the limit, so a break day is due\"]}; after the early in-times {\"Mon\":[\"note LONGDAY: Static has a long work day: 13h05, 03:00 → 16:05 (last landing 14:05 + 2h debrief assumed)\"],\"Tue\":[\"hard CREW_REST: Crew rest breach — Monday landed 14:05, +2h debrief assumed → ended 16:05 → crew rest clear at 04:05, but told to report 03:30 — only 11h25 \",\"note LONGDAY: Static has a long work day: 14h35, 03:30 → 18:05 (last landing 16:05 + 2h debrief assumed)\"],\"Sun\":[\"hard DAYS_RUN: Static is on the programme 7 days in a row — 6 is the limit, so a break day is due\"]}; after shortening Monday {\"Tue\":[\"hard CREW_REST: Crew rest breach — Monday landed 14:05, +2h debrief assumed → ended 16:05 → crew rest clear at 04:05, but told to report 03:30 — only 11h25 \",\"note LONGDAY: Static has a long work day: 14h35, 03:30 → 18:05 (last landing 16:05 + 2h debrief assumed)\"],\"Sun\":[\"hard DAYS_RUN: Static is on the programme 7 days in a row — 6 is the limit, so a break day is due\"]}. Work hours: 33h20 -> 43h50 -> 39h50. long-day warning true->true; seven-day true->true; crew-rest true->true. Clicking each line: [{\"label\":\"Mon: Breaks Tuesday (crew rest)\",\"found\":true,\"ringed\":16,\"pucks\":17,\"focusNote\":[]},{\"label\":\"Mon: Breaks Sunday (7th day)\",\"found\":true,\"ringed\":16,\"pucks\":17,\"focusNote\":[]},{\"label\":\"Mon: Long work day Static\",\"found\":true,\"ringed\":16,\"pucks\":17,\"focusNote\":[\"The same aircrew are lit dashed on every other day they appear\",\"✕ Clear focus\"]},{\"label\":\"Tue: Crew rest (<12h) Static\",\"found\":false},{\"label\":\"Tue: Long work day Static\",\"found\":true,\"ringed\":16,\"pucks\":17,\"focusNote\":[\"The same aircrew are lit dashed on every other day they appear\",\"✕ Clear focus\"]}]",
+     "verdict": "PARTIAL",
+     "pics": [
+      "p216-3-monday-long-day-week",
+      "p216-5-shortened-insights",
+      "p216-6-monday-shortened-week"
+     ]
+    }
+   ],
+   "errors": [],
+   "cs": "Static",
+   "W1": {
+    "Tue": [
+     "note LONGDAY: Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)"
+    ],
+    "Sun": [
+     "hard DAYS_RUN: Static is on the programme 7 days in a row — 6 is the limit, so a break day is due"
+    ]
+   },
+   "W2": {
+    "Mon": [
+     "note LONGDAY: Static has a long work day: 13h05, 03:00 → 16:05 (last landing 14:05 + 2h debrief assumed)"
+    ],
+    "Tue": [
+     "hard CREW_REST: Crew rest breach — Monday landed 14:05, +2h debrief assumed → ended 16:05 → crew rest clear at 04:05, but told to report 03:30 — only 11h25 ",
+     "note LONGDAY: Static has a long work day: 14h35, 03:30 → 18:05 (last landing 16:05 + 2h debrief assumed)"
+    ],
+    "Sun": [
+     "hard DAYS_RUN: Static is on the programme 7 days in a row — 6 is the limit, so a break day is due"
+    ]
+   },
+   "W3": {
+    "Tue": [
+     "hard CREW_REST: Crew rest breach — Monday landed 14:05, +2h debrief assumed → ended 16:05 → crew rest clear at 04:05, but told to report 03:30 — only 11h25 ",
+     "note LONGDAY: Static has a long work day: 14h35, 03:30 → 18:05 (last landing 16:05 + 2h debrief assumed)"
+    ],
+    "Sun": [
+     "hard DAYS_RUN: Static is on the programme 7 days in a row — 6 is the limit, so a break day is due"
+    ]
+   },
+   "sel": [
+    {
+     "label": "Mon: Breaks Tuesday (crew rest)",
+     "found": true,
+     "ringed": 16,
+     "pucks": 17,
+     "focusNote": []
+    },
+    {
+     "label": "Mon: Breaks Sunday (7th day)",
+     "found": true,
+     "ringed": 16,
+     "pucks": 17,
+     "focusNote": []
+    },
+    {
+     "label": "Mon: Long work day Static",
+     "found": true,
+     "ringed": 16,
+     "pucks": 17,
+     "focusNote": [
+      "The same aircrew are lit dashed on every other day they appear",
+      "✕ Clear focus"
+     ]
+    },
+    {
+     "label": "Tue: Crew rest (<12h) Static",
+     "found": false
+    },
+    {
+     "label": "Tue: Long work day Static",
+     "found": true,
+     "ringed": 16,
+     "pucks": 17,
+     "focusNote": [
+      "The same aircrew are lit dashed on every other day they appear",
+      "✕ Clear focus"
+     ]
+    }
+   ],
+   "hr0": "33h20",
+   "hr1": "43h50",
+   "hr2": "39h50"
+  },
+  "h05-dk": {
+   "at": "2026-10-05T15:21:24.375Z",
+   "base": "http://localhost:4227",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-05",
+     "did": "Tuesday: new wave, formation ZZ, take-off 01:30, landing 02:30, Cinch seated; Logic nominal report 3h; pressed \"+ In-time / Rally\" on the week",
+     "saw": "Line filled: [\"01:30H: IN TIME + WX/NOTAMS\"]. Beside the wave on the week: [\"06:00H: FIRST WAVE VL IN TIME + WX/NOTAMS ✕ 07:00H: FIRST WAVE RU IN TIME + WX/NOTAMS ✕\",\"12:00H: SECOND WAVE VL IN TIME + WX/NOTAMS ✕ 13:00H: SECOND WAVE RU IN TIME + WX/NOTAMS ✕ RU: in-time 13:00 is later than brief 12:20.\",\"01:30H: IN TIME + WX/NOTAMS ✕ ZZ: in-time 01:30 is later than brief 23:10 (previous day).\"]; board wave header: [\"In-time / Rally 06:00 · 4 ac\",\"In-time / Rally 12:00 · 4 ac\",\"In-time / Rally 01:30 · 1 ac\"] and lines [\"01:30H: IN TIME + WX/NOTAMS\"] / near [\"06:00H: FIRST WAVE VL IN TIME + WX/NOTAMS ✕ 07:00H: FIRST WAVE RU IN TIME + WX/NOTAMS ✕\",\"12:00H: SECOND WAVE VL IN TIME + WX/NOTAMS ✕ 13:00H: SECOND WAVE RU IN TIME + WX/NOTAMS ✕ RU: in-time 13:00 is later than brief 12:20.\",\"01:30H: IN TIME + WX/NOTAMS ✕ ZZ: in-time 01:30 is later than brief 23:10 (previous day).\"]. Tuesday warnings mentioning reporting: [\"hard REPORT_ORDER: RU: in-time 13:00 is later than brief 12:20.\",\"hard REPORT_ORDER: ZZ: in-time 01:30 is later than brief 23:10 (previous day).\",\"hard CREW_REST: Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.\",\"hard CREW_REST: Crew rest breach — Monday ended 13:30 → crew rest clear at 01:30, but told to report 23:10 — only 9h40 rest.\"]. Cinch's Work hours (week): before the wave 8h30; crew + times, no line 13h; after the press 12h. Warnings before the press naming the wave: [\"hard: RU: in-time 13:00 is later than brief 12:20.\",\"hard: Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.\",\"hard: Crew rest breach — Monday ended 13:30 → crew rest clear at 01:30, but told to report 23:10 — only 9h40 rest.\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "h05-2-week-after-press",
+      "h05-3-board-wave-header",
+      "h05-4-after-press"
+     ]
+    }
+   ],
+   "errors": [],
+   "h0": "8h30",
+   "h1": "13h",
+   "h2": "12h",
+   "weekLines": [
+    {
+     "at": "1|2|0",
+     "text": "01:30H: IN TIME + WX/NOTAMS"
+    }
+   ],
+   "wk": {
+    "lines": [
+     "01:30H: IN TIME + WX/NOTAMS"
+    ],
+    "asd": [
+     "WAVE 1",
+     "WAVE 2",
+     "WAVE 3"
+    ],
+    "near": [
+     "06:00H: FIRST WAVE VL IN TIME + WX/NOTAMS ✕ 07:00H: FIRST WAVE RU IN TIME + WX/NOTAMS ✕",
+     "12:00H: SECOND WAVE VL IN TIME + WX/NOTAMS ✕ 13:00H: SECOND WAVE RU IN TIME + WX/NOTAMS ✕ RU: in-time 13:00 is later than brief 12:20.",
+     "01:30H: IN TIME + WX/NOTAMS ✕ ZZ: in-time 01:30 is later than brief 23:10 (previous day)."
+    ]
+   },
+   "bh": {
+    "lines": [
+     "01:30H: IN TIME + WX/NOTAMS"
+    ],
+    "asd": [
+     "In-time / Rally 06:00 · 4 ac",
+     "In-time / Rally 12:00 · 4 ac",
+     "In-time / Rally 01:30 · 1 ac"
+    ],
+    "near": [
+     "06:00H: FIRST WAVE VL IN TIME + WX/NOTAMS ✕ 07:00H: FIRST WAVE RU IN TIME + WX/NOTAMS ✕",
+     "12:00H: SECOND WAVE VL IN TIME + WX/NOTAMS ✕ 13:00H: SECOND WAVE RU IN TIME + WX/NOTAMS ✕ RU: in-time 13:00 is later than brief 12:20.",
+     "01:30H: IN TIME + WX/NOTAMS ✕ ZZ: in-time 01:30 is later than brief 23:10 (previous day)."
+    ]
+   },
+   "warnWeek": [
+    "hard REPORT_ORDER: RU: in-time 13:00 is later than brief 12:20.",
+    "hard REPORT_ORDER: ZZ: in-time 01:30 is later than brief 23:10 (previous day).",
+    "hard DOUBLE_BOOK: VL SAT & APPOINTMENT clash",
+    "hard CREW_REST: Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.",
+    "hard CREW_REST: Crew rest breach — Monday ended 13:30 → crew rest clear at 01:30, but told to report 23:10 — only 9h40 rest.",
+    "adv NO_BRIEF: No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)",
+    "note LONGDAY: Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)"
+   ]
+  }
+ },
+ "final": [
+  [
+   "P2-06",
+   "PASS desktop and phone"
+  ],
+  [
+   "P2-07",
+   "PASS desktop and phone"
+  ],
+  [
+   "P2-08",
+   "RECORDED desktop and phone"
+  ],
+  [
+   "P2-09",
+   "NOT WALKED - words setting absent"
+  ],
+  [
+   "P2-10",
+   "FAIL"
+  ],
+  [
+   "P2-11",
+   "PASS (walked before the cut)"
+  ],
+  [
+   "P2-12",
+   "FAIL"
+  ],
+  [
+   "P2-13",
+   "PASS (walked before the cut)"
+  ],
+  [
+   "P2-16",
+   "PASS (walked before the cut)"
+  ],
+  [
+   "P2-17",
+   "NOT WALKED - share cut by the host"
+  ],
+  [
+   "H-01",
+   "RECORDED (walked before the cut)"
+  ],
+  [
+   "H-05",
+   "RECORDED"
+  ]
+ ]
+}
