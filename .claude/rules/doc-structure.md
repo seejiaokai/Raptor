@@ -66,6 +66,10 @@ on his "merge live"; he sometimes runs two worktrees in parallel and merges both
   on, and which branch to PICK in the new-chat picker and which to avoid** — a new job: a worktree on `main`; an unmerged
   branch continuing: that `claude/<name>` branch; a just-merged branch: never. Compaction, if it happens, is the same:
   persist first.
+- **Unattended runs (D596, 5 Oct 26):** when he leaves a job to run while he is asleep or away, a question never stops
+  the run. Search the rulings and the backlog first (D53); a choice that is truly his is parked in ONE list — the
+  question in the app's own words, a recommended answer, and what waits on it — only that piece is left undone, and
+  everything else carries on. One notification at the end or when truly blocked; nothing merges, nothing touches `main`.
 - **Parallel chats** each touch only their own `## Now` block, their own backlog items and their own D-number range;
   the later merge brings `main` in first (D78).
 - **The Claudex loop** (Opus 5.5 builds; Astra reviews, Sol 6.1 second where two readers are required, Fable on call only — D67, D590): plans and review logs are tier-3 docs (the
