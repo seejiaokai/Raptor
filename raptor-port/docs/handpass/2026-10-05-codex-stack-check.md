@@ -206,21 +206,74 @@ check set is §9.
 | W18 | the ⋯ button 10 px and 350 px from the left: the menu at 10–186 px and 204–380 px, Insights · Sort all · Phone layout whole | PASS (seen) |
 | errors | none in either run | PASS |
 
-### 5.5 The re-walk (6 Oct 26) — IN PROGRESS
+### 5.5 The re-walk (6 Oct 26) — DONE: four walkers back
 Four Sonnet 5.5 walkers (D588; Trial 1's conditions, §11) on the frozen fixed build `raptor-port/dist-fix` (app code
 `b1632e32`), ports 4231 / 4232, under the PC lock; brief `…/2026-10-06-codex-stack-rewalk-brief.md`, added scenarios
-`…-rewalk-additions.md` (R-01, R-03, R-04, R-11); each starts from the first walk's scripts as a recipe, never a
-verdict, into its own folder.
+`…-rewalk-additions.md` (R-01, R-03, R-04, R-11); each started from the first walk's scripts as a recipe, never a
+verdict, into its own folder (`../img/handpass/2026-10-06-codex-stack-fix/<letter>/`). No console error, page error or
+4xx in any run. About 820 pictures saved by the walkers, 96 opened by them.
 
-| Walker | Share | Table |
+| Walker | Share | Result | Table |
+|---|---|---|---|
+| M | L-02…L-08, R-11, the stale-header steps, P1-01…06, P2-08…13, L-01 (record) | every fixed finding PASSES: no stamp for the button's words, and the stamp back for a number (W2); VL's day starts 08:00 in either order (W3); no "NaN", the new wave's header and band (W4, W5); "In-time / Rally" in the changes window, the pending list, the gold-dot bubble and the ✕ toast (W6); an answer under "Flying · VL" in both groupings (W7); the answer kept across a reload, a saved day and a week switch (W8); the button under the second formation with the first one's question still open — week, board, phone (W9); the week header 22:30 straight after the Tab (W16); the odd spellings told "no recognised clock", `BLDG 12` and `FL240` left alone (W19). Discard marks six of six PASS. **One FAIL, P2-08** — the second press of "+ In-time / Rally" copies the line already there, not take-off less the Logic value: the first walk's recorded question, as built on the 3 Oct review's instruction (§12, question 4). L-01 recorded: W1 exactly as filed (`[OIL-WORK-START]`). | `parts/stk2-M.md` |
+| N | L-09…L-16, R-03, R-04, the ⋯ menu, P5-01…08, X-06, X-07 | the four confirmation windows keep open through a drag-out, desktop and phone, 8 of 8 (W10); 146 Tabs through a published Tuesday holding a double-spaced remark: nothing written, the sign-offs standing (W11); the OIL question opens with the caret INSIDE it, `X` typed goes nowhere, Tab moves among its buttons (W12 — on a duty whose time change really re-prices it; the scenario as the host wrote it, a 4-hour duty moved an hour, opens no window: the host's premise, not a fault); the band's words and Retry together at three pans (W13); the day's list gains the new red line straight after ONE Tab, the next three Tabs move nothing, the typed letter is in the caret's box, Undo puts the list back — week, board, phone week, and a published Tuesday reads "1 pending", "Not yet signed" with the caret still in text (W15); the ⋯ menu whole at three positions (W18); the failed-save band 8 of 8, X-06, X-07 PASS. **One FAIL, L-12 on the week** — Tab after the day's last box lands on nothing (W14 (a), parked: §12, question 1; the same dead stop on the PHONE board, where no control follows the last box either). Recorded, as designed: the puck rings INSIDE the section the caret is in wait for the caret to leave it (W15's stated limit). | `parts/stk2-N.md` |
+| P | P4c-01…16, H-04, P4d-01…06, P4e-06/07/08, ten Tabs in a row | the Tab route as on the first walk: the order on week and board, reordered and folded sections, standby rows, no write on a pass through a signed published day (214 board / 206 week boxes — bar and signed line identical), short screens; ten Tabs after one changed take-off: every Tab in the next box, no box under the caret replaced, the caret box moved 0 px, ONE saved change. The phone ⋯ menus, the Insights cross, tall and short windows, all thirteen surrounds PASS. **Three older behaviours again, none the stack's** (judged on the first walk, §5.2): typing in a request's PROGRAMME ROW changes the row, not the request (`[REQ-ROW-OWN-BOXES]` — filed low; nothing in the stack touched that code); Escape in a board TIME box (`[BOARD-TIME-ESCAPE]`); after Enter the caret is dropped (Enter's existing meaning, D544). | `parts/stk2-P.md` |
+| Q | R-01, P3-01/02/04/05/07/08/16/18, H-02, H-03, H-07, X-01/03/04/05/09, the two-formation question | **20 of 20 PASS.** A week nobody touched stores no week row before or after a reload, and an answer on it survives a reload and a week switch while its day stays unsaved (R-01); an answer on a published day counts at once with the programme and the signature book byte-identical (P3-01, X-03, X-05); plans and day templates carry their own answers, Undo takes template and answer back together (P3-04, P3-05); the question's ten endings (P3-08); a member never meets a question or a button and sees the admin's bars (H-03); the two-formation steps: one question, one button, the answer on the right formation — week, board and phone. | `parts/stk2-Q.md` |
+
+**Opened by the host (Trial 1's condition 1).** The host REPRODUCED the two published-day results itself rather than
+rest on a walker's picture (`scripts/handpass/stk-host-pub.mjs`, 4 pictures opened): 136 Tabs through a signed,
+published Tuesday leave the day as stored byte-identical, its signed line standing, nothing pending; one typed word
+and ONE Tab show "1 pending", "Not yet signed", the four boxes to sign and "Publish AL1" with the caret still in a text
+box; Undo puts the day back. Of the walkers' own pictures the host opened five (the answer's "Change mission role"
+after a reload; the published AL1 after an answer; the Leave War cells unchanged after the Tab pass; two of N's).
+The FAILs' pictures were not re-opened: each is a behaviour already established on the first walk.
+
+### 5.6 What the fix round's two reads found, and the second fix round (6 Oct 26)
+Astra and Sol 6.1 each read the five fix commits, apart (§10.2). Five real gaps, all fixed in `a8355d98`, each with a
+test that failed first:
+
+| # | Found by | The gap | The fix |
+|---|---|---|---|
+| RF1 | both | W4 half-fixed: an unfinished flying line still lent its wave's reporting clock to the day (08:00 from it, 14:00 from a ground row: "six hours" for one hour of work) | `workSpan` counts an event only when both its ends are real (`engine/insights.test.ts` "RF1") |
+| RF2 | both | W12 half-fixed: the question sheet took the keyboard once and let it go — Shift+Tab walked back into the editor underneath; and the board's cancel-reason and Sort all dialogs were not counted as windows | the sheets KEEP the keyboard (Tab and Shift+Tab go round inside the topmost one); the two board dialogs count, and take the keyboard (`ui/sheetfocus.ts`, `ui/pops.ts`; `ui/outside.test.tsx` "RF2", `ui/schedule-tab.test.tsx` "RF2") |
+| RF3 | Astra | W11 broke one path: a formation whose stored Mission holds a doubled space could not be answered Blue/Red (the answer path took the unchanged words for a failed save) | the answer path folds the stored words as the writer does (`ui/mission-role-interim-fixes.test.tsx` "RF3") |
+| RF4 | Astra | W9 half-fixed: the button vanished on moving between the Remarks of two aircraft of one formation | the button is rebuilt on the box he is in ("RF4") |
+| RF5 | both | W19 half-fixed: a clock the app cannot read was told so only once a take-off existed (walker M met the same on L-04) | the advisory no longer waits for a take-off; order checks still do (`engine/rally-workspan.test.ts` "RF5") |
+
+Neither reviewer found a fault in W8 (the repeatable ids — two tabs, templates, saved plans, Undo across a week
+switch, a partly saved week), in W15's partial redraw (no block left owed for good, no box moved under the caret), or
+in W2, W3, W5, W6, W7, W10, W13, W18.
+
+## 6. The break tests (6 Oct 26)
+`scripts/handpass/stk-breaks.py` cuts ONE wire at a time, runs the test file that should notice, and puts the file
+back from git; results `parts/stk-breaks.json`. **27 wires cut, 27 times a named test went red** (the first run left
+six green — five because the host had pointed at the wrong test file, one because no test told a caret that briefly
+touched the next box from one that never did; that test was strengthened, and all six were re-run red).
+
+| Wire | The surface | The test that went red |
 |---|---|---|
-| M | L-02…L-08, R-11, the stale-header steps, P1-01…06, P2-08/09/11/12/13, L-01 (record) | `parts/stk2-M.md` |
-| N | L-09…L-16, R-03, R-04, the ⋯ menu steps, P5-01…08, X-06, X-07 | `parts/stk2-N.md` |
-| P | P4c-01…16, H-04, P4d-01…06, P4e-06/07/08, ten Tabs in a row (caret never replaced, no jump, one saved change) | `parts/stk2-P.md` |
-| Q | R-01, P3-01/02/04/05/07/08/16/18, H-02, H-03, H-07, X-01/03/04/05/09, the two-formation question steps | `parts/stk2-Q.md` |
+| B1 | a crew's report time reads the In-time / Rally lines | `rally-workspan.test` "D497 rally alone can report…" |
+| B2 | a timing pair out of order reaches the day's warning list | `schedule-tab.test` "W15 … week", "… Board" |
+| B3 | the "+ In-time / Rally" button fills the Logic words | `rally-feedback.test` "review D2 mints the configured literal text…" |
+| B4, B5 | the wave header on the week (previous day) and on the board | `rally-feedback.test` "review E both headers…"; `schedule-tab.test` "W16" |
+| C1 | Insights splits a bar by Blue / Red | `insights-mission-mix.test` "MIX4 MIX14 MIX15…" |
+| C2 | the question after his own edit, week and board | `mission-role-offer.test` "MIX6 R1…" ×2 |
+| C3 | the published board's read-only Remarks door | `mission-role-interim-fixes.test` "F1 …" |
+| C4 | a saved answer comes back at boot | `mission-role-persist.test` "MIX12 two independently answered contexts…" |
+| C5 | only an admin may answer | `perms.test` / `mission-roles.test` "a guest, a pending person and an account switched off…" |
+| C6 | the Logic switch | `mission-role-offer.test` "MIX1 the actual Logic edit switch…" |
+| C7 | the board's own way into Insights | `mission-role-offer.test` "MIX16 both real Board entry callbacks…" |
+| C8 | an answer's line in the change history | `mission-roles.test` "D525/D530 answer/correction history…" |
+| D1 | the stylesheet parts, all loaded, in order | `scheduler-css-order.test` "imports every physical part exactly once…" |
+| D2 | Tab on the schedule takes the route | `schedule-tab.test` "Board repeats all flight fields…" |
+| D3 | the phone ⋯ menu's Insights item | `schedule-insights-menu.test` "editsched: More after Highlight…" |
+| E1, E2 | the failed-save band on the board and on the Inputs calendar | the BROWSER test, `e2e/save-note.spec.ts` "the full-screen board, the Inputs calendar and the Medical view each show it…" (no unit test mounts those two — the browser test is their only guard) |
+| F1–F8 | the fix round's own: W11, W15 week, W15 board, W8, W12, W10, W7, W2 | each fix's own test, by name (§5.3) |
+| A1 | "Discard marks" removed | NOT RUN — a removed control has no wire to cut; its absence is walked (P1-06) and pinned by the source scan in reader AB's negatives |
 
-## 6. The break tests — to come
-## 7. Errors seen — to come
+## 7. Errors seen
+None. Across the first walk (eight walkers), the re-walk (four) and the host's own runs, no console error, page error
+or 4xx was recorded — the forced "quota exceeded" of the failed-save steps excepted, which is the fixture.
 ## 8. What was NOT walked, and why — to come
 ## 9. The gates — to come
 ## 10. The reads, and each owed read paid — IN PROGRESS
@@ -286,6 +339,8 @@ list.
    changing day" (D553) — here the next button belongs to the NEXT day. Which do you want?
    **(A, recommended) the caret stays in that last box** — nothing vanishes, nothing jumps; Shift+Tab goes back.
    (B) Tab goes on to the next day's first button (the week pans to that day). (C) leave it as built.
+   The same dead stop is on the PHONE's Scheduler Board (no button follows its last box); the desktop board goes on
+   to the first ✕ of the warning list.
    *Parked on it: W14 (a) only. Everything else about the Tab route is fixed and re-walked.*
 2. **A second formation asks while the first one's Blue/Red question is still open.** You type "DS FOR RU" on VL and
    leave its question unanswered, then type a DS / RED remark on another formation. Today the new question REPLACES
@@ -301,3 +356,10 @@ list.
    today the question waits on its day until you answer it or press Later, and nothing else is blocked by it.
    **(A, recommended) leave it — it waits where you left it.** (B) end it when you swipe or step to another day.
    *Parked on it: nothing else.*
+4. **The second press of "+ In-time / Rally" on a wave that already has a line.** You ruled the button "fills in the
+   wave's earliest take-off less the Logic time" (D510). When the wave already has a line, the button today COPIES that
+   line's clock instead (a wave reporting 08:00 gets a second 08:00 line, not 10:00 for a 12:00 take-off at 2 hours) —
+   built that way on the 3 Oct review's instruction, so a second line starts where the first is.
+   **(A, recommended) leave it** — a second line is nearly always for the same report time with other words (a Rally
+   after the in-time), and the clock is one edit away. (B) always take-off less the Logic time, whatever is there.
+   *Parked on it: nothing — recorded by both walks (P2-08).*

@@ -1,0 +1,5854 @@
+{
+ "parts": {
+  "L02-dk": {
+   "at": "2026-10-05T16:42:59.705Z",
+   "base": "http://localhost:4231",
+   "rows": [
+    {
+     "id": "L-02-dk",
+     "did": "raw",
+     "saw": [
+      {
+       "label": "1-fresh",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02-1-fresh-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "dk-L02-1-fresh-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "dk-L02-1-fresh-logic.png"
+      },
+      {
+       "label": "3-after-words",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02-3-after-words-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "dk-L02-3-after-words-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+        "reset": {
+         "hidden": false
+        }
+       },
+       "logic_pic": "dk-L02-3-after-words-logic.png"
+      },
+      {
+       "label": "4-member-in-place-after-words",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02-4-member-in-place-after-words-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "dk-L02-4-member-in-place-after-words-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "dk-L02-4-member-in-place-after-words-logic.png"
+      },
+      {
+       "label": "5-after-number-rule-crewRest-13h",
+       "viewsched": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "vBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         },
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02-5-after-number-rule-crewRest-13h-viewsched.png",
+       "editsched": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "dk-L02-5-after-number-rule-crewRest-13h-editsched.png",
+       "logic": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": {
+         "hidden": false,
+         "shown": true,
+         "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones — “Reset to standard” puts them all back."
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 2 off standard",
+        "reset": {
+         "hidden": false
+        }
+       },
+       "logic_pic": "dk-L02-5-after-number-rule-crewRest-13h-logic.png"
+      },
+      {
+       "label": "6-member-in-place-after-number-rule",
+       "logic": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": {
+         "hidden": false,
+         "shown": true,
+         "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones. Only an admin can change them."
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 2 off standard",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "dk-L02-6-member-in-place-after-number-rule-logic.png",
+       "viewsched": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "vBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         },
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02-6-member-in-place-after-number-rule-viewsched.png"
+      },
+      {
+       "label": "7-after-reset",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02-7-after-reset-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "dk-L02-7-after-reset-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "dk-L02-7-after-reset-logic.png"
+      },
+      {
+       "label": "8-reload-as-member",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02-8-reload-as-member-viewsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "dk-L02-8-reload-as-member-logic.png"
+      }
+     ],
+     "verdict": "RAW",
+     "pics": []
+    }
+   ],
+   "out": [
+    {
+     "label": "1-fresh",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02-1-fresh-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "dk-L02-1-fresh-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "dk-L02-1-fresh-logic.png"
+    },
+    {
+     "label": "3-after-words",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02-3-after-words-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "dk-L02-3-after-words-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+      "reset": {
+       "hidden": false
+      }
+     },
+     "logic_pic": "dk-L02-3-after-words-logic.png"
+    },
+    {
+     "label": "4-member-in-place-after-words",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02-4-member-in-place-after-words-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "dk-L02-4-member-in-place-after-words-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "dk-L02-4-member-in-place-after-words-logic.png"
+    },
+    {
+     "label": "5-after-number-rule-crewRest-13h",
+     "viewsched": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "vBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       },
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02-5-after-number-rule-crewRest-13h-viewsched.png",
+     "editsched": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "dk-L02-5-after-number-rule-crewRest-13h-editsched.png",
+     "logic": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": {
+       "hidden": false,
+       "shown": true,
+       "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones — “Reset to standard” puts them all back."
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 2 off standard",
+      "reset": {
+       "hidden": false
+      }
+     },
+     "logic_pic": "dk-L02-5-after-number-rule-crewRest-13h-logic.png"
+    },
+    {
+     "label": "6-member-in-place-after-number-rule",
+     "logic": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": {
+       "hidden": false,
+       "shown": true,
+       "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones. Only an admin can change them."
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 2 off standard",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "dk-L02-6-member-in-place-after-number-rule-logic.png",
+     "viewsched": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "vBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       },
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02-6-member-in-place-after-number-rule-viewsched.png"
+    },
+    {
+     "label": "7-after-reset",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02-7-after-reset-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "dk-L02-7-after-reset-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "dk-L02-7-after-reset-logic.png"
+    },
+    {
+     "label": "8-reload-as-member",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02-8-reload-as-member-viewsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "dk-L02-8-reload-as-member-logic.png"
+    }
+   ],
+   "errors": []
+  },
+  "L03-dk": {
+   "at": "2026-10-05T16:43:48.315Z",
+   "base": "http://localhost:4231",
+   "rows": [
+    {
+     "id": "L-03-dk",
+     "did": "raw",
+     "saw": [
+      {
+       "label": "A-original-order",
+       "intimes": [
+        "08:00H: IN TIME + WX/NOTAMS",
+        "08:30H: VL RALLY AFTER IN TIME"
+       ],
+       "header": "In-time / Rally 08:00 · 2 ac",
+       "lineText": [
+        "08:00H: IN TIME + WX/NOTAMS",
+        "08:30H: VL RALLY AFTER IN TIME"
+       ],
+       "feedback": [
+        ""
+       ],
+       "warns": {
+        "where": "board",
+        "head": "⚠ 1 issue · tap to review",
+        "lines": [
+         "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+        ]
+       },
+       "pics": [
+        "dk-L03-A-original-order-board.png",
+        "dk-L03-A-original-order-insights.png"
+       ],
+       "insights": {
+        "rows": [
+         "Ghost 7h30",
+         "Ryder 7h30",
+         "Hunter 7h",
+         "Reaper 7h"
+        ]
+       },
+       "figs": {
+        "Reaper": "7h",
+        "Ghost": "7h30",
+        "Hunter": "7h",
+        "Ryder": "7h30"
+       }
+      },
+      {
+       "label": "B-swapped",
+       "intimes": [
+        "08:30H: VL RALLY AFTER IN TIME",
+        "08:00H: IN TIME + WX/NOTAMS"
+       ],
+       "header": "In-time / Rally 08:00 · 2 ac",
+       "lineText": [
+        "08:30H: VL RALLY AFTER IN TIME",
+        "08:00H: IN TIME + WX/NOTAMS"
+       ],
+       "feedback": [
+        ""
+       ],
+       "warns": {
+        "where": "board",
+        "head": "⚠ 1 issue · tap to review",
+        "lines": [
+         "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+        ]
+       },
+       "pics": [
+        "dk-L03-B-swapped-board.png",
+        "dk-L03-B-swapped-insights.png"
+       ],
+       "insights": {
+        "rows": [
+         "Ghost 7h30",
+         "Ryder 7h30",
+         "Hunter 7h",
+         "Reaper 7h"
+        ]
+       },
+       "figs": {
+        "Reaper": "7h",
+        "Ghost": "7h30",
+        "Hunter": "7h",
+        "Ryder": "7h30"
+       }
+      }
+     ],
+     "verdict": "RAW",
+     "pics": []
+    }
+   ],
+   "baseline": {
+    "Reaper": "1h",
+    "Ghost": "1h30",
+    "Hunter": "1h",
+    "Ryder": "1h30"
+   },
+   "out": [
+    {
+     "label": "A-original-order",
+     "intimes": [
+      "08:00H: IN TIME + WX/NOTAMS",
+      "08:30H: VL RALLY AFTER IN TIME"
+     ],
+     "header": "In-time / Rally 08:00 · 2 ac",
+     "lineText": [
+      "08:00H: IN TIME + WX/NOTAMS",
+      "08:30H: VL RALLY AFTER IN TIME"
+     ],
+     "feedback": [
+      ""
+     ],
+     "warns": {
+      "where": "board",
+      "head": "⚠ 1 issue · tap to review",
+      "lines": [
+       "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+      ]
+     },
+     "pics": [
+      "dk-L03-A-original-order-board.png",
+      "dk-L03-A-original-order-insights.png"
+     ],
+     "insights": {
+      "rows": [
+       "Ghost 7h30",
+       "Ryder 7h30",
+       "Hunter 7h",
+       "Reaper 7h"
+      ]
+     },
+     "figs": {
+      "Reaper": "7h",
+      "Ghost": "7h30",
+      "Hunter": "7h",
+      "Ryder": "7h30"
+     }
+    },
+    {
+     "label": "B-swapped",
+     "intimes": [
+      "08:30H: VL RALLY AFTER IN TIME",
+      "08:00H: IN TIME + WX/NOTAMS"
+     ],
+     "header": "In-time / Rally 08:00 · 2 ac",
+     "lineText": [
+      "08:30H: VL RALLY AFTER IN TIME",
+      "08:00H: IN TIME + WX/NOTAMS"
+     ],
+     "feedback": [
+      ""
+     ],
+     "warns": {
+      "where": "board",
+      "head": "⚠ 1 issue · tap to review",
+      "lines": [
+       "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+      ]
+     },
+     "pics": [
+      "dk-L03-B-swapped-board.png",
+      "dk-L03-B-swapped-insights.png"
+     ],
+     "insights": {
+      "rows": [
+       "Ghost 7h30",
+       "Ryder 7h30",
+       "Hunter 7h",
+       "Reaper 7h"
+      ]
+     },
+     "figs": {
+      "Reaper": "7h",
+      "Ghost": "7h30",
+      "Hunter": "7h",
+      "Ryder": "7h30"
+     }
+    }
+   ],
+   "errors": []
+  },
+  "L04-dk": {
+   "at": "2026-10-05T16:44:01.739Z",
+   "base": "http://localhost:4231",
+   "rows": [
+    {
+     "id": "L-04-dk",
+     "did": "raw",
+     "saw": [
+      {
+       "label": "0-before-wave",
+       "intimes": null,
+       "header": null,
+       "lineText": [],
+       "feedback": [],
+       "avail": {
+        "heads": [
+         "⠿ AVAILABLE CREW by wave · close ⌃"
+        ],
+        "groups": [
+         "AVAILABLE ALL DAY · 46"
+        ]
+       },
+       "warns": {
+        "where": "board",
+        "head": "⚠ 1 issue · tap to review",
+        "lines": [
+         "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+        ]
+       },
+       "pics": [
+        "dk-L04-0-before-wave-board.png"
+       ]
+      },
+      {
+       "label": "1-empty-wave",
+       "intimes": [],
+       "header": "In-time / Rally — · 1 ac",
+       "lineText": [],
+       "feedback": [],
+       "avail": {
+        "heads": [
+         "⠿ AVAILABLE CREW by wave · close ⌃"
+        ],
+        "groups": [
+         "AVAILABLE ALL DAY · 46"
+        ]
+       },
+       "warns": {
+        "where": "board",
+        "head": "⚠ 1 issue · tap to review",
+        "lines": [
+         "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+        ]
+       },
+       "pics": [
+        "dk-L04-1-empty-wave-board.png"
+       ]
+      },
+      {
+       "label": "2-line-minted",
+       "intimes": [
+        "IN TIME + WX/NOTAMS"
+       ],
+       "header": "In-time / Rally — · 1 ac",
+       "lineText": [
+        "IN TIME + WX/NOTAMS"
+       ],
+       "feedback": [
+        ""
+       ],
+       "avail": {
+        "heads": [
+         "⠿ AVAILABLE CREW by wave · close ⌃"
+        ],
+        "groups": [
+         "AVAILABLE ALL DAY · 46"
+        ]
+       },
+       "warns": {
+        "where": "board",
+        "head": "⚠ 1 issue · tap to review",
+        "lines": [
+         "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+        ]
+       },
+       "pics": [
+        "dk-L04-2-line-minted-board.png"
+       ]
+      },
+      {
+       "label": "3-0800-at-front",
+       "intimes": [
+        "0800IN TIME + WX/NOTAMS"
+       ],
+       "header": "In-time / Rally — · 1 ac",
+       "lineText": [
+        "0800IN TIME + WX/NOTAMS"
+       ],
+       "feedback": [
+        ""
+       ],
+       "avail": {
+        "heads": [
+         "⠿ AVAILABLE CREW by wave · close ⌃"
+        ],
+        "groups": [
+         "AVAILABLE ALL DAY · 46"
+        ]
+       },
+       "warns": {
+        "where": "board",
+        "head": "⚠ 1 issue · tap to review",
+        "lines": [
+         "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+        ]
+       },
+       "pics": [
+        "dk-L04-3-0800-at-front-board.png"
+       ]
+      },
+      {
+       "label": "4-0800-space",
+       "intimes": [
+        "08:00 IN TIME + WX/NOTAMS"
+       ],
+       "header": "In-time / Rally 08:00 · 1 ac",
+       "lineText": [
+        "08:00 IN TIME + WX/NOTAMS"
+       ],
+       "feedback": [
+        ""
+       ],
+       "avail": {
+        "heads": [
+         "⠿ AVAILABLE CREW by wave · close ⌃"
+        ],
+        "groups": [
+         "1ST WAVE AM–END · 46 CAN FLY",
+         "AVAILABLE ALL DAY · 46"
+        ]
+       },
+       "warns": {
+        "where": "board",
+        "head": "⚠ 1 issue · tap to review",
+        "lines": [
+         "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+        ]
+       },
+       "pics": [
+        "dk-L04-4-0800-space-board.png"
+       ]
+      },
+      {
+       "label": "5-person-on-blank-line",
+       "intimes": [
+        "08:00 IN TIME + WX/NOTAMS"
+       ],
+       "header": "In-time / Rally 08:00 · 1 ac",
+       "lineText": [
+        "08:00 IN TIME + WX/NOTAMS"
+       ],
+       "feedback": [
+        ""
+       ],
+       "avail": {
+        "heads": [
+         "⠿ AVAILABLE CREW by wave · close ⌃"
+        ],
+        "groups": [
+         "1ST WAVE AM–END · 46 CAN FLY",
+         "AVAILABLE ALL DAY · 45"
+        ]
+       },
+       "warns": {
+        "where": "board",
+        "head": "⚠ 2 issues · 1 warning · tap to review",
+        "lines": [
+         "the WAVE 1 line has no usable times — nobody on it earns OIL for this day ✕",
+         "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+        ]
+       },
+       "pics": [
+        "dk-L04-5-person-on-blank-line-board.png",
+        "dk-L04-5-person-on-blank-line-insights.png"
+       ],
+       "figs": {
+        "Reaper": "1h"
+       },
+       "reaperAnywhere": [
+        "it 1h30 Ryder 1h30 Scribe 1h30 Cobra 1h Hunter 1h Jester 1h Reaper 1h NOT ON THE FLYING PROGRAMME · 19 AVAILABLE Anvil Cinch C"
+       ],
+       "rowsWithReaper": [
+        "Reaper 1h"
+       ],
+       "nWorkRows": 68
+      },
+      {
+       "label": "6-with-takeoff-landing",
+       "intimes": [
+        "08:00 IN TIME + WX/NOTAMS"
+       ],
+       "header": "In-time / Rally 08:00 · 1 ac",
+       "lineText": [
+        "08:00 IN TIME + WX/NOTAMS"
+       ],
+       "feedback": [
+        ""
+       ],
+       "avail": {
+        "heads": [
+         "⠿ AVAILABLE CREW by wave · close ⌃"
+        ],
+        "groups": [
+         "1ST WAVE AM–END · 45 CAN FLY",
+         "AVAILABLE ALL DAY · 45"
+        ]
+       },
+       "warns": {
+        "where": "board",
+        "head": "⚠ 1 issue · tap to review",
+        "lines": [
+         "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+        ]
+       },
+       "pics": [
+        "dk-L04-6-with-takeoff-landing-board.png",
+        "dk-L04-6-with-takeoff-landing-insights.png"
+       ],
+       "figs": {
+        "Reaper": "7h"
+       },
+       "reaperAnywhere": [
+        "8h55 Cinch 8h30 Havoc 8h Blade 7h55 Cutter 7h25 Ledger 7h25 Reaper 7h Rebel 6h45 Cinder 6h25 Marlin 6h25 Nomad 6h25 Otter 6h25"
+       ],
+       "rowsWithReaper": [
+        "Reaper 7h"
+       ],
+       "nWorkRows": 68
+      }
+     ],
+     "verdict": "RAW",
+     "pics": []
+    }
+   ],
+   "baseline": {
+    "Reaper": "1h"
+   },
+   "out": [
+    {
+     "label": "0-before-wave",
+     "intimes": null,
+     "header": null,
+     "lineText": [],
+     "feedback": [],
+     "avail": {
+      "heads": [
+       "⠿ AVAILABLE CREW by wave · close ⌃"
+      ],
+      "groups": [
+       "AVAILABLE ALL DAY · 46"
+      ]
+     },
+     "warns": {
+      "where": "board",
+      "head": "⚠ 1 issue · tap to review",
+      "lines": [
+       "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+      ]
+     },
+     "pics": [
+      "dk-L04-0-before-wave-board.png"
+     ]
+    },
+    {
+     "label": "1-empty-wave",
+     "intimes": [],
+     "header": "In-time / Rally — · 1 ac",
+     "lineText": [],
+     "feedback": [],
+     "avail": {
+      "heads": [
+       "⠿ AVAILABLE CREW by wave · close ⌃"
+      ],
+      "groups": [
+       "AVAILABLE ALL DAY · 46"
+      ]
+     },
+     "warns": {
+      "where": "board",
+      "head": "⚠ 1 issue · tap to review",
+      "lines": [
+       "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+      ]
+     },
+     "pics": [
+      "dk-L04-1-empty-wave-board.png"
+     ]
+    },
+    {
+     "label": "2-line-minted",
+     "intimes": [
+      "IN TIME + WX/NOTAMS"
+     ],
+     "header": "In-time / Rally — · 1 ac",
+     "lineText": [
+      "IN TIME + WX/NOTAMS"
+     ],
+     "feedback": [
+      ""
+     ],
+     "avail": {
+      "heads": [
+       "⠿ AVAILABLE CREW by wave · close ⌃"
+      ],
+      "groups": [
+       "AVAILABLE ALL DAY · 46"
+      ]
+     },
+     "warns": {
+      "where": "board",
+      "head": "⚠ 1 issue · tap to review",
+      "lines": [
+       "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+      ]
+     },
+     "pics": [
+      "dk-L04-2-line-minted-board.png"
+     ]
+    },
+    {
+     "label": "3-0800-at-front",
+     "intimes": [
+      "0800IN TIME + WX/NOTAMS"
+     ],
+     "header": "In-time / Rally — · 1 ac",
+     "lineText": [
+      "0800IN TIME + WX/NOTAMS"
+     ],
+     "feedback": [
+      ""
+     ],
+     "avail": {
+      "heads": [
+       "⠿ AVAILABLE CREW by wave · close ⌃"
+      ],
+      "groups": [
+       "AVAILABLE ALL DAY · 46"
+      ]
+     },
+     "warns": {
+      "where": "board",
+      "head": "⚠ 1 issue · tap to review",
+      "lines": [
+       "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+      ]
+     },
+     "pics": [
+      "dk-L04-3-0800-at-front-board.png"
+     ]
+    },
+    {
+     "label": "4-0800-space",
+     "intimes": [
+      "08:00 IN TIME + WX/NOTAMS"
+     ],
+     "header": "In-time / Rally 08:00 · 1 ac",
+     "lineText": [
+      "08:00 IN TIME + WX/NOTAMS"
+     ],
+     "feedback": [
+      ""
+     ],
+     "avail": {
+      "heads": [
+       "⠿ AVAILABLE CREW by wave · close ⌃"
+      ],
+      "groups": [
+       "1ST WAVE AM–END · 46 CAN FLY",
+       "AVAILABLE ALL DAY · 46"
+      ]
+     },
+     "warns": {
+      "where": "board",
+      "head": "⚠ 1 issue · tap to review",
+      "lines": [
+       "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+      ]
+     },
+     "pics": [
+      "dk-L04-4-0800-space-board.png"
+     ]
+    },
+    {
+     "label": "5-person-on-blank-line",
+     "intimes": [
+      "08:00 IN TIME + WX/NOTAMS"
+     ],
+     "header": "In-time / Rally 08:00 · 1 ac",
+     "lineText": [
+      "08:00 IN TIME + WX/NOTAMS"
+     ],
+     "feedback": [
+      ""
+     ],
+     "avail": {
+      "heads": [
+       "⠿ AVAILABLE CREW by wave · close ⌃"
+      ],
+      "groups": [
+       "1ST WAVE AM–END · 46 CAN FLY",
+       "AVAILABLE ALL DAY · 45"
+      ]
+     },
+     "warns": {
+      "where": "board",
+      "head": "⚠ 2 issues · 1 warning · tap to review",
+      "lines": [
+       "the WAVE 1 line has no usable times — nobody on it earns OIL for this day ✕",
+       "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+      ]
+     },
+     "pics": [
+      "dk-L04-5-person-on-blank-line-board.png",
+      "dk-L04-5-person-on-blank-line-insights.png"
+     ],
+     "figs": {
+      "Reaper": "1h"
+     },
+     "reaperAnywhere": [
+      "it 1h30 Ryder 1h30 Scribe 1h30 Cobra 1h Hunter 1h Jester 1h Reaper 1h NOT ON THE FLYING PROGRAMME · 19 AVAILABLE Anvil Cinch C"
+     ],
+     "rowsWithReaper": [
+      "Reaper 1h"
+     ],
+     "nWorkRows": 68
+    },
+    {
+     "label": "6-with-takeoff-landing",
+     "intimes": [
+      "08:00 IN TIME + WX/NOTAMS"
+     ],
+     "header": "In-time / Rally 08:00 · 1 ac",
+     "lineText": [
+      "08:00 IN TIME + WX/NOTAMS"
+     ],
+     "feedback": [
+      ""
+     ],
+     "avail": {
+      "heads": [
+       "⠿ AVAILABLE CREW by wave · close ⌃"
+      ],
+      "groups": [
+       "1ST WAVE AM–END · 45 CAN FLY",
+       "AVAILABLE ALL DAY · 45"
+      ]
+     },
+     "warns": {
+      "where": "board",
+      "head": "⚠ 1 issue · tap to review",
+      "lines": [
+       "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"
+      ]
+     },
+     "pics": [
+      "dk-L04-6-with-takeoff-landing-board.png",
+      "dk-L04-6-with-takeoff-landing-insights.png"
+     ],
+     "figs": {
+      "Reaper": "7h"
+     },
+     "reaperAnywhere": [
+      "8h55 Cinch 8h30 Havoc 8h Blade 7h55 Cutter 7h25 Ledger 7h25 Reaper 7h Rebel 6h45 Cinder 6h25 Marlin 6h25 Nomad 6h25 Otter 6h25"
+     ],
+     "rowsWithReaper": [
+      "Reaper 7h"
+     ],
+     "nWorkRows": 68
+    }
+   ],
+   "errors": []
+  },
+  "L05-dk": {
+   "at": "2026-10-05T16:44:28.716Z",
+   "base": "http://localhost:4231",
+   "rows": [],
+   "out": {
+    "head0": {
+     "tag": "ORIG",
+     "pending": "13 changes",
+     "beak": "none",
+     "alpub": "",
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": ""
+    },
+    "toastsAfterChange": [
+     "Wave added",
+     "Reaper planned",
+     "Saturday published — APPROVED",
+     "Schedule updated"
+    ],
+    "undoTitleAfterChange": {
+     "title": "Undo — an In-time / Rally line",
+     "aria": null,
+     "text": "↶",
+     "disabled": false
+    },
+    "toastAfterX": [
+     "In-time / Rally line removed — 08:30H: VL RALLY AFTER IN TIME"
+    ],
+    "toastNow": "In-time / Rally line removed — 08:30H: VL RALLY AFTER IN TIME",
+    "undoTitleAfterX": {
+     "title": "Undo — a change to the schedule",
+     "aria": null,
+     "text": "↶",
+     "disabled": false
+    },
+    "lines": [
+     "07:45H: IN TIME + WX/NOTAMS"
+    ],
+    "head1": {
+     "tag": "ORIG",
+     "pending": "1 pending",
+     "beak": "none",
+     "alpub": "Publish AL1",
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": "Not yet signed"
+    },
+    "chips": [
+     {
+      "text": "1 pending",
+      "attrs": "class=dpend dpendbtn data-pendlist=5 aria-haspopup=dialog title=See the 1 change waiting to go out as AL1 on Saturday, a"
+     }
+    ],
+    "win_3-to-go-out": {
+     "title": "Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1",
+     "tabs": [
+      "New to you 0",
+      "All changes 15",
+      "To go out · AL1 1 [on]"
+     ],
+     "groups": [],
+     "lines": [],
+     "out": "Waiting to go out as AL1 · 1 change WAVE 1 · In-time / Rally Saber 6/10 00:44 2 In-time / Rally lines → 1 In-time / Rally line Tap a change to go to it.",
+     "none": null,
+     "pic": "dk-L05-3-to-go-out.png"
+    },
+    "win_4-all-by-item": {
+     "title": "Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1",
+     "tabs": [
+      "New to you 0",
+      "All changes 15 [on]",
+      "To go out · AL1 1"
+     ],
+     "groups": [
+      "▾ Wave · WAVE 1 · 5 00:44",
+      "▾ The day · 6 00:44",
+      "▾ Flying · VIPER · 4 00:44"
+     ],
+     "lines": [
+      "In-time / Rally07:45H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME → 07:45H: IN TIME + WX/NOTAMS Saber · 6/10 00:44",
+      "In-time / Rally07:00H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME → 07:45H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME Saber · 6/10 00:44",
+      "In-time / Rally07:00H: IN TIME + WX/NOTAMS, 07:00H: IN TIME + WX/NOTAMS → 07:00H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME Saber · 6/10 00:44",
+      "In-time / Rally07:00H: IN TIME + WX/NOTAMS → 07:00H: IN TIME + WX/NOTAMS, 07:00H: IN TIME + WX/NOTAMS Saber · 6/10 00:44",
+      "In-time / Rally— → 07:00H: IN TIME + WX/NOTAMS Saber · 6/10 00:44",
+      "Published — the Original Saber · 6/10 00:44",
+      "Signed · APPROVED BY · Anvil Saber · 6/10 00:44",
+      "Signed · PLANNED BY · Anvil Saber · 6/10 00:44",
+      "Signed · SKED CK · Anvil Saber · 6/10 00:44",
+      "Signed · CUR CK · Ace Saber · 6/10 00:44",
+      "Wave added Saber · 6/10 00:44",
+      "FCPReaper put on Saber · 6/10 00:44",
+      "Land— → 11:15 Saber · 6/10 00:44",
+      "Take-off— → 10:00 Saber · 6/10 00:44",
+      "Callsign— → VIPER Saber · 6/10 00:44"
+     ],
+     "out": null,
+     "none": null,
+     "pic": "dk-L05-4-all-by-item.png"
+    },
+    "win_5-all-by-who": {
+     "title": "Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1",
+     "tabs": [
+      "New to you 0",
+      "All changes 15 [on]",
+      "To go out · AL1 1"
+     ],
+     "groups": [
+      "▾ Saber · 15 changes 6/10 00:44–00:44"
+     ],
+     "lines": [
+      "Wave · WAVE 1 Saber · 6/10 00:44 In-time / Rally07:45H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME → 07:45H: IN TIME + WX/NOTAMS",
+      "Wave · WAVE 1 Saber · 6/10 00:44 In-time / Rally07:00H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME → 07:45H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME",
+      "The day Saber · 6/10 00:44 Published — the Original",
+      "The day Saber · 6/10 00:44 Signed · APPROVED BY · Anvil",
+      "The day Saber · 6/10 00:44 Signed · PLANNED BY · Anvil",
+      "The day Saber · 6/10 00:44 Signed · SKED CK · Anvil",
+      "The day Saber · 6/10 00:44 Signed · CUR CK · Ace",
+      "Wave · WAVE 1 Saber · 6/10 00:44 In-time / Rally07:00H: IN TIME + WX/NOTAMS, 07:00H: IN TIME + WX/NOTAMS → 07:00H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME",
+      "Wave · WAVE 1 Saber · 6/10 00:44 In-time / Rally07:00H: IN TIME + WX/NOTAMS → 07:00H: IN TIME + WX/NOTAMS, 07:00H: IN TIME + WX/NOTAMS",
+      "Wave · WAVE 1 Saber · 6/10 00:44 In-time / Rally— → 07:00H: IN TIME + WX/NOTAMS",
+      "Flying · VIPER Saber · 6/10 00:44 FCPReaper put on",
+      "Flying · VIPER Saber · 6/10 00:44 Land— → 11:15",
+      "Flying · VIPER Saber · 6/10 00:44 Take-off— → 10:00",
+      "Flying · VIPER Saber · 6/10 00:44 Callsign— → VIPER",
+      "The day Saber · 6/10 00:44 Wave added"
+     ],
+     "out": null,
+     "none": null,
+     "pic": "dk-L05-5-all-by-who.png"
+    },
+    "win_6-new-by-item": {
+     "title": "Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1",
+     "tabs": [
+      "New to you 0 [on]",
+      "All changes 15",
+      "To go out · AL1 1"
+     ],
+     "groups": [],
+     "lines": [],
+     "out": null,
+     "none": "Nothing new to you on Saturday.",
+     "pic": "dk-L05-6-new-by-item.png"
+    },
+    "win_7-new-by-who": {
+     "title": "Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1",
+     "tabs": [
+      "New to you 0 [on]",
+      "All changes 15",
+      "To go out · AL1 1"
+     ],
+     "groups": [],
+     "lines": [],
+     "out": null,
+     "none": "Nothing new to you on Saturday.",
+     "pic": "dk-L05-7-new-by-who.png"
+    },
+    "dot": {
+     "histdot": true
+    },
+    "bubble": {
+     "shown": true,
+     "text": "WAVE 1 · IN-TIME / RALLY set to 07:00H: IN TIME + WX/NOTAMS Saber · 6/10 00:44 07:00H: IN TIME + WX/NOTAMS → 07:00H: IN TIME + WX/NOTAMS, 07:00H: IN TIME + WX/NOTAMS Saber · 6/10 00:44 07:00H: IN TIME + WX/NOTAMS, 07:00H: IN TIME + WX/NOTAMS → 07:00H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME Saber · 6/10 00:44 07:00H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME → 07:45H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME Saber · 6/10 00:44 07:45H: IN TIME + WX/NOTAMS, 08:30H: VL RALLY AFTER IN TIME → 07:45H: IN TIME + WX/NOTAMS Saber · 6/10 00:44"
+    },
+    "bubblePic": "dk-L05-8-history-bubble.png",
+    "undo1": {
+     "present": true,
+     "title": "Undo — a change to the schedule",
+     "pressed": true,
+     "toasts": [
+      "Undid: a change to the schedule"
+     ]
+    },
+    "redo1": {
+     "present": true,
+     "title": "Redo — a change to the schedule",
+     "pressed": true,
+     "toasts": [
+      "Redid: a change to the schedule"
+     ]
+    },
+    "undoTitleNow": {
+     "title": "Undo — a change to the schedule",
+     "aria": null
+    }
+   },
+   "errors": []
+  },
+  "L06-dk": {
+   "at": "2026-10-05T16:45:02.120Z",
+   "base": "http://localhost:4231",
+   "rows": [],
+   "out": {
+    "tracking": null,
+    "questionShown": 1,
+    "afterRed": {
+     "toast": "Schedule updated",
+     "q": 0
+    },
+    "changeBtnText": "Change mission role",
+    "afterBlue": {
+     "toast": "Schedule updated"
+    },
+    "elogRole": [
+     {
+      "fld": "mission-role",
+      "lbl": "VL · mission role · Working copy",
+      "key": "",
+      "from": "Unresolved",
+      "to": "Red",
+      "sub": "rmuvhcmul1aqky2",
+      "who": "Saber"
+     },
+     {
+      "fld": "mission-role",
+      "lbl": "VL · mission role · Working copy",
+      "key": "",
+      "from": "Red",
+      "to": "Blue",
+      "sub": "rmuvhcmul1aqky2",
+      "who": "Saber"
+     }
+    ],
+    "opened1": true,
+    "win_4-sat-two-answers-item": {
+     "title": "Changes · Saturday 18/7 Not yet published",
+     "tabs": [
+      "New to you 0",
+      "All changes 8 [on]"
+     ],
+     "groups": [
+      "▾ Flying · VL · 7 00:44"
+     ],
+     "lines": [
+      "Mission roleWorking copy Red → Blue Saber · 6/10 00:44",
+      "Mission roleWorking copy Unresolved → Red Saber · 6/10 00:44",
+      "remarks— → DS FOR VL Saber · 6/10 00:44",
+      "FCPReaper put on Saber · 6/10 00:44",
+      "Land— → 11:15 Saber · 6/10 00:44",
+      "Take-off— → 10:00 Saber · 6/10 00:44",
+      "Callsign— → VL Saber · 6/10 00:44",
+      "The day Saber · 6/10 00:44 Wave added"
+     ],
+     "none": null,
+     "pic": "dk-L06-4-sat-two-answers-item.png"
+    },
+    "win_4-sat-two-answers-who": {
+     "title": "Changes · Saturday 18/7 Not yet published",
+     "tabs": [
+      "New to you 0",
+      "All changes 8 [on]"
+     ],
+     "groups": [
+      "▾ Saber · 8 changes 6/10 00:44–00:44"
+     ],
+     "lines": [
+      "Flying · VL Saber · 6/10 00:44 Mission roleWorking copy Red → Blue",
+      "Flying · VL Saber · 6/10 00:44 Mission roleWorking copy Unresolved → Red",
+      "Flying · VL Saber · 6/10 00:44 remarks— → DS FOR VL",
+      "Flying · VL Saber · 6/10 00:44 FCPReaper put on",
+      "Flying · VL Saber · 6/10 00:44 Land— → 11:15",
+      "Flying · VL Saber · 6/10 00:44 Take-off— → 10:00",
+      "Flying · VL Saber · 6/10 00:44 Callsign— → VL",
+      "The day Saber · 6/10 00:44 Wave added"
+     ],
+     "none": null,
+     "pic": "dk-L06-4-sat-two-answers-who.png"
+    },
+    "tplToast": "Saved as \"Template 1\"",
+    "pickText": "Template 11 wave · 1 duty block · 0 ground rows · 0 sims",
+    "applyToast1": "Applied \"Template 1\" to Sunday",
+    "sunday": {
+     "waves": [
+      [
+       {
+        "cs": "VL",
+        "to": "10:00",
+        "rm": [
+         "DS FOR VL"
+        ]
+       }
+      ]
+     ]
+    },
+    "opened2": true,
+    "win_7-sun-after-template-item": {
+     "title": "Changes · Sunday 19/7 Not yet published",
+     "tabs": [
+      "New to you 0",
+      "All changes 2 [on]"
+     ],
+     "groups": [],
+     "lines": [
+      "The day Saber · 6/10 00:44 Day template \"Template 1\" applied",
+      "Flying · VL Saber · 6/10 00:44 Mission rolecopied with the day template Unresolved → Blue"
+     ],
+     "none": null,
+     "pic": "dk-L06-7-sun-after-template-item.png"
+    },
+    "win_7-sun-after-template-who": {
+     "title": "Changes · Sunday 19/7 Not yet published",
+     "tabs": [
+      "New to you 0",
+      "All changes 2 [on]"
+     ],
+     "groups": [
+      "▾ Saber · 2 changes 6/10 00:44–00:44"
+     ],
+     "lines": [
+      "The day Saber · 6/10 00:44 Day template \"Template 1\" applied",
+      "Flying · VL Saber · 6/10 00:44 Mission rolecopied with the day template Unresolved → Blue"
+     ],
+     "none": null,
+     "pic": "dk-L06-7-sun-after-template-who.png"
+    },
+    "undo": {
+     "present": true,
+     "title": "Undo — a change to the schedule",
+     "pressed": true,
+     "toasts": [
+      "Undid: a change to the schedule"
+     ]
+    },
+    "sundayAfterUndo": {
+     "waves": []
+    },
+    "opened3": true,
+    "win_8-sun-after-undo-item": {
+     "title": "Changes · Sunday 19/7 Not yet published",
+     "tabs": [
+      "New to you 0",
+      "All changes 3 [on]"
+     ],
+     "groups": [
+      "▾ The day · 2 00:44"
+     ],
+     "lines": [
+      "Undo — a change to the schedule Saber · 6/10 00:44",
+      "Day template \"Template 1\" applied Saber · 6/10 00:44",
+      "Flying · VL Saber · 6/10 00:44 Mission rolecopied with the day template Unresolved → Blue"
+     ],
+     "none": null,
+     "pic": "dk-L06-8-sun-after-undo-item.png"
+    },
+    "win_8-sun-after-undo-who": {
+     "title": "Changes · Sunday 19/7 Not yet published",
+     "tabs": [
+      "New to you 0",
+      "All changes 3 [on]"
+     ],
+     "groups": [
+      "▾ Saber · 3 changes 6/10 00:44–00:44"
+     ],
+     "lines": [
+      "The day Saber · 6/10 00:44 Undo — a change to the schedule",
+      "The day Saber · 6/10 00:44 Day template \"Template 1\" applied",
+      "Flying · VL Saber · 6/10 00:44 Mission rolecopied with the day template Unresolved → Blue"
+     ],
+     "none": null,
+     "pic": "dk-L06-8-sun-after-undo-who.png"
+    },
+    "opened4": true,
+    "win_9-sat-after-undo-item": {
+     "title": "Changes · Saturday 18/7 Not yet published",
+     "tabs": [
+      "New to you 0",
+      "All changes 8 [on]"
+     ],
+     "groups": [
+      "▾ Flying · VL · 7 00:44"
+     ],
+     "lines": [
+      "Mission roleWorking copy Red → Blue Saber · 6/10 00:44",
+      "Mission roleWorking copy Unresolved → Red Saber · 6/10 00:44",
+      "remarks— → DS FOR VL Saber · 6/10 00:44",
+      "FCPReaper put on Saber · 6/10 00:44",
+      "Land— → 11:15 Saber · 6/10 00:44",
+      "Take-off— → 10:00 Saber · 6/10 00:44",
+      "Callsign— → VL Saber · 6/10 00:44",
+      "The day Saber · 6/10 00:44 Wave added"
+     ],
+     "none": null,
+     "pic": "dk-L06-9-sat-after-undo-item.png"
+    },
+    "win_9-sat-after-undo-who": {
+     "title": "Changes · Saturday 18/7 Not yet published",
+     "tabs": [
+      "New to you 0",
+      "All changes 8 [on]"
+     ],
+     "groups": [
+      "▾ Saber · 8 changes 6/10 00:44–00:44"
+     ],
+     "lines": [
+      "Flying · VL Saber · 6/10 00:44 Mission roleWorking copy Red → Blue",
+      "Flying · VL Saber · 6/10 00:44 Mission roleWorking copy Unresolved → Red",
+      "Flying · VL Saber · 6/10 00:44 remarks— → DS FOR VL",
+      "Flying · VL Saber · 6/10 00:44 FCPReaper put on",
+      "Flying · VL Saber · 6/10 00:44 Land— → 11:15",
+      "Flying · VL Saber · 6/10 00:44 Take-off— → 10:00",
+      "Flying · VL Saber · 6/10 00:44 Callsign— → VL",
+      "The day Saber · 6/10 00:44 Wave added"
+     ],
+     "none": null,
+     "pic": "dk-L06-9-sat-after-undo-who.png"
+    }
+   },
+   "errors": []
+  },
+  "L07a-dk": {
+   "at": "2026-10-05T16:45:20.406Z",
+   "base": "http://localhost:4231",
+   "rows": [],
+   "out": {
+    "PART": "a",
+    "crew": {
+     "cs": "RU",
+     "rm": [
+      "RED AIR",
+      "2A: ACM-2"
+     ],
+     "msn": "ACM",
+     "people": [
+      {
+       "id": "romeo",
+       "cs": "Rebel"
+      },
+      {
+       "id": "ammo",
+       "cs": "Cinder"
+      },
+      {
+       "id": "vegas",
+       "cs": "Vapor"
+      },
+      {
+       "id": "cards",
+       "cs": "Marlin"
+      }
+     ]
+    },
+    "tracking": null,
+    "bars_0-before": {
+     "crewMix": [
+      {
+       "text": "Cinder 1",
+       "html": "<span class=\"nm\" title=\"\">Cinder</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Marlin 1",
+       "html": "<span class=\"nm\" title=\"\">Marlin</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Rebel 1",
+       "html": "<span class=\"nm\" title=\"\">Rebel</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Vapor 1",
+       "html": "<span class=\"nm\" title=\"\">Vapor</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      }
+     ],
+     "nMix": 38,
+     "legend": "32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES THIS WEEK Blue Red Total-only rows include unanswered mission roles. Relay 4 0 4 ",
+     "pic": "dk-L07a-0-before-insights.png"
+    },
+    "chooseText": "Choose mission role",
+    "stored": {
+     "rm": [
+      "RED AIR",
+      "2A: ACM-2"
+     ]
+    },
+    "bars_1-after-answer": {
+     "crewMix": [
+      {
+       "text": "Cinder 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Cinder</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Marlin 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Marlin</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Rebel 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Rebel</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Vapor 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Vapor</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      }
+     ],
+     "nMix": 38,
+     "legend": "32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES THIS WEEK Blue Red Total-only rows include unanswered mission roles. Relay 4 0 4 ",
+     "pic": "dk-L07a-1-after-answer-insights.png"
+    },
+    "box_1-after-answer": {
+     "btn": "Change mission role",
+     "q": 0,
+     "text": "RED AIR",
+     "pic": "dk-L07a-1-after-answer-box.png"
+    },
+    "trackingAfter": "not on this page",
+    "trackingAfterNav": 180,
+    "trackingSwitch": "true",
+    "bars_2-after-nav": {
+     "crewMix": [
+      {
+       "text": "Cinder 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Cinder</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Marlin 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Marlin</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Rebel 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Rebel</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Vapor 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Vapor</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      }
+     ],
+     "nMix": 38,
+     "legend": "32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES THIS WEEK Blue Red Total-only rows include unanswered mission roles. Relay 4 0 4 ",
+     "pic": "dk-L07a-2-after-nav-insights.png"
+    },
+    "box_2-after-nav": {
+     "btn": "Change mission role",
+     "q": 0,
+     "text": "RED AIR",
+     "pic": "dk-L07a-2-after-nav-box.png"
+    }
+   },
+   "errors": []
+  },
+  "L07b-dk": {
+   "at": "2026-10-05T16:45:39.672Z",
+   "base": "http://localhost:4231",
+   "rows": [],
+   "out": {
+    "PART": "b",
+    "crew": {
+     "cs": "RU",
+     "rm": [
+      "RED AIR",
+      "2A: ACM-2"
+     ],
+     "msn": "ACM",
+     "people": [
+      {
+       "id": "romeo",
+       "cs": "Rebel"
+      },
+      {
+       "id": "ammo",
+       "cs": "Cinder"
+      },
+      {
+       "id": "vegas",
+       "cs": "Vapor"
+      },
+      {
+       "id": "cards",
+       "cs": "Marlin"
+      }
+     ]
+    },
+    "tracking": null,
+    "otherEdited": "1B: BFM-3 X",
+    "bars_0-before": {
+     "crewMix": [
+      {
+       "text": "Cinder 1",
+       "html": "<span class=\"nm\" title=\"\">Cinder</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Marlin 1",
+       "html": "<span class=\"nm\" title=\"\">Marlin</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Rebel 1",
+       "html": "<span class=\"nm\" title=\"\">Rebel</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Vapor 1",
+       "html": "<span class=\"nm\" title=\"\">Vapor</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      }
+     ],
+     "nMix": 38,
+     "legend": "32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES THIS WEEK Blue Red Total-only rows include unanswered mission roles. Relay 4 0 4 ",
+     "pic": "dk-L07b-0-before-insights.png"
+    },
+    "chooseText": "Choose mission role",
+    "stored": {
+     "rm": [
+      "RED AIR",
+      "2A: ACM-2"
+     ]
+    },
+    "bars_1-after-answer": {
+     "crewMix": [
+      {
+       "text": "Cinder 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Cinder</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Marlin 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Marlin</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Rebel 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Rebel</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Vapor 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Vapor</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      }
+     ],
+     "nMix": 38,
+     "legend": "32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES THIS WEEK Blue Red Total-only rows include unanswered mission roles. Relay 4 0 4 ",
+     "pic": "dk-L07b-1-after-answer-insights.png"
+    },
+    "box_1-after-answer": {
+     "btn": "Change mission role",
+     "q": 0,
+     "text": "RED AIR",
+     "pic": "dk-L07b-1-after-answer-box.png"
+    },
+    "trackingAfter": "not on this page",
+    "trackingAfterNav": 180,
+    "trackingSwitch": "true",
+    "bars_2-after-nav": {
+     "crewMix": [
+      {
+       "text": "Cinder 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Cinder</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Marlin 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Marlin</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Rebel 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Rebel</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Vapor 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Vapor</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      }
+     ],
+     "nMix": 38,
+     "legend": "32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES THIS WEEK Blue Red Total-only rows include unanswered mission roles. Relay 4 0 4 ",
+     "pic": "dk-L07b-2-after-nav-insights.png"
+    },
+    "box_2-after-nav": {
+     "btn": "Change mission role",
+     "q": 0,
+     "text": "RED AIR",
+     "pic": "dk-L07b-2-after-nav-box.png"
+    }
+   },
+   "errors": []
+  },
+  "L07c-dk": {
+   "at": "2026-10-05T16:45:58.649Z",
+   "base": "http://localhost:4231",
+   "rows": [],
+   "out": {
+    "PART": "c",
+    "crew": {
+     "cs": "RU",
+     "rm": [
+      "RED AIR",
+      "2A: ACM-2"
+     ],
+     "msn": "ACM",
+     "people": [
+      {
+       "id": "romeo",
+       "cs": "Rebel"
+      },
+      {
+       "id": "ammo",
+       "cs": "Cinder"
+      },
+      {
+       "id": "vegas",
+       "cs": "Vapor"
+      },
+      {
+       "id": "cards",
+       "cs": "Marlin"
+      }
+     ]
+    },
+    "tracking": null,
+    "bars_0-before": {
+     "crewMix": [
+      {
+       "text": "Cinder 1",
+       "html": "<span class=\"nm\" title=\"\">Cinder</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Marlin 1",
+       "html": "<span class=\"nm\" title=\"\">Marlin</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Rebel 1",
+       "html": "<span class=\"nm\" title=\"\">Rebel</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Vapor 1",
+       "html": "<span class=\"nm\" title=\"\">Vapor</span><span class=\"track\"><span class=\"fill\" style=\"width:25%\"></span></span><span class=\"mix-numbers\"><span class=\"v\">1</span></span>"
+      }
+     ],
+     "nMix": 38,
+     "legend": "32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES THIS WEEK Blue Red Total-only rows include unanswered mission roles. Relay 4 0 4 ",
+     "pic": "dk-L07c-0-before-insights.png"
+    },
+    "chooseText": "Choose mission role",
+    "stored": {
+     "rm": [
+      "RED AIR",
+      "2A: ACM-2"
+     ]
+    },
+    "bars_1-after-answer": {
+     "crewMix": [
+      {
+       "text": "Cinder 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Cinder</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Marlin 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Marlin</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Rebel 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Rebel</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Vapor 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Vapor</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      }
+     ],
+     "nMix": 38,
+     "legend": "32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES THIS WEEK Blue Red Total-only rows include unanswered mission roles. Relay 4 0 4 ",
+     "pic": "dk-L07c-1-after-answer-insights.png"
+    },
+    "box_1-after-answer": {
+     "btn": "Change mission role",
+     "q": 0,
+     "text": "RED AIR",
+     "pic": "dk-L07c-1-after-answer-box.png"
+    },
+    "wk1": "20/07/2026",
+    "wk2": "13/07/2026",
+    "trackingAfterNav": 180,
+    "trackingSwitch": "true",
+    "bars_2-after-nav": {
+     "crewMix": [
+      {
+       "text": "Cinder 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Cinder</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Marlin 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Marlin</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Rebel 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Rebel</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      },
+      {
+       "text": "Vapor 0 1 1",
+       "html": "<span class=\"nm\" title=\"\">Vapor</span><span class=\"track\"><span class=\"mix-segments\" style=\"width:25%\"><span class=\"mix-blue\" style=\"width:0%\"></span><span class=\"mix-red\" style=\"width:100%\"></span></span></span><span class=\"mix-numbers\"><span class=\"mix-count-blue\">0</span><span class=\"mix-count-red\">1</span><span class=\"v\">1</span></span>"
+      }
+     ],
+     "nMix": 38,
+     "legend": "32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES THIS WEEK Blue Red Total-only rows include unanswered mission roles. Relay 4 0 4 ",
+     "pic": "dk-L07c-2-after-nav-insights.png"
+    },
+    "box_2-after-nav": {
+     "btn": "Change mission role",
+     "q": 0,
+     "text": "RED AIR",
+     "pic": "dk-L07c-2-after-nav-box.png"
+    }
+   },
+   "errors": []
+  },
+  "L08week-dk": {
+   "at": "2026-10-05T16:46:06.234Z",
+   "base": "http://localhost:4231",
+   "rows": [],
+   "out": {
+    "SURF": "week",
+    "A": "fr:1.0.0.0",
+    "B": "fr:1.1.1.0",
+    "snap_1-A-question-open": {
+     "ui": [
+      {
+       "text": "Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later",
+       "rect": {
+        "l": 159,
+        "t": 547,
+        "r": 667,
+        "b": 616
+       },
+       "under": null,
+       "isQ": true,
+       "visible": true,
+       "cls": "mission-role-question"
+      }
+     ],
+     "choose": [],
+     "boxA": {
+      "rect": {
+       "l": 493,
+       "t": 444,
+       "r": 670,
+       "b": 456
+      },
+      "text": "DS FOR VL",
+      "focused": false
+     },
+     "boxB": {
+      "rect": {
+       "l": 493,
+       "t": 946,
+       "r": 670,
+       "b": 958
+      },
+      "text": "RED AIR",
+      "focused": false
+     },
+     "active": "SPAN",
+     "vw": 1440,
+     "vh": 900,
+     "pic": "dk-L08dkweek-1-A-question-open.png"
+    },
+    "snap_3-B-box-edited": {
+     "ui": [
+      {
+       "text": "Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later",
+       "rect": {
+        "l": 159,
+        "t": 45,
+        "r": 667,
+        "b": 114
+       },
+       "under": null,
+       "isQ": true,
+       "visible": true,
+       "cls": "mission-role-question"
+      },
+      {
+       "text": "Working copy Choose mission role",
+       "rect": {
+        "l": 159,
+        "t": 547,
+        "r": 667,
+        "b": 597
+       },
+       "under": "fr:0.0.0.0",
+       "isQ": false,
+       "visible": true,
+       "cls": "mission-role-action"
+      }
+     ],
+     "choose": [
+      {
+       "text": "Choose mission role",
+       "rect": {
+        "l": 535,
+        "t": 557,
+        "r": 655,
+        "b": 587
+       },
+       "under": "fr:1.1.1.1",
+       "visible": true
+      }
+     ],
+     "boxA": {
+      "rect": {
+       "l": 493,
+       "t": -58,
+       "r": 670,
+       "b": -46
+      },
+      "text": "DS FOR VL",
+      "focused": false
+     },
+     "boxB": {
+      "rect": {
+       "l": 493,
+       "t": 444,
+       "r": 670,
+       "b": 456
+      },
+      "text": "RED AIR",
+      "focused": true
+     },
+     "active": "fr:1.1.1.0",
+     "vw": 1440,
+     "vh": 900,
+     "pic": "dk-L08dkweek-3-B-box-edited.png"
+    },
+    "finalQuestions": 1,
+    "finalChoose": [
+     "Choose mission role"
+    ]
+   },
+   "errors": []
+  },
+  "L08board-dk": {
+   "at": "2026-10-05T16:46:14.193Z",
+   "base": "http://localhost:4231",
+   "rows": [],
+   "out": {
+    "SURF": "board",
+    "A": "fr:1.0.0.0",
+    "B": "fr:1.1.1.0",
+    "snap_1-A-question-open": {
+     "ui": [
+      {
+       "text": "Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later",
+       "rect": {
+        "l": 26,
+        "t": 620,
+        "r": 1096,
+        "b": 689
+       },
+       "under": null,
+       "isQ": true,
+       "visible": true,
+       "cls": "mission-role-question"
+      }
+     ],
+     "choose": [],
+     "boxA": {
+      "rect": {
+       "l": 773,
+       "t": 491,
+       "r": 994,
+       "b": 515
+      },
+      "text": "",
+      "focused": false
+     },
+     "boxB": {
+      "rect": {
+       "l": 773,
+       "t": 1082,
+       "r": 994,
+       "b": 1106
+      },
+      "text": "",
+      "focused": false
+     },
+     "active": "SPAN",
+     "vw": 1440,
+     "vh": 900,
+     "pic": "dk-L08dkboard-1-A-question-open.png"
+    },
+    "snap_3-B-box-edited": {
+     "ui": [
+      {
+       "text": "Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later",
+       "rect": {
+        "l": 26,
+        "t": 29,
+        "r": 1096,
+        "b": 98
+       },
+       "under": null,
+       "isQ": true,
+       "visible": true,
+       "cls": "mission-role-question"
+      },
+      {
+       "text": "Working copy Choose mission role",
+       "rect": {
+        "l": 26,
+        "t": 620,
+        "r": 1096,
+        "b": 670
+       },
+       "under": null,
+       "isQ": false,
+       "visible": true,
+       "cls": "mission-role-action"
+      }
+     ],
+     "choose": [
+      {
+       "text": "Choose mission role",
+       "rect": {
+        "l": 964,
+        "t": 630,
+        "r": 1084,
+        "b": 660
+       },
+       "under": "fr:1.1.1.1",
+       "visible": true
+      }
+     ],
+     "boxA": {
+      "rect": {
+       "l": 773,
+       "t": -100,
+       "r": 994,
+       "b": -76
+      },
+      "text": "",
+      "focused": false
+     },
+     "boxB": {
+      "rect": {
+       "l": 773,
+       "t": 491,
+       "r": 994,
+       "b": 515
+      },
+      "text": "",
+      "focused": true
+     },
+     "active": "fr:1.1.1.0",
+     "vw": 1440,
+     "vh": 900,
+     "pic": "dk-L08dkboard-3-B-box-edited.png"
+    },
+    "finalQuestions": 1,
+    "finalChoose": [
+     "Choose mission role"
+    ]
+   },
+   "errors": []
+  },
+  "L02-ph": {
+   "at": "2026-10-05T16:43:52.369Z",
+   "base": "http://localhost:4231",
+   "rows": [
+    {
+     "id": "L-02-ph",
+     "did": "raw",
+     "saw": [
+      {
+       "label": "1-fresh",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "ph-L02-1-fresh-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "ph-L02-1-fresh-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "ph-L02-1-fresh-logic.png"
+      },
+      {
+       "label": "3-after-words",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "ph-L02-3-after-words-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "ph-L02-3-after-words-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+        "reset": {
+         "hidden": false
+        }
+       },
+       "logic_pic": "ph-L02-3-after-words-logic.png"
+      },
+      {
+       "label": "4-member-in-place-after-words",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "ph-L02-4-member-in-place-after-words-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "ph-L02-4-member-in-place-after-words-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "ph-L02-4-member-in-place-after-words-logic.png"
+      },
+      {
+       "label": "5-after-number-rule-crewRest-13h",
+       "viewsched": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "vBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         },
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "ph-L02-5-after-number-rule-crewRest-13h-viewsched.png",
+       "editsched": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "ph-L02-5-after-number-rule-crewRest-13h-editsched.png",
+       "logic": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": {
+         "hidden": false,
+         "shown": true,
+         "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones — “Reset to standard” puts them all back."
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 2 off standard",
+        "reset": {
+         "hidden": false
+        }
+       },
+       "logic_pic": "ph-L02-5-after-number-rule-crewRest-13h-logic.png"
+      },
+      {
+       "label": "6-member-in-place-after-number-rule",
+       "logic": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": {
+         "hidden": false,
+         "shown": true,
+         "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones. Only an admin can change them."
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 2 off standard",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "ph-L02-6-member-in-place-after-number-rule-logic.png",
+       "viewsched": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "vBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         },
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "ph-L02-6-member-in-place-after-number-rule-viewsched.png"
+      },
+      {
+       "label": "7-after-reset",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "ph-L02-7-after-reset-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "ph-L02-7-after-reset-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "ph-L02-7-after-reset-logic.png"
+      },
+      {
+       "label": "8-reload-as-member",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "ph-L02-8-reload-as-member-viewsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "ph-L02-8-reload-as-member-logic.png"
+      }
+     ],
+     "verdict": "RAW",
+     "pics": []
+    }
+   ],
+   "out": [
+    {
+     "label": "1-fresh",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "ph-L02-1-fresh-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "ph-L02-1-fresh-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "ph-L02-1-fresh-logic.png"
+    },
+    {
+     "label": "3-after-words",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "ph-L02-3-after-words-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "ph-L02-3-after-words-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+      "reset": {
+       "hidden": false
+      }
+     },
+     "logic_pic": "ph-L02-3-after-words-logic.png"
+    },
+    {
+     "label": "4-member-in-place-after-words",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "ph-L02-4-member-in-place-after-words-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "ph-L02-4-member-in-place-after-words-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "ph-L02-4-member-in-place-after-words-logic.png"
+    },
+    {
+     "label": "5-after-number-rule-crewRest-13h",
+     "viewsched": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "vBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       },
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "ph-L02-5-after-number-rule-crewRest-13h-viewsched.png",
+     "editsched": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "ph-L02-5-after-number-rule-crewRest-13h-editsched.png",
+     "logic": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": {
+       "hidden": false,
+       "shown": true,
+       "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones — “Reset to standard” puts them all back."
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 2 off standard",
+      "reset": {
+       "hidden": false
+      }
+     },
+     "logic_pic": "ph-L02-5-after-number-rule-crewRest-13h-logic.png"
+    },
+    {
+     "label": "6-member-in-place-after-number-rule",
+     "logic": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": {
+       "hidden": false,
+       "shown": true,
+       "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones. Only an admin can change them."
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 2 off standard",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "ph-L02-6-member-in-place-after-number-rule-logic.png",
+     "viewsched": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "vBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       },
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "ph-L02-6-member-in-place-after-number-rule-viewsched.png"
+    },
+    {
+     "label": "7-after-reset",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "ph-L02-7-after-reset-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "ph-L02-7-after-reset-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "ph-L02-7-after-reset-logic.png"
+    },
+    {
+     "label": "8-reload-as-member",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "ph-L02-8-reload-as-member-viewsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "ph-L02-8-reload-as-member-logic.png"
+    }
+   ],
+   "errors": []
+  },
+  "L08phone-ph": {
+   "at": "2026-10-05T16:44:01.695Z",
+   "base": "http://localhost:4231",
+   "rows": [],
+   "out": {
+    "SURF": "phone",
+    "A": "fr:1.0.0.0",
+    "B": "fr:2.0.1.0",
+    "snap_1-A-question-open": {
+     "ui": [
+      {
+       "text": "Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later",
+       "rect": {
+        "l": 23,
+        "t": 544,
+        "r": 345,
+        "b": 653
+       },
+       "under": null,
+       "isQ": true,
+       "visible": true,
+       "cls": "mission-role-question"
+      }
+     ],
+     "choose": [],
+     "boxA": {
+      "rect": {
+       "l": 298,
+       "t": 416,
+       "r": 350,
+       "b": 427
+      },
+      "text": "DS FOR VL",
+      "focused": false
+     },
+     "boxB": {
+      "rect": {
+       "l": 676,
+       "t": 464,
+       "r": 728,
+       "b": 475
+      },
+      "text": "RED AIR",
+      "focused": false
+     },
+     "active": "SPAN",
+     "vw": 390,
+     "vh": 844,
+     "pic": "dk-L08phphone-1-A-question-open.png"
+    },
+    "dayBefore": [
+     {
+      "di": 1,
+      "l": 0,
+      "r": 366
+     },
+     {
+      "di": 2,
+      "l": 378,
+      "r": 744
+     }
+    ],
+    "swipeScrollLeft": 390,
+    "dayAfter": [
+     {
+      "di": 1,
+      "l": 0,
+      "r": 366
+     },
+     {
+      "di": 2,
+      "l": 378,
+      "r": 744
+     }
+    ],
+    "snap_2-after-swipe": {
+     "ui": [
+      {
+       "text": "Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later",
+       "rect": {
+        "l": 23,
+        "t": 544,
+        "r": 345,
+        "b": 653
+       },
+       "under": null,
+       "isQ": true,
+       "visible": true,
+       "cls": "mission-role-question"
+      }
+     ],
+     "choose": [],
+     "boxA": {
+      "rect": {
+       "l": 298,
+       "t": 416,
+       "r": 350,
+       "b": 427
+      },
+      "text": "DS FOR VL",
+      "focused": false
+     },
+     "boxB": {
+      "rect": {
+       "l": 676,
+       "t": 464,
+       "r": 728,
+       "b": 475
+      },
+      "text": "RED AIR",
+      "focused": false
+     },
+     "active": "SPAN",
+     "vw": 390,
+     "vh": 844,
+     "pic": "dk-L08phphone-2-after-swipe.png"
+    },
+    "snap_3-B-box-edited": {
+     "ui": [
+      {
+       "text": "Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later",
+       "rect": {
+        "l": -355,
+        "t": 497,
+        "r": -33,
+        "b": 606
+       },
+       "under": null,
+       "isQ": true,
+       "visible": true,
+       "cls": "mission-role-question"
+      },
+      {
+       "text": "Working copy Choose mission role",
+       "rect": {
+        "l": 23,
+        "t": 529,
+        "r": 345,
+        "b": 579
+       },
+       "under": "fr:1.0.0.1",
+       "isQ": false,
+       "visible": true,
+       "cls": "mission-role-action"
+      }
+     ],
+     "choose": [
+      {
+       "text": "Choose mission role",
+       "rect": {
+        "l": 213,
+        "t": 539,
+        "r": 333,
+        "b": 569
+       },
+       "under": "fr:2.0.1.1",
+       "visible": true
+      }
+     ],
+     "boxA": {
+      "rect": {
+       "l": -80,
+       "t": 369,
+       "r": -28,
+       "b": 380
+      },
+      "text": "DS FOR VL",
+      "focused": false
+     },
+     "boxB": {
+      "rect": {
+       "l": 298,
+       "t": 417,
+       "r": 350,
+       "b": 428
+      },
+      "text": "RED AIR",
+      "focused": true
+     },
+     "active": "fr:2.0.1.0",
+     "vw": 390,
+     "vh": 844,
+     "pic": "dk-L08phphone-3-B-box-edited.png"
+    },
+    "finalQuestions": 1,
+    "finalChoose": [
+     "Choose mission role"
+    ]
+   },
+   "errors": []
+  },
+  "p1a-dk": {
+   "at": "2026-10-05T16:44:54.920Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "P1-01",
+     "did": "published Mon, changed its Remarks, changed Tue day note; previewed Mon Original; Load onto working copy (armed, then confirmed)",
+     "saw": "✓ Monday published (ORIG, orig=true) [ORIG] · ✓ Mon pending 1 before, Tue pending 1 before [{\"pendMon\":[\"fr:0.rs130720260xa.rs130720260xb.rs130720260xc\"],\"pendTue\":[\"dn:1.0\"]}] · ✓ preview banner offers Load onto working copy; first tap arms with a discard count [← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Discard 1 edit & load — confirm Keep editing] · ✓ nothing changed before confirmation (Mon remarks still the edited text while armed) [[\"fr:0.rs130720260xa.rs130720260xb.rs130720260xc\"]] · ✓ Monday follows the existing load: remarks back to the original [1B: BFM-6] · ✓ Tuesday text kept [D488 TUE NOTE CHANGED] · ✓ Tuesday marks kept (pending keys still 1) [[\"dn:1.0\"]] · ✓ no Discard marks control anywhere [{\"alDrop\":0,\"textMatches\":[],\"bodyHasPhrase\":false}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-P1-01-a-before-load.png",
+      "dk-02-P1-01-c-preview-banner.png",
+      "dk-03-P1-01-d-armed.png",
+      "dk-04-P1-01-e-after-load.png"
+     ]
+    },
+    {
+     "id": "P1-02",
+     "did": "edited Mon (published) and Tue (unpublished); signed Mon; Publish AL1 in the Amendments box",
+     "saw": "✓ panel before: lists Monday only as a day with changes [AMENDMENTS 1 day with changes to publish Mon · 1 change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.] · ✓ Monday issued AL1 (als has an Mon entry), Tuesday has none [{\"alsMon\":[\"2026-07-13#1\"],\"alsTue\":[]}] · ✓ Monday pending now 0 [[]] · ✓ Tuesday keeps both notes and its pending marks [{\"tuePend2\":[\"dn:1.0\",\"pn:1\"],\"tueNotes2\":[\"D488 TUE NOTE CHANGED\",\"D488 TUE SECOND NOTE\"]}] · ✓ Tuesday still unpublished (no version) [null]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-P1-02-a-two-days-edited.png",
+      "dk-06-P1-02-b-after-AL1.png"
+     ]
+    },
+    {
+     "id": "P1-03",
+     "did": "Wed unpublished: changed Mission, a reporting line, the programme note; looked in week + board; published",
+     "saw": "✓ three edits are pending marks before publication [[\"ff:2.rs130720262x1.rs130720262x2.msn\",\"it:2.rs130720262x1\",\"pn:2\"]] · ✓ published [ORIG] · ✓ marks cleared on publication [[]] · ✓ text survives [{\"msn\":\"D488 ACM\",\"it\":[\"07:00H: D488 RALLY TEST\",\"07:35H: FIRST WAVE RU IN TIME + WX/NOTAMS\"],\"pn\":\"D488 WED PROGRAMME NOTE\",\"orig\":true}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-P1-03-a-week-marks.png",
+      "dk-08-P1-03-b-board-marks.png",
+      "dk-09-P1-03-c-published.png",
+      "dk-10-P1-03-d-week-after.png"
+     ]
+    },
+    {
+     "id": "P1-04",
+     "did": "edited Thu day note; top-bar Undo, Redo; opened History; reloaded",
+     "saw": "✓ edit marked (1 pending) [{\"text\":\"D488 THU NOTE EDITED\",\"pend\":[\"dn:3.0\"]}] · ✓ Undo puts the old text back and clears its mark [{\"text\":\"EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H\",\"pend\":[]}] · ✓ Redo restores text and its mark [{\"text\":\"D488 THU NOTE EDITED\",\"pend\":[\"dn:3.0\"]}] · ✓ History names the actual edit (the note text) and has no marks-cleared line [⠿ Changes · week of 13/7 26 changes this week ✕ New to you 0 All changes 26 To go out 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Thu · The day · 2 0] · ✓ after reload text and mark are still there [{\"text\":\"D488 THU NOTE EDITED\",\"pend\":[\"dn:3.0\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-P1-04-a-edited.png",
+      "dk-12-P1-04-b-undone.png",
+      "dk-13-P1-04-c-history.png",
+      "dk-14-P1-04-d-reloaded.png"
+     ]
+    },
+    {
+     "id": "P1-05",
+     "did": "published Fri; amended (AL1); pressed Unpublish; edited the working copy; signed and republished",
+     "saw": "✓ Friday issued then amended to AL1 [{\"friV0\":\"2026-07-17#0\",\"friV1\":\"2026-07-17#1\"}] · ✓ Unpublish ran the existing confirm (armed first) [{\"pressed\":true,\"label\":\"Unpublish\"}] · ✓ Unpublish withdrew the latest issue: Friday is back at its Original with the amendment held as a pending change [{\"orig\":true,\"ver\":\"2026-07-17#0\",\"pend\":[\"dtn:4\"],\"head\":{\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"unpub\":\"Unpublish\",\"signs\":[\"] · ✓ edit on the working copy is marked, no clearing control anywhere [{\"friEdit\":{\"pend\":[\"dtn:4\"],\"note\":\"D488 FRI AFTER UNPUBLISH\"},\"disc5\":{\"alDrop\":0,\"textMatches\":[],\"bodyHasPhrase\":false}}] · ✓ republishing needed the four sign-offs and issued the amendment again (same version id) [{\"friRe\":{\"orig\":true,\"ver\":\"2026-07-17#1\",\"pend\":[],\"note\":\"D488 FRI AFTER UNPUBLISH\",\"als\":[\"2026-07-17#1\"]},\"signs\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-P1-05-a-friday-AL1.png",
+      "dk-16-P1-05-b-unpublished.png",
+      "dk-17-P1-05-c-republished.png"
+     ]
+    }
+   ]
+  },
+  "p1b-dk": {
+   "at": "2026-10-05T16:45:12.748Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "P1-06-desk",
+     "did": "draft changes (Tue, Thu) + published Mon with a pending change; inspected as admin, admin-as-member, then real member",
+     "saw": "✓ fixture: a draft day and a published day each carry marks [{\"mon\":[\"fr:0.rs130720260xa.rs130720260xb.rs130720260xc\"],\"tue\":[\"dn:1.0\"],\"thu\":[\"dn:3.0\"]}] · ✓ admin: no Discard marks anywhere (not even hidden) [{\"a\":0,\"b\":0}] · ✓ member view: none [{}] · ✓ real member: none, and no Publish AL / panel [{\"alpub\":0,\"panel\":false}] · ✓ admin: the Publish controls are what a finger lands on [{\"[data-alpub]\":{\"txt\":\"Publish AL1\",\"size\":\"105x25\",\"hit\":true,\"disabled\":true},\"[data-unpub]\":{\"txt\":\"Unpublish\",\"size\":\"70x22\",\"hit\":true,\"disabled\":false}}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-P1-06-a-admin-week.png",
+      "dk-02-P1-06-b-admin-board.png",
+      "dk-03-P1-06-c-member-view.png",
+      "dk-04-P1-06-d-member.png",
+      "dk-05-P1-06-e-member-nav.png"
+     ]
+    }
+   ]
+  },
+  "p1b-ph": {
+   "at": "2026-10-05T16:45:30.783Z",
+   "base": "http://localhost:4231",
+   "phone": true,
+   "table": [
+    {
+     "id": "P1-06-phone",
+     "did": "draft changes (Tue, Thu) + published Mon with a pending change; inspected as admin, admin-as-member, then real member",
+     "saw": "✓ fixture: a draft day and a published day each carry marks [{\"mon\":[\"fr:0.rs130720260xa.rs130720260xb.rs130720260xc\"],\"tue\":[\"dn:1.0\"],\"thu\":[\"dn:3.0\"]}] · ✓ admin: no Discard marks anywhere (not even hidden) [{\"a\":0,\"b\":0}] · ✓ member view: none [{}] · ✓ real member: none, and no Publish AL / panel [{\"alpub\":0,\"panel\":false}] · ✓ admin: the Publish controls are what a finger lands on [{\"[data-alpub]\":{\"txt\":\"Publish AL1\",\"size\":\"105x25\",\"hit\":true,\"disabled\":true},\"[data-unpub]\":{\"txt\":\"Unpublish\",\"size\":\"70x22\",\"hit\":true,\"disabled\":false}}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-P1-06-a-admin-week.png",
+      "ph-02-P1-06-b-admin-board.png",
+      "ph-03-P1-06-c-member-view.png",
+      "ph-04-P1-06-d-member.png",
+      "ph-05-P1-06-e-member-nav.png"
+     ]
+    }
+   ]
+  },
+  "hdr-dk": {
+   "at": "2026-10-05T16:45:45.754Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "F-A1",
+     "did": "new wave Mon 20 Jul 00:30-01:30; pressed + In-time / Rally (filled 21:30H), edited the line to 22:30H; read the week header and the board header",
+     "saw": "week line says [\"22:30H: IN TIME + WX/NOTAMS\"]; week wave header says [\"In-time / Rally 22:30 (prev day)\"]; board header says [\"In-time / Rally 22:30 (prev day) · 1 ac\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-F-A1-week-header-after-line-edit.png",
+      "dk-02-F-A1-board-header-same-moment.png"
+     ]
+    }
+   ]
+  },
+  "s1p09-dk": {
+   "at": "2026-10-05T16:46:42.146Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-09.a",
+     "did": "Logic \"button's words\" IN TIME + WX/NOTAMS → RALLY; new wave AA 12:00; \"+ In-time / Rally\" on the WEEK, then retyped \"10:00 RALLY\"",
+     "saw": "first press fills \"09:00H: RALLY\" (feedback \"null\", day warnings []); after retype \"10:00 RALLY\": live feedback while typing \"AA: rally 10:00 is later than suggested brief 09:40.\", settled feedback \"AA: rally 10:00 is later than suggested brief 09:40.\", warnings [\"hard/REPORT_ORDER: AA: rally 10:00 is later than suggested brief 09:40.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p09-A-week-default.png",
+      "dk-02-p09-A-week-later.png"
+     ]
+    },
+    {
+     "id": "P2-09.b",
+     "did": "new wave BB2 12:00; \"+ In-time / Rally\" on the BOARD with the same words",
+     "saw": "fills \"09:00H: RALLY\" (week fill was \"09:00H: RALLY\"); feedback \"null\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-p09-B-board-default.png"
+     ]
+    },
+    {
+     "id": "P2-09.c",
+     "did": "Logic words blanked (typed nothing, Enter); new wave CC 12:00; \"+ In-time / Rally\" on the week; then retyped \"10:00 IN TIME + WX/NOTAMS\"",
+     "saw": "Logic box emptied to \"\", after Enter reads \"IN TIME + WX/NOTAMS\" and on re-opening \"IN TIME + WX/NOTAMS\" (was \"RALLY\"); first press fills \"09:00H: IN TIME + WX/NOTAMS\"; retyped feedback \"CC: in-time 10:00 is later than suggested brief 09:40.\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-p09-C-blank-default.png"
+     ]
+    },
+    {
+     "id": "P2-09.d",
+     "did": "Logic words \"RALLY — check 13:00\"; new wave DD 12:00; \"+ In-time / Rally\" on the week, then pressed once more on the board",
+     "saw": "Logic box reads \"RALLY — check 13:00\"; first line \"09:00H: RALLY — check 13:00\", feedback \"null\", warnings [\"hard/REPORT_ORDER: AA: rally 10:00 is later than suggested brief 09:40.\",\"hard/REPORT_ORDER: CC: in-time 10:00 is later than suggested brief 09:40.\"]; after the board press the wave holds [\"09:00H: RALLY — check 13:00\",\"09:00H: RALLY — check 13:00\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-p09-D-prose.png"
+     ]
+    },
+    {
+     "id": "P2-09.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p10-dk": {
+   "at": "2026-10-05T16:47:11.983Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-10.a",
+     "did": "new wave TS 12:00→13:00 (Cobra+Sidewinder), blank Brief; \"+ In-time / Rally\" then typed \"10:00 RALLY\" and committed",
+     "saw": "while typing \"TS: rally 10:00 is later than suggested brief 09:40.\"; settled \"TS: rally 10:00 is later than suggested brief 09:40.\"; the day's warning list: [\"hard TS: rally 10:00 is later than suggested brief 09:40.\"]; list bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\", Rally line on the list \"In-time / Rally — timings out of order TS: rally 10:00 is later than suggested brief 09:40. ✕\" (button ✕)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p10-warning.png"
+     ]
+    },
+    {
+     "id": "P2-10.b",
+     "did": "signed the four names and pressed Publish day with the red timing line still showing",
+     "saw": "before: tag \"DRAFT\" button locked; button press {\"pressed\":true,\"label\":\"Publish day\"}; sign-offs {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}; after: tag \"ORIG\", signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\", chip \"14 changes\"; the warning is still held: [\"TS: rally 10:00 is later than suggested brief 09:40.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-p10-published.png"
+     ]
+    },
+    {
+     "id": "P2-10.c",
+     "did": "changed the Mission to ACM on the published day, signed the four again, pressed Publish AL1 while the warning remains",
+     "saw": "before: chip \"1 pending\" tag \"ORIG\"; press {\"pressed\":true,\"label\":\"Publish AL1\"}; after: tag \"AL1\", chip \"20 changes\", signed \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"; warning still there: [\"TS: rally 10:00 is later than suggested brief 09:40.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-p10-amended.png"
+     ]
+    },
+    {
+     "id": "P2-10.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p11-dk": {
+   "at": "2026-10-05T16:47:37.914Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-11",
+     "did": "new wave EQ 12:00→13:00, Brief typed 09:40; lines \"08:00 IN TIME\" and \"09:40 RALLY\"; then Rally 09:41 (week), then back to 09:40 (on the board)",
+     "saw": "equal: lines [\"08:00 IN TIME\",\"09:40 RALLY\"] feedback \"null\" warnings []; one minute later: live \"EQ: rally 09:41 is later than brief 09:40.\" settled \"EQ: rally 09:41 is later than brief 09:40.\" warnings [\"EQ: rally 09:41 is later than brief 09:40.\"], board panel [\"EQ: rally 09:41 is later than brief 09:40. ✕\"]; corrected: feedback \"null\" warnings []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p11-equal.png",
+      "dk-02-p11-board-late.png",
+      "dk-03-p11-back.png"
+     ]
+    },
+    {
+     "id": "P2-11.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p12-dk": {
+   "at": "2026-10-05T16:48:11.558Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-12.a",
+     "did": "new wave with NO take-off and an empty formation; \"+ In-time / Rally\" (no take-off to work from), then typed \"RALLY AFTER IN TIME\"",
+     "saw": "the press fills [\"IN TIME + WX/NOTAMS\"]; typed: live \"null\", settled \"null\"; warnings []; the day's whole list has 0 entries",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-p12-a-no-takeoff.png"
+     ]
+    },
+    {
+     "id": "P2-12.b",
+     "did": "added a second line and typed the invalid clock \"25:99 IN TIME\" (still no take-off)",
+     "saw": "lines [\"RALLY AFTER IN TIME\",\"25:99 IN TIME\"]; live \"null\", settled \"null\"; warnings []",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "P2-12.c",
+     "did": "gave the formation MM 12:00→13:00, crew Cobra+Sidewinder (seated true,true), then a third line \"08:30 IN TIME\"",
+     "saw": "with take-off, before the valid in-time: feedback \"MM: rally after in-time has no applicable in-time clock. MM: reporting line 2 has no recognised clock. Check the time.\", warnings [\"MM: rally after in-time has no applicable in-time clock.\",\"MM: reporting line 2 has no recognised clock. Check the time.\"]; lines now [\"RALLY AFTER IN TIME\",\"25:99 IN TIME\",\"08:30 IN TIME\"], feedback \"MM: reporting line 2 has no recognised clock. Check the time.\", warnings [\"MM: reporting line 2 has no recognised clock. Check the time.\"]; Work hours base {\"Sidewinder\":\"12h\",\"Cobra\":\"1h\"} → with the valid in-time {\"Sidewinder\":\"18h30\",\"Cobra\":\"7h30\"}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-p12-c-takeoff.png",
+      "dk-05-p12-d-valid.png",
+      "dk-01-p12-ins-base.png",
+      "dk-04-p12-ins-valid.png"
+     ]
+    },
+    {
+     "id": "P2-12.d",
+     "did": "cancelled the formation (CX with a reason)",
+     "saw": "Work hours {\"Sidewinder\":\"18h30\",\"Cobra\":\"7h30\"} → {\"Sidewinder\":\"12h\",\"Cobra\":\"1h\"} (base {\"Sidewinder\":\"12h\",\"Cobra\":\"1h\"}); report warnings now []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-p12-e-cx.png",
+      "dk-06-p12-ins-cx.png"
+     ]
+    },
+    {
+     "id": "P2-12.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p13-dk": {
+   "at": "2026-10-05T16:48:58.374Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-13.a",
+     "did": "wave VL + VL2 (both 12:00→13:00; VL crew Cobra+Sidewinder, VL2 crew Havoc+Comet; seated true,true); one line \"08:00 VL IN TIME\"",
+     "saw": "Work hours: Cobra 5h→8h, Sidewinder 16h→19h, Havoc 12h→12h, Comet 14h→14h; feedback \"null\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-p13-a-VL-line.png",
+      "dk-01-p13-0-base.png",
+      "dk-02-p13-1-VLline.png"
+     ]
+    },
+    {
+     "id": "P2-13.b",
+     "did": "second line: only a crew member's callsign \"Cobra\" (no clock, no formation name)",
+     "saw": "Work hours: Cobra 8h→8h, Sidewinder 19h→19h, Havoc 12h→12h, Comet 14h→14h; feedback \"null\"; warnings []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-p13-b-name-only.png",
+      "dk-04-p13-2-name-only.png"
+     ]
+    },
+    {
+     "id": "P2-13.c",
+     "did": "second line retyped \"07:00 Cobra IN TIME\" (a clock and a man's name, no formation callsign)",
+     "saw": "Work hours: Cobra 8h→8h, Sidewinder 19h→19h, Havoc 12h→16h, Comet 14h→18h; who changed: Cobra:false Sidewinder:false Havoc:true Comet:true; feedback \"null\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-p13-c-name-clock.png",
+      "dk-06-p13-3-name-with-clock.png"
+     ]
+    },
+    {
+     "id": "P2-13.d",
+     "did": "line 1 retyped through accepted and unaccepted clock spellings (week)",
+     "saw": "\"8:00 VL IN TIME\" → stored \"08:00 VL IN TIME\" / feedback \"\" ;; \"0800 VL IN TIME\" → stored \"08:00 VL IN TIME\" / feedback \"\" ;; \"800H VL RALLY\" → stored \"08:00H VL RALLY\" / feedback \"\" ;; \"08:00L VL IN TIME\" → stored \"08:00L VL IN TIME\" / feedback \"\" ;; \"8h00 VL IN TIME\" → stored \"8h00 VL IN TIME\" / feedback \"VL: reporting line 1 has no recognised clock. Check the time.\" ;; \"8.00 VL IN TIME\" → stored \"8.00 VL IN TIME\" / feedback \"VL: reporting line 1 has no recognised clock. Check the time.\" ;; \"2400 VL IN TIME\" → stored \"2400 VL IN TIME\" / feedback \"VL: reporting line 1 has no recognised clock. Check the time.\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-p13-d-spellings.png"
+     ]
+    },
+    {
+     "id": "P2-13.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "R11-dk": {
+   "at": "2026-10-05T16:45:19.091Z",
+   "base": "http://localhost:4231",
+   "rows": [],
+   "out": {
+    "steps": [
+     {
+      "label": "1-built-no-lines",
+      "intimes": [],
+      "headers": [
+       "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 11:00 · 2 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+      ],
+      "hdrAsd": [
+       "In-time / Rally 07:35 · 4 ac",
+       "In-time / Rally 10:00 · 4 ac",
+       "In-time / Rally 11:00 · 2 ac"
+      ],
+      "feedback": [
+       {
+        "key": "it:2.0",
+        "text": ""
+       },
+       {
+        "key": "it:2.1",
+        "text": ""
+       }
+      ],
+      "panel": {
+       "head": "⚠ 8 issues · 3 warnings · tap to review",
+       "lines": [
+        "Gambit — On leave but planned to fly VL ACM ✕",
+        "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕",
+        "Cobra — On leave but planned to fly VL — reason: Overseas leave — off island ✕",
+        "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Trident, Relay — 2 people are double turning: Trident, Relay ✕",
+        "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required ✕",
+        "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required ✕"
+       ]
+      },
+      "appWarns": [],
+      "nan": false,
+      "hours": {
+       "Cobra": "5h",
+       "Comet": "14h",
+       "Ranger": "18h",
+       "Echo": "25h25"
+      },
+      "hoursPic": "dk-02-R11-1-built-no-lines-insights.png",
+      "insNaN": false,
+      "pic": "dk-R11-1-built-no-lines-board.png"
+     },
+     {
+      "label": "a1-original-order",
+      "intimes": [
+       "08:00H: IN TIME + WX/NOTAMS",
+       "08:30H: VL RALLY AFTER IN TIME"
+      ],
+      "headers": [
+       "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 08:00 · 2 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+      ],
+      "hdrAsd": [
+       "In-time / Rally 07:35 · 4 ac",
+       "In-time / Rally 10:00 · 4 ac",
+       "In-time / Rally 08:00 · 2 ac"
+      ],
+      "feedback": [
+       {
+        "key": "it:2.0",
+        "text": ""
+       },
+       {
+        "key": "it:2.1",
+        "text": ""
+       },
+       {
+        "key": "it:2.2",
+        "text": ""
+       }
+      ],
+      "panel": {
+       "head": "⚠ 8 issues · 3 warnings · tap to review",
+       "lines": [
+        "Gambit — On leave but planned to fly VL ACM ✕",
+        "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕",
+        "Cobra — On leave but planned to fly VL — reason: Overseas leave — off island ✕",
+        "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Trident, Relay — 2 people are double turning: Trident, Relay ✕",
+        "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required ✕",
+        "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required ✕"
+       ]
+      },
+      "appWarns": [],
+      "nan": false,
+      "hours": {
+       "Cobra": "7h",
+       "Comet": "16h",
+       "Ranger": "20h",
+       "Echo": "27h25"
+      },
+      "hoursPic": "dk-03-R11-a1-original-order-insights.png",
+      "insNaN": false,
+      "pic": "dk-R11-a1-original-order-board.png"
+     },
+     {
+      "label": "a2-swapped",
+      "intimes": [
+       "08:30H: VL RALLY AFTER IN TIME",
+       "08:00H: IN TIME + WX/NOTAMS"
+      ],
+      "headers": [
+       "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 08:00 · 2 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+      ],
+      "hdrAsd": [
+       "In-time / Rally 07:35 · 4 ac",
+       "In-time / Rally 10:00 · 4 ac",
+       "In-time / Rally 08:00 · 2 ac"
+      ],
+      "feedback": [
+       {
+        "key": "it:2.0",
+        "text": ""
+       },
+       {
+        "key": "it:2.1",
+        "text": ""
+       },
+       {
+        "key": "it:2.2",
+        "text": ""
+       }
+      ],
+      "panel": {
+       "head": "⚠ 8 issues · 3 warnings · tap to review",
+       "lines": [
+        "Gambit — On leave but planned to fly VL ACM ✕",
+        "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕",
+        "Cobra — On leave but planned to fly VL — reason: Overseas leave — off island ✕",
+        "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Trident, Relay — 2 people are double turning: Trident, Relay ✕",
+        "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required ✕",
+        "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required ✕"
+       ]
+      },
+      "appWarns": [],
+      "nan": false,
+      "hours": {
+       "Cobra": "7h",
+       "Comet": "16h",
+       "Ranger": "20h",
+       "Echo": "27h25"
+      },
+      "hoursPic": "dk-04-R11-a2-swapped-insights.png",
+      "insNaN": false,
+      "pic": "dk-R11-a2-swapped-board.png"
+     },
+     {
+      "label": "b1",
+      "intimes": [
+       "8h00 VL IN TIME"
+      ],
+      "headers": [
+       "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 11:00 · 2 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+      ],
+      "hdrAsd": [
+       "In-time / Rally 07:35 · 4 ac",
+       "In-time / Rally 10:00 · 4 ac",
+       "In-time / Rally 11:00 · 2 ac"
+      ],
+      "feedback": [
+       {
+        "key": "it:2.0",
+        "text": ""
+       },
+       {
+        "key": "it:2.1",
+        "text": ""
+       },
+       {
+        "key": "it:2.2",
+        "text": "VL: reporting line 1 has no recognised clock. Check the time."
+       }
+      ],
+      "panel": {
+       "head": "⚠ 9 issues · 3 warnings · tap to review",
+       "lines": [
+        "Gambit — On leave but planned to fly VL ACM ✕",
+        "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕",
+        "Cobra — On leave but planned to fly VL — reason: Overseas leave — off island ✕",
+        "VL: reporting line 1 has no recognised clock. Check the time. ✕",
+        "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Trident, Relay — 2 people are double turning: Trident, Relay ✕",
+        "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required ✕",
+        "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required ✕"
+       ]
+      },
+      "appWarns": [
+       "adv/REPORT_UNRESOLVED: VL: reporting line 1 has no recognised clock. Check the time."
+      ],
+      "nan": false,
+      "hours": {
+       "Cobra": "5h",
+       "Comet": "14h",
+       "Ranger": "18h",
+       "Echo": "25h25"
+      },
+      "hoursPic": "dk-05-R11-b1-insights.png",
+      "insNaN": false,
+      "pic": "dk-R11-b1-board.png",
+      "typed": "8h00 VL IN TIME"
+     },
+     {
+      "label": "b2",
+      "intimes": [
+       "8.00 IN TIME"
+      ],
+      "headers": [
+       "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 11:00 · 2 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+      ],
+      "hdrAsd": [
+       "In-time / Rally 07:35 · 4 ac",
+       "In-time / Rally 10:00 · 4 ac",
+       "In-time / Rally 11:00 · 2 ac"
+      ],
+      "feedback": [
+       {
+        "key": "it:2.0",
+        "text": ""
+       },
+       {
+        "key": "it:2.1",
+        "text": ""
+       },
+       {
+        "key": "it:2.2",
+        "text": "VL: reporting line 1 has no recognised clock. Check the time. RU: reporting line 1 has no recognised clock. Check the time."
+       }
+      ],
+      "panel": {
+       "head": "⚠ 10 issues · 3 warnings · tap to review",
+       "lines": [
+        "Gambit — On leave but planned to fly VL ACM ✕",
+        "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕",
+        "Cobra — On leave but planned to fly VL — reason: Overseas leave — off island ✕",
+        "VL: reporting line 1 has no recognised clock. Check the time. ✕",
+        "RU: reporting line 1 has no recognised clock. Check the time. ✕",
+        "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Trident, Relay — 2 people are double turning: Trident, Relay ✕",
+        "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required ✕",
+        "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required ✕"
+       ]
+      },
+      "appWarns": [
+       "adv/REPORT_UNRESOLVED: VL: reporting line 1 has no recognised clock. Check the time.",
+       "adv/REPORT_UNRESOLVED: RU: reporting line 1 has no recognised clock. Check the time."
+      ],
+      "nan": false,
+      "hours": {
+       "Cobra": "5h",
+       "Comet": "14h",
+       "Ranger": "18h",
+       "Echo": "25h25"
+      },
+      "hoursPic": "dk-06-R11-b2-insights.png",
+      "insNaN": false,
+      "pic": "dk-R11-b2-board.png",
+      "typed": "8.00 IN TIME"
+     },
+     {
+      "label": "b3",
+      "intimes": [
+       "0800IN TIME + WX/NOTAMS"
+      ],
+      "headers": [
+       "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 11:00 · 2 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+      ],
+      "hdrAsd": [
+       "In-time / Rally 07:35 · 4 ac",
+       "In-time / Rally 10:00 · 4 ac",
+       "In-time / Rally 11:00 · 2 ac"
+      ],
+      "feedback": [
+       {
+        "key": "it:2.0",
+        "text": ""
+       },
+       {
+        "key": "it:2.1",
+        "text": ""
+       },
+       {
+        "key": "it:2.2",
+        "text": "VL: reporting line 1 has no recognised clock. Check the time. RU: reporting line 1 has no recognised clock. Check the time."
+       }
+      ],
+      "panel": {
+       "head": "⚠ 10 issues · 3 warnings · tap to review",
+       "lines": [
+        "Gambit — On leave but planned to fly VL ACM ✕",
+        "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕",
+        "Cobra — On leave but planned to fly VL — reason: Overseas leave — off island ✕",
+        "VL: reporting line 1 has no recognised clock. Check the time. ✕",
+        "RU: reporting line 1 has no recognised clock. Check the time. ✕",
+        "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Trident, Relay — 2 people are double turning: Trident, Relay ✕",
+        "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required ✕",
+        "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required ✕"
+       ]
+      },
+      "appWarns": [
+       "adv/REPORT_UNRESOLVED: VL: reporting line 1 has no recognised clock. Check the time.",
+       "adv/REPORT_UNRESOLVED: RU: reporting line 1 has no recognised clock. Check the time."
+      ],
+      "nan": false,
+      "hours": {
+       "Cobra": "5h",
+       "Comet": "14h",
+       "Ranger": "18h",
+       "Echo": "25h25"
+      },
+      "hoursPic": "dk-07-R11-b3-insights.png",
+      "insNaN": false,
+      "pic": "dk-R11-b3-board.png",
+      "typed": "0800IN TIME + WX/NOTAMS"
+     },
+     {
+      "label": "c1",
+      "intimes": [
+       "IN TIME BLDG 12"
+      ],
+      "headers": [
+       "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 11:00 · 2 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+      ],
+      "hdrAsd": [
+       "In-time / Rally 07:35 · 4 ac",
+       "In-time / Rally 10:00 · 4 ac",
+       "In-time / Rally 11:00 · 2 ac"
+      ],
+      "feedback": [
+       {
+        "key": "it:2.0",
+        "text": ""
+       },
+       {
+        "key": "it:2.1",
+        "text": ""
+       },
+       {
+        "key": "it:2.2",
+        "text": ""
+       }
+      ],
+      "panel": {
+       "head": "⚠ 8 issues · 3 warnings · tap to review",
+       "lines": [
+        "Gambit — On leave but planned to fly VL ACM ✕",
+        "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕",
+        "Cobra — On leave but planned to fly VL — reason: Overseas leave — off island ✕",
+        "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Trident, Relay — 2 people are double turning: Trident, Relay ✕",
+        "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required ✕",
+        "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required ✕"
+       ]
+      },
+      "appWarns": [],
+      "nan": false,
+      "hours": {
+       "Cobra": "5h",
+       "Comet": "14h",
+       "Ranger": "18h",
+       "Echo": "25h25"
+      },
+      "hoursPic": "dk-08-R11-c1-insights.png",
+      "insNaN": false,
+      "pic": "dk-R11-c1-board.png",
+      "typed": "IN TIME BLDG 12"
+     },
+     {
+      "label": "c2",
+      "intimes": [
+       "RALLY AT FL240"
+      ],
+      "headers": [
+       "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 11:00 · 2 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+      ],
+      "hdrAsd": [
+       "In-time / Rally 07:35 · 4 ac",
+       "In-time / Rally 10:00 · 4 ac",
+       "In-time / Rally 11:00 · 2 ac"
+      ],
+      "feedback": [
+       {
+        "key": "it:2.0",
+        "text": ""
+       },
+       {
+        "key": "it:2.1",
+        "text": ""
+       },
+       {
+        "key": "it:2.2",
+        "text": ""
+       }
+      ],
+      "panel": {
+       "head": "⚠ 8 issues · 3 warnings · tap to review",
+       "lines": [
+        "Gambit — On leave but planned to fly VL ACM ✕",
+        "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕",
+        "Cobra — On leave but planned to fly VL — reason: Overseas leave — off island ✕",
+        "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Trident, Relay — 2 people are double turning: Trident, Relay ✕",
+        "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required ✕",
+        "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required ✕"
+       ]
+      },
+      "appWarns": [],
+      "nan": false,
+      "hours": {
+       "Cobra": "5h",
+       "Comet": "14h",
+       "Ranger": "18h",
+       "Echo": "25h25"
+      },
+      "hoursPic": "dk-09-R11-c2-insights.png",
+      "insNaN": false,
+      "pic": "dk-R11-c2-board.png",
+      "typed": "RALLY AT FL240"
+     },
+     {
+      "label": "d1-0800-in-front",
+      "intimes": [
+       "08:00 IN TIME + WX/NOTAMS"
+      ],
+      "headers": [
+       "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 11:00 · 2 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 4 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 08:00 · 1 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+      ],
+      "hdrAsd": [
+       "In-time / Rally 07:35 · 4 ac",
+       "In-time / Rally 10:00 · 4 ac",
+       "In-time / Rally 11:00 · 2 ac",
+       "In-time / Rally 08:00 · 1 ac"
+      ],
+      "feedback": [
+       {
+        "key": "it:2.0",
+        "text": ""
+       },
+       {
+        "key": "it:2.1",
+        "text": ""
+       },
+       {
+        "key": "it:2.2",
+        "text": ""
+       },
+       {
+        "key": "it:2.3",
+        "text": ""
+       }
+      ],
+      "panel": {
+       "head": "⚠ 8 issues · 3 warnings · tap to review",
+       "lines": [
+        "Gambit — On leave but planned to fly VL ACM ✕",
+        "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕",
+        "Cobra — On leave but planned to fly VL — reason: Overseas leave — off island ✕",
+        "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Trident, Relay — 2 people are double turning: Trident, Relay ✕",
+        "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required ✕",
+        "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required ✕"
+       ]
+      },
+      "appWarns": [],
+      "nan": false,
+      "pic": "dk-R11-d1-0800-in-front-board.png",
+      "avail": {
+       "heads": [
+        "⠿ AVAILABLE CREW by wave · close ⌃"
+       ],
+       "groups": [
+        "1ST WAVE AM–08:00 · 43 CAN FLY",
+        "2ND WAVE 08:00–10:00 · 33 CAN FLY",
+        "3RD WAVE 10:00–11:00 · 30 CAN FLY",
+        "4TH WAVE 11:00–END · 26 CAN FLY",
+        "AVAILABLE ALL DAY · 24"
+       ]
+      }
+     },
+     {
+      "label": "d2-pilot-on-line",
+      "intimes": [
+       "08:00 IN TIME + WX/NOTAMS"
+      ],
+      "headers": [
+       "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 11:00 · 2 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+       "⠿ Go 4 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 08:00 · 1 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+      ],
+      "hdrAsd": [
+       "In-time / Rally 07:35 · 4 ac",
+       "In-time / Rally 10:00 · 4 ac",
+       "In-time / Rally 11:00 · 2 ac",
+       "In-time / Rally 08:00 · 1 ac"
+      ],
+      "feedback": [
+       {
+        "key": "it:2.0",
+        "text": ""
+       },
+       {
+        "key": "it:2.1",
+        "text": ""
+       },
+       {
+        "key": "it:2.2",
+        "text": ""
+       },
+       {
+        "key": "it:2.3",
+        "text": ""
+       }
+      ],
+      "panel": {
+       "head": "⚠ 8 issues · 3 warnings · tap to review",
+       "lines": [
+        "Gambit — On leave but planned to fly VL ACM ✕",
+        "Nomad — OD clashes with RU BFM — reason: Overseas duty — exercise, off island ✕",
+        "Cobra — On leave but planned to fly VL — reason: Overseas leave — off island ✕",
+        "Trident — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Relay — Tight turn VL ACM→VL BFM: 60 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+        "Trident, Relay — 2 people are double turning: Trident, Relay ✕",
+        "Kraken, Otter — CAT D pilot Kraken with CAT D WSO Otter in RU ACM — CO approval required ✕",
+        "Nomad, Pixel — CAT C pilot Nomad with CAT D WSO Pixel in RU BFM — CO approval required ✕"
+       ]
+      },
+      "appWarns": [],
+      "nan": false,
+      "hours": {
+       "Cobra": "5h",
+       "Comet": "14h",
+       "Ranger": "18h",
+       "Echo": "25h25"
+      },
+      "hoursPic": "dk-10-R11-d2-pilot-on-line-insights.png",
+      "insNaN": false,
+      "pic": "dk-R11-d2-pilot-on-line-board.png",
+      "avail": {
+       "heads": [
+        "⠿ AVAILABLE CREW by wave · close ⌃"
+       ],
+       "groups": [
+        "1ST WAVE AM–08:00 · 43 CAN FLY",
+        "2ND WAVE 08:00–10:00 · 33 CAN FLY",
+        "3RD WAVE 10:00–11:00 · 30 CAN FLY",
+        "4TH WAVE 11:00–END · 26 CAN FLY",
+        "AVAILABLE ALL DAY · 23"
+       ]
+      }
+     }
+    ],
+    "crew": {
+     "VL": [
+      "Cobra",
+      "Comet"
+     ],
+     "RU": [
+      "Ranger",
+      "Echo"
+     ],
+     "onWed": [
+      "mamba",
+      "boosh"
+     ]
+    },
+    "base": {
+     "Cobra": "1h",
+     "Comet": "10h",
+     "Ranger": "14h",
+     "Echo": "21h25"
+    },
+    "basePic": "dk-01-R11-0-base-insights.png",
+    "seats": {
+     "got": [
+      "taipan",
+      "beams"
+     ],
+     "t3": "bane",
+     "t4": "freak"
+    },
+    "firstPress": [
+     "08:00H: IN TIME + WX/NOTAMS"
+    ],
+    "secondPress": [
+     "08:00H: IN TIME + WX/NOTAMS",
+     "08:00H: IN TIME + WX/NOTAMS"
+    ],
+    "dLineMinted": [
+     "IN TIME + WX/NOTAMS"
+    ],
+    "dPilot": "slash",
+    "dPilotName": "Blade"
+   },
+   "errors": []
+  },
+  "R11d-dk": {
+   "at": "2026-10-05T16:46:28.006Z",
+   "base": "http://localhost:4231",
+   "rows": [],
+   "out": {
+    "crew": {
+     "VL": [
+      "Cobra",
+      "Comet"
+     ],
+     "RU": [
+      "Ranger",
+      "Echo"
+     ],
+     "onWed": [
+      "mamba",
+      "boosh"
+     ]
+    },
+    "minted": [
+     "IN TIME + WX/NOTAMS"
+    ],
+    "band0": [
+     "1ST WAVE AM–10:00 · 33 CAN FLY",
+     "2ND WAVE 10:00–END · 27 CAN FLY",
+     "AVAILABLE ALL DAY · 27"
+    ],
+    "hdr0": [
+     "In-time / Rally 07:35 · 4 ac",
+     "In-time / Rally 10:00 · 4 ac",
+     "In-time / Rally — · 1 ac"
+    ],
+    "pic0": "dk-R11d-0b-minted-line.png",
+    "stored": [
+     "08:00 IN TIME + WX/NOTAMS"
+    ],
+    "hdr": [
+     "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+     "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+     "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 08:00 · 1 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+    ],
+    "band1": [
+     "1ST WAVE AM–08:00 · 43 CAN FLY",
+     "2ND WAVE 08:00–10:00 · 33 CAN FLY",
+     "3RD WAVE 10:00–END · 27 CAN FLY",
+     "AVAILABLE ALL DAY · 27"
+    ],
+    "pic1": "dk-R11d-1-line-0800.png",
+    "pk": "taipan",
+    "person": "Cobra",
+    "hoursBefore": "1h",
+    "hoursAfter": "1h",
+    "band2": [
+     "1ST WAVE AM–08:00 · 43 CAN FLY",
+     "2ND WAVE 08:00–10:00 · 33 CAN FLY",
+     "3RD WAVE 10:00–END · 27 CAN FLY",
+     "AVAILABLE ALL DAY · 27"
+    ],
+    "hdr2": [
+     "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 07:35 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+     "⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 10:00 · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave",
+     "⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 08:00 · 1 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave"
+    ],
+    "nan": false,
+    "pic2": "dk-R11d-3-pilot-board.png"
+   },
+   "errors": []
+  },
+  "L08xphone-ph": {
+   "at": "2026-10-05T16:50:02.931Z",
+   "base": "http://localhost:4231",
+   "rows": [],
+   "out": {
+    "SURF": "phone",
+    "A": "fr:1.0.0.0",
+    "B": "fr:2.0.1.0",
+    "snap_1-A-question-open": {
+     "ui": [
+      {
+       "text": "Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later",
+       "rect": {
+        "l": 23,
+        "t": 544,
+        "r": 345,
+        "b": 653
+       },
+       "under": null,
+       "isQ": true,
+       "visible": true,
+       "cls": "mission-role-question"
+      }
+     ],
+     "choose": [],
+     "boxA": {
+      "rect": {
+       "l": 298,
+       "t": 416,
+       "r": 350,
+       "b": 427
+      },
+      "text": "DS FOR VL",
+      "focused": false
+     },
+     "boxB": {
+      "rect": {
+       "l": 676,
+       "t": 464,
+       "r": 728,
+       "b": 475
+      },
+      "text": "RED AIR",
+      "focused": false
+     },
+     "active": "SPAN",
+     "vw": 390,
+     "vh": 844,
+     "pic": "dk-L08phphone-1-A-question-open.png"
+    },
+    "dayBefore": [
+     {
+      "di": 1,
+      "l": 0,
+      "r": 366
+     },
+     {
+      "di": 2,
+      "l": 378,
+      "r": 744
+     }
+    ],
+    "scrollersBefore": [
+     {
+      "tag": "DIV",
+      "id": "eWeek",
+      "cls": "week",
+      "sl": 390,
+      "sw": 2646,
+      "cw": 390
+     }
+    ],
+    "scrollersAfter": [
+     {
+      "tag": "DIV",
+      "id": "eWeek",
+      "cls": "week",
+      "sl": 675,
+      "sw": 2646,
+      "cw": 390
+     }
+    ],
+    "dayAfter": [
+     {
+      "di": 1,
+      "l": -285,
+      "r": 81
+     },
+     {
+      "di": 2,
+      "l": 93,
+      "r": 459
+     }
+    ],
+    "snap_2-after-swipe": {
+     "ui": [
+      {
+       "text": "Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later",
+       "rect": {
+        "l": -262,
+        "t": 544,
+        "r": 60,
+        "b": 653
+       },
+       "under": null,
+       "isQ": true,
+       "visible": true,
+       "cls": "mission-role-question"
+      }
+     ],
+     "choose": [],
+     "boxA": {
+      "rect": {
+       "l": 13,
+       "t": 416,
+       "r": 65,
+       "b": 427
+      },
+      "text": "DS FOR VL",
+      "focused": false
+     },
+     "boxB": {
+      "rect": {
+       "l": 391,
+       "t": 464,
+       "r": 443,
+       "b": 475
+      },
+      "text": "RED AIR",
+      "focused": false
+     },
+     "active": "SPAN",
+     "vw": 390,
+     "vh": 844,
+     "pic": "dk-L08phphone-2-after-swipe.png"
+    },
+    "snap_3-B-box-edited": {
+     "ui": [
+      {
+       "text": "Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later",
+       "rect": {
+        "l": -355,
+        "t": 497,
+        "r": -33,
+        "b": 606
+       },
+       "under": null,
+       "isQ": true,
+       "visible": true,
+       "cls": "mission-role-question"
+      },
+      {
+       "text": "Working copy Choose mission role",
+       "rect": {
+        "l": 23,
+        "t": 529,
+        "r": 345,
+        "b": 579
+       },
+       "under": "fr:1.0.0.1",
+       "isQ": false,
+       "visible": true,
+       "cls": "mission-role-action"
+      }
+     ],
+     "choose": [
+      {
+       "text": "Choose mission role",
+       "rect": {
+        "l": 213,
+        "t": 539,
+        "r": 333,
+        "b": 569
+       },
+       "under": "fr:2.0.1.1",
+       "visible": true
+      }
+     ],
+     "boxA": {
+      "rect": {
+       "l": -80,
+       "t": 369,
+       "r": -28,
+       "b": 380
+      },
+      "text": "DS FOR VL",
+      "focused": false
+     },
+     "boxB": {
+      "rect": {
+       "l": 298,
+       "t": 417,
+       "r": 350,
+       "b": 428
+      },
+      "text": "RED AIR",
+      "focused": true
+     },
+     "active": "fr:2.0.1.0",
+     "vw": 390,
+     "vh": 844,
+     "pic": "dk-L08phphone-3-B-box-edited.png"
+    },
+    "finalQuestions": 1,
+    "finalChoose": [
+     "Choose mission role"
+    ]
+   },
+   "errors": []
+  },
+  "p208-dk": {
+   "at": "2026-10-05T16:55:01.679Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-08",
+     "did": "a wave with take-offs 12:00 and 13:00 (Logic \"nominal report before T/O\" 3h): pressed \"+ In-time / Rally\"; edited the line to 08:00H; set Logic nominal report to 2h; pressed again — once on the Edit Schedule week (Thu), once on the Scheduler Board (Wed)",
+     "saw": "week: Logic nominal report 3h at first press -> first press filled [\"09:00H: IN TIME + WX/NOTAMS\"]; line edited to [\"08:00H: IN TIME + WX/NOTAMS\"]; Logic then 2h (box showed \"2h\") -> second press, lines now [\"08:00H: IN TIME + WX/NOTAMS\",\"08:00H: IN TIME + WX/NOTAMS\"]  ||  board: Logic nominal report 3h at first press -> first press filled [\"09:00H: IN TIME + WX/NOTAMS\"]; line edited to [\"08:00H: IN TIME + WX/NOTAMS\"]; Logic then 2h (box showed \"2h\") -> second press, lines now [\"08:00H: IN TIME + WX/NOTAMS\",\"08:00H: IN TIME + WX/NOTAMS\"]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-P2-08-week-a-first-press.png",
+      "dk-02-P2-08-week-b-second-press.png",
+      "dk-03-P2-08-board-a-first-press.png",
+      "dk-04-P2-08-board-b-second-press.png"
+     ]
+    }
+   ]
+  },
+  "hdr2-dk": {
+   "at": "2026-10-05T16:50:54.841Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-A1",
+     "did": "new wave Mon 20 Jul 00:30-01:30 (one pilot); week: + In-time / Rally; typed 22:30H over the line; Tab; header read at once, after 120 ms, after 1.2 s; then the Board header",
+     "saw": "button filled [\"22:30H: IN TIME + WX/NOTAMS\"], header after the press [\"In-time / Rally 21:30 (prev day)\"]; typed (before Tab) header [\"In-time / Rally 21:30 (prev day)\"]; AT ONCE after Tab [\"In-time / Rally 22:30 (prev day)\"] (caret in SPAN ff:0.2.0.cs); 120 ms [\"In-time / Rally 22:30 (prev day)\"]; 1.2 s [\"In-time / Rally 22:30 (prev day)\"]; board header [\"In-time / Rally 22:30 (prev day) · 1 ac\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-F-A1-week-header-after-line-edit.png",
+      "dk-02-F-A1-board-header-same-moment.png"
+     ]
+    }
+   ]
+  },
+  "L01-dk": {
+   "at": "2026-10-05T16:52:39.844Z",
+   "base": "http://localhost:4231",
+   "rows": [
+    {
+     "id": "L-01",
+     "did": "raw",
+     "saw": [
+      {
+       "label": "A-baseline",
+       "cell": {
+        "box": "FO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRanger": [],
+       "trackerN": 32,
+       "trackerRangerLine": "Ranger IP 1 + 1 +1 18",
+       "trackerText": "",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": false
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 120,
+        "oilFullMin": 361
+       }
+      },
+      {
+       "label": "B-report-2h30",
+       "cell": {
+        "box": "HO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRanger": [],
+       "trackerN": 32,
+       "trackerRangerLine": "Ranger IP 0.5 + 0.5 +0.5 18",
+       "trackerText": "",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": true
+       },
+       "vconf": {
+        "reportLead": 150,
+        "debrief": 120,
+        "oilFullMin": 361
+       }
+      },
+      {
+       "label": "C-report-back-3h",
+       "cell": {
+        "box": "FO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRanger": [],
+       "trackerN": 32,
+       "trackerRangerLine": "Ranger IP 1 + 1 +1 18",
+       "trackerText": "",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": false
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 120,
+        "oilFullMin": 361
+       }
+      },
+      {
+       "label": "D-debrief-1h30",
+       "cell": {
+        "box": "HO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRanger": [],
+       "trackerN": 32,
+       "trackerRangerLine": "Ranger IP 0.5 + 0.5 +0.5 18",
+       "trackerText": "",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": true
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 90,
+        "oilFullMin": 361
+       }
+      },
+      {
+       "label": "E-debrief-back-2h",
+       "cell": {
+        "box": "FO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRanger": [],
+       "trackerN": 32,
+       "trackerRangerLine": "Ranger IP 1 + 1 +1 18",
+       "trackerText": "",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": false
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 120,
+        "oilFullMin": 361
+       }
+      },
+      {
+       "label": "F-threshold-plus30",
+       "cell": {
+        "box": "HO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRanger": [],
+       "trackerN": 32,
+       "trackerRangerLine": "Ranger IP 0.5 + 0.5 +0.5 18",
+       "trackerText": "",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": true
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 120,
+        "oilFullMin": 391
+       }
+      },
+      {
+       "label": "G-threshold-back",
+       "cell": {
+        "box": "FO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRanger": [],
+       "trackerN": 32,
+       "trackerRangerLine": "Ranger IP 1 + 1 +1 18",
+       "trackerText": "",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": false
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 120,
+        "oilFullMin": 361
+       }
+      }
+     ],
+     "verdict": "RAW",
+     "pics": []
+    }
+   ],
+   "rowsOut": [
+    {
+     "label": "A-baseline",
+     "cell": {
+      "box": "FO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRanger": [],
+     "trackerN": 32,
+     "trackerRangerLine": "Ranger IP 1 + 1 +1 18",
+     "trackerText": "",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": false
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 120,
+      "oilFullMin": 361
+     }
+    },
+    {
+     "label": "B-report-2h30",
+     "cell": {
+      "box": "HO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRanger": [],
+     "trackerN": 32,
+     "trackerRangerLine": "Ranger IP 0.5 + 0.5 +0.5 18",
+     "trackerText": "",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": true
+     },
+     "vconf": {
+      "reportLead": 150,
+      "debrief": 120,
+      "oilFullMin": 361
+     }
+    },
+    {
+     "label": "C-report-back-3h",
+     "cell": {
+      "box": "FO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRanger": [],
+     "trackerN": 32,
+     "trackerRangerLine": "Ranger IP 1 + 1 +1 18",
+     "trackerText": "",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": false
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 120,
+      "oilFullMin": 361
+     }
+    },
+    {
+     "label": "D-debrief-1h30",
+     "cell": {
+      "box": "HO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRanger": [],
+     "trackerN": 32,
+     "trackerRangerLine": "Ranger IP 0.5 + 0.5 +0.5 18",
+     "trackerText": "",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": true
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 90,
+      "oilFullMin": 361
+     }
+    },
+    {
+     "label": "E-debrief-back-2h",
+     "cell": {
+      "box": "FO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRanger": [],
+     "trackerN": 32,
+     "trackerRangerLine": "Ranger IP 1 + 1 +1 18",
+     "trackerText": "",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": false
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 120,
+      "oilFullMin": 361
+     }
+    },
+    {
+     "label": "F-threshold-plus30",
+     "cell": {
+      "box": "HO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRanger": [],
+     "trackerN": 32,
+     "trackerRangerLine": "Ranger IP 0.5 + 0.5 +0.5 18",
+     "trackerText": "",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": true
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 120,
+      "oilFullMin": 391
+     }
+    },
+    {
+     "label": "G-threshold-back",
+     "cell": {
+      "box": "FO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRanger": [],
+     "trackerN": 32,
+     "trackerRangerLine": "Ranger IP 1 + 1 +1 18",
+     "trackerText": "",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": false
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 120,
+      "oilFullMin": 361
+     }
+    }
+   ],
+   "errors": []
+  },
+  "L01b-dk": {
+   "at": "2026-10-05T16:54:13.350Z",
+   "base": "http://localhost:4231",
+   "rows": [
+    {
+     "id": "L-01",
+     "did": "raw",
+     "saw": [
+      {
+       "label": "A-baseline",
+       "cell": {
+        "box": "FO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRow": "Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": false
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 120,
+        "oilFullMin": 361
+       }
+      },
+      {
+       "label": "B-report-2h30",
+       "cell": {
+        "box": "HO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRow": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:30–13:15 0.5 left",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": true
+       },
+       "vconf": {
+        "reportLead": 150,
+        "debrief": 120,
+        "oilFullMin": 361
+       }
+      },
+      {
+       "label": "C-report-back-3h",
+       "cell": {
+        "box": "FO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRow": "Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": false
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 120,
+        "oilFullMin": 361
+       }
+      },
+      {
+       "label": "D-debrief-1h30",
+       "cell": {
+        "box": "HO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRow": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–12:45 0.5 left",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": true
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 90,
+        "oilFullMin": 361
+       }
+      },
+      {
+       "label": "E-debrief-back-2h",
+       "cell": {
+        "box": "FO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRow": "Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": false
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 120,
+        "oilFullMin": 361
+       }
+      },
+      {
+       "label": "F-threshold-plus30",
+       "cell": {
+        "box": "HO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRow": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 0.5 left",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": true
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 120,
+        "oilFullMin": 391
+       }
+      },
+      {
+       "label": "G-threshold-back",
+       "cell": {
+        "box": "FO*",
+        "mark": "",
+        "title": "",
+        "cls": "c sc raptor"
+       },
+       "trackerRow": "Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left",
+       "head": {
+        "tag": "ORIG",
+        "pending": "10 changes",
+        "beak": "none",
+        "alpub": "",
+        "unpub": "Unpublish",
+        "signs": [
+         "— name —",
+         "— name —",
+         "— name —",
+         "— name —"
+        ],
+        "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+        "nys": ""
+       },
+       "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+       "rules": {
+        "stamp": false
+       },
+       "vconf": {
+        "reportLead": 180,
+        "debrief": 120,
+        "oilFullMin": 361
+       }
+      }
+     ],
+     "verdict": "RAW",
+     "pics": []
+    }
+   ],
+   "rowsOut": [
+    {
+     "label": "A-baseline",
+     "cell": {
+      "box": "FO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRow": "Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": false
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 120,
+      "oilFullMin": 361
+     }
+    },
+    {
+     "label": "B-report-2h30",
+     "cell": {
+      "box": "HO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRow": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:30–13:15 0.5 left",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": true
+     },
+     "vconf": {
+      "reportLead": 150,
+      "debrief": 120,
+      "oilFullMin": 361
+     }
+    },
+    {
+     "label": "C-report-back-3h",
+     "cell": {
+      "box": "FO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRow": "Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": false
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 120,
+      "oilFullMin": 361
+     }
+    },
+    {
+     "label": "D-debrief-1h30",
+     "cell": {
+      "box": "HO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRow": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–12:45 0.5 left",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": true
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 90,
+      "oilFullMin": 361
+     }
+    },
+    {
+     "label": "E-debrief-back-2h",
+     "cell": {
+      "box": "FO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRow": "Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": false
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 120,
+      "oilFullMin": 361
+     }
+    },
+    {
+     "label": "F-threshold-plus30",
+     "cell": {
+      "box": "HO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRow": "Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 0.5 left",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": true
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 120,
+      "oilFullMin": 391
+     }
+    },
+    {
+     "label": "G-threshold-back",
+     "cell": {
+      "box": "FO*",
+      "mark": "",
+      "title": "",
+      "cls": "c sc raptor"
+     },
+     "trackerRow": "Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left",
+     "head": {
+      "tag": "ORIG",
+      "pending": "10 changes",
+      "beak": "none",
+      "alpub": "",
+      "unpub": "Unpublish",
+      "signs": [
+       "— name —",
+       "— name —",
+       "— name —",
+       "— name —"
+      ],
+      "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+      "nys": ""
+     },
+     "amend": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+     "rules": {
+      "stamp": false
+     },
+     "vconf": {
+      "reportLead": 180,
+      "debrief": 120,
+      "oilFullMin": 361
+     }
+    }
+   ],
+   "errors": []
+  },
+  "L02b-dk": {
+   "at": "2026-10-05T16:56:39.969Z",
+   "base": "http://localhost:4231",
+   "rows": [
+    {
+     "id": "L-02-dk",
+     "did": "raw",
+     "saw": [
+      {
+       "label": "1-fresh",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02b-1-fresh-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "dk-L02b-1-fresh-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "dk-L02b-1-fresh-logic.png"
+      },
+      {
+       "label": "3-after-words",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02b-3-after-words-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "dk-L02b-3-after-words-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+        "reset": {
+         "hidden": false
+        }
+       },
+       "logic_pic": "dk-L02b-3-after-words-logic.png"
+      },
+      {
+       "label": "4-member-in-place-after-words",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02b-4-member-in-place-after-words-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "dk-L02b-4-member-in-place-after-words-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "dk-L02b-4-member-in-place-after-words-logic.png"
+      },
+      {
+       "label": "5-after-number-rule-briefLead-13h",
+       "viewsched": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "vBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         },
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02b-5-after-number-rule-briefLead-13h-viewsched.png",
+       "editsched": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "dk-L02b-5-after-number-rule-briefLead-13h-editsched.png",
+       "logic": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": {
+         "hidden": false,
+         "shown": true,
+         "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones — “Reset to standard” puts them all back."
+        },
+        "lgCount": "75 of 75 rules · 17 fired on this week's schedule · 2 off standard",
+        "reset": {
+         "hidden": false
+        }
+       },
+       "logic_pic": "dk-L02b-5-after-number-rule-briefLead-13h-logic.png"
+      },
+      {
+       "label": "6-member-in-place-after-number-rule",
+       "logic": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": {
+         "hidden": false,
+         "shown": true,
+         "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones. Only an admin can change them."
+        },
+        "lgCount": "75 of 75 rules · 17 fired on this week's schedule · 2 off standard",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "dk-L02b-6-member-in-place-after-number-rule-logic.png",
+       "viewsched": {
+        "bodyFlag": true,
+        "banners": [
+         {
+          "id": "vBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         },
+         {
+          "id": "eBanner",
+          "after": "\"RULES MODIFIED\"",
+          "disp": "inline",
+          "vis": true
+         }
+        ],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02b-6-member-in-place-after-number-rule-viewsched.png"
+      },
+      {
+       "label": "7-after-reset",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02b-7-after-reset-viewsched.png",
+       "editsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "editsched_pic": "dk-L02b-7-after-reset-editsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "dk-L02b-7-after-reset-logic.png"
+      },
+      {
+       "label": "8-reload-as-member",
+       "viewsched": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": null,
+        "lgCount": null,
+        "reset": null
+       },
+       "viewsched_pic": "dk-L02b-8-reload-as-member-viewsched.png",
+       "logic": {
+        "bodyFlag": false,
+        "banners": [],
+        "lgOff": {
+         "hidden": true,
+         "shown": false,
+         "text": ""
+        },
+        "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+        "reset": {
+         "hidden": true
+        }
+       },
+       "logic_pic": "dk-L02b-8-reload-as-member-logic.png"
+      }
+     ],
+     "verdict": "RAW",
+     "pics": []
+    }
+   ],
+   "out": [
+    {
+     "label": "1-fresh",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02b-1-fresh-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "dk-L02b-1-fresh-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "dk-L02b-1-fresh-logic.png"
+    },
+    {
+     "label": "3-after-words",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02b-3-after-words-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "dk-L02b-3-after-words-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+      "reset": {
+       "hidden": false
+      }
+     },
+     "logic_pic": "dk-L02b-3-after-words-logic.png"
+    },
+    {
+     "label": "4-member-in-place-after-words",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02b-4-member-in-place-after-words-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "dk-L02b-4-member-in-place-after-words-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule · 1 off standard",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "dk-L02b-4-member-in-place-after-words-logic.png"
+    },
+    {
+     "label": "5-after-number-rule-briefLead-13h",
+     "viewsched": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "vBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       },
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02b-5-after-number-rule-briefLead-13h-viewsched.png",
+     "editsched": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "dk-L02b-5-after-number-rule-briefLead-13h-editsched.png",
+     "logic": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": {
+       "hidden": false,
+       "shown": true,
+       "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones — “Reset to standard” puts them all back."
+      },
+      "lgCount": "75 of 75 rules · 17 fired on this week's schedule · 2 off standard",
+      "reset": {
+       "hidden": false
+      }
+     },
+     "logic_pic": "dk-L02b-5-after-number-rule-briefLead-13h-logic.png"
+    },
+    {
+     "label": "6-member-in-place-after-number-rule",
+     "logic": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": {
+       "hidden": false,
+       "shown": true,
+       "text": "1 rule changed from the squadron standard. The schedule is being checked against these values, not the published ones. Only an admin can change them."
+      },
+      "lgCount": "75 of 75 rules · 17 fired on this week's schedule · 2 off standard",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "dk-L02b-6-member-in-place-after-number-rule-logic.png",
+     "viewsched": {
+      "bodyFlag": true,
+      "banners": [
+       {
+        "id": "vBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       },
+       {
+        "id": "eBanner",
+        "after": "\"RULES MODIFIED\"",
+        "disp": "inline",
+        "vis": true
+       }
+      ],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02b-6-member-in-place-after-number-rule-viewsched.png"
+    },
+    {
+     "label": "7-after-reset",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02b-7-after-reset-viewsched.png",
+     "editsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "editsched_pic": "dk-L02b-7-after-reset-editsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "dk-L02b-7-after-reset-logic.png"
+    },
+    {
+     "label": "8-reload-as-member",
+     "viewsched": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": null,
+      "lgCount": null,
+      "reset": null
+     },
+     "viewsched_pic": "dk-L02b-8-reload-as-member-viewsched.png",
+     "logic": {
+      "bodyFlag": false,
+      "banners": [],
+      "lgOff": {
+       "hidden": true,
+       "shown": false,
+       "text": ""
+      },
+      "lgCount": "75 of 75 rules · 16 fired on this week's schedule",
+      "reset": {
+       "hidden": true
+      }
+     },
+     "logic_pic": "dk-L02b-8-reload-as-member-logic.png"
+    }
+   ],
+   "errors": []
+  }
+ }
+}

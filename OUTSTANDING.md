@@ -59,7 +59,7 @@ app; with the next change to the schedule's text boxes). **From the same check's
 each parked with a recommended answer in the check's sheet (`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md` §12):**
 [TAB-DAY-END] (where Tab goes after a day's last text box when no button follows — D553), [ROLE-QUESTION-SECOND] (a second formation's
 Blue/Red question replaces the first one's — D535, D523), [ROLE-QUESTION-WEEK-DAY] (does moving to another day on the week end an open
-question — D535). Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
+question — D535). Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
 
 **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
 are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
@@ -1960,6 +1960,17 @@ D535: an open question ends when he "moves to another day". On the Scheduler Boa
 once on a desktop, one per swipe on a phone — the question stays on its day until answered or Later; since W9's fix it blocks nothing
 (every other formation's button shows). **Parked for his answer (D596) — the sheet §12, question 3; recommended: leave it.**
 **Place (the agent's line):** low; with [ROLE-QUESTION-SECOND].
+
+### [REQ-ROW-OWN-BOXES] Typing in the programme row of an accepted request changes the row, not the request (both walks of the Codex stack check, 5–6 Oct 26 — a question for him)
+A timed request (walked: Training, Sat 18 Jul, 11:00–12:00) accepted onto the Ground / Common Programme: typing a new start, end or
+remark in the PROGRAMME ROW's own boxes changes that row (10:15–11:45, the new words) while the request — its line under Personal
+Inputs, the Inputs page — keeps 11:00–12:00 and its own remark, also after a reload; typing in the request's own boxes changes the
+request and the row follows. On the week and on the board, by click and by Tab alike. Older than the Codex stack: nothing in it touched
+that code (the row's boxes are the scheduler's own layer over the request — `raptor-port/src/engine/overlay.ts`, unchanged against
+`main`); Astra's scenario P4c-03 assumed the row IS the request. Walkers D and P, `raptor-port/docs/handpass/parts/stk-D.md`,
+`stk2-P.md`. Not ruled. **Place (the agent's line):** low — ask him: should the row's times be the request's (one record), or may the
+scheduler re-time the row on the programme and leave the member's request as filed (as now)? With the next change to requests on the
+programme.
 
 ### [SAVE-NOTE-TEST-GAPS] Two soft spots in the failed-save warning's browser test (Astra's read of the last round, 6 Oct 26 — tests only, the app is right)
 Astra read commit `bcc69fc8` (the last round of `[SAVE-NOTE-COVERS]`, never independently read before): the three repairs are sound

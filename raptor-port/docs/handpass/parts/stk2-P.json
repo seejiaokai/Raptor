@@ -1,0 +1,1564 @@
+{
+ "parts": {
+  "mon": {
+   "at": "2026-10-05T16:47:51.630Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4c-05",
+     "did": "Week, Monday, 2-aircraft formation VL (Brief empty): clicked into its Callsign, pressed Tab 11 times",
+     "saw": "✓ route Callsign→Mission→Brief→take-off→landing→aircraft-one Remarks→stores→aircraft-two Remarks→stores→Area→time→next formation [txt:ff:0.0.0.cs > txt:ff:0.0.0.msn > txt:ff:0.0.0.br > txt:ff:0.0.0.to > txt:ff:0.0.0.ld > txt:fr:0.0.0.0 > bombs:0.0.0.0 > txt:fr:0.0.0.1 > bombs:0.0.0.1 > area:0.0.0 > atime:0.0.0 > txt:ff:0.0.1.cs] · ✓ no box repeated, empty Brief not skipped · ✓ every stop visible and topmost [[]] · ✓ Tab typed nothing: nothing written",
+     "verdict": "PASS",
+     "pics": [
+      "001-P4c-05-week-brief-empty.png",
+      "002-P4c-05-week-after-11-tabs.png"
+     ]
+    },
+    {
+     "id": "P4c-06",
+     "did": "Board, formation VL: Tab through every displayed aircraft row from Callsign, then Shift+Tab the whole way back",
+     "saw": "✓ forward: both aircraft rows each give Callsign/Mission/Brief/take-off/landing/Remarks/stores, then Area/time, then next formation [bfld:ff:0.0.0.cs > bfld:ff:0.0.0.msn > bfld:ff:0.0.0.br > bfld:ff:0.0.0.to > bfld:ff:0.0.0.ld > bfld:fr:0.0.0.0 > bombs:0.0.0.0 > bfld:ff:0.0.0.cs > bfld:ff:0.0.0.msn > bfld:ff:0.0.0.br > bfld:ff:0.0.0.to > bfld:ff:0.0.0.ld > bfld:fr:0.0.0.1 > bombs:0.0.0.1 > area:0.0.0 > atime:0.0.0 > bfld:ff:0.0.1.cs > bfld:ff:0.0.1.msn] · ✓ reverse is the exact mirror [bfld:ff:0.0.1.cs > atime:0.0.0 > area:0.0.0 > bombs:0.0.0.1 > bfld:fr:0.0.0.1 > bfld:ff:0.0.0.ld > bfld:ff:0.0.0.to > bfld:ff:0.0.0.br > bfld:ff:0.0.0.msn > bfld:ff:0.0.0.cs > bombs:0.0.0.0 > bfld:fr:0.0.0.0 > bfld:ff:0.0.0.ld > bfld:ff:0.0.0.to > bfld:ff:0.0.0.br > bfld:ff:0.0.0.msn > bfld:ff:0.0.0.cs] · ✓ every stop visible and topmost [[]] · ✓ no writes",
+     "verdict": "PASS",
+     "pics": [
+      "003-P4c-06-board-aircraft-two-row.png",
+      "004-P4c-06-board-after-reverse.png"
+     ]
+    },
+    {
+     "id": "P4c-01",
+     "did": "Board, formation VL: on aircraft one typed Callsign KILO, Mission DACT, take-off 12:50 (Tab between); Tabbed on into aircraft two's repeated boxes; typed LIMA there and Shift+Tabbed back to aircraft one",
+     "saw": "✓ Tab out of aircraft-one Callsign lands on Mission; ... to take-off [[\"bfld:ff:0.0.0.msn\",\"bfld:ff:0.0.0.to\"]] · ✓ data after the three typed edits [{\"cs\":\"KILO\",\"msn\":\"DACT\",\"to\":\"12:50\",\"ld\":\"14:05\"}] · ✓ aircraft two's repeated Callsign, Mission, Brief, take-off show the CURRENT shared values when the caret reaches them (KILO, DACT, blank, 12:50) [[{\"at\":\"bfld:ff:0.0.0.cs\",\"ix\":52,\"shown\":\"KILO\"},{\"at\":\"bfld:ff:0.0.0.msn\",\"ix\":53,\"shown\":\"DACT\"},{\"at\":\"bfld:ff:0.0.0.br\",\"ix\":54,\"shown\":\"\"},{\"at\":\"bfld:ff:0.0.0.to\",\"ix\":55,\"shown\":\"12:50\"},{\"at\":\"bfld:ff:0.0.0.ld\",\"ix\":56,\"shown\":\"14:05\"}]] · ✓ typing LIMA on aircraft two then Shift+Tab: caret leaves to the previous box and shared data = LIMA [{\"data\":\"LIMA\",\"ixAfter\":51,\"at\":\"board:bombs=0.0.0.0 [0.waves] @(854,458 34x14)\"}] · ✓ back on aircraft one's Callsign after Shift+Tab x6: caret there and BOTH callsign boxes read LIMA [{\"ixBack\":45,\"vals\":[\"LIMA\",\"LIMA\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "005-P4c-01-aircraft-two-repeated.png",
+      "006-P4c-01-back-on-aircraft-one.png"
+     ]
+    },
+    {
+     "id": "P4c-02-week",
+     "did": "Week, Monday wave 1: added a third In-time/Rally line; emptied the first line and Tabbed on, edited the survivor and Tabbed on; then added another, emptied the middle line and Shift+Tabbed, edited the line landed on and Tabbed on",
+     "saw": "✓ started with the lines the day has plus the one added (>= 2 lines, the check below needs 3) [[\"0940H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"1040H: FIRST WAVE RU IN TIME + WX/NOTAMS\",\"09:40H: IN TIME + WX/NOTAMS\"]] · ✓ after emptying the FIRST line and Tab: 2 lines remain = old second and third, unchanged; caret on the survivor (now first) or next [{\"caretAt\":\"week:itline=0|0|0 [0.waves] @(43,442 481x17)\",\"text\":\"10:40H: FIRST WAVE RU IN\",\"lines\":[\"1040H: FIRST WAVE RU IN TIME + WX/NOTAMS\",\"09:40H: IN TIME + WX/NOTAMS\"]}] · ✓ edit typed where the caret landed went to a surviving line; the third stayed unchanged; 2 lines [{\"caretAfterEdit\":\"week:itline=0|0|1 [0.waves] @(43,459 481x17)\",\"lines\":[\"10:45H: EDITED SECOND\",\"09:40H: IN TIME + WX/NOTAMS\"]}] · ✓ BACKWARD: emptying the middle of 3 lines and Shift+Tab lands on the first line (unchanged text), 2 lines remain [{\"before\":[\"10:45H: EDITED SECOND\",\"09:40H: IN TIME + WX/NOTAMS\",\"09:40H: IN TIME + WX/NOTAMS\"],\"caretAt\":\"week:itline=0|0|0 [0.waves] @(43,425 481x17)\",\"txt\":\"10:45H: EDITED SECOND\",\"lines\":[\"10:45H: EDITED SECOND\",\"09:40H: IN TIME + WX/NOTAMS\"]}] · ✓ edit there then Tab: first line edited, last line unchanged, 2 lines [{\"caretAt\":\"week:itline=0|0|1 [0.waves] @(43,442 481x17)\",\"lines\":[\"10:46H: EDITED FIRST\",\"09:40H: IN TIME + WX/NOTAMS\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "007-P4c-02-week-after-empty-first.png",
+      "008-P4c-02-week-after-empty-middle-shift-tab.png",
+      "009-P4c-02-week-after-edit-then-tab.png"
+     ]
+    },
+    {
+     "id": "P4c-02-board",
+     "did": "Board, Monday wave 1: added a third In-time/Rally line; emptied the first line and Tabbed on, edited the survivor and Tabbed on; then added another, emptied the middle line and Shift+Tabbed, edited the line landed on and Tabbed on",
+     "saw": "✓ started with the lines the day has plus the one added (>= 2 lines, the check below needs 3) [[\"0940H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"1040H: FIRST WAVE RU IN TIME + WX/NOTAMS\",\"09:40H: IN TIME + WX/NOTAMS\"]] · ✓ after emptying the FIRST line and Tab: 2 lines remain = old second and third, unchanged; caret on the survivor (now first) or next [{\"caretAt\":\"board:itline=0|0|0 [0.waves] @(26,495 1043x17)\",\"text\":\"10:40H: FIRST WAVE RU IN\",\"lines\":[\"1040H: FIRST WAVE RU IN TIME + WX/NOTAMS\",\"09:40H: IN TIME + WX/NOTAMS\"]}] · ✓ edit typed where the caret landed went to a surviving line; the third stayed unchanged; 2 lines [{\"caretAfterEdit\":\"board:itline=0|0|1 [0.waves] @(26,512 1043x17)\",\"lines\":[\"10:45H: EDITED SECOND\",\"09:40H: IN TIME + WX/NOTAMS\"]}] · ✓ BACKWARD: emptying the middle of 3 lines and Shift+Tab lands on the first line (unchanged text), 2 lines remain [{\"before\":[\"10:45H: EDITED SECOND\",\"09:40H: IN TIME + WX/NOTAMS\",\"09:40H: IN TIME + WX/NOTAMS\"],\"caretAt\":\"board:itline=0|0|0 [0.waves] @(26,478 1043x17)\",\"txt\":\"10:45H: EDITED SECOND\",\"lines\":[\"10:45H: EDITED SECOND\",\"09:40H: IN TIME + WX/NOTAMS\"]}] · ✓ edit there then Tab: first line edited, last line unchanged, 2 lines [{\"caretAt\":\"board:itline=0|0|1 [0.waves] @(26,495 1043x17)\",\"lines\":[\"10:46H: EDITED FIRST\",\"09:40H: IN TIME + WX/NOTAMS\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "010-P4c-02-board-after-empty-first.png",
+      "011-P4c-02-board-after-empty-middle-shift-tab.png",
+      "012-P4c-02-board-after-edit-then-tab.png"
+     ]
+    },
+    {
+     "id": "P4c-10-week",
+     "did": "Week, Monday: typed END in the LAST open box and pressed Tab once; clicked the FIRST open box and pressed Shift+Tab once",
+     "saw": "✓ the text typed in the last box committed (box reads END, one command) [{\"stored\":\"END\",\"commands\":1,\"lastKey\":\"imuvhdmyynetinr.rmks\"}] · ✓ Tab from the last box leaves text entry (no loop to the first box) [{\"caretAt\":\"(none: BODY)\"}] · ✓ day and page unchanged [{\"day0\":{\"sb\":null,\"page\":\"editsched\"},\"day1\":{\"sb\":null,\"page\":\"editsched\"}}] · ✓ focus did not enter the week hidden behind the Board [{\"insideWeekBehind\":false}] · ✓ Shift+Tab from the first box leaves text entry (no loop to the last box) [{\"caretAt\":\"week:SELECT @(428,324 123x37)\"}] · ✓ and not into the hidden week behind the Board [{\"behind2\":false}] · ✓ no ordinary control was activated by either press (no command added by Shift+Tab) [{\"n2\":2,\"n3\":2}]",
+     "verdict": "PASS",
+     "pics": [
+      "013-P4c-10-week-after-last-tab.png",
+      "014-P4c-10-week-after-first-shifttab.png"
+     ]
+    },
+    {
+     "id": "P4c-10-board",
+     "did": "Board, Monday: typed END in the LAST open box and pressed Tab once; clicked the FIRST open box and pressed Shift+Tab once",
+     "saw": "✓ the text typed in the last box committed (box reads END, one command) [{\"stored\":\"END\",\"commands\":1,\"lastKey\":\"imuvhdps3in771z.rmks\"}] · ✓ Tab from the last box leaves text entry (no loop to the first box) [{\"caretAt\":\"(none: BODY)\"}] · ✓ day and page unchanged [{\"day0\":{\"sb\":0,\"page\":\"editsched\"},\"day1\":{\"sb\":0,\"page\":\"editsched\"}}] · ✓ focus did not enter the week hidden behind the Board [{\"insideWeekBehind\":false}] · ✓ Shift+Tab from the first box leaves text entry (no loop to the last box) [{\"caretAt\":\"board:BUTTON [0.notes] @(1045,269 49x18)\"}] · ✓ and not into the hidden week behind the Board [{\"behind2\":false}] · ✓ no ordinary control was activated by either press (no command added by Shift+Tab) [{\"n2\":2,\"n3\":2}]",
+     "verdict": "PASS",
+     "pics": [
+      "015-P4c-10-board-after-last-tab.png",
+      "016-P4c-10-board-after-first-shifttab.png"
+     ]
+    },
+    {
+     "id": "P4c-11-week",
+     "did": "Week: for a time box, a Remarks box, a reporting line and a day note: recorded the saved value; typed a replacement then Escape; typed a replacement then Enter; then Tab",
+     "saw": "✓ time (take-off): Escape restores the saved value (no write) [{\"orig\":\"12:40\",\"afterEsc\":\"12:40\",\"commands\":0}] · ✓ time (take-off): Enter commits (one write), caret after Enter [{\"afterEnter\":\"09:09\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":59}] · ✗ time (take-off): Tab after Enter uses the same route (next box from where the caret was) and adds no second write [{\"ixTab\":53,\"ixEnter\":-1,\"ix\":59,\"caret\":\"week:txt=wl:0.0 [0.waves] @(66,322 40x15)\",\"commands\":0}] · ✓ Remarks: Escape restores the saved value (no write) [{\"orig\":\"1B: BFM-6\",\"afterEsc\":\"1B: BFM-6\",\"commands\":0}] · ✓ Remarks: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT REMARKS W\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":61}] · ✗ Remarks: Tab after Enter uses the same route (next box from where the caret was) and adds no second write [{\"ixTab\":53,\"ixEnter\":-1,\"ix\":61,\"caret\":\"week:txt=wl:0.0 [0.waves] @(66,344 40x15)\",\"commands\":0}] · ✓ reporting line: Escape restores the saved value (no write) [{\"orig\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"afterEsc\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"commands\":0}] · ✓ reporting line: Enter commits (one write), caret after Enter [{\"afterEnter\":\"08:08H: ESC ENT LINE W\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":54}] · ✗ reporting line: Tab after Enter uses the same route (next box from where the caret was) and adds no second write [{\"ixTab\":53,\"ixEnter\":-1,\"ix\":54,\"caret\":\"week:txt=wl:0.0 [0.waves] @(66,414 40x15)\",\"commands\":0}] · ✓ day note: Escape restores the saved value (no write) [{\"orig\":\"EP: ENGINE FIRE ON TAKE OFF\",\"afterEsc\":\"EP: ENGINE FIRE ON TAKE OFF\",\"commands\":0}] · ✓ day note: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT NOTE W\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":0}] · ✓ day note: Tab after Enter uses the same route (next box from where the caret was) and adds no second write [{\"ixTab\":0,\"ixEnter\":-1,\"ix\":0,\"caret\":\"week:txt=dn:0.0 [0.prog] @(40,440 520x14)\",\"commands\":0}]",
+     "verdict": "FAIL",
+     "pics": [
+      "017-P4c-11-week-end.png"
+     ]
+    },
+    {
+     "id": "P4c-11-board",
+     "did": "Board: for a time box, a Remarks box, a reporting line and a day note: recorded the saved value; typed a replacement then Escape; typed a replacement then Enter; then Tab",
+     "saw": "✗ time (take-off): Escape restores the saved value (no write) [{\"orig\":\"12:40\",\"afterEsc\":\"09:19\",\"commands\":0}] · ✓ time (take-off): Enter commits (one write), caret after Enter [{\"afterEnter\":\"09:19\",\"commands\":1,\"caretAfterEnter\":\"board:bfld=ff:0.0.0.to [0.waves] @(268,490 52x25)\",\"ixEnter\":48,\"ix\":48}] · ✓ time (take-off): Tab after Enter uses the same route (next box from where the caret was) and adds no second write [{\"ixTab\":49,\"ixEnter\":48,\"ix\":48,\"caret\":\"board:bfld=ff:0.0.0.ld [0.waves] @(328,490 52x25)\",\"commands\":0}] · ✓ Remarks: Escape restores the saved value (no write) [{\"orig\":\"1B: BFM-6\",\"afterEsc\":\"1B: BFM-6\",\"commands\":0}] · ✓ Remarks: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT REMARKS B\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":50}] · ✗ Remarks: Tab after Enter uses the same route (next box from where the caret was) and adds no second write [{\"ixTab\":-1,\"ixEnter\":-1,\"ix\":50,\"caret\":\"board:BUTTON [0.notes] @(1045,269 49x18)\",\"commands\":0}] · ✓ reporting line: Escape restores the saved value (no write) [{\"orig\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"afterEsc\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"commands\":0}] · ✓ reporting line: Enter commits (one write), caret after Enter [{\"afterEnter\":\"08:08H: ESC ENT LINE B\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":43}] · ✗ reporting line: Tab after Enter uses the same route (next box from where the caret was) and adds no second write [{\"ixTab\":-1,\"ixEnter\":-1,\"ix\":43,\"caret\":\"board:BUTTON [0.notes] @(1045,269 49x18)\",\"commands\":0}] · ✓ day note: Escape restores the saved value (no write) [{\"orig\":\"EP: ENGINE FIRE ON TAKE OFF\",\"afterEsc\":\"EP: ENGINE FIRE ON TAKE OFF\",\"commands\":0}] · ✓ day note: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT NOTE B\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":0}] · ✗ day note: Tab after Enter uses the same route (next box from where the caret was) and adds no second write [{\"ixTab\":-1,\"ixEnter\":-1,\"ix\":0,\"caret\":\"board:BUTTON [0.notes] @(1045,269 49x18)\",\"commands\":0}]",
+     "verdict": "FAIL",
+     "pics": [
+      "018-P4c-11-board-end.png"
+     ]
+    },
+    {
+     "id": "P4c-12",
+     "did": "Tracking on; Board Monday: Mission ACM, Remarks \"DS FOR RU\" answered Red; signed the four names, published; then on Board and then Week clicked into the first box and Tabbed through every open box, one more Tab, Shift+Tab all the way back — typed nothing",
+     "saw": "✓ setup: question asked once and answered Red; day signed and published (tag, sign-offs) [{\"asked\":1,\"signed\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"},\"pubr\":{\"pressed\":true,\"label\":\"Publish day\"},\"head0\":{\"tag\":\"ORIG\",\"pending\":\"8 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}}] · ✓ board: forward route over all 214 boxes in order [[]] · ✓ board: reverse route in order [[]] · ✓ board: nothing changed (days, inputs, settings, command count, history lines, pending counts) [{\"seq\":[10,10],\"elog\":[8,8],\"pend\":[0,0,0,0,0,0,0]}] · ✓ board: the day's bar and four sign-offs as before [{\"before\":{\"tag\":\"ORIG\",\"pending\":\"8 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"},\"after\":{\"tag\":\"ORIG\",\"pending\":\"8 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLAN] · ✓ board: no Blue/Red question appeared [0] · ✓ week: forward route over all 206 boxes in order [[]] · ✓ week: reverse route in order [[]] · ✓ week: nothing changed (days, inputs, settings, command count, history lines, pending counts) [{\"seq\":[10,10],\"elog\":[8,8],\"pend\":[0,0,0,0,0,0,0]}] · ✓ week: the day's bar and four sign-offs as before [{\"before\":{\"tag\":\"ORIG\",\"pending\":\"8 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"},\"after\":{\"tag\":\"ORIG\",\"pending\":\"8 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLAN] · ✓ week: no Blue/Red question appeared [0]",
+     "verdict": "PASS",
+     "pics": [
+      "019-P4c-12-published-monday-board.png",
+      "020-P4c-12-board-after-traversal.png",
+      "021-P4c-12-week-after-traversal.png"
+     ]
+    },
+    {
+     "id": "P4c-14",
+     "did": "Tracking on, Monday ACM + \"DS FOR RU\" left unanswered, signed and published (Original), amended (callsign MIKE on formation 2) and published as an amendment; then View-only Sched as admin, the older and latest version previews on the Board, the live published Remarks box, and the member's View-only Sched: Tab x12 and typing QQQ in each",
+     "saw": "ERROR locator.click: Timeout 9000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#burger')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"burger\" class=\"burger\" aria-label=\"Menu\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    17 × wa",
+     "verdict": "NOT WALKED (script error)",
+     "pics": [
+      "024-ERR-P4c-14.png"
+     ]
+    },
+    {
+     "id": "ERRORS-mon",
+     "did": "console / page errors / 4xx across the worlds of mon",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-P4c-05-week-brief-empty.png",
+    "002-P4c-05-week-after-11-tabs.png",
+    "003-P4c-06-board-aircraft-two-row.png",
+    "004-P4c-06-board-after-reverse.png",
+    "005-P4c-01-aircraft-two-repeated.png",
+    "006-P4c-01-back-on-aircraft-one.png",
+    "007-P4c-02-week-after-empty-first.png",
+    "008-P4c-02-week-after-empty-middle-shift-tab.png",
+    "009-P4c-02-week-after-edit-then-tab.png",
+    "010-P4c-02-board-after-empty-first.png",
+    "011-P4c-02-board-after-empty-middle-shift-tab.png",
+    "012-P4c-02-board-after-edit-then-tab.png",
+    "013-P4c-10-week-after-last-tab.png",
+    "014-P4c-10-week-after-first-shifttab.png",
+    "015-P4c-10-board-after-last-tab.png",
+    "016-P4c-10-board-after-first-shifttab.png",
+    "017-P4c-11-week-end.png",
+    "018-P4c-11-board-end.png",
+    "019-P4c-12-published-monday-board.png",
+    "020-P4c-12-board-after-traversal.png",
+    "021-P4c-12-week-after-traversal.png",
+    "022-P4c-14-live-published-remarks-focus.png",
+    "023-P4c-14-viewonly-after-tabs.png",
+    "024-ERR-P4c-14.png"
+   ],
+   "errors": []
+  },
+  "mon-P4c-11+P4c-14": {
+   "at": "2026-10-05T16:51:11.491Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4c-11-week",
+     "did": "Week: for a time box, a Remarks box, a reporting line and a day note: recorded the saved value; typed a replacement then Escape; typed a replacement then Enter; then Tab",
+     "saw": "✓ time (take-off): Escape restores the saved value (no write) [{\"orig\":\"12:40\",\"afterEsc\":\"12:40\",\"commands\":0}] · ✓ time (take-off): Enter commits (one write), caret after Enter [{\"afterEnter\":\"09:09\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":59}] · ✗ time (take-off): typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"09:09\",\"commands\":0,\"ix\":59,\"ixT\":60,\"caret\":\"week:txt=ff:0.0.0.ld [0.waves] @(162,422 39x13)\"}] · ✓ Remarks: Escape restores the saved value (no write) [{\"orig\":\"1B: BFM-6\",\"afterEsc\":\"1B: BFM-6\",\"commands\":0}] · ✓ Remarks: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT REMARKS W\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":61}] · ✓ Remarks: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"ESC ENT REMARKS W T\",\"commands\":1,\"ix\":61,\"ixT\":62,\"caret\":\"week:bombs=0.0.0.0 [0.waves] @(471,458 34x15)\"}] · ✓ reporting line: Escape restores the saved value (no write) [{\"orig\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"afterEsc\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"commands\":0}] · ✓ reporting line: Enter commits (one write), caret after Enter [{\"afterEnter\":\"08:08H: ESC ENT LINE W\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":54}] · ✓ reporting line: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"08:08H: ESC ENT LINE W T\",\"commands\":1,\"ix\":54,\"ixT\":55,\"caret\":\"week:itline=0|0|1 [0.waves] @(43,459 481x17)\"}] · ✓ day note: Escape restores the saved value (no write) [{\"orig\":\"EP: ENGINE FIRE ON TAKE OFF\",\"afterEsc\":\"EP: ENGINE FIRE ON TAKE OFF\",\"commands\":0}] · ✓ day note: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT NOTE W\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":0}] · ✓ day note: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"ESC ENT NOTE W T\",\"commands\":1,\"ix\":0,\"ixT\":1,\"caret\":\"week:txt=dn:0.1 [0.prog] @(40,454 520x14)\"}] · ✗ OBSERVED, Tab pressed after Enter: time (take-off): after Enter the caret is in no box; a Tab pressed next lands on week:txt=wl:0.0 [0.waves] @(66,322 40x15) (box 53; the Enter-box was 59); second write: false · ✗ OBSERVED, Tab pressed after Enter: Remarks: after Enter the caret is in no box; a Tab pressed next lands on week:txt=wl:0.0 [0.waves] @(66,344 40x15) (box 53; the Enter-box was 61); second write: false · ✗ OBSERVED, Tab pressed after Enter: reporting line: after Enter the caret is in no box; a Tab pressed next lands on week:txt=wl:0.0 [0.waves] @(66,414 40x15) (box 53; the Enter-box was 54); second write: false · ✗ OBSERVED, Tab pressed after Enter: day note: after Enter the caret is in no box; a Tab pressed next lands on week:txt=dn:0.0 [0.prog] @(40,440 520x14) (box 0; the Enter-box was 0); second write: false",
+     "verdict": "FAIL",
+     "pics": [
+      "001-P4c-11-week-end.png"
+     ]
+    },
+    {
+     "id": "P4c-11-board",
+     "did": "Board: for a time box, a Remarks box, a reporting line and a day note: recorded the saved value; typed a replacement then Escape; typed a replacement then Enter; then Tab",
+     "saw": "✗ time (take-off): Escape restores the saved value (no write) [{\"orig\":\"12:40\",\"afterEsc\":\"09:19\",\"commands\":0}] · ✓ time (take-off): Enter commits (one write), caret after Enter [{\"afterEnter\":\"09:19\",\"commands\":1,\"caretAfterEnter\":\"board:bfld=ff:0.0.0.to [0.waves] @(268,490 52x25)\",\"ixEnter\":48,\"ix\":48}] · ✗ time (take-off): typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"09:19\",\"commands\":0,\"ix\":48,\"ixT\":49,\"caret\":\"board:bfld=ff:0.0.0.ld [0.waves] @(328,490 52x25)\"}] · ✓ Remarks: Escape restores the saved value (no write) [{\"orig\":\"1B: BFM-6\",\"afterEsc\":\"1B: BFM-6\",\"commands\":0}] · ✓ Remarks: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT REMARKS B\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":50}] · ✓ Remarks: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"ESC ENT REMARKS B T\",\"commands\":1,\"ix\":50,\"ixT\":51,\"caret\":\"board:bombs=0.0.0.0 [0.waves] @(854,517 34x14)\"}] · ✓ reporting line: Escape restores the saved value (no write) [{\"orig\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"afterEsc\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"commands\":0}] · ✓ reporting line: Enter commits (one write), caret after Enter [{\"afterEnter\":\"08:08H: ESC ENT LINE B\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":43}] · ✓ reporting line: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"08:08H: ESC ENT LINE B T\",\"commands\":1,\"ix\":43,\"ixT\":44,\"caret\":\"board:itline=0|0|1 [0.waves] @(26,512 1043x17)\"}] · ✓ day note: Escape restores the saved value (no write) [{\"orig\":\"EP: ENGINE FIRE ON TAKE OFF\",\"afterEsc\":\"EP: ENGINE FIRE ON TAKE OFF\",\"commands\":0}] · ✓ day note: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT NOTE B\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":0}] · ✓ day note: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"ESC ENT NOTE B T\",\"commands\":1,\"ix\":0,\"ixT\":1,\"caret\":\"board:bfld=dn:0.1 [0.notes] @(82,339 943x24)\"}] · ✓ OBSERVED, Tab pressed after Enter: time (take-off): after Enter the caret is still in the box; a Tab pressed next lands on board:bfld=ff:0.0.0.ld [0.waves] @(328,490 52x25) (box 49; the Enter-box was 48); second write: false · ✗ OBSERVED, Tab pressed after Enter: Remarks: after Enter the caret is in no box; a Tab pressed next lands on board:BUTTON [0.notes] @(1045,269 49x18) (box -1; the Enter-box was 50); second write: false · ✗ OBSERVED, Tab pressed after Enter: reporting line: after Enter the caret is in no box; a Tab pressed next lands on board:BUTTON [0.notes] @(1045,269 49x18) (box -1; the Enter-box was 43); second write: false · ✗ OBSERVED, Tab pressed after Enter: day note: after Enter the caret is in no box; a Tab pressed next lands on board:BUTTON [0.notes] @(1045,269 49x18) (box -1; the Enter-box was 0); second write: false",
+     "verdict": "FAIL",
+     "pics": [
+      "002-P4c-11-board-end.png"
+     ]
+    },
+    {
+     "id": "P4c-14",
+     "did": "Tracking on, Monday ACM + \"DS FOR RU\" left unanswered, signed and published (Original), amended (callsign MIKE on formation 2) and published as an amendment; then View-only Sched as admin, the older and latest version previews on the Board, the live published Remarks box, and the member's View-only Sched: Tab x12 and typing QQQ in each",
+     "saw": "✓ setup: two issued versions (Original and an amendment) [{\"ver0\":\"2026-07-13#0\",\"ver1\":\"2026-07-13#1\",\"pubr\":{\"pressed\":true,\"label\":\"Publish day\"},\"alr\":{\"pressed\":true,\"label\":\"Publish AL1\"}}] · ✓ View-only Sched (admin): no editable schedule box; Tab x12 + typing QQQ + Enter wrote nothing [{\"editable\":0,\"diff\":[],\"stops\":\"A > A > A > A > A > A > A > BUTTON#fastSync > BUTTON#notifyBell > BUTTON#insightBtn > BUTTON#logout > BUTTON#roleBadge\"}] · ✓ Board preview, older version (Original): frozen, no editable box, typing QQQ wrote nothing [{\"frozen\":1,\"editable\":0,\"rmInfo\":{\"tag\":\"TEXTAREA\",\"ro\":false,\"dis\":true,\"ce\":null},\"roleButtonsInPreview\":0,\"diff\":[],\"stops\":\"SPAN > SPAN > SPAN > SPAN > SPAN > SPAN > SPAN > SPAN > SPAN > SPAN > SPAN > SPAN\"}] · ✓ Board preview, latest version (the amendment): frozen, no editable box, typing QQQ wrote nothing [{\"frozen\":1,\"editable\":0,\"rmInfo\":null,\"roleButtonsInPreview\":0,\"diff\":[],\"stops\":\"A > A > A > A > A > A > A > A > A > BUTTON#undoBtn > BUTTON#histBtn > BUTTON#fastSync\"}] · ✓ live published day: focusing the Remarks box — what role action shows (the admin's published role action stays apart from text traversal) [{\"choose\":[\"Choose mission role\"],\"q\":0}] · ✓ member View-only Sched: no editable box, no role button; Tab x12 + QQQ + Enter wrote nothing [{\"editable\":0,\"roleBtn\":0,\"diff\":[],\"stops\":\"A > A > A > A > A > A > BUTTON#fastSync > BUTTON#notifyBell > BUTTON#insightBtn > BUTTON#logout > BUTTON > BUTTON\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "003-P4c-14-live-published-remarks-focus.png",
+      "004-P4c-14-viewonly-after-tabs.png",
+      "005-P4c-14-preview-older.png",
+      "006-P4c-14-preview-latest.png",
+      "007-P4c-14-member-after-tabs.png"
+     ]
+    },
+    {
+     "id": "ERRORS-mon-P4c-11+P4c-14",
+     "did": "console / page errors / 4xx across the worlds of mon-P4c-11+P4c-14",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-P4c-11-week-end.png",
+    "002-P4c-11-board-end.png",
+    "003-P4c-14-live-published-remarks-focus.png",
+    "004-P4c-14-viewonly-after-tabs.png",
+    "005-P4c-14-preview-older.png",
+    "006-P4c-14-preview-latest.png",
+    "007-P4c-14-member-after-tabs.png"
+   ],
+   "errors": []
+  },
+  "mon-P4c-11": {
+   "at": "2026-10-05T16:51:47.172Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4c-11-week",
+     "did": "Week: for a time box, a Remarks box, a reporting line and a day note: recorded the saved value; typed a replacement then Escape; typed a replacement then Enter; then Tab",
+     "saw": "✓ time (take-off): Escape restores the saved value (no write) [{\"orig\":\"12:40\",\"afterEsc\":\"12:40\",\"commands\":0}] · ✓ time (take-off): Enter commits (one write), caret after Enter [{\"afterEnter\":\"09:09\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":59}] · ✓ time (take-off): typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"09:11\",\"commands\":1,\"ix\":59,\"ixT\":60,\"caret\":\"week:txt=ff:0.0.0.ld [0.waves] @(162,422 39x13)\"}] · ✓ Remarks: Escape restores the saved value (no write) [{\"orig\":\"1B: BFM-6\",\"afterEsc\":\"1B: BFM-6\",\"commands\":0}] · ✓ Remarks: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT REMARKS W\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":61}] · ✓ Remarks: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"ESC ENT REMARKS W T\",\"commands\":1,\"ix\":61,\"ixT\":62,\"caret\":\"week:bombs=0.0.0.0 [0.waves] @(471,458 34x15)\"}] · ✓ reporting line: Escape restores the saved value (no write) [{\"orig\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"afterEsc\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"commands\":0}] · ✓ reporting line: Enter commits (one write), caret after Enter [{\"afterEnter\":\"08:08H: ESC ENT LINE W\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":54}] · ✓ reporting line: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"08:08H: ESC ENT LINE W T\",\"commands\":1,\"ix\":54,\"ixT\":55,\"caret\":\"week:itline=0|0|1 [0.waves] @(43,459 481x17)\"}] · ✓ day note: Escape restores the saved value (no write) [{\"orig\":\"EP: ENGINE FIRE ON TAKE OFF\",\"afterEsc\":\"EP: ENGINE FIRE ON TAKE OFF\",\"commands\":0}] · ✓ day note: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT NOTE W\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":0}] · ✓ day note: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"ESC ENT NOTE W T\",\"commands\":1,\"ix\":0,\"ixT\":1,\"caret\":\"week:txt=dn:0.1 [0.prog] @(40,454 520x14)\"}] · ✗ OBSERVED, Tab pressed after Enter: time (take-off): after Enter the caret is in no box; a Tab pressed next lands on week:txt=wl:0.0 [0.waves] @(66,322 40x15) (box 53; the Enter-box was 59); second write: false · ✗ OBSERVED, Tab pressed after Enter: Remarks: after Enter the caret is in no box; a Tab pressed next lands on week:txt=wl:0.0 [0.waves] @(66,344 40x15) (box 53; the Enter-box was 61); second write: false · ✗ OBSERVED, Tab pressed after Enter: reporting line: after Enter the caret is in no box; a Tab pressed next lands on week:txt=wl:0.0 [0.waves] @(66,414 40x15) (box 53; the Enter-box was 54); second write: false · ✗ OBSERVED, Tab pressed after Enter: day note: after Enter the caret is in no box; a Tab pressed next lands on week:txt=dn:0.0 [0.prog] @(40,440 520x14) (box 0; the Enter-box was 0); second write: false",
+     "verdict": "PARTIAL",
+     "pics": [
+      "001-P4c-11-week-end.png"
+     ]
+    },
+    {
+     "id": "P4c-11-board",
+     "did": "Board: for a time box, a Remarks box, a reporting line and a day note: recorded the saved value; typed a replacement then Escape; typed a replacement then Enter; then Tab",
+     "saw": "✗ time (take-off): Escape restores the saved value (no write) [{\"orig\":\"12:40\",\"afterEsc\":\"09:19\",\"commands\":0}] · ✓ time (take-off): Enter commits (one write), caret after Enter [{\"afterEnter\":\"09:19\",\"commands\":1,\"caretAfterEnter\":\"board:bfld=ff:0.0.0.to [0.waves] @(268,490 52x25)\",\"ixEnter\":48,\"ix\":48}] · ✓ time (take-off): typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"09:21\",\"commands\":1,\"ix\":48,\"ixT\":49,\"caret\":\"board:bfld=ff:0.0.0.ld [0.waves] @(328,490 52x25)\"}] · ✓ Remarks: Escape restores the saved value (no write) [{\"orig\":\"1B: BFM-6\",\"afterEsc\":\"1B: BFM-6\",\"commands\":0}] · ✓ Remarks: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT REMARKS B\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":50}] · ✓ Remarks: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"ESC ENT REMARKS B T\",\"commands\":1,\"ix\":50,\"ixT\":51,\"caret\":\"board:bombs=0.0.0.0 [0.waves] @(854,517 34x14)\"}] · ✓ reporting line: Escape restores the saved value (no write) [{\"orig\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"afterEsc\":\"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"commands\":0}] · ✓ reporting line: Enter commits (one write), caret after Enter [{\"afterEnter\":\"08:08H: ESC ENT LINE B\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":43}] · ✓ reporting line: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"08:08H: ESC ENT LINE B T\",\"commands\":1,\"ix\":43,\"ixT\":44,\"caret\":\"board:itline=0|0|1 [0.waves] @(26,512 1043x17)\"}] · ✓ day note: Escape restores the saved value (no write) [{\"orig\":\"EP: ENGINE FIRE ON TAKE OFF\",\"afterEsc\":\"EP: ENGINE FIRE ON TAKE OFF\",\"commands\":0}] · ✓ day note: Enter commits (one write), caret after Enter [{\"afterEnter\":\"ESC ENT NOTE B\",\"commands\":1,\"caretAfterEnter\":\"(none: BODY)\",\"ixEnter\":-1,\"ix\":0}] · ✓ day note: typing a replacement then Tab saves it once and the caret moves on to the next box of the route [{\"saved\":\"ESC ENT NOTE B T\",\"commands\":1,\"ix\":0,\"ixT\":1,\"caret\":\"board:bfld=dn:0.1 [0.notes] @(82,339 943x24)\"}] · ✓ OBSERVED, Tab pressed after Enter: time (take-off): after Enter the caret is still in the box; a Tab pressed next lands on board:bfld=ff:0.0.0.ld [0.waves] @(328,490 52x25) (box 49; the Enter-box was 48); second write: false · ✗ OBSERVED, Tab pressed after Enter: Remarks: after Enter the caret is in no box; a Tab pressed next lands on board:BUTTON [0.notes] @(1045,269 49x18) (box -1; the Enter-box was 50); second write: false · ✗ OBSERVED, Tab pressed after Enter: reporting line: after Enter the caret is in no box; a Tab pressed next lands on board:BUTTON [0.notes] @(1045,269 49x18) (box -1; the Enter-box was 43); second write: false · ✗ OBSERVED, Tab pressed after Enter: day note: after Enter the caret is in no box; a Tab pressed next lands on board:BUTTON [0.notes] @(1045,269 49x18) (box -1; the Enter-box was 0); second write: false",
+     "verdict": "FAIL",
+     "pics": [
+      "002-P4c-11-board-end.png"
+     ]
+    },
+    {
+     "id": "ERRORS-mon-P4c-11",
+     "did": "console / page errors / 4xx across the worlds of mon-P4c-11",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-P4c-11-week-end.png",
+    "002-P4c-11-board-end.png"
+   ],
+   "errors": []
+  },
+  "sat": {
+   "at": "2026-10-05T16:55:34.918Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4c-07-week",
+     "did": "Week, Saturday (tracking ON): typed DS FOR RU into the Remarks of an SC row, an AVALON row and a BB row; clicked into each standalone wave's first box and Tabbed through to its last box and one more",
+     "saw": "✓ SC: route visits exactly the wave's 17 open boxes in order, then leaves to txt=wl:5.2 [{\"bad\":[],\"boxKinds\":\"wl:5.n,ff:0.cs,ff:0.msn,ff:0.to,ff:0.ld,fr:0.n,ff:1.cs,ff:1.msn,ff:1.to,ff:1.ld,fr:1.n\"}] · ✓ SC: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✓ SC: ordinary-flight Brief box among the wave's boxes (none expected) [0 box(es) with key ff:*.br] · ✓ SC: nothing written by the Tab route · ✓ AVALON: route visits exactly the wave's 9 open boxes in order, then leaves to txt=wl:5.3 [{\"bad\":[],\"boxKinds\":\"wl:5.n,ff:0.cs,ff:0.msn,ff:0.to,ff:0.ld,fr:0.n\"}] · ✓ AVALON: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✓ AVALON: ordinary-flight Brief box among the wave's boxes (none expected) [0 box(es) with key ff:*.br] · ✓ AVALON: nothing written by the Tab route · ✓ BB: route visits exactly the wave's 9 open boxes in order, then leaves to txt=dl:5.0 [{\"bad\":[],\"boxKinds\":\"wl:5.n,ff:0.cs,ff:0.msn,ff:0.to,ff:0.ld,fr:0.n\"}] · ✓ BB: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✓ BB: ordinary-flight Brief box among the wave's boxes (none expected) [0 box(es) with key ff:*.br] · ✓ BB: nothing written by the Tab route",
+     "verdict": "PASS",
+     "pics": [
+      "001-P4c-07-week-SC-after-route.png",
+      "002-P4c-07-week-BB-after-route.png"
+     ]
+    },
+    {
+     "id": "P4c-07-board",
+     "did": "Board, Saturday (tracking ON): typed DS FOR RU into the Remarks of an SC row, an AVALON row and a BB row; clicked into each standalone wave's first box and Tabbed through to its last box and one more",
+     "saw": "✓ SC: route visits exactly the wave's 48 open boxes in order, then leaves to bfld=ff:5.2.0.cs [{\"bad\":[],\"boxKinds\":\"ff:0.cs,ff:0.msn,ff:0.br,ff:0.to,ff:0.ld,fr:0.n,ff:1.cs,ff:1.msn,ff:1.br,ff:1.to,ff:1.ld,fr:1.n\"}] · ✓ SC: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✗ SC: ordinary-flight Brief box among the wave's boxes (none expected) [8 box(es) with key ff:*.br] · ✓ SC: nothing written by the Tab route · ✓ AVALON: route visits exactly the wave's 24 open boxes in order, then leaves to bfld=ff:5.3.0.cs [{\"bad\":[],\"boxKinds\":\"ff:0.cs,ff:0.msn,ff:0.br,ff:0.to,ff:0.ld,fr:0.n\"}] · ✓ AVALON: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✗ AVALON: ordinary-flight Brief box among the wave's boxes (none expected) [4 box(es) with key ff:*.br] · ✓ AVALON: nothing written by the Tab route · ✓ BB: route visits exactly the wave's 24 open boxes in order, then leaves to bfld=dl:5.0 [{\"bad\":[],\"boxKinds\":\"ff:0.cs,ff:0.msn,ff:0.br,ff:0.to,ff:0.ld,fr:0.n\"}] · ✓ BB: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✗ BB: ordinary-flight Brief box among the wave's boxes (none expected) [4 box(es) with key ff:*.br] · ✓ BB: nothing written by the Tab route",
+     "verdict": "FAIL",
+     "pics": [
+      "003-P4c-07-board-SC-after-route.png",
+      "004-P4c-07-board-BB-after-route.png"
+     ]
+    },
+    {
+     "id": "P4c-13",
+     "did": "Board then Week, Saturday: pressed + Line on the flying wave (an EMPTY formation) and CX on the COBRA line (cancelled); Tabbed the whole wave in both editors and compared with what is enabled",
+     "saw": "✓ setup: a third (empty) formation exists and COBRA's CX button went ON [{\"cx\":\"5.0.1.0\",\"before\":[\"5.0.0.0\",\"5.0.1.0\",\"5.0.2.0\"],\"after\":[\"5.0.0.0\",\"5.0.1.0:ON\",\"5.0.2.0\"],\"cxState\":[[false],[true],[false]]}] · ✓ Board: every enabled visible box of the wave is reached in order (cancelled COBRA row boxes and the empty formation boxes included if enabled) [{\"n\":27,\"bad\":[],\"empty\":6,\"cobra\":6}] · ✓ Board: disabled / read-only boxes drawn in the wave (skipped by the route) [[]] · ✓ Week: every enabled visible box reached in order [{\"n\":27,\"bad\":[],\"empty\":6,\"cobra\":6}] · ✓ Week: disabled / read-only boxes drawn in the wave [[]] · ✓ no write by either route; the cancellation state after the routes is unchanged [[[false],[true],[false]]]",
+     "verdict": "PASS",
+     "pics": [
+      "005-P4c-13-board-cx-and-empty-line.png",
+      "006-P4c-13-board-after-route.png",
+      "007-P4c-13-week-after-route.png"
+     ]
+    },
+    {
+     "id": "P4c-08-board",
+     "did": "Board, Saturday (duty desks, sims, ground, Common Programme, the five notes): clicked into the first box, Tabbed through all of them, then Shift+Tab all the way back",
+     "saw": "✓ forward: all 203 open boxes visited in displayed order [[]] · ✓ backward: exact reverse [[]] · ✓ sections in the route (document order) = sections as laid out on screen [{\"route\":[\"5.notes\",\"5.prog\",\"5.waves\",\"5.duty\",\"5.sims\",\"5.ground\"],\"screen\":[\"5.notes\",\"5.prog\",\"5.waves\",\"5.duty\",\"5.sims\",\"5.ground\",\"5.inputs\",\"5.avail\",\"5.sans\",\"5.unav\"]}] · ✓ every kind present: duty (dl/dr), sim (sr), ground (gr), Common Programme (ap), notes (dn, pn, dtn, sn, gn) [{\"5\":6,\"dn\":2,\"ap\":8,\"pn\":1,\"ff\":90,\"fr\":18,\"dl\":3,\"dr\":44,\"dtn\":1,\"sr\":16,\"sn\":1,\"gr\":12,\"gn\":1}] · ✓ no crew puck/picker was activated and nothing written [{\"before\":{\"arm\":false,\"q\":0,\"pops\":[]},\"after\":{\"arm\":false,\"q\":0,\"pops\":[]}}]",
+     "verdict": "PASS",
+     "pics": [
+      "008-P4c-08-board-after-route.png"
+     ]
+    },
+    {
+     "id": "P4c-08-week",
+     "did": "Week, Saturday (duty desks, sims, ground, Common Programme, the five notes): clicked into the first box, Tabbed through all of them, then Shift+Tab all the way back",
+     "saw": "✓ forward: all 145 open boxes visited in displayed order [[]] · ✓ backward: exact reverse [[]] · ✓ sections in the route (document order) = sections as laid out on screen [{\"route\":[\"5.prog\",\"5.waves\",\"5.duty\",\"5.sims\",\"5.ground\"],\"screen\":[\"5.prog\",\"5.waves\",\"5.duty\",\"5.sims\",\"5.ground\",\"5.inputs\",\"5.avail\",\"5.unav\"]}] · ✓ every kind present: duty (dl/dr), sim (sr), ground (gr), Common Programme (ap), notes (dn, pn, dtn, sn, gn) [{\"5\":6,\"dn\":2,\"ap\":10,\"pn\":1,\"wl\":4,\"ff\":26,\"fr\":18,\"dl\":3,\"dr\":44,\"dtn\":1,\"sr\":16,\"sn\":1,\"gr\":12,\"gn\":1}] · ✓ no crew puck/picker was activated and nothing written [{\"before\":{\"arm\":false,\"q\":0,\"pops\":[]},\"after\":{\"arm\":false,\"q\":0,\"pops\":[]}}]",
+     "verdict": "PASS",
+     "pics": [
+      "009-P4c-08-week-after-route.png"
+     ]
+    },
+    {
+     "id": "P4c-03-board-programme-row",
+     "did": "Board, Saturday: the timed personal input (Training 11:00–12:00, remarks TAB INPUT, filed on the Inputs page and accepted onto the programme): clicked into the programme row's start box, typed 10:15 / 11:45 / PROG ROW TEXT with Tab after each",
+     "saw": "✓ Tab order start → end → Remarks [[\"board:bfld=gr:5.2.str [5.ground] @(361,490 52x25)\",\"board:bfld=gr:5.2.end [5.ground] @(421,490 52x25)\",\"board:bfld=gr:5.2.rmks [5.ground] @(764,491 230x24)\",\"board:bfld=gr:5.1.prog [5.ground] @(54,525 299x24)\"]] · ✗ the SAVED INPUT (the same input) took the values (s=615, e=705, text) [{\"before\":{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47},\"after\":{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47}}] · ✓ the other displayed occurrence shows them too [{\"ground\":[\"str=10:15\",\"end=11:45\",\"rmks=PROG ROW TEXT\"],\"echo\":[\"str=11:00\",\"end=12:00\",\"rmks=TAB INPUT\"]}] · ✓ no second input appeared; three commands [{\"n0\":47,\"n1\":47,\"commands\":3}] · ✗ after a reload the same input still holds the values (one input) [{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47}]",
+     "verdict": "FAIL",
+     "pics": [
+      "010-P4c-03-board-programme-row.png"
+     ]
+    },
+    {
+     "id": "P4c-03-board-echo",
+     "did": "Board, Saturday: the timed personal input (Training 11:00–12:00, remarks TAB INPUT, filed on the Inputs page and accepted onto the programme): clicked into the input's own start box, typed 10:20 / 11:50 / ECHO TEXT with Tab after each",
+     "saw": "✓ Tab order start → end → Remarks [[\"board:ifld=imuvhbc7d7e04fy.str [5.inputs] @(361,491 52x25)\",\"board:ifld=imuvhbc7d7e04fy.end [5.inputs] @(421,491 52x25)\",\"board:ifld=imuvhbc7d7e04fy.rmks [5.inputs] @(764,491 230x24)\",\"(none: BODY)\"]] · ✓ the SAVED INPUT (the same input) took the values (s=620, e=710, text) [{\"before\":{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47},\"after\":{\"s\":620,\"e\":710,\"remarks\":\"ECHO TEXT\",\"n\":47}}] · ✓ the other displayed occurrence shows them too [{\"ground\":[\"str=10:20\",\"end=11:50\",\"rmks=ECHO TEXT\"],\"echo\":[\"str=10:20\",\"end=11:50\",\"rmks=ECHO TEXT\"]}] · ✓ no second input appeared; three commands [{\"n0\":47,\"n1\":47,\"commands\":3}] · ✓ after a reload the same input still holds the values (one input) [{\"s\":620,\"e\":710,\"remarks\":\"ECHO TEXT\",\"n\":47}]",
+     "verdict": "PASS",
+     "pics": [
+      "011-P4c-03-board-echo.png"
+     ]
+    },
+    {
+     "id": "P4c-03-week-programme-row",
+     "did": "Week, Saturday: the timed personal input (Training 11:00–12:00, remarks TAB INPUT, filed on the Inputs page and accepted onto the programme): clicked into the programme row's start box, typed 10:25 / 11:55 / WEEK PROG TEXT with Tab after each",
+     "saw": "✓ Tab order start → end → Remarks [[\"week:txt=gr:5.2.str [5.ground] @(560,442 44x17)\",\"week:txt=gr:5.2.end [5.ground] @(612,442 44x17)\",\"week:txt=gr:5.2.rmks [5.ground] @(830,445 128x14)\",\"week:txt=gr:5.1.prog [5.ground] @(449,488 39x15)\"]] · ✗ the SAVED INPUT (the same input) took the values (s=625, e=715, text) [{\"before\":{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47},\"after\":{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47}}] · ✓ the other displayed occurrence shows them too [{\"ground\":[\"str=10:25\",\"end=11:55\",\"rmks=WEEK PROG TEXT\"],\"echo\":[]}] · ✓ no second input appeared; three commands [{\"n0\":47,\"n1\":47,\"commands\":3}] · ✗ after a reload the same input still holds the values (one input) [{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47}]",
+     "verdict": "FAIL",
+     "pics": [
+      "012-P4c-03-week-programme-row.png"
+     ]
+    },
+    {
+     "id": "P4c-03-week-echo",
+     "did": "Week, Saturday: the timed personal input (Training 11:00–12:00, remarks TAB INPUT, filed on the Inputs page and accepted onto the programme): clicked into the input's own start box, typed 10:35 / 11:45 / WEEK ECHO TEXT with Tab after each",
+     "saw": "ERROR no box -1 in #eWeek > .day[data-day=\"5\"]",
+     "verdict": "NOT WALKED (script error)",
+     "pics": [
+      "013-ERR-P4c-03-week-echo.png"
+     ]
+    },
+    {
+     "id": "P4c-09-board",
+     "did": "Board, Saturday: Personal Inputs opened then folded; Available crew folded; Tabbed the whole route and compared with the boxes drawn; looked for opened popups",
+     "saw": "✓ with Personal Inputs OPEN its echo boxes joined the route (3), folded they are absent [{\"open\":3,\"folded\":{\"pin\":0,\"avail\":0},\"open0\":{\"pin\":1,\"avail\":50}}] · ✓ route over the 203 drawn boxes in order, nothing hidden visited [[]] · ✓ folds and popups stayed closed (fold rows the same before and after; no popup open) [{\"folded\":{\"pin\":0,\"avail\":0},\"stillFolded\":{\"pin\":0,\"avail\":0},\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✓ nothing written",
+     "verdict": "PASS",
+     "pics": [
+      "014-P4c-09-board-open-state.png",
+      "015-P4c-09-board-after-route.png"
+     ]
+    },
+    {
+     "id": "P4c-09-week",
+     "did": "Week, Saturday: Tabbed the whole route and compared with the boxes drawn; looked for opened popups",
+     "saw": "✓ week has no Personal Inputs fold; ifld boxes none · ✓ route over the 145 drawn boxes in order, nothing hidden visited [[]] · ✓ folds and popups stayed closed (fold rows the same before and after; no popup open) [{\"folded\":{\"pin\":0,\"avail\":0},\"stillFolded\":{\"pin\":0,\"avail\":0},\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✓ nothing written",
+     "verdict": "PASS",
+     "pics": [
+      "016-P4c-09-week-after-route.png"
+     ]
+    },
+    {
+     "id": "P4c-04",
+     "did": "Sunday: added a flying wave; dragged Ground before Flying and Common Programme before Duties by their grips; then on the Board and on the Week Tabbed forward over the whole day (headings and notes) and Shift+Tab back",
+     "saw": "✓ setup: the sections were reordered by the real drag (before → after) [{\"o0\":[\"notes\",\"prog\",\"waves\",\"duty\",\"sims\",\"ground\",\"inputs\",\"avail\",\"sans\",\"unav\"],\"o1\":[\"notes\",\"prog\",\"ground\",\"waves\",\"duty\",\"sims\",\"inputs\",\"avail\",\"sans\",\"unav\"],\"o2\":[\"notes\",\"ground\",\"waves\",\"duty\",\"prog\",\"sims\",\"inputs\",\"avail\",\"sans\",\"unav\"]}] · ✗ board: the displayed section order after the drags has Ground before Flying and Common Programme before Duties [[\"notes\",\"ground\",\"waves\",\"duty\",\"prog\",\"sims\",\"inputs\",\"avail\",\"sans\",\"unav\"]] · ✓ board: forward route: all 20 open boxes in order, section by section = the displayed order [{\"bad\":[],\"routeSections\":[\"notes\",\"ground\",\"waves\",\"duty\",\"prog\",\"sims\"],\"displayed\":[\"notes\",\"ground\",\"waves\",\"duty\",\"prog\",\"sims\"]}] · ✓ board: backward route is the exact mirror [[]] · ✓ board: each section's own note box is reached inside the route [[\"dn:6.0@6.notes\",\"dn:6.1@6.notes\",\"gn:6@6.ground\",\"dtn:6@6.duty\",\"pn:6@6.prog\",\"sn:6@6.sims\"]] · ✓ board: nothing written · ✗ week: the displayed section order after the drags has Ground before Flying and Common Programme before Duties [[\"ground\",\"waves\",\"duty\",\"prog\",\"sims\",\"avail\",\"unav\"]] · ✓ week: forward route: all 21 open boxes in order, section by section = the displayed order [{\"bad\":[],\"routeSections\":[\"ground\",\"waves\",\"duty\",\"prog\",\"sims\"],\"displayed\":[\"ground\",\"waves\",\"duty\",\"prog\",\"sims\"]}] · ✓ week: backward route is the exact mirror [[]] · ✓ week: each section's own note box is reached inside the route [[\"gn:6@6.ground\",\"dtn:6@6.duty\",\"dn:6.0@6.prog\",\"dn:6.1@6.prog\",\"pn:6@6.prog\",\"sn:6@6.sims\"]] · ✓ week: nothing written",
+     "verdict": "FAIL",
+     "pics": [
+      "017-P4c-04-board-before.png",
+      "018-P4c-04-board-after-drags.png",
+      "019-P4c-04-board-after-route.png",
+      "020-P4c-04-week-after-route.png"
+     ]
+    },
+    {
+     "id": "ERRORS-sat",
+     "did": "console / page errors / 4xx across the worlds of sat",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-P4c-07-week-SC-after-route.png",
+    "002-P4c-07-week-BB-after-route.png",
+    "003-P4c-07-board-SC-after-route.png",
+    "004-P4c-07-board-BB-after-route.png",
+    "005-P4c-13-board-cx-and-empty-line.png",
+    "006-P4c-13-board-after-route.png",
+    "007-P4c-13-week-after-route.png",
+    "008-P4c-08-board-after-route.png",
+    "009-P4c-08-week-after-route.png",
+    "010-P4c-03-board-programme-row.png",
+    "011-P4c-03-board-echo.png",
+    "012-P4c-03-week-programme-row.png",
+    "013-ERR-P4c-03-week-echo.png",
+    "014-P4c-09-board-open-state.png",
+    "015-P4c-09-board-after-route.png",
+    "016-P4c-09-week-after-route.png",
+    "017-P4c-04-board-before.png",
+    "018-P4c-04-board-after-drags.png",
+    "019-P4c-04-board-after-route.png",
+    "020-P4c-04-week-after-route.png"
+   ],
+   "errors": []
+  },
+  "sat-P4c-07+P4c-03+P4c-04": {
+   "at": "2026-10-05T16:57:55.293Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4c-07-week",
+     "did": "Week, Saturday (tracking ON): typed DS FOR RU into the Remarks of an SC row, an AVALON row and a BB row; clicked into each standalone wave's first box and Tabbed through to its last box and one more",
+     "saw": "✓ SC: route visits exactly the wave's 17 open boxes in order, then leaves to txt=wl:5.2 [{\"bad\":[],\"boxKinds\":\"wl:5.n,ff:0.cs,ff:0.msn,ff:0.to,ff:0.ld,fr:0.n,ff:1.cs,ff:1.msn,ff:1.to,ff:1.ld,fr:1.n\"}] · ✓ SC: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✓ SC: nothing written by the Tab route · ✓ AVALON: route visits exactly the wave's 9 open boxes in order, then leaves to txt=wl:5.3 [{\"bad\":[],\"boxKinds\":\"wl:5.n,ff:0.cs,ff:0.msn,ff:0.to,ff:0.ld,fr:0.n\"}] · ✓ AVALON: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✓ AVALON: nothing written by the Tab route · ✓ BB: route visits exactly the wave's 9 open boxes in order, then leaves to txt=dl:5.0 [{\"bad\":[],\"boxKinds\":\"wl:5.n,ff:0.cs,ff:0.msn,ff:0.to,ff:0.ld,fr:0.n\"}] · ✓ BB: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✓ BB: nothing written by the Tab route · ✓ OBSERVED: SC: the wave draws and the route visits 0 Brief (B) box(es) on this surface · ✓ OBSERVED: AVALON: the wave draws and the route visits 0 Brief (B) box(es) on this surface · ✓ OBSERVED: BB: the wave draws and the route visits 0 Brief (B) box(es) on this surface",
+     "verdict": "PASS",
+     "pics": [
+      "001-P4c-07-week-SC-after-route.png",
+      "002-P4c-07-week-BB-after-route.png"
+     ]
+    },
+    {
+     "id": "P4c-07-board",
+     "did": "Board, Saturday (tracking ON): typed DS FOR RU into the Remarks of an SC row, an AVALON row and a BB row; clicked into each standalone wave's first box and Tabbed through to its last box and one more",
+     "saw": "✓ SC: route visits exactly the wave's 48 open boxes in order, then leaves to bfld=ff:5.2.0.cs [{\"bad\":[],\"boxKinds\":\"ff:0.cs,ff:0.msn,ff:0.br,ff:0.to,ff:0.ld,fr:0.n,ff:1.cs,ff:1.msn,ff:1.br,ff:1.to,ff:1.ld,fr:1.n\"}] · ✓ SC: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✓ SC: nothing written by the Tab route · ✓ AVALON: route visits exactly the wave's 24 open boxes in order, then leaves to bfld=ff:5.3.0.cs [{\"bad\":[],\"boxKinds\":\"ff:0.cs,ff:0.msn,ff:0.br,ff:0.to,ff:0.ld,fr:0.n\"}] · ✓ AVALON: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✓ AVALON: nothing written by the Tab route · ✓ BB: route visits exactly the wave's 24 open boxes in order, then leaves to bfld=dl:5.0 [{\"bad\":[],\"boxKinds\":\"ff:0.cs,ff:0.msn,ff:0.br,ff:0.to,ff:0.ld,fr:0.n\"}] · ✓ BB: no In-time/Rally box in the wave, no stores/area boxes, no role question or popup after typing DS FOR RU [{\"itline\":0,\"bombs\":0,\"popups\":{\"arm\":false,\"q\":0,\"pops\":[]}}] · ✓ BB: nothing written by the Tab route · ✓ OBSERVED: SC: the wave draws and the route visits 8 Brief (B) box(es) on this surface · ✓ OBSERVED: AVALON: the wave draws and the route visits 4 Brief (B) box(es) on this surface · ✓ OBSERVED: BB: the wave draws and the route visits 4 Brief (B) box(es) on this surface",
+     "verdict": "PARTIAL",
+     "pics": [
+      "003-P4c-07-board-SC-after-route.png",
+      "004-P4c-07-board-BB-after-route.png"
+     ]
+    },
+    {
+     "id": "P4c-03-board-programme-row",
+     "did": "Board, Saturday: the timed personal input (Training 11:00–12:00, remarks TAB INPUT, filed on the Inputs page and accepted onto the programme): clicked into the programme row's start box, typed 10:15 / 11:45 / PROG ROW TEXT with Tab after each",
+     "saw": "✓ Tab order start → end → Remarks [[\"board:bfld=gr:5.2.str [5.ground] @(361,490 52x25)\",\"board:bfld=gr:5.2.end [5.ground] @(421,490 52x25)\",\"board:bfld=gr:5.2.rmks [5.ground] @(764,491 230x24)\",\"board:bfld=gr:5.1.prog [5.ground] @(54,525 299x24)\"]] · ✗ the SAVED INPUT (the same input) took the values (s=615, e=705, text) [{\"before\":{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47},\"after\":{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47}}] · ✓ the other displayed occurrence shows them too [{\"ground\":[\"str=10:15\",\"end=11:45\",\"rmks=PROG ROW TEXT\"],\"echo\":[\"str=11:00\",\"end=12:00\",\"rmks=TAB INPUT\"]}] · ✓ no second input appeared; three commands [{\"n0\":47,\"n1\":47,\"commands\":3}] · ✗ after a reload the same input still holds the values (one input) [{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47,\"programmeRow\":{\"str\":\"10:15\",\"end\":\"11:45\",\"rmks\":\"PROG ROW TEXT\"}}]",
+     "verdict": "FAIL",
+     "pics": [
+      "005-P4c-03-board-programme-row.png"
+     ]
+    },
+    {
+     "id": "P4c-03-board-echo",
+     "did": "Board, Saturday: the timed personal input (Training 11:00–12:00, remarks TAB INPUT, filed on the Inputs page and accepted onto the programme): clicked into the input's own start box, typed 10:20 / 11:50 / ECHO TEXT with Tab after each",
+     "saw": "✓ Tab order start → end → Remarks [[\"board:ifld=imuvhbc7d7e04fy.str [5.inputs] @(361,491 52x25)\",\"board:ifld=imuvhbc7d7e04fy.end [5.inputs] @(421,491 52x25)\",\"board:ifld=imuvhbc7d7e04fy.rmks [5.inputs] @(764,491 230x24)\",\"(none: BODY)\"]] · ✓ the SAVED INPUT (the same input) took the values (s=620, e=710, text) [{\"before\":{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47},\"after\":{\"s\":620,\"e\":710,\"remarks\":\"ECHO TEXT\",\"n\":47}}] · ✓ the other displayed occurrence shows them too [{\"ground\":[\"str=10:20\",\"end=11:50\",\"rmks=ECHO TEXT\"],\"echo\":[\"str=10:20\",\"end=11:50\",\"rmks=ECHO TEXT\"]}] · ✓ no second input appeared; three commands [{\"n0\":47,\"n1\":47,\"commands\":3}] · ✓ after a reload the same input still holds the values (one input) [{\"s\":620,\"e\":710,\"remarks\":\"ECHO TEXT\",\"n\":47,\"programmeRow\":{\"str\":\"10:20\",\"end\":\"11:50\",\"rmks\":\"ECHO TEXT\"}}]",
+     "verdict": "PASS",
+     "pics": [
+      "006-P4c-03-board-echo.png"
+     ]
+    },
+    {
+     "id": "P4c-03-week-programme-row",
+     "did": "Week, Saturday: the timed personal input (Training 11:00–12:00, remarks TAB INPUT, filed on the Inputs page and accepted onto the programme): clicked into the programme row's start box, typed 10:25 / 11:55 / WEEK PROG TEXT with Tab after each",
+     "saw": "✓ Tab order start → end → Remarks [[\"week:txt=gr:5.2.str [5.ground] @(560,442 44x17)\",\"week:txt=gr:5.2.end [5.ground] @(612,442 44x17)\",\"week:txt=gr:5.2.rmks [5.ground] @(830,445 128x14)\",\"week:txt=gr:5.1.prog [5.ground] @(449,488 39x15)\"]] · ✗ the SAVED INPUT (the same input) took the values (s=625, e=715, text) [{\"before\":{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47},\"after\":{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47}}] · ✓ the other displayed occurrence shows them too [{\"ground\":[\"str=10:25\",\"end=11:55\",\"rmks=WEEK PROG TEXT\"],\"echo\":[\"str=11:00\",\"end=12:00\",\"rmks=TAB INPUT\"]}] · ✓ no second input appeared; three commands [{\"n0\":47,\"n1\":47,\"commands\":3}] · ✗ after a reload the same input still holds the values (one input) [{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47,\"programmeRow\":{\"str\":\"10:25\",\"end\":\"11:55\",\"rmks\":\"WEEK PROG TEXT\"}}]",
+     "verdict": "FAIL",
+     "pics": [
+      "007-P4c-03-week-programme-row.png"
+     ]
+    },
+    {
+     "id": "P4c-03-week-echo",
+     "did": "Week, Saturday: the timed personal input (Training 11:00–12:00, remarks TAB INPUT, filed on the Inputs page and accepted onto the programme): clicked into the input's own start box, typed 10:35 / 11:45 / WEEK ECHO TEXT with Tab after each",
+     "saw": "✓ Tab order start → end → Remarks [[\"week:inp=imuvhbc7d7e04fy.str [5.inputs] @(560,442 44x17)\",\"week:inp=imuvhbc7d7e04fy.end [5.inputs] @(612,442 44x17)\",\"week:inp=imuvhbc7d7e04fy.rmks [5.inputs] @(746,445 131x14)\",\"(none: BODY)\"]] · ✓ the SAVED INPUT (the same input) took the values (s=635, e=705, text) [{\"before\":{\"s\":660,\"e\":720,\"remarks\":\"TAB INPUT\",\"n\":47},\"after\":{\"s\":635,\"e\":705,\"remarks\":\"WEEK ECHO TEXT\",\"n\":47}}] · ✓ the other displayed occurrence shows them too [{\"ground\":[\"str=10:35\",\"end=11:45\",\"rmks=WEEK ECHO TEXT\"],\"echo\":[\"str=10:35\",\"end=11:45\",\"rmks=WEEK ECHO TEXT\"]}] · ✓ no second input appeared; three commands [{\"n0\":47,\"n1\":47,\"commands\":3}] · ✓ after a reload the same input still holds the values (one input) [{\"s\":635,\"e\":705,\"remarks\":\"WEEK ECHO TEXT\",\"n\":47,\"programmeRow\":{\"str\":\"10:35\",\"end\":\"11:45\",\"rmks\":\"WEEK ECHO TEXT\"}}]",
+     "verdict": "PASS",
+     "pics": [
+      "008-P4c-03-week-echo.png"
+     ]
+    },
+    {
+     "id": "P4c-04",
+     "did": "Sunday: added a flying wave; dragged Ground before Flying, and Common Programme to after Flying (before Sims), by their grips; then on the Board and on the Week Tabbed forward over the whole day (headings and notes) and Shift+Tab back",
+     "saw": "✓ setup: the sections were reordered by the real drag (before → after) [{\"o0\":[\"notes\",\"prog\",\"waves\",\"duty\",\"sims\",\"ground\",\"inputs\",\"avail\",\"sans\",\"unav\"],\"o1\":[\"notes\",\"prog\",\"ground\",\"waves\",\"duty\",\"sims\",\"inputs\",\"avail\",\"sans\",\"unav\"],\"o2\":[\"notes\",\"ground\",\"waves\",\"duty\",\"prog\",\"sims\",\"inputs\",\"avail\",\"sans\",\"unav\"]}] · ✓ board: the displayed section order after the drags has Ground before Flying and Common Programme after Flying [[\"notes\",\"ground\",\"waves\",\"duty\",\"prog\",\"sims\",\"inputs\",\"avail\",\"sans\",\"unav\"]] · ✓ board: forward route: all 20 open boxes in order, section by section = the displayed order [{\"bad\":[],\"routeSections\":[\"notes\",\"ground\",\"waves\",\"duty\",\"prog\",\"sims\"],\"displayed\":[\"notes\",\"ground\",\"waves\",\"duty\",\"prog\",\"sims\"]}] · ✓ board: backward route is the exact mirror [[]] · ✓ board: each section's own note box is reached inside the route [[\"dn:6.0@6.notes\",\"dn:6.1@6.notes\",\"gn:6@6.ground\",\"dtn:6@6.duty\",\"pn:6@6.prog\",\"sn:6@6.sims\"]] · ✓ board: nothing written · ✓ week: the displayed section order after the drags has Ground before Flying and Common Programme after Flying [[\"ground\",\"waves\",\"duty\",\"prog\",\"sims\",\"avail\",\"unav\"]] · ✓ week: forward route: all 21 open boxes in order, section by section = the displayed order [{\"bad\":[],\"routeSections\":[\"ground\",\"waves\",\"duty\",\"prog\",\"sims\"],\"displayed\":[\"ground\",\"waves\",\"duty\",\"prog\",\"sims\"]}] · ✓ week: backward route is the exact mirror [[]] · ✓ week: each section's own note box is reached inside the route [[\"gn:6@6.ground\",\"dtn:6@6.duty\",\"dn:6.0@6.prog\",\"dn:6.1@6.prog\",\"pn:6@6.prog\",\"sn:6@6.sims\"]] · ✓ week: nothing written",
+     "verdict": "PASS",
+     "pics": [
+      "009-P4c-04-board-before.png",
+      "010-P4c-04-board-after-drags.png",
+      "011-P4c-04-board-after-route.png",
+      "012-P4c-04-week-after-route.png"
+     ]
+    },
+    {
+     "id": "ERRORS-sat-P4c-07+P4c-03+P4c-04",
+     "did": "console / page errors / 4xx across the worlds of sat-P4c-07+P4c-03+P4c-04",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-P4c-07-week-SC-after-route.png",
+    "002-P4c-07-week-BB-after-route.png",
+    "003-P4c-07-board-SC-after-route.png",
+    "004-P4c-07-board-BB-after-route.png",
+    "005-P4c-03-board-programme-row.png",
+    "006-P4c-03-board-echo.png",
+    "007-P4c-03-week-programme-row.png",
+    "008-P4c-03-week-echo.png",
+    "009-P4c-04-board-before.png",
+    "010-P4c-04-board-after-drags.png",
+    "011-P4c-04-board-after-route.png",
+    "012-P4c-04-week-after-route.png"
+   ],
+   "errors": []
+  },
+  "short": {
+   "at": "2026-10-05T17:01:30.543Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4c-15-phone-week",
+     "did": "Phone 390x844, Edit Schedule week, Saturday (long day, one very long wrapped Remarks): Tabbed from the first box through every open box and Shift+Tabbed back, measuring how much of each focused box a finger can land on",
+     "saw": "✓ all 145 boxes reached in order (forward) [[]] · ✓ every focused box is at least half exposed (nothing — arrows, bars, drawer — sits on top of it) [{\"fwd\":[],\"back\":[],\"minFrac\":0.6666666666666666}] · ✓ reverse in order [[]] · ✓ no writes; the day unchanged (stops with the box only partly inside the window: 1) [{\"partIn\":1,\"dayKept\":true}]",
+     "verdict": "PASS",
+     "pics": [
+      "001-P4c-15-phone-week-end.png"
+     ]
+    },
+    {
+     "id": "P4c-15-phone-board",
+     "did": "Phone 390x844, Scheduler Board (phone layout), Saturday: same route",
+     "saw": "✓ all 203 boxes reached in order (forward) [[]] · ✓ every focused box is at least half exposed (nothing — arrows, bars, drawer — sits on top of it) [{\"fwd\":[],\"back\":[],\"minFrac\":1}] · ✓ reverse in order [[]] · ✓ no writes; the day unchanged (stops with the box only partly inside the window: 7) [{\"partIn\":7,\"dayKept\":true}]",
+     "verdict": "PASS",
+     "pics": [
+      "002-P4c-15-phone-board-end.png"
+     ]
+    },
+    {
+     "id": "P4c-15-phone-board-desktop-layout",
+     "did": "Phone 390x844, Scheduler Board in the Desktop layout (More → Desktop layout), panned sideways to the far end; same route",
+     "saw": "✓ all 203 boxes reached in order (forward) [[]] · ✓ every focused box is at least half exposed (nothing — arrows, bars, drawer — sits on top of it) [{\"fwd\":[],\"back\":[],\"minFrac\":1}] · ✓ reverse in order [[]] · ✓ no writes; the day unchanged (stops with the box only partly inside the window: 11) [{\"partIn\":11,\"dayKept\":true}] · ✓ the Desktop layout is on (class sb-wide) [true] · ✓ sideways pan position after the route (for the record) [{\"left\":0,\"max\":790}]",
+     "verdict": "PASS",
+     "pics": [
+      "003-P4c-15-phone-desktop-layout-panned.png",
+      "004-P4c-15-phone-desktop-layout-end.png"
+     ]
+    },
+    {
+     "id": "P4c-15-landscape-board",
+     "did": "Phone on its side 844x390, Scheduler Board: same route",
+     "saw": "✓ all 203 boxes reached in order (forward) [[]] · ✓ every focused box is at least half exposed (nothing — arrows, bars, drawer — sits on top of it) [{\"fwd\":[],\"back\":[],\"minFrac\":0.8}] · ✓ reverse in order [[]] · ✓ no writes; the day unchanged (stops with the box only partly inside the window: 21) [{\"partIn\":21,\"dayKept\":true}]",
+     "verdict": "PASS",
+     "pics": [
+      "005-P4c-15-landscape-board-end.png"
+     ]
+    },
+    {
+     "id": "P4c-15-short-desktop-board",
+     "did": "Short desktop 1280x700, Scheduler Board: same route",
+     "saw": "✓ all 203 boxes reached in order (forward) [[]] · ✓ every focused box is at least half exposed (nothing — arrows, bars, drawer — sits on top of it) [{\"fwd\":[],\"back\":[],\"minFrac\":1}] · ✓ reverse in order [[]] · ✓ no writes; the day unchanged (stops with the box only partly inside the window: 8) [{\"partIn\":8,\"dayKept\":true}]",
+     "verdict": "PASS",
+     "pics": [
+      "006-P4c-15-1280x700-board-end.png"
+     ]
+    },
+    {
+     "id": "P4c-15-short-desktop-week",
+     "did": "Short desktop 1280x700, Edit Schedule week, Saturday: same route",
+     "saw": "✓ all 145 boxes reached in order (forward) [[]] · ✓ every focused box is at least half exposed (nothing — arrows, bars, drawer — sits on top of it) [{\"fwd\":[],\"back\":[],\"minFrac\":0.5333333333333333}] · ✓ reverse in order [[]] · ✓ no writes; the day unchanged (stops with the box only partly inside the window: 0) [{\"partIn\":0,\"dayKept\":true}]",
+     "verdict": "PASS",
+     "pics": [
+      "007-P4c-15-1280x700-week-end.png"
+     ]
+    },
+    {
+     "id": "ERRORS-short",
+     "did": "console / page errors / 4xx across the worlds of short",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-P4c-15-phone-week-end.png",
+    "002-P4c-15-phone-board-end.png",
+    "003-P4c-15-phone-desktop-layout-panned.png",
+    "004-P4c-15-phone-desktop-layout-end.png",
+    "005-P4c-15-landscape-board-end.png",
+    "006-P4c-15-1280x700-board-end.png",
+    "007-P4c-15-1280x700-week-end.png"
+   ],
+   "errors": []
+  },
+  "other": {
+   "at": "2026-10-05T17:02:35.188Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4c-16-tracker-picker",
+     "did": "Schedule edited by keyboard (callsign ZED, Tab); Tracker → \"+ Add\" student picker: Tab x24, Shift+Tab x24, typed zz + Enter, then Escape",
+     "saw": "✓ setup: the schedule was edited with the keyboard (callsign now ZED) · ✓ focus starts in the dialog and every Tab and Shift+Tab stop (48) stays inside the dialog [{\"first\":\"INPUT#dlgFilter. \\\"\\\"\",\"leaks\":[]}] · ✓ no stop ever lands in the schedule · ✓ Enter after typing zz; Escape closes the dialog [{\"openAfterEnter\":false,\"openAfterEscape\":false}] · ✓ the schedule is as the edit left it (nothing committed by Tab/Enter/Escape in the dialog)",
+     "verdict": "PASS",
+     "pics": [
+      "001-P4c-16-tracker-add-open.png",
+      "002-P4c-16-tracker-add-after-tabs.png",
+      "003-P4c-16-tracker-add-after-escape.png"
+     ]
+    },
+    {
+     "id": "P4c-16-tracker-details",
+     "did": "Schedule edited by keyboard; Tracker → ⓘ details: Tab x24, Shift+Tab x24, Escape",
+     "saw": "✓ what opened (for the record) [{\"first\":\"BUTTON#detailsBtn.sm icon primar \\\"ⓘ\\\"\",\"overlays\":[]}] · ✓ no Tab / Shift+Tab stop (48) entered the schedule; how many left the dialog [{\"outside\":48,\"intoSchedule\":0,\"sample\":[\"BUTTON#showAllBtn.sm \\\"☰ Show All\\\"\",\"BUTTON#fileMenuBtn.sm \\\"⇪ File ▾\\\"\",\"INPUT#hSearch. \\\"\\\"\"]}] · ✓ Escape closes it [0] · ✓ the schedule is as the edit left it",
+     "verdict": "PASS",
+     "pics": [
+      "004-P4c-16-tracker-details-open.png",
+      "005-P4c-16-tracker-details-after-tabs.png"
+     ]
+    },
+    {
+     "id": "P4c-16-tracker-event",
+     "did": "Schedule edited by keyboard; Tracker → pressed the ST-01 event ball: Tab x24, Shift+Tab x24, Enter, Escape",
+     "saw": "✗ what the press opened (overlays before / after) [{\"before\":[],\"opened\":[],\"firstFocus\":\"DIV#board.board \\\"ST-01\\nST-02\\nAC\\\"\"}] · ✓ no Tab / Shift+Tab stop (48) ever landed in the schedule [{\"outsideOverlay\":48,\"intoSchedule\":0}] · ✓ after Enter and then Escape: overlays (for the record) [{\"afterEnter\":[],\"afterEsc\":[]}] · ✓ the schedule is as the edit left it",
+     "verdict": "FAIL",
+     "pics": [
+      "006-P4c-16-tracker-event-open.png",
+      "007-P4c-16-tracker-event-after-tabs.png"
+     ]
+    },
+    {
+     "id": "P4c-16-lw-bidsheet",
+     "did": "Schedule edited by keyboard; Leave War → clicked a cell of Saber's row (the bid sheet): Tab x24, Shift+Tab x24, Escape; reopened and pressed Tab then Enter on the first control",
+     "saw": "✓ the sheet opens [{\"first\":\"BODY\"}] · ✓ no Tab / Shift+Tab stop of 48 entered the schedule; how many left the sheet [{\"leftTheSheet\":0,\"intoSchedule\":0,\"sample\":[]}] · ✓ Escape closes the sheet [true] · ✓ Enter on the focused first control (BUTTON.x \"✕\") closes it [true] · ✓ the schedule is as the edit left it",
+     "verdict": "PASS",
+     "pics": [
+      "008-P4c-16-lw-sheet-open.png",
+      "009-P4c-16-lw-sheet-after-tabs.png"
+     ]
+    },
+    {
+     "id": "ERRORS-other",
+     "did": "console / page errors / 4xx across the worlds of other",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-P4c-16-tracker-add-open.png",
+    "002-P4c-16-tracker-add-after-tabs.png",
+    "003-P4c-16-tracker-add-after-escape.png",
+    "004-P4c-16-tracker-details-open.png",
+    "005-P4c-16-tracker-details-after-tabs.png",
+    "006-P4c-16-tracker-event-open.png",
+    "007-P4c-16-tracker-event-after-tabs.png",
+    "008-P4c-16-lw-sheet-open.png",
+    "009-P4c-16-lw-sheet-after-tabs.png"
+   ],
+   "errors": []
+  },
+  "other-event": {
+   "at": "2026-10-05T17:03:16.729Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4c-16-tracker-event",
+     "did": "Schedule edited by keyboard; Tracker → pressed the ST-01 event ball: Tab x24, Shift+Tab x24, Enter, Escape",
+     "saw": "✓ the press on the ST-01 ball opened the event / student mark popup (#pop, \"ST-01 · STUDENT A\", Edit details) [{\"overlays\":[],\"firstFocus\":\"DIV#board.board \\\"ST-01\\nST-02\\nAC\\\"\"}] · ✓ no Tab / Shift+Tab stop (48) ever landed in the schedule (the popup is not a trap: the stops go on through the Tracker's own controls — count outside the popup: 48) [{\"intoSchedule\":0}] · ✓ Enter, then Escape: the popup state (Escape closes it) [{\"afterEnterOverlays\":[],\"popupAfterEscape\":false}] · ✓ the schedule is as the edit left it",
+     "verdict": "PASS",
+     "pics": [
+      "001-P4c-16-tracker-event-open.png",
+      "002-P4c-16-tracker-event-after-tabs.png"
+     ]
+    },
+    {
+     "id": "ERRORS-other-event",
+     "did": "console / page errors / 4xx across the worlds of other-event",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-P4c-16-tracker-event-open.png",
+    "002-P4c-16-tracker-event-after-tabs.png"
+   ],
+   "errors": []
+  },
+  "h04": {
+   "at": "2026-10-05T17:04:23.631Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "H-04",
+     "did": "Saturday: SDO desk (Fable 08:00–18:00), added SXO 06:00–14:00 (nact), VIPER 12:00–13:00 (bane/freak), signed the four names, published; clicked into Saturday's first open box, Tab until focus left the day, typing nothing — week then Board — then Shift+Tab all the way back",
+     "saw": "✓ setup: the day is published and signed (tag, sign-off line) [{\"headBefore\":{\"tag\":\"ORIG\",\"pending\":\"16 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"},\"signed\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"},\"pub\":{\"pressed\":true,\"label\":\"Publish day\"},\"puts\":[\"nact\",\"bane\",\"freak\"]}] · ✓ the people noted: Leave War cells on Sat 18 Jul before [{\"Fable\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"},\"Warden\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"},\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Echo\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"}}] · ✓ week: Tab through all 25 open boxes in order, one more Tab leaves (to week:SPAN [5.avail] @(331,770 74x15)), Shift+Tab all the way back (out to week:SELECT @(709,122 123x37)) [{\"bad\":[],\"badBack\":[]}] · ✓ board: the same over all 24 boxes (leaves to board:SPAN [5.avail] @(27,741 74x15)) [{\"bad\":[],\"badBack\":[]}] · ✓ nothing written (days, inputs, settings, command count, history lines, pending counts) on either surface [{\"week\":[],\"board\":[]}] · ✓ \"0 pending\" throughout: pending count 0 before and after both surfaces; the bar says [{\"before\":{\"cnt\":0},\"week\":{\"cnt\":0},\"board\":{\"cnt\":0},\"bars\":[\"16 changes\",\"16 changes\",\"16 changes\",\"16 changes\"]}] · ✓ the day's bar and four sign-offs unchanged (week and board reads, then week again) [{\"before\":{\"tag\":\"ORIG\",\"pending\":\"16 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"},\"week\":{\"tag\":\"ORIG\",\"pending\":\"16 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLA] · ✓ no line in the changes window [{\"before\":{\"tabs\":[\"New to you 0\",\"All changes 16\",\"To go out · AL1 0\"],\"lines\":[\"Waiting to go out as\",\"AL1\",\"· 0 changes\",\"Nothing is waiting to go out.\"]},\"after\":{\"tabs\":[\"New to you 0\",\"All changes 16\",\"To go out · AL1 0\"],\"lines\":[\"Waiting to go out as\",\"AL1\",\"· 0 changes\",\"Nothing is waiting to go out.\"]}}] · ✓ no amendment mark painted on any box (mark-classed elements in the day: before / after week / after board) [{\"before\":1,\"week\":1,\"board\":1}] · ✓ every Leave War cell as noted [{\"before\":{\"Fable\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"},\"Warden\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"},\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Echo\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"}},\"after\":{\"Fable\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"},\"Warden\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"},\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Echo\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"}}}]",
+     "verdict": "PASS",
+     "pics": [
+      "001-H-04-leavewar-before.png",
+      "002-H-04-week-before.png",
+      "005-H-04-leavewar-after.png",
+      "003-H-04-week-after.png",
+      "004-H-04-board-after.png"
+     ]
+    },
+    {
+     "id": "ERRORS-h04",
+     "did": "console / page errors / 4xx across the worlds of h04",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-H-04-leavewar-before.png",
+    "002-H-04-week-before.png",
+    "003-H-04-week-after.png",
+    "004-H-04-board-after.png",
+    "005-H-04-leavewar-after.png"
+   ],
+   "errors": []
+  },
+  "ht1": {
+   "at": "2026-10-05T17:06:00.271Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "H-T1-week",
+     "did": "Edit Schedule week, Monday: clicked into VL's take-off box (12:40), changed it by five minutes (12:45), pressed Tab, then Tab through ten more boxes typing nothing; after each Tab read the caret box, whether the box just left is still attached, the caret box's top straight after and 300 ms later",
+     "saw": "✓ the take-off box changed by five minutes (12:40 → 12:45) and saved [{\"orig\":\"12:40\",\"saved\":\"12:45\",\"t5\":\"12:45\"}] · ✓ every Tab landed in a box (a typing box, not the page or a bar): the eleven stops [txt=ff:0.0.0.ld > txt=fr:0.0.0.0 > bombs=0.0.0.0 > txt=fr:0.0.0.1 > bombs=0.0.0.1 > area=0.0.0 > atime=0.0.0 > txt=ff:0.0.1.cs > txt=ff:0.0.1.msn > txt=ff:0.0.1.br > txt=ff:0.0.1.to] · ✓ no box just left was removed from the page (all still attached) [[]] · ✓ no box under the caret was replaced (the caret box after each Tab is still attached and still has the caret 300 ms later) [[]] · ✓ the caret box moved no more than 2 px in the 300 ms after each Tab; the page did not scroll [{\"maxMove\":0,\"scrolls\":[],\"tops\":\"421.9→421.9 421.9→421.9 436.4→436.4 460.7→460.7 475.2→475.2 499.4→499.4 499.4→499.4 521.6→521.6 537→537 531.6→531.6 545.3→545.3\"}] · ✓ exactly one change saved (command count +1) [{\"commands\":1}] · ✓ one Undo step takes the time back to 12:40 and leaves Undo with nothing more [{\"undo1\":\"12:40\",\"undo2\":{\"first\":{\"present\":true,\"title\":\"Undo — a take-off time\",\"pressed\":true,\"toasts\":[]},\"second\":{\"present\":true,\"title\":\"Undo\",\"disabled\":true,\"pressed\":false},\"afterSecond\":\"12:40\"}}]",
+     "verdict": "PASS",
+     "pics": [
+      "001-H-T1-week-after-11-tabs.png",
+      "002-H-T1-week-after-undo.png"
+     ]
+    },
+    {
+     "id": "H-T1-board",
+     "did": "Scheduler Board, Monday: clicked into VL's take-off box (12:40), changed it by five minutes (12:45), pressed Tab, then Tab through ten more boxes typing nothing; after each Tab read the caret box, whether the box just left is still attached, the caret box's top straight after and 300 ms later",
+     "saw": "✓ the take-off box changed by five minutes (12:40 → 12:45) and saved [{\"orig\":\"12:40\",\"saved\":\"12:45\",\"t5\":\"12:45\"}] · ✓ every Tab landed in a box (a typing box, not the page or a bar): the eleven stops [bfld=ff:0.0.0.ld > bfld=fr:0.0.0.0 > bombs=0.0.0.0 > bfld=ff:0.0.0.cs > bfld=ff:0.0.0.msn > bfld=ff:0.0.0.br > bfld=ff:0.0.0.to > bfld=ff:0.0.0.ld > bfld=fr:0.0.0.1 > bombs=0.0.0.1 > area=0.0.0] · ✓ no box just left was removed from the page (all still attached) [[]] · ✓ no box under the caret was replaced (the caret box after each Tab is still attached and still has the caret 300 ms later) [[]] · ✓ the caret box moved no more than 2 px in the 300 ms after each Tab; the page did not scroll [{\"maxMove\":0,\"scrolls\":[],\"tops\":\"490.2→490.2 482.7→482.7 508.7→508.7 541.7→541.7 541.7→541.7 547.2→547.2 541.2→541.2 541.2→541.2 533.7→533.7 559.7→559.7 587.7→587.7\"}] · ✓ exactly one change saved (command count +1) [{\"commands\":1}] · ✓ one Undo step takes the time back to 12:40 and leaves Undo with nothing more [{\"undo1\":\"12:40\",\"undo2\":{\"first\":{\"present\":true,\"title\":\"Undo — a change to the schedule\",\"pressed\":true,\"toasts\":[]},\"second\":{\"present\":true,\"title\":\"Undo\",\"disabled\":true,\"pressed\":false},\"afterSecond\":\"12:40\"}}]",
+     "verdict": "PASS",
+     "pics": [
+      "003-H-T1-board-after-11-tabs.png",
+      "004-H-T1-board-after-undo.png"
+     ]
+    },
+    {
+     "id": "ERRORS-ht1",
+     "did": "console / page errors / 4xx across the worlds of ht1",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-H-T1-week-after-11-tabs.png",
+    "002-H-T1-week-after-undo.png",
+    "003-H-T1-board-after-11-tabs.png",
+    "004-H-T1-board-after-undo.png"
+   ],
+   "errors": []
+  },
+  "phone": {
+   "at": "2026-10-05T17:07:40.880Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4d-02-editsched",
+     "did": "Edit Schedule at 390 and 320 px wide: read the toolbar, pressed the button after Highlight, read the menu, tested neighbours with a real hit test",
+     "saw": "✓ 390px: the button right after Highlight is the ⋯ menu [{\"after\":{\"id\":\"editSchedMore\",\"cls\":\"abtn schedule-more\",\"t\":\"⋯\",\"x\":180,\"w\":30,\"r\":210},\"order\":[\"Jump to a date\",\"exportSched\",\"exportPdf\",\"Highlight filters\",\"editSchedMore\",\"searchE\",\"Templates\",\"Live working copy\\n\",\"i\",\"Publish day\",\"Templates\",\"Live working copy\\n\",\"i\",\"Publish day\",\"Templates\",\"Live working copy\\n\",\"i\",\"Publish day\",\"Templates\",\"Live working copy\\n\",\"i\",\"Publish day\",\"Templates\",\"Live workin] · ✓ 390px: the menu holds exactly one item, Insights, and sits inside the screen [{\"items\":[\"Insights\"],\"box\":{\"x\":180,\"y\":90,\"width\":176,\"height\":48}}] · ✓ 390px: search, calendar, the ⋯ button and Highlight are each topmost at their centre (reachable) [{\"#searchE\":{\"onScreen\":true,\"hit\":true},\"#page-editsched .filt-cal\":{\"onScreen\":true,\"hit\":true},\"#editSchedMore\":{\"onScreen\":true,\"hit\":true},\"#page-editsched .hl-tog\":{\"onScreen\":true,\"hit\":true}}] · ✓ 390px: toolbar controls drawn (for the record) [[\"\",\"exportSched\",\"exportPdf\",\"\",\"editSchedMore\"]] · ✓ 320px: the button right after Highlight is the ⋯ menu [{\"after\":{\"id\":\"editSchedMore\",\"cls\":\"abtn schedule-more\",\"t\":\"⋯\",\"x\":180,\"w\":30,\"r\":210},\"order\":[\"Jump to a date\",\"exportSched\",\"exportPdf\",\"Highlight filters\",\"editSchedMore\",\"searchE\",\"‹\",\"›\"]}] · ✓ 320px: the menu holds exactly one item, Insights, and sits inside the screen [{\"items\":[\"Insights\"],\"box\":{\"x\":34,\"y\":90,\"width\":176,\"height\":48}}] · ✓ 320px: search, calendar, the ⋯ button and Highlight are each topmost at their centre (reachable) [{\"#searchE\":{\"onScreen\":true,\"hit\":true},\"#page-editsched .filt-cal\":{\"onScreen\":true,\"hit\":true},\"#editSchedMore\":{\"onScreen\":true,\"hit\":true},\"#page-editsched .hl-tog\":{\"onScreen\":true,\"hit\":true}}] · ✓ 320px: toolbar controls drawn (for the record) [[\"\",\"exportSched\",\"exportPdf\",\"\",\"editSchedMore\",\"‹\",\"›\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "001-P4d-02-editsched-390-menu-open.png",
+      "002-P4d-02-editsched-320-menu-open.png"
+     ]
+    },
+    {
+     "id": "P4d-02-viewsched",
+     "did": "View-only Sched at 390 and 320 px wide: read the toolbar, pressed the button after Highlight, read the menu, tested neighbours with a real hit test",
+     "saw": "✓ 390px: the button right after Highlight is the ⋯ menu [{\"after\":{\"id\":\"viewSchedMore\",\"cls\":\"abtn schedule-more\",\"t\":\"⋯\",\"x\":86,\"w\":30,\"r\":116},\"order\":[\"Jump to a date\",\"Highlight filters\",\"viewSchedMore\",\"searchV\",\"i\",\"i\",\"i\",\"i\",\"i\",\"i\",\"i\"]}] · ✓ 390px: the menu holds exactly one item, Insights, and sits inside the screen [{\"items\":[\"Insights\"],\"box\":{\"x\":86,\"y\":88,\"width\":176,\"height\":48}}] · ✓ 390px: search, calendar, the ⋯ button and Highlight are each topmost at their centre (reachable) [{\"#searchV\":{\"onScreen\":true,\"hit\":true},\"#page-viewsched .filt-cal\":{\"onScreen\":true,\"hit\":true},\"#viewSchedMore\":{\"onScreen\":true,\"hit\":true},\"#page-viewsched .hl-tog\":{\"onScreen\":true,\"hit\":true}}] · ✓ 390px: toolbar controls drawn (for the record) [[\"\",\"\",\"viewSchedMore\"]] · ✓ 320px: the button right after Highlight is the ⋯ menu [{\"after\":{\"id\":\"viewSchedMore\",\"cls\":\"abtn schedule-more\",\"t\":\"⋯\",\"x\":86,\"w\":30,\"r\":116},\"order\":[\"Jump to a date\",\"Highlight filters\",\"viewSchedMore\",\"searchV\"]}] · ✓ 320px: the menu holds exactly one item, Insights, and sits inside the screen [{\"items\":[\"Insights\"],\"box\":{\"x\":86,\"y\":88,\"width\":176,\"height\":48}}] · ✓ 320px: search, calendar, the ⋯ button and Highlight are each topmost at their centre (reachable) [{\"#searchV\":{\"onScreen\":true,\"hit\":true},\"#page-viewsched .filt-cal\":{\"onScreen\":true,\"hit\":true},\"#viewSchedMore\":{\"onScreen\":true,\"hit\":true},\"#page-viewsched .hl-tog\":{\"onScreen\":true,\"hit\":true}}] · ✓ 320px: toolbar controls drawn (for the record) [[\"\",\"\",\"viewSchedMore\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "003-P4d-02-viewsched-390-menu-open.png",
+      "004-P4d-02-viewsched-320-menu-open.png"
+     ]
+    },
+    {
+     "id": "P4d-03",
+     "did": "Phone drawer opened from Inputs, Tracker, Leave War; then on each schedule page the calendar picked Mon 20 Jul",
+     "saw": "✓ drawer from inputs: sections [\"Menu\",\"Account\"], no WEEK block/shortcuts [{\"heads\":[\"Menu\",\"Account\"],\"weeks\":0}] · ✓ drawer from tracker: sections [\"Menu\",\"Account\"], no WEEK block/shortcuts [{\"heads\":[\"Menu\",\"Account\"],\"weeks\":0}] · ✓ drawer from leavewar: sections [\"Menu\",\"Account\"], no WEEK block/shortcuts [{\"heads\":[\"Menu\",\"Account\"],\"weeks\":0}] · ✓ viewsched: the calendar picked Mon 20 Jul — week is 20/07/2026, Monday at the left edge (offset 0) [{\"wk\":\"20/07/2026\",\"left\":0}] · ✓ editsched: the calendar picked Mon 20 Jul — week is 20/07/2026, Monday at the left edge (offset 0) [{\"wk\":\"20/07/2026\",\"left\":0}]",
+     "verdict": "PASS",
+     "pics": [
+      "005-P4d-03-drawer-from-inputs.png",
+      "006-P4d-03-viewsched-calendar-open.png",
+      "007-P4d-03-editsched-calendar-open.png"
+     ]
+    },
+    {
+     "id": "P4d-04-editsched",
+     "did": "Edit Schedule phone: opened the menu by pointer, tapped outside, opened by keyboard, pressed Escape, reopened, chose Insights, closed it",
+     "saw": "✓ pointer: opens; a tap on the search box closes the menu AND reaches the search box [{\"opened\":true,\"closed\":true,\"searchFocused\":true}] · ✓ keyboard: Enter opens; Escape closes and the caret returns to the visible ⋯ button [{\"kopened\":true,\"focus\":{\"id\":\"editSchedMore\",\"visible\":true}}] · ✓ choosing Insights opens the window (readable text), the menu is gone, closing returns the caret to the ⋯ button [{\"shown\":true,\"textLen\":1831,\"focusAfterClose\":\"editSchedMore\"}] · ✓ the next gesture (calendar button) works after the menu [true]",
+     "verdict": "PASS",
+     "pics": [
+      "008-P4d-04-editsched-after-escape.png",
+      "009-P4d-04-editsched-insights-open.png"
+     ]
+    },
+    {
+     "id": "P4d-04-viewsched",
+     "did": "View-only Sched phone: opened the menu by pointer, tapped outside, opened by keyboard, pressed Escape, reopened, chose Insights, closed it",
+     "saw": "✓ pointer: opens; a tap on the search box closes the menu AND reaches the search box [{\"opened\":true,\"closed\":true,\"searchFocused\":true}] · ✓ keyboard: Enter opens; Escape closes and the caret returns to the visible ⋯ button [{\"kopened\":true,\"focus\":{\"id\":\"viewSchedMore\",\"visible\":true}}] · ✓ choosing Insights opens the window (readable text), the menu is gone, closing returns the caret to the ⋯ button [{\"shown\":true,\"textLen\":1831,\"focusAfterClose\":\"viewSchedMore\"}] · ✓ the next gesture (calendar button) works after the menu [true]",
+     "verdict": "PASS",
+     "pics": [
+      "010-P4d-04-viewsched-after-escape.png",
+      "011-P4d-04-viewsched-insights-open.png"
+     ]
+    },
+    {
+     "id": "P4d-05",
+     "did": "Phone menu opened at 820 px then resized to 821 and back to 390; then with a week change, a page change and a sign-out/sign-in as the member",
+     "saw": "✓ at 820 the ⋯ button is there and opens the menu [{\"has820\":true,\"open820\":1}] · ✓ at 821 the menu is gone and the direct Insights button is drawn (no ⋯ button); back at 390 no old menu reappears [{\"menu821\":0,\"btn821\":true,\"more821\":0,\"menuBack\":0,\"moreBack\":true}] · ✓ opening the calendar closes the menu; after leaving the page and returning, no menu is open [{\"afterCal\":0,\"reopened\":1,\"afterNav\":0}] · ✗ after sign-out and sign-in as the member: no stale menu, no Edit Schedule ⋯ button [{\"memberMenu\":0,\"memberMoreEdit\":1}] · ✓ signed back in as the admin: no menu left open, the ⋯ button is back [{\"adminMenu\":0,\"adminMore\":true}]",
+     "verdict": "FAIL",
+     "pics": [
+      "012-P4d-05-820-open.png",
+      "013-P4d-05-821-direct-door.png",
+      "014-P4d-05-member-after-signin.png"
+     ]
+    },
+    {
+     "id": "P4d-06",
+     "did": "Board on Wednesday: opened Insights by the phone Board's own More menu, closed it, pressed Done; then at desktop width by the Board's direct Insights button",
+     "saw": "✓ phone Board: More → Insights opens the window; no week-toolbar popup over it [{\"len\":1831,\"weekMenu\":0}] · ✓ closing leaves the Board open on Wednesday (day 2); Done returns to the week page [{\"day\":2,\"boardStill\":true,\"onWeek\":\"editsched\"}] · ✓ the desktop Board button shows the same weekly figures; the Board is still on Wednesday [{\"same\":true,\"d2\":2,\"stillBoard2\":true,\"lenPhone\":1831,\"lenDesk\":1831}]",
+     "verdict": "PASS",
+     "pics": [
+      "015-P4d-06-board-more-open.png",
+      "016-P4d-06-board-insights-phone.png",
+      "017-P4d-06-board-insights-desktop.png"
+     ]
+    },
+    {
+     "id": "P4d-01",
+     "did": "RECORD ONLY: Admin enabled guest viewing (Admin → Users), signed out, signed in as a name with no access, sent the request form, entered the guest door; looked for More schedule options → Insights",
+     "saw": "✓ the real guest door was reached (the guest app is on screen) [true] · ✓ RECORD: the guest's \"More schedule options\" button and its menu items [{\"moreButtons\":[],\"menuItems\":null,\"insightsButtons\":[],\"insightsTextLen\":null}] · ✓ RECORD: editing actions the guest is offered (editable boxes) and the guest's buttons [{\"editable\":0,\"tools\":[\"guestOut\"]}]",
+     "verdict": "RECORDED",
+     "pics": [
+      "018-P4d-01-waiting-screen.png",
+      "019-P4d-01-guest-app.png"
+     ]
+    },
+    {
+     "id": "ERRORS-phone",
+     "did": "console / page errors / 4xx across the worlds of phone",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-P4d-02-editsched-390-menu-open.png",
+    "002-P4d-02-editsched-320-menu-open.png",
+    "003-P4d-02-viewsched-390-menu-open.png",
+    "004-P4d-02-viewsched-320-menu-open.png",
+    "005-P4d-03-drawer-from-inputs.png",
+    "006-P4d-03-viewsched-calendar-open.png",
+    "007-P4d-03-editsched-calendar-open.png",
+    "008-P4d-04-editsched-after-escape.png",
+    "009-P4d-04-editsched-insights-open.png",
+    "010-P4d-04-viewsched-after-escape.png",
+    "011-P4d-04-viewsched-insights-open.png",
+    "012-P4d-05-820-open.png",
+    "013-P4d-05-821-direct-door.png",
+    "014-P4d-05-member-after-signin.png",
+    "015-P4d-06-board-more-open.png",
+    "016-P4d-06-board-insights-phone.png",
+    "017-P4d-06-board-insights-desktop.png",
+    "018-P4d-01-waiting-screen.png",
+    "019-P4d-01-guest-app.png"
+   ],
+   "errors": []
+  },
+  "phone-P4d-05": {
+   "at": "2026-10-05T17:08:01.380Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4d-05",
+     "did": "Phone menu opened at 820 px then resized to 821 and back to 390; then with a week change, a page change and a sign-out/sign-in as the member",
+     "saw": "✓ at 820 the ⋯ button is there and opens the menu [{\"has820\":true,\"open820\":1}] · ✓ at 821 the menu is gone and the direct Insights button is drawn (no ⋯ button); back at 390 no old menu reappears [{\"menu821\":0,\"btn821\":true,\"more821\":0,\"menuBack\":0,\"moreBack\":true}] · ✓ opening the calendar closes the menu; after leaving the page and returning, no menu is open [{\"afterCal\":0,\"reopened\":1,\"afterNav\":0}] · ✓ after sign-out and sign-in as the member: no stale menu, no Edit Schedule ⋯ button drawn on screen (a finger would land on it) [{\"memberMenu\":0,\"memberMoreEdit\":0}] · ✓ signed back in as the admin: no menu left open, the ⋯ button is back [{\"adminMenu\":0,\"adminMore\":true}]",
+     "verdict": "PASS",
+     "pics": [
+      "001-P4d-05-820-open.png",
+      "002-P4d-05-821-direct-door.png",
+      "003-P4d-05-member-after-signin.png"
+     ]
+    },
+    {
+     "id": "ERRORS-phone-P4d-05",
+     "did": "console / page errors / 4xx across the worlds of phone-P4d-05",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "pics": [
+    "001-P4d-05-820-open.png",
+    "002-P4d-05-821-direct-door.png",
+    "003-P4d-05-member-after-signin.png"
+   ],
+   "errors": []
+  },
+  "p4e8-desktop": {
+   "at": "2026-10-05T17:10:01.244Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4e-06-desktop",
+     "did": "desktop: Insights opened from each door, Show all, scrolled to the bottom, the cross pressed",
+     "saw": "OK View-only Sched (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2117/2117) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2117,\"max\":2117}}] | OK Edit Schedule (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2117/2117) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2117,\"max\":2117}}] | OK Board (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2117/2117) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2117,\"max\":2117}}] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "001-p4e06-desktop-insights-bottom-View-only-Sched-direct-.png",
+      "002-p4e06-desktop-insights-bottom-Edit-Schedule-direct-.png",
+      "003-p4e06-desktop-insights-bottom-Board-direct-.png"
+     ]
+    },
+    {
+     "id": "P4e-07-desktop",
+     "did": "desktop: tall (Insights, Duty templates) and short (Day templates) windows at 1440x900, 1280x700",
+     "saw": "OK 1440x900: windows sit inside the screen with their close reachable (the phone-height rules apply to a phone only) [{\"ins\":{\"top\":72,\"bottom\":828,\"h\":756,\"vh\":900,\"gapBelow\":72,\"x\":420,\"w\":600},\"duty\":{\"top\":237,\"bottom\":663,\"h\":427,\"vh\":900,\"gapBelow\":237,\"x\":490,\"w\":460}}] | OK 1280x700: windows sit inside the screen with their close reachable (the phone-height rules apply to a phone only) [{\"ins\":{\"top\":56,\"bottom\":644,\"h\":588,\"vh\":700,\"gapBelow\":56,\"x\":340,\"w\":600},\"duty\":{\"top\":137,\"bottom\":563,\"h\":427,\"vh\":700,\"gapBelow\":137,\"x\":410,\"w\":460}}] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "004-p4e07-desktop-1440x900-insights.png",
+      "005-p4e07-desktop-1440x900-duty-templates.png",
+      "006-p4e07-desktop-1440x900-day-templates-short.png",
+      "007-p4e07-desktop-1280x700-insights.png",
+      "008-p4e07-desktop-1280x700-duty-templates.png",
+      "009-p4e07-desktop-1280x700-day-templates-short.png"
+     ]
+    },
+    {
+     "id": "P4e-08-desktop",
+     "did": "desktop: the thirteen surrounds - 12 of 13 behave",
+     "saw": "OK Duty templates (#tplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Wave templates (#waveTplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day templates (#daytplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Week calendar (#weekCal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day details (#dayPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Insights (#insightModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Traffic (#airpop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Sort all (#sortAllPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Cancellation (CX) (#cxPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Saved plans (#draftsModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Input editor (#inpEditPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Document viewer (#docViewPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Drawer (#drawer): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [{\"name\":\"Drawer\",\"id\":\"drawer\",\"status\":\"NOT DRAWN on a desktop (the drawer exists on a phone only)\"}] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "010-p4e08-desktop-tplModal-open.png",
+      "011-p4e08-desktop-tplModal-after-drag.png",
+      "012-p4e08-desktop-waveTplModal-open.png",
+      "013-p4e08-desktop-waveTplModal-after-drag.png",
+      "014-p4e08-desktop-daytplModal-open.png",
+      "015-p4e08-desktop-daytplModal-after-drag.png",
+      "016-p4e08-desktop-weekCal-open.png",
+      "017-p4e08-desktop-weekCal-after-drag.png",
+      "018-p4e08-desktop-dayPop-open.png",
+      "019-p4e08-desktop-dayPop-after-drag.png",
+      "020-p4e08-desktop-insightModal-open.png",
+      "021-p4e08-desktop-insightModal-after-drag.png",
+      "022-p4e08-desktop-airpop-open.png",
+      "023-p4e08-desktop-airpop-after-drag.png",
+      "024-p4e08-desktop-sortAllPop-open.png",
+      "025-p4e08-desktop-sortAllPop-after-drag.png",
+      "026-p4e08-desktop-cxPop-open.png",
+      "027-p4e08-desktop-cxPop-after-drag.png",
+      "028-p4e08-desktop-draftsModal-open.png",
+      "029-p4e08-desktop-draftsModal-after-drag.png",
+      "030-p4e08-desktop-inpEditPop-open.png",
+      "031-p4e08-desktop-inpEditPop-after-drag.png",
+      "032-p4e08-desktop-docViewPop-open.png",
+      "033-p4e08-desktop-docViewPop-after-drag.png"
+     ]
+    }
+   ],
+   "pics": [
+    "001-p4e06-desktop-insights-bottom-View-only-Sched-direct-.png",
+    "002-p4e06-desktop-insights-bottom-Edit-Schedule-direct-.png",
+    "003-p4e06-desktop-insights-bottom-Board-direct-.png",
+    "004-p4e07-desktop-1440x900-insights.png",
+    "005-p4e07-desktop-1440x900-duty-templates.png",
+    "006-p4e07-desktop-1440x900-day-templates-short.png",
+    "007-p4e07-desktop-1280x700-insights.png",
+    "008-p4e07-desktop-1280x700-duty-templates.png",
+    "009-p4e07-desktop-1280x700-day-templates-short.png",
+    "010-p4e08-desktop-tplModal-open.png",
+    "011-p4e08-desktop-tplModal-after-drag.png",
+    "012-p4e08-desktop-waveTplModal-open.png",
+    "013-p4e08-desktop-waveTplModal-after-drag.png",
+    "014-p4e08-desktop-daytplModal-open.png",
+    "015-p4e08-desktop-daytplModal-after-drag.png",
+    "016-p4e08-desktop-weekCal-open.png",
+    "017-p4e08-desktop-weekCal-after-drag.png",
+    "018-p4e08-desktop-dayPop-open.png",
+    "019-p4e08-desktop-dayPop-after-drag.png",
+    "020-p4e08-desktop-insightModal-open.png",
+    "021-p4e08-desktop-insightModal-after-drag.png",
+    "022-p4e08-desktop-airpop-open.png",
+    "023-p4e08-desktop-airpop-after-drag.png",
+    "024-p4e08-desktop-sortAllPop-open.png",
+    "025-p4e08-desktop-sortAllPop-after-drag.png",
+    "026-p4e08-desktop-cxPop-open.png",
+    "027-p4e08-desktop-cxPop-after-drag.png",
+    "028-p4e08-desktop-draftsModal-open.png",
+    "029-p4e08-desktop-draftsModal-after-drag.png",
+    "030-p4e08-desktop-inpEditPop-open.png",
+    "031-p4e08-desktop-inpEditPop-after-drag.png",
+    "032-p4e08-desktop-docViewPop-open.png",
+    "033-p4e08-desktop-docViewPop-after-drag.png"
+   ],
+   "rows": [
+    {
+     "name": "Duty templates",
+     "id": "tplModal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Wave templates",
+     "id": "waveTplModal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Day templates",
+     "id": "daytplModal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Week calendar",
+     "id": "weekCal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Day details",
+     "id": "dayPop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Insights",
+     "id": "insightModal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Traffic",
+     "id": "airpop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Sort all",
+     "id": "sortAllPop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Cancellation (CX)",
+     "id": "cxPop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Saved plans",
+     "id": "draftsModal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Input editor",
+     "id": "inpEditPop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Document viewer",
+     "id": "docViewPop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Drawer",
+     "id": "drawer",
+     "status": "NOT DRAWN on a desktop (the drawer exists on a phone only)"
+    }
+   ]
+  },
+  "p4e8-phone": {
+   "at": "2026-10-05T17:11:28.987Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4e-06-desktop",
+     "did": "desktop: Insights opened from each door, Show all, scrolled to the bottom, the cross pressed",
+     "saw": "OK View-only Sched (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2117/2117) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2117,\"max\":2117}}] | OK Edit Schedule (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2117/2117) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2117,\"max\":2117}}] | OK Board (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2117/2117) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2117,\"max\":2117}}] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "001-p4e06-desktop-insights-bottom-View-only-Sched-direct-.png",
+      "002-p4e06-desktop-insights-bottom-Edit-Schedule-direct-.png",
+      "003-p4e06-desktop-insights-bottom-Board-direct-.png"
+     ]
+    },
+    {
+     "id": "P4e-07-desktop",
+     "did": "desktop: tall (Insights, Duty templates) and short (Day templates) windows at 1440x900, 1280x700",
+     "saw": "OK 1440x900: windows sit inside the screen with their close reachable (the phone-height rules apply to a phone only) [{\"ins\":{\"top\":72,\"bottom\":828,\"h\":756,\"vh\":900,\"gapBelow\":72,\"x\":420,\"w\":600},\"duty\":{\"top\":237,\"bottom\":663,\"h\":427,\"vh\":900,\"gapBelow\":237,\"x\":490,\"w\":460}}] | OK 1280x700: windows sit inside the screen with their close reachable (the phone-height rules apply to a phone only) [{\"ins\":{\"top\":56,\"bottom\":644,\"h\":588,\"vh\":700,\"gapBelow\":56,\"x\":340,\"w\":600},\"duty\":{\"top\":137,\"bottom\":563,\"h\":427,\"vh\":700,\"gapBelow\":137,\"x\":410,\"w\":460}}] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "004-p4e07-desktop-1440x900-insights.png",
+      "005-p4e07-desktop-1440x900-duty-templates.png",
+      "006-p4e07-desktop-1440x900-day-templates-short.png",
+      "007-p4e07-desktop-1280x700-insights.png",
+      "008-p4e07-desktop-1280x700-duty-templates.png",
+      "009-p4e07-desktop-1280x700-day-templates-short.png"
+     ]
+    },
+    {
+     "id": "P4e-08-desktop",
+     "did": "desktop: the thirteen surrounds - 12 of 13 behave",
+     "saw": "OK Duty templates (#tplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Wave templates (#waveTplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day templates (#daytplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Week calendar (#weekCal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day details (#dayPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Insights (#insightModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Traffic (#airpop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Sort all (#sortAllPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Cancellation (CX) (#cxPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Saved plans (#draftsModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Input editor (#inpEditPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Document viewer (#docViewPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Drawer (#drawer): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [{\"name\":\"Drawer\",\"id\":\"drawer\",\"status\":\"NOT DRAWN on a desktop (the drawer exists on a phone only)\"}] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "010-p4e08-desktop-tplModal-open.png",
+      "011-p4e08-desktop-tplModal-after-drag.png",
+      "012-p4e08-desktop-waveTplModal-open.png",
+      "013-p4e08-desktop-waveTplModal-after-drag.png",
+      "014-p4e08-desktop-daytplModal-open.png",
+      "015-p4e08-desktop-daytplModal-after-drag.png",
+      "016-p4e08-desktop-weekCal-open.png",
+      "017-p4e08-desktop-weekCal-after-drag.png",
+      "018-p4e08-desktop-dayPop-open.png",
+      "019-p4e08-desktop-dayPop-after-drag.png",
+      "020-p4e08-desktop-insightModal-open.png",
+      "021-p4e08-desktop-insightModal-after-drag.png",
+      "022-p4e08-desktop-airpop-open.png",
+      "023-p4e08-desktop-airpop-after-drag.png",
+      "024-p4e08-desktop-sortAllPop-open.png",
+      "025-p4e08-desktop-sortAllPop-after-drag.png",
+      "026-p4e08-desktop-cxPop-open.png",
+      "027-p4e08-desktop-cxPop-after-drag.png",
+      "028-p4e08-desktop-draftsModal-open.png",
+      "029-p4e08-desktop-draftsModal-after-drag.png",
+      "030-p4e08-desktop-inpEditPop-open.png",
+      "031-p4e08-desktop-inpEditPop-after-drag.png",
+      "032-p4e08-desktop-docViewPop-open.png",
+      "033-p4e08-desktop-docViewPop-after-drag.png"
+     ]
+    },
+    {
+     "id": "P4e-06-phone",
+     "did": "phone: Insights opened from each door, Show all, scrolled to the bottom, the cross pressed",
+     "saw": "OK View-only Sched ⋯: after Show all (24 -> 24 rows) and scrolling to the bottom (2150/2150) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":346,\"y\":40,\"right\":373,\"bottom\":60,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2150,\"max\":2150}}] | OK Edit Schedule ⋯: after Show all (24 -> 24 rows) and scrolling to the bottom (2150/2150) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":346,\"y\":40,\"right\":373,\"bottom\":60,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2150,\"max\":2150}}] | OK Board ⋯: after Show all (24 -> 24 rows) and scrolling to the bottom (2150/2150) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":346,\"y\":40,\"right\":373,\"bottom\":60,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2150,\"max\":2150}}] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "034-p4e06-phone-insights-bottom-View-only-Sched-.png",
+      "035-p4e06-phone-insights-bottom-Edit-Schedule-.png",
+      "036-p4e06-phone-insights-bottom-Board-.png"
+     ]
+    },
+    {
+     "id": "P4e-07-phone",
+     "did": "phone: tall (Insights, Duty templates) and short (Day templates) windows at 390x844, 390x568, 844x390",
+     "saw": "OK 390x844: the tall Insights window runs up to a thin strip at the top (top 24px of 844px, bottom edge 844) and its cross is reachable [{\"top\":24,\"bottom\":844,\"h\":820,\"vh\":844,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x844: the Duty templates window stays within the screen and its close is reachable (top 417, bottom 844 of 844) [{\"top\":417,\"bottom\":844,\"h\":427,\"vh\":844,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x844: the short Day templates window is only as tall as its content (191px) and sits at the bottom (gap below 0px) [{\"top\":653,\"bottom\":844,\"h\":191,\"vh\":844,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x568: the tall Insights window runs up to a thin strip at the top (top 24px of 568px, bottom edge 568) and its cross is reachable [{\"top\":24,\"bottom\":568,\"h\":544,\"vh\":568,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x568: the Duty templates window stays within the screen and its close is reachable (top 141, bottom 568 of 568) [{\"top\":141,\"bottom\":568,\"h\":427,\"vh\":568,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x568: the short Day templates window is only as tall as its content (191px) and sits at the bottom (gap below 0px) [{\"top\":377,\"bottom\":568,\"h\":191,\"vh\":568,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 844x390: the phone rules apply to widths up to 820px; at this width (a phone on its side) the windows are centred inside the screen with their close reachable [{\"ins\":{\"top\":31,\"bottom\":359,\"h\":328,\"vh\":390,\"gapBelow\":31,\"x\":122,\"w\":600},\"duty\":{\"top\":31,\"bottom\":359,\"h\":328,\"vh\":390,\"gapBelow\":31,\"x\":192,\"w\":460},\"short\":{\"top\":100,\"bottom\":291,\"h\":191,\"vh\"] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "037-p4e07-phone-390x844-insights.png",
+      "038-p4e07-phone-390x844-duty-templates.png",
+      "039-p4e07-phone-390x844-day-templates-short.png",
+      "040-p4e07-phone-390x568-insights.png",
+      "041-p4e07-phone-390x568-duty-templates.png",
+      "042-p4e07-phone-390x568-day-templates-short.png",
+      "043-p4e07-phone-844x390-insights.png",
+      "044-p4e07-phone-844x390-duty-templates.png",
+      "045-p4e07-phone-844x390-day-templates-short.png"
+     ]
+    },
+    {
+     "id": "P4e-08-phone",
+     "did": "phone: the thirteen surrounds - 13 of 13 behave",
+     "saw": "OK Duty templates (#tplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Wave templates (#waveTplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day templates (#daytplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Week calendar (#weekCal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day details (#dayPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Insights (#insightModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Traffic (#airpop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Sort all (#sortAllPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Cancellation (CX) (#cxPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Saved plans (#draftsModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Input editor (#inpEditPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Document viewer (#docViewPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Drawer (#drawer): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "046-p4e08-phone-tplModal-open.png",
+      "047-p4e08-phone-tplModal-after-drag.png",
+      "048-p4e08-phone-waveTplModal-open.png",
+      "049-p4e08-phone-waveTplModal-after-drag.png",
+      "050-p4e08-phone-daytplModal-open.png",
+      "051-p4e08-phone-daytplModal-after-drag.png",
+      "052-p4e08-phone-weekCal-open.png",
+      "053-p4e08-phone-weekCal-after-drag.png",
+      "054-p4e08-phone-dayPop-open.png",
+      "055-p4e08-phone-dayPop-after-drag.png",
+      "056-p4e08-phone-insightModal-open.png",
+      "057-p4e08-phone-insightModal-after-drag.png",
+      "058-p4e08-phone-airpop-open.png",
+      "059-p4e08-phone-airpop-after-drag.png",
+      "060-p4e08-phone-sortAllPop-open.png",
+      "061-p4e08-phone-sortAllPop-after-drag.png",
+      "062-p4e08-phone-cxPop-open.png",
+      "063-p4e08-phone-cxPop-after-drag.png",
+      "064-p4e08-phone-draftsModal-open.png",
+      "065-p4e08-phone-draftsModal-after-drag.png",
+      "066-p4e08-phone-inpEditPop-open.png",
+      "067-p4e08-phone-inpEditPop-after-drag.png",
+      "068-p4e08-phone-docViewPop-open.png",
+      "069-p4e08-phone-docViewPop-after-drag.png",
+      "070-p4e08-phone-drawer-open.png",
+      "071-p4e08-phone-drawer-after-drag.png"
+     ]
+    }
+   ],
+   "pics": [
+    "001-p4e06-desktop-insights-bottom-View-only-Sched-direct-.png",
+    "002-p4e06-desktop-insights-bottom-Edit-Schedule-direct-.png",
+    "003-p4e06-desktop-insights-bottom-Board-direct-.png",
+    "004-p4e07-desktop-1440x900-insights.png",
+    "005-p4e07-desktop-1440x900-duty-templates.png",
+    "006-p4e07-desktop-1440x900-day-templates-short.png",
+    "007-p4e07-desktop-1280x700-insights.png",
+    "008-p4e07-desktop-1280x700-duty-templates.png",
+    "009-p4e07-desktop-1280x700-day-templates-short.png",
+    "010-p4e08-desktop-tplModal-open.png",
+    "011-p4e08-desktop-tplModal-after-drag.png",
+    "012-p4e08-desktop-waveTplModal-open.png",
+    "013-p4e08-desktop-waveTplModal-after-drag.png",
+    "014-p4e08-desktop-daytplModal-open.png",
+    "015-p4e08-desktop-daytplModal-after-drag.png",
+    "016-p4e08-desktop-weekCal-open.png",
+    "017-p4e08-desktop-weekCal-after-drag.png",
+    "018-p4e08-desktop-dayPop-open.png",
+    "019-p4e08-desktop-dayPop-after-drag.png",
+    "020-p4e08-desktop-insightModal-open.png",
+    "021-p4e08-desktop-insightModal-after-drag.png",
+    "022-p4e08-desktop-airpop-open.png",
+    "023-p4e08-desktop-airpop-after-drag.png",
+    "024-p4e08-desktop-sortAllPop-open.png",
+    "025-p4e08-desktop-sortAllPop-after-drag.png",
+    "026-p4e08-desktop-cxPop-open.png",
+    "027-p4e08-desktop-cxPop-after-drag.png",
+    "028-p4e08-desktop-draftsModal-open.png",
+    "029-p4e08-desktop-draftsModal-after-drag.png",
+    "030-p4e08-desktop-inpEditPop-open.png",
+    "031-p4e08-desktop-inpEditPop-after-drag.png",
+    "032-p4e08-desktop-docViewPop-open.png",
+    "033-p4e08-desktop-docViewPop-after-drag.png",
+    "034-p4e06-phone-insights-bottom-View-only-Sched-.png",
+    "035-p4e06-phone-insights-bottom-Edit-Schedule-.png",
+    "036-p4e06-phone-insights-bottom-Board-.png",
+    "037-p4e07-phone-390x844-insights.png",
+    "038-p4e07-phone-390x844-duty-templates.png",
+    "039-p4e07-phone-390x844-day-templates-short.png",
+    "040-p4e07-phone-390x568-insights.png",
+    "041-p4e07-phone-390x568-duty-templates.png",
+    "042-p4e07-phone-390x568-day-templates-short.png",
+    "043-p4e07-phone-844x390-insights.png",
+    "044-p4e07-phone-844x390-duty-templates.png",
+    "045-p4e07-phone-844x390-day-templates-short.png",
+    "046-p4e08-phone-tplModal-open.png",
+    "047-p4e08-phone-tplModal-after-drag.png",
+    "048-p4e08-phone-waveTplModal-open.png",
+    "049-p4e08-phone-waveTplModal-after-drag.png",
+    "050-p4e08-phone-daytplModal-open.png",
+    "051-p4e08-phone-daytplModal-after-drag.png",
+    "052-p4e08-phone-weekCal-open.png",
+    "053-p4e08-phone-weekCal-after-drag.png",
+    "054-p4e08-phone-dayPop-open.png",
+    "055-p4e08-phone-dayPop-after-drag.png",
+    "056-p4e08-phone-insightModal-open.png",
+    "057-p4e08-phone-insightModal-after-drag.png",
+    "058-p4e08-phone-airpop-open.png",
+    "059-p4e08-phone-airpop-after-drag.png",
+    "060-p4e08-phone-sortAllPop-open.png",
+    "061-p4e08-phone-sortAllPop-after-drag.png",
+    "062-p4e08-phone-cxPop-open.png",
+    "063-p4e08-phone-cxPop-after-drag.png",
+    "064-p4e08-phone-draftsModal-open.png",
+    "065-p4e08-phone-draftsModal-after-drag.png",
+    "066-p4e08-phone-inpEditPop-open.png",
+    "067-p4e08-phone-inpEditPop-after-drag.png",
+    "068-p4e08-phone-docViewPop-open.png",
+    "069-p4e08-phone-docViewPop-after-drag.png",
+    "070-p4e08-phone-drawer-open.png",
+    "071-p4e08-phone-drawer-after-drag.png"
+   ],
+   "rows": [
+    {
+     "name": "Duty templates",
+     "id": "tplModal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Wave templates",
+     "id": "waveTplModal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Day templates",
+     "id": "daytplModal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Week calendar",
+     "id": "weekCal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Day details",
+     "id": "dayPop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Insights",
+     "id": "insightModal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Traffic",
+     "id": "airpop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Sort all",
+     "id": "sortAllPop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Cancellation (CX)",
+     "id": "cxPop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Saved plans",
+     "id": "draftsModal",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Input editor",
+     "id": "inpEditPop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Document viewer",
+     "id": "docViewPop",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    },
+    {
+     "name": "Drawer",
+     "id": "drawer",
+     "status": "PASS",
+     "afterDrag": true,
+     "afterSurroundClick": false
+    }
+   ]
+  },
+  "e-desktop+phone": {
+   "at": "2026-10-05T17:11:29.064Z",
+   "base": "http://localhost:4231",
+   "table": [
+    {
+     "id": "P4e-06-desktop",
+     "did": "desktop: Insights opened from each door, Show all, scrolled to the bottom, the cross pressed",
+     "saw": "OK View-only Sched (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2117/2117) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2117,\"max\":2117}}] | OK Edit Schedule (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2117/2117) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2117,\"max\":2117}}] | OK Board (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2117/2117) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2117,\"max\":2117}}] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "001-p4e06-desktop-insights-bottom-View-only-Sched-direct-.png",
+      "002-p4e06-desktop-insights-bottom-Edit-Schedule-direct-.png",
+      "003-p4e06-desktop-insights-bottom-Board-direct-.png"
+     ]
+    },
+    {
+     "id": "P4e-07-desktop",
+     "did": "desktop: tall (Insights, Duty templates) and short (Day templates) windows at 1440x900, 1280x700",
+     "saw": "OK 1440x900: windows sit inside the screen with their close reachable (the phone-height rules apply to a phone only) [{\"ins\":{\"top\":72,\"bottom\":828,\"h\":756,\"vh\":900,\"gapBelow\":72,\"x\":420,\"w\":600},\"duty\":{\"top\":237,\"bottom\":663,\"h\":427,\"vh\":900,\"gapBelow\":237,\"x\":490,\"w\":460}}] | OK 1280x700: windows sit inside the screen with their close reachable (the phone-height rules apply to a phone only) [{\"ins\":{\"top\":56,\"bottom\":644,\"h\":588,\"vh\":700,\"gapBelow\":56,\"x\":340,\"w\":600},\"duty\":{\"top\":137,\"bottom\":563,\"h\":427,\"vh\":700,\"gapBelow\":137,\"x\":410,\"w\":460}}] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "004-p4e07-desktop-1440x900-insights.png",
+      "005-p4e07-desktop-1440x900-duty-templates.png",
+      "006-p4e07-desktop-1440x900-day-templates-short.png",
+      "007-p4e07-desktop-1280x700-insights.png",
+      "008-p4e07-desktop-1280x700-duty-templates.png",
+      "009-p4e07-desktop-1280x700-day-templates-short.png"
+     ]
+    },
+    {
+     "id": "P4e-08-desktop",
+     "did": "desktop: the thirteen surrounds - 12 of 13 behave",
+     "saw": "OK Duty templates (#tplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Wave templates (#waveTplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day templates (#daytplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Week calendar (#weekCal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day details (#dayPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Insights (#insightModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Traffic (#airpop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Sort all (#sortAllPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Cancellation (CX) (#cxPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Saved plans (#draftsModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Input editor (#inpEditPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Document viewer (#docViewPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Drawer (#drawer): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [{\"name\":\"Drawer\",\"id\":\"drawer\",\"status\":\"NOT DRAWN on a desktop (the drawer exists on a phone only)\"}] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "010-p4e08-desktop-tplModal-open.png",
+      "011-p4e08-desktop-tplModal-after-drag.png",
+      "012-p4e08-desktop-waveTplModal-open.png",
+      "013-p4e08-desktop-waveTplModal-after-drag.png",
+      "014-p4e08-desktop-daytplModal-open.png",
+      "015-p4e08-desktop-daytplModal-after-drag.png",
+      "016-p4e08-desktop-weekCal-open.png",
+      "017-p4e08-desktop-weekCal-after-drag.png",
+      "018-p4e08-desktop-dayPop-open.png",
+      "019-p4e08-desktop-dayPop-after-drag.png",
+      "020-p4e08-desktop-insightModal-open.png",
+      "021-p4e08-desktop-insightModal-after-drag.png",
+      "022-p4e08-desktop-airpop-open.png",
+      "023-p4e08-desktop-airpop-after-drag.png",
+      "024-p4e08-desktop-sortAllPop-open.png",
+      "025-p4e08-desktop-sortAllPop-after-drag.png",
+      "026-p4e08-desktop-cxPop-open.png",
+      "027-p4e08-desktop-cxPop-after-drag.png",
+      "028-p4e08-desktop-draftsModal-open.png",
+      "029-p4e08-desktop-draftsModal-after-drag.png",
+      "030-p4e08-desktop-inpEditPop-open.png",
+      "031-p4e08-desktop-inpEditPop-after-drag.png",
+      "032-p4e08-desktop-docViewPop-open.png",
+      "033-p4e08-desktop-docViewPop-after-drag.png"
+     ]
+    },
+    {
+     "id": "P4e-06-phone",
+     "did": "phone: Insights opened from each door, Show all, scrolled to the bottom, the cross pressed",
+     "saw": "OK View-only Sched ⋯: after Show all (24 -> 24 rows) and scrolling to the bottom (2150/2150) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":346,\"y\":40,\"right\":373,\"bottom\":60,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2150,\"max\":2150}}] | OK Edit Schedule ⋯: after Show all (24 -> 24 rows) and scrolling to the bottom (2150/2150) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":346,\"y\":40,\"right\":373,\"bottom\":60,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2150,\"max\":2150}}] | OK Board ⋯: after Show all (24 -> 24 rows) and scrolling to the bottom (2150/2150) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":346,\"y\":40,\"right\":373,\"bottom\":60,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2150,\"max\":2150}}] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "034-p4e06-phone-insights-bottom-View-only-Sched-.png",
+      "035-p4e06-phone-insights-bottom-Edit-Schedule-.png",
+      "036-p4e06-phone-insights-bottom-Board-.png"
+     ]
+    },
+    {
+     "id": "P4e-07-phone",
+     "did": "phone: tall (Insights, Duty templates) and short (Day templates) windows at 390x844, 390x568, 844x390",
+     "saw": "OK 390x844: the tall Insights window runs up to a thin strip at the top (top 24px of 844px, bottom edge 844) and its cross is reachable [{\"top\":24,\"bottom\":844,\"h\":820,\"vh\":844,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x844: the Duty templates window stays within the screen and its close is reachable (top 417, bottom 844 of 844) [{\"top\":417,\"bottom\":844,\"h\":427,\"vh\":844,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x844: the short Day templates window is only as tall as its content (191px) and sits at the bottom (gap below 0px) [{\"top\":653,\"bottom\":844,\"h\":191,\"vh\":844,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x568: the tall Insights window runs up to a thin strip at the top (top 24px of 568px, bottom edge 568) and its cross is reachable [{\"top\":24,\"bottom\":568,\"h\":544,\"vh\":568,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x568: the Duty templates window stays within the screen and its close is reachable (top 141, bottom 568 of 568) [{\"top\":141,\"bottom\":568,\"h\":427,\"vh\":568,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x568: the short Day templates window is only as tall as its content (191px) and sits at the bottom (gap below 0px) [{\"top\":377,\"bottom\":568,\"h\":191,\"vh\":568,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 844x390: the phone rules apply to widths up to 820px; at this width (a phone on its side) the windows are centred inside the screen with their close reachable [{\"ins\":{\"top\":31,\"bottom\":359,\"h\":328,\"vh\":390,\"gapBelow\":31,\"x\":122,\"w\":600},\"duty\":{\"top\":31,\"bottom\":359,\"h\":328,\"vh\":390,\"gapBelow\":31,\"x\":192,\"w\":460},\"short\":{\"top\":100,\"bottom\":291,\"h\":191,\"vh\"] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "037-p4e07-phone-390x844-insights.png",
+      "038-p4e07-phone-390x844-duty-templates.png",
+      "039-p4e07-phone-390x844-day-templates-short.png",
+      "040-p4e07-phone-390x568-insights.png",
+      "041-p4e07-phone-390x568-duty-templates.png",
+      "042-p4e07-phone-390x568-day-templates-short.png",
+      "043-p4e07-phone-844x390-insights.png",
+      "044-p4e07-phone-844x390-duty-templates.png",
+      "045-p4e07-phone-844x390-day-templates-short.png"
+     ]
+    },
+    {
+     "id": "P4e-08-phone",
+     "did": "phone: the thirteen surrounds - 13 of 13 behave",
+     "saw": "OK Duty templates (#tplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Wave templates (#waveTplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day templates (#daytplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Week calendar (#weekCal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day details (#dayPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Insights (#insightModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Traffic (#airpop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Sort all (#sortAllPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Cancellation (CX) (#cxPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Saved plans (#draftsModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Input editor (#inpEditPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Document viewer (#docViewPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Drawer (#drawer): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK no console / page / 4xx errors [[]]",
+     "verdict": "PASS",
+     "pics": [
+      "046-p4e08-phone-tplModal-open.png",
+      "047-p4e08-phone-tplModal-after-drag.png",
+      "048-p4e08-phone-waveTplModal-open.png",
+      "049-p4e08-phone-waveTplModal-after-drag.png",
+      "050-p4e08-phone-daytplModal-open.png",
+      "051-p4e08-phone-daytplModal-after-drag.png",
+      "052-p4e08-phone-weekCal-open.png",
+      "053-p4e08-phone-weekCal-after-drag.png",
+      "054-p4e08-phone-dayPop-open.png",
+      "055-p4e08-phone-dayPop-after-drag.png",
+      "056-p4e08-phone-insightModal-open.png",
+      "057-p4e08-phone-insightModal-after-drag.png",
+      "058-p4e08-phone-airpop-open.png",
+      "059-p4e08-phone-airpop-after-drag.png",
+      "060-p4e08-phone-sortAllPop-open.png",
+      "061-p4e08-phone-sortAllPop-after-drag.png",
+      "062-p4e08-phone-cxPop-open.png",
+      "063-p4e08-phone-cxPop-after-drag.png",
+      "064-p4e08-phone-draftsModal-open.png",
+      "065-p4e08-phone-draftsModal-after-drag.png",
+      "066-p4e08-phone-inpEditPop-open.png",
+      "067-p4e08-phone-inpEditPop-after-drag.png",
+      "068-p4e08-phone-docViewPop-open.png",
+      "069-p4e08-phone-docViewPop-after-drag.png",
+      "070-p4e08-phone-drawer-open.png",
+      "071-p4e08-phone-drawer-after-drag.png"
+     ]
+    }
+   ],
+   "pics": [
+    "001-p4e06-desktop-insights-bottom-View-only-Sched-direct-.png",
+    "002-p4e06-desktop-insights-bottom-Edit-Schedule-direct-.png",
+    "003-p4e06-desktop-insights-bottom-Board-direct-.png",
+    "004-p4e07-desktop-1440x900-insights.png",
+    "005-p4e07-desktop-1440x900-duty-templates.png",
+    "006-p4e07-desktop-1440x900-day-templates-short.png",
+    "007-p4e07-desktop-1280x700-insights.png",
+    "008-p4e07-desktop-1280x700-duty-templates.png",
+    "009-p4e07-desktop-1280x700-day-templates-short.png",
+    "010-p4e08-desktop-tplModal-open.png",
+    "011-p4e08-desktop-tplModal-after-drag.png",
+    "012-p4e08-desktop-waveTplModal-open.png",
+    "013-p4e08-desktop-waveTplModal-after-drag.png",
+    "014-p4e08-desktop-daytplModal-open.png",
+    "015-p4e08-desktop-daytplModal-after-drag.png",
+    "016-p4e08-desktop-weekCal-open.png",
+    "017-p4e08-desktop-weekCal-after-drag.png",
+    "018-p4e08-desktop-dayPop-open.png",
+    "019-p4e08-desktop-dayPop-after-drag.png",
+    "020-p4e08-desktop-insightModal-open.png",
+    "021-p4e08-desktop-insightModal-after-drag.png",
+    "022-p4e08-desktop-airpop-open.png",
+    "023-p4e08-desktop-airpop-after-drag.png",
+    "024-p4e08-desktop-sortAllPop-open.png",
+    "025-p4e08-desktop-sortAllPop-after-drag.png",
+    "026-p4e08-desktop-cxPop-open.png",
+    "027-p4e08-desktop-cxPop-after-drag.png",
+    "028-p4e08-desktop-draftsModal-open.png",
+    "029-p4e08-desktop-draftsModal-after-drag.png",
+    "030-p4e08-desktop-inpEditPop-open.png",
+    "031-p4e08-desktop-inpEditPop-after-drag.png",
+    "032-p4e08-desktop-docViewPop-open.png",
+    "033-p4e08-desktop-docViewPop-after-drag.png",
+    "034-p4e06-phone-insights-bottom-View-only-Sched-.png",
+    "035-p4e06-phone-insights-bottom-Edit-Schedule-.png",
+    "036-p4e06-phone-insights-bottom-Board-.png",
+    "037-p4e07-phone-390x844-insights.png",
+    "038-p4e07-phone-390x844-duty-templates.png",
+    "039-p4e07-phone-390x844-day-templates-short.png",
+    "040-p4e07-phone-390x568-insights.png",
+    "041-p4e07-phone-390x568-duty-templates.png",
+    "042-p4e07-phone-390x568-day-templates-short.png",
+    "043-p4e07-phone-844x390-insights.png",
+    "044-p4e07-phone-844x390-duty-templates.png",
+    "045-p4e07-phone-844x390-day-templates-short.png",
+    "046-p4e08-phone-tplModal-open.png",
+    "047-p4e08-phone-tplModal-after-drag.png",
+    "048-p4e08-phone-waveTplModal-open.png",
+    "049-p4e08-phone-waveTplModal-after-drag.png",
+    "050-p4e08-phone-daytplModal-open.png",
+    "051-p4e08-phone-daytplModal-after-drag.png",
+    "052-p4e08-phone-weekCal-open.png",
+    "053-p4e08-phone-weekCal-after-drag.png",
+    "054-p4e08-phone-dayPop-open.png",
+    "055-p4e08-phone-dayPop-after-drag.png",
+    "056-p4e08-phone-insightModal-open.png",
+    "057-p4e08-phone-insightModal-after-drag.png",
+    "058-p4e08-phone-airpop-open.png",
+    "059-p4e08-phone-airpop-after-drag.png",
+    "060-p4e08-phone-sortAllPop-open.png",
+    "061-p4e08-phone-sortAllPop-after-drag.png",
+    "062-p4e08-phone-cxPop-open.png",
+    "063-p4e08-phone-cxPop-after-drag.png",
+    "064-p4e08-phone-draftsModal-open.png",
+    "065-p4e08-phone-draftsModal-after-drag.png",
+    "066-p4e08-phone-inpEditPop-open.png",
+    "067-p4e08-phone-inpEditPop-after-drag.png",
+    "068-p4e08-phone-docViewPop-open.png",
+    "069-p4e08-phone-docViewPop-after-drag.png",
+    "070-p4e08-phone-drawer-open.png",
+    "071-p4e08-phone-drawer-after-drag.png"
+   ]
+  }
+ }
+}
