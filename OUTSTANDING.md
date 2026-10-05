@@ -59,7 +59,7 @@ app; with the next change to the schedule's text boxes). **From the same check's
 each parked with a recommended answer in the check's sheet (`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md` §12):**
 [TAB-DAY-END] (where Tab goes after a day's last text box when no button follows — D553), [ROLE-QUESTION-SECOND] (a second formation's
 Blue/Red question replaces the first one's — D535, D523), [ROLE-QUESTION-WEEK-DAY] (does moving to another day on the week end an open
-question — D535). Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights).
+question — D535). Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
 
 **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
 are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
@@ -1960,6 +1960,16 @@ D535: an open question ends when he "moves to another day". On the Scheduler Boa
 once on a desktop, one per swipe on a phone — the question stays on its day until answered or Later; since W9's fix it blocks nothing
 (every other formation's button shows). **Parked for his answer (D596) — the sheet §12, question 3; recommended: leave it.**
 **Place (the agent's line):** low; with [ROLE-QUESTION-SECOND].
+
+### [SAVE-NOTE-TEST-GAPS] Two soft spots in the failed-save warning's browser test (Astra's read of the last round, 6 Oct 26 — tests only, the app is right)
+Astra read commit `bcc69fc8` (the last round of `[SAVE-NOTE-COVERS]`, never independently read before): the three repairs are sound
+in the app. Two weaknesses in `raptor-port/e2e/save-note.spec.ts`, neither a fault a person can meet: (1) the proof that a press on
+Retry itself tried to save reads the write counter one task later (`setTimeout(…, 0)`), so an automatic retry falling due at that very
+moment could pass for the press — sample it in the same click, after the button's own handler, and repeat the disabled-handler check
+with a retry due at the click; (2) "a window he has moved keeps its place and size" is pinned for a MOVED changes window only — add
+a resized one, an operated ALL AVAIL window and the preview-bar combinations. The report:
+`raptor-port/docs/superpowers/briefs/2026-10-06-owed-small-reads-astra.md` Part 3. **Place (the agent's line):** low — with the next
+change to the failed-save warning or its test.
 
 ### [INSIGHTS-EMPTY-LINE-COUNT] A flying line with nobody on it counts as a sortie and a formation in Insights (the Codex stack check's W17, 5 Oct 26 — a question for him)
 "+ Line" on a flying wave, no crew: Insights' SORTIES tile goes up by one and FORMATIONS by one; the per-person bars are right. The

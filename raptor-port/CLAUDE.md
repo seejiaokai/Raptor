@@ -26,7 +26,8 @@ load in every chat. Map: §Where things live, at the end.
 **Reach 95% confidence before building.** If the request could reasonably
 mean two different things, or a choice would materially change the result,
 ask follow-up questions until it wouldn't. Small, unambiguous asks clear
-that bar on their own — don't manufacture questions for them.
+that bar on their own — don't manufacture questions for them. During an unattended run (D596): leave only the work
+that needs his choice undone, park the choice in the run's one list, carry on with the rest — never guess his answer.
 
 **STANDING ORDER — weigh the whole ecosystem** (owner, 28 Aug 26): on every feature change, before building and before done, reason how it lands across the app (`docs/feature-impact.md`); tell him the ripples, risks and assumptions, ask where a question is genuinely his — the technical how stays yours; in doubt, a one-line heads-up with your call · full text: docs/guide-full.md §Weigh the whole ecosystem
 
