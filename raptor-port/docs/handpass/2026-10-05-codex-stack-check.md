@@ -7,7 +7,7 @@ against `main` at `de470db5`. Five pieces, built 2–5 Oct 26 while Claude waite
 the Logic search and the Insights cross) · **the failed-save warning's band** (D586, D587). The Inputs/SANS calendar
 (`codex/inputs-sans-calendar`) is on hold and outside this check.
 
-**STATE OF THIS SHEET: THE CHECK IS DONE, 6 Oct 26 — his look is what is left (§12: four questions first, then the look card). Nothing is merged.** *(What follows in this paragraph is the sheet's history.)* **Earlier: IN PROGRESS.** It is written as the check goes (order §9). A section that says "to come" has not
+**STATE OF THIS SHEET: THE CHECK IS DONE, 6 Oct 26, AND SO IS ITS THIRD ROUND (§13 — his four answers built, his own find fixed, read twice by Astra and Sol) — his look is what is left (§12's look card and §13.9). Nothing is merged.** *(What follows in this paragraph is the sheet's history.)* **Earlier: IN PROGRESS.** It is written as the check goes (order §9). A section that says "to come" has not
 been done; nothing here is a result until its section is filled. **6 Oct 26: the fix round is done (§5.3 — sixteen
 findings fixed, each with a test that was red first), the host has looked at the fixes in a real browser (§5.4), the
 re-walk is under way (§5.5), and three questions wait for him at the head of §12.**
@@ -505,3 +505,156 @@ Known and filed, so you need not report them: a published weekend's OIL moving w
 (`[OIL-WORK-START]`, D591 — the next job); Escape in a time box on the board; the green OIL chip over a phone request
 card's date.
 
+## 13. Round 3 (6 Oct 26, a new chat) — his answers built, his own find fixed, and the reads of it
+
+### 13.1 What came in
+- **His answers to §12's four questions** — "yes all 4 as recommended": D597 (Tab at a day's last box), D598 (two questions
+  stand together), D599 (the week keeps a question on its day — as built), D600 (the second press of "+ In-time / Rally"
+  — as built). **"ok sol can be a 2nd reviewer"**: D601.
+- **His own find on the preview:** "i cant see the red crew rest warning, over the amber line … its when im at default
+  zoom" — the dotted ring of the man whose day breaks the next day's crew rest. His screen runs Windows at 125%.
+  Old (the ring is of 6 Aug 26), not the Codex stack's: `[PUCK-DOT-ZOOM]`.
+- **His question about `[REST-BLANK-LINE]`:** "if a take off time is placed after the man is on a flying line, will he see
+  the crew rest warning?" — yes. Run through the rule itself that day (a throwaway test of `engine/validate.ts`, removed
+  afterwards; not pressed on screen): the warning is there → gone when he is put on a line with no take-off → back the
+  moment a take-off is typed on it, no landing needed → a landing alone does not bring it back; the same when the empty
+  line is on the day before. His word since: fixed first after the stack, in a new chat (D602).
+
+### 13.2 The eight questions — the tier of this batch (D485: one check, sized by the riskiest change)
+| | Question | Answer |
+|---|---|---|
+| 1 | What a man is owed | NO — no figure, no OIL, no count of who is present is touched |
+| 2 | The published record | **YES, by one path** — a Blue/Red answer counts at once on a published day (D530), and which formation an answer lands on is the code D598 changed |
+| 3 | Saved data | NO new record or shape; the same writer saves the same answer |
+| 4 | A shared drawer | **YES** — the puck's dotted ring is drawn wherever a puck is |
+| 5 | A gesture | **YES** — what Tab does at the end of a day |
+| 6 | A new surface | NO |
+| 7 | Roles | NO |
+| 8 | The warning list | NO — the ring's look only; no rule, no wording |
+**Tier: FULL for the reads (two readers, apart — Astra and Sol 6.1, D590, D601), WALK for the running app.** Said plainly,
+what was NOT done of a FULL: no other-model scenario design before the walk (the scenarios are the rulings' own cases and
+the readers' own finds) and no fanned-out walk or Sonnet walkers (one scripted run of 50 steps by the host, D17).
+
+### 13.3 The roll-call — every place the app draws what was touched
+| The thing | Where | Has it / must not / how checked |
+|---|---|---|
+| the dotted ring | Edit Schedule's week, every seat | HAS IT — walked R3-15 |
+| | the Scheduler Board's seats (D94) | HAS IT — walked R3-16 |
+| | View-only Sched | HAS IT — walked R3-17 |
+| | a published day's face (D183: the mark stays live) | HAS IT — the same builder and class; read by both readers |
+| | the ALL AVAIL window and the available-crew lists | HAS IT — one puck builder passes the mark; the width is set on the page itself, so every window inherits it; read |
+| | a puck being dragged | HAS IT — the ghost is a copy of the puck; read |
+| | the crew list beside the board; the Inputs calendar; the Medical view; the next-week peek | MUST NOT — those pucks are drawn with no ring, as before |
+| | print / export; the Leave War; the Tracker | MUST NOT — their own stylesheets; read by both readers |
+| | screens | pictured at 80%, 100%, 125% (his), 150%, 2x; a 3x phone: nothing is handed over (unit test) — a real iPhone NOT seen |
+| Tab at a day's last box | the week, desktop and phone | HAS IT — walked R3-11 to R3-14, both sizes |
+| | the phone's board | HAS IT — walked R3-10, R3-24 |
+| | the desktop board | MUST NOT — it has a control after its boxes (D553): walked R3-10, R3-24 |
+| | a published day | HAS IT — the same route; the save is the ordinary one (pending marks, sign-offs); read by both readers, not walked |
+| | a look at an older version, OIL Earn, a member | MUST NOT — the route refuses all three; read by both readers |
+| | a save that opens a window (the weekend-duty OIL question) | MUST NOT put the caret back behind it — read by both readers, not walked |
+| the Blue/Red questions | the week, desktop and phone | HAS IT — walked R3-01 to R3-06, R3-19 to R3-21 |
+| | the board, desktop and phone | HAS IT — walked R3-07 to R3-09, R3-22, R3-23 |
+| | a question on another day of the week (D599) | HAS IT — unit test (Monday's two and Tuesday's one); R3-04 |
+| | the read-only Remarks of a published look | read by both readers ("readonly … sound"); NOT walked with two questions |
+| | Insights' bars after an answer | unchanged writer — R3-05 checks the answer was saved; the Insights browser tests |
+| | Undo and History naming a line with no callsign | walked R3-23; unit test |
+| | tracking Off, another week, version or sign-in | end EVERY open question — unit test (tracking Off); the reset list read |
+
+### 13.4 The walk — the built bundle, real typing and presses
+`scripts/handpass/stk3-walk.mjs`, at 1440×900 and at 390×844 (a phone), on the build served for this chat; every step an
+assertion of the right behaviour, so a re-run is the re-walk. **50 steps: 50 PASS, 0 FAIL; no console, page or HTTP
+error.** The table: `../img/handpass/2026-10-06-codex-stack-r3/result.md`; 14 pictures there, 8 opened by the host (both
+sizes' two-questions pictures on the week and the board, the phone's last-box Tab, the "Change mission role" button back,
+the blank line's "Line: Blue or Red?"). The ring: `scripts/handpass/zoom-dot.mjs` — a browser STARTED at each screen
+scaling (Playwright's own picture scaling hides the fault), the ring's red pixels counted round one puck: at 125% **100
+before, 233 after**; at 80% **34 before, 92 after**; 100%, 150% and 2x unchanged. 21 pictures and the before/after sheet
+in `../img/handpass/2026-10-06-puck-dot/` (the sheet and four enlargements opened).
+**What the walk found in the app: nothing.** Three reds were the walk script's own and were read against what it pressed
+before anything was called a finding: two control names, and `End` on a remark that wraps on a phone (it stops at the end
+of the first line).
+
+### 13.5 Tests red first, and the break tests
+| Change | Red first | Break test |
+|---|---|---|
+| the ring | `e2e/puck-dot.spec.ts` on the build without the fix: "thickness, in screen pixels: expected 2, received 1" | the same |
+| Tab keeps the caret (D597) | `e2e/schedule-tab.spec.ts` "D597 …", both sizes: the caret was on nothing | — |
+| the day still catches up at that Tab | `e2e` "D597 the last box's Tab still brings the day up to date" on the phone board: area time `1240-1405` | the redraw line taken out: two unit tests red (the week; Flying last on the day) |
+| the caret after a redraw that replaces the whole day | unit: "the caret is not left on the page" (Friday gains its first warning with that blur) | — |
+| two questions (D598) | three unit tests: one question where two were expected | — |
+| a line with no callsign | "expected '<row code>: Blue or Red?' to be 'Line: Blue or Red?'" | — |
+| the button back after an answer | "the button is offered again: expected undefined" | — |
+Older expectations CHANGED, each a ruled change and no looser (both readers were asked exactly this): the Tab unit test
+that pinned "final forward blurs" (D597); W9's ending "pressing the second button MOVES the one question" (D598); the
+MIX6 R1 family's "no mission-role control after the action" → "no question; the button is back" (D527, D529); the two
+that spell out the ring's stylesheet text.
+Two wrong turns on the ring, kept in the code's comments: snapping its OFFSET (built, measured, no difference), and
+measuring under an emulated picture scale.
+
+### 13.6 The reads (D590, D601 — Astra, and Sol 6.1 second and apart; the brief word for word)
+**First read** (`../superpowers/briefs/2026-10-06-stack-r3-read-brief.md`; reports verbatim:
+`2026-10-06-stack-r3-read-astra.md`, `-sol.md`). **Both found the same one fault, apart:** on the phone's Scheduler Board
+the Tab that keeps the caret in the last box no longer let the board redraw what it was holding for the caret — a
+take-off typed earlier left its line's area time showing the old window. The host reproduced it in the running app before
+touching it (the e2e above), then fixed it as Astra specified: the redraw is carried through while the caret is still out
+of the box, then the caret goes back. Sol's extra case (the week with Flying dragged to the foot of the day) is pinned
+too. Astra's second point — two older tests spelling out the ring's stylesheet text — had already shown in the first full
+run and was fixed. Everything else each read "checked and sound": the questions' independence, whose words an answer
+saves, the endings, the ring's arithmetic and reach, the changed expectations (ruled, not loosened).
+**The words:** both read D597–D601's short lines against their full rows, and the rewritten lines of D553, D535, D523,
+D510 and D590 — sound (D138); both read the two lines added to the bug-check order for D601 — sound (D70).
+**The re-read of the fix round** (`…-stack-r3-reread-brief.md` — the second and LAST read of this round; reports
+verbatim: `2026-10-06-stack-r3-reread-astra.md`, `-sol.md`). **Again both found the same one fault, apart:** the redraw
+now carried through at that Tab can replace the WHOLE day on screen (the week does when a day's first warning appears or
+its last one goes); the check after it asked for the original day, found it gone, and left the caret on nothing — a
+further Tab could reach another day. Reproduced by a real test first (Friday of the demo week gaining its first warning
+with the last box's blur), then fixed as both specified: the same day is looked up afresh and the box's twin takes the
+caret. Everything else each re-read "checked and sound": the first finding's fix, no second save or history line from
+the redraw, "Line" as wording only (identity untouched), the button's guards, and every changed expectation (ruled, no
+looser). **That last fix has had no independent read of its own — the cap of two reads; it is the fix both specified, it
+has its red-first test, and the walk and every gate were re-run after it.**
+
+### 13.7 The gates — the final run, watched 6 Oct 26, on app code `2284261a`, under the PC lock
+| Check | Result |
+|---|---|
+| unit | **7828 / 7828 (493 files)** |
+| build | clean |
+| the original app's assertions (tfin) | **728 / 0** |
+| browser tests (e2e) | **611 passed, 0 failed, 50 skipped** |
+| the Tracker's smoke suite | **445 / 0** |
+| rulecheck | OK |
+| docsize | OK — every record accounted for (over its size markers by 10,125, deferred — D29: a code change never trims a document) |
+| perf (local) | **4 / 0** — week DOM 5131 ≤ 5450, board DOM 1018 ≤ 1150 |
+| the six adapted probes (local) | all six passed |
+The first full run of this round, on `7482ee18`, was red on unit only — the two tests that spell out the ring's
+stylesheet text (13.6); everything else passed. The second, on `d5732266` (before the re-read's fix), was green
+throughout. The walk was re-run on the final code after the last fix: 50 PASS, 0 FAIL, no errors.
+
+### 13.8 What was NOT walked, and why
+- **A real iPhone.** The ring: nothing changes on a whole-number screen (unit test; the 2x picture). Tab: a hardware
+  keyboard only.
+- **His own screen.** Reproduced in a browser started at 125%, and the desktop app's own pane reported 125% and the
+  ring's real widths (one screen pixel before, two after) — but the pane's pictures are too coarse to judge a ring by.
+  His look at the preview is the last check.
+- **Ring against its neighbours at extreme scalings** (a corner tag, the solid or dashed red box, the next puck of a
+  pair) — both readers named it as beyond reading; the 125% and 80% pictures show the next puck clear.
+- **Two questions on the read-only Remarks of a published look; a save that opens the OIL window from a day's last box;
+  a last box its own save removes** — read by both readers, not exercised.
+
+### 13.9 For his look, and what waits for him
+Added to §12's look card:
+6. **The red dotted ring at your normal zoom** — a man whose line in the warning list starts "Breaks <day>" and who also
+   has an amber warning: the red dots should show all round the amber ring.
+7. **Edit Schedule, any day: Tab at the last text box** (usually the last Unavailable remark) — the caret should stay in
+   it, and Shift+Tab should go back.
+8. **With "Track Blue/Red sorties" On: type `DS FOR RU` on one line and `RED FROM VL` on another** — both questions
+   should show, each under its own line; answer one and the other should stay.
+**Questions waiting for him (D596):**
+1. *(answered — D602: the crew-rest fault is fixed first after the stack, in a new chat.)*
+2. **Once the sign-in ends, a Blue/Red answer can be changed to the other colour but not cleared** (`[ROLE-NOT-CHOSEN]`).
+   **(A, recommended) leave it** — a wrong answer is corrected, and Undo clears it while he is signed in. (B) add a way
+   to put a line back to "not chosen". *Parked on it: nothing.*
+3. **The wording added to the working guides** for D588–D590, D596 and D601 has had its reads (Astra and Sol) and waits
+   for his approval.
+
+**`Walk (round 3): docs/handpass/2026-10-05-codex-stack-check.md §13 · 35 pictures (the walk 14, the ring 21) · 23 roll-call rows (14 walked, 9 read) · 50 scenario rows · MISSING: 2 fixed (the reads' finding and the re-read's, each with a test red first), 0 parked, 0 filed`**
