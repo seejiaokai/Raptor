@@ -314,7 +314,9 @@ false alarms), never decides whether a finding is real, never writes the roll-ca
 second trial above still runs — in the check of the Codex stack (D589): one Opus walker and one Sonnet walker on the same
 scenarios, on the frozen Rally build as it stood before its review fixes, neither told what is wrong — and its report
 adds his weekly allowance, read before and after each walker. One building trial rides with it: ONE small low-risk fix
-(`[OG-TAG-OVER-COUNT]`) built by a Sonnet helper to a precise spec, its diff and tests read by Opus. His answer to each
+(`[OG-TAG-OVER-COUNT]`) built by a Sonnet helper to a precise spec, its diff and tests read by Opus, checked as its tier
+requires, and touching nothing of earned leave, permissions, the published record, saved data or the rules engine. The host
+also checks what a check run or a document chore hands back before accepting it (D588). His answer to each
 report is a new ruling; until then no other build or fix leaves Opus, and haiku stays closed.
 
 **The owner's trigger rule, in one line:**
@@ -338,7 +340,7 @@ This order adds checks; it never removes one of Claudex's.
 | Claudex stage | What it is | What this order says about it |
 |---|---|---|
 | **Plan review** — the host plans, the other provider attacks the plan before any code | The pre-build red team | This IS §4 rank 3, and Claudex is the machinery for it. The owner's cap of about three rounds still applies; after that, findings fold into the build. |
-| **Build** — one provider implements | — | Unchanged. The implementation stays in the main session (the executor rule). |
+| **Build** — one provider implements | — | Unchanged. The implementation stays in the main session (the executor rule) — one exception: D588's one Sonnet trial fix, its diff and tests read by Opus. |
 | **Final inspection** — a fresh session of the provider that did NOT build reads the finished code | The post-build code read | This is §4 rank 2 — but with two changes, below. |
 | *(nothing)* | — | **Claudex has no step that runs the app.** That is the gap this order fills, and it is where every defect the owner found tonight lived. |
 
@@ -350,7 +352,8 @@ This order adds checks; it never removes one of Claudex's.
    ran first, passed, and three unwired surfaces went out behind it.
 2. **On FULL-tier work, one inspector is not enough.** Claudex's default is a single fresh session
    of the other provider. Where money, entitlement, published records, permissions or persistence
-   are touched, run **both** providers independently and blind to each other (§4 rank 2). That is
+   are touched, run **two** readers independently and blind to each other (§4 rank 2 — for work Opus wrote
+   they are Astra and Sol 6.1, D590; what Codex built, Opus reads beside Codex's own inspector). That is
    what found five money defects here that driving the app would not have.
 3. **The inspection brief gets the finder wording from §4.** Claudex's inspector is asked whether
    the code is wrong. Add the sentence that asks what is MISSING, or it will answer only the first
@@ -361,7 +364,7 @@ bug check never re-opens an approved plan. If the walk finds behaviour the plan 
 that is a question for the owner (§11), not a change made under cover of a fix.
 
 **In one line:** run Claudex to harden the plan, build, then **walk the app**, then run Claudex's
-inspection — both providers if the change touches money — and only then report, with the `Walk:`
+inspection — two independent readers if the change touches money (§4, D590) — and only then report, with the `Walk:`
 line.
 
 ---

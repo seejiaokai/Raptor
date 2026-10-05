@@ -4,8 +4,8 @@
 Codex is called as the REVIEWER — Astra reviews what Opus wrote, and Sol 6.1 is the second reader where two are required
 (earned leave, published records, permissions, saved data, an important plan, a changed working guide); each reads
 independently and never reads the other's report first. Claude is checking everything built under the arrangement below
-as one stack, on `claude/codex-stack-review` (D589). What follows describes that arrangement and applies again only if
-he starts a build in Codex; every hard limit below stands either way.
+as one stack, on `claude/codex-stack-review` (D589). What follows records that arrangement as it ran until the reset; starting another build in Codex
+does not renew D496 — follow the current rulings and his instruction for that build. Every hard limit below stands either way.
 
 **D496 supersedes the temporary model/review mapping below until Monday 5 Oct 26, 19:00:**
 Astra plans and coordinates; Sol 6.1 independently challenges its plans, builds and fixes; Astra

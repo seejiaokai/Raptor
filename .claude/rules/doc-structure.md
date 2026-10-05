@@ -68,7 +68,7 @@ on his "merge live"; he sometimes runs two worktrees in parallel and merges both
   persist first.
 - **Parallel chats** each touch only their own `## Now` block, their own backlog items and their own D-number range;
   the later merge brings `main` in first (D78).
-- **The Claudex loop** (Opus 5.5 builds; Fable and Astra review — D67): plans and review logs are tier-3 docs (the
+- **The Claudex loop** (Opus 5.5 builds; Astra reviews, Sol 6.1 second where two readers are required, Fable on call only — D67, D590): plans and review logs are tier-3 docs (the
   table above); the ripple walk reads `feature-impact.md`.
 
 ## The check that keeps it
