@@ -2487,3 +2487,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the walk brief: "send your report ONCE, after stopping every script and browser you started"; "a scenario with an EXPECTED line is PASS or FAIL — RECORDED only where the host says so"; and say plainly that the host, not the walker, opens the pictures behind every FAIL and every high-consequence PASS. For a per-helper cost measurement: use the helper's own token count as the measure, and promise an allowance reading only if the host can truly go silent for the whole window — say so to the owner before starting, not after.
 
 **Principle:** A helper's brief must say how the helper ENDS, not only what it does; and a measurement taken on a shared meter is only as clean as the quiet around it.
+
+### Observation 432: A rebuilt build under a walker — one served folder per walk ROUND, never refreshed in place
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Claude's one check of the Codex stack (D589) — the fix rounds, the re-walk, the reads
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §4 "nobody rebuilds the build they are served")
+**Type:** internal
+**Phase/Area:** the re-walk after a fix round
+
+**Issue:** The host froze one folder (dist-fix) for the re-walk and later copied a newer build over it for the next small round — while a walker of the previous round was still walking. The rule was known and was still broken, because "refresh the frozen folder" looked like housekeeping. Nothing the walker walked had changed and it reported no FAIL, but the evidence had to carry a caveat.
+
+**Suggested improvement:** In the order's §4 paragraph, add: each walk round gets its OWN folder and servers named for the app commit (dist-<sha>), created once and never written again; a later round makes a new folder. Check for running walkers (ListAgents) before any copy into a served folder.
+
+**Principle:** A frozen artefact is frozen by never reusing its name; a rule that depends on remembering who is still reading it will be broken under time pressure.
+
+### Observation 433: A fix to a shared writer needs its callers' "did the save work?" checks read in the same change
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** the same check — W11 (spacing alone is no change, in the one text writer) silently broke the Blue/Red answer path, found by an outside reviewer (RF3)
+**Skill:** bug-check order §6 (a fix to one writer of a record gets its own small roll-call)
+**Type:** internal
+**Phase/Area:** fixing — the roll-call of a changed writer's callers
+
+**Issue:** Making the writer return "no change" for a spacing-only difference was right, but one caller treated "stored words still differ from typed words" as a failed save and dropped its work. The roll-call of the writer's callers was not made before the fix; two reviewers and a reader later found the gap and its siblings.
+
+**Suggested improvement:** §6's "fix to one writer" bullet: when a writer's RETURN or no-op condition changes, list every caller that reads the return value or re-compares after the call, and give each a line (unchanged / adjusted) in the commit.
+
+**Principle:** Changing when a function reports "nothing happened" is an interface change; every caller that infers failure from "nothing happened" must be read in the same change.
