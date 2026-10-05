@@ -2427,3 +2427,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** When replacing a reviewer's specific instruction with a broader mechanism, first list every existing consumer of that mechanism and say for each whether its reaction is wanted here; put that list in the disposition handed back to the reviewer. If the list cannot be made cheaply, take the reviewer's narrower fix.
 
 **Principle:** A shared signal reaches everyone who listens for it; before reusing one as a shortcut, read its whole audience.
+
+### Observation 428: Research for a decision — open the source that cuts AGAINST the leaning before reporting
+
+**Status:** OPEN
+**Date:** 2026-10-05
+**Session context:** The owner asked for online evidence on whether one model can replace a dearer one as reviewer. Numbered on claude/codex-stack-review; codex/inputs-sans-calendar may hold later numbers.
+**Skill:** New skill candidate: decision-research (or a line in the proactive-advisor guidance)
+**Type:** open-source
+**Phase/Area:** Web research feeding a recommendation the agent has already leaned toward
+
+**Issue:** The first research pass opened the sources whose search summaries agreed with the recommendation already given, and reported "the evidence supports it". A search result whose own title signalled the opposite (an independent test where the dearer model was clearly more reliable) was listed but not opened. The owner asked "is it really better?" and the second pass found it; the advice had to be qualified after he had been told it was supported.
+
+**Suggested improvement:** When research feeds a recommendation already made, the pass is not finished until (a) at least one source arguing the other way has been opened and reported, (b) vendor-run numbers are labelled as the vendor's own, and (c) the reply says which claims came from a search summary and not from the page itself.
+
+**Principle:** A search run after a recommendation tends to confirm it. Look for the disconfirming source first, and report it with the same weight.
