@@ -50,7 +50,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
 count from its entered in-time / Rally (D591), and a published weekend must keep the earned leave it went out with when a Logic value
-changes (today it moves at once). Proposed: its own job, straight after the stack goes live. [EDIT-SECOND-CLICK] (low — after a
+changes (today it moves at once). Proposed: its own job, straight after the stack goes live. [INTIME-LINES-DRAG] (D593, his ask of
+5 Oct 26 — drag a wave's In-time / Rally lines into order on the Scheduler Board, Auto sort too; proposed in the same batch). [EDIT-SECOND-CLICK] (low — after a
 changed text box on Edit Schedule, the first click into another box lands on the page and a second is needed; the same on the live
 app; with the next change to the schedule's text boxes).
 
@@ -1899,6 +1900,18 @@ first event's start to the last event's end with the breaks counted (the 29 Aug 
 and any earlier event of his.
 **Tier:** FULL — earned leave, the published record, saved data. **Place (the agent's proposal, his to set):** its own branch, straight
 after the Codex stack goes live; until then, do not change those three Logic values once a weekend is published.
+
+### [INTIME-LINES-DRAG] Drag a wave's In-time / Rally lines into order on the Scheduler Board; Auto sort orders them too (D593, 5 Oct 26)
+**His ruling (D593):** *"I also want the option to be able to [drag] and rearrange in Time/rally. In the schedule board. And the auto sort
+button also helps in rearranging."* Full row: `.claude/decisions-full/scheduler.md` D593.
+**Today:** a line is added by "+ In-time / Rally", typed in, and removed with its ✕; the lines stay in the order they were added. Their
+order changes nothing the app works out — the earliest applicable clock is used whatever the order (D506).
+**To ask him before building (the agent's readings, in the row):** the same drag on Edit Schedule's week (he named the board only); Auto
+sort's order — by time, earliest first, a previous-evening clock first, a line with no clock last — from the wave's own Auto sort and from
+Sort all; the six-dot grip; a new order on a published day reads as a pending change.
+**Tier (the agent's reading):** WALK at least — a new gesture on a shared drawer; FULL if the reorder is recorded on a published day.
+**Place (the agent's proposal, his to set):** one batch with `[OIL-WORK-START]` — both are about the In-time / Rally lines — on its own
+branch after the Codex stack goes live, with one check for the two (D485).
 
 ### [EDIT-SECOND-CLICK] After a changed text box on Edit Schedule, the first click into another box does not take the caret (found 5 Oct 26, the Codex stack check)
 On Edit Schedule's week: type a new value in a text box (a take-off, a mission), then click ONCE into another text box. The day

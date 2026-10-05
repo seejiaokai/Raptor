@@ -590,6 +590,10 @@ a real edit still commits, and an emptied cell still stores the blank.
 
 ## In-time lines: added and removed per wave (owner, 21 Aug 26)
 
+**RULED 5 Oct 26 (D593) — NOT YET BUILT.** On the Scheduler Board a wave's In-time / Rally lines are to be draggable into a new
+order, and Auto sort is to put them in order too. Until it is built, the lines stay in the order they were added, as this
+section describes. The build and its open questions: `OUTSTANDING.md` `[INTIME-LINES-DRAG]`.
+
 "Allow me to input lines at the top of each wave where I can reflect the in
 time likewise to be able to edit or delete it." Before this, the in-time
 block could only be TYPED IN: deleting the last line dropped the whole box
