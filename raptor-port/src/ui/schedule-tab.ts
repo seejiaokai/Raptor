@@ -4,6 +4,7 @@ import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import { CURPAGE, SBDAY, DPREV, navGen } from '../state/view'
+import { notify } from '../state/store'
 import { oilModeOn } from './oilmode'
 import { windowOverSchedule } from './pops'
 
@@ -71,6 +72,20 @@ function ordinaryTarget(scope: Scope, source: HTMLElement, backwards: boolean): 
   return backwards ? nodes.at(-1) : nodes[0]
 }
 
+const marksOf = (el: HTMLElement) => el.tagName + JSON.stringify({ ...el.dataset })
+function twinOrLast(scope: Scope, source: HTMLElement): HTMLElement | undefined {
+  const fields = [...scope.root.querySelectorAll<HTMLElement>(scope.board ? BOARD_TEXT : WEEK_TEXT)].filter(el => textField(el))
+  const marks = marksOf(source)
+  return fields.find(el => marksOf(el) === marks) || fields.at(-1)
+}
+function caretToEnd(el: HTMLElement) {
+  try {
+    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) { const n = el.value.length; el.setSelectionRange(n, n); return }
+    const range = document.createRange(); range.selectNodeContents(el); range.collapse(false)
+    const sel = window.getSelection(); sel?.removeAllRanges(); sel?.addRange(range)
+  } catch (_) { /* a box that keeps no selection (a number box) still holds the focus */ }
+}
+
 export function routeScheduleTab(e: KeyboardEvent, refresh: (el: HTMLElement) => void): boolean {
   if (e.key !== 'Tab' || e.defaultPrevented || e.isComposing || e.ctrlKey || e.altKey || e.metaKey) return false
   const eventTarget = e.target
@@ -93,10 +108,30 @@ export function routeScheduleTab(e: KeyboardEvent, refresh: (el: HTMLElement) =>
      handler ends. Stop here — the caret must not land in a box behind it, where typing and further Tabs would go on
      editing the schedule unseen; the window takes the keyboard when it opens (ui/sheetfocus.ts). */
   if (windowOverSchedule()) return true
-  if (!sameScope(scope) || !destination?.isConnected) return true
+  if (!sameScope(scope)) return true
   // A blur handler can deliberately give a newly opened dialog its own caret.
   // Preserve that focus rather than overriding it with the collected successor.
   if (document.activeElement !== document.body && document.activeElement !== source) return true
+  if (!destination) {
+    /* THE DAY HAS NO BUTTON BELOW ITS LAST OPEN TEXT BOX (owner, D597, 6 Oct 26 — narrows D553): the caret stays in
+       that box. It used to be left on nothing — the box blurred, the page held the focus, and the next Tab went to the
+       NEXT day's first button (the Codex stack check's W14), which D553 had refused. Forward only: Shift+Tab from a
+       first box with nothing before it is as it was. The blur above has saved what he typed; a save that redrew the
+       box hands back its twin (the same marks on it), or failing that the day's last box. */
+    if (e.shiftKey) return true
+    const stay = source.isConnected && textField(source) ? source : twinOrLast(scope, source)
+    if (!stay) return true
+    stay.focus()
+    caretToEnd(stay)
+    /* …AND THE DAY STILL CATCHES UP. Until D597 this Tab took the caret out of text altogether, which is the moment
+       the page redraws every block it had been holding for the caret (a take-off typed earlier leaves its line's
+       worked-out area time waiting, for one). The caret no longer leaves, so the page is asked to redraw now: with a
+       caret in text it writes everything but the caret's own block (EditWeek / SchedBoard, the W15 paint). Nothing is
+       written to the schedule by this — it is the store's ordinary "look again". */
+    notify()
+    return true
+  }
+  if (!destination.isConnected) return true
   if (next) {
     if (!scope.root.contains(next) || !textField(next)) return true
     // A skipped repaint can leave derived or repeated boxes stale. Refresh only

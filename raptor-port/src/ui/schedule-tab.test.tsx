@@ -124,14 +124,20 @@ describe('D556 schedule Tab production wiring', () => {
     const button = $('[data-daytplopen="0"]'); await focus(button)
     expect((await tab(button)).defaultPrevented).toBe(false)
   })
-  it('first reverse exits to the same-day sign control; final forward blurs without entering Tuesday', async () => {
+  /* D597 (owner, 6 Oct 26 — narrows D553): the day has no button below its last box, so the final forward Tab keeps the
+     caret in that box. Until then this test pinned "blurs" — the caret on nothing, the stack check's W14. */
+  it('first reverse exits to the same-day sign control; final forward keeps the caret in the last box, never Tuesday (D597)', async () => {
     const fields = [...host.querySelectorAll<HTMLElement>('#eWeek > .day[data-day="0"] [contenteditable="true"]')]
       .filter(el => el.matches('[data-txt],[data-inp],[data-itline],[data-bombs],[data-area],[data-atime]'))
     await focus(fields[0]!); await tab(fields[0]!, { shiftKey: true })
     expect((document.activeElement as HTMLElement).dataset.signday).toBe('0')
-    await focus(fields.at(-1)!); expect((await tab(fields.at(-1)!)).defaultPrevented).toBe(true)
-    expect(document.activeElement).toBe(document.body)
-    expect((await tab(document.body)).defaultPrevented).toBe(false)
+    const last = fields.at(-1)!
+    await focus(last); expect((await tab(last)).defaultPrevented).toBe(true)
+    expect(document.activeElement).toBe(last)
+    expect((await tab(last)).defaultPrevented).toBe(true); expect(document.activeElement).toBe(last)   // and again: it stays
+    expect((document.activeElement as HTMLElement).closest('#eWeek > .day')!.getAttribute('data-day')).toBe('0')
+    expect((await tab(last, { shiftKey: true })).defaultPrevented).toBe(true)
+    expect(document.activeElement).toBe(fields.at(-2))                                                // Shift+Tab goes back
   })
   it('a single available text box exits once instead of looping, then a day with none leaves ordinary Tab alone', async () => {
     const root=$('#eWeek > .day[data-day="0"]'),cs=week('ff:0.0.0.cs')

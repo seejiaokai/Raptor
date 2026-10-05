@@ -68,6 +68,45 @@ for (const [name, viewport] of [['desktop',{width:1440,height:900}],['phone',{wi
       expect(await page.evaluate(() => !document.activeElement?.closest('#eWeek') && !(document.activeElement?.closest('#sbRoster') && !document.body.classList.contains('ros-open') && document.activeElement!.getBoundingClientRect().left >= innerWidth))).toBe(true)
       expect(await page.evaluate(() => (window as any).SBDAY)).toBe(0)
     })
+    /* D597 (owner, 6 Oct 26 — narrows D553): where the day has NO button below its last open text box, Tab keeps the
+       caret in that box — it used to land on nothing (the stack check's W14), and the next Tab went to the next day.
+       The week on both sizes, and the phone's board (no button follows its last box); the desktop board still goes on
+       to the first control after its boxes, as D553 ruled. */
+    test('D597 Tab from the day\'s last box with no button below keeps the caret there, saves, and Shift+Tab still goes back', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      const sig = () => page.evaluate(() => { const a = document.activeElement as HTMLElement | null; return a && a !== document.body ? a.tagName + JSON.stringify({ ...a.dataset }) : null })
+      const lastOf = async (surface: string) => {
+        const all = await page.locator(surface).locator(typing).elementHandles(); let last = null
+        for (const el of all) if (await el.isVisible() && await el.evaluate(e => !e.closest('[data-role-ui],[data-role-remarks],.pv-frozen,[role="dialog"]') && (e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement ? !e.disabled && !e.readOnly : e.getAttribute('contenteditable') === 'true'))) last = el
+        return last!
+      }
+      const day = '#eWeek .day[data-day="0"]'
+      const last = await lastOf(day)
+      await last.focus(); const at = await sig(); expect(at).not.toBeNull()
+      const pan = await page.locator('#eWeek').evaluate(e => e.scrollLeft)
+      await page.keyboard.press('End'); await page.keyboard.type(' D597')
+      await page.keyboard.press('Tab')
+      expect(await sig(), 'the caret is still in the day\'s last box').toBe(at)
+      expect(await page.locator('#eWeek').evaluate(e => e.scrollLeft), 'the week did not pan').toBe(pan)
+      expect(await page.evaluate(() => { const a = document.activeElement as any; return String(a.value ?? a.textContent) }), 'what was typed is in the box').toContain('D597')
+      expect(await page.evaluate(() => JSON.stringify([(window as any).DAYS, (window as any).INPUTS])), 'and was saved by that Tab').toContain('D597')
+      await page.keyboard.press('Tab')
+      expect(await sig(), 'a second Tab stays too').toBe(at)
+      await page.keyboard.press('Shift+Tab')
+      const back = await sig()
+      expect(back, 'Shift+Tab goes back to another box').not.toBe(at); expect(back).not.toBeNull()
+      expect(await page.evaluate(() => !!document.activeElement?.closest('#eWeek .day[data-day="0"]'))).toBe(true)
+      await openBoard(page)
+      const blast = await lastOf('#sbBoard')
+      await blast.focus(); const bat = await sig()
+      await page.keyboard.press('Tab')
+      if (name === 'phone') expect(await sig(), 'the phone board has no button after its last box: the caret stays').toBe(bat)
+      else {
+        expect(await sig(), 'the desktop board goes on to its next control (D553)').not.toBe(bat)
+        expect(await page.evaluate(() => { const a = document.activeElement; return !!a && a !== document.body && !!a.closest('#schedBoard') && !a.closest('#eWeek') })).toBe(true)
+      }
+      expect(await page.evaluate(() => (window as any).SBDAY)).toBe(0)
+    })
     test('native Board change saves once, refreshes repeated fields and settles after text exit', async ({ page }) => {
       await login(page); await go(page, 'editsched'); await openBoard(page)
       const cs = field(page, '#sbBoard', 'ff:0.0.0.cs'), seq = await page.evaluate(() => (window as any).commandStreamLen())
