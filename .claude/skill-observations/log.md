@@ -2472,3 +2472,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** When a ruling or a handoff assigns a job to a named model, the same turn runs a one-word probe of that model through the route the next chat will use, and writes the working command (or "not reachable from here, because …") into the handoff block and the memory note. A per-measurement requirement that needs a quiet machine (an allowance reading before and after one helper) is likewise checked against the plan to fan out, and the order of work written down, before anything is launched.
 
 **Principle:** A plan that names a tool has an untested assumption until the tool has answered once from where the work will run.
+
+### Observation 431: A fanned-out helper's brief says "report once, after stopping everything you started" — and a measurement that needs a quiet machine is planned before the fan-out
+
+**Status:** OPEN
+**Date:** 2026-10-05
+**Session context:** The one check of the Codex stack: nine Sonnet walkers and one Opus walker, a blind two-walker trial with an allowance reading owed before and after each. Numbered on claude/codex-stack-review.
+**Skill:** bug-check order §4 (the fanned-out walk and the walker trial); dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** Briefing parallel helpers; measuring one helper's cost
+
+**Issue:** (1) One walker finished, then re-sent its whole final report five times because a process of its own was still alive; each copy landed in the host's context, already two-thirds full, and it had to be stopped by hand. (2) The owner wanted his allowance read before and after each trial walker; the reading is one whole-account figure in whole percents, so the two walkers had to run one after the other with the host idle — and the host then answered the owner and wrote a handoff inside both windows, so neither reading was clean. (3) Most walkers opened a third or less of the pictures they saved although the brief said every one, and two scenarios with an expected result were marked "recorded" instead of judged.
+
+**Suggested improvement:** In the walk brief: "send your report ONCE, after stopping every script and browser you started"; "a scenario with an EXPECTED line is PASS or FAIL — RECORDED only where the host says so"; and say plainly that the host, not the walker, opens the pictures behind every FAIL and every high-consequence PASS. For a per-helper cost measurement: use the helper's own token count as the measure, and promise an allowance reading only if the host can truly go silent for the whole window — say so to the owner before starting, not after.
+
+**Principle:** A helper's brief must say how the helper ENDS, not only what it does; and a measurement taken on a shared meter is only as clean as the quiet around it.
