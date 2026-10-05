@@ -54,9 +54,45 @@ on the earlier one the Rally scenarios could not be walked at all; so the trial 
 Parts, one per reader: `parts/stack-read-AB.md`, `-C.md`, `-D1.md`, `-D2.md`; the save-note band's own roll-call is in
 `2026-10-05-save-note-controls.md` and is re-checked here against the top of the stack.
 
-## 5. The walk — to come
-Briefs: `../superpowers/briefs/2026-10-05-codex-stack-scenarios-brief.md` (Astra's list:
-`…-codex-stack-scenarios-astra.md`), the readers' `…-codex-stack-read-brief.md`.
+## 5. The walk — IN PROGRESS
+### 5.1 How it is walked
+Astra designed 104 scenarios (`../superpowers/briefs/2026-10-05-codex-stack-scenarios-astra.md`, from
+`…-scenarios-brief.md`); the host added eight (`…-scenarios-host.md`, H-01 to H-08, with notes on three of Astra's that
+tested a promise the host's brief worded wrongly — RECORDED, not judged) and, from the four readers' leads, sixteen
+more (`…-scenarios-leads.md`, L-01 to L-16). One brief for every walker: `…-codex-stack-walk-brief.md`. Eight Sonnet 5.5
+walkers (D588), each a fresh browser world per scenario, on the frozen build, under the PC lock:
+
+| Walker | Share | Server | Table | State |
+|---|---|---|---|---|
+| A | P1-01…06, P2-01…08 | 4221 | `parts/stk-A.md` | out |
+| B | P2-09…18, H-01, H-05…H-08 | 4222 | `parts/stk-B.md` | out |
+| C | P3-01…18, H-02, H-03 | 4221 | `parts/stk-C.md` | out |
+| D | P4c-01…16, P4d-01…06, H-04 | 4222 | `parts/stk-D.md` | out |
+| E | P4a, P4b, P4e, and one picture of every screen at two sizes | 4221 | `parts/stk-E.md` | out |
+| F | P5-01…08, X-01…12 | 4222 | `parts/stk-F.md` | out |
+| G | L-01…L-08 | 4221 | `parts/stk-G.md` | BACK — 142 pictures, 15 opened by the walker; the host opened 8 (those behind the findings) |
+| K | L-09…L-16 | 4222 | `parts/stk-K.md` | out |
+
+### 5.2 What the walk has found so far, and each disposition
+"Seen" = the host opened the walker's picture and it shows the fault. "To reproduce" = taken from the walker's figures,
+not yet seen by the host — it is reproduced by the red test written before its fix. Provenance is against `main`
+(`de470db5`). Dispositions are the host's proposals until the fix round; none is fixed yet.
+
+| # | The finding (what a person sees) | From | Seen? | `main`? | Proposed disposition |
+|---|---|---|---|---|---|
+| W1 | A PUBLISHED weekend's earned leave moves at once when a Logic value is changed — "Nominal report before T/O", "Flight debrief after land" or the full-day threshold: Ranger's Saturday goes from +1 (07:00–13:15) to +0.5 (07:30–13:15) with "No pending changes", ORIG and the four sign-offs standing; it flips back when the value is put back. Against D48, D142. | L-01 (walker G); Astra M1; reader AB lead 1 — three finders | SEEN (the tracker before and after; the day's bar) | the same on `main` (the earned-leave code is untouched); the stack makes it likelier — the same box now sets the button's time (D510) | NOT this stack's fault; high consequence. To be put to him and FILED as its own job (it changes what a published day stores) — never fixed under cover of this check |
+| W2 | Typing new words for the "+ In-time / Rally" button on Logic lights "RULES MODIFIED" on both week banners for everyone, and Logic says "1 rule changed … the schedule is being checked against these values" — no rule changed. | L-02; reader AB lead 2 | SEEN (the Logic strip) | new in the stack (`94aa8913`) | fix here, red test first |
+| W3 | `08:30H: VL RALLY AFTER IN TIME` beside a whole-wave `08:00H: IN TIME …`: VL's crew start 08:30, RU's 08:00 (VL's work hours 30 minutes shorter), in either order. Against D505. | L-03; reader AB lead 3 | to reproduce (figures read off the window) | `main` gave VL 08:30 too, by another route; the stack promised D505 | fix here, red test first |
+| W4 | A person on a flying line with no times reads "NaN min" in Insights' Work hours. | L-04 (the walker's side find) | to reproduce | not yet compared | reproduce, compare with `main`, then fix or file |
+| W5 | A wave with a reporting line and no take-off yet: its header reads "In-time / Rally —" and it has no band in Available crew; with no take-off the button fills only the words, and `0800` typed at the front joins them as `0800IN TIME + WX/NOTAMS`. | L-04; reader AB lead 4 | to reproduce | new against `main` (reader) | reproduce, then fix here |
+| W6 | The lines are still called "in-times" in the changes window ("In-times", "2 in-times → 1 in-time"), the gold-dot bubble ("· IN-TIMES") and the ✕ toast ("In-time line removed") — beside "In-time / Rally" on the box, the button and Undo. D504. | L-05; reader AB lead 5 | recorded by the walker | new (the rename) | fix here: one shared name, a test that draws each place |
+| W7 | Every Blue/Red answer is listed in the changes window under "Leave War · rmuv8bvw885wj10" — a hidden code, under another page's name — in both groupings; the same for an answer a day template copies; and after Undo of the template its lines are still listed. D530, D340. | L-06; reader C lead 1 | SEEN (the changes window) | new in the stack (`4cfe81a1`) | fix here, red test first |
+| W8 | On a demo day nobody has edited, a Blue/Red answer is gone after a reload, a sign-in, or a visit to the next week and back (bars back to one, the button back to "Choose"); it holds once the day has been saved once. Only the two built-in demo weeks can do it. D530. | L-07; reader C lead 2 | to reproduce | old id behaviour on `main`, harmless there; this feature made it matter | fix here (repeatable ids for the built-in weeks) — he would meet it on his look |
+| W9 | While one formation's Blue/Red question is open, no "Choose / Change mission role" button appears for any other formation — week, board and phone. D527, D529. | L-08; reader C lead 3 | SEEN (the week: VL's question open, RU's RED AIR box in use, no button) | new in the stack (reachable since the D535 fix) | fix here, red test first |
+
+**Still to come from walkers and readers, unproven:** the Tab route's leads (L-10 to L-15), the four confirmation
+windows (L-09), Retry off-screen on the phone board's Desktop layout (L-16), and a walker's remark that Logic values
+did not survive a reload on this build (H-07 tests it).
 
 ## 6. The break tests — to come
 ## 7. Errors seen — to come
