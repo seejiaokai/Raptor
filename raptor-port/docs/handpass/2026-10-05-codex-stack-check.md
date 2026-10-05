@@ -68,7 +68,7 @@ walkers (D588), each a fresh browser world per scenario, on the frozen build, un
 | B | P2-09…18, H-01, H-05…H-08 | 4222 | `parts/stk-B.md` | BACK — 167 pictures, about 70 opened by the walker (it says which were not, and that they are not evidence), desktop and phone. 13 PASS, 1 PARTIAL (P2-15: a Common Programme row has no CX to press), 1 FAIL (P2-17, the next-week peek — judged below). PASS: the button's words from Logic, blank restoring the default (P2-09); a red timing warning never blocks the first publish or the amendment (P2-10); equal Rally and brief legal, one minute later flagged (P2-11); a formation's line moves that formation only, a person's name is no target (P2-13); standby is no sortie, SC MAIN alone gains hours (P2-14); the long day, crew rest and the 7-day run stay apart (P2-16); the published face, print and CSV keep the issued wording until the amendment (P2-17); plans and templates carry the lines (P2-18); H-01 — NO negative work hours: the evening clock is read as the previous day and the day carries a long-day note (16:20 (previous day) → 13:25); H-05 a 01:30 take-off fills 22:30 and says "(prev day)"; H-06 markup typed on Logic is drawn as text everywhere; H-07 each Logic change is one undo step and all three values SURVIVE A RELOAD; H-08 the new warning hides like any other, and on a published day the hide waits for the amendment |
 | C | P3-01…18, H-02, H-03 | 4221 | `parts/stk-C.md` | BACK — 301 pictures (about 119 behind the final table), about 25 opened by the walker; the host opened 2. 19 PASS, 1 FAIL (P3-04 — W7 again, the changes-window heading), 1 PARTIAL (P3-17: the guest on a phone not walked). PASS on the high-consequence lines: an answer on a published day counts at once with the pending count, the sign-offs and the day's stored record byte-identical (P3-01, seen by the host: the issued Original with its Remarks, and the split bars); an older version offers no way to answer (P3-02); saved plans and day templates carry their own answers and Undo leaves no orphan (P3-04, P3-05); the question stays through an unrelated edit and goes on each of ten context changes (P3-07, P3-08); another person's answer is not undone (P3-18); no mark on any schedule line (H-02); a member never meets a question or a button and sees the admin's bars (H-03); the same twelve rows and Show all from all six doors (P3-16) |
 | D | P4c-01…16, P4d-01…06, H-04 | 4222 | `parts/stk-D.md` | BACK — 111 pictures, 31 opened by the walker. The Tab route: 13 of 16 PASS (the order on week and board, reordered sections, folded sections, standby rows, no loop, no write on an unchanged pass through a signed published day, short screens, other apps' own Tab); the phone ⋯ menu 5 of 6 PASS; H-04 PASS — a Tab pass through a published Saturday left "0 pending", the four sign-offs and every Leave War cell as they were |
-| E | P4a, P4b, P4e, and one picture of every screen at two sizes | 4221 | `parts/stk-E.md` | out |
+| E | P4a, P4b, P4e, and one picture of every screen at two sizes | 4221 | `parts/stk-E.md` | BACK — 352 pictures, about 155 opened by the walker; the host opened 1. 19 of 20 PASS: every lazy-loaded app keeps its own look in either order of visit; the sign-in and no-access screens; dense paint and hit targets on a built Saturday; Inputs, Quals, Medical, Logic, Help, Admin; every window at normal and short size; the phone board's Desktop layout draws all ten sections 816 px wide, both published versions read-only, the day kept through layout switches; the wing in every Tracker mode with marks and save / export / import intact; Logic's search and the Insights cross stay reachable; all thirteen surrounds keep a window open through a drag-out and close on a real surround press. **The every-screen look (D541): 47 screens at two sizes, every one "looks whole", no page scrolling sideways — except one phone card, judged below** |
 | F | P5-01…08, X-01…12 | 4222 | `parts/stk-F.md` | BACK — 190 pictures, the 87 behind its table all opened by the walker; the host opened 2. The failed-save band: 8 of 8 PASS (its own band under the OIL tracker, the board, the Inputs calendar and the Medical view; one reachable Retry; nothing covered on nine pages at three sizes; the Tracker's Tools stays open; a placed window keeps its size; no band inside a window; Saving… unchanged). The crossings: 11 of 12 PASS — Tab out of a Remarks box that asks Blue/Red keeps the next keystroke (X-01, three surfaces); a failed save in the middle of a Tab run or of a Blue/Red answer loses nothing after Retry and a reload (X-04, X-05); an answer on a published day leaves a waiting timing correction waiting (X-03); the phone ⋯ menu, the Insights cross and Logic's search all sit right with the band showing (X-06, X-07); work hours and the Blue/Red split move separately (X-09). X-11 FAIL = W1 a third time (HO → FO at 3h → 4h) |
 | G | L-01…L-08 | 4221 | `parts/stk-G.md` | BACK — 142 pictures, 15 opened by the walker; the host opened 8 (those behind the findings) |
 | K | L-09…L-16 | 4222 | `parts/stk-K.md` | BACK — 109 pictures, 23 opened by the walker; the host opened 3 |
@@ -120,7 +120,7 @@ script had pressed "Reset to standard" before the reload. H-07 (walker B) tests 
 - *P4c-11 (Escape on the Scheduler Board's TIME boxes does not put the old value back, and a click away saves it).* The host ran the
   walker's own probe (`stk-D-1b.mjs`) on `main`'s build and on the stack: the same on both, box for box — the board's take-off,
   landing, Brief and duty-start boxes keep what was typed after Escape and save it on leaving; the week's boxes and the board's text
-  boxes restore. D544 says "keep the existing Enter and Escape meanings" — they are kept. Old behaviour: to FILE low
+  boxes restore. D544 says "keep the existing Enter and Escape meanings" — they are kept. Old behaviour: FILED low
   (`[BOARD-TIME-ESCAPE]`), for his word.
 - *P4c-03 (typing in the Ground ROW's own boxes of a row that came from a request changes the row, not the request).* The row's own
   boxes are the scheduler's layer over the request, typed by click on `main` too; typing in the request's own boxes saves to the
@@ -145,7 +145,21 @@ View-only Sched, print, CSV and the Original all read the issued BFM).* The peek
 question already filed for him as `OUTSTANDING.md` `[PEEK-ISSUED]`; the stack did not touch it. Not a finding here; it goes on his
 look card as a reminder that the question is his.
 
-**Still out:** walker E.
+**Walker E's finds, judged.**
+- *The green OIL chip is painted over the date and time on a phone Inputs card of an OIL-credited request (seen by the host:
+  "18 Jul 11:00–12:00" with "OIL" over it).* NOT the stack's and NOT the stylesheet split's: the Inputs page's code and its
+  stylesheet part have no change anywhere in the stack (`git diff de470db5 bcc69fc8` is empty for them, and the split's parts
+  re-join byte for byte — reader D1). Older: FILED low, `OUTSTANDING.md` `[INP-OIL-CHIP-PHONE]`.
+- *P4b-02 FAIL: in the phone board's Desktop layout a sideways swipe on the schedule itself moves nothing (14 of 790 px); it pans
+  only from the title strip; and a swipe along the Mon–Sun chips both pans and changes the open day.* The first is the 4 Oct
+  investigation's known behaviour, left by D548 ("fix ONLY the blank layout"); the second was seen only in the test browser's touch
+  emulation. Both go on his look card for his iPhone — he ruled the rest of that layout left as it is.
+- Observations, none a fault of the stack: the Quals date box is the browser's plain grey box; Admin → Squadron config's order lists
+  glue the number to the name ("Overall notes1"); a passing toast lies over a window on a phone; the Tracker opens with an empty band
+  above its first ball. Not compared with `main`; listed for the look card only if he asks.
+
+**THE WALK IS COMPLETE — eight walkers back, 5 Oct 26.** 1,529 pictures saved by the walkers; the host opened 16, each one
+behind a finding or a high-consequence PASS. The PC lock was released when the last walker returned.
 
 ## 6. The break tests — to come
 ## 7. Errors seen — to come
