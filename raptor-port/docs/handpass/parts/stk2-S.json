@@ -1,0 +1,155 @@
+{
+ "rows": [
+  {
+   "id": "S-1",
+   "part": "run",
+   "did": "Duty (Ranger, Sat 18 Jul, 08:00–16:00, was {\"person\":\"bane\",\"type\":\"Duty\",\"date\":\"Jul 18\",\"acc\":\"g\",\"oil\":{\"2026-07-18\":1}}) filed via Inputs, OIL asked Yes; Edit Schedule Sat Personal Inputs: START box (was 08:00) clicked, typed 1300, Tab; 8× Shift+Tab, 8× Tab, typed XYZ, Escape",
+   "saw": "question OPEN: OIL — Ranger, Duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the who; focus right after first Tab: div  \"OIL — Ranger, Duty ✕ THIS INPU\" (inside); presses landing outside the window: none (16 of 16 inside); trail: Shift+Tab1:in button  \"Cancel\" | Shift+Tab2:in button  \"No OIL\" | Shift+Tab3:in button  \"Yes — credit  | Shift+Tab4:in button  \"✕\" | Shift+Tab5:in button  \"Cancel\" | Shift+Tab6:in button  \"No OIL\" | Shift+Tab7:in button  \"Yes — credit  | Shift+Tab8:in button  \"✕\" | Tab1:in button  \"Yes — credit  | Tab2:in button  \"No OIL\" | Tab3:in button  \"Cancel\" | Tab4:in button  \"✕\" | Tab5:in button  \"Yes — credit  | Tab6:in button  \"No OIL\" | Tab7:in button  \"Cancel\" | Tab8:in button  \"✕\"; after XYZ focus button  \"✕\" (inside), window still open true, schedule days changed false, requests changed false, edit-history rows 3->3; after Escape window closed true, focus BODY (nothing focused); start box now \"13:00\"; request {\"person\":\"bane\",\"date\":\"Jul 18\",\"allday\":false,\"s\":780,\"e\":960,\"yr\":2026,\"type\":\"Duty\",\"remarks\":\"S1 duty\",\"mod\":\"2026-10-06\",\"iid\":\"imuvjfm08jvg2yw\",\"ord\":0,\"acc\":\"g\"}; stray XYZ boxes []",
+   "verdict": "PASS",
+   "pics": [
+    "dk-02-S1-1-question-open.png",
+    "dk-03-S1-2-after-shift-tabs.png",
+    "dk-04-S1-3-after-tabs.png",
+    "dk-05-S1-4-after-XYZ.png",
+    "dk-06-S1-5-after-escape.png"
+   ]
+  },
+  {
+   "id": "S-2",
+   "part": "a",
+   "did": "Scheduler Board Monday: pressed Sort all; 6× Tab, 6× Shift+Tab; closed with its own button (pressed Cancel)",
+   "saw": "dialog: {\"cls\":\"airpop\",\"tid\":\"\",\"text\":\"Sort all — Monday ✕ Every section on Monday — flying, duties, sims, ground and the overall programme — goes back into its own reading order, and the flying waves and duty blocks themselves move into take-off and start-time order. Unlike every other control on \",\"btns\":[\"✕\",\"Cancel\",\"Sort all\"]}; focus when opened: div  \"Sort all — Monday ✕ Every se\" (inside); Tab1:in button sortAllClose \"✕\" | Tab2:in button sortAllCancel \"Canc | Tab3:in button sortAllConfirm \"Sor | Tab4:in button sortAllClose \"✕\" | Tab5:in button sortAllCancel \"Canc | Tab6:in button sortAllConfirm \"Sor | Shift+Tab1:in button sortAllCancel \"Canc | Shift+Tab2:in button sortAllClose \"✕\" | Shift+Tab3:in button sortAllConfirm \"Sor | Shift+Tab4:in button sortAllCancel \"Canc | Shift+Tab5:in button sortAllClose \"✕\" | Shift+Tab6:in button sortAllConfirm \"Sor; schedule days changed behind: false; edit-history rows 0->0; presses outside: none (12 of 12 inside); dialogs still open after close: 0",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-S2a-sortall-open.png",
+    "dk-02-S2a-sortall-after-tabs.png",
+    "dk-03-S2a-sortall-after-shifttabs.png"
+   ]
+  },
+  {
+   "id": "S-2",
+   "part": "b",
+   "did": "Scheduler Board Monday: pressed CX of flying line 0.0.0.0; 6× Tab, 6× Shift+Tab; closed with its own button (pressed ✕)",
+   "saw": "dialog: {\"cls\":\"airpop\",\"tid\":\"\",\"text\":\"Cancel this line ✕ CX DUE Reads CX DUE <reason> on the line. Leave it blank for a plain CX. WX OPS LOGS ✎ Edit Cancel line\",\"btns\":[\"✕\",\"WX\",\"OPS\",\"LOGS\",\"✎ Edit\",\"Un-cancel\",\"Cancel line\"]}; focus when opened: input cxReason \"\" (inside); Tab1:in button  \"WX\" | Tab2:in button  \"OPS\" | Tab3:in button  \"LOGS\" | Tab4:in button  \"✎ Edit\" | Tab5:in button cxSave \"Cancel line | Tab6:in button cxClose \"✕\" | Shift+Tab1:in button cxSave \"Cancel line | Shift+Tab2:in button  \"✎ Edit\" | Shift+Tab3:in button  \"LOGS\" | Shift+Tab4:in button  \"OPS\" | Shift+Tab5:in button  \"WX\" | Shift+Tab6:in input cxReason \"\"; schedule days changed behind: false; edit-history rows 0->0; presses outside: none (12 of 12 inside); dialogs still open after close: 0",
+   "verdict": "PASS",
+   "pics": [
+    "dk-05-S2b-cx-open.png",
+    "dk-06-S2b-cx-after-tabs.png",
+    "dk-07-S2b-cx-after-shifttabs.png"
+   ]
+  },
+  {
+   "id": "S-2",
+   "part": "c",
+   "did": "after each dialog closed: clicked into the first flying line's Callsign box, pressed Tab once",
+   "saw": "after Sort all closed: caret in ff:0.0.0.cs, Tab -> {\"k\":\"ff:0.0.0.msn\",\"tag\":\"TEXTAREA\",\"txt\":\"BFM\",\"box\":[126,491]}; after CX dialog closed: caret in ff:0.0.0.cs, Tab -> {\"k\":\"ff:0.0.0.msn\",\"tag\":\"TEXTAREA\",\"txt\":\"BFM\",\"box\":[126,491]}",
+   "verdict": "PASS",
+   "pics": [
+    "dk-04-S2c-after-sortall-tab-check.png",
+    "dk-08-S2c-after-cx-tab-check.png"
+   ]
+  },
+  {
+   "id": "S-3",
+   "part": "run",
+   "did": "pilot Comet (no work on Wed 15 Jul; Work hours figure before: 10h); Board Wed: ground row 13:00–14:00 Comet on it; first flying wave: + Line, take-off/landing empty, Comet front seat (seated: true); first reporting line replaced with \"08:00H: IN TIME + WX/NOTAMS\" (before: [\"0735H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"0735H: FIRST WAVE RU IN TIME + WX/NOTAMS\"], now [\"08:00H: IN TIME + WX/NOTAMS\",\"0735H: FIRST WAVE RU IN TIME + WX/NOTAMS\"]); then take-off 11:00, landing 12:00",
+   "saw": "Work hours (whole-week figure) for Comet: base 10h; after ground row 11h; after untimed line + 08:00 reporting line 11h; after 11:00/12:00 typed 16h. Per-day tooltips: base \"2 days on the programme\", ground \"3 days on the programme\", untimed \"3 days on the programme\", timed \"3 days on the programme\". NaN seen anywhere: false. Debrief time in Logic 120. Day's reporting/work warnings now: []",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-S3-0-base.png",
+    "dk-02-S3-1-ground-row.png",
+    "dk-03-S3-1-ground-row.png",
+    "dk-04-S3-2-untimed-line.png",
+    "dk-05-S3-2-untimed-line.png",
+    "dk-06-S3-3-timed-line.png",
+    "dk-07-S3-3-timed-line.png"
+   ]
+  },
+  {
+   "id": "S-4",
+   "part": "a",
+   "did": "Board Thursday 16 Jul: + Wave (Flying wave), take-off left empty, + In-time / Rally, line text replaced with \"8h00 IN TIME\", box left",
+   "saw": "lines [\"8h00 IN TIME\"]; line under the reporting box: [\"it:3.2 :: WAVE 3: reporting line 1 has no recognised clock. Check the time.\"]; day issues list (reporting/clock lines): [\"WAVE 3: reporting line 1 has no recognised clock. Check the time. ✕\"]; app warnings: [\"adv/REPORT_UNRESOLVED: WAVE 3: reporting line 1 has no recognised clock. Check the time.\"]; wave header \"⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally — · 1 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-S4a-unreadable-clock.png"
+   ]
+  },
+  {
+   "id": "S-4",
+   "part": "b",
+   "did": "replaced with \"0800 IN TIME\"",
+   "saw": "lines [\"08:00 IN TIME\"]; under box: []; issues (reporting/clock): []; app warnings []; wave header \"⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 08:00 · 1 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-02-S4b-readable-clock.png"
+   ]
+  },
+  {
+   "id": "S-4",
+   "part": "c",
+   "did": "put \"8h00 IN TIME\" back, removed the wave's only line with its ✕",
+   "saw": "delete button class=mbtn del data-ldel=3.2.0.0 title=Remove this line; dialog \"null\"; formation boxes left in wave: 0; reporting lines [\"8h00 IN TIME\"]; under box: [\"it:3.2 :: WAVE 3: reporting line 1 has no recognised clock. Check the time.\"]; issues (reporting/clock): [\"WAVE 3: reporting line 1 has no recognised clock. Check the time. ✕\"]; app warnings [\"adv/REPORT_UNRESOLVED/it:3.2: WAVE 3: reporting line 1 has no recognised clock. Check the time.\"]; header \"⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally — · 0 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-03-S4c-no-line-left.png"
+   ]
+  },
+  {
+   "id": "S-4",
+   "part": "d",
+   "did": "+ Line again on that wave",
+   "saw": "under box: [\"it:3.2 :: WAVE 3: reporting line 1 has no recognised clock. Check the time.\"]; issues (reporting/clock): [\"WAVE 3: reporting line 1 has no recognised clock. Check the time. ✕\"]; copies of the message in the issues list: 1; app warnings [\"adv/REPORT_UNRESOLVED/it:3.2: WAVE 3: reporting line 1 has no recognised clock. Check the time.\"]; header \"⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally — · 1 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave\"; NaN on page: false",
+   "verdict": "PASS",
+   "pics": [
+    "dk-04-S4d-line-again.png"
+   ]
+  },
+  {
+   "id": "S-5",
+   "part": "S5-week",
+   "did": "tracking On; Edit Schedule week (Mon, RU formation, BFM): typed \"DS FOR RU\" in the first aircraft's Remarks, clicked empty page ([1428,8,\"topbar editing has-undo\"]), question: pressed Later; clicked into first Remarks, then straight into the second Remarks; pressed the button; pressed Blue",
+   "saw": "question right after the first edit: [{\"txt\":\"Working copy RU: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[43,546,508,69]}]; in first Remarks: button [{\"txt\":\"Choose mission role\",\"box\":[419,556,120,30]}] caret {\"k\":\"fr:0.0.1.0\",\"text\":\"DS FOR RU\",\"visible\":true,\"box\":[377,444,177,13]}; straight into second Remarks: caret {\"k\":\"fr:0.0.1.1\",\"text\":\"2A: BFM-ADD\",\"visible\":true,\"box\":[377,443,177,13]}, button [{\"txt\":\"Choose mission role\",\"box\":[419,517,120,30]}], question []; button -> pressed \"Choose mission role\"; questions open: 1 [{\"txt\":\"Working copy RU: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[43,507,508,69]}]; Blue -> pressed Blue; caret after Blue: {\"k\":\"fr:0.0.1.1\",\"text\":\"2A: BFM-ADD\",\"visible\":true,\"box\":[377,443,177,13]}; role UI after: {\"btn\":[],\"q\":[]}; Insights rows for the crew (Drifter, Vector, Piston, Relay): [\"FLYING LOAD · SORTIE Relay: blue 4 red 0 :: Relay 4 0 4\",\"FLYING LOAD · SORTIE Drifter: blue 2 red 0 :: Drifter 2 0 2\",\"FLYING LOAD · SORTIE Piston: blue 2 red 0 :: Piston 2 0 2\",\"FLYING LOAD · SORTIE Vector: blue 2 red 0 :: Vector 2 0 2\",\"WORK HOURS · REPORT  Vector: blue null red null :: Vector 24h30\",\"WORK HOURS · REPORT  Relay: blue null red null :: Relay 20h55\",\"WORK HOURS · REPORT  Drifter: blue null red null :: Drifter 12h30\",\"WORK HOURS · REPORT  Piston: blue null red null :: Piston 12h05\"]; mission-role change lines [\"{\\\"t\\\":1791222540837,\\\"who\\\":\\\"Saber\\\",\\\"pid\\\":\\\"stiff\\\",\\\"di\\\":null,\\\"date\\\":\\\"2026-07-13\\\",\\\"key\\\":\\\"\\\",\\\"lbl\\\":\\\"RU · mission role · Working copy\\\",\\\"from\\\":\\\"Unresolved\\\",\\\"to\\\":\\\"Blue\\\",\\\"\"]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-S5-week-1-after-typing-click-empty.png",
+    "dk-02-S5-week-2-in-first-remarks.png",
+    "dk-03-S5-week-3-in-second-remarks.png",
+    "dk-04-S5-week-4-question-open.png",
+    "dk-05-S5-week-5-after-blue.png",
+    "dk-06-S5-week-6-insights.png"
+   ]
+  },
+  {
+   "id": "S-5",
+   "part": "S5-board",
+   "did": "tracking On; Scheduler Board (Thu, 2nd wave RU formation, BFM): typed \"DS FOR RU\" in the first aircraft's Remarks, clicked empty page ([1428,8,\"sb-top\"]), question: pressed Later; clicked into first Remarks, then straight into the second Remarks; pressed the button; pressed Blue",
+   "saw": "question right after the first edit: [{\"txt\":\"Working copy RU: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[26,620,1070,69]}]; in first Remarks: button [{\"txt\":\"Choose mission role\",\"box\":[964,630,120,30]}] caret {\"k\":\"fr:3.1.1.0\",\"text\":\"DS FOR RU\",\"visible\":true,\"box\":[773,491,221,24]}; straight into second Remarks: caret {\"k\":\"fr:3.1.1.1\",\"text\":\"2A: BFM-8X / OC CHK\",\"visible\":true,\"box\":[773,491,221,24]}, button [{\"txt\":\"Choose mission role\",\"box\":[964,579,120,30]}], question []; button -> pressed \"Choose mission role\"; questions open: 1 [{\"txt\":\"Working copy RU: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[26,569,1070,69]}]; Blue -> pressed Blue; caret after Blue: {\"k\":\"fr:3.1.1.1\",\"text\":\"2A: BFM-8X / OC CHK\",\"visible\":true,\"box\":[773,491,221,24]}; role UI after: {\"btn\":[],\"q\":[]}; Insights rows for the crew (Ranger, Hex, Zenith, Ledger): [\"FLYING LOAD · SORTIE Hex: blue 3 red 0 :: Hex 3 0 3\",\"FLYING LOAD · SORTIE Ranger: blue 2 red 0 :: Ranger 2 0 2\",\"FLYING LOAD · SORTIE Zenith: blue 2 red 0 :: Zenith 2 0 2\",\"FLYING LOAD · SORTIE Ledger: blue 1 red 0 :: Ledger 1 0 1\",\"WORK HOURS · REPORT  Zenith: blue null red null :: Zenith 20h50\",\"WORK HOURS · REPORT  Hex: blue null red null :: Hex 19h55\",\"WORK HOURS · REPORT  Ranger: blue null red null :: Ranger 14h\",\"WORK HOURS · REPORT  Ledger: blue null red null :: Ledger 7h25\"]; mission-role change lines [\"{\\\"t\\\":1791222540837,\\\"who\\\":\\\"Saber\\\",\\\"pid\\\":\\\"stiff\\\",\\\"di\\\":null,\\\"date\\\":\\\"2026-07-13\\\",\\\"key\\\":\\\"\\\",\\\"lbl\\\":\\\"RU · mission role · Working copy\\\",\\\"from\\\":\\\"Unresolved\\\",\\\"to\\\":\\\"Blue\\\",\\\"\",\"{\\\"t\\\":1791222548212,\\\"who\\\":\\\"Saber\\\",\\\"pid\\\":\\\"stiff\\\",\\\"di\\\":null,\\\"date\\\":\\\"2026-07-16\\\",\\\"key\\\":\\\"\\\",\\\"lbl\\\":\\\"RU · mission role · Working copy\\\",\\\"from\\\":\\\"Unresolved\\\",\\\"to\\\":\\\"Blue\\\",\\\"\"]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-07-S5-board-1-after-typing-click-empty.png",
+    "dk-08-S5-board-2-in-first-remarks.png",
+    "dk-09-S5-board-3-in-second-remarks.png",
+    "dk-10-S5-board-4-question-open.png",
+    "dk-11-S5-board-5-after-blue.png",
+    "dk-12-S5-board-6-insights.png"
+   ]
+  },
+  {
+   "id": "S-6",
+   "part": "run",
+   "did": "tracking On; Scheduler Board Friday 17 Jul: + Wave -> ⚙ -> New wave template, callsign VL, Mission typed \"ACM /  DS\" (two spaces), T/O 1200, LD 1300; Done; + Wave -> that template -> Friday; Comet on the line (seated); clicked the line's Remarks; pressed \"Choose mission role\"; with the question open clicked the same line's Mission box; pressed Red",
+   "saw": "template editor kept the Mission as \"ACM /  DS\" (typed \"ACM /  DS\"); stored on the Friday line: msn \"ACM /  DS\", to/ld {\"to\":\"12:00\",\"ld\":\"13:00\"} (before I set any); after placing: {\"cs\":\"VL\",\"msn\":\"ACM /  DS\",\"to\":\"12:00\",\"ld\":\"13:00\",\"p\":\"beams\",\"w\":\"\"}; Insights for Comet before: [\"FLYING LOAD · SORT: blue null red null :: Comet 1\",\"WORK HOURS · REPOR: blue null red null :: Comet 14h\"]; Remarks clicked -> button [{\"txt\":\"Choose mission role\",\"box\":[964,577,120,30]}], questions 0; after the button: question [\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\"]; after clicking Mission box: question [\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\"], caret {\"k\":\"ff:4.0.0.msn\",\"text\":\"ACM /  DS\",\"visible\":true,\"box\":[126,491,74,24]}; Red -> pressed Red; Mission text after: \"ACM /  DS\"; questions left open 0; change history rows 2 -> 3; new lines: [\"mission-role: VL · mission role · Working copy Unresolved -> Red\"]; day's head before {\"tag\":\"DRAFT\",\"pending\":\"2 changes\",\"beak\":\"locked\",\"alpub\":\"\",\"unpub\":\"\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"\",\"nys\":\"\"} / after {\"tag\":\"DRAFT\",\"pending\":\"3 changes\",\"beak\":\"locked\",\"alpub\":\"\",\"unpub\":\"\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"\",\"nys\":\"\"}; Insights for Comet after: [\"FLYING LOAD · SORT: blue 0 red 1 :: Comet 0 1 1\",\"WORK HOURS · REPOR: blue null red null :: Comet 14h\"]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-S6-1-template-editor.png",
+    "dk-02-S6-2-wave-on-friday.png",
+    "dk-03-S6-3-remarks-clicked.png",
+    "dk-04-S6-4-question-open.png",
+    "dk-05-S6-5-mission-clicked-question-still-there.png",
+    "dk-06-S6-6-after-red.png",
+    "dk-07-S6-7-insights.png"
+   ]
+  }
+ ]
+}
