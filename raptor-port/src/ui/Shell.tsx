@@ -309,12 +309,15 @@ export function Shell() {
      page measured itself against the bar keeps its old figure unless told: a Quals or Leave War header ALREADY frozen
      sat 36px off (under the band, or a gap above it); the Tracker's full-height column kept its old height, its foot
      36px below a screen that does not scroll. Each of them already re-measures on a window resize — so they are told
-     the one way they all listen for, once, when the warning comes and once when it goes. Not on the first draw. */
+     the one way they all listen for, once, when the warning comes and once when it goes. Not on the first draw.
+     THE EVENT SAYS WHY (`saveBand`), because a resize also means "the screen turned" to some listeners: the Tracker
+     shuts its open Tools set on one, and a person choosing a tool would lose it when a save failed or landed behind
+     them (Astra's second read, R2-1). A listener that only re-measures needs no change. */
   const saveFailedWas = useRef(saveFailed)
   useEffect(() => {
     if (saveFailedWas.current === saveFailed) return
     saveFailedWas.current = saveFailed
-    window.dispatchEvent(new Event('resize'))
+    window.dispatchEvent(Object.assign(new Event('resize'), { saveBand: true }))
   }, [saveFailed])
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,

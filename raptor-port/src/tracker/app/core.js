@@ -6612,7 +6612,7 @@ export async function init() {
     let t = null;
     /* while editing: the canvas follows the new shape, the middle kept (F1); the Tools set shuts (F5) */
     let ta = null, lastW = window.innerWidth;
-    window.addEventListener('resize', () => {
+    window.addEventListener('resize', e => {
       if (!arrangeMode) return;
       /* a phone's keyboard opening for a box inside the Tools set makes the window shorter,
          not narrower: that is not a turn, and shutting the set would drop the box and its
@@ -6621,7 +6621,11 @@ export async function init() {
       const typing = a && a.matches && a.matches('input, textarea') && a.closest && a.closest('#arrTools, #arrFold');
       if (w === lastW && typing) return;
       lastW = w;
-      if (toolsOpen) { toolsOpen = false; notify(); }
+      /* …but not when Raptor's top bar has only gained or lost its failed-save warning (ui/Shell.tsx marks that
+         resize `saveBand`): the screen did not turn, and a person choosing a tool would lose the set when a save
+         failed or landed behind them. The canvas still re-fits below — its room did change. ([SAVE-NOTE-COVERS],
+         Astra's second read R2-1) */
+      if (toolsOpen && !(e && e.saveBand)) { toolsOpen = false; notify(); }
       clearTimeout(ta);
       ta = setTimeout(refitArrange, 150);
     });

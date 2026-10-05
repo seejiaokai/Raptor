@@ -52,9 +52,12 @@
 .topbar.save-failed ~ .page .ros-rail{top:calc(150px + var(--save-band))}
 /* DESKTOP ONLY (Astra's read, F2): under 621px both windows are bottom panels (`top:auto`), and this rule — an id
    stronger than theirs — pulled them up to the top and stretched the changes window's slim "Hide" bar into a panel.
-   And lower by the band means shorter by the band, or on a short desktop window the foot would fall off the screen. */
+   And lower by the band means shorter by the band, or on a short desktop window the foot would fall off the screen.
+   ONLY A WINDOW STILL AT ITS DEFAULT SPOT (Astra's second read, R2-2): one a person has moved or resized carries
+   `data-placed` (ui/floatwin.ts) and keeps its own box — capped here, its shrunken height would be recorded as the
+   size he chose and stay after the warning went. */
 @media (min-width:621px){
-  #shell.save-failed ~ .chgwin, #shell.save-failed ~ .availwin{top:calc(96px + var(--save-band));max-height:calc(100vh - 120px - var(--save-band))}   /* drawn beside the shell, not in it (ui/App.tsx) */
+  #shell.save-failed ~ .chgwin:not([data-placed]), #shell.save-failed ~ .availwin:not([data-placed]){top:calc(96px + var(--save-band));max-height:calc(100vh - 120px - var(--save-band))}   /* drawn beside the shell, not in it (ui/App.tsx) */
 }
 .savestat .sv-msg, .saveband .sv-msg{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .savestat .sv-ico, .saveband .sv-ico{margin-right:6px}

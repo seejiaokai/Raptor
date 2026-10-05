@@ -26,40 +26,55 @@ const SIZES = [
 const BAR = '.topbar > .savestat.failed'
 const TOPBAR = '.topbar:has(#burger)'   // Raptor's own bar — the Leave War's chrome has a .topbar of its own
 
+/* STORAGE IS MADE TO REFUSE, AND EVERY ATTEMPT TO WRITE IS COUNTED. One wrapper stays in place for the whole test — it
+   refuses while `__lsRefuse` is set and writes for real when it is not — so the count runs through refusal and
+   recovery alike. EVERY press on a Retry is measured too: the count is read as the click is captured and again one
+   task later, before any timer of the app's own can run — the write that press caused, apart from the app's automatic
+   retry (1s, 2s, 4s … storage/postman.ts), which would otherwise pass for it (Astra's second read, R2-3). */
 async function failSaves(page: Page) {
   await page.evaluate(() => {
     const w = window as any
-    w.__lsSetWas = Storage.prototype.setItem
-    w.__lsTries = w.__lsTries || 0
-    Storage.prototype.setItem = function () { w.__lsTries++; throw new DOMException('The quota has been exceeded (test: forced)', 'QuotaExceededError') }
+    if (!w.__lsSetWas) {
+      w.__lsSetWas = Storage.prototype.setItem
+      w.__lsTries = 0
+      Storage.prototype.setItem = function (this: Storage, ...a: [string, string]) {
+        w.__lsTries++
+        if (w.__lsRefuse) throw new DOMException('The quota has been exceeded (test: forced)', 'QuotaExceededError')
+        return w.__lsSetWas.apply(this, a)
+      }
+      document.addEventListener('click', e => {
+        if (!(e.target as HTMLElement).closest('.savestat button, .saveband button')) return
+        /* storage works again FROM this press, when the test has armed it — never before the press: the app's own
+           retry could otherwise save first and take the button away before the press reached it */
+        if (w.__lsArmed) { w.__lsArmed = false; w.__lsRefuse = false }
+        const before = w.__lsTries
+        w.__retryWrote = null
+        setTimeout(() => { w.__retryWrote = w.__lsTries - before }, 0)
+      }, true)
+    }
+    w.__lsRefuse = true
     /* a change through the one write path, so there is something to save */
     w.fillSlot('1.0.0.0.p', w.DAYS[1].waves[0].formations[0].aircraft[0].p === 'casper' ? 'bane' : 'casper'); w.afterSchedMutate()
   })
   await page.waitForSelector(BAR)
 }
-/* STORAGE WORKS AGAIN FROM THE MOMENT RETRY IS PRESSED — armed on the press itself, never before it. The app retries a
-   failed save by itself (1s, 2s, 4s … storage/postman.ts): were storage put back first, that retry could land the save
-   and take the warning away before the test's press reached Retry, and the press would wait for a button that had
-   gone (seen once, on a loaded machine). So the real press that reaches Retry is also what un-breaks storage. */
-const tries = (page: Page) => page.evaluate(() => (window as any).__lsTries as number)
-/* Retry, pressed while storage still refuses: a write is attempted AT ONCE (the app's own next retry is seconds away by
-   now), and the warning stays. This is what tells a working Retry from one that only waits for the automatic retry. */
-async function retryRefused(page: Page, sel: string, touch: boolean) {
-  const before = await tries(page)
+/* a real press on the Retry inside `sel`, and the proof that THAT press tried to save */
+async function pressRetry(page: Page, sel: string, touch: boolean) {
+  await page.evaluate(() => { (window as any).__retryWrote = null })
   const l = page.locator(sel + ' button').first()
   if (touch) await l.tap(); else await l.click()
-  await expect.poll(() => tries(page), { message: 'Retry made an attempt to save', timeout: 1500 }).toBeGreaterThan(before)
+  await expect.poll(() => page.evaluate(() => (window as any).__retryWrote), { message: 'the press on Retry made an attempt to save, itself' }).toBeGreaterThan(0)
+}
+/* Retry while storage still refuses: it tries at once, and the warning stays */
+async function retryRefused(page: Page, sel: string, touch: boolean) {
+  await pressRetry(page, sel, touch)
   await expect(page.locator(sel)).toHaveCount(1)
 }
-const saveAgain = (page: Page) => page.evaluate(() => {
-  /* armed for ONE press of Retry — a later failSaves breaks storage again and must stay broken until re-armed */
-  const arm = (e: Event) => {
-    if (!(e.target as HTMLElement).closest('.savestat button, .saveband button')) return
-    Storage.prototype.setItem = (window as any).__lsSetWas
-    document.removeEventListener('pointerdown', arm, true)
-  }
-  document.addEventListener('pointerdown', arm, true)
-})
+/* Retry with storage working again from that press: it tries at once (the caller then sees the warning go) */
+async function retrySaves(page: Page, sel: string, touch: boolean) {
+  await page.evaluate(() => { (window as any).__lsArmed = true })
+  await pressRetry(page, sel, touch)
+}
 
 /* the warning at `sel`: can it be seen, whole and on top; and which controls lie under it */
 function look(page: Page, sel: string) {
@@ -162,8 +177,7 @@ for (const [label, viewport, touch] of SIZES) {
       await retryRefused(page, BAR, touch)
       const rb = (await page.locator(BAR + ' button').boundingBox())!
       expect(rb.height, 'Retry is tall enough to press').toBeGreaterThanOrEqual(24)
-      await saveAgain(page)
-      await press(page, BAR + ' button')
+      await retrySaves(page, BAR, touch)
       await expect(page.locator('.topbar > .savestat')).toHaveCount(0)
       await go(page, 'viewsched')
       await expect.poll(() => page.locator(TOPBAR).evaluate(b => Math.round(b.getBoundingClientRect().height))).toBe(bar0.h)
@@ -185,8 +199,7 @@ for (const [label, viewport, touch] of SIZES) {
       expect(await page.locator(BAR).evaluate(n => [n.getAttribute('aria-hidden'), (n as HTMLElement).inert]), 'the bar’s copy while the board shows its own').toEqual(['true', true])
       /* …and its Retry works from there */
       await retryRefused(page, onBoard, touch)
-      await saveAgain(page)
-      await press(page, onBoard + ' button')
+      await retrySaves(page, onBoard, touch)
       await expect(page.locator(onBoard)).toHaveCount(0)
       await expect(page.locator('.topbar > .savestat')).toHaveCount(0)
 
@@ -202,7 +215,7 @@ for (const [label, viewport, touch] of SIZES) {
            again, it saves and the warning goes */
         await retryRefused(page, root + ' .saveband', touch)
         expect(await page.locator(BAR).getAttribute('aria-hidden'), `${root}: the bar’s copy is hidden from readers`).toBe('true')
-        if (root === '#medView') { await saveAgain(page); await press(page, root + ' .saveband button'); await expect(page.locator('.saveband')).toHaveCount(0) }
+        if (root === '#medView') { await retrySaves(page, root + ' .saveband', touch); await expect(page.locator('.saveband')).toHaveCount(0) }
         await page.locator(root + ' .ic-head button[aria-label="Back to list"], ' + root + ' .ic-head button:has-text("✕")').first().click()
         await expect(page.locator(root)).toHaveCount(0)
         /* closed with the save still failed (the Inputs calendar): the bar's own warning is the one again */
@@ -224,8 +237,7 @@ for (const [label, viewport, touch] of SIZES) {
       await page.locator('[data-testid="oil-settings"]').click()
       await expect.poll(async () => (await look(page, on)).seen, { message: 'its settings show the warning too' }).toBe(true)
       expect((await look(page, on)).covers, 'what the warning lies over on the settings').toEqual([])
-      await saveAgain(page)
-      await press(page, on + ' button')
+      await retrySaves(page, on, touch)
       await expect(page.locator('.saveband')).toHaveCount(0)
     })
 
@@ -243,8 +255,7 @@ for (const [label, viewport, touch] of SIZES) {
         const g0 = await gap()
         await failSaves(page)
         await expect.poll(gap, { message: `${pg}: the frozen header sits under the taller bar` }).toBe(g0)
-        await saveAgain(page)
-        await press(page, BAR + ' button')
+        await retrySaves(page, BAR, touch)
         await expect(page.locator('.topbar > .savestat')).toHaveCount(0)
         await expect.poll(gap, { message: `${pg}: …and back under the bar when the warning goes` }).toBe(g0)
         await page.evaluate(() => window.scrollTo(0, 0))
@@ -255,10 +266,37 @@ for (const [label, viewport, touch] of SIZES) {
       const f0 = await foot()
       await failSaves(page)
       await expect.poll(foot, { message: 'the Tracker’s column still ends at the foot of the screen' }).toBe(f0)
-      await saveAgain(page)
-      await press(page, BAR + ' button')
+      await retrySaves(page, BAR, touch)
       await expect(page.locator('.topbar > .savestat')).toHaveCount(0)
       await expect.poll(foot, { message: '…and when the warning goes' }).toBe(f0)
+    })
+
+    /* THE TRACKER'S TOOLS SET STAYS OPEN (Astra's second read, R2-1). The page is told of the taller bar by a window
+       resize, and the Tracker shuts its Tools set on a resize (a turned phone). A save failing or landing behind a
+       person choosing a tool must not take the set away. Only where the set folds: a short screen (D373). */
+    if (viewport.height <= 500) test('the Tracker’s open Tools set stays open when the warning comes and when it goes', async ({ page }) => {
+      await login(page)
+      await go(page, 'tracker')
+      await page.waitForSelector('#sylMenuBtn:visible')
+      await page.locator('#sylMenuBtn:visible').first().click()
+      await page.locator('#arrangeBtn:visible').first().click()
+      await page.locator('#foldTools').click()
+      const open = () => page.locator('#arrTools').evaluate(n => n.classList.contains('open'))
+      await expect.poll(open, { message: 'the Tools set is open' }).toBe(true)
+      const tool = await page.locator('#foldTool').textContent()
+      const foot = () => page.evaluate(() => Math.round(document.querySelector('#page-tracker .tr-root')!.getBoundingClientRect().bottom - innerHeight))
+      const f0 = await foot()
+      await failSaves(page)
+      await expect.poll(foot, { message: 'the Tracker still fits the screen under the taller bar' }).toBe(f0)
+      expect(await open(), 'the Tools set, once the warning has come').toBe(true)
+      /* the save lands by itself (nobody presses Retry): the warning goes, the set is still open, the tool still chosen */
+      await page.evaluate(() => { (window as any).__lsRefuse = false })
+      await expect(page.locator('.topbar > .savestat')).toHaveCount(0, { timeout: 40_000 })
+      await expect.poll(foot).toBe(f0)
+      expect(await open(), 'the Tools set, once the warning has gone').toBe(true)
+      expect(await page.locator('#foldTool').textContent(), 'the tool in use').toBe(tool)
+      /* …and it still works: a tool can be picked from it */
+      await page.locator('#arrTools button:visible').first().click()
     })
 
     /* ON A PHONE THE TWO MOVABLE WINDOWS ARE BOTTOM PANELS — the rule that lowers their desktop opening spot must not
@@ -279,6 +317,34 @@ for (const [label, viewport, touch] of SIZES) {
       await expect.poll(async () => (await box())[1], { message: 'hidden, it is a slim bar' }).toBeLessThan(80)
       const bar = (await win.boundingBox())!
       expect(Math.round(bar.y + bar.height), 'the slim bar sits at the foot of the screen').toBeGreaterThan(viewport.height - 40)
+    })
+
+    /* A WINDOW HE HAS MOVED KEEPS ITS OWN BOX (Astra's second read, R2-2). The rule that lowers and shortens a window at
+       its default spot must not reach one he placed: capped, its shrunken height was recorded as the size he chose and
+       stayed after the warning went. The board's preview bar is not part of this — it writes its own inline cap on an
+       UNPLACED window only (ui/floatwin.ts), which the stylesheet rule never outranks. */
+    if (!touch) test('a changes window he has moved keeps its place and size when the warning comes and when it goes', async ({ page }) => {
+      await login(page)
+      await go(page, 'editsched')
+      await page.locator('#histBtn').click()
+      const win = page.locator('.chgwin:not([hidden])').first()
+      await expect(win).toBeVisible()
+      const bar = (await page.locator('.chgwin:not([hidden]) .win-bar .win-grip').boundingBox())!
+      await page.mouse.move(bar.x + bar.width / 2, bar.y + bar.height / 2)
+      await page.mouse.down()
+      await page.mouse.move(bar.x - 520, bar.y + 200, { steps: 8 })   // well clear of the top bar: where he puts it is his, and over the warning it would hide it
+      await page.mouse.up()
+      const box = async () => { const b = (await win.boundingBox())!; return [b.x, b.y, b.width, b.height].map(Math.round) }
+      await expect.poll(() => win.evaluate(n => n.hasAttribute('data-placed')), { message: 'the window knows it has been placed' }).toBe(true)
+      const b0 = await box()
+      await failSaves(page)
+      await expect.poll(async () => (await look(page, BAR)).seen).toBe(true)
+      await page.waitForTimeout(400)   // long enough for a stylesheet cap to have been recorded as "his size", were there one
+      expect(await box(), 'the moved window, with the warning up').toEqual(b0)
+      await retrySaves(page, BAR, touch)
+      await expect(page.locator('.topbar > .savestat')).toHaveCount(0)
+      await page.waitForTimeout(400)
+      expect(await box(), 'the moved window, once the warning has gone').toEqual(b0)
     })
 
     /* the changes window stays open while a person works, and opens 96px down the right edge — under a two-line bar
@@ -304,8 +370,7 @@ for (const [label, viewport, touch] of SIZES) {
       await expect.poll(async () => { const b = (await win.boundingBox())!; return Math.round(b.y + b.height) }, { message: 'the window’s foot on a 600-tall screen' }).toBeLessThanOrEqual(600)
       await page.setViewportSize(viewport)
       expect(await page.evaluate(() => getComputedStyle(document.querySelector('.availwin')!).top), 'the ALL AVAIL window opens lower by the same band').toBe(`${96 + band}px`)
-      await saveAgain(page)
-      await page.locator(BAR + ' button').click()
+      await retrySaves(page, BAR, touch)
       await expect(page.locator('.topbar > .savestat')).toHaveCount(0)
       await expect.poll(async () => Math.round((await win.boundingBox())!.y)).toBe(Math.round(top0))
     })

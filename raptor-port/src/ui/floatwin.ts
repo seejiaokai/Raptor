@@ -68,6 +68,11 @@ export function useFloatWin(opts: {
     if (!n || !open || drag.current) return
     const b = getBox()
     const phone = phoneLayout()
+    /* `data-placed` says "he put this window here" — a desktop box of his own. The failed-save rule that lowers and
+       shortens a window at its DEFAULT spot (17-save-status.css) must not reach a placed one: a stylesheet cap would
+       shrink it, and the ResizeObserver below would then record the shrunken height as the size he chose
+       ([SAVE-NOTE-COVERS], Astra's second read R2-2). */
+    n.toggleAttribute('data-placed', !!b && !b.phone && !phone)
     if (!b || !!b.phone !== phone) {
       n.style.left = n.style.top = n.style.right = n.style.bottom = n.style.width = n.style.height = n.style.maxHeight = ''
       /* HIS PLACE IS HIS; THE STYLESHEET'S CORNER YIELDS TO THE PREVIEW BAR. Only a window he has not placed, on a
@@ -147,6 +152,7 @@ export function useFloatWin(opts: {
     n.style.left = r.left + 'px'; n.style.top = r.top + 'px'
     n.style.right = 'auto'; n.style.bottom = 'auto'
     n.style.width = r.width + 'px'; n.style.height = r.height + 'px'
+    if (!phoneLayout()) n.setAttribute('data-placed', '')   // from the first moment of a drag it is where he puts it
     try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId) } catch { /* jsdom */ }
     e.preventDefault()
   }
