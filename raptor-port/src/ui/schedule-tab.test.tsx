@@ -315,7 +315,13 @@ describe('W12 a save that opens a window stops the Tab route there', () => {
     await act(async () => { INPUTS.push(row); PIOPEN.add(5); histInit(); notify() })
     const start = $(`#eWeek .day[data-day="5"] [data-inp="${inpId(row)}.str"]`)
     await focus(start); start.textContent = '0900'
+    /* the caret must never even touch the next schedule box on its way (the route stops before focusing it) */
+    let touched = 0
+    const spy = (ev: Event) => { const t = ev.target as HTMLElement; if (t !== start && t.closest && t.closest('#eWeek [data-inp], #eWeek [data-txt]')) touched++ }
+    document.addEventListener('focusin', spy, true)
     const e = await tab(start); await tick()
+    document.removeEventListener('focusin', spy, true)
+    expect(touched, 'no schedule box took the caret, even for a moment').toBe(0)
     expect(e.defaultPrevented).toBe(true)
     expect(INPUTS.find((r: any) => r.iid === 'iw12duty')!.s, 'the time was saved once').toBe(540)
     expect(pops.INPEDIT, 'the request’s window was asked for').toBeTruthy()
