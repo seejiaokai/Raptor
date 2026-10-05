@@ -333,7 +333,7 @@ report is a new ruling; until then no other build or fix leaves Opus, and haiku 
 ## 4a. How this fits the Claudex loop
 
 They do not compete. **Claudex covers the plan and the code; this order covers the running app** (D11).
-Claudex's own rules stand unchanged — in particular *the provider that built never inspects*, and
+Claudex's own rules stand unchanged — in particular *the provider that built never inspects* (one exception: D588's ONE Sonnet trial fix, whose diff and tests Opus reads), and
 *never disable or bypass the workflow's independent reviewer* (`.claude/rules/raptor-executor.md`).
 This order adds checks; it never removes one of Claudex's.
 

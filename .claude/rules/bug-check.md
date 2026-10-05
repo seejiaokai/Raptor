@@ -74,5 +74,5 @@ Claudex has no step that runs it. Order of operations: harden the plan with Clau
 → report. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
 first, passed, and three unwired surfaces went out behind it. On money, published records,
 permissions or persistence, one inspector is not enough — run two, independently (for work Opus wrote: Astra and Sol 6.1 — D590).
-Claudex's own rules stand: the provider that built never inspects, and its reviewer is never
+Claudex's own rules stand: the provider that built never inspects (one exception — D588's ONE Sonnet trial fix, read by Opus), and its reviewer is never
 bypassed. Full detail: §4a of the order.
