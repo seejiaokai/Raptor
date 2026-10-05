@@ -9,7 +9,8 @@ merge, no `main`; `[OG-TAG-OVER-COUNT]` only afterwards.
 its words included ("Not saved — keep this page open", Retry); the same band under the bar of every full-screen surface
 that covers the top bar; "Saving…" unchanged.
 
-**Status: BUILT, WALKED, GATES — see §Gates; the independent read — see §The read. Not merged; `main` untouched.**
+**Status: BUILT, WALKED, ALL GATES GREEN on the final tree, TWO independent reads done and their findings fixed (the
+round-2 fixes themselves unread — the cap). His look left. Not merged; `main` untouched.**
 
 ## The eight questions (bug-check order §5) → tier WALK
 
@@ -88,8 +89,10 @@ height changes; `SaveBand`, the same warning in the flow), `ui/scheduler/17-save
 bar makes; four things that move down with the page), `ui/Shell.tsx` (`.save-failed` on the bar and on the shell),
 `ui/SchedBoard.tsx`, `ui/InputsCal.tsx`, `ui/MedicalView.tsx`, `leavewar/ui/OilTracker.tsx` (the band under each one's
 own bar). After Astra's read: one warning exposed at a time; one window `resize` from `Shell` when the warning comes or
-goes; the movable windows' rule desktop-only and shorter by the band. Tests: `e2e/save-note.spec.ts` (35, new; in the
-`raptor` project), `ui/SaveStatus.test.tsx` (two added). The contract:
+goes; the movable windows' rule desktop-only and shorter by the band. After Astra's second read: that `resize` says why
+(`saveBand`) and the Tracker keeps its Tools set open (`tracker/app/core.js`); a window a person has placed is marked
+(`ui/floatwin.ts`, `data-placed`) and left alone. Tests: `e2e/save-note.spec.ts` (39, new; in the `raptor` project),
+`ui/SaveStatus.test.tsx` (two added). The contract:
 `raptor-port/docs/ui-contracts.md` §The failed-save warning has a band of its own.
 
 ## THE ROLL-CALL — every place a top bar is drawn, or something lies over one
@@ -104,7 +107,7 @@ Columns: **shows** the warning · **Retry works** there (a real press) · **what
 | 4 | — Quals (a frozen header that follows the bar) | YES, top and scrolled | same element | nothing; the frozen header sits below the band — walked scrolled with the warning already up, AND tested with the header ALREADY frozen when the warning comes and when it goes (Astra F3; it sat 36px off) |
 | 5 | — Logic (its search pinned under the bar) | YES, top and scrolled | same element | nothing; the pinned search sits below the band (walked scrolled) |
 | 6 | — the Leave War (its own chrome has a `.topbar` class of its own; a frozen header) | YES, top and scrolled | same element | nothing; "+ New" and the period picker clear; its header ALREADY frozen follows the bar both ways (Astra F3; test) |
-| 7 | — the Tracker (its own bar, ✓ Save changes showing; a full-height column) | YES | same element | nothing; ✓ Save changes takes its own press (test, all 6 sizes); its column still ends at the screen's foot when the warning comes and goes WITHOUT leaving the page (Astra F4; test). Its open menus and Find strip re-place on the same resize — NOT pressed |
+| 7 | — the Tracker (its own bar, ✓ Save changes showing; a full-height column) | YES | same element | nothing; ✓ Save changes takes its own press (test, all 6 sizes); its column still ends at the screen's foot when the warning comes and goes WITHOUT leaving the page (Astra F4; test). Its open Tools set (a short screen) STAYS open when the warning comes and goes (Astra R2-1; test). Its open menus and Find strip re-place on the same resize — NOT pressed |
 | 8 | — Help | YES | same element | nothing |
 | 9 | — Admin | YES | same element | nothing |
 | 10 | The member's pages (View-only Sched, Inputs, Quals, Logic, Leave War, Tracker, Help) | YES (walk, phone 390 and desktop 1366) | same element | nothing |
@@ -117,9 +120,10 @@ Columns: **shows** the warning · **Retry works** there (a real press) · **what
 | 14 | The changes window, on a desktop (movable, stays open while working) | MUST NOT carry one — the bar's own is visible beside it | YES with it open (test, 3 desktop sizes) | it opens 96px down the right edge; moved down by the band so it stands where it stood, and shorter by the band — its foot stays on a 600-tall screen (Astra F2; test). Under a two-line bar its top edge still lies 7px over the band's lower edge, as it lay over the bar before — filed `[FLOATWIN-TWO-LINE-BAR]` |
 | 14a | — on a phone (a bottom panel; "Hide" makes it a slim bar) | MUST NOT | n/a | the desktop rule must not reach it: the panel stays where it was and the slim bar stays slim (Astra F2 — the first build pulled it to the top; test, phones 390 and 320) |
 | 14b | The ALL AVAIL window | MUST NOT | NOT pressed | the same one rule: its opening spot read from the page — lower by the band on a desktop, still a bottom panel on a phone (test) |
-| 14c | A window a person has MOVED | MUST NOT | NOT walked | its own inline place wins — it is where they put it |
+| 14c | A window a person has MOVED or resized | MUST NOT | YES (it was dragged clear of the bar; Retry pressed) | it keeps its own place AND size when the warning comes and goes (Astra R2-2 — the first fix's cap was recorded as the size he chose; test, 3 desktop sizes, the changes window). Put OVER the warning it hides it — where he puts it is his. The ALL AVAIL window moved: the same code, NOT walked |
 | 15 | A window (Insights walked), a SHORT sheet, the phone's menu (walked), a dialog — NOT the full-screen OIL tracker (13a) | MUST NOT, because each is a short visit (D587): it covers the bar's warning as it covers the bar, and the warning is there, seen and covering nothing, when it closes (walk, 3 sizes) | n/a while open | the window itself |
-| 16 | The sign-in screen; the pages of someone signed in without access (the guest's and the access-request pages) | MUST NOT differ — the sign-in screen saves nothing; the guest's pages are the same shell and the same bar. NOT walked as a guest | n/a | — |
+| 16 | The sign-in screen | MUST NOT — nothing is being saved before sign-in | n/a | — |
+| 16b | The pages of someone signed in without access (a guest) | UNCHANGED, and excluded — a separate read-only set of pages (`ui/GuestApp.tsx`) that never drew the save warning, before or after (Astra's second read corrected this row, which had called it the same shell). Whether a guest's page ever needs one: FILED `[GUEST-SAVE-WARNING]` | n/a | — |
 | 16a | The Tracker exported as a standalone app | not this app's shell — it has no Raptor top bar and no postman; out of scope | n/a | — |
 | 17 | The Tracker's own save words in its header (`#saveStat`, shares the `savestat` class) | MUST NOT change — the new rules are scoped to `.topbar > .savestat.failed` and `.saveband` | n/a | unchanged (the Tracker smoke gate) |
 | 18 | "Saving…" (the passing note) | unchanged: floats, takes no press, never moves the bar | n/a | `e2e/geometry.spec.ts` "the Saving… note never moves the top bar" stays green |
@@ -130,19 +134,18 @@ Every run below is the build of the final source (the tree this sheet is committ
 
 | Run | What | Result |
 |---|---|---|
-| `sn-cover.mjs`, admin | 9 pages × 6 sizes (phones 390, 320, a phone on its side 844×390; desktops 1200, 1366, 1440) × top and scrolled: the warning seen whole; the page does not scroll sideways; no control under it. Then Retry pressed for real at each size | **336 PASS, 0 FAIL**, no browser errors |
+| `sn-cover.mjs`, admin | 9 pages × 6 sizes (phones 390, 320, a phone on its side 844×390; desktops 1200, 1366, 1440) × top and scrolled: the warning seen whole; the page does not scroll sideways; no control under it. Then Retry pressed for real at each size | **336 PASS, 0 FAIL**, no browser errors — run again after each round of fixes, the same |
 | `sn-cover.mjs`, the member's pages | 7 pages × phone 390 and desktop 1366 × top and scrolled, the role changed in place (§7.7) | **88 PASS, 0 FAIL**, no browser errors (the top bar read "Saber · Member"; no Edit Schedule or Admin tab — seen on the pictures) |
 | `sn-board.mjs` | the board, the Inputs calendar, the Medical view, the OIL tracker (grid and settings), a window (desktop) or the menu (phone), at phone 390, a phone on its side and desktop 1366; Retry pressed from the board while refusing and then saving | **45 PASS, 0 FAIL**, no browser errors (the OIL tracker's grid and settings added after Astra's read) |
-| `e2e/save-note.spec.ts` | the same, as a gate: 6 sizes; real presses on the search box, ✓ Save changes, Retry (bar, board, both calendars); the bar grows by exactly the band and its own buttons do not move; the changes window open | **35 passed** (21, then 14 added for Astra's findings); run twice over, 70 of 70 |
+| `e2e/save-note.spec.ts` | the same, as a gate: 6 sizes; real presses on the search box, ✓ Save changes, Retry (bar, board, both calendars); the bar grows by exactly the band and its own buttons do not move; the changes window open | **39 passed** (21, then 14 and 4 added for Astra's two reads); run twice over, 78 of 78 |
 
 Pictures: `…/2026-10-05-save-note-controls/after/` and `after-member/` — one per page and size (the top of the page),
 plus the board, both calendars, the window and the menu; a contact sheet per size (`sheet-*.png`). **Opened and looked
-at:** four of the admin's six contact sheets (phone 390, phone 320, a phone on its side, desktop 1366 — 36 of the 54
-page pictures), the member's phone sheet (7 of 14) and its desktop View-only Sched; and, from the run on the build before
-the last style rule (the movable windows' opening spot — nothing on these pictures), the board at all three sizes, the
-Inputs calendar (phone), the Medical view (desktop) and the Insights window open (desktop). **Not opened:** the admin's
-desktop 1200 and 1440 sheets, the member's desktop sheet, the final build's re-taken board and calendar pictures —
-measured, not looked at.
+at:** every contact sheet of the walk before round 2's fixes — the admin's six (54 page pictures) and the member's two
+(14) — and the board at three sizes, the Inputs calendar (phone), the Medical view (desktop), the Insights window open
+(desktop), the OIL tracker (phone) and its settings (desktop). **Not opened:** the pictures re-taken by the last
+re-walk, after round 2's two small fixes (an event's mark, a window's attribute — neither paints anything): those were
+measured (the same 336 + 88 + 45 checks, no failures), not looked at.
 
 Orders walked: failed on one page → every other page (the page-change case) · failed → Retry while storage still
 refuses (stays) → storage works → Retry (saves, the bar returns to its height) · failed on Edit Schedule → the board →
@@ -170,6 +173,14 @@ After Astra's read, the four new wires and one more, the same way (of 35):
 | 8 | the movable windows' rule reaches phones | 2 — "the changes window stays a bottom panel…" at both phone sizes |
 | 9 | the bar's copy stays exposed under a full-screen surface | 6 — the board test at every size |
 | 10 | the movable window is lower but no shorter | 3 — "the changes window, open…" at every desktop size (its foot on a 600-tall screen) |
+
+After Astra's second read (of 39):
+
+| # | The wire cut | What went red |
+|---|---|---|
+| 11 | Retry's own click does nothing — the app's automatic retry left running | **30** — every test that presses a Retry, at every size (before R2-3's fix the automatic retry could pass for the press) |
+| 12 | the resize does not say why | 1 — "the Tracker's open Tools set stays open…" (a phone on its side, where the set folds) |
+| 13 | the movable-window rule reaches a window he has placed | 1 — "a changes window he has moved keeps its place and size…" at 1366×700, where the cap bites (at 1200×800 and 1440×900 the cap is taller than the window, so nothing shrinks) |
 
 **One fault of the TEST found by this step, and fixed:** after the wires were put back one run failed waiting for the
 board's Retry. The test put storage back and THEN pressed Retry; the app's own retry (1s, 2s, 4s …) had saved in
@@ -200,12 +211,36 @@ scripts), and the suite was run three times over: 63 of 63.
 - **Every window and sheet** — one window (Insights) and the phone's menu stand for the kind (row 15).
 - **The Leave War's and the Tracker's own sheets and dialogs under a failed save** — short visits (row 15); their pages'
   tops were walked.
+- **What Astra listed as unproven after its second read** — see §The read.
 - **Light or custom colour palettes** — the band's amber is fixed on the page's own background colour; not looked at
   under a changed palette.
 
 ## Gates
 
-GATES
+Three runs, all watched, under the PC lock (`node raptor-port/scripts/gatelock.mjs run`), about 15 minutes each.
+
+**The run on the FINAL tree** (source as committed in bcc69fc8 — both of Astra's reads' fixes in; 5 Oct 26, the evening):
+
+| Gate | Result |
+|---|---|
+| unit | **7782 / 7782** (491 files), 301 s |
+| build | clean |
+| the original's assertions (tfin) | **728 / 0** |
+| browser tests (e2e) | **600 passed, 0 failed**, 49 skipped (the existing skips), 246 s — the 39 new ones among them |
+| Tracker smoke | **445 / 0** |
+| rulecheck | OK |
+| docsize | OK — every record accounted for; `OUTSTANDING.md` over its size marker, deferred (D29) |
+| perf (run apart, the same build) | **4 / 0** — week DOM 5131 ≤ 5450, board DOM 1018 ≤ 1150 (the band draws nothing while saves work) |
+| the six adapted probes (run apart) | all passed (155 checks) |
+
+**The second run** (78772e58, round 1's fixes in, before round 2's): everything passed — unit 7782 / 7782, tfin 728 / 0,
+e2e 596 passed with 49 skipped, smoke 445 / 0, rulecheck, docsize; perf 4 / 0 and the six adapted probes run apart.
+
+**The first run** (before Astra's fixes, on c8d006eb, 17:35–17:50): build, tfin 728/0, e2e, smoke 445/0, rulecheck all
+passed; unit **7780 of 7781 — one failure**: `src/tracker/leftovers.test.tsx` "Tab / Shift+Tab stay inside the box"
+(a keyboard-focus test of the Tracker's dialog, which this change does not touch). It ran while Astra's read and other
+work loaded the PC; alone it passed 53 of 53 straight after, and it passed in the final run. Read as a test that is
+sensitive to a loaded machine, not a fault of this change — not filed; file it if it is seen again.
 
 ## The read
 
@@ -228,4 +263,25 @@ and F4 are old arrangements this change made matter.
 
 Astra's roll-call corrections are in the table above (rows 4, 6, 7, 11, 13a–13c, 14–14c, 15, 16–16a).
 
-ROUND2
+**Round 2, the last — Astra (a fresh session, read-only, on 163a58c7): CHANGES REQUIRED.** Brief:
+`raptor-port/docs/superpowers/briefs/2026-10-05-save-note-controls-astra-final-r2.md`; the complete report, verbatim:
+`raptor-port/docs/handpass/2026-10-05-save-note-controls-astra-final-r2.md`. It judged F1 closed, F2's phone and default-desktop
+faults closed, F3–F5 addressed, the warning count sound in every lifecycle it traced, and D586 and D587's short lines
+true to their full rows — and found two faults MADE BY ROUND 1'S FIXES, and one test still too loose. Two reads is the
+cap (owner, 19 Sep 26), so these were fixed and are reported to him beside the findings; no third read was run.
+
+| # | Astra's finding | Reproduced | Disposition |
+|---|---|---|---|
+| R2-1 | the window resize that tells pages the bar changed also shut the Tracker's open Tools set (a short screen, editing a chart) | YES (break 12) | confirmed, NEW with round 1's fix; FIXED: the event says why (`saveBand`), the Tracker re-fits but keeps the set open — its inventory of every other resize listener found nothing else harmful (two read-only explanation pop-ups close when their anchor moves, as they always do) |
+| R2-2 | the height cap reached a window a person had moved or resized, and its shrunken height was then recorded as the size he chose | YES (break 13) | confirmed, NEW with round 1's fix; FIXED: a placed window is marked and the rule leaves it alone |
+| R2-3 | the browser tests' "Retry tried" could be satisfied by the app's automatic retry | YES (break 11: with Retry's click cut, the old check could still pass; the new one fails 30 tests) | FIXED: each press measured from the click's capture to one task later |
+| roll-call | row 16 called the guest's pages "the same shell" — they are a separate read-only set | — | corrected (16b); FILED `[GUEST-SAVE-WARNING]` as a check |
+| note | one Leave War sheet reads the bar only on a visible-screen change, not on this trigger | — | no concrete failure (Astra's own words); the contract's wording about sheets corrected |
+
+**Left unproven after both reads** (Astra's list, accepted as limits, none with a concrete failure): the Tracker's open
+menus and Find strip during the change (they re-place on the same resize — not opened in a test); the board closed
+WHILE the save is still failed (the count's bookkeeping was traced by Astra and found sound; the calendar's close in
+that state IS tested); the ALL AVAIL window opened and worked; a press on a frozen header's own control; a failure
+that begins while the OIL tracker is already open; the older unit test's 1000 ms wait (the new one isolates Retry).
+**The fixes for round 2 have had no independent read** — that is the cost of the cap; they are small (one mark on an
+event, one attribute), each has a test that goes red when cut, and the full gates and the walk were re-run after them.

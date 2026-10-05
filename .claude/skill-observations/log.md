@@ -2397,3 +2397,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** When a visual change must be shown before it is built, write the reproduction as right-behaviour assertions with an injection hook, run it once plain (the defect's evidence) and once with the candidate laid over the app (the proposal's pictures and its measurement). Size any pixel sampling to the element's area, and check that the mode the app is opened in can show the state under test.
 
 **Principle:** A proposal measured on the running product is worth more than a drawing of it; make the defect's reproduction reusable as the proposal's test and as the fix's re-walk.
+
+### Observation 426: Staging a whole directory swept another session's untracked files into a commit and a push
+
+**Status:** OPEN
+**Date:** 5 Oct 26
+**Session context:** `[SAVE-NOTE-COVERS]` (D586) — a records-only commit made while the gates were running.
+**Skill:** session-handoff / finishing-a-development-branch (the commit step of any skill)
+**Type:** open-source
+**Phase/Area:** committing in a checkout shared with other sessions
+
+**Issue:** The checkout held an untracked evidence folder that another session had deliberately left out of the repository (its handoff said so). `git add <parent directory>` staged all 213 files of it (31 MB) with this session's own documents; the commit went out in a push before the stat line was read. It was repaired by redoing that one commit without the folder and replacing it on the session's own branch, but the objects had already left the machine.
+
+**Suggested improvement:** In a checkout that shows untracked paths at the start of a session, stage by named files (or by a path that cannot contain them), never by a shared parent directory; and read `git diff --cached --stat | tail -1` — the file count — before every commit: a records commit that reports hundreds of files is wrong on sight.
+
+**Principle:** Untracked files in a shared checkout belong to whoever left them; stage what you wrote by name, and read the count before the commit rather than after the push.
+
+### Observation 427: Swapping a reviewer's targeted fix for one shared trigger fixed the finding and made two new ones
+
+**Status:** OPEN
+**Date:** 5 Oct 26
+**Session context:** `[SAVE-NOTE-COVERS]` — the independent reviewer's round 1 asked for an observer in each of three pages; the builder instead fired one window `resize` that all three already listened for.
+**Skill:** receiving-code-review
+**Type:** open-source
+**Phase/Area:** acting on review findings
+
+**Issue:** The shared trigger closed the finding with one line and no edits to two vendored modules. Round 2 then found that one unrelated listener of the same signal closed a panel a person was using, and that a companion style cap was being recorded as a user's chosen size. Both were second-order effects of the broader mechanism, visible only by listing every consumer of the signal — which the builder had not done before choosing it. The review cap (two rounds) then left those last fixes without an independent read.
+
+**Suggested improvement:** When replacing a reviewer's specific instruction with a broader mechanism, first list every existing consumer of that mechanism and say for each whether its reaction is wanted here; put that list in the disposition handed back to the reviewer. If the list cannot be made cheaply, take the reviewer's narrower fix.
+
+**Principle:** A shared signal reaches everyone who listens for it; before reusing one as a shortcut, read its whole audience.
