@@ -1202,6 +1202,17 @@ export function waveHeadBoard(w:any):string{
 }
 export function refreshWaveReports(root:ParentNode|null|undefined):void{
   if(!root)return;
+  /* …and the red explanation under a wave's lines (the Rally reader's second pass, 6 Oct 26; D509 "explained while
+     editing"): it was rewritten only by its block's redraw or by typing in a LINE, so a take-off or brief committed by
+     Tab left it stale beside a correct warning list. Text only; never the block the caret is typing in. */
+  root.querySelectorAll<HTMLElement>('.intimes[data-intimes]').forEach(blk=>{
+    if(blk.contains(document.activeElement))return;
+    const [di,gi]=String(blk.dataset.intimes).split('|').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
+    const note=blk.querySelector('[data-reporting-feedback]');
+    if(!w||!note)return;
+    const want=reportingIssuesForWave(w,gi).map(i=>i.msg).join(' ');
+    if(note.textContent!==want)note.textContent=want;
+  });
   root.querySelectorAll<HTMLElement>('[data-move^="mv:w."]').forEach(go=>{
     const [di,gi]=String(go.dataset.move).slice(5).split('.').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
     if(!w)return;

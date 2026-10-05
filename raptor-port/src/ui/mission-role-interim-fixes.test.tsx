@@ -179,3 +179,20 @@ it('RF4 — the button follows him between the two aircraft Remarks of one forma
   expect(readRole(roleTarget(0,f.rid!)!.id)?.side).toBe('blue')
   expect(document.activeElement,'and the caret is back in the box he was in').toBe(two)
 })
+
+/* P2-F3 (the Tab-route reader's second pass, 6 Oct 26; D535): the question hangs inside the flying block. A block held
+   back for the caret is written when the caret leaves text — by a paint no store change announces — and the question
+   went with the old block, to come back only at the next change anywhere. Both paints put it back themselves. */
+it('P2-F3 — an open question survives the catch-up paint that follows a caret leaving text',async()=>{
+  const {notify}=await import('../state/store')
+  await type('fr:0.0.0.0','DS FOR EAGLE')
+  expect(document.querySelectorAll('.mission-role-question')).toHaveLength(1)
+  const box=q('#eWeek [data-txt="ff:0.0.0.cs"]')
+  await act(async()=>{box.focus()});await settle()
+  /* something else in the same block changes while the caret is in it: the block is owed */
+  await act(async()=>{DAYS[0].waves[0]!.formations[1]!.cs='P2F3';notify()});await settle()
+  await act(async()=>{box.blur();box.dispatchEvent(new FocusEvent('focusout',{bubbles:true}))});await settle()
+  expect(q('#eWeek [data-txt="ff:0.0.1.cs"]').textContent,'the block was caught up').toBe('P2F3')
+  expect(document.querySelectorAll('.mission-role-question'),'and the question is still on screen').toHaveLength(1)
+  expect(document.querySelector('.mission-role-question')!.isConnected).toBe(true)
+})

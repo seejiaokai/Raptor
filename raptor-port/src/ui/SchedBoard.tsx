@@ -21,6 +21,7 @@ import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { holdingPlace } from './dayswap'
 import { useSheetFocus } from './sheetfocus'
+import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, dayTplMenu } from './board'
@@ -345,6 +346,8 @@ export function SchedBoard() {
     refreshHighlights()
     /* the gold dots, as on the edit week ([HIST-PHONE-HIDE], D345) — over the board wrap, where the bubble is wired */
     refreshHistDots(wrapRef.current)
+    /* an open Blue/Red question hangs inside the board's own panel — put it back after a rewrite (P2-F3, as on the week) */
+    reconcileMissionRoleOffer()
     /* a repaint replaces a panel's markup wholesale, so a bubble that is up
        may have just lost the cell it hangs on — re-anchor it, or take it down
        if the row has gone (audit, 12 Aug 26). Before this it only noticed on

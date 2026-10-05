@@ -273,7 +273,9 @@ function refreshTextDestination(el: HTMLElement) {
   } else if (d.itline) {
     const [di, gi, ix] = d.itline.split('|').map(Number)
     value = DAYS[di]?.waves?.[gi]?.intimes?.[ix]
-    el.innerHTML = intimeLineHTML(value == null ? '' : value)
+    /* only when it differs: a rewrite moves the caret, and a click's own caret must stay where he put it */
+    const want = intimeLineHTML(value == null ? '' : value)
+    if (!sameInner(el, want)) el.innerHTML = want
     return
   } else {
     const address = d.bombs || d.area || d.atime
@@ -286,6 +288,20 @@ function refreshTextDestination(el: HTMLElement) {
   const text = String(value == null ? '' : value)
   if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) { if (el.value !== text) el.value = text }
   else heal(el, text)
+}
+
+/* EVERY ARRIVAL IN A TEXT BOX BRINGS IT UP TO DATE — BY A CLICK TOO (the Tab-route reader's second pass, 6 Oct 26; the
+   first pass's lead 1, by the route the walk did not take). The Tab route refreshed the box it landed in; a click did
+   not. After a take-off saved by Tab the formation's block is held for the caret, so its Area-time cell still showed
+   the OLD derived window — and a click into it and away stored that as a typed override: the window frozen and
+   wrong, a history line, a pending change on a published day. On focus, the box is rewritten from the model by the
+   same reader the Tab route uses — only where it differs, never a write. */
+const ARRIVALS = '[data-txt],[data-bfld],[data-inp],[data-ifld],[data-itline],[data-bombs],[data-area],[data-atime]'
+export function routeFocusIn(e: FocusEvent) {
+  if (!canEditSched() || view.CURPAGE !== 'editsched') return
+  const t = e.target as HTMLElement
+  const el = t && t.closest ? t.closest(ARRIVALS) as HTMLElement | null : null
+  if (el && !el.closest('[data-role-ui],.pv-frozen')) refreshTextDestination(el)
 }
 
 export function routeKeyDown(e: KeyboardEvent) {

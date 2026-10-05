@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { dayHTML, dayPreviewHTML, refreshWaveReports } from './html'
+import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { daySnapOf } from '../engine/publish'
 import { paletteHTML, paletteDay } from './palette-html'
 import { ARM, CARRYDAY, CURPAGE, DPREV, PEEKLAND, WEEKJUMP, navGen, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
@@ -159,6 +160,7 @@ export function EditWeek() {
       prev.current = { ed: edit, html: shown, chunks: kept }
       refreshHighlights()
       refreshHistDots(root)
+      reconcileMissionRoleOffer()
       return
     }
     pendingPaint.current = null
@@ -235,6 +237,9 @@ export function EditWeek() {
     /* the gold dots on every detail with a history, while History is on ([HIST-PHONE-HIDE], D345) — after the swap, as the
        highlights are: a rewritten block is fresh nodes */
     refreshHistDots(root)
+    /* an open Blue/Red question hangs inside the flying block: a block rewritten here took it along, and nothing but a
+       store change put it back — the catch-up paint after the caret leaves text is no store change (P2-F3, D535) */
+    reconcileMissionRoleOffer()
     /* now the new week is written and landed on its near edge — slide it in */
     if (runGlide) runGlide()
   }, [version, settledPaint])

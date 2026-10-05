@@ -134,6 +134,21 @@ export function swapDayAround(live: Element, html: string, prev: DayChunks | nul
   const next = parseDay(html)
   if (!next || !prev) return { chunks: prev, held: true }
   const chunks = chunksOf(next)
+  /* THE WARNINGS BOX COMES AND GOES (the Tab-route reader's second pass, 6 Oct 26). A day with nothing to warn about
+     draws no box, so its FIRST warning — and the clearing of its last — changes the day's block count; that sent the
+     whole day to the hold below, the very case this function exists for. The box is always the day-body's first block
+     and never holds a caret: put it in (a copy of the freshly parsed one) or take it out, tell `prev` the same, and
+     the ordinary block-for-block pass then sees a day that lines up. */
+  const bodyOf = (el: Element) => kidsOf(el).find(c => c.classList.contains('day-body')) || null
+  const boxOf = (b: Element | null) => (b && b.firstElementChild && b.firstElementChild.classList.contains('dwbox')) ? b.firstElementChild : null
+  const lb = bodyOf(live), nb = bodyOf(next), lw = boxOf(lb), nw = boxOf(nb)
+  if (lb && nb && !!lw !== !!nw && !(lw && holds(lw))) {
+    const at = kidsOf(live).indexOf(lb), pb = prev.kids[at]
+    if (pb && typeof pb !== 'string' && pb.kids.length === lb.children.length) {
+      if (nw) { lb.prepend(nw.cloneNode(true)); prev = { attrs: prev.attrs, kids: prev.kids.map((k, i) => i === at ? { attrs: pb.attrs, kids: [nw.outerHTML, ...pb.kids] } : k) } }
+      else { lw!.remove(); prev = { attrs: prev.attrs, kids: prev.kids.map((k, i) => i === at ? { attrs: pb.attrs, kids: pb.kids.slice(1) } : k) } }
+    }
+  }
   if (!fits(live, next, prev, chunks)) return { chunks: prev, held: true }
   if (chunks.attrs !== prev.attrs) syncAttrs(live, next)
   let held = false

@@ -152,3 +152,34 @@ describe('swapDayAround — the block holding the caret is left standing, every 
     expect(r.chunks).toEqual(chunksOfHTML(day({ b: 'B2' })))
   })
 })
+
+/* P2-F1 (the Tab-route reader's second pass, 6 Oct 26): a day with nothing to warn about draws NO warnings box, so its
+   first warning adds a block — a shape change, which held the whole day back while the caret was in it: the one case
+   W15 most needed. The box coming and going is handled on its own; everything else still lines up block for block. */
+describe('swapDayAround — a day gains its first warning, or loses its last, with the caret in it', () => {
+  const bare = (html: string) => html.replace('<div class="dwbox"></div>', '')
+  it('the first warning: the box appears, the other blocks follow, the block with the caret stands', () => {
+    const sec = mount(bare(day({ b: '<span class="box" tabindex="0">typing</span>' })))
+    expect(sec.querySelector('.dwbox')).toBeNull()
+    const prev = chunksOf(sec), caret = sec.querySelector('.box')!, held = sec.querySelector('[data-secmove="0.waves"]')!
+    const next = day({ warn: '1 issue', a: 'A2', b: '<span class="box" tabindex="0">typing</span> ring' })
+    const r = swapDayAround(sec, next, prev, caret)
+    expect(sec.querySelector('.dwbox')?.textContent, 'the warnings box is on screen').toBe('1 issue')
+    expect(sec.querySelector('.day-body')!.firstElementChild!.classList.contains('dwbox'), 'at the head of the day').toBe(true)
+    expect(sec.querySelector('[data-secmove="0.prog"]')!.textContent).toBe('A2')
+    expect(sec.querySelector('[data-secmove="0.waves"]'), 'the caret block is the same node').toBe(held)
+    expect(r.held).toBe(true)
+    expect(swapDay(sec, next, r.chunks)).toEqual(chunksOfHTML(next))
+    expect(sec.querySelector('[data-secmove="0.waves"]')!.textContent).toBe('typing ring')
+  })
+  it('the last warning cleared: the box goes, the block with the caret stands', () => {
+    const sec = mount(day({ warn: '1 issue', b: '<span class="box" tabindex="0">typing</span>' }))
+    const prev = chunksOf(sec), caret = sec.querySelector('.box')!, held = sec.querySelector('[data-secmove="0.waves"]')!
+    const next = bare(day({ a: 'A2', b: '<span class="box" tabindex="0">typing</span>' }))
+    const r = swapDayAround(sec, next, prev, caret)
+    expect(sec.querySelector('.dwbox'), 'no warnings box left standing').toBeNull()
+    expect(sec.querySelector('[data-secmove="0.prog"]')!.textContent).toBe('A2')
+    expect(sec.querySelector('[data-secmove="0.waves"]')).toBe(held)
+    expect(r.chunks).toEqual(chunksOfHTML(next))
+  })
+})

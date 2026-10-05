@@ -257,6 +257,38 @@ for (const [label, viewport, touch] of SIZES) {
       await expect(page.locator(onBoard)).toHaveCount(0)
     })
 
+    /* …AND WHEN THAT PHONE IS TURNED ON ITS SIDE (the stylesheet reader's second pass, 6 Oct 26): the Desktop layout
+       stays on for the session and the board is still 1180px wide and panning at 844px — wider than the phone rules
+       reach. The band then fell back to the bar's full width with its words and Retry both at the far right end: an
+       empty amber strip on screen. Its two pieces are held to the screen's two edges at every width. */
+    if (touch && viewport.width === 390) test('on the board’s Desktop layout, the phone turned on its side: the words and Retry are still on screen together', async ({ page }) => {
+      await login(page)
+      await go(page, 'editsched')
+      await failSaves(page)
+      await page.locator('#eWeek [data-sbday="1"]:visible').first().click()
+      await page.waitForSelector('#schedBoard:not([hidden])')
+      await page.locator('#sbMore').click()
+      await page.locator('#sbMoreWide').click()
+      await expect(page.locator('#schedBoard')).toHaveClass(/sb-wide/)
+      const onBoard = '#schedBoard .saveband'
+      for (const size of [{ width: 844, height: 390 }, { width: 1024, height: 768 }]) {
+        await page.setViewportSize(size)
+        await expect(page.locator('#schedBoard')).toHaveClass(/sb-wide/)
+        const widest = await page.locator('#schedBoard').evaluate(b => b.scrollWidth - b.clientWidth)
+        expect(widest, `${size.width}px: the layout still pans`).toBeGreaterThan(100)
+        for (const pan of [0, Math.round(widest / 2), widest]) {
+          await page.locator('#schedBoard').evaluate((b, x) => { b.scrollLeft = x }, pan)
+          const at = await page.evaluate(sel => {
+            const band = document.querySelector(sel)!, btn = band.querySelector('button')!, msg = band.querySelector('.sv-msg')!
+            const b = btn.getBoundingClientRect(), m = msg.getBoundingClientRect()
+            const hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2)
+            return { retryIn: b.left >= 0 && b.right <= innerWidth && b.width > 0, wordsIn: m.left >= 0 && m.right <= innerWidth && m.width > 60, hitRetry: hit === btn || btn.contains(hit) }
+          }, onBoard)
+          expect(at, `${size.width}px wide, panned ${pan}px: the words and Retry both on screen, Retry the thing a finger lands on`).toEqual({ retryIn: true, wordsIn: true, hitRetry: true })
+        }
+      }
+    })
+
     /* THE LEAVE WAR'S OIL TRACKER IS A FULL-SCREEN WORKING SURFACE TOO (Astra's read, F1) — its grid and its settings both
        lie over the top bar, and credits are awarded from it. */
     test('the Leave War’s OIL tracker shows it under its head, on the grid and on its settings', async ({ page }) => {

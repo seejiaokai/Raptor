@@ -429,3 +429,25 @@ describe('RF2 the board\u2019s own dialogs stop the Tab route', () => {
     expect(document.activeElement).toBe(box('ff:0.0.0.msn'))
   })
 })
+
+/* P2-F2 (the Tab-route reader's second pass, 6 Oct 26): Tab refreshed the box it arrived in; a CLICK did not. After a
+   take-off saved by Tab (the caret in Landing, the formation's block held for it), a click into that formation's Area
+   time found the OLD derived window still showing, and leaving the cell stored it as if typed — the window frozen and
+   wrong, a history line, a pending change on a published day. Every arrival refreshes the box now, however he got there. */
+describe('P2-F2 a box entered by a click is brought up to date too', () => {
+  it('take-off by Tab, then a click into Area time and away: the window follows, nothing is stored', async () => {
+    const { commandStream } = await import('../command')
+    const f = DAYS[0].waves[0].formations[0]
+    const to = week('ff:0.0.0.to'), at = $('#eWeek .day[data-day="0"] [data-atime="0.0.0"]')
+    await focus(to); to.textContent = '1255'; await tab(to); await tick()
+    expect(txtGet('ff:0.0.0.to')).toBe('12:55')
+    const n = commandStream().length
+    await act(async () => { at.focus(); at.dispatchEvent(new FocusEvent('focusin', { bubbles: true })) })
+    expect(at.textContent, 'the cell shows the window as it now is').toBe(atimeText(f))
+    await act(async () => { at.blur(); at.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) }); await tick()
+    expect(f.atime == null || f.atime === '', 'no typed override was stored').toBe(true)
+    expect(commandStream().length, 'and no command').toBe(n)
+    expect(atimeText(f)).toMatch(/^1255-/)
+    await act(async () => { undo() })
+  })
+})
