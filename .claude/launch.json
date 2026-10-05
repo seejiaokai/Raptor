@@ -380,6 +380,74 @@
         "--strictPort"
       ],
       "port": 4214
+    },
+    {
+      "name": "raptor-stack-a",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-stack",
+        "--port",
+        "4221",
+        "--strictPort"
+      ],
+      "port": 4221
+    },
+    {
+      "name": "raptor-stack-b",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-stack",
+        "--port",
+        "4222",
+        "--strictPort"
+      ],
+      "port": 4222
+    },
+    {
+      "name": "raptor-rallyold-o",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-rallyold",
+        "--port",
+        "4226",
+        "--strictPort"
+      ],
+      "port": 4226
+    },
+    {
+      "name": "raptor-rallyold-s",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-rallyold",
+        "--port",
+        "4227",
+        "--strictPort"
+      ],
+      "port": 4227
     }
   ]
 }
