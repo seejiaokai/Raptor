@@ -1,0 +1,1283 @@
+{
+ "parts": {
+  "s1h05-dk": {
+   "at": "2026-10-05T12:16:10.897Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-05",
+     "did": "new wave on Tue (WAVE 3) NX 01:30→02:30, crew Cobra+Sidewinder (seated: true,true); Logic nominal 3h; pressed \"+ In-time / Rally\" on the week",
+     "saw": "line \"22:30H: IN TIME + WX/NOTAMS\"; reporting feedback on week \"null\" / board \"null\"; board shows lines [22:30H: IN TIME + WX/NOTAMS]; board wave header \"⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 22:30 (prev day) · 1 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave\"; Edit-week bar \"⚠ 6 issues · 4 warning · tap to collapse ▲\" lines [\"Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\",\"Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew res\",\"Crew rest (<12h) Cobra — Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report \",\"Crew rest (<12h) Sidewinder — Crew rest breach — Monday ended 13:00 → crew rest clear at 01:00, but told to re\",\"No time for the flight brief Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40\",\"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assum\"]; board panel \"⚠ 6 issues · 4 warnings · tap to review\" [\"Saint — VL SAT & APPOINTMENT clash ✕\",\"Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45,\",\"Cobra — Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:30 (previous d\",\"Sidewinder — Crew rest breach — Monday ended 13:00 → crew rest clear at 01:00, but told to report 22:30 (previ\",\"Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20) ✕\",\"Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) ✕\"]; app warns [\"hard/DOUBLE_BOOK: VL SAT & APPOINTMENT clash\",\"hard/CREW_REST: Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clea\",\"hard/CREW_REST: Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:30\",\"hard/CREW_REST: Crew rest breach — Monday ended 13:00 → crew rest clear at 01:00, but told to report 22:30\",\"adv/NO_BRIEF: No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)\",\"note/LONGDAY: Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)\"]; Work hours BEFORE the wave {\"Sidewinder\":\"12h\",\"Cobra\":\"1h\"}, AFTER {\"Sidewinder\":\"18h\",\"Cobra\":\"7h\"} (the whole-week figure; the change is the NX day)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-h05-week-line.png",
+      "dk-03-h05-board-line.png",
+      "dk-04-h05-board-warn.png",
+      "dk-01-h05-ins-before.png",
+      "dk-05-h05-insights.png"
+     ]
+    },
+    {
+     "id": "H-05.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s1p09-dk": {
+   "at": "2026-10-05T12:18:25.769Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-09.a",
+     "did": "Logic \"button's words\" IN TIME + WX/NOTAMS → RALLY; new wave AA 12:00; \"+ In-time / Rally\" on the WEEK, then retyped \"10:00 RALLY\"",
+     "saw": "first press fills \"09:00H: RALLY\" (feedback \"null\", day warnings []); after retype \"10:00 RALLY\": live feedback while typing \"AA: rally 10:00 is later than suggested brief 09:40.\", settled feedback \"AA: rally 10:00 is later than suggested brief 09:40.\", warnings [\"hard/REPORT_ORDER: AA: rally 10:00 is later than suggested brief 09:40.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p09-A-week-default.png",
+      "dk-02-p09-A-week-later.png"
+     ]
+    },
+    {
+     "id": "P2-09.b",
+     "did": "new wave BB2 12:00; \"+ In-time / Rally\" on the BOARD with the same words",
+     "saw": "fills \"09:00H: RALLY\" (week fill was \"09:00H: RALLY\"); feedback \"null\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-p09-B-board-default.png"
+     ]
+    },
+    {
+     "id": "P2-09.c",
+     "did": "Logic words blanked (typed nothing, Enter); new wave CC 12:00; \"+ In-time / Rally\" on the week; then retyped \"10:00 IN TIME + WX/NOTAMS\"",
+     "saw": "Logic box emptied to \"\", after Enter reads \"IN TIME + WX/NOTAMS\" and on re-opening \"IN TIME + WX/NOTAMS\" (was \"RALLY\"); first press fills \"09:00H: IN TIME + WX/NOTAMS\"; retyped feedback \"CC: in-time 10:00 is later than suggested brief 09:40.\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-p09-C-blank-default.png"
+     ]
+    },
+    {
+     "id": "P2-09.d",
+     "did": "Logic words \"RALLY — check 13:00\"; new wave DD 12:00; \"+ In-time / Rally\" on the week, then pressed once more on the board",
+     "saw": "Logic box reads \"RALLY — check 13:00\"; first line \"09:00H: RALLY — check 13:00\", feedback \"null\", warnings [\"hard/REPORT_ORDER: AA: rally 10:00 is later than suggested brief 09:40.\",\"hard/REPORT_ORDER: CC: in-time 10:00 is later than suggested brief 09:40.\"]; after the board press the wave holds [\"09:00H: RALLY — check 13:00\",\"09:00H: RALLY — check 13:00\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-p09-D-prose.png"
+     ]
+    },
+    {
+     "id": "P2-09.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p10-dk": {
+   "at": "2026-10-05T12:20:02.624Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-10.a",
+     "did": "new wave TS 12:00→13:00 (Cobra+Sidewinder), blank Brief; \"+ In-time / Rally\" then typed \"10:00 RALLY\" and committed",
+     "saw": "while typing \"TS: rally 10:00 is later than suggested brief 09:40.\"; settled \"TS: rally 10:00 is later than suggested brief 09:40.\"; the day's warning list: [\"hard TS: rally 10:00 is later than suggested brief 09:40.\"]; list bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\", Rally line on the list \"In-time / Rally — timings out of order TS: rally 10:00 is later than suggested brief 09:40. ✕\" (button ✕)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p10-warning.png"
+     ]
+    },
+    {
+     "id": "P2-10.b",
+     "did": "signed the four names and pressed Publish day with the red timing line still showing",
+     "saw": "before: tag \"DRAFT\" button locked; button press {\"pressed\":true,\"label\":\"Publish day\"}; sign-offs {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}; after: tag \"ORIG\", signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\", chip \"14 changes\"; the warning is still held: [\"TS: rally 10:00 is later than suggested brief 09:40.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-p10-published.png"
+     ]
+    },
+    {
+     "id": "P2-10.c",
+     "did": "changed the Mission to ACM on the published day, signed the four again, pressed Publish AL1 while the warning remains",
+     "saw": "before: chip \"1 pending\" tag \"ORIG\"; press {\"pressed\":true,\"label\":\"Publish AL1\"}; after: tag \"AL1\", chip \"20 changes\", signed \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"; warning still there: [\"TS: rally 10:00 is later than suggested brief 09:40.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-p10-amended.png"
+     ]
+    },
+    {
+     "id": "P2-10.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p11-dk": {
+   "at": "2026-10-05T12:20:37.611Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-11",
+     "did": "new wave EQ 12:00→13:00, Brief typed 09:40; lines \"08:00 IN TIME\" and \"09:40 RALLY\"; then Rally 09:41 (week), then back to 09:40 (on the board)",
+     "saw": "equal: lines [\"08:00 IN TIME\",\"09:40 RALLY\"] feedback \"null\" warnings []; one minute later: live \"EQ: rally 09:41 is later than brief 09:40.\" settled \"EQ: rally 09:41 is later than brief 09:40.\" warnings [\"EQ: rally 09:41 is later than brief 09:40.\"], board panel [\"EQ: rally 09:41 is later than brief 09:40. ✕\"]; corrected: feedback \"null\" warnings []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p11-equal.png",
+      "dk-02-p11-board-late.png",
+      "dk-03-p11-back.png"
+     ]
+    },
+    {
+     "id": "P2-11.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p12-dk": {
+   "at": "2026-10-05T12:21:10.931Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-12.a",
+     "did": "new wave with NO take-off and an empty formation; \"+ In-time / Rally\" (no take-off to work from), then typed \"RALLY AFTER IN TIME\"",
+     "saw": "the press fills [\"IN TIME + WX/NOTAMS\"]; typed: live \"null\", settled \"null\"; warnings []; the day's whole list has 0 entries",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-p12-a-no-takeoff.png"
+     ]
+    },
+    {
+     "id": "P2-12.b",
+     "did": "added a second line and typed the invalid clock \"25:99 IN TIME\" (still no take-off)",
+     "saw": "lines [\"RALLY AFTER IN TIME\",\"25:99 IN TIME\"]; live \"null\", settled \"null\"; warnings []",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "P2-12.c",
+     "did": "gave the formation MM 12:00→13:00, crew Cobra+Sidewinder (seated true,true), then a third line \"08:30 IN TIME\"",
+     "saw": "with take-off, before the valid in-time: feedback \"MM: rally after in-time has no applicable in-time clock. MM: reporting line 2 has no recognised clock. Check the time.\", warnings [\"MM: rally after in-time has no applicable in-time clock.\",\"MM: reporting line 2 has no recognised clock. Check the time.\"]; lines now [\"RALLY AFTER IN TIME\",\"25:99 IN TIME\",\"08:30 IN TIME\"], feedback \"MM: reporting line 2 has no recognised clock. Check the time.\", warnings [\"MM: reporting line 2 has no recognised clock. Check the time.\"]; Work hours base {\"Sidewinder\":\"12h\",\"Cobra\":\"1h\"} → with the valid in-time {\"Sidewinder\":\"18h30\",\"Cobra\":\"7h30\"}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-p12-c-takeoff.png",
+      "dk-05-p12-d-valid.png",
+      "dk-01-p12-ins-base.png",
+      "dk-04-p12-ins-valid.png"
+     ]
+    },
+    {
+     "id": "P2-12.d",
+     "did": "cancelled the formation (CX with a reason)",
+     "saw": "Work hours {\"Sidewinder\":\"18h30\",\"Cobra\":\"7h30\"} → {\"Sidewinder\":\"12h\",\"Cobra\":\"1h\"} (base {\"Sidewinder\":\"12h\",\"Cobra\":\"1h\"}); report warnings now []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-p12-e-cx.png",
+      "dk-06-p12-ins-cx.png"
+     ]
+    },
+    {
+     "id": "P2-12.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p13-dk": {
+   "at": "2026-10-05T12:22:12.248Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-13.a",
+     "did": "wave VL + VL2 (both 12:00→13:00; VL crew Cobra+Sidewinder, VL2 crew Havoc+Comet; seated true,true); one line \"08:00 VL IN TIME\"",
+     "saw": "Work hours: Cobra 5h→8h, Sidewinder 16h→19h, Havoc 12h→12h, Comet 14h→14h; feedback \"null\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-p13-a-VL-line.png",
+      "dk-01-p13-0-base.png",
+      "dk-02-p13-1-VLline.png"
+     ]
+    },
+    {
+     "id": "P2-13.b",
+     "did": "second line: only a crew member's callsign \"Cobra\" (no clock, no formation name)",
+     "saw": "Work hours: Cobra 8h→8h, Sidewinder 19h→19h, Havoc 12h→12h, Comet 14h→14h; feedback \"null\"; warnings []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-p13-b-name-only.png",
+      "dk-04-p13-2-name-only.png"
+     ]
+    },
+    {
+     "id": "P2-13.c",
+     "did": "second line retyped \"07:00 Cobra IN TIME\" (a clock and a man's name, no formation callsign)",
+     "saw": "Work hours: Cobra 8h→8h, Sidewinder 19h→19h, Havoc 12h→16h, Comet 14h→18h; who changed: Cobra:false Sidewinder:false Havoc:true Comet:true; feedback \"null\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-p13-c-name-clock.png",
+      "dk-06-p13-3-name-with-clock.png"
+     ]
+    },
+    {
+     "id": "P2-13.d",
+     "did": "line 1 retyped through accepted and unaccepted clock spellings (week)",
+     "saw": "\"8:00 VL IN TIME\" → stored \"08:00 VL IN TIME\" / feedback \"\" ;; \"0800 VL IN TIME\" → stored \"08:00 VL IN TIME\" / feedback \"\" ;; \"800H VL RALLY\" → stored \"08:00H VL RALLY\" / feedback \"\" ;; \"08:00L VL IN TIME\" → stored \"08:00L VL IN TIME\" / feedback \"\" ;; \"8h00 VL IN TIME\" → stored \"8h00 VL IN TIME\" / feedback \"\" ;; \"8.00 VL IN TIME\" → stored \"8.00 VL IN TIME\" / feedback \"\" ;; \"2400 VL IN TIME\" → stored \"2400 VL IN TIME\" / feedback \"VL: reporting line 1 has no recognised clock. Check the time.\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-p13-d-spellings.png"
+     ]
+    },
+    {
+     "id": "P2-13.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s3p14-dk": {
+   "at": "2026-10-05T12:29:01.294Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-14.a",
+     "did": "Saturday: SC AM MAIN Cobra, SC SPARE Sidewinder, AVALON night Havoc, BB 08:00-14:00 Comet (seated true,true,true,true)",
+     "saw": "board rows: SC:SC 07:00-13:00 [MAIN=taipan,MAIN=-,SPARE=mamba,SPARE=-] ; SC 13:00-19:00 [MAIN=-,MAIN=-,SPARE=-,SPARE=-] || AVALON:AV 19:00-07:00 [MAIN=boosh,MAIN=-,SPARE=-,SPARE=-] || BB:BB 08:00-14:00 [MAIN=beams,MAIN=-,SPARE=-,SPARE=-]; Work hours before {\"Sidewinder\":\"12h\",\"Comet\":\"10h\",\"Havoc\":\"8h\",\"Cobra\":\"1h\"} -> after {\"Sidewinder\":\"12h\",\"Comet\":\"10h\",\"Havoc\":\"8h\",\"Cobra\":\"7h\"}; flying-load chart Cobra: not in the flying-load chart | Sidewinder: not in the flying-load chart | Havoc: not in the flying-load chart | Comet: not in the flying-load chart (the chart before had 13 entries, after 13); tiles 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 36 13 WARNING -> 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 36 13 WARNING",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-p14-a-board.png",
+      "dk-01-p14-0-base.png",
+      "dk-03-p14-1-after.png"
+     ]
+    },
+    {
+     "id": "P2-14.b",
+     "did": "signed the four and published Saturday, opened the board's OIL Earn mode",
+     "saw": "publish {\"pressed\":true,\"label\":\"Publish day\"}, tag \"ORIG\"; mode {\"items\":10,\"people\":5,\"bar\":\"Calendar | Saturday Jul 18 · scheduler board | ‹ | Mon 13 | Tue 14 | Wed 15 | Thu 16 | Fri 17 | Sat 18 | Sun 19 | › | 🔍 | ◧ | OIL Earn | ⇅ | Sort all | ↶ | Undo | ↷ | Redo | History | Sync · slow | Insights | ✓ | Done | CAT | TYPE | QUALS\"}; switches [{\"item\":\"r:rmuv87ccyova0xr\",\"txt\":\"SC\",\"state\":\"mixed\",\"title\":\"Part of this row earns — tap to make all of it earn\"},{\"item\":\"r:rmuv87ccy2kwboj\",\"txt\":\"SC\",\"state\":\"on\",\"title\":\"Earns OIL — tap to stop this item earning\"},{\"item\":\"r:rmuv87dh7ij29if\",\"txt\":\"AV\",\"state\":\"on\",\"title\":\"This kind of event earns nothing — tap to make it earn\"},{\"item\":\"r:rmuv87elixrbk22\",\"txt\":\"BB\",\"state\":\"on\",\"title\":\"This kind of event earns nothing — tap to make it earn\"},{\"item\":\"r:rmuv878wrf4iq4a\",\"txt\":\"SDO\",\"state\":\"on\",\"title\":\"Earns OIL — tap to stop this item earning\"}]; pucks [{\"who\":\"taipan\",\"item\":\"r:rmuv87ccyova0xr\",\"on\":true,\"cs\":\"Cobra\"},{\"who\":\"mamba\",\"item\":\"r:rmuv87ccyova0xr\",\"on\":false,\"cs\":\"Sidewinder\"},{\"who\":\"boosh\",\"item\":\"r:rmuv87dh7ij29if\",\"on\":false,\"cs\":\"Havoc\"},{\"who\":\"beams\",\"item\":\"r:rmuv87elixrbk22\",\"on\":false,\"cs\":\"Comet\"},{\"who\":\"plasma\",\"item\":\"r:rmuv878wrf4iq4a\",\"on\":true,\"cs\":\"Fable\"}]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-p14-b-oil-mode.png"
+     ]
+    },
+    {
+     "id": "P2-14.c",
+     "did": "Leave War: the Saturday 18 Jul cell of each of the four",
+     "saw": "{\"Cobra\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Sidewinder\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Havoc\":{\"text\":\"\",\"cls\":\"weekend act\"},\"Comet\":{\"text\":\"\",\"cls\":\"weekend act\"}}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-p14-c-leavewar-Cobra.png",
+      "dk-06-p14-c-leavewar-Comet.png"
+     ]
+    },
+    {
+     "id": "P2-14.d",
+     "did": "in the OIL Earn mode pressed the BB seat's person (the exempt seat) to switch its credit on",
+     "saw": "found r:rmuv87elixrbk22; clicked; switches [{\"item\":\"r:rmuv87ccyova0xr\",\"txt\":\"SC\",\"state\":\"mixed\",\"title\":\"Part of this row earns — tap to make all of it earn\"},{\"item\":\"r:rmuv87ccy2kwboj\",\"txt\":\"SC\",\"state\":\"on\",\"title\":\"Earns OIL — tap to stop this item earning\"},{\"item\":\"r:rmuv87dh7ij29if\",\"txt\":\"AV\",\"state\":\"on\",\"title\":\"This kind of event earns nothing — tap to make it earn\"},{\"item\":\"r:rmuv87elixrbk22\",\"txt\":\"BB\",\"state\":\"on\",\"title\":\"This kind of event earns nothing — tap to make it earn\"},{\"item\":\"r:rmuv878wrf4iq4a\",\"txt\":\"SDO\",\"state\":\"on\",\"title\":\"Earns OIL — tap to stop this item earning\"}]; pucks [{\"who\":\"taipan\",\"item\":\"r:rmuv87ccyova0xr\",\"on\":true,\"cs\":\"Cobra\"},{\"who\":\"mamba\",\"item\":\"r:rmuv87ccyova0xr\",\"on\":false,\"cs\":\"Sidewinder\"},{\"who\":\"boosh\",\"item\":\"r:rmuv87dh7ij29if\",\"on\":false,\"cs\":\"Havoc\"},{\"who\":\"beams\",\"item\":\"r:rmuv87elixrbk22\",\"on\":true,\"cs\":\"Comet\"},{\"who\":\"plasma\",\"item\":\"r:rmuv878wrf4iq4a\",\"on\":true,\"cs\":\"Fable\"}]; day head after: chip \"1 pending\", signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-p14-d-after-enable.png"
+     ]
+    },
+    {
+     "id": "P2-14.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s3p15-dk": {
+   "at": "2026-10-05T12:28:20.879Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-15.a",
+     "did": "Friday wave VL 12:00->13:00 with the VL line 09:00, crew Cobra+Sidewinder",
+     "saw": "Work hours Cobra 1h->7h, Sidewinder 12h->18h, Havoc 8h->8h, Comet 10h->10h, Reaper 1h->1h",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-p15-1-crew.png"
+     ]
+    },
+    {
+     "id": "P2-15.b",
+     "did": "+ Row in the duty block: role EARLY 06:00-08:00, Cobra placed on it (seated true)",
+     "saw": "Work hours Cobra 7h->10h, Sidewinder 18h->18h, Havoc 8h->8h, Comet 10h->10h, Reaper 1h->1h",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-p15-b-duty-row.png",
+      "dk-03-p15-2-duty.png"
+     ]
+    },
+    {
+     "id": "P2-15.c",
+     "did": "added a sim row 05:00-06:00 (Havoc, seated true), a ground row 05:30-06:30 (Comet, true) and a Common Programme row 05:30-06:30 (Reaper, true)",
+     "saw": "Work hours Cobra 10h->10h, Sidewinder 18h->18h, Havoc 8h->9h, Comet 10h->11h, Reaper 1h->2h; rows {\"sim\":[{\"label\":\"EARLYSIM\",\"str\":\"05:00\",\"end\":\"06:00\",\"rid\":\"rmuv86fyr2o746d\",\"p\":\"boosh\"}],\"ground\":[{\"prog\":\"EARLYGND\",\"str\":\"05:30\",\"end\":\"06:30\",\"who\":\"beams\",\"rid\":\"rmuv86jbmj6ywkz\"}]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-06-p15-c-ground-row.png",
+      "dk-05-p15-3-sim-ground-prog.png"
+     ]
+    },
+    {
+     "id": "P2-15.d",
+     "did": "pressed CX on each of the four added rows (with a reason), read Insights; then pressed it again on each (restore)",
+     "saw": "cancel: duty: Cancel this duty (CX) -> pop asked; now \"Restore this duty\" | sim: Cancel this sim (CX) -> pop asked; now \"Restore this sim\" | ground: Cancel this item (CX) -> pop asked; now \"Restore this item\" | programme: no CX button (ap); Work hours Cobra 10h->7h, Sidewinder 18h->18h, Havoc 9h->8h, Comet 11h->10h, Reaper 2h->2h; restore: duty: Restore this duty -> pop asked; now \"Cancel this duty (CX)\" | sim: Restore this sim -> pop asked; now \"Cancel this sim (CX)\" | ground: Restore this item -> pop asked; now \"Cancel this item (CX)\" | programme: no CX button (ap); Work hours Cobra 7h->10h, Sidewinder 18h->18h, Havoc 8h->9h, Comet 10h->11h, Reaper 2h->2h",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-p15-d-cancelled.png",
+      "dk-08-p15-4-cancelled.png",
+      "dk-09-p15-5-restored.png"
+     ]
+    },
+    {
+     "id": "P2-15.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s4h01-dk": {
+   "at": "2026-10-05T12:30:48.201Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-01",
+     "did": "Monday board: night wave RU (crew Outlaw+Wisp), take-off/landing 19:20/20:45 -> 10:00/11:25, line left as it was",
+     "saw": "before the change the lines were [\"1645H: NIGHT WAVE VL IN TIME + WX/NOTAMS\",\"1620H: NIGHT WAVE RU IN TIME + WX/NOTAMS\"]; after: board lines [\"16:45H: NIGHT WAVE VL IN TIME + WX/NOTAMS\",\"16:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS\"], wave header \"⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON · night Traffic In-time / Rally 16:20 (prev day) · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave\", reporting feedback \"null\"; Monday warnings [\"hard DOUBLE_BOOK: OPS SHARING + NAV SYS BRIEF & VL BFM clash\",\"hard DOUBLE_BOOK: VL BFM & Sim EP-4 clash\",\"hard DOUBLE_BOOK: RU BFM & STANDARDISATION MEETING clash\",\"hard DNIF_FLY: Downchit but planned to fly RU BFM — reason: Medical leave 13 Jul\",\"hard INPUT_FLY: Fly with but tasked — Sim BOX — reason: Keen for any wave\",\"hard DNIF_FLY: Downchit but tasked — Sim EP-6N — reason: Medically down till 17 Jul\",\"adv NO_BRIEF: No time for the VL BFM flight brief — OPS SHARING + NAV SYS BRIEF sits inside 17:25–19:45 (brief 17:25)\",\"adv NO_BRIEF: No time for the VL BFM flight brief — Sim EP-4 sits inside 10:20–12:40 (brief 10:20)\",\"adv NO_BRIEF: No time for the RU BFM flight brief — STANDARDISATION MEETING sits inside 11:20–13:40 (brief 11:20)\",\"adv SIM_BRIEF: No time for the OFT EP-4 brief — VL BFM sits inside 11:30–12:00\",\"adv SIM_DEBRIEF: No time for the OFT EP-4 debrief — VL BFM sits inside 13:30–14:00\",\"adv DT_SUM: 4 people are double turning: Saber, Echo, Piston, Relay\",\"adv CREW_SOLO: Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabu\",\"note LONGDAY: Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note LONGDAY: Echo has a long work day: 13h30, 09:40 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note LONGDAY: Piston has a long work day: 24h45, 16:20 (previous day) → 17:05 (last landing 15:05 + 2h debrief assumed)\",\"note LONGDAY: Relay has a long work day: 24h45, 16:20 (previous day) → 17:05 (last landing 15:05 + 2h debrief assumed)\",\"note LONGDAY: Outlaw has a long work day: 21h05, 16:20 (previous day) → 13:25 (last landing 11:25 + 2h debrief assumed)\",\"note LONGDAY: Wisp has a long work day: 21h05, 16:20 (previous day) → 13:25 (last landing 11:25 + 2h debrief assumed)\"]; Work hours Outlaw 12h30->27h10, Wisp 12h50->27h30; negative figures in the chart before: [], after: []; longest three bars [\"Relay=33h35\",\"Bolt=29h25\",\"Ridge=28h\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-h01-a-line-before.png",
+      "dk-03-h01-b-line-after.png",
+      "dk-04-h01-c-warnings.png",
+      "dk-01-h01-0-before.png",
+      "dk-05-h01-1-after.png"
+     ]
+    },
+    {
+     "id": "H-01.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s4h06-dk": {
+   "at": "2026-10-05T12:32:45.724Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-06",
+     "did": "Logic: button words set to the markup-and-quotes string; \"+ In-time / Rally\" on a new Friday wave; looked at the week, the board, View-only Sched (after publishing), the changes window and the print frame; reloaded",
+     "saw": "Logic box after typing \"<b>BOLD</b> & \"QUOTES\" <img src=x onerror=alert(1)>\" (typed: \"<b>BOLD</b> & \"QUOTES\" <img src=x onerror=alert(1)>\"); stored line [\"09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)>\"]; week {\"text\":\"09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)>\",\"kids\":[],\"html\":\"<b>09:00H</b>: &lt;b&gt;BOLD&lt;/b&gt; &amp; \\\"QUOTES\\\" &lt;img src=x onerror=alert(1)&gt;\"}; board {\"text\":\"09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)>\",\"kids\":[],\"html\":\"<b>09:00H</b>: &lt;b&gt;BOLD&lt;/b&gt; &amp; \\\"QUOTES\\\" &lt;img src=x onerror=alert(1)&gt;\"}; View-only Sched {\"text\":\"09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)>\",\"kids\":[],\"html\":\"<span><b>09:00H</b>: &lt;b&gt;BOLD&lt;/b&gt; &amp; \\\"QUOTES\\\" &lt;img src=x onerror=alert(1)&gt;</span>\"}; changes window {\"text\":\"⠿ Changes · week of 13/7 13 changes this week ✕ New to you 0 All changes 13 To go out 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Fri · The day · 6 20:32 Published — the Original Saber · 5/10 20:32 Signed · APPROVED BY · Anvil Saber · 5/10 20:32 Signed · PLANNED BY · Anvil Saber · 5/10 20:32 Signed · SKED CK · Anvil Saber · 5/10 20:32 Signed · CUR CK · Ace Saber · 5/10 20:32 Wave added Saber · 5/10 20:32 Fri · Wave · WAVE 1 Saber · 5/10 20:32 In-times— → 09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)> ▾ Fri · Flying · XS BFM · 6 20:32 RCPSidewinder put on Saber · 5/10 20:32 FCPCobra put on Saber · 5/10 20:32 Land— → 13:00 Saber · 5/10 20:32 Take-off— → 12:00 Saber · 5/10 20:32 Mission— → BFM Saber · 5/10 20:32 Callsign— → XS Saber · 5/10 20:32 Tap a change to go to i\",\"kids\":[\"B\",\"B\",\"B\",\"B\",\"B\",\"B\"]}; print frame {\"len\":15519,\"hasWords\":false,\"hasRawTag\":false,\"hasImg\":false,\"hasEscaped\":false,\"hasFriday\":true}; after reload Logic reads \"<b>BOLD</b> & \"QUOTES\" <img src=x onerror=alert(1)>\", week {\"text\":\"09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)>\",\"kids\":[],\"html\":\"<b>09:00H</b>: &lt;b&gt;BOLD&lt;/b&gt; &amp; \\\"QUOTES\\\" &lt;img src=x onerror=alert(1)&gt;\"}; publish {\"pressed\":true,\"label\":\"Publish day\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-h06-a-week.png",
+      "dk-02-h06-b-board.png",
+      "dk-03-h06-c-viewonly.png",
+      "dk-04-h06-d-changes.png",
+      "dk-05-h06-e-reloaded.png"
+     ]
+    },
+    {
+     "id": "H-06.err",
+     "did": "browser errors (a native dialog or a 404 for the image would show here)",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s4h07-dk": {
+   "at": "2026-10-05T12:35:48.393Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-07.lead",
+     "did": "changed the nominal report (3h -> 2h), then top-bar Undo, then Redo",
+     "saw": "before {\"lead\":\"3h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}; after the change {\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}; the Undo button said \"Undo — a rule on the Logic page\"; pressed {\"present\":true,\"pressed\":true,\"toasts\":[\"Undid: a rule on the Logic page\"]}; after Undo {\"lead\":\"3h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}; the Redo button then said \"Redo — a rule on the Logic page\"; Redo {\"pressed\":true,\"toasts\":[\"Redid: a rule on the Logic page\"],\"title\":\"Redo — a rule on the Logic page\"} -> {\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-h07-lead.png"
+     ]
+    },
+    {
+     "id": "H-07.words",
+     "did": "changed the button words (-> WALK WORDS), then top-bar Undo, then Redo",
+     "saw": "before {\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}; after the change {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false}; the Undo button said \"Undo — a rule on the Logic page\"; pressed {\"present\":true,\"pressed\":true,\"toasts\":[\"Undid: a rule on the Logic page\"]}; after Undo {\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}; the Redo button then said \"Redo — a rule on the Logic page\"; Redo {\"pressed\":true,\"toasts\":[\"Redid: a rule on the Logic page\"],\"title\":\"Redo — a rule on the Logic page\"} -> {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-h07-words.png"
+     ]
+    },
+    {
+     "id": "H-07.track",
+     "did": "changed the Track Blue/RED sorties switch (off -> on), then top-bar Undo, then Redo",
+     "saw": "before {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false}; after the change {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true}; the Undo button said \"Undo — Blue/Red sortie tracking\"; pressed {\"present\":true,\"pressed\":true,\"toasts\":[\"Undid: Blue/Red sortie tracking\"]}; after Undo {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false}; the Redo button then said \"Redo — Blue/Red sortie tracking\"; Redo {\"pressed\":true,\"toasts\":[\"Redid: Blue/Red sortie tracking\"],\"title\":\"Redo — Blue/Red sortie tracking\"} -> {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-h07-track.png"
+     ]
+    },
+    {
+     "id": "H-07.reload",
+     "did": "with all three changed (2h, WALK WORDS, switch on), reloaded and signed in again",
+     "saw": "before the reload {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true}; after {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-h07-reloaded.png"
+     ]
+    },
+    {
+     "id": "H-07.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s4h08-dk": {
+   "at": "2026-10-05T12:36:40.972Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-08.a",
+     "did": "unpublished Friday with one Rally-after-brief warning (TS 12:00, \"10:00 RALLY\"): tapped X on it, reloaded, tapped the undo arrow",
+     "saw": "flagged: bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\", the line has \"✕\" (X present: true); after X (pressed): bar \"✓ No issues · tap to collapse ▲\", line struck=true hid=true btn \"↺\"; after reload: bar \"✓ No issues · tap to collapse ▲\", line struck=true btn \"↺\"; after the undo arrow (pressed): bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\", line struck=false btn \"✕\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-h08-a-flagged.png",
+      "dk-02-h08-b-hidden.png",
+      "dk-03-h08-c-after-reload.png"
+     ]
+    },
+    {
+     "id": "H-08.b",
+     "did": "published Friday with the warning showing (signed, Publish day); tapped X on the line on the working copy; read the day's bar; read the published face as the member; then signed and Published AL1",
+     "saw": "after publish: tag \"ORIG\", edit-list bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\"; after X (pressed): chip \"1 pending\", working line struck=true, bar \"✓ No issues · tap to collapse ▲\", changes window \"Warning · TS: rally 10:00 is later than suggested brief 09:40. flagged → hidden\"; member's published face: bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\", Rally line struck=false \"In-time / Rally — timings out of order TS: rally 10:00 is la\"; after AL1 ({\"pressed\":true,\"label\":\"Publish AL1\"}, tag \"AL1\"): member bar \"✓ No issues · tap to collapse ▲\", Rally line struck=true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-h08-d-published-hidden.png",
+      "dk-07-h08-e-member-face.png",
+      "dk-08-h08-f-member-after-AL.png"
+     ]
+    },
+    {
+     "id": "H-08.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s5p16-dk": {
+   "at": "2026-10-05T12:40:04.219Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-16.a",
+     "did": "Cobra on a new wave every day Mon-Sun (Mon 20:00-21:00, Tue 06:30-07:30, Wed 19:30-21:00 with in-time 06:00, Thu-Sun 12:00-13:00, default in-times); every Cobra warning tapped on its day's list",
+     "saw": "lines {\"0\":\"17:00H: IN TIME + WX/NOTAMS\",\"1\":\"03:30H: IN TIME + WX/NOTAMS\",\"2\":\"06:00 IN TIME\",\"3\":\"09:00H: IN TIME + WX/NOTAMS\",\"4\":\"09:00H: IN TIME + WX/NOTAMS\",\"5\":\"09:00H: IN TIME + WX/NOTAMS\",\"6\":\"09:00H: IN TIME + WX/NOTAMS\"}; warnings (Cobra and run/long/rest kinds) {\"0\":[\"note/LONGDAY: Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note/LONGDAY: Echo has a long work day: 13h30, 09:40 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note/LONGDAY: Piston has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)\",\"note/LONGDAY: Relay has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)\",\"note/LONGDAY: Sidewinder has a long work day: 16h00, 07:00 → 23:00 (last landing 21:00 + 2h debrief assumed)\"],\"1\":[\"hard/CREW_REST: Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report\",\"hard/CREW_REST: Crew rest breach — Monday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to report\",\"hard/CREW_REST: Crew rest breach — Monday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to report\",\"note/LONGDAY: Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)\"],\"2\":[\"note/LONGDAY: Cobra has a long work day: 17h00, 06:00 → 23:00 (last landing 21:00 + 2h debrief assumed)\",\"note/LONGDAY: Sidewinder has a long work day: 17h00, 06:00 → 23:00 (last landing 21:00 + 2h debrief assumed)\"],\"3\":[\"hard/CREW_REST: Crew rest breach — Wednesday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to rep\",\"hard/CREW_REST: Crew rest breach — Wednesday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to rep\"],\"4\":[],\"5\":[],\"6\":[\"hard/DAYS_RUN: Cobra is on the programme 7 days in a row — 6 is the limit, so a break day is due\",\"hard/DAYS_RUN: Sidewinder is on the programme 7 days in a row — 6 is the limit, so a break day is due\"]}; Cobra work hours (week) 1h -> 58h30; tapped: [{\"di\":0,\"text\":\"Breaks Tuesday Cobra — had to leave by 15:30. Crew rest breach — Monda\",\"sev\":\"hard\",\"pucks\":\"flying line:plain chip 7 dotted, other:plain chip 7 dotted, other:plain chip 7 dotted\",\"lit\":88},{\"di\":0,\"text\":\"Breaks Sunday Cobra — his 7th day in a row falls on Sunday; a break da\",\"sev\":\"hard\",\"pucks\":\"flying line:plain chip 7 dotted, other:plain chip 7 dotted, other:plain chip 7 dotted\",\"lit\":88},{\"di\":1,\"text\":\"Crew rest (<12h) Cobra — Crew rest breach — Monday landed 21:00, +2h d\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red\",\"lit\":82},{\"di\":1,\"text\":\"Breaks Sunday Cobra — his 7th day in a row falls on Sunday; a break da\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red\",\"lit\":82},{\"di\":2,\"text\":\"On leave + flying Cobra — On leave but planned to fly LD BFM — reason:\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip C dotted red, other:ring(hard) chip C red\",\"lit\":84},{\"di\":2,\"text\":\"Breaks Thursday Cobra — had to leave by 21:00. Crew rest breach — Wedn\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip C dotted red, other:ring(hard) chip C red\",\"lit\":84},{\"di\":2,\"text\":\"Breaks Sunday Cobra — his 7th day in a row falls on Sunday; a break da\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip C dotted red, other:ring(hard) chip C red\",\"lit\":84},{\"di\":2,\"text\":\"Long work day Cobra — Cobra has a long work day: 17h00, 06:00 → 23:00 \",\"sev\":\"note\",\"pucks\":\"flying line:ring(hard) chip C dotted red, other:ring(hard) chip C red\",\"lit\":84},{\"di\":3,\"text\":\"Crew rest (<12h) Cobra — Crew rest breach — Wednesday landed 21:00, +2\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red\",\"lit\":83},{\"di\":3,\"text\":\"Breaks Sunday Cobra — his 7th day in a row falls on Sunday; a break da\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red\",\"lit\":83},{\"di\":5,\"text\":\"Breaks Sunday Cobra — his 7th day in a row falls on Sunday; a break da\",\"sev\":\"hard\",\"pucks\":\"flying line:plain chip 7 dotted\",\"lit\":77},{\"di\":6,\"text\":\"No break day — too many days in a row Cobra — Cobra is on the programm\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip 7 red\",\"lit\":79}]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-p16-a-selected.png",
+      "dk-02-p16-1-seven-days.png"
+     ]
+    },
+    {
+     "id": "P2-16.b",
+     "did": "Wednesday in-time retyped 13:00 (the long day shortened, Wednesday still worked)",
+     "saw": "warnings now {\"0\":[\"note/LONGDAY: Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note/LONGDAY: Echo has a long work day: 13h30, 09:40 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note/LONGDAY: Piston has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)\",\"note/LONGDAY: Relay has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)\",\"note/LONGDAY: Sidewinder has a long work day: 16h00, 07:00 → 23:00 (last landing 21:00 + 2h debrief assumed)\"],\"1\":[\"hard/CREW_REST: Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report\",\"hard/CREW_REST: Crew rest breach — Monday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to report\",\"hard/CREW_REST: Crew rest breach — Monday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to report\",\"note/LONGDAY: Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)\"],\"2\":[\"note/LONGDAY: Sidewinder has a long work day: 15h00, 08:00 → 23:00 (last landing 21:00 + 2h debrief assumed)\"],\"3\":[\"hard/CREW_REST: Crew rest breach — Wednesday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to rep\",\"hard/CREW_REST: Crew rest breach — Wednesday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to rep\"],\"4\":[],\"5\":[],\"6\":[\"hard/DAYS_RUN: Cobra is on the programme 7 days in a row — 6 is the limit, so a break day is due\",\"hard/DAYS_RUN: Sidewinder is on the programme 7 days in a row — 6 is the limit, so a break day is due\"]}; counts before/after: LONGDAY 8 -> 7, CREW_REST 5 -> 5, RUN-kind 2 -> 2; Cobra work hours 58h30 -> 51h30",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-p16-b-after-shorten.png",
+      "dk-04-p16-2-shortened.png"
+     ]
+    },
+    {
+     "id": "P2-16.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s6p18-dk": {
+   "at": "2026-10-05T12:55:42.970Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-18.a",
+     "did": "Friday wave RP (crew Cobra+Sidewinder) and RP2 (Havoc+Comet), both 12:00-13:00; lines \"08:00 RP IN TIME\" (specific), \"09:00 IN TIME\" (general), \"09:30 RALLY\" (general)",
+     "saw": "lines [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"]; Work hours Cobra 1h->8h, Sidewinder 12h->19h, Havoc 8h->14h, Comet 10h->16h (RP crew should start 08:00, RP2 crew 09:00)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-p18-1-day.png"
+     ]
+    },
+    {
+     "id": "P2-18.b",
+     "did": "saved the day as a template (Template 1) and as a plan (+ Alt Plan = Plan B, which becomes the live one); in Plan B retyped line 1 to \"07:00 RP IN TIME\"; chose Plan A, then Plan B, then Plan A again from the plans menu",
+     "saw": "Plan B at creation: [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"] (selector \"Plan B ▾\"); Plan B after the edit: [\"07:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"]; plan menu: [\"BUTTON plansel=dr1:Plan Atap to make it the live day\",\"BUTTON planedit=dr1:✎\",\"BUTTON plangolive=4:Plan B ●live now — this is what publishes\",\"BUTTON planedit=dr2:✎\",\"BUTTON plandup=1:+ Alt Plan\",\"BUTTON planmanage=1:✎ Manage plans\"]; Plan A chosen (Plan A ▾): [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"], Work hours Cobra 8h->8h, Sidewinder 19h->19h, Havoc 14h->14h, Comet 16h->16h; Plan B chosen (Plan B ▾): [\"07:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"], Work hours Cobra 8h->9h, Sidewinder 19h->20h, Havoc 14h->14h, Comet 16h->16h; Plan A again (Plan A ▾): [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-p18-b-plan-A.png",
+      "dk-05-p18-b-plan-B.png",
+      "dk-04-p18-b-hours-A.png",
+      "dk-06-p18-b-hours-B.png"
+     ]
+    },
+    {
+     "id": "P2-18.c",
+     "did": "applied Template 1 to Saturday",
+     "saw": "Saturday now [\"WAVE 1:RP 12:00-13:00,RP2 12:00-13:00 lines [\\\"08:00 RP IN TIME\\\",\\\"09:00 IN TIME\\\",\\\"09:30 RALLY\\\"]\"]; Saturday crew after the copy [[\"RP:-+-\",\"RP2:-+-\"]]; Saturday warnings []; Work hours (both days now) Cobra 8h->8h, Sidewinder 19h->19h, Havoc 14h->14h, Comet 16h->16h; buttons seen after the pick: []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-08-p18-c-saturday.png",
+      "dk-07-p18-2-after-template.png"
+     ]
+    },
+    {
+     "id": "P2-18.d",
+     "did": "top-bar Undo then Redo after applying the template",
+     "saw": "Undo: {\"title\":\"Undo — a change to the schedule\",\"toasts\":[]} -> Saturday [], Friday lines [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"]; Redo: {\"title\":\"Redo — a change to the schedule\",\"toasts\":[]} -> Saturday [\"WAVE 1 lines [\\\"08:00 RP IN TIME\\\",\\\"09:00 IN TIME\\\",\\\"09:30 RALLY\\\"]\"]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "P2-18.d2",
+     "did": "Changes window, All changes, Saturday",
+     "saw": "⠿ Changes · Saturday 18/7 Not yet published ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ The day · 3 20:55 Redo — a change to the schedule Saber · 5/10 20:55 Undo — a change to the schedule Saber · 5/10 20:55 Day template \"Template 1\" applied Saber · 5/10 20:55 Tap a change to go to it — the window stays open.",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-09-p18-d-history.png"
+     ]
+    },
+    {
+     "id": "P2-18.e",
+     "did": "visited next week (Jul 20) and came back to Jul 13",
+     "saw": "Friday lines [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"], Saturday lines [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"]; Work hours Cobra 8h->8h, Sidewinder 19h->19h, Havoc 14h->14h, Comet 16h->16h",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-p18-e-after-travel.png",
+      "dk-10-p18-3-after-travel.png"
+     ]
+    },
+    {
+     "id": "P2-18.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s6p17-dk": {
+   "at": "2026-10-05T12:54:28.356Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-17.a",
+     "did": "next week (20/07/2026) Monday: new wave PB 12:00, \"10:00 RALLY\" (red warning [\"PB: rally 10:00 is later than suggested brief 09:40.\"]), signed and published; then the working copy corrected to \"09:30 RALLY\" and Mission ACM, NOT amended",
+     "saw": "week had waves before: [\"WAVE 1:VL 08:40,RU 08:40\",\"WAVE 2:VL 10:30\"]; publish {\"pressed\":true,\"label\":\"Publish day\"} tag \"ORIG\"; working copy now: chip \"2 pending\", warnings [], Edit-week list bar \"⚠ 16 issues · 4 warning · tap to collapse ▲\"",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "P2-17.b",
+     "did": "View-only Sched on the working-copy-corrected day, as the admin and then as the member (week Jul 20 loaded)",
+     "saw": "admin: bar \"⚠ 17 issues · 5 warning · tap to collapse ▲\", {\"rally\":\"10:00 RALLY\",\"msn\":\"BFM\"}; member: bar \"⚠ 17 issues · 5 warning · tap to collapse ▲\", {\"rally\":\"10:00 RALLY\",\"msn\":\"BFM\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-p17-b-viewonly-admin-PBrow.png",
+      "dk-02-p17-c-viewonly-member-PBrow.png"
+     ],
+     "note": "the script's own check (\"1 issue\" in the bar) was mis-specified: the demo week already has 16 issues; what the screen said is what counts - the published face of Monday 20 Jul reads 10:00 RALLY and Mission BFM for the admin and for the member, and the bar reads 17 issues against 16 on the working copy, i.e. the issued warning is still on the face"
+    },
+    {
+     "id": "P2-17.c2",
+     "did": "the member, View-only Sched on the current week: the next-week peek for Monday 20 Jul while the working copy (ACM) is corrected but not amended (issued: BFM)",
+     "saw": "{\"pb\":\"ACM\",\"len\":1404}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-03-p17-c2-peek-member.png"
+     ],
+     "note": "the next-week peek shows the working copy (PB Mission ACM, 2 changes pending) for a day issued with BFM - finding F1"
+    },
+    {
+     "id": "P2-17.c",
+     "did": "back on the current week, the next-week peek column for Monday 20 Jul",
+     "saw": "{\"text\":\"NEXT WEEK — CLICK A DAY TO LOAD IT Monday Jul 20 4 X 2 X 1 COMMON PROGRAMME DEMO — SECOND SCHEDULE WEEK ORDERS: FLYING ORDERS SECTION 2 NAME START END PEOPLE RMKS SODB 07:45 08:00 MASS BRIEF 08:00 08:30 STANDARDISATION MEETING 13:30 14:30 Piston IP WAVE 1 CS MSN B TO LD FCP / RCP RMKS VL BFM 06:20 08:40 10:05 Ranger IP Echo IW 1B: BFM-4 TPOD 2 TKS Wildcard O Tally O 2A: OCU CREW SOLO AREA NORTH · SOUTH 0840-1005 RU BFM 06:20 08:40 10:05 Diesel D Hex C 1A: CO APPR PAIR 2 TKS Outlaw C Wisp C 2A: BFM-5 (ALSO ON SIM) 2 TKS AREA NORTH · SOUTH 0840-1005 WAVE 2 CS MSN B TO LD FCP / RCP RMKS VL ACM 08:10 10:30 11:55 Ranger IP Echo IW 1B: ACM // TIGHT TURN OFF WAVE 1 2 TKS Blade IP Relay IW 2A: ACM-2 2 TKS AREA NORTH · SOUTH 1030-1155 WAVE 3 CS MSN B TO LD FCP / RCP RMKS PB ACM 09:40 12:00 13:00 Cobra IP Sidewinder IP DUTIES NAME START END PEOPLE RMKS 1ST WAVE SDO 07:00 13:00 Sidewinder IP SXO 06\",\"rally\":null,\"msn\":\"ACM\"}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-04-p17-d-peek.png"
+     ],
+     "note": "the next-week peek shows the working copy (PB Mission ACM, 2 changes pending) for a day issued with BFM - finding F1"
+    },
+    {
+     "id": "P2-17.d",
+     "did": "print frame and CSV export for the week Jul 20 (working copy corrected, not amended)",
+     "saw": "print {\"hasPB\":true,\"pbMission\":\"BFM\",\"rally\":null}; CSV {\"name\":\"142-schedule.csv\",\"lines\":19,\"PB\":[\"\\\"Monday\\\",\\\"Jul 20\\\",\\\"WAVE 3\\\",\\\"PB\\\",\\\"BFM\\\",\\\"09:40\\\",\\\"12:00\\\",\\\"13:00\\\",\\\"Cobra\\\",\\\"IP\\\",\\\"Sidewinder\\\",\\\"IP\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\"\"],\"hasRally\":false,\"head\":\"﻿\\\"Day\\\",\\\"Date\\\",\\\"Wave\\\",\\\"CS\\\",\\\"Mission\\\",\\\"Brief\\\",\\\"TO\\\",\\\"Land\\\",\\\"FCP\\\",\\\"FCP lvl\\\",\\\"RCP\\\",\\\"RCP lvl\\\",\\\"Area\\\",\\\"Area time\\\",\\\"Rmks\\\",\\\"Stores\\\"\"}",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "P2-17.e",
+     "did": "signed and published AL1; then print, CSV, the Original version look on Edit Schedule, and View-only Sched again",
+     "saw": "AL1 {\"pressed\":true,\"label\":\"Publish AL1\"} tag \"AL1\"; print after: {\"pbMission\":\"ACM\"}; CSV after: {\"PB\":[\"\\\"Monday\\\",\\\"Jul 20\\\",\\\"WAVE 3\\\",\\\"PB\\\",\\\"ACM\\\",\\\"09:40\\\",\\\"12:00\\\",\\\"13:00\\\",\\\"Cobra\\\",\\\"IP\\\",\\\"Sidewinder\\\",\\\"IP\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\"\"]}; look at Original {\"ok\":true,\"label\":\"Original\"}: {\"rally\":\"10:00 RALLY\",\"msn\":\"BFM\",\"warn\":false}; View-only now: bar \"⚠ 16 issues · 4 warning · tap to collapse ▲\", {\"rally\":\"09:30 RALLY\",\"msn\":\"ACM\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-p17-e-old-version.png",
+      "dk-06-p17-f-viewonly-after-AL-PBrow.png"
+     ]
+    },
+    {
+     "id": "P2-17.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s1h05-ph": {
+   "at": "2026-10-05T13:11:57.905Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "H-05",
+     "did": "new wave on Tue (WAVE 3) NX 01:30→02:30, crew Cobra+Sidewinder (seated: true,true); Logic nominal 3h; pressed \"+ In-time / Rally\" on the week",
+     "saw": "line \"22:30H: IN TIME + WX/NOTAMS\"; reporting feedback on week \"null\" / board \"null\"; board shows lines [22:30H: IN TIME + WX/NOTAMS]; board wave header \"⠿ Go 3 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON Traffic In-time / Rally 22:30 (prev day) · 1 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave\"; Edit-week bar \"⚠ 6 issues · 4 warning · tap to collapse ▲\" lines [\"Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\",\"Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew res\",\"Crew rest (<12h) Cobra — Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report \",\"Crew rest (<12h) Sidewinder — Crew rest breach — Monday ended 13:00 → crew rest clear at 01:00, but told to re\",\"No time for the flight brief Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40\",\"Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assum\"]; board panel \"▾ ⚠ 6 issues · 4 warnings · tap to collapse\" [\"Saint — VL SAT & APPOINTMENT clash ✕\",\"Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45,\",\"Cobra — Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:30 (previous d\",\"Sidewinder — Crew rest breach — Monday ended 13:00 → crew rest clear at 01:00, but told to report 22:30 (previ\",\"Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20) ✕\",\"Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) ✕\"]; app warns [\"hard/DOUBLE_BOOK: VL SAT & APPOINTMENT clash\",\"hard/CREW_REST: Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clea\",\"hard/CREW_REST: Crew rest breach — Monday ended 12:30 → crew rest clear at 00:30, but told to report 22:30\",\"hard/CREW_REST: Crew rest breach — Monday ended 13:00 → crew rest clear at 01:00, but told to report 22:30\",\"adv/NO_BRIEF: No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20)\",\"note/LONGDAY: Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)\"]; Work hours BEFORE the wave {\"Sidewinder\":\"12h\",\"Cobra\":\"1h\"}, AFTER {\"Sidewinder\":\"18h\",\"Cobra\":\"7h\"} (the whole-week figure; the change is the NX day)",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-h05-week-line.png",
+      "ph-03-h05-board-line.png",
+      "ph-04-h05-board-warn.png",
+      "ph-01-h05-ins-before.png",
+      "ph-05-h05-insights.png"
+     ]
+    },
+    {
+     "id": "H-05.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s1p09-ph": {
+   "at": "2026-10-05T13:13:05.024Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-09.a",
+     "did": "Logic \"button's words\" IN TIME + WX/NOTAMS → RALLY; new wave AA 12:00; \"+ In-time / Rally\" on the WEEK, then retyped \"10:00 RALLY\"",
+     "saw": "first press fills \"09:00H: RALLY\" (feedback \"null\", day warnings []); after retype \"10:00 RALLY\": live feedback while typing \"AA: rally 10:00 is later than suggested brief 09:40.\", settled feedback \"AA: rally 10:00 is later than suggested brief 09:40.\", warnings [\"hard/REPORT_ORDER: AA: rally 10:00 is later than suggested brief 09:40.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-p09-A-week-default.png",
+      "ph-02-p09-A-week-later.png"
+     ]
+    },
+    {
+     "id": "P2-09.b",
+     "did": "new wave BB2 12:00; \"+ In-time / Rally\" on the BOARD with the same words",
+     "saw": "fills \"09:00H: RALLY\" (week fill was \"09:00H: RALLY\"); feedback \"null\"",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-p09-B-board-default.png"
+     ]
+    },
+    {
+     "id": "P2-09.c",
+     "did": "Logic words blanked (typed nothing, Enter); new wave CC 12:00; \"+ In-time / Rally\" on the week; then retyped \"10:00 IN TIME + WX/NOTAMS\"",
+     "saw": "Logic box emptied to \"\", after Enter reads \"IN TIME + WX/NOTAMS\" and on re-opening \"IN TIME + WX/NOTAMS\" (was \"RALLY\"); first press fills \"09:00H: IN TIME + WX/NOTAMS\"; retyped feedback \"CC: in-time 10:00 is later than suggested brief 09:40.\"",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-p09-C-blank-default.png"
+     ]
+    },
+    {
+     "id": "P2-09.d",
+     "did": "Logic words \"RALLY — check 13:00\"; new wave DD 12:00; \"+ In-time / Rally\" on the week, then pressed once more on the board",
+     "saw": "Logic box reads \"RALLY — check 13:00\"; first line \"09:00H: RALLY — check 13:00\", feedback \"null\", warnings [\"hard/REPORT_ORDER: AA: rally 10:00 is later than suggested brief 09:40.\",\"hard/REPORT_ORDER: CC: in-time 10:00 is later than suggested brief 09:40.\"]; after the board press the wave holds [\"09:00H: RALLY — check 13:00\",\"09:00H: RALLY — check 13:00\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-p09-D-prose.png"
+     ]
+    },
+    {
+     "id": "P2-09.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s4h07-ph": {
+   "at": "2026-10-05T13:14:19.600Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "H-07.lead",
+     "did": "changed the nominal report (3h -> 2h), then top-bar Undo, then Redo",
+     "saw": "before {\"lead\":\"3h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}; after the change {\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}; the Undo button said \"Undo — a rule on the Logic page\"; pressed {\"present\":true,\"pressed\":true,\"toasts\":[\"Undid: a rule on the Logic page\"]}; after Undo {\"lead\":\"3h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}; the Redo button then said \"Redo — a rule on the Logic page\"; Redo {\"pressed\":true,\"toasts\":[\"Redid: a rule on the Logic page\"],\"title\":\"Redo — a rule on the Logic page\"} -> {\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-h07-lead.png"
+     ]
+    },
+    {
+     "id": "H-07.words",
+     "did": "changed the button words (-> WALK WORDS), then top-bar Undo, then Redo",
+     "saw": "before {\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}; after the change {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false}; the Undo button said \"Undo — a rule on the Logic page\"; pressed {\"present\":true,\"pressed\":true,\"toasts\":[\"Undid: a rule on the Logic page\"]}; after Undo {\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}; the Redo button then said \"Redo — a rule on the Logic page\"; Redo {\"pressed\":true,\"toasts\":[\"Redid: a rule on the Logic page\"],\"title\":\"Redo — a rule on the Logic page\"} -> {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false}",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-h07-words.png"
+     ]
+    },
+    {
+     "id": "H-07.track",
+     "did": "changed the Track Blue/RED sorties switch (off -> on), then top-bar Undo, then Redo",
+     "saw": "before {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false}; after the change {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true}; the Undo button said \"Undo — Blue/Red sortie tracking\"; pressed {\"present\":true,\"pressed\":true,\"toasts\":[\"Undid: Blue/Red sortie tracking\"]}; after Undo {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false}; the Redo button then said \"Redo — Blue/Red sortie tracking\"; Redo {\"pressed\":true,\"toasts\":[\"Redid: Blue/Red sortie tracking\"],\"title\":\"Redo — Blue/Red sortie tracking\"} -> {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true}",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-h07-track.png"
+     ]
+    },
+    {
+     "id": "H-07.reload",
+     "did": "with all three changed (2h, WALK WORDS, switch on), reloaded and signed in again",
+     "saw": "before the reload {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true}; after {\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true}",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-h07-reloaded.png"
+     ]
+    },
+    {
+     "id": "H-07.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s4h08-ph": {
+   "at": "2026-10-05T13:15:08.221Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "H-08.a",
+     "did": "unpublished Friday with one Rally-after-brief warning (TS 12:00, \"10:00 RALLY\"): tapped X on it, reloaded, tapped the undo arrow",
+     "saw": "flagged: bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\", the line has \"✕\" (X present: true); after X (pressed): bar \"✓ No issues · tap to collapse ▲\", line struck=true hid=true btn \"↺\"; after reload: bar \"✓ No issues · tap to collapse ▲\", line struck=true btn \"↺\"; after the undo arrow (pressed): bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\", line struck=false btn \"✕\"",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-h08-a-flagged.png",
+      "ph-02-h08-b-hidden.png",
+      "ph-03-h08-c-after-reload.png"
+     ]
+    },
+    {
+     "id": "H-08.b",
+     "did": "published Friday with the warning showing (signed, Publish day); tapped X on the line on the working copy; read the day's bar; read the published face as the member; then signed and Published AL1",
+     "saw": "after publish: tag \"ORIG\", edit-list bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\"; after X (pressed): chip \"1 pending\", working line struck=true, bar \"✓ No issues · tap to collapse ▲\", changes window \"Warning · TS: rally 10:00 is later than suggested brief 09:40. flagged → hidden\"; member's published face: bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\", Rally line struck=false \"In-time / Rally — timings out of order TS: rally 10:00 is la\"; after AL1 ({\"pressed\":true,\"label\":\"Publish AL1\"}, tag \"AL1\"): member bar \"✓ No issues · tap to collapse ▲\", Rally line struck=true",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-h08-d-published-hidden.png",
+      "ph-07-h08-e-member-face.png",
+      "ph-08-h08-f-member-after-AL.png"
+     ]
+    },
+    {
+     "id": "H-08.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s4h06-ph": {
+   "at": "2026-10-05T13:15:55.268Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "H-06",
+     "did": "Logic: button words set to the markup-and-quotes string; \"+ In-time / Rally\" on a new Friday wave; looked at the week, the board, View-only Sched (after publishing), the changes window and the print frame; reloaded",
+     "saw": "Logic box after typing \"<b>BOLD</b> & \"QUOTES\" <img src=x onerror=alert(1)>\" (typed: \"<b>BOLD</b> & \"QUOTES\" <img src=x onerror=alert(1)>\"); stored line [\"09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)>\"]; week {\"text\":\"09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)>\",\"kids\":[],\"html\":\"<b>09:00H</b>: &lt;b&gt;BOLD&lt;/b&gt; &amp; \\\"QUOTES\\\" &lt;img src=x onerror=alert(1)&gt;\"}; board {\"text\":\"09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)>\",\"kids\":[],\"html\":\"<b>09:00H</b>: &lt;b&gt;BOLD&lt;/b&gt; &amp; \\\"QUOTES\\\" &lt;img src=x onerror=alert(1)&gt;\"}; View-only Sched {\"text\":\"09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)>\",\"kids\":[],\"html\":\"<span><b>09:00H</b>: &lt;b&gt;BOLD&lt;/b&gt; &amp; \\\"QUOTES\\\" &lt;img src=x onerror=alert(1)&gt;</span>\"}; changes window {\"text\":\"⠿ Changes · week of 13/7 13 changes this week Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 13 To go out 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Fri · The day · 6 21:15 Published — the Original Saber · 5/10 21:15 Signed · APPROVED BY · Anvil Saber · 5/10 21:15 Signed · PLANNED BY · Anvil Saber · 5/10 21:15 Signed · SKED CK · Anvil Saber · 5/10 21:15 Signed · CUR CK · Ace Saber · 5/10 21:15 Wave added Saber · 5/10 21:15 Fri · Wave · WAVE 1 Saber · 5/10 21:15 In-times— → 09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)> ▾ Fri · Flying · XS BFM · 6 21:15 RCPSidewinder put on Saber · 5/10 21:15 FCPCobra put on Saber · 5/10 21:15 Land— → 13:00 Saber · 5/10 21:15 Take-off— → 12:00 Saber · 5/10 21:15 Mission— → BFM Saber · 5/10 21:15 Callsig\",\"kids\":[\"B\",\"B\",\"B\",\"B\",\"B\",\"B\"]}; print frame {\"len\":15519,\"hasWords\":false,\"hasRawTag\":false,\"hasImg\":false,\"hasEscaped\":false,\"hasFriday\":true}; after reload Logic reads \"<b>BOLD</b> & \"QUOTES\" <img src=x onerror=alert(1)>\", week {\"text\":\"09:00H: <b>BOLD</b> & \\\"QUOTES\\\" <img src=x onerror=alert(1)>\",\"kids\":[],\"html\":\"<b>09:00H</b>: &lt;b&gt;BOLD&lt;/b&gt; &amp; \\\"QUOTES\\\" &lt;img src=x onerror=alert(1)&gt;\"}; publish {\"pressed\":true,\"label\":\"Publish day\"}",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-h06-a-week.png",
+      "ph-02-h06-b-board.png",
+      "ph-03-h06-c-viewonly.png",
+      "ph-04-h06-d-changes.png",
+      "ph-05-h06-e-reloaded.png"
+     ]
+    },
+    {
+     "id": "H-06.err",
+     "did": "browser errors (a native dialog or a 404 for the image would show here)",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s4h01-ph": {
+   "at": "2026-10-05T13:16:07.807Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "H-01",
+     "did": "Monday board: night wave RU (crew Outlaw+Wisp), take-off/landing 19:20/20:45 -> 10:00/11:25, line left as it was",
+     "saw": "before the change the lines were [\"1645H: NIGHT WAVE VL IN TIME + WX/NOTAMS\",\"1620H: NIGHT WAVE RU IN TIME + WX/NOTAMS\"]; after: board lines [\"16:45H: NIGHT WAVE VL IN TIME + WX/NOTAMS\",\"16:20H: NIGHT WAVE RU IN TIME + WX/NOTAMS\"], wave header \"⠿ Go 2 1st wave 2nd wave 3rd wave 4th wave 5th wave Night wave SC AVALON · night Traffic In-time / Rally 16:20 (prev day) · 4 ac ⇅ Auto sort + In-time / Rally + Line ✕ Wave\", reporting feedback \"null\"; Monday warnings [\"hard DOUBLE_BOOK: OPS SHARING + NAV SYS BRIEF & VL BFM clash\",\"hard DOUBLE_BOOK: VL BFM & Sim EP-4 clash\",\"hard DOUBLE_BOOK: RU BFM & STANDARDISATION MEETING clash\",\"hard DNIF_FLY: Downchit but planned to fly RU BFM — reason: Medical leave 13 Jul\",\"hard INPUT_FLY: Fly with but tasked — Sim BOX — reason: Keen for any wave\",\"hard DNIF_FLY: Downchit but tasked — Sim EP-6N — reason: Medically down till 17 Jul\",\"adv NO_BRIEF: No time for the VL BFM flight brief — OPS SHARING + NAV SYS BRIEF sits inside 17:25–19:45 (brief 17:25)\",\"adv NO_BRIEF: No time for the VL BFM flight brief — Sim EP-4 sits inside 10:20–12:40 (brief 10:20)\",\"adv NO_BRIEF: No time for the RU BFM flight brief — STANDARDISATION MEETING sits inside 11:20–13:40 (brief 11:20)\",\"adv SIM_BRIEF: No time for the OFT EP-4 brief — VL BFM sits inside 11:30–12:00\",\"adv SIM_DEBRIEF: No time for the OFT EP-4 debrief — VL BFM sits inside 13:30–14:00\",\"adv DT_SUM: 4 people are double turning: Saber, Echo, Piston, Relay\",\"adv CREW_SOLO: Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabu\",\"note LONGDAY: Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note LONGDAY: Echo has a long work day: 13h30, 09:40 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note LONGDAY: Piston has a long work day: 24h45, 16:20 (previous day) → 17:05 (last landing 15:05 + 2h debrief assumed)\",\"note LONGDAY: Relay has a long work day: 24h45, 16:20 (previous day) → 17:05 (last landing 15:05 + 2h debrief assumed)\",\"note LONGDAY: Outlaw has a long work day: 21h05, 16:20 (previous day) → 13:25 (last landing 11:25 + 2h debrief assumed)\",\"note LONGDAY: Wisp has a long work day: 21h05, 16:20 (previous day) → 13:25 (last landing 11:25 + 2h debrief assumed)\"]; Work hours Outlaw 12h30->27h10, Wisp 12h50->27h30; negative figures in the chart before: [], after: []; longest three bars [\"Relay=33h35\",\"Bolt=29h25\",\"Ridge=28h\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-h01-a-line-before.png",
+      "ph-03-h01-b-line-after.png",
+      "ph-04-h01-c-warnings.png",
+      "ph-01-h01-0-before.png",
+      "ph-05-h01-1-after.png"
+     ]
+    },
+    {
+     "id": "H-01.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p10-ph": {
+   "at": "2026-10-05T13:16:42.362Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-10.a",
+     "did": "new wave TS 12:00→13:00 (Cobra+Sidewinder), blank Brief; \"+ In-time / Rally\" then typed \"10:00 RALLY\" and committed",
+     "saw": "while typing \"TS: rally 10:00 is later than suggested brief 09:40.\"; settled \"TS: rally 10:00 is later than suggested brief 09:40.\"; the day's warning list: [\"hard TS: rally 10:00 is later than suggested brief 09:40.\"]; list bar \"⚠ 1 issue · 1 warning · tap to collapse ▲\", Rally line on the list \"In-time / Rally — timings out of order TS: rally 10:00 is later than suggested brief 09:40. ✕\" (button ✕)",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-p10-warning.png"
+     ]
+    },
+    {
+     "id": "P2-10.b",
+     "did": "signed the four names and pressed Publish day with the red timing line still showing",
+     "saw": "before: tag \"DRAFT\" button locked; button press {\"pressed\":true,\"label\":\"Publish day\"}; sign-offs {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}; after: tag \"ORIG\", signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\", chip \"14 changes\"; the warning is still held: [\"TS: rally 10:00 is later than suggested brief 09:40.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-p10-published.png"
+     ]
+    },
+    {
+     "id": "P2-10.c",
+     "did": "changed the Mission to ACM on the published day, signed the four again, pressed Publish AL1 while the warning remains",
+     "saw": "before: chip \"1 pending\" tag \"ORIG\"; press {\"pressed\":true,\"label\":\"Publish AL1\"}; after: tag \"AL1\", chip \"20 changes\", signed \"SIGNED AL1 Ace Anvil Anvil Anvil\"; warning still there: [\"TS: rally 10:00 is later than suggested brief 09:40.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-p10-amended.png"
+     ]
+    },
+    {
+     "id": "P2-10.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p11-ph": {
+   "at": "2026-10-05T13:17:08.209Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-11",
+     "did": "new wave EQ 12:00→13:00, Brief typed 09:40; lines \"08:00 IN TIME\" and \"09:40 RALLY\"; then Rally 09:41 (week), then back to 09:40 (on the board)",
+     "saw": "equal: lines [\"08:00 IN TIME\",\"09:40 RALLY\"] feedback \"null\" warnings []; one minute later: live \"EQ: rally 09:41 is later than brief 09:40.\" settled \"EQ: rally 09:41 is later than brief 09:40.\" warnings [\"EQ: rally 09:41 is later than brief 09:40.\"], board panel [\"EQ: rally 09:41 is later than brief 09:40. ✕\"]; corrected: feedback \"null\" warnings []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-p11-equal.png",
+      "ph-02-p11-board-late.png",
+      "ph-03-p11-back.png"
+     ]
+    },
+    {
+     "id": "P2-11.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p12-ph": {
+   "at": "2026-10-05T13:17:42.946Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-12.a",
+     "did": "new wave with NO take-off and an empty formation; \"+ In-time / Rally\" (no take-off to work from), then typed \"RALLY AFTER IN TIME\"",
+     "saw": "the press fills [\"IN TIME + WX/NOTAMS\"]; typed: live \"null\", settled \"null\"; warnings []; the day's whole list has 0 entries",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-02-p12-a-no-takeoff.png"
+     ]
+    },
+    {
+     "id": "P2-12.b",
+     "did": "added a second line and typed the invalid clock \"25:99 IN TIME\" (still no take-off)",
+     "saw": "lines [\"RALLY AFTER IN TIME\",\"25:99 IN TIME\"]; live \"null\", settled \"null\"; warnings []",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "P2-12.c",
+     "did": "gave the formation MM 12:00→13:00, crew Cobra+Sidewinder (seated true,true), then a third line \"08:30 IN TIME\"",
+     "saw": "with take-off, before the valid in-time: feedback \"MM: rally after in-time has no applicable in-time clock. MM: reporting line 2 has no recognised clock. Check the time.\", warnings [\"MM: rally after in-time has no applicable in-time clock.\",\"MM: reporting line 2 has no recognised clock. Check the time.\"]; lines now [\"RALLY AFTER IN TIME\",\"25:99 IN TIME\",\"08:30 IN TIME\"], feedback \"MM: reporting line 2 has no recognised clock. Check the time.\", warnings [\"MM: reporting line 2 has no recognised clock. Check the time.\"]; Work hours base {\"Sidewinder\":\"12h\",\"Cobra\":\"1h\"} → with the valid in-time {\"Sidewinder\":\"18h30\",\"Cobra\":\"7h30\"}",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-03-p12-c-takeoff.png",
+      "ph-05-p12-d-valid.png",
+      "ph-01-p12-ins-base.png",
+      "ph-04-p12-ins-valid.png"
+     ]
+    },
+    {
+     "id": "P2-12.d",
+     "did": "cancelled the formation (CX with a reason)",
+     "saw": "Work hours {\"Sidewinder\":\"18h30\",\"Cobra\":\"7h30\"} → {\"Sidewinder\":\"12h\",\"Cobra\":\"1h\"} (base {\"Sidewinder\":\"12h\",\"Cobra\":\"1h\"}); report warnings now []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-p12-e-cx.png",
+      "ph-06-p12-ins-cx.png"
+     ]
+    },
+    {
+     "id": "P2-12.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s2p13-ph": {
+   "at": "2026-10-05T13:18:30.285Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-13.a",
+     "did": "wave VL + VL2 (both 12:00→13:00; VL crew Cobra+Sidewinder, VL2 crew Havoc+Comet; seated true,true); one line \"08:00 VL IN TIME\"",
+     "saw": "Work hours: Cobra 5h→8h, Sidewinder 16h→19h, Havoc 12h→12h, Comet 14h→14h; feedback \"null\"",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-p13-a-VL-line.png",
+      "ph-01-p13-0-base.png",
+      "ph-02-p13-1-VLline.png"
+     ]
+    },
+    {
+     "id": "P2-13.b",
+     "did": "second line: only a crew member's callsign \"Cobra\" (no clock, no formation name)",
+     "saw": "Work hours: Cobra 8h→8h, Sidewinder 19h→19h, Havoc 12h→12h, Comet 14h→14h; feedback \"null\"; warnings []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-p13-b-name-only.png",
+      "ph-04-p13-2-name-only.png"
+     ]
+    },
+    {
+     "id": "P2-13.c",
+     "did": "second line retyped \"07:00 Cobra IN TIME\" (a clock and a man's name, no formation callsign)",
+     "saw": "Work hours: Cobra 8h→8h, Sidewinder 19h→19h, Havoc 12h→16h, Comet 14h→18h; who changed: Cobra:false Sidewinder:false Havoc:true Comet:true; feedback \"null\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-07-p13-c-name-clock.png",
+      "ph-06-p13-3-name-with-clock.png"
+     ]
+    },
+    {
+     "id": "P2-13.d",
+     "did": "line 1 retyped through accepted and unaccepted clock spellings (week)",
+     "saw": "\"8:00 VL IN TIME\" → stored \"08:00 VL IN TIME\" / feedback \"\" ;; \"0800 VL IN TIME\" → stored \"08:00 VL IN TIME\" / feedback \"\" ;; \"800H VL RALLY\" → stored \"08:00H VL RALLY\" / feedback \"\" ;; \"08:00L VL IN TIME\" → stored \"08:00L VL IN TIME\" / feedback \"\" ;; \"8h00 VL IN TIME\" → stored \"8h00 VL IN TIME\" / feedback \"\" ;; \"8.00 VL IN TIME\" → stored \"8.00 VL IN TIME\" / feedback \"\" ;; \"2400 VL IN TIME\" → stored \"2400 VL IN TIME\" / feedback \"VL: reporting line 1 has no recognised clock. Check the time.\"",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-p13-d-spellings.png"
+     ]
+    },
+    {
+     "id": "P2-13.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s3p14-ph": {
+   "at": "2026-10-05T13:19:32.087Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-14.a",
+     "did": "Saturday: SC AM MAIN Cobra, SC SPARE Sidewinder, AVALON night Havoc, BB 08:00-14:00 Comet (seated true,true,true,true)",
+     "saw": "board rows: SC:SC 07:00-13:00 [MAIN=taipan,MAIN=-,SPARE=mamba,SPARE=-] ; SC 13:00-19:00 [MAIN=-,MAIN=-,SPARE=-,SPARE=-] || AVALON:AV 19:00-07:00 [MAIN=boosh,MAIN=-,SPARE=-,SPARE=-] || BB:BB 08:00-14:00 [MAIN=beams,MAIN=-,SPARE=-,SPARE=-]; Work hours before {\"Sidewinder\":\"12h\",\"Comet\":\"10h\",\"Havoc\":\"8h\",\"Cobra\":\"1h\"} -> after {\"Sidewinder\":\"12h\",\"Comet\":\"10h\",\"Havoc\":\"8h\",\"Cobra\":\"7h\"}; flying-load chart Cobra: not in the flying-load chart | Sidewinder: not in the flying-load chart | Havoc: not in the flying-load chart | Comet: not in the flying-load chart (the chart before had 13 entries, after 13); tiles 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 36 13 WARNING -> 32 SORTIES | 16 FORMATIONS | 38 AIRCREW FLYING | 36 13 WARNING",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-02-p14-a-board.png",
+      "ph-01-p14-0-base.png",
+      "ph-03-p14-1-after.png"
+     ]
+    },
+    {
+     "id": "P2-14.X",
+     "did": "script",
+     "saw": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#sbOil')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"sbOil\" aria-pressed=\"false\" class=\"abtn sb-daybtn sb-oilbtn\" title=\"Show who earns OIL on this day, and change it\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    -",
+     "verdict": "NOT WALKED",
+     "pics": [
+      "ph-04-p14-X.png"
+     ],
+     "note": "phone: the board's OIL Earn button is not visible on the board's top bar (a phone keeps it elsewhere); P2-14 b-d NOT WALKED on a phone"
+    },
+    {
+     "id": "P2-14.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s3p15-ph": {
+   "at": "2026-10-05T13:20:32.463Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-15.a",
+     "did": "Friday wave VL 12:00->13:00 with the VL line 09:00, crew Cobra+Sidewinder",
+     "saw": "Work hours Cobra 1h->7h, Sidewinder 12h->18h, Havoc 8h->8h, Comet 10h->10h, Reaper 1h->1h",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-02-p15-1-crew.png"
+     ]
+    },
+    {
+     "id": "P2-15.b",
+     "did": "+ Row in the duty block: role EARLY 06:00-08:00, Cobra placed on it (seated true)",
+     "saw": "Work hours Cobra 7h->10h, Sidewinder 18h->18h, Havoc 8h->8h, Comet 10h->10h, Reaper 1h->1h",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-04-p15-b-duty-row.png",
+      "ph-03-p15-2-duty.png"
+     ]
+    },
+    {
+     "id": "P2-15.c",
+     "did": "added a sim row 05:00-06:00 (Havoc, seated true), a ground row 05:30-06:30 (Comet, true) and a Common Programme row 05:30-06:30 (Reaper, true)",
+     "saw": "Work hours Cobra 10h->10h, Sidewinder 18h->18h, Havoc 8h->9h, Comet 10h->11h, Reaper 1h->2h; rows {\"sim\":[{\"label\":\"EARLYSIM\",\"str\":\"05:00\",\"end\":\"06:00\",\"rid\":\"rmuva1jmu8owrjm\",\"p\":\"boosh\"}],\"ground\":[{\"prog\":\"EARLYGND\",\"str\":\"05:30\",\"end\":\"06:30\",\"who\":\"beams\",\"rid\":\"rmuva1mxtafhqwe\"}]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-06-p15-c-ground-row.png",
+      "ph-05-p15-3-sim-ground-prog.png"
+     ]
+    },
+    {
+     "id": "P2-15.d",
+     "did": "pressed CX on each of the four added rows (with a reason), read Insights; then pressed it again on each (restore)",
+     "saw": "cancel: duty: Cancel this duty (CX) -> pop asked; now \"Restore this duty\" | sim: Cancel this sim (CX) -> pop asked; now \"Restore this sim\" | ground: Cancel this item (CX) -> pop asked; now \"Restore this item\" | programme: no CX button (ap); Work hours Cobra 10h->7h, Sidewinder 18h->18h, Havoc 9h->8h, Comet 11h->10h, Reaper 2h->2h; restore: duty: Restore this duty -> pop asked; now \"Cancel this duty (CX)\" | sim: Restore this sim -> pop asked; now \"Cancel this sim (CX)\" | ground: Restore this item -> pop asked; now \"Cancel this item (CX)\" | programme: no CX button (ap); Work hours Cobra 7h->10h, Sidewinder 18h->18h, Havoc 8h->9h, Comet 10h->11h, Reaper 2h->2h",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-07-p15-d-cancelled.png",
+      "ph-08-p15-4-cancelled.png",
+      "ph-09-p15-5-restored.png"
+     ]
+    },
+    {
+     "id": "P2-15.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s5p16-ph": {
+   "at": "2026-10-05T13:22:31.047Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-16.a",
+     "did": "Cobra on a new wave every day Mon-Sun (Mon 20:00-21:00, Tue 06:30-07:30, Wed 19:30-21:00 with in-time 06:00, Thu-Sun 12:00-13:00, default in-times); every Cobra warning tapped on its day's list",
+     "saw": "lines {\"0\":\"17:00H: IN TIME + WX/NOTAMS\",\"1\":\"03:30H: IN TIME + WX/NOTAMS\",\"2\":\"06:00 IN TIME\",\"3\":\"09:00H: IN TIME + WX/NOTAMS\",\"4\":\"09:00H: IN TIME + WX/NOTAMS\",\"5\":\"09:00H: IN TIME + WX/NOTAMS\",\"6\":\"09:00H: IN TIME + WX/NOTAMS\"}; warnings (Cobra and run/long/rest kinds) {\"0\":[\"note/LONGDAY: Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note/LONGDAY: Echo has a long work day: 13h30, 09:40 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note/LONGDAY: Piston has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)\",\"note/LONGDAY: Relay has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)\",\"note/LONGDAY: Sidewinder has a long work day: 16h00, 07:00 → 23:00 (last landing 21:00 + 2h debrief assumed)\"],\"1\":[\"hard/CREW_REST: Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report\",\"hard/CREW_REST: Crew rest breach — Monday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to report\",\"hard/CREW_REST: Crew rest breach — Monday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to report\",\"note/LONGDAY: Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)\"],\"2\":[\"note/LONGDAY: Cobra has a long work day: 17h00, 06:00 → 23:00 (last landing 21:00 + 2h debrief assumed)\",\"note/LONGDAY: Sidewinder has a long work day: 17h00, 06:00 → 23:00 (last landing 21:00 + 2h debrief assumed)\"],\"3\":[\"hard/CREW_REST: Crew rest breach — Wednesday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to rep\",\"hard/CREW_REST: Crew rest breach — Wednesday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to rep\"],\"4\":[],\"5\":[],\"6\":[\"hard/DAYS_RUN: Cobra is on the programme 7 days in a row — 6 is the limit, so a break day is due\",\"hard/DAYS_RUN: Sidewinder is on the programme 7 days in a row — 6 is the limit, so a break day is due\"]}; Cobra work hours (week) 1h -> 58h30; tapped: [{\"di\":0,\"text\":\"Breaks Tuesday Cobra — had to leave by 15:30. Crew rest breach — Monda\",\"sev\":\"hard\",\"pucks\":\"flying line:plain chip 7 dotted, other:plain chip 7 dotted, other:plain chip 7 dotted\",\"lit\":88},{\"di\":0,\"text\":\"Breaks Sunday Cobra — his 7th day in a row falls on Sunday; a break da\",\"sev\":\"hard\",\"pucks\":\"flying line:plain chip 7 dotted, other:plain chip 7 dotted, other:plain chip 7 dotted\",\"lit\":88},{\"di\":1,\"text\":\"Crew rest (<12h) Cobra — Crew rest breach — Monday landed 21:00, +2h d\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red\",\"lit\":82},{\"di\":1,\"text\":\"Breaks Sunday Cobra — his 7th day in a row falls on Sunday; a break da\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red\",\"lit\":82},{\"di\":2,\"text\":\"On leave + flying Cobra — On leave but planned to fly LD BFM — reason:\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip C dotted red, other:ring(hard) chip C red\",\"lit\":84},{\"di\":2,\"text\":\"Breaks Thursday Cobra — had to leave by 21:00. Crew rest breach — Wedn\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip C dotted red, other:ring(hard) chip C red\",\"lit\":84},{\"di\":2,\"text\":\"Breaks Sunday Cobra — his 7th day in a row falls on Sunday; a break da\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip C dotted red, other:ring(hard) chip C red\",\"lit\":84},{\"di\":2,\"text\":\"Long work day Cobra — Cobra has a long work day: 17h00, 06:00 → 23:00 \",\"sev\":\"note\",\"pucks\":\"flying line:ring(hard) chip C dotted red, other:ring(hard) chip C red\",\"lit\":84},{\"di\":3,\"text\":\"Crew rest (<12h) Cobra — Crew rest breach — Wednesday landed 21:00, +2\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red\",\"lit\":83},{\"di\":3,\"text\":\"Breaks Sunday Cobra — his 7th day in a row falls on Sunday; a break da\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red, other:ring(hard) chip R dotted red\",\"lit\":83},{\"di\":5,\"text\":\"Breaks Sunday Cobra — his 7th day in a row falls on Sunday; a break da\",\"sev\":\"hard\",\"pucks\":\"flying line:plain chip 7 dotted\",\"lit\":79},{\"di\":6,\"text\":\"No break day — too many days in a row Cobra — Cobra is on the programm\",\"sev\":\"hard\",\"pucks\":\"flying line:ring(hard) chip 7 red\",\"lit\":79}]",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-03-p16-a-selected.png",
+      "ph-02-p16-1-seven-days.png"
+     ]
+    },
+    {
+     "id": "P2-16.b",
+     "did": "Wednesday in-time retyped 13:00 (the long day shortened, Wednesday still worked)",
+     "saw": "warnings now {\"0\":[\"note/LONGDAY: Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note/LONGDAY: Echo has a long work day: 13h30, 09:40 → 23:10 (last landing 21:10 + 2h debrief assumed)\",\"note/LONGDAY: Piston has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)\",\"note/LONGDAY: Relay has a long work day: 12h05, 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)\",\"note/LONGDAY: Sidewinder has a long work day: 16h00, 07:00 → 23:00 (last landing 21:00 + 2h debrief assumed)\"],\"1\":[\"hard/CREW_REST: Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report\",\"hard/CREW_REST: Crew rest breach — Monday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to report\",\"hard/CREW_REST: Crew rest breach — Monday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to report\",\"note/LONGDAY: Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)\"],\"2\":[\"note/LONGDAY: Sidewinder has a long work day: 15h00, 08:00 → 23:00 (last landing 21:00 + 2h debrief assumed)\"],\"3\":[\"hard/CREW_REST: Crew rest breach — Wednesday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to rep\",\"hard/CREW_REST: Crew rest breach — Wednesday landed 21:00, +2h debrief assumed → ended 23:00 → crew rest clear at 11:00, but told to rep\"],\"4\":[],\"5\":[],\"6\":[\"hard/DAYS_RUN: Cobra is on the programme 7 days in a row — 6 is the limit, so a break day is due\",\"hard/DAYS_RUN: Sidewinder is on the programme 7 days in a row — 6 is the limit, so a break day is due\"]}; counts before/after: LONGDAY 8 -> 7, CREW_REST 5 -> 5, RUN-kind 2 -> 2; Cobra work hours 58h30 -> 51h30",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-p16-b-after-shorten.png",
+      "ph-04-p16-2-shortened.png"
+     ]
+    },
+    {
+     "id": "P2-16.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s6p18-ph": {
+   "at": "2026-10-05T13:24:04.447Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-18.a",
+     "did": "Friday wave RP (crew Cobra+Sidewinder) and RP2 (Havoc+Comet), both 12:00-13:00; lines \"08:00 RP IN TIME\" (specific), \"09:00 IN TIME\" (general), \"09:30 RALLY\" (general)",
+     "saw": "lines [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"]; Work hours Cobra 1h->8h, Sidewinder 12h->19h, Havoc 8h->14h, Comet 10h->16h (RP crew should start 08:00, RP2 crew 09:00)",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-02-p18-1-day.png"
+     ]
+    },
+    {
+     "id": "P2-18.b",
+     "did": "saved the day as a template (Template 1) and as a plan (+ Alt Plan = Plan B, which becomes the live one); in Plan B retyped line 1 to \"07:00 RP IN TIME\"; chose Plan A, then Plan B, then Plan A again from the plans menu",
+     "saw": "Plan B at creation: [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"] (selector \"Plan B ▾\"); Plan B after the edit: [\"07:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"]; plan menu: [\"BUTTON plansel=dr1:Plan Atap to make it the live day\",\"BUTTON planedit=dr1:✎\",\"BUTTON plangolive=4:Plan B ●live now — this is what publishes\",\"BUTTON planedit=dr2:✎\",\"BUTTON plandup=1:+ Alt Plan\",\"BUTTON planmanage=1:✎ Manage plans\"]; Plan A chosen (Plan A ▾): [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"], Work hours Cobra 8h->8h, Sidewinder 19h->19h, Havoc 14h->14h, Comet 16h->16h; Plan B chosen (Plan B ▾): [\"07:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"], Work hours Cobra 8h->9h, Sidewinder 19h->20h, Havoc 14h->14h, Comet 16h->16h; Plan A again (Plan A ▾): [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-p18-b-plan-A.png",
+      "ph-05-p18-b-plan-B.png",
+      "ph-04-p18-b-hours-A.png",
+      "ph-06-p18-b-hours-B.png"
+     ]
+    },
+    {
+     "id": "P2-18.c",
+     "did": "applied Template 1 to Saturday",
+     "saw": "Saturday now [\"WAVE 1:RP 12:00-13:00,RP2 12:00-13:00 lines [\\\"08:00 RP IN TIME\\\",\\\"09:00 IN TIME\\\",\\\"09:30 RALLY\\\"]\"]; Saturday crew after the copy [[\"RP:-+-\",\"RP2:-+-\"]]; Saturday warnings []; Work hours (both days now) Cobra 8h->8h, Sidewinder 19h->19h, Havoc 14h->14h, Comet 16h->16h; buttons seen after the pick: []",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-08-p18-c-saturday.png",
+      "ph-07-p18-2-after-template.png"
+     ]
+    },
+    {
+     "id": "P2-18.d",
+     "did": "top-bar Undo then Redo after applying the template",
+     "saw": "Undo: {\"title\":\"Undo — a change to the schedule\",\"toasts\":[]} -> Saturday [], Friday lines [\"08:00 RP IN TIME\",\"09:00 IN TIME\",\"09:30 RALLY\"]; Redo: {\"title\":\"Redo — a change to the schedule\",\"toasts\":[]} -> Saturday [\"WAVE 1 lines [\\\"08:00 RP IN TIME\\\",\\\"09:00 IN TIME\\\",\\\"09:30 RALLY\\\"]\"]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "P2-18.d2",
+     "did": "Changes window, All changes, Saturday",
+     "saw": "⠿ Changes · Saturday 18/7 Not yet published Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ The day · 3 21:23 Redo — a change to the schedule Saber · 5/10 21:23 Undo — a change to the schedule Saber · 5/10 21:23 Day template \"Template 1\" applied Saber · 5/10 21:23 Tap a change to go to it — the window stays open.",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-09-p18-d-history.png"
+     ]
+    },
+    {
+     "id": "P2-18.X",
+     "did": "script",
+     "saw": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-wk=\"20/07/2026\"]:visible').first()\u001b[22m\n\n    at weekTo (C:\\Users\\User\\projects\\Raptor\\raptor-port\\scripts\\handpass\\stk-B-s6.mjs:11:56)\n    at async p218 (C:\\Users\\User\\projects\\Raptor\\raptor-port\\scripts\\handpass\\stk-B-s6.mjs:190:5)\n    at async file:///C:/Users/User/projects/Raptor/raptor-port/scripts/handpass/stk-B-s6.mjs:204:41",
+     "verdict": "NOT WALKED",
+     "pics": [
+      "ph-10-p18-X.png"
+     ],
+     "note": "phone: the week chips (Jul 13 / Jul 20) are not shown on a phone, so the week-travel steps were not driven; NOT WALKED on a phone"
+    },
+    {
+     "id": "P2-18.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "s6p17-ph": {
+   "at": "2026-10-05T13:24:36.995Z",
+   "base": "http://localhost:4222",
+   "phone": true,
+   "table": [
+    {
+     "id": "P2-17.X",
+     "did": "script",
+     "saw": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-wk=\"20/07/2026\"]:visible').first()\u001b[22m\n\n    at weekTo (C:\\Users\\User\\projects\\Raptor\\raptor-port\\scripts\\handpass\\stk-B-s6.mjs:11:56)\n    at async p217 (C:\\Users\\User\\projects\\Raptor\\raptor-port\\scripts\\handpass\\stk-B-s6.mjs:35:5)\n    at async file:///C:/Users/User/projects/Raptor/raptor-port/scripts/handpass/stk-B-s6.mjs:203:41",
+     "verdict": "NOT WALKED",
+     "pics": [
+      "ph-01-p17-X.png"
+     ],
+     "note": "phone: the week chips (Jul 13 / Jul 20) are not shown on a phone, so the week-travel steps were not driven; NOT WALKED on a phone"
+    },
+    {
+     "id": "P2-17.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

@@ -65,7 +65,7 @@ walkers (D588), each a fresh browser world per scenario, on the frozen build, un
 | Walker | Share | Server | Table | State |
 |---|---|---|---|---|
 | A | P1-01…06, P2-01…08 | 4221 | `parts/stk-A.md` | BACK — 91 pictures, 22 opened by the walker; Discard marks six of six PASS (guest not walked); P2-04 to P2-07 PASS; P2-01 FAIL (W1); P2-02, P2-03, P2-08 RECORDED |
-| B | P2-09…18, H-01, H-05…H-08 | 4222 | `parts/stk-B.md` | out |
+| B | P2-09…18, H-01, H-05…H-08 | 4222 | `parts/stk-B.md` | BACK — 167 pictures, about 70 opened by the walker (it says which were not, and that they are not evidence), desktop and phone. 13 PASS, 1 PARTIAL (P2-15: a Common Programme row has no CX to press), 1 FAIL (P2-17, the next-week peek — judged below). PASS: the button's words from Logic, blank restoring the default (P2-09); a red timing warning never blocks the first publish or the amendment (P2-10); equal Rally and brief legal, one minute later flagged (P2-11); a formation's line moves that formation only, a person's name is no target (P2-13); standby is no sortie, SC MAIN alone gains hours (P2-14); the long day, crew rest and the 7-day run stay apart (P2-16); the published face, print and CSV keep the issued wording until the amendment (P2-17); plans and templates carry the lines (P2-18); H-01 — NO negative work hours: the evening clock is read as the previous day and the day carries a long-day note (16:20 (previous day) → 13:25); H-05 a 01:30 take-off fills 22:30 and says "(prev day)"; H-06 markup typed on Logic is drawn as text everywhere; H-07 each Logic change is one undo step and all three values SURVIVE A RELOAD; H-08 the new warning hides like any other, and on a published day the hide waits for the amendment |
 | C | P3-01…18, H-02, H-03 | 4221 | `parts/stk-C.md` | BACK — 301 pictures (about 119 behind the final table), about 25 opened by the walker; the host opened 2. 19 PASS, 1 FAIL (P3-04 — W7 again, the changes-window heading), 1 PARTIAL (P3-17: the guest on a phone not walked). PASS on the high-consequence lines: an answer on a published day counts at once with the pending count, the sign-offs and the day's stored record byte-identical (P3-01, seen by the host: the issued Original with its Remarks, and the split bars); an older version offers no way to answer (P3-02); saved plans and day templates carry their own answers and Undo leaves no orphan (P3-04, P3-05); the question stays through an unrelated edit and goes on each of ten context changes (P3-07, P3-08); another person's answer is not undone (P3-18); no mark on any schedule line (H-02); a member never meets a question or a button and sees the admin's bars (H-03); the same twelve rows and Show all from all six doors (P3-16) |
 | D | P4c-01…16, P4d-01…06, H-04 | 4222 | `parts/stk-D.md` | BACK — 111 pictures, 31 opened by the walker. The Tab route: 13 of 16 PASS (the order on week and board, reordered sections, folded sections, standby rows, no loop, no write on an unchanged pass through a signed published day, short screens, other apps' own Tab); the phone ⋯ menu 5 of 6 PASS; H-04 PASS — a Tab pass through a published Saturday left "0 pending", the four sign-offs and every Leave War cell as they were |
 | E | P4a, P4b, P4e, and one picture of every screen at two sizes | 4221 | `parts/stk-E.md` | out |
@@ -136,9 +136,16 @@ the in-time, the settled 24 Aug 26 rule).
 
 | W18 | On a phone, the Scheduler Board in its Desktop layout, panned so the ⋯ button sits at the right edge: its menu opens past the edge of the screen and "Insights" (with Sort and Phone layout) is cut off; panned further left it works. Also recorded: a sideways pan takes only when it starts on the board's top bar, not on the schedule — the 4 Oct investigation's known behaviour, left by D548. | walker F (its F-2) | SEEN (the menu cut at the right edge) | new for Insights (the item is the stack's; the layout was unusable before the repair) | fix here (keep the menu inside the screen), a browser test |
 
-*(W17 and W18 are listed here, out of the table above, because they arrived after it; the fix round renumbers nothing.)*
+| W19 | A reporting line whose clock is spelt in a way the app does not read — `8h00 VL IN TIME`, `8.00 …` — is kept as typed, counts as no clock, and nothing says so; `2400` and `25:99` do warn, and a line with no clock at all gets "reporting line 2 has no recognised clock". | walker B (its F2) | to reproduce | not yet compared | low — reproduce; if the advisory exists for one case, give this one the same line |
 
-**Still out:** walkers B, E.
+*(W17, W18 and W19 are listed here, out of the table above, because they arrived after it; the fix round renumbers nothing.)*
+
+**Walker B's FAIL, judged — not this stack's.** *P2-17: the next-week peek column shows the WORKING copy of a published day ("PB ACM" while
+View-only Sched, print, CSV and the Original all read the issued BFM).* The peek has never read the publish state — it is the open
+question already filed for him as `OUTSTANDING.md` `[PEEK-ISSUED]`; the stack did not touch it. Not a finding here; it goes on his
+look card as a reminder that the question is his.
+
+**Still out:** walker E.
 
 ## 6. The break tests — to come
 ## 7. Errors seen — to come
