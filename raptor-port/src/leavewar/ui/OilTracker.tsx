@@ -92,6 +92,7 @@ import {
   updateLedgerEntry,
 } from '../state/store'
 import { hhmm } from '../../engine/time'
+import { SaveBand } from '../../ui/SaveStatus'
 import { CreditForm, DayChip } from './CreditForm'
 import { shortDate, shortSpan } from './dates'
 import { RangePicker, type Range } from './RangePicker'
@@ -334,6 +335,9 @@ export function OilTracker({ person, onClose, onGranted }: {
           <span className="dt">settings · squadron-wide</span>
           <button className="x" data-testid="oil-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
+        {/* a failed save's warning, under this full-screen sheet's own head: the sheet lies over Raptor's top bar, whose
+            own warning cannot be seen from here ([SAVE-NOTE-COVERS], D587 — Astra's read, F1; ui/SaveStatus.tsx) */}
+        <SaveBand />
         <div className="oil-set">
           <div className="bidsheet-row">
             <span className="lab">OIL lasts</span>
@@ -611,6 +615,9 @@ export function OilTracker({ person, onClose, onGranted }: {
         <span className="dt">{admin ? 'one row per person · the oldest credit is used first' : 'one row per person'}</span>
         <button className="x" data-testid="oil-close" onClick={onClose} aria-label="Close">✕</button>
       </div>
+      {/* a failed save's warning, under this full-screen sheet's own head: the sheet lies over Raptor's top bar, whose
+          own warning cannot be seen from here ([SAVE-NOTE-COVERS], D587 — Astra's read, F1; ui/SaveStatus.tsx) */}
+      <SaveBand />
       <div className="oil-tools">
         <span className="lab">Show</span>
         <button className={`tchip${mode === 'first' ? ' on' : ''}`} data-testid="oil-range-first" onClick={() => { setMode('first'); setPicking(false) }}>

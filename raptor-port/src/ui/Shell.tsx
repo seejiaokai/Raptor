@@ -305,6 +305,17 @@ export function Shell() {
   const accAlert = accessAlert()
   /* a failed save's warning has a line of its own along the bar's bottom ([SAVE-NOTE-COVERS], D587): the bar makes room */
   const saveFailed = useSaveFailed()
+  /* THE ROOM UNDER THE BAR HAS JUST CHANGED BY ONE LINE WITH NO WINDOW RESIZE (Astra's read, F3 and F4). Whatever on a
+     page measured itself against the bar keeps its old figure unless told: a Quals or Leave War header ALREADY frozen
+     sat 36px off (under the band, or a gap above it); the Tracker's full-height column kept its old height, its foot
+     36px below a screen that does not scroll. Each of them already re-measures on a window resize — so they are told
+     the one way they all listen for, once, when the warning comes and once when it goes. Not on the first draw. */
+  const saveFailedWas = useRef(saveFailed)
+  useEffect(() => {
+    if (saveFailedWas.current === saveFailed) return
+    saveFailedWas.current = saveFailed
+    window.dispatchEvent(new Event('resize'))
+  }, [saveFailed])
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode

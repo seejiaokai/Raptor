@@ -50,7 +50,12 @@
    bar as it always did; a full-screen surface has its own band). */
 .topbar.save-failed ~ .week-nav{top:calc(52% + var(--save-band))}
 .topbar.save-failed ~ .page .ros-rail{top:calc(150px + var(--save-band))}
-#shell.save-failed ~ .chgwin, #shell.save-failed ~ .availwin{top:calc(96px + var(--save-band))}   /* drawn beside the shell, not in it (ui/App.tsx) */
+/* DESKTOP ONLY (Astra's read, F2): under 621px both windows are bottom panels (`top:auto`), and this rule — an id
+   stronger than theirs — pulled them up to the top and stretched the changes window's slim "Hide" bar into a panel.
+   And lower by the band means shorter by the band, or on a short desktop window the foot would fall off the screen. */
+@media (min-width:621px){
+  #shell.save-failed ~ .chgwin, #shell.save-failed ~ .availwin{top:calc(96px + var(--save-band));max-height:calc(100vh - 120px - var(--save-band))}   /* drawn beside the shell, not in it (ui/App.tsx) */
+}
 .savestat .sv-msg, .saveband .sv-msg{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .savestat .sv-ico, .saveband .sv-ico{margin-right:6px}
 .topbar > .savestat.failed button, .saveband button{flex:0 0 auto;margin:0;padding:4px 14px;border-radius:9px;border:1px solid currentColor;
@@ -59,6 +64,8 @@
    the bar's edges past its padding; in the two calendars it is a line of the column, between the head and the body */
 .sb-top > .saveband{flex:0 0 auto;order:99;width:calc(100% + 32px);margin:2px -16px -10px}
 .inpcal > .saveband{flex:0 0 auto}
+/* …and in the Leave War's full-screen OIL tracker (grid and settings), a line of that sheet's column under its head */
+.bidsheet.full > .saveband{flex:0 0 auto}
 @media (max-width:820px){
   .topbar.save-failed{padding-bottom:calc(8px + var(--save-band))}   /* the phone bar's own 8px */
   .topbar > .savestat.failed, .saveband{padding:0 14px;justify-content:space-between}

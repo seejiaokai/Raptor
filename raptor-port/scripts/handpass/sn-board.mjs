@@ -3,6 +3,7 @@
      1. the full-screen scheduler board — the warning under the board's own bar, every control of that bar still its own
         target, the board's content not under the band, and Retry pressed for real FROM the board;
      2. the Inputs calendar and the Medical view — the same warning under their heads;
+     2b. the Leave War's OIL tracker (its grid and its settings) — full screen too;
      3. a window (Insights) and, on a phone, the menu drawer — short visits: they cover the bar's warning as they cover
         the bar (D587), and it is there again when they close.
    Written as assertions of the RIGHT behaviour: on the build before the fix steps 1 and 2 FAIL (the warning could not
@@ -90,6 +91,18 @@ for (const size of [{ name: 'phone-390', width: 390, height: 844, touch: true },
     line(r.there && r.covers.length === 0, `${size.name} ${name}: it covers no control`, r.covers.join(' · '))
     await page.locator(root + ' .ic-head button[aria-label="Back to list"]').first().click(); await sleep(300)
   }
+
+  /* 2b — the Leave War's OIL tracker: a full-screen working sheet (its grid, and its settings) — Astra's read, F1 */
+  await go(page, 'leavewar'); await sleep(900)
+  await page.locator('[data-testid="oil-tracker"]:visible').first().click(); await page.waitForSelector('[data-testid="oil-sheet"]'); await sleep(500)
+  for (const name of ['oil-tracker', 'oil-tracker-settings']) {
+    if (name === 'oil-tracker-settings') { await page.locator('[data-testid="oil-settings"]').click(); await sleep(400) }
+    const r = await look(page, '[data-testid="oil-sheet"] .saveband')
+    await shot(name)
+    line(r.seen, `${size.name} ${name}: the warning can be seen under its head`, JSON.stringify({ box: r.box, onTop: r.onTop, there: r.there }))
+    line(r.there && r.covers.length === 0, `${size.name} ${name}: it covers no control`, r.covers.join(' · '))
+  }
+  await page.locator('[data-testid="oil-close"]').first().click(); await sleep(300)
 
   /* 3 — short visits: a window, and the phone's menu. They cover the bar's warning; it is there again when they close. */
   await go(page, 'viewsched'); await sleep(300)

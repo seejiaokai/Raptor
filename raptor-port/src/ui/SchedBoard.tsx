@@ -574,7 +574,7 @@ export function SchedBoard() {
         {/* A FAILED SAVE'S WARNING ([SAVE-NOTE-COVERS], D587): the board lies over the top bar, so the bar's own
             warning cannot be seen from here — the board carries it, on a line of its own at the bottom of its bar.
             INSIDE .sb-top like the strip above, so --sb-topH follows it and nothing below is covered. */}
-        <SaveBand />
+        <SaveBand active={open} />
       </div>
       <div className="sb-main" ref={mainRef}>
         <div className={'sb-boardwrap' + (HISTMODE ? ' hist-on' : '')} ref={wrapRef}>

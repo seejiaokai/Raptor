@@ -12,7 +12,7 @@
    carries the same warning under its own bar (`SaveBand`), because there the bar's cannot be seen. A window, a sheet
    or the phone's menu is a short visit and has none: the bar's is there when it closes (D587).
    Pinned by e2e/save-note.spec.ts; the contract: docs/ui-contracts.md §The failed-save warning. */
-import { useLayoutEffect, useRef, useSyncExternalStore } from 'react'
+import { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import type { Postman, SaveStatus as Status } from '../storage/postman'
 
 let source: Postman | null = null
@@ -25,6 +25,16 @@ export function setSaveStatusSource(p: Postman): void {
 const subscribe = (fn: () => void) => { subs.add(fn); return () => { subs.delete(fn) } }
 const read = (): Status => (source ? source.status : 'saved')
 const readFailed = (): boolean => read() === 'failed'
+
+/* ONE WARNING AT A TIME FOR A SCREEN READER AND THE KEYBOARD (Astra's read, F5). While a full-screen surface shows the
+   warning under its own bar, the top bar's copy is still in the page beneath it — painted over, but a second
+   `role="status"` and a second Retry to tab to. So each showing SaveBand counts itself in, and while any is counted the
+   bar's copy is `inert` and hidden from readers; it keeps its room, so nothing moves when the surface closes. */
+let covering = 0
+const coverSubs = new Set<() => void>()
+const subscribeCover = (fn: () => void) => { coverSubs.add(fn); return () => { coverSubs.delete(fn) } }
+const readCover = (): boolean => covering > 0
+const cover = (d: 1 | -1) => { covering += d; for (const f of [...coverSubs]) f() }
 
 /** Has a save failed (and not yet landed)? Shell asks, to make room for the warning's band in the top bar. */
 export function useSaveFailed(): boolean {
@@ -72,16 +82,23 @@ function Warning() {
 
 export function SaveStatus() {
   const s = useSyncExternalStore(subscribe, read, read)
+  const covered = useSyncExternalStore(subscribeCover, readCover, readCover)
   const ref = useRef<HTMLSpanElement>(null)
   useFollowTheBar(ref, s)
   if (s === 'saved') return null
-  if (s === 'failed') return <span className="savestat failed" role="status" ref={ref}><Warning /></span>
+  if (s === 'failed') return <span className="savestat failed" role="status" ref={ref} aria-hidden={covered || undefined} inert={covered || undefined}><Warning /></span>
   return <span className="savestat" role="status" ref={ref}>Saving…</span>
 }
 
-/** The same warning, IN THE FLOW of a full-screen surface, under that surface's own bar (D587). Nothing while saves work. */
-export function SaveBand() {
+/** The same warning, IN THE FLOW of a full-screen surface, under that surface's own bar (D587). Nothing while saves work.
+    `active` is false while its surface is closed but still drawn (the board stays in the page, hidden). */
+export function SaveBand({ active = true }: { active?: boolean }) {
   const failed = useSaveFailed()
+  useEffect(() => {
+    if (!failed || !active) return
+    cover(1)
+    return () => cover(-1)
+  }, [failed, active])
   if (!failed) return null
   return <div className="saveband" role="status"><Warning /></div>
 }
