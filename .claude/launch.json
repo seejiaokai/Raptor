@@ -448,6 +448,23 @@
         "--strictPort"
       ],
       "port": 4227
+    },
+    {
+      "name": "raptor-main-cmp",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-main",
+        "--port",
+        "4228",
+        "--strictPort"
+      ],
+      "port": 4228
     }
   ]
 }

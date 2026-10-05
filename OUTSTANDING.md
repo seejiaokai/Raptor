@@ -48,6 +48,12 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
+count from its entered in-time / Rally (D591), and a published weekend must keep the earned leave it went out with when a Logic value
+changes (today it moves at once). Proposed: its own job, straight after the stack goes live. [EDIT-SECOND-CLICK] (low — after a
+changed text box on Edit Schedule, the first click into another box lands on the page and a second is needed; the same on the live
+app; with the next change to the schedule's text boxes).
+
 **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
 are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
 `[DB-STEP]` wait for the end; the table list is kept up to date as each feature is added, and the table format is written on his
@@ -1868,6 +1874,37 @@ From Astra's tidiness read (its §3 — read it before building). The export / i
 catch-all "core context" — stop and report, do not force it. First the boundary test Astra names (export, fresh store,
 import, compare every record and id; cancel; a conflicting syllabus; no partial write on a refusal). FULL tier — saved data.
 **Place — D493, D485: with the Tracker batch (`[FEATURE-WISHLIST]` item 4).**
+
+### [OIL-WORK-START] A flying line's earned leave counts from its entered in-time / Rally, and a published day keeps what it went out with (D591; found 5 Oct 26 by Claude's check of the Codex stack)
+**His ruling (D591, 5 Oct 26):** *"it should take the actual intime/rally time right? not the nominal report timing"* — a flying
+line's earned leave (OIL) is worked out from its actual in-time / Rally time. Full row: `.claude/decisions-full/oil.md` D591.
+**What the app does today (not his ruling, and not this stack's doing — the same on `main`):** earned leave starts at take-off less
+the Logic page's "Nominal report before T/O", never at an entered in-time or Rally; and it is worked out afresh from TODAY's Logic
+values every time it is shown, published days included.
+**The finding that raised it (W1 of `raptor-port/docs/handpass/2026-10-05-codex-stack-check.md` §5.2 — found separately by Astra, by an
+Opus reader and by a walker, and seen by the host in the walker's pictures):** Ranger on a published Saturday, take-off 10:00, landing
+11:15, a full day (+1, 07:00–13:15). Changing "Nominal report before T/O" from 3h to 2h30 makes it half a day (+0.5, 07:30–13:15) at
+once — "No pending changes", ORIG, the four sign-offs standing; "Flight debrief after land" and the full-day threshold do the same; it
+flips back when the value is put back. Against D48 and D142. The Rally work made it likelier: the same box now also sets the time the
+"+ In-time / Rally" button fills in (D510).
+**To build — two halves, one job:** (1) the start of a flying line's earned-leave day is the report time the work-hours bar already
+uses (the one shared reader, `engine/reporting.ts`), with the nominal time only where no in-time or Rally is entered; (2) a published
+day keeps the values its earned leave was worked out from, so a later change — to an entered time or to a Logic value — reads as a
+pending change and moves the earned leave only when the day is published again. A reader's step-by-step proposal for half (2):
+`raptor-port/docs/handpass/parts/stack-read-AB.md` §4 lead 1; Astra's: `raptor-port/docs/superpowers/briefs/2026-10-05-codex-stack-scenarios-astra.md` M1, M2.
+**Open with him before building** (the agent's readings in D591's row): the earliest applicable clock; the nominal time as the fallback;
+an evening-before report lengthens the line's own day and credits nothing to the day before (D42); the freeze as described.
+**Tier:** FULL — earned leave, the published record, saved data. **Place (the agent's proposal, his to set):** its own branch, straight
+after the Codex stack goes live; until then, do not change those three Logic values once a weekend is published.
+
+### [EDIT-SECOND-CLICK] After a changed text box on Edit Schedule, the first click into another box does not take the caret (found 5 Oct 26, the Codex stack check)
+On Edit Schedule's week: type a new value in a text box (a take-off, a mission), then click ONCE into another text box. The day
+redraws as the first box is left, the box that was clicked is replaced, and the caret is nowhere (the page itself has the focus); a
+second click takes it. With an UNCHANGED first box one click is enough. The same on `main` (`de470db5`) and on the stack — measured
+on both builds with real clicks: `raptor-port/scripts/handpass/stk-host-click-cmp.mjs`; walker K met it in L-10 and L-12
+(`raptor-port/docs/handpass/parts/stk-K.md`). Nothing is saved wrongly; it costs him a click each time, and the Tab route (D544) is the
+way round it. Not ruled; no fix proposed in the stack check. **Place (the agent's line, not his ruling):** low — with the next change
+to the schedule's text boxes; if fixed, restore the caret to the box at the click's position after the redraw.
 
 ### [RALLY-REVIEW-FIXES] The fixes from Claude's small check of the two Codex builds (3 Oct 26; D508, D509)
 **Current round:** independent Astra plan and Sol challenge:

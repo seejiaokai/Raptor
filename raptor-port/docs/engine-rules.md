@@ -1825,6 +1825,12 @@ the mark useless.
 
 ## Weekend/PH work earns OIL (`engine/oil.ts`, owner 16–17 Aug 26, REWRITTEN 28 Aug 26 — Leave War sync wire 4)
 
+**RULED 5 Oct 26 (D591) — NOT YET BUILT.** A flying line's earned leave is to be worked out from its actual In-time /
+Rally time, not from the nominal report time (`VCONF.reportLead` before take-off) that this section describes; the
+agent's readings of the detail (the earliest applicable clock; the nominal time where none is entered; a published day
+keeps what it went out with) are put to him and not yet answered. Until it is built, the text below is what the app
+does. The build and the finding that raised it: `OUTSTANDING.md` `[OIL-WORK-START]`.
+
 Work stood on a NON-WORKING day credits OIL into Leave War as an FO
 ('full day OIL', earns 1) or HO ('half day OIL', 0.5) cell. Like the
 late-input mark this grades no

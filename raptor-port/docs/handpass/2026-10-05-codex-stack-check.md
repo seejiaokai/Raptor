@@ -64,14 +64,14 @@ walkers (D588), each a fresh browser world per scenario, on the frozen build, un
 
 | Walker | Share | Server | Table | State |
 |---|---|---|---|---|
-| A | P1-01…06, P2-01…08 | 4221 | `parts/stk-A.md` | out |
+| A | P1-01…06, P2-01…08 | 4221 | `parts/stk-A.md` | BACK — 91 pictures, 22 opened by the walker; Discard marks six of six PASS (guest not walked); P2-04 to P2-07 PASS; P2-01 FAIL (W1); P2-02, P2-03, P2-08 RECORDED |
 | B | P2-09…18, H-01, H-05…H-08 | 4222 | `parts/stk-B.md` | out |
 | C | P3-01…18, H-02, H-03 | 4221 | `parts/stk-C.md` | out |
 | D | P4c-01…16, P4d-01…06, H-04 | 4222 | `parts/stk-D.md` | out |
 | E | P4a, P4b, P4e, and one picture of every screen at two sizes | 4221 | `parts/stk-E.md` | out |
 | F | P5-01…08, X-01…12 | 4222 | `parts/stk-F.md` | out |
 | G | L-01…L-08 | 4221 | `parts/stk-G.md` | BACK — 142 pictures, 15 opened by the walker; the host opened 8 (those behind the findings) |
-| K | L-09…L-16 | 4222 | `parts/stk-K.md` | out |
+| K | L-09…L-16 | 4222 | `parts/stk-K.md` | BACK — 109 pictures, 23 opened by the walker; the host opened 3 |
 
 ### 5.2 What the walk has found so far, and each disposition
 "Seen" = the host opened the walker's picture and it shows the fault. "To reproduce" = taken from the walker's figures,
@@ -80,7 +80,7 @@ not yet seen by the host — it is reproduced by the red test written before its
 
 | # | The finding (what a person sees) | From | Seen? | `main`? | Proposed disposition |
 |---|---|---|---|---|---|
-| W1 | A PUBLISHED weekend's earned leave moves at once when a Logic value is changed — "Nominal report before T/O", "Flight debrief after land" or the full-day threshold: Ranger's Saturday goes from +1 (07:00–13:15) to +0.5 (07:30–13:15) with "No pending changes", ORIG and the four sign-offs standing; it flips back when the value is put back. Against D48, D142. | L-01 (walker G); Astra M1; reader AB lead 1 — three finders | SEEN (the tracker before and after; the day's bar) | the same on `main` (the earned-leave code is untouched); the stack makes it likelier — the same box now sets the button's time (D510) | NOT this stack's fault; high consequence. To be put to him and FILED as its own job (it changes what a published day stores) — never fixed under cover of this check |
+| W1 | A PUBLISHED weekend's earned leave moves at once when a Logic value is changed — "Nominal report before T/O", "Flight debrief after land" or the full-day threshold: Ranger's Saturday goes from +1 (07:00–13:15) to +0.5 (07:30–13:15) with "No pending changes", ORIG and the four sign-offs standing; it flips back when the value is put back. Against D48, D142. | L-01 (walker G); Astra M1; reader AB lead 1 — three finders | SEEN (the tracker before and after; the day's bar) | the same on `main` (the earned-leave code is untouched); the stack makes it likelier — the same box now sets the button's time (D510) | NOT this stack's fault; high consequence. Put to him 5 Oct 26; his answer is **D591** — a flying line's earned leave is to be worked out from its actual in-time / Rally, not the nominal report time (not yet built; walker A's P2-02 / P2-03 record that an entered clock moves only the work-hours bar today). FILED with the freeze as one job, `OUTSTANDING.md` `[OIL-WORK-START]` — never fixed under cover of this check. Walker A reproduced it a second way (P2-01: HO → FO at 3h → 4h, still so after a week switch and a reload) |
 | W2 | Typing new words for the "+ In-time / Rally" button on Logic lights "RULES MODIFIED" on both week banners for everyone, and Logic says "1 rule changed … the schedule is being checked against these values" — no rule changed. | L-02; reader AB lead 2 | SEEN (the Logic strip) | new in the stack (`94aa8913`) | fix here, red test first |
 | W3 | `08:30H: VL RALLY AFTER IN TIME` beside a whole-wave `08:00H: IN TIME …`: VL's crew start 08:30, RU's 08:00 (VL's work hours 30 minutes shorter), in either order. Against D505. | L-03; reader AB lead 3 | to reproduce (figures read off the window) | `main` gave VL 08:30 too, by another route; the stack promised D505 | fix here, red test first |
 | W4 | A person on a flying line with no times reads "NaN min" in Insights' Work hours. | L-04 (the walker's side find) | to reproduce | not yet compared | reproduce, compare with `main`, then fix or file |
@@ -90,9 +90,33 @@ not yet seen by the host — it is reproduced by the red test written before its
 | W8 | On a demo day nobody has edited, a Blue/Red answer is gone after a reload, a sign-in, or a visit to the next week and back (bars back to one, the button back to "Choose"); it holds once the day has been saved once. Only the two built-in demo weeks can do it. D530. | L-07; reader C lead 2 | to reproduce | old id behaviour on `main`, harmless there; this feature made it matter | fix here (repeatable ids for the built-in weeks) — he would meet it on his look |
 | W9 | While one formation's Blue/Red question is open, no "Choose / Change mission role" button appears for any other formation — week, board and phone. D527, D529. | L-08; reader C lead 3 | SEEN (the week: VL's question open, RU's RED AIR box in use, no button) | new in the stack (reachable since the D535 fix) | fix here, red test first |
 
-**Still to come from walkers and readers, unproven:** the Tab route's leads (L-10 to L-15), the four confirmation
-windows (L-09), Retry off-screen on the phone board's Desktop layout (L-16), and a walker's remark that Logic values
-did not survive a reload on this build (H-07 tests it).
+| W10 | Four confirmation windows — the OIL question, the upchit one, "covers other days", "no medical document" — close when a press that began INSIDE them is dragged out and released on the dark surround (desktop and phone). D538. | L-09 (walker K); reader C lead 4 | to reproduce | the same on `main`; the 3 Oct fix covered thirteen windows and its guard test missed these four | fix here (the same helper), red test first; Astra reads it (Opus wrote the original fix) |
+| W11 | A remark stored with a double space counts as CHANGED when Tab merely passes through it: after a Tab pass through a published Tuesday with nothing typed the day read "1 pending", "Not yet signed", "Publish AL1", with a change line whose before and after look the same. D103, D529. | L-11; reader D2 lead 2 | SEEN (Tuesday's bar and the amendments box) | `main` does the same on a click-through; the Tab route makes a whole-day pass normal | fix here (compare the folded text before writing), red test first |
+| W12 | A save that opens a window leaves the typing behind it: a weekend duty request's start time changed + Tab opens the OIL question, the caret stays in the end-time box behind it, and typed characters and further Tabs go into the schedule ("That is not a time"). | L-14; reader D2 lead 5 | SEEN (the OIL window over the editor, the toast) | the first hop is the same on `main`; walking on behind the window is new | fix here, red test first |
+| W13 | On a phone, the Scheduler Board's Desktop layout with a failed save: "Not saved — keep this page open" and its Retry are never on screen together — Retry sits about 700 px to the right, reached only by panning. D587. | L-16; reader D1 lead 1 | SEEN (the band cut off at the left, no Retry) | new (neither the band nor a working Desktop layout exists on `main`) | fix here (the band pinned to the screen's width), a browser test |
+| W14 | After the day's last open text box on the week, Tab lands on nothing (the page body); the next Tab goes to the next day's Templates. On the board it lands on the ✕ of the first warning line. D553 says "the next normal button or control". | L-12; reader D2 lead 3 | recorded by the walker | new (the route) | fix here: where the day has no later control, let the browser's own Tab carry on |
+| W15 | While he is still tabbing, the day does not redraw: the issue count, the warning list, the puck rings and "N pending" stay as they were until Escape or a click; then they update. | L-13; reader D2 lead 4 | recorded by the walker | new in degree (on `main` Tab reached a puck after two or three boxes, so the day redrew often) | a LOOK for him, not a wrong save — on the look card; no fix proposed here |
+| W16 | On Edit Schedule's week a wave's header keeps the OLD clock after its In-time / Rally line is edited ("21:30 (prev day)" beside a line reading 22:30H) until the next edit or a reload; the board's header is right at the same moment. | walker A (its own find, off the list) | to reproduce | not yet compared | reproduce, compare with `main`, then fix here |
+
+**Leads that did NOT reproduce.** Reader D2's lead 1 (a box still showing an old copy writes it back when entered by a
+click): walker K walked all three forms — PASS each; the host ran the take-off / Area-time case on both builds with real
+clicks (`scripts/handpass/stk-host-click-cmp.mjs`): the window followed to `1255-1405` and nothing was stored, on the
+stack and on `main` alike. The reason is the same on both: after a CHANGED box, one click into another box lands on
+the page (the day redraws first) and it takes a second click to put the caret in — old behaviour, on `main` too, FILED
+as a low item rather than fixed here (`OUTSTANDING.md` `[EDIT-SECOND-CLICK]`). Only a phone keyboard's own next-field arrows
+could still reach the reader's case — a real-device line for his look. Reader D2's lead 6 (the page jerking on a
+wrapped box): walker K measured no movement at either width — not a finding.
+
+**Recorded, for the host to judge.** P2-08 (walker A): with a line already on the wave, a second press of "+ In-time /
+Rally" copies that line's clock (08:00) and not take-off less the Logic value (10:00) — as the 3 Oct review's fix D
+specified ("when the wave has no resolved report"); D510's own words do not carry that condition. A question for him
+on the look card, not a fault. L-09: a plain click on the surround also closes each of the four windows, cancelling
+the save — as built.
+
+**A walker's remark thrown out.** Walker G wrote that Logic values are not kept across a reload on this build; its
+script had pressed "Reset to standard" before the reload. H-07 (walker B) tests it properly.
+
+**Still out:** walkers B, C, D, E, F.
 
 ## 6. The break tests — to come
 ## 7. Errors seen — to come
