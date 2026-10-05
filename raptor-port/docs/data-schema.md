@@ -739,6 +739,11 @@ Listed in the order they would bite.
    rewrite is the next step. *(Corrected 24 Sep 26: that rewrite SHIPPED 11 Sep 26 — the amendment
    book now resolves rows by `rid`, translated at the screen boundary; `raptor-port/CLAUDE.md` §The
    slot-key grammar.)*
+   *(6 Oct 26, the Codex stack check's W8: the rows of the two BUILT-IN demo weeks carry REPEATABLE ids — the same id
+   for the same row on every load (`engine/weeks-data.ts seedRids`: its week, its day and its place in the day's walk;
+   the boot seeds the module's own literal the same way). A day nobody has saved is read from the built-in week every
+   time, and its random ids changed on every load, which lost any record keyed by a row id that does not save its day —
+   a Blue/Red answer (D530). Every other row — a blank week's, anything added — is still minted at random.)*
 4. **The demo seed is code.** PEOPLE, DAYS and INPUTS are literals in
    `people.ts` / `data.ts` / `inputs.ts`. A database replaces the seed; the
    seed then becomes test fixtures only. The repository is public: no real

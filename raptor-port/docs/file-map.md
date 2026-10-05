@@ -356,6 +356,11 @@ seat counts, cancellation/standby rules and work-hour invariance. `docs/handpass
 and focused-check logs; `docs/superpowers/plans/2026-10-03-insights-build-coordination.md` contains Astra's independent
 D532 meaning read and S01–S33 route map. `src/state/mission-role-persist.test.ts` exercises the real Whiteboard/Postman
 save pipeline, retry, crash recovery, slow-save Undo, atomic template rollback and empty/malformed hydration.
+`src/state/mission-role-seedweek.test.ts` (6 Oct 26, the Codex stack check's W8) — an answer on a built-in demo day
+nobody has edited, through the real save and a fresh boot, and across a week switch (its own file: the week stash is
+module state). `src/ui/sheetfocus.ts` (W12) — the hook by which a question sheet takes the keyboard when it opens and
+gives it back when it closes. `scripts/handpass/stk-host-fix.mjs` — the host's real-browser look at that check's fix
+round.
 The FULL evidence sheet qualifies each unit, connected command, mounted event and running-app result separately.
 
 Insights browser regression: `e2e/insights.spec.ts` (registered in the existing Raptor project) drives actual Logic and Board role controls at phone/desktop widths. `docs/handpass/2026-10-03-insights-mission-mix.md` is the FULL evidence sheet, with risk selection, roll-call, failures and owed reads.

@@ -532,6 +532,25 @@ At either end, focus an eligible ordinary same-day control in that direction,
 otherwise blur; never loop, activate, change day or enter a hidden drawer. Subsequent
 non-text Tab is normal browser navigation. Enter/Escape and D529 remain unchanged.
 
+**While the caret is in a text box, everything that does not hold it keeps up (the Codex stack check, 6 Oct 26 — W15,
+W16, W12, W11).** "Never repaint under the caret" used to mean nothing was redrawn until the caret left text; on the Tab
+route that is a whole day. Now, after each commit: on the WEEK every changed block of every day is written except the
+one block (a `.dsec` section, the day head, the sign-off strip, the warnings box) that contains the caret
+(`dayswap.ts swapDayAround` — it hands back chunks that still describe what is on screen, so the ordinary paint writes
+the held block when the caret leaves; a change needing the whole day replaced waits whole); on the BOARD every panel
+but the caret's own (`SchedBoard.tsx`). So the day's warning list and count (D509), "N pending", "Not yet signed" and
+the sign-off strip are current while he types on. **Held by design until the caret leaves its section:** the puck rings
+and marks inside that section. Inside the held block the wave header's In-time / Rally clock is corrected in place —
+text nodes only, no new markup (`html.ts refreshWaveReports`; `waveHeadTail` / `waveHeadBoard` are the one body for the
+builder and the refresh). `dayswap.ts holdingPlace` keeps the box he is typing in where it was on screen.
+**A save that opens a window stops the route:** `pops.ts windowOverSchedule()` — true from the moment a gesture asks for
+any window over the schedule — is asked straight after the route's blur, and the route declines while one is up; the
+four question sheets (OIL, upchit, "covers other days", "no medical document") take the keyboard when they open and
+give it back when they close (`sheetfocus.ts`). **Spacing alone is no change** (`engine/slots.ts txtSet` folds the
+stored words too): a box whose stored words hold a doubled space is not written by a click or a Tab through it.
+**Open (his answer awaited, `[TAB-DAY-END]`):** after a day's last box with no button below it the caret ends on
+nothing.
+
 `schedule-tab.ts` collects at each gesture, shares ancestor visibility reads within
 that gesture only, then native blur/change saves through existing writers. After
 commit it rechecks current context and preserves any new focus established by a blur
@@ -4893,6 +4912,16 @@ role unresolved and the affected person's ordinary total bar intact (D526). Late
 action and Undo step. Apply this to every forward writer; unresolved saved roles are legitimate, no guessed colour,
 answer-before-creation requirement or new publication block. Working wording edits on an issued day still wait for AL;
 role answers alone count at once without changing signs/pending/amendments (D530).
+**The question and the button are two things (the Codex stack check, 6 Oct 26 — W9):** `mission-role-offer.ts` holds
+ONE open question (D523) and, separately, the temporary Choose / Change button under the Remarks he is in — so with
+one formation's question open (it stays through other edits, D535) every other formation's Remarks still shows its
+button; the formation whose question is open gets no button beside it; pressing another formation's button moves the
+one question there. **In the changes window an answer is filed under its formation** ("Flying · RU ACM", detail
+"Mission role" — the same item as that line's other changes; its recorded callsign when the line has gone), never
+under a hidden row id (W7, `changesmodel.ts roleItem`). **An answer on a built-in demo day nobody has saved survives a
+reload** because the two built-in weeks carry repeatable row ids (W8, `data-schema.md`). **Open (his answers awaited):**
+`[ROLE-QUESTION-SECOND]` — a second formation's automatic question replaces the first one's; `[ROLE-QUESTION-WEEK-DAY]`
+— on the week, going to another day does not end an open question.
 Offer Change mission role temporarily while editing relevant Remarks (D527), reusing the formation question and edit
 permission; no permanent line marker. Named red Missions remain automatic, without overrides/questions. Recheck live
 formation identity/context/permission when answering; never apply an old popup's answer to a changed formation.
@@ -4919,6 +4948,9 @@ browser's bars and pushed the Insights window's title bar and ✕ under the addr
 box's text by dragging and letting go outside the window is one click on the surround to the browser, and closed the window
 under him. Every window that closes on a click outside asks ONE helper, `ui/outside.ts` `clickedOutside` (thirteen places —
 `outside.test.tsx` fails if a window keeps its own test); his 4 Sep 26 rule, a click outside closes, is unchanged.
+*Four more since 6 Oct 26 (the Codex stack check, W10):* the OIL question, the upchit confirm, "covers other days" and
+"no medical document" know their surround by a class, not an id, and were left out of the thirteen — they ask the same
+rule through `clickedSurround`, and the guard test refuses a surround test by class too.
 **A Blue/Red answer counts at once (D530):** on a published day too, it needs no amendment and does not touch the day's
 sign-offs — it is a label for the statistics, not part of the programme (as a Logic rule change is not, D482). This replaces
 "working answers on an issued day wait for AL" above and "new answers on issued days still wait for an amendment" below,
@@ -8804,6 +8836,11 @@ line of its own along the BOTTOM OF THE TOP BAR, edge to edge. The top bar is on
 while it shows, so the page moves down and **nothing is under the warning, on any page, at any size**. It goes when the
 save lands. The passing "Saving…" note is unchanged: it floats under the bar's right end, takes no press, and never
 moves the bar (`[LW-FIGSEL-FLAKE]`, 28 Sep 26).
+**On a phone, in the Scheduler Board's Desktop layout (6 Oct 26, the Codex stack check — W13):** that layout is 1180px
+wide and pans, so the band is pinned to the SCREEN there (sticky at the board's left edge, one screen wide) — the words
+and Retry together at any pan (`17-save-status.css`; `e2e/save-note.spec.ts` walks three pans). In the same layout the
+board's ⋯ menu hangs from its button's right edge when the left-hung menu would pass the screen's edge (W18,
+`SchedBoard.tsx`, `e2e/geometry.spec.ts`).
 
 - **Why not floating, as it was:** it sat for as long as the save kept failing on whatever each page keeps under the
   bar's right end — the name search box on both schedule pages (a phone tap on the box pressed Retry), the Tracker's
