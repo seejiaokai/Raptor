@@ -127,7 +127,7 @@ phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Cod
 
 **From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION]. **D493 (2 Oct 26):** the tidiness read is answered — three tidy-ups approved, each with its area's batch: [LW-ROWS-SPLIT] (the next Leave War batch), [CSS-SPLIT-BY-SCREEN] (first step of the workflow UI pass), [TRK-FILE-TRANSFER-SPLIT] (the Tracker batch); two not now (in [CODE-TIDY-AUDIT]).
 
-**Current direction — D580, 5 Oct 26:** [SANS-COMMITMENT-CALENDAR] is authorized to build from delegated recommendations while the owner sleeps; includes Member Inputs calendar and secondary List. Initial D569 scope: monthly SANS demand/shortage calendar, shared day commitments and existing Custom timing form with no Remarks placeholder. Caps/ops new-chat handoff remains cancelled D568; no new chat created. Caps/ops, other Inputs work and Tracker remain outstanding. Earlier builds/every owed read unchanged; agent settles product choices with reasons and pictures before source work; independent review/required checks and Claude before main remain.
+**Historical build authority — D580, now ON HOLD D585 (5 Oct 26):** [SANS-COMMITMENT-CALENDAR] is authorized to build from delegated recommendations while the owner sleeps; includes Member Inputs calendar and secondary List. Initial D569 scope: monthly SANS demand/shortage calendar, shared day commitments and existing Custom timing form with no Remarks placeholder. Caps/ops new-chat handoff remains cancelled D568; no new chat created. Caps/ops, other Inputs work and Tracker remain outstanding. Earlier builds/every owed read unchanged; agent settles product choices with reasons and pictures before source work; independent review/required checks and Claude before main remain.
 **Timing follow-up:** [REST-FIRST-CREW-HINT] — existing empty-formation predictive-rest gap, filed with caps and ops limits; committed placement still validates. Current Rally evidence declares this limitation; no owner approval inferred.
 **Availability follow-up:** [SANS-PREVIOUS-REPORT-OFFER] — previous-date offers are not combined with target-date half-days for a previous-evening report; characterized in this round's actual picker/placement, with caps and ops limits. No new availability policy or owner waiver inferred.
 **Workflow UI follow-up:** [PALETTE-WRAPPED-HEADER] — inherited sticky-palette overlap under a wrapped desktop account bar; with the UI pass after [CSS-SPLIT-BY-SCREEN]. Current Rally and baseline reproduce it; not dismissed as a helper-only failure.
@@ -1672,7 +1672,13 @@ one whole-app check. This chooses the next batch; its policies and design still
 need the owner. See [CAPS-OPS-LIMITS]; it does not accept the latest UI preview,
 waive owed reads or authorize a live merge.
 
-### [SANS-COMMITMENT-CALENDAR] Inputs and SANS calendars — built, expanded gates/walk PASS; owner look/Claude vetting owed (5 Oct 26)
+**Current direction — D585, 5 Oct 26:** Inputs/SANS calendar is on hold; preserve the completed preview and context. No more design/build/Claude vetting until owner resumes. Other outstanding tasks may be discussed; no new batch starts automatically. Existing D495 later order remains Tracker progress graph → caps/ops limits → whole-app check, with database connection at the end; this pause does not approve another build.
+
+### [SANS-COMMITMENT-CALENDAR] Inputs and SANS calendars — ON HOLD D585; built preview/evidence preserved (5 Oct 26)
+**D585:** owner puts this task on hold before choosing other outstanding work.
+Pause further design, building and Claude vetting until explicit resume. Keep
+the existing branch/Ready preview, settled requirements, recommendations and
+all evidence/owed reads. No cancellation, main authority or new batch inferred.
 **D583 delivery:** show finished desktop and mobile mockups from the actual preview,
 then bring to Claude for vetting. No owner design acceptance or main authority inferred.
 **D584 handoff:** explain owner intent, original references and settled answers;

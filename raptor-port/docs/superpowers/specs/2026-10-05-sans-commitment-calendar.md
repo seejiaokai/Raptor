@@ -1,5 +1,14 @@
 # SANS commitment calendar — product design start, 5 Oct 2026
 
+## On hold — D585, 5 Oct 2026
+
+The owner has put this Inputs/SANS task on hold. Stop further design, build and
+Claude vetting until he resumes it. Preserve the built branch preview, original
+references, settled decisions, delegated choices, evidence and owed reviews.
+Recording the hold and reporting other outstanding tasks are authorized; no
+replacement feature or new chat is selected. Earlier D579/D580 autonomy/build
+authority below is historical while this hold applies.
+
 ## Finished-view delivery — D583
 
 Show the finished design on desktop and mobile after the current build/checks,

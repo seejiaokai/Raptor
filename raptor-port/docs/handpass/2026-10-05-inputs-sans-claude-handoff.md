@@ -1,5 +1,10 @@
 # Inputs and SANS calendars — owner context for Claude
 
+**ON HOLD — D585, 5 Oct 2026.** The owner has paused this task, including Claude
+vetting. Keep this context and the existing preview for a later resume; do not
+start the review or further calendar changes from the older prompt alone. The
+remaining fresh-eye review request below is retained for when he resumes.
+
 D583/D584, 5 Oct 2026. **Start with the product problem and references below. Bring fresh eyes to the approach; the owner has not approved Codex's finished design.** This is a branch preview to vet, not a request to merge. Refresh the checkout and read AGENTS/HANDOFF/standing rules before work. Branch: `codex/inputs-sans-calendar`, based on planning plus `codex/workflow-ui` at9bd14458; do not replace unrelated working changes.
 
 **Ready code Preview: https://raptor-dx35curde-kai-e2f5.vercel.app** — exact code commit `1bf27de172fcd15dc74c8d53da4e65b7ff3e12d3`, GitHub Preview deployment`6850010991` reported success at2026-10-05T02:22:00Z. Branch`codex/inputs-sans-calendar`; refresh it before review. The later closing handoff commit changes documents only; all source/test/driver/bundle files remain identical to Freeze14. Exact shipping receipt: `C:/Users/User/.codex/visualizations/2026/10/04/01a106e0-f018-7e91-be46-ca442dde08b3/inputs-sans/shipping-receipt.json`. Local matching production build: **http://localhost:4192**, accessible on this Windows host while its preview server runs. Vercel is the owner's authenticated look surface; Claude's runtime check uses the matching local production build. Do not use an older workflow-UI preview.
