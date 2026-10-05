@@ -49,6 +49,8 @@ trial the same shape came to about half the cost.
 
 ## The decision (the agent's, D595)
 
+*His word on it, the same night, when told: "ok so sonnet is good for this" — he agrees; no overrule.*
+
 **Walking the app stays with Sonnet 5.5, for every walk, with no Opus walker beside it.** On a build with five known
 faults the Sonnet walker caught all five that the Opus walker caught (one of them only in part, one of them better),
 raised no false alarm, and found the same off-the-key fault ("NaN min") with a sharper control. Across the eight Sonnet
