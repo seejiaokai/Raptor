@@ -158,7 +158,7 @@ look card as a reminder that the question is his.
   glue the number to the name ("Overall notes1"); a passing toast lies over a window on a phone; the Tracker opens with an empty band
   above its first ball. Not compared with `main`; listed for the look card only if he asks.
 
-**THE WALK IS COMPLETE — eight walkers back, 5 Oct 26.** 1,529 pictures saved by the walkers; the host opened 16, each one
+**THE WALK IS COMPLETE — eight walkers back, 5 Oct 26.** 1,471 pictures saved by the walkers; the host opened 16, each one
 behind a finding or a high-consequence PASS. The PC lock was released when the last walker returned.
 
 ## 6. The break tests — to come
