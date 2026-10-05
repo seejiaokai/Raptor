@@ -2442,3 +2442,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** When research feeds a recommendation already made, the pass is not finished until (a) at least one source arguing the other way has been opened and reported, (b) vendor-run numbers are labelled as the vendor's own, and (c) the reply says which claims came from a search summary and not from the page itself.
 
 **Principle:** A search run after a recommendation tends to confirm it. Look for the disconfirming source first, and report it with the same weight.
+
+### Observation 429: A brief's "what the app should now do" paragraph is checked against the FULL rows before it is sent
+
+**Status:** OPEN
+**Date:** 2026-10-05
+**Session context:** Writing the scenario-design brief for the one check of the Codex stack (D589). Numbered on claude/codex-stack-review; codex/inputs-sans-calendar may hold later numbers.
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §4, the scenario brief) — and any brief-writing guidance
+**Type:** internal
+**Phase/Area:** Writing the promise paragraph a reviewer or walker is handed
+
+**Issue:** The host wrote the promise for five pieces from the rulings' short lines and the handoff. One sentence said a weekend's earned leave reads the entered in-time / Rally clock; the ruling's full row (D498) says the earned-leave rule was deliberately not changed. The scenario designer caught it and wrote two scenarios "expected under the brief", flagged as a conflict — so two scenarios had to be downgraded to "recorded, not judged" and the walkers' brief carried the same wrong sentence until corrected in a notes file.
+
+**Suggested improvement:** Before a brief leaves, every sentence of its promise that states a behaviour touching earned leave, the published record, roles or saved data is traced to a ruling's FULL row (grep the row, read it), and the brief cites that row beside the sentence. A promise sentence with no row behind it is marked "the host's reading" so the reviewer treats it as a question, not a requirement.
+
+**Principle:** A brief is the one place a wrong sentence gets multiplied by every reader of it. Summaries are for finding the ruling; the requirement is copied from the ruling itself.
+
+### Observation 430: Before a check is planned around a named reviewer, prove that reviewer answers from this machine
+
+**Status:** OPEN
+**Date:** 2026-10-05
+**Session context:** The same check. A ruling made the same day named a specific model as second reader; the set-up chat and the handoff planned on it. Numbered on claude/codex-stack-review.
+**Skill:** session-handoff; bug-check order §4 (where to spend the reviewers)
+**Type:** internal
+**Phase/Area:** Set-up of a multi-reviewer check; handoff of "who reads what"
+
+**Issue:** The first call to the second reader was refused in two seconds: the command-line tool on this PC did not offer that model to this account (its model list held an older one), although the same model had been used for days from the provider's desktop app. The memory note on how to call the reviewers was also a version behind (it named a model id since replaced). The check had to carry an open question to the owner and an owed read.
+
+**Suggested improvement:** When a ruling or a handoff assigns a job to a named model, the same turn runs a one-word probe of that model through the route the next chat will use, and writes the working command (or "not reachable from here, because …") into the handoff block and the memory note. A per-measurement requirement that needs a quiet machine (an allowance reading before and after one helper) is likewise checked against the plan to fan out, and the order of work written down, before anything is launched.
+
+**Principle:** A plan that names a tool has an untested assumption until the tool has answered once from where the work will run.
