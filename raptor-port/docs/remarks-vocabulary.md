@@ -82,6 +82,7 @@ rules include the original in-time spellings and the approved Rally extension
 | `0900 RALLY` | rally at 09:00; rally supplies the report when no in-time applies |
 | `0900 IN TIME + RALLY` | both activities at the same first valid clock |
 | `RALLY AFTER IN TIME` or `RALLY AFTER IN`, with no clock | immediate rally at its applicable in-time; it never adds another minute |
+| `0830H: VL RALLY AFTER IN TIME` — the same words WITH a clock | VL's rally at 08:30 and nothing else: it is never a second in-time, so the whole-wave in-time still starts VL's day (D505; the Codex stack check's W3, 5 Oct 26) |
 | `0900` `09:00` `0900H` `09:00H` `0900L` `09:00L` without a recognised activity | the legacy unlabelled in-time |
 | `0900 RALLYING` | also legacy unlabelled in-time: RALLYING is not the bounded word RALLY |
 | `0900H: RU RALLY`, or a formation name in remarks | that activity applies to this wave's named formation; only its own formation callsigns are recognised |
@@ -111,7 +112,10 @@ and all-day inputs do not become earlier rest commitments through these words.
 → landing; equality is legal. `REPORT_ORDER` names an actual reversed pair as
 a red warning; a blank B is checked and named as the **suggested brief**.
 `REPORT_UNRESOLVED` is an advisory for a completed malformed clock or immediate
-rally lacking an applicable in-time. Other clockless notes remain inert.
+rally lacking an applicable in-time. A clock attempted in a spelling the reader does not
+take — `8h00`, `8.00`, `08.00`, or digits glued to the words (`0800IN TIME`) — is a malformed
+clock too and gets the same line (W19, 5 Oct 26); digits that are plainly not a clock
+(`FL240`, `2 SHIPS`, `2.5 HRS`) do not. Other clockless notes remain inert.
 Drafts save and first publication, amendments and correcting reissues all remain
 allowed with a timing warning (D509); issued copies keep the warning normally.
 The add button's nominal lead and words are both set in Logic (D510/D511).

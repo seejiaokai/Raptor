@@ -167,8 +167,10 @@ export function workSpan(evs:any){
     const os=o.kind==='fly'?(o.report!=null?o.report:o.to-VCONF.reportLead)
             :o.kind==='shift'&&o.report!=null?Math.min(o.report,o.s):o.s;
     const oe=o.kind==='fly'?o.ld+VCONF.debrief:o.e;
-    if(os!=null&&(s==null||os<s))s=os;
-    if(oe!=null&&(e==null||oe>e)){e=oe;ef=o.kind==='fly'?o:null;}
+    /* W4 (5 Oct 26): a flying line with no take-off or landing yet carries NaN times — it has no span, and must
+       not turn the man's whole day (and his week's hours in Insights, "NaN min") into NaN. */
+    if(os!=null&&!isNaN(os)&&(s==null||os<s))s=os;
+    if(oe!=null&&!isNaN(oe)&&(e==null||oe>e)){e=oe;ef=o.kind==='fly'?o:null;}
   });
   if(s==null||e==null)return null;
   return {s,e,span:e-s,ef};

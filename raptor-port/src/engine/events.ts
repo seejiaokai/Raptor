@@ -503,10 +503,15 @@ export function waveInTime(w:any){
   const parsed=parseReportingLines(w);
   (w.formations||[]).forEach((f:any)=>{
     if(f.cx)return;
-    const to=parseHM(f.to); if(to==null)return;
-    const t=resolveReporting(w,f,to,parsed).report;
+    /* W5 (5 Oct 26): a formation with no take-off yet still reads its reporting line — with no take-off the clock
+       stays on its own day, exactly as buildDay's seatIntime reads it — so the header, the Available-crew band and
+       the day's checks never give two readings of one line. */
+    const to=parseHM(f.to);
+    const t=resolveReporting(w,f,to==null?NaN:to,parsed).report;
     if(t!=null&&(best==null||t<best))best=t;
   });
+  /* lines, but no formation left to read them (none yet, or every one cancelled): the earliest typed clock, as before D497 */
+  if(best==null&&!(w.formations||[]).some((f:any)=>!f.cx))parsed.forEach(p=>{if(p.clock!=null&&(best==null||p.clock<best))best=p.clock;});
   if(best==null)(w.formations||[]).forEach((f:any)=>{const to=parseHM(f.to); if(to!=null&&(best==null||to<best))best=to;});
   return best;
 }

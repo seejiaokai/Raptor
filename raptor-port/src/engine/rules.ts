@@ -145,6 +145,13 @@ export function kindOff(k:any){return !!SHIFT_HARD[k]!==!!RULE_STD.s[k];}
 export function rulesOffCount(){
   return Object.keys(RULE_SPEC).filter(ruleOff).length
        + Object.keys(KIND_LABEL).filter(kindOff).length;}
+/* W2 (the Codex stack check, 5 Oct 26): the settings a CHECK reads. A text setting (D511 — the words the
+   "+ In-time / Rally" button fills in) is a wording preference no rule reads, so it must not light the RULES MODIFIED
+   stamp or the "checked against these values" strip — a squadron that says RALLY would wear the stamp for good and
+   could no longer tell when a real rule had changed. rulesOffCount() still counts it for "N off standard" and Reset. */
+export function rulesCheckedOffCount(){
+  return Object.keys(RULE_SPEC).filter((k:any)=>RULE_SPEC[k].kind!=='text'&&ruleOff(k)).length
+       + Object.keys(KIND_LABEL).filter(kindOff).length;}
 /* persistence — only what differs from standard is stored, so a later change to
    the standard is picked up rather than silently overridden by a stale copy */
 export function rulesSave(){

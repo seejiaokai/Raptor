@@ -39,15 +39,20 @@ const immediateWord=bounded('RALLY[ \\t]+AFTER[ \\t]+IN(?:[ \\t-]+TIME|TIME)?');
 export function parseReportingLines(w:any):ReportingLine[]{
   const css=[...new Set<string>((w.formations||[]).map((f:any)=>String(f.cs??'').trim()).filter(Boolean))];
   return (w.intimes||[]).map((value:any,index:number)=>{
-    const text=String(value??''), clock=intimeTime(text), immediate=clock==null&&immediateWord.test(text);
-    const activities:Activity[]=immediate?['rally']:[];
-    if(!immediate){
+    /* W3 (D505): "RALLY AFTER IN TIME" is a RALLY line whether or not a clock is typed with it — with a clock it
+       is that rally's own time, never a second in-time (which, on a formation's line, replaced the wave's in-time). */
+    const text=String(value??''), clock=intimeTime(text), after=immediateWord.test(text), immediate=clock==null&&after;
+    const activities:Activity[]=after?['rally']:[];
+    if(!after){
       if(inWord.test(text))activities.push('inTime');
       if(rallyWord.test(text))activities.push('rally');
       if(clock!=null&&!activities.length)activities.push('inTime'); // legacy unlabelled line
     }
     const targets=css.filter(cs=>bounded(cs.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).test(text));
-    const malformed=clock==null&&/(?:^|[^A-Za-z0-9])(?:\d{1,2}:\d{2}|\d{3,4})\s*[HL]?(?![A-Za-z0-9])/i.test(text);
+    /* W19 (5 Oct 26): a clock ATTEMPTED in a spelling the reader does not take — 8h00, 8.00, 0800IN — gets the same
+       "no recognised clock" line as 25:90; digits that are plainly not a clock (FL240, 2 SHIPS, 2.5 HRS) do not. */
+    const malformed=clock==null&&(/(?:^|[^A-Za-z0-9])(?:\d{1,2}:\d{2}|\d{3,4})\s*[HL]?(?![A-Za-z0-9])/i.test(text)
+      ||/(?:^|[^A-Za-z0-9])(?:\d{1,2}[.hH]\d{2}(?![A-Za-z0-9])|\d{3,4}(?=[A-Za-z])(?![HLhl](?![A-Za-z0-9])))/.test(text));
     return {index,text,clock,activities,targets,immediate,malformed};
   });
 }

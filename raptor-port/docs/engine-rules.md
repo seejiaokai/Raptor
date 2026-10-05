@@ -206,7 +206,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   and publication. Bounded, case-insensitive IN TIME / IN-TIME / INTIME and
   RALLY identify each activity. One first-valid clock bearing both labels
   applies to both. A clock-only legacy instruction remains IN; a clockless
-  `RALLY AFTER IN TIME` (or `RALLY AFTER IN`) inherits its applicable IN.
+  `RALLY AFTER IN TIME` (or `RALLY AFTER IN`) inherits its applicable IN, and the same
+  words typed WITH a clock are that rally's own time — never a second in-time (W3, 5 Oct 26).
+  A wave's header time (`waveInTime`) reads a formation with no take-off yet as the day's
+  checks do — the typed clock on its own day (W5, 5 Oct 26).
   Other clockless notes stay inert. Formation matching is bounded against only
   this wave's actual formation names anywhere in the whole line, including
   remarks; unmatched words and personal names do not create another target.

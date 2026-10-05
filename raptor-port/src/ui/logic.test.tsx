@@ -222,6 +222,33 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
   })
 })
 
+/* W2 (the Codex stack check, 5 Oct 26): the button's WORDS are a squadron's wording preference (D511), not a rule
+   any check reads — so they never light the RULES MODIFIED stamp or the "schedule is being checked against these
+   values" strip; the count, the cell's own tag and Reset to standard still know them. */
+describe('W2 the words the + In-time / Rally button fills in are not a modified RULE', () => {
+  it('words alone: no stamp, no strip, Reset still offered; a number brings both back', async () => {
+    const { VCONF, rulesReset } = await import('../engine/rules')
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
+    await act(async () => { rulesReset(); VCONF.reportText = 'RALLY'; notify() })
+    expect(document.body.classList.contains('page-rules-off')).toBe(false)
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
+    expect(($('#lgReset') as HTMLElement).hidden).toBe(false)
+    expect($('#lgCount').textContent).toContain('1 off standard')
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='viewsched')!)
+    expect(document.body.classList.contains('page-rules-off')).toBe(false)
+    expect($('#vBanner').classList.contains('rules-off')).toBe(false)
+    await act(async () => { VCONF.crewRest = 600; notify() })
+    expect(document.body.classList.contains('page-rules-off')).toBe(true)
+    expect($('#vBanner').classList.contains('rules-off')).toBe(true)
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(false)
+    expect($('#lgOff').textContent).toContain('1 rule changed')
+    expect($('#lgCount').textContent).toContain('2 off standard')
+    await act(async () => { rulesReset(); notify() })
+    expect(document.body.classList.contains('page-rules-off')).toBe(false)
+  })
+})
+
 describe('the stamp does not need the Logic page (audit2 #6)', () => {
   it('a modified rule stamps the body from the banner path, on any page', async () => {
     const { VCONF } = await import('../engine/rules')

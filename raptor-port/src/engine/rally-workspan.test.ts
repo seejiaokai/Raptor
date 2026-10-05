@@ -112,6 +112,14 @@ describe('Rally reporting decisions D497–D507: RT1 scope, RT2 grammar, RT3 act
     const both=wave(['08:00 IN-TIME + RALLY'])
     expect(resolveReporting(both,both.formations[0],720)).toMatchObject({inTime:480,rally:480,report:480})
   })
+  it('W3 D505 a formation RALLY AFTER IN TIME typed WITH a clock is its rally only — the whole-wave in-time still starts its day, in either order', () => {
+    for(const lines of [['08:00H: IN TIME + WX/NOTAMS','08:30H: VL RALLY AFTER IN TIME'],['08:30H: VL RALLY AFTER IN TIME','08:00H: IN TIME + WX/NOTAMS']]){
+      const w=wave(lines,[formation('VL','11:00'),formation('RU','11:00')])
+      expect(resolveReporting(w,w.formations[0],660)).toMatchObject({inTime:480,rally:510,report:480})
+      expect(resolveReporting(w,w.formations[1],660)).toMatchObject({inTime:480,rally:null,report:480})
+      expect(seatIntime(w,w.formations[0],660)).toBe(480)
+    }
+  })
   it('D500/D504 matching includes remarks, bounded own-wave tokens, and no person targeting', () => {
     const w=wave(['08:00 IN TIME | TRUE','09:00 RALLY (vl + IGNITE)'])
     expect(resolveReporting(w,w.formations[0],720).rally).toBe(540)
@@ -143,6 +151,17 @@ describe('Rally reporting decisions D497–D507: RT1 scope, RT2 grammar, RT3 act
       expect(reportingIssuesForWave(wave([text]))).toEqual([])
     const w=wave(['2590 THEN 0900 INTIME'])
     expect(resolveReporting(w,w.formations[0],720).inTime).toBe(540)
+  })
+  it('W19 a clock spelt in a way the app does not read is told so, like 25:90 — and prose with digits is left alone', () => {
+    for(const text of ['8h00 VL IN TIME','8.00 IN TIME','08.00 RALLY','0800IN TIME + WX/NOTAMS','800RALLY']){
+      const w=wave([text],[formation()]); const issues=reportingIssuesForWave(w)
+      expect(issues,text).toHaveLength(1)
+      expect(issues[0],text).toMatchObject({blocking:false,code:'REPORT_UNRESOLVED',msg:'VL: reporting line 1 has no recognised clock. Check the time.'})
+    }
+    for(const text of ['IN TIME + 2 SHIPS','RALLY AT FL240','IN TIME BLDG 12','RALLY 2.5 HRS PRIOR','IN TIME A0900 glued','IN TIME 12345 block','8 IN TIME'])
+      expect(reportingIssuesForWave(wave([text],[formation()])),text).toEqual([])
+    /* a readable clock elsewhere on the line is the line's clock — nothing to say */
+    expect(reportingIssuesForWave(wave(['8.00 or 08:00 IN TIME'],[formation()]))).toEqual([])
   })
   it('D503 resolves each same-callsign formation using its own take-off', () => {
     const w=wave(['08:00 VL IN TIME'],[formation('VL','07:00'),formation('VL','12:00')])

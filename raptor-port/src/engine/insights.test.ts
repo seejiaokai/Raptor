@@ -130,3 +130,26 @@ describe('work hours for the week', () => {
     expect(mine.mins, "whose week is at least that one day's span").toBeGreaterThanOrEqual(sp.span)
   })
 })
+
+/* W4 (the Codex stack check, 5 Oct 26 — a walker's find, old on `main` too): a man on a flying line that has no
+   take-off or landing yet has no span that day. His week total read "NaN min", and one such line poisoned the whole
+   total of a man who also had real, timed work. */
+describe('W4 a flying line with no times yet adds no hours — never NaN', () => {
+  it('an untimed line on every flying day moves nobody’s hours or days, idle or busy', () => {
+    const base = computeInsights()
+    const of = (I: any, id: string) => { const h = I.hours.find((x: any) => x.id === id); return h ? [h.mins, h.days] : [0, 0] }
+    const busy = base.hours[0].id
+    for (const who of ['waldo', busy]) {
+      DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
+      let planted = 0
+      DAYS.forEach((d: any) => { const w = (d.waves || []).find((x: any) => !x.standalone); if (!w) return; planted++
+        w.formations.push({ cs: 'NT', msn: 'BFM', to: '', ld: '', br: '', aircraft: [{ p: who, w: '', area: '', rmks: '', opts: {} }] }) })
+      expect(planted).toBeGreaterThan(2)
+      const after = computeInsights()
+      expect(after.hours.every((h: any) => Number.isFinite(h.mins)), 'no NaN in the list').toBe(true)
+      expect(of(after, who), who).toEqual(of(base, who))
+    }
+    expect(workSpan([{ kind: 'fly', to: NaN, ld: NaN, report: NaN }])).toBe(null)
+    expect(workSpan([{ kind: 'fly', to: NaN, ld: NaN, report: 480 }]), 'a reporting clock alone is no span').toBe(null)
+  })
+})

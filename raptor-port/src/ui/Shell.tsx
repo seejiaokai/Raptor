@@ -8,7 +8,7 @@ import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
-import { rulesOffCount } from '../engine/rules'
+import { rulesCheckedOffCount } from '../engine/rules'
 import { isAdmin, me, mayViewAsMember } from '../state/perms'
 import { toggleChanges } from './changesopen'
 import { weekNew } from './changesmodel'
@@ -257,7 +257,7 @@ export function Shell() {
      the reference's renderStatus comment records the bug: "the stamp used to
      be set only by renderLogic(), so a reload with saved overrides showed a
      clean banner until someone happened to open Logic" (audit2 probe #6) */
-  useEffect(() => { document.body.classList.toggle('page-rules-off', !!rulesOffCount()) })
+  useEffect(() => { document.body.classList.toggle('page-rules-off', !!rulesCheckedOffCount()) })
   /* NO validate() here: the reference never validates during a repaint — every
      mutation path has already validated, and a second engine pass per paint is
      what blew the phone budget */
@@ -295,7 +295,7 @@ export function Shell() {
      so a memoized parent never starves them. */
   const legend = legendHTML()
   const hlSig = [...HLSET].sort().join(',')
-  const rulesOff = rulesOffCount()
+  const rulesOff = rulesCheckedOffCount()
 
   /* computed ONCE per render — the bell's class and the memo deps both read
      it (bug pass, 28 Aug 26: two full INPUTS scans per render was waste);
@@ -508,7 +508,7 @@ export function Shell() {
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           </div>
         </div>
-        <div className={'schedbanner' + (rulesOffCount() ? ' rules-off' : '')} id="vBanner" />
+        <div className={'schedbanner' + (rulesCheckedOffCount() ? ' rules-off' : '')} id="vBanner" />
         <details className="legendbox" id="vLegendBox">
           <summary className="legend-sum">Legend — colours &amp; flags</summary>
           <div className="legend" id="vLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
@@ -588,7 +588,7 @@ export function Shell() {
               to this prototype" title was removed (owner, 22 Aug 26) on both
               widths — it carried a stale hardcoded date and being on Edit
               Schedule already says it is the edit surface. */}
-          <div className={'schedbanner' + (rulesOffCount() ? ' rules-off' : '')} id="eBanner" />
+          <div className={'schedbanner' + (rulesCheckedOffCount() ? ' rules-off' : '')} id="eBanner" />
           <ALPanel />
           <details className="legendbox" id="eLegendBox">
             <summary className="legend-sum">Legend — colours &amp; flags</summary>
