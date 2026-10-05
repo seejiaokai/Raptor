@@ -371,7 +371,7 @@ report is `docs/handpass/2026-10-03-insights-mission-mix-review-r2.md`, covering
 804 matching hashes, eleven independently opened existing pictures and explicit limits. Required gate and comparison logs are retained in
 `docs/handpass/insights-gates/`, including the unchanged planning snapshot's three existing adapted audit failures.
 
-D569 SANS calendar design start: `docs/superpowers/specs/2026-10-05-sans-commitment-calendar.md` records the requested month/day/form behaviour, private reference mapping and unsettled product choices; no calendar source built.
+D569 SANS calendar design start: `docs/superpowers/specs/2026-10-05-sans-commitment-calendar.md` records the requested month/day/form behaviour, private reference mapping and historical unsettled choices. D580 now authorizes the delegated build recorded below.
 Initial independent read/full dispositions: `docs/superpowers/plans/2026-10-05-sans-calendar-initial-read.md`.
 
 D567 design-start draft, cancelled D568: `docs/superpowers/specs/2026-10-05-caps-ops-limits.md` retains the cancelled caps/ops priority, baseline and policy boundaries; no new chat created. `docs/handpass/2026-10-05-caps-ops-handoff-meaning-read.md` preserves the independent priority/handoff read and correction dispositions; application unchanged.
@@ -382,4 +382,35 @@ Current accepted-build evidence: `docs/handpass/2026-10-04-accepted-taper-interf
 Fresh accepted-batch R1 inspector: immutable `docs/superpowers/briefs/2026-10-04-accepted-taper-interface-astra-final-r1.md`; complete PASS/report `docs/handpass/2026-10-04-accepted-taper-interface-astra-final-r1.md`. Source freeze unchanged; closing status only afterward.
 
 D580 Inputs/SANS calendar proposed build plan and independent scenario proposal: docs/superpowers/plans/2026-10-05-inputs-sans-calendar.md (Astra; corrected plan independently challenged by Sol PASS; private synthetic design pictures separate).
+
+D581/D582 header/counts addendum: docs/superpowers/plans/2026-10-05-inputs-sans-header-counts-addendum.md (Astra); independent Sol disposition: docs/superpowers/plans/2026-10-05-inputs-sans-header-counts-sol-challenge.md. Private synthetic proposal pictures precede source work; final expanded code remains owed to Claude after reset.
+
+`scripts/handpass/inputs-sans-header-counts.mjs`: independent D581/D582 actual-app scenario driver; default phone header/filter memory, three-activity totals, popup layering and role withdrawal, short phone/320 reflow. Synthetic design examples are separate from runtime proof.
+
+`docs/handpass/2026-10-05-inputs-sans-claude-handoff.md`: D583/D584 owner-intent-first Claude handoff, original reference map, settled answers versus agent recommendations, finished desktop/mobile views and verification/review limits. Invites fresh critique; no assumed design approval or main authority.
 D580 independent Sol plan/picture challenge: `docs/superpowers/plans/2026-10-05-inputs-sans-plan-challenge.md`; corrected plan PASS, source/review authority qualified.
+
+D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
+through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
+thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.
+`src/ui/sans-calendar-model.ts` derives mode subsets and unique F/Fly, O/OFT and A/AMT people per date (D581); only Fly drives shortage;
+`sans-calendar-model.test.ts` pins flags, hours, years and spans. `src/ui/SansCalendarControls.tsx`
+provides explicit flying-period SVGs and admin forms. `src/ui/inputs-calendar-flow.test.tsx`
+pins main embedded calendar/secondary list, demand/icons, member controls and reverse range seeds.
+`docs/handpass/2026-10-05-inputs-sans-calendar.md` is the FULL roll-call/evidence sheet.
+`e2e/inputs-sans-calendar.spec.ts` pins production save/reload/count, settings,
+date gestures, member doors and phone reach. Its project match is in Playwright config.
+Independent runtime drivers: `scripts/handpass/inputs-sans-calendar.cjs` (Astra
+scenario walk; host portability/failed-harness corrections) and
+`scripts/handpass/inputs-sans-supplementary.mjs` (Astra FULL downstream cases).
+Results/pictures are task-private; evidence and final reviewer reports live under handpass.
+Fresh final inspection brief: `docs/superpowers/briefs/2026-10-05-inputs-sans-astra-final-r1.md`.
+Its fresh independent inspector's complete report belongs at
+`docs/handpass/2026-10-05-inputs-sans-astra-final-r1.md`; that report is not an
+owner or Claude approval and never edits the source it judges.
+R1 repair uses transient `state/view.ts:INPREVEAL`/`requestInpReveal` metadata
+and live-only `revealInput`, consumed by Calendar/List. Ordinary and confirmed
+save callbacks carry the actual retained row; `undo-wire.ts` requests the
+directional image before restore, validated by the live renderer afterward.
+Final fresh R2 brief/report: `docs/superpowers/briefs/2026-10-05-inputs-sans-astra-final-r2.md`
+and `docs/handpass/2026-10-05-inputs-sans-astra-final-r2.md`; immutable after dispatch.

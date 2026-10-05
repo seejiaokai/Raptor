@@ -4805,6 +4805,7 @@ test('the desktop checks panel resizes by its grip', async ({ page }) => {
 test('the phone Inputs cards align their type and date columns', async ({ page }) => {
   await page.setViewportSize(PHONE)
   await login(page); await go(page, 'inputs')
+  await page.click('#inListBtn') // D580: these assertions concern the secondary List.
   /* the default today→two-weeks window is EMPTY on the demo data by design
      (owner, 12 Aug 26 — do not "fix" it): All dates is the way to rows,
      exactly as a user is told by the empty state */
@@ -4829,7 +4830,9 @@ test('the phone Inputs cards align their type and date columns', async ({ page }
   expect(m.n, 'enough cards on screen to prove alignment').toBeGreaterThan(3)
   for (const x of m.chipX) expect(Math.abs(x - m.chipX[0]), 'every type chip starts at the same x').toBeLessThan(1.5)
   for (const x of m.dateX) expect(Math.abs(x - m.dateX[0]), 'every date starts at the same x').toBeLessThan(1.5)
-  expect(m.sansTail, 'the SANS tail is hidden on a phone — the chip reads SANS AVAIL').toBe('none')
+  await page.click('#inSansMode')
+  const sansTail=await page.locator('#inBody .intag .bl').first().evaluate(el=>getComputedStyle(el).display)
+  expect(sansTail, 'the SANS tail is hidden on a phone — the chip reads SANS AVAIL').toBe('none')
   expect(m.below, 'a card carrying remarks exists in the demo data').toBeTruthy()
   expect(m.below.rkTop, 'remarks sit below the callsign line').toBeGreaterThanOrEqual(m.below.nameBottom - 0.5)
   expect(Math.abs(m.below.rkLeft - m.below.nameLeft), 'and start under it').toBeLessThan(1.5)
@@ -4844,21 +4847,23 @@ test('the phone Inputs cards align their type and date columns', async ({ page }
    chips are bare colour bars, not text. */
 test.describe('the Inputs month calendar', () => {
   for (const [name, viewport] of [['phone', PHONE], ['desktop', DESK]] as const) {
-    test(`fills the viewport with 7 equal columns, chips inside their cells, on ${name}`, async ({ page }) => {
+    test(`fills the Inputs workspace with 7 equal columns, chips inside their cells, on ${name}`, async ({ page }) => {
       await page.setViewportSize(viewport)
       await login(page)
       await go(page, 'inputs')
       await page.click('#inCalBtn')
       await page.waitForSelector('#inpCal')
 
-      /* the overlay is the whole screen — that is what "full screen" means */
+      /* D580: the main calendar fills Inputs while app navigation stays reachable. */
       const box = await page.evaluate(() => {
         const r = document.getElementById('inpCal')!.getBoundingClientRect()
-        return { x: r.x, y: r.y, w: r.width, h: r.height, iw: innerWidth, ih: innerHeight }
+        const parent=document.querySelector('.inputs-workspace')!.getBoundingClientRect()
+        return { x: r.x, y: r.y, w: r.width, h: r.height, iw: innerWidth, ih: innerHeight, pw:parent.width }
       })
-      expect(box.x).toBe(0); expect(box.y).toBe(0)
-      expect(Math.abs(box.w - box.iw)).toBeLessThan(1)
-      expect(Math.abs(box.h - box.ih)).toBeLessThan(1)
+      expect(box.x).toBeGreaterThanOrEqual(0); expect(box.y).toBeGreaterThan(0)
+      expect(Math.abs(box.w - box.pw)).toBeLessThan(2)
+      expect(box.h).toBeGreaterThanOrEqual(460)
+      await expect(page.locator('#inMemberMode')).toBeVisible()
 
       /* seven equal columns — the first WEEK's cells, blanks included, and no
          horizontal spill past the overlay's own right edge. Each week is its own
@@ -4907,7 +4912,7 @@ test.describe('the Inputs month calendar', () => {
         expect(h.length).toBeGreaterThan(0)
         for (const v of h) expect(v, 'phone chips are compact colour bars').toBeLessThanOrEqual(10)
       }
-      await page.click('#icClose')
+      await page.click('#inListBtn')
     })
   }
 })

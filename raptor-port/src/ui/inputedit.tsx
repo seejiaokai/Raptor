@@ -11,7 +11,7 @@
    What is NOT here is the Inputs page's own furniture — the calendar, the
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
@@ -39,6 +39,7 @@ import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, mayEditInputOf, mayDeleteInputOf } from '../state/perms'
 import { INPEDIT, setInpEdit, OILASK, setOilAsk, setMedMove } from './pops'
+import { CURPAGE, revealInput } from '../state/view'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
 import { clickedOutside } from './outside'
@@ -798,7 +799,7 @@ export const medSegmentsProtected = (base: any, segs: any[], keepTail?: any, ent
   segs.some(g => inputProtected({ ...base, date: ordLabel(g.startOrd, base.yr), endDate: ordLabel(g.endOrd, base.yr) }) ||
     medPlanProtected(newMedTrimPlan(base.person, base.type, g.startOrd, g.endOrd, except, keepTail, entryEnd)))
 
-export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any): boolean {
+export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any, onAdded?: (row:any)=>void): boolean {
   if (!draft) return false
   /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only
      for whoever they are viewing as; the Person choice is a scheduler's).
@@ -877,6 +878,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
      preflights above) — report failure, don't log a phantom "Input added" (P2-QREV-04) */
   if (!ok) return false
   /* its history line is the change history's one writer's (state/changelines.ts — Astra DP-03, 28 Sep 26) */
+  onAdded?.(row)
   return true
 }
 
@@ -1559,7 +1561,7 @@ export function InputEditor() {
      hand-off (pops.OILASK) is consumed HERE: opened on the flagged row, the
      OIL sheet comes straight up over the dialog so the tap lands on the
      question itself — one-shot, cleared as it is read. */
-  useEffect(() => {
+  useLayoutEffect(() => {
     setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
     if (r && !r._new && OILASK && r.iid === OILASK) {
       setOilAsk(null)
@@ -1592,15 +1594,19 @@ export function InputEditor() {
     if (medPlanProtected(removals.map(row => ({ row })))) return medicalLocked()
     if (isNew) {
       let ok = false
+      let savedRow:any=null
       writeInputsBatch(() => {
-        ok = commitNewInput(draft, ctx === 'g')
+        ok = commitNewInput(draft, ctx === 'g', undefined, undefined, row=>{savedRow=row})
         /* the OIL answers land on the just-unshifted row, inside the same
            batch, so the add and its acknowledgment are ONE undo step */
-        if (ok && oilDec) INPUTS[0].oil = oilDec
+        if (ok && oilDec) savedRow.oil = oilDec
         if (ok && removals.length)
           applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
       })
-      if (ok) { HOOKS.toast(ctx === 'g' ? 'Input added to the Ground Programme' : 'Input added', 'ok'); close() }
+      if (ok) {
+        if(r._calendar||CURPAGE==='inputs')revealInput(savedRow)
+        HOOKS.toast(ctx === 'g' ? 'Input added to the Ground Programme' : 'Input added', 'ok'); close()
+      }
       return
     }
     let ok = false
@@ -1610,7 +1616,7 @@ export function InputEditor() {
       if (ok && removals.length)
         applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
     })
-    if (ok) { HOOKS.toast('Input updated', 'ok'); close() }
+    if (ok) { if(CURPAGE==='inputs')revealInput(r);HOOKS.toast('Input updated', 'ok'); close() }
     else if (INPUTS.indexOf(r) < 0) close()
   }
   /* the clash sheet's Save — resolve the choices into kept segments, file
@@ -1627,16 +1633,17 @@ export function InputEditor() {
       remarks: withRemarksTail(draft.remarks, ordISO(g0.startOrd), ordISO(g0.endOrd), 'till'),
     }
     let ok = false
+    let savedRow:any=isNew?null:r
     writeInputsBatch(() => {
-      ok = isNew ? commitNewInput(d2, ctx === 'g', keepTail, medConf.b) : commitInputEdit(r, d2, keepTail, medConf.b)
+      ok = isNew ? commitNewInput(d2, ctx === 'g', keepTail, medConf.b, row=>{savedRow=row}) : commitInputEdit(r, d2, keepTail, medConf.b)
       /* the commit's own trim only cuts rows the first segment overlaps —
          all of them chosen losers, since kept rows sit outside every
          segment; the later segments land as sibling rows, each trimmed the
          same way. keepTail carries the filer's per-leftover Remove/Keep so a
          tail is minted only where kept (owner, 28 Aug 26) */
-      if (ok) mintMedSegments(isNew ? INPUTS[0] : r, segs.slice(1), keepTail, medConf.b)
+      if (ok) mintMedSegments(savedRow, segs.slice(1), keepTail, medConf.b)
     })
-    if (ok) { HOOKS.toast(isNew ? 'Input added' : 'Input updated', 'ok'); close() }
+    if (ok) { if(r._calendar||CURPAGE==='inputs')revealInput(savedRow);HOOKS.toast(isNew ? 'Input added' : 'Input updated', 'ok'); close() }
     else if (!isNew && INPUTS.indexOf(r) < 0) close()
   }
   /* `skipDoc` is reserved for the DocConfirm "No document" resume (owner,
@@ -1791,7 +1798,7 @@ export function InputEditor() {
             <input type="date" id="inpEditUpDate" aria-label="Upchit date" value={draft.start}
               onChange={e => setDraft({ ...draft, start: e.target.value, end: '' })} />
           </label>}
-          {ctx === 'u' && <div className="inped-f">
+          {(ctx === 'u' || (isNew && r._calendar)) && <div className="inped-f">
             <span className="inped-k">Dates</span>
             <div className="inped-dates">
               <RangeCal idPrefix="inpEd" start={draft.start} end={draft.end}
@@ -1862,7 +1869,9 @@ export function InputEditor() {
             </div>
           </div>}
           <div className="inped-hint">{isNew
-            ? ctx === 'up'
+            ? r._calendar
+              ? 'Choose the dates and your available hours. Save adds one input covering the whole date range.'
+              : ctx === 'up'
               ? 'Pick the day he is fit for full duty and attach the upchit document — the medical entry ends the day before, and a summary asks before anything is changed.'
               : ctx === 'u'
               ? 'Pick the dates on the calendar — the remarks carry the till date automatically, and a leave syncs to the Inputs page and Leave War.'

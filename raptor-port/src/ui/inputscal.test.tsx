@@ -15,7 +15,7 @@ import { DAYRMK, PLANPUCKS, addPlanPuck, addPuckPeople, addPuckRow, removePlanPu
 import { LIFT_LAND_MS, markLand, pendingLand } from './lift'
 import { ME } from '../state/auth'
 import { PEOPLE, QORDER } from '../engine/people'
-import { fmt, fmtDay, firstPersonalType } from './inputedit'
+import { fmt, fmtDay, unfmt, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { monthCells, MAX_CHIPS, HOLD_ADD } from './InputsCal'
 
@@ -51,6 +51,9 @@ const ptr = (type: string, x: number, y: number, id = 1) =>
 const tap = async (el: Element, x: number, y: number) => act(async () => {
   el.dispatchEvent(ptr('pointerdown', x, y))
   el.dispatchEvent(ptr('pointerup', x, y))
+  // A browser follows a tap with click. caldrag consumes that click after its
+  // own onTap; omitting it left suppression armed for the next toolbar click.
+  el.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))
 })
 /* a React-controlled text input needs the native value setter, or React's
    own change-detection swallows a same-string re-set — the same trick every
@@ -104,14 +107,16 @@ describe('monthCells (pure)', () => {
 })
 
 describe('the Inputs page calendar toggle', () => {
-  it('#inCalBtn leads the title row as a prominent switch and opens the overlay; #icClose closes it', async () => {
+  it('D582 groups Calendar with List after input category and retains opening/closing', async () => {
     expect($('#inCalBtn'), 'the toggle button exists').toBeTruthy()
-    /* lifted into the title row and accent-styled (owner, 22 Aug 26 — "make
-       the calendar button more obvious"); it is no longer the plain grey
-       button in the filter bar */
-    expect($('#inCalBtn')!.closest('.title'), 'it leads the title row now').toBeTruthy()
-    expect($('#inCalBtn')!.classList.contains('calview'), 'and wears the prominent style').toBe(true)
-    expect($('#inpCal'), 'closed to start with').toBeFalsy()
+    /* D582 supersedes the old full-width Calendar accent: input category first,
+       then the compact presentation group. The same switch still works. */
+    expect($('#inCalBtn')!.closest('.inputs-views'), 'presentation controls are grouped').toBeTruthy()
+    expect($('#inListBtn')!.closest('.inputs-views')).toBe($('#inCalBtn')!.closest('.inputs-views'))
+    expect($('.inputs-modes')!.compareDocumentPosition($('.inputs-tools')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect($('#inpCal'), 'D580: calendar opens first inside Inputs').toBeTruthy()
+    await click($('#inListBtn'))
+    expect($('#inpCal'), 'secondary list is reachable').toBeFalsy()
 
     await click($('#inCalBtn'))
     expect($('#inpCal'), 'opens on a click').toBeTruthy()
@@ -172,12 +177,16 @@ describe('chips (seeded demo data)', () => {
      san. Filtering to the type itself is what a scheduler would actually do
      to see the SANS picture, and it is what isolates the tone here too. */
   it('a SANS Availability record chips purple', async () => {
-    await setSelect('#inFType', 'SANS Availability')
+    await click($('#inSansMode'))
+    await goJul2026()
     try {
       const cell = $('[data-icday="2026-07-13"]')!
-      expect(cell.querySelector('.ic-chip.san'), cell.textContent || '').toBeTruthy()
+      expect(cell.querySelector('.sans-cell-summary'), 'SANS mode shows its daily count').toBeTruthy()
+      await tap(cell,10,10)
+      expect($('.ic-poprow.san'), 'offers retain the purple row treatment').toBeTruthy()
     } finally {
-      await setSelect('#inFType', 'all')
+      await click($('#inMemberMode'))
+      await goJul2026()
     }
   })
 
@@ -283,6 +292,28 @@ describe('the day popover — tap an empty cell, close it two ways', () => {
 })
 
 describe('hold-to-add on an empty cell', () => {
+  it('consumes the release click after a hold, while the next deliberate date pick still works', async () => {
+    await goJul2026()
+    vi.useFakeTimers()
+    try {
+      const cell = $('[data-icday="2026-07-08"]')!
+      await act(async () => { cell.dispatchEvent(ptr('pointerdown', 30, 30)); vi.advanceTimersByTime(HOLD_ADD) })
+      // The new dialog can cover the finger before it lifts. Chromium follows
+      // that lift with a compatibility click on the newly exposed date button.
+      const covered = $('#inpEdCal [data-cal="2026-07-30"]')!
+      await act(async () => {
+        covered.dispatchEvent(ptr('pointerup', 30, 30))
+        covered.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+      })
+      expect($('#inpEditPop .rc-read')!.textContent).toBe('Jul 8')
+      const intentional = $('#inpEdCal [data-cal="2026-07-10"]')!
+      await tap(intentional, 30, 30)
+      expect($('#inpEditPop .rc-read')!.textContent).toBe('Jul 8 → Jul 10')
+    } finally {
+      vi.useRealTimers()
+      await act(async () => { setInpEdit(null); notify() })
+    }
+  })
   it(`holding ${HOLD_ADD}ms seeds a new personal input for ME, without also opening the popover`, async () => {
     vi.useFakeTimers()
     try {
@@ -522,15 +553,22 @@ describe('the 22 Aug 26 cell redesign — title, sections, side-by-side inputs',
        its cell and read the chip the calendar drew for it */
     const rec: any = INPUTS.find((r: any) => r.type === 'SANS Availability' && r.sans)
     expect(rec, 'a seeded SANS record exists').toBeTruthy()
-    await setSelect('#inFType', 'SANS Availability')
+    await click($('#inSansMode'))
+    expect($('#inSansMode').getAttribute('aria-pressed')).toBe('true')
+    expect($('#inpCal').classList.contains('ic-sans')).toBe(true)
+    await goJul2026()
+    const iso=unfmt(rec.date,rec.yr)
+    await act(async()=>{setCalMonth({y:+iso.slice(0,4),m:+iso.slice(5,7)});notify()})
+    await tap($(`[data-icday="${iso}"]`),10,10)
     try {
-      const chip = host.querySelector(`[data-iid="${rec.iid}"]`)!
-      expect(chip, 'its chip renders').toBeTruthy()
+      const chip = host.querySelector(`[data-popiid="${rec.iid}"] .ic-poprow-lbl`)!
+      expect(chip, `its chip renders (${rec.iid}; ${$('.ic-pop')?.textContent})`).toBeTruthy()
       expect(chip.textContent).not.toContain('SANS')
       expect(chip.textContent).not.toContain('Availability')
       expect(chip.textContent).toMatch(/[FOA](\/[FOA])*/)
     } finally {
-      await setSelect('#inFType', 'all')
+      await click($('#inMemberMode'))
+      await goJul2026()
     }
   })
 

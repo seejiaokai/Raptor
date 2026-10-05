@@ -822,6 +822,11 @@ export and Undo carry the same typed value and restore missing text to default.
 Relationships: none.
 From today: the `raptor:settings/*` keys and the ~20 `raptor:leavewar/*`
 preference keys.
+SANS calendar D580 uses this existing Setting table: one global `sanscalendar`
+row and one `sansday:<ISO>` row per authored date. Validated shapes/defaults
+live in `data-schema.md` §SANS calendar planning settings. Typed admin writes
+`settings.sanscalendar` / `sans.day.set` retain this row's permissions and Undo;
+members read these rows. They do not amend a schedule or imply shared storage.
 App change: **an absent row means "on the shipped standard"** — today's `null`
 convention. The default is never written, so a later change to the standard is
 picked up rather than frozen. Do not seed this table.

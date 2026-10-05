@@ -1187,3 +1187,29 @@ agree — name it here so the next session knows to check both.
   reach OIL entries only —
   a plain-pool credit is corrected with a negative entry
   (`docs/leavewar/known-gaps.md` §What balances do not yet do).
+
+## Inputs and SANS calendars — D580 build
+
+Inputs is one route with session-only Member Inputs/SANS modes, Calendar primary and List secondary.
+Member mode excludes SANS offers; SANS mode includes all F/O/A offers. Filters are independent by mode;
+unique F/Fly, O/OFT and A/AMT counts always read the entire authoritative Input collection,
+independent of visible filters (D581); only Fly has a required target or shortage tone.
+One person counts once per authored date, including short/overnight windows; this planning count does
+not change actual scheduler eligibility. Existing input writers retain pending/amendment, documents,
+medical, leave/OIL and own-member/admin rules. Range selection seeds one ordinary Input editor; it
+writes nothing until Save. Remarks has no placeholder. Sun/moon are explicit day/night flying intent.
+Daily targets and global baselines use typed admin Setting commands, existing capture/rollback,
+record persistence and global Undo; no direct localStorage, cross-device backend or schedule write.
+The new drift seams are filter-independent counts, mode-specific view defaults, date identity,
+empty-cell versus chip gesture ownership, and settings Undo returning to the SANS calendar.
+Runtime proof and review status: `docs/handpass/2026-10-05-inputs-sans-calendar.md`.
+D582's category-before-view header groups Calendar/List, quiet Medical and phone Filters.
+Folding/unfolding the native fields is ephemeral and does not change filters or saved reveal.
+Applied person/type/search summary remains visible; Clear filters affects the current mode only.
+List dates/presets/reset/sort/export retain their own state. One DOM serves desktop and phone.
+R1's missing save doors now share a transient actual-row reveal (`view.ts:INPREVEAL`):
+List add/inline and shared calendar new/edit/confirmed medical/OIL saves signal only
+after success. Calendar/List retain that live correct-mode row despite remembered
+filters; deliberate filter/mode/leave/session intent releases it. Restored-image
+Undo/Redo finds the actual live ID, never resurrects removed rows, and planning-only
+Undo/Redo selects Member Calendar. This is feedback state, not persistent data.

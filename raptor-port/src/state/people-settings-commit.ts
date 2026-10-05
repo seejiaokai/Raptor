@@ -64,7 +64,7 @@ export const SETTINGS_KEYS = [
   'qualcols', 'lookahead', 'secdefault', 'wavedefault',
   /* [ACCOUNTS] (D166, D204, 26 Sep 26): the guest switch — one `Setting` (data-model §3, §11). Written ONLY by
      state/accounts.ts, through its intent commands. */
-  'guestview', 'insights',
+  'guestview', 'insights', 'sanscalendar',
 ] as const
 /* THE SETTINGS RECORDS KEPT ONE ROW PER THING ([DB-READINESS] group A, phase 4 — plan §2.5's matrix, §2.9: the command
    layer's records follow the storage grain). Each row is its own record, `settings/<prefix><id>`, found by its prefix:
@@ -75,7 +75,7 @@ export const SETTINGS_KEYS = [
      written ONLY by state/changes.ts, through its one command `changes.seen` (own row only — D170).
    The change history's own lines (`elog:<lineId>`) are NOT records here: written raw by engine/editlog.ts inside the
    command that made them, never undone (the log is not in any Undo). */
-export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:'] as const
+export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'sansday:'] as const
 const isRowKey = (k: string) => SETTINGS_ROW_PREFIXES.some(p => k.startsWith(p))
 /* every row stored now — ONE pass over the settings keys (the guard reads this on every command, so never one per kind) */
 const settingsRowKeys = (): string[] => store.keys('').filter(isRowKey)
@@ -313,6 +313,7 @@ export function registerPeopleSettingsCommandLayer(): void {
      COMMAND_OPS through the resolver store.ts wireStore installs */
   for (const t of ACCOUNT_TYPES) definePermission(t, anyone)
   for (const t of CHANGES_TYPES) definePermission(t, anyone)
+  definePermission('sans.day.set', anyone) // authority is the central Setting/admin permission
   registerGuardedStore(peopleStore)
   registerGuardedStore(settingsStore)
   // route every durable settings write (store.set) through a named command.
@@ -320,6 +321,7 @@ export function registerPeopleSettingsCommandLayer(): void {
   // or for an unknown key, write raw so nothing nests or is refused-and-lost.
   setSettingsWriteHook((k, v, raw) => {
     if (k.startsWith('missionrole:')) throw new Error('Mission-role rows require the typed annotation command')
+    if (!isCommitting() && (k.startsWith('sansday:') || k === 'sanscalendar')) throw new Error('SANS calendar settings require the typed settings command')
     if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(k, v); return }
     commitSettings(settingsType(k), () => raw(k, v))
   })

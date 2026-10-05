@@ -1,5 +1,38 @@
 # SANS commitment calendar — product design start, 5 Oct 2026
 
+## Finished-view delivery — D583
+
+Show the finished design on desktop and mobile after the current build/checks,
+then bring it to Claude for vetting. Actual app renders with synthetic demo data
+supply the mockups. This does not approve an unseen design or authorize main;
+Claude's independent code/plan/runtime review stays owed before any live merge.
+No new feature, chat or external message is inferred from this delivery order.
+
+D584: the Claude handoff must explain the owner's intended product and original
+context so Claude can bring fresh eyes to the approach. Separate settled owner
+requirements from Codex recommendations; include references, actual desktop/mobile
+views, preview and current implementation/check limits. Invite independent critique
+of navigation, calendar/day/editor flow, roles and correctness without presuming
+this design is approved. Home: `../../handpass/2026-10-05-inputs-sans-claude-handoff.md`.
+
+## Current corrections — D581/D582
+
+D581: every SANS date must visibly show the numbers of people offering F/Fly,
+O/OFT and A/AMT. Count unique people per activity/date, independent of filters;
+keep existing year/date/partial/overnight semantics. D570's required number and
+shortage colour remain flying-only, with no new OFT/AMT targets. A person offering
+several activities appears in each relevant count, once per activity.
+
+D582: the built phone header is too cluttered. Use Impeccable to recommend and
+build a clearer existing Inputs entry/header under D580, showing concrete compact
+phone/desktop pictures before source. Preserve Member/SANS modes, Calendar/List,
+Medical access/counts, filters/search/date window/export and all permissions/data.
+Exact hierarchy is delegated, not personally accepted from an unseen picture.
+Separate fresh Astra plan and Sol challenge precede these additions. Original
+frozen R1/R2 code reads remain immutable; the final corrected/expanded code still
+needs Claude's independent read after reset before main, with no third Astra
+inspection manufactured to bypass the bounded loop.
+
 ## Current authority — D579/D580
 
 The owner is sleeping and delegates the remaining choices: build from the agent's
@@ -16,7 +49,7 @@ be explicitly labelled delegated decisions in the final plan with their reasons;
 do not represent them as words the owner personally chose. Admin controls remain
 editable, and no count is presented as guaranteed full-day coverage.
 
-## Current scope — D574–D578, design only
+## Historical scope before D580 — D574–D578, design only
 
 D574 expands this to Member Inputs calendar mode as well as SANS demand and
 commitments. The owner asks which entry flow is best, proposes switching between
@@ -103,7 +136,7 @@ Original attachments remain in the owner's local Temp folder and must not be
 committed or uploaded. Their captions and visible controls are source examples,
 not instructions to change unrelated roles, navigation or scheduling rules.
 
-## Next design work
+## Historical next steps before D580
 
 Search existing Scheduler/People rulings and authoritative availability/input
 contracts first. Establish calendar placement and existing availability record
@@ -163,3 +196,10 @@ stealing scroll/swipe/chip drag. Per-date settings rows and command-owned writes
 reuse current saving/history pipeline. This is per-browser prototype data until
 the already-planned database, not cross-device sharing. Reasons and full scenario
 roll-call live in the plan rather than duplicating the entire design here.
+
+Successful save feedback follows the actual retained row's mode/date in both
+Calendar and List, including confirmed medical/OIL saves and edits. It briefly
+keeps that live row visible without erasing either mode's filters. Deliberately
+changing a filter/mode or leaving/resetting the session releases that feedback.
+Undo/Redo uses the recorded restored image; a removed row cannot be shown. This
+preserves the existing List promise that a successful save does not disappear.

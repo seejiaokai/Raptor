@@ -1672,7 +1672,48 @@ one whole-app check. This chooses the next batch; its policies and design still
 need the owner. See [CAPS-OPS-LIMITS]; it does not accept the latest UI preview,
 waive owed reads or authorize a live merge.
 
-### [SANS-COMMITMENT-CALENDAR] Inputs and SANS calendars — BUILD authorized D580 (5 Oct 26)
+### [SANS-COMMITMENT-CALENDAR] Inputs and SANS calendars — built, expanded gates/walk PASS; owner look/Claude vetting owed (5 Oct 26)
+**D583 delivery:** show finished desktop and mobile mockups from the actual preview,
+then bring to Claude for vetting. No owner design acceptance or main authority inferred.
+**D584 handoff:** explain owner intent, original references and settled answers;
+separate agent choices and invite fresh independent critique of how to tackle it.
+Home: `raptor-port/docs/handpass/2026-10-05-inputs-sans-claude-handoff.md`.
+**Current corrections D581/D582:** show F/Fly, O/OFT and A/AMT unique-person
+availability counts on every SANS date; flying-only target/shortage remains.
+Compact Inputs entry/header delegated addendum and independent challenge:
+`raptor-port/docs/superpowers/plans/2026-10-05-inputs-sans-header-counts-addendum.md`
+and `raptor-port/docs/superpowers/plans/2026-10-05-inputs-sans-header-counts-sol-challenge.md`.
+Simplify the cluttered phone Inputs entry/header through Impeccable, retaining
+the existing mode/view/Medical/filter/export doors. Recommended compact layout,
+pre-source phone/desktop pictures and independent plan challenge precede these
+additions. Original R2 remains frozen on the old build; new code's independent
+Claude read after reset is owed before main, no third Astra inspection inferred.
+**Build status:** Calendar-first Inputs with Member/SANS modes and secondary List,
+shared day/editor and date-range gestures, admin daily Fly demand/manual day/night
+intent and global amber1/red3 deficit cutoffs built on `codex/inputs-sans-calendar`.
+Independent plan/challenge and private pre-source pictures complete. FULL evidence:
+`raptor-port/docs/handpass/2026-10-05-inputs-sans-calendar.md`. A final picture walk
+caught a hold-release date change; fixed after failing proof. Corrected-build
+gates and31 independent runtime groups PASS on the earlier snapshot. Fresh Astra
+R1 found three save/reveal orders; corrected with failing-first tests. The rewalk
+also exposed a restore-before-data-replay error; corrected directional metadata
+and primary restored-row selection. Final independent runtime50groups PASS with
+seven actual showcase states; all42 original pictures personally opened/hashed.
+Corrected final gates unit7810/494files, browser570/49existing skips, six adapted
+156assertions and performance4/0 PASS on that older snapshot. Final Astra R2
+CHANGES REQUIRED (one P2 colour-popup dismissal/Escape defect), immutable2of2.
+Corrected capturing outside press/Escape/focus/role cleanup; no third Astra code
+read. New D581/D582 header/counts plus popup correction: focused72unit,
+11production-browser/build PASS; independent expanded34runtimegroups PASS,
+all25 original pictures opened. Two original harness errors preserved/corrected
+(native all-date seed rows; hidden phone role badge), no app defect established.
+Current Freeze13 has identical18served assets to walked Freeze11/12; one CSS
+source CRLF→LF byte normalization only. Final new full gates PASS: unit7819/494,
+browser572PASS/49existing skips/0FAIL, adapted156/performance4/reference728/
+Tracker445; build/rulecheck/whitespace PASS. Final expanded
+code's independent Claude read after reset remains owed before main.
+Owner look/Claude reads/explicit
+merge remain owed. Existing per-browser backend; no shared database is delivered.
 D570–D572 settle flying-only demand, deficit-based admin-editable red/amber baselines and one count/person with hours visible. D573 initially deferred placement; D574 asks for recommendations, D575 requests app-style pictures/Claude review, D576 considers secondary List, D577 sun/day and moon/night flying. D578 held build; D579/D580 supersede that hold and delegate choices/build now. Monthly calendar shows the resulting flying-offer shortage.
 Members open a day to see others' commitments and add their own. Form follows the
 fourth private reference/current app availability controls, with Custom start/end;
@@ -1680,7 +1721,7 @@ Remarks has no faded placeholder. References1/2 supply month/day direction,3 is
 contrast only. Remaining numbers/boundaries/config scope and day-list/navigation choices are delegated by D580; explain them in the plan rather than waiting for another answer. Existing timing/edit/delete/overlap
 behaviour retained, not re-asked. One short offer counts once, not full-day coverage.
 **Home:** `raptor-port/docs/superpowers/specs/2026-10-05-sans-commitment-calendar.md`.
-**Independent initial read:** `raptor-port/docs/superpowers/plans/2026-10-05-sans-calendar-initial-read.md`; first round answered D570–D573 (flying demand, deficit colours, unique people with hours, location deferred). Concrete Astra plan and pictures next; host Sol challenges before source work. No new unseen picture acceptance is inferred; D580 supplies recommendation-based build authority.
+**Independent initial read:** `raptor-port/docs/superpowers/plans/2026-10-05-sans-calendar-initial-read.md`; first round answered D570–D573 (flying demand, deficit colours, unique people with hours, location deferred). Concrete Astra plan/pictures and Sol challenge completed before source work. No new unseen picture acceptance is inferred; D580 supplies recommendation-based build authority.
 **Place:** replacement current build task after D568 cancels caps/ops handoff;
 no new chat requested. Other feature batches remain outstanding. Picture/plan and
 independent challenge precede source work; calendar request/count/permission and
@@ -1930,6 +1971,13 @@ reword is read against the original for meaning (D138) — one reviewer, Astra f
 about 60 lines further under its tripwire.
 
 ### [INP-TILL-STALE] The Inputs editor leaves "till <date>" in the remarks when a range is taken back to one day (walk find, 1 Oct 26)
+**Characterized 5 Oct, Inputs/SANS batch:** the exact18→18–19→single19 sequence
+passes both incumbent List and shared calendar editor doors: one matching
+`till 19 Jul`, user prose Bangkok, one-day saved dates and durable reload.
+The established one-day till wording is valid; no token-removal policy/fix is
+invented. Evidence/forward facts: `raptor-port/docs/handpass/2026-10-05-inputs-sans-calendar.md`.
+Original report below is retained for Claude's later review; its described sequence
+does not demonstrate a currently stale date. No source change made for this item.
 Found by walker A of the `[DB-READINESS]` phase 7 walk (its O4; picture `raptor-port/docs/img/handpass/2026-10-01-dbr-phase7/a/A10x.png`),
 outside that batch. **Steps:** Inputs page, the editor of a one-day request on 18 Jul; click 19 Jul in its calendar (dates read
 "18 Jul → 19 Jul", the remarks gain "till 19 Jul"); click 19 Jul again (dates "19 Jul") — the remarks keep "till 19 Jul"; Save

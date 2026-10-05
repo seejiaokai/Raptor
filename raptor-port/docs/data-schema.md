@@ -801,3 +801,13 @@ normalising on day one:
 Normalising `Weeks` into Days / Waves / Formations / Aircraft rows is a
 later step, worth doing only when something outside RAPTOR (a report, Power
 BI) needs to query inside a week.
+
+## SANS calendar planning settings — 5 Oct26, D580
+
+`settings/sanscalendar` holds `{amberFrom,redFrom}`: safe whole numbers, `1 <= amberFrom < redFrom`.
+Absent/malformed reads shipped defaults1/3. `settings/sansday:<YYYY-MM-DD>` holds
+`{required:number|null,flying:'unset'|'day'|'night'|'both'}`. Required is a safe integer >=0;
+null means no target, 0 explicitly none required. A null/unset pair deletes the row.
+Dates round-trip as real ISO dates; unknown fields/periods are refused. Writes use typed
+admin commands `sans.day.set` and `settings.sanscalendar`, one settings record per changed day.
+Input records are unchanged. Sun/moon intent never rewrites availability or issued schedules.

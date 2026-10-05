@@ -3,7 +3,7 @@
    logic is the reference's verbatim, including the role gate that keeps a
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks, nowStamp, isoLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
@@ -17,7 +17,8 @@ import { LOOK_CFG, LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, setLookah
 import { canEditSched } from '../state/auth'
 import { me, isMe, isAdmin } from '../state/perms'
 import { writeInputsBatch, notify, inputProtected } from '../state/store'
-import { INPVIEW, setInpView } from '../state/view'
+import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal, revealInput } from '../state/view'
+import { inputsInMode } from './sans-calendar-model'
 import { setDocView } from './pops'
 import { ClipIcon, MedIcon } from './icons'
 import { MedicalView } from './MedicalView'
@@ -237,7 +238,7 @@ function TypeLegend() {
 export function InputsPage() {
   useVersion()
   const [person, setPerson] = useState(me() ?? '')
-  const [type, setType] = useState(INPUT_TYPES[0])
+  const [type, setType] = useState(INPMODE==='sans'?'SANS Availability':INPUT_TYPES[0])
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
   const [allday, setAllday] = useState(defaultAllday(INPUT_TYPES[0]))
@@ -251,7 +252,7 @@ export function InputsPage() {
   const [remarks, setRemarks] = useState('')
   /* SANS Availability's own Fly/AMT/OFT payload — see SansPicker/sansRefusal
      in ui/inputedit.tsx. Only read by add() when `type` is the SANS type. */
-  const [sans, setSans] = useState<any>(null)
+  const [sans, setSans] = useState<any>(INPMODE==='sans'?{f:true}:null)
   /* the supporting documents a medical input is filed with (owner, 27 Aug
      26; several files per entry since 1 Sep 26) — ids into state/docs;
      cleared after a successful add because the files belong to the input
@@ -260,9 +261,27 @@ export function InputsPage() {
   /* A member lands on THEIR OWN inputs (owner, 27 Aug 26) — the page is their
      paperwork first — with "Everyone" one pick away in the same filter. A
      scheduler (admin) still opens on the whole squadron. */
-  const [fPerson, setFPerson] = useState(canEditSched() ? 'all' : (me() ?? ''))
-  const [fType, setFType] = useState('all')
-  const [fSearch, setFSearch] = useState('')
+  const [memberPerson, setMemberPerson] = useState(canEditSched() ? 'all' : (me() ?? ''))
+  const [memberType, setMemberType] = useState('all')
+  const [memberSearch, setMemberSearch] = useState('')
+  const [sansPerson, setSansPerson] = useState('all')
+  const [sansSearch, setSansSearch] = useState('')
+  const fPerson = INPMODE === 'sans' ? sansPerson : memberPerson
+  const setFPerson = INPMODE === 'sans' ? setSansPerson : setMemberPerson
+  const fType = INPMODE === 'sans' ? 'all' : memberType
+  const setFType = setMemberType
+  const fSearch = INPMODE === 'sans' ? sansSearch : memberSearch
+  const setFSearch = INPMODE === 'sans' ? setSansSearch : setMemberSearch
+  const [filtersOpen,setFiltersOpen] = useState(false)
+  const medicalReturn = useRef<'cal'|'table'>('cal')
+  const chooseMode=(mode:'member'|'sans')=>{
+    clearInpReveal();setPinned([]);setInpMode(mode);setEditRow(null);setDraft(null)
+    if(mode==='sans'){
+      setType('SANS Availability');setSans({f:true});setAllday(true);setHalf('')
+      if(canEditSched()&&!PEOPLE[person]?.san) setPerson(people().find(id=>PEOPLE[id].san)??person)
+    } else if(isSansAvail(type)) {const t=INPUT_TYPES.find(t=>!isSansAvail(t))!;setType(t);setSans(null);setAllday(defaultAllday(t))}
+    notify()
+  }
   const [editRow, setEditRow] = useState<any>(null)
   const [draft, setDraft] = useState<any>(null)
   const [range, setRange] = useState(initialRange)
@@ -293,6 +312,7 @@ export function InputsPage() {
   const [flash, setFlash] = useState<any[]>([])
   const timers = useRef<any[]>([])
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
+  useEffect(()=>()=>clearInpReveal(),[])
 
   /* SCROLL THE NEW ROW INTO VIEW (owner — "once an input is made, the view
      will snap to the input u just made"). The row already pins to the top
@@ -301,10 +321,17 @@ export function InputsPage() {
      <tr> commits to the DOM after this render, on the same clock the pin/
      flash lists already ride — so the lookup runs from an effect keyed off
      the iid add() just set, which fires once React has painted it. */
-  const [justAddedIid, setJustAddedIid] = useState<string | null>(null)
+  const [justAddedIid, setJustAddedIid] = useState<{iid:string} | null>(null)
+  const reveal=INPREVEAL
+  useLayoutEffect(()=>{
+    const row=reveal&&INPUTS.find((r:any)=>r.iid===reveal.iid&&inputsInMode([r],INPMODE).length)
+    if(!row||!reveal||reveal.mode!==INPMODE)return
+    setPinned(p=>[row,...p.filter(r=>r.iid!==row.iid)])
+    setJustAddedIid({iid:row.iid})
+  },[reveal])
   useEffect(() => {
     if (!justAddedIid) return
-    const el = document.querySelector(`[data-iid="${justAddedIid}"]`)
+    const el = document.querySelector(`[data-iid="${justAddedIid.iid}"]`)
     /* GUARDED exactly like interactions.ts:72-79 — jsdom implements no
        scrolling at all, so scrollIntoView is simply absent on its elements;
        unguarded it throws out of this effect where no test assertion sees it. */
@@ -318,7 +345,7 @@ export function InputsPage() {
      the one thing the feedback has to rule out. It is a HOLD, not a new
      ordering: the next touch of the filter bar or a column heading is the user
      arranging the table for themselves, and it releases every pin. */
-  const unpin = () => setPinned(p => (p.length ? [] : p))
+  const unpin = () => { clearInpReveal();setPinned(p => (p.length ? [] : p)) }
 
   /* first click on a heading sorts it ascending, a second click inverts it —
      every column the same way round, so there is one rule to remember */
@@ -452,14 +479,13 @@ export function InputsPage() {
        dates stay on the form after an add, so the tail that describes them
        stays too — only what the typist wrote is cleared. The document goes
        with its input; the next one needs its own. */
-    const finishAdd = () => {
-      const row = INPUTS[0]
+    const finishAdd = (row:any) => {
+      if(!row||!INPUTS.includes(row))return
+      revealInput(row)
       /* ITS HISTORY LINE (AB8a, 26 Sep 26 — this page's Add, the door people use most, once wrote nothing) is written
          by the change history's ONE writer now, from the command itself (state/changelines.ts — [DRAFT-PENDING],
          Astra DP-03, 28 Sep 26), so no door writes it twice and none can forget it */
-      setPinned(p => [row, ...p])
       setFlash(f => [row, ...f])
-      setJustAddedIid(row.iid)
       timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
       setRemarks(withTill('', start, end))
       setDocIds([])
@@ -475,8 +501,10 @@ export function InputsPage() {
       if (medPlanProtected(checkPlan) || medPlanProtected((removals || []).map((lr: any) => ({ row: lr })))) {
         return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
       }
+      let savedRow:any=null
       const ok = writeInputsBatch(() => {
         INPUTS.unshift(rowBody(date, endDate, remarks.trim()))
+        savedRow=INPUTS[0]
         /* the OIL answers land on the just-unshifted row inside the same
            batch — add plus acknowledgment is ONE undo step (owner, 28 Aug 26) */
         if (oilDec) INPUTS[0].oil = oilDec
@@ -499,7 +527,7 @@ export function InputsPage() {
            PUBLISHED day it lands on the working copy as a pending amendment (owner 16 Sep 26), the issued face frozen — and a
            reload, or another device, shows the same */
       })
-      if (ok) finishAdd()   // don't flash/clear the form if the funnel rolled the add back (P2-QREV-04)
+      if (ok) finishAdd(savedRow)   // don't flash/clear the form if the funnel rolled the add back (P2-QREV-04)
     }
     /* an upchit is NEVER saved silently (owner, 27 Aug 26): the summary sheet
        says what it ends and puts every later-dated entry to the filer as an
@@ -532,17 +560,19 @@ export function InputsPage() {
             if (medSegmentsProtected({ person: filedFor(), type, yr: baseYear() }, segs, keepTail, bOrd, null)) {
               return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
             }
+            let savedRow:any=null
             const ok = writeInputsBatch(() => {
               const g0 = segs[0]
               INPUTS.unshift(rowBody(
                 ordLabel(g0.startOrd, baseYear()),
                 g0.endOrd > g0.startOrd ? ordLabel(g0.endOrd, baseYear()) : undefined,
                 withRemarksTail(remarks.trim(), ordISO(g0.startOrd), ordISO(g0.endOrd), 'till')))
+              savedRow=INPUTS[0]
               applyMedPlan(newMedTrimPlan(INPUTS[0].person, type, g0.startOrd, g0.endOrd, INPUTS[0], keepTail, bOrd))
               mintMedSegments(INPUTS[0], segs.slice(1), keepTail, bOrd)
               /* a medical never goes on the programme; an activity's row is worked out after the command (phase 6 (c)) */
             })
-            if (ok) finishAdd()
+            if (ok) finishAdd(savedRow)
           },
         })
         return
@@ -604,7 +634,7 @@ export function InputsPage() {
        commitEditMedChoices — the absence-record re-test, AB4, 26 Sep 26), so the three doors cannot drift. The shared
        refusals run first; each Save is one undo step. */
     const after = (ok: boolean) => {
-      if (ok) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
+      if (ok) { revealInput(editRow);setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
       else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
     }
     const ask = medAskFor(editRow, draft)
@@ -630,14 +660,12 @@ export function InputsPage() {
         commit: (dec: Record<string, number>) => {
           let ok = false
           writeInputsBatch(() => { ok = commitInputEdit(editRow, draft); if (ok) editRow.oil = dec })
-          if (ok) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
-          else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
+          after(ok)
         },
       })
       return
     }
-    if (commitInputEdit(editRow, draft)) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
-    else if (editRow && INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
+    after(commitInputEdit(editRow, draft))
   }
 
   const del = (inx: number) => {
@@ -667,7 +695,7 @@ export function InputsPage() {
     })
   }
 
-  let rows = INPUTS.slice()
+  let rows = inputsInMode(INPUTS, INPMODE)
   if (fPerson !== 'all') rows = rows.filter((r: any) => r.person === fPerson)
   if (fType !== 'all') rows = rows.filter((r: any) => r.type === fType)
   if (fSearch) { const s = fSearch.toLowerCase(); rows = rows.filter((r: any) => (r.remarks || '').toLowerCase().includes(s) || (PEOPLE[r.person] ? PEOPLE[r.person].cs.toLowerCase() : '').includes(s)) }
@@ -704,7 +732,7 @@ export function InputsPage() {
      Deleted and undone rows fall out here — the pin points at an object, so a
      row that has left INPUTS simply stops matching. */
   {
-    const pins = pinned.filter((r: any) => INPUTS.indexOf(r) >= 0)
+    const pins = inputsInMode(pinned, INPMODE).filter((r: any) => INPUTS.indexOf(r) >= 0)
     if (pins.length) rows = pins.concat(rows.filter((r: any) => pins.indexOf(r) < 0))
   }
 
@@ -730,32 +758,47 @@ export function InputsPage() {
   const medOrd = +medIso.slice(0, 4) * 10000 + +medIso.slice(5, 7) * 100 + +medIso.slice(8, 10)
   const medDownN = medDownAsOf(medOrd).length
   const medPendN = pendingUpchits(medOrd).length
+  const appliedFilters = [fPerson!=='all'?(PEOPLE[fPerson]?.cs??fPerson):'',fType!=='all'?fType:'',fSearch.trim()?`Search: ${fSearch.trim()}`:''].filter(Boolean)
 
   return (
-    <>
-      {/* the Calendar-view switch leads the page now (owner, 22 Aug 26 — "make
-          the calendar button more obvious… I want people to see it"): a prominent
-          accent button in the title row, not a plain grey one buried at the end
-          of the wrapping filter bar. Same id/handler as before, so every caller
-          and test is unchanged — it still just flips INPVIEW over the same
-          filtered/windowed data. */}
-      <div className="title">
-        <h1>Personal Inputs</h1>
-        <button className="abtn calview" id="inCalBtn" title="See a whole month at a glance"
-          onClick={() => { setInpView('cal'); notify() }}>📅 Calendar view</button>
+    <div className="inputs-workspace">
+      <div className="title"><h1>Inputs</h1></div>
+      <div className="inputs-modes" role="group" aria-label="Input category">
+        <button className="abtn" id="inMemberMode" aria-pressed={INPMODE==='member'} onClick={()=>chooseMode('member')}>Member Inputs</button>
+        <button className="abtn" id="inSansMode" aria-pressed={INPMODE==='sans'} onClick={()=>chooseMode('sans')}>SANS Availability</button>
+      </div>
+      <div className="inputs-tools">
+        <div className="inputs-views" role="group" aria-label="Display inputs">
+        <button className="abtn" id="inCalBtn" title="See a whole month at a glance"
+          aria-pressed={INPVIEW==='cal'} onClick={() => { setInpView('cal'); notify() }}>Calendar</button>
+        <button className="abtn" id="inListBtn" aria-pressed={INPVIEW==='table'} onClick={()=>{setInpView('table');notify()}}>List</button>
+        </div>
         {/* the Medical view (owner, 27 Aug 26): who is down, who owes an
             upchit, who upchitted. The count is down-now + pending as of the
             notional today — the button SIGNALS instead of the page
             restructuring itself (a control that appears and disappears with
             the data is a trap; a badge that reads 0-quiet is not). */}
-        <button className="abtn calview" id="inMedBtn"
+        <button className="abtn" id="inMedBtn"
           title="Who is medically down, owing an upchit, or upchitted"
-          onClick={() => { setInpView('med'); notify() }}>
+          onClick={() => { medicalReturn.current=INPVIEW==='table'?'table':'cal';setInpView('med'); notify() }}>
           <MedIcon /> Medical
           {medDownN > 0 && <span className="medcount" title="Medically down now">{medDownN}</span>}
           {medPendN > 0 && <span className="medcount pend" title="Owing an upchit">{medPendN}</span>}</button>
+        <button className="abtn" id="inFiltersBtn" aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>setFiltersOpen(o=>!o)}>Filters{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
       </div>
-      <div className="inbar">
+      {appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={()=>{unpin();setFPerson('all');if(INPMODE==='member')setFType('all');setFSearch('');notify()}}>Clear filters</button></div>}
+      <div className={'inputs-filterfields'+(filtersOpen?' open':'')} id="inFilters">
+        <label><span>Person</span><select id="inFPerson" value={fPerson} onChange={e => { unpin(); setFPerson(e.target.value); notify() }}>
+          <option value="all">Everyone</option>
+          {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+          <ArchivedGroup /><DeletedGroup />
+        </select></label>
+        <label hidden={INPMODE==='sans'}><span>Type</span><select id="inFType" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
+          <option value="all">Show all types</option>{typeOptions(t=>!isSansAvail(t))}
+        </select></label>
+        <label className="inputs-search"><span>Search</span><input id="inFSearch" type="search" placeholder="Search inputs" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></label>
+      </div>
+      <div className="inbar" hidden={INPVIEW!=='table'}>
         <div className="ingrid">
           {/* A MEMBER'S PERSON IS A VALUE, NOT A CHOICE (owner, 22 Aug 26 —
               admin files for anyone, a member only for whoever they are
@@ -829,25 +872,14 @@ export function InputsPage() {
               whose add() refuses without one (needsDoc, one body) */}
           {needsDoc(type) && <div className="ifield"><label>Document</label>
             <DocField ids={docIds} onIds={setDocIds} /></div>}
-          <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder={isSansAvail(type) ? '' : 'e.g. medical appt'} maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
+          <div className="ifield"><label>Remarks</label><input id="inRemarks" maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
           <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={() => add(false)}>Add input</button></div>
         </div>
       </div>
-      <div className="infilter">
-        <span className="lab">Filter</span>
-        <select id="inFPerson" aria-label="Filter by person" value={fPerson} onChange={e => { unpin(); setFPerson(e.target.value); notify() }}>
-          <option value="all">Everyone</option>
-          {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
-          <ArchivedGroup />
-          <DeletedGroup />
-        </select>
-        <select id="inFType" aria-label="Filter by type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
-          <option value="all">Show all types</option>
-          {typeOptions()}
-        </select>
+      <div className="infilter inputs-listtools" hidden={INPVIEW!=='table'}>
         {/* the window, picked on the same two-click calendar as the form above:
             first click is the from-date, second the to-date */}
-        <div className="inrange" ref={rangeRef}>
+        <div className="inrange" hidden={INPVIEW!=='table'} ref={rangeRef}>
           <button className={'abtn' + (calOpen ? ' primary' : '')} id="inRangeBtn"
             aria-expanded={calOpen} onClick={() => setCalOpen(o => !o)}>📅 {rangeLabel}</button>
           {calOpen && (
@@ -905,19 +937,15 @@ export function InputsPage() {
             </div>
           )}
         </div>
-        <div className="searchbox">🔍<input id="inFSearch" placeholder="search" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></div>
-        {/* the Calendar-view switch moved to the title row (see above) — it opens
-            over whatever the table is already filtered and windowed to
-            (INPVIEW, state/view.ts); wherever it sits, the filters still apply */}
-        <button className="abtn" id="inExport" onClick={() => {
-          exportCSV('142-inputs.csv', inputRows(INPUTS))   // each input's whole span (AB10) — ui/export.ts
+        <button className="abtn" id="inExport" hidden={INPVIEW!=='table'} onClick={() => {
+          exportCSV('142-inputs.csv', inputRows(rows))
           /* a phone browser often shows nothing at all when a download lands —
              no bar, no tray notification the user is looking at — so the tap
              otherwise reads as dead (owner audit) */
           HOOKS.toast('CSV downloaded', 'ok')
         }}>Export to Excel</button>
       </div>
-      <div className="inwrap">
+      <div className="inwrap" hidden={INPVIEW!=='table'}>
         <table className="intbl" id="intbl">
           <thead><tr>
             {th('name', 'Name')}{th('start', 'Start')}{th('end', 'End')}{th('type', 'Type')}
@@ -1110,10 +1138,10 @@ export function InputsPage() {
       {/* the table stays mounted underneath — closing the calendar is then a
           free round trip, scroll position and all, rather than a re-navigate
           that has to rebuild the list from scratch */}
-      {INPVIEW === 'cal' && <InputsCal fPerson={fPerson} fType={fType} fSearch={fSearch}
+      {INPVIEW === 'cal' && <InputsCal key={INPMODE} mode={INPMODE} embedded fPerson={fPerson} fType={fType} fSearch={fSearch}
         seedIso={range.from || isoOf(new Date())}
         onClose={() => { setInpView('table'); notify() }} />}
-      {INPVIEW === 'med' && <MedicalView onClose={() => { setInpView('table'); notify() }} />}
+      {INPVIEW === 'med' && <MedicalView onClose={() => { setInpView(medicalReturn.current); notify() }} />}
       {/* the upchit save-time summary (owner, 27 Aug 26) — one render site
           for the add form and the row editor; Save runs the stashed commit
           with the removals the filer ticked, Cancel writes nothing */}
@@ -1136,6 +1164,6 @@ export function InputsPage() {
       {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel}
         onUpload={() => setDocConf(null)}
         onNoDoc={() => { const r = docConf.resume; setDocConf(null); r() }} />}
-    </>
+    </div>
   )
 }

@@ -1,5 +1,5 @@
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, inpId, dateOrd, isSansAvail } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, lastFilled, armTargetExists, sentinelSeatOK } from '../engine/slots'
@@ -63,8 +63,10 @@ export function setRosDay(n:any){ ROSDAY=n }
    the calendar is a view of the same page, not a different page, so a hop to
    another page and back must land on whichever of the two the scheduler had
    open — it survives leaving/returning to Inputs within a session on purpose. */
-export let INPVIEW:'table'|'cal'|'med'='table'
+export let INPVIEW:'table'|'cal'|'med'='cal'
 export function setInpView(v:'table'|'cal'|'med'){ INPVIEW=v }
+export let INPMODE:'member'|'sans'='member'
+export function setInpMode(v:'member'|'sans'){ INPMODE=v }
 /* The Medical view's as-of date, ISO, or null for "the notional today"
    (owner, 27 Aug 26 — "it will show all from the current view date ... u can
    click on a calendar view to view the history as per that selected date").
@@ -84,6 +86,24 @@ export function setMedAsOf(v:string|null){ MEDASOF=v }
    uses — every reader here converts at its own edge. */
 export let CALMONTH:{y:number,m:number}|null=null
 export function setCalMonth(v:{y:number,m:number}|null){ CALMONTH=v }
+/* Successful Inputs saves carry their actual row across a calendar-mode remount.
+   This is transient feedback, never a stored input or a second writer. */
+export let INPREVEAL:{iid:string,iso:string,mode:'member'|'sans'}|null=null
+export function clearInpReveal(){ INPREVEAL=null }
+export function requestInpReveal(row:any){
+  if(!row||!row.iid)return
+  const ordinal=dateOrd(row.date,row.yr)
+  if(ordinal==null)return
+  const day=String(ordinal).padStart(8,'0')
+  const iso=`${day.slice(0,4)}-${day.slice(4,6)}-${day.slice(6,8)}`
+  const mode=isSansAvail(row.type)?'sans':'member'
+  setInpMode(mode);setCalMonth({y:+iso.slice(0,4),m:+iso.slice(5,7)})
+  INPREVEAL={iid:row.iid,iso,mode}
+}
+export function revealInput(row:any){
+  if(!row||!INPUTS.includes(row))return
+  requestInpReveal({...row,iid:inpId(row)})
+}
 
 /* ---- HISTORY MODE (owner, 11 Aug 26) --------------------------------------
    The board's History toggle. A VIEW mode, not an edit mode: it changes what
@@ -875,7 +895,9 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
      refold the strip mid-gesture), and only reset when the user changes */
   { name:'HLOPEN',  scopes:['session'], reset:()=>setHlOpen(false) },
   { name:'HLGROUP', scopes:['session'], reset:()=>setHlGroup('') },
-  { name:'INPVIEW', scopes:['session'], reset:()=>setInpView('table') },
+  { name:'INPVIEW', scopes:['session'], reset:()=>setInpView('cal') },
+  { name:'INPMODE', scopes:['session'], reset:()=>setInpMode('member') },
+  { name:'INPREVEAL', scopes:['session'], reset:clearInpReveal },
   { name:'CALMONTH',scopes:['session'], reset:()=>setCalMonth(null) },
   { name:'MEDASOF', scopes:['session'], reset:()=>setMedAsOf(null) },
   /* the two-tap "Load onto working copy" confirm. Its own doctrine is "any

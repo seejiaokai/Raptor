@@ -340,6 +340,7 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
 
   /* ---- 12 · undo on the Inputs page redraws the table -------------------- */
   await p.evaluate(() => go('inputs')); await p.waitForTimeout(600)
+  await p.click('#inListBtn') // D580: the probe drives the secondary List.
   /* the table now opens on a today → +2-months window (owner, Aug 5) and this
      item's contract is "the table follows the MODEL" — so widen the window
      first, or the Jul 13 row it adds is filtered out and the count is a
@@ -372,7 +373,8 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     console.log(`   12 · inputs ${n0}/${r0} → ${n0 + 1}/${r1} → ${n2}/${r2}`)
     T('12 · the added row really appears', r1, r0 + 1)
     T('12 · undo takes it back out of the model', n2, n0)
-    T('12 · and the table follows the model', r2, n2)
+    const memberCount=await p.evaluate(()=>INPUTS.filter(i=>!isSansAvail(i.type)).length)
+    T('12 · and Member Inputs follows its model subset', r2, memberCount)
     T('12 · Undo removed the same stable id', await p.evaluate(id => INPUTS.some(i => i.iid === id), added.id), false)
     T('12 · Undo removed the matching row', await matching(), 0)
     T('12 · Undo kept page, All range and filters', JSON.stringify(await filters()), JSON.stringify(f0))
@@ -381,6 +383,11 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     T('12 · Redo restores the same stable id', await p.evaluate(id => INPUTS.some(i => i.iid === id), added.id), true)
     T('12 · Redo restores exactly the matching row', await matching(), 1)
     T('12 · Redo keeps page, All range and filters', JSON.stringify(await filters()), JSON.stringify(f0))
+    const memberRedo=await rows()
+    await p.click('#inSansMode')
+    await p.waitForFunction(()=>document.querySelectorAll('#inBody [data-inx]').length===INPUTS.filter(i=>isSansAvail(i.type)).length)
+    T('12 · both modes account for the whole restored model',await rows()+memberRedo,n2+1)
+    await p.click('#inMemberMode')
   }
 
   /* ---- 14 · a traffic edit earns a history step and an amendment mark ---- */

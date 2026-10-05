@@ -52,6 +52,47 @@ beforeEach(() => {
 afterEach(() => { _resetTimeline() })
 
 describe('installGlobalUndo() wires the live cutover', () => {
+  it('addition Redo reveals its live saved input and addition Undo leaves no reveal',()=>{
+    view.setPage('inputs');view.setInpMode('sans')
+    writeInputs(()=>INPUTS.unshift({iid:'reveal-wire-add',person:'vinci',type:'SANS Availability',date:'Jul 22',yr:2026,allday:true,sans:{f:true}} as any))
+    expect(globalUndo().ok).toBe(true);expect(INPUTS.some(r=>r.iid==='reveal-wire-add')).toBe(false)
+    expect(view.INPREVEAL).toBeNull()
+    expect(globalRedo().ok).toBe(true)
+    expect(view.INPREVEAL).toEqual({iid:'reveal-wire-add',iso:'2026-07-22',mode:'sans'})
+  })
+  it('type-edit Undo/Redo uses the restored image rather than the live image before restoration',()=>{
+    view.setPage('inputs')
+    writeInputs(()=>INPUTS.unshift({iid:'reveal-wire-edit',person:'vinci',type:'Personal',date:'Jul 22',yr:2026,allday:true} as any))
+    const row=INPUTS.find(r=>r.iid==='reveal-wire-edit')!
+    writeInputs(()=>{row.type='SANS Availability';row.sans={f:true}})
+    expect(globalUndo().ok).toBe(true);expect(view.INPMODE).toBe('member')
+    expect(view.INPREVEAL).toEqual({iid:row.iid,iso:'2026-07-22',mode:'member'})
+    expect(globalRedo().ok).toBe(true);expect(view.INPMODE).toBe('sans')
+    expect(view.INPREVEAL).toEqual({iid:row.iid,iso:'2026-07-22',mode:'sans'})
+  })
+  it('Redo of a new upchit and shortened old medical reveals the new request rather than the old tail',()=>{
+    view.setPage('inputs')
+    writeInputs(()=>INPUTS.unshift({iid:'reveal-wire-old-med',person:'vinci',type:'OML',date:'Jul 20',endDate:'Jul 24',yr:2026,allday:true} as any))
+    writeInputsBatch(()=>{
+      INPUTS.find(r=>r.iid==='reveal-wire-old-med')!.endDate='Jul 21'
+      INPUTS.unshift({iid:'reveal-wire-upchit',person:'vinci',type:'Upchit',date:'Jul 22',yr:2026,allday:true} as any)
+    })
+    expect(globalUndo().ok).toBe(true);expect(globalRedo().ok).toBe(true)
+    expect(view.INPREVEAL).toEqual({iid:'reveal-wire-upchit',iso:'2026-07-22',mode:'member'})
+  })
+  it('planning Undo and Redo leave SANS for the Member calendar where the note lives',()=>{
+    const entry={scope:{module:'inputs'},forward:[{collection:'plan',id:'2026-07-22',before:null,after:{rmk:'Planning note'}}]} as any
+    view.setPage('inputs');view.setInpMode('sans');view.setInpView('table')
+    _snapView(entry,'undo');expect(view.INPMODE).toBe('member');expect(view.INPVIEW).toBe('cal')
+    view.setInpMode('sans');view.setInpView('table')
+    _snapView(entry,'redo');expect(view.INPMODE).toBe('member');expect(view.INPVIEW).toBe('cal')
+  })
+  it('D580 Undo and Redo reveal the input mode of the restored row after a type change',()=>{
+    const entry={scope:{module:'inputs'},forward:[{collection:'inputs',id:'test-mode',before:{type:'LL'},after:{type:'SANS Availability'}}]} as any
+    view.setPage('inputs');view.setInpMode('sans')
+    _snapView(entry,'undo');expect(view.INPMODE).toBe('member')
+    _snapView(entry,'redo');expect(view.INPMODE).toBe('sans')
+  })
   it('a real scheduler edit is undoable/redoable with only the production wire', () => {
     const before = note0()
     writeText('dn:0.0', 'HELLO WIRE')

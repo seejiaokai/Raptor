@@ -152,6 +152,8 @@ interface Filing {
 /** File one input through the REAL Inputs page form, the way a person does. */
 async function fileOnInputsPage(page: Page, f: Filing) {
   await go(page, 'inputs')
+  // D580: the preserved List form now has an explicit secondary-view door.
+  await page.locator('#inListBtn').click()
   await page.waitForSelector('#inAdd')
   if (f.person) await page.selectOption('#inPerson', f.person)
   await page.selectOption('#inType', f.type)

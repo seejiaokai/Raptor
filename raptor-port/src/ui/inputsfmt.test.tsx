@@ -55,6 +55,7 @@ describe('a rendered input row is compact and uniform', () => {
     host = document.createElement('div'); document.body.appendChild(host)
     root = createRoot(host)
     await act(async () => { root.render(<InputsPage />) })
+    await act(async()=>$(host,'#inListBtn').click())
     // show everything so the July rows are certainly on screen
     if (!host.querySelector('#inRangePop')) await act(async () => { $(host, '#inRangeBtn').dispatchEvent(new MouseEvent('click', { bubbles: true })) })
     await act(async () => { $(host, '#inRangeAll').dispatchEvent(new MouseEvent('click', { bubbles: true })) })
@@ -102,9 +103,12 @@ describe('a rendered input row is compact and uniform', () => {
         INPUTS.unshift({ person: 'zzv', date: 'Jul 14', allday: true, type: 'SANS Availability', remarks: 'sans split', f: true, mod: 'now' })
       })
     })
+    // D580 separates mode subsets; inspect the same chip in its actual view.
+    await act(async()=>$(host,'#inSansMode').click())
     const sans = $(rowOf('sans split'), '.intag')
     expect(sans.textContent, 'the DOM text is still the raw type').toBe('SANS Availability')
     expect($(sans, '.bl')?.textContent, 'the hideable tail').toBe('ability')
+    await act(async()=>$(host,'#inMemberMode').click())
     const appt = $(rowOf('timed one-day'), '.intag')
     expect(appt.textContent).toBe('Appointment')
     expect($(appt, '.bl')?.textContent, 'APPOINTMENT measured 88px against a 76px track').toBe('ment')

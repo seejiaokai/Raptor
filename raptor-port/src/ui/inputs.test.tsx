@@ -64,6 +64,7 @@ beforeAll(async () => {
   await act(async () => { createRoot(host).render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'inputs')!)
+  await click($('#inListBtn')) // D580: these list assertions enter the secondary view.
   await showAllDates()
 })
 
@@ -444,7 +445,9 @@ describe('the Inputs page (tfin)', () => {
     expect(rowFor(ambIx).className, 'an activity commitment').toContain('in-amb')
     const sanIx = INPUTS.findIndex((r: any) => r.person === 'nick' && r.type === 'SANS Availability')
     expect(sanIx, 'the demo SANS seed is present').toBeGreaterThanOrEqual(0)
+    await click($('#inSansMode'))
     expect(rowFor(sanIx).className, 'SANS Availability').toContain('in-san')
+    await click($('#inMemberMode'))
   })
 
   /* owner, 24 Aug 26 — "include the F/O/A in the inputs as well". A SANS row
@@ -463,10 +466,12 @@ describe('the Inputs page (tfin)', () => {
     const bulletIx = INPUTS.findIndex((r: any) => r.person === 'bullet' && r.type === 'SANS Availability')
     const nickIx = INPUTS.findIndex((r: any) => r.person === 'nick' && r.type === 'SANS Availability')
     expect(bulletIx, 'the all-letters SANS seed is present').toBeGreaterThanOrEqual(0)
+    await click($('#inSansMode'))
     expect(rowFor(bulletIx).querySelector('.foa')!.textContent).toBe('F/O/A')
     expect(rowFor(nickIx).querySelector('.foa')!.textContent).toBe('F')
     /* the type tag stays pure identity — no letters leaked into it */
     expect(rowFor(bulletIx).querySelector('.intag')!.textContent).toBe('SANS Availability')
+    await click($('#inMemberMode'))
     /* a non-SANS row carries no F/O/A chip at all */
     const omlIx = INPUTS.findIndex((r: any) => r.type === 'OML')
     expect(rowFor(omlIx).querySelector('.foa')).toBeNull()

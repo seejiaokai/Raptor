@@ -30,7 +30,7 @@ import { weekOf, dayKeyOf } from '../undo/derive'
 import { schedStore, schedPostRestore } from './sched-commit'
 import { weekstashStore, loadWeek } from './store'
 import { HIST } from './history'
-import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView } from './view'
+import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView, setInpMode, setCalMonth, clearInpReveal, requestInpReveal } from './view'
 import { canEditSched } from './auth'
 import { bringDayIntoView } from '../ui/highlights'
 import { boardTab } from '../ui/board'
@@ -41,7 +41,7 @@ import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
 import { restoreAbsencesOf } from '../leavewar/sync'
 import { warVisible } from '../leavewar/absences'
-import { DATES, inputCoversDate } from '../engine/inputs'
+import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
@@ -133,7 +133,7 @@ function inputDayOf(entry: UndoEntry): number | null {
   }
   return null
 }
-function landingOf(entry: UndoEntry): Landing | null {
+function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
   const fwd = entry.forward, m = entry.scope.module
   const also: string[] = []
   let primary: string | null = null
@@ -144,7 +144,20 @@ function landingOf(entry: UndoEntry): Landing | null {
     primary = 'inputs'
     /* the calendar's own records (a day title, its puck rows — saved through the Inputs page's door, so filed under
        inputs) and no input row: the change is on the calendar */
-    if (fwd.some(c => c.collection === 'plan') && !fwd.some(c => c.collection === 'inputs')) then = () => setInpView('cal')
+    if (fwd.some(c => c.collection === 'plan') && !fwd.some(c => c.collection === 'inputs')) then = () => { clearInpReveal(); setInpMode('member'); setInpView('cal') }
+    else if(m==='inputs') {
+      const changes=fwd.filter(c=>c.collection==='inputs')
+      const image=(c:Change)=>dir==='undo'?c.before:c.after
+      // snapView runs BEFORE the restored writes. Use their directional image,
+      // never the old live row. New retained medical segments outrank removed tails.
+      const change=changes.find(c=>image(c)&&(dir==='undo'?!c.after:!c.before))??changes.find(c=>image(c))
+      const row=(change?image(change):null) as any
+      const fallback=(dir==='undo'?changes[0]?.after:changes[0]?.before) as any
+      if(row||fallback) then=()=>{
+        clearInpReveal();setInpMode(isSansAvail((row??fallback).type)?'sans':'member')
+        if(row&&change)requestInpReveal({...row,iid:change.id})
+      }
+    }
   } else if (m === 'people') {
     primary = 'quals'
     const person = fwd.find(c => c.collection === 'people')
@@ -155,6 +168,14 @@ function landingOf(entry: UndoEntry): Landing | null {
     else if (ids.includes('rules') || ids.includes('insights')) primary = 'logic'
     else if (ids.includes('qualcols')) primary = 'quals'
     else if (ids.includes('lookahead')) primary = 'inputs'
+    else if(ids.includes('sanscalendar')||ids.some(k=>k.startsWith('sansday:'))){
+      primary='inputs';then=()=>{
+        clearInpReveal()
+        setInpView('cal');setInpMode('sans')
+        const key=ids.find(k=>k.startsWith('sansday:'))
+        if(key){const iso=key.slice(8);setCalMonth({y:+iso.slice(0,4),m:+iso.slice(5,7)})}
+      }
+    }
     else if (ids.some(k => k === 'dutytpl' || k === 'wavetpl' || k === 'wavehide' || k === 'daytpl' || k === 'secdefault' || k === 'wavedefault')) primary = 'admin'
   }
   if (m === 'inputs') {
@@ -164,9 +185,9 @@ function landingOf(entry: UndoEntry): Landing | null {
   return primary || also.length ? { primary, also, then } : null
 }
 
-function snapView(entry: UndoEntry, _dir: 'undo' | 'redo'): void {
+function snapView(entry: UndoEntry, dir: 'undo' | 'redo'): void {
   const boardWas = BOARD_WAS; BOARD_WAS = null
-  const land = landingOf(entry)
+  const land = landingOf(entry,dir)
   /* not when the change already shows on the page you are on (an input filed on Inputs, undone there) */
   if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE)) setPage(land.primary)
   if (land && land.then) land.then()

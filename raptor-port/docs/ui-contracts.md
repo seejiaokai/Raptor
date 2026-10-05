@@ -8789,3 +8789,35 @@ A shared store starts with nothing demo (`src/bootpolicy.ts`), so two tabs must 
   course yet" with two full-size buttons — **+ Add a course** (the Course menu's own prompt) and **⇪ Import a file…** (the
   File menu's Import — his charts and students reach the database by his own Export → Import, D120); the dialog box rides
   along. The first course brings the usual Tracker back and draws the board. Pin: `tracker/trk-nocourse.test.tsx`.
+
+## Inputs calendar and SANS demand — D580
+
+D581: every SANS date shows unique people offering F/Fly, O/OFT and A/AMT,
+independent of filters and using existing covered-date/year semantics. The flying
+target and deficit colour remain Fly-only; other activities have counts, no
+invented requirements. A multi-activity person counts once in each offered activity.
+D582: simplify the existing Inputs header and entry hierarchy; preserve its two
+modes, Calendar/List, Medical access/counts and filters/export. Concrete compact
+layout is delegated by D580, with pre-source pictures and independent challenge.
+Built arrangement: category first, compact Calendar/List plus quiet Medical/Filters next.
+Phone native person/type/search fields fold out of keyboard order; applied summary and
+Clear filters stay visible. Desktop fields stay expanded in the same DOM. Clear changes
+current-mode person/type/search only, preserving List dates and other-mode memory.
+Folding alone retains saved-row reveal. Every action stays at least44px high.
+
+Inputs opens within the app on Calendar; List remains reachable with existing filters and export.
+Member Inputs and SANS Availability are separate modes with independently retained person/search
+filters. SANS cells show offered/required and textual shortage; amber/red use inclusive global
+cutoffs, red first. Unset and explicit zero stay neutral. Counts ignore filters; day details state
+when rows are filtered and show each offer's F/O/A and All day/custom hours. Admin edits target,
+flying period and colour baselines; members read demand and edit their own eligible offers only.
+Desktop details sit beside the month; phone details scroll below a reachable header/close.
+Empty-cell primary mouse drag selects inclusive dates; phone/keyboard Select dates uses two picks,
+month arrows, Cancel/Escape and ordinary shared Save. Touch scrolling/swiping and chip drag remain
+separate. Each day is Enter/Space reachable. Saved inputs hidden by a filter are retained in day
+view; changing modes clears transient selection. No remarks placeholder, no inferred weather icon.
+Successful Inputs saves reveal the actual retained row in its correct mode and date in Calendar/List,
+including edits and confirmed medical/OIL paths. Remembered filters remain unchanged; a deliberate
+filter/mode change, leaving Inputs or session reset releases the temporary reveal. Only a live row
+of the current mode may be pinned. Undo/Redo follows the restored row; addition Undo never resurrects
+a deleted pin. Planning-only Undo/Redo returns to Member Calendar, where notes and pucks live.
