@@ -424,7 +424,7 @@ leaves the text boxes altogether.
 | `codex/save-note-controls` — the last round, never independently read | Astra (`…-owed-small-reads-astra.md` Part 3: the app sound; two test soft spots filed `[SAVE-NOTE-TEST-GAPS]`); reader D1; walkers F and N |
 | the working-guide changes Codex made before the reset (D70) — `AGENTS.md`'s D496 part, `raptor-port/docs/codex-review-workflow.md`, the D496 banners on `raptor-port/CLAUDE.md`, `bug-check-order.md` and `guide-full.md`, the D499 addendum | read by the host (Opus), 6 Oct 26: they say what D494, D496 and D499 say, keep the independence rule and "Claude's read before main", and extend nothing past the reset. One tidy-up, not a fault: the three banners describe an arrangement that ended on 5 Oct 26 at 19:00 — to go at the next documents pass |
 | the short lines of D591–D594 against their full rows (D138) | Astra — three corrected (§12, the guide wording) |
-| the guide wording written for D588–D590, and D596 (D70) | Astra and Sol 6.1, one round each; corrections applied; **waits for his approval** |
+| the guide wording written for D588–D590, and D596 (D70) | Astra and Sol 6.1, one round each; corrections applied; **approved by him, with D601's two lines, on 6 Oct 26 (D604)** |
 
 ## 11. Trial 1 (the walkers) and Trial 2 (the builder)
 
@@ -649,7 +649,9 @@ Added to §12's look card:
    it, and Shift+Tab should go back.
 8. **With "Track Blue/Red sorties" On: type `DS FOR RU` on one line and `RED FROM VL` on another** — both questions
    should show, each under its own line; answer one and the other should stay.
-**Questions waiting for him (D596):**
+**HIS REPLY, 6 Oct 26 — "All looks good and as recommended. We can handoff to a new chat continue":** his look is done
+(D604); question 2 → leave it (D603); the guide wording → approved (D604, the agent's reading of "as recommended", told to
+him). **He has not said "merge live"** — the stack waits for those words. The questions as put:
 1. *(answered — D602: the crew-rest fault is fixed first after the stack, in a new chat.)*
 2. **Once the sign-in ends, a Blue/Red answer can be changed to the other colour but not cleared** (`[ROLE-NOT-CHOSEN]`).
    **(A, recommended) leave it** — a wrong answer is corrected, and Undo clears it while he is signed in. (B) add a way

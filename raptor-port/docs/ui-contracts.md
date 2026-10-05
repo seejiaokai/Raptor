@@ -4941,7 +4941,9 @@ first, never in its place (until D598 there was one slot, newest wins). Each end
 another week, version or sign-in end them all. **After Blue, Red or Later the button is back at once while the caret is
 still in that Remarks box** — "Change mission role" after an answer, "Choose mission role" after Later — so a mis-press is
 corrected from where he stands (`offerForFocus`, `[ROLE-BUTTON-AFTER-ANSWER]`, 6 Oct 26; D527, D529). **A line with no
-callsign is "Line"** in the question, in Undo and in History, never its row code (`[ROLE-BLANK-CALLSIGN]`; D340). **In the changes window an answer is filed under its formation** ("Flying · RU ACM", detail
+callsign is "Line"** in the question, in Undo and in History, never its row code (`[ROLE-BLANK-CALLSIGN]`; D340). **An answer
+can be changed to the other colour, never put back to "not chosen", once the sign-in has ended** — left as built on his word
+(D603, 6 Oct 26); Undo clears it during the same sign-in. **In the changes window an answer is filed under its formation** ("Flying · RU ACM", detail
 "Mission role" — the same item as that line's other changes; its recorded callsign when the line has gone), never
 under a hidden row id (W7, `changesmodel.ts roleItem`). **An answer on a built-in demo day nobody has saved survives a
 reload** because the two built-in weeks carry repeatable row ids (W8, `data-schema.md`). **His answers (6 Oct 26):** a second formation's question never

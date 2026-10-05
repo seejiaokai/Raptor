@@ -3259,3 +3259,11 @@ lines: `raptor-port/src/state/mission-roles.ts` (the target's `name`) and `rapto
 D527: the button shows while a relevant Remarks is being edited. After an answer (or Later) with the caret left in the box nothing is
 offered until he clicks out and back in. Fix and test: `…/stack-read2-C.md` F2. **Place:** low — with `[ROLE-QUESTION-SECOND]`.
 
+
+*Moved here 2026-10-06 by backlog-archive.mjs ([ROLE-NOT-CHOSEN]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [ROLE-NOT-CHOSEN] Once the sign-in ends, a Blue/Red answer cannot be put back to "not chosen" (reader C, both passes — a question for him)
+An answer given by mistake can be changed to the other colour, never cleared, once Undo's list has gone (sign-out, reload). The
+permissions table allows the admin to delete the record; no control does. D527 offers a correction only. **Place (the agent's
+line):** low — a question for him, put with the third round's report (6 Oct 26); recommended: leave as built.
+
