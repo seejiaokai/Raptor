@@ -92,9 +92,17 @@ export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{
   const parsed=parseReportingLines(w), issues:ReportingIssue[]=[];
   (w.formations||[]).forEach((f:any,li:number)=>{
     if(f.cx)return;
-    const to=parseHM(f.to);
-    if(to==null||!Number.isFinite(to))return;
-    const r=resolveReporting(w,f,to,parsed), name=String(f.cs||w.label||'Formation');
+    const to=parseHM(f.to), name=String(f.cs||w.label||'Formation');
+    if(to==null||!Number.isFinite(to)){
+      /* RF5 (6 Oct 26, Astra's and Sol's reads; W19): no take-off yet, so no order to check — but a clock the reader
+         cannot read is told so now, not only once a take-off is typed. Only that: "rally after in-time" with no
+         in-time, and every order check, still wait for the take-off. */
+      parsed.filter(p=>p.malformed&&(!p.targets.length||p.targets.some(t=>t.toLowerCase()===String(f.cs??'').trim().toLowerCase())))
+        .forEach(p=>issues.push({gi,li,lines:[p.index],code:'REPORT_UNRESOLVED',blocking:false,
+          msg:`${name}: reporting line ${p.index+1} has no recognised clock. Check the time.`}));
+      return;
+    }
+    const r=resolveReporting(w,f,to,parsed);
     const stages:{name:string,time:number}[]=[];
     if(r.inTime!=null)stages.push({name:'in-time',time:r.inTime});
     if(r.rally!=null)stages.push({name:'rally',time:r.rally});

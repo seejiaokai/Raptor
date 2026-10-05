@@ -94,11 +94,15 @@ function saveVisibleText(t:RoleTarget,origin:HTMLElement):RoleTarget|null {
   if(!source||source.di!==t.di||source.rid!==t.formationRid)return null
   const raw=field instanceof HTMLInputElement||field instanceof HTMLTextAreaElement?field.value:field.textContent
   const value=String(raw??'').replace(/\s+/g,' ').trim(),want=value==='—'?'':value
-  if(String(txtGet(fieldKey(field))??'')!==want){
+  /* RF3 (6 Oct 26, Astra's read): the stored words are compared FOLDED, as the writer compares them (engine/slots.ts
+     txtSet, W11) — words stored with a doubled space (a wave template keeps them) are already "saved", and taking them
+     for a failed save dropped the question without its answer. */
+  const stored=()=>String(txtGet(fieldKey(field))??'').replace(/\s+/g,' ').trim()
+  if(stored()!==want){
     field.dispatchEvent(field.dataset.bfld?new Event('change',{bubbles:true}):new FocusEvent('focusout',{bubbles:true}))
     // The click handles the fresh question itself; suppress the writer event's deferred offer.
     offerEpoch++
-    if(String(txtGet(fieldKey(field))??'')!==want)return null
+    if(stored()!==want)return null
   }
   return roleTarget(t.di,t.formationRid)
 }
@@ -108,7 +112,9 @@ function show(t:RoleTarget,question:boolean,field:HTMLElement):void {
   /* the formation whose question is open gets no button beside it */
   if(!question&&asking&&sameFormation(asking.target,t)) return clearOffered()
   const held=slot(question), other=slot(!question)
-  if(held?.target.id===t.id && held.node.isConnected) return
+  /* the same thing already drawn — for the SAME box. Another aircraft's Remarks of the same formation is another box
+     (RF4, 6 Oct 26, Astra's read): the button is rebuilt on it, or the blur tidy-up, seeing "not his box", removed it. */
+  if(held?.target.id===t.id && held.node.isConnected && (question||held.field===field)) return
   /* the caret remembered for this box, whichever slot was holding it (a button turning into its question keeps it) */
   const caret=held?.field===field?held.caret:other?.field===field?other.caret:caretOf(field)
   clearSlot(question)

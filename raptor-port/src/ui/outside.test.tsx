@@ -86,3 +86,32 @@ describe('a pop-up window closes on its surround only when the press began on th
     }
   })
 })
+
+/* RF2 (Astra's and Sol's reads of the fix round, 6 Oct 26): a question sheet took the keyboard when it opened and
+   then let it go — Shift+Tab from its first button walked back into the editor underneath, where typing changed the
+   request behind an unanswered question. Tab and Shift+Tab stay inside the sheet until it is answered or closed. */
+describe('RF2 a question sheet keeps the keyboard until it is answered', () => {
+  const key = async (el: Element, shiftKey = false) => { const e = new KeyboardEvent('keydown', { key: 'Tab', shiftKey, bubbles: true, cancelable: true }); await act(async () => { el.dispatchEvent(e) }); return e }
+  it('Tab past the last button and Shift+Tab before the first both stay inside; a box behind is pulled back', async () => {
+    const behind = document.createElement('input'); document.body.prepend(behind)
+    await act(async () => root.render(<DocConfirm who="Ranger" typeLabel="Downchit" onUpload={() => {}} onNoDoc={() => {}} />))
+    const sheet = document.querySelector('.upconf-pop')!, box = sheet.querySelector('.airpop-box') as HTMLElement
+    const stops = [...box.querySelectorAll<HTMLElement>('button')]
+    expect(stops.length).toBeGreaterThan(1)
+    expect(document.activeElement, 'the sheet has the keyboard on opening').toBe(box)
+    expect((await key(box, true)).defaultPrevented, 'Shift+Tab from the sheet itself').toBe(true)
+    expect(document.activeElement).toBe(stops.at(-1))
+    expect((await key(stops.at(-1)!)).defaultPrevented, 'Tab from the last button').toBe(true)
+    expect(document.activeElement).toBe(stops[0])
+    expect((await key(stops[0]!, true)).defaultPrevented, 'Shift+Tab from the first button').toBe(true)
+    expect(document.activeElement).toBe(stops.at(-1))
+    await act(async () => { stops[0]!.focus() })
+    expect((await key(stops[0]!)).defaultPrevented, 'Tab between two of its own buttons is the browser\u2019s').toBe(false)
+    await act(async () => { behind.focus() })
+    expect((await key(behind)).defaultPrevented, 'a Tab pressed in a box behind the sheet').toBe(true)
+    expect(sheet.contains(document.activeElement), 'comes back into the sheet').toBe(true)
+    await act(async () => root.render(<i />))
+    expect((await key(behind)).defaultPrevented, 'and once the sheet is gone Tab is free again').toBe(false)
+    behind.remove()
+  })
+})

@@ -137,3 +137,45 @@ it('W9 — with one formation’s question open, another formation’s Remarks s
   expect(readRole(roleTarget(0,a.rid!)!.id),'the first formation is still unanswered').toBeUndefined()
   expect(document.querySelectorAll('[data-role-ui]')).toHaveLength(0)
 })
+
+/* RF3 (Astra's read of the fix round, 6 Oct 26): W11 made a spacing-only save a no-op — right — but the answer path
+   compared the stored words with the folded ones literally, "saved", compared again, took the unchanged stored words
+   for a failed save and dropped the question without the answer. A Mission or Remarks whose stored words hold a
+   doubled space (a wave template keeps them) could not be answered. */
+it('RF3 — a formation whose stored Mission holds a doubled space can still be answered, and nothing else is written',async()=>{
+  const {commandStream}=await import('../command')
+  const f=DAYS[0].waves[0]!.formations[0]!
+  await act(async()=>{f.msn='ACM /  DS';schedBaselineClean();(await import('../state/store')).notify()});await settle()
+  const rm=q('#eWeek [data-txt="fr:0.0.0.0"]')
+  await act(async()=>{rm.focus();rm.dispatchEvent(new FocusEvent('focusin',{bubbles:true}))});await settle()
+  await click(q('.mission-role-action [data-role-choose]'));await settle()
+  expect(document.querySelectorAll('.mission-role-question'),'the question opened').toHaveLength(1)
+  /* he selects the Mission box of that formation, changes nothing, and presses Red */
+  const msn=q('#eWeek [data-txt="ff:0.0.0.msn"]')
+  await act(async()=>{msn.focus();msn.dispatchEvent(new FocusEvent('focusin',{bubbles:true}))});await settle()
+  const n=commandStream().length
+  await click(q('[data-role-side="red"]'));await settle()
+  expect(readRole(roleTarget(0,f.rid!)!.id)?.side,'Red is recorded').toBe('red')
+  expect(f.msn,'the stored words are untouched').toBe('ACM /  DS')
+  expect(commandStream().slice(n).map(e=>e.type),'one command: the answer').toEqual(['insights.role.set'])
+})
+
+/* RF4 (Astra's read, 6 Oct 26): with a button showing under a formation, selecting the Remarks of ANOTHER aircraft of
+   the same formation took the button away — it was kept as it was (the same formation), still tied to the first box,
+   and the tidy-up that follows a blur saw "not his box any more" and removed it. */
+it('RF4 — the button follows him between the two aircraft Remarks of one formation',async()=>{
+  expect(writeText('fr:0.0.0.0','DS FOR EAGLE')).toBeTruthy();await settle()
+  const f=DAYS[0].waves[0]!.formations[0]!
+  expect(f.aircraft.length,'the demo formation has two aircraft').toBeGreaterThan(1)
+  const one=q('#eWeek [data-txt="fr:0.0.0.0"]'),two=q('#eWeek [data-txt="fr:0.0.0.1"]')
+  await act(async()=>{one.focus();one.dispatchEvent(new FocusEvent('focusin',{bubbles:true}))});await settle()
+  expect(document.querySelectorAll('.mission-role-action')).toHaveLength(1)
+  await act(async()=>{one.dispatchEvent(new FocusEvent('focusout',{bubbles:true,relatedTarget:two}));two.focus();two.dispatchEvent(new FocusEvent('focusin',{bubbles:true}))});await settle()
+  expect(document.activeElement).toBe(two)
+  expect(document.querySelectorAll('.mission-role-action'),'still offered while he is in the second aircraft Remarks').toHaveLength(1)
+  await click(q('.mission-role-action [data-role-choose]'));await settle()
+  expect(document.querySelectorAll('.mission-role-question')).toHaveLength(1)
+  await click(q('[data-role-side="blue"]'));await settle()
+  expect(readRole(roleTarget(0,f.rid!)!.id)?.side).toBe('blue')
+  expect(document.activeElement,'and the caret is back in the box he was in').toBe(two)
+})

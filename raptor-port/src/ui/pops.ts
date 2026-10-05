@@ -141,7 +141,11 @@ export function resetPopsForSession(): void { for (const p of POPS_RESET) p.rese
    asks this straight after the save it causes, so it never puts the caret in a box behind a window that save opened
    (a weekend duty request's time → the OIL question), and never walks the schedule while one is up. */
 export function windowOverSchedule(): boolean {
-  return !!(INPEDIT || MEDMOVE || DOCVIEW || INSIGHTS || AIRKEY || TPLEDIT || WAVEEDIT || DAYTPLEDIT || DRAFTSEDIT || WEEKCAL || DAYPOP != null)
+  if (INPEDIT || MEDMOVE || DOCVIEW || INSIGHTS || AIRKEY || TPLEDIT || WAVEEDIT || DAYTPLEDIT || DRAFTSEDIT || WEEKCAL || DAYPOP != null) return true
+  /* the Scheduler Board's cancel-reason and Sort all dialogs (RF2, 6 Oct 26 — Sol's read): their state lives in
+     ui/board.ts, which imports this file, so they are asked of the page — both are always mounted and shown by
+     dropping `hidden` */
+  return typeof document !== 'undefined' && !!document.querySelector('#cxPop:not([hidden]), #sortAllPop:not([hidden])')
 }
 VIEW_RESET.push({ name: 'POPS', scopes: ['session'], reset: resetPopsForSession })
 VIEW_RESET.push({name:'INSIGHTS_ALL',scopes:['week'],reset:()=>setInsightsAll(false)})

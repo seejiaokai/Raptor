@@ -153,3 +153,32 @@ describe('W4 a flying line with no times yet adds no hours — never NaN', () =>
     expect(workSpan([{ kind: 'fly', to: NaN, ld: NaN, report: 480 }]), 'a reporting clock alone is no span').toBe(null)
   })
 })
+
+/* RF1 (Astra's and Sol's reads of the fix round, 6 Oct 26): W4 stopped the NaN, but an unfinished flight whose wave
+   carries a reporting clock still lent that clock to the day — 08:00 from the flight, 14:00 from a ground row, "six
+   hours" for a man with one hour of work. An event counts only when BOTH its ends are real. */
+describe('RF1 an unfinished flying line lends nothing to the span of other work', () => {
+  it('a reporting clock on an untimed line beside timed ground work: the ground work alone, in either order', () => {
+    const ground = { kind: 'ground', s: 13 * 60, e: 14 * 60 }
+    const unfinished = { kind: 'fly', to: NaN, ld: NaN, report: 8 * 60 }
+    for (const evs of [[unfinished, ground], [ground, unfinished]]) {
+      const sp = workSpan(evs)!
+      expect([sp.s, sp.e, sp.span]).toEqual([13 * 60, 14 * 60, 60])
+    }
+    /* a finished flight still counts whole, and an overnight one keeps its negative report */
+    expect(workSpan([{ kind: 'fly', to: 600, ld: 660, report: 420 }, ground])!.span).toBe(14 * 60 - 420)
+    expect(workSpan([{ kind: 'fly', to: 30, ld: 90, report: -90 }])!.s).toBe(-90)
+  })
+  it('in the app: a man with one ground hour, put on an untimed line of a wave that has an in-time, still shows one hour', () => {
+    const before = computeInsights()
+    const w = DAYS[0].waves.find((x: any) => !x.standalone)
+    w.intimes = ['08:00 IN TIME + WX/NOTAMS']   // a whole-wave line: every formation of the wave reads it
+    DAYS[0].ground.push({ prog: 'RF1 MEETING', str: '1900', end: '2000', who: 'waldo' })
+    const alone = computeInsights().hours.find((h: any) => h.id === 'waldo')
+    w.formations.push({ cs: 'NT', msn: 'BFM', to: '', ld: '', br: '', aircraft: [{ p: 'waldo', w: '', area: '', rmks: '', opts: {} }] })
+    const both = computeInsights().hours.find((h: any) => h.id === 'waldo')
+    expect(alone, 'the ground hour is counted').toBeTruthy()
+    expect(both!.mins, 'the untimed line adds nothing to it').toBe(alone!.mins)
+    expect(before.hours.length).toBeGreaterThan(0)
+  })
+})

@@ -20,6 +20,7 @@ import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { holdingPlace } from './dayswap'
+import { useSheetFocus } from './sheetfocus'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, dayTplMenu } from './board'
@@ -666,6 +667,9 @@ export function CxDialog() {
   const what = open ? (CXT.label || 'this line') : ''
   const canEdit = canEditSched()
   useEffect(() => { if (open && inRef.current) { inRef.current.value = (CXT.o.cxr || ''); inRef.current.focus() } }, [open])
+  /* the dialog keeps the keyboard while it is up (RF2 — ui/sheetfocus.ts) */
+  const cxBox = useRef<HTMLDivElement>(null)
+  useSheetFocus(cxBox, open)
   /* dropping edit mode when the dialog closes so it never reopens mid-edit */
   useEffect(() => { if (!open) { setEditing(false); setArmReset(false) } }, [open])
   const close = () => { setCxt(null); notify() }
@@ -685,7 +689,7 @@ export function CxDialog() {
   return (
     <div className="airpop" id="cxPop" hidden={!open}
       onClick={e => { if (clickedOutside(e, 'cxPop')) close() }}>
-      <div className="airpop-box cxbox">
+      <div className="airpop-box cxbox" ref={cxBox} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b id="cxTitle">{on ? (what.charAt(0).toUpperCase() + what.slice(1)) + ' is cancelled — reason' : 'Cancel ' + what}</b><button className="x" id="cxClose" aria-label="Close" onClick={close}>✕</button></div>
         <div className="cxbody">
           <label className="cxlead" htmlFor="cxReason">CX DUE</label>
@@ -750,10 +754,13 @@ export function SortAllDialog() {
   const open = di != null
   const d = open ? DAYS[di] : null
   const close = () => cancelSortAll()
+  /* the dialog takes the keyboard when it opens and keeps it (RF2 — ui/sheetfocus.ts) */
+  const sortBox = useRef<HTMLDivElement>(null)
+  useSheetFocus(sortBox, open)
   return (
     <div className="airpop" id="sortAllPop" hidden={!open}
       onClick={e => { if (clickedOutside(e, 'sortAllPop')) close() }}>
-      <div className="airpop-box">
+      <div className="airpop-box" ref={sortBox} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b id="sortAllTitle">Sort all — {d ? d.dow : ''}</b><button className="x" id="sortAllClose" aria-label="Close" onClick={close}>✕</button></div>
         <div className="airpop-body">
           Every section on {d ? d.dow : 'this day'} — flying, duties, sims, ground and the

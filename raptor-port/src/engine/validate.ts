@@ -168,9 +168,13 @@ export function workSpan(evs:any){
             :o.kind==='shift'&&o.report!=null?Math.min(o.report,o.s):o.s;
     const oe=o.kind==='fly'?o.ld+VCONF.debrief:o.e;
     /* W4 (5 Oct 26): a flying line with no take-off or landing yet carries NaN times — it has no span, and must
-       not turn the man's whole day (and his week's hours in Insights, "NaN min") into NaN. */
-    if(os!=null&&!isNaN(os)&&(s==null||os<s))s=os;
-    if(oe!=null&&!isNaN(oe)&&(e==null||oe>e)){e=oe;ef=o.kind==='fly'?o:null;}
+       not turn the man's whole day (and his week's hours in Insights, "NaN min") into NaN.
+       RF1 (6 Oct 26, Astra's and Sol's reads): nor may it lend ONE end — its wave's reporting clock is real while its
+       landing is not, and 08:00 from the unfinished line with 14:00 from a ground row read "six hours" for one hour
+       of work. An event counts only when both its ends are real numbers. */
+    if((typeof os==='number'&&isNaN(os))||(typeof oe==='number'&&isNaN(oe)))return;
+    if(os!=null&&(s==null||os<s))s=os;
+    if(oe!=null&&(e==null||oe>e)){e=oe;ef=o.kind==='fly'?o:null;}
   });
   if(s==null||e==null)return null;
   return {s,e,span:e-s,ef};

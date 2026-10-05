@@ -323,11 +323,13 @@ describe('W12 a save that opens a window stops the Tab route there', () => {
     expect(sheet, 'the OIL question is up').toBeTruthy()
     expect(editingText(), 'no caret in a schedule box behind the window').toBe(false)
     expect(sheet!.contains(document.activeElement), 'the window holds the keyboard').toBe(true)
-    /* a text box behind an open window is not on the route: Tab there is the browser's own */
+    /* a text box behind an open window is not on the route: a Tab there goes back INTO the window (RF2 — the sheet
+       keeps the keyboard), never on to the next schedule box */
     const behind = week('ff:0.0.0.cs')
     await focus(behind)
-    const again = await tab(behind)
-    expect(again.defaultPrevented, 'the route declines while a window is up').toBe(false)
+    await tab(behind)
+    expect(sheet!.contains(document.activeElement), 'a Tab behind the window comes back into it').toBe(true)
+    expect(editingText(), 'and never on to the next schedule box').toBe(false)
     await act(async () => { (document.activeElement as HTMLElement)?.blur(); pops.setInpEdit(null); notify() }); await tick()
     /* and with the window closed the route is back */
     await focus(behind)
@@ -395,5 +397,29 @@ describe('W15 W16 the day keeps up while he tabs', () => {
     expect(words('#sbWarn'), 'the list names it while he is still in the boxes').toContain('is later than')
     await act(async () => { at.blur(); undo() }); await tick()
     expect(words('#sbWarn')).toBe(listWas)
+  })
+})
+
+/* RF2 (Sol's read of the fix round, 6 Oct 26): the board's cancel-reason and Sort all dialogs are windows over the
+   schedule too — the Tab route must not walk the boxes behind them. */
+describe('RF2 the board\u2019s own dialogs stop the Tab route', () => {
+  it('Sort all open: Tab in a board box behind it is not routed, and comes back into the dialog; closed: the route is back', async () => {
+    const { askSortAll, cancelSortAll } = await import('./board')
+    await board()
+    const cs = box('ff:0.0.0.cs')
+    await focus(cs)
+    expect((await tab(cs)).defaultPrevented, 'the route works before').toBe(true)
+    await act(async () => { (document.activeElement as HTMLElement)?.blur(); askSortAll(0); notify() }); await tick()
+    const pop = document.querySelector('#sortAllPop') as HTMLElement
+    expect(pop.hidden, 'the dialog is up (Monday is day 0)').toBe(false)
+    expect(pop.contains(document.activeElement), 'it took the keyboard').toBe(true)
+    await focus(cs)
+    await tab(cs); await tick()
+    expect(pop.contains(document.activeElement), 'a Tab from a box behind it lands inside the dialog').toBe(true)
+    expect(box('ff:0.0.0.msn')).not.toBe(document.activeElement)
+    await act(async () => { cancelSortAll(); notify() }); await tick()
+    await focus(cs)
+    expect((await tab(cs)).defaultPrevented).toBe(true)
+    expect(document.activeElement).toBe(box('ff:0.0.0.msn'))
   })
 })
