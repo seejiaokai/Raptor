@@ -487,3 +487,37 @@ Both native syntax checks PASS. Freeze14 manifest
 861files/18HTTP. This is no new app behavior or scenario assertion; the runtime,
 unit and browser results above remain executable-identical. Independent exact
 Freeze13→14 byte/HTTP comparison is requested before branch delivery.
+
+
+## Ready branch preview and final context delivery
+
+Independent Freeze13→14 byte/HTTP comparison PASS:861paths identical,859files
+byte-identical, exactly two walk-driver terminal whitespace deltas (−4/−2bytes),
+non-whitespace prefixes equal and preserved originals match Freeze13. Checkout
+all861files and18HTTP assets match Freeze14. Private independent receipt
+`freeze14-independent-byte-verification.json`,
+SHAfe236469c7b9936535f4bf0470bb62bbf6ea8d20029015b7235f951bf5223dd1.
+No app/scenario behavior changed; no unnecessary broad gate rerun or third source
+inspection. Closing staged whitespace and Freeze14 document check PASS.
+
+Code commit`1bf27de172fcd15dc74c8d53da4e65b7ff3e12d3` pushed only to`codex/inputs-sans-calendar`;
+no open PR or running PR checks. GitHub Preview deployment`6850010991`
+reported **success/Ready** at2026-10-05T02:22:00Z: https://raptor-dx35curde-kai-e2f5.vercel.app.
+Exact private shipping receipt`inputs-sans/shipping-receipt.json`. Closing
+context documents only are committed/pushed separately; executable/source/driver
+bytes remain exactly Freeze14 and the locally checked/walked bundle. Desktop/mobile
+actual renders and intent-first Claude brief are delivered for owner look and
+Claude vetting. No design/code approval or main delivery implied.
+
+Final independent Astra context/locator meaning check PASS: finished handoff
+SHA31323793f277b295e66361ab76d78f928c5a06ce90ac70e8857662a993f2d309 and
+shipping receipt matched exact code commit, branch, Ready deployment/URL and
+host-bound local fallback. Settled owner constraints and delegated choices remain
+separate; fresh assessment precedes prior findings. No outstanding document
+finding, browser/auth attempt or source review. Closing shipping document check
+PASS D1–D584 homes accounted for; overage7673 deferred D29, no trimming.
+
+Walk:34groupsPASS/all25 originals independently opened; desktop/mobile delivered;
+Claude final expanded approach/code/runtime vet OWED before main.
+Rulings: D569–D584; original intent, references, role boundaries and delegated
+recommendations separated for fresh assessment. No new owner decision inferred.
