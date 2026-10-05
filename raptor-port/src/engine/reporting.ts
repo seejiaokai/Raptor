@@ -90,6 +90,10 @@ export const stated=(t:number,short=false)=>hm24(t)+(t<0?short?' (prev day)':' (
 export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{
   if(w.standalone)return [];
   const parsed=parseReportingLines(w), issues:ReportingIssue[]=[];
+  /* RF5b (6 Oct 26, Astra's and Sol's second reads): a wave whose last line has been removed keeps its reporting text —
+     and with no formation to speak for it, an unreadable clock there went quiet again. The wave says it itself. */
+  if(!(w.formations||[]).length)parsed.filter(p=>p.malformed).forEach(p=>issues.push({gi,li:0,lines:[p.index],code:'REPORT_UNRESOLVED',blocking:false,
+    msg:`${String(w.label||'Wave')}: reporting line ${p.index+1} has no recognised clock. Check the time.`}));
   (w.formations||[]).forEach((f:any,li:number)=>{
     if(f.cx)return;
     const to=parseHM(f.to), name=String(f.cs||w.label||'Formation');

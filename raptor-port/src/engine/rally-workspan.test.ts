@@ -177,6 +177,16 @@ describe('Rally reporting decisions D497–D507: RT1 scope, RT2 grammar, RT3 act
     expect(reportingIssuesForWave(wave(['8h00 IN TIME'],[{...blank,cx:'WX'} as any]))).toEqual([])
     expect(reportingIssuesForWave({...wave(['8h00 IN TIME'],[blank]),standalone:true,kind:'sc'})).toEqual([])
   })
+  it('RF5b a wave left with NO line at all still says an unreadable clock is unreadable — once, and by the name of the wave', () => {
+    const empty={label:'FIRST WAVE',intimes:['8h00 IN TIME','IN TIME + WX/NOTAMS','0900 RALLY'],formations:[] as any[]}
+    expect(reportingIssuesForWave(empty,3)).toEqual([{gi:3,li:0,lines:[0],code:'REPORT_UNRESOLVED',blocking:false,msg:'FIRST WAVE: reporting line 1 has no recognised clock. Check the time.'}])
+    /* a line added back: the formation says it, once — never twice */
+    const back=wave(['8h00 IN TIME'],[{...formation(),to:'',ld:'',br:''}])
+    expect(reportingIssuesForWave(back)).toHaveLength(1)
+    /* every line cancelled is still the cancelled exclusion; a standalone wave still says nothing */
+    expect(reportingIssuesForWave(wave(['8h00 IN TIME'],[{...formation(),cx:'WX'} as any]))).toEqual([])
+    expect(reportingIssuesForWave({...empty,standalone:true,kind:'sc'})).toEqual([])
+  })
   it('D503 resolves each same-callsign formation using its own take-off', () => {
     const w=wave(['08:00 VL IN TIME'],[formation('VL','07:00'),formation('VL','12:00')])
     expect(resolveReporting(w,w.formations[0],420).inTime).toBe(-960)
