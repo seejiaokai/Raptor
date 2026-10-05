@@ -11,7 +11,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import { SCHED } from '../engine/publish'
 import { txtGet } from '../engine/slots'
-import { DPREV, setPage, setBoardDay, PIOPEN } from '../state/view'
+import { DPREV, setPage, setBoardDay, PIOPEN, DWOPEN } from '../state/view'
 import { openScheduler } from './board'
 import { atimeText } from './html'
 import { editingText } from './textedit'
@@ -332,5 +332,68 @@ describe('W12 a save that opens a window stops the Tab route there', () => {
     /* and with the window closed the route is back */
     await focus(behind)
     expect((await tab(behind)).defaultPrevented).toBe(true)
+  })
+})
+
+/* W15 + W16 (the Codex stack check, 5 Oct 26; D509 "shows in the warning list"): during a Tab run the day did not
+   redraw at all — "never repaint under the caret" was kept by repainting NOTHING — so a warning made or cleared by a
+   Tab commit was missing from, or left in, the day's list and count until he left the text boxes, and a wave's header
+   kept its old In-time / Rally clock. Now everything that does not hold the caret is written at once, and the wave
+   header inside the caret's own block is corrected in place. */
+describe('W15 W16 the day keeps up while he tabs', () => {
+  const words = (sel: string) => (host.querySelector(sel) as HTMLElement).textContent!.replace(/\s+/g, ' ')
+  const BOX = '#eWeek .day[data-day="0"] [data-dwbox="0"]'
+  const shown = async () => {
+    const { WARN } = await import('../engine/validate')
+    const { shownWarns } = await import('../engine/warnhide')
+    return shownWarns((WARN.byDay[0] && WARN.byDay[0].warns) || []) as any[]
+  }
+  /* an in-time typed later than the suggested brief of its formation: a red timing warning the day did not have (D509) */
+  const LATE = () => { const f = DAYS[0].waves[0].formations[0]; return `${f.to}H: ${f.cs} IN TIME` }
+  it('week: a Tab commit that makes a warning updates the bar of the day at once, the caret staying in the next box', async () => {
+    await act(async () => { DWOPEN.add(0); notify() })   // the list of the day, open, as a scheduler keeps it
+    const boxWas = words(BOX)
+    expect(boxWas).not.toContain('is later than')
+    const line = $('#eWeek .day[data-day="0"] [data-itline="0|0|0"]'), block = line.closest('.dsec')!
+    await focus(line); line.textContent = LATE(); await tab(line); await tick()
+    const at = document.activeElement as HTMLElement
+    expect(editingText(), 'the caret is in the next box').toBe(true)
+    expect(at.isConnected && at.closest('.dsec') === block, 'and that box was never redrawn — same block, same node').toBe(true)
+    const now = await shown()
+    expect(now.some((w: any) => w.code === 'REPORT_ORDER'), 'the edit really made the timing warning').toBe(true)
+    expect(words(BOX), 'the list names it while he is still typing').toContain('is later than')
+    expect(words(BOX), 'and its count is the count now').toContain(`${now.length} issue`)
+    await act(async () => { at.blur(); undo() }); await tick()
+    expect(words(BOX)).toBe(boxWas)
+    DWOPEN.delete(0)
+  })
+  it('week: the wave header follows an In-time / Rally line changed on the way through (W16)', async () => {
+    await act(async () => {
+      DAYS[0].waves[0].formations.forEach((x: any) => { x.to = '00:30'; x.ld = '01:30'; x.br = '' })
+      DAYS[0].waves[0].intimes = ['21:30H: IN TIME + WX/NOTAMS']; histInit(); notify()
+    })
+    const HEAD = '#eWeek .day[data-day="0"] .go .go-tab .asd'
+    expect(words(HEAD)).toContain('In-time / Rally 21:30 (prev day)')
+    const line = $('#eWeek .day[data-day="0"] [data-itline="0|0|0"]')
+    await focus(line); line.textContent = '22:30H: IN TIME + WX/NOTAMS'; await tab(line); await tick()
+    expect(editingText(), 'still in a text box').toBe(true)
+    expect(DAYS[0].waves[0].intimes).toEqual(['22:30H: IN TIME + WX/NOTAMS'])
+    expect(words(HEAD), 'the header beside the line agrees with it').toContain('In-time / Rally 22:30 (prev day)')
+    expect(words(HEAD)).not.toContain('21:30')
+  })
+  it('Board: the warning list of the day follows a Tab commit; the boxes of the board are not redrawn under the caret', async () => {
+    await board()
+    const listWas = words('#sbWarn')
+    expect(listWas).not.toContain('is later than')
+    const line = $('#sbBoard [data-itline="0|0|0"]'), first = box('ff:0.0.0.cs')
+    await focus(line); line.textContent = LATE(); await tab(line); await tick()
+    const at = document.activeElement as HTMLElement
+    expect(editingText(), 'the caret is in the next box').toBe(true)
+    expect(at.isConnected && box('ff:0.0.0.cs') === first, 'the boxes of the board are the same nodes').toBe(true)
+    const now = await shown()
+    expect(now.some((w: any) => w.code === 'REPORT_ORDER')).toBe(true)
+    expect(words('#sbWarn'), 'the list names it while he is still in the boxes').toContain('is later than')
+    await act(async () => { at.blur(); undo() }); await tick()
+    expect(words('#sbWarn')).toBe(listWas)
   })
 })

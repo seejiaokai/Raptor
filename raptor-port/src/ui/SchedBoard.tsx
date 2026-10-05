@@ -18,7 +18,8 @@ import { daySnapOf, alColor, dayDiscardCount } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
-import { withDaySnap, withVersionFlags } from './html'
+import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
+import { holdingPlace } from './dayswap'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, dayTplMenu } from './board'
@@ -273,13 +274,26 @@ export function SchedBoard() {
        whether the panels have a day to render, which SBDAY alone answers
        correctly. */
     if (SBDAY == null) { panelPrev.current = {}; pendingPaint.current = null; return }
-    if (editingText()) { pendingPaint.current = { di: SBDAY, nav: navGen() }; return }
-    pendingPaint.current = null
+    /* WHILE A TEXT BOX HAS THE CARET, EVERY PANEL THAT DOES NOT HOLD IT IS STILL WRITTEN (W15, the Codex stack check,
+       5 Oct 26; D509 — a timing warning "shows in the warning list"). The board used to write nothing at all until the
+       caret left text; on the Tab route that is a whole day, and the list said "No conflicts" beside a line it should
+       have named. The panel with the caret waits, as before (pendingPaint stays set and the paint after the caret
+       leaves writes it); inside it the wave header's clock is corrected in place (W16). A look at an older version,
+       and a caret that is not in the board's own panel, keep the old rule — nothing is written. */
+    let caret: HTMLElement | null = null
+    if (editingText()) {
+      pendingPaint.current = { di: SBDAY, nav: navGen() }
+      caret = document.activeElement as HTMLElement | null
+      if (!caret || DPREV.has(SBDAY) || !boardRef.current || !boardRef.current.contains(caret)) return
+    } else pendingPaint.current = null
     const di = SBDAY
-    const set = (el: HTMLElement, key: string, html: string) => {
+    const put = (el: HTMLElement, key: string, html: string) => {
       if (panelPrev.current[key] === html) return
+      if (caret && el.contains(caret)) return   // the caret's own panel: owed, written when the caret leaves
       el.innerHTML = html; panelPrev.current[key] = html
     }
+    /* with a caret, the writes above it must not move the box he is typing in */
+    const set = (el: HTMLElement, key: string, html: string) => { if (caret && caret.isConnected) holdingPlace(caret, () => put(el, key, html)); else put(el, key, html) }
     set(daysRef.current!, 'days', dayTabsHTML(di))
     /* same lazy orphan prune as the edit week */
     if (DPREV.has(di) && !daySnapOf(di, DPREV.get(di))) DPREV.delete(di)
@@ -326,6 +340,7 @@ export function SchedBoard() {
        answer — the armed slot's day, else the day the week behind is scrolled to — and the board draws no day name, so
        Thursday's board listed Monday's crew: a man on leave Thursday showed free. An armed slot still wins. */
     set(rosterRef.current!, 'roster', paletteHTML(ARM && ARM.di >= 0 ? ARM.di : di, { head: false }))
+    if (caret) refreshWaveReports(boardRef.current)
     refreshHighlights()
     /* the gold dots, as on the edit week ([HIST-PHONE-HIDE], D345) — over the board wrap, where the bubble is wired */
     refreshHistDots(wrapRef.current)

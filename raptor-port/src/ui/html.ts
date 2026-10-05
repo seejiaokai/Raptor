@@ -1182,6 +1182,41 @@ export function dayWarnHTML(di:any){
    stored lines byte-identical for parity (the html.test dayHTML compare
    folds the reference's own <b>NNNNH</b> the same way before comparing —
    its noItTime normaliser, a no-op on the port's already-folded output). */
+/* THE WAVE HEADER'S IN-TIME / RALLY CLOCK, AND ITS REFRESH IN PLACE (W16, the Codex stack check, 5 Oct 26). The header
+   sits in the same block as the wave's own text boxes, so while the caret is in one of them that block is not redrawn
+   (ui/dayswap.ts swapDayAround) — and the header went on showing the clock from before the line was edited ("21:30
+   (prev day)" beside a line reading 22:30H). refreshWaveReports rewrites the header's WORDS from the model: text
+   nodes only, no element replaced, nothing near the caret — and no new markup (the edit week is compared byte for
+   byte with the reference, html.test.ts). One body each for the builder and the refresh, so the two cannot drift:
+   on the week, what follows the wave's label (" · NIGHT", and the clock only when it falls on the previous day, as
+   before); on the board, the whole header note. Waves are found by the drag address every edit-mode wave carries. */
+export function waveHeadTail(w:any):string{
+  const sa=isStandalone(w);
+  const night=!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':'';
+  const r=sa?null:waveInTime(w);
+  return night+(r!=null&&r<0?` · ${REPORTING_LABEL} ${stated(r,true)}`:'');
+}
+export function waveHeadBoard(w:any):string{
+  const t=waveInTime(w), n=(w.formations||[]).reduce((k:number,f:any)=>k+f.aircraft.length,0);
+  return `${REPORTING_LABEL} ${t!=null?stated(t,true):'—'} · ${n} ac`;
+}
+export function refreshWaveReports(root:ParentNode|null|undefined):void{
+  if(!root)return;
+  root.querySelectorAll<HTMLElement>('[data-move^="mv:w."]').forEach(go=>{
+    const [di,gi]=String(go.dataset.move).slice(5).split('.').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
+    if(!w)return;
+    if(go.classList.contains('sb-go')){
+      const note=go.querySelector(':scope > .sb-go-h > .asd'), want=waveHeadBoard(w);
+      if(note&&note.textContent!==want)note.textContent=want;
+      return;
+    }
+    const head=go.querySelector(':scope > .go-tab > .asd'); if(!head)return;
+    const want=waveHeadTail(w), texts=[...head.childNodes].filter(n=>n.nodeType===3);
+    if(texts.map(n=>n.nodeValue).join('')===want)return;
+    texts.forEach(n=>n.remove());
+    if(want){ const label=head.firstElementChild, node=document.createTextNode(want); if(label)label.after(node); else head.prepend(node); }
+  });
+}
 export function intimeLineHTML(t:any){
   return esc(t).replace(/^(\s*)((?:\d{1,2}:\d{2}|\d{3,4})\s*[HL]?)(?![0-9A-Za-z])/i,
     (_,sp,tok)=>`${sp}<b>${intimeFold(tok)}</b>`);}
@@ -1664,11 +1699,10 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          last line and is about to add another — so never index formations[0] blind. */
       const f0=(w.formations||[])[0];
       const sa=isStandalone(w);
-      const report=sa?null:waveInTime(w);
       const edge=sa?'var(--san)':`var(--${mColor(f0?f0.msn:'')})`;
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
-        <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
-        +`${report!=null&&report<0?` · ${REPORTING_LABEL} ${stated(report,true)}`:''}${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
+        <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${waveHeadTail(w)}`
+        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
         ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
          add control is the fix for the old trap where deleting the last line

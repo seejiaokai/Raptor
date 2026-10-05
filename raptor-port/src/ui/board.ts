@@ -7,8 +7,7 @@ import { briefLeadShown } from '../engine/faceattrs'
 import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId } from '../engine/inputs'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
-import { waveInTime } from '../engine/events'
-import { stated, REPORTING_LABEL } from '../engine/reporting'
+import { REPORTING_LABEL } from '../engine/reporting'
 import { WARN, validate, WCODE, wlbl, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { shownWarns } from '../engine/warnhide'
 import { hhmm, hm24, fmtHM, minus, parseHM } from '../engine/time'
@@ -22,7 +21,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
+import { waveHeadBoard, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
@@ -146,12 +145,10 @@ function boardHTMLBody(di: number, pv?: boolean) {
        "in-time · N ac" header note and the blue suggested-brief ghost that make
        sense only on a real sortie. AVALON/BB keep theirs. */
     const sc = w.kind === 'sc'
-    const asd = w.formations.reduce((n: number, f: any) => n + f.aircraft.length, 0)
     /* SC and AVALON after Night wave (owner, 10 Aug 26) — the same list the
        + Wave picker offers, reachable from a wave that already exists. */
     const opts = ['1st wave', '2nd wave', '3rd wave', '4th wave', '5th wave', 'Night wave', 'SC', 'AVALON']
     const cur = labelToTitle(w); if (!opts.includes(cur)) opts.unshift(cur)
-    const inT = waveInTime(w)
     /* mvRO, not pv (reviewer-found residual, 9 Aug 26): the wave header's
        own title select and its + Line / ✕ Wave pair were still pv-only,
        the same gap as everything else in this pass — a read-only board
@@ -172,7 +169,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
          data-air click is handled globally (interactions.ts setAirKey → AirPop),
          which already reaches the board, so no board-side wiring is needed. */
       + `${sa || mvRO ? '' : `<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}`
-      + (sc ? '' : `<span class="asd">${REPORTING_LABEL} ${inT != null ? stated(inT,true) : '—'} · ${asd} ac</span>`)
+      + (sc ? '' : `<span class="asd">${waveHeadBoard(w)}</span>`)
       + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     /* The IN TIME + WX/NOTAMS lines edit exactly as the week's do (html.ts):
