@@ -8808,8 +8808,17 @@ moves the bar (`[LW-FIGSEL-FLAKE]`, 28 Sep 26).
   resize; the old note stayed at the old height, on the account button and Logout at 1366 wide).
 - **A full-screen surface that lies over the top bar carries the same warning under its own bar** (`SaveBand`, in the
   flow): the scheduler board (inside `.sb-top`, last, so `--sb-topH` follows it), the Inputs calendar and the Medical
-  view (between the head and the body). There the bar's own warning cannot be seen. A window, a sheet or the phone's
-  menu is a short visit and has none — the bar's is there when it closes.
+  view (between the head and the body), and the Leave War's full-screen OIL tracker — its grid and its settings (under
+  the sheet's head). There the bar's own warning cannot be seen. A window, a sheet or the phone's menu is a short visit
+  and has none — the bar's is there when it closes. **What decides it is the surface, not its component's name:** full
+  screen and worked in (the OIL tracker is a `Sheet`) carries the band.
+- **One warning at a time for a screen reader and the keyboard:** while a `SaveBand` shows, the bar's copy beneath it is
+  `inert` and `aria-hidden` (it keeps its room, so nothing moves when the surface closes). The board passes
+  `active={open}`, because it stays in the page while closed.
+- **When the warning comes or goes, the page is told the way a window resize tells it:** `Shell` fires one `resize`
+  on the window. A Quals or Leave War header ALREADY frozen, the Tracker's full-height column, its open menus and Find
+  strip all measured the bar before it changed and re-measure on a resize — without it the frozen header sat 36px off
+  and the Tracker's foot fell 36px below a screen that does not scroll.
 - **What follows the bar already follows this** — it is one line or two by page and width: Quals' and the Leave War's
   frozen headers and the Leave War's sheets (measured live), Logic's pinned search (its own size observer). **Two things
   float at a FIXED height above the bar's layer and move down by the band with the page:** the week's two side arrows
@@ -8817,7 +8826,9 @@ moves the bar (`[LW-FIGSEL-FLAKE]`, 28 Sep 26).
   taller bar would otherwise reach them, and the right-hand arrow would lie on Retry. **So does the spot the two movable
   windows open at** (the changes window and the ALL AVAIL window, 96px down the right edge — they stay open while a
   person works, and under a two-line bar would open on Retry); they are drawn beside the shell, so `#shell` carries
-  `.save-failed` too. A window a person has moved stays where they put it. **A new thing pinned at a fixed height near
+  `.save-failed` too. DESKTOP ONLY (621px and wider) — on a phone both are bottom panels and the rule must not reach
+  them — and shorter by the band, so the foot stays on a short screen. A window a person has moved stays where they put
+  it. **A new thing pinned at a fixed height near
   the top must do the same**, or be measured from the bar.
 - **The cost, accepted:** the page shifts down one line ONCE, at the moment a save fails, and back when it lands. A
   failed save stays failed until it lands (`storage/postman.ts`), so this is not a per-change twitch; the top bar's own
@@ -8825,8 +8836,10 @@ moves the bar (`[LW-FIGSEL-FLAKE]`, 28 Sep 26).
 - **Pins:** `e2e/save-note.spec.ts` — at six sizes (phones 390 and 320, a phone on its side, desktops 1200, 1366×700,
   1440), on all nine pages, at the top and scrolled: the warning seen whole and nothing a person can press under it;
   real presses reach the name search box and the Tracker's ✓ Save changes; Retry, pressed for real, saves and the bar
-  returns to its height; the board, the Inputs calendar and the Medical view each show it and their Retry works; with
-  the changes window open Retry still takes the press. `ui/SaveStatus.test.tsx`
+  returns to its height; the board, the Inputs calendar, the Medical view and the OIL tracker each show it and their
+  Retry works; one warning exposed at a time; a frozen header and the Tracker's column follow the bar when the warning
+  comes and goes; with the changes window open Retry still takes the press, its foot stays on a 600-tall screen, and on
+  a phone it stays a bottom panel. `ui/SaveStatus.test.tsx`
   (the states). The walk's driver: `scripts/handpass/sn-cover.mjs`, `sn-board.mjs`.
 - **Device caveat:** on an iPhone, pulling the page down past its top lets the bar bounce while a fixed note stays —
   the band may part from the bar for the length of the bounce (the floating note did the same). Not measured on his
