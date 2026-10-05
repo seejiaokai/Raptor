@@ -276,6 +276,17 @@ test that failed first:
 | RF4 | Astra | W9 half-fixed: the button vanished on moving between the Remarks of two aircraft of one formation | the button is rebuilt on the box he is in ("RF4") |
 | RF5 | both | W19 half-fixed: a clock the app cannot read was told so only once a take-off existed (walker M met the same on L-04) | the advisory no longer waits for a take-off; order checks still do (`engine/rally-workspan.test.ts` "RF5") |
 
+**Walked (6 Oct 26): walker S, six scenarios written for these fixes — 6 of 6 PASS** (`parts/stk2-S.md`, 48 pictures,
+14 opened by it): sixteen Tab and Shift+Tab presses all stay inside the OIL question, `XYZ` changes nothing behind it,
+Escape closes it; twelve presses each stay inside Sort all and the cancel-reason dialog, and Tab works on the schedule
+again after each is closed (RF2); a pilot with one ground hour keeps exactly that with an untimed line under an 08:00
+in-time, and reads 08:00–14:00 once the line has times — no "NaN" (RF1); `8h00 IN TIME` is told so with no take-off,
+and still when the wave is left with no line, once (RF5, RF5b); the button follows him to the second aircraft's
+Remarks, week and board (RF4); a Mission stored `ACM /  DS` is answered Red with the words untouched and one new line
+in the history (RF3). *One thing the host did wrong: it rebuilt the served build once while S was walking (for the
+readers' second-pass fixes — the order says never). Nothing S walked was changed by that rebuild, and S reported no
+FAIL to re-run; said here so the evidence is read with it.*
+
 Neither reviewer found a fault in W8 (the repeatable ids — two tabs, templates, saved plans, Undo across a week
 switch, a partly saved week), in W15's partial redraw (no block left owed for good, no box moved under the caret), or
 in W2, W3, W5, W6, W7, W10, W13, W18.
