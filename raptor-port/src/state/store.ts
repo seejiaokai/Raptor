@@ -25,7 +25,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
-import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
+import { weekBundle, otherWeekInputs, seedRids } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
@@ -919,6 +919,9 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
      (no ridV) has inconsistent identities, so strip them first (gated on the
      version), then rebuild one id-space via ensureRowIds + backfill. */
   const wasLegacy = migrateLegacyIds(SCHED, DAYS)
+  /* the boot reads the built-in week from the module's own literal, not from weekBundle — give its rows the same
+     repeatable ids weekBundle hands out (W8; engine/weeks-data.ts seedRids), before the random mint below */
+  if (!stashHas(CURWEEK)) seedRids(DAYS, CURWEEK)
   ensureRowIds(DAYS)
   /* THE BACKFILL — same reasoning as loadWeek's own call just above this
      comment's twin: SCHED can arrive here already carrying an amendment book

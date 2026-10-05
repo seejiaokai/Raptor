@@ -20,6 +20,7 @@
    ONE element at body level, like the History bubble (histbubble.ts): the day heads are string-built and swapped
    by the per-block repaint, which would throw a list hung inside them away mid-read. */
 import { DAYS } from '../engine/data'
+import { REPORTING_LABEL } from '../engine/reporting'
 import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId, inpLabel, inputCoversDate } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
@@ -65,7 +66,7 @@ function issuedDays(di: number): any[] | null {
 }
 /* a stored value as a reader says it. The record keeps a row's state on its name field as one composite
    (restore.ts dayKeys: "name␟cx␟…"), so a cancelled row or a flag is spelled out rather than shown raw. */
-function valueWords(addr: string, v: any): string {
+export function valueWords(addr: string, v: any): string {
   const s = String(v == null ? '' : v)
   if (!s) return ''
   const c = addr.indexOf(':'), p = c < 0 ? '' : addr.slice(0, c), fld = addr.split('.').pop()
@@ -88,7 +89,7 @@ function valueWords(addr: string, v: any): string {
       const j = JSON.parse(s)
       if (j == null) return ''
       if (typeof j === 'string') return j
-      if (Array.isArray(j)) return p === 'it' ? `${j.length} in-time${j.length === 1 ? '' : 's'}` : p === 'tr' ? `${j.length} traffic` : j.filter(Boolean).join(', ')
+      if (Array.isArray(j)) return p === 'it' ? `${j.length} ${REPORTING_LABEL} line${j.length === 1 ? '' : 's'}` : p === 'tr' ? `${j.length} traffic` : j.filter(Boolean).join(', ')
       return Object.keys(j).filter(k => j[k]).map(k => j[k] === true ? k : `${k} ${j[k]}`).join(', ')
     } catch (_) {}
   }

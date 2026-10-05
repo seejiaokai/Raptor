@@ -8,7 +8,7 @@ import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId } from '
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
-import { stated } from '../engine/reporting'
+import { stated, REPORTING_LABEL } from '../engine/reporting'
 import { WARN, validate, WCODE, wlbl, FLT_NO_LEN_SAYS } from '../engine/validate'
 import { shownWarns } from '../engine/warnhide'
 import { hhmm, hm24, fmtHM, minus, parseHM } from '../engine/time'
@@ -172,8 +172,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
          data-air click is handled globally (interactions.ts setAirKey → AirPop),
          which already reaches the board, so no board-side wiring is needed. */
       + `${sa || mvRO ? '' : `<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}`
-      + (sc ? '' : `<span class="asd">In-time / Rally ${inT != null ? stated(inT,true) : '—'} · ${asd} ac</span>`)
-      + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an In-time / Rally line to this wave">+ In-time / Rally</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
+      + (sc ? '' : `<span class="asd">${REPORTING_LABEL} ${inT != null ? stated(inT,true) : '—'} · ${asd} ac</span>`)
+      + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     /* The IN TIME + WX/NOTAMS lines edit exactly as the week's do (html.ts):
        an editable .intimes block committing `it:` through the global

@@ -23,6 +23,10 @@ export function intimeFold(s:any){
       return lead+String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0')+suf;
     });
 }
+/* W6 (D498, D504; the Codex stack check, 5 Oct 26): the ONE name of the wave's reporting box, wherever it is drawn —
+   the box's button and ✕, the wave header, the changes window, the pending list, the change record, the toasts, Undo.
+   The rename reached four of them and left the old plural name on the other four; ui/intimesadd.test.tsx draws every place. */
+export const REPORTING_LABEL='In-time / Rally';
 type Activity='inTime'|'rally';
 export interface ReportingLine {
   index:number; text:string; clock:number|null; activities:Activity[];

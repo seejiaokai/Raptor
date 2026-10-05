@@ -16,6 +16,7 @@
      the admin's icon counts the week, a line once however many of its days it covers. */
 import { ELOG, elogWeekRows, rowTouches, weekDates, elogWho, elogVal, isPersonKey, TXT_FLD, NOTE_LBL, jetOf, type ELogRow } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
+import { REPORTING_LABEL } from '../engine/reporting'
 import { isNewToMe, SEEN_VER } from '../state/changes'
 import { me } from '../state/perms'
 import { HOOKS } from '../engine/hooks'
@@ -116,7 +117,7 @@ const fieldWord = (f: any) => cap(TXT_FLD[f] || f)
 const head = (lbl: string) => { const i = lbl.lastIndexOf(' · '); return i < 0 ? lbl : lbl.slice(0, i) }
 const tail = (lbl: string) => { const i = lbl.lastIndexOf(' · '); return i < 0 ? '' : lbl.slice(i + 3) }
 const FLY = new Set(['', 'ff', 'fr', 'st', 'ar', 'at', 'fa', 'ft', 'fx', 'aa', 'au'])
-const WAVE: Record<string, string> = { wl: 'Label', it: 'In-times', tr: 'Traffic', wx: '' }
+const WAVE: Record<string, string> = { wl: 'Label', it: REPORTING_LABEL, tr: 'Traffic', wx: '' }
 const SEAT: Record<string, string> = { p: 'FCP', w: 'RCP', pax: 'Pax' }
 const AIR: Record<string, string> = { ar: 'Area', at: 'Area time', fa: 'Area', ft: 'Area time', fx: '' }
 
@@ -127,6 +128,30 @@ function inputItem(date: string, iid: string, r: ELogRow): Item {
   const type = inp ? inp.type : (r.itype || '')
   const title = inp ? `Input · ${csOf(inp.person)} · ${inp.type}` : who ? `Input · ${csOf(who)}${type ? ' · ' + type : ''}` : 'Input'
   return { id: `${date}|I|${iid}`, title, detail: '' }
+}
+
+/* A BLUE/RED ANSWER'S ITEM (W7, the Codex stack check, 5 Oct 26; D530, D340). Its line carries no key — an answer writes
+   no schedule cell — and names its formation by the line's hidden row id in `sub` (state/changelines.ts). `sub` is
+   otherwise "the man this line is about", so the window filed every answer under "Leave War · <the hidden code>". It is
+   the formation's own item: found on the loaded week by that id, it takes the very id and title its seats and times
+   are filed under (so the answer sits with that line's other changes); gone, or on a week not on screen, it keeps the
+   callsign its line recorded — never the code. */
+function roleItem(date: string, r: ELogRow): Item {
+  const days: any[] = DAYS as any
+  for (let di = 0; di < days.length; di++) {
+    const waves = (days[di] && days[di].waves) || []
+    for (let gi = 0; gi < waves.length; gi++) {
+      const fs = (waves[gi] && waves[gi].formations) || []
+      for (let li = 0; li < fs.length; li++) {
+        const f = fs[li]
+        if (!f || !f.rid || f.rid !== r.sub) continue
+        const k = ridKey(`ff:${di}.${gi}.${li}.cs`, DAYS), parts = k.slice(k.indexOf(':') + 1).split('.')
+        return { id: `${date}|F|${parts[1]}.${parts[2]}`, title: `Flying · ${`${f.cs || 'Line'} ${f.msn || ''}`.trim()}`, detail: 'Mission role' }
+      }
+    }
+  }
+  const name = (r.lbl || '').split(' · ')[0] || ''
+  return { id: `${date}|MR|${r.sub}`, title: `Flying · ${name && name !== r.sub ? name : 'line'}`, detail: 'Mission role' }
 }
 
 export function itemOf(r: ELogRow, day?: string | null): Item {
@@ -189,6 +214,7 @@ export function itemOf(r: ELogRow, day?: string | null): Item {
   /* no key — in this order, the first that fits (Fable F3): the input; the man (his Quals, or his Leave War — a decision,
      an award, a posting, by the line's own `sect`, never its words); the day; else the line itself */
   if (r.iid) return inputItem(date, r.iid, r)
+  if (r.fld === 'mission-role') return roleItem(date, r)
   if (r.sub) return r.sect === 'quals'
     ? { id: `${date}|Q|${r.sub}`, title: `Quals · ${csOf(r.sub)}`, detail: r.fld && r.fld !== 'roster' ? tail(r.lbl) : '' }
     : { id: `${date}|LW|${r.sub}`, title: `Leave War · ${csOf(r.sub)}`, detail: '' }
@@ -209,6 +235,9 @@ const shortTitle = (other: string, mine: string) => {
 /* a keyless line's words without its item's name in front ("Ranger · LL added" under "Input · Ranger · LL") */
 function ownWords(r: ELogRow, item: Item): string {
   const lbl = r.lbl || ''
+  /* a Blue/Red answer's own words are where it was given ("Working copy", "Published · AL1", "copied with the day
+     template") — its formation and "mission role" are already its heading (W7) */
+  if (r.fld === 'mission-role') { const i = lbl.indexOf(' · mission role · '); return i < 0 ? lbl : lbl.slice(i + ' · mission role · '.length) }
   const who = r.sub || (r.iid ? (inpById(r.iid) as any)?.person : '')
   for (const lead of [`Leave War · ${csOf(who)} · `, `${csOf(who)} · `]) if (who && lbl.startsWith(lead)) return lbl.slice(lead.length)
   return item.title === lbl ? '' : lbl

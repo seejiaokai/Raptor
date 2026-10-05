@@ -37,7 +37,7 @@ import { pickRosDay } from './pan'
 import { isStandalone, CURWEEK } from '../engine/waves'
 import { WARN } from '../engine/validate'
 import { hm24,parseHM } from '../engine/time'
-import { parseReportingLines,resolveReporting } from '../engine/reporting'
+import { parseReportingLines,resolveReporting,REPORTING_LABEL } from '../engine/reporting'
 import { VCONF } from '../engine/rules'
 import { shiftWeek } from './weeknav'
 
@@ -730,7 +730,7 @@ export function routeClick(e: MouseEvent) {
   const ita = t.closest('[data-itadd]') as HTMLElement | null
   if (ita) {
     e.stopPropagation()
-    if (!canEditSched() || !HOOKS.editMode()) { HOOKS.toast('Only a scheduler can edit In-time / Rally', 'warn'); return }
+    if (!canEditSched() || !HOOKS.editMode()) { HOOKS.toast(`Only a scheduler can edit ${REPORTING_LABEL}`, 'warn'); return }
     const [dis, gis] = ita.dataset.itadd!.split('|'); const di = +dis, gi = +gis
     const w = DAYS[di] && DAYS[di].waves[gi]; if (!w || isStandalone(w)) return
     const was = (w.intimes || []).join(', ')
@@ -765,7 +765,7 @@ export function routeClick(e: MouseEvent) {
   const itd = t.closest('[data-itdel]') as HTMLElement | null
   if (itd) {
     e.stopPropagation()
-    if (!canEditSched() || !HOOKS.editMode()) { HOOKS.toast('Only a scheduler can edit In-time / Rally', 'warn'); return }
+    if (!canEditSched() || !HOOKS.editMode()) { HOOKS.toast(`Only a scheduler can edit ${REPORTING_LABEL}`, 'warn'); return }
     const [dis, gis, ixs] = itd.dataset.itdel!.split('|'); const di = +dis, gi = +gis
     /* the index is read off the button's POSITION in its block, not its
        minted attribute: tapping a ✕ right after clearing another line's text
@@ -782,7 +782,7 @@ export function routeClick(e: MouseEvent) {
     w.intimes = w.intimes.filter((_: any, i: number) => i !== ix)
     markEdit(`it:${di}.${gi}`, was, w.intimes.join(', '))
     view.afterSchedMutate(); notify()
-    HOOKS.toast(`In-time line removed — ${gone.length > 40 ? gone.slice(0, 40) + '…' : gone}`, 'ok')
+    HOOKS.toast(`${REPORTING_LABEL} line removed — ${gone.length > 40 ? gone.slice(0, 40) + '…' : gone}`, 'ok')
     return
   }
   const iad = t.closest('[data-inpadd]') as HTMLElement | null

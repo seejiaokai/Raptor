@@ -228,7 +228,8 @@ export function storyOf(el: HTMLElement): ELogRow[] {
 const csOf = (pid: any) => ((PEOPLE as any)[pid] && (PEOPLE as any)[pid].cs) || String(pid || '')
 function sentenceOf(r: ELogRow): string {
   const lbl = r.lbl || ''
-  if (r.sub) for (const lead of [`Leave War · ${csOf(r.sub)} · `, `${csOf(r.sub)} · `]) if (lbl.startsWith(lead)) return lbl.slice(lead.length)
+  /* a Blue/Red answer's `sub` is its formation's row id, not a man (W7) */
+  if (r.sub && r.fld !== 'mission-role') for (const lead of [`Leave War · ${csOf(r.sub)} · `, `${csOf(r.sub)} · `]) if (lbl.startsWith(lead)) return lbl.slice(lead.length)
   return lbl
 }
 function chgHTML(r: ELogRow) {

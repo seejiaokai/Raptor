@@ -5,7 +5,7 @@ import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
 import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
-import { reportingIssuesForWave,stated } from '../engine/reporting'
+import { reportingIssuesForWave,stated,REPORTING_LABEL } from '../engine/reporting'
 import { waveInTime } from '../engine/events'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, acceptedDay } from '../engine/slots'
@@ -1195,7 +1195,7 @@ export function intimeLineHTML(t:any){
 export function intimesInner(w:any,ek?:any){
   return ((w&&w.intimes)||[]).map((t:any,i:number)=> ek
     ? `<span class="itline" contenteditable="true" spellcheck="false" data-itline="${ek}|${i}">${intimeLineHTML(t)}</span>`
-      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this In-time / Rally line" aria-label="Remove this In-time / Rally line">✕</button>`
+      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this ${REPORTING_LABEL} line" aria-label="Remove this ${REPORTING_LABEL} line">✕</button>`
     : `<span>${intimeLineHTML(t)}</span>`).join('')
     + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).map(i=>i.msg).join(' '))}</span>`:'');}
 /* AREA and TIME are not the model fields they are edited through. Until a
@@ -1668,8 +1668,8 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       const edge=sa?'var(--san)':`var(--${mColor(f0?f0.msn:'')})`;
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
         <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
-        +`${report!=null&&report<0?` · In-time / Rally ${stated(report,true)}`:''}${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
-        ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an In-time / Rally line to this wave">+ In-time / Rally</button>`}</div>`;
+        +`${report!=null&&report<0?` · ${REPORTING_LABEL} ${stated(report,true)}`:''}${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
+        ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
          add control is the fix for the old trap where deleting the last line
          dropped the whole block with no way back (owner, 21 Aug 26). Standalone

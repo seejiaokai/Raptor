@@ -94,7 +94,7 @@ describe('THE ITEM of a line — from its row-anchored key, never its words (D34
       [{ key: 'ar:1.0.0', lbl: 'VL · area' }, `${T}|F|0.0`, 'Flying · VL BFM', 'Area'],
       [{ key: 'at:1.0.0', lbl: 'VL · area time' }, `${T}|F|0.0`, 'Flying · VL BFM', 'Area time'],
       [{ key: 'wl:1.1', lbl: 'Wave · WAVE 2' }, `${T}|W|1`, 'Wave · WAVE 2', 'Label'],
-      [{ key: 'it:1.1', lbl: 'WAVE 2 · in-times' }, `${T}|W|1`, 'Wave · WAVE 2', 'In-times'],
+      [{ key: 'it:1.1', lbl: 'WAVE 2 · In-time / Rally' }, `${T}|W|1`, 'Wave · WAVE 2', 'In-time / Rally'],   // W6: one name (D504)
       [{ key: 'tr:1.1', lbl: 'WAVE 2 · traffic' }, `${T}|W|1`, 'Wave · WAVE 2', 'Traffic'],
       [{ key: 'd:1.0.0', lbl: 'Duty · SDO' }, `${T}|D|0.0`, 'Duty · SDO', ''],
       [{ key: 'dr:1.0.0.str', lbl: 'Duty · SDO · start' }, `${T}|D|0.0`, 'Duty · SDO', 'Start'],
@@ -122,6 +122,40 @@ describe('THE ITEM of a line — from its row-anchored key, never its words (D34
       const it0 = itemOf(row(x))
       expect([it0.id, it0.title, it0.detail], JSON.stringify(x)).toEqual([id, title, detail])
     }
+  })
+
+  /* W7 (the Codex stack check, 5 Oct 26; D530, D340): a Blue/Red answer is a line about a FORMATION. Its record names the
+     formation by its hidden row id — which the window read as "the man this line is about" and filed under
+     "Leave War · <the hidden code>". It belongs to its flying line, named as the schedule names it. */
+  it('W7 a Blue/Red answer is filed under its formation — never under "Leave War" or a hidden code', async () => {
+    const { DAYS } = await import('../engine/data')
+    const { ridKey } = await import('../engine/rowids')
+    const T = '2026-07-14'
+    const role = (x: Partial<ELogRow>) => row({ key: '', sect: 'day', fld: 'mission-role', from: 'Unresolved', to: 'Red', ...x })
+    /* the formation is gone, or its week is not on screen: its callsign, off the line's own words */
+    const gone = itemOf(role({ sub: 'rabc', lbl: 'RU · mission role · Working copy' }))
+    expect([gone.id, gone.title, gone.detail]).toEqual([`${T}|MR|rabc`, 'Flying · RU', 'Mission role'])
+    /* the last resort wrote the code itself as the name — it is never shown */
+    expect(itemOf(role({ sub: 'rabc', lbl: 'rabc · mission role · copied with the day template' })).title).toBe('Flying · line')
+    /* the formation is on screen: the very item its other changes are filed under */
+    const f: any = (DAYS as any)[1].waves[0].formations[0], had = f.rid
+    f.rid = 'rw7live'
+    try {
+      const live = itemOf(role({ sub: 'rw7live', lbl: `${f.cs} · mission role · Published · AL1` }))
+      const sibling = itemOf(row({ key: ridKey('ff:1.0.0.to', DAYS), lbl: `${f.cs} · take-off` }))
+      expect(live.title).toBe(`Flying · ${f.cs} ${f.msn}`)
+      expect(live.id, 'grouped with the same line').toBe(sibling.id)
+      expect(live.detail).toBe('Mission role')
+      put(role({ sub: 'rw7live', lbl: `${f.cs} · mission role · Working copy` }), role({ sub: 'rw7live', lbl: `${f.cs} · mission role · copied with the day template`, from: 'Red', to: 'Blue' }))
+      const ls = linesFor([T], newTo('stiff'))
+      const es = ls.flatMap(l => entriesOf(l))
+      expect(es.map(e => [e.title, e.detail, e.text, e.from, e.to]).sort()).toEqual([
+        [`Flying · ${f.cs} ${f.msn}`, 'Mission role', 'Working copy', 'Unresolved', 'Red'],
+        [`Flying · ${f.cs} ${f.msn}`, 'Mission role', 'copied with the day template', 'Red', 'Blue'],
+      ].sort())
+      for (const g of byItem(ls, true, [T])) expect(g.title).not.toMatch(/Leave War|rw7live/)
+      for (const l of ls) expect(whoEntry(l, true, [T]).title).toBe(`Tue · Flying · ${f.cs} ${f.msn}`)
+    } finally { if (had === undefined) delete f.rid; else f.rid = had }
   })
 
   it('a line with nothing to file it by — no key, no input, no man, no day — is its own item, in its own words', () => {
