@@ -274,3 +274,63 @@ describe('D556 schedule Tab production wiring', () => {
     }finally{dialog.remove()}
   })
 })
+
+/* W11 (the Codex stack check, 5 Oct 26; D103, D529): a box whose stored words hold a doubled space (a request's remark
+   as filed, a template's text — writers that do not fold spaces) was "changed" by merely passing through it: the save
+   folds runs of spaces, the folded words differed from the stored ones, and it wrote them — a history line whose before
+   and after look the same, and on a published day "1 pending" and the four sign-offs gone. A whole-day Tab pass makes
+   that the normal case. A difference that is only spacing is no change. */
+describe('W11 a Tab pass through a box holding a doubled space changes nothing', () => {
+  it('week: no write, no pending mark, no history step; a real edit still saves, folded', async () => {
+    const { commandStream } = await import('../command')
+    const { txtSet } = await import('../engine/slots')
+    await act(async () => { DAYS[0].waves[0].formations[0].aircraft[0].rmks = 'Dental review.  Back by 1400'; histInit(); notify() })
+    const rm = week('fr:0.0.0.0')
+    expect(rm.textContent).toBe('Dental review.  Back by 1400')
+    const cmds = commandStream().length, steps = HIST.stack.length, pending = JSON.stringify(SCHED.pending)
+    await focus(rm); await tab(rm); await tick()
+    expect(document.activeElement, 'the route still moves on').not.toBe(rm)
+    expect(commandStream().length, 'no command').toBe(cmds)
+    expect(HIST.stack.length, 'no Undo step').toBe(steps)
+    expect(JSON.stringify(SCHED.pending), 'no pending mark').toBe(pending)
+    expect(DAYS[0].waves[0].formations[0].aircraft[0].rmks, 'the stored words are untouched').toBe('Dental review.  Back by 1400')
+    await act(async () => { (document.activeElement as HTMLElement)?.blur() }); await tick()
+    /* the funnel itself: spacing alone is no change, in either direction; other words are */
+    expect(txtSet('fr:0.0.0.0', ' Dental review. Back   by 1400 ')).toBe(false)
+    expect(txtSet('fr:0.0.0.0', 'Dental review. Back by 1500')).toBe(true)
+    expect(txtGet('fr:0.0.0.0')).toBe('Dental review. Back by 1500')
+  })
+})
+
+/* W12 (the Codex stack check, 5 Oct 26): a save that opens a window. Changing a weekend duty request's start time on
+   Edit Schedule and pressing Tab saved it and opened the OIL question — and the route had already put the caret in
+   the next box BEHIND that window, where typed characters and further Tabs went on editing the schedule unseen. The
+   route stops when the save it caused asks for a window, never walks while one is up, and the window takes the keys. */
+describe('W12 a save that opens a window stops the Tab route there', () => {
+  it('Tab out of a weekend duty request’s time: the OIL question opens, the caret is not behind it, and the window holds the keys', async () => {
+    const pops = await import('./pops')
+    const { inpId } = await import('../engine/inputs')
+    const row: any = { ...structuredClone(INPUTS.find((r: any) => r.person === 'bane' && r.s != null)!), iid: 'iw12duty', type: 'Duty', date: 'Jul 18', remarks: 'w12', s: 480, e: 720 }
+    delete row.acc; delete row.oil; delete row.endDate
+    await act(async () => { INPUTS.push(row); PIOPEN.add(5); histInit(); notify() })
+    const start = $(`#eWeek .day[data-day="5"] [data-inp="${inpId(row)}.str"]`)
+    await focus(start); start.textContent = '0900'
+    const e = await tab(start); await tick()
+    expect(e.defaultPrevented).toBe(true)
+    expect(INPUTS.find((r: any) => r.iid === 'iw12duty')!.s, 'the time was saved once').toBe(540)
+    expect(pops.INPEDIT, 'the request’s window was asked for').toBeTruthy()
+    const sheet = document.querySelector<HTMLElement>('[data-testid="oilconf"]')
+    expect(sheet, 'the OIL question is up').toBeTruthy()
+    expect(editingText(), 'no caret in a schedule box behind the window').toBe(false)
+    expect(sheet!.contains(document.activeElement), 'the window holds the keyboard').toBe(true)
+    /* a text box behind an open window is not on the route: Tab there is the browser's own */
+    const behind = week('ff:0.0.0.cs')
+    await focus(behind)
+    const again = await tab(behind)
+    expect(again.defaultPrevented, 'the route declines while a window is up').toBe(false)
+    await act(async () => { (document.activeElement as HTMLElement)?.blur(); pops.setInpEdit(null); notify() }); await tick()
+    /* and with the window closed the route is back */
+    await focus(behind)
+    expect((await tab(behind)).defaultPrevented).toBe(true)
+  })
+})

@@ -13,9 +13,10 @@
    save then does cannot disagree. Callers own the actual write (each keeps
    its own commit + removals inside ONE writeInputsBatch); this component
    only collects the decision. */
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { ordLabel } from '../engine/medical'
 import { clickedSurround } from './outside'
+import { useSheetFocus } from './sheetfocus'
 
 export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
   who: string
@@ -36,10 +37,13 @@ export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
   })
+  /* the sheet takes the keyboard when it opens (W12 — ui/sheetfocus.ts) */
+  const boxRef = useRef<HTMLDivElement>(null)
+  useSheetFocus(boxRef)
   return (
     <div className="airpop upconf-pop" data-testid="upconf"
       onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
-      <div className="airpop-box upconf-box">
+      <div className="airpop-box upconf-box" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b>Upchit — {who}, {dateLabel}</b>
           <button className="x" aria-label="Close" onClick={onCancel}>✕</button></div>
         <div className="airpop-body upconf-body">

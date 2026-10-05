@@ -2,7 +2,7 @@
    is 1:1 with the reference; the four panels are filled by the verbatim
    builders in an effect and re-hung on every store change, and the board's
    own delegated handlers are attached to #sbBoard. */
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { SBDAY, CURPAGE, DPREV, HISTMODE, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch, ARM, navGen } from '../state/view'
@@ -84,6 +84,20 @@ export function SchedBoard() {
     document.addEventListener('pointerdown', down, true)
     document.addEventListener('keydown', key, true)
     return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true) }
+  }, [moreOpen])
+  /* THE MENU OPENS WHOLE ON SCREEN (W18, 5 Oct 26). It hangs from the button's left edge; in the phone's Desktop layout
+     the board pans, and with the button near the right edge of the screen the menu ran off it. Measured as it opens,
+     before the first paint: if its right edge would pass the screen's, hang it from the button's right edge instead
+     (and back, should that side not fit either). The class lives on the menu's own node, which goes when it closes. */
+  useLayoutEffect(() => {
+    if (!moreOpen) return
+    const menu = moreRef.current?.querySelector<HTMLElement>('.sb-moremenu')
+    if (!menu) return
+    menu.classList.remove('end')
+    if (menu.getBoundingClientRect().right > window.innerWidth - 4) {
+      menu.classList.add('end')
+      if (menu.getBoundingClientRect().left < 4) menu.classList.remove('end')
+    }
   }, [moreOpen])
 
   /* LOCK THE PAGE WHILE THE BOARD IS OPEN (owner-reported, 11 Aug 26 — "I

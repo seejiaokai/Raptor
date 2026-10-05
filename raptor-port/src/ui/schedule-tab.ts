@@ -5,6 +5,7 @@ import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import { CURPAGE, SBDAY, DPREV, navGen } from '../state/view'
 import { oilModeOn } from './oilmode'
+import { windowOverSchedule } from './pops'
 
 const WEEK_TEXT = '[data-txt],[data-inp],[data-itline],[data-bombs],[data-area],[data-atime]'
 const BOARD_TEXT = '[data-bfld],[data-ifld],[data-itline],[data-bombs],[data-area],[data-atime]'
@@ -31,6 +32,8 @@ function textField(el: HTMLElement, seen?: Map<HTMLElement, boolean>): boolean {
 }
 function scopeOf(source: HTMLElement): Scope | null {
   if (CURPAGE !== 'editsched' || !canEditSched() || !HOOKS.editMode()) return null
+  /* a window is over the schedule: its boxes are not a route to walk (W12) — the browser's own Tab applies */
+  if (windowOverSchedule()) return null
   let root: HTMLElement | null, boundary: HTMLElement | null, di: number, board = SBDAY != null
   if (board) {
     root = document.getElementById('sbBoard'); boundary = document.getElementById('schedBoard'); di = +SBDAY
@@ -86,6 +89,10 @@ export function routeScheduleTab(e: KeyboardEvent, refresh: (el: HTMLElement) =>
   e.preventDefault()
   // Native blur/change remain the only save paths. Re-check after those handlers.
   source.blur()
+  /* THE SAVE ASKED FOR A WINDOW (W12): a weekend duty request's time opens the OIL question, drawn a moment after this
+     handler ends. Stop here — the caret must not land in a box behind it, where typing and further Tabs would go on
+     editing the schedule unseen; the window takes the keyboard when it opens (ui/sheetfocus.ts). */
+  if (windowOverSchedule()) return true
   if (!sameScope(scope) || !destination?.isConnected) return true
   // A blur handler can deliberately give a newly opened dialog its own caret.
   // Preserve that focus rather than overriding it with the collected successor.

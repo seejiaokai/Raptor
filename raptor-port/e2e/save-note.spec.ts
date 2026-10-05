@@ -223,6 +223,40 @@ for (const [label, viewport, touch] of SIZES) {
       }
     })
 
+    /* W13 (the Codex stack check, 5 Oct 26; D587): the phone board's DESKTOP LAYOUT is 1180px wide and pans. The band was a
+       line of that wide bar with its words at one end and Retry at the other — about 700px apart on a 390px screen, so
+       a person saw "Not saved" with no button. In that layout the band is pinned to the screen: words and Retry
+       together, wherever the board is panned. */
+    if (touch && viewport.width <= 620) test('on the board’s Desktop layout the warning and its Retry are on screen together, at any pan', async ({ page }) => {
+      await login(page)
+      await go(page, 'editsched')
+      await failSaves(page)
+      await page.locator('#eWeek [data-sbday="1"]:visible').first().click()
+      await page.waitForSelector('#schedBoard:not([hidden])')
+      await page.locator('#sbMore').click()
+      await page.locator('#sbMoreWide').click()
+      await expect(page.locator('#schedBoard')).toHaveClass(/sb-wide/)
+      const onBoard = '#schedBoard .saveband'
+      const widest = await page.locator('#schedBoard').evaluate(b => b.scrollWidth - b.clientWidth)
+      expect(widest, 'the layout really pans').toBeGreaterThan(400)
+      for (const pan of [0, 400, widest]) {
+        await page.locator('#schedBoard').evaluate((b, x) => { b.scrollLeft = x }, pan)
+        await expect.poll(async () => (await look(page, onBoard)).seen, { message: `panned ${pan}px: the warning is whole and on top` }).toBe(true)
+        const at = await page.evaluate(sel => {
+          const band = document.querySelector(sel)!, btn = band.querySelector('button')!, msg = band.querySelector('.sv-msg')!
+          const b = btn.getBoundingClientRect(), m = msg.getBoundingClientRect()
+          const hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2)
+          return { retryIn: b.left >= 0 && b.right <= innerWidth && b.width > 0, wordsIn: m.left >= 0 && m.left < innerWidth - 60, hitRetry: hit === btn || btn.contains(hit) }
+        }, onBoard)
+        expect(at, `panned ${pan}px: the words and Retry, both on screen, Retry the thing a finger lands on`).toEqual({ retryIn: true, wordsIn: true, hitRetry: true })
+      }
+      /* every control of the board's own bar that is on screen is still its own target under the pinned band */
+      expect((await look(page, onBoard)).covers, 'what the pinned warning lies over').toEqual([])
+      await retryRefused(page, onBoard, touch)
+      await retrySaves(page, onBoard, touch)
+      await expect(page.locator(onBoard)).toHaveCount(0)
+    })
+
     /* THE LEAVE WAR'S OIL TRACKER IS A FULL-SCREEN WORKING SURFACE TOO (Astra's read, F1) — its grid and its settings both
        lie over the top bar, and credits are awarded from it. */
     test('the Leave War’s OIL tracker shows it under its head, on the grid and on its settings', async ({ page }) => {

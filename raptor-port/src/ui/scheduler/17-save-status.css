@@ -73,5 +73,11 @@
   .topbar.save-failed{padding-bottom:calc(8px + var(--save-band))}   /* the phone bar's own 8px */
   .topbar > .savestat.failed, .saveband{padding:0 14px;justify-content:space-between}
   .sb-top > .saveband{width:calc(100% + 16px);margin:2px -8px -6px}   /* the phone board bar's 6px 8px */
+  /* W13 (the Codex stack check, 5 Oct 26; D587): the phone board's DESKTOP LAYOUT is 1180px wide and pans
+     (.schedboard.sb-wide>*, part 13), so a band as wide as that bar put its words at one end and Retry at the other —
+     about 700px apart on a 390px screen: a warning with no button. There the band is pinned to the SCREEN instead: the
+     board itself is the sideways scroller, so sticky left:0 holds it at the screen's left edge and 100vw makes it one
+     screen wide — words left, Retry right, at any pan. (e2e/save-note.spec.ts walks three pans.) */
+  .schedboard.sb-wide .sb-top > .saveband{position:sticky;left:0;width:100vw;max-width:100vw;margin:2px -8px -6px;box-sizing:border-box}   /* both side margins negative: at the far pan the band may reach the bar's own edge, past its 8px padding */
 }
 

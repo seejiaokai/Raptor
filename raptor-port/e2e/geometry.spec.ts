@@ -45,6 +45,44 @@ test('phone Desktop layout keeps every schedule section usable below sign-off', 
   await expect(page.locator('#sbBoard .sb-nrow').first()).toBeVisible()
 })
 
+/* W18 (the Codex stack check, 5 Oct 26): in that layout the board pans, and with the ⋯ button near the right edge of
+   the screen its menu opened past the edge — "Insights", Sort all and the layout switch cut off. The menu opens on
+   whichever side keeps it whole on screen, at every pan that leaves the button itself on screen. */
+test('phone Desktop layout: the board’s ⋯ menu opens whole on screen wherever the board is panned', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await page.locator('#burger').click()
+  await page.locator('#drawerNav [data-page="editsched"]').click()
+  await page.locator('#eWeek [data-sbday="0"]:visible').click()
+  await page.locator('#sbBoard .sb-sec').first().waitFor({ state: 'attached' })
+  await page.locator('#sbMore').click()
+  await page.locator('#sbMoreWide').click()
+  await expect(page.locator('#schedBoard')).toHaveClass(/sb-wide/)
+  const home = await page.locator('#sbMore').evaluate(b => { const board = document.querySelector('#schedBoard')!; return board.scrollLeft + b.getBoundingClientRect().left })
+  /* the button at the left of the screen, in the middle, and hard against the right edge */
+  let checked = 0
+  for (const left of [8, 180, PHONE.width - 34]) {
+    const want = Math.max(0, Math.round(home - left))
+    await page.locator('#schedBoard').evaluate((b, x) => { b.scrollLeft = x }, want)
+    const btn = await page.locator('#sbMore').boundingBox()
+    if (!btn || btn.x < 0 || btn.x + btn.width > PHONE.width) continue
+    await page.locator('#sbMore').click()
+    const menu = await page.evaluate(() => {
+      const m = document.querySelector('#sbMoreMenu')!.getBoundingClientRect()
+      const items = [...document.querySelectorAll('#sbMoreMenu .sb-moreitem')].map(i => { const r = i.getBoundingClientRect(); const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return r.left >= 0 && r.right <= innerWidth && (hit === i || i.contains(hit)) })
+      return { left: Math.round(m.left), right: Math.round(m.right), items }
+    })
+    expect(menu.left, `button at ${Math.round(btn.x)}px: the menu's left edge`).toBeGreaterThanOrEqual(0)
+    expect(menu.right, `button at ${Math.round(btn.x)}px: the menu's right edge`).toBeLessThanOrEqual(PHONE.width)
+    expect(menu.items.length, 'Insights and the layout switch at least').toBeGreaterThanOrEqual(2)
+    expect(menu.items.every(Boolean), `button at ${Math.round(btn.x)}px: every item whole and tappable`).toBe(true)
+    await page.keyboard.press('Escape')
+    await expect(page.locator('#sbMoreMenu')).toHaveCount(0)
+    checked++
+  }
+  expect(checked, 'at least the left and the right-edge positions were reachable').toBeGreaterThanOrEqual(2)
+})
+
 /* every free-text cell on the dense surfaces: these must WRAP (grow taller),
    never widen their column or spill over the neighbour */
 const FREETEXT = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .ppl .itxt, .areacell'

@@ -19,8 +19,9 @@
    arithmetic, copied the way WeekCal copied it) where only the applicable
    days are tappable; tap to select, tap again to deselect (owner's exact
    ask), then Save. */
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { clickedSurround } from './outside'
+import { useSheetFocus } from './sheetfocus'
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const iso = (y: number, m: number, d: number) =>
@@ -108,10 +109,13 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel }: {
     <button className={'upconf-seg' + (mode === k ? ' on-keep' : '')} data-testid={tid}
       onClick={() => setMode(k)}>{label}</button>
   )
+  /* the sheet takes the keyboard when it opens (W12 — ui/sheetfocus.ts) */
+  const boxRef = useRef<HTMLDivElement>(null)
+  useSheetFocus(boxRef)
   return (
     <div className="airpop upconf-pop oilconf-pop" data-testid="oilconf"
       onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
-      <div className="airpop-box upconf-box">
+      <div className="airpop-box upconf-box" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b>OIL — {who}, {typeLabel}</b>
           <button className="x" aria-label="Close" onClick={onCancel}>✕</button></div>
         <div className="airpop-body upconf-body">
