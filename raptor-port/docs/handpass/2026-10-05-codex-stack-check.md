@@ -7,7 +7,7 @@ against `main` at `de470db5`. Five pieces, built 2–5 Oct 26 while Claude waite
 the Logic search and the Insights cross) · **the failed-save warning's band** (D586, D587). The Inputs/SANS calendar
 (`codex/inputs-sans-calendar`) is on hold and outside this check.
 
-**STATE OF THIS SHEET: IN PROGRESS.** It is written as the check goes (order §9). A section that says "to come" has not
+**STATE OF THIS SHEET: THE CHECK IS DONE, 6 Oct 26 — his look is what is left (§12: four questions first, then the look card). Nothing is merged.** *(What follows in this paragraph is the sheet's history.)* **Earlier: IN PROGRESS.** It is written as the check goes (order §9). A section that says "to come" has not
 been done; nothing here is a result until its section is filled. **6 Oct 26: the fix round is done (§5.3 — sixteen
 findings fixed, each with a test that was red first), the host has looked at the fixes in a real browser (§5.4), the
 re-walk is under way (§5.5), and three questions wait for him at the head of §12.**
@@ -336,7 +336,23 @@ or 4xx was recorded — the forced "quota exceeded" of the failed-save steps exc
   again by walker S for the keys staying inside it.
 - **The peek of next week showing the working copy of a published day** (P2-17) — the open question already filed
   for him (`[PEEK-ISSUED]`); not the stack's.
-## 9. The gates — to come
+## 9. The gates — the final run, watched 6 Oct 26, on app code `4e8695bf`, under the PC lock
+| Check | Result |
+|---|---|
+| unit | **7817 / 7817** (492 files) |
+| build | clean |
+| the original app's assertions (tfin) | **728 / 0** |
+| browser tests (e2e) | **604 passed, 0 failed**, 49 skipped |
+| the Tracker's smoke suite | **445 / 0** |
+| rulecheck | OK |
+| docsize | OK — every record accounted for (over its size markers by 8,292, deferred — D29: a code change never trims a document) |
+| perf (local) | **4 / 0** — week DOM 5131 ≤ 5450, board DOM 1018 ≤ 1150 |
+| the six adapted probes (local) | all six passed |
+An earlier full run the same night, on `a8355d98` (before the readers' second-pass fixes), was green too.
+
+**`Walk: docs/handpass/2026-10-05-codex-stack-check.md · 2,351 pictures (first walk 1,471, re-walk 867, the host's own 13) · 261 roll-call rows (216 walked, 45 read) · 224 scenario rows (128 first walk, 96 re-walk) · MISSING: 27 fixed (each with a test red first), 4 parked for his answer, 14 filed`**
+`Docs: OUTSTANDING 132 items (+38 −2, −2 all in ARCHIVE) · DECISIONS D1–D596 · homes OK`
+`docsize: OVER by 8292, deferred (D29)`
 ## 10. The reads, and each owed read paid — IN PROGRESS
 
 ### 10.1 The one side-by-side (D590 (5)) — Astra, Sol 6.1 and Fable 5.1 on the Insights fixes of 3 Oct
