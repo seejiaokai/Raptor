@@ -29,6 +29,7 @@ import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
 import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
 import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
+import { SaveBand } from './SaveStatus'
 import { clickedOutside } from './outside'
 
 export function SchedBoard() {
@@ -570,6 +571,10 @@ export function SchedBoard() {
             on a phone, where the fold makes its own geometry. */}
         <i className="sb-break" aria-hidden="true"></i>
         <div className={'sb-hl' + (HLOPEN ? ' open' : '')} id="sbHlStrip"><HlChips /></div>
+        {/* A FAILED SAVE'S WARNING ([SAVE-NOTE-COVERS], D587): the board lies over the top bar, so the bar's own
+            warning cannot be seen from here — the board carries it, on a line of its own at the bottom of its bar.
+            INSIDE .sb-top like the strip above, so --sb-topH follows it and nothing below is covered. */}
+        <SaveBand />
       </div>
       <div className="sb-main" ref={mainRef}>
         <div className={'sb-boardwrap' + (HISTMODE ? ' hist-on' : '')} ref={wrapRef}>

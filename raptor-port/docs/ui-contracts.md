@@ -8789,3 +8789,41 @@ A shared store starts with nothing demo (`src/bootpolicy.ts`), so two tabs must 
   course yet" with two full-size buttons — **+ Add a course** (the Course menu's own prompt) and **⇪ Import a file…** (the
   File menu's Import — his charts and students reach the database by his own Export → Import, D120); the dialog box rides
   along. The first course brings the usual Tracker back and draws the board. Pin: `tracker/trk-nocourse.test.tsx`.
+
+## The failed-save warning has a band of its own (owner, 5 Oct 26 — D586, D587; `[SAVE-NOTE-COVERS]`)
+
+**The rule (D587):** when a save has failed, the warning — "⚠ Not saved — keep this page open" and **Retry** — fills a
+line of its own along the BOTTOM OF THE TOP BAR, edge to edge. The top bar is one line (36px, `--save-band`) taller
+while it shows, so the page moves down and **nothing is under the warning, on any page, at any size**. It goes when the
+save lands. The passing "Saving…" note is unchanged: it floats under the bar's right end, takes no press, and never
+moves the bar (`[LW-FIGSEL-FLAKE]`, 28 Sep 26).
+
+- **Why not floating, as it was:** it sat for as long as the save kept failing on whatever each page keeps under the
+  bar's right end — the name search box on both schedule pages (a phone tap on the box pressed Retry), the Tracker's
+  ✓ Save changes (a click on it pressed Retry) and its syllabus edit button, Quals' filter, the Leave War's "+ New".
+- **Where it is drawn** (`ui/SaveStatus.tsx`, styles `ui/scheduler/17-save-status.css`): `SaveStatus` in the top bar;
+  `Shell` puts `.save-failed` on the bar (from `useSaveFailed`) to make the room. The note stays `position:fixed` (the
+  phone bar is a sideways scroll box) and its top is MEASURED — the bar's bottom less the band — when it comes up, on a
+  window resize, and whenever the bar's own height changes (a page change takes the bar from one line to two with no
+  resize; the old note stayed at the old height, on the account button and Logout at 1366 wide).
+- **A full-screen surface that lies over the top bar carries the same warning under its own bar** (`SaveBand`, in the
+  flow): the scheduler board (inside `.sb-top`, last, so `--sb-topH` follows it), the Inputs calendar and the Medical
+  view (between the head and the body). There the bar's own warning cannot be seen. A window, a sheet or the phone's
+  menu is a short visit and has none — the bar's is there when it closes.
+- **What follows the bar already follows this** — it is one line or two by page and width: Quals' and the Leave War's
+  frozen headers and the Leave War's sheets (measured live), Logic's pinned search (its own size observer). **Two things
+  float at a FIXED height above the bar's layer and move down by the band with the page:** the week's two side arrows
+  (`.week-nav`) and Edit Schedule's blue CREW tab (`.ros-rail`) — where the bar is three lines (a phone on its side) the
+  taller bar would otherwise reach them, and the right-hand arrow would lie on Retry. **A new thing pinned at a fixed
+  height near the top must do the same**, or be measured from the bar.
+- **The cost, accepted:** the page shifts down one line ONCE, at the moment a save fails, and back when it lands. A
+  failed save stays failed until it lands (`storage/postman.ts`), so this is not a per-change twitch; the top bar's own
+  buttons do not move.
+- **Pins:** `e2e/save-note.spec.ts` — at six sizes (phones 390 and 320, a phone on its side, desktops 1200, 1366×700,
+  1440), on all nine pages, at the top and scrolled: the warning seen whole and nothing a person can press under it;
+  real presses reach the name search box and the Tracker's ✓ Save changes; Retry, pressed for real, saves and the bar
+  returns to its height; the board, the Inputs calendar and the Medical view each show it. `ui/SaveStatus.test.tsx`
+  (the states). The walk's driver: `scripts/handpass/sn-cover.mjs`, `sn-board.mjs`.
+- **Device caveat:** on an iPhone, pulling the page down past its top lets the bar bounce while a fixed note stays —
+  the band may part from the bar for the length of the bounce (the floating note did the same). Not measured on his
+  phone.

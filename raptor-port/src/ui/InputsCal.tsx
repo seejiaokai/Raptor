@@ -32,6 +32,7 @@ import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { landOn, markLand, paintLand } from './lift'
 import { useVersion } from './useStore'
+import { SaveBand } from './SaveStatus'
 
 const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December']
@@ -904,6 +905,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         <button type="button" className="abtn" id="icClose" aria-label="Back to list"
           title="Back to list" onClick={onClose}>✕</button>
       </div>
+      {/* a failed save's warning, under this full-screen surface's own bar — it lies over the top bar, whose own
+          warning cannot be seen from here ([SAVE-NOTE-COVERS], D587; ui/SaveStatus.tsx) */}
+      <SaveBand />
       <div className="ic-dow">{DOW.map(d => <span key={d}>{d}</span>)}</div>
       {/* THE MONTH BODY scrolls when a day is packed. --ic-rows is the live week
           count: each week's MINIMUM height is one viewport share of it (see

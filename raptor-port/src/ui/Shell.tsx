@@ -66,7 +66,7 @@ import { installIdleTracking, msSinceInput } from '../state/idle'
 import { oilPendingFor } from '../leavewar/sync'
 import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
-import { SaveStatus } from './SaveStatus'
+import { SaveStatus, useSaveFailed } from './SaveStatus'
 import { bugAlert } from '../state/reports'
 import { UndoPair, SyncChip, BellButton, globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topbits'
 
@@ -303,11 +303,13 @@ export function Shell() {
   const oilPend = mine ? oilPendingFor(mine).length : 0
   /* D216, D227 — an access request this admin has not had on screen yet (his own bell) */
   const accAlert = accessAlert()
+  /* a failed save's warning has a line of its own along the bar's bottom ([SAVE-NOTE-COVERS], D587): the bar makes room */
+  const saveFailed = useSaveFailed()
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
          at a glance — both widths; View-only keeps the neutral dark. */
-      <div className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '')}>
+      <div className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '') + (saveFailed ? ' save-failed' : '')}>
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
         <div className="mark">
           <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
@@ -442,7 +444,7 @@ export function Shell() {
   /* the changes clock's number and its open state are read inside the memo, so they are its deps too (the gate found it,
      29 Sep 26: "Mark all as seen" used to be an Undo step, and the undo version's bump was what repainted this bar — once
      a seen mark stopped being a step, the clock kept its stale number) */
-  ), [page, admin, mine, mineCs, canSwitch, waiting, fastSync(), uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellLit(), bugAlert(), oilPend, accAlert, clockNew, !!CHGWIN])
+  ), [page, admin, mine, mineCs, canSwitch, waiting, fastSync(), uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellLit(), bugAlert(), oilPend, accAlert, clockNew, !!CHGWIN, saveFailed])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

@@ -5,6 +5,10 @@
 presses are checked, not appearance alone; an independent read follows; the Inputs/SANS calendar stays on hold; no
 merge, no `main`; `[OG-TAG-OVER-COUNT]` only afterwards.
 
+**D587 (owner, 5 Oct 26 — "ok looks good" to the pictures):** the band along the bottom of the top bar is accepted as drawn,
+its words included ("Not saved — keep this page open", Retry); the same band under the bar of every full-screen surface
+that covers the top bar; "Saving…" unchanged.
+
 **Status when this was last written: REPRODUCED and PROPOSAL SHOWN — no source file changed. Waiting for his word on
 the picture.** Everything below the line "What is NOT done" is still to do.
 

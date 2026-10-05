@@ -30,7 +30,9 @@ is looking for a file. Paths in the Tooling table are relative to `raptor-port/`
 `[SAVE-NOTE-COVERS]` (D586, 5 Oct 26): `scripts/handpass/sn-cover.mjs` forces a failed save in the built app and, on
 every page at five sizes, measures what the "Not saved — Retry" note lies over and presses for real (a PASS means it
 covers nothing; `SN_CSS` / `SN_JS` lay a proposal over the running app); `sn-board.mjs` asks whether the warning can be
-seen on the full-screen board. The record: `docs/handpass/2026-10-05-save-note-controls.md`.
+seen on the full-screen board. The record: `docs/handpass/2026-10-05-save-note-controls.md`. The fix: the warning's band is drawn by
+`src/ui/SaveStatus.tsx` (`SaveStatus` in the top bar, `SaveBand` under a full-screen surface's bar), styled in
+`src/ui/scheduler/17-save-status.css`, and pinned by `e2e/save-note.spec.ts` (in the `raptor` browser-test project).
 
 D560-D563 interface readability/scroll batch: `scripts/handpass/interface-readability-scroll.mjs`
 drives the real built Tracker, Logic and every Insights door with private local pictures and native actions.
