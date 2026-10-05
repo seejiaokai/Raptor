@@ -67,7 +67,7 @@ walkers (D588), each a fresh browser world per scenario, on the frozen build, un
 | A | P1-01…06, P2-01…08 | 4221 | `parts/stk-A.md` | BACK — 91 pictures, 22 opened by the walker; Discard marks six of six PASS (guest not walked); P2-04 to P2-07 PASS; P2-01 FAIL (W1); P2-02, P2-03, P2-08 RECORDED |
 | B | P2-09…18, H-01, H-05…H-08 | 4222 | `parts/stk-B.md` | out |
 | C | P3-01…18, H-02, H-03 | 4221 | `parts/stk-C.md` | out |
-| D | P4c-01…16, P4d-01…06, H-04 | 4222 | `parts/stk-D.md` | out |
+| D | P4c-01…16, P4d-01…06, H-04 | 4222 | `parts/stk-D.md` | BACK — 111 pictures, 31 opened by the walker. The Tab route: 13 of 16 PASS (the order on week and board, reordered sections, folded sections, standby rows, no loop, no write on an unchanged pass through a signed published day, short screens, other apps' own Tab); the phone ⋯ menu 5 of 6 PASS; H-04 PASS — a Tab pass through a published Saturday left "0 pending", the four sign-offs and every Leave War cell as they were |
 | E | P4a, P4b, P4e, and one picture of every screen at two sizes | 4221 | `parts/stk-E.md` | out |
 | F | P5-01…08, X-01…12 | 4222 | `parts/stk-F.md` | out |
 | G | L-01…L-08 | 4221 | `parts/stk-G.md` | BACK — 142 pictures, 15 opened by the walker; the host opened 8 (those behind the findings) |
@@ -116,7 +116,23 @@ the save — as built.
 **A walker's remark thrown out.** Walker G wrote that Logic values are not kept across a reload on this build; its
 script had pressed "Reset to standard" before the reload. H-07 (walker B) tests it properly.
 
-**Still out:** walkers B, C, D, E, F.
+**Walker D's three FAILs, each judged by the host — none is a fault of this stack.**
+- *P4c-11 (Escape on the Scheduler Board's TIME boxes does not put the old value back, and a click away saves it).* The host ran the
+  walker's own probe (`stk-D-1b.mjs`) on `main`'s build and on the stack: the same on both, box for box — the board's take-off,
+  landing, Brief and duty-start boxes keep what was typed after Escape and save it on leaving; the week's boxes and the board's text
+  boxes restore. D544 says "keep the existing Enter and Escape meanings" — they are kept. Old behaviour: to FILE low
+  (`[BOARD-TIME-ESCAPE]`), for his word.
+- *P4c-03 (typing in the Ground ROW's own boxes of a row that came from a request changes the row, not the request).* The row's own
+  boxes are the scheduler's layer over the request, typed by click on `main` too; typing in the request's own boxes saves to the
+  request and the row follows (walker D, and L-10 (c) by walker K). Astra's scenario assumed the row is the request. Not walked on
+  `main`; to confirm by reading at the fix round — not listed as a finding.
+- *P4d-01 (the guest's view has no ⋯ menu and no Insights).* By design: the guest's pages never had Insights (the 1 Oct check
+  excluded the same scenario for the same reason). Not a finding.
+Also recorded by walker D: after Enter in a time box the caret is dropped and the next Tab starts again from the top of the section
+(with W14 at the fix round); the board draws a Brief box on SC / AVALON / BB rows, which the route visits (as built — on SC it is
+the in-time, the settled 24 Aug 26 rule).
+
+**Still out:** walkers B, C, E, F.
 
 ## 6. The break tests — to come
 ## 7. Errors seen — to come
