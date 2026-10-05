@@ -516,6 +516,23 @@
         "--strictPort"
       ],
       "port": 4233
+    },
+    {
+      "name": "raptor-next",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-fix",
+        "--port",
+        "4241",
+        "--strictPort"
+      ],
+      "port": 4241
     }
   ]
 }

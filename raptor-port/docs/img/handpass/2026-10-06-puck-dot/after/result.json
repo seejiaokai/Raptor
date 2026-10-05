@@ -1,0 +1,82 @@
+[
+ {
+  "z": 0.8,
+  "dpr": 0.800000011920929,
+  "found": true,
+  "w": 71,
+  "h": 25,
+  "band": 1008,
+  "red": 92,
+  "amber": 82,
+  "css": {
+   "cls": "puck boxdot warn",
+   "outline": "2.5px dotted",
+   "offset": "1.25px",
+   "shadow": "rgb(229, 168, 59) 0px 0px 0px 1.5px"
+  }
+ },
+ {
+  "z": 1,
+  "dpr": 1,
+  "found": true,
+  "w": 90,
+  "h": 31,
+  "band": 1680,
+  "red": 41,
+  "amber": 173,
+  "css": {
+   "cls": "puck boxdot warn",
+   "outline": "1px dotted",
+   "offset": "2px",
+   "shadow": "rgb(229, 168, 59) 0px 0px 0px 1.5px"
+  }
+ },
+ {
+  "z": 1.25,
+  "dpr": 1.25,
+  "found": true,
+  "w": 113,
+  "h": 39,
+  "band": 2640,
+  "red": 233,
+  "amber": 398,
+  "css": {
+   "cls": "puck boxdot warn",
+   "outline": "1.6px dotted",
+   "offset": "1.6px",
+   "shadow": "rgb(229, 168, 59) 0px 0px 0px 1.5px"
+  }
+ },
+ {
+  "z": 1.5,
+  "dpr": 1.5,
+  "found": true,
+  "w": 135,
+  "h": 47,
+  "band": 3792,
+  "red": 215,
+  "amber": 405,
+  "css": {
+   "cls": "puck boxdot warn",
+   "outline": "1.33333px dotted",
+   "offset": "2px",
+   "shadow": "rgb(229, 168, 59) 0px 0px 0px 1.5px"
+  }
+ },
+ {
+  "z": 2,
+  "dpr": 2,
+  "found": true,
+  "w": 180,
+  "h": 62,
+  "band": 6720,
+  "red": 472,
+  "amber": 1016,
+  "css": {
+   "cls": "puck boxdot warn",
+   "outline": "1.5px dotted",
+   "offset": "2px",
+   "shadow": "rgb(229, 168, 59) 0px 0px 0px 1.5px"
+  }
+ }
+]

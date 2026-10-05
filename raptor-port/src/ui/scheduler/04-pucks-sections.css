@@ -86,8 +86,12 @@
    is very nearly the dashed stroke above it — three meanings and two of them
    looking alike is worse than having only two. Dropping half a pixel rounds
    the dots and reads distinctly lighter, which is also the right weight for
-   the lightest of the three claims. */
-.puck.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
+   the lightest of the three claims.
+   ON A SCALED SCREEN THE WIDTH IS HANDED IN ([PUCK-DOT-ZOOM], owner, 6 Oct 26 — his screen runs at 125%): there the
+   browser still draws this ring one screen pixel thick, but hard against an advisory's amber ring, where it reads as
+   that ring's edge and cannot be seen. ui/dotring.ts sets `--dot-w` to two whole screen pixels where the screen's
+   scaling is not a whole number, and to NOTHING on an unscaled, 2x or 3x screen — the 1.5px above stands there. */
+.puck.boxdot{outline:var(--dot-w,1.5px) dotted var(--hard);outline-offset:2px}
 /* THE DROP-DELTA PULSE (state/dropflag.ts, 5 Sep 26): a puck a drop has just
    flagged blinks twice on its own day. Opacity only — it composites, it never
    relayouts, and it leaves every ring (boxred's !important shadow, boxdot's
