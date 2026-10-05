@@ -465,6 +465,57 @@
         "--strictPort"
       ],
       "port": 4228
+    },
+    {
+      "name": "raptor-fix-a",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-fix",
+        "--port",
+        "4231",
+        "--strictPort"
+      ],
+      "port": 4231
+    },
+    {
+      "name": "raptor-fix-b",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-fix",
+        "--port",
+        "4232",
+        "--strictPort"
+      ],
+      "port": 4232
+    },
+    {
+      "name": "raptor-fix-host",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-fix",
+        "--port",
+        "4233",
+        "--strictPort"
+      ],
+      "port": 4233
     }
   ]
 }

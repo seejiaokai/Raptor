@@ -1,0 +1,127 @@
+{
+ "parts": {
+  "host-fix-dk": {
+   "at": "2026-10-05T16:26:44.037Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "W15-week",
+     "did": "Edit Schedule Mon, list open; in-time line 1 retyped \"12:40H: VL IN TIME\" (an in-time later than the suggested brief), Tab",
+     "saw": "✓ the caret is in a text box of the day [itline:0|0|1] · ✓ the list did not name it before [⚠ 17 issues · 6 warning · tap to collapse ▲] · ✓ the list names the timing warning while the caret is still in text [[\"In-time / Rally — timings out of order VL: in-time 12:40 is later than suggested brief 10:20. ✕\"]] · ✓ the bar counts it [⚠ 17 issues · 6 warning · tap to collapse ▲ → ⚠ 17 issues · 7 warning · tap to collapse ▲]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-W15-week-list-while-caret-in-next-box.png"
+     ]
+    },
+    {
+     "id": "W15-week-caret",
+     "did": "typed ZZ straight after",
+     "saw": "✓ the characters went into the focused box [ZZ10:40H: FIRST WAVE RU IN TIME + WX/NOTAMS]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "W16-fixture",
+     "did": "Mon 20 Jul as it stands",
+     "saw": "[{\"label\":\"WAVE 1\",\"sa\":false,\"to\":[\"08:40\",\"08:40\"],\"it\":[\"0540H: FIRST WAVE VL IN TIME + WX/NOTAMS\",\"0540H: FIRST WAVE RU IN TIME + WX/NOTAMS\"]},{\"label\":\"WAVE 2\",\"sa\":false,\"to\":[\"10:30\"],\"it\":[\"0730H: SECOND WAVE VL IN TIME + WX/NOTAMS\"]}]",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "W16",
+     "did": "Mon 20 Jul wave 1: its In-time / Rally line set to 23:30H (later than every take-off, so the previous day), Tab",
+     "saw": "✓ the caret is still in a text box [itline:0|0|1] · ✓ the line holds 23:30 [[\"23:30H: IN TIME + WX/NOTAMS\",\"0540H: FIRST WAVE RU IN TIME + WX/NOTAMS\"]] · ✓ the header of that wave says 23:30 (prev day) [WAVE 1 · In-time / Rally 23:30 (prev day)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-W16-week-header-after-line-edit-caret-in-next-box.png"
+     ]
+    },
+    {
+     "id": "W15-board",
+     "did": "Scheduler Board Tue: in-time line 1 retyped \"08:40H: VL IN TIME\", Tab",
+     "saw": "✓ the caret is in a box of the board [itline:1|0|1] · ✓ the list did not name it before [⚠ 4 issues · 2 warnings · tap to review Saint — VL SAT & APPOINTMENT clash ✕ Out] · ✓ the list names the timing warning while the caret is still in text [⚠ 5 issues · 3 warnings · tap to review VL: in-time 08:40 is later than suggested brief 06:20.]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-W15-board-list-while-caret-in-next-box.png"
+     ]
+    },
+    {
+     "id": "W14b-board",
+     "did": "Board Tue, a line saved earlier in the run; the caret put in the last open box (imuvgpb4ndpjzt8.rmks), Tab",
+     "saw": "focus at once: wln-mute; 0.7 s later: wln-mute",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-W14b-board-exit-after-a-saved-run.png"
+     ]
+    },
+    {
+     "id": "errors",
+     "did": "the browser error list over the whole run",
+     "saw": "[]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "host-fix-ph": {
+   "at": "2026-10-05T16:27:08.473Z",
+   "base": "http://localhost:4233",
+   "phone": true,
+   "table": [
+    {
+     "id": "W13-pan-0",
+     "did": "phone, board Tue in Desktop layout (on), a failed save, panned 0px of 790",
+     "saw": "✓ the band is there · ✓ the words start on screen [[14,220]] · ✓ Retry is wholly on screen [[314,376]] · ✓ a finger on Retry lands on Retry",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-W13-band-panned-0.png"
+     ]
+    },
+    {
+     "id": "W13-pan-395",
+     "did": "phone, board Tue in Desktop layout (on), a failed save, panned 395px of 790",
+     "saw": "✓ the band is there · ✓ the words start on screen [[14,220]] · ✓ Retry is wholly on screen [[314,376]] · ✓ a finger on Retry lands on Retry",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-W13-band-panned-395.png"
+     ]
+    },
+    {
+     "id": "W13-pan-790",
+     "did": "phone, board Tue in Desktop layout (on), a failed save, panned 790px of 790",
+     "saw": "✓ the band is there · ✓ the words start on screen [[14,220]] · ✓ Retry is wholly on screen [[314,376]] · ✓ a finger on Retry lands on Retry",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-W13-band-panned-790.png"
+     ]
+    },
+    {
+     "id": "W18-at-10",
+     "did": "the ⋯ button about 10px from the left of a 390px screen, pressed",
+     "saw": "✓ the menu opened · ✓ its whole width is on screen [[10,186]] · ✓ Insights is in it [[\"Insights\",\"⇅\\nSort all\",\"📱\\nPhone layout\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-W18-menu-button-at-10.png"
+     ]
+    },
+    {
+     "id": "W18-at-350",
+     "did": "the ⋯ button about 350px from the left of a 390px screen, pressed",
+     "saw": "✓ the menu opened · ✓ its whole width is on screen [[204,380]] · ✓ Insights is in it [[\"Insights\",\"⇅\\nSort all\",\"📱\\nPhone layout\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-W18-menu-button-at-350.png"
+     ]
+    },
+    {
+     "id": "errors",
+     "did": "the browser error list over the whole run",
+     "saw": "[]",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}
