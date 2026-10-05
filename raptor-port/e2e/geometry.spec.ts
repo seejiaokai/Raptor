@@ -1829,8 +1829,12 @@ test('the burger drawer at 390px scrolls only itself — the page behind it hold
      is now shorter than a 780px screen, so it no longer scrolled there and the first check
      below lost its premise. The rule is unchanged — a drawer taller than the screen scrolls
      itself and the page behind holds still — so the screen is made shorter than the
-     drawer, and the premise is asserted before the wheel. */
-  await page.setViewportSize({ width: 390, height: 460 })
+     drawer, and the premise is asserted before the wheel.
+     RE-MEASURED AGAIN 6 Oct 26 (the Codex stack's merge, PR #481): the drawer lost its Week section too (D558), and at
+     460px it is 525px tall on the owner's PC — 65 over — and less than the 40 the premise asks on GitHub's Linux
+     machine, where the same letters set a little smaller: red there, green here. 360px leaves it 165 over on the PC.
+     The scrim's presses move up with the shorter screen. Nothing about the rule or its assertions changes. */
+  await page.setViewportSize({ width: 390, height: 360 })
   await login(page); await go(page, 'viewsched')
   await page.evaluate(() => window.scrollTo(0, 300))
   await page.waitForTimeout(100)
@@ -1849,12 +1853,12 @@ test('the burger drawer at 390px scrolls only itself — the page behind it hold
   expect(panelScrolled, 'the panel itself scrolled').toBeGreaterThan(0)
   expect(await page.evaluate(() => window.scrollY), 'the page did not').toBe(y0)
   // wheel over the scrim (the dimmed area right of the panel)
-  await page.mouse.move(box.x + box.width + 20, 400)
+  await page.mouse.move(box.x + box.width + 20, 200)
   await page.mouse.wheel(0, 800); await page.mouse.wheel(0, -800)
   await page.waitForTimeout(150)
   expect(await page.evaluate(() => window.scrollY)).toBe(y0)
   // close by the scrim; the lock lifts and the page is where it was
-  await page.mouse.click(box.x + box.width + 20, 400)
+  await page.mouse.click(box.x + box.width + 20, 200)
   await expect(page.locator('#drawer')).not.toHaveClass(/open/)
   expect(await page.evaluate(() => document.body.classList.contains('dw-lock'))).toBe(false)
   expect(await page.evaluate(() => window.scrollY)).toBe(y0)
