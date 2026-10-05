@@ -59,7 +59,7 @@ app; with the next change to the schedule's text boxes). **From the same check's
 each parked with a recommended answer in the check's sheet (`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md` §12):**
 [TAB-DAY-END] (where Tab goes after a day's last text box when no button follows — D553), [ROLE-QUESTION-SECOND] (a second formation's
 Blue/Red question replaces the first one's — D535, D523), [ROLE-QUESTION-WEEK-DAY] (does moving to another day on the week end an open
-question — D535). Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
+question — D535). Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; the same on the live app; proposed: fixed FIRST after the stack, with [OIL-WORK-START]), [ROLE-BLANK-CALLSIGN] (a line with no callsign is named by a hidden code in the Blue/Red question and Undo), [ROLE-BUTTON-AFTER-ANSWER], [ROLE-NOT-CHOSEN] (a question for him), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
 
 **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
 are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
@@ -1971,6 +1971,49 @@ that code (the row's boxes are the scheduler's own layer over the request — `r
 `stk2-P.md`. Not ruled. **Place (the agent's line):** low — ask him: should the row's times be the request's (one record), or may the
 scheduler re-time the row on the programme and leave the member's request as filed (as now)? With the next change to requests on the
 programme.
+
+### [REST-BLANK-LINE] A man put on a flying line with no take-off loses his crew-rest check (reader AB's second pass, 6 Oct 26 — OLD, the same on `main`; MEDIUM)
+Mon: X on a line landing 22:30; Tue: X on a line taking off 07:00 → the red "Crew rest breach", its ring, Monday's dotted mark. Now
+"+ Line" on Tuesday (a new line comes up blank) and put X in its seat: by the code the warning, the ring and the dotted mark all go;
+a blank crewed line on MONDAY, in a wave drawn before his 22:30 landing, likewise stops Tuesday's breach being raised; the same-day
+tight-turn note can miss a turn the same way. Cause: a line with no times carries not-a-number times into the crew-rest arithmetic
+(`raptor-port/src/engine/validate.ts` — the earliest-report minimum and yesterday's last end), and every comparison with it is false.
+The check's W4 / RF1 fixed only the work-hours reader of that event. By reading, not yet run: it needs its red test first. The fix,
+step by step, and the lines: `raptor-port/docs/handpass/parts/stack-read2-AB.md` F1 (skip a leg whose take-off or end is not a number
+in the three places; leave the count that includes a timeless leg on purpose). **An engine change: the robustness doctrine's five
+families are walked with it.** **Place (the agent's line):** FIRST after the Codex stack goes live, with `[OIL-WORK-START]` — a
+missing crew-rest warning is the kind of fault that harms people; it is not the stack's, so it was not fixed under cover of its check.
+
+### [ROLE-BLANK-CALLSIGN] A line with no callsign is named by its hidden row code in the Blue/Red question and in Undo (reader C's second pass, 6 Oct 26)
+Tracking On; "+ Line" (blank), leave the callsign empty, type `DS-2` in Mission: the question reads "<a code>: Blue or Red?", and after
+an answer Undo and its history line name the same code. Should read "Line", as the rest of the app names such a line (D340). Two
+lines: `raptor-port/src/state/mission-roles.ts` (the target's `name`) and `raptor-port/src/state/changelines.ts` (the copy's fallback)
+— `raptor-port/docs/handpass/parts/stack-read2-C.md` F1, with its test. **Place (the agent's line):** low — with `[ROLE-QUESTION-SECOND]`.
+
+### [ROLE-BUTTON-AFTER-ANSWER] After Blue, Red or Later the Choose / Change button is not put back while the caret is still in that Remarks box (reader C's second pass, 6 Oct 26)
+D527: the button shows while a relevant Remarks is being edited. After an answer (or Later) with the caret left in the box nothing is
+offered until he clicks out and back in. Fix and test: `…/stack-read2-C.md` F2. **Place:** low — with `[ROLE-QUESTION-SECOND]`.
+
+### [ROLE-NOT-CHOSEN] Once the sign-in ends, a Blue/Red answer cannot be put back to "not chosen" (reader C, both passes — a question for him)
+An answer given by mistake can be changed to the other colour, never cleared, once Undo's list has gone (sign-out, reload). The
+permissions table allows the admin to delete the record; no control does. D527 offers a correction only. **Place (the agent's
+line):** low — ask him with `[ROLE-QUESTION-SECOND]`; recommended: leave as built.
+
+### [PEND-INTIME-WORDS] "To go out" words an edited reporting line as "2 In-time / Rally lines → 2 In-time / Rally lines" (reader AB's second pass, 6 Oct 26 — OLD)
+A line's clock changed on a published day, with the number of lines unchanged: the pending list shows the same words before and
+after (the changes window's "All changes" shows the real text). The same on `main` ("2 in-times → 2 in-times"). Fix: word the lines
+that differ — `…/stack-read2-AB.md` F3. **Place:** low — with the next change to the changes window.
+
+### [BOARD-INTIME-JUMP] On the Scheduler Board a reporting-line change in the changes window is not a button (reader AB's second pass, 6 Oct 26 — OLD)
+The board draws the In-time / Rally block with its address, but the list of "details the board does not draw" still names it
+(`raptor-port/src/ui/histbubble.ts`), so its line cannot be tapped to go there. `…/stack-read2-AB.md` F4. **Place:** low.
+
+### [WINDOWS-KEEP-KEYS] Only the six question sheets keep the keyboard; the larger windows let Tab walk into the page behind (reader D2's second pass, 6 Oct 26 — OLD)
+The request's edit window, Insights, the document viewer and the template windows take no focus and hold none: Tab goes on into the
+schedule behind them (the Tab route stands down; a box there still saves on leaving). The same on `main`. The six sheets fixed in the
+check use `raptor-port/src/ui/sheetfocus.ts`; the same hook fits these. Also from that pass, low: after the OIL question is answered
+the caret is on nothing (his place in a Tab run is lost); the red explanation refresh (AB-F2) has no test of its own; with several
+unnamed lines an unreadable clock is explained once per line under the box. **Place:** low — with the next change to those windows.
 
 ### [SAVE-NOTE-TEST-GAPS] Two soft spots in the failed-save warning's browser test (Astra's read of the last round, 6 Oct 26 — tests only, the app is right)
 Astra read commit `bcc69fc8` (the last round of `[SAVE-NOTE-COVERS]`, never independently read before): the three repairs are sound

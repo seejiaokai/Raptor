@@ -77,7 +77,18 @@ Each ruling of the five pieces, the scenarios that walked it (first walk · re-w
 | D103, D45 | a pending change on a published day wipes the sign-offs; nothing changes there unacknowledged | H-04, P4c-12, L-11, R-04 (e), the host's own run | PASS — a whole-day Tab pass writes nothing; one typed word shows "1 pending" and empties the four boxes at once |
 | D149, D200, D213, D215 (roles) | a member reads, an admin answers; a guest reads what a member reads | H-03, P1-06, P3-17, P4d-05 (C, A, D · Q, M, P) | PASS; the guest on a PHONE was not walked (§8) |
 
-## 4. The roll-call and the door check — to come
+## 4. The roll-call and the door check
+**261 rows**, written by the four first-pass readers (AB 61, C 90, D1 63, D2 47 — each surface the piece draws on, each
+door, each reader of a shared value), every row with the reader's own answer: has it / must not, because … / MISSING.
+`parts/stk-rollcall-marks.md` sets every row against both walks (a Sonnet document chore, spot-checked by the host
+against the walkers' tables): **216 rows walked, 45 not.** Each of the 45 was then READ by its piece's second-pass
+reader (§10.3) and has a written answer — 44 "sound, because …" (most are things with no screen: a permission row, a
+test helper, a CI filter; or surfaces the piece never reaches: the Tracker, the Inputs calendar, CSV), and one
+corrected (the board in OIL Earn mode offers no mission-role button — its text boxes are off there — where the first
+pass had said it would). The rows whose latest verdict is FAIL or PARTIAL all trace to items already dispositioned:
+P2-08 (§12, question 4), P2-17 (`[PEEK-ISSUED]`), W1 (`[OIL-WORK-START]`), L-12 (§12, question 1), P4c-03
+(`[REQ-ROW-OWN-BOXES]`), P4c-11 (`[BOARD-TIME-ESCAPE]`; Enter as before), P4c-07 (the SC row's B box, as built),
+P4b-02 (the pan gesture, left by D548), P3-17 (the guest on a phone, §8).
 Parts, one per reader: `parts/stack-read-AB.md`, `-C.md`, `-D1.md`, `-D2.md`; the save-note band's own roll-call is in
 `2026-10-05-save-note-controls.md` and is re-checked here against the top of the stack.
 
@@ -354,7 +365,27 @@ the same leftover — a wave with no line at all went quiet about an unreadable 
 rounds, as capped. What they said is unpinned by a test and left so: the cancel-reason dialog's own keyboard ring, two
 sheets one over another, a sheet with no enabled control (walker S walks the first; the others cannot arise from the
 app's own controls today).
-### 10.3 The four Opus readers' second pass on Codex's code — to come
+### 10.3 The four Opus readers' second pass on Codex's code, with the walk in hand (6 Oct 26)
+Four fresh Opus 5.5 readers, one per piece, each with its first pass, this sheet and the roll-call marks; asked for
+ABSENCES (every unwalked roll-call row read), SIBLINGS (another instance of each kind of fault found) and how the fixes
+sit in the piece. Reports: `parts/stack-read2-AB.md`, `-C.md`, `-D1.md`, `-D2.md`. Every one of the 45 unwalked
+roll-call rows has a line there: "sound, because …", or a finding. Findings, by reading (each needed its red test):
+
+| From | The finding | Disposition |
+|---|---|---|
+| D1 | the failed-save band above the phone width — the board's Desktop layout with the phone turned on its side: an empty amber strip, no words, no Retry | FIXED `4e8695bf` (browser test at 844 and 1024 wide, three pans) |
+| D2 | the caret-safe redraw wrote nothing when a day gained its FIRST warning or lost its last | FIXED `4e8695bf` (`dayswap.test`) |
+| D2 | a take-off saved by Tab, then a CLICK into Area time: the old window stored as typed | FIXED `4e8695bf` (every arrival in a box refreshes it; `schedule-tab.test` "P2-F2") |
+| D2 | an open Blue/Red question vanished at the catch-up paint after the caret left text | FIXED `4e8695bf` (`mission-role-interim-fixes.test` "P2-F3") |
+| AB | the red explanation under a wave's lines stale after a take-off or brief committed by Tab | FIXED `4e8695bf` (text refresh beside W16's; no test of its own — filed with `[WINDOWS-KEEP-KEYS]`) |
+| AB | **a man put on a flying line with no take-off loses his crew-rest check — OLD, the same on `main`** | FILED, MEDIUM: `[REST-BLANK-LINE]` — an engine change with its own walk; proposed first after the stack |
+| AB | "To go out" words an edited line "2 lines → 2 lines" (old); a reporting-line change is no button on the board (old) | FILED low: `[PEND-INTIME-WORDS]`, `[BOARD-INTIME-JUMP]` |
+| C | a line with no callsign named by a hidden code in the question and Undo; the button not put back after an answer; "not chosen" has no way back | FILED low: `[ROLE-BLANK-CALLSIGN]`, `[ROLE-BUTTON-AFTER-ANSWER]`, `[ROLE-NOT-CHOSEN]` (a question for him) |
+| D2 | the larger windows let Tab walk into the page behind (old) | FILED low: `[WINDOWS-KEEP-KEYS]` |
+
+One correction to this sheet from that pass: "the puck rings inside the caret's section catch up when the caret leaves
+that section" (§5.3, W15) is not exact — they catch up at the next saved change after it leaves, or when the caret
+leaves the text boxes altogether.
 ### 10.4 Each read the Codex blocks listed as owed to Claude — paid by this check (D589)
 | Owed (the `HANDOFF.md` blocks' own words) | Paid by |
 |---|---|
