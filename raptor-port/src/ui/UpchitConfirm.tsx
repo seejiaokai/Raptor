@@ -15,6 +15,7 @@
    only collects the decision. */
 import { useEffect, useState } from 'react'
 import { ordLabel } from '../engine/medical'
+import { clickedSurround } from './outside'
 
 export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
   who: string
@@ -37,7 +38,7 @@ export function UpchitConfirm({ who, dateLabel, effects, onSave, onCancel }: {
   })
   return (
     <div className="airpop upconf-pop" data-testid="upconf"
-      onClick={e => { if ((e.target as HTMLElement).classList.contains('upconf-pop')) onCancel() }}>
+      onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
       <div className="airpop-box upconf-box">
         <div className="airpop-head"><b>Upchit — {who}, {dateLabel}</b>
           <button className="x" aria-label="Close" onClick={onCancel}>✕</button></div>

@@ -30,7 +30,17 @@ function returnCaret(field:HTMLElement,caret?:Caret):void {
     const a=point(caret.anchor),f=point(caret.focus);window.getSelection()?.setBaseAndExtent(a[0],a[1],f[0],f[1])
   }
 }
-let current: { target:RoleTarget; question:boolean; node:HTMLElement; field:HTMLElement; caret?:Caret; place:string } | null=null
+/* TWO SLOTS, NEVER ONE (W9, the Codex stack check, 5 Oct 26; D523, D527, D529, D535). `asking` is the ONE open Blue/Red
+   question (D523: never two). `offered` is the temporary Choose / Change button under the Remarks he is in. They were one
+   record, so an open question — which D535 keeps through other edits — left no room for any other formation's button,
+   and the focus handler never looked at the box he had just selected. The button is not drawn for the formation whose
+   question is already open (the question is its bigger self); pressing another formation's button moves the one
+   question there, as the automatic question already does (newest wins). */
+type Offer={ target:RoleTarget; question:boolean; node:HTMLElement; field:HTMLElement; caret?:Caret; place:string }
+let asking: Offer | null=null
+let offered: Offer | null=null
+const slot=(question:boolean)=>question?asking:offered
+const sameFormation=(a:RoleTarget,b:RoleTarget)=>a.di===b.di&&a.formationRid===b.formationRid
 let timer:ReturnType<typeof setTimeout> | undefined
 let offerEpoch=0
 const fieldKey=(el:HTMLElement)=>el.dataset.txt || el.dataset.bfld || ''
@@ -67,7 +77,10 @@ function placeOf(t:RoleTarget):string {
   for(const [gi,w] of (DAYS[t.di]?.waves||[]).entries()) for(const [li,f] of (w.formations||[]).entries()) if(f.rid===t.formationRid) return `${gi}.${li}.${(f.aircraft||[]).length}`
   return ''
 }
-function clear():void {current?.node.remove();current=null}
+function clearAsking():void {asking?.node.remove();asking=null}
+function clearOffered():void {offered?.node.remove();offered=null}
+const clearSlot=(question:boolean)=>question?clearAsking():clearOffered()
+function clear():void {clearAsking();clearOffered()}
 export function resetMissionRoleOffer():void {offerEpoch++;if(timer)clearTimeout(timer);timer=undefined;clear();invalidateRoleTargets()}
 /** Pointer activation intentionally keeps the editor focused. Commit its visible words through
  * the existing native editor event, then resolve a new guarded target. Never answer a cached
@@ -90,11 +103,17 @@ function saveVisibleText(t:RoleTarget,origin:HTMLElement):RoleTarget|null {
   return roleTarget(t.di,t.formationRid)
 }
 function show(t:RoleTarget,question:boolean,field:HTMLElement):void {
-  if(!targetIsCurrent(t)) return clear()
-  const at=anchor(t);if(!at)return clear()
-  if(current?.target.id===t.id && current.question===question && current.node.isConnected) return
-  const caret=current?.field===field?current.caret:caretOf(field)
-  clear()
+  if(!targetIsCurrent(t)) return clearSlot(question)
+  const at=anchor(t);if(!at)return clearSlot(question)
+  /* the formation whose question is open gets no button beside it */
+  if(!question&&asking&&sameFormation(asking.target,t)) return clearOffered()
+  const held=slot(question), other=slot(!question)
+  if(held?.target.id===t.id && held.node.isConnected) return
+  /* the caret remembered for this box, whichever slot was holding it (a button turning into its question keeps it) */
+  const caret=held?.field===field?held.caret:other?.field===field?other.caret:caretOf(field)
+  clearSlot(question)
+  /* a question opening for a formation takes that formation's button with it */
+  if(question&&offered&&sameFormation(offered.target,t)) clearOffered()
   const node=document.createElement(question?'section':'div')
   node.className=question?'mission-role-question':'mission-role-action';node.dataset.roleUi='';node.setAttribute('aria-label',`Mission role for ${t.name}`)
   node.innerHTML=question?`<div class="words"><span class="context">${esc(t.label)}</span><strong>${esc(t.name)}: Blue or Red?</strong><p>Mission or remarks mention DS or RED.</p></div><div class="choices"><button type="button" data-role-side="blue">Blue</button><button type="button" data-role-side="red">Red</button><button type="button" class="later" data-role-side="later">Later</button></div>`:`<span>${esc(t.label)}</span><button type="button" data-role-choose>${readRole(t.id)?'Change':'Choose'} mission role</button>`
@@ -103,42 +122,57 @@ function show(t:RoleTarget,question:boolean,field:HTMLElement):void {
   node.addEventListener('click',e=>{
     e.preventDefault();e.stopImmediatePropagation()
     const b=(e.target as HTMLElement).closest<HTMLButtonElement>('button');if(!b)return
-    if(!current || current.node!==node || !targetIsCurrent(t)) return clear()
+    const mine=slot(question)
+    if(!mine || mine.node!==node || !targetIsCurrent(t)) {if(mine?.node===node)clearSlot(question);else node.remove();return}
     const keyboard=document.activeElement===b
     const active=document.activeElement as HTMLElement
     const focused=active?.closest<HTMLElement>('[data-txt],[data-bfld]')
     const restore=keyboard?field:focused
-    const savedCaret=restore?caretOf(restore)||current.caret:undefined
+    const savedCaret=restore?caretOf(restore)||mine.caret:undefined
     const fresh=saveVisibleText(t,field)
-    if(!fresh){clear();if(restore)returnCaret(restore,savedCaret);return}
+    if(!fresh){clearSlot(question);if(restore)returnCaret(restore,savedCaret);return}
     if(b.hasAttribute('data-role-choose')) {show(fresh,true,field);if(restore)returnCaret(restore,savedCaret);return}
     const side=b.dataset.roleSide
-    if(side==='later') {clear();if(restore)returnCaret(restore,savedCaret);return}
+    if(side==='later') {clearAsking();if(restore)returnCaret(restore,savedCaret);return}
     if(side==='blue'||side==='red') {
       const result=setMissionRole(fresh,side)
-      if(isOk(result)) {clear();if(restore)returnCaret(restore,savedCaret)}
-      else if('ok' in result&&!result.ok) {clear();HOOKS.toast('message' in result&&result.message?String(result.message):'That mission-role question is no longer current. Select Remarks to try again.')}
+      if(isOk(result)) {clearAsking();if(restore)returnCaret(restore,savedCaret)}
+      else if('ok' in result&&!result.ok) {clearAsking();HOOKS.toast('message' in result&&result.message?String(result.message):'That mission-role question is no longer current. Select Remarks to try again.')}
     }
   })
-  at.after(node);current={target:t,question,node,field,caret,place:placeOf(t)}
+  at.after(node)
+  const made:Offer={target:t,question,node,field,caret,place:placeOf(t)}
+  if(question)asking=made;else offered=made
 }
 export function reconcileMissionRoleOffer():void {
-  if(!current)return
-  if(!targetIsCurrent(current.target)) {
+  reconcileAsking()
+  /* the button: a stale one goes (the next focus draws a fresh one), as it always did; one a repaint dropped is put back */
+  if(!offered)return
+  if(!targetIsCurrent(offered.target)) return clearOffered()
+  if(!offered.node.isConnected) {
+    const {target}=offered, field=remarksFor(target)
+    if(!field)return clearOffered()
+    offered=null;show(target,false,field)
+  }
+}
+function reconcileAsking():void {
+  if(!asking)return
+  if(!targetIsCurrent(asking.target)) {
     /* D535 (3 Oct 26): an open QUESTION stays through an unrelated edit on the same day. It continues on a freshly
        resolved target — the buttons are rebuilt on it, so an answer is still checked against today's facts. */
-    const fresh=current.question&&current.place===placeOf(current.target)?sameQuestion(current.target):null
+    const fresh=asking.place===placeOf(asking.target)?sameQuestion(asking.target):null
     const field=fresh&&remarksFor(fresh)
-    if(!fresh||!field)return clear()
-    const caret=current.field===field?current.caret:undefined
-    clear();show(fresh,true,field)
-    if(current&&caret)(current as {caret?:Caret}).caret=caret
+    if(!fresh||!field)return clearAsking()
+    const caret=asking.field===field?asking.caret:undefined
+    clearAsking();show(fresh,true,field)
+    const now=asking as Offer|null
+    if(now&&caret)now.caret=caret
     return
   }
-  if(!current.node.isConnected) {
-    const {target,question}=current, field=remarksFor(target)
-    if(!field)return clear()
-    current=null;show(target,question,field)
+  if(!asking.node.isConnected) {
+    const {target}=asking, field=remarksFor(target)
+    if(!field)return clearAsking()
+    asking=null;show(target,true,field)
   }
 }
 export function installMissionRoleOffers():()=>void {
@@ -146,9 +180,10 @@ export function installMissionRoleOffers():()=>void {
   const focus=(e:FocusEvent)=>{
     const el=(e.target as HTMLElement).closest<HTMLElement>('[data-txt],[data-bfld],[data-role-remarks]')
     if((e.target as HTMLElement).closest('[data-role-ui]'))return
-    if(current?.question) {reconcileMissionRoleOffer();return}
+    /* an open question is re-checked, and stays; the box he has just selected is ALWAYS looked at (W9) */
+    if(asking) reconcileAsking()
     const t=el && missionTracking()&&canEditSched() ? focusedTarget(el) : null
-    if(t&&el)show(t,false,el);else clear()
+    if(t&&el)show(t,false,el);else clearOffered()
   }
   const edit=(e:Event)=>{
     const el=(e.target as HTMLElement).closest<HTMLElement>('[data-txt],[data-bfld]')
@@ -158,14 +193,14 @@ export function installMissionRoleOffers():()=>void {
       if(!alive || epoch!==offerEpoch || gen!==roleTargetGeneration() || CURWEEK!==before.week || navGen()!==before.nav || missionTrackingEpoch()!==before.trackingEpoch)return
       const after=roleTarget(before.di,before.rid)
       if(after&&after.id!==before.id&&!readRole(after.id)) {const field=remarksFor(after);if(field)show(after,true,field)}
-      else if(!current?.question && document.activeElement!==current?.field && !(document.activeElement as HTMLElement)?.closest('[data-role-ui]'))clear()
+      else if(offered && document.activeElement!==offered.field && !(document.activeElement as HTMLElement)?.closest('[data-role-ui]'))clearOffered()
     },0)
   }
   const blur=(e:FocusEvent)=>{
-    if(current?.field===e.target)current.caret=caretOf(current.field)
+    for(const held of [asking,offered]) if(held?.field===e.target)held.caret=caretOf(held.field)
     edit(e)
     const epoch=offerEpoch
-    setTimeout(()=>{if(alive&&epoch===offerEpoch&&current&&!current.question && document.activeElement!==current.field && !(document.activeElement as HTMLElement)?.closest('[data-role-ui]'))clear()},0)
+    setTimeout(()=>{if(alive&&epoch===offerEpoch&&offered && document.activeElement!==offered.field && !(document.activeElement as HTMLElement)?.closest('[data-role-ui]'))clearOffered()},0)
   }
   const schedule=()=>{if(timer)clearTimeout(timer);timer=setTimeout(()=>{timer=undefined;reconcileMissionRoleOffer()},0)}
   const structural=(e:MouseEvent)=>{

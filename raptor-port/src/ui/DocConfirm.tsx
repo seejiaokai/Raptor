@@ -10,6 +10,7 @@
    Mirrors OilConfirm's shape (scrim click + its own Escape = cancel = Upload),
    so the two save-time asks read and behave the same. */
 import { useEffect } from 'react'
+import { clickedSurround } from './outside'
 
 export function DocConfirm({ who, typeLabel, onUpload, onNoDoc }: {
   who: string
@@ -28,7 +29,7 @@ export function DocConfirm({ who, typeLabel, onUpload, onNoDoc }: {
   })
   return (
     <div className="airpop upconf-pop docconf-pop" data-testid="docconf"
-      onClick={e => { if ((e.target as HTMLElement).classList.contains('docconf-pop')) onUpload() }}>
+      onClick={e => { if (clickedSurround(e, 'docconf-pop')) onUpload() }}>
       <div className="airpop-box upconf-box">
         <div className="airpop-head"><b>No medical document — {who}, {typeLabel}</b>
           <button className="x" aria-label="Close" onClick={onUpload}>✕</button></div>

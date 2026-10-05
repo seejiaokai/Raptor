@@ -20,6 +20,7 @@
    days are tappable; tap to select, tap again to deselect (owner's exact
    ask), then Save. */
 import { useEffect, useMemo, useState } from 'react'
+import { clickedSurround } from './outside'
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const iso = (y: number, m: number, d: number) =>
@@ -109,7 +110,7 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel }: {
   )
   return (
     <div className="airpop upconf-pop oilconf-pop" data-testid="oilconf"
-      onClick={e => { if ((e.target as HTMLElement).classList.contains('upconf-pop')) onCancel() }}>
+      onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
       <div className="airpop-box upconf-box">
         <div className="airpop-head"><b>OIL — {who}, {typeLabel}</b>
           <button className="x" aria-label="Close" onClick={onCancel}>✕</button></div>

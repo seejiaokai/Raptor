@@ -102,3 +102,38 @@ it('F3 — a role copied by a day template is named in History by its formation,
   expect(String(line!.lbl)).toBe(`${dest.cs} · mission role · copied with the day template`)
   expect(String(line!.lbl),'never the internal row id').not.toContain(String(dest.rid))
 })
+
+/* W9 (the Codex stack check, 5 Oct 26; D527, D529, D523): while ONE formation's question was open, selecting any other
+   formation's Remarks showed nothing — the handler returned before it looked at the newly selected box. Since D535
+   keeps a question open through other edits, that locked every other line out for as long as it stayed. A question and
+   a button are two different things: one question at a time (D523), and the button for whichever Remarks he is in. */
+it('W9 — with one formation’s question open, another formation’s Remarks still offers Choose / Change, and pressing it moves the ONE question there',async()=>{
+  expect(writeText('fr:0.0.1.0','RED AIR'),'the second formation carries a cue of its own').toBeTruthy()
+  await settle()
+  await type('fr:0.0.0.0','DS FOR EAGLE')
+  const a=DAYS[0].waves[0]!.formations[0]!,b=DAYS[0].waves[0]!.formations[1]!
+  expect(document.querySelectorAll('.mission-role-question'),'the first formation asks').toHaveLength(1)
+  expect(q('.mission-role-question').textContent).toContain(String(a.cs))
+  const other=q('#eWeek [data-txt="fr:0.0.1.0"]')
+  await act(async()=>{other.focus();other.dispatchEvent(new FocusEvent('focusin',{bubbles:true}))});await settle()
+  expect(document.querySelectorAll('.mission-role-question'),'the open question stays (D535)').toHaveLength(1)
+  const btn=document.querySelector<HTMLElement>('.mission-role-action [data-role-choose]')
+  expect(btn,'and the selected Remarks has its button').toBeTruthy()
+  expect(btn!.closest('.mission-role-action')!.getAttribute('aria-label')).toBe(`Mission role for ${b.cs}`)
+  expect(btn!.textContent).toBe('Choose mission role')
+  /* the button never doubles the question of the formation that is already asking */
+  const own=q('#eWeek [data-txt="fr:0.0.0.0"]')
+  await act(async()=>{own.focus();own.dispatchEvent(new FocusEvent('focusin',{bubbles:true}))});await settle()
+  expect(document.querySelectorAll('.mission-role-action'),'no button under the formation whose question is open').toHaveLength(0)
+  expect(document.querySelectorAll('.mission-role-question')).toHaveLength(1)
+  /* back to the second formation: press its button — still ONE question (D523), now the second formation's */
+  await act(async()=>{other.focus();other.dispatchEvent(new FocusEvent('focusin',{bubbles:true}))});await settle()
+  await click(q('.mission-role-action [data-role-choose]'));await settle()
+  expect(document.querySelectorAll('.mission-role-question')).toHaveLength(1)
+  expect(q('.mission-role-question').getAttribute('aria-label')).toBe(`Mission role for ${b.cs}`)
+  expect(document.querySelectorAll('.mission-role-action')).toHaveLength(0)
+  await click(q('[data-role-side="blue"]'));await settle()
+  expect(readRole(roleTarget(0,b.rid!)!.id)?.side).toBe('blue')
+  expect(readRole(roleTarget(0,a.rid!)!.id),'the first formation is still unanswered').toBeUndefined()
+  expect(document.querySelectorAll('[data-role-ui]')).toHaveLength(0)
+})

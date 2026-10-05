@@ -35,6 +35,7 @@
    language for the two medical confirms. */
 import { useEffect, useState } from 'react'
 import { ordLabel, medTailBeyond } from '../engine/medical'
+import { clickedSurround } from './outside'
 
 export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSave, onCancel }: {
   who: string
@@ -78,7 +79,7 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
     clashes.filter((c: any, i: number) => leftover(c, i) && (tail[i] || 'remove') === 'keep').map((c: any) => c.row))
   return (
     <div className="airpop upconf-pop" data-testid="medclash"
-      onClick={e => { if ((e.target as HTMLElement).classList.contains('upconf-pop')) onCancel() }}>
+      onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
       <div className="airpop-box upconf-box">
         <div className="airpop-head"><b>{newType} — {who}, {span}</b>
           <button className="x" aria-label="Close" onClick={onCancel}>✕</button></div>

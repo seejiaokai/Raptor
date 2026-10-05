@@ -15,6 +15,13 @@ if (typeof document !== 'undefined') {
   document.addEventListener('mousedown', note, true)
   document.addEventListener('click', () => { setTimeout(() => { press = null }, 0) }, true)
 }
+/** the same rule for a window whose surround is known by a CLASS, not an id (W10, the Codex stack check, 5 Oct 26 —
+    the four confirmation windows: the OIL question, the upchit one, "covers other days", "no medical document". The
+    3 Oct fix's roll-call was the windows that test an id, and its guard test looked only for that spelling) */
+export function clickedSurround(e: { target: EventTarget | null }, cls: string): boolean {
+  const t = e.target as HTMLElement | null
+  return !!t && !!t.classList && t.classList.contains(cls) && (press == null || press === t)
+}
 /** true when this click is a click on the window's own surround (the element with `id`), begun there too */
 export function clickedOutside(e: { target: EventTarget | null }, id: string): boolean {
   const t = e.target as HTMLElement | null
