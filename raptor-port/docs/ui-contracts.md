@@ -534,8 +534,14 @@ non-text Tab is normal browser navigation. Enter/Escape and D529 remain unchange
 **The end of a day with no button below its last box (owner, D597, 6 Oct 26 — narrows D553):** forward Tab from the
 day's last open text box, where that day has no ordinary control after it, KEEPS THE CARET IN THAT BOX — never a blur
 onto nothing, never the next day's first button. Edit Schedule's week and the phone's Scheduler Board (no button follows
-its last box); the desktop board still goes on to the first ✕ of its warning list. Shift+Tab is unchanged. The build:
-`OUTSTANDING.md` `[TAB-DAY-END]`.
+its last box); the desktop board still goes on to the first ✕ of its warning list. Shift+Tab is unchanged. **Built 6 Oct 26**
+(`ui/schedule-tab.ts`): the box is saved by its blur, as on every Tab, and the caret is put back at the end of its text —
+in its twin if the save redrew it. **The day still catches up at that Tab:** it used to take the caret out of text, the
+moment everything held for the caret was redrawn (a line's worked-out area time after a typed take-off), so the route
+carries that redraw through itself — the store's "look again", flushed at once — BEFORE the caret goes back. After was
+not enough: the week writes all but the caret's block, but the board holds its whole day panel for a caret inside it
+(Astra's and Sol's reads, 6 Oct 26, the same finding apart). Pins: `e2e/schedule-tab.spec.ts` "D597 …" (three; the
+phone board's catch-up among them), `ui/schedule-tab.test.tsx` (the week, and Flying dragged to the foot of the day).
 
 **While the caret is in a text box, everything that does not hold it keeps up (the Codex stack check, 6 Oct 26 — W15,
 W16, W12, W11).** "Never repaint under the caret" used to mean nothing was redrawn until the caret left text; on the Tab
@@ -553,8 +559,8 @@ any window over the schedule — is asked straight after the route's blur, and t
 four question sheets (OIL, upchit, "covers other days", "no medical document") take the keyboard when they open and
 give it back when they close (`sheetfocus.ts`). **Spacing alone is no change** (`engine/slots.ts txtSet` folds the
 stored words too): a box whose stored words hold a doubled space is not written by a click or a Tab through it.
-**Open (his answer awaited, `[TAB-DAY-END]`):** after a day's last box with no button below it the caret ends on
-nothing.
+**After a day's last box with no button below it** the caret stays in that box (D597 — the paragraph above; it ended on
+nothing until 6 Oct 26, the stack check's W14).
 
 `schedule-tab.ts` collects at each gesture, shares ancestor visibility reads within
 that gesture only, then native blur/change saves through existing writers. After
@@ -4926,17 +4932,22 @@ role unresolved and the affected person's ordinary total bar intact (D526). Late
 action and Undo step. Apply this to every forward writer; unresolved saved roles are legitimate, no guessed colour,
 answer-before-creation requirement or new publication block. Working wording edits on an issued day still wait for AL;
 role answers alone count at once without changing signs/pending/amendments (D530).
-**The question and the button are two things (the Codex stack check, 6 Oct 26 — W9):** `mission-role-offer.ts` holds
-ONE open question (D523) and, separately, the temporary Choose / Change button under the Remarks he is in — so with
-one formation's question open (it stays through other edits, D535) every other formation's Remarks still shows its
-button; the formation whose question is open gets no button beside it; pressing another formation's button moves the
-one question there. **In the changes window an answer is filed under its formation** ("Flying · RU ACM", detail
+**The questions and the button are two things (the Codex stack check, 6 Oct 26 — W9; D598):** `mission-role-offer.ts`
+holds every open question — at most ONE PER FORMATION, each drawn under its own formation — and, separately, the one
+temporary Choose / Change button under the Remarks he is in. So with a formation's question open (it stays through
+other edits, D535) every other formation's Remarks still shows its button; a formation whose question is open gets no
+button beside it; and a second formation's question — from a cue typed there, or its button pressed — opens BESIDE the
+first, never in its place (until D598 there was one slot, newest wins). Each ends by its own rules, alone; tracking Off,
+another week, version or sign-in end them all. **After Blue, Red or Later the button is back at once while the caret is
+still in that Remarks box** — "Change mission role" after an answer, "Choose mission role" after Later — so a mis-press is
+corrected from where he stands (`offerForFocus`, `[ROLE-BUTTON-AFTER-ANSWER]`, 6 Oct 26; D527, D529). **A line with no
+callsign is "Line"** in the question, in Undo and in History, never its row code (`[ROLE-BLANK-CALLSIGN]`; D340). **In the changes window an answer is filed under its formation** ("Flying · RU ACM", detail
 "Mission role" — the same item as that line's other changes; its recorded callsign when the line has gone), never
 under a hidden row id (W7, `changesmodel.ts roleItem`). **An answer on a built-in demo day nobody has saved survives a
 reload** because the two built-in weeks carry repeatable row ids (W8, `data-schema.md`). **His answers (6 Oct 26):** a second formation's question never
 removes the first one's — BOTH show, each under its own formation, each ending by its own rules (D598, narrowing
-D523; one gesture that leaves several formations needing answers still asks none — D529; the build:
-`[ROLE-QUESTION-SECOND]`); and on Edit Schedule's week an open question WAITS on its day — swiping or stepping to
+D523; one gesture that leaves several formations needing answers still asks none — D529; built 6 Oct 26, pins in
+`ui/mission-role-interim-fixes.test.tsx` "D598 …"); and on Edit Schedule's week an open question WAITS on its day — swiping or stepping to
 another day does not end it, while on the Scheduler Board moving to another day still does (D599, narrowing D535; as built).
 Offer Change mission role temporarily while editing relevant Remarks (D527), reusing the formation question and edit
 permission; no permanent line marker. Named red Missions remain automatic, without overrides/questions. Recheck live

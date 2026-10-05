@@ -55,11 +55,8 @@ changes (today it moves at once). Proposed: its own job, straight after the stac
 check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip over a phone request card's date), [BOARD-TIME-ESCAPE]
 (Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
 changed text box on Edit Schedule, the first click into another box lands on the page and a second is needed; the same on the live
-app; with the next change to the schedule's text boxes). **From the same check's fix round (6 Oct 26) — three questions waiting for him,
-each parked with a recommended answer in the check's sheet (`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md` §12):**
-[TAB-DAY-END] (where Tab goes after a day's last text box when no button follows — D553), [ROLE-QUESTION-SECOND] (a second formation's
-Blue/Red question replaces the first one's — D535, D523), [ROLE-QUESTION-WEEK-DAY] (does moving to another day on the week end an open
-question — D535). Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; the same on the live app; proposed: fixed FIRST after the stack, with [OIL-WORK-START]), [ROLE-BLANK-CALLSIGN] (a line with no callsign is named by a hidden code in the Blue/Red question and Undo), [ROLE-BUTTON-AFTER-ANSWER], [ROLE-NOT-CHOSEN] (a question for him), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
+app; with the next change to the schedule's text boxes). **The same check's three parked questions were answered on 6 Oct 26 (D597–D599) and built on the stack branch** — the items
+are in `OUTSTANDING-ARCHIVE.md`; the sheet's §13 has the walk. Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; the same on the live app; proposed: fixed FIRST after the stack, with [OIL-WORK-START]), [ROLE-NOT-CHOSEN] (a question for him; the two small Blue/Red fixes that stood here were built in the check's third round, 6 Oct 26, and archived), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
 
 **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
 are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
@@ -1936,32 +1933,6 @@ stack — the host ran walker D's probe (`raptor-port/scripts/handpass/stk-D-1b.
 Enter and Escape meanings", so the Tab route did not change it. Not ruled. **Place (the agent's line):** low — a question for him with
 the next change to the board's boxes: should Escape restore there as it does on the week?
 
-### [TAB-DAY-END] After the last text box of a day with no button below it, Tab leaves the caret on nothing (the Codex stack check's W14, 5–6 Oct 26 — a question for him)
-Edit Schedule's week: from the day's last open text box (on the demo Monday, the last Unavailable remark) Tab blurs the box and the
-caret is nowhere; the next Tab goes to the NEXT day's Templates button. D553 ruled "Tab continues to the next normal button or control
-without looping or changing day" and its full row adds "it does not approve moving to the next day" — and here the only next button is
-the next day's. Codex's browser test (`raptor-port/e2e/schedule-tab.spec.ts`, "D553 first/last exits remain on the day") pins "no pan,
-focus on the page or in the day". **ANSWERED 6 Oct 26 (D597): the caret stays in that last box** — the week, and the phone's board, where no button follows the
-last box either. Parked until then under D596 (the check's sheet §12, question 1). On the board the exit lands on the first control after the boxes (walked: the ✕ of a warning line) — as ruled.
-**Place (the agent's line):** with the next change to the Tab route, once he answers.
-
-### [ROLE-QUESTION-SECOND] A second formation's Blue/Red question replaces the first formation's open one (found 6 Oct 26 by Astra and Sol 6.1, the side-by-side read — a question for him)
-Tracking On. Type a DS / RED cue in formation A's Remarks and leave its question unanswered; type one in formation B's Remarks and
-leave it: B's question opens and A's is removed without an answer (`raptor-port/src/ui/mission-role-offer.ts` — the automatic question
-has one slot, newest wins). D535 lists when an open question goes (Blue, Red, Later, its own wording, the formation gone, another day /
-week / version / sign-in) and a second formation's edit is not in the list; D523 says not many questions at once; D529 says ask straight
-after his own edit. A's "Choose mission role" button still works when its Remarks is selected (W9, fixed 6 Oct 26), and an unanswered
-formation keeps the ordinary total bar. **ANSWERED 6 Oct 26 (D598): show both, each under its own formation; a newer question never removes an older one.** Parked
-until then under D596 (the sheet §12, question 2). The reports: `raptor-port/docs/superpowers/briefs/2026-10-06-insights-fixes-read-astra.md`, `-sol.md`.
-**Place (the agent's line):** with the next change to Insights' mission mix, once he answers.
-
-### [ROLE-QUESTION-WEEK-DAY] On Edit Schedule's week, going to another day does not end an open Blue/Red question (found 6 Oct 26 by Astra and Sol 6.1 — a question for him)
-D535: an open question ends when he "moves to another day". On the Scheduler Board it does. On the week — several days on screen at
-once on a desktop, one per swipe on a phone — the question stays on its day until answered or Later; since W9's fix it blocks nothing
-(every other formation's button shows). **ANSWERED 6 Oct 26 (D599): leave it — on the week the question waits on its day; the board still ends it on a day change.
-Nothing to build.** Parked until then under D596 (the sheet §12, question 3).
-**Place (the agent's line):** low; with [ROLE-QUESTION-SECOND].
-
 ### [REQ-ROW-OWN-BOXES] Typing in the programme row of an accepted request changes the row, not the request (both walks of the Codex stack check, 5–6 Oct 26 — a question for him)
 A timed request (walked: Training, Sat 18 Jul, 11:00–12:00) accepted onto the Ground / Common Programme: typing a new start, end or
 remark in the PROGRAMME ROW's own boxes changes that row (10:15–11:45, the new words) while the request — its line under Personal
@@ -1985,20 +1956,10 @@ in the three places; leave the count that includes a timeless leg on purpose). *
 families are walked with it.** **Place (the agent's line):** FIRST after the Codex stack goes live, with `[OIL-WORK-START]` — a
 missing crew-rest warning is the kind of fault that harms people; it is not the stack's, so it was not fixed under cover of its check.
 
-### [ROLE-BLANK-CALLSIGN] A line with no callsign is named by its hidden row code in the Blue/Red question and in Undo (reader C's second pass, 6 Oct 26)
-Tracking On; "+ Line" (blank), leave the callsign empty, type `DS-2` in Mission: the question reads "<a code>: Blue or Red?", and after
-an answer Undo and its history line name the same code. Should read "Line", as the rest of the app names such a line (D340). Two
-lines: `raptor-port/src/state/mission-roles.ts` (the target's `name`) and `raptor-port/src/state/changelines.ts` (the copy's fallback)
-— `raptor-port/docs/handpass/parts/stack-read2-C.md` F1, with its test. **Place (the agent's line):** low — with `[ROLE-QUESTION-SECOND]`.
-
-### [ROLE-BUTTON-AFTER-ANSWER] After Blue, Red or Later the Choose / Change button is not put back while the caret is still in that Remarks box (reader C's second pass, 6 Oct 26)
-D527: the button shows while a relevant Remarks is being edited. After an answer (or Later) with the caret left in the box nothing is
-offered until he clicks out and back in. Fix and test: `…/stack-read2-C.md` F2. **Place:** low — with `[ROLE-QUESTION-SECOND]`.
-
 ### [ROLE-NOT-CHOSEN] Once the sign-in ends, a Blue/Red answer cannot be put back to "not chosen" (reader C, both passes — a question for him)
 An answer given by mistake can be changed to the other colour, never cleared, once Undo's list has gone (sign-out, reload). The
 permissions table allows the admin to delete the record; no control does. D527 offers a correction only. **Place (the agent's
-line):** low — ask him with `[ROLE-QUESTION-SECOND]`; recommended: leave as built.
+line):** low — a question for him, put with the third round's report (6 Oct 26); recommended: leave as built.
 
 ### [PEND-INTIME-WORDS] "To go out" words an edited reporting line as "2 In-time / Rally lines → 2 In-time / Rally lines" (reader AB's second pass, 6 Oct 26 — OLD)
 A line's clock changed on a published day, with the number of lines unchanged: the pending list shows the same words before and

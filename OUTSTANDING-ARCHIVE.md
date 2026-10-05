@@ -3208,3 +3208,54 @@ and the working copy on Edit Schedule? If yes, Astra's fix steps are in the read
 issued days through `withChipWorld` / `faceWarn`). **Place:** a question for him; with the one changes window
 (`[DRAFT-PENDING]`, the next time the working-versus-published split is designed) or any time.
 
+
+*Moved here 2026-10-06 by backlog-archive.mjs ([TAB-DAY-END]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-05-codex-stack-check.md`.*
+
+### [TAB-DAY-END] After the last text box of a day with no button below it, Tab leaves the caret on nothing (the Codex stack check's W14, 5–6 Oct 26 — a question for him)
+Edit Schedule's week: from the day's last open text box (on the demo Monday, the last Unavailable remark) Tab blurs the box and the
+caret is nowhere; the next Tab goes to the NEXT day's Templates button. D553 ruled "Tab continues to the next normal button or control
+without looping or changing day" and its full row adds "it does not approve moving to the next day" — and here the only next button is
+the next day's. Codex's browser test (`raptor-port/e2e/schedule-tab.spec.ts`, "D553 first/last exits remain on the day") pins "no pan,
+focus on the page or in the day". **ANSWERED 6 Oct 26 (D597): the caret stays in that last box** — the week, and the phone's board, where no button follows the
+last box either. Parked until then under D596 (the check's sheet §12, question 1). On the board the exit lands on the first control after the boxes (walked: the ✕ of a warning line) — as ruled.
+**Place (the agent's line):** with the next change to the Tab route, once he answers.
+
+
+*Moved here 2026-10-06 by backlog-archive.mjs ([ROLE-QUESTION-SECOND]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-05-codex-stack-check.md`.*
+
+### [ROLE-QUESTION-SECOND] A second formation's Blue/Red question replaces the first formation's open one (found 6 Oct 26 by Astra and Sol 6.1, the side-by-side read — a question for him)
+Tracking On. Type a DS / RED cue in formation A's Remarks and leave its question unanswered; type one in formation B's Remarks and
+leave it: B's question opens and A's is removed without an answer (`raptor-port/src/ui/mission-role-offer.ts` — the automatic question
+has one slot, newest wins). D535 lists when an open question goes (Blue, Red, Later, its own wording, the formation gone, another day /
+week / version / sign-in) and a second formation's edit is not in the list; D523 says not many questions at once; D529 says ask straight
+after his own edit. A's "Choose mission role" button still works when its Remarks is selected (W9, fixed 6 Oct 26), and an unanswered
+formation keeps the ordinary total bar. **ANSWERED 6 Oct 26 (D598): show both, each under its own formation; a newer question never removes an older one.** Parked
+until then under D596 (the sheet §12, question 2). The reports: `raptor-port/docs/superpowers/briefs/2026-10-06-insights-fixes-read-astra.md`, `-sol.md`.
+**Place (the agent's line):** with the next change to Insights' mission mix, once he answers.
+
+
+*Moved here 2026-10-06 by backlog-archive.mjs ([ROLE-QUESTION-WEEK-DAY]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-05-codex-stack-check.md`.*
+
+### [ROLE-QUESTION-WEEK-DAY] On Edit Schedule's week, going to another day does not end an open Blue/Red question (found 6 Oct 26 by Astra and Sol 6.1 — a question for him)
+D535: an open question ends when he "moves to another day". On the Scheduler Board it does. On the week — several days on screen at
+once on a desktop, one per swipe on a phone — the question stays on its day until answered or Later; since W9's fix it blocks nothing
+(every other formation's button shows). **ANSWERED 6 Oct 26 (D599): leave it — on the week the question waits on its day; the board still ends it on a day change.
+Nothing to build.** Parked until then under D596 (the sheet §12, question 3).
+**Place (the agent's line):** low; with [ROLE-QUESTION-SECOND].
+
+
+*Moved here 2026-10-06 by backlog-archive.mjs ([ROLE-BLANK-CALLSIGN]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [ROLE-BLANK-CALLSIGN] A line with no callsign is named by its hidden row code in the Blue/Red question and in Undo (reader C's second pass, 6 Oct 26)
+Tracking On; "+ Line" (blank), leave the callsign empty, type `DS-2` in Mission: the question reads "<a code>: Blue or Red?", and after
+an answer Undo and its history line name the same code. Should read "Line", as the rest of the app names such a line (D340). Two
+lines: `raptor-port/src/state/mission-roles.ts` (the target's `name`) and `raptor-port/src/state/changelines.ts` (the copy's fallback)
+— `raptor-port/docs/handpass/parts/stack-read2-C.md` F1, with its test. **Place (the agent's line):** low — with `[ROLE-QUESTION-SECOND]`.
+
+
+*Moved here 2026-10-06 by backlog-archive.mjs ([ROLE-BUTTON-AFTER-ANSWER]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [ROLE-BUTTON-AFTER-ANSWER] After Blue, Red or Later the Choose / Change button is not put back while the caret is still in that Remarks box (reader C's second pass, 6 Oct 26)
+D527: the button shows while a relevant Remarks is being edited. After an answer (or Later) with the caret left in the box nothing is
+offered until he clicks out and back in. Fix and test: `…/stack-read2-C.md` F2. **Place:** low — with `[ROLE-QUESTION-SECOND]`.
+

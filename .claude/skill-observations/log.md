@@ -2517,3 +2517,48 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** §6's "fix to one writer" bullet: when a writer's RETURN or no-op condition changes, list every caller that reads the return value or re-compares after the call, and give each a line (unchanged / adjusted) in the commit.
 
 **Principle:** Changing when a function reports "nothing happened" is an interface change; every caller that infers failure from "nothing happened" must be read in the same change.
+
+### Observation 434: A rendering fault is measured at the screen's real scaling, before any fix is designed
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** his find on the stack's preview — the dotted crew-rest ring invisible beside an amber ring "at default zoom" (his screen: Windows at 125%)
+**Skill:** bug-check order §7 (the walk) and the debugging guide (reproduce first)
+**Type:** internal
+**Phase/Area:** reproducing a visual fault
+
+**Issue:** Two fixes were built on theories before the measurement that disproved them. (1) The fault was reproduced with Playwright's `deviceScaleFactor`, which scales the finished picture and leaves the page's own arithmetic at 1 — the browser then rounds a 1.6px line down to 1px, so both the fault and the fix vanish under it. (2) "The ring falls between pixels, snap its offset" was built, unit-tested and only then measured: no difference, the browser already rounds the offset. The real cause (one screen pixel thick, hard against the amber ring) showed only in a browser started with `--force-device-scale-factor`, checked against the desktop app's own pane, which reported his real scaling (1.25) and the real computed widths.
+
+**Suggested improvement:** In the order's walk section, one line for visual faults: "a fault that depends on zoom or display scaling is reproduced in a browser STARTED at that scaling (`--force-device-scale-factor`), never with an emulated picture scale; read the owner's real scaling first (the app's pane reports `devicePixelRatio`); count the pixels before and after — and measure the candidate fix before writing its tests." `scripts/handpass/zoom-dot.mjs` is the worked example.
+
+**Principle:** An emulator that changes the picture but not the arithmetic cannot reproduce an arithmetic fault; build the measuring tool first and let it choose the fix.
+
+### Observation 435: Keeping the caret where a blur used to happen means finding everything that blur used to trigger
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** D597 — Tab from a day's last text box keeps the caret in that box instead of leaving it on nothing
+**Skill:** bug-check order §6 (the roll-call of a changed gesture); feature-impact walk
+**Type:** internal
+**Phase/Area:** building a change that removes an event other code relied on
+
+**Issue:** The old ending (the caret leaving text) was also the moment the page redrew every block it had been holding for the caret. Refocusing the box at once removed that moment, and a line's worked-out area time stayed stale. It was caught only because an existing unit test pinned "settles after the final Tab"; no roll-call line asked "what else listened for the event this change removes?".
+
+**Suggested improvement:** In §6's door check, add a question for a change that removes or shortens an event (a blur, a close, a navigation): "list what else ran on that event — deferred paints, saves, tidy-ups — and give each a line: still runs / now triggered here / no longer needed, because…".
+
+**Principle:** Removing a side effect's trigger is a behaviour change for every listener; list the listeners before removing it.
+
+### Observation 436: A walk script's FAIL is read against what the script actually pressed before it is called the app's
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** the third-round walk of the stack check — one phone step failed three runs in a row
+**Skill:** bug-check order §5 (the re-walk: read every FAIL against the flow)
+**Type:** internal
+**Phase/Area:** judging a walk failure
+
+**Issue:** "A second Tab stays and saves again" failed on the phone only. The script pressed End before typing; on a phone the remark wraps onto two lines, and End stops at the end of the first LINE, so the typed marker landed mid-text and the assertion looked for it at the end. The app was right. Printing what the box actually read, in the step's note, settled it in one run; two selector errors earlier in the same script (a day tab, the phone menu) were the script's too.
+
+**Suggested improvement:** In the walk section: every assertion's note prints the observed value it judged (the text of the box, the focused element), so a FAIL can be read without a rerun; and "a key that moves the caret (End, Home, arrows) means something different once text wraps — use the document-level one (Control+End) in scripts".
+
+**Principle:** A failing step reports what it saw, not only that it failed; the first question about a red walk step is what the script did, not what the app did.

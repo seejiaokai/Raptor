@@ -154,6 +154,56 @@ for (const size of ['desktop', 'phone']) {
     row(size, 'R3-18', 'an unscaled screen is handed no width: the ring is what it always was', await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--dot-w') === ''))
   } catch (e) { row(size, 'R3-XX', 'the walk stopped', false, String(e && e.message || e).slice(0, 300)); await shot(page, `${size}-99-stopped`).catch(() => {}) }
   await ctx.close()
+
+  /* ================= part 2 — the fix round (the two reads' finding, and the two small Blue/Red leftovers) =================
+     A fresh sign-in, so nothing above colours it. */
+  const two = await open(browser, size)
+  const p2 = two.page
+  try {
+    await nav(p2, phone, 'logic'); await p2.locator('#lgEdit').click(); await p2.locator('#lgMissionMix').check()
+    await nav(p2, phone, 'editsched'); await p2.waitForSelector('#eWeek .day')
+    const wk = '#eWeek .day[data-day="0"]', rm = `${wk} [data-txt="fr:0.0.0.0"]`
+    const inBox = () => p2.evaluate(() => document.activeElement?.getAttribute('data-txt') || document.activeElement?.getAttribute('data-bfld') || null)
+    const btn = () => p2.evaluate(() => [...document.querySelectorAll('.mission-role-action [data-role-choose]')].map(b => b.textContent).join(' | '))
+
+    /* [ROLE-BUTTON-AFTER-ANSWER] — the week */
+    await typeIn(p2, rm, 'DS FOR EAGLE')
+    await p2.locator('.mission-role-question [data-role-side="later"]').click(); await p2.waitForTimeout(150)
+    await p2.locator(rm).first().click(); await p2.waitForTimeout(150)
+    row(size, 'R3-19', 'week: selecting the Remarks of a formation with a cue and no answer offers "Choose mission role"', await btn() === 'Choose mission role', await btn())
+    await p2.locator('.mission-role-action [data-role-choose]').click(); await p2.waitForTimeout(150)
+    await p2.locator('.mission-role-question [data-role-side="later"]').click(); await p2.waitForTimeout(200)
+    row(size, 'R3-20', 'week: Later pressed with the caret still in that Remarks — the question goes and "Choose mission role" is back at once', await btn() === 'Choose mission role' && await inBox() === 'fr:0.0.0.0' && await p2.locator('.mission-role-question').count() === 0, `button: ${await btn()} · caret in ${await inBox()}`)
+    await p2.locator('.mission-role-action [data-role-choose]').click(); await p2.waitForTimeout(150)
+    await p2.locator('.mission-role-question [data-role-side="red"]').click(); await p2.waitForTimeout(250)
+    row(size, 'R3-21', 'week: Red pressed with the caret still there — the button now reads "Change mission role", so a mis-press can be corrected on the spot', await btn() === 'Change mission role' && await inBox() === 'fr:0.0.0.0', `button: ${await btn()} · caret in ${await inBox()}`)
+    await shot(p2, `${size}-06-week-change-button-back`)
+
+    /* [ROLE-BLANK-CALLSIGN] — the board: a new line, no callsign, a mission that asks */
+    await p2.locator('#eWeek [data-sbday="0"]').first().click(); await p2.waitForSelector('#schedBoard', { state: 'visible' })
+    const n = await p2.evaluate(() => window.DAYS[0].waves[0].formations.length)
+    await p2.locator('#sbBoard [data-gline="0.0"]').first().click(); await p2.waitForTimeout(250)
+    const msn = p2.locator(`#sbBoard [data-bfld="ff:0.0.${n}.msn"]:visible`).first()
+    await msn.scrollIntoViewIfNeeded(); await msn.fill('DS-2'); await msn.press('Tab'); await p2.waitForTimeout(250)
+    const rid = await p2.evaluate(i => window.DAYS[0].waves[0].formations[i].rid, n)
+    const heads = await p2.evaluate(() => [...document.querySelectorAll('.mission-role-question strong')].map(x => x.textContent))
+    const pageText = await p2.evaluate(() => document.body.innerText)
+    row(size, 'R3-22', 'board: a new line with no callsign and Mission DS-2 asks "Line: Blue or Red?" — the page shows no hidden row code', heads.includes('Line: Blue or Red?') && !pageText.includes(rid), heads.join(' | '))
+    await p2.locator('.mission-role-question').last().scrollIntoViewIfNeeded(); await shot(p2, `${size}-07-board-blank-line-question`)
+    await p2.locator('.mission-role-question:has(strong:text-is("Line: Blue or Red?")) [data-role-side="red"]').click(); await p2.waitForTimeout(250)
+    const undoWords = await p2.evaluate(() => { const b = document.querySelector('#sbUndo,#undoBtn'); return [...document.querySelectorAll('#sbUndo,#undoBtn')].map(x => (x.getAttribute('title') || '') + ' ' + (x.getAttribute('aria-label') || '')).join(' / ') })
+    row(size, 'R3-23', 'board: after Red, Undo names it "the mission role for Line", never the row code', /mission role for Line/.test(undoWords) && !undoWords.includes(rid), undoWords.slice(0, 160))
+
+    /* the two reads' finding — the board holds its whole day for the caret: the last box's Tab must still bring it up to date */
+    const to = p2.locator('#sbBoard [data-bfld="ff:0.0.0.to"]:visible').first()
+    await to.scrollIntoViewIfNeeded(); await to.fill('1255'); await to.press('Tab'); await p2.waitForTimeout(150)
+    const bl = await lastBox(p2, '#sbBoard'); await bl.scrollIntoViewIfNeeded(); await bl.focus(); const at = await sig(p2)
+    await p2.keyboard.press('Tab'); await p2.waitForTimeout(250)
+    const shown = await p2.locator('#sbBoard [data-atime="0.0.0"]').first().evaluate(e => String(e.value ?? e.textContent))
+    if (phone) row(size, 'R3-24', 'phone board: a take-off typed, then Tab from the day\'s last box — the caret stays AND the line\'s area time on screen is the new one (Astra\'s and Sol\'s finding)', await sig(p2) === at && /^1255-/.test(shown), `area time shown: ${shown}`)
+    else row(size, 'R3-24', 'desktop board: a take-off typed, then Tab from the last box (it goes on to the next control) — the line\'s area time on screen is the new one', /^1255-/.test(shown), `area time shown: ${shown}`)
+  } catch (e) { row(size, 'R3-YY', 'part 2 of the walk stopped', false, String(e && e.message || e).slice(0, 300)); await shot(p2, `${size}-98-stopped`).catch(() => {}) }
+  await two.ctx.close()
 }
 await browser.close()
 const md = ['| size | id | what was done and what must be true | result | note |', '|---|---|---|---|---|', ...rows.map(r => `| ${r.size} | ${r.id} | ${r.what} | ${r.pass} | ${String(r.note).replace(/\|/g, '/')} |`), '', `Errors seen (console, page, HTTP 4xx): ${errors.length ? errors.join(' · ') : 'none'}`].join('\n')

@@ -1,5 +1,6 @@
 /* D550–D556: the live editor's existing DOM order is the agreed B route.
    Collect at the gesture, so folds, row changes and section order stay current. */
+import { flushSync } from 'react-dom'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -119,16 +120,21 @@ export function routeScheduleTab(e: KeyboardEvent, refresh: (el: HTMLElement) =>
        first box with nothing before it is as it was. The blur above has saved what he typed; a save that redrew the
        box hands back its twin (the same marks on it), or failing that the day's last box. */
     if (e.shiftKey) return true
+    /* …AND THE DAY STILL CATCHES UP, BEFORE THE CARET GOES BACK. Until D597 this Tab took the caret out of text
+       altogether, which is the moment the page redraws everything it had been holding for the caret (a take-off typed
+       earlier leaves its line's worked-out area time waiting, for one). So that redraw is done HERE, now, while the
+       caret is still out of the box: the store's ordinary "look again", carried through at once. Asking for it AFTER
+       the caret was back (the first build of this) was not enough — the week writes all but the caret's block, but the
+       BOARD holds its whole day panel for a caret inside it and wrote nothing (Astra's read, 6 Oct 26, F1; pinned on
+       the phone's board in e2e/schedule-tab.spec.ts). Nothing is written to the schedule by this. */
+    flushSync(() => notify())
+    /* the redraw is the page's own, and so is anything it opened or moved: the same checks as after the blur */
+    if (windowOverSchedule() || !sameScope(scope)) return true
+    if (document.activeElement !== document.body && document.activeElement !== source) return true
     const stay = source.isConnected && textField(source) ? source : twinOrLast(scope, source)
     if (!stay) return true
     stay.focus()
     caretToEnd(stay)
-    /* …AND THE DAY STILL CATCHES UP. Until D597 this Tab took the caret out of text altogether, which is the moment
-       the page redraws every block it had been holding for the caret (a take-off typed earlier leaves its line's
-       worked-out area time waiting, for one). The caret no longer leaves, so the page is asked to redraw now: with a
-       caret in text it writes everything but the caret's own block (EditWeek / SchedBoard, the W15 paint). Nothing is
-       written to the schedule by this — it is the store's ordinary "look again". */
-    notify()
     return true
   }
   if (!destination.isConnected) return true

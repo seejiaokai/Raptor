@@ -86,7 +86,7 @@ export function roleTarget(di: number, rid: string): RoleTarget | null {
   const identity={weekKey:CURWEEK,dayISO:dayIso(CURWEEK,di),formationRid:rid,context:result.context}
   let id:string
   try { id=encodeRoleId(identity) } catch { return null }
-  return {...identity,id,di,origin:source.origin,label:source.label,name:String(source.f.cs || rid),dayRevision:revisionOf('days',`${CURWEEK}#${di}`),roleRevision:revisionOf('insights.role',id),session:SESSION,generation,trackingEpoch:missionTrackingEpoch(),view:viewStamp(),formation:source.f}
+  return {...identity,id,di,origin:source.origin,label:source.label,name:String(source.f.cs || '').replace(/\s+/g,' ').trim() || 'Line',dayRevision:revisionOf('days',`${CURWEEK}#${di}`),roleRevision:revisionOf('insights.role',id),session:SESSION,generation,trackingEpoch:missionTrackingEpoch(),view:viewStamp(),formation:source.f}
 }
 /** The same QUESTION, re-resolved (D535, 3 Oct 26): an unrelated edit on the day moves the day's revision and may
  * replace the formation object, and the open question must survive it. Everything that identifies the question is

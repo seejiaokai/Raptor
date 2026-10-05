@@ -143,7 +143,9 @@ it('W9 — with one formation’s question open, another formation’s Remarks s
   expect(labels(),'and its question is still there to answer').toEqual([`Mission role for ${a.cs}`])
   await click(side(String(a.cs),'red'));await settle()
   expect(readRole(roleTarget(0,a.rid!)!.id)?.side).toBe('red')
-  expect(document.querySelectorAll('[data-role-ui]')).toHaveLength(0)
+  expect(labels(),'no question is left').toHaveLength(0)
+  /* the caret is still in the second formation's Remarks: its button is back, to correct the answer ([ROLE-BUTTON-AFTER-ANSWER]) */
+  expect([...document.querySelectorAll('.mission-role-action')].map(n=>`${n.getAttribute('aria-label')} · ${n.querySelector('[data-role-choose]')!.textContent}`)).toEqual([`Mission role for ${b.cs} · Change mission role`])
 })
 
 /* D598 (owner, 6 Oct 26 — "yes all 4 as recommended", question 2; found by Astra and Sol 6.1 in the side-by-side read).
@@ -185,6 +187,49 @@ it('D598 — Later on one question, or its own wording changing, removes that on
   expect(labels(),'the first formation’s wording no longer asks; Tuesday’s question still does').toEqual([`Mission role for ${c.cs}`])
   await act(async()=>{setMissionTracking(false)});await settle()
   expect(document.querySelectorAll('[data-role-ui]'),'tracking Off ends every open question').toHaveLength(0)
+})
+
+/* [ROLE-BLANK-CALLSIGN] (reader C's second pass, 6 Oct 26 — F1; D340). A line with no callsign was named by its hidden
+   row code: the question read "<code>: Blue or Red?", and Undo and History carried the same code. The app's word for
+   such a line is "Line" (the changes window, the edit log). */
+it('ROLE-BLANK-CALLSIGN — a line with no callsign is called "Line" in the question, in Undo and in History, never its row code',async()=>{
+  const {commandStream}=await import('../command')
+  const f=DAYS[0].waves[0]!.formations[0]!,rid=String(f.rid)
+  await act(async()=>{f.cs='';schedBaselineClean();(await import('../state/store')).notify()});await settle()
+  await type('ff:0.0.0.msn','DS-2')
+  const qn=q('.mission-role-question')
+  expect(qn.querySelector('strong')!.textContent).toBe('Line: Blue or Red?')
+  expect(qn.getAttribute('aria-label')).toBe('Mission role for Line')
+  expect(qn.textContent,'never the row code').not.toContain(rid)
+  expect(roleTarget(0,rid)!.name).toBe('Line')
+  const from=ELOG.rows.length,n=commandStream().length
+  await click(q('[data-role-side="red"]'));await settle()
+  const sent=commandStream().slice(n).find(e=>e.type==='insights.role.set')!
+  expect(JSON.parse(String(sent.detail)).name,'the name Undo reads').toBe('Line')
+  const line=ELOG.rows.slice(from).find((x:any)=>x.fld==='mission-role')
+  expect(String(line!.lbl),'the History line').toMatch(/^Line · mission role/)
+  expect(String(line!.lbl)).not.toContain(rid)
+})
+
+/* [ROLE-BUTTON-AFTER-ANSWER] (reader C's second pass — F2; D527, D529: the button shows while a relevant Remarks box is
+   being edited). After Blue, Red or Later the caret is still in that Remarks box, and nothing was offered until he
+   clicked out and back in — a mis-press could not be corrected from where he was. */
+it('ROLE-BUTTON-AFTER-ANSWER — after Later or an answer, with the caret still in that Remarks, the Choose / Change button is back',async()=>{
+  expect(writeText('fr:0.0.0.0','RED AIR'),'a cue of its own').toBeTruthy();await settle()
+  const rm=()=>q('#eWeek [data-txt="fr:0.0.0.0"]')
+  await act(async()=>{rm().focus();rm().dispatchEvent(new FocusEvent('focusin',{bubbles:true}))});await settle()
+  await click(q('.mission-role-action [data-role-choose]'));await settle()
+  expect(labels()).toHaveLength(1)
+  await click(q('[data-role-side="later"]'));await settle()
+  expect(labels(),'Later closed the question').toHaveLength(0)
+  expect(document.activeElement,'the caret is still in the Remarks box').toBe(rm())
+  expect(document.querySelector('.mission-role-action [data-role-choose]')?.textContent,'and the button is offered again').toBe('Choose mission role')
+  await click(q('.mission-role-action [data-role-choose]'));await settle()
+  await click(q('[data-role-side="red"]'));await settle()
+  const f=DAYS[0].waves[0]!.formations[0]!
+  expect(readRole(roleTarget(0,f.rid!)!.id)?.side).toBe('red')
+  expect(document.querySelector('.mission-role-action [data-role-choose]')?.textContent,'an answer given: the button now corrects it').toBe('Change mission role')
+  expect(document.querySelectorAll('.mission-role-action')).toHaveLength(1)
 })
 
 /* RF3 (Astra's read of the fix round, 6 Oct 26): W11 made a spacing-only save a no-op — right — but the answer path

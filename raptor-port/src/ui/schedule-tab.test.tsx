@@ -235,6 +235,24 @@ describe('D556 schedule Tab production wiring', () => {
     expect(week('ff:0.0.0.to').textContent).toBe('12:55')
     expect(f.atime??null).toBe(null);expect(HIST.stack.length).toBe(h+1)
   })
+  /* Sol's read of the third round (6 Oct 26): the catch-up at the last box's Tab must also hold when the stale box and
+     the day's last box are in the SAME section — Flying dragged to the foot of the day. The first build asked for the
+     redraw after the caret was back, when that section was the one being held for it. */
+  it("D597 with Flying last on the day, the last box's Tab still shows an earlier take-off's new area time and keeps the caret", async () => {
+    await act(async () => { (DAYS[0] as any).secOrder = ['notes','prog','duty','sims','ground','inputs','avail','sans','unav','waves']; notify() }); await tick()
+    const to = week('ff:0.0.0.to'), f = DAYS[0].waves[0].formations[0], h = HIST.stack.length
+    await focus(to); to.textContent = '1255'; await tab(to); await tick()
+    expect(txtGet('ff:0.0.0.to')).toBe('12:55')
+    const fields = () => [...host.querySelectorAll<HTMLElement>('#eWeek > .day[data-day="0"] [contenteditable="true"]')]
+      .filter(el => el.matches('[data-txt],[data-inp],[data-itline],[data-bombs],[data-area],[data-atime]'))
+    const last = fields().at(-1)!, marks = (el: HTMLElement) => el.tagName + JSON.stringify({ ...el.dataset })
+    expect(last.closest('[data-secmove="0.waves"],.wv-sech,.go,.wave') || last.matches('[data-area],[data-atime],[data-bombs],[data-txt^="f"]'), "the day's last box is a flying one").toBeTruthy()
+    const was = marks(last)
+    await focus(last); await tab(last); await tick()
+    expect(marks(document.activeElement as HTMLElement), 'the caret is in the last box').toBe(was)
+    expect($('[data-atime="0.0.0"]').textContent, "and the first line's area time is the new one").toBe(atimeText(f))
+    expect(f.atime ?? null).toBe(null); expect(HIST.stack.length).toBe(h + 1)
+  })
   it.each(['page','Board day','admin session'])('source blur changing %s does not focus its stale destination',async transition=>{
     if(transition==='Board day')await board()
     const source=transition==='Board day'?box('ff:0.0.0.cs'):week('ff:0.0.0.cs')

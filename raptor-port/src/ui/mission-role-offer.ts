@@ -112,6 +112,17 @@ function saveVisibleText(t:RoleTarget,origin:HTMLElement):RoleTarget|null {
   }
   return roleTarget(t.di,t.formationRid)
 }
+/* THE BUTTON FOR THE BOX THE CARET IS IN ([ROLE-BUTTON-AFTER-ANSWER], reader C's second pass, 6 Oct 26; D527, D529 —
+   "while its Remarks box is being edited"). A question opening takes its formation's button with it; once that question
+   is answered or put off the caret is still in the box, no focus event follows, and nothing was offered until he
+   clicked out and back in — a mis-press could not be corrected from where he stood. */
+function offerForFocus():void {
+  const active=document.activeElement as HTMLElement|null
+  if(!active||active.closest('[data-role-ui]'))return
+  const el=active.closest<HTMLElement>('[data-txt],[data-bfld],[data-role-remarks]')
+  const t=el&&missionTracking()&&canEditSched()?focusedTarget(el):null
+  if(t&&el)show(t,false,el)
+}
 function show(t:RoleTarget,question:boolean,field:HTMLElement):void {
   /* this formation's own question, or the button — whichever is being drawn; nobody else's question is touched */
   const clearMine=()=>question?dropAsking(askingFor(t)):clearOffered()
@@ -149,10 +160,10 @@ function show(t:RoleTarget,question:boolean,field:HTMLElement):void {
     if(!fresh){dropMine();if(restore)returnCaret(restore,savedCaret);return}
     if(b.hasAttribute('data-role-choose')) {show(fresh,true,field);if(restore)returnCaret(restore,savedCaret);return}
     const side=b.dataset.roleSide
-    if(side==='later') {dropMine();if(restore)returnCaret(restore,savedCaret);return}
+    if(side==='later') {dropMine();if(restore)returnCaret(restore,savedCaret);offerForFocus();return}
     if(side==='blue'||side==='red') {
       const result=setMissionRole(fresh,side)
-      if(isOk(result)) {dropMine();if(restore)returnCaret(restore,savedCaret)}
+      if(isOk(result)) {dropMine();if(restore)returnCaret(restore,savedCaret);offerForFocus()}
       else if('ok' in result&&!result.ok) {dropMine();HOOKS.toast('message' in result&&result.message?String(result.message):'That mission-role question is no longer current. Select Remarks to try again.')}
     }
   })
@@ -162,9 +173,10 @@ function show(t:RoleTarget,question:boolean,field:HTMLElement):void {
 }
 export function reconcileMissionRoleOffer():void {
   reconcileAsking()
-  /* the button: a stale one goes (the next focus draws a fresh one), as it always did; one a repaint dropped is put back */
+  /* the button: a stale one goes; one a repaint dropped is put back */
   if(!offered)return
-  if(!targetIsCurrent(offered.target)) return clearOffered()
+  /* …and where the caret is still in a box that earns one, a fresh one is drawn at once */
+  if(!targetIsCurrent(offered.target)) {clearOffered();offerForFocus();return}
   if(!offered.node.isConnected) {
     const {target}=offered, field=remarksFor(target)
     if(!field)return clearOffered()
