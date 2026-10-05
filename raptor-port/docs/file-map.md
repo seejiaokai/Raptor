@@ -27,6 +27,11 @@ one** (`raptor-port/CLAUDE.md` §Coding conventions). Moved WHOLE from `HANDOFF.
 (D138, D140) — it was two thirds of the handoff every chat read at its start, and a chat needs it only when it
 is looking for a file. Paths in the Tooling table are relative to `raptor-port/`, as they were in `HANDOFF.md`; the rows moved byte for byte and the few that had gone stale were corrected the same day, each marked.
 
+`[SAVE-NOTE-COVERS]` (D586, 5 Oct 26): `scripts/handpass/sn-cover.mjs` forces a failed save in the built app and, on
+every page at five sizes, measures what the "Not saved — Retry" note lies over and presses for real (a PASS means it
+covers nothing; `SN_CSS` / `SN_JS` lay a proposal over the running app); `sn-board.mjs` asks whether the warning can be
+seen on the full-screen board. The record: `docs/handpass/2026-10-05-save-note-controls.md`.
+
 D560-D563 interface readability/scroll batch: `scripts/handpass/interface-readability-scroll.mjs`
 drives the real built Tracker, Logic and every Insights door with private local pictures and native actions.
 Logic's local topbar size observer is in `src/ui/LogicPage.tsx`; compact controls are scoped to

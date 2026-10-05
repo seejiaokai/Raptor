@@ -723,6 +723,12 @@ Save beneath — and at 390px its Retry sits on the ✎ Syllabus menu button. It
 roll-call of every page's controls under the note's spot (Edit Schedule, the board, the Leave War, the Tracker, Quals,
 Admin) at phone and desktop; give the note a place that covers nothing (or pushes nothing), with a browser test that
 the element at each covered control's centre is still that control.
+**5 Oct 26 (D586) — in hand on `codex/save-note-controls`:** reproduced on every page at five sizes with real presses
+(far wider than filed: the name search box on both schedule pages, Quals' filter, the Leave War's "+ New"), and two
+more found — on the full-screen scheduler board the warning cannot be seen at all, and the note keeps a stale place
+after a page change (at 1366 it lands on the account button and Logout). Proposed and shown to him before any layout
+change: a band of its own along the bottom of the top bar. The record and what is still owed:
+`raptor-port/docs/handpass/2026-10-05-save-note-controls.md`.
 
 ### [TRK-SAVE-FAIL-SAYS-SAVED] Inside Raptor the Tracker says "saved" when the save failed (filed 28 Sep 26)
 **Place:** low — with `[DB-READINESS]` (honest refusals and saves in small pieces are that batch's job). Found by the

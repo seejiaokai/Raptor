@@ -2382,3 +2382,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** When stating how long a check takes, read the last recorded run (the handoff block or the evidence sheet carries gate times) and quote it; if none exists, say "not measured". Keep the measured gate-set time in the handoff block so the next chat quotes it.
 
 **Principle:** A duration told to a non-technical owner is a claim he plans around; quote the last measurement, and label a guess as a guess.
+
+### Observation 425: A proposed layout can be laid over the running build and measured by the walk's own assertions before any source changes
+
+**Status:** OPEN
+**Date:** 5 Oct 26
+**Session context:** `[SAVE-NOTE-COVERS]` (D586) — the owner asked to see the proposed phone and desktop look before the layout changed.
+**Skill:** New skill candidate: picture-before-build (or a section of the bug-check order §7 / the Impeccable mock step)
+**Type:** open-source
+**Phase/Area:** design proposal, before implementation
+
+**Issue:** The usual picture-before-build is a drawn mock, which proves appearance only. Here the reproduction script was written as assertions of the RIGHT behaviour (no control covered, a real press on Retry works) and took an optional throwaway style sheet and script to inject into the built app. The same run then gave the "before" failures, the proposal's pictures on the real pages, and a pass/fail measurement of the proposal on every page and size — with no source file changed. Two traps met on the way: the app's memory-only mode cannot produce a failed save, so the first run reproduced nothing; and a pixel-grid scan sized for a small note ran past the tool's time limit once the proposal made the note full-width.
+
+**Suggested improvement:** When a visual change must be shown before it is built, write the reproduction as right-behaviour assertions with an injection hook, run it once plain (the defect's evidence) and once with the candidate laid over the app (the proposal's pictures and its measurement). Size any pixel sampling to the element's area, and check that the mode the app is opened in can show the state under test.
+
+**Principle:** A proposal measured on the running product is worth more than a drawing of it; make the defect's reproduction reusable as the proposal's test and as the fix's re-walk.

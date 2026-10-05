@@ -15,6 +15,15 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:codex/save-note-controls -->
+### `codex/save-note-controls` — `[SAVE-NOTE-COVERS]` (D586): REPRODUCED and the proposed look SHOWN; NO source changed yet; waiting for his word on the picture — written 5 Oct 26 — verify before use
+- **Authority (D586, 5 Oct 26):** Opus 5.5 fixes the "Not saved — Retry" note that covers controls, on this branch — made from the PUSHED `codex/workflow-ui` (c6e1634d), so it carries none of the calendar's records. The proposed phone and desktop look before any layout change; real presses checked; an independent read (Astra — Opus writes it); the Inputs/SANS calendar stays on hold (its own block is on `codex/inputs-sans-calendar`, D585); no merge, no `main`; `[OG-TAG-OVER-COUNT]` only after this is finished.
+- **Done:** the fault reproduced in the built app on every page at five sizes, with real presses (47 failures: the name search box on both schedule pages, the Tracker's Save changes and syllabus edit button, Quals' filter, the Leave War's "+ New" …); two more found — on the full-screen board the warning cannot be seen at all, and the note keeps a stale place after a page change. The proposal — a band of its own along the bottom of the top bar — drawn on the running app and measured the same way. All of it, the tier (WALK) and what is not done: `raptor-port/docs/handpass/2026-10-05-save-note-controls.md`. His pictures: https://claude.ai/artifact/Ju7P8Y52PsMJrg8CCGeWmG (private).
+- **Checks run:** the reproduction and the proposal run only (`raptor-port/scripts/handpass/sn-cover.mjs`, `sn-board.mjs`). NO gates — nothing under `raptor-port/src` has changed.
+- **Next:** his answer on the picture (the place, and the new words "Not saved — keep this page open"); then build it red-first, walk it, the five gates under the PC lock, Astra's read, his look. The evidence sheet lists every step still owed.
+- **Rulings:** D586 recorded (How we work). The calendar branch holds D567–D585; a next ruling here takes D587.
+<!-- /now -->
+
 <!-- now:codex/workflow-ui -->
 ### `codex/workflow-ui` — D566 accepted tapered wing built with Logic/Insights; all gates/fresh independent R1PASS; pushed/current preview completed; not live — 4–5 Oct 26
 - **CURRENT CONTINUATION:** entry007e61069d405eba40a1d6e63d8dcd70a2244bd7 equal origin; same checkout, no new worktree. D560–D563 authorize three requests together. First blocky wing checked then rejected D564; alternatives/font repair preserved, D565 exact tapered leading-edge picture accepted D566 "Yes, use this tapered wing" before source replacement. No shape/product question remains; nextD567. Original Astra plan/spec immutable, Sol challenge PASS; new Astra taper addendum hash3d67170998acf6228dcbfa2e5efc34ecef13fc4304112a1d51b16bdc085780e1 independently challenged by Sol PASS before edits.
