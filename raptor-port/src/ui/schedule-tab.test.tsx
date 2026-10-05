@@ -8,6 +8,7 @@ import { App } from './App'
 import { initStore, notify, setSession, resetSession, undo } from '../state/store'
 import { histInit, HIST } from '../state/history'
 import { DAYS } from '../engine/data'
+import { validate } from '../engine/validate'
 import { INPUTS } from '../engine/inputs'
 import { SCHED } from '../engine/publish'
 import { txtGet } from '../engine/slots'
@@ -252,6 +253,30 @@ describe('D556 schedule Tab production wiring', () => {
     expect(marks(document.activeElement as HTMLElement), 'the caret is in the last box').toBe(was)
     expect($('[data-atime="0.0.0"]').textContent, "and the first line's area time is the new one").toBe(atimeText(f))
     expect(f.atime ?? null).toBe(null); expect(HIST.stack.length).toBe(h + 1)
+  })
+  /* Astra's re-read (6 Oct 26, F1): the redraw carried through at that Tab can REPLACE the whole day on screen — the
+     week does when the day's shape changes (its first warning appears, its last one goes: ui/dayswap.ts). The check
+     that followed the redraw asked for the ORIGINAL day element, found it gone, and left the caret on nothing — D597's
+     fault back by another road. The day is looked up again and the box's twin takes the caret. */
+  it('D597 when the redraw at that Tab replaces the whole day on screen, the caret still goes back into the last box', async () => {
+    /* Friday of the demo week carries no warning, so its first one adds a block to the day and the whole day is replaced */
+    const day = () => host.querySelector<HTMLElement>('#eWeek > .day[data-day="4"]')!
+    const fields = () => [...day().querySelectorAll<HTMLElement>('[contenteditable="true"]')]
+      .filter(el => el.matches('[data-txt],[data-inp],[data-itline],[data-bombs],[data-area],[data-atime]'))
+    const marks = (el: HTMLElement) => el.tagName + JSON.stringify({ ...el.dataset })
+    const last = fields().at(-1)!, was = marks(last), first = day()
+    /* his save brings the day its first warning: here, a wave arriving with one man in two of its jets, with that blur */
+    expect(day().querySelector('.warnbar,.wbar,[data-warnday]'), 'Friday starts with no warning block').toBeNull()
+    last.addEventListener('blur', () => {
+      const wave = JSON.parse(JSON.stringify(DAYS[0].waves[0], (k, v) => k === 'rid' ? undefined : v))
+      wave.formations[1].aircraft[0].p = wave.formations[0].aircraft[0].p
+      ;(DAYS[4] as any).waves = [wave]; validate(); notify()
+    }, { once: true })
+    await focus(last); expect((await tab(last)).defaultPrevented).toBe(true); await tick()
+    expect(first.isConnected, 'the day on screen really was replaced (or this test proves nothing)').toBe(false)
+    expect(document.activeElement, 'the caret is not left on the page').not.toBe(document.body)
+    expect(marks(document.activeElement as HTMLElement), 'it is in the last box\u2019s twin').toBe(was)
+    expect((document.activeElement as HTMLElement).closest('#eWeek > .day')!.getAttribute('data-day')).toBe('4')
   })
   it.each(['page','Board day','admin session'])('source blur changing %s does not focus its stale destination',async transition=>{
     if(transition==='Board day')await board()

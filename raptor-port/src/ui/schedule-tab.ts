@@ -128,10 +128,20 @@ export function routeScheduleTab(e: KeyboardEvent, refresh: (el: HTMLElement) =>
        BOARD holds its whole day panel for a caret inside it and wrote nothing (Astra's read, 6 Oct 26, F1; pinned on
        the phone's board in e2e/schedule-tab.spec.ts). Nothing is written to the schedule by this. */
     flushSync(() => notify())
+    /* THE REDRAW MAY HAVE REPLACED THE WHOLE DAY ON SCREEN — the week does when the day's shape changes (its first
+       warning appears, its last one goes: ui/dayswap.ts). The day element this gesture started in is then gone, and
+       asking after IT left the caret on nothing again (Astra's re-read, 6 Oct 26). The same day is looked up afresh
+       under the week; everything else about the scope — the page, the day's number, who may edit, the mode — is
+       checked as before. The board's own containers are never replaced, only their contents. */
+    let live = scope
+    if (!scope.board && !scope.root.isConnected) {
+      const again = document.querySelector<HTMLElement>(`#eWeek > .day[data-day="${scope.di}"]`)
+      if (again && rendered(again)) live = { ...scope, root: again, boundary: again }
+    }
     /* the redraw is the page's own, and so is anything it opened or moved: the same checks as after the blur */
-    if (windowOverSchedule() || !sameScope(scope)) return true
+    if (windowOverSchedule() || !sameScope(live)) return true
     if (document.activeElement !== document.body && document.activeElement !== source) return true
-    const stay = source.isConnected && textField(source) ? source : twinOrLast(scope, source)
+    const stay = source.isConnected && textField(source) ? source : twinOrLast(live, source)
     if (!stay) return true
     stay.focus()
     caretToEnd(stay)
