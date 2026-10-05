@@ -11,9 +11,9 @@
 | desktop | R3-08 | board: selecting the Remarks of a formation whose question is open draws no second button for it | PASS |  |
 | desktop | R3-09 | board: stepping to Tuesday ends both open questions, and they do not come back on Monday (D535; D599 leaves the board as it was) | PASS |  |
 | desktop | R3-10 | desktop board: Tab from the last text box goes on to the next control, inside the board (D553, unchanged) | PASS | BUTTON{"woff":"0.0"} |
-| desktop | R3-11 | week: Tab from Monday's last text box keeps the caret in that box, the week does not pan, and what was typed is saved (D597) | PASS | in: SPAN{"inp":"imuvr9kmtkqsf8i.rmks","ph":"remarks"} · saved: true |
-| desktop | R3-12 | week: he can go on typing in that box, and a second Tab stays and saves again | PASS | in: SPAN{"inp":"imuvr9kmtkqsf8i.rmks","ph":"remarks"} · the box reads "Medically down till 17 Jul R3!" |
-| desktop | R3-13 | week: Shift+Tab still goes back to the box before, on the same day | PASS | SPAN{"inp":"imuvr9kmtkqsf8i.end"} |
+| desktop | R3-11 | week: Tab from Monday's last text box keeps the caret in that box, the week does not pan, and what was typed is saved (D597) | PASS | in: SPAN{"inp":"imuvry41h8bjnz2.rmks","ph":"remarks"} · saved: true |
+| desktop | R3-12 | week: he can go on typing in that box, and a second Tab stays and saves again | PASS | in: SPAN{"inp":"imuvry41h8bjnz2.rmks","ph":"remarks"} · the box reads "Medically down till 17 Jul R3!" |
+| desktop | R3-13 | week: Shift+Tab still goes back to the box before, on the same day | PASS | SPAN{"inp":"imuvry41h8bjnz2.end"} |
 | desktop | R3-14 | week: after that Tab the line's worked-out area time on screen is the one for the new take-off (the day still catches up) | PASS | shown 1410-1505 |
 | desktop | R3-15 | Edit Schedule's week draws the dotted ring on the man whose day breaks the next day's crew rest | PASS | 2 · dotted 1px |
 | desktop | R3-16 | the Scheduler Board draws the same dotted ring (D94) | PASS | 4 · dotted 1px |
@@ -35,10 +35,10 @@
 | phone | R3-07 | board: two cues typed one after the other leave TWO questions, each under its own formation (D598) | PASS | Mission role for VL @ own formation day 0 / Mission role for RU @ own formation day 0 |
 | phone | R3-08 | board: selecting the Remarks of a formation whose question is open draws no second button for it | PASS |  |
 | phone | R3-09 | board: stepping to Tuesday ends both open questions, and they do not come back on Monday (D535; D599 leaves the board as it was) | PASS |  |
-| phone | R3-10 | phone board: Tab from the last text box keeps the caret in it (no button follows it — D597) | PASS | TEXTAREA{"ifld":"imuvr9x6b24irlu.rmks"} |
-| phone | R3-11 | week: Tab from Monday's last text box keeps the caret in that box, the week does not pan, and what was typed is saved (D597) | PASS | in: SPAN{"inp":"imuvr9x6b24irlu.rmks","ph":"remarks"} · saved: true |
-| phone | R3-12 | week: he can go on typing in that box, and a second Tab stays and saves again | PASS | in: SPAN{"inp":"imuvr9x6b24irlu.rmks","ph":"remarks"} · the box reads "Medically down till 17 Jul R3!" |
-| phone | R3-13 | week: Shift+Tab still goes back to the box before, on the same day | PASS | SPAN{"inp":"imuvr9x6b24irlu.end"} |
+| phone | R3-10 | phone board: Tab from the last text box keeps the caret in it (no button follows it — D597) | PASS | TEXTAREA{"ifld":"imuvryg1gq36yv6.rmks"} |
+| phone | R3-11 | week: Tab from Monday's last text box keeps the caret in that box, the week does not pan, and what was typed is saved (D597) | PASS | in: SPAN{"inp":"imuvryg1gq36yv6.rmks","ph":"remarks"} · saved: true |
+| phone | R3-12 | week: he can go on typing in that box, and a second Tab stays and saves again | PASS | in: SPAN{"inp":"imuvryg1gq36yv6.rmks","ph":"remarks"} · the box reads "Medically down till 17 Jul R3!" |
+| phone | R3-13 | week: Shift+Tab still goes back to the box before, on the same day | PASS | SPAN{"inp":"imuvryg1gq36yv6.end"} |
 | phone | R3-14 | week: after that Tab the line's worked-out area time on screen is the one for the new take-off (the day still catches up) | PASS | shown 1410-1505 |
 | phone | R3-15 | Edit Schedule's week draws the dotted ring on the man whose day breaks the next day's crew rest | PASS | 2 · dotted 1px |
 | phone | R3-16 | the Scheduler Board draws the same dotted ring (D94) | PASS | 4 · dotted 1px |

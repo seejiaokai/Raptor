@@ -56,7 +56,7 @@ check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip
 (Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
 changed text box on Edit Schedule, the first click into another box lands on the page and a second is needed; the same on the live
 app; with the next change to the schedule's text boxes). **The same check's three parked questions were answered on 6 Oct 26 (D597–D599) and built on the stack branch** — the items
-are in `OUTSTANDING-ARCHIVE.md`; the sheet's §13 has the walk. Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; the same on the live app; proposed: fixed FIRST after the stack, with [OIL-WORK-START]), [ROLE-NOT-CHOSEN] (a question for him; the two small Blue/Red fixes that stood here were built in the check's third round, 6 Oct 26, and archived), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
+are in `OUTSTANDING-ARCHIVE.md`; the sheet's §13 has the walk. Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; the same on the live app; **fixed FIRST after the stack, in a new chat — D602**, with [OIL-WORK-START]), then [START-CONTEXT-AUDIT] (what a new chat loads at its start, measured and cut to what a job needs, never at the cost of quality — D602), [ROLE-NOT-CHOSEN] (a question for him; the two small Blue/Red fixes that stood here were built in the check's third round, 6 Oct 26, and archived), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
 
 **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
 are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
@@ -1944,6 +1944,22 @@ that code (the row's boxes are the scheduler's own layer over the request — `r
 scheduler re-time the row on the programme and leave the member's request as filed (as now)? With the next change to requests on the
 programme.
 
+### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
+His words: *"why I am at 30% context the moment I start a new chat? Is it required? Is there a way we can optimise how the repo is
+structured so that we only read what's required? Or summarise it. Or u suggest. A lot of tokens are wasted if we carry on like this.
+But we should not cut down at the expense of losing the quality of work."* The rulings were slimmed once (one line each — D390,
+28 Sep 26) and the guide after them (D391); since then about two hundred rulings were added, most to the list every chat loads and
+to the scheduler's. **The job, in order:** (1) MEASURE — every piece loaded before a chat's first message (the unscoped rule files,
+the general rulings, the memory index, the tool and skill lists) and on opening its first file (the project guide, an area's
+rulings), each with its size, and what a typical job actually used of it; (2) OPTIONS for him, each with what it saves and what it
+risks — among those to weigh: the general rulings split so that only the rules of conduct load every time and the dated one-off
+ones (a build's permissions, an order of work already done) load by search; spent permissions retired (D136 already allows it);
+the scheduler's rulings split by screen; the handoff's merged blocks removed; rule files that repeat each other merged; (3) his
+ruling; (4) the change, read by Astra and Sol before he approves it (D70), with the document check extended so it cannot grow back
+unseen. **The test of every option (D602): never at the cost of the quality of the work** — D68 (correctness beats context
+economy), D136 (no live ruling leaves the list a chat reads), D138 (a summary never changes the meaning), D141 (no size targets).
+**Place (D602):** after the crew-rest fix (`[REST-BLANK-LINE]`), in a fresh chat on its own branch — documents only.
+
 ### [REST-BLANK-LINE] A man put on a flying line with no take-off loses his crew-rest check (reader AB's second pass, 6 Oct 26 — OLD, the same on `main`; MEDIUM)
 Mon: X on a line landing 22:30; Tue: X on a line taking off 07:00 → the red "Crew rest breach", its ring, Monday's dotted mark. Now
 "+ Line" on Tuesday (a new line comes up blank) and put X in its seat: by the code the warning, the ring and the dotted mark all go;
@@ -1955,6 +1971,9 @@ step by step, and the lines: `raptor-port/docs/handpass/parts/stack-read2-AB.md`
 in the three places; leave the count that includes a timeless leg on purpose). **An engine change: the robustness doctrine's five
 families are walked with it.** **Place (the agent's line):** FIRST after the Codex stack goes live, with `[OIL-WORK-START]` — a
 missing crew-rest warning is the kind of fault that harms people; it is not the stack's, so it was not fixed under cover of its check.
+**His word (D602, 6 Oct 26): fixed first after the stack, in a new chat.** Run through the rule itself that day (not on screen): the
+warning goes when he is put on a line with no take-off — on his own day or the day before — and comes back the moment a take-off is
+typed on that line, a landing not needed; a landing alone does not bring it back.
 
 ### [ROLE-NOT-CHOSEN] Once the sign-in ends, a Blue/Red answer cannot be put back to "not chosen" (reader C, both passes — a question for him)
 An answer given by mistake can be changed to the other colour, never cleared, once Undo's list has gone (sign-out, reload). The
