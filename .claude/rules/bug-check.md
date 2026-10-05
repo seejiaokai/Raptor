@@ -45,6 +45,8 @@ order is in force:
 MISSING, not whether the code is wrong), **both of them reading the code** only on money, published
 records, permissions or persistence — and **never another static review when what is missing is
 someone running the app.** That last one has a name now: review pile-on.
+**Who they are now (D590, 5 Oct 26):** for work Opus wrote, Astra reviews and Sol 6.1 is the second reader where two are
+required; Fable is on call only (a bug Opus cannot crack, or a big open-ended plan, on his word). What Codex wrote, Opus reads.
 
 ## WHAT IS NOT A FINDING (owner, D56, 23 Sep 26) — read this BEFORE you spend anything
 
@@ -71,6 +73,6 @@ Claudex has no step that runs it. Order of operations: harden the plan with Clau
 **WALK THE APP** → then Claudex's final inspection, given the finished code AND the evidence sheet
 → report. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
 first, passed, and three unwired surfaces went out behind it. On money, published records,
-permissions or persistence, one inspector is not enough — run both providers, independently.
+permissions or persistence, one inspector is not enough — run two, independently (for work Opus wrote: Astra and Sol 6.1 — D590).
 Claudex's own rules stand: the provider that built never inspects, and its reviewer is never
 bypassed. Full detail: §4a of the order.

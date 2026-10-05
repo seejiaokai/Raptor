@@ -212,6 +212,17 @@ red team of an important plan (rank 3) — BOTH; the code reads on high-conseque
 28 Sep 26: three Fable runs cost ~1.4M Claude tokens and found the serious issues; the doubled scenario and side-question
 runs mostly repeated each other.
 
+**WHO THE TWO ARE NOW (owner, D590, 5 Oct 26 — "A").** Wherever this section says "Fable", "both" or "the other
+providers" about work OPUS wrote: **Astra reviews it, and Sol 6.1 is the second reader where two are required** — the
+code reads on high-consequence work (rank 2), an important plan's red team (rank 3), a changed working guide (D70).
+They read independently and blind to each other; where Astra is unavailable Sol takes the one-reviewer jobs. **Fable is
+on call only:** a bug Opus cannot crack, or a big open-ended plan, on his word each time. What Codex planned or built is
+read by Opus 5.5 (D67 (3)), unchanged. The price he was told: Astra and Sol come from one maker and tend to miss the
+same kinds of thing — a weaker pair than Fable and Astra — so the walk of the running app carries more, never less.
+**One side-by-side, once:** on the first high-consequence change Opus wrote, Astra, Sol AND Fable each read it; the
+report to him says what each found, each one's false alarms, and Fable's cost in his weekly allowance (read before and
+after). His answer is a new ruling on whether Sol keeps the seat.
+
 **Do NOT spend them on:**
 
 - **Another code review when the missing evidence is runtime.** This is the trap that was actually
