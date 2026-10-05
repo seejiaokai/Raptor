@@ -316,8 +316,11 @@ scenarios, on the frozen Rally build as it stood before its review fixes, neithe
 adds his weekly allowance, read before and after each walker. One building trial rides with it: ONE small low-risk fix
 (`[OG-TAG-OVER-COUNT]`) built by a Sonnet helper to a precise spec, its diff and tests read by Opus, checked as its tier
 requires, and touching nothing of earned leave, permissions, the published record, saved data or the rules engine. The host
-also checks what a check run or a document chore hands back before accepting it (D588). His answer to each
-report is a new ruling; until then no other build or fix leaves Opus, and haiku stays closed.
+also checks what a check run or a document chore hands back before accepting it (D588). **Since D595 (the same night — "make a
+smaller comparison to make a decision from there yourself"): a trial of a cheaper model is kept SMALL — a handful of scenarios, never a
+full share walked twice — and the AGENT decides from the comparison what that model takes, writes the decision and its reasons in the
+evidence sheet and here, and tells him; he can overrule.** His answer to each
+report was to be a new ruling (D588); until then no other build or fix leaves Opus, and haiku stays closed.
 
 **The owner's trigger rule, in one line:**
 

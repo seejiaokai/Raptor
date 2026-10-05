@@ -1539,7 +1539,9 @@ the app, runs the check set and does documents-only chores; it never reads code 
 runs, its place moved:** the check of the Codex stack (D589, `claude/codex-stack-review`) — one Opus walker and one Sonnet
 walker on the same scenarios, on the frozen Rally build as it stood before its review fixes (the baseline
 `codex/rally-workspan`'s sheet names), neither told what is wrong; the report adds his weekly allowance read before and
-after each walker. **A building trial rides with it:** `[OG-TAG-OVER-COUNT]` built by a Sonnet helper to a precise spec, its
+after each walker. **D595 (5 Oct 26, the same night): the trial is kept SMALL and the agent decides from it and tells him — the Sonnet walker's
+share was cut from twelve Rally scenarios to seven while it ran; the comparison is `raptor-port/docs/handpass/parts/stk-trial-1.md`.**
+**A building trial rides with it:** `[OG-TAG-OVER-COUNT]` built by a Sonnet helper to a precise spec, its
 diff and tests read by Opus. His answer to each report is a new ruling (`raptor-port/docs/bug-check-order.md` §4).
 
 ### [MODAL-DRAG-CLOSE] A pop-up window closes when text is selected by dragging and the finger or mouse is let go outside it — found 3 Oct 26; FIXED the same day on the Insights branch (D538), awaiting the reads and main
