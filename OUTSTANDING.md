@@ -1906,9 +1906,10 @@ after the Codex stack goes live; until then, do not change those three Logic val
 button also helps in rearranging."* Full row: `.claude/decisions-full/scheduler.md` D593.
 **Today:** a line is added by "+ In-time / Rally", typed in, and removed with its ✕; the lines stay in the order they were added. Their
 order changes nothing the app works out — the earliest applicable clock is used whatever the order (D506).
-**To ask him before building (the agent's readings, in the row):** the same drag on Edit Schedule's week (he named the board only); Auto
-sort's order — by time, earliest first, a previous-evening clock first, a line with no clock last — from the wave's own Auto sort and from
-Sort all; the six-dot grip; a new order on a published day reads as a pending change.
+**Answered — nothing is left to ask before building (D594, 5 Oct 26):** the board ONLY — no drag for these lines on Edit Schedule's week,
+which shows them in the order the board left them; Auto sort's order is by time, earliest first, a previous-evening clock first, a line
+with no clock last, from the wave's own Auto sort and from Sort all; a new order on a published day reads as a pending change. The
+six-dot grip is the app's own (the agent's call).
 **Tier (the agent's reading):** WALK at least — a new gesture on a shared drawer; FULL if the reorder is recorded on a published day.
 **Place (the agent's proposal, his to set):** one batch with `[OIL-WORK-START]` — both are about the In-time / Rally lines — on its own
 branch after the Codex stack goes live, with one check for the two (D485).
