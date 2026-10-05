@@ -43,10 +43,14 @@
 /* TWO THINGS FLOAT AT A FIXED HEIGHT ABOVE THE BAR'S LAYER, and where the bar is three lines (a phone on its side, a
    narrow desktop window) the taller bar would reach them: the week's two side arrows (mid-screen — on a short screen
    the right-hand one would lie on Retry) and Edit Schedule's blue CREW tab (150px down the right edge). Both move down
-   with the page, by the same band, so each stands where it stood against the bar. Every other fixed thing is a window
-   or a full-screen surface (D587: a window covers the bar as it always did; a full-screen surface has its own band). */
+   with the page, by the same band, so each stands where it stood against the bar. So does the spot the two MOVABLE
+   windows open at (the changes window, the ALL AVAIL window — 96px down the right edge, and they stay open while a
+   person works): under a two-line bar they would open on Retry. Once a person has moved one it is where they put it
+   (its own inline place wins). Every other fixed thing is a window or a full-screen surface (D587: a window covers the
+   bar as it always did; a full-screen surface has its own band). */
 .topbar.save-failed ~ .week-nav{top:calc(52% + var(--save-band))}
 .topbar.save-failed ~ .page .ros-rail{top:calc(150px + var(--save-band))}
+#shell.save-failed ~ .chgwin, #shell.save-failed ~ .availwin{top:calc(96px + var(--save-band))}   /* drawn beside the shell, not in it (ui/App.tsx) */
 .savestat .sv-msg, .saveband .sv-msg{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .savestat .sv-ico, .saveband .sv-ico{margin-right:6px}
 .topbar > .savestat.failed button, .saveband button{flex:0 0 auto;margin:0;padding:4px 14px;border-radius:9px;border:1px solid currentColor;

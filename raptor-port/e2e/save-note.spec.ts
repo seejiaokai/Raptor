@@ -36,7 +36,19 @@ async function failSaves(page: Page) {
   })
   await page.waitForSelector(BAR)
 }
-const saveAgain = (page: Page) => page.evaluate(() => { Storage.prototype.setItem = (window as any).__lsSetWas })
+/* STORAGE WORKS AGAIN FROM THE MOMENT RETRY IS PRESSED — armed on the press itself, never before it. The app retries a
+   failed save by itself (1s, 2s, 4s … storage/postman.ts): were storage put back first, that retry could land the save
+   and take the warning away before the test's press reached Retry, and the press would wait for a button that had
+   gone (seen once, on a loaded machine). So the real press that reaches Retry is also what un-breaks storage. */
+const saveAgain = (page: Page) => page.evaluate(() => {
+  /* armed for ONE press of Retry — a later failSaves breaks storage again and must stay broken until re-armed */
+  const arm = (e: Event) => {
+    if (!(e.target as HTMLElement).closest('.savestat button, .saveband button')) return
+    Storage.prototype.setItem = (window as any).__lsSetWas
+    document.removeEventListener('pointerdown', arm, true)
+  }
+  document.addEventListener('pointerdown', arm, true)
+})
 
 /* the warning at `sel`: can it be seen, whole and on top; and which controls lie under it */
 function look(page: Page, sel: string) {
@@ -168,9 +180,35 @@ for (const [label, viewport, touch] of SIZES) {
         await page.waitForSelector(root)
         await expect.poll(async () => (await look(page, root + ' .saveband')).seen, { message: `${root} shows the warning, whole and on top` }).toBe(true)
         expect((await look(page, root + ' .saveband')).covers, `${root}: what the warning lies over`).toEqual([])
+        /* its Retry, pressed for real: while storage refuses the warning stays; from the Medical view, storage working
+           again, it saves and the warning goes */
+        await press(page, root + ' .saveband button')
+        await expect(page.locator(root + ' .saveband')).toHaveCount(1)
+        if (root === '#medView') { await saveAgain(page); await press(page, root + ' .saveband button'); await expect(page.locator('.saveband')).toHaveCount(0) }
         await page.locator(root + ' .ic-head button[aria-label="Back to list"], ' + root + ' .ic-head button:has-text("✕")').first().click()
         await expect(page.locator(root)).toHaveCount(0)
       }
+    })
+
+    /* the changes window stays open while a person works, and opens 96px down the right edge — under a two-line bar
+       that is where the band's Retry is. It opens lower by the band, and Retry still takes a real press. */
+    if (!touch) test('the changes window, open, leaves Retry pressable', async ({ page }) => {
+      await login(page)
+      await go(page, 'editsched')
+      await page.locator('#histBtn').click()
+      const win = page.locator('.chgwin:not([hidden])').first()
+      await expect(win).toBeVisible()
+      const top0 = (await win.boundingBox())!.y
+      await failSaves(page)
+      const band = (await look(page, BAR)).h
+      await expect.poll(async () => Math.round((await win.boundingBox())!.y)).toBe(Math.round(top0 + band))
+      const rb = (await page.locator(BAR + ' button').boundingBox())!
+      const hit = await page.evaluate(([x, y]) => (document.elementFromPoint(x, y) as HTMLElement | null)?.closest('.savestat button') ? 'Retry' : 'something else', [rb.x + rb.width / 2, rb.y + rb.height / 2])
+      expect(hit, 'what is at Retry’s middle with the changes window open').toBe('Retry')
+      await saveAgain(page)
+      await page.locator(BAR + ' button').click()
+      await expect(page.locator('.topbar > .savestat')).toHaveCount(0)
+      await expect.poll(async () => Math.round((await win.boundingBox())!.y)).toBe(Math.round(top0))
     })
   })
 }

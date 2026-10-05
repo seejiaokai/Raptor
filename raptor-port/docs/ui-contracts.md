@@ -8814,15 +8814,19 @@ moves the bar (`[LW-FIGSEL-FLAKE]`, 28 Sep 26).
   frozen headers and the Leave War's sheets (measured live), Logic's pinned search (its own size observer). **Two things
   float at a FIXED height above the bar's layer and move down by the band with the page:** the week's two side arrows
   (`.week-nav`) and Edit Schedule's blue CREW tab (`.ros-rail`) — where the bar is three lines (a phone on its side) the
-  taller bar would otherwise reach them, and the right-hand arrow would lie on Retry. **A new thing pinned at a fixed
-  height near the top must do the same**, or be measured from the bar.
+  taller bar would otherwise reach them, and the right-hand arrow would lie on Retry. **So does the spot the two movable
+  windows open at** (the changes window and the ALL AVAIL window, 96px down the right edge — they stay open while a
+  person works, and under a two-line bar would open on Retry); they are drawn beside the shell, so `#shell` carries
+  `.save-failed` too. A window a person has moved stays where they put it. **A new thing pinned at a fixed height near
+  the top must do the same**, or be measured from the bar.
 - **The cost, accepted:** the page shifts down one line ONCE, at the moment a save fails, and back when it lands. A
   failed save stays failed until it lands (`storage/postman.ts`), so this is not a per-change twitch; the top bar's own
   buttons do not move.
 - **Pins:** `e2e/save-note.spec.ts` — at six sizes (phones 390 and 320, a phone on its side, desktops 1200, 1366×700,
   1440), on all nine pages, at the top and scrolled: the warning seen whole and nothing a person can press under it;
   real presses reach the name search box and the Tracker's ✓ Save changes; Retry, pressed for real, saves and the bar
-  returns to its height; the board, the Inputs calendar and the Medical view each show it. `ui/SaveStatus.test.tsx`
+  returns to its height; the board, the Inputs calendar and the Medical view each show it and their Retry works; with
+  the changes window open Retry still takes the press. `ui/SaveStatus.test.tsx`
   (the states). The walk's driver: `scripts/handpass/sn-cover.mjs`, `sn-board.mjs`.
 - **Device caveat:** on an iPhone, pulling the page down past its top lets the bar bounce while a fixed note stays —
   the band may part from the bar for the length of the bounce (the floating note did the same). Not measured on his

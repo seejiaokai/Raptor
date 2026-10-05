@@ -1,0 +1,631 @@
+{
+ "base": "http://localhost:4173",
+ "css": false,
+ "results": [
+  {
+   "size": "phone-390",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    0,
+    48,
+    390,
+    36
+   ],
+   "retry": [
+    314,
+    54,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 85,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "presses": []
+  },
+  {
+   "size": "desk-1366",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    0,
+    56,
+    1366,
+    36
+   ],
+   "retry": [
+    1284,
+    62,
+    62,
+    26
+   ],
+   "text": "⚠Not saved — keep this page openRetry",
+   "seen": true,
+   "barBottom": 93,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "presses": []
+  }
+ ],
+ "errors": []
+}

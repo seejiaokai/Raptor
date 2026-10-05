@@ -30,11 +30,18 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 const SIZES = [
   { name: 'phone-390', width: 390, height: 844, touch: true },
   { name: 'phone-320', width: 320, height: 568, touch: true },
+  { name: 'phone-side', width: 844, height: 390, touch: true },   // a phone on its side: a short screen, a three-line bar
   { name: 'desk-1200', width: 1200, height: 800 },
   { name: 'desk-1366', width: 1366, height: 800 },
   { name: 'desk-1440', width: 1440, height: 900 },
 ].filter(s => !ONLY.length || ONLY.includes(s.name))
-const PAGES = ['viewsched', 'editsched', 'inputs', 'quals', 'logic', 'leavewar', 'tracker', 'help', 'admin']
+/* SN_WHO=us walks the member's pages (no Edit Schedule, no Admin). The sign-in is the admin's, so the one change that
+   makes a save fail can be made; the role is then changed IN PLACE through the localhost bridge (bug-check-order §7.7 —
+   a second sign-in would reload the page and lose the failed state) */
+const WHO = process.env.SN_WHO === 'us' ? 'us' : 'a'
+const PAGES = WHO === 'a' ? ['viewsched', 'editsched', 'inputs', 'quals', 'logic', 'leavewar', 'tracker', 'help', 'admin'] : ['viewsched', 'inputs', 'quals', 'logic', 'leavewar', 'tracker', 'help']
+/* SN_PICS=top keeps one picture per page (the top of the page) — few enough to open every one */
+const PICS_TOP_ONLY = process.env.SN_PICS === 'top'
 
 /* what lies under the note, and where a press on each thing lands */
 const under = page => page.evaluate(() => {
@@ -58,11 +65,16 @@ const under = page => page.evaluate(() => {
   note.style.pointerEvents = pe
   const seen = !!top && note.contains(top) && nr.width > 0 && nr.top >= 0 && nr.left >= 0 && nr.right <= innerWidth && nr.bottom <= innerHeight
   const found = new Map()
+  /* the note is taken away ONCE and every spot asked, then put back and the same spots asked again — one layout each
+     way, not two per spot (a full-width band has some three thousand spots) */
+  const spots = []
+  for (let y = nr.top + 2; y <= nr.bottom - 2; y += 4) for (let x = nr.left + 2; x <= nr.right - 2; x += 4) spots.push([x, y])
   const vis = note.style.visibility
-  for (let y = nr.top + 2; y <= nr.bottom - 2; y += 4) for (let x = nr.left + 2; x <= nr.right - 2; x += 4) {
-    note.style.visibility = 'hidden'
-    const below = document.elementFromPoint(x, y)
-    note.style.visibility = vis
+  note.style.visibility = 'hidden'
+  const belows = spots.map(([x, y]) => document.elementFromPoint(x, y))
+  note.style.visibility = vis
+  for (let i = 0; i < spots.length; i++) {
+    const [x, y] = spots[i], below = belows[i]
     const c = below && control(below)
     if (!c || note.contains(c)) continue
     const now = document.elementFromPoint(x, y)
@@ -110,7 +122,10 @@ for (const size of SIZES) {
     await go(page, 'tracker'); await sleep(900)
     const t = async sel => { const l = page.locator(sel + ':visible').first(); await l.click({ timeout: 4000 }); await sleep(300) }
     await t('#sylMenuBtn'); await t('#arrangeBtn')
-    await page.locator('#arrTools button', { hasText: '+ Test' }).first().click({ timeout: 4000 }); await sleep(300)
+    /* on a short screen the tools fold behind "Tools ▾" (D373) */
+    const add = page.locator('#arrTools button', { hasText: '+ Test' }).first()
+    if (!(await add.isVisible())) { await page.locator('#page-tracker button', { hasText: 'Tools ▾' }).first().click({ timeout: 4000 }); await sleep(300) }
+    await add.click({ timeout: 4000 }); await sleep(300)
     await page.locator('#dlgInput').first().click(); await page.keyboard.type('SN-TEST', { delay: 20 }); await t('#dlgOk')
     await t('#sylMenuBtn'); await t('#arrangeBtn')
     trackerEdit = await page.evaluate(() => [...document.querySelectorAll('#page-tracker header button')].some(b => /Save changes/.test(b.textContent || '') && b.getClientRects().length > 0))
@@ -126,6 +141,7 @@ for (const size of SIZES) {
     w.fillSlot('1.0.0.0.p', w.DAYS[1].waves[0].formations[0].aircraft[0].p === 'casper' ? 'bane' : 'casper'); w.afterSchedMutate()
   })
   await page.waitForSelector('.topbar > .savestat.failed', { timeout: 8000 })
+  if (WHO === 'us') { await page.evaluate(() => window.raptorRole('member')); await page.waitForFunction(() => /Member/.test(document.querySelector('#roleBadge')?.textContent || ''), null, { timeout: 5000 }); console.log(`NOTE ${size.name}: walking as a member — the top bar reads "${await page.locator('#roleBadge').textContent()}"`) }
 
   for (const pg of PAGES) {
     await go(page, pg); await sleep(pg === 'tracker' || pg === 'leavewar' ? 900 : 300)
@@ -137,7 +153,7 @@ for (const size of SIZES) {
       results.push({ size: size.name, page: pg, scrolled, ...r })
       const file = `${SHOTS}/${size.name}-${pg}${scrolled ? '-scrolled' : ''}.png`
       const x0 = Math.max(0, r.note[0] - (size.touch ? 400 : 420)), y1 = Math.min(size.height, r.note[1] + r.note[3] + 110)
-      await page.screenshot({ path: file, clip: { x: x0, y: 0, width: size.width - x0, height: y1 } })
+      if (!(PICS_TOP_ONLY && scrolled)) await page.screenshot({ path: file, clip: { x: x0, y: 0, width: size.width - x0, height: y1 } })
       line(r.seen, tag + ': the warning can be seen, whole, on screen', JSON.stringify({ note: r.note }))
       line(!r.sideways, tag + ': the page does not scroll sideways')
       const bad = r.under.filter(u => u.hidden > 0)
@@ -160,7 +176,9 @@ for (const size of SIZES) {
     }
   }
   await go(page, 'viewsched')
-  await page.evaluate(() => { Storage.prototype.setItem = window.__lsSetWas })
+  /* storage works again FROM the press on Retry, never before it: the app's own retry (1s, 2s, 4s …) could otherwise
+     save first and take the button away before the press reaches it */
+  await page.evaluate(() => { const arm = e => { if (!e.target.closest('.savestat button, .saveband button')) return; Storage.prototype.setItem = window.__lsSetWas; document.removeEventListener('pointerdown', arm, true) }; document.addEventListener('pointerdown', arm, true) })
   const rb = await page.locator('.topbar > .savestat button').boundingBox()
   line(!!rb && rb.width >= 24 && rb.height >= 20, `${size.name}: Retry is a pressable size`, JSON.stringify(rb && [Math.round(rb.width), Math.round(rb.height)]))
   if (rb) await press(rb.x + rb.width / 2, rb.y + rb.height / 2)

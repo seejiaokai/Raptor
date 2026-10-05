@@ -605,7 +605,9 @@ export function Shell() {
   ), [page, rulesOff, HIST.ix, HIST.stack.length, hlSig, HLOPEN, HLGROUP, SEARCH, legend, CURWEEK])
 
   return (
-    <div id="shell">
+    /* .save-failed here as well as on the bar: the two movable windows are drawn OUTSIDE the shell (ui/App.tsx), and their
+       opening spot moves down with the band too (17-save-status.css) */
+    <div id="shell" className={saveFailed ? 'save-failed' : undefined}>
       {topbar}
       {/* [ONE-DOOR] (D305): his own "Welcome back — check your quals and CAT", after a Restore */}
       <WelcomeBack />

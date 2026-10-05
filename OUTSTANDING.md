@@ -108,7 +108,7 @@ only), [SETTINGS-LIST-ROWS] (a stage-2 split, only if it bites), [LW-OIL-DATECHI
 before the first real deployment: [SHARED-OPENS-DEMO-WEEK]; a question for him: [LW-LABEL-NO-DOOR]; with group B:
 [ELOG-LINE-AFTER-COMMAND] (low); the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only),
-[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (BUILT 5 Oct 26 on `codex/save-note-controls` — his look and "merge live" left), [FLOATWIN-TWO-LINE-BAR] (low, with the next change to either movable window), [EVIDENCE-RECORD-SIZE] (low, his call — at Claude's review of the Codex branches), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (DONE 2 Oct 26; archived), [INSIGHTS-WHICH-COPY] (D477, D478 — MERGED 1 Oct 26, PR #479; archived), [WORKSPAN-NEGATIVE] (**NEXT — the next chat, D483**; the second Sonnet-walker trial rides on its walk), [SONNET-WALKER-TRIAL] (the first walked 1 Oct 26; **ONE MORE, on a build with known defects — D480**, with `[WORKSPAN-NEGATIVE]`'s walk), [INSIGHTS-BOARD-DOOR] (RULED D481 — to build: a picture first; after `[WORKSPAN-NEGATIVE]`), [INSIGHTS-RULE-CHANGE] (ANSWERED D482 — closed; archived) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
@@ -712,6 +712,8 @@ switch it to the section's `.on` / `.doze`. Nothing on screen is known to be wro
 measured it at 149px before and after). At 844×390 the desktop menu wraps into two rows and takes 149 of 390px — the
 biggest single piece of a sideways phone's screen (the Tracker walk's w3 O4, moved here from `[TRK-RETEST-NOTES]` when the
 Tracker's own fold, D373, was built). A shell layout question, and a visual one: a picture first.
+*(5 Oct 26, `[SAVE-NOTE-COVERS]`: while a save has failed the warning's band adds 36px to it — 185 of 390px on a
+sideways phone, until the save lands.)*
 
 ### [SAVE-NOTE-COVERS] Raptor's "Not saved — Retry" note floats over the page's own controls (filed 28 Sep 26)
 **Place:** medium — next, on its own small branch (a shell matter; the change-recording chat is changing the top bar —
@@ -729,6 +731,30 @@ more found — on the full-screen scheduler board the warning cannot be seen at 
 after a page change (at 1366 it lands on the account button and Logout). Proposed and shown to him before any layout
 change: a band of its own along the bottom of the top bar. The record and what is still owed:
 `raptor-port/docs/handpass/2026-10-05-save-note-controls.md`.
+**BUILT 5 Oct 26 (D587 — his "ok looks good" to the pictures):** the warning has a band of its own along the bottom of
+the top bar, and the same band under the bars of the scheduler board, the Inputs calendar and the Medical view; the
+contract is `raptor-port/docs/ui-contracts.md` §The failed-save warning has a band of its own; pinned by
+`raptor-port/e2e/save-note.spec.ts`. **Left before it can close:** his look on the preview, and his "merge live" — this
+branch sits on the unmerged `codex/workflow-ui`, so it reaches `main` only after Claude's owed reads of that work.
+
+### [FLOATWIN-TWO-LINE-BAR] The two movable windows open over the bottom of a two-line top bar (filed 5 Oct 26)
+**Place:** low — with the next change to the changes window or the ALL AVAIL window. Found while building
+`[SAVE-NOTE-COVERS]`: both open at a fixed spot, 96px down the right edge, whatever the top bar's height. Where the bar
+is two lines (Edit Schedule at about 1400px wide and under: 103px) the window's top edge lies over the bar's last 7px,
+on `main` too. With a failed save showing it now opens lower by the warning's band, so it stands where it stood — still
+those 7px over the band's lower edge; Retry's middle stays clear and a real press reaches it (tested). **Do:** measure
+the opening spot from the bar's bottom, as the failed-save warning does (`raptor-port/src/ui/floatwin.ts`,
+`raptor-port/src/ui/SaveStatus.tsx`).
+
+### [EVIDENCE-RECORD-SIZE] The Codex branches carry very large machine-written record files (filed 5 Oct 26)
+**Place:** low — his call, put to him at Claude's review of the Codex branches, before any of them reaches `main`. He
+asked on 5 Oct 26 why the branch showed about 680,000 added lines. About 585,000 are records of checks, not the app:
+two measurement files of about 122,000 lines each and two of about 33,000 under
+`raptor-port/docs/handpass/css-split/`, a 29,000-line test log under `raptor-port/docs/handpass/insights-mission-mix/`,
+and the evidence archives beside them. They do not run in the app or slow it; they make the repository heavier to
+fetch and to search. **The question for him:** keep them whole, or keep each check's evidence sheet and pictures and
+move the raw measurement files and logs out of the repository (their fingerprints stay in the sheets). Nothing is
+deleted without his word.
 
 ### [TRK-SAVE-FAIL-SAYS-SAVED] Inside Raptor the Tracker says "saved" when the save failed (filed 28 Sep 26)
 **Place:** low — with `[DB-READINESS]` (honest refusals and saves in small pieces are that batch's job). Found by the
