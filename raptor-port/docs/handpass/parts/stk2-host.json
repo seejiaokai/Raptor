@@ -122,6 +122,63 @@
      "pics": []
     }
    ]
+  },
+  "host-pub-dk": {
+   "at": "2026-10-05T16:55:19.133Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "PUB-0",
+     "did": "Tuesday signed by four and published",
+     "saw": "✓ published [ORIG] · ✓ the head carries its signed line [SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil] · ✓ nothing pending [5 changes]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-pub-0-tuesday-published.png"
+     ]
+    },
+    {
+     "id": "PUB-1",
+     "did": "Tab pressed 136 times from the day's first text box until the caret left the day's boxes, nothing typed",
+     "saw": "✓ the day reached its last box (many Tabs) [136] · ✓ still published, same version [ORIG] · ✓ its signed line stands [SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil] · ✓ nothing pending [5 changes | ] · ✓ the day as stored is byte-identical",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-pub-1-after-a-whole-day-tab-pass.png"
+     ]
+    },
+    {
+     "id": "PUB-2",
+     "did": "a word typed at the end of a flying Remarks on the published Tuesday, Tab ONCE; the head read without leaving the text boxes",
+     "saw": "✓ the caret is in a text box · ✓ the head counts the change [1 pending] · ✓ \"Not yet signed\" [Not yet signed] · ✓ the four sign-off boxes are empty, to be signed again [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ Publish AL1 is offered [Publish AL1]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-pub-2-one-word-one-tab-caret-still-in-text.png"
+     ]
+    },
+    {
+     "id": "PUB-3",
+     "did": "Escape, then Undo from the top bar",
+     "saw": "✓ Undo ran [Undo — a remark on a flying line] · ✓ nothing pending again [7 changes | ] · ✓ the day as stored is the published day again · ✓ its signed line is as published [SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-pub-3-after-undo.png"
+     ]
+    },
+    {
+     "id": "errors",
+     "did": "the browser error list",
+     "saw": "[]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "setup",
+     "did": "sign and publish",
+     "saw": "{\"signed\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"},\"pub\":{\"pressed\":true,\"label\":\"Publish day\"}}",
+     "verdict": "RECORDED",
+     "pics": []
+    }
+   ]
   }
  }
 }
