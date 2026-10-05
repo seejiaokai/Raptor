@@ -31,6 +31,10 @@ const q=(s:string)=>document.querySelector<HTMLElement>(s)!
 const settle=()=>act(async()=>{await new Promise(r=>setTimeout(r,20))})
 const click=async(el:HTMLElement)=>act(async()=>el.dispatchEvent(new MouseEvent('click',{bubbles:true})))
 const type=async(key:string,value:string)=>{const f=q(`#eWeek [data-txt="${key}"]`);await act(async()=>{f.textContent=value;f.dispatchEvent(new FocusEvent('focusout',{bubbles:true}))});await settle()}
+const labels=()=>[...document.querySelectorAll('.mission-role-question')].map(n=>String(n.getAttribute('aria-label'))).sort()
+/* a formation's own question, by the callsign in its label; `di` picks the day when two days carry the same callsign */
+const question=(cs:string,di?:number)=>[...document.querySelectorAll<HTMLElement>('.mission-role-question')].find(n=>n.getAttribute('aria-label')===`Mission role for ${cs}`&&(di==null||(n.previousElementSibling as HTMLElement|null)?.dataset.roleDay===String(di)))!
+const side=(cs:string,which:string)=>question(cs).querySelector<HTMLElement>(`[data-role-side="${which}"]`)!
 const sign=(di:number)=>{const g=signOf(di);g.cur='ignite';g.sked='bane';g.plan='stiff';g.appr='pump'}
 beforeEach(async()=>{
   const mem:Record<string,string>={};storeBackend.impl={getItem:k=>mem[k]??null,setItem:(k,v)=>{mem[k]=v},keys:()=>Object.keys(mem)}
@@ -106,8 +110,10 @@ it('F3 — a role copied by a day template is named in History by its formation,
 /* W9 (the Codex stack check, 5 Oct 26; D527, D529, D523): while ONE formation's question was open, selecting any other
    formation's Remarks showed nothing — the handler returned before it looked at the newly selected box. Since D535
    keeps a question open through other edits, that locked every other line out for as long as it stayed. A question and
-   a button are two different things: one question at a time (D523), and the button for whichever Remarks he is in. */
-it('W9 — with one formation’s question open, another formation’s Remarks still offers Choose / Change, and pressing it moves the ONE question there',async()=>{
+   a button are two different things, and the button is for whichever Remarks he is in.
+   D598 (owner, 6 Oct 26) changed the END of this test: pressing the second formation's button used to MOVE the one
+   question there; a newer question never removes an older one now, so both stand, each under its own formation. */
+it('W9 — with one formation’s question open, another formation’s Remarks still offers Choose / Change, and pressing it opens a SECOND question beside the first (D598)',async()=>{
   expect(writeText('fr:0.0.1.0','RED AIR'),'the second formation carries a cue of its own').toBeTruthy()
   await settle()
   await type('fr:0.0.0.0','DS FOR EAGLE')
@@ -126,16 +132,59 @@ it('W9 — with one formation’s question open, another formation’s Remarks s
   await act(async()=>{own.focus();own.dispatchEvent(new FocusEvent('focusin',{bubbles:true}))});await settle()
   expect(document.querySelectorAll('.mission-role-action'),'no button under the formation whose question is open').toHaveLength(0)
   expect(document.querySelectorAll('.mission-role-question')).toHaveLength(1)
-  /* back to the second formation: press its button — still ONE question (D523), now the second formation's */
+  /* back to the second formation: press its button — its question opens, and the first formation's STAYS (D598) */
   await act(async()=>{other.focus();other.dispatchEvent(new FocusEvent('focusin',{bubbles:true}))});await settle()
   await click(q('.mission-role-action [data-role-choose]'));await settle()
-  expect(document.querySelectorAll('.mission-role-question')).toHaveLength(1)
-  expect(q('.mission-role-question').getAttribute('aria-label')).toBe(`Mission role for ${b.cs}`)
-  expect(document.querySelectorAll('.mission-role-action')).toHaveLength(0)
-  await click(q('[data-role-side="blue"]'));await settle()
+  expect(labels(),'both questions, each for its own formation').toEqual([`Mission role for ${a.cs}`,`Mission role for ${b.cs}`].sort())
+  expect(document.querySelectorAll('.mission-role-action'),'no button under a formation whose question is open').toHaveLength(0)
+  await click(side(String(b.cs),'blue'));await settle()
   expect(readRole(roleTarget(0,b.rid!)!.id)?.side).toBe('blue')
   expect(readRole(roleTarget(0,a.rid!)!.id),'the first formation is still unanswered').toBeUndefined()
+  expect(labels(),'and its question is still there to answer').toEqual([`Mission role for ${a.cs}`])
+  await click(side(String(a.cs),'red'));await settle()
+  expect(readRole(roleTarget(0,a.rid!)!.id)?.side).toBe('red')
   expect(document.querySelectorAll('[data-role-ui]')).toHaveLength(0)
+})
+
+/* D598 (owner, 6 Oct 26 — "yes all 4 as recommended", question 2; found by Astra and Sol 6.1 in the side-by-side read).
+   The automatic question had ONE slot, newest wins: typing a cue on a second formation REMOVED the first formation's
+   open question without an answer — an ending D535 never listed. Both show now, each under its own formation, and
+   each ends by its own rules. */
+it('D598 — a cue typed on a second formation opens its question BESIDE the first one’s; each is answered on its own',async()=>{
+  const a=DAYS[0].waves[0]!.formations[0]!,b=DAYS[0].waves[0]!.formations[1]!
+  await type('fr:0.0.0.0','DS FOR EAGLE')
+  expect(labels()).toEqual([`Mission role for ${a.cs}`])
+  await type('fr:0.0.1.0','RED FROM VIPER')
+  expect(labels(),'the second formation asks, and the first is still asking').toEqual([`Mission role for ${a.cs}`,`Mission role for ${b.cs}`].sort())
+  /* each sits under its OWN formation */
+  for(const f of [a,b]) expect(question(String(f.cs)).previousElementSibling?.getAttribute('data-role-formation'),`${f.cs}'s question is under ${f.cs}`).toBe(String(f.rid))
+  /* an unrelated edit on the day keeps both (D535) */
+  await type('ff:0.0.0.to','08:45')
+  expect(labels()).toHaveLength(2)
+  await click(side(String(b.cs),'red'));await settle()
+  expect(readRole(roleTarget(0,b.rid!)!.id)?.side,'the answer lands on the formation whose question was pressed').toBe('red')
+  expect(readRole(roleTarget(0,a.rid!)!.id)).toBeUndefined()
+  expect(labels(),'the other question is untouched').toEqual([`Mission role for ${a.cs}`])
+  await click(side(String(a.cs),'blue'));await settle()
+  expect(readRole(roleTarget(0,a.rid!)!.id)?.side).toBe('blue')
+  expect(document.querySelectorAll('[data-role-ui]')).toHaveLength(0)
+})
+
+it('D598 — Later on one question, or its own wording changing, removes that one only',async()=>{
+  const a=DAYS[0].waves[0]!.formations[0]!,b=DAYS[0].waves[0]!.formations[1]!,c=DAYS[1].waves[0]!.formations[0]!
+  c.msn='ACM';c.aircraft.forEach((x:any)=>x.rmks='')
+  await type('fr:0.0.0.0','DS FOR EAGLE');await type('fr:0.0.1.0','RED FROM VIPER')
+  /* and one on ANOTHER DAY of the week (D599: on the week a question waits on its day) */
+  await type('fr:1.0.0.0','DS FOR RU')
+  expect(labels()).toHaveLength(3)
+  expect(question(String(c.cs),1).previousElementSibling?.getAttribute('data-role-day'),'Tuesday’s sits on Tuesday').toBe('1')
+  await click(side(String(b.cs),'later'));await settle()
+  expect(labels(),'Later took its own question only').toHaveLength(2)
+  expect(readRole(roleTarget(0,b.rid!)!.id)).toBeUndefined()
+  await type('fr:0.0.0.0','ordinary briefing')
+  expect(labels(),'the first formation’s wording no longer asks; Tuesday’s question still does').toEqual([`Mission role for ${c.cs}`])
+  await act(async()=>{setMissionTracking(false)});await settle()
+  expect(document.querySelectorAll('[data-role-ui]'),'tracking Off ends every open question').toHaveLength(0)
 })
 
 /* RF3 (Astra's read of the fix round, 6 Oct 26): W11 made a spacing-only save a no-op — right — but the answer path
