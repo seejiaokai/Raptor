@@ -1892,8 +1892,11 @@ uses (the one shared reader, `engine/reporting.ts`), with the nominal time only 
 day keeps the values its earned leave was worked out from, so a later change — to an entered time or to a Logic value — reads as a
 pending change and moves the earned leave only when the day is published again. A reader's step-by-step proposal for half (2):
 `raptor-port/docs/handpass/parts/stack-read-AB.md` §4 lead 1; Astra's: `raptor-port/docs/superpowers/briefs/2026-10-05-codex-stack-scenarios-astra.md` M1, M2.
-**Open with him before building** (the agent's readings in D591's row): the earliest applicable clock; the nominal time as the fallback;
-an evening-before report lengthens the line's own day and credits nothing to the day before (D42); the freeze as described.
+**Answered — nothing is left to ask before building (D592, 5 Oct 26: "all 4 as recommended"):** the earliest in-time or Rally that
+applies to the formation; the nominal time where none is typed; an evening-before report lengthens the line's own day and credits
+nothing to the day before (D42); a published day keeps its OIL until published again; and, his reminder, the day still runs from the
+first event's start to the last event's end with the breaks counted (the 29 Aug 26 rule) — so from the earliest of the in-time / Rally
+and any earlier event of his.
 **Tier:** FULL — earned leave, the published record, saved data. **Place (the agent's proposal, his to set):** its own branch, straight
 after the Codex stack goes live; until then, do not change those three Logic values once a weekend is published.
 

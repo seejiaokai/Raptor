@@ -1827,8 +1827,10 @@ the mark useless.
 
 **RULED 5 Oct 26 (D591) — NOT YET BUILT.** A flying line's earned leave is to be worked out from its actual In-time /
 Rally time, not from the nominal report time (`VCONF.reportLead` before take-off) that this section describes; the
-agent's readings of the detail (the earliest applicable clock; the nominal time where none is entered; a published day
-keeps what it went out with) are put to him and not yet answered. Until it is built, the text below is what the app
+detail is settled (D592, the same day — "all 4 as recommended"): the earliest in-time or Rally that applies to the
+formation; the nominal time where none is typed; an evening-before report lengthens the line's own day only; a published
+day keeps the OIL it went out with until it is published again; and the day is still measured from the first event's
+start to the last event's end, gaps included (the 29 Aug 26 envelope rule below, which he restated). Until it is built, the text below is what the app
 does. The build and the finding that raised it: `OUTSTANDING.md` `[OIL-WORK-START]`.
 
 Work stood on a NON-WORKING day credits OIL into Leave War as an FO
