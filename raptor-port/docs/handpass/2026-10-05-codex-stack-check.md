@@ -50,7 +50,32 @@ command on `786d2b2c` in a temporary checkout, frozen the same day; servers `rap
 the build BEFORE Rally existed. D588, the later ruling, says "the Rally build as it stood before its review fixes", and
 on the earlier one the Rally scenarios could not be walked at all; so the trial uses `786d2b2c`.)*
 
-## 3. The rulings walked — to come (the rules sweep: one mark per surface for what is shown, one per order for earned leave)
+## 3. The rulings walked (the rules sweep: one mark per surface for what is shown, one per order for OIL)
+Each ruling of the five pieces, the scenarios that walked it (first walk · re-walk) and the result on the fixed build.
+
+| Ruling | What it says, in short | Walked by | Result |
+|---|---|---|---|
+| D488 | no "Discard marks"; a day not yet published keeps its marks until published | P1-01…06 (A · M) — week, board, the amendments box, member and admin, phone | PASS on every surface |
+| D497–D501, D504 | the In-time / Rally box: one clock per line, a named formation's line or the whole wave's | P2-04…13 (A, B · M), R-11 | PASS; W6's one name on every place that prints it |
+| D502 → D509 | a timing pair out of order is a red warning, explained while editing, and never blocks publishing | P2-10, P2-11 (B · M), R-04, the host's run | PASS — and since W15 the list shows it while he is still typing |
+| D503 | a reporting clock later than its take-off is the previous day, one day back at most | P2-04, H-01, H-05 (A, B), H-A1 (M) | PASS |
+| D505, D506, D507 | own-over-wide per activity; the earliest of duplicates; Rally may equal brief | P2-06, P2-07, P2-11, L-03 (A, B, G · M) | PASS (W3 fixed: a clocked "RALLY AFTER IN TIME" no longer replaces the wave's in-time) |
+| D510, D511 | the button fills take-off less the Logic time, and the Logic words | P2-08, P2-09 (A, B · M), L-02 | PASS for a first press and for the words (W2 fixed); the SECOND press copies the line already there — §12, question 4 |
+| D25, D48, D142, D591, D592 (OIL) | a published day's OIL comes from its published version | P2-01…03, X-11, L-01 (A, F, G · M) | W1 — a Logic value moves a published weekend's OIL at once: older than the stack, FILED `[OIL-WORK-START]`; the stack's own changes move no OIL (H-04, X-09) |
+| D512, D513, D516–D518, D523, D531 | Insights' Blue/Red split, the first twelve and Show all, standby is no sortie, exact DS / RED count Red, the rest ask | P3-01…18 (C · Q), H-02 | PASS |
+| D519 | no mark on a schedule line for the mission role | H-02 (C · Q) — week, board, View-only, print | PASS (pictures pixel-identical across the three states) |
+| D521, D522, D524 | the Logic switch, Off at first | P3-08, H-07 (B · Q), break C6 | PASS |
+| D525, D527, D529 | the answer is remembered until the wording changes; Change while editing Remarks; the automatic question only after his own edit | P3-07, P3-08, X-01 (C, F · Q), L-08, the two-formation steps | PASS (W9, RF4 fixed) |
+| D530 | an answer counts at once on a published day, no amendment, sign-offs untouched | P3-01, X-03, X-05 (C, F · Q), R-01 | PASS — programme and signature book byte-identical after each answer; W8 fixed (an answer on an unedited demo day survives a reload) |
+| D535 | an open question stays through unrelated edits | P3-07, P3-08 (C · Q) | PASS on the board and for edits; two corners parked — §12, questions 2 and 3 |
+| D536, D537, D538 | the window's top on a phone; a tall window to a thin strip; a drag-out never closes a window | P4e-07, P4e-08 (E · P), L-09 (K · N) | PASS — thirteen surrounds and, since W10, the four confirmation windows |
+| D541, D548 | the stylesheet split changes nothing visible; the phone board's Desktop layout shows the schedule | P4a, P4b (E): 47 screens at two sizes | PASS; W13 and W18 fixed in that layout |
+| D544, D550–D556 | the Tab route, both surfaces; Enter and Escape as before | P4c-01…16 (D · P), H-04, L-10…L-13, R-04 | PASS, with W11, W12, W15, W16 fixed; W14 (a) parked — §12, question 1 |
+| D557, D558 | the phone ⋯ menu with Insights; the drawer's WEEK section gone | P4d-01…06 (D · P), X-06 | PASS |
+| D560–D566 | the Tracker's tapered wing; Logic's search and the Insights cross stay in view | P4e-01…06 (E · P), X-07 | PASS |
+| D586, D587 | the failed-save warning's band, under every full-screen surface, never in a window | P5-01…08 (F · N), L-16, X-04, X-05 | PASS |
+| D103, D45 | a pending change on a published day wipes the sign-offs; nothing changes there unacknowledged | H-04, P4c-12, L-11, R-04 (e), the host's own run | PASS — a whole-day Tab pass writes nothing; one typed word shows "1 pending" and empties the four boxes at once |
+| D149, D200, D213, D215 (roles) | a member reads, an admin answers; a guest reads what a member reads | H-03, P1-06, P3-17, P4d-05 (C, A, D · Q, M, P) | PASS; the guest on a PHONE was not walked (§8) |
 
 ## 4. The roll-call and the door check — to come
 Parts, one per reader: `parts/stack-read-AB.md`, `-C.md`, `-D1.md`, `-D2.md`; the save-note band's own roll-call is in
@@ -274,7 +299,21 @@ touched the next box from one that never did; that test was strengthened, and al
 ## 7. Errors seen
 None. Across the first walk (eight walkers), the re-walk (four) and the host's own runs, no console error, page error
 or 4xx was recorded — the forced "quota exceeded" of the failed-save steps excepted, which is the fixture.
-## 8. What was NOT walked, and why — to come
+## 8. What was NOT walked, and why
+- **A real iPhone, throughout.** Every phone step ran in the test browser at phone size with touch. Lines only his
+  device can prove are on the look card (§12): the keyboard's own next-field arrows on the schedule; the board's
+  Desktop layout panned by finger; Safari's bars against the Insights window's top strip; the wing's label at his size.
+- **The guest on a phone** (P3-17 was walked on a desktop only) and **the suspended-account screen** — no change in the
+  stack reaches either; not walked.
+- **The admin's member view on the Tab route** — the route asks the same permission as every edit; walked as admin
+  and as a real member (who has no Edit Schedule), not as an admin switched to the member view.
+- **Tab with a modifier key or while composing text** (an input-method keyboard) — declined by the route by reading;
+  not walked.
+- **R-03 as the host first wrote it** — a 4-hour duty moved by an hour re-prices nothing, so no window opens: the
+  host's premise was wrong. Walked instead on a duty whose change does open the OIL question (three ways, PASS), and
+  again by walker S for the keys staying inside it.
+- **The peek of next week showing the working copy of a published day** (P2-17) — the open question already filed
+  for him (`[PEEK-ISSUED]`); not the stack's.
 ## 9. The gates — to come
 ## 10. The reads, and each owed read paid — IN PROGRESS
 
@@ -305,10 +344,28 @@ of three small commits is thin evidence — the recommendation is in §12.
 **The two new finds** are real gaps against D535's own words; both are choices about what he wants to see, so they are
 parked, not guessed: §12, questions 2 and 3.
 
-### 10.2 The fix round's own reads — to come
-Astra and Sol 6.1, apart, on the five fix commits (brief `…/2026-10-06-codex-stack-fix-read-brief.md`).
+### 10.2 The fix round's own reads (D590: Astra, and Sol 6.1 second — it touches the published record and saved data)
+Astra and Sol 6.1, apart, on the five fix commits (brief `…/2026-10-06-codex-stack-fix-read-brief.md`; reports
+`…-codex-stack-fix-read-astra.md`, `-sol.md`). Both: REVISE. Four gaps found by both and one more each by Astra — RF1
+to RF5, all real, all fixed (§5.6). Neither found a fault in the repeatable row ids, the caret-safe redraw, or the
+other ten fixes. **Second round** on the one commit of those fixes (brief `…-fix-read-r2-brief.md`; reports
+`…-fix-read-r2-astra.md`, `-sol.md`): both found RF1–RF4 fixed and pinned by tests that fail without them, and BOTH
+the same leftover — a wave with no line at all went quiet about an unreadable clock (RF5b, fixed, `eb8fd4d6`). Two
+rounds, as capped. What they said is unpinned by a test and left so: the cancel-reason dialog's own keyboard ring, two
+sheets one over another, a sheet with no enabled control (walker S walks the first; the others cannot arise from the
+app's own controls today).
 ### 10.3 The four Opus readers' second pass on Codex's code — to come
-### 10.4 Each read the Codex blocks listed as owed to Claude — to come
+### 10.4 Each read the Codex blocks listed as owed to Claude — paid by this check (D589)
+| Owed (the `HANDOFF.md` blocks' own words) | Paid by |
+|---|---|
+| `codex/discard-marks-remove` — Claude's FULL check | reader AB (pass 1 and 2), walkers A and M, break tests |
+| `codex/rally-workspan` — a FULL independent walk, plan / code / scenario reads | reader AB, walkers A, B, M; Astra's scenarios; Trial 1 ran on its pre-fix build |
+| `codex/insights-mission-mix` — the code and scenario coverage; and the read of OPUS's three fixes by reviewers who are not Opus | reader C, walkers C and Q; the fixes: Astra, Sol 6.1 and Fable 5.1 (§10.1) |
+| `codex/workflow-ui` — plan / code / scenarios and a full independent desktop and phone walk (the split, the board repair, the Tab route, the phone menu, the wing and the two bars) | readers D1 and D2, walkers D, E, P (47 screens at two sizes) |
+| `codex/save-note-controls` — the last round, never independently read | Astra (`…-owed-small-reads-astra.md` Part 3: the app sound; two test soft spots filed `[SAVE-NOTE-TEST-GAPS]`); reader D1; walkers F and N |
+| the working-guide changes Codex made before the reset (D70) — `AGENTS.md`'s D496 part, `raptor-port/docs/codex-review-workflow.md`, the D496 banners on `raptor-port/CLAUDE.md`, `bug-check-order.md` and `guide-full.md`, the D499 addendum | read by the host (Opus), 6 Oct 26: they say what D494, D496 and D499 say, keep the independence rule and "Claude's read before main", and extend nothing past the reset. One tidy-up, not a fault: the three banners describe an arrangement that ended on 5 Oct 26 at 19:00 — to go at the next documents pass |
+| the short lines of D591–D594 against their full rows (D138) | Astra — three corrected (§12, the guide wording) |
+| the guide wording written for D588–D590, and D596 (D70) | Astra and Sol 6.1, one round each; corrections applied; **waits for his approval** |
 
 ## 11. Trial 1 (the walkers) and Trial 2 (the builder)
 
