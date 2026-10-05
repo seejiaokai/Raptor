@@ -1525,6 +1525,13 @@ catches. **HIS ANSWER — D480 (1 Oct 26): "One more trial".** A second trial on
 build as it stood BEFORE its fix, neither walker told what is wrong, and report what each CAUGHT (`raptor-port/docs/bug-check-order.md`
 §4). **Its place:** `[WORKSPAN-NEGATIVE]`'s walk (the next chat, D483) — freeze the build before the fix for the two trial
 walkers. Then his answer to the second report is a new ruling. Until then nothing else goes to a cheaper model.
+**D588 (5 Oct 26 — "Walk, checks, chores + one trial fix"):** he did not wait for the second report — Sonnet 5.5 now walks
+the app, runs the check set and does documents-only chores; it never reads code to find bugs. **The second trial still
+runs, its place moved:** the check of the Codex stack (D589, `claude/codex-stack-review`) — one Opus walker and one Sonnet
+walker on the same scenarios, on the frozen Rally build as it stood before its review fixes (the baseline
+`codex/rally-workspan`'s sheet names), neither told what is wrong; the report adds his weekly allowance read before and
+after each walker. **A building trial rides with it:** `[OG-TAG-OVER-COUNT]` built by a Sonnet helper to a precise spec, its
+diff and tests read by Opus. His answer to each report is a new ruling (`raptor-port/docs/bug-check-order.md` §4).
 
 ### [MODAL-DRAG-CLOSE] A pop-up window closes when text is selected by dragging and the finger or mouse is let go outside it — found 3 Oct 26; FIXED the same day on the Insights branch (D538), awaiting the reads and main
 **FIXED 3 Oct 26 (his "Fix it", D538):** one helper, `src/ui/outside.ts` `clickedOutside` — a window closes on its surround only
@@ -1767,7 +1774,9 @@ plans, Sol builds, Astra reads); Opus does not plan it; an interim Opus read of 
 and allowance remains. Its new branch is cut from `codex/insights-mission-mix` with the two other built branches merged in first
 (`HANDOFF.md`). After the split, every screen is walked at phone and desktop size, not only the measured ones.
 **D540–D541 (3 Oct 26):** owner explicitly requires that integrated base before any rule moves, keeps the three earlier builds
-separate for Claude's review, and requires no visible change plus opening every phone/desktop screen picture. Next batch branch:
+separate for Claude's review, and requires no visible change plus opening every phone/desktop screen picture. *(D589, 5 Oct 26:
+"separate for Claude's review" no longer holds — Claude checks the whole stack once, on `claude/codex-stack-review`, and it goes
+live on one "merge live".)* Next batch branch:
 `codex/workflow-ui`; scope: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md`. D546 defers D542/D543; D544 keyboard work remains. Actual UI design still waits.
 **Built/checks, 3 Oct 26:** split22 contiguous runs from the combined base, original bytes and all4 emitted CSS assets exactly equal;
 full unit7727,reference728,browser527+49existing skips,Tracker445,all6adapted/perf4/rulecheck/docsize PASS. Every main screen at

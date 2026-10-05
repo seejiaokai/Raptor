@@ -8,6 +8,8 @@ the refreshed `codex/insights-mission-mix`; merge `origin/codex/rally-workspan`
 and `origin/codex/discard-marks-remove` before moving any stylesheet rule.
 Keep those three built branches separate for Claude's review. Report conflicts
 in plain words. No main push, merge into main or merging PR.
+*(D589, 5 Oct 26: the built branches are no longer reviewed separately — Claude checks
+the whole stack once, on `claude/codex-stack-review`, and it goes live on one "merge live".)*
 
 D541: the stylesheet split changes nothing visible. After the split walk EVERY
 screen at phone and desktop sizes and open every saved picture, including screens

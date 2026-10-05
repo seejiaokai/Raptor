@@ -15,6 +15,16 @@ the later merge keeps both (D78).
 
 ## Now
 
+<!-- now:claude/codex-stack-review -->
+### `claude/codex-stack-review` — Claude's ONE check of the whole Codex stack (D589): set up, NOT started — the rulings recorded, no code read, no walk, nothing merged — written 5 Oct 26 — verify before use
+- **What it is (D589):** the reads owed to Claude after the reset, paid by ONE full check of the one stacked build — Discard marks, Rally / work hours, Insights, the workflow UI pass and the save-note fix — the code read piece by piece, one walk, one set of checks, later one "merge live" for the lot. This branch is cut from `codex/save-note-controls` (bcc69fc8 + its records), the top of the stack; the fixes the check makes land here. The Inputs/SANS calendar (`codex/inputs-sans-calendar`) stays on hold, outside it.
+- **Who does what (D588):** Opus 5.5 reads Codex's code (it wrote none of it) and plans the check; Sonnet 5.5 helpers walk the app, run the check set and do document chores — never a code read; the host opens every picture and reproduces every finding. The second walker trial runs inside this check (one Opus walker beside one Sonnet walker on the frozen Rally build before its review fixes), with his weekly allowance read before and after each; then ONE trial fix by Sonnet, `[OG-TAG-OVER-COUNT]`, read by Opus.
+- **Opus-written pieces inside the stack** (the Insights interim fixes of 3 Oct 26, the save-note fix): Opus does not read its own — Astra reads them. The save-note fix's last round of fixes has had no independent read yet.
+- **Waiting on him:** who takes Fable's seat from here on (his question back, 5 Oct 26: is that about this review or about bug checks from now on — answered in chat; his answer is the next ruling, D590).
+- **Next:** read `raptor-port/docs/bug-check-order.md` whole; state the tier and the checks to him; the roll-call of the stack; Astra designs the scenarios; the walk; the gates; the reads; fix; re-walk; the evidence sheet; his look.
+- **Rulings:** D588, D589 recorded (How we work); the next is D590. The rewritten short lines of D16, D476, D480, D540 are owed one read against their full rows by a reviewer who did not write them (D138) — Astra.
+<!-- /now -->
+
 <!-- now:codex/save-note-controls -->
 ### `codex/save-note-controls` — `[SAVE-NOTE-COVERS]` (D586, D587): BUILT, WALKED, ALL GATES GREEN, two independent reads done and their findings fixed; his LOOK is left; not merged, `main` untouched — written 5 Oct 26 — verify before use
 - **Authority:** D586 (Opus 5.5 fixes it on this branch, made from the PUSHED `codex/workflow-ui` at c6e1634d — it carries none of the calendar's records; pictures before the layout change; real presses; an independent read; the Inputs/SANS calendar stays on hold, its own block is on `codex/inputs-sans-calendar`, D585; no merge, no `main`; `[OG-TAG-OVER-COUNT]` only afterwards) and D587 (his "ok looks good" to the pictures: the band, its words, the same band under every full-screen surface).

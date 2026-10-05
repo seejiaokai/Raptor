@@ -221,6 +221,10 @@ barely more than one.
   **One trial, 1 Oct 26 (D476): on the next walk ONE extra walker runs on Sonnet 5.5 beside the Opus ones, on the
   same scenarios, and the two are compared for him (`docs/bug-check-order.md` §4). Everything else in this rule
   stands until he rules on the result.**
+  **NARROWED 5 Oct 26 (D588): Sonnet 5.5 helpers walk the app, run the check set and do documents-only chores; they
+  never read code to find bugs, decide a finding, write the roll-call or a plan. ONE small low-risk fix is built by a
+  Sonnet helper as a trial, read by Opus — the only build that leaves the main session. Haiku stays closed; every
+  other part of this rule stands until he rules on the reports (`docs/bug-check-order.md` §4).**
 
 ### Delegate frugally
 
@@ -232,6 +236,9 @@ barely more than one.
   code-writing on sonnet — stands only if he later reopens cheaper helpers.
   *(1 Oct 26, D476: he has opened ONE trial — a Sonnet 5.5 walker beside the Opus ones on the next walk; nothing
   else moves until he rules on its result.)*
+  *(5 Oct 26, D588: he has reopened cheaper helpers in part — Sonnet 5.5 walks the app, runs the check set and does
+  documents-only chores, and builds ONE small low-risk fix as a trial, read by Opus. Reading code to find bugs,
+  every other build, and haiku stay as the 17 Sep 26 rule has them.)*
   Whoever is delegated to is handed a precise spec (files, expected
   shape, which tests to run) so it never explores. Agents return diffs
   and conclusions, never file dumps. Small precise work stays inline —

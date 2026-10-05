@@ -267,7 +267,7 @@ an area the other found a defect in is the cheapest possible pointer to a real b
 7. Every confirmed defect gets a regression test and a row in the roll-call.
 
 **A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
-helpers are Opus agents, and each walks its own WORLD — its own port, its own fresh browser context, its own
+helpers are Opus agents (Sonnet 5.5 since D588, 5 Oct 26 — the paragraph at the end of this block), and each walks its own WORLD — its own port, its own fresh browser context, its own
 copy of the demo data — so no two share a fixture; each is handed the fixture recipe rather than left to
 rediscover it. The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
 so each returns PICTURES and a filled table, and the host REPRODUCES every finding before it enters the
@@ -294,6 +294,17 @@ second report nothing else goes to a cheaper model.
 (`codex/discard-marks-remove`, `codex/rally-workspan`) Opus 5.5 plans a small, targeted check and Sonnet 5.5 does the
 reading and the walking, with no Fable; the host reproduces every find. It is an early signal on Codex's reliability,
 NOT a bug check: the full check, this second trial and the second reads stay owed after the reset, before "merge live".
+**FROM 5 OCT 26 THE WALKERS ARE SONNET 5.5 (owner, D588 — "Walk, checks, chores + one trial fix").** A walk's helpers
+are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
+chores, may go to a Sonnet helper too. Unchanged, and the price of it: each walker returns PICTURES and a filled table,
+and the host opens the pictures and REPRODUCES every finding before it enters the evidence sheet. **Sonnet never reads
+code to find bugs** (in one outside code-review test it caught 6 of 13 known bugs where Opus caught 8 to 10, with more
+false alarms), never decides whether a finding is real, never writes the roll-call, a plan or a scenario list. The
+second trial above still runs — in the check of the Codex stack (D589): one Opus walker and one Sonnet walker on the same
+scenarios, on the frozen Rally build as it stood before its review fixes, neither told what is wrong — and its report
+adds his weekly allowance, read before and after each walker. One building trial rides with it: ONE small low-risk fix
+(`[OG-TAG-OVER-COUNT]`) built by a Sonnet helper to a precise spec, its diff and tests read by Opus. His answer to each
+report is a new ruling; until then no other build or fix leaves Opus, and haiku stays closed.
 
 **The owner's trigger rule, in one line:**
 
