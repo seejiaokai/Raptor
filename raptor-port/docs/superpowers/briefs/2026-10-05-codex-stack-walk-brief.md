@@ -120,3 +120,14 @@ the next week starts Mon 20 Jul.
    PASS / FAIL / PARTIAL / NOT WALKED (why) · the pictures.
 2. Findings, each: the exact steps, what was expected (the scenario's line or the ruling), what happened, the picture.
 3. The errors seen. 4. What you did NOT walk and why. 5. One line: how many pictures you saved and how many you opened.
+
+## Added 6 Oct 26, from Trial 1 (`docs/handpass/parts/stk-trial-1.md` — walking stays with Sonnet 5.5, on these conditions)
+1. **The host opens the pictures behind every FAIL and behind every high-consequence PASS** (OIL, a published day, a
+   role, saved data) — a walker opens about a third of its own, whatever a brief says; an unopened picture is not
+   evidence. The walker still opens the picture behind every FAIL and every such step, and says honestly how many.
+2. **A scenario with an EXPECTED line is judged PASS or FAIL.** "RECORDED" is only for the scenarios the host marks so;
+   the host re-judges any RECORDED row that has an EXPECTED line.
+3. **A walker's conclusion is not a finding until the host has reproduced it** (D16) — report what the screen did and
+   the exact steps, never a cause that was not seen.
+4. **The report is sent ONCE**, after every script and browser is stopped.
+The re-walk's own brief, which carries these: `2026-10-06-codex-stack-rewalk-brief.md`.
