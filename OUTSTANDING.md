@@ -118,7 +118,7 @@ only), [SETTINGS-LIST-ROWS] (a stage-2 split, only if it bites), [LW-OIL-DATECHI
 before the first real deployment: [SHARED-OPENS-DEMO-WEEK]; a question for him: [LW-LABEL-NO-DOOR]; with group B:
 [ELOG-LINE-AFTER-COMMAND] (low); the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only),
-[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [PRIVATE-BRANCH-NEVER-PUSH] (his call, low — a branch on his PC with his phone photos, never to be pushed), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (BUILT 5 Oct 26 on `codex/save-note-controls` — MERGED with the Codex stack, live since 6 Oct 26, PR #481), [FLOATWIN-TWO-LINE-BAR] (low, with the next change to either movable window), [GUEST-SAVE-WARNING] (low — a check first, with the next change to the guest's pages), [EVIDENCE-RECORD-SIZE] (low, his call — at Claude's review of the Codex branches), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [PRIVATE-BRANCH-NEVER-PUSH] (his call, low — a branch on his PC with his phone photos, never to be pushed; its deletion held for his word), [SANS-CALENDAR-WIP] (on hold, his to call back — the SANS availability calendar's new layout, on its own Codex branch; nothing of it is deleted, D610), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (BUILT 5 Oct 26 on `codex/save-note-controls` — MERGED with the Codex stack, live since 6 Oct 26, PR #481), [FLOATWIN-TWO-LINE-BAR] (low, with the next change to either movable window), [GUEST-SAVE-WARNING] (low — a check first, with the next change to the guest's pages), [EVIDENCE-RECORD-SIZE] (low, his call — at Claude's review of the Codex branches), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
 [RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (DONE 2 Oct 26; archived), [INSIGHTS-WHICH-COPY] (D477, D478 — MERGED 1 Oct 26, PR #479; archived), [WORKSPAN-NEGATIVE] (**NEXT — the next chat, D483**; the second Sonnet-walker trial rides on its walk), [SONNET-WALKER-TRIAL] (the first walked 1 Oct 26; **ONE MORE, on a build with known defects — D480**, with `[WORKSPAN-NEGATIVE]`'s walk), [INSIGHTS-BOARD-DOOR] (RULED D481 — to build: a picture first; after `[WORKSPAN-NEGATIVE]`), [INSIGHTS-RULE-CHANGE] (ANSWERED D482 — closed; archived) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
@@ -764,6 +764,15 @@ through the app's saver (an access request, for one)? If it does and that save c
 give that page the same warning (`SaveBand`, `raptor-port/src/ui/SaveStatus.tsx`). If nothing of a guest's is saved
 that way, close this with the reason. Not walked; nothing on screen is known to be wrong.
 
+### [SANS-CALENDAR-WIP] The new layout for the SANS availability calendar, worked on with Codex, is in progress and on hold — nothing of it is deleted (owner, D610, 7 Oct 26)
+His words: *"That's still work in progress and I may call it back to work on it anytime. So don't delete"*. The work is on
+the branch `codex/inputs-sans-calendar` (on his PC and on GitHub; checked 7 Oct 26) — its own handoff block, its rulings
+D567–D585 and its records are on that branch, not on `main`; Codex recorded his hold there (D585) and D589 kept it outside
+the Codex stack. **Until he calls it back: no chat reviews, rebuilds, merges or tidies it, and no tidy-up deletes its branch,
+its records, its pictures, its backlog items or its rulings.** When he calls it back: read that branch's `HANDOFF.md` block
+first; its ruling numbers D567–D585 are reserved. In D495's order it is the batch "how inputs show on the calendar"
+(`[FEATURE-WISHLIST]`). **Place:** his to call.
+
 ### [PRIVATE-BRANCH-NEVER-PUSH] A branch on his PC holds his four phone photos — it must never be pushed (filed 7 Oct 26)
 `codex/private-insights-menu-materials` exists ONLY on his PC (checked 7 Oct 26: not on GitHub). Its one commit beyond
 the shared history (9fcdc555) carries four screenshots from his iPhone of the app's preview (the demo week; the board's ⋯ menu, the phone menu with
@@ -774,7 +783,9 @@ information, and the repo is public for the present (D106). **Never push this br
 Until 7 Oct 26 this caution stood only in the merged `codex/workflow-ui` block of `HANDOFF.md` — found when that block's
 removal was prepared (`[START-CONTEXT-AUDIT]`, option 1). **His call (low):** keep the branch as it is, or have it
 deleted from the PC once he no longer wants the photos kept in git (a deletion — only on his word). **Place (the
-agent's line):** ask him with the start-of-chat options.
+agent's line):** ask him with the start-of-chat options. **7 Oct 26: he said "Delete the photo branch", and a minute later
+"So don't delete*" — a correction of his sentence about the SANS calendar work (D610), most likely not of this. The
+deletion is HELD until he says which; the branch is untouched.**
 
 ### [EVIDENCE-RECORD-SIZE] The Codex branches carry very large machine-written record files (filed 5 Oct 26)
 **Place:** low — his call, put to him at Claude's review of the Codex branches, before any of them reaches `main`. He
@@ -2045,7 +2056,8 @@ are expired — a working-guide change, so read by Astra and Sol before he appro
 bytes, the scheduler's by 5,700, the Tracker's by 440) — put off while every branch carried code (D29); on a documents-only change the
 document check FAILS on them, and this pass is where they are answered: move what does not belong, split an area, or raise a marker
 with its reason (D141, D136) — never trim a ruling. **Place:** the first step of
-`[START-CONTEXT-AUDIT]` — the same pass, since both are about what a new chat is made to read.
+`[START-CONTEXT-AUDIT]` — the same pass, since both are about what a new chat is made to read. **Ordered by him on 7 Oct 26
+(D609) and carried out on `claude/docs-tidy-7-oct`.**
 
 ### [R3-OWED-READS] Two small reads the stack check's third round still owes (filed 6 Oct 26)
 (1) The last fix of the round had no independent read of its own — the cap of two reads: `raptor-port/src/ui/schedule-tab.ts`, where
@@ -2095,8 +2107,9 @@ against the sheets and writes the figures. **Place (the agent's line):** next, w
 next walk is sized, since the sizing step reads these figures.
 
 ### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
-**STEPS (1) AND (2) DONE 7 Oct 26 on `claude/docs-tidy-7-oct` — WAITING FOR HIS RULING (step 3); nothing trimmed, no
-guide changed.** The measurement and thirteen options, each with what it saves and risks:
+**HIS RULING (D609, 7 Oct 26): options 1 to 4 now, then 5 to 7 with Astra and Sol reading; one branch, the document
+check green, then a pull request for his "merge live". Option 8 is not ruled — an open job of its own.** As it stood
+before: steps (1) and (2) done 7 Oct 26 on `claude/docs-tidy-7-oct`, nothing trimmed, no guide changed. The measurement and thirteen options, each with what it saves and risks:
 `raptor-port/docs/superpowers/specs/2026-10-07-start-context-audit.md`. In short: about 97 thousand tokens before the
 first message (68 thousand of it the app's own tools), about 189 thousand once a scheduler build has opened its first
 files; the largest avoidable piece is 18 thousand of merged blocks in the handoff. The text below is the item as filed.

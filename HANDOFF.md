@@ -186,6 +186,8 @@ the later merge keeps both (D78).
 `[BLANK-TIMES-ABSENCE]` with `[SC-PICKER-INTIME-REST]` (D605 — LIVE, PR #483, 6 Oct 26) → `[OIL-WORK-START]` (D591, D592, D606 — LIVE, PR #484, 7 Oct 26) → `[START-CONTEXT-AUDIT]` (what a new chat loads at its start: measured, options to him, nothing
 trimmed before he rules — step 1 under way on `claude/docs-tidy-7-oct`, with `[WALK-LEDGER-HISTORY]` and `[WALK-SIZING-GUIDE]`) → the feature batches in D495's order (`OUTSTANDING.md` `[FEATURE-WISHLIST]`).
 
+**ON HOLD, HIS TO CALL BACK (D610, 7 Oct 26):** the new layout for the SANS availability calendar, worked on with Codex — on the branch `codex/inputs-sans-calendar` (its own block, rulings D567–D585 and records are there). Nothing of it is deleted, reviewed, rebuilt or merged until he calls it back (`OUTSTANDING.md` `[SANS-CALENDAR-WIP]`).
+
 0. **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now"):** the app's features are built first; after
    phase 7 no more database-readiness work until then; the table list (`raptor-port/docs/data-model.md`) is kept up to date as
    each feature is added, and he — with his AI — writes the table format for the IT side to enter. `[WARN-HIDE-KEPT]` is BUILT, FULL-checked and MERGED (1 Oct 26, PR #478); `[INSIGHTS-WHICH-COPY]` (D477, D478) BUILT, WALK-checked and MERGED on his "merge live" (1 Oct 26, PR #479). **Next (D483): `[WORKSPAN-NEGATIVE]`** — the negative work-hours fault, in a fresh chat, with the second Sonnet-walker trial on its walk (D480); then `[INSIGHTS-BOARD-DOOR]` (D481).

@@ -5,6 +5,10 @@ guide changed. Every option waits for his ruling (D602).** The test of every opt
 down at the expense of losing the quality of work"* — D68 (correctness beats context economy), D136 (no live ruling
 leaves the list a chat reads), D138 (a move never rewords), D141 (no size targets).
 
+**HIS RULING, 7 Oct 26 (D609):** options 1 to 4 now; then 5 to 7 with Astra and Sol reading; all on the one branch, the
+document check green, then a pull request for his "merge live". Option 8 is not ruled; 9 and 10 are his own settings;
+11 to 13 are not done. Nothing of the SANS calendar work is touched (D610). What was done under it is at the foot.
+
 ## For him — the short version
 
 - **A new chat has used about 97 thousand tokens before you type anything** — about a tenth of its room. After the
