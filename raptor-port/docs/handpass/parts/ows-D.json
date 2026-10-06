@@ -131,6 +131,1034 @@
    },
    "logicText": "openEnd 60 SETTING A standby shift (SC, AVALON, BB) occupies exactly the hours written on the line — no step, no dekit, no brief, no debrief tail. |  insOf · crewRestDay SETTING An SC SPARE carries no crew rest in either direction — standing spare buys none for the next day, and it never closes a spare slot to anyone. |  LL local leave — cannot be planned, but may still stand an SC SPARE OL overseas leave — out of reach — cannot be planned for anything, an SC SPARE included OIL off in lieu — cannot be planned, but may still stand an SC SPARE CCL childcare leave — cannot be planned, but may still stand an SC SPARE PL paternity leave — cannot be planned, but may still stand an SC SPARE FCL family care leave — cannot be planned, but may still stand an SC SPARE EL embarkation leave — cannot be",
    "pics": 8
+  },
+  "ows-D-s36b-dk": {
+   "at": "2026-10-06T13:13:43.735Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S36.sc-spare-default",
+     "did": "SC wave: Ranger on MAIN (jet 1), Saber on SPARE (jet 4), 07:00–13:00; published",
+     "saw": "✓ seated through the crew list [{\"m\":true,\"s\":true}] · ✓ MAIN: HO 07:00–13:00 [HO* | Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:00 0.5 left] · ✓ SPARE (default off): nothing [ | Saber IP 0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S36b-bane-cell.png",
+      "dk-02-S36b-bane-tracker.png",
+      "dk-03-S36b-stiff-default-cell.png",
+      "dk-04-S36b-stiff-default-tracker.png"
+     ]
+    },
+    {
+     "id": "S36.sc-spare-optin",
+     "did": "OIL Earn → tapped the SC line switch (\"Part of this row earns — tap to make all of it earn\"); four sign again; Publish AL",
+     "saw": "✓ a switch with the \"part of this row\" words was offered [[\"Part of this row earns — tap to make all of it earn\"]] · ✓ the mode figure for SPARE now HO [stiff: Saber HO {puck sm oilglow half me}] · ✓ AL1 [AL1] · ✓ MAIN still HO 07:00–13:00 [HO* | Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:00 0.5 left] · ✓ SPARE: HO 07:00–13:00 [HO* | Saber IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:00 0.5 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-S36b-oilmode-before.png",
+      "dk-06-S36b-oilmode-after.png",
+      "dk-07-S36b-bane-al-cell.png",
+      "dk-08-S36b-bane-al-tracker.png",
+      "dk-09-S36b-stiff-al-cell.png",
+      "dk-10-S36b-stiff-al-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "logicWords": [],
+   "pics": 11
+  },
+  "ows-D-s37-dk": {
+   "at": "2026-10-06T13:16:05.212Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S37.initial",
+     "did": "four isolated cases on one Saturday: (a) flight with take-off 12:00 and no landing — Ranger; (b) duty with 09:00 and no end — Piston; (c) a jet cancelled with CX — Vandal; (d) an ⓘ info-only ground row 09:00–15:00 — Sidewinder; (e) ALL AVAIL on a programme item 09:00, no end; OIL Earn read",
+     "saw": "✓ all fixtures seated [{\"a\":true,\"b\":true,\"c\":true,\"d\":true,\"e\":true}] · ✓ (a) the mode figure for Ranger shows no HO/FO [[\"Ranger IP {puck sm} title=Ranger · IP · instructor pilot · SXO\"]] · ✓ (b) Piston none [[\"Piston IP {puck sm} title=Piston · IP · instructor pilot · SXO\"]] · ✓ (c) Vandal none [[\"Vandal IP {puck sm} title=Vandal · IP · instructor pilot\"]] · ✓ (d) Sidewinder none [[\"Sidewinder IP {puck sm} title=Sidewinder · IP · instructor pilot · SXO\"]] · ✓ no Leave War credit before the day goes out [bane:(empty) pump:(empty) split:(empty) mamba:(empty)] · ✗ the ALL AVAIL window opened and gives a reason or list []",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-S37-fixture-board.png",
+      "dk-03-S37-oilmode-initial.png",
+      "dk-02-S37-allavail-window.png"
+     ]
+    },
+    {
+     "id": "S37.repair",
+     "did": "repaired the duty row: end box 15:00 (09:00–15:00) on the working copy of the unpublished day",
+     "saw": "✓ OIL Earn figure for Piston: HO (candidate) [[\"Piston HO {puck sm oilglow half dim} title=Piston · IP · instructor pilot · SXO\"]] · ✓ the other three still none [[[\"Ranger IP {puck sm dim} title=Ranger · IP · instructor pilot · SXO\"],[\"Vandal IP {puck sm dim} title=Vandal · IP · instructor pilot\"],[\"Sidewinder IP {puck s] · ✓ not paid yet: Leave War cell empty []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-S37-oilmode-repaired.png",
+      "dk-05-S37-repaired-day.png"
+     ]
+    },
+    {
+     "id": "S37.issue",
+     "did": "four sign-offs, Publish day",
+     "saw": "✓ ORIG [ORIG] · ✓ Piston (repaired duty): HO, worked 09:00–15:00 [HO* | Piston IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH Duty · 09:00–15:00 0.5 left] · ✓ Ranger (no landing): nothing, balance 0 [ | Ranger IP 0] · ✓ Vandal (cancelled jet): nothing [ | Vandal IP 0] · ✓ Sidewinder (info-only row): nothing [ | Sidewinder IP 0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-S37-pump-cell.png",
+      "dk-07-S37-pump-tracker.png",
+      "dk-08-S37-bane-cell.png",
+      "dk-09-S37-bane-tracker.png",
+      "dk-10-S37-split-cell.png",
+      "dk-11-S37-split-tracker.png",
+      "dk-12-S37-mamba-cell.png",
+      "dk-13-S37-mamba-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "window": "",
+   "pics": 13
+  },
+  "ows-D-s37b-dk": {
+   "at": "2026-10-06T13:16:41.177Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S37.allavail-window",
+     "did": "ALL AVAIL placeholder on the Common Programme item \"CP-OPEN\" (start 09:00, no end); tapped its count chip with OIL Earn off, then on",
+     "saw": "✓ seated [true] · ✓ window opens with OIL Earn off (the availability half) [⠿ CP-OPEN Jul 18 · 09:00–10:00 · no end time, an hour assumed ✕ Who’s available 45 PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP H] · ✓ window opens with OIL Earn on [⠿ CP-OPEN Jul 18 · 09:00–10:00 · no end time, an hour assumed ✕ Who’s available 45 Who earns OIL 0 of 45 PILOTS · 0 EARN Reaper IR Anvil IP Blade IP Cinch IP Co] · ✓ in the mode it says there is no end time / no OIL worked out [⠿ CP-OPEN Jul 18 · 09:00–10:00 · no end time, an hour assumed ✕ Who’s available 45 Who earns OIL 0 of 45 PILOTS · 0 EARN Reaper IR Anvil IP Blade IP Cinch IP Co]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S37b-window-modeoff.png",
+      "dk-02-S37b-window-modeon.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "w1": "⠿ CP-OPEN Jul 18 · 09:00–10:00 · no end time, an hour assumed ✕ Who’s available 45 PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 17 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now Tap a puck for why.",
+   "w2": "⠿ CP-OPEN Jul 18 · 09:00–10:00 · no end time, an hour assumed ✕ Who’s available 45 Who earns OIL 0 of 45 PILOTS · 0 EARN Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 0 EARN Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now No OIL worked out — this row has no end time.",
+   "pics": 2
+  },
+  "ows-D-S38-dk": {
+   "at": "2026-10-06T13:28:08.436Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S38.0",
+     "did": "M (Ranger): duty DESK-A 06:00–06:30 through \"+ Row\"; flight VIPER 12:00–13:00 with IN TIME 10:00 typed through \"+ In-time / Rally\"; four sign-offs; Publish day",
+     "saw": "✓ fixture seated, line typed [{\"took\":true,\"its\":[\"IN TIME 10:00\"]}] · ✓ published ORIG [ORIG] · ✓ Leave War FO [FO*] · ✓ tracker prints both periods 06:00–06:30 and 10:00–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S38-base-day.png",
+      "dk-02-S38-base-cell.png",
+      "dk-03-S38-base-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.1",
+     "did": "OIL Earn: tapped the VIPER row switch (flight off)",
+     "saw": "✓ mode figure for Ranger: half day for the duty alone (HO), the flight no longer counted [Ranger — [dim] | Ranger HO [glow]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ the day reads 1 pending [1 pending]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-S38-1-flightoff-day.png",
+      "dk-06-S38-1-flightoff-togoout.png",
+      "dk-07-S38-1-flightoff-cell.png",
+      "dk-08-S38-1-flightoff-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.2",
+     "did": "tapped the VIPER switch again (restored)",
+     "saw": "✓ mode figure for Ranger: FO again [Ranger FO [glow] | Ranger FO [glow]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ nothing pending again [] · ✓ sign-offs: all four empty []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-S38-2-flighton-day.png",
+      "dk-11-S38-2-flighton-cell.png",
+      "dk-12-S38-2-flighton-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.3",
+     "did": "tapped the day switch \"Nothing today earns — covers anything added later too\"",
+     "saw": "✓ mode figure for Ranger: none [Ranger — [dim] | Ranger — [dim]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ the day reads 1 pending [1 pending]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-S38-3-dayoff-day.png",
+      "dk-15-S38-3-dayoff-togoout.png",
+      "dk-16-S38-3-dayoff-cell.png",
+      "dk-17-S38-3-dayoff-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.4",
+     "did": "pressed the day switch's restore button (\"Nothing today earns\")",
+     "saw": "✓ mode figure for Ranger: FO again [Ranger FO [glow] | Ranger FO [glow]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-S38-4-dayrestored-day.png",
+      "dk-20-S38-4-dayrestored-cell.png",
+      "dk-21-S38-4-dayrestored-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.5",
+     "did": "tapped Ranger's own puck on the VIPER line (take him off that event)",
+     "saw": "✓ mode figure for Ranger: half day (the duty still counts) [Ranger — [dim] | Ranger HO [glow]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ the day reads 1 pending [1 pending]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-23-S38-5-manoff-flight-day.png",
+      "dk-24-S38-5-manoff-flight-togoout.png",
+      "dk-25-S38-5-manoff-flight-cell.png",
+      "dk-26-S38-5-manoff-flight-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.6",
+     "did": "then tapped his puck on DESK-A too (off both events = off for the day)",
+     "saw": "✓ mode figure for Ranger: none [Ranger — [dim] | Ranger — [dim]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ the day reads pending [1 pending]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-28-S38-6-manoff-both-day.png",
+      "dk-29-S38-6-manoff-both-togoout.png",
+      "dk-30-S38-6-manoff-both-cell.png",
+      "dk-31-S38-6-manoff-both-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.7",
+     "did": "tapped both pucks back on",
+     "saw": "✓ mode figure for Ranger: FO [Ranger FO [glow] | Ranger FO [glow]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-33-S38-7-restored-day.png",
+      "dk-34-S38-7-restored-cell.png",
+      "dk-35-S38-7-restored-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.8",
+     "did": "with the flight row off: Logic \"Flight debrief after land\" 2h → 2h30",
+     "saw": "✓ the value changed [2h30] · ✓ published cell still FO [FO*] · ✓ tracker still both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✗ no \"OIL on this day · Logic values changed\" line (the flight is excluded, no record would differ) [What this day earns changed OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 06]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-36-S38-8-flightoff-debrief-day.png",
+      "dk-37-S38-8-flightoff-debrief-togoout.png",
+      "dk-38-S38-8-flightoff-debrief-cell.png",
+      "dk-39-S38-8-flightoff-debrief-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.9",
+     "did": "flight row back on, debrief still 2h30 (now the flight counts again)",
+     "saw": "✓ published cell still FO [FO*] · ✓ tracker still both periods (end 15:00) [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ the day reads 1 pending (worked end would be 15:30) [1 pending] · ✓ To go out says OIL on this day · Logic values changed, with the man [OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 06:00–06:30, 10:00–15:00 → ful]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-40-S38-9-flighton-debrief-day.png",
+      "dk-41-S38-9-flighton-debrief-togoout.png",
+      "dk-42-S38-9-flighton-debrief-cell.png",
+      "dk-43-S38-9-flighton-debrief-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.10",
+     "did": "flight row switched off in OIL Earn; four sign again; Publish AL",
+     "saw": "✓ AL1 [AL1] · ✓ Leave War now HO [HO*] · ✓ tracker: one period 06:00–06:30 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH Duty · 06:00–06:30 0.5 left] · ✓ balance down to base − 0.5 [{\"base\":\"1\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-44-S38-10-al-flightoff-day.png",
+      "dk-45-S38-10-al-flightoff-cell.png",
+      "dk-46-S38-10-al-flightoff-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.10b",
+     "did": "the flight-off amendment is out; now Logic \"Flight debrief after land\" 2h → 2h30 again",
+     "saw": "✓ published cell stays HO (duty only) [HO*] · ✓ tracker still one period 06:00–06:30 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH Duty · 06:00–06:30 0.5 left] · ✓ nothing pending (no flight work in the issued record) [] · ✓ no Logic line in To go out []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-47-S38-10b-issuedoff-debrief-day.png",
+      "dk-48-S38-10b-issuedoff-debrief-cell.png",
+      "dk-49-S38-10b-issuedoff-debrief-tracker.png"
+     ]
+    },
+    {
+     "id": "S38.11",
+     "did": "flight row switched back on; Publish AL again",
+     "saw": "✓ AL2 [AL2] · ✓ Leave War FO [FO*] · ✓ both periods again [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance back to base [{\"base\":\"1\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-50-S38-11-al-flighton-day.png",
+      "dk-51-S38-11-al-flighton-cell.png",
+      "dk-52-S38-11-al-flighton-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 52
+  },
+  "ows-D-S38ph-ph": {
+   "at": "2026-10-06T13:34:30.508Z",
+   "base": "http://localhost:4296",
+   "phone": true,
+   "table": [
+    {
+     "id": "S38ph.0",
+     "did": "M (Ranger): duty DESK-A 06:00–06:30 through \"+ Row\"; flight VIPER 12:00–13:00 with IN TIME 10:00 typed through \"+ In-time / Rally\"; four sign-offs; Publish day",
+     "saw": "✓ fixture seated, line typed [{\"took\":true,\"its\":[\"IN TIME 10:00\"]}] · ✓ published ORIG [ORIG] · ✓ Leave War FO [FO*] · ✓ tracker prints both periods 06:00–06:30 and 10:00–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-S38ph-base-day.png",
+      "ph-02-S38ph-base-cell.png",
+      "ph-03-S38ph-base-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.1",
+     "did": "OIL Earn: tapped the VIPER row switch (flight off)",
+     "saw": "✓ mode figure for Ranger: half day for the duty alone (HO), the flight no longer counted [Ranger — [dim] | Ranger HO [glow]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ the day reads 1 pending [1 pending]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-S38ph-1-flightoff-day.png",
+      "ph-06-S38ph-1-flightoff-togoout.png",
+      "ph-07-S38ph-1-flightoff-cell.png",
+      "ph-08-S38ph-1-flightoff-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.2",
+     "did": "tapped the VIPER switch again (restored)",
+     "saw": "✓ mode figure for Ranger: FO again [Ranger FO [glow] | Ranger FO [glow]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ nothing pending again [] · ✓ sign-offs: all four empty []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-S38ph-2-flighton-day.png",
+      "ph-11-S38ph-2-flighton-cell.png",
+      "ph-12-S38ph-2-flighton-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.3",
+     "did": "tapped the day switch \"Nothing today earns — covers anything added later too\"",
+     "saw": "✓ mode figure for Ranger: none [Ranger — [dim] | Ranger — [dim]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ the day reads 1 pending [1 pending]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-S38ph-3-dayoff-day.png",
+      "ph-15-S38ph-3-dayoff-togoout.png",
+      "ph-16-S38ph-3-dayoff-cell.png",
+      "ph-17-S38ph-3-dayoff-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.4",
+     "did": "pressed the day switch's restore button (\"Nothing today earns\")",
+     "saw": "✓ mode figure for Ranger: FO again [Ranger FO [glow] | Ranger FO [glow]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-19-S38ph-4-dayrestored-day.png",
+      "ph-20-S38ph-4-dayrestored-cell.png",
+      "ph-21-S38ph-4-dayrestored-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.5",
+     "did": "tapped Ranger's own puck on the VIPER line (take him off that event)",
+     "saw": "✓ mode figure for Ranger: half day (the duty still counts) [Ranger — [dim] | Ranger HO [glow]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ the day reads 1 pending [1 pending]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-23-S38ph-5-manoff-flight-day.png",
+      "ph-24-S38ph-5-manoff-flight-togoout.png",
+      "ph-25-S38ph-5-manoff-flight-cell.png",
+      "ph-26-S38ph-5-manoff-flight-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.6",
+     "did": "then tapped his puck on DESK-A too (off both events = off for the day)",
+     "saw": "✓ mode figure for Ranger: none [Ranger — [dim] | Ranger — [dim]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ the day reads pending [1 pending]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-28-S38ph-6-manoff-both-day.png",
+      "ph-29-S38ph-6-manoff-both-togoout.png",
+      "ph-30-S38ph-6-manoff-both-cell.png",
+      "ph-31-S38ph-6-manoff-both-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.7",
+     "did": "tapped both pucks back on",
+     "saw": "✓ mode figure for Ranger: FO [Ranger FO [glow] | Ranger FO [glow]] · ✓ Leave War cell still FO (published holds) [FO*] · ✓ tracker still prints both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-33-S38ph-7-restored-day.png",
+      "ph-34-S38ph-7-restored-cell.png",
+      "ph-35-S38ph-7-restored-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.8",
+     "did": "with the flight row off: Logic \"Flight debrief after land\" 2h → 2h30",
+     "saw": "✓ the value changed [2h30] · ✓ published cell still FO [FO*] · ✓ tracker still both periods [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}] · ✗ no \"OIL on this day · Logic values changed\" line (the flight is excluded, no record would differ) [What this day earns changed OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 06]",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-36-S38ph-8-flightoff-debrief-day.png",
+      "ph-37-S38ph-8-flightoff-debrief-togoout.png",
+      "ph-38-S38ph-8-flightoff-debrief-cell.png",
+      "ph-39-S38ph-8-flightoff-debrief-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.9",
+     "did": "flight row back on, debrief still 2h30 (now the flight counts again)",
+     "saw": "✓ published cell still FO [FO*] · ✓ tracker still both periods (end 15:00) [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ the day reads 1 pending (worked end would be 15:30) [1 pending] · ✓ To go out says OIL on this day · Logic values changed, with the man [OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 06:00–06:30, 10:00–15:00 → ful]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-40-S38ph-9-flighton-debrief-day.png",
+      "ph-41-S38ph-9-flighton-debrief-togoout.png",
+      "ph-42-S38ph-9-flighton-debrief-cell.png",
+      "ph-43-S38ph-9-flighton-debrief-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.10",
+     "did": "flight row switched off in OIL Earn; four sign again; Publish AL",
+     "saw": "✓ AL1 [AL1] · ✓ Leave War now HO [HO*] · ✓ tracker: one period 06:00–06:30 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH Duty · 06:00–06:30 0.5 left] · ✓ balance down to base − 0.5 [{\"base\":\"1\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-44-S38ph-10-al-flightoff-day.png",
+      "ph-45-S38ph-10-al-flightoff-cell.png",
+      "ph-46-S38ph-10-al-flightoff-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.10b",
+     "did": "the flight-off amendment is out; now Logic \"Flight debrief after land\" 2h → 2h30 again",
+     "saw": "✓ published cell stays HO (duty only) [HO*] · ✓ tracker still one period 06:00–06:30 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH Duty · 06:00–06:30 0.5 left] · ✓ nothing pending (no flight work in the issued record) [] · ✓ no Logic line in To go out []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-47-S38ph-10b-issuedoff-debrief-day.png",
+      "ph-48-S38ph-10b-issuedoff-debrief-cell.png",
+      "ph-49-S38ph-10b-issuedoff-debrief-tracker.png"
+     ]
+    },
+    {
+     "id": "S38ph.11",
+     "did": "flight row switched back on; Publish AL again",
+     "saw": "✓ AL2 [AL2] · ✓ Leave War FO [FO*] · ✓ both periods again [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ balance back to base [{\"base\":\"1\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-50-S38ph-11-al-flighton-day.png",
+      "ph-51-S38ph-11-al-flighton-cell.png",
+      "ph-52-S38ph-11-al-flighton-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 52
+  },
+  "ows-D-s39-dk": {
+   "at": "2026-10-06T13:38:46.098Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S39.A",
+     "did": "ordinary Tuesday 14 Jul: Ranger on VIPER 12:00–13:00, IN TIME 0830; four sign-offs; Publish day",
+     "saw": "✓ published ORIG [ORIG] · ✓ Leave War: nothing [] · ✓ tracker: no credit for the 14th [Ranger IP 0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S39A-weekday-day.png",
+      "dk-02-S39A-weekday-cell.png",
+      "dk-03-S39A-weekday-tracker.png"
+     ]
+    },
+    {
+     "id": "S39.B",
+     "did": "Tuesday 14 Jul declared PH on the Leave War event row BEFORE anything is published; same flight; four sign-offs; Publish day",
+     "saw": "✓ the event row shows PH on the 14th [PH] · ✓ before publishing: nothing paid [] · ✓ published ORIG [ORIG] · ✓ Leave War: FO [FO*] · ✓ tracker worked 08:30–15:00 [Ranger IP 1 + 1 +1 14 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-declare-PH-2026-07-14.png",
+      "dk-05-S39B-before-publish-day.png",
+      "dk-06-S39B-before-publish-cell.png",
+      "dk-07-S39B-before-publish-tracker.png",
+      "dk-08-S39B-published-day.png",
+      "dk-09-S39B-published-cell.png",
+      "dk-10-S39B-published-tracker.png"
+     ]
+    },
+    {
+     "id": "S39.C",
+     "did": "ordinary Tuesday issued first (no credit); then Tuesday declared PH; then four sign again and Publish AL",
+     "saw": "✓ issued without credit [] · ✓ PH declared [PH] · ✓ no paid credit yet (cell empty) [] · ✓ no tracker row for the 14th yet [Ranger IP 0] · ✓ the day reads pending (a change waits) [1 pending] · ✓ AL1 published [AL1] · ✓ after the AL: FO, worked 08:30–15:00 [FO* | Ranger IP 1 + 1 +1 14 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-declare-PH-2026-07-14.png",
+      "dk-11-S39C-issued-weekday-day.png",
+      "dk-12-S39C-issued-weekday-cell.png",
+      "dk-13-S39C-issued-weekday-tracker.png",
+      "dk-15-S39C-ph-after-day.png",
+      "dk-16-S39C-ph-after-togoout.png",
+      "dk-17-S39C-ph-after-cell.png",
+      "dk-18-S39C-ph-after-tracker.png",
+      "dk-19-S39C-reissued-day.png",
+      "dk-20-S39C-reissued-cell.png",
+      "dk-21-S39C-reissued-tracker.png"
+     ]
+    },
+    {
+     "id": "S39.D1",
+     "did": "Tuesday 14 Jul declared \"Off day\" before publishing; flight with IN TIME; Publish day",
+     "saw": "✓ event row shows Off day [Off day] · ✓ published ORIG [ORIG] · ✓ Leave War: nothing []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-declare-Offday-2026-07-14.png",
+      "dk-23-S39D-offday-tue-day.png",
+      "dk-24-S39D-offday-tue-cell.png",
+      "dk-25-S39D-offday-tue-tracker.png"
+     ]
+    },
+    {
+     "id": "S39.D2",
+     "did": "Saturday 18 Jul issued with credit; then declared \"Off day\"; then four sign again and Publish AL",
+     "saw": "✓ issued credit FO 08:30–15:00 [FO* | Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ Off day declared [Off day] · ✓ credit held until the change is issued: cell still FO [FO*] · ✓ tracker still shows the credit [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✗ the day reads pending [] · ✗ after the AL: credit gone [FO* | Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-29-declare-Offday-2026-07-18.png",
+      "dk-26-S39D-sat-issued-day.png",
+      "dk-27-S39D-sat-issued-cell.png",
+      "dk-28-S39D-sat-issued-tracker.png",
+      "dk-30-S39D-sat-offday-day.png",
+      "dk-31-S39D-sat-offday-cell.png",
+      "dk-32-S39D-sat-offday-tracker.png",
+      "dk-33-S39D-sat-reissued-day.png",
+      "dk-34-S39D-sat-reissued-cell.png",
+      "dk-35-S39D-sat-reissued-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 35
+  },
+  "ows-D-s39b-dk": {
+   "at": "2026-10-06T13:39:54.470Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S39.D3",
+     "did": "Saturday issued with credit (FO, 08:30–15:00); then the Leave War event row for 18 Jul set to \"Off day\"; the day, the Amendments box, a reload",
+     "saw": "✓ issued FO [FO*] · ✓ the credit is held (cell still FO) [FO*] · ✗ the day reads a pending change [{\"afterDeclare\":\"\",\"afterReload\":\"\"}] · ✗ the Amendments box shows a day with changes [AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-03-S39b-after-offday-day.png",
+      "dk-04-S39b-after-reload-day.png",
+      "dk-05-S39b-after-reload-cell.png",
+      "dk-06-S39b-after-reload-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 6
+  },
+  "ows-D-s40a-dk": {
+   "at": "2026-10-06T13:41:54.492Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S40.1",
+     "did": "Saturday 27 Dec 2025 (jumped to with the week calendar, 7 months back): Ranger on VIPER 12:00–13:00, IN TIME 0830; four sign-offs; Publish day",
+     "saw": "✗ the week really is the one with 27 Dec 2025 as its Saturday [Dec 27] · ✓ published ORIG [ORIG] · ✓ no landed cell and no credit claimed before a period exists [NO CELL (this date is on no war)]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-S40-jumped.png",
+      "dk-02-S40-oilmode.png",
+      "dk-03-S40-published-board.png",
+      "dk-05-S40-day-list.png",
+      "dk-06-S40-leavewar-before.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "toast": "Saturday published — APPROVED · there is no leave war period for 2025, so no OIL can be earned for this day — create the period on the Leave War",
+   "boardAdv": [
+    "There is no leave war period for 2025, so no OIL can be earned for this day — create the period on the Leave War ✕ Create the 2025 period"
+   ],
+   "mode": "Calendar Saturday Dec 27 · scheduler board ‹ Mon 22 Tue 23 Wed 24 Thu 25 Fri 26 Sat 27 Sun 28 › 🔍 ◧ OIL Earn ⇅ Sort all ↶ Undo ↷ Redo History Sync · slow Insights ✓ Done CAT TYPE QUALS SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter O",
+   "pics": 6
+  },
+  "ows-D-s40-dk": {
+   "at": "2026-10-06T13:45:40.125Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S40.1",
+     "did": "Saturday 27 Dec 2025 (week calendar, 7 months back): Ranger on VIPER 12:00–13:00, IN TIME 0830; four sign-offs; Publish day",
+     "saw": "✓ the week is 22–28 Dec 2025 and its Saturday Dec 27 [{\"week\":\"22/12/2025\",\"dates\":[\"Dec 22\",\"Dec 23\",\"Dec 24\",\"Dec 25\",\"Dec 26\",\"Dec 27\",\"Dec 28\"]}] · ✓ OIL Earn on the unpublished day: figure FO (the entitlement 08:30–15:00, 390 min) [[\"Ranger FO\"]] · ✓ published ORIG [ORIG] · ✓ the app names the reason: no leave war period for 2025, create the period [Saturday published — APPROVED · there is no leave war period for 2025, so no OIL can be earned for this day — create the period on the Leave War] · ✓ and offers a way out (\"Create the 2025 period\") [Create the 2025 period] · ✓ no landed cell, no +1 claimed [NO CELL]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S40-jumped.png",
+      "dk-02-S40-oilmode.png",
+      "dk-03-S40-published-board.png",
+      "dk-04-S40-leavewar-before.png"
+     ]
+    },
+    {
+     "id": "S40.2",
+     "did": "pressed the offer \"Create the 2025 period\" (it made the war and took me to the Leave War); opened the 2025 war, DEC; then a reload",
+     "saw": "✓ the offer made a \"2025\" period appear beside JAN-DEC 26 / 27 [JAN - DEC 26 JAN - DEC 27 2025] · ✓ Leave War cell for Ranger on 27 Dec 2025: FO [{\"text\":\"FO*\",\"cls\":\"duty weekend act\",\"title\":\"\"}] · ✓ tracker row: worked 08:30–15:00, one credit of +1 [Ranger IP 1 + 1 +1 27 Dec AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ after a reload: still one credit, still FO [{\"cell\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\",\"title\":\"\"},\"n27\":1}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-S40-leavewar-after-create.png",
+      "dk-07-S40-2025-cell.png",
+      "dk-08-S40-2025-tracker.png",
+      "dk-09-S40-2025-tracker-reload.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "toast": "Saturday published — APPROVED · there is no leave war period for 2025, so no OIL can be earned for this day — create the period on the Leave War",
+   "boardAdv": [
+    "There is no leave war period for 2025, so no OIL can be earned for this day — create the period on the Leave War ✕ Create the 2025 period"
+   ],
+   "created": {
+    "page": "leavewar",
+    "text": "142 RAPTOR Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMIN PERIOD JAN - DEC 26 JAN - DEC 27 2025 + New VIEWING AS Saber STAGE OPEN FOR BIDDING → BIDDING CLOSED ← DRAFT BIDDING ON 1 Jan 26 – 31 Mar 26 UNDER-MANNED 0 days Legend ▾ Manning ⚙ ⇅ Rearrange ◷ OIL tracker − ＋ CREW SETS 18 18 18 18 17 17 18 17 18 18 18 17 17 18 17 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 1"
+   },
+   "wpTxt": "JAN - DEC 26 JAN - DEC 27 2025",
+   "pics": 9
+  },
+  "ows-D-s19-dk": {
+   "at": "2026-10-06T13:47:45.490Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S19.A",
+     "did": "two plans of Saturday: A = IN TIME 08:30 (signed), B = a copy of the day made with \"+ Alt Plan\" and given IN TIME 10:00; on B the Logic debrief 2h → 2h30; back to A; then sign four and Publish",
+     "saw": "✓ plan A carries IN TIME 08:30, plan B IN TIME 10:00 [{\"A\":\"IN TIME 08:30\",\"B\":\"IN TIME 10:00\"}] · ✓ A was signed (four names set) [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ OIL Earn shows FO for A and HO for B [{\"A\":[\"Ranger FO\"],\"B\":[\"Ranger HO\"]}] · ✓ selecting plans pays nothing (Leave War empty after the switch to B and after returning to A) [{\"b\":\"\",\"a\":\"\"}] · ✓ A is live again [IN TIME 08:30] · ✓ A's old signatures no longer stand (the four selects are empty) [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ A published: FO, worked 08:30–15:30 (420 min with the new 2h30 debrief) [FO* | Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:30 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S19-A-signed.png",
+      "dk-02-S19-mode.png",
+      "dk-03-S19-B-selected.png",
+      "dk-04-S19-mode.png",
+      "dk-05-S19-A-back.png",
+      "dk-06-S19-mode.png",
+      "dk-07-S19-A-published-cell.png",
+      "dk-08-S19-A-published-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 8
+  },
+  "ows-D-s19b-dk": {
+   "at": "2026-10-06T13:48:44.458Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S19.control",
+     "did": "plans A (signed) and B; switched to B and back to A with NO Logic change; then debrief 2h30 and B published",
+     "saw": "✓ A signed (four names) [[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"]] · ✓ switching to B and back, nothing else: A's four signatures still stand [{\"selects\":[\"Ace\",\"Anvil\",\"Anvil\",\"Anvil\"],\"marker\":\"\"}] · ✓ B published under debrief 2h30: HO, worked 10:00–15:30 (330 min) [HO* | Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:30 0.5 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S19b-A-signed.png",
+      "dk-02-S19b-B-live.png",
+      "dk-03-S19b-A-back-nochange.png",
+      "dk-04-S19b-B-published-cell.png",
+      "dk-05-S19b-B-published-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 5
+  },
+  "ows-D-s20-dk": {
+   "at": "2026-10-06T13:53:49.729Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S20",
+     "did": "ORIGINAL IN TIME 08:30 published; IN TIME 10:00 published as AL1; Logic debrief 2h → 2h30; looked at ORIGINAL (read only); then \"Load onto working copy\"; then four sign and Publish AL",
+     "saw": "✓ ORIG paid FO 08:30–15:00 [FO* | Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ AL1 paid HO 10:00–15:00 [HO* | Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left] · ✓ debrief change reads pending and names the Logic value [{\"chip\":\"1 pending\",\"list\":\"OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL half day · 10] · ✗ previewing ORIGINAL: its face reads IN TIME 08:30 and the FULL-day (FO) edge [{\"bar\":\"← Back to live copy\\n👁 Viewing the issued\\nOriginal\\n— read-only. This is what was sent out; it never changes.\\nLoad onto working copy\",\"pucks\":[\"oilba] · ✓ previewing changes no money: paid still HO 10:00–15:00 [HO* | Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left] · ✓ loaded onto the working copy: line is IN TIME 08:30 again [[\"IN TIME 08:30\"]] · ✓ loaded candidate under today's values: still a full day (FO) in the mode [[\"Ranger FO\"]] · ✓ paid latest AL1 still HO 10:00–15:00 until reissue [HO* | Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left] · ✓ reissued AL2: FO, worked 08:30–15:30 (420 min under debrief 2h30) [FO* | Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:30 1 left]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-05-S20-debrief-day.png",
+      "dk-09-S20-preview-orig.png",
+      "dk-10-S20-while-previewing-cell.png",
+      "dk-11-S20-while-previewing-tracker.png",
+      "dk-12-S20-loaded-day.png",
+      "dk-16-S20-loaded-mode.png",
+      "dk-14-S20-loaded-cell.png",
+      "dk-15-S20-loaded-tracker.png",
+      "dk-17-S20-al2-cell.png",
+      "dk-18-S20-al2-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 18
+  },
+  "ows-D-s21-dk": {
+   "at": "2026-10-06T13:57:33.321Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S21.template",
+     "did": "Saturday (IN TIME 08:30, VIPER 12:00–13:00, Ranger) published; saved as a day template through Templates → \"+ Save this day as a template\"; on Sunday 19 Jul applied it through Templates → the template",
+     "saw": "✓ source published FO 08:30–15:00 [FO* | Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ Sunday received the wave with its IN TIME line 08:30 [{\"waves\":[[\"VIPER 12:00-13:00 p=\\\"\\\"\"]],\"it\":[[\"IN TIME 08:30\"]]}] · ✓ Ranger seated on Sunday [true] · ✓ before issue: OIL Earn shows FO, Leave War has no Sunday credit [{\"fig\":[\"Ranger FO\"],\"cell\":\"\"}] · ✓ Sunday published: FO, worked 08:30–15:00 [FO* | Ranger IP 2 + 2 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left +1 19 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ Saturday's credit unchanged [FO* | Ranger IP 2 + 2 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left +1 19 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-S21-saved-template.png",
+      "dk-04-S21-sunday-applied.png",
+      "dk-05-S21-sunday-mode.png",
+      "dk-06-S21-sunday-before-cell.png",
+      "dk-07-S21-sunday-before-tracker.png",
+      "dk-08-S21-sunday-published-cell.png",
+      "dk-09-S21-sunday-published-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 11
+  },
+  "ows-D-s22-dk": {
+   "at": "2026-10-06T13:59:19.444Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S22",
+     "did": "wave template WT-A (VIPER 12:00–13:00) made in the Flying waves sheet, dropped on Saturday from + Wave; Ranger seated; published; then \"+ In-time / Rally\" typed IN TIME 0830; Publish AL",
+     "saw": "✓ the dropped wave has no in-time line (the template stores none) [{\"label\":\"WT-A\",\"f\":[\"VIPER 12:00-13:00\"],\"it\":[]}] · ✓ Ranger seated [true] · ✓ before issue: OIL Earn shows HO (the nominal report), Leave War empty [{\"figA\":[\"Ranger HO\"],\"cell\":\"\"}] · ✓ published ORIG: HO, worked 09:00–15:00 [HO* | Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ \"+ In-time / Rally\" then the typed line IN TIME 08:30 [{\"lineBefore\":[\"09:00H: IN TIME + WX/NOTAMS\"],\"lineAfter\":[\"IN TIME 08:30\"]}] · ✓ typed after issue: the day reads pending and the paid HO holds [{\"chip\":\"1 pending\",\"paid\":\"HO*\"}] · ✓ AL1: FO, worked 08:30–15:00 [FO* | Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S22-template-editor.png",
+      "dk-02-S22-wave-placed.png",
+      "dk-05-S22-orig-cell.png",
+      "dk-06-S22-orig-tracker.png",
+      "dk-07-S22-typed-day.png",
+      "dk-08-S22-typed-togoout.png",
+      "dk-09-S22-typed-cell.png",
+      "dk-10-S22-typed-tracker.png",
+      "dk-11-S22-al-cell.png",
+      "dk-12-S22-al-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 12
+  },
+  "ows-D-pairs-P-dk": {
+   "at": "2026-10-06T14:22:35.742Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "PR-P-Op-Lr",
+     "did": "published Saturday; first Op, then Lr",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Op: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Op: the day reads pending [1 pending] · ✓ after Lr: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-PR-P-Op-Lr-after-2.png",
+      "dk-02-PR-P-Op-Lr-final-cell.png",
+      "dk-03-PR-P-Op-Lr-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Lr-Op",
+     "did": "published Saturday; first Lr, then Op",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Lr: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"OIL on this day · Logic values changed since it was published Logic · N] · ✓ after Lr: the day reads pending [1 pending] · ✓ after Op: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"OIL on this day · Logic values ] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-PR-P-Lr-Op-after-2.png",
+      "dk-05-PR-P-Lr-Op-final-cell.png",
+      "dk-06-PR-P-Lr-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Op-Ld",
+     "did": "published Saturday; first Op, then Ld",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Op: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Op: the day reads pending [1 pending] · ✓ after Ld: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-PR-P-Op-Ld-after-2.png",
+      "dk-08-PR-P-Op-Ld-final-cell.png",
+      "dk-09-PR-P-Op-Ld-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Ld-Op",
+     "did": "published Saturday; first Ld, then Op",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Ld: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"OIL on this day · Logic values changed since it was published Logic · F] · ✓ after Ld: the day reads pending [1 pending] · ✓ after Op: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"OIL on this day · Logic values ] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-PR-P-Ld-Op-after-2.png",
+      "dk-11-PR-P-Ld-Op-final-cell.png",
+      "dk-12-PR-P-Ld-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Op-A",
+     "did": "published Saturday; first Op, then A",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Op: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Op: the day reads pending [1 pending] · ✓ A: the amendment went out as AL1 [{\"absent\":false,\"said\":\"AL1\",\"signedFirst\":\"{\\\"cur\\\":\\\"Ace\\\",\\\"sked\\\":\\\"Anvil\\\",\\\"plan\\\":\\\"Anvil\\\",\\\"appr\\\":\\\"Anvil\\\"}\",\"note\":\"Publish AL control: {\\\"text\\\":\\\"] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (the pair's own A published it)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-PR-P-Op-A-after-2.png",
+      "dk-14-PR-P-Op-A-final-cell.png",
+      "dk-15-PR-P-Op-A-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-A-Op",
+     "did": "published Saturday; first A, then Op",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Op: paid still holds [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ A first (nothing waiting): no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: none)\"}] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"\\\"\",\"redoPressed\":true,\"afterRedo\":\"chip \\\"1 pending\\\" marker \\\"No] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-PR-P-A-Op-after-2.png",
+      "dk-17-PR-P-A-Op-final-cell.png",
+      "dk-18-PR-P-A-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Or-Lr",
+     "did": "published Saturday; first Or, then Lr",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Or: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Or: the day reads pending [1 pending] · ✓ after Lr: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-PR-P-Or-Lr-after-2.png",
+      "dk-20-PR-P-Or-Lr-final-cell.png",
+      "dk-21-PR-P-Or-Lr-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Lr-Or",
+     "did": "published Saturday; first Lr, then Or",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Lr: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"OIL on this day · Logic values changed since it was published Logic · N] · ✓ after Lr: the day reads pending [1 pending] · ✓ after Or: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"OIL on this day · Logic values ] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-PR-P-Lr-Or-after-2.png",
+      "dk-23-PR-P-Lr-Or-final-cell.png",
+      "dk-24-PR-P-Lr-Or-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Or-Ld",
+     "did": "published Saturday; first Or, then Ld",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Or: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Or: the day reads pending [1 pending] · ✓ after Ld: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-PR-P-Or-Ld-after-2.png",
+      "dk-26-PR-P-Or-Ld-final-cell.png",
+      "dk-27-PR-P-Or-Ld-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Ld-Or",
+     "did": "published Saturday; first Ld, then Or",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Ld: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"OIL on this day · Logic values changed since it was published Logic · F] · ✓ after Ld: the day reads pending [1 pending] · ✓ after Or: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"OIL on this day · Logic values ] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-28-PR-P-Ld-Or-after-2.png",
+      "dk-29-PR-P-Ld-Or-final-cell.png",
+      "dk-30-PR-P-Ld-Or-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Or-A",
+     "did": "published Saturday; first Or, then A",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Or: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Or: the day reads pending [1 pending] · ✓ A: the amendment went out as AL1 [{\"absent\":false,\"said\":\"AL1\",\"signedFirst\":\"{\\\"cur\\\":\\\"Ace\\\",\\\"sked\\\":\\\"Anvil\\\",\\\"plan\\\":\\\"Anvil\\\",\\\"appr\\\":\\\"Anvil\\\"}\",\"note\":\"Publish AL control: {\\\"text\\\":\\\"] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (the pair's own A published it)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-31-PR-P-Or-A-after-2.png",
+      "dk-32-PR-P-Or-A-final-cell.png",
+      "dk-33-PR-P-Or-A-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-A-Or",
+     "did": "published Saturday; first A, then Or",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Or: paid still holds [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ A first (nothing waiting): no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: none)\"}] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"\\\"\",\"redoPressed\":true,\"afterRedo\":\"chip \\\"1 pending\\\" marker \\\"No] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-34-PR-P-A-Or-after-2.png",
+      "dk-35-PR-P-A-Or-final-cell.png",
+      "dk-36-PR-P-A-Or-final-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 36
+  },
+  "ows-D-h05-dk": {
+   "at": "2026-10-06T14:05:48.028Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-05",
+     "did": "S08 fixture (Ranger, flight 10:00–11:15, no in-time) published = FO 07:00–13:15; Logic \"Nominal report before T/O\" 3h → 2h30; OIL Earn on the WORKING copy; the published face in View-only Sched; his puck off and on again",
+     "saw": "✓ published FO 07:00–13:15 [FO* | Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left] · ✓ the Logic change reads pending with the man named full day → half day [{\"chip\":\"1 pending\",\"list\":\"OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07] · ✓ OIL Earn on the working copy: his figure is HO (what WOULD go out) [[\"Ranger HO [glow]\"]] · ✓ View-only Sched: the published face still wears the FULL-day (FO) edge [{\"tag\":\"ORIG\",\"pucks\":[\"oilbar-fo\"],\"pic\":\"dk-06-face-bane.png\"}] · ✓ him off: the To go out list has the What-this-day-earns line AND the Logic line [What this day earns changed OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07] · ✓ him back on: the Logic line stands alone (the earns line is gone) [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → half day · 07:30] · ✓ the published credit never moved (FO 07:00–13:15) [FO* | Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-H05-mode-working.png",
+      "dk-06-face-bane.png",
+      "dk-03-H05-logic-day.png",
+      "dk-04-H05-logic-togoout.png",
+      "dk-07-H05-off-day.png",
+      "dk-08-H05-off-togoout.png",
+      "dk-09-H05-on-again-day.png",
+      "dk-10-H05-on-again-togoout.png",
+      "dk-11-H05-after-cell.png",
+      "dk-12-H05-after-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 12
+  },
+  "ows-D-pairs-U-dk": {
+   "at": "2026-10-06T14:09:58.118Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "PR-U-Op-Lr",
+     "did": "unpublished Saturday; first Op, then Lr",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Op: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-PR-U-Op-Lr-after-2.png",
+      "dk-02-PR-U-Op-Lr-final-cell.png",
+      "dk-03-PR-U-Op-Lr-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Lr-Op",
+     "did": "unpublished Saturday; first Lr, then Op",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Lr: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-PR-U-Lr-Op-after-2.png",
+      "dk-05-PR-U-Lr-Op-final-cell.png",
+      "dk-06-PR-U-Lr-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Op-Ld",
+     "did": "unpublished Saturday; first Op, then Ld",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Op: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-PR-U-Op-Ld-after-2.png",
+      "dk-08-PR-U-Op-Ld-final-cell.png",
+      "dk-09-PR-U-Op-Ld-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Ld-Op",
+     "did": "unpublished Saturday; first Ld, then Op",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Ld: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-PR-U-Ld-Op-after-2.png",
+      "dk-11-PR-U-Ld-Op-final-cell.png",
+      "dk-12-PR-U-Ld-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Op-A",
+     "did": "unpublished Saturday; first Op, then A",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Op: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ A second on an unpublished day: no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: {\\\"text\\\":\\\"Publish day\\\",\\\"disabled\\\":true})\"}] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-PR-U-Op-A-after-2.png",
+      "dk-14-PR-U-Op-A-final-cell.png",
+      "dk-15-PR-U-Op-A-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-A-Op",
+     "did": "unpublished Saturday; first A, then Op",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after A: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ A first on an unpublished day: no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: {\\\"text\\\":\\\"Publish day\\\",\\\"disabled\\\":true})\"}] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-PR-U-A-Op-after-2.png",
+      "dk-17-PR-U-A-Op-final-cell.png",
+      "dk-18-PR-U-A-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Or-Lr",
+     "did": "unpublished Saturday; first Or, then Lr",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Or: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-PR-U-Or-Lr-after-2.png",
+      "dk-20-PR-U-Or-Lr-final-cell.png",
+      "dk-21-PR-U-Or-Lr-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Lr-Or",
+     "did": "unpublished Saturday; first Lr, then Or",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Lr: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-PR-U-Lr-Or-after-2.png",
+      "dk-23-PR-U-Lr-Or-final-cell.png",
+      "dk-24-PR-U-Lr-Or-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Or-Ld",
+     "did": "unpublished Saturday; first Or, then Ld",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Or: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-PR-U-Or-Ld-after-2.png",
+      "dk-26-PR-U-Or-Ld-final-cell.png",
+      "dk-27-PR-U-Or-Ld-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Ld-Or",
+     "did": "unpublished Saturday; first Ld, then Or",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Ld: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-28-PR-U-Ld-Or-after-2.png",
+      "dk-29-PR-U-Ld-Or-final-cell.png",
+      "dk-30-PR-U-Ld-Or-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Or-A",
+     "did": "unpublished Saturday; first Or, then A",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Or: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ A second on an unpublished day: no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: {\\\"text\\\":\\\"Publish day\\\",\\\"disabled\\\":true})\"}] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-31-PR-U-Or-A-after-2.png",
+      "dk-32-PR-U-Or-A-final-cell.png",
+      "dk-33-PR-U-Or-A-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-A-Or",
+     "did": "unpublished Saturday; first A, then Or",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after A: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ A first on an unpublished day: no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: {\\\"text\\\":\\\"Publish day\\\",\\\"disabled\\\":true})\"}] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-34-PR-U-A-Or-after-2.png",
+      "dk-35-PR-U-A-Or-final-cell.png",
+      "dk-36-PR-U-A-Or-final-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 36
   }
  }
 }

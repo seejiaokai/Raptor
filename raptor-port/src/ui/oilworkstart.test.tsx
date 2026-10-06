@@ -66,7 +66,7 @@ const jet = (p: string) => ({ p, w: '', area: '', rmks: '', opts: {} })
 /* the two men by the callsigns the screen prints (the ids are the roster's own keys; `bane` is the demo's Ranger) */
 const FLYER = String((PEOPLE as any).bane.cs), DESK = String((PEOPLE as any).stiff.cs)
 /* a man's line as the list prints it: his callsign, then what his OIL would go from and to */
-const moves = (who: string, from: string, to: string) => `${who} · OIL${from} → ${to}`
+const moves = (who: string, from: string, to: string) => `${who} · OIL as published, under today's values${from} → ${to}`
 /* Saturday holding exactly this: the flyer on a flying line, the desk man on a six-hour desk */
 const build = (to: string, ld: string, intimes: string[] = []) => {
   Object.assign(DAYS[SAT], {
@@ -122,6 +122,9 @@ describe('OWS7 — a Logic change that would move a published day\'s OIL is one 
     expect(t, 'the man whose OIL would move, and how').toContain(moves(FLYER, 'full day · 07:00–13:15', 'half day · 07:30–13:15'))
     expect(t, 'never the long label of the Logic box').not.toContain('button fills in')
     expect(t, 'a man whose OIL does not move is not named').not.toContain(DESK)
+    /* the walk (walker D, S38): the man's line says what it compares — his PUBLISHED OIL against today's values — so it
+       is not read as what the amendment will give him when another change is also waiting */
+    expect(t).toContain(`${FLYER} · OIL as published, under today's values`)
     expect(daySigned(SAT), 'something waiting means sign again').toBe(false)
     expect(alPanelText()).toMatch(/Sat · 1 change/)
 

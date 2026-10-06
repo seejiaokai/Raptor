@@ -1,0 +1,96 @@
+PASS PR00.U>Lr.UNPUB | Unpublish  THEN  Logic lead 3h→2h30 — from an UNPUBLISHED day (fixture no report, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. Unpublish → ABSENT: no Unpublish button ⇒ day DRAFT, chip "", sign-offs empty || 2. Logic lead 3h→2h30 → lead now 2h30 ⇒ day DRAFT, chip "", sign-offs empty ]
+   pics: 3
+PASS PR01.U>Lr.PUB | Unpublish  THEN  Logic lead 3h→2h30 — from a PUBLISHED day (fixture no report, PUB)
+   BAD: 
+   REC: (record) what the day said [1. Unpublish → pressed (Unpublish); said: Saturday unpublished — it is a draft again; publishing reissues the Original ⇒ day DRAFT, chip "", sign-offs empty || ]
+   pics: 3
+PASS PR02.Lr>U.UNPUB | Logic lead 3h→2h30  THEN  Unpublish — from an UNPUBLISHED day (fixture no report, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. Logic lead 3h→2h30 → lead now 2h30 ⇒ day DRAFT, chip "", sign-offs empty || 2. Unpublish → ABSENT: no Unpublish button ⇒ day DRAFT, chip "", sign-offs empty ]
+   pics: 3
+PASS PR03.Lr>U.PUB | Logic lead 3h→2h30  THEN  Unpublish — from a PUBLISHED day (fixture no report, PUB)
+   BAD: 
+   REC: (record) what the day said [1. Logic lead 3h→2h30 → lead now 2h30 ⇒ day ORIG, chip "1 pending", sign-offs empty, To go out: OIL on this day · Logic values changed since it was published Lo]
+   pics: 3
+PASS PR04.U>T~.UNPUB | Unpublish  THEN  in-time → 08:30 — from an UNPUBLISHED day (fixture IN TIME 10:00, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. Unpublish → ABSENT: no Unpublish button ⇒ day DRAFT, chip "", sign-offs empty || 2. in-time → 08:30 → line reads ["IN TIME 08:30"] ⇒ day DRAFT, chip "", sign]
+   pics: 3
+PASS PR05.U>T~.PUB | Unpublish  THEN  in-time → 08:30 — from a PUBLISHED day (fixture IN TIME 10:00, PUB)
+   BAD: 
+   REC: (record) what the day said [1. Unpublish → pressed (Unpublish); said: Saturday unpublished — it is a draft again; publishing reissues the Original ⇒ day DRAFT, chip "", sign-offs empty || ]
+   pics: 3
+PASS PR06.T~>U.UNPUB | in-time → 08:30  THEN  Unpublish — from an UNPUBLISHED day (fixture IN TIME 10:00, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. in-time → 08:30 → line reads ["IN TIME 08:30"] ⇒ day DRAFT, chip "", sign-offs empty || 2. Unpublish → ABSENT: no Unpublish button ⇒ day DRAFT, chip "", sign]
+   pics: 3
+PASS PR07.T~>U.PUB | in-time → 08:30  THEN  Unpublish — from a PUBLISHED day (fixture IN TIME 10:00, PUB)
+   BAD: 
+   REC: (record) what the day said [1. in-time → 08:30 → line reads ["IN TIME 08:30"] ⇒ day ORIG, chip "1 pending", sign-offs empty, To go out: WAVE 1 · In-time / Rally Saber 6/10 21:51 1 In-time ]
+   pics: 3
+PASS PR08.V>Lr.UNPUB | Load Original onto working copy  THEN  Logic lead 3h→2h30 — from an UNPUBLISHED day (fixture no report, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. Load Original onto working copy → ABSENT: no such version in the menu:  ⇒ day DRAFT, chip "", sign-offs empty || 2. Logic lead 3h→2h30 → lead now 2h30 ⇒ day ]
+   pics: 3
+PASS PR09.V>Lr.PUB | Load Original onto working copy  THEN  Logic lead 3h→2h30 — from a PUBLISHED day (fixture no report, PUB)
+   BAD: 
+   REC: (record) what the day said [1. Load Original onto working copy → looked at "Original", Load onto working copy → ["Load onto working copy"] ⇒ day ORIG, chip "", sign-offs empty || 2. Logic ]
+   pics: 4
+PASS PR10.Lr>V.UNPUB | Logic lead 3h→2h30  THEN  Load Original onto working copy — from an UNPUBLISHED day (fixture no report, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. Logic lead 3h→2h30 → lead now 2h30 ⇒ day DRAFT, chip "", sign-offs empty || 2. Load Original onto working copy → ABSENT: no such version in the menu:  ⇒ day ]
+   pics: 3
+PASS PR11.Lr>V.PUB | Logic lead 3h→2h30  THEN  Load Original onto working copy — from a PUBLISHED day (fixture no report, PUB)
+   BAD: 
+   REC: (record) what the day said [1. Logic lead 3h→2h30 → lead now 2h30 ⇒ day ORIG, chip "1 pending", sign-offs empty, To go out: OIL on this day · Logic values changed since it was published Lo]
+   pics: 4
+PASS PR12.V>T~.UNPUB | Load Original onto working copy  THEN  in-time → 08:30 — from an UNPUBLISHED day (fixture IN TIME 10:00, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. Load Original onto working copy → ABSENT: no such version in the menu:  ⇒ day DRAFT, chip "", sign-offs empty || 2. in-time → 08:30 → line reads ["IN TIME 08]
+   pics: 3
+PASS PR13.V>T~.PUB | Load Original onto working copy  THEN  in-time → 08:30 — from a PUBLISHED day (fixture IN TIME 10:00, PUB)
+   BAD: 
+   REC: (record) what the day said [1. Load Original onto working copy → looked at "Original", Load onto working copy → ["Load onto working copy"] ⇒ day ORIG, chip "", sign-offs empty || 2. in-tim]
+   pics: 4
+PASS PR14.T~>V.UNPUB | in-time → 08:30  THEN  Load Original onto working copy — from an UNPUBLISHED day (fixture IN TIME 10:00, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. in-time → 08:30 → line reads ["IN TIME 08:30"] ⇒ day DRAFT, chip "", sign-offs empty || 2. Load Original onto working copy → ABSENT: no such version in the m]
+   pics: 3
+PASS PR15.T~>V.PUB | in-time → 08:30  THEN  Load Original onto working copy — from a PUBLISHED day (fixture IN TIME 10:00, PUB)
+   BAD: 
+   REC: (record) what the day said [1. in-time → 08:30 → line reads ["IN TIME 08:30"] ⇒ day ORIG, chip "1 pending", sign-offs empty, To go out: WAVE 1 · In-time / Rally Saber 6/10 21:54 1 In-time ]
+   pics: 3
+PASS PR16.M>Lr.UNPUB | member edits request → 07:00–07:30  THEN  Logic lead 3h→2h30 — from an UNPUBLISHED day (fixture no report + request 06:00–06:30, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. member edits request → 07:00–07:30 → member's row now: Ranger 18 Jul 07:00–07:30 DUTY LATEPR16 now OIL ✎ ✕ ⇒ day DRAFT, chip "", sign-offs empty || 2. Logic ]
+   pics: 3
+PASS PR17.M>Lr.PUB | member edits request → 07:00–07:30  THEN  Logic lead 3h→2h30 — from a PUBLISHED day (fixture no report + request 06:00–06:30, PUB)
+   BAD: 
+   REC: (record) what the day said [1. member edits request → 07:00–07:30 → member's row now: Ranger 18 Jul 07:00–07:30 DUTY LATEPR17 now OIL ✎ ✕ ⇒ day ORIG, chip "1 pending", sign-offs empty, To ]
+   pics: 4
+PASS PR18.Lr>M.UNPUB | Logic lead 3h→2h30  THEN  member edits request → 07:00–07:30 — from an UNPUBLISHED day (fixture no report + request 06:00–06:30, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. Logic lead 3h→2h30 → lead now 2h30 ⇒ day DRAFT, chip "", sign-offs empty || 2. member edits request → 07:00–07:30 → member's row now: Ranger 18 Jul 07:00–07:]
+   pics: 3
+PASS PR19.Lr>M.PUB | Logic lead 3h→2h30  THEN  member edits request → 07:00–07:30 — from a PUBLISHED day (fixture no report + request 06:00–06:30, PUB)
+   BAD: 
+   REC: (record) what the day said [1. Logic lead 3h→2h30 → lead now 2h30 ⇒ day ORIG, chip "1 pending", sign-offs empty, To go out: OIL on this day · Logic values changed since it was published Lo]
+   pics: 4
+PASS PR20.M>T~.UNPUB | member edits request → 07:00–07:30  THEN  in-time → 08:30 — from an UNPUBLISHED day (fixture IN TIME 10:00 + request 06:00–06:30, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. member edits request → 07:00–07:30 → member's row now: Ranger 18 Jul 07:00–07:30 DUTY LATEPR20 now OIL ✎ ✕ ⇒ day DRAFT, chip "", sign-offs empty || 2. in-tim]
+   pics: 3
+PASS PR21.M>T~.PUB | member edits request → 07:00–07:30  THEN  in-time → 08:30 — from a PUBLISHED day (fixture IN TIME 10:00 + request 06:00–06:30, PUB)
+   BAD: 
+   REC: (record) what the day said [1. member edits request → 07:00–07:30 → member's row now: Ranger 18 Jul 07:00–07:30 DUTY LATEPR21 now OIL ✎ ✕ ⇒ day ORIG, chip "1 pending", sign-offs empty, To ]
+   pics: 4
+PASS PR22.T~>M.UNPUB | in-time → 08:30  THEN  member edits request → 07:00–07:30 — from an UNPUBLISHED day (fixture IN TIME 10:00 + request 06:00–06:30, UNPUB)
+   BAD: 
+   REC: (record) what the day said [1. in-time → 08:30 → line reads ["IN TIME 08:30"] ⇒ day DRAFT, chip "", sign-offs empty || 2. member edits request → 07:00–07:30 → member's row now: Ranger 18 J]
+   pics: 3
+PASS PR23.T~>M.PUB | in-time → 08:30  THEN  member edits request → 07:00–07:30 — from a PUBLISHED day (fixture IN TIME 10:00 + request 06:00–06:30, PUB)
+   BAD: 
+   REC: (record) what the day said [1. in-time → 08:30 → line reads ["IN TIME 08:30"] ⇒ day ORIG, chip "1 pending", sign-offs empty, To go out: WAVE 1 · In-time / Rally Saber 6/10 21:57 1 In-time ]
+   pics: 4

@@ -1,0 +1,70 @@
+{
+ "parts": {
+  "PR-U-SLt-dk": {
+   "at": "2026-10-06T13:34:25.625Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLt",
+     "did": "an UNPUBLISHED unsigned draft: S then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-PLt-dk": {
+   "at": "2026-10-06T13:35:37.831Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLt",
+     "did": "an UNPUBLISHED unsigned draft: S then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLt",
+     "did": "an UNPUBLISHED unsigned draft: P then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-ALt-dk": {
+   "at": "2026-10-06T13:36:49.858Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLt",
+     "did": "an UNPUBLISHED unsigned draft: S then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLt",
+     "did": "an UNPUBLISHED unsigned draft: P then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-ALt",
+     "did": "an UNPUBLISHED unsigned draft: A then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  }
+ }
+}

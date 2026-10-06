@@ -1,0 +1,199 @@
+{
+ "parts": {
+  "PR-U-LrS-dk": {
+   "at": "2026-10-06T13:25:52.732Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LrS",
+     "did": "an UNPUBLISHED unsigned draft: Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-SLr-dk": {
+   "at": "2026-10-06T13:27:05.559Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LrS",
+     "did": "an UNPUBLISHED unsigned draft: Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-SLr",
+     "did": "an UNPUBLISHED unsigned draft: S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-LrP-dk": {
+   "at": "2026-10-06T13:28:18.167Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LrS",
+     "did": "an UNPUBLISHED unsigned draft: Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-SLr",
+     "did": "an UNPUBLISHED unsigned draft: S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-LrP",
+     "did": "an UNPUBLISHED unsigned draft: Lr then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"disabled: Sign off CUR ] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-PLr-dk": {
+   "at": "2026-10-06T13:29:30.186Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LrS",
+     "did": "an UNPUBLISHED unsigned draft: Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-SLr",
+     "did": "an UNPUBLISHED unsigned draft: S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-LrP",
+     "did": "an UNPUBLISHED unsigned draft: Lr then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"disabled: Sign off CUR ] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLr",
+     "did": "an UNPUBLISHED unsigned draft: P then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✗ after Lr (Lr: reportLead → 2h30 — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-LrA-dk": {
+   "at": "2026-10-06T13:30:42.498Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LrS",
+     "did": "an UNPUBLISHED unsigned draft: Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-SLr",
+     "did": "an UNPUBLISHED unsigned draft: S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-LrP",
+     "did": "an UNPUBLISHED unsigned draft: Lr then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"disabled: Sign off CUR ] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLr",
+     "did": "an UNPUBLISHED unsigned draft: P then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✗ after Lr (Lr: reportLead → 2h30 — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "U-LrA",
+     "did": "an UNPUBLISHED unsigned draft: Lr then A",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"absent\"}] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-ALr-dk": {
+   "at": "2026-10-06T13:31:55.257Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LrS",
+     "did": "an UNPUBLISHED unsigned draft: Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-SLr",
+     "did": "an UNPUBLISHED unsigned draft: S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-LrP",
+     "did": "an UNPUBLISHED unsigned draft: Lr then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"disabled: Sign off CUR ] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLr",
+     "did": "an UNPUBLISHED unsigned draft: P then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✗ after Lr (Lr: reportLead → 2h30 — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "U-LrA",
+     "did": "an UNPUBLISHED unsigned draft: Lr then A",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"absent\"}] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-ALr",
+     "did": "an UNPUBLISHED unsigned draft: A then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✗ after Lr (Lr: reportLead → 2h30 — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    }
+   ],
+   "errors": []
+  }
+ }
+}

@@ -56,16 +56,16 @@ const SC = {
         ['worked 08:00–18:00', spans(a).includes('08:00–18:00'), a.lw.row.slice(0, 150)], ['nothing pending', a.d.pend === '0', a.d.head.pending],
       ], a.pics); console.log(T + '.1', sayS(a))
       await logicSet(p, 'reportLead', '2h30')
-      const s1 = await snap(p, SAT, ID, A.SAT, T + '-b1', { shots: false })
+      const s1 = await snap(p, SAT, ID, A.SAT, T + '-b1')
       await logicSet(p, 'debrief', '2h30')
-      const s2 = await snap(p, SAT, ID, A.SAT, T + '-b2', { shots: false })
+      const s2 = await snap(p, SAT, ID, A.SAT, T + '-b2')
       await logicSet(p, 'oilFullMin', '6h40')
       const lg = await lgRead(p)
       const b = await snap(p, SAT, ID, A.SAT, T + '-b3')
       judge(T + '.2', 'Logic: lead 3h → 2h30, debrief 2h → 2h30, threshold 6h01 → 6h40, one after the other', [
         ['values 150/150/400', lg.lead === 150 && lg.debrief === 150 && lg.full === 400, lg],
         ['after lead: nothing pending, sign-offs stand', s1.d.pend === '0' && signStand(s1.d.head), [s1.d.head.pending, signsWords(s1.d.head)]],
-        ['after debrief: nothing pending, sign-offs stand', s2.d.pend === '0' && signStand(s2.d.head), [s2.d.head.pending, signsWords(s2.d.head)]],
+        ['after debrief: nothing pending, sign-offs stand', s2.d.pend === '0' && signStand(s2.d.head), [s2.d.head.pending, signsWords(s2.d.head), s2.d.list]],
         ['after threshold: nothing pending', b.d.pend === '0' && !b.d.list, [b.d.head.pending, b.d.list]],
         ['sign-offs stand (no Not-yet-signed chip)', signStand(b.d.head), signsWords(b.d.head)],
         ['cell FO, worked 08:00–18:00, balance unmoved', b.lw.letters === 'FO' && spans(b).includes('08:00–18:00') && b.lw.bal === a.lw.bal, A.say(b.lw)],

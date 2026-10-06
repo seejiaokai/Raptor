@@ -1,0 +1,93 @@
+{
+ "parts": {
+  "ows-B-sB-S28S29-dk": {
+   "at": "2026-10-06T13:13:06.299Z",
+   "base": "http://localhost:4294",
+   "phone": false,
+   "table": [
+    {
+     "id": "S28.1",
+     "did": "Saturday: wave with two lines — VIPER (Ranger) and COBRA (Saber), both 12:00–13:00; typed IN TIME 08:30 (wave-wide) and VIPER IN TIME 10:00; published",
+     "saw": "✓ both lines drawn [\"?\"] · ✓ the two in-time lines [{\"trace\":[1,2],\"lines\":[\"IN TIME 08:30\",\"VIPER IN TIME 10:00\"]}] · ✓ published ORIG [ORIG] · ✓ A (Ranger): HO, 10:00–15:00 [{\"cell\":\"HO*\",\"row\":\"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left\",\"bal\":[\"0\",\"0.5\"]}] · ✓ B (Saber): FO, 08:30–15:00 [{\"cell\":\"FO*\",\"row\":\"Saber IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left\",\"bal\":[\"0\",\"1\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S28-board.png",
+      "dk-02-S28a-A-cell.png",
+      "dk-03-S28a-A-tracker.png",
+      "dk-04-S28a-B-cell.png",
+      "dk-05-S28a-B-tracker.png"
+     ]
+    },
+    {
+     "id": "S28.1-words",
+     "did": "the box and the day say",
+     "saw": "{\"box\":[\"VIPER: in-time 10:00 is later than suggested brief 09:40.\"],\"day\":[\"hard/REPORT_ORDER: VIPER: in-time 10:00 is later than suggested brief 09:40.\"]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-S28-board.png"
+     ]
+    },
+    {
+     "id": "S28.2",
+     "did": "then a wave-wide RALLY 09:00 typed through \"+ In-time / Rally\" (working copy), then Publish AL",
+     "saw": "✓ the third line is there [[\"IN TIME 08:30\",\"VIPER IN TIME 10:00\",\"RALLY 09:00\"]] · ✓ working copy: 1 pending [1 pending] · ✓ paid holds: A HO 10:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left] · ✓ paid holds: B FO 08:30 [Saber IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ AL1 [AL1] · ✓ A now HO 09:00–15:00 [{\"cell\":\"HO*\",\"row\":\"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\",\"bal\":\"0.5\"}] · ✓ B stays FO 08:30–15:00 [{\"cell\":\"FO*\",\"row\":\"Saber IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left\",\"bal\":\"1\"}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-S28b-board.png",
+      "dk-07-S28b-day-day.png",
+      "dk-08-S28b-day-togoout.png",
+      "dk-09-S28b-A-held-cell.png",
+      "dk-10-S28b-A-held-tracker.png",
+      "dk-13-S28c-A-cell.png",
+      "dk-14-S28c-A-tracker.png",
+      "dk-15-S28c-B-cell.png",
+      "dk-16-S28c-B-tracker.png"
+     ]
+    },
+    {
+     "id": "S29-A",
+     "did": "Saturday flight 01:00–02:00; two In-time lines typed in the order [\"IN TIME 23:00\",\"IN TIME 00:30\"]; published",
+     "saw": "✓ two lines kept in that order [{\"trace\":[1,2],\"lines\":[\"IN TIME 23:00\",\"IN TIME 00:30\"]}] · ✓ HO [HO*] · ✓ worked 00:00–04:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 00:00–04:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-S29-A-pub-cell.png",
+      "dk-20-S29-A-pub-tracker.png",
+      "dk-21-S29-A-day-day.png",
+      "dk-18-S29-A-board.png"
+     ]
+    },
+    {
+     "id": "S29-A-words",
+     "did": "box / day words",
+     "saw": "{\"box\":[\"VIPER: in-time 23:00 (previous day) is later than suggested brief 22:40 (previous day).\"],\"day\":[\"hard/REPORT_ORDER: VIPER: in-time 23:00 (previous day) is later than suggested brief 22:40 (previous day).\"]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-18-S29-A-board.png"
+     ]
+    },
+    {
+     "id": "S29-B",
+     "did": "Saturday flight 01:00–02:00; two In-time lines typed in the order [\"IN TIME 00:30\",\"IN TIME 23:00\"]; published",
+     "saw": "✓ two lines kept in that order [{\"trace\":[1,2],\"lines\":[\"IN TIME 00:30\",\"IN TIME 23:00\"]}] · ✓ HO [HO*] · ✓ worked 00:00–04:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 00:00–04:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-23-S29-B-pub-cell.png",
+      "dk-24-S29-B-pub-tracker.png",
+      "dk-25-S29-B-day-day.png",
+      "dk-22-S29-B-board.png"
+     ]
+    },
+    {
+     "id": "S29-B-words",
+     "did": "box / day words",
+     "saw": "{\"box\":[\"VIPER: in-time 23:00 (previous day) is later than suggested brief 22:40 (previous day).\"],\"day\":[\"hard/REPORT_ORDER: VIPER: in-time 23:00 (previous day) is later than suggested brief 22:40 (previous day).\"]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-22-S29-B-board.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

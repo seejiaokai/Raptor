@@ -233,6 +233,1343 @@
     }
    ],
    "errors": []
+  },
+  "S13-dk": {
+   "at": "2026-10-06T13:13:22.160Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "S13.1",
+     "did": "Ranger 12:00–13:00 no report; published",
+     "saw": "✓ ORIG [ORIG] · ✓ HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S13-a-cell.png",
+      "dk-02-S13-a-tracker.png",
+      "dk-03-S13-a-day.png"
+     ]
+    },
+    {
+     "id": "S13.2",
+     "did": "Logic lead 3h → 2h30",
+     "saw": "✓ one pending, sign-offs fell [[\"1 pending\",\"–/–/–/– + chip \\\"Not yet signed\\\" + button \\\"Publish AL1\\\"\"]] · ✓ Leave War holds HO 09:00–15:00 [cell HO; tracker row \"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"; worked 09:00–15:00; balance 0.5; war record \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-S13-b-cell.png",
+      "dk-05-S13-b-tracker.png",
+      "dk-06-S13-b-day.png",
+      "dk-07-S13-b-togoout.png"
+     ]
+    },
+    {
+     "id": "S13.3",
+     "did": "then \"+ In-time / Rally\" typed IN TIME 0900",
+     "saw": "✓ the line reads 09:00 [{\"btn\":[\"09:30H: IN TIME + WX/NOTAMS\"],\"lines\":[\"IN TIME 09:00\"]}] · ✓ an ordinary reporting change is pending (the day reads pending) [2 pending] · ✓ the Logic explanation is still in To go out (\"OIL on this day · Logic values changed\") [WAVE 1 · In-time / Rally Saber 6/10 21:13 0 In-time / Rally lines → 1 In-time / Rally line OIL on this day · Logic values changed since it was published Logic ·] · ✓ it says 09:00–15:00 → 09:30–15:00 for Ranger (issued content under the lead now set) [WAVE 1 · In-time / Rally Saber 6/10 21:13 0 In-time / Rally lines → 1 In-time / Rally line OIL on this day · Logic values changed since it was published Logic ·] · ✓ Leave War holds HO 09:00–15:00 [cell HO; tracker row \"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"; worked 09:00–15:00; balance 0.5; war record \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-S13-c-cell.png",
+      "dk-09-S13-c-tracker.png",
+      "dk-10-S13-c-day.png",
+      "dk-11-S13-c-togoout.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "S11b-dk": {
+   "at": "2026-10-06T13:13:23.385Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "S11b.1",
+     "did": "duty row DOO 09:00–15:00, seated [true,\"Ranger planned\"]; four signed; published",
+     "saw": "✓ ORIG [ORIG] · ✓ HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH Duty · 09:00–15:00 0.5 left] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S11b-a-cell.png",
+      "dk-02-S11b-a-tracker.png",
+      "dk-03-S11b-a-day.png"
+     ]
+    },
+    {
+     "id": "S11b.2",
+     "did": "Logic: Full-day OIL threshold 6h01 → 6h",
+     "saw": "✓ value 360 [{\"set\":\"6h\",\"lg\":{\"lead\":180,\"debrief\":120,\"full\":360}}] · ✓ cell still HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH Duty · 09:00–15:00 0.5 left] · ✓ balance unmoved [[0.5,0.5]] · ✓ one pending [1 pending] · ✓ sign-offs fell [–/–/–/– + chip \"Not yet signed\" + button \"Publish AL1\"] · ✓ list: threshold sub-line and man half day → full day [OIL on this day · Logic values changed since it was published Logic · Full-day OIL threshold 6h01 → 6h Ranger · OIL half day · 09:00–15:00 → full day · 09:00–15]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-S11b-b-cell.png",
+      "dk-05-S11b-b-tracker.png",
+      "dk-06-S11b-b-day.png",
+      "dk-07-S11b-b-togoout.png"
+     ]
+    },
+    {
+     "id": "S11b.3",
+     "did": "sign again; publish the amendment",
+     "saw": "✓ AL1 [AL1] · ✓ cell FO [FO*] · ✓ worked unchanged 09:00–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH Duty · 09:00–15:00 1 left] · ✓ balance higher by 0.5 [[0.5,1]] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-S11b-c-cell.png",
+      "dk-09-S11b-c-tracker.png",
+      "dk-10-S11b-c-day.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "S12-dk": {
+   "at": "2026-10-06T13:14:51.542Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "S12.1",
+     "did": "Ranger: Ground row GND 08:00–18:00 and a flying line 12:00–13:00 with IN TIME 10:00; published",
+     "saw": "✓ seated on the Ground row [{\"ri\":0,\"took\":true,\"msg\":\"Ranger — GND & VIPER  clash (+2 more)\",\"label\":\"Ground Programme row\"}] · ✓ ORIG [ORIG] · ✓ FO [FO*] · ✓ worked 08:00–18:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 08:00–18:00 1 left] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S12-a-cell.png",
+      "dk-02-S12-a-tracker.png",
+      "dk-03-S12-a-day.png"
+     ]
+    },
+    {
+     "id": "S12.2",
+     "did": "Logic: lead 3h → 2h30, debrief 2h → 2h30, threshold 6h01 → 6h40, one after the other",
+     "saw": "✓ values 150/150/400 [{\"lead\":150,\"debrief\":150,\"full\":400}] · ✓ after lead: nothing pending, sign-offs stand [[\"\",\"–/–/–/– + no Not-yet-signed chip\"]] · ✗ after debrief: nothing pending, sign-offs stand [[\"1 pending\",\"–/–/–/– + chip \\\"Not yet signed\\\" + button \\\"Publish AL1\\\"\",\"Not enough time to attend the VIPER debrief — GND sits inside 13:00–15:30 (land + 2h3] · ✗ after threshold: nothing pending [[\"1 pending\",\"Not enough time to attend the VIPER debrief — GND sits inside 13:00–15:30 (land + 2h30) changed\"]] · ✗ sign-offs stand (no Not-yet-signed chip) [–/–/–/– + chip \"Not yet signed\" + button \"Publish AL1\"] · ✓ cell FO, worked 08:00–18:00, balance unmoved [cell FO; tracker row \"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 08:00–18:00 1 left\"; worked 08:00–18:00; balance 1; war record \"\"]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-11-S12-b3-cell.png",
+      "dk-12-S12-b3-tracker.png",
+      "dk-13-S12-b3-day.png",
+      "dk-14-S12-b3-togoout.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "S07-dk": {
+   "at": "2026-10-06T13:18:18.590Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "S07.1",
+     "did": "unpublished 12:00–13:00 no report (candidate 09:00–15:00 HO); sign CUR CK and SKED CK",
+     "saw": "✓ two named, two blank [{\"w1\":\"Ace / Basher / — name — / — name —\",\"s1\":[\"Ace\",\"Basher\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S07-1-two-signed.png"
+     ]
+    },
+    {
+     "id": "S07.2",
+     "did": "threshold 6h01 → 6h (candidate FO): the first two sign-offs; then sign the other two",
+     "saw": "✓ at 6h the first two are no longer signed (all four blank) [{\"w2\":\"— name — / — name — / — name — / — name —\"}] · ✓ after signing the other two: they stand; the first two still blank [{\"w3\":\"— name — / — name — / Anvil / Basher\",\"sIn\":[\"Anvil\",\"Basher\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-S07-2-threshold-6h.png",
+      "dk-03-S07-3-other-two-signed.png"
+     ]
+    },
+    {
+     "id": "S07.3",
+     "did": "threshold put back to 6h01 (candidate HO again)",
+     "saw": "✓ value 361 [{\"lead\":180,\"debrief\":120,\"full\":361}] · ✓ the first two (signed for HO) stand again [Ace / Basher / — name — / — name —] · ✓ the last two (signed for FO) do NOT stand [Ace / Basher / — name — / — name —] · ✓ so the day is not publishable on four signatures [Publish day: locked]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-S07-4-restored-6h01.png"
+     ]
+    },
+    {
+     "id": "S07.4",
+     "did": "no credit paid at any step (day never published)",
+     "saw": "✓ cell empty / no FO-HO [{\"text\":\"\",\"cls\":\"weekend act\",\"title\":\"\"}] · ✓ tracker has no 18 Jul credit for Ranger [Ranger IP 0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-S07-lw-cell.png",
+      "dk-06-S07-lw-tracker.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "S06-dk": {
+   "at": "2026-10-06T13:20:46.903Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "S06.1",
+     "did": "published: 12:00–13:00 with IN TIME 10:00",
+     "saw": "✓ HO, worked 10:00–15:00, balance 0.5 [cell HO; tracker row \"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left\"; worked 10:00–15:00; balance 0.5; war record \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S06-a-cell.png",
+      "dk-02-S06-a-tracker.png",
+      "dk-03-S06-a-day.png"
+     ]
+    },
+    {
+     "id": "S06.2",
+     "did": "on the working copy delete the in-time line (candidate 09:00–15:00 HO) and sign it",
+     "saw": "✓ the line is gone [[]] · ✓ signed: four names on the day; the marker reads \"Not yet published\" (signed, not yet out) [{\"sw\":\"Ace / Anvil / Anvil / Anvil\",\"nys\":\"Not yet published\",\"s\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}}] · ✓ Leave War holds HO 10:00–15:00 [cell HO; tracker row \"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left\"; worked 10:00–15:00; balance 0.5; war record \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-S06-b-cell.png",
+      "dk-05-S06-b-tracker.png",
+      "dk-06-S06-b-day.png",
+      "dk-07-S06-b-togoout.png"
+     ]
+    },
+    {
+     "id": "S06.3",
+     "did": "Logic lead 3h → 2h30",
+     "saw": "✓ sign-offs fell: all four names blank and the marker back to \"Not yet signed\" [{\"sw\":\"— name — / — name — / — name — / — name —\",\"nys\":\"Not yet signed\"}] · ✓ pending shown [1 pending | WAVE 1 · In-time / Rally Saber 6/10 21:20 1 In-time / Rally line → 0 In-time / Rally lines] · ✓ paid record holds HO 10:00–15:00 [cell HO; tracker row \"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left\"; worked 10:00–15:00; balance 0.5; war record \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-S06-c-cell.png",
+      "dk-09-S06-c-tracker.png",
+      "dk-10-S06-c-day.png",
+      "dk-11-S06-c-togoout.png"
+     ]
+    },
+    {
+     "id": "S06.4",
+     "did": "Logic back to 3h (180)",
+     "saw": "✓ signatures revive: the four names are back and the marker reads \"Not yet published\" [{\"sw\":\"Ace / Anvil / Anvil / Anvil\",\"nys\":\"Not yet published\"}] · ✓ paid record still HO 10:00–15:00, balance 0.5 [cell HO; tracker row \"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left\"; worked 10:00–15:00; balance 0.5; war record \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-S06-d-cell.png",
+      "dk-13-S06-d-tracker.png",
+      "dk-14-S06-d-day.png",
+      "dk-15-S06-d-togoout.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "S04-dk": {
+   "at": "2026-10-06T13:17:13.225Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "S04.1",
+     "did": "ORIG (lead 3h): 10:00–11:15 → FO 07:00–13:15; lead 2h30, sign, AL1: HO 07:30–13:15; then lead 2h",
+     "saw": "✓ ORIG was FO 07:00–13:15 [cell FO; tracker row \"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left\"; worked 07:00–13:15; balance 1; war record \"\"] · ✓ AL1 published [AL1] · ✓ after AL1: HO, worked 07:30–13:15, balance 0.5 [cell HO; tracker row \"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:30–13:15 0.5 left\"; worked 07:30–13:15; balance 0.5; war record \"\"] · ✓ lead 120 now [{\"lead\":120,\"debrief\":120,\"full\":361}] · ✓ Leave War still HO 07:30–13:15 (the paid AL1) [cell HO; tracker row \"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:30–13:15 0.5 left\"; worked 07:30–13:15; balance 0.5; war record \"\"] · ✓ one pending, sign-offs fell [[\"1 pending\",\"–/–/–/– + chip \\\"Not yet signed\\\" + button \\\"Publish AL2\\\"\"]] · ✓ one OIL item: Logic · lead 2h30 → 2h; Ranger half day 07:30–13:15 → half day 08:00–13:15 [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 2h30 → 2h Ranger · OIL half day · 07:30–13:15 → half day · 08:00]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S04-b-cell.png",
+      "dk-02-S04-b-tracker.png",
+      "dk-03-S04-b-day.png",
+      "dk-04-S04-c-cell.png",
+      "dk-05-S04-c-tracker.png",
+      "dk-06-S04-c-day.png",
+      "dk-07-S04-c-togoout.png"
+     ]
+    },
+    {
+     "id": "S04.2",
+     "did": "three eyes: ORIGINAL look, latest AL look, working copy; then the Leave War",
+     "saw": "✓ the version menu offered ORIGINAL and AL1 [[\"Original\",\"AL1\"]] · ✓ ORIGINAL eye: FO edge (earns a full day) [{\"lk\":\"Original\",\"bar\":\"← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy\",\"pk] · ✓ latest AL eye: HO edge [{\"lk\":\"AL1\",\"bar\":\"← Back to live copy 👁 Viewing the issued AL1 — read-only. This is what was sent out; it never changes. Load onto working copy\",\"pk\":\"HO edge] · ✓ working copy: HO edge [{\"live\":\"HO edge · Ranger · IP · instructor pilot · SXO · earns half a day of OIL\",\"board\":\"HO edge · Ranger · IP · instructor pilot · SXO · earns half a day of] · ✓ Leave War still HO 07:30–13:15 balance 0.5 after looking [cell HO; tracker row \"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:30–13:15 0.5 left\"; worked 07:30–13:15; balance 0.5; war record \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-S04-eye-orig.png",
+      "dk-09-S04-eye-al1.png",
+      "dk-10-S04-working-board.png",
+      "dk-11-S04-d-cell.png",
+      "dk-12-S04-d-tracker.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "S41-dk": {
+   "at": "2026-10-06T13:19:23.703Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "S41.0",
+     "did": "S08 fixture published (FO 07:00–13:15)",
+     "saw": "✓ FO 07:00–13:15 balance 1 [cell FO; tracker row \"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left\"; worked 07:00–13:15; balance 1; war record \"\"]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S41.box0",
+     "did": "lead typed in edit box #0 (2h30), then put back through the OTHER box (3h)",
+     "saw": "✓ box showed 2h30; VCONF 150 [{\"sh\":\"2h30\",\"lg\":{\"lead\":150,\"debrief\":120,\"full\":361}}] · ✓ every box shows the same [[\"2h30\",\"2h30\"]] · ✓ pending 1, sign-offs fell, OIL line named [[\"1 pending\",\"OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → ha] · ✓ paid FO 07:00–13:15 holds [cell FO; tracker row \"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left\"; worked 07:00–13:15; balance 1; war record \"\"] · ✓ put back via other box: 180, cleared, signs stand [{\"back\":\"3h\",\"lg2\":{\"lead\":180,\"debrief\":120,\"full\":361},\"pend\":\"\",\"signs\":\"–/–/–/– + no Not-yet-signed chip\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S41-box0-set-day.png",
+      "dk-02-S41-box0-set-togoout.png"
+     ]
+    },
+    {
+     "id": "S41.box1",
+     "did": "lead typed in edit box #1 (2h30), then put back through the OTHER box (3h)",
+     "saw": "✓ box showed 2h30; VCONF 150 [{\"sh\":\"2h30\",\"lg\":{\"lead\":150,\"debrief\":120,\"full\":361}}] · ✓ every box shows the same [[\"2h30\",\"2h30\"]] · ✓ pending 1, sign-offs fell, OIL line named [[\"1 pending\",\"OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → ha] · ✓ paid FO 07:00–13:15 holds [cell FO; tracker row \"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left\"; worked 07:00–13:15; balance 1; war record \"\"] · ✓ put back via other box: 180, cleared, signs stand [{\"back\":\"3h\",\"lg2\":{\"lead\":180,\"debrief\":120,\"full\":361},\"pend\":\"\",\"signs\":\"–/–/–/– + no Not-yet-signed chip\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-S41-box1-set-day.png",
+      "dk-04-S41-box1-set-togoout.png"
+     ]
+    },
+    {
+     "id": "S41.zero",
+     "did": "nominal lead typed 0 (accepted as \"0 min\"): the published day",
+     "saw": "✓ recorded: value 0, pending \"1 pending\" [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 0 min Ranger · OIL full day · 07:00–13:15 → half day · 10:0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-S41-lead-zero-day.png",
+      "dk-06-S41-lead-zero-togoout.png"
+     ]
+    },
+    {
+     "id": "S41.invalid",
+     "did": "invalid / out-of-range lead values typed into the box",
+     "saw": "✓ text and out-of-range values leave the last accepted value (180) intact [{\"0\":{\"shown\":\"0 min\",\"vconf\":0},\"abc\":{\"shown\":\"3h\",\"vconf\":180},\"99h\":{\"shown\":\"3h\",\"vconf\":180},\"-5\":{\"shown\":\"3h\",\"vconf\":180},\"(blank)\":{\"shown\":\"3h\",\"vcon] · ✓ \"0\" is accepted as 0 min (recorded) [{\"shown\":\"0 min\",\"vconf\":0}] · ✓ day: nothing corrupted (record words still sane) [{\"pend\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-S41-invalid-last.png",
+      "dk-08-S41-after-invalid-day.png"
+     ]
+    },
+    {
+     "id": "S41.reload",
+     "did": "lead 2h30 set, page reloaded and signed in again",
+     "saw": "✓ value still 150 [{\"lead\":150,\"debrief\":120,\"full\":361}] · ✓ still 1 pending with the OIL line [[\"1 pending\",\"OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → ha] · ✓ paid FO 07:00–13:15 holds [cell FO; tracker row \"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left\"; worked 07:00–13:15; balance 1; war record \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-S41-reload-day.png",
+      "dk-10-S41-reload-togoout.png",
+      "dk-11-S41-reload-cell.png",
+      "dk-12-S41-reload-tracker.png"
+     ]
+    },
+    {
+     "id": "S41.2tabs",
+     "did": "a second tab opened on the same browser; then the first reloaded",
+     "saw": "✓ tab 2 reads the saved lead 150 [{\"lead\":150,\"debrief\":120,\"full\":361}] · ✓ tab 2: 1 pending, paid FO 07:00–13:15 [cell FO; tracker row \"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left\"; worked 07:00–13:15; balance 1; war record \"\" || day tag ORIG; pending] · ✓ tab 1 after reload agrees [{\"lg1\":{\"lead\":150,\"debrief\":120,\"full\":361},\"pend\":\"1 pending\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-S41-tab2-day.png",
+      "dk-14-S41-tab2-togoout.png",
+      "dk-15-S41-tab2-cell.png",
+      "dk-16-S41-tab2-tracker.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "H02-dk": {
+   "at": "2026-10-06T13:21:13.575Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "H02.1",
+     "did": "Logic page: the Nominal-report row, the OIL row, and the search box",
+     "saw": "✓ nominal row says: a flying line with no In-time / Rally entered counts its OIL day from that time [SETTING The nominal report to the squadron is 3h before take-off. A flying line with no In-time / Rally entered counts its OIL day from this time. The + In-time] · ✓ OIL row says: day runs from the line's entered In-time / Rally; a published day keeps the OIL it went out with; SC spare / AVALON / BB earn nothing unless switched on in OIL Earn [NOTE Work on a weekend or public holiday earns OIL, credited automatically into Leave War when the day is published. ONE rule for everything: a person's worked ] · ✓ no clipped words on the nominal row [{\"right\":1060,\"vw\":1440,\"overflowPage\":false,\"hiddenOverflow\":[]}] · ✓ no clipped words on the OIL row [{\"cl2\":{\"right\":1060,\"vw\":1440,\"overflowPage\":false,\"hiddenOverflow\":[]},\"whyVis\":{\"display\":\"block\",\"shown\":true,\"h\":214.5}}] · ✓ the page's search finds the OIL row on \"published day keeps\" [[\"NOTE Work on a weekend or public holiday earns OIL, credited automatically into Leave War when the day is publ\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-H02-nominal-row.png",
+      "dk-02-H02-oil-row.png",
+      "dk-03-H02-search-published-day-keeps.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "H02b-ph": {
+   "at": "2026-10-06T13:21:28.219Z",
+   "base": "http://localhost:4293",
+   "phone": true,
+   "table": [],
+   "errors": []
+  },
+  "H02ph-ph": {
+   "at": "2026-10-06T13:21:52.312Z",
+   "base": "http://localhost:4293",
+   "phone": true,
+   "table": [
+    {
+     "id": "H02ph.1",
+     "did": "Logic page: the Nominal-report row, the OIL row, and the search box (phone)",
+     "saw": "✓ nominal row says: a flying line with no In-time / Rally entered counts its OIL day from that time [SETTING The nominal report to the squadron is 3h before take-off. A flying line with no In-time / Rally entered counts its OIL day from this time. The + In-time] · ✓ OIL row says: day runs from the line's entered In-time / Rally; a published day keeps the OIL it went out with; SC spare / AVALON / BB earn nothing unless switched on in OIL Earn [NOTE Work on a weekend or public holiday earns OIL, credited automatically into Leave War when the day is published. ONE rule for everything: a person's worked ] · ✓ no clipped words on the nominal row [{\"right\":378,\"vw\":390,\"overflowPage\":false,\"hiddenOverflow\":[]}] · ✓ no clipped words on the OIL row [{\"cl2\":{\"right\":378,\"vw\":390,\"overflowPage\":false,\"hiddenOverflow\":[]},\"whyVis\":{\"display\":\"block\",\"shown\":true,\"h\":643.5}}] · ✓ the page's search finds the OIL row on \"published day keeps\" [[\"NOTE Work on a weekend or public holiday earns OIL, credited automatically into Leave War when the day is publ\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-H02ph-nominal-row.png",
+      "ph-02-H02ph-oil-row.png",
+      "ph-03-H02ph-search-published-day-keeps.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "S10ph-ph": {
+   "at": "2026-10-06T13:25:52.839Z",
+   "base": "http://localhost:4293",
+   "phone": true,
+   "table": [
+    {
+     "id": "S10ph.1",
+     "did": "Ranger on Saturday line 12:00–13:00, \"+ In-time / Rally\" typed IN TIME 0830; four signed; published",
+     "saw": "✓ ORIG [ORIG] · ✓ FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-S10ph-a-cell.png",
+      "ph-02-S10ph-a-tracker.png",
+      "ph-03-S10ph-a-day.png"
+     ]
+    },
+    {
+     "id": "S10ph.2",
+     "did": "Logic: Flight debrief after land 2h → 2h30; Saturday, Leave War, tracker",
+     "saw": "✓ value 150 [{\"lead\":180,\"debrief\":150,\"full\":361}] · ✓ cell still FO [FO*] · ✓ worked still 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance unmoved [[1,1]] · ✓ one pending [1 pending] · ✓ sign-offs fell [–/–/–/– + chip \"Not yet signed\" + button \"Publish AL1\"] · ✓ list: OIL on this day · Logic values changed… + debrief 2h → 2h30 [OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 08:30–15:00 → full day · 08:30] · ✓ man: full day 08:30–15:00 → full day 08:30–15:30 [OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 08:30–15:00 → full day · 08:30]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-S10ph-b-cell.png",
+      "ph-05-S10ph-b-tracker.png",
+      "ph-06-S10ph-b-day.png",
+      "ph-07-S10ph-b-togoout.png"
+     ]
+    },
+    {
+     "id": "S10ph.3",
+     "did": "sign again; publish the amendment",
+     "saw": "✓ AL1 [AL1] · ✓ cell FO [FO*] · ✓ worked now 08:30–15:30 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:30 1 left] · ✓ balance not raised (no second FO) [{\"bal\":1,\"credits\":1}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-S10ph-c-cell.png",
+      "ph-09-S10ph-c-tracker.png",
+      "ph-10-S10ph-c-day.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-SLr-dk": {
+   "at": "2026-10-06T13:34:25.096Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLr",
+     "did": "an UNPUBLISHED unsigned draft: S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-PLr-dk": {
+   "at": "2026-10-06T13:35:37.024Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLr",
+     "did": "an UNPUBLISHED unsigned draft: S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLr",
+     "did": "an UNPUBLISHED unsigned draft: P then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-ALr-dk": {
+   "at": "2026-10-06T13:36:49.463Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLr",
+     "did": "an UNPUBLISHED unsigned draft: S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLr",
+     "did": "an UNPUBLISHED unsigned draft: P then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-ALr",
+     "did": "an UNPUBLISHED unsigned draft: A then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-SLd-dk": {
+   "at": "2026-10-06T13:34:26.031Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLd",
+     "did": "an UNPUBLISHED unsigned draft: S then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-PLd-dk": {
+   "at": "2026-10-06T13:35:38.315Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLd",
+     "did": "an UNPUBLISHED unsigned draft: S then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLd",
+     "did": "an UNPUBLISHED unsigned draft: P then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-ALd-dk": {
+   "at": "2026-10-06T13:36:50.599Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLd",
+     "did": "an UNPUBLISHED unsigned draft: S then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLd",
+     "did": "an UNPUBLISHED unsigned draft: P then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-ALd",
+     "did": "an UNPUBLISHED unsigned draft: A then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-SLt-dk": {
+   "at": "2026-10-06T13:34:25.625Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLt",
+     "did": "an UNPUBLISHED unsigned draft: S then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-PLt-dk": {
+   "at": "2026-10-06T13:35:37.831Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLt",
+     "did": "an UNPUBLISHED unsigned draft: S then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLt",
+     "did": "an UNPUBLISHED unsigned draft: P then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-ALt-dk": {
+   "at": "2026-10-06T13:36:49.858Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-SLt",
+     "did": "an UNPUBLISHED unsigned draft: S then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLt",
+     "did": "an UNPUBLISHED unsigned draft: P then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-ALt",
+     "did": "an UNPUBLISHED unsigned draft: A then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-SLr-dk": {
+   "at": "2026-10-06T13:34:33.378Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLr",
+     "did": "a PUBLISHED day (ORIG, signed): S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-PLr-dk": {
+   "at": "2026-10-06T13:35:52.632Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLr",
+     "did": "a PUBLISHED day (ORIG, signed): S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-PLr",
+     "did": "a PUBLISHED day (ORIG, signed): P then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-ALr-dk": {
+   "at": "2026-10-06T13:37:11.297Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLr",
+     "did": "a PUBLISHED day (ORIG, signed): S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-PLr",
+     "did": "a PUBLISHED day (ORIG, signed): P then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-ALr",
+     "did": "a PUBLISHED day (ORIG, signed): A then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-SLd-dk": {
+   "at": "2026-10-06T13:34:33.584Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLd",
+     "did": "a PUBLISHED day (ORIG, signed): S then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-PLd-dk": {
+   "at": "2026-10-06T13:35:52.943Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLd",
+     "did": "a PUBLISHED day (ORIG, signed): S then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-PLd",
+     "did": "a PUBLISHED day (ORIG, signed): P then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-ALd-dk": {
+   "at": "2026-10-06T13:37:11.729Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLd",
+     "did": "a PUBLISHED day (ORIG, signed): S then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-PLd",
+     "did": "a PUBLISHED day (ORIG, signed): P then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-ALd",
+     "did": "a PUBLISHED day (ORIG, signed): A then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-SLt-dk": {
+   "at": "2026-10-06T13:34:33.739Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLt",
+     "did": "a PUBLISHED day (ORIG, signed): S then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-PLt-dk": {
+   "at": "2026-10-06T13:35:52.959Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLt",
+     "did": "a PUBLISHED day (ORIG, signed): S then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-PLt",
+     "did": "a PUBLISHED day (ORIG, signed): P then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-ALt-dk": {
+   "at": "2026-10-06T13:37:12.083Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLt",
+     "did": "a PUBLISHED day (ORIG, signed): S then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-PLt",
+     "did": "a PUBLISHED day (ORIG, signed): P then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-ALt",
+     "did": "a PUBLISHED day (ORIG, signed): A then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-LrS-dk": {
+   "at": "2026-10-06T13:25:52.732Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LrS",
+     "did": "an UNPUBLISHED unsigned draft: Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-LrP-dk": {
+   "at": "2026-10-06T13:28:18.167Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LrS",
+     "did": "an UNPUBLISHED unsigned draft: Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-SLr",
+     "did": "an UNPUBLISHED unsigned draft: S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-LrP",
+     "did": "an UNPUBLISHED unsigned draft: Lr then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"disabled: Sign off CUR ] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-LrA-dk": {
+   "at": "2026-10-06T13:30:42.498Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LrS",
+     "did": "an UNPUBLISHED unsigned draft: Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-SLr",
+     "did": "an UNPUBLISHED unsigned draft: S then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-LrP",
+     "did": "an UNPUBLISHED unsigned draft: Lr then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"disabled: Sign off CUR ] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLr",
+     "did": "an UNPUBLISHED unsigned draft: P then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✗ after Lr (Lr: reportLead → 2h30 — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "U-LrA",
+     "did": "an UNPUBLISHED unsigned draft: Lr then A",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"absent\"}] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-LdS-dk": {
+   "at": "2026-10-06T13:25:53.335Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LdS",
+     "did": "an UNPUBLISHED unsigned draft: Ld then S",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-LdP-dk": {
+   "at": "2026-10-06T13:28:18.378Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LdS",
+     "did": "an UNPUBLISHED unsigned draft: Ld then S",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-SLd",
+     "did": "an UNPUBLISHED unsigned draft: S then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-LdP",
+     "did": "an UNPUBLISHED unsigned draft: Ld then P",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"disabled: Sign off CUR ] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-LdA-dk": {
+   "at": "2026-10-06T13:30:42.763Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LdS",
+     "did": "an UNPUBLISHED unsigned draft: Ld then S",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-SLd",
+     "did": "an UNPUBLISHED unsigned draft: S then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-LdP",
+     "did": "an UNPUBLISHED unsigned draft: Ld then P",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"disabled: Sign off CUR ] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLd",
+     "did": "an UNPUBLISHED unsigned draft: P then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✗ after Ld (Ld: debrief → 2h30 — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "U-LdA",
+     "did": "an UNPUBLISHED unsigned draft: Ld then A",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"absent\"}] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-LtS-dk": {
+   "at": "2026-10-06T13:25:53.703Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LtS",
+     "did": "an UNPUBLISHED unsigned draft: Lt then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-LtP-dk": {
+   "at": "2026-10-06T13:28:19.605Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LtS",
+     "did": "an UNPUBLISHED unsigned draft: Lt then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-SLt",
+     "did": "an UNPUBLISHED unsigned draft: S then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-LtP",
+     "did": "an UNPUBLISHED unsigned draft: Lt then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"disabled: Sign off CUR ] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-U-LtA-dk": {
+   "at": "2026-10-06T13:30:44.676Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "U-LtS",
+     "did": "an UNPUBLISHED unsigned draft: Lt then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-SLt",
+     "did": "an UNPUBLISHED unsigned draft: S then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=on al=\"\"] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-LtP",
+     "did": "an UNPUBLISHED unsigned draft: Lt then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"disabled: Sign off CUR ] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "U-PLt",
+     "did": "an UNPUBLISHED unsigned draft: P then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\"}): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✗ after Lt (Lt: oilFullMin → 6h — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "U-LtA",
+     "did": "an UNPUBLISHED unsigned draft: Lt then A",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\"] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"} — expected refused/unavailable): as the rules say [no credit (cell \"\", bal null) | tag DRAFT | pend 0 | marker \"\" | selects all blank | buttons beak=locked al=\"\" | {\"pressed\":false,\"why\":\"absent\"}] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-LrS-dk": {
+   "at": "2026-10-06T13:26:02.686Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-LrS",
+     "did": "a PUBLISHED day (ORIG, signed): Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet published\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"Publish AL1\" |] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-LrP-dk": {
+   "at": "2026-10-06T13:28:43.770Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-LrS",
+     "did": "a PUBLISHED day (ORIG, signed): Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet published\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"Publish AL1\" |] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-SLr",
+     "did": "a PUBLISHED day (ORIG, signed): S then Lr",
+     "saw": "✓ start as expected [[]] · ✗ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [[\"sign-offs expected signed, saw standing+names\"]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "PB-LrP",
+     "did": "a PUBLISHED day (ORIG, signed): Lr then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"} — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-LrA-dk": {
+   "at": "2026-10-06T13:31:25.540Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-LrS",
+     "did": "a PUBLISHED day (ORIG, signed): Lr then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet published\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"Publish AL1\" |] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-SLr",
+     "did": "a PUBLISHED day (ORIG, signed): S then Lr",
+     "saw": "✓ start as expected [[]] · ✗ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [[\"sign-offs expected signed, saw standing+names\"]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "PB-LrP",
+     "did": "a PUBLISHED day (ORIG, signed): Lr then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"} — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-PLr",
+     "did": "a PUBLISHED day (ORIG, signed): P then Lr",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✗ after Lr (Lr: reportLead → 2h30 — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "PB-LrA",
+     "did": "a PUBLISHED day (ORIG, signed): Lr then A",
+     "saw": "✓ start as expected [[]] · ✓ after Lr (Lr: reportLead → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after A (A: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"} — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-LdS-dk": {
+   "at": "2026-10-06T13:26:03.556Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-LdS",
+     "did": "a PUBLISHED day (ORIG, signed): Ld then S",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet published\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"Publish AL1\" |] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-LdP-dk": {
+   "at": "2026-10-06T13:28:45.082Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-LdS",
+     "did": "a PUBLISHED day (ORIG, signed): Ld then S",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet published\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"Publish AL1\" |] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-SLd",
+     "did": "a PUBLISHED day (ORIG, signed): S then Ld",
+     "saw": "✓ start as expected [[]] · ✗ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [[\"sign-offs expected signed, saw standing+names\"]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "PB-LdP",
+     "did": "a PUBLISHED day (ORIG, signed): Ld then P",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"} — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-LdA-dk": {
+   "at": "2026-10-06T13:31:25.556Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-LdS",
+     "did": "a PUBLISHED day (ORIG, signed): Ld then S",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet published\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"Publish AL1\" |] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-SLd",
+     "did": "a PUBLISHED day (ORIG, signed): S then Ld",
+     "saw": "✓ start as expected [[]] · ✗ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [[\"sign-offs expected signed, saw standing+names\"]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "PB-LdP",
+     "did": "a PUBLISHED day (ORIG, signed): Ld then P",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"} — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-PLd",
+     "did": "a PUBLISHED day (ORIG, signed): P then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✗ after Ld (Ld: debrief → 2h30 — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "PB-LdA",
+     "did": "a PUBLISHED day (ORIG, signed): Ld then A",
+     "saw": "✓ start as expected [[]] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after A (A: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"} — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-LtS-dk": {
+   "at": "2026-10-06T13:26:03.230Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-LtS",
+     "did": "a PUBLISHED day (ORIG, signed): Lt then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet published\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"Publish AL1\" |] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-LtP-dk": {
+   "at": "2026-10-06T13:28:44.413Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-LtS",
+     "did": "a PUBLISHED day (ORIG, signed): Lt then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet published\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"Publish AL1\" |] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-SLt",
+     "did": "a PUBLISHED day (ORIG, signed): S then Lt",
+     "saw": "✓ start as expected [[]] · ✗ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [[\"sign-offs expected signed, saw standing+names\"]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "PB-LtP",
+     "did": "a PUBLISHED day (ORIG, signed): Lt then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"} — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-LtA-dk": {
+   "at": "2026-10-06T13:31:24.761Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-LtS",
+     "did": "a PUBLISHED day (ORIG, signed): Lt then S",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet published\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"Publish AL1\" |] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-SLt",
+     "did": "a PUBLISHED day (ORIG, signed): S then Lt",
+     "saw": "✓ start as expected [[]] · ✗ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [[\"sign-offs expected signed, saw standing+names\"]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "PB-LtP",
+     "did": "a PUBLISHED day (ORIG, signed): Lt then P",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"} — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-PLt",
+     "did": "a PUBLISHED day (ORIG, signed): P then Lt",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✗ after Lt (Lt: oilFullMin → 6h — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "PB-LtA",
+     "did": "a PUBLISHED day (ORIG, signed): Lt then A",
+     "saw": "✓ start as expected [[]] · ✓ after Lt (Lt: oilFullMin → 6h): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ after A (A: {\"pressed\":false,\"why\":\"disabled: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"} — expected refused/unavailable): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
   }
  }
 }

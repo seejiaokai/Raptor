@@ -1,0 +1,77 @@
+{
+ "parts": {
+  "ows-C-pairs-0_1_2_3_4_5-dk": {
+   "at": "2026-10-06T13:57:54.172Z",
+   "base": "http://localhost:4295",
+   "phone": false,
+   "table": [
+    {
+     "id": "PR00.U>Lr.UNPUB",
+     "did": "Unpublish  THEN  Logic lead 3h→2h30 — from an UNPUBLISHED day (fixture no report, UNPUB)",
+     "saw": "✓ start: unpublished pays nothing [ bal 0 tag DRAFT] · ✓ after U: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ U unavailable on an unpublished day: absence verified, data unchanged [ABSENT: no Unpublish button] · ✓ after Lr: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ Undo of Lr: back to the state after U [{\"present\":true,\"title\":\"Undo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[\"Undid: a rule on the Logic page\"]} →  bal 0 tag DRAFT (after U:  bal 0 tag D] · ✓ Redo of Lr: the state after Lr again [{\"present\":true,\"title\":\"Redo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[\"Redid: a rule on the Logic page\"]} →  bal 0 tag DRAFT (after Lr:  bal 0 tag ] · ✓ after a reload: the same money and tag as before the reload [ bal 0 tag DRAFT chip \"\" (before:  bal 0 tag DRAFT chip \"\")] · ✓ (record) what the day said [1. Unpublish → ABSENT: no Unpublish button ⇒ day DRAFT, chip \"\", sign-offs empty || 2. Logic lead 3h→2h30 → lead now 2h30 ⇒ day DRAFT, chip \"\", sign-offs empty ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-PR00-2-Lr-cell.png",
+      "dk-02-PR00-2-Lr-tracker.png",
+      "dk-03-PR00-2-Lr-day.png"
+     ]
+    },
+    {
+     "id": "PR01.U>Lr.PUB",
+     "did": "Unpublish  THEN  Logic lead 3h→2h30 — from a PUBLISHED day (fixture no report, PUB)",
+     "saw": "✓ start: published ORIG pays (a credit is on the war) [HO* bal 0.5 tag ORIG] · ✓ after U: no automatic credit on the war, balance back [ bal 0 ← HO* bal 0.5; row Ranger IP 0] · ✓ after Lr: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ Undo of Lr: back to the state after U [{\"present\":true,\"title\":\"Undo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[\"Undid: a rule on the Logic page\"]} →  bal 0 tag DRAFT (after U:  bal 0 tag D] · ✓ Redo of Lr: the state after Lr again [{\"present\":true,\"title\":\"Redo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[\"Redid: a rule on the Logic page\"]} →  bal 0 tag DRAFT (after Lr:  bal 0 tag ] · ✓ after a reload: the same money and tag as before the reload [ bal 0 tag DRAFT chip \"\" (before:  bal 0 tag DRAFT chip \"\")] · ✓ (record) what the day said [1. Unpublish → pressed (Unpublish); said: Saturday unpublished — it is a draft again; publishing reissues the Original ⇒ day DRAFT, chip \"\", sign-offs empty || ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-PR01-2-Lr-cell.png",
+      "dk-05-PR01-2-Lr-tracker.png",
+      "dk-06-PR01-2-Lr-day.png"
+     ]
+    },
+    {
+     "id": "PR02.Lr>U.UNPUB",
+     "did": "Logic lead 3h→2h30  THEN  Unpublish — from an UNPUBLISHED day (fixture no report, UNPUB)",
+     "saw": "✓ start: unpublished pays nothing [ bal 0 tag DRAFT] · ✓ after Lr: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ after U: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ U unavailable on an unpublished day: absence verified, data unchanged [ABSENT: no Unpublish button] · ✓ Undo of U: back to the state after Lr [{\"present\":true,\"title\":\"Undo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[\"Undid: a rule on the Logic page\"]} →  bal 0 tag DRAFT (after Lr:  bal 0 tag ] · ✓ Redo of U: the state after U again [{\"present\":true,\"title\":\"Redo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[\"Redid: a rule on the Logic page\"]} →  bal 0 tag DRAFT (after U:  bal 0 tag D] · ✓ after a reload: the same money and tag as before the reload [ bal 0 tag DRAFT chip \"\" (before:  bal 0 tag DRAFT chip \"\")] · ✓ (record) what the day said [1. Logic lead 3h→2h30 → lead now 2h30 ⇒ day DRAFT, chip \"\", sign-offs empty || 2. Unpublish → ABSENT: no Unpublish button ⇒ day DRAFT, chip \"\", sign-offs empty ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-PR02-2-U-cell.png",
+      "dk-08-PR02-2-U-tracker.png",
+      "dk-09-PR02-2-U-day.png"
+     ]
+    },
+    {
+     "id": "PR03.Lr>U.PUB",
+     "did": "Logic lead 3h→2h30  THEN  Unpublish — from a PUBLISHED day (fixture no report, PUB)",
+     "saw": "✓ start: published ORIG pays (a credit is on the war) [HO* bal 0.5 tag ORIG] · ✓ after Lr: the ORIGINAL's money holds (cell, worked times, balance) [HO* bal 0.5 ← HO* bal 0.5; row Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ after U: no automatic credit on the war, balance back [ bal 0 ← HO* bal 0.5; row Ranger IP 0] · ✓ Undo of U: back to the state after Lr [{\"present\":true,\"title\":\"Undo — taking a published day back\",\"pressed\":true,\"toasts\":[\"Undid: taking a published day bac → HO* bal 0.5 tag ORIG (after Lr: HO* b] · ✓ Redo of U: the state after U again [{\"present\":true,\"title\":\"Redo — taking a published day back\",\"pressed\":true,\"toasts\":[\"Redid: taking a published day bac →  bal 0 tag DRAFT (after U:  bal 0 tag] · ✓ after a reload: the same money and tag as before the reload [ bal 0 tag DRAFT chip \"\" (before:  bal 0 tag DRAFT chip \"\")] · ✓ (record) what the day said [1. Logic lead 3h→2h30 → lead now 2h30 ⇒ day ORIG, chip \"1 pending\", sign-offs empty, To go out: OIL on this day · Logic values changed since it was published Lo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-PR03-2-U-cell.png",
+      "dk-11-PR03-2-U-tracker.png",
+      "dk-12-PR03-2-U-day.png"
+     ]
+    },
+    {
+     "id": "PR04.U>T~.UNPUB",
+     "did": "Unpublish  THEN  in-time → 08:30 — from an UNPUBLISHED day (fixture IN TIME 10:00, UNPUB)",
+     "saw": "✓ start: unpublished pays nothing [ bal 0 tag DRAFT] · ✓ after U: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ U unavailable on an unpublished day: absence verified, data unchanged [ABSENT: no Unpublish button] · ✓ after T~: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ Undo of T~: back to the state after U [{\"present\":true,\"title\":\"Undo — an In-time / Rally line\",\"pressed\":true,\"toasts\":[\"Undid: an In-time / Rally line\"]} →  bal 0 tag DRAFT (after U:  bal 0 tag DRA] · ✓ Redo of T~: the state after T~ again [{\"present\":true,\"title\":\"Redo — an In-time / Rally line\",\"pressed\":true,\"toasts\":[\"Redid: an In-time / Rally line\"]} →  bal 0 tag DRAFT (after T~:  bal 0 tag DR] · ✓ after a reload: the same money and tag as before the reload [ bal 0 tag DRAFT chip \"\" (before:  bal 0 tag DRAFT chip \"\")] · ✓ (record) what the day said [1. Unpublish → ABSENT: no Unpublish button ⇒ day DRAFT, chip \"\", sign-offs empty || 2. in-time → 08:30 → line reads [\"IN TIME 08:30\"] ⇒ day DRAFT, chip \"\", sign]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-PR04-2-Tt-cell.png",
+      "dk-14-PR04-2-Tt-tracker.png",
+      "dk-15-PR04-2-Tt-day.png"
+     ]
+    },
+    {
+     "id": "PR05.U>T~.PUB",
+     "did": "Unpublish  THEN  in-time → 08:30 — from a PUBLISHED day (fixture IN TIME 10:00, PUB)",
+     "saw": "✓ start: published ORIG pays (a credit is on the war) [HO* bal 0.5 tag ORIG] · ✓ after U: no automatic credit on the war, balance back [ bal 0 ← HO* bal 0.5; row Ranger IP 0] · ✓ after T~: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ Undo of T~: back to the state after U [{\"present\":true,\"title\":\"Undo — an In-time / Rally line\",\"pressed\":true,\"toasts\":[\"Undid: an In-time / Rally line\"]} →  bal 0 tag DRAFT (after U:  bal 0 tag DRA] · ✓ Redo of T~: the state after T~ again [{\"present\":true,\"title\":\"Redo — an In-time / Rally line\",\"pressed\":true,\"toasts\":[\"Redid: an In-time / Rally line\"]} →  bal 0 tag DRAFT (after T~:  bal 0 tag DR] · ✓ after a reload: the same money and tag as before the reload [ bal 0 tag DRAFT chip \"\" (before:  bal 0 tag DRAFT chip \"\")] · ✓ (record) what the day said [1. Unpublish → pressed (Unpublish); said: Saturday unpublished — it is a draft again; publishing reissues the Original ⇒ day DRAFT, chip \"\", sign-offs empty || ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-PR05-2-Tt-cell.png",
+      "dk-17-PR05-2-Tt-tracker.png",
+      "dk-18-PR05-2-Tt-day.png"
+     ]
+    }
+   ]
+  }
+ }
+}

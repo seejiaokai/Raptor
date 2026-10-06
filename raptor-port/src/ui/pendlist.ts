@@ -368,7 +368,11 @@ export function pendItemWords(di: number, it: PendItem): Words {
    bracketed note), and each man whose OIL record would move, in words: full day, half day or nothing, with the worked
    times the record carries — so a change that leaves his day a full day and moves only "worked until" still reads as
    what it is. A man whose record stays as it is is not named. No place on the schedule to go to: the value lives on the
-   Logic page. */
+   Logic page.
+   EACH MAN'S LINE SAYS WHAT IT COMPARES (the walk, 6 Oct 26 — walker D, S38): his PUBLISHED OIL, against the same
+   published day worked out with today's values. With another change also waiting — his flight switched off, an in-time
+   typed — "Ranger · OIL  full day → full day …15:30" read as what the amendment would give him, which it is not: the
+   other change has its own line, and what the day WILL earn is the working copy's own figure in OIL Earn. */
 const OIL_VALS = ['reportLead', 'debrief', 'oilFullMin'] as const
 const oilRecWords = (r: { amt: number, spans: Array<[number, number]> } | null) => !r ? 'nothing'
   : `${r.amt === 1 ? 'full day' : 'half day'}${r.spans.length ? ` · ${r.spans.map(([a, b]) => `${hm(a)}–${hm(b)}`).join(', ')}` : ''}`
@@ -378,7 +382,7 @@ function oilRuleWords(di: number): Words & { rows: CrowdRow[] } {
   const rows: CrowdRow[] = []
   if (kept) OIL_VALS.forEach(k => { if (kept[k] !== now[k])
     rows.push({ where: `Logic · ${String(RULE_SPEC[k].t).replace(/\s*\(.*\)\s*$/, '')}`, from: String(ruleFmt(k, kept[k])), to: String(ruleFmt(k, now[k])), keys: [] }) })
-  oilRuleShift(d, ev).forEach(r => rows.push({ where: `${cs(r.person)} · OIL`, from: oilRecWords(r.was), to: oilRecWords(r.now), keys: [] }))
+  oilRuleShift(d, ev).forEach(r => rows.push({ where: `${cs(r.person)} · OIL as published, under today's values`, from: oilRecWords(r.was), to: oilRecWords(r.now), keys: [] }))
   return { where: 'OIL on this day · Logic values changed since it was published', from: '', to: '', who: '', when: '', jump: false, rows }
 }
 /* the rows whose placeholder crowd differs from what the day went out with: its name, who left, who joined, and the

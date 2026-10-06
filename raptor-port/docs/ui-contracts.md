@@ -942,8 +942,10 @@ the same helper. A request filed after publication and then deleted still reads 
 **A Logic change that would move a published day's OIL is its own line (`[OIL-WORK-START]`, D592 (4), 6 Oct 26).** The
 To go out list reads "OIL on this day · Logic values changed since it was published", and under it one sub-line per
 value that differs ("Logic · Nominal report before T/O  3h → 2h30" — the box's own name on the Logic page, less its
-bracketed note) and one per man whose OIL record would change ("Ranger · OIL  full day · 07:00–13:15 → half day ·
-07:30–13:15"; "nothing" where he would earn none). It is counted as ONE change on every surface (the week's and the
+bracketed note) and one per man whose OIL record would change ("Ranger · OIL as published, under today's values  full day · 07:00–13:15 →
+half day · 07:30–13:15"; "nothing" where he would earn none) — the man's line names what it compares, his PUBLISHED OIL
+against the same day under today's values, because another change waiting beside it (his row switched off, an in-time
+typed) has its own line and the two must not be read as one. It is counted as ONE change on every surface (the week's and the
 board's chip, the ⓘ panel, the Amendments panel), never folded into an edited request's line, and has no place on the
 schedule to go to — its sub-lines are not tappable. Pinned by `ui/oilworkstart.test.tsx`.
 **One request, one row — across WEEKS too (`[REQ-ORPHAN-ROW]` + `[REQ-DOOR-WORDS]` 2, 28 Sep 26).** "One request, one

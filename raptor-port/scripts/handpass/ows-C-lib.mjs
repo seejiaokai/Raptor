@@ -44,6 +44,13 @@ export async function oilOf(p, id, iso, name, { sheet = true, pics = true } = {}
     await LW.closeSheets(p)
   }
   out.row = await S.oilRow(p, id)
+  out.archived = false
+  /* a used-up credit is filed in the archive column: open it and read the row again (the app's own toggle) */
+  if (!/AUTO/.test(out.row)) {
+    const arch = p.locator('[data-testid="oil-arch-' + id + '"]').first()
+    const n = await arch.evaluate(e => (e.innerText || '').trim()).catch(() => '')
+    if (/^\d+$/.test(n)) { await arch.click(); await sleep(700); out.archived = true; out.row = (await p.evaluate(i => { const e = document.querySelector('[data-testid="oil-row-' + i + '"]'); return e ? e.innerText.replace(/\s+/g, ' ').trim() : 'NO ROW' }, id)) + ' [ARCHIVE OPENED]' }
+  }
   out.bal = await p.evaluate(i => { const e = document.querySelector(`[data-testid="oil-bal-${i}"]`); return e ? e.innerText.trim() : null }, id)
   if (pics) out.pics.push(await pic(p, name + '-tracker'))
   /* the credit's stored worked spans (read only): a second reading of the same thing the sheet and the row print */
@@ -56,11 +63,11 @@ export const rowFor = (row, dateWord) => { const i = row.indexOf(dateWord); retu
 
 /* the day: head, the WAITING-TO-GO-OUT chip only, the To go out list, the Amendments box */
 export const pendOf = h => (/\d+/.exec((h && h.pending) || '') || ['0'])[0]
-export async function dayState(p, di, name, { list = true } = {}) {
+export async function dayState(p, di, name, { list = true, noPic = false } = {}) {
   await S.toWeek(p); await W.showDay(p, di)
   const head = await S.dayHead(p, di)
   head.pending = await p.evaluate(i => { const c = document.querySelector(`#eWeek .day[data-day="${i}"] .dpend:not(.dnew):not(.dchg)`); return c && c.offsetParent !== null ? c.innerText.replace(/\s+/g, ' ').trim() : '' }, di)
-  const pics = [await pic(p, name + '-day')]
+  const pics = noPic ? [] : [await pic(p, name + '-day')]
   let lst = ''
   if (list) {
     const chip = p.locator(`#eWeek .day[data-day="${di}"] .dpend:not(.dnew):not(.dchg)`).first()
@@ -68,7 +75,7 @@ export async function dayState(p, di, name, { list = true } = {}) {
       await chip.click(); await sleep(600)
       const tab = p.locator('.chgwin:not([hidden]) .win-tab', { hasText: 'To go out' }).first(); if (await tab.count()) { await tab.click(); await sleep(300) }
       lst = await p.evaluate(() => { const e = document.querySelector('.pl-list'); return e ? e.innerText.replace(/\s+/g, ' ').trim() : '(no list drawn)' })
-      pics.push(await pic(p, name + '-togoout'))
+      if (!noPic) pics.push(await pic(p, name + '-togoout'))
       const x = p.locator('.chgwin:not([hidden]) .win-x').first()
       if (await x.count()) { await x.click().catch(() => {}); await sleep(300) } else { await p.keyboard.press('Escape'); await sleep(300) }
     }

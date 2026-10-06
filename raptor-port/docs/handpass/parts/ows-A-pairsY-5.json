@@ -1,0 +1,70 @@
+{
+ "parts": {
+  "PR-PB-SLd-dk": {
+   "at": "2026-10-06T13:34:33.584Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLd",
+     "did": "a PUBLISHED day (ORIG, signed): S then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-PLd-dk": {
+   "at": "2026-10-06T13:35:52.943Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLd",
+     "did": "a PUBLISHED day (ORIG, signed): S then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-PLd",
+     "did": "a PUBLISHED day (ORIG, signed): P then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  },
+  "PR-PB-ALd-dk": {
+   "at": "2026-10-06T13:37:11.729Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "PB-SLd",
+     "did": "a PUBLISHED day (ORIG, signed): S then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after S (S: signed four selects {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all named (Ace / Anvil / Anvil / Anvil) | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-PLd",
+     "did": "a PUBLISHED day (ORIG, signed): P then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after P (P: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "PB-ALd",
+     "did": "a PUBLISHED day (ORIG, signed): A then Ld",
+     "saw": "✓ start as expected [[]] · ✓ after A (A: {\"pressed\":false,\"why\":\"absent\"}): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 0 | marker \"\" | selects all blank | buttons beak=none al=\"\"] · ✓ after Ld (Ld: debrief → 2h30): as the rules say [HO 09:00–15:00 bal 0.5 | tag ORIG | pend 1 | marker \"Not yet signed\" | selects all blank | buttons beak=none al=\"Publish AL1\" | list: OIL on this day · Logic va] · ✓ reload gives back the same state []",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ],
+   "errors": []
+  }
+ }
+}

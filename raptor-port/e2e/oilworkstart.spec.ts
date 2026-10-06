@@ -115,6 +115,7 @@ test.describe('a published day keeps the OIL it went out with (D592)', () => {
     await expect(list).toContainText('OIL on this day')
     await expect(list).toContainText('Nominal report before T/O')
     await expect(list).toContainText('2h30')
+    await expect(list).toContainText("OIL as published, under today's values")
     await expect(list).toContainText('full day · 07:00–13:15')
     await expect(list).toContainText('half day · 07:30–13:15')
     await page.keyboard.press('Escape')

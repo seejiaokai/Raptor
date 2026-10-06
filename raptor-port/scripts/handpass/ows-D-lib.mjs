@@ -16,27 +16,27 @@ export async function P(p, name, opts) { const f = await origPic(p, name, opts);
 
 /* ---- a Leave War cell + tracker row for a man and date (read-only) ---- */
 export const letters = c => (/\b(HO|FO)\b/.exec((c && c.text) || '') || [])[1] || (c && c.text && c.text !== '' ? c.text : '(empty)')
-export async function oilOf(p, id, iso, name) {
+export async function oilOf(p, id, iso, name, quiet = false) {
   await A.lwOpenMonth(p, 'JUL')
   const cell = await A.lwCellOf(p, id, iso)
   await p.evaluate(([i, d]) => { const c = document.querySelector(`[data-testid="cell-${i}-${d}"]`); if (c) c.scrollIntoView({ block: 'center', inline: 'center' }) }, [id, iso]); await sleep(300)
-  const picCell = await P(p, name + '-cell')
+  const picCell = quiet ? null : await P(p, name + '-cell')
   const rowTxt = await A.oilRow(p, id)
-  const picRow = await P(p, name + '-tracker')
+  const picRow = quiet ? null : await P(p, name + '-tracker')
   await A.closeOil(p)
   const rec = await p.evaluate(([i, d]) => { try { const st = window.lwState ? window.lwState() : null; const w = st && st.wars && st.wars[0]; const l = w && w.recs && w.recs[i] && w.recs[i][d]; return l ? l.filter(r => r.oil === 'auto').map(r => `${r.code} ${(r.spans || []).map(s => s.join('-')).join(',')}`).join(' | ') : '' } catch (e) { return 'n/a' } }, [id, iso])
   const bal = (/(-?[\d.]+)\s+left/.exec(rowTxt) || [])[1]
-  return { cell, letters: letters(cell), row: rowTxt, rec, bal, pics: [picCell, picRow] }
+  return { cell, letters: letters(cell), row: rowTxt, rec, bal, pics: [picCell, picRow].filter(Boolean) }
 }
 /* the tracker row line that holds a given date (e.g. "18 Jul") — plain text of the row */
 export const rowHas = (o, re) => re.test(o.row || '')
 
 /* ---- the day: pending chip (the right read), sign-offs, version tag, and the To go out list ---- */
-export async function dayState(p, di, name, { list = true } = {}) {
+export async function dayState(p, di, name, { list = true, quiet = false } = {}) {
   await A.toWeek(p); await W.showDay(p, di)
   const head = await A.dayHead(p, di)
   head.pending = await p.evaluate(i => { const c = document.querySelector(`#eWeek .day[data-day="${i}"] .dpend:not(.dnew):not(.dchg)`); return c && c.offsetParent !== null ? c.innerText.replace(/\s+/g, ' ').trim() : '' }, di)
-  const picHead = await P(p, name + '-day')
+  const picHead = quiet ? null : await P(p, name + '-day')
   let lst = ''
   const chip = p.locator(`#eWeek .day[data-day="${di}"] .dpend:not(.dnew):not(.dchg)`).first()
   if (list && await chip.count() && await chip.isVisible()) {
@@ -44,12 +44,12 @@ export async function dayState(p, di, name, { list = true } = {}) {
     const tab = p.locator('.chgwin:not([hidden]) .win-tab', { hasText: 'To go out' }).first()
     if (await tab.count()) { await tab.click(); await sleep(300) }
     lst = await p.evaluate(() => { const e = document.querySelector('.chgwin:not([hidden]) .pl-list') || document.querySelector('.pl-list'); return e ? e.innerText.replace(/\s+/g, ' ').trim() : '(no list drawn)' })
-    const picList = await P(p, name + '-togoout')
+    const picList = quiet ? null : await P(p, name + '-togoout')
     const x = p.locator('.chgwin:not([hidden]) .win-x').first()
     if (await x.count()) { await x.click().catch(() => {}); await sleep(300) } else { await p.keyboard.press('Escape'); await sleep(300) }
-    return { head, list: lst, pics: [picHead, picList] }
+    return { head, list: lst, pics: [picHead, picList].filter(Boolean) }
   }
-  return { head, list: lst, pics: [picHead] }
+  return { head, list: lst, pics: [picHead].filter(Boolean) }
 }
 export const pend = h => (/\d+/.exec((h && h.pending) || '') || ['0'])[0]
 export const signsOf = h => (h && h.signs ? (W.signsEmpty(h) ? 'all four empty' : W.signsFull(h) ? 'all four standing' : 'some: ' + h.signs.join('|')) : '?')
@@ -70,7 +70,16 @@ export async function face(p, di, id) {
 export async function standbyWave(p, di, kind) { return R.addStandby(p, di, kind) }
 export async function flyingWave(p, di, o) { return A.addFlyingWave(p, di, o) }
 /* the OIL Earn mode's own button (#sbOil) */
-export async function oilMode(p, on) { return O.oilMode(p, on) }
+export async function oilMode(p, on) {
+  if (!PHONE) return O.oilMode(p, on)
+  /* a phone: the board bar's own OIL Earn button is folded away; the day's body carries an "OIL Earn" button (and "✓ OIL done") */
+  const isOn = await p.evaluate(() => !!document.querySelector('#schedBoard [data-oilitem]'))
+  if (isOn !== on) {
+    const b = on ? p.locator('#schedBoard button:visible', { hasText: /^\s*(◧\s*)?OIL Earn\s*$/ }).first() : p.locator('#schedBoard button:visible', { hasText: /OIL done/ }).first()
+    await b.evaluate(e => e.scrollIntoView({ block: 'center' })); await b.click(); await sleep(700)
+  }
+  return p.evaluate(() => ({ items: document.querySelectorAll('#schedBoard [data-oilitem]').length, people: document.querySelectorAll('#schedBoard [data-oilp]').length }))
+}
 export async function switches(p) {
   return p.evaluate(() => [...document.querySelectorAll('#schedBoard .oilitem')].filter(e => e.offsetParent !== null).map(e => ({ txt: (e.innerText || '').trim().slice(0, 40), item: e.dataset.oilitem || '', who: e.dataset.oilp || '', cls: String(e.className).slice(0, 80), title: (e.getAttribute('title') || '').slice(0, 140) })))
 }

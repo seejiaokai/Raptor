@@ -78,14 +78,16 @@ async function runOne(a1, a2, start) {
       await K.toBoard(p, SAT)
       const sel = a === 'P' ? '[data-beak]' : '[data-alpub]'
       const btn = p.locator(`#schedBoard ${sel}:visible`).first()
-      const present = await btn.count(), enabled = present ? !(await btn.isDisabled()) : false
+      const present = await btn.count()
       const btxt = present ? (await btn.innerText()).trim() : ''
-      let blockedBy = ''
+      const wasLocked = present ? await btn.isDisabled() : null
+      /* the button is locked until the four sign: the sign step is part of the action */
+      if (present) await K.W.signDay(p, SAT)
+      const enabled = present ? !(await btn.isDisabled()) : false
       if (present && enabled) {
-        const signs = await K.W.signDay(p, SAT)
         const res = a === 'P' ? await K.W.publishDay(p, SAT) : await K.W.publishAL(p, SAT)
         await sleep(500)
-        result = `signed + pressed "${btxt}" → ${JSON.stringify(res)}`
+        result = `button "${btxt}" was ${wasLocked ? "locked until the four signed" : "open"}; signed + pressed → ${JSON.stringify(res)}`
         if (res.pressed) { m.pubd = true; m.snap = { line: m.line, lead: m.lead }; m.paid = cand() } else avail = false
       } else { avail = false; result = `button ${present ? 'present but locked/disabled: "' + btxt + '"' : 'absent'}` }
       if (avail !== expectAvail) bad.push(`${stepName}: ${a} was ${avail ? 'available' : 'unavailable'}, my model says ${expectAvail ? 'available' : 'unavailable'}`)

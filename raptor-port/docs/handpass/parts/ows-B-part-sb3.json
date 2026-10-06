@@ -1,0 +1,43 @@
+{
+ "parts": {
+  "ows-B-sB-S32-dk": {
+   "at": "2026-10-06T13:15:09.381Z",
+   "base": "http://localhost:4294",
+   "phone": false,
+   "table": [
+    {
+     "id": "S32.1",
+     "did": "Saturday flight 22:00–01:00, line IN TIME 20:00; published",
+     "saw": "✓ published ORIG [ORIG] · ✓ line kept [[\"IN TIME 20:00\"]] · ✓ Saturday FO [FO*] · ✓ worked 20:00–23:59 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 20:00–23:59 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}] · ✓ Sunday: nothing from it [{\"text\":\"\",\"cls\":\"weekend act\",\"title\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S32a-sat-cell.png",
+      "dk-02-S32a-sat-tracker.png",
+      "dk-03-S32a-day-day.png"
+     ]
+    },
+    {
+     "id": "S32.2",
+     "did": "Logic → \"Flight debrief after land\" 2h → 1h30",
+     "saw": "✓ value changed (minutes) [{\"set\":\"1h30\",\"debrief\":90}] · ✓ no OIL pending (0 pending) [] · ✓ sign-offs still stand [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ paid holds: FO, 20:00–23:59 [{\"cell\":\"FO*\",\"row\":\"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 20:00–23:59 1 left\"}] · ✓ balance holds [{\"was\":\"1\",\"now\":\"1\"}] · ✓ Sunday: still nothing [{\"text\":\"\",\"cls\":\"weekend act\",\"title\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-S32b-day-day.png",
+      "dk-05-S32b-sat-cell.png",
+      "dk-06-S32b-sat-tracker.png"
+     ]
+    },
+    {
+     "id": "S32.2-list",
+     "did": "the day head after the Logic change",
+     "saw": "{\"head\":{\"tag\":\"ORIG\",\"pending\":\"\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-S32b-day-day.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}
