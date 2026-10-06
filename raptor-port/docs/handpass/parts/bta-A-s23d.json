@@ -1,0 +1,443 @@
+{
+ "parts": {
+  "bta-A-s23-dk": {
+   "at": "2026-10-06T08:54:12.522Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "S23 ALL AVAIL on flying line by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.2.0.0.p; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s23_flying_line_allavail_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on flying line by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s23_flying_line_allavail_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on flying line by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.2.0.0.p; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s23_flying_line_all_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on flying line by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s23_flying_line_all_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on SC MAIN by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.3.0.0.p; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s23_SC_MAIN_allavail_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on SC MAIN by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s23_SC_MAIN_allavail_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on SC MAIN by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.3.0.0.p; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s23_SC_MAIN_all_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on SC MAIN by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s23_SC_MAIN_all_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on SC SPARE by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.3.0.2.p; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s23_SC_SPARE_allavail_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on SC SPARE by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s23_SC_SPARE_allavail_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on SC SPARE by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.3.0.2.p; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s23_SC_SPARE_all_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on SC SPARE by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s23_SC_SPARE_all_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on AVALON MAIN by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.4.0.0.p; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s23_AVALON_MAIN_allavail_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on AVALON MAIN by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-s23_AVALON_MAIN_allavail_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on AVALON MAIN by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.4.0.0.p; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-s23_AVALON_MAIN_all_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on AVALON MAIN by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-s23_AVALON_MAIN_all_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on AVALON SPARE by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.4.0.2.p; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-s23_AVALON_SPARE_allavail_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on AVALON SPARE by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-s23_AVALON_SPARE_allavail_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on AVALON SPARE by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.4.0.2.p; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-s23_AVALON_SPARE_all_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on AVALON SPARE by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-20-s23_AVALON_SPARE_all_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on BB MAIN by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.5.0.0.p; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-s23_BB_MAIN_allavail_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on BB MAIN by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-s23_BB_MAIN_allavail_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on BB MAIN by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.5.0.0.p; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-23-s23_BB_MAIN_all_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on BB MAIN by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-24-s23_BB_MAIN_all_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on BB SPARE by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.5.0.2.p; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-s23_BB_SPARE_allavail_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on BB SPARE by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL AVAIL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-26-s23_BB_SPARE_allavail_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on BB SPARE by tap",
+     "did": "1440×900 desktop: seat armed, the name pressed in the crew list",
+     "saw": "armed 1.5.0.2.p; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-27-s23_BB_SPARE_all_tap.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on BB SPARE by drag",
+     "did": "1440×900 desktop: a real drag from the crew list onto the seat",
+     "saw": "armed -; the app said \"ALL — cannot crew a jet; name the people flying it\"; seat holds after: unchanged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-28-s23_BB_SPARE_all_drag.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on duty row by tap",
+     "did": "1440×900 desktop: a blank duty row (no times); tap",
+     "saw": "armed d:1.0.3.+; the app said \"ALL AVAIL planned\"; row took it; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-30-s23_duty_row_allavail_tap-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on duty row by drag",
+     "did": "1440×900 desktop: a blank duty row (no times); drag",
+     "saw": "armed -; the app said DRAG FAILED: Error: drag: something lies over the source or the target — the press would miss; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-31-s23_duty_row_allavail_drag-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on duty row by tap",
+     "did": "1440×900 desktop: a blank duty row (no times); tap",
+     "saw": "armed d:1.0.3.+; the app said nothing; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-32-s23_duty_row_all_tap-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on duty row by drag",
+     "did": "1440×900 desktop: a blank duty row (no times); drag",
+     "saw": "armed -; the app said DRAG FAILED: Error: drag: something lies over the source or the target — the press would miss; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-33-s23_duty_row_all_drag-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on sim (OFT) row by tap",
+     "did": "1440×900 desktop: a blank sim (OFT) row (no times); tap",
+     "saw": "armed s:1.oft.2.w; the app said nothing; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-34-s23_sim_OFT_row_allavail_tap-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on sim (OFT) row by drag",
+     "did": "1440×900 desktop: a blank sim (OFT) row (no times); drag",
+     "saw": "armed -; the app said DRAG FAILED: Error: drag: something lies over the source or the target — the press would miss; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-35-s23_sim_OFT_row_allavail_drag-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on sim (OFT) row by tap",
+     "did": "1440×900 desktop: a blank sim (OFT) row (no times); tap",
+     "saw": "armed s:1.oft.2.w; the app said nothing; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-36-s23_sim_OFT_row_all_tap-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on sim (OFT) row by drag",
+     "did": "1440×900 desktop: a blank sim (OFT) row (no times); drag",
+     "saw": "armed -; the app said DRAG FAILED: Error: drag: something lies over the source or the target — the press would miss; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-37-s23_sim_OFT_row_all_drag-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on Ground Programme row by tap",
+     "did": "1440×900 desktop: a blank Ground Programme row (no times); tap",
+     "saw": "armed g:1.4.+; the app said nothing; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-38-s23_Ground_Programme_row_allavail_tap-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on Ground Programme row by drag",
+     "did": "1440×900 desktop: a blank Ground Programme row (no times); drag",
+     "saw": "armed -; the app said DRAG FAILED: Error: drag: something lies over the source or the target — the press would miss; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-39-s23_Ground_Programme_row_allavail_drag-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on Ground Programme row by tap",
+     "did": "1440×900 desktop: a blank Ground Programme row (no times); tap",
+     "saw": "armed g:1.4.+; the app said nothing; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-40-s23_Ground_Programme_row_all_tap-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on Ground Programme row by drag",
+     "did": "1440×900 desktop: a blank Ground Programme row (no times); drag",
+     "saw": "armed -; the app said DRAG FAILED: Error: drag: something lies over the source or the target — the press would miss; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-41-s23_Ground_Programme_row_all_drag-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on Common Programme row by tap",
+     "did": "1440×900 desktop: a blank Common Programme row (no times); tap",
+     "saw": "armed a:1.2.+; the app said nothing; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-42-s23_Common_Programme_row_allavail_tap-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on Common Programme row by drag",
+     "did": "1440×900 desktop: a blank Common Programme row (no times); drag",
+     "saw": "armed -; the app said DRAG FAILED: Error: drag: something lies over the source or the target — the press would miss; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-43-s23_Common_Programme_row_allavail_drag-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on Common Programme row by tap",
+     "did": "1440×900 desktop: a blank Common Programme row (no times); tap",
+     "saw": "armed a:1.2.+; the app said nothing; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-44-s23_Common_Programme_row_all_tap-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on Common Programme row by drag",
+     "did": "1440×900 desktop: a blank Common Programme row (no times); drag",
+     "saw": "armed -; the app said DRAG FAILED: Error: drag: something lies over the source or the target — the press would miss; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-45-s23_Common_Programme_row_all_drag-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on BB desk by tap",
+     "did": "1440×900 desktop: a blank BB desk (no times); tap",
+     "saw": "armed d:1.2.0.+; the app said nothing; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-46-s23_BB_desk_allavail_tap-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on BB desk by drag",
+     "did": "1440×900 desktop: a blank BB desk (no times); drag",
+     "saw": "armed -; the app said DRAG FAILED: Error: drag: something lies over the source or the target — the press would miss; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-47-s23_BB_desk_allavail_drag-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on BB desk by tap",
+     "did": "1440×900 desktop: a blank BB desk (no times); tap",
+     "saw": "armed d:1.2.0.+; the app said nothing; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-48-s23_BB_desk_all_tap-list.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on BB desk by drag",
+     "did": "1440×900 desktop: a blank BB desk (no times); drag",
+     "saw": "armed -; the app said DRAG FAILED: Error: drag: something lies over the source or the target — the press would miss; row unchanged; his name absent from the warnings; day's warnings naming anybody new: warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"toast\":null,\"title\":\"No start time — give it a time to count who can attend\",\"pop\":\"\"}",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-49-s23_BB_desk_all_drag-list.png"
+     ]
+    }
+   ]
+  }
+ }
+}

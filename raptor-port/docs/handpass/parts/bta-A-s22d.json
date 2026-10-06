@@ -1,0 +1,137 @@
+{
+ "parts": {
+  "bta-A-s22-dk": {
+   "at": "2026-10-06T08:50:01.808Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "S22 0 all four named rows, X on each",
+     "did": "1440×900 desktop: OL filed; a flying line ZQ, a duty row DESK Q, a Ground Programme row GRND Q, a Common Programme row PROG Q, each no times, X on each",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 8 issues · 6 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground flagged, prog flagged → expected fly flagged, duty flagged, ground flagged, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s22_0_all_four_named_rows_X_on_each-list.png"
+     ]
+    },
+    {
+     "id": "S22 1 flying line CX",
+     "did": "1440×900 desktop: the flying line's CX pressed (popup: \"Cancel line\")",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · by row: fly silent, duty flagged, ground flagged, prog flagged → expected fly silent, duty flagged, ground flagged, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s22_1_flying_line_CX-list.png"
+     ]
+    },
+    {
+     "id": "S22 2 flying line restored",
+     "did": "1440×900 desktop: the same CX pressed again (popup: \"Un-cancel\")",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 8 issues · 6 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground flagged, prog flagged → expected fly flagged, duty flagged, ground flagged, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s22_2_flying_line_restored-list.png"
+     ]
+    },
+    {
+     "id": "S22 3 duty row CX",
+     "did": "1440×900 desktop: the duty row's CX pressed (popup)",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · by row: fly flagged, duty silent, ground flagged, prog flagged → expected fly flagged, duty silent, ground flagged, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s22_3_duty_row_CX-list.png"
+     ]
+    },
+    {
+     "id": "S22 4 duty row restored",
+     "did": "1440×900 desktop: the duty row's CX pressed again (popup)",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 8 issues · 6 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground flagged, prog flagged → expected fly flagged, duty flagged, ground flagged, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s22_4_duty_row_restored-list.png"
+     ]
+    },
+    {
+     "id": "S22 5 ground row CX",
+     "did": "1440×900 desktop: the Ground Programme row's CX pressed (popup)",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground silent, prog flagged → expected fly flagged, duty flagged, ground silent, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s22_5_ground_row_CX-list.png"
+     ]
+    },
+    {
+     "id": "S22 6 ground row restored",
+     "did": "1440×900 desktop: the Ground Programme row's CX pressed again (popup)",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 8 issues · 6 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground flagged, prog flagged → expected fly flagged, duty flagged, ground flagged, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s22_6_ground_row_restored-list.png"
+     ]
+    },
+    {
+     "id": "S22 7 ground row info-only on",
+     "did": "1440×900 desktop: the Ground Programme row set to ⓘ info-only",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground silent, prog flagged → expected fly flagged, duty flagged, ground silent, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s22_7_ground_row_info_only_on-list.png"
+     ]
+    },
+    {
+     "id": "S22 8 ground row info-only off",
+     "did": "1440×900 desktop: ⓘ pressed again",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 8 issues · 6 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground flagged, prog flagged → expected fly flagged, duty flagged, ground flagged, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s22_8_ground_row_info_only_off-list.png"
+     ]
+    },
+    {
+     "id": "S22 9 Common Programme row info-only on",
+     "did": "1440×900 desktop: the Common Programme row set to ⓘ info-only",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground flagged, prog silent → expected fly flagged, duty flagged, ground flagged, prog silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s22_9_Common_Programme_row_info_only_on-list.png"
+     ]
+    },
+    {
+     "id": "S22 10 Common Programme row info-only off",
+     "did": "1440×900 desktop: ⓘ pressed again",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 8 issues · 6 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground flagged, prog flagged → expected fly flagged, duty flagged, ground flagged, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s22_10_Common_Programme_row_info_only_off-list.png"
+     ]
+    },
+    {
+     "id": "S22 11 Undo",
+     "did": "1440×900 desktop: the top bar's Undo",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground flagged, prog silent → expected fly flagged, duty flagged, ground flagged, prog silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s22_11_Undo-list.png"
+     ]
+    },
+    {
+     "id": "S22 12 Redo",
+     "did": "1440×900 desktop: the top bar's Redo",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 8 issues · 6 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground flagged, prog flagged → expected fly flagged, duty flagged, ground flagged, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s22_12_Redo-list.png"
+     ]
+    },
+    {
+     "id": "S22 13 reload",
+     "did": "1440×900 desktop: the page reloaded and signed in again",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — DESK Q duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — PROG Q — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 8 issues · 6 warning · tap to collapse ▲\" · by row: fly flagged, duty flagged, ground flagged, prog flagged → expected fly flagged, duty flagged, ground flagged, prog flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-s22_13_reload-list.png"
+     ]
+    }
+   ]
+  }
+ }
+}

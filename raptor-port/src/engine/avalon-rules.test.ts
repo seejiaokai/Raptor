@@ -457,11 +457,22 @@ describe('BB carries exactly the AVALON rules', () => {
     INPUTS.push({ person: 'xray', date: 'Jul 14', allday: true, type: 'ATT C', remarks: '' })
     expect(bw('xray', 'DNIF_FLY').length).toBe(1)
   })
-  it('a BB shift with BLANK times checks nothing — no window, no rule (fail closed, inert)', () => {
+  /* CHANGED FOR A WHOLE-DAY ABSENCE ONLY (owner, D605, 6 Oct 26 — a man away for the whole day is flagged the moment
+     he is seated, times or no times). "Blank times check nothing" was this suite's own reading, never a ruling of
+     his: it still holds for everything that needs the shift's hours — currency by day or night, one man in two
+     places, a part-day absence — and no longer for the one look that does not. */
+  it('a BB shift with BLANK times: no currency or two-places check, a part-day absence silent — a whole-day one flagged', () => {
     B().to = ''; B().ld = ''
     B().aircraft[0].p = 'glass'; B().aircraft[2].p = 'glass'
+    expect(bw('glass'), 'MAIN and SPARE at once, no SC NIGHT asked: nothing without hours').toEqual([])
+    INPUTS.push({ person: 'glass', date: 'Jul 14', allday: false, s: 240, e: 720, half: 'am', type: 'OL', remarks: '' })
+    expect(bw('glass'), 'a morning-only overseas leave: nothing to compare').toEqual([])
+    INPUTS.pop()
     INPUTS.push({ person: 'glass', date: 'Jul 14', allday: true, type: 'OL', remarks: '' })
-    expect(bw('glass')).toEqual([])
+    expect(bw('glass').map((x: any) => x.code), 'the whole day overseas').toEqual(['LEAVE_FLY'])
+    INPUTS.pop()
+    INPUTS.push({ person: 'glass', date: 'Jul 14', allday: true, type: 'LL', remarks: '' })
+    expect(bw('glass'), 'local leave may stand a BB seat, with or without hours').toEqual([])
   })
   it('BB adds no OIL by default', () => {
     B().aircraft[0].p = 'split'; bdesk.rows[0].id = 'ignite'

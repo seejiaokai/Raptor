@@ -1,0 +1,71 @@
+{
+ "parts": {
+  "bta-A-s22b-dk": {
+   "at": "2026-10-06T08:57:31.108Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "S22b fly 1 flagged",
+     "did": "1440×900 desktop: OL filed; ONE flying line ZQ with X on it, no times; nothing else carries X",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · day list lines naming him: 1 · ring on the row puck: SOLID chip [C]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-s22b-fly-1 flagged-list.png",
+      "dk-01-s22b-fly-1 flagged-puck.png"
+     ]
+    },
+    {
+     "id": "S22b fly 2 CX",
+     "did": "1440×900 desktop: the line cancelled with CX",
+     "saw": "warnings naming him: none · his pucks [flying line:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · day list lines naming him: 0 · ring on the row puck: none chip []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-s22b-fly-2 CX-list.png",
+      "dk-03-s22b-fly-2 CX-puck.png"
+     ]
+    },
+    {
+     "id": "S22b fly 3 restored",
+     "did": "1440×900 desktop: the line un-cancelled",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · day list lines naming him: 1 · ring on the row puck: SOLID chip [C]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-06-s22b-fly-3 restored-list.png",
+      "dk-05-s22b-fly-3 restored-puck.png"
+     ]
+    },
+    {
+     "id": "S22b ground 1 flagged",
+     "did": "1440×900 desktop: OL filed; ONE Ground Programme row GRND Q with X on it, no times; nothing else carries X",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" · his pucks [ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · day list lines naming him: 1 · ring on the row puck: SOLID chip [C]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-08-s22b-ground-1 flagged-list.png",
+      "dk-07-s22b-ground-1 flagged-puck.png"
+     ]
+    },
+    {
+     "id": "S22b ground 2 info-only on",
+     "did": "1440×900 desktop: the row set to ⓘ info-only",
+     "saw": "warnings naming him: none · his pucks [ground row:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · day list lines naming him: 0 · ring on the row puck: none chip []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-10-s22b-ground-2 info-only on-list.png",
+      "dk-09-s22b-ground-2 info-only on-puck.png"
+     ]
+    },
+    {
+     "id": "S22b ground 3 info-only off",
+     "did": "1440×900 desktop: ⓘ pressed again",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — GRND Q — reason: x-OL\" · his pucks [ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · day list lines naming him: 1 · ring on the row puck: SOLID chip [C]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-12-s22b-ground-3 info-only off-list.png",
+      "dk-11-s22b-ground-3 info-only off-puck.png"
+     ]
+    }
+   ]
+  }
+ }
+}

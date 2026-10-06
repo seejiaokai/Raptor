@@ -2577,3 +2577,48 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In receiving-code-review (and bug-check-order §4's disposition list), add a step before implementing a reviewer's fix: "If the fix drops, skips or filters a RECORD because one field is missing, list every quantity the rule derives from that record and what each one needs; write a test for each case that works today from the record's other fields, and watch it stay green." And in the scenario-design brief template, keep the explicit item "the cases a simple skip would get WRONG".
 
 **Principle:** A missing field invalidates the quantities that depend on it, not the record. Filter the unusable VALUES, keep the record — and before changing a rule, pin the cases it gets right by accident, because a fix spec is written from the failing case and never from those.
+
+### Observation 438: An "equal with and without X" test passes on two equally wrong answers — it needs an absolute oracle beside it
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Building a rules-engine change ([BLANK-TIMES-ABSENCE], D605): a whole-day absence must flag a seat with no times exactly as it flags the seat once times are typed. The builder's first roll-call test looped every input type over every kind of seat and asserted "the same codes blank and timed".
+**Skill:** test-driven-development (and the project's bug-check order, raptor-port/docs/bug-check-order.md §8 "Making the checks FIND rather than CONFIRM")
+**Type:** open-source
+**Phase/Area:** Designing the roll-call test of a change that extends an existing rule to a new state
+
+**Issue:** The comparison test was green while one input type (a paperwork record that must never flag) was wrongly flagged on BOTH sides: the old timed path already had the fault, the new path mirrored it, and "same before and after" agreed. The scenario designer (a model that did not build it) asked for the exact expected answer per cell; writing that table turned three tests red at once and exposed an old fault the change would have spread.
+
+**Suggested improvement:** In bug-check-order §8 (and test-driven-development's guidance on parity / equivalence tests): "A test that asserts new == old proves the new path copies the old one, including its faults. Beside every equivalence loop write the absolute table — one expected value per cell, taken from the rulings, not from the code — and assert that the table names every member of the enumerated set, so a new member cannot be skipped."
+
+**Principle:** Equivalence is evidence of consistency, not of correctness. Any test of the form "A behaves like B" needs one test that says what B is supposed to do.
+
+### Observation 439: A handoff's opening line "run git pull" fails in the fresh worktree the same handoff tells him to make
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Starting a new chat from the previous chat's ready-to-paste opening line ("Read HANDOFF.md, run git pull, then build …") in a new worktree on a new branch cut from main.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** The ready-to-paste opening prompt for the next chat
+
+**Issue:** The new worktree's branch has no upstream, so `git pull` answers "There is no tracking information for the current branch" and pulls nothing. The chat has to notice, then `git fetch origin` and compare its HEAD with `origin/main` by hand to know it is level. A chat that did not notice would build on a stale base believing it had pulled.
+
+**Suggested improvement:** In session-handoff's opening-line template: for a NEW job on a worktree from main write "run `git fetch origin` and check this branch is level with `origin/main`" (and say what to do if it is behind: `git merge --ff-only origin/main`); keep "git pull" only for a chat continuing an existing pushed branch.
+
+**Principle:** A handoff instruction is written for the state the next session will actually start in, not the state the writing session is in.
+
+### Observation 440: The read brief offers "you may run one test file" to a reviewer whose sandbox cannot run anything
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** The two final code reads of a FULL bug check ([BLANK-TIMES-ABSENCE]) by the Codex-side reviewers, run with `codex exec -s read-only`. The same happened on the previous check the day before.
+**Skill:** claudex-loop / codex-review (and the project's bug-check order, raptor-port/docs/bug-check-order.md §4 "The brief that turns a reviewer into a finder")
+**Type:** internal
+**Phase/Area:** Writing the final-inspection brief
+
+**Issue:** The brief tells each reader it may run a single test file to settle a doubt. Under the read-only sandbox the test runner cannot create its temporary directory, so zero tests run; both readers spent effort trying, then reported "no tests completed" — and one of their findings (a label fallback folding two warnings into one) was exactly the kind a thirty-second run would have confirmed. The host confirmed it instead, by a red test.
+
+**Suggested improvement:** In the read brief template: either say plainly "you cannot run anything — read the source; name the exact input you would run and the host runs it", or launch the reader with a sandbox that allows writes to a scratch directory only and point the test runner's cache and temp there. And add to the host's steps: "run every 'would run' case the readers name before dispositioning the finding".
+
+**Principle:** Do not offer a reviewer a verification step its environment cannot perform; turn "I could not run it" into a named case the host is obliged to run.

@@ -691,6 +691,15 @@ ON these, don't route around them):
 split — these are where this app's recurring bugs come from; touch one side and
 check the other):
 
+#### A seat with hours and the same seat without (D605, 6 Oct 26)
+
+- **Every kind of seat is collected twice in `events.ts buildDay`: with a window, as an event (or a `sacrew` entry); with
+  none, in `day.blank`** — and `validate.ts` gives each its absence look twice, timed and time-less, with the same
+  types, exemptions and words. A NEW kind of row that can hold a person, or a new exemption on an existing one, must
+  land on BOTH sides, or a man away for the whole day goes unflagged there until a time is typed (the fault D605
+  closed). The roll-call that proves it is `engine/blankabsence.test.ts`'s `SEATS` table — add the new kind to it; its
+  "same codes with and without times" loop then checks every input type against it by itself.
+
 #### Who may write — the Leave War's guards, the role and the signed-in account
 
 - **The Leave War batch writers vs their single-cell parents** (27 Aug 26,

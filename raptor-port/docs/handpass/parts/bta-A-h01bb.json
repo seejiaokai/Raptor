@@ -1,0 +1,119 @@
+{
+ "parts": {
+  "bta-A-h01bb-dk": {
+   "at": "2026-10-06T09:00:19.091Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-01 OL × bbMain",
+     "did": "OL filed for Tuesday (Inputs page), then X on BB MAIN seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "filed OL ({\"iid\":true,\"asked\":[],\"clash\":false}); BB MAIN seat (+ Wave → BB, shift start and end as it comes up); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal — OL but on BB SHIFT — overseas — reason: x-OL\". BLANK: warnings naming him: [hard/LEAVE_FLY] \"OL but on BB SHIFT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches oracle (red). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: [hard/LEAVE_FLY] \"OL but on BB SHIFT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches; same sentence as blank: true. CLEARED AGAIN: warnings naming him: [hard/LEAVE_FLY] \"OL but on BB SHIFT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-OL_bbMain_1blank-list.png",
+      "dk-01-OL_bbMain_1blank-puck.png",
+      "dk-03-OL_bbMain_2timed-list.png"
+     ],
+     "oracle": "red"
+    },
+    {
+     "id": "H-01 OL × bbSpare",
+     "did": "OL filed for Tuesday (Inputs page), then X on BB SPARE seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "filed OL ({\"iid\":true,\"asked\":[],\"clash\":false}); BB SPARE seat (+ Wave → BB, shift start and end as it comes up); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal — OL but on BB SHIFT — overseas — reason: x-OL\". BLANK: warnings naming him: [hard/LEAVE_FLY] \"OL but on BB SHIFT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches oracle (red). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: [hard/LEAVE_FLY] \"OL but on BB SHIFT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches; same sentence as blank: true. CLEARED AGAIN: warnings naming him: [hard/LEAVE_FLY] \"OL but on BB SHIFT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-OL_bbSpare_1blank-list.png",
+      "dk-04-OL_bbSpare_1blank-puck.png",
+      "dk-06-OL_bbSpare_2timed-list.png"
+     ],
+     "oracle": "red"
+    },
+    {
+     "id": "H-01 OL × bbDesk",
+     "did": "OL filed for Tuesday (Inputs page), then X on a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times)",
+     "saw": "filed OL ({\"iid\":true,\"asked\":[],\"clash\":false}); a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times); state block \"BB DESK\" row role \"\" start \"\" end \"\"; crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal — OL but on duty — overseas — reason: x-OL\". BLANK: warnings naming him: [hard/LEAVE_FLY] \"OL but on  duty — overseas — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches oracle (red). TIMED (block \"BB DESK\" row role \"\" start \"08:00\" end \"12:00\"):warnings naming him: [hard/LEAVE_FLY] \"OL but on  duty — overseas — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches; same sentence as blank: true. CLEARED AGAIN: warnings naming him: [hard/LEAVE_FLY] \"OL but on  duty — overseas — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches. [template note: The BB desk — the same rules as the AVALON desk: checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-OL_bbDesk_1blank-list.png",
+      "dk-08-OL_bbDesk_1blank-puck.png",
+      "dk-10-OL_bbDesk_2timed-list.png"
+     ],
+     "oracle": "red"
+    },
+    {
+     "id": "H-01 ATT C × bbMain",
+     "did": "ATT C filed for Tuesday (Inputs page), then X on BB MAIN seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "filed ATT C ({\"iid\":true,\"asked\":[\"certificate\"],\"clash\":false}); BB MAIN seat (+ Wave → BB, shift start and end as it comes up); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck YES · printed \"Vandal IP medically down — cannot report to work (ATT C) — x-ATT C\" · tooltip \"Vandal — medically down — cannot report to work (ATT C) — x-ATT C\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal — ATT C but on BB SHIFT — medically down — reason: x-ATT C\". BLANK: warnings naming him: [hard/DNIF_FLY] \"ATT C but on BB SHIFT — medically down — reason: x-ATT C\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches oracle (red). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: [hard/DNIF_FLY] \"ATT C but on BB SHIFT — medically down — reason: x-ATT C\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches; same sentence as blank: true. CLEARED AGAIN: warnings naming him: [hard/DNIF_FLY] \"ATT C but on BB SHIFT — medically down — reason: x-ATT C\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-ATT_C_bbMain_1blank-list.png",
+      "dk-11-ATT_C_bbMain_1blank-puck.png",
+      "dk-13-ATT_C_bbMain_2timed-list.png"
+     ],
+     "oracle": "red"
+    },
+    {
+     "id": "H-01 ATT C × bbSpare",
+     "did": "ATT C filed for Tuesday (Inputs page), then X on BB SPARE seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "filed ATT C ({\"iid\":true,\"asked\":[\"certificate\"],\"clash\":false}); BB SPARE seat (+ Wave → BB, shift start and end as it comes up); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck YES · printed \"Vandal IP medically down — cannot report to work (ATT C) — x-ATT C\" · tooltip \"Vandal — medically down — cannot report to work (ATT C) — x-ATT C\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal — ATT C but on BB SHIFT — medically down — reason: x-ATT C\". BLANK: warnings naming him: [hard/DNIF_FLY] \"ATT C but on BB SHIFT — medically down — reason: x-ATT C\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches oracle (red). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: [hard/DNIF_FLY] \"ATT C but on BB SHIFT — medically down — reason: x-ATT C\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches; same sentence as blank: true. CLEARED AGAIN: warnings naming him: [hard/DNIF_FLY] \"ATT C but on BB SHIFT — medically down — reason: x-ATT C\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-ATT_C_bbSpare_1blank-list.png",
+      "dk-14-ATT_C_bbSpare_1blank-puck.png",
+      "dk-16-ATT_C_bbSpare_2timed-list.png"
+     ],
+     "oracle": "red"
+    },
+    {
+     "id": "H-01 ATT C × bbDesk",
+     "did": "ATT C filed for Tuesday (Inputs page), then X on a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times)",
+     "saw": "filed ATT C ({\"iid\":true,\"asked\":[\"certificate\"],\"clash\":false}); a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times); state block \"BB DESK\" row role \"\" start \"\" end \"\"; crew list before he is placed: struck YES · printed \"Vandal IP medically down — cannot report to work (ATT C) — x-ATT C\" · tooltip \"Vandal — medically down — cannot report to work (ATT C) — x-ATT C\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal — ATT C but on duty — medically down — reason: x-ATT C\". BLANK: warnings naming him: [hard/DNIF_FLY] \"ATT C but on  duty — medically down — reason: x-ATT C\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches oracle (red). TIMED (block \"BB DESK\" row role \"\" start \"08:00\" end \"12:00\"):warnings naming him: [hard/DNIF_FLY] \"ATT C but on  duty — medically down — reason: x-ATT C\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches; same sentence as blank: true. CLEARED AGAIN: warnings naming him: [hard/DNIF_FLY] \"ATT C but on  duty — medically down — reason: x-ATT C\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches. [template note: The BB desk — the same rules as the AVALON desk: checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-ATT_C_bbDesk_1blank-list.png",
+      "dk-18-ATT_C_bbDesk_1blank-puck.png",
+      "dk-20-ATT_C_bbDesk_2timed-list.png"
+     ],
+     "oracle": "red"
+    },
+    {
+     "id": "H-01 ATT B × bbMain",
+     "did": "ATT B filed for Tuesday (Inputs page), then X on BB MAIN seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "filed ATT B ({\"iid\":true,\"asked\":[\"certificate\"],\"clash\":false}); BB MAIN seat (+ Wave → BB, shift start and end as it comes up); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck YES · printed \"Vandal IP medically down — no flying, may still work (ATT B) — x-ATT B\" · tooltip \"Vandal — medically down — no flying, may still work (ATT B) — x-ATT B\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal — ATT B but on BB SHIFT — medically down — reason: x-ATT B\". BLANK: warnings naming him: [hard/DNIF_FLY] \"ATT B but on BB SHIFT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches oracle (red). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: [hard/DNIF_FLY] \"ATT B but on BB SHIFT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches; same sentence as blank: true. CLEARED AGAIN: warnings naming him: [hard/DNIF_FLY] \"ATT B but on BB SHIFT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-ATT_B_bbMain_1blank-list.png",
+      "dk-21-ATT_B_bbMain_1blank-puck.png",
+      "dk-23-ATT_B_bbMain_2timed-list.png"
+     ],
+     "oracle": "red"
+    },
+    {
+     "id": "H-01 ATT B × bbSpare",
+     "did": "ATT B filed for Tuesday (Inputs page), then X on BB SPARE seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "filed ATT B ({\"iid\":true,\"asked\":[\"certificate\"],\"clash\":false}); BB SPARE seat (+ Wave → BB, shift start and end as it comes up); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck YES · printed \"Vandal IP medically down — no flying, may still work (ATT B) — x-ATT B\" · tooltip \"Vandal — medically down — no flying, may still work (ATT B) — x-ATT B\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal — ATT B but on BB SHIFT — medically down — reason: x-ATT B\". BLANK: warnings naming him: [hard/DNIF_FLY] \"ATT B but on BB SHIFT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches oracle (red). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: [hard/DNIF_FLY] \"ATT B but on BB SHIFT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches; same sentence as blank: true. CLEARED AGAIN: warnings naming him: [hard/DNIF_FLY] \"ATT B but on BB SHIFT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-ATT_B_bbSpare_1blank-list.png",
+      "dk-24-ATT_B_bbSpare_1blank-puck.png",
+      "dk-26-ATT_B_bbSpare_2timed-list.png"
+     ],
+     "oracle": "red"
+    },
+    {
+     "id": "H-01 ATT B × bbDesk",
+     "did": "ATT B filed for Tuesday (Inputs page), then X on a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times)",
+     "saw": "filed ATT B ({\"iid\":true,\"asked\":[\"certificate\"],\"clash\":false}); a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times); state block \"BB DESK\" row role \"\" start \"\" end \"\"; crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal planned\". BLANK: warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (block \"BB DESK\" row role \"\" start \"08:00\" end \"12:00\"):warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true. CLEARED AGAIN: warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches. [template note: The BB desk — the same rules as the AVALON desk: checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-29-ATT_B_bbDesk_1blank-list.png",
+      "dk-28-ATT_B_bbDesk_1blank-puck.png",
+      "dk-30-ATT_B_bbDesk_2timed-list.png"
+     ],
+     "oracle": "silent"
+    }
+   ]
+  }
+ }
+}

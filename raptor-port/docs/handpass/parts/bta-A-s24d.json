@@ -1,0 +1,66 @@
+{
+ "parts": {
+  "bta-A-s24-dk": {
+   "at": "2026-10-06T08:55:59.423Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "S24 sim (OFT) row — front then rear seat of the same row",
+     "did": "1440×900 desktop: OL filed for X; a new a new sim (OFT) row (\"+ Row\"); X put on it, then put on it AGAIN",
+     "saw": "first press: toast \"Vandal — On leave but tasked — this row — reason: x-OL\", row {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwfzq1at401n6\",\"p\":\"split\"}; second press: toast \"Vandal — already on this row · not added twice\", row UNCHANGED; warnings naming him before/after: 1 / 1 (On leave but tasked — this row — reason: x-OL)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s24_oft_second-list.png"
+     ]
+    },
+    {
+     "id": "S24 sim (OFT) row — via \"+\" twice",
+     "did": "1440×900 desktop: OL filed for X; a new a new sim (OFT) row (\"+ Row\"); X put on it, then put on it AGAIN",
+     "saw": "first press: toast \"Vandal — On leave but tasked — this row — reason: x-OL\", row {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg03yy1y2dlk\",\"w\":\"split\"}; second press: toast \"\", row UNCHANGED; warnings naming him before/after: 1 / 1 (On leave but tasked — this row — reason: x-OL)",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-02-s24_oft_second-list.png"
+     ]
+    },
+    {
+     "id": "S24 duty row — primary then extra",
+     "did": "1440×900 desktop: OL filed for X; a new a new duty row (\"+ Row\"); X put on it, then put on it AGAIN",
+     "saw": "first press: toast \"Vandal — On leave but tasked — this row — reason: x-OL\", row {\"role\":\"\",\"id\":\"split\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg0i009ycf89\"}; second press: toast \"Vandal — already on this row · not added twice\", row UNCHANGED; warnings naming him before/after: 1 / 1 (On leave but tasked — this row — reason: x-OL)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s24_duty_second-list.png"
+     ]
+    },
+    {
+     "id": "S24 Ground Programme row — primary then extra",
+     "did": "1440×900 desktop: OL filed for X; a new a new Ground Programme row (\"+ Item\"); X put on it, then put on it AGAIN",
+     "saw": "first press: toast \"Vandal — On leave but tasked — this row — reason: x-OL\", row {\"prog\":\"\",\"str\":\"\",\"end\":\"\",\"who\":\"split\",\"rid\":\"rmuwg0w2z80xx0x\"}; second press: toast \"Vandal — already on this row · not added twice\", row UNCHANGED; warnings naming him before/after: 1 / 1 (On leave but tasked — this row — reason: x-OL)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s24_ground_second-list.png"
+     ]
+    },
+    {
+     "id": "S24 Common Programme row — crowd twice",
+     "did": "1440×900 desktop: OL filed for X; a new a new Common Programme row (\"+ Item\"); X put on it, then put on it AGAIN",
+     "saw": "first press: toast \"Vandal — On leave but tasked — programme — reason: x-OL\", row {\"prog\":\"\",\"sub\":\"\",\"str\":\"\",\"end\":\"\",\"who\":\"split\",\"rmks\":\"\",\"rid\":\"rmuwg1a8a7vfwvo\"}; second press: toast \"Vandal — already on this row · not added twice\", row UNCHANGED; warnings naming him before/after: 1 / 1 (On leave but tasked — programme — reason: x-OL)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s24_prog_second-list.png"
+     ]
+    },
+    {
+     "id": "S24 cockpit — both seats of one aircraft",
+     "did": "1440×900 desktop: OL filed for X; a flying line ZQ; X put on its front seat, then on its rear seat",
+     "saw": "first toast \"Vandal — On leave but planned to fly ZQ — reason: x-OL\", second toast \"Vandal — 1 person is double turning: Vandal\"; aircraft now p \"split\" w \"split\"; warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly ZQ  — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" (the existing policy is warning-only: expected both seats held)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s24-cockpit-list.png",
+      "dk-06-s24-cockpit-puck.png"
+     ]
+    }
+   ]
+  }
+ }
+}

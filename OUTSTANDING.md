@@ -56,7 +56,7 @@ check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip
 (Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
 changed text box on Edit Schedule, the first click into another box lands on the page and a second is needed; the same on the live
 app; with the next change to the schedule's text boxes). **The same check's three parked questions were answered on 6 Oct 26 (D597–D599) and built on the stack branch** — the items
-are in `OUTSTANDING-ARCHIVE.md`; the sheet's §13 has the walk. Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; **BUILT and FULL-checked 6 Oct 26 on `claude/rest-blank-line` (D602) — his look and "merge live" left**; [OIL-WORK-START] was NOT built with it — his instruction for that chat named the crew-rest fault alone — and stays next, its own job), **found by that check and filed, none of them this fix's doing: [BLANK-TIMES-ABSENCE] (MEDIUM — a man on all-day leave or a downchit seated on a line with no times gets no line in the warning list until a time is typed; **answered YES, flag him at once — D605; to build NEXT, the agent's proposal**), [SC-PICKER-INTIME-REST] (low–medium — the crew list does not warn of crew rest before a man is put on an SC seat whose typed in-time is early; from Sol's read of the fix), [SC-BLANK-SHIFT-QUAL] (low), [CREW-REST-MARK-COPIES] (low, a question for him), [BLANK-LINE-SANS-WORDS] (low), [TAB-LAST-BOX-TEST-GAPS] (low, tests only)**, then [START-CONTEXT-AUDIT] (what a new chat loads at its start, measured and cut to what a job needs, never at the cost of quality — D602; its first step is [STACK-MERGED-TIDY] — the stack went live as PR #481 on 6 Oct 26 and its finished items and handoff blocks still stand), [R3-OWED-READS] (both reads done 6 Oct 26 with the crew-rest fix's scenario read — it leaves at the next documents-only pass), (the two small Blue/Red fixes that stood here were built in the check's third round, 6 Oct 26, and archived; `[ROLE-NOT-CHOSEN]` was answered "leave it" — D603), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
+are in `OUTSTANDING-ARCHIVE.md`; the sheet's §13 has the walk. Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; **BUILT and FULL-checked 6 Oct 26 on `claude/rest-blank-line` (D602) — his look and "merge live" left**; [OIL-WORK-START] was NOT built with it — his instruction for that chat named the crew-rest fault alone — and stays next, its own job), **found by that check and filed, none of them this fix's doing: [BLANK-TIMES-ABSENCE] (MEDIUM — a man on all-day leave or a downchit seated on a line with no times gets no line in the warning list until a time is typed; answered YES, flag him at once — D605; **BUILT and FULL-checked 6 Oct 26 on `claude/blank-times-absence-picker-2cebae` — his look and "merge live" left**), [SC-PICKER-INTIME-REST] (low–medium — the crew list does not warn of crew rest before a man is put on an SC seat whose typed in-time is early; from Sol's read of the fix; **BUILT with it, the same branch**), [SC-BLANK-SHIFT-QUAL] (low), [CREW-REST-MARK-COPIES] (low, a question for him), [BLANK-LINE-SANS-WORDS] (low — its absence sentences done with D605), [TAB-LAST-BOX-TEST-GAPS] (low, tests only)**, **found by the D605 check and filed, none of them its doing: [BLANK-STANDBY-STRIKE] (low — the crew list strikes a man on local leave for a standby seat whose shift times are blank), [BLANK-SEAT-ACTIVITY-HINT] (low — the crew list says nothing before a man with a whole-day course is put on a seat with no times; the list flags him after), [SC-SPARE-RING-BORROWS] (low — one man in a MAIN and a SPARE seat of one SC line: the spare puck wears the MAIN's leave ring), [REQ-ROW-SELF-CLASH] (low — times typed on an all-day request's own row flag its own man), [SC-INTIME-REST-WORDS] (low — the crew-rest sentence calls an SC line's in-time its "start"), [UPCHIT-MOVE-NO-REGROW] (low, a question for him — an Upchit moved later does not give back the days it cut), [OFT-ADD-TWICE-SILENT] (low), [LOOK-PENDING-COUNT] (low)**, then [START-CONTEXT-AUDIT] (what a new chat loads at its start, measured and cut to what a job needs, never at the cost of quality — D602; its first step is [STACK-MERGED-TIDY] — the stack went live as PR #481 on 6 Oct 26 and its finished items and handoff blocks still stand), [R3-OWED-READS] (both reads done 6 Oct 26 with the crew-rest fix's scenario read — it leaves at the next documents-only pass), (the two small Blue/Red fixes that stood here were built in the check's third round, 6 Oct 26, and archived; `[ROLE-NOT-CHOSEN]` was answered "leave it" — D603), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
 
 **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
 are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
@@ -2035,6 +2035,16 @@ nothing" pin (`avalon-rules.test.ts`) changes for whole-day absences only; a pub
 Full row: `grep -h '^| D605 |' .claude/decisions-full/*.md`. **Owed with this job's first read:** D605's short line read against its full row by a reviewer who did not write it (D138). **Tier:** FULL (the warning list, the published record).
 **Place (the agent's proposal, his to change):** its own small job, NEXT — before `[OIL-WORK-START]`, with
 `[SC-PICKER-INTIME-REST]` — since a missing "grounded but flying" warning is the kind of fault that harms people.
+**BUILT 6 Oct 26 on `claude/blank-times-absence-picker-2cebae`, FULL check done — his look and "merge live" left.** Seen on
+screen on the live build first (a man on all-day leave seated on a new blank line: plain puck, nothing in the list), flagged
+at once on the fixed one — on a flying line, a duty, sim, ground and programme row, an SC MAIN and SPARE with cleared
+times, a BB / AVALON seat and desk. Two readings of the agent's were told to him in the report (D605's full row, (6) and
+(7)): it reaches every input type that covers the whole day, not only leave and medical; the crew list is unchanged.
+Astra's scenario read found three faults that were fixed in the same build, each red-first — an Upchit raising "Upchit
+clashes with …" (OLD, on timed seats too); a request typed 00:00–23:59 and put on the programme going silent against a
+seat with no times; an unnamed sim or duty row printing "— Sim" / "— duty". The record, with what was walked and what was
+not: `raptor-port/docs/handpass/2026-10-06-blank-times-absence.md`; the rule: `raptor-port/docs/engine-rules.md` §Crew
+rest ("An absence that covers the whole day"). This item leaves when the branch merges (D29).
 
 ### [SC-PICKER-INTIME-REST] Before a man is put on an SC seat, the crew list ignores the shift's typed in-time when it asks about crew rest (Sol's read of the crew-rest fix, 6 Oct 26 — OLD, the same on the live app; low–medium)
 Monday: X lands 22:30 (clear 12:30 on Tuesday). Tuesday: an SC wave with someone already in a MAIN seat, B (the in-time) typed
@@ -2050,6 +2060,12 @@ a `shift` sibling as well as a `fly` one (same formation, another person) — **
 spare carries no crew rest, and the sibling lookup goes by formation, so a spare seat must not borrow the MAIN's answer**; walk
 the armed crew list and the drag bubble for both. **Place (the agent's line):** with `[BLANK-TIMES-ABSENCE]` — the next small
 job, both are about what the app says before and after a man is seated where a time is early or missing.
+**BUILT 6 Oct 26 on `claude/blank-times-absence-picker-2cebae`, with `[BLANK-TIMES-ABSENCE]`'s FULL check — his look and
+"merge live" left.** The crew list's question now counts a shift sibling as it counts a sortie's, backward and forward,
+and answers nothing for a seat the conflict engine leaves alone (an SC SPARE, AVALON, BB) — the negative control is
+pinned. An EMPTY SC formation still says nothing before the drop (`[REST-FIRST-CREW-HINT]`). The rule:
+`raptor-port/docs/engine-rules.md` §Crew rest ("The crew list's crew-rest question answers for an SC MAIN seat"); pins
+`raptor-port/src/engine/scpickerrest.test.ts`. This item leaves when the branch merges (D29).
 
 ### [SC-BLANK-SHIFT-QUAL] An SC line whose shift times were cleared prints "(NaN:NaN–NaN:NaN)" in its currency warning, and asks for NIGHT currency (found 6 Oct 26, the crew-rest fix's check — OLD; low)
 Tuesday "+ Wave" → SC; clear the first shift's start and end boxes; put a man who holds SC DAY currency only in its first MAIN
@@ -2079,6 +2095,10 @@ although there is no time yet to compare with his offer; the crew list does not 
 disagree (walker C, S28c). (2) A line with no callsign or mission prints its blank name into sentences: "cannot fly FCP ( )",
 "OCU in   with no IP", "planned for   —". **Place:** low — with `[BLANK-TIMES-ABSENCE]` (what each rule says when a seat has no
 times) or the next change to those sentences; "this line" where the name is blank.
+**Part done 6 Oct 26 with D605 (`claude/blank-times-absence-picker-2cebae`):** the three ABSENCE sentences ("On leave but
+planned to fly …", "… but tasked — …", "… clashes with …") say "this line" / "this row" where the seat has no name, with
+times and without. Still open: (1) the SANS offer worded as a clash on a line with no times, and the blank name in every
+OTHER sentence ("cannot fly FCP ( )", "OCU in   with no IP", the clash and brief sentences).
 
 ### [TAB-LAST-BOX-TEST-GAPS] The Tab that keeps the caret in a day's last box (D597): what its test does not cover (Astra's owed read, 6 Oct 26 — no defect found; low, tests only)
 From `[R3-OWED-READS]` (1): the fix in `raptor-port/src/ui/schedule-tab.ts` is sound for the redraw it was written for. Not
@@ -2087,6 +2107,84 @@ appearing); the caret seen in a real browser after the day is replaced (the shor
 fallback when the exact box no longer exists; a day replaced during the box's own blur (the earlier same-scope check exits
 first — a coverage boundary, not a shown failure). The read: `raptor-port/docs/superpowers/briefs/2026-10-06-rest-blank-line-scenarios-astra.md` §5(a).
 **Place:** low — with the next change to the Tab route.
+
+### [BLANK-STANDBY-STRIKE] On a standby seat whose shift times are blank, the crew list strikes a man on LOCAL leave — whom the rule lets stand it (found 6 Oct 26, the D605 build — OLD; low)
+"+ Wave" → BB (it comes up with no shift times), or an SC wave with its first shift's start and end cleared; a man on
+local leave (LL) all day; arm a BB seat, or the SC SPARE seat: his name is struck "local leave (LL)". Type the shift's
+times and the strike goes; seat him either way and the day's list says nothing — a local leave may stand a standby place
+(owner, 10–11 Aug 26; D605 keeps each kind's exemptions). **Cause:** the crew list tells a standby place by its HOURS —
+`raptor-port/src/engine/avail.ts` `slotRules` sets `avJet` only beside a start time, and `slotBar`'s `spareLike` reads
+`r.sc`, the shift's day / night kind, which is null without times — so a blank standby seat is judged like an ordinary
+one ("unknown fails closed", pinned in `slotrules.test.ts` with exactly this case). Stricter than the rule, never looser:
+no man the list flags is offered clean (pinned in `blankabsence.test.ts`, which names this gap). **Fix:** set the standby
+flags whatever the hours (`avJet` for any AVALON / BB line; `spareLike` on `scSpare` alone), keep failing closed for a
+type that DOES bar the seat, and change the `slotrules.test.ts` pin to an overseas leave; a red test first. **Place:**
+low — with the next change to the crew list.
+
+### [BLANK-SEAT-ACTIVITY-HINT] Before a man with a whole-day course or meeting is put on a seat with no times, the crew list says nothing — the list flags him the moment he is seated (Astra's code read of D605, F2, 6 Oct 26 — a gap the build left on purpose; low)
+A whole-day Training for a man; "+ Line" (no times); arm its seat: his name is offered with no reason. Place him: "Training
+clashes with this line" (the drop's toast says it at once). With hours on the seat the crew list does advise first
+("already on Training") — its soft check for a personal commitment needs the seat's hours
+(`raptor-port/src/engine/avail.ts` `slotBar`, the "IS HE ALREADY BUSY AT THIS HOUR" block, guarded on `slotStart`). For a
+LEAVE, a downchit or an overseas duty there is no such gap: the crew list strikes those on a seat with no hours. D605 was
+built with the crew list unchanged (its full row, reading (7)); pinned as it stands in `blankabsence.test.ts`. **Fix:** in
+that block, a whole-day personal commitment advises against a seat with no hours too ("already on Training", never a
+strike); a red test first. **Place:** low — with `[BLANK-STANDBY-STRIKE]`, the next change to the crew list.
+
+### [SC-SPARE-RING-BORROWS] One man in a MAIN and a SPARE seat of ONE SC line: his SPARE puck wears the MAIN seat's leave ring (Astra's scenario read of D605, F3, 6 Oct 26 — OLD; low)
+An SC line, the same man in a MAIN seat and a SPARE seat of the same shift, a local leave all day: the MAIN seat is
+flagged ("On leave but tasked — SC AM"), rightly; the SPARE seat's puck wears the red ring and C too, though local leave
+may stand a spare. Reproduced by the host through the rule and the week's own drawer, with the shift's times blank and
+typed (typed, the pair is red anyway — "standing SC SPARE and also on SC AM MAIN"). **Cause:** the exempt seat's puck
+rings for any warning anchored anywhere in its formation (`raptor-port/src/ui/html.ts` `exemptLineOwn` — the key-prefix
+match), and a MAIN seat's absence warning is anchored on the MAIN seat of that formation. It needs one man in two seats
+of one shift — already a planning error. **Fix (Astra's steps):** for an SC SPARE's absence ring accept the
+formation-level spare warning and not a MAIN seat's key that merely shares the prefix; keep the currency and two-places
+matching; pin week and Board, blank and timed, with an overseas leave and ATT C as positive controls. **Place:** low —
+with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
+
+### [REQ-ROW-SELF-CLASH] Times typed on the row of an ALL-DAY request put on the Ground Programme flag the request's own man against it (found 6 Oct 26, the D605 build — OLD; low)
+File an all-day Training for a man; put it on the Ground Programme (its row has no times, by design); type 09:00–10:00
+in that row's own boxes: the list says "Training but tasked — TRAINING" for him — his request against its own row. Run
+by the host through the rule on the unchanged timed path; the same on the live app. An all-day request keeps its own
+voice beside its row (`raptor-port/src/engine/inputs.ts` `inputFlags` — a time-less row cannot carry a clash), and the
+timed absence loop does not know the row IS that request. D605's new look does know (`events.ts` — `src` against the
+input's id) and stays silent while the row has no times. Kin of `[REQ-ROW-OWN-BOXES]` (typing in a request's row changes
+the row, not the request — a question for him). **Fix:** the timed loop skips an input against the ground row whose
+`src` is that input; a red test first. **Place:** low — with `[REQ-ROW-OWN-BOXES]`.
+
+### [SC-INTIME-REST-WORDS] The crew-rest sentence calls an SC line's typed in-time its "start" (seen 6 Oct 26, the D605 walk — OLD; low)
+An SC shift 13:00–19:00 with B (its in-time) 05:00, a man clear at 12:30 placed on a MAIN seat: "… crew rest clear at
+12:30, but SC AM starts 05:00 — only 4h30 rest." The shift starts 13:00; 05:00 is its in-time. The arithmetic is right
+(the in-time is the report); the word is not. `raptor-port/src/engine/validate.ts`, the crew-rest sentence's shift
+branch. **Fix:** "… but SC AM's in-time is 05:00 …" when the report is the typed B and "starts" only when it is the
+shift's start; the crew list's line is unaffected. **Place:** low — with `[OIL-WORK-START]` or the next change to the
+crew-rest sentences.
+
+### [UPCHIT-MOVE-NO-REGROW] An Upchit moved to a LATER date does not give back the medical days it cut (walker B, the D605 walk, 6 Oct 26 — OLD; low; a question for him)
+A downchit (ATT C) Monday to Friday; an Upchit effective Wednesday — the downchit is cut to end Tuesday, as it should
+be. Then the Upchit's date is changed to Thursday in the Inputs page's row editor: the downchit still ends Tuesday (the
+editor's sheet says "no current entry needs shortening"), so Wednesday reads fit although the man was cleared only from
+Thursday. Seen by walker B (S26; `raptor-port/docs/handpass/parts/bta-B.md`), NOT reproduced by the host; the Upchit's
+write path only ever shortens. **The question for him:** when an Upchit is moved later, should the downchit it cut grow
+back to the day before the new date — or is the Upchit deleted and filed again? **Place:** low — with the next change
+to the Medical view.
+
+### [OFT-ADD-TWICE-SILENT] The second press of an OFT row's "+" for a man already on that row is refused with no message (walker A, the D605 walk, 6 Oct 26 — OLD; low)
+"One man, once per row" (D271) refuses the second place and says why — on a duty row, a ground row, a Common Programme
+row and from an OFT row's front seat to its rear. Pressing the OFT row's "+" twice with the same man armed: the row is
+unchanged, rightly, and nothing is said. Seen by walker A (S24; `raptor-port/docs/handpass/parts/bta-A.md`), not
+reproduced by the host. **Fix:** that door shows the same sentence the others do; a browser test first. **Place:** low —
+with the next change to the sim rows.
+
+### [LOOK-PENDING-COUNT] The 👁 look at the Original shows "1 pending" in its head while the working copy shows "2 pending" (walker D, the D605 walk, 6 Oct 26 — OLD; low)
+A published Tuesday; a man seated on a new line and a leave filed for him afterwards: the working copy's head reads
+"2 pending" ("Vandal · LL filed", "WAVE 3 added"), and the 👁 look at the Original, opened at the same moment, reads
+"1 pending". Seen by walker D in two of its orders (pictures
+`raptor-port/docs/img/handpass/2026-10-06-blank-times-absence/D/dk-04-dk-obs-2-after-leave-W.png`, `dk-06-…-L.png`),
+not reproduced or explained by the host; nothing about a warning. **To do:** find which count the look's head prints and
+whether a pending chip belongs on a look at an issued version at all. **Place:** low — with the next change to the
+changes window or the version look.
 
 ### [PEND-INTIME-WORDS] "To go out" words an edited reporting line as "2 In-time / Rally lines → 2 In-time / Rally lines" (reader AB's second pass, 6 Oct 26 — OLD)
 A line's clock changed on a published day, with the number of lines unchanged: the pending list shows the same words before and

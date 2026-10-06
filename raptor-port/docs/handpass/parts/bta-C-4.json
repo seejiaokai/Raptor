@@ -1,0 +1,58 @@
+{
+ "parts": {
+  "bta-C-4-dk": {
+   "at": "2026-10-06T08:38:28.363Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "S36.1",
+     "did": "Torch (SC DAY current only): Monday flight 21:00–22:30 (took true); Tuesday SC B 05:00, Cobra in MAIN row 0; his name pressed on the other MAIN seat (crew list said: struck YES · printed \"Torch C crew rest — not clear until 12:30\" · tooltip \"Torch — crew rest — not clear until 12:30\" ·) → seat holds \"ignite\", toast \"Torch — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"; then the shift retimed to 19:00–07:00 (night) and OL all Tuesday filed (iid imuwfetix8cmz2f); shift now B \"05:00\" start \"19:00\" end \"07:00\" · rows MAIN:taipan/- MAIN:ignite/- SPARE:-/- SPARE:-/-",
+     "saw": "bar \"⚠ 10 issues · 6 warning · tap to collapse ▲\" · lines naming him: [\"On leave + flying Torch — On leave but tasked — SC AM — reason: Overseas\",\"Crew rest (<12h) Torch — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\",\"SC currency — wrong shift Torch — SC NIGHT currency needed for SC AM (19:00–07:00) — Torch is not current\",\"Breaks Wednesday Torch — had to leave by 19:35. Crew rest breach — Tuesday ended 07:00 → crew rest clear at 19:00, but told to report 07:35 — only 0h35 rest.\",\"Long work day Torch — Torch has a long work day: 26h00, 05:00 → 07:00\"] · codes [\"LEAVE_FLY\",\"CREW_REST\",\"SC_QUAL\",\"LONGDAY\"] · his pucks [flying line:SOLID-ring DOTTED chip Q; Unavailable row:SOLID-ring chip Q]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s36-1-all-three-list.png",
+      "dk-02-s36-1-all-three-puck.png"
+     ]
+    },
+    {
+     "id": "S36.2",
+     "did": "cause 1 removed: B retyped 12:45 (after his 12:30 clearance); the shift is B \"12:45\" start \"19:00\" end \"07:00\" · rows MAIN:taipan/- MAIN:ignite/- SPARE:-/- SPARE:-/-",
+     "saw": "bar \"⚠ 9 issues · 5 warning · tap to collapse ▲\" · lines naming him: [\"On leave + flying Torch — On leave but tasked — SC AM — reason: Overseas\",\"SC currency — wrong shift Torch — SC NIGHT currency needed for SC AM (19:00–07:00) — Torch is not current\",\"Breaks Wednesday Torch — had to leave by 19:35. Crew rest breach — Tuesday ended 07:00 → crew rest clear at 19:00, but told to report 07:35 — only 0h35 rest.\",\"Long work day Torch — Torch has a long work day: 18h15, 12:45 → 07:00\"] · codes [\"LEAVE_FLY\",\"SC_QUAL\",\"LONGDAY\"] · his pucks [flying line:SOLID-ring DOTTED chip Q; Unavailable row:SOLID-ring chip Q]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-s36-2-rest-removed-list.png",
+      "dk-04-s36-2-rest-removed-puck.png"
+     ]
+    },
+    {
+     "id": "S36.3",
+     "did": "cause 2 removed: shift retimed back to 13:00–19:00 (B \"12:45\" start \"13:00\" end \"19:00\" · rows MAIN:taipan/- MAIN:ignite/- SPARE:-/- SPARE:-/-)",
+     "saw": "bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · lines naming him: [\"On leave + flying Torch — On leave but tasked — SC AM — reason: Overseas\"] · codes [\"LEAVE_FLY\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-s36-3-qual-removed-list.png",
+      "dk-06-s36-3-qual-removed-puck.png"
+     ]
+    },
+    {
+     "id": "S36.4",
+     "did": "cause 3 removed: the OL deleted on the Inputs page (the row's ✕ pressed: gone; input gone true)",
+     "saw": "bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · lines naming him: [] · codes [] · his pucks [flying line:no-solid; Available crew:no-solid; Available crew:no-solid]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-09-s36-4-ol-removed-list.png",
+      "dk-08-s36-4-ol-removed-puck.png"
+     ]
+    },
+    {
+     "id": "S36.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

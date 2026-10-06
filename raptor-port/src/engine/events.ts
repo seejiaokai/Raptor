@@ -20,7 +20,7 @@ import { standsOn } from './overlay'
    row's own day, so that is the only day the deferral now applies to.
    A deferred input whose row cannot be found at all stays VISIBLE: with no
    row anywhere, hiding it here would silence the man's absence outright. */
-export const inpShow=(inp:any,dt:any,xweek?:any)=>{
+export const inpShow=(inp:any,dt:any,xweek?:any,undeferred?:any)=>{
   /* SANS AVAILABILITY IS AN OFFER, NOT A COMMITMENT — it must never reach
      day.input (brief/debrief clashes, INPUT_FLY, the midnight-tail machinery
      all read that array). sansGate (avail.ts) is the only thing that judges
@@ -28,6 +28,13 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
      construction sites funnel through here, so this one line keeps it out
      everywhere at once. */
   if(isSansAvail(inp.type))return false;
+  /* AN UPCHIT IS A PAPERWORK RECORD, NOT AN ABSENCE — it says the man is fit AGAIN (owner, 27 Aug 26; inputs.ts
+     INPUT_META: "otherwise invisible to the engine"). inputFlags turns it away, but the fall-through below — "not on a
+     landed row, so it keeps its own voice" — let it back in: an Upchit has no row, so it reached day.input and read
+     "Upchit clashes with …" / "Upchit but tasked — …" on the very day he was cleared (Astra's scenario read of
+     [BLANK-TIMES-ABSENCE], F1, 6 Oct 26 — OLD, the same for a seat with times; D605 would have carried it to every
+     seat without). Turned away HERE, beside SANS, so the official run, the cross-week read and the tails agree. */
+  if(isUpchit(inp.type))return false;
   /* A REMOVED INPUT IS DORMANT (owner, 26 Aug 26 — see inputDormant): parked
      back in Personal Inputs by unacceptInput, it speaks NOWHERE until
      re-accepted. Before the xweek bypass on purpose — dormancy holds for
@@ -52,7 +59,7 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
   if(filingActive()){
     const eff=inp.iid?fileAcc(dt,inp.iid,inp.acc):'r';
     if(eff==='r')return false;                    // dormant, or absent when this date was signed
-    if(xweek)return true;
+    if(xweek||undeferred)return true;             // `undeferred`: the comment at the foot of this function
     if(!isUpchit(inp.type)&&!(eff==='g'&&!inp.allday))return true;   // not a timed accepted input → a live flag
     /* a timed accept speaks as its landed ground row: find that row on the SWAPPED DAYS
        by its source id (live-acc-agnostic — acceptedDay's own 'g' guard reads the working
@@ -69,9 +76,25 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
      seed. The tails (nx/pv, below) never set xweek and keep this dedup. */
   if(xweek)return true;
   if(inputFlags(inp))return true;                 // not a timed accepted input
+  /* `undeferred` — THE ASK OF A SEAT WITH NO HOURS (D605; Astra's scenario read, F2). The deferral below exists so a
+     clash is said ONCE, by the landed row: the row is an event with the request's hours and overlaps whatever the
+     man is also on. A seat with no hours cannot be overlapped by anything, so against it the row can never speak —
+     and a whole-day request typed 00:00–23:59 went silent there the moment it was put on the programme, where the
+     All day tick (never deferred: its row has no times — inputs.ts inputFlags) kept its voice. buildDay's `whole`
+     list asks with this flag; day.input never does. */
+  if(undeferred)return true;
   const di=acceptedDay(inp);
   return di<0||(DAYS[di]||{}).dt!==dt;            // defer only on the row's day
 };
+/* DOES THIS INPUT COVER THE WHOLE OF ITS DAY? (owner, D605, 6 Oct 26). Asked of a day.input entry — the All day
+   tick, a record too thin to place (inpWin fails closed to [0,1439]) or hours typed 00:00–23:59. For such an input
+   the answer to "does it overlap this seat?" does not depend on the seat's hours, which is why a seat with none can
+   still be judged against it — and only against it. A NEIGHBOURING day's copy (`nx` / `pv`, the midnight tails) can
+   never pass: it is shifted a whole day, so tomorrow's starts at 24:00 and yesterday's ends before 00:00 — tomorrow's
+   leave says nothing about a seat today that has no hours to reach past midnight with (pinned on every kind of seat,
+   blankabsence.test.ts; an explicit nx / pv guard here was cut once and nothing went red, so it is not written). Asked
+   in ONE place: buildDay's `whole` list (below), which every seat with no hours is then judged against. */
+export const wholeDay=(i:any)=>!!i&&i.s!=null&&i.e!=null&&i.s<=0&&i.e>=1439;
 /* IS THIS EVENT A HARD CLASH AGAINST AN SC MAIN SHIFT? (owner, 26 Aug 26).
    The kind table (SHIFT_HARD) still grades ground/prog as academics — amber —
    but a GROUND ROW that IS a red-list commitment is the commitment, not
@@ -236,6 +259,17 @@ export const lateShowOf=(rmks:any)=>/\b(?:late\s*show|show\s*(?:at|@)\s*brief|br
    read for inpShow (see its own comment) — never set by collectEvents. */
 export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
     const fly:any[]=[],forms:any[]=[],events:any[]=[],simcrew:any[]=[],sacrew:any[]=[];
+    /* THE SEATS WITH NO HOURS OF THEIR OWN (owner, D605, 6 Oct 26 — "a man who is on leave or grounded for the whole
+       day is flagged the moment he is seated anywhere that day"). A row with no start, a sim box with none, a standby
+       line whose shift times are blank (BB is minted so) has no window, so it never became an event or a sacrew entry
+       and nothing could be said about the man on it. They are collected HERE instead — never in `events`, so the clash
+       loop, the crew picker's busy scan, Insights' hours and OIL still read a time-less row as occupying no time — and
+       validate() asks them the ONE question that needs no hours: is he away for the whole of this day? `av` marks an
+       AVALON / BB place (its own exemptions and its own words), `work` its desk, `src` the request a ground row was
+       landed from, `kind` what sort of row it is (for the words of a row with no name yet). Port-only, like sacrew (the parity gate excises it whole). A flying line or an SC line with no
+       times is NOT here: those are in day.fly / day.events / day.forms already, with times that are not numbers —
+       validate() judges them against the same `whole` list (returned beside `blank`). */
+    const blank:any[]=[];
     (d.waves||[]).forEach((w:any,gi:any)=>{
       const im=parseReportingLines(w);
       w.formations.forEach((f:any,li:any)=>{
@@ -262,6 +296,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
                  it whole), so the extra fields cost nothing there. */
               const role=(f.spare||a.spare)?'SPARE':'MAIN';
               [['p',a.p],['w',a.w]].forEach(([seat,id]:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:sTo,e:sLd,label:`${w.label} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat}`,work:false,role,seat,kind:w.kind}); });
+            });
+            /* no shift times: no window for the currency, front-seat and two-places looks — still inert — but the
+               men are kept for the whole-day absence look (D605; `blank`, above) */
+            else f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;
+              [['p',a.p],['w',a.w]].forEach(([seat,id]:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))blank.push({id,label:`${w.label} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat}`,av:true,work:false}); });
             });
           }
           return;
@@ -359,9 +398,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
          as [1380,60] — an inverted interval that `overlap` can never match, so
          every check on that row was silently switched off. And the bodies
          dropped underneath the row (more[]) are as tasked as the two in seats. */
-      const sw=win(st,en,VCONF.simLen); if(!sw)return;
+      const sw=win(st,en,VCONF.simLen);
       [s.p,s.w].concat(s.pax||[]).concat(s.more||[])   // sim who is free text (1C), not a person
-        .forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))events.push({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim',key:'s:'+di+'.'+k+'.'+ri}); }); }));
+        .forEach((id:any)=>{ if(!id||!PEOPLE[id]||isSpecial(id))return;
+          if(!sw){blank.push({id,label:'Sim '+s.label,key:'s:'+di+'.'+k+'.'+ri,kind:'sim'});return;}   // a box with no start — D605, `blank` above
+          events.push({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim',key:'s:'+di+'.'+k+'.'+ri}); }); }));
     /* ---- sim brief / debrief windows -------------------------------------
        An EP profile on the OFT briefs 15 min before the box — unless its
        remarks name their own lead (briefLeadOf above), which wins for that
@@ -403,9 +444,9 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        man added to a duty could fly straight through it unflagged. */
     /* kind matters now: a shift clashing with a duty post is a Warning, with a
        ground event or a programme item only an Advisory. */
-    const push=(id:any,st:any,en:any,label:any,kind:any,key?:any)=>{
+    const push=(id:any,st:any,en:any,label:any,kind:any,key?:any,src?:any)=>{
       if(!id||!PEOPLE[id]||isSpecial(id))return;
-      const w2=win(st,en); if(!w2)return;
+      const w2=win(st,en); if(!w2){blank.push({id,label,key,src,kind});return;}   // a row with no start — D605, `blank` above
       /* the same man in the row's seat AND in its more[] is one commitment, not
          two — he used to be flagged as clashing with himself */
       if(events.some((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label))return;
@@ -421,6 +462,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
         if(saExemptKind(dw.sa)){
           const w2=win(parseHM(r.str),parseHM(r.end));
           if(w2)[r.id].concat(extras(r)).forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:w2[0],e:w2[1],label:r.role+' duty',key:`d:${di}.${dwi}.${ri}`,work:true,role:'DUTY',seat:null,kind:dw.sa}); });
+          else [r.id].concat(extras(r)).forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))blank.push({id,label:r.role+' duty',key:`d:${di}.${dwi}.${ri}`,av:true,work:true,kind:'duty'}); });   // D605
         }
         return;
       }
@@ -433,8 +475,8 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        all read day.events. Kept as a SEPARATE guard beside cx, not merged. */
     (d.ground||[]).forEach((g:any,ri:any)=>{ if(g.cx)return; if(g.info)return;
       const st=parseHM(g.str),en=parseHM(g.end);
-      push(whoId(g.who),st,en,g.prog,'ground',`g:${di}.${ri}`);
-      extras(g).forEach((x:any)=>push(x,st,en,g.prog,'ground',`g:${di}.${ri}`)); });
+      push(whoId(g.who),st,en,g.prog,'ground',`g:${di}.${ri}`,g.src);
+      extras(g).forEach((x:any)=>push(x,st,en,g.prog,'ground',`g:${di}.${ri}`,g.src)); });
     /* the squadron-wide Programme was never read here at all — a man booked to
        a 0845–1630 engagement could be scheduled to fly at 1245 with nothing
        said about it */
@@ -448,6 +490,15 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
     const mapInp=(inp:any)=>{const w2=inpWin(inp);
       return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks};};
     const input:any[]=inputsOn(d.dt).filter((inp:any)=>inpShow(inp,d.dt,xweek)).map(mapInp);
+    /* THE WHOLE-DAY INPUTS OF THIS DAY — what a seat with no hours is judged against (D605). The same gate, the
+       same frozen world on a published face, as day.input, asked UNDEFERRED (inpShow's last comment: a landed row
+       cannot speak against a seat with no hours). Only THIS day's records: a neighbour's copy in the midnight tails
+       below says nothing about such a seat. Each keeps its request's id for one reader — the line under this: a
+       request put on the Ground Programme must not flag its own man on its OWN row when that row has no times (an
+       all-day request lands one by construction — inputs.ts inputFlags — and a timed one may have its hours cleared),
+       or he would be "Training but tasked" on the row that IS his Training. Port-only, like `blank`. */
+    const whole:any[]=inputsOn(d.dt).filter((inp:any)=>inpShow(inp,d.dt,xweek,true)).map((inp:any)=>({...mapInp(inp),iid:inp.iid})).filter(wholeDay);
+    blank.forEach((b:any)=>{b.abs=whole.filter((m:any)=>m.id===b.id&&!(b.src!=null&&m.iid===b.src));});
     /* THE MIDNIGHT TAIL (owner, 11 Aug 26 — "the default warning engine also checks
        in the same modality for all applicable rules based on timing"). A window that
        runs past midnight — a night sortie's landing and debrief, an overnight duty
@@ -486,7 +537,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
       const m=mapInp(inp); if(m.s==null||m.e==null)return;
       input.push({...m,s:m.s-1440,e:m.e-1440,pv:true});
     });
-    return {di,dow:d.dow,dt:d.dt,fly,forms,input,events,simcrew,simwin,sacrew};
+    return {di,dow:d.dow,dt:d.dt,fly,forms,input,events,simcrew,simwin,sacrew,blank,whole};
 }
 /* the loaded week's Monday pv-tail and Sunday nx-tail used to read nothing
    past DAYS' own ends (owner ask: continuous rule reading — see weekctx.ts).

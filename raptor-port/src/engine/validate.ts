@@ -8,7 +8,7 @@ import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
-import { CURWEEK, isStandalone } from './waves'
+import { CURWEEK, isStandalone, saExempt } from './waves'
 import { DAYS } from './data'
 import { dayOilBlind, blindDesks } from './oil'
 import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
@@ -824,9 +824,33 @@ function validateCore(){
        26 Aug 26) the events loop below is a shift's ONE voice — red-list and
        ATT B hard, Meeting amber, leave/med/OD hard — so a shift line is
        excluded here outright. Real sorties are untouched. */
-    day.fly.forEach((e:any)=>day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
+    /* AN ABSENCE THAT COVERS THE WHOLE DAY DOES NOT NEED THE SEAT'S HOURS (owner, D605, 6 Oct 26 — "4 yes as
+       recommended": a man on leave or grounded for the whole day is flagged the moment he is seated anywhere that day,
+       on a line or row with no times yet too; a part-day absence against a seat with no times stays silent — nothing
+       to compare). "+ Line" and "+ Wave" mint a line with no take-off, its hours reach here as not-a-number, and every
+       overlap with not-a-number is false: the struck name in the crew list was the only warning until a time was
+       typed. So each absence check below — this one, the duty / sim / ground loop, the standby looks — judges a seat
+       with no usable window against a DIFFERENT list: `day.whole`, this day's inputs that cover the whole day
+       (events.ts buildDay / wholeDay — the All day tick, a record with no usable hours, hours typed 00:00–23:59 or to
+       24:00; asked undeferred, so a whole-day request already put on the programme still counts). Whether such an
+       input overlaps the seat never depended on the missing hours. Nothing else about any check moves: the same
+       types, the same exemptions, the same words — said without a clock, and "this line" / "this duty row" (sim, ground …) where the seat
+       has no name yet either. Pins: blankabsence.test.ts. */
+    const noWin=(s:any,e:any)=>!(isFinite(s)&&isFinite(e));
+    const whole:any[]=day.whole||[];
+    /* A SEAT WITH NO NAME YET. A flying line: an empty label -> "this line". A row says WHICH kind it is — the list
+       folds identical sentences into one line, and a plain "this row" for a man on a new duty row, a new sim row and a
+       new ground item was one line for three places (walkers A and B, 6 Oct 26). A sim row's label is built 'Sim '+its
+       name and a duty row's its role+' duty' (events.ts), so for THOSE kinds alone the bare word left behind means "no
+       name": a Ground or Common Programme item really titled "Sim" or "duty" keeps its title (Sol 6.1's read, F2 —
+       the first cut took the bare words for no-name on every kind, and two such items became one line). */
+    const named=(label:any,alt:string)=>String(label==null?'':label).trim()?label:alt;
+    const ROWWORD:any={duty:'this duty row',sim:'this sim row',ground:'this ground row',prog:'this programme row'};
+    const BARE:any={sim:'Sim',duty:'duty'};
+    const rowName=(x:any)=>{const t=String(x.label==null?'':x.label).trim(); return !t||t===BARE[x.kind]?(ROWWORD[x.kind]||'this row'):x.label;};
+    day.fly.forEach((e:any)=>(noWin(e.step,e.dekit)?whole:day.input).forEach((inp:any)=>{ if(inp.id!==e.id)return;
       if(e.shift)return;
-      if(overlap(e.step,e.dekit,inp.s,inp.e)){
+      if(noWin(e.step,e.dekit)||overlap(e.step,e.dekit,inp.s,inp.e)){
         /* the offer exemption is gone with the "Available *" types (owner
            decision, Aug 26). "Fly with" is now an ordinary commitment: a man who
            says he is flying elsewhere is not available for this sortie, so it
@@ -837,9 +861,9 @@ function validateCore(){
            fly has to say what grounded them, not merely that something clashes. */
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
-          dn?`Downchit but planned to fly ${e.label}${why}`
-            :lv?`On leave but planned to fly ${e.label}${why}`
-              :`${inp.type} clashes with ${e.label}${why}`,e.key);} }));
+          dn?`Downchit but planned to fly ${named(e.label,'this line')}${why}`
+            :lv?`On leave but planned to fly ${named(e.label,'this line')}${why}`
+              :`${inp.type} clashes with ${named(e.label,'this line')}${why}`,e.key);} }));
     /* being unavailable does not only bar flying — a duty, a sim seat or a
        ground slot on the same day is just as wrong, and used to pass. This
        covered leave and downchits only (owner, 4 Aug 26): a Detachment, or a
@@ -868,9 +892,13 @@ function validateCore(){
        closes that drift). canWork() still separates "cannot fly" from "cannot
        work" everywhere else. */
     day.events.forEach((e:any)=>{ if(e.kind==='fly')return;
-      day.input.forEach((inp:any)=>{ if(inp.id!==e.id)return;
+      /* an SC line whose shift times were cleared is the one event that reaches here with no hours (a row with no
+         start never became an event — the time-less rows have their own look below): it is judged against the
+         whole-day inputs, and its sentence prints no clock (D605, above) */
+      const blankShift=noWin(e.s,e.e);
+      (blankShift?whole:day.input).forEach((inp:any)=>{ if(inp.id!==e.id)return;
         if(canWork(inp.type)&&e.kind!=='shift')return;
-        const dn=isDownchit(inp.type), lv=isLeave(inp.type);
+        const dn=isDownchit(inp.type), lv=isLeave(inp.type), hits=blankShift||overlap(e.s,e.e,inp.s,inp.e);
         if(!isUnavail(inp.type)&&e.kind==='shift'&&!shiftHardInput(inp.type)&&inpMeta(inp.type)){
           /* Meeting — the one KNOWN soft type — is the shift's amber voice,
              worded byte-for-byte like the ground-row SHIFT_SOFT above. An
@@ -879,17 +907,37 @@ function validateCore(){
              belongs on the serious side): the inpMeta gate is what keeps a
              typo'd or stale-store type out of this advisory. Mirrored in
              refwin.ts reinput as the explicit MEETING literal. */
-          if(!overlap(e.s,e.e,inp.s,inp.e))return;
+          if(!hits)return;
           markChip(di,e.id,'A','SHIFT_SOFT'); markRing(di,e.id,'adv','SHIFT_SOFT');
           add('adv','SHIFT_SOFT',[e.id],
-            `${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label} (${hm24(e.s)}–${hm24(e.e)}) and also down for ${inpLabel(inp)}`,kOf(e));
+            `${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label}${blankShift?'':` (${hm24(e.s)}–${hm24(e.e)})`} and also down for ${inpLabel(inp)}`,kOf(e));
           return;
         }
-        if(!overlap(e.s,e.e,inp.s,inp.e))return;
+        if(!hits)return;
         { const wc=dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY'; markChip(di,e.id,'C',wc); markRing(di,e.id,'hard',wc); }
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
-          (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${e.label}${why}`,kOf(e)); }); });
+          (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${rowName(e)}${why}`,kOf(e)); }); });
+    /* …AND THE ROWS THAT NEVER BECAME AN EVENT, because they have no start to make a window from (D605, above;
+       events.ts `blank`): a duty desk, a sim seat, a ground or Common Programme row, an AVALON / BB seat or desk
+       with no shift times. `abs` is that man's whole-day inputs for THIS day, already cleared of the request the row
+       itself was landed from. Each kind keeps the exemptions and the words of its timed loop — the two branches
+       below are the loop above and the AVALON / BB look below it, minus the overlap that has nothing to compare:
+       ATT B may work a desk, a sim or a ground row; a standby place bars only what cannot spare. */
+    (day.blank||[]).forEach((b:any)=>(b.abs||[]).forEach((inp:any)=>{
+      const dn=isDownchit(inp.type), lv=isLeave(inp.type), why=inp.remarks?` — reason: ${inp.remarks}`:'';
+      if(b.av){
+        if(canSpare(inp.type))return;
+        if(b.work&&canWork(inp.type))return;
+        const wc=dn?'DNIF_FLY':'LEAVE_FLY';
+        markChip(di,b.id,'C',wc); markRing(di,b.id,'hard',wc);
+        add('hard',wc,[b.id],`${inp.type} but on ${rowName(b)} — ${dn?'medically down':'overseas'}${why}`,b.key);
+        return;
+      }
+      if(canWork(inp.type))return;
+      { const wc=dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY'; markChip(di,b.id,'C',wc); markRing(di,b.id,'hard',wc); }
+      add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[b.id],
+        (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${rowName(b)}${why}`,b.key); }));
     /* AVALON'S ONE CHECK (owner, 11 Aug 26; three more joined it on 7 Sep 26,
        right below, and BB became AVALON's twin the same day). The wave and its desk keep their
        noconf exemption — nothing on them is cross-checked against tasks, rest or
@@ -911,7 +959,7 @@ function validateCore(){
         markChip(di,sa.id,'C',wc); markRing(di,sa.id,'hard',wc);
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[sa.id],
-          `${inp.type} but on ${sa.label} — ${dn?'medically down':'overseas'}${why}`,sa.key);
+          `${inp.type} but on ${sa.role==='DUTY'?rowName({label:sa.label,kind:'duty'}):sa.label} — ${dn?'medically down':'overseas'}${why}`,sa.key);   /* a desk with no role yet (D605's note, the sortie loop) */
       });
     });
     /* THE THREE AVALON CHECKS OF 7 SEP 26 (owner — "Avalon main will also be
@@ -1227,9 +1275,10 @@ function validateCore(){
            alone — and the AVALON/BB version of it (every seat and the desk,
            with the ATT B desk carve-out) is the day.sacrew loop above. */
         (f.spareCrew||[]).forEach((id:any)=>{
-          day.input.forEach((inp:any)=>{ if(inp.id!==id)return;
+          /* a shift with its times cleared is judged against the whole-day inputs (D605 — the sortie loop's note) */
+          (noWin(f.s,f.e)?whole:day.input).forEach((inp:any)=>{ if(inp.id!==id)return;
             if(canSpare(inp.type))return;
-            if(!overlap(f.s,f.e,inp.s,inp.e))return;
+            if(!noWin(f.s,f.e)&&!overlap(f.s,f.e,inp.s,inp.e))return;
             const dn=isDownchit(inp.type), wc=dn?'DNIF_FLY':'LEAVE_FLY';
             markChip(di,id,'C',wc); markRing(di,id,'hard',wc);
             const why=inp.remarks?` — reason: ${inp.remarks}`:'';
@@ -1961,8 +2010,20 @@ export function restIfPlaced(id:any,key:any,from?:any){
      kind, keyed by `slot`); the candidate is cloned into each from a sibling
      leg of the same formation in that same list */
   const pre=`${a[0]}.${a[1]}.${a[2]}.`;
+  /* A SEAT THE CONFLICT ENGINE LEAVES ALONE BORROWS NOTHING ([SC-PICKER-INTIME-REST], 6 Oct 26). The sibling below is
+     found by FORMATION, and an SC line holds its MAIN and SPARE rows in one formation — so now that a shift sibling
+     counts, a SPARE seat asked here would be handed the MAIN's report and told "crew rest", for a seat that bears
+     none (a spare is stood by, not tasked; nothing on AVALON / BB is an event at all). slotBar already stands down
+     for these (its `saExempt`); the guard is here too so the question cannot be wrong whoever asks it. */
+  {const wv=((DAYS[di]||{}).waves||[])[+a[1]], f=wv&&(wv.formations||[])[+a[2]], ac=f&&(f.aircraft||[])[+a[3]];
+    if(wv&&f&&ac&&saExempt(wv,f,ac))return null;}
   const sibF=(EVDAYS[di].fly||[]).find((e:any)=>String(e.key||e.slot||'').indexOf(pre)===0&&e.id!==id);
-  const sibE=(EVDAYS[di].events||[]).find((e:any)=>e.kind==='fly'&&String(e.slot||e.key||'').indexOf(pre)===0&&e.id!==id);
+  /* a SHIFT sibling as well as a sortie (Sol 6.1's read of the crew-rest fix): an SC MAIN is told to report at its
+     line's typed in-time (the B box — owner, 24 Aug 26) or its shift start, and it bears crew rest like a sortie, but
+     its event is kind `shift`, so this lookup found none and the question answered nothing for ANY SC seat — a man
+     clear at 12:30 was offered a seat with a 05:00 in-time, and the breach appeared the moment he was placed. The
+     in-time and the shift's hours are the formation's, so the clone is as true as a sortie's. */
+  const sibE=(EVDAYS[di].events||[]).find((e:any)=>(e.kind==='fly'||e.kind==='shift')&&String(e.slot||e.key||'').indexOf(pre)===0&&e.id!==id);
   if(!sibF||!sibE)return null;
   const legF={...sibF,id,seat:a[4]==='w'?'RCP':'FCP',key:k};
   const legE={...sibE,id,slot:k};

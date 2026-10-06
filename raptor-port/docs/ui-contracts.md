@@ -2455,7 +2455,9 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   already on and into next Monday) and crew rest in BOTH directions
   (`restIfPlaced` — the validator's own `crewRestDay` re-run in probe mode on a
   copy of the day with the candidate leg cloned from a sibling leg of the same
-  formation; an empty formation answers null). It sits after every other
+  formation; an empty formation answers null; since 6 Oct 26 an SC MAIN seat is
+  answered too, from a seated MAIN sibling's shift and its typed in-time, and an
+  SC SPARE seat never — `[SC-PICKER-INTIME-REST]`, `engine-rules.md` §Crew rest). It sits after every other
   reason because those are closer facts about the slot itself; warn-not-bar
   like the rest; and the green `paintSelRings`, the palette strike and the drop
   fallback inherit it with no wiring of their own. Three guards from the 5 Sep

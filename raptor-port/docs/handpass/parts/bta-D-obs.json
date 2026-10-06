@@ -1,0 +1,48 @@
+{
+ "parts": {
+  "bta-D-obs-dk": {
+   "at": "2026-10-06T09:41:05.406Z",
+   "base": "http://localhost:4241",
+   "phone": false,
+   "table": [
+    {
+     "id": "OBS-LOOKCHIP.1",
+     "did": "Tuesday published; then Vandal put on a new blank line",
+     "saw": "working chip \"1 pending\" · look chip \"1 pending\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-dk-obs-1-after-seat-W.png",
+      "dk-03-dk-obs-1-after-seat-L.png"
+     ]
+    },
+    {
+     "id": "OBS-LOOKCHIP.2",
+     "did": "then a whole-day LL filed for him on the Inputs page",
+     "saw": "working chip \"2 pending\" · look chip \"1 pending\" · look sign-off marker \"\" · working marker \"Not yet signed\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-dk-obs-2-after-leave-W.png",
+      "dk-06-dk-obs-2-after-leave-L.png"
+     ]
+    },
+    {
+     "id": "OBS-LOOKCHIP.3",
+     "did": "the day's changes window (the working chip tapped): 'To go out' list",
+     "saw": "chip \"2 pending\" · marker \"Not yet signed\" · sign-offs [— name — | — name — | — name — | — name —] · button \"Publish AL1\" (locked) · Amendments \"1 day with changes to publish / Tue · 2 changes · 1 input change Publish AL1 (locked)\" · window \"Changes · Tuesday 14/7 Published · 2 changes waiting to go out as AL1\" tabs New to you 0, All changes 8, To go out · AL1 2 [on] — Waiting to go out as AL1 · 2 changes — Vandal · LL filed || Wave · WAVE 3 added",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-pend-togoout.png",
+      "dk-08-pend-allchanges.png"
+     ]
+    },
+    {
+     "id": "OBS-LOOKCHIP.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

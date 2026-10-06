@@ -1,0 +1,121 @@
+{
+ "parts": {
+  "bta-D-s30-dk": {
+   "at": "2026-10-06T09:25:39.156Z",
+   "base": "http://localhost:4241",
+   "phone": false,
+   "table": [
+    {
+     "id": "S30.a",
+     "did": "Vandal on a blank flying line (took true), no absence; Tuesday signed and published. Insights opened from Edit Schedule, the Board and View-only Sched",
+     "saw": "edit: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl]  ||  board: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl]  ||  view: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl] · \"On leave + flying\" count [edit, board, view]: [1,1,1]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-dk-s30-a-edit.png",
+      "dk-02-dk-s30-a-board.png",
+      "dk-03-dk-s30-a-view.png"
+     ]
+    },
+    {
+     "id": "S30.b",
+     "did": "local leave all Tuesday filed AFTER publishing (working copy: \"1 pending\", 1 absence line(s)); Insights re-read on all three",
+     "saw": "edit: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl]  ||  board: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl]  ||  view: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl] · unchanged from step a: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-dk-s30-b-edit.png",
+      "dk-06-dk-s30-b-board.png",
+      "dk-07-dk-s30-b-view.png",
+      "dk-04-dk-s30-b-W-W.png"
+     ]
+    },
+    {
+     "id": "S30.c",
+     "did": "Publish AL1 ({\"pressed\":true,\"label\":\"Publish AL1\"}); Insights re-read",
+     "saw": "edit: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ]  ||  board: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ]  ||  view: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ] · \"On leave + flying\" count on each surface [edit, board, view]: [2,2,2] (step a: [1,1,1]) · all three agree: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-dk-s30-c-edit.png",
+      "dk-09-dk-s30-c-board.png",
+      "dk-10-dk-s30-c-view.png"
+     ]
+    },
+    {
+     "id": "S30.d",
+     "did": "after AL1 the new warning's ✕ pressed on the working copy (pressed; working: \"1 pending\", line [HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reas); Insights re-read",
+     "saw": "edit: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ]  ||  board: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ]  ||  view: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ] · unchanged from step c: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-dk-s30-d-edit.png",
+      "dk-13-dk-s30-d-board.png",
+      "dk-14-dk-s30-d-view.png",
+      "dk-11-dk-s30-d-W-W.png"
+     ]
+    },
+    {
+     "id": "S30.e",
+     "did": "Publish AL2 with the warning hidden ({\"pressed\":true,\"label\":\"Publish AL2\"}); Insights re-read",
+     "saw": "edit: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl]  ||  board: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl]  ||  view: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl] · \"On leave + flying\" count [edit, board, view]: [1,1,1] · equals step a: true · all three agree: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-dk-s30-e-edit.png",
+      "dk-16-dk-s30-e-board.png",
+      "dk-17-dk-s30-e-view.png"
+     ]
+    },
+    {
+     "id": "S30.f",
+     "did": "the ↺ pressed (pressed; working: \"1 pending\", line On leave + flying Vandal — On leave but planned to fly this line — reason: Walke); Insights re-read",
+     "saw": "edit: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl]  ||  board: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl]  ||  view: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl] · unchanged from step e: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-dk-s30-f-edit.png",
+      "dk-20-dk-s30-f-board.png",
+      "dk-21-dk-s30-f-view.png",
+      "dk-18-dk-s30-f-W-W.png"
+     ]
+    },
+    {
+     "id": "S30.g",
+     "did": "Publish AL3 with the warning showing again ({\"pressed\":true,\"label\":\"Publish AL3\"}); Insights re-read",
+     "saw": "edit: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ]  ||  board: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ]  ||  view: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ] · \"On leave + flying\" count: [2,2,2] · equals step c: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-dk-s30-g-edit.png",
+      "dk-23-dk-s30-g-board.png",
+      "dk-24-dk-s30-g-view.png"
+     ]
+    },
+    {
+     "id": "S30.h",
+     "did": "the leave lifted on the Inputs page (gone; working: \"1 pending\", 0 absence line(s)); Insights re-read",
+     "saw": "edit: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ]  ||  board: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ]  ||  view: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 37 14 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 5 issues\" leave-types [Downchit + flying 2; On leave + flying 2] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; On leave + flying 2; Tight turn 2; Crew combination — CO approval required ] · unchanged from step g: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-26-dk-s30-h-edit.png",
+      "dk-27-dk-s30-h-board.png",
+      "dk-28-dk-s30-h-view.png",
+      "dk-25-dk-s30-h-W-W.png"
+     ]
+    },
+    {
+     "id": "S30.i",
+     "did": "Publish AL4 with the leave lifted ({\"pressed\":true,\"label\":\"Publish AL4\"}); Insights re-read",
+     "saw": "edit: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl]  ||  board: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl]  ||  view: tiles [33 SORTIES | 17 FORMATIONS | 39 AIRCREW FLYING | 36 13 WARNING] Tue \"Tuesday 9 sorties · 5 formations · 4 issues\" leave-types [Downchit + flying 2; On leave + flying 1] all types [Conflict — two events at once 6; No time for the flight brief 5; Long work day 5; Downchit + flying 2; Personal input clash 2; Double turning 2; Tight turn 2; Crew combination — CO approval required 2; No time for the fl] · \"On leave + flying\" count: [1,1,1] · equals step a: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-29-dk-s30-i-edit.png",
+      "dk-30-dk-s30-i-board.png",
+      "dk-31-dk-s30-i-view.png"
+     ]
+    },
+    {
+     "id": "S30.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

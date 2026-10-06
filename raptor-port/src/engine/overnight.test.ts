@@ -196,19 +196,24 @@ describe('the AVALON rule reaches the tail too, and stays exempt from everything
     expect(bad, JSON.stringify(bad)).toEqual([])
   })
 
-  it("BB is AVALON's twin since 7 Sep 26: a BB seat with OL today flags — typed hours, since a blank shift checks nothing", () => {
+  it("BB is AVALON's twin since 7 Sep 26: a BB seat with OL today flags — with typed hours, and with none (D605)", () => {
     const w = makeStandalone('bb')
     DAYS[0].waves.push(w)
     const f = w.formations[0]
-    // typed hours, or the blank BB seed would make this pass vacuously —
-    // an unparseable window checks nothing whatever kind the wave is
     f.to = '19:00'; f.ld = '07:00'
     f.aircraft[0].p = 'waldo'
     INPUTS.push({ person: 'waldo', date: 'Jul 13', allday: true, type: 'OL', remarks: '' })
     expect(hits('LEAVE_FLY', 'waldo').length).toBe(1)
+    /* the blank BB seed: a whole-day absence needs no hours (owner, D605, 6 Oct 26 — this line used to read
+       "a blank shift checks nothing"); the same single line, and no second code */
     f.to = ''; f.ld = ''
-    expect(hits('LEAVE_FLY', 'waldo')).toEqual([])
+    expect(hits('LEAVE_FLY', 'waldo').length).toBe(1)
     expect(hits('DNIF_FLY', 'waldo')).toEqual([])
+    /* TOMORROW's whole-day leave reached the typed 19:00–07:00 shift through the midnight tail; a shift with no hours
+       has no tail to reach it with */
+    INPUTS.pop()
+    INPUTS.push({ person: 'waldo', date: 'Jul 14', allday: true, type: 'OL', remarks: '' })
+    expect(hits('LEAVE_FLY', 'waldo').filter((x: any) => x.di === 0)).toEqual([])
   })
 })
 
@@ -238,13 +243,29 @@ describe('the AVALON puck wears its ring (11 Aug 26, owner’s first live use)',
     expect(/warn hard/.test(cls!) && /boxred/.test(cls!), cls!).toBe(true)
   })
 
+  /* the exempt copy rings for its OWN rule and nothing else. The man's own warning here is a LOCAL leave — it flags
+     his ordinary seat and may stand a BB seat. (It was ATT C on a BB seat with no shift times, clean only because a
+     blank shift checked nothing; a whole-day downchit is flagged there now — owner, D605, 6 Oct 26 — the test below.) */
+  it('a BB seat with NO shift times rings red for a whole-day downchit (D605) — the puck, not only the list', () => {
+    const w = makeStandalone('bb')
+    DAYS[0].waves.push(w)
+    const wi = DAYS[0].waves.length - 1
+    expect(w.formations[0].to, 'BB is minted with no shift times').toBe('')
+    w.formations[0].aircraft[0].p = 'split'
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: true, type: 'ATT C', remarks: '' })
+    expect(hits('DNIF_FLY', 'split').length).toBe(1)
+    const cls = slotPuckClass(dayHTML(0, false), `0.${wi}.0.0.p`)
+    expect(cls, 'BB seat renders a puck').toBeTruthy()
+    expect(/warn hard/.test(cls!) && /boxred/.test(cls!), cls!).toBe(true)
+  })
+
   it('BB stays clean even when the man carries a warning of his own', () => {
     const w = makeStandalone('bb')
     DAYS[0].waves.push(w)
     const wi = DAYS[0].waves.length - 1
     w.formations[0].aircraft[0].p = 'split'
     DAYS[0].waves[0].formations[0].aircraft[0].p = 'split'      // an ordinary seat too
-    INPUTS.push({ person: 'split', date: 'Jul 13', allday: true, type: 'ATT C', remarks: '' })
+    INPUTS.push({ person: 'split', date: 'Jul 13', allday: true, type: 'LL', remarks: '' })
     validate()
     const html = dayHTML(0, false)
     expect(/warn hard/.test(slotPuckClass(html, '0.0.0.0.p') || ''), 'ordinary copy rings').toBe(true)

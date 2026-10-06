@@ -885,3 +885,93 @@ describe('D187, the board\'s look — the whole record, and an exempt desk keeps
     dutyTplReset()
   })
 })
+
+/* D605 ON A PUBLISHED DAY (6 Oct 26). "A man away for the whole day is flagged on a seat with no times" changes WHEN a
+   leave or downchit warning is raised; D177–D179 still decide WHERE it shows once a day is published: the issued face
+   keeps the list it went out with, and whatever happens afterwards waits on the working copy as a pending change. */
+describe('D605 on a published day — the warning on a seat with no times freezes like every leave warning', () => {
+  const X = 'split'                       // idle across the seed week, no input of his own
+  const blankLine = (who: string) => {
+    const d: any = DAYS[WED]
+    d.waves.push({ label: 'ZB', night: false, intimes: [], traffic: [], formations: [{ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: who, w: '', area: '', rmks: '', opts: {} }] }] })
+  }
+  const flagged = (b: any, who: string) => ((b.byDay[WED] && b.byDay[WED].warns) || [])
+    .filter((w: any) => (w.code === 'LEAVE_FLY' || w.code === 'DNIF_FLY') && (w.who || []).includes(who))
+
+  it('seated on a blank line while already on leave, then published: the day goes out WITH the warning, nothing pending', () => {
+    blankLine('taipan'); validate()          // the seed's own whole-day OL, Wed 15 Jul
+    expect(flagged(WARN, 'taipan').map((w: any) => w.msg), 'flagged before any time is typed').toEqual(['On leave but planned to fly this line — reason: Overseas leave — off island'])
+    publishDay(WED); signBound(WED)
+    expect(flagged(officialWarn(), 'taipan').length, 'the issued face carries it').toBe(1)
+    expect(dayShownPendCount(WED), 'nothing waits').toBe(0)
+    expect(daySigned(WED), 'the four sign-offs hold').toBe(true)
+  })
+
+  it('a leave filed AFTER publishing for a man seated on a blank line: the issued face says nothing, the working copy does, 1 pending', () => {
+    blankLine(X); validate()
+    expect(flagged(WARN, X)).toEqual([])
+    publishDay(WED); signBound(WED)
+    expect(commitNewInput({ ...leaveDraft(X, '2026-07-15', 'LEAVE AFTER PUBLISH', 'LL') })).toBe(true)
+    validate()
+    expect(flagged(WARN, X).length, 'the working copy flags him at once, with no time on his line').toBe(1)
+    expect(flagged(officialWarn(), X), 'the issued face keeps what it went out with').toEqual([])
+    expect(dayShownPendCount(WED), 'the filing is the one pending change').toBe(1)
+    expect(daySigned(WED), 'and the sign-offs fall (D103)').toBe(false)
+    /* the amendment takes it out: now the issued face says it */
+    signBound(WED); publishALDay(WED); validate()
+    expect(flagged(officialWarn(), X).length, 'after the amendment the issued face carries it').toBe(1)
+    expect(dayShownPendCount(WED)).toBe(0)
+  })
+
+  /* the three below were asked for by the two code reads (Astra, Sol 6.1 — 6 Oct 26): an order with the amendment
+     BEFORE the absence; a whole-day request already on the programme, through a published day; an Upchit on the
+     published (official) run */
+  it('seat, publish, an amendment for something else, THEN the leave: still one pending change, the face as AL1 left it', () => {
+    blankLine(X); validate()
+    publishDay(WED); signBound(WED)
+    ;(DAYS[WED] as any).waves[(DAYS[WED] as any).waves.length - 1].formations[0].cs = 'ZQ'   // a callsign typed on his line
+    setSlotVal(`${WED}.${(DAYS[WED] as any).waves.length - 1}.0.0.w`, 'bullet'); validate()
+    expect(dayShownPendCount(WED), 'something to amend').toBeGreaterThan(0)
+    signBound(WED); publishALDay(WED); validate()
+    expect(dayShownPendCount(WED), 'AL1 took it').toBe(0)
+    expect(commitNewInput({ ...leaveDraft(X, '2026-07-15', 'AFTER AL1', 'OL') })).toBe(true)
+    validate()
+    expect(flagged(WARN, X).length, 'the working copy flags him').toBe(1)
+    expect(flagged(officialWarn(), X), 'AL1\'s face says nothing of it').toEqual([])
+    expect(dayShownPendCount(WED)).toBe(1)
+    expect(daySigned(WED), 'the sign-offs fall').toBe(false)
+  })
+
+  it('a Training typed 00:00–23:59 and put on the programme, his other seat a blank line: published WITH the warning; taken off afterwards, the face keeps it', () => {
+    const inp: any = { person: X, date: 'Jul 15', allday: false, s: 0, e: 1439, type: 'Training', remarks: 'CRM', mod: '' }
+    INPUTS.push(inp); inpId(inp)
+    expect(acceptInput(WED, inp, 'g'), 'the request lands').toBe(true)
+    blankLine(X); validate()
+    const said = (b: any) => ((b.byDay[WED] && b.byDay[WED].warns) || []).filter((w: any) => w.code === 'INPUT_FLY' && (w.who || []).includes(X) && /Training clashes with this line/.test(w.msg))
+    expect(said(WARN).length, 'flagged on the blank line although its row speaks for it elsewhere').toBe(1)
+    publishDay(WED); signBound(WED)
+    expect(said(officialWarn()).length, 'the day goes out with it').toBe(1)
+    expect(dayShownPendCount(WED)).toBe(0)
+    /* the request deleted after publishing: the working copy loses the line, the issued face does not */
+    expect(removeInput(inp)).toBeTruthy()
+    validate()
+    expect(said(WARN), 'the working copy').toEqual([])
+    expect(said(officialWarn()).length, 'the issued face keeps what it went out with').toBe(1)
+    expect(dayShownPendCount(WED), 'and the day reads pending').toBeGreaterThan(0)
+  })
+
+  it('an Upchit is no absence on the published run either: a day published with one says nothing of it, on a blank line or a timed one', () => {
+    const up: any = { person: X, date: 'Jul 15', allday: true, type: 'Upchit', remarks: 'fit again', mod: '' }
+    INPUTS.push(up); inpId(up)
+    blankLine(X)
+    ;(DAYS[WED] as any).waves[0].formations[0].aircraft[0].p = X          // and a seat with times
+    validate()
+    const upchit = (b: any) => ((b.byDay[WED] && b.byDay[WED].warns) || []).filter((w: any) => /Upchit/.test(w.msg))
+    expect(upchit(WARN), 'the working copy').toEqual([])
+    publishDay(WED); signBound(WED)
+    expect(!!SCHED.dayOK[WED], 'the fixture publishes').toBe(true)
+    expect(upchit(officialWarn()), 'the issued face').toEqual([])
+    expect(upchit(officialRaw()), 'and the detector behind it').toEqual([])
+  })
+})
+

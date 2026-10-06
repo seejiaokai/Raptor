@@ -1,0 +1,71 @@
+{
+ "parts": {
+  "bta-C-3-all-dk": {
+   "at": "2026-10-06T08:31:33.883Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-05.blank",
+     "did": "Vandal in MAIN (1.2.0.0.p, took true) and SPARE (1.2.0.2.p, took true) of ONE SC formation, local leave all day Tuesday (filed yes); shift now: B \"\" start \"\" end \"\" · rows MAIN:split/- MAIN:-/- SPARE:split/- SPARE:-/-",
+     "saw": "board: MAIN puck SOLID RING, chip C [puck sm warn hard boxred flagnew]; SPARE puck SOLID RING, chip C [puck sm warn hard boxred flagnew] · week card: MAIN SOLID RING, chip C [puck warn hard boxred]; SPARE SOLID RING, chip C [puck warn hard boxred] · his warnings: [\"hard/LEAVE_FLY: On leave but tasked — SC AM — reason: Wedding\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-h05-blank-board.png",
+      "dk-02-h05-blank-week.png"
+     ]
+    },
+    {
+     "id": "H-05.typed",
+     "did": "Vandal in MAIN (1.2.0.0.p, took true) and SPARE (1.2.0.2.p, took true) of ONE SC formation, local leave all day Tuesday (filed yes); shift now: B \"\" start \"13:00\" end \"19:00\" · rows MAIN:split/- MAIN:-/- SPARE:split/- SPARE:-/-",
+     "saw": "board: MAIN puck SOLID RING, chip C [puck sm warn hard boxred]; SPARE puck SOLID RING, chip C [puck sm warn hard boxred] · week card: MAIN SOLID RING, chip C [puck warn hard boxred]; SPARE SOLID RING, chip C [puck warn hard boxred] · his warnings: [\"hard/LEAVE_FLY: On leave but tasked — SC AM — reason: Wedding\",\"hard/DOUBLE_BOOK: Vandal is standing SC SPARE (SC AM 13:00–19:00) and also on SC AM MAIN (13:00–19:00)\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-h05-typed-board.png",
+      "dk-04-h05-typed-week.png"
+     ]
+    },
+    {
+     "id": "H-05.cleared-again",
+     "did": "Vandal in MAIN (1.2.0.0.p, took true) and SPARE (1.2.0.2.p, took true) of ONE SC formation, local leave all day Tuesday (filed yes); shift now: B \"\" start \"\" end \"\" · rows MAIN:split/- MAIN:-/- SPARE:split/- SPARE:-/-",
+     "saw": "board: MAIN puck SOLID RING, chip C [puck sm warn hard boxred]; SPARE puck SOLID RING, chip C [puck sm warn hard boxred] · week card: MAIN SOLID RING, chip C [puck warn hard boxred]; SPARE SOLID RING, chip C [puck warn hard boxred] · his warnings: [\"hard/LEAVE_FLY: On leave but tasked — SC AM — reason: Wedding\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-h05-cleared-board.png",
+      "dk-06-h05-cleared-week.png"
+     ]
+    },
+    {
+     "id": "H-05.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S29.Meeting.0",
+     "did": "Vandal: Meeting all Tuesday filed (iid imuwf67vplbfbyn, asked nothing); \"+ Wave\" → flying wave, he is seated on its blank line (took true)",
+     "saw": "his warnings: [\"hard/INPUT_FLY: Meeting clashes with this line — reason: Full-day\"]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S29.Meeting.1",
+     "did": "ALL AVAIL placed on the 15:00–16:00 Ground Programme row (took true); its count chip \"35\" (title \"35 with nothing else on at that time — tap to see them (who is free as things stand now)\") pressed → the window",
+     "saw": "window \"LATER BRIEF Jul 14 · 15:00–16:00\" tabs [] · note \"Who’s available 35\" · rows 35: his row NOT IN THE CROWD · flagged rows Outlaw:RED · foot \"Tap a puck for why. One man is flagged.\"",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-07-s29-Meeting-window.png"
+     ]
+    },
+    {
+     "id": "S29.Meeting.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}
