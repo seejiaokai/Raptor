@@ -65,21 +65,32 @@ async function oilCell(page: Page) {
   return (/\b(FO|HO)\b/.exec(t) || [''])[0]
 }
 /* the Logic page's own box for "Nominal report before T/O": Edit rules (once — the page keeps it on), type, Tab. It
-   WAITS on what it needs (D87): the box drawn before it is typed in, and the value the app then holds before the page
-   is left — a fixed pause let a busy machine leave the page with the old value still in force. */
+   WAITS on what it needs (D87): the box drawn before it is typed in, and the value the app then HOLDS before the page
+   is left.
+   The type-and-Tab is tried again until the app holds the value, because the Logic page can redraw its rules about half
+   a second after it opens — the same markup, new boxes — and a value typed into a box at that instant goes with the old
+   box (traced 6 Oct 26 with a watcher on the page's body: once in two full runs on a busy machine, every time with a
+   pause put between the typing and the Tab; filed `[LOGIC-REDRAW-DROPS-TYPING]`). A person cannot type that fast; a
+   test can. Nothing here waits a fixed time. */
 async function logicLead(page: Page, value: string, minutes: number) {
   await go(page, 'logic')
   const f = page.locator('input[data-lgset="reportLead"]').first()
   if (!(await f.isVisible().catch(() => false))) await page.locator('#lgEdit').click()
   await expect(f).toBeVisible()
-  await f.scrollIntoViewIfNeeded(); await f.fill(value); await f.press('Tab')
-  await expect.poll(() => page.evaluate(() => (window as any).VCONF.reportLead)).toBe(minutes)
+  await expect(async () => {
+    await f.scrollIntoViewIfNeeded(); await f.fill(value); await f.press('Tab')
+    expect(await page.evaluate(() => (window as any).VCONF.reportLead)).toBe(minutes)
+  }).toPass({ timeout: 15_000 })
   await go(page, 'editsched')
 }
 const pendChip = (page: Page) => page.locator(`${day} .dpend:not(.dnew):not(.dchg)`).first()
 
 test.describe('a published day keeps the OIL it went out with (D592)', () => {
   test.use({ viewport: DESK })
+  /* ONE long chain through the real controls — build, sign, publish, Logic, sign, amend, Logic again, with a dozen page
+     changes: about 20 seconds on a free machine, so the standard 30 leaves no room on a busy one (the page slowed four
+     times over, eight at once: 70 seconds each — measured 6 Oct 26). The budget is the test's, not a pause. */
+  test.setTimeout(120_000)
 
   test('OWS6, OWS7, OWS8 — publish a Saturday sortie, change "Nominal report before T/O": the Leave War holds the full day, the day reads 1 pending and names the value and the man; the amendment applies it', async ({ page }) => {
     await login(page)
