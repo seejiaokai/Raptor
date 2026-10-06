@@ -22,6 +22,7 @@
    drives the real "+ Line" button. Snapshot/restore of DAYS follows turnring.test.ts. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
+import { INPUTS } from './inputs'
 import { validate, WARN, restClear, chipOf, traceOf, restIfPlaced } from './validate'
 import { VCONF } from './rules'
 import { makeStandalone } from './waves'
@@ -29,9 +30,10 @@ import { hm24 } from './time'
 
 const CREW = 'waldo'      // idle across the seed week, so planting him moves nothing else
 const MON = 0, TUE = 1
-const DSNAP = JSON.stringify(DAYS)
+const DSNAP = JSON.stringify(DAYS), ISNAP = JSON.stringify(INPUTS)
 beforeEach(() => {
   DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
+  INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
 })
 
 /* board.ts addLine — the blank line, as the app mints it */
@@ -215,8 +217,25 @@ describe('TODAY — a line with no take-off is measured on the instruction it do
     expect(cr.msg).not.toContain('report')
     expect(WARN.sev[TUE][CREW]).toBe('hard')
     expect(WARN.dash[TUE] && WARN.dash[TUE][CREW], 'a blank line sanctions nothing').toBeFalsy()
+    /* the figures, not only their presence (Sol's read): to be clear for an 08:00 start he had to be gone by 20:00,
+       and the warning jumps to the row the scheduler has to move — the meeting's own */
+    expect(cr.leaveBy).toBe('20:00')
+    expect(String(cr.key), 'anchored on the ground row').toMatch(new RegExp(`^g:${TUE}\\.`))
     const t: any = traceOf(MON, CREW)
-    expect(t && t.leaveBy, "Monday's dotted mark").toBeTruthy()
+    expect(t && t.leaveBy, "Monday's dotted mark carries the same leave-by").toBe('20:00')
+    noNaN()
+  })
+
+  it('…and when what starts his day is a typed Meeting REQUEST (no row to jump to), the warning anchors on his blank line', () => {
+    lateMonday(); const w = add(TUE, wave('ZT', [blank()]))
+    INPUTS.push({ person: CREW, date: 'Jul 14', allday: false, s: 8 * 60, e: 9 * 60, type: 'Meeting', mod: '2026-06-26', remarks: '' } as any)
+    validate()
+    const cr = breach()
+    expect(cr, 'the request binds the breach').toBeTruthy()
+    expect(cr.msg).toContain('his day starts 08:00 (Meeting), and he is on a line with no take-off yet')
+    const gi = (DAYS[TUE] as any).waves.indexOf(w)
+    expect(cr.key, 'the fallback anchor is his own seat on the blank line').toBe(`${TUE}.${gi}.0.0.w`)
+    expect(cr.leaveBy).toBe('20:00')
     noNaN()
   })
 
@@ -284,6 +303,53 @@ describe('THE CREW PICKER asks the same question before the drop', () => {
     expect(ans, 'the pre-drop answer').toBeTruthy()
     expect(ans.dir).toBe('back')
     expect(ans.earliest).toBe(clear())
+  })
+})
+
+describe('THE CREW PICKER, when the line he is asked about has no take-off itself', () => {
+  /* restIfPlaced clones a sibling leg of the same formation; the sibling of a line with no take-off carries
+     not-a-number times too. Whatever instruction that line does carry must reach the pre-drop answer, and the
+     answer must be the same breach the list shows once he is placed. */
+  const ask = (form: any, intimes: string[] = []) => {
+    lateMonday()
+    form.aircraft[0].p = 'stuff'; form.aircraft[0].w = ''     // someone else in front: the empty back seat has a sibling
+    const w = add(TUE, wave('ZT', [form], intimes)); validate()
+    const gi = (DAYS[TUE] as any).waves.indexOf(w)
+    const key = `${TUE}.${gi}.0.0.w`
+    const before: any = restIfPlaced(CREW, key)
+    form.aircraft[0].w = CREW; validate()
+    return { before, placed: breach() }
+  }
+  it('a typed Brief 05:00 and no take-off: "not clear until 12:30" before the drop, the breach after it', () => {
+    const b = blank(); b.br = '05:00'
+    const { before, placed } = ask(b)
+    expect(before, 'the pre-drop answer').toBeTruthy()
+    expect(before.dir).toBe('back')
+    expect(before.earliest).toBe(clear())
+    expect(placed.msg).toContain('told to report 05:00')
+    expect(before.msg, 'the same sentence before and after').toBe(placed.msg)
+    noNaN()
+  })
+  it("the wave's In-time alone: the same", () => {
+    const { before, placed } = ask(blank(), ['0500H: IN TIME'])
+    expect(before && before.dir).toBe('back')
+    expect(before.earliest).toBe(clear())
+    expect(before.msg).toBe(placed.msg)
+    expect(placed.msg).toContain('told to report 05:00')
+  })
+  it('a wholly blank line and an earlier meeting of his: the meeting answers before the drop too', () => {
+    ;(DAYS[TUE] as any).ground.push({ prog: 'SQN BRIEF', str: '0800', end: '0900', who: CREW })
+    const { before, placed } = ask(blank())
+    expect(before && before.dir).toBe('back')
+    expect(before.earliest).toBe(clear())
+    expect(placed.msg).toContain('his day starts 08:00 (SQN BRIEF), and he is on a line with no take-off yet')
+    expect(before.msg).toBe(placed.msg)
+    noNaN()
+  })
+  it('a wholly blank line and nothing else: no answer, and none is invented', () => {
+    const { before, placed } = ask(blank())
+    expect(before).toBeNull()
+    expect(placed).toBeFalsy()
   })
 })
 
