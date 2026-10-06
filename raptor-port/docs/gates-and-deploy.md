@@ -19,6 +19,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   offered to him the same day, not asked for yet.
 - **Never two full gate runs at once, and never a full local run while his PC's runner is mid-run** (D86) — look
   first: `gh run list`.
+- **A browser-test run of even ONE file rebuilds the app's files** (7 Oct 26, the `[OIL-WORK-START]` chat): started
+  while a gate run was in flight, it took the files from under the Tracker smoke's server and that run aborted. Start
+  nothing that builds until the lock is free — "one test file needs no lock" holds for a unit test, not a browser one.
 - **Parallel chats take turns through ONE lock** (D228, 26 Sep 26): `node raptor-port/scripts/gatelock.mjs run` takes
   the PC-wide lock `C:\Users\User\.raptor-gates-lock` (waiting while another chat holds it), runs the whole gate set in
   order — unit, build, tfin, e2e, the Tracker smoke, rulecheck, docsize — into log files, prints one summary line per
