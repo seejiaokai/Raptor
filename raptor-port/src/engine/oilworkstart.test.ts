@@ -109,6 +109,13 @@ describe('OWS2 — nothing typed, or nothing readable: the nominal report time (
     expect(dayOilSpans(d).bane).toEqual([[h(9), h(15)]])
     expect(dayOilSpans(d).stiff).toEqual([[h(7), h(15)]])
   })
+  /* Astra's read, case 7 (6 Oct 26): the line names a formation that is CANCELLED. It stays that formation's line — it
+     must not turn into a wave-wide one and start the other formation's day at 08:30. */
+  it('a line naming a CANCELLED formation does not become the wave\'s', () => {
+    const d = day([wave(['VL IN TIME 0830'], line('VL', '12:00', '13:00', [jet('bane')], { cx: true }), line('ST', '12:00', '13:00', [jet('stiff')]))])
+    expect(dayOilSpans(d).bane).toBeUndefined()
+    expect(dayOilSpans(d).stiff).toEqual([[h(9), h(15)]])
+  })
   it('whatever a saved day holds in its lines, the walk does not break', () => {
     for (const lines of [[null], [undefined], [{}], [[]], [NaN], [true]] as any[])
       expect(dayOilSpans(sat(lines)).bane, JSON.stringify(lines)).toEqual([[h(9), h(15)]])

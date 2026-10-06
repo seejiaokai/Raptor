@@ -214,6 +214,21 @@ describe('OWS7 — a Logic change that would move a published day\'s OIL is ONE 
     expect(oilPending(5)).toEqual([])
     expect(daySigned(5)).toBe(true)
   })
+  /* The two reads, case 6 (6 Oct 26): the day stores only its own hours — what runs past midnight earns the next day
+     nothing (D42) and is not kept. A change that moves only that unstored end leaves the record exactly as it is, so
+     there is nothing to acknowledge. */
+  it('a change that only moves hours past midnight — which the day never stores — raises nothing', () => {
+    build(5, '22:00', '01:00', ['IN TIME 2000'])              // 20:00 to 03:00 the next morning: seven hours, a full day (D42)
+    publish(5); runOilPass()
+    const kept = worked('bane', SAT)
+    expect(cellOf('bane', SAT)).toBe('FO')
+    expect(kept).toEqual([[[1200, 1439]]])
+    VCONF.debrief = 90                                        // would end it at 02:30 — still past midnight
+    runOilPass()
+    expect(oilPending(5)).toEqual([])
+    expect(worked('bane', SAT)).toEqual(kept)
+    expect(cellOf('bane', SAT)).toBe('FO')
+  })
   it('a line with an entered in-time is not moved by the nominal lead at all', () => {
     build(5, '10:00', '11:15', ['IN TIME 0700'])
     publish(5)
