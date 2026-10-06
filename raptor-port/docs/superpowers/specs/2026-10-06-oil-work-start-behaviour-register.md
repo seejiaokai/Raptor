@@ -13,7 +13,7 @@ The rules as written: `../../engine-rules.md` §Weekend/PH work earns OIL. The c
 | OWS4 | The day still runs from the start of his first event to the end of his last, gaps included — so from the earlier of his entered report and any earlier event | D592 (5); the 29 Aug 26 rule | `engine/oilworkstart.test.ts` |
 | OWS5 | Unchanged: SC, AVALON and BB lines are their written window (no reporting line and no typed B moves them); sims, duty, ground and Common Programme rows; a cancelled line or jet; a line with no readable times; a nought-minute sortie still earns from its report and debrief (D49) | D591 ("a flying line"); D49 | `engine/oilworkstart.test.ts`; `engine/oil.test.ts`, `engine/oilflighttimes.test.ts` (untouched) |
 | OWS6 | A published version keeps the three Logic values its OIL was worked out from (nominal report, flight debrief, full-day line); its credit, its worked times and the published face's OIL figures do not move when one changes — on the loaded week and on a week that is off screen | D592 (4); D48, D142 | `leavewar/oilworkstart-published.test.ts`; `ui/oilworkstart.test.tsx` |
-| OWS7 | A Logic change that would move somebody's OIL on a published day reads as ONE pending change of its own — in every count and in the To go out list, naming the value and each man — takes the four sign-offs down, and clears when the value is put back; a change that moves nobody's OIL there raises nothing | D592 (4); D45, D98, D103 | `leavewar/oilworkstart-published.test.ts`; `ui/oilworkstart.test.tsx` |
+| OWS7 | A Logic change that would write somebody's OIL record for a published day differently — his amount or his worked times — reads as ONE pending change of its own — in every count and in the To go out list, naming the value and each man — takes the four sign-offs down, and clears when the value is put back; a change that would write every record there as it stands raises nothing; it is never folded into an edited request's line | D592 (4); D45, D98, D103 | `leavewar/oilworkstart-published.test.ts`; `ui/oilworkstart.test.tsx` |
 | OWS8 | Publishing the day again (an amendment, or Unpublish and publish) applies today's values and keeps them with the new version | D592 (4); D142 | `leavewar/oilworkstart-published.test.ts` |
 | OWS9 | An in-time or Rally changed after publishing reads pending (it is day content) and moves the OIL only when the day goes out again — the credit reads the published version's own lines | D592 (4) | `leavewar/oilworkstart-published.test.ts` |
 | OWS10 | A version published before the values were kept still loads and reads — with today's values, as that build did — and raises nothing pending | D56 | `leavewar/oilworkstart-published.test.ts` |
@@ -21,8 +21,12 @@ The rules as written: `../../engine-rules.md` §Weekend/PH work earns OIL. The c
 
 **The builder's readings** (each named in the plan, tested as built, and put to him on the look card):
 - a time entered LATER than the nominal one shortens the day (OWS1) — D591's own words, and what the work-hours bar does;
-- the pending comparison (OWS7) and the sign-off check (OWS11) are on each man's AMOUNT — nothing, half, full — not on
-  the minutes behind it.
+- the pending comparison (OWS7) and the sign-off check (OWS11) are on each man's whole OIL RECORD — his amount (nothing,
+  half, full) AND the worked times stored beside it — and a Logic change that would write every record on the day
+  exactly as it stands raises nothing. *(First built on the amount alone; both plan challenges read D592's words as
+  covering the worked times, and it was changed before the walk — the plan's §7.)*
+- a line the app cannot read as a clock, or "rally after in-time" with no in-time, counts as nothing entered (OWS2);
+- an SC shift's typed B does not move its OIL (OWS5) — D591 says "a flying line".
 
 **What this register replaces:** RT8's "nominal OIL unaffected by reporting-only edits"
 (`2026-10-02-rally-behaviour-register.md`) — D591 narrowed D498; its other half (ordinary busy, the SANS window and the

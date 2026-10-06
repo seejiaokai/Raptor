@@ -1921,7 +1921,7 @@ the mark useless.
 **BUILT 6 Oct 26 — `[OIL-WORK-START]` (owner, D591, D592, 5 Oct 26).** A flying line's OIL is worked out from its actual
 In-time / Rally, not from the nominal report time, and a published day keeps the OIL it went out with. Both halves are
 stated where they belong below — "What pools" (the flying seat) and §Which published version pays (the kept values) —
-and line by line in `docs/superpowers/specs/2026-10-06-oil-work-start-register.md` (OWS1–OWS11). The day is still
+and line by line in `docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md` (OWS1–OWS11). The day is still
 measured from the first event's start to the last event's end, gaps included (the 29 Aug 26 envelope rule below, which
 he restated in D592).
 

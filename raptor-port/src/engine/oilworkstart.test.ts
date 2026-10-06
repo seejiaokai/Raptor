@@ -9,7 +9,7 @@
 //
 // Bare day blobs through the engine's own walk, an exact answer per case. The published half — a day keeps the
 // values its OIL went out with (D592 (4)) — is src/leavewar/oilworkstart-published.test.ts.
-// Register: docs/superpowers/specs/2026-10-06-oil-work-start-register.md (OWS1–OWS5 here).
+// Register: docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md (OWS1–OWS5 here).
 
 import { afterEach, describe, expect, it } from 'vitest'
 import { dayOilCredits, dayOilSpans, dayOilWork, uniformOil, oilCapableItems } from './oil'

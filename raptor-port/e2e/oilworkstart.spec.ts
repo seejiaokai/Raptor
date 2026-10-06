@@ -4,7 +4,7 @@ import { go, login } from './app'
 
 /* [OIL-WORK-START] (owner, D591, D592 — 5 Oct 26) IN A REAL BROWSER: a published day keeps the OIL it went out with, and
    a flying line's OIL day starts at its entered In-time / Rally (OWS1, OWS6, OWS7, OWS8 of
-   docs/superpowers/specs/2026-10-06-oil-work-start-register.md). The engine halves are engine/oilworkstart.test.ts and
+   docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md). The engine halves are engine/oilworkstart.test.ts and
    leavewar/oilworkstart-published.test.ts; what only the running app can prove is the whole chain through its OWN
    controls — "+ Wave", the typed take-off and landing, the crew list, the four sign-off selects, Publish, the Logic
    page's box — read where the OIL actually lands: the Leave War's cell.

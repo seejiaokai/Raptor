@@ -263,7 +263,7 @@ const RULES = {
   RT6: 'first publication, AL and reissue refuse atomically, independent of warning visibility',
   RT7: 'existing reporting editor doors, Escape/delete, history and read-only authority stay intact',
   RT8: 'nominal OIL and ordinary busy versus SANS windows retain their own definitions',
-  /* [OIL-WORK-START] — D591, D592; 2026-10-06-oil-work-start-register.md (it replaces RT8's "nominal OIL" half) */
+  /* [OIL-WORK-START] — D591, D592; 2026-10-06-oil-work-start-behaviour-register.md (it replaces RT8's "nominal OIL" half) */
   OWS1: 'the OIL day of a flying line starts at its earliest applicable entered in-time / Rally',
   OWS2: 'nothing entered or readable: the nominal report time',
   OWS3: 'an evening-before report lengthens its own day only',

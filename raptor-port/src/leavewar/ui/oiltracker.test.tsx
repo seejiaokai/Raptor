@@ -44,6 +44,18 @@ describe('the OIL tracker grid', () => {
     expect(screen.queryByTestId('oil-credit-panel')).toBeNull()
   })
 
+  /* Astra's scenario read of [OIL-WORK-START], finding F1 (6 Oct 26): a day's credit is written with EVERY worked
+     period (a morning desk, then a sortie from its report to its debrief), and the tracker printed only the first — a
+     full day read "06:00–06:30". The day's sheet and the day's list already print them all. */
+  it('a credit worked in two periods prints both, in order — never only the first', () => {
+    setRole('admin')
+    expect(ingestDutyCredit('slammed', '2026-01-03', 'FO', 'Duty + FLT', [[360, 390], [600, 900]])).toBe('written')
+    const sheet = openTracker()
+    const row = screen.getByTestId('oil-row-slammed').textContent || ''
+    expect(row).toContain('06:00–06:30, 10:00–15:00')
+    expect(sheet.querySelectorAll('[data-testid="oil-row-slammed"] .oil-hrs')).toHaveLength(1)
+  })
+
   it('the admin sees the same grid, plus settings and the idle credit bar', () => {
     setRole('admin')
     openTracker()

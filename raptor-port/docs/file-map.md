@@ -10,7 +10,7 @@ words in `src/ui/logic-html.ts`. Pinned by `src/engine/oilworkstart.test.ts` (wh
 `src/leavewar/oilworkstart-published.test.ts` (a published day, through the real publish path, read at the Leave War's
 own cell and record), `src/ui/oilworkstart.test.tsx` (every count and the To go out list) and `e2e/oilworkstart.spec.ts`.
 `scripts/handpass/ows-host.mjs` is the host's walk (the build before the fix and after it); `scripts/handpass/ows-*.mjs`
-the walkers'. The register: `docs/superpowers/specs/2026-10-06-oil-work-start-register.md`; the plan and what its two
+the walkers'. The register: `docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md`; the plan and what its two
 challenges changed: `docs/superpowers/plans/2026-10-06-oil-work-start-plan.md`; the record:
 `docs/handpass/2026-10-06-oil-work-start.md`, pictures under `docs/img/handpass/2026-10-06-oil-work-start/`; the briefs
 and reports: `docs/superpowers/briefs/2026-10-06-oil-work-start-*.md`.

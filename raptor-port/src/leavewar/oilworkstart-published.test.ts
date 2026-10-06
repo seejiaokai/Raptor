@@ -9,7 +9,7 @@
 // reader of an issued day's OIL uses them, and a Logic change that WOULD move somebody's OIL reads as one pending change
 // until the day is published again. Driven through the real publish path (setDayApproved / publishALDay /
 // unpublishDay) and read where the OIL lands — the Leave War's own cell and record.
-// Register: docs/superpowers/specs/2026-10-06-oil-work-start-register.md (OWS6–OWS10). Half 1 (where a flying line's
+// Register: docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md (OWS6–OWS10). Half 1 (where a flying line's
 // day starts): src/engine/oilworkstart.test.ts.
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'

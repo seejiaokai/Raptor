@@ -50,7 +50,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
 count from its entered in-time / Rally (D591), and a published weekend must keep the earned leave it went out with when a Logic value
-changes (today it moves at once). Proposed: its own job, straight after the stack goes live. [INTIME-LINES-DRAG] (D593, his ask of
+changes (today it moves at once). **BUILT 6 Oct 26 and FULL-checked on its own branch (D591, D592) — his look and "merge live" are left.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn). [INTIME-LINES-DRAG] (D593, his ask of
 5 Oct 26 — drag a wave's In-time / Rally lines into order on the Scheduler Board, Auto sort too; proposed in the same batch). Low, from the same
 check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip over a phone request card's date), [BOARD-TIME-ESCAPE]
 (Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
@@ -1884,6 +1884,15 @@ import, compare every record and id; cancel; a conflicting syllabus; no partial 
 **Place — D493, D485: with the Tracker batch (`[FEATURE-WISHLIST]` item 4).**
 
 ### [OIL-WORK-START] A flying line's earned leave counts from its entered in-time / Rally, and a published day keeps what it went out with (D591; found 5 Oct 26 by Claude's check of the Codex stack)
+**BUILT 6 Oct 26 on `claude/oil-work-start-build-35a0e3` (D591, D592) — FULL-checked; his look and "merge live" are left; not merged.**
+What was built, line by line: `raptor-port/docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md` (OWS1–OWS11); the
+rules as written: `raptor-port/docs/engine-rules.md` §Weekend/PH work earns OIL; the check, its look card and the readings
+put to him: `raptor-port/docs/handpass/2026-10-06-oil-work-start.md`. Beyond the two halves below, from the plan's two
+challenges: a published weekend reads pending when anyone's OIL amount OR worked times would change; the four sign-offs
+fall when a later Logic change would alter the OIL of the day they signed. Fixed with it, from the scenario read: the OIL
+tracker printed only the first worked period of a day; the Logic page said standby lines can never earn. Filed beside it:
+`[OIL-ZERO-SPAN-SORTIE]`, `[UNPUB-WARN-AL-RESTORES]`.
+The text below is the item as filed.
 **His ruling (D591, 5 Oct 26):** *"it should take the actual intime/rally time right? not the nominal report timing"* — a flying
 line's earned leave (OIL) is worked out from its actual in-time / Rally time. Full row: `.claude/decisions-full/oil.md` D591.
 **What the app does today (not his ruling, and not this stack's doing — the same on `main`):** earned leave starts at take-off less
@@ -1907,6 +1916,31 @@ first event's start to the last event's end with the breaks counted (the 29 Aug 
 and any earlier event of his.
 **Tier:** FULL — earned leave, the published record, saved data. **Place (the agent's proposal, his to set):** its own branch, straight
 after the Codex stack goes live; until then, do not change those three Logic values once a weekend is published.
+
+### [OIL-ZERO-SPAN-SORTIE] A take-off-equals-landing line whose report is also its take-off, with the debrief setting at zero, earns nothing — and the day's advisory still says it "earns from the report and debrief" (found 6 Oct 26, the plan challenge of `[OIL-WORK-START]` — Astra's finding 4; LOW)
+A flying line typed with the SAME take-off and landing earns from the report before it and the debrief after it (D49). Where
+there is neither — the Logic page's "Flight debrief after land" set to zero AND the line's entered in-time equal to its
+take-off (or, as before this build, both the debrief and "Nominal report before T/O" set to zero) — the line measures nothing
+and its crew earn nothing: correct by the standing rule that OIL comes only from written times (D31), and pinned as built in
+`raptor-port/src/engine/oilworkstart.test.ts`. What is wrong is the WORDS: the day's "Flight times — the same" advisory still
+tells the scheduler the line "still earns from the report and debrief", and the day's "no usable times" list does not name it.
+Reached only with a debrief of zero, which no squadron sets. **To build:** word the advisory from what the line actually
+measures, and name the line in the "no usable times" list when it measures nothing. **Tier:** WALK (the warning list).
+**Place (the agent's line):** low — with the next change to the OIL warnings.
+
+### [UNPUB-WARN-AL-RESTORES] The Unpublish warning assumes the day's OIL disappears — when withdrawing an AMENDMENT puts the earlier version's OIL back (found 6 Oct 26, the scenario read of `[OIL-WORK-START]` — Astra's F2; OLD, the same on the live app; LOW-MEDIUM)
+Unpublish on a published weekend warns when taking the day's OIL away would leave a man who has already spent it below
+zero (`leavewar/sync.ts oilCreditBidAgainst`, asked by the Unpublish button — `ui/interactions.ts`). It works that out by
+rebuilding his OIL with the day's credit LEFT OUT. That is right for withdrawing an ORIGINAL (the day becomes a draft and
+earns nothing). It is wrong for withdrawing an AMENDMENT: the version before it becomes the published one again
+(`engine/publish.ts unpublishDay`) and ITS OIL pays — so withdrawing a half-day amendment that restores a full-day
+original RAISES his balance, and the warning still says the withdrawal would strand his leave. It errs toward warning,
+never toward silence. Astra's steps: find the version that survives the withdrawal; work out its OIL records from its own
+kept evidence and values; rebuild the man's OIL with THAT in place of today's; warn only if the real result goes below
+zero; and word the warning and the done-message for "back to a draft" and "back to the earlier version" apart. Checks: an
+ORIGINAL withdrawn; an AL withdrawn to a higher, a lower and an equal credit; a credit that never landed.
+**Tier:** FULL (OIL, the published record). **Place (the agent's line):** low-medium — with the next change to Unpublish or
+to the OIL tracker.
 
 ### [INTIME-LINES-DRAG] Drag a wave's In-time / Rally lines into order on the Scheduler Board; Auto sort orders them too (D593, 5 Oct 26)
 **His ruling (D593):** *"I also want the option to be able to [drag] and rearrange in Time/rally. In the schedule board. And the auto sort
