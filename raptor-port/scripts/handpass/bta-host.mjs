@@ -113,7 +113,7 @@ async function h3() {
     const row = await p.evaluate(([i, r]) => { const x = window.DAYS[i].ground[r]; return x ? `name "${x.prog || ''}" start "${x.str || ''}" end "${x.end || ''}" who "${x.who || ''}" more ${JSON.stringify(x.more || [])}` : 'no row' }, [TUE, n0])
     const s2 = await see(p, 'h3-2-ground')
     R('H3.2', `"+ Item" on the Ground Programme (the new row: ${row}); ${CSN} put on it (took ${g.took}${g.msg ? ', the app said "' + String(g.msg).slice(0, 120) + '"' : ''})`, says(s2),
-      s2.lines.some(t => /Downchit but tasked — this row/.test(t)) && !s2.nan ? 'PASS' : 'FAIL', s2.pics)
+      s2.lines.some(t => /Downchit but tasked — this ground row/.test(t)) && !s2.nan ? 'PASS' : 'FAIL', s2.pics)
     await K.boardTo(p, TUE)
     await W.boardText(p, `gr:${TUE}.${n0}.prog`, 'RANGE SWEEP')
     const s3 = await see(p, 'h3-3-ground-named')

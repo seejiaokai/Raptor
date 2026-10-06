@@ -1,0 +1,125 @@
+{
+ "parts": {
+  "bta-C-2-s35-dk": {
+   "at": "2026-10-06T08:40:00.669Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "S35.0",
+     "did": "B 13:00 (after his 12:30 clearance), shift 14:00–19:00, Cobra in MAIN row 0; he is seated in the other MAIN seat (took true)",
+     "saw": "his crew-rest warnings: []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s35-seated.png"
+     ]
+    },
+    {
+     "id": "S35.1",
+     "did": "his own held seat (1.2.0.1.p) tapped (armed)",
+     "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal — already tasked today, but you can still plan him\" · row \"PILOTS · 14 FREE Anvil IP Blade IP Diesel D Forge IP Hunter IP Nomad C Piston IP Ranger IP Recon O Saber IP Sidewinder IP Torch C Trident IP Wildcard O Ace A Ci\" (his seat afterwards holds \"split\")",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s35-1-own-seat-armed.png"
+     ]
+    },
+    {
+     "id": "S35.2",
+     "did": "a seat-to-seat drag of his puck from MAIN (1.2.0.1.p) towards a SPARE seat (1.2.0.3.p) of the same shift, held over it, released without dropping",
+     "saw": "bubble: {\"ghost\":true,\"why\":null} (released back on his own seat: it holds \"split\")",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s35-2-drag-to-spare.png"
+     ]
+    },
+    {
+     "id": "S35.2b",
+     "did": "…then really dropped on that SPARE seat",
+     "saw": "toast nothing · MAIN seat now \"\", SPARE seat now \"split\" · his warnings: []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-s35-3-after-drop.png"
+     ]
+    },
+    {
+     "id": "S35.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-C-2-s35b-dk": {
+   "at": "2026-10-06T08:40:23.752Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "S35.3",
+     "did": "B 05:00, shift 14:00–19:00, he is the ONLY man in MAIN (took true); his puck dragged from MAIN row 1 towards MAIN row 0's front seat, held over it",
+     "saw": "bubble: {\"ghost\":true,\"why\":null} (his seat still \"split\")",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s35b-1-drag-main-to-main.png"
+     ]
+    },
+    {
+     "id": "S35.3b",
+     "did": "…and dropped",
+     "saw": "toast nothing · now row 0 front \"split\", row 1 front \"\" · crew-rest warnings: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s35b-3-dropped.png"
+     ]
+    },
+    {
+     "id": "S35b.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-C-2-s35c-dk": {
+   "at": "2026-10-06T08:41:14.948Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "S35.4",
+     "did": "edit week: his Monday late flight seat dragged onto Tuesday's other MAIN seat (Cobra in MAIN row 0; B 05:00); held over it, not dropped",
+     "saw": "bubble: {\"ghost\":false,\"why\":null}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s35c1-drag.png"
+     ]
+    },
+    {
+     "id": "S35c.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S35.5",
+     "did": "edit week: his Monday late flight seat dragged onto Tuesday's other MAIN seat (Cobra in MAIN row 0; B 05:00) and ANOTHER late seat on Monday (ZN 23:00–23:45, took true); held over it, not dropped",
+     "saw": "bubble: {\"ghost\":false,\"why\":null}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-s35c2-drag.png"
+     ]
+    },
+    {
+     "id": "S35c.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

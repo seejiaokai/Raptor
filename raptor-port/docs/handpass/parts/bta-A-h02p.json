@@ -1,0 +1,65 @@
+{
+ "parts": {
+  "bta-A-h02-ph": {
+   "at": "2026-10-06T08:34:58.688Z",
+   "base": "http://localhost:4231",
+   "phone": true,
+   "table": [
+    {
+     "id": "H-02.1",
+     "did": "390×844 phone: OL filed for X for Tuesday; \"+ Row\" in a duty block, \"+ Row\" in the OFT sim block, \"+ Item\" on the Ground Programme — each with no name and no times (duty: role \"\" start \"\" end \"\" who \"split\" (X placed true) · sim: label \"\" start \"\" end \"\" p \"split\" w \"\" who \"\" (X placed true) · ground: name \"\" start \"\" end \"\" who \"split\" (X placed true)); X put on each by the crew list",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · warning keys [\"\"] · warnings with \"— this row\": 1",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-02-h02-1-blank-list.png",
+      "ph-01-h02-1-blank-puck.png"
+     ]
+    },
+    {
+     "id": "H-02.2-duty",
+     "did": "390×844 phone: the a new duty row (\"+ Row\") named \"NIGHT DESK\" (times still none)",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — NIGHT DESK duty — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 6 issues · 4 warning · tap to collapse ▲\" · rows still unnamed: 1",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-h02-2-named-duty-list.png"
+     ]
+    },
+    {
+     "id": "H-02.2-sim",
+     "did": "390×844 phone: the a new sim (OFT) row (\"+ Row\") named \"EP-9\" (times still none)",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — Sim EP-9 — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — NIGHT DESK duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · rows still unnamed: 1",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-h02-2-named-sim-list.png"
+     ]
+    },
+    {
+     "id": "H-02.2-ground",
+     "did": "390×844 phone: the a new Ground Programme row (\"+ Item\") named \"RANGE SWEEP\" (times still none)",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — Sim EP-9 — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — NIGHT DESK duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — RANGE SWEEP — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 7 issues · 5 warning · tap to collapse ▲\" · rows still unnamed: 0",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-h02-2-named-ground-list.png",
+      "ph-05-h02-2-named-ground-puck.png"
+     ]
+    },
+    {
+     "id": "H-02.3",
+     "did": "390×844 phone: 08:00–12:00 typed on all three rows",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — Sim EP-9 — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — NIGHT DESK duty — reason: x-OL\" || [hard/LEAVE_FLY] \"On leave but tasked — RANGE SWEEP — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 10 issues · 8 warning · tap to collapse ▲\"",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-h02-3-timed-list.png"
+     ]
+    },
+    {
+     "id": "H-02.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,88 @@
+{
+ "parts": {
+  "bta-C-2-s20-dk": {
+   "at": "2026-10-06T08:45:07.540Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "S20.0500",
+     "did": "B typed \"0500\" (shift 14:00–19:00; Cobra in MAIN; clearance 12:30); the other MAIN seat armed",
+     "saw": "box shows \"05:00\", stored \"05:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s20-form-0500.png"
+     ]
+    },
+    {
+     "id": "S20.05:00",
+     "did": "B typed \"05:00\" (shift 14:00–19:00; Cobra in MAIN; clearance 12:30); the other MAIN seat armed",
+     "saw": "box shows \"05:00\", stored \"05:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-s20-form-05_00.png"
+     ]
+    },
+    {
+     "id": "S20.0500H",
+     "did": "B typed \"0500H\" (shift 14:00–19:00; Cobra in MAIN; clearance 12:30); the other MAIN seat armed",
+     "saw": "box shows \"05:00\", stored \"05:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s20-form-0500H.png"
+     ]
+    },
+    {
+     "id": "S20.same",
+     "did": "the three accepted forms compared",
+     "saw": "{\"0500\":\"05:00/true\",\"05:00\":\"05:00/true\",\"0500H\":\"05:00/true\"}",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S20.12:90",
+     "did": "B typed \"12:90\"",
+     "saw": "box shows \"05:00\", stored \"05:00\", toast \"12:90 is not a time — try 0900 or 09:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-s20-bad-1290.png"
+     ]
+    },
+    {
+     "id": "S20.25:00",
+     "did": "B typed \"25:00\"",
+     "saw": "box shows \"05:00\", stored \"05:00\", toast \"25:00 is not a time — try 0900 or 09:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-s20-bad-2500.png"
+     ]
+    },
+    {
+     "id": "S20.eq1",
+     "did": "B 14:00 equal to the shift start 14:00",
+     "saw": "box B \"14:00\"; crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 19 FREE Anvil IP Blade IP Cinch IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Piston IP Ranger IP Reaper IR Saber IP Sidewinder IP\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-06-s20-equal-b-start.png"
+     ]
+    },
+    {
+     "id": "S20.eq2",
+     "did": "shift start 19:00 equal to its end 19:00, B 05:00",
+     "saw": "start \"19:00\" end \"19:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 18 FREE Blade IP Cinch IP L Cobra IP Comet IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Ridge C C Saint B Sidewinder IP Torch C \"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-s20-equal-start-end.png"
+     ]
+    },
+    {
+     "id": "S20.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

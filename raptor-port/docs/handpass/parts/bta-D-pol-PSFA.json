@@ -1,0 +1,60 @@
+{
+ "parts": {
+  "PO-PSLA-dk": {
+   "at": "2026-10-06T09:16:05.969Z",
+   "base": "http://localhost:4241",
+   "phone": false,
+   "table": [
+    {
+     "id": "PO-PSLA.1P",
+     "did": "the day signed (four boxes) and published as Original ({\"pressed\":true,\"label\":\"Publish day\"})",
+     "saw": "WORKING: [ORIG · 6 changes · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [Unavailable row:no-ring]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [Unavailable row:no-ring]  ||  LOOK (👁 Original): [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [Unavailable row:no-ring] · pending chip \"6 changes\" · day head \"ORIG\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-dk-PSLA-1P-W.png",
+      "dk-02-dk-PSLA-1P-V.png",
+      "dk-03-dk-PSLA-1P-L.png"
+     ]
+    },
+    {
+     "id": "PO-PSLA.2S",
+     "did": "Vandal put on a new blank flying line (\"+ Wave\" → Flying wave, no times; took true)",
+     "saw": "WORKING: [ORIG · 1 pending · Not yet signed · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker Dnew once signed\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [Unavailable row:no-ring]  ||  LOOK (👁 Original): [ORIG · 1 pending · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [Unavailable row:no-ring] · pending chip \"1 pending\" · day head \"ORIG\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-dk-PSLA-2S-W.png",
+      "dk-05-dk-PSLA-2S-V.png"
+     ]
+    },
+    {
+     "id": "PO-PSLA.3L",
+     "did": "the leave that was there from the start lifted on the Inputs page (gone)",
+     "saw": "WORKING: [ORIG · 2 pending · Not yet signed · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [Unavailable row:no-ring]  ||  LOOK (👁 Original): [ORIG · 1 pending · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [Unavailable row:no-ring] · pending chip \"2 pending\" · day head \"ORIG\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-dk-PSLA-3L-W.png",
+      "dk-07-dk-PSLA-3L-V.png"
+     ]
+    },
+    {
+     "id": "PO-PSLA.4A",
+     "did": "AL1 step: the day's Publish-AL1 button before signing: {\"label\":\"Publish AL1\",\"disabled\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"}; four boxes signed and pressed → {\"pressed\":true,\"label\":\"Publish AL1\"}; versions offered now [\"Original\",\"AL1\"]",
+     "saw": "WORKING: [AL1 · 14 changes · SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring]  ||  FACE (View-only Sched): [AL1 · SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]  ||  LOOK (👁 Original): [AL1 · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [Unavailable row:no-ring] · pending chip \"14 changes\" · day head \"AL1\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-dk-PSLA-4A-W.png",
+      "dk-09-dk-PSLA-4A-V.png",
+      "dk-10-dk-PSLA-4A-L.png"
+     ]
+    },
+    {
+     "id": "PO-PSLA.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

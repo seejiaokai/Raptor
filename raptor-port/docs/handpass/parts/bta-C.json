@@ -1,0 +1,937 @@
+{
+ "walker": "C",
+ "base": "http://localhost:4233",
+ "rows": [
+  {
+   "id": "S08.1",
+   "did": "desktop Vandal lands 22:30 Monday (seated true); Tuesday SC wave SC: B \"05:00\" start \"13:00\" end \"19:00\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-, Cobra seated true; the OTHER MAIN seat (1.2.0.1.p) tapped → armed 1.2.0.1.p",
+   "saw": "crew list, before any drop: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-s08-armed-main.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S08.2",
+   "did": "desktop his name pressed in the crew list → placed true",
+   "saw": "toast \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\" · crew-rest warnings naming him on Tuesday: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"] · day's list lines: [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest. ✕\"] · pucks [flying line:SOLID-ring chip R; Available crew:SOLID-ring chip R; Available crew:SOLID-ring chip R]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-04-s08-placed-list.png",
+    "dk-02-s08-placed-puck.png",
+    "dk-03-s08-placed-prev-puck.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "H-04",
+   "did": "desktop after X is placed on the SC MAIN seat: the crew-rest line's words (which time is the \"start\")",
+   "saw": "the shift: B \"05:00\" start \"13:00\" end \"19:00\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-; the warning: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"]",
+   "verdict": "RECORDED",
+   "pics": [],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S08.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S08.3",
+   "did": "desktop: his name dragged from the crew list towards the other MAIN seat (1.2.0.1.p) and held there; bubble read, then dropped",
+   "saw": "bubble under the dragged name: {\"ghost\":true,\"why\":\"crew rest — not clear until 12:30\",\"over\":1} · after the drop: placed true, toast \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\", crew-rest warnings naming him: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-05-s08-drag-bubble.png",
+    "dk-06-s08-drag-after.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S08d.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S09.1",
+   "did": "desktop as S08 but the shift start and end cleared (B \"05:00\" start \"\" end \"\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-); the other MAIN seat armed",
+   "saw": "crew list before the drop: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 20 FREE Blade IP Cinch IP Cobra IP Comet IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Ta\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-07-s09-armed-blank.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S09.2",
+   "did": "desktop his name pressed → placed true",
+   "saw": "toast \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\" · crew-rest warnings naming him: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"] · list: [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest. ✕\"]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-10-s09-placed-list.png",
+    "dk-08-s09-placed-puck.png",
+    "dk-09-s09-placed-prev-puck.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S09.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S09.3",
+   "did": "desktop: shift start/end blank, B 05:00; his name dragged from the crew list to the other MAIN seat",
+   "saw": "bubble: {\"ghost\":true,\"why\":\"crew rest — not clear until 12:30\",\"over\":1} · after the drop: placed true, crew-rest warnings: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-11-s09-drag-bubble.png",
+    "dk-12-s09-drag-after.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S09d.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S10.1",
+   "did": "desktop SC SPARE seat (1.2.0.2.p) armed (B 05:00, shift 13:00–19:00, Cobra in MAIN, he lands 22:30 Monday)",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 25 FREE Ace A Anvil IP Blade IP Cinch IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston IP Ranger IP Reaper\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-13-s10-spare-armed.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S10.2",
+   "did": "desktop placed on the SC SPARE seat (took true)",
+   "saw": "toast \"Vandal planned\" · crew-rest warnings naming him: []",
+   "verdict": "PASS",
+   "pics": [
+    "dk-14-s10-spare-placed.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S10.avalon.1",
+   "did": "desktop a AVALON wave AVALON (B \"\" start \"19:00\" end \"07:00\"; B 05:00 typed); its first seat (1.3.0.0.p) armed",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 18 FREE Ace A Anvil IP Blade IP Cinch IP Comet IP Drifter A Forge IP Havoc IP Hunter IP Piston IP Ranger IP Reaper IR Saber IP C Saint B Sidewinder IP \"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-15-s10-avalon-armed.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S10.avalon.2",
+   "did": "desktop placed on the AVALON seat (took true)",
+   "saw": "crew-rest warnings naming him: []",
+   "verdict": "PASS",
+   "pics": [
+    "dk-16-s10-avalon-placed.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S10.bb.1",
+   "did": "desktop a BB wave BB (B \"\" start \"\" end \"\"; B 05:00 typed); its first seat (1.4.0.0.p) armed",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP L Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston IP Range\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-17-s10-bb-armed.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S10.bb.2",
+   "did": "desktop placed on the BB seat (took true)",
+   "saw": "crew-rest warnings naming him: []",
+   "verdict": "PASS",
+   "pics": [
+    "dk-18-s10-bb-placed.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S10.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S11.1",
+   "did": "desktop Wednesday flight ZW (report 06:00, take-off 08:00, landing 09:30) with him seated (true); Tuesday SC B \"05:00\" start \"13:00\" end \"23:30\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-, Cobra seated true; the other MAIN seat armed",
+   "saw": "crew list before the drop: struck YES · printed \"Vandal IP crew rest — breaks Wednesday: he must be gone by 18:00\" · tooltip \"Vandal — crew rest — breaks Wednesday: he must be gone by 18:00\" · row \"PILOTS · 8 FREE Blade IP Cinch IP Havoc IP Hunter IP Ranger IP Reaper IR Sidewinder IP Warden IP Ace A on VL SAT 13:40–16:35 — inside this shift Anvil IP crew r\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-19-s11-armed.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S11.2",
+   "did": "desktop his name pressed → placed true",
+   "saw": "toast \"Wed · Vandal — Crew rest breach — Tuesday ended 23:30 → crew rest clear at 11:30, but told to report 06:00 — only 6h30 rest.\" · Tuesday crew-rest warnings: [] · Wednesday: [\"hard/CREW_REST: Crew rest breach — Tuesday ended 23:30 → crew rest clear at 11:30, but told to report 06:00 — only 6h30 rest.\"]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-20-s11-placed.png"
+   ],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S11.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C.json:bta-C-1-all-dk"
+  },
+  {
+   "id": "S32.12:29/14:00",
+   "did": "Cobra seated in MAIN row 0; Monday landing 22:30 (clear 12:30); B typed 12:29, shift start 14:00; the other MAIN seat armed (B \"12:29\" start \"14:00\" end \"19:00\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-)",
+   "saw": "crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 18 FREE Anvil IP Blade IP Cinch IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Piston IP Ranger IP Reaper IR Saber IP Sidewinder IP\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-s32-b1229-to1400.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S32.12:30/14:00",
+   "did": "Cobra seated in MAIN row 0; Monday landing 22:30 (clear 12:30); B typed 12:30, shift start 14:00; the other MAIN seat armed (B \"12:30\" start \"14:00\" end \"19:00\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-)",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 19 FREE Anvil IP Blade IP Cinch IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Piston IP Ranger IP Reaper IR Saber IP Sidewinder IP\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-02-s32-b1230-to1400.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S32.12:31/14:00",
+   "did": "Cobra seated in MAIN row 0; Monday landing 22:30 (clear 12:30); B typed 12:31, shift start 14:00; the other MAIN seat armed (B \"12:31\" start \"14:00\" end \"19:00\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-)",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 19 FREE Anvil IP Blade IP Cinch IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Piston IP Ranger IP Reaper IR Saber IP Sidewinder IP\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-03-s32-b1231-to1400.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S32.13:00/12:00",
+   "did": "Cobra seated in MAIN row 0; Monday landing 22:30 (clear 12:30); B typed 13:00, shift start 12:00; the other MAIN seat armed (B \"13:00\" start \"12:00\" end \"19:00\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-)",
+   "saw": "crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 18 FREE Anvil IP Blade IP Cinch IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Piston IP Ranger IP Reaper IR Saber IP Sidewinder IP\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-04-s32-b1300-to1200.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S32.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S33.1",
+   "did": "Monday landing 22:30; Tuesday SC B \"23:00\" start \"01:00\" end \"07:00\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-; Cobra seated; the other MAIN seat armed",
+   "saw": "crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 4 FREE Comet IP Reaper IR C Saint B Warden IP Ace A crew rest — not clear until 06:00 Anvil IP crew rest — not clear until 06:30 Blade IP crew rest — n\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-05-s33-b2300-armed.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S33.2",
+   "did": "B cleared (B \"\" start \"01:00\" end \"07:00\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-); the same seat armed again",
+   "saw": "crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 7 FREE Comet IP Hunter IP Reaper IR C Saint B Sidewinder IP Trident IP Warden IP Ace A crew rest — not clear until 06:00 Anvil IP crew rest — not clear\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-06-s33-b-cleared-armed.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S33.3",
+   "did": "B 23:00 typed again, armed, his name pressed → placed true",
+   "saw": "before: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 4 FREE Comet IP Reaper IR C Saint B Warden IP Ace A crew rest — not clear until 06:00 Anvil IP crew rest — not clear until 06:30 Blade IP crew rest — n\" · toast \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 23:00 (previous day) — 1h30 before his Tuesday duty ends.\" · Tuesday crew-rest warnings: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 23:00 (previous day) — 1h30 before his Tuesday duty ends.\"] · Monday: []",
+   "verdict": "PASS",
+   "pics": [
+    "dk-08-s33-placed.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S33.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S34.a",
+   "did": "SC shift 13:00–19:00 B 05:00, nobody seated; a MAIN seat (1.2.0.0.p) armed",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 21 FREE Anvil IP Blade IP Cinch IP Cobra IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston IP Ranger IP Reaper IR Sa\"",
+   "verdict": "RECORDED",
+   "pics": [
+    "dk-09-s34-a-empty-main.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S34.a2",
+   "did": "nobody seated; shift start typed 12:00 (before his 12:30 clearance), B 05:00; the MAIN seat armed",
+   "saw": "crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 20 FREE Anvil IP Blade IP Cinch IP Cobra IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston IP Ranger IP Reaper IR Sa\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-10-s34-a2-empty-early-start.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S34.b",
+   "did": "Cobra seated on a SPARE row only (took true); a MAIN seat armed",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 20 FREE Anvil IP Blade IP Cinch IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston IP Ranger IP Reaper IR Saber IP Si\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-11-s34-b-spare-only.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S34.c",
+   "did": "the SPARE placement taken back with Undo (SPARE seat now holds \"\"), Cobra seated in MAIN row 0 (took true); the other MAIN seat armed",
+   "saw": "crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-12-s34-c-main-sibling.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S34.d1",
+   "did": "Cobra taken out of MAIN by the board's Undo (his seat now \"\"; Undo said []); the armed seat was disarmed by it",
+   "saw": "crew list right then: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 16 FREE Anvil IP Blade IP Cobra IP Diesel D Forge IP Hunter IP Nomad C Piston IP Ranger IP Recon O Saber IP Sid\"",
+   "verdict": "RECORDED",
+   "pics": [
+    "dk-13-s34-d-sibling-removed-live.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S34.d2",
+   "did": "the other MAIN seat armed again with nobody else in MAIN",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 21 FREE Anvil IP Blade IP Cinch IP Cobra IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston IP Ranger IP Reaper IR Sa\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-14-s34-d-sibling-removed-rearmed.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S34.d3",
+   "did": "Redo → Cobra back in MAIN (seat \"taipan\"); the other MAIN seat armed again",
+   "saw": "crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-15-s34-d-sibling-restored.png"
+   ],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S34.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C.json:bta-C-2-all-dk"
+  },
+  {
+   "id": "S35.0",
+   "did": "B 13:00 (after his 12:30 clearance), shift 14:00–19:00, Cobra in MAIN row 0; he is seated in the other MAIN seat (took true)",
+   "saw": "his crew-rest warnings: []",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-s35-seated.png"
+   ],
+   "src": "bta-C-2b.json:bta-C-2-s35-dk"
+  },
+  {
+   "id": "S35.1",
+   "did": "his own held seat (1.2.0.1.p) tapped (armed)",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal — already tasked today, but you can still plan him\" · row \"PILOTS · 14 FREE Anvil IP Blade IP Diesel D Forge IP Hunter IP Nomad C Piston IP Ranger IP Recon O Saber IP Sidewinder IP Torch C Trident IP Wildcard O Ace A Ci\" (his seat afterwards holds \"split\")",
+   "verdict": "PASS",
+   "pics": [
+    "dk-02-s35-1-own-seat-armed.png"
+   ],
+   "src": "bta-C-2b.json:bta-C-2-s35-dk"
+  },
+  {
+   "id": "S35.2",
+   "did": "a seat-to-seat drag of his puck from MAIN (1.2.0.1.p) towards a SPARE seat (1.2.0.3.p) of the same shift, held over it, released without dropping",
+   "saw": "bubble: {\"ghost\":true,\"why\":null} (released back on his own seat: it holds \"split\")",
+   "verdict": "PASS",
+   "pics": [
+    "dk-03-s35-2-drag-to-spare.png"
+   ],
+   "src": "bta-C-2b.json:bta-C-2-s35-dk"
+  },
+  {
+   "id": "S35.2b",
+   "did": "…then really dropped on that SPARE seat",
+   "saw": "toast nothing · MAIN seat now \"\", SPARE seat now \"split\" · his warnings: []",
+   "verdict": "PASS",
+   "pics": [
+    "dk-05-s35-3-after-drop.png"
+   ],
+   "src": "bta-C-2b.json:bta-C-2-s35-dk"
+  },
+  {
+   "id": "S35.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-2b.json:bta-C-2-s35-dk"
+  },
+  {
+   "id": "S35.3",
+   "did": "B 05:00, shift 14:00–19:00, he is the ONLY man in MAIN (took true); his puck dragged from MAIN row 1 towards MAIN row 0's front seat, held over it",
+   "saw": "bubble: {\"ghost\":true,\"why\":null} (his seat still \"split\")",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-s35b-1-drag-main-to-main.png"
+   ],
+   "src": "bta-C-2b.json:bta-C-2-s35b-dk"
+  },
+  {
+   "id": "S35.3b",
+   "did": "…and dropped",
+   "saw": "toast nothing · now row 0 front \"split\", row 1 front \"\" · crew-rest warnings: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"]",
+   "verdict": "RECORDED",
+   "pics": [
+    "dk-03-s35b-3-dropped.png"
+   ],
+   "src": "bta-C-2b.json:bta-C-2-s35b-dk"
+  },
+  {
+   "id": "S35b.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-2b.json:bta-C-2-s35b-dk"
+  },
+  {
+   "id": "S35.4",
+   "did": "edit week: his Monday late flight seat (ZM 21:00–22:30) dragged onto Tuesday's other MAIN seat (Cobra in MAIN row 0; B 05:00, shift 14:00–19:00); held over it, then carried back and released on his own seat (Monday seat now \"split\")",
+   "saw": "the bubble under the dragged name: {\"ghost\":true,\"why\":null}",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-s35d-1-before.png",
+    "dk-02-s35d-1-held.png"
+   ],
+   "src": "bta-C-5.json:bta-C-5-1-dk"
+  },
+  {
+   "id": "S35d.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-5.json:bta-C-5-1-dk"
+  },
+  {
+   "id": "S35.5",
+   "did": "edit week: his Monday late flight seat (ZM 21:00–22:30) dragged onto Tuesday's other MAIN seat (Cobra in MAIN row 0; B 05:00, shift 14:00–19:00) and ANOTHER late seat on Monday (ZN 23:00–23:45, took true); held over it, then carried back and released on his own seat (Monday seat now \"split\")",
+   "saw": "the bubble under the dragged name: {\"ghost\":true,\"why\":\"crew rest — not clear until 13:45\"}",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-s35d-2-before.png",
+    "dk-02-s35d-2-held.png"
+   ],
+   "src": "bta-C-5.json:bta-C-5-2-dk"
+  },
+  {
+   "id": "S35d.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-5.json:bta-C-5-2-dk"
+  },
+  {
+   "id": "S20.0500",
+   "did": "B typed \"0500\" (shift 14:00–19:00; Cobra in MAIN; clearance 12:30); the other MAIN seat armed",
+   "saw": "box shows \"05:00\", stored \"05:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-s20-form-0500.png"
+   ],
+   "src": "bta-C-2c.json:bta-C-2-s20-dk"
+  },
+  {
+   "id": "S20.05:00",
+   "did": "B typed \"05:00\" (shift 14:00–19:00; Cobra in MAIN; clearance 12:30); the other MAIN seat armed",
+   "saw": "box shows \"05:00\", stored \"05:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-02-s20-form-05_00.png"
+   ],
+   "src": "bta-C-2c.json:bta-C-2-s20-dk"
+  },
+  {
+   "id": "S20.0500H",
+   "did": "B typed \"0500H\" (shift 14:00–19:00; Cobra in MAIN; clearance 12:30); the other MAIN seat armed",
+   "saw": "box shows \"05:00\", stored \"05:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-03-s20-form-0500H.png"
+   ],
+   "src": "bta-C-2c.json:bta-C-2-s20-dk"
+  },
+  {
+   "id": "S20.same",
+   "did": "the three accepted forms compared",
+   "saw": "{\"0500\":\"05:00/true\",\"05:00\":\"05:00/true\",\"0500H\":\"05:00/true\"}",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-2c.json:bta-C-2-s20-dk"
+  },
+  {
+   "id": "S20.12:90",
+   "did": "B typed \"12:90\"",
+   "saw": "box shows \"05:00\", stored \"05:00\", toast \"12:90 is not a time — try 0900 or 09:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-04-s20-bad-1290.png"
+   ],
+   "src": "bta-C-2c.json:bta-C-2-s20-dk"
+  },
+  {
+   "id": "S20.25:00",
+   "did": "B typed \"25:00\"",
+   "saw": "box shows \"05:00\", stored \"05:00\", toast \"25:00 is not a time — try 0900 or 09:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-05-s20-bad-2500.png"
+   ],
+   "src": "bta-C-2c.json:bta-C-2-s20-dk"
+  },
+  {
+   "id": "S20.eq1",
+   "did": "B 14:00 equal to the shift start 14:00",
+   "saw": "box B \"14:00\"; crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 19 FREE Anvil IP Blade IP Cinch IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Piston IP Ranger IP Reaper IR Saber IP Sidewinder IP\"",
+   "verdict": "RECORDED",
+   "pics": [
+    "dk-06-s20-equal-b-start.png"
+   ],
+   "src": "bta-C-2c.json:bta-C-2-s20-dk"
+  },
+  {
+   "id": "S20.eq2",
+   "did": "shift start 19:00 equal to its end 19:00, B 05:00",
+   "saw": "start \"19:00\" end \"19:00\"; crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 18 FREE Blade IP Cinch IP L Cobra IP Comet IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Ridge C C Saint B Sidewinder IP Torch C \"",
+   "verdict": "RECORDED",
+   "pics": [
+    "dk-07-s20-equal-start-end.png"
+   ],
+   "src": "bta-C-2c.json:bta-C-2-s20-dk"
+  },
+  {
+   "id": "S20.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-2c.json:bta-C-2-s20-dk"
+  },
+  {
+   "id": "H-05.blank",
+   "did": "Vandal in MAIN (1.2.0.0.p, took true) and SPARE (1.2.0.2.p, took true) of ONE SC formation, local leave all day Tuesday (filed yes); shift now: B \"\" start \"\" end \"\" · rows MAIN:split/- MAIN:-/- SPARE:split/- SPARE:-/-",
+   "saw": "board: MAIN puck SOLID RING, chip C [puck sm warn hard boxred flagnew]; SPARE puck SOLID RING, chip C [puck sm warn hard boxred flagnew] · week card: MAIN SOLID RING, chip C [puck warn hard boxred]; SPARE SOLID RING, chip C [puck warn hard boxred] · his warnings: [\"hard/LEAVE_FLY: On leave but tasked — SC AM — reason: Wedding\"]",
+   "verdict": "RECORDED",
+   "pics": [
+    "dk-01-h05-blank-board.png",
+    "dk-02-h05-blank-week.png"
+   ],
+   "src": "bta-C-3.json:bta-C-3-all-dk"
+  },
+  {
+   "id": "H-05.typed",
+   "did": "Vandal in MAIN (1.2.0.0.p, took true) and SPARE (1.2.0.2.p, took true) of ONE SC formation, local leave all day Tuesday (filed yes); shift now: B \"\" start \"13:00\" end \"19:00\" · rows MAIN:split/- MAIN:-/- SPARE:split/- SPARE:-/-",
+   "saw": "board: MAIN puck SOLID RING, chip C [puck sm warn hard boxred]; SPARE puck SOLID RING, chip C [puck sm warn hard boxred] · week card: MAIN SOLID RING, chip C [puck warn hard boxred]; SPARE SOLID RING, chip C [puck warn hard boxred] · his warnings: [\"hard/LEAVE_FLY: On leave but tasked — SC AM — reason: Wedding\",\"hard/DOUBLE_BOOK: Vandal is standing SC SPARE (SC AM 13:00–19:00) and also on SC AM MAIN (13:00–19:00)\"]",
+   "verdict": "RECORDED",
+   "pics": [
+    "dk-03-h05-typed-board.png",
+    "dk-04-h05-typed-week.png"
+   ],
+   "src": "bta-C-3.json:bta-C-3-all-dk"
+  },
+  {
+   "id": "H-05.cleared-again",
+   "did": "Vandal in MAIN (1.2.0.0.p, took true) and SPARE (1.2.0.2.p, took true) of ONE SC formation, local leave all day Tuesday (filed yes); shift now: B \"\" start \"\" end \"\" · rows MAIN:split/- MAIN:-/- SPARE:split/- SPARE:-/-",
+   "saw": "board: MAIN puck SOLID RING, chip C [puck sm warn hard boxred]; SPARE puck SOLID RING, chip C [puck sm warn hard boxred] · week card: MAIN SOLID RING, chip C [puck warn hard boxred]; SPARE SOLID RING, chip C [puck warn hard boxred] · his warnings: [\"hard/LEAVE_FLY: On leave but tasked — SC AM — reason: Wedding\"]",
+   "verdict": "RECORDED",
+   "pics": [
+    "dk-05-h05-cleared-board.png",
+    "dk-06-h05-cleared-week.png"
+   ],
+   "src": "bta-C-3.json:bta-C-3-all-dk"
+  },
+  {
+   "id": "H-05.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3.json:bta-C-3-all-dk"
+  },
+  {
+   "id": "S29.Meeting.0",
+   "did": "Vandal: Meeting all Tuesday filed (iid imuwf67vplbfbyn, asked nothing); \"+ Wave\" → flying wave, he is seated on its blank line (took true)",
+   "saw": "his warnings: [\"hard/INPUT_FLY: Meeting clashes with this line — reason: Full-day\"]",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3.json:bta-C-3-all-dk"
+  },
+  {
+   "id": "S29.Meeting.1",
+   "did": "ALL AVAIL placed on the 15:00–16:00 Ground Programme row (took true); its count chip \"35\" (title \"35 with nothing else on at that time — tap to see them (who is free as things stand now)\") pressed → the window",
+   "saw": "window \"LATER BRIEF Jul 14 · 15:00–16:00\" tabs [] · note \"Who’s available 35\" · rows 35: his row NOT IN THE CROWD · flagged rows Outlaw:RED · foot \"Tap a puck for why. One man is flagged.\"",
+   "verdict": "PARTIAL",
+   "pics": [
+    "dk-07-s29-Meeting-window.png"
+   ],
+   "src": "bta-C-3.json:bta-C-3-all-dk"
+  },
+  {
+   "id": "S29.Meeting.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3.json:bta-C-3-all-dk"
+  },
+  {
+   "id": "S29.Training.0",
+   "did": "Vandal: Training all Tuesday filed (iid imuwf81qg4bricj, asked nothing); \"+ Wave\" → flying wave, he is seated on its blank line (took true)",
+   "saw": "his warnings: [\"hard/INPUT_FLY: Training clashes with this line — reason: Full-day\"]",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.Training.1",
+   "did": "ALL AVAIL placed on the 15:00–16:00 Ground Programme row (took true); its count chip \"35\" (title \"35 with nothing else on at that time — tap to see them (who is free as things stand now)\") pressed → the window",
+   "saw": "window \"LATER BRIEF Jul 14 · 15:00–16:00\" tabs [] · note \"Who’s available 35\" · rows 35: his row NOT IN THE CROWD · flagged rows Outlaw:RED · foot \"Tap a puck for why. One man is flagged.\"",
+   "verdict": "PARTIAL",
+   "pics": [
+    "dk-01-s29-Training-window.png"
+   ],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.Training.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.Appointment.0",
+   "did": "Vandal: Appointment all Tuesday filed (iid imuwf8d2bl2f6om, asked nothing); \"+ Wave\" → flying wave, he is seated on its blank line (took true)",
+   "saw": "his warnings: [\"hard/INPUT_FLY: Appointment clashes with this line — reason: Full-day\"]",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.Appointment.1",
+   "did": "ALL AVAIL placed on the 15:00–16:00 Ground Programme row (took true); its count chip \"35\" (title \"35 with nothing else on at that time — tap to see them (who is free as things stand now)\") pressed → the window",
+   "saw": "window \"LATER BRIEF Jul 14 · 15:00–16:00\" tabs [] · note \"Who’s available 35\" · rows 35: his row NOT IN THE CROWD · flagged rows Outlaw:RED · foot \"Tap a puck for why. One man is flagged.\"",
+   "verdict": "PARTIAL",
+   "pics": [
+    "dk-02-s29-Appointment-window.png"
+   ],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.Appointment.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.Personal.0",
+   "did": "Vandal: Personal all Tuesday filed (iid imuwf8oe5cjz14c, asked nothing); \"+ Wave\" → flying wave, he is seated on its blank line (took true)",
+   "saw": "his warnings: [\"hard/INPUT_FLY: Personal clashes with this line — reason: Full-day\"]",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.Personal.1",
+   "did": "ALL AVAIL placed on the 15:00–16:00 Ground Programme row (took true); its count chip \"35\" (title \"35 with nothing else on at that time — tap to see them (who is free as things stand now)\") pressed → the window",
+   "saw": "window \"LATER BRIEF Jul 14 · 15:00–16:00\" tabs [] · note \"Who’s available 35\" · rows 35: his row NOT IN THE CROWD · flagged rows Outlaw:RED · foot \"Tap a puck for why. One man is flagged.\"",
+   "verdict": "PARTIAL",
+   "pics": [
+    "dk-03-s29-Personal-window.png"
+   ],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.Personal.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.Other.0",
+   "did": "Vandal: Other all Tuesday filed (iid imuwf8zqxbou69l, asked nothing); \"+ Wave\" → flying wave, he is seated on its blank line (took true)",
+   "saw": "his warnings: [\"hard/INPUT_FLY: Other clashes with this line — reason: Full-day\"]",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.Other.1",
+   "did": "ALL AVAIL placed on the 15:00–16:00 Ground Programme row (took true); its count chip \"35\" (title \"35 with nothing else on at that time — tap to see them (who is free as things stand now)\") pressed → the window",
+   "saw": "window \"LATER BRIEF Jul 14 · 15:00–16:00\" tabs [] · note \"Who’s available 35\" · rows 35: his row NOT IN THE CROWD · flagged rows Outlaw:RED · foot \"Tap a puck for why. One man is flagged.\"",
+   "verdict": "PARTIAL",
+   "pics": [
+    "dk-04-s29-Other-window.png"
+   ],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.Other.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3t.json:bta-C-3-s29t-dk"
+  },
+  {
+   "id": "S29.none.0",
+   "did": "Vandal: none all Tuesday filed (iid null, asked nothing); \"+ Wave\" → flying wave, he is seated on its blank line (took true)",
+   "saw": "his warnings: []",
+   "verdict": "RECORDED",
+   "pics": [],
+   "src": "bta-C-3n.json:bta-C-3-s29n-dk"
+  },
+  {
+   "id": "S29.none.1",
+   "did": "ALL AVAIL placed on the 15:00–16:00 Ground Programme row (took true); its count chip \"36\" (title \"36 with nothing else on at that time — tap to see them (who is free as things stand now)\") pressed → the window",
+   "saw": "window \"LATER BRIEF Jul 14 · 15:00–16:00\" tabs [] · note \"Who’s available 36\" · rows 36: his row flag none, reason \"\" · flagged rows Outlaw:RED · foot \"Tap a puck for why. One man is flagged.\"",
+   "verdict": "RECORDED",
+   "pics": [
+    "dk-01-s29-none-window.png"
+   ],
+   "src": "bta-C-3n.json:bta-C-3-s29n-dk"
+  },
+  {
+   "id": "S29.none.2",
+   "did": "his row in the window tapped",
+   "saw": "foot \"Vandal — nothing else on the programme at that time.\" · toast \"ALL AVAIL planned\" · the day's warnings naming him: []",
+   "verdict": "RECORDED",
+   "pics": [
+    "dk-02-s29-none-tapped.png"
+   ],
+   "src": "bta-C-3n.json:bta-C-3-s29n-dk"
+  },
+  {
+   "id": "S29.none.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-3n.json:bta-C-3-s29n-dk"
+  },
+  {
+   "id": "S36.1",
+   "did": "Torch (SC DAY current only): Monday flight 21:00–22:30 (took true); Tuesday SC B 05:00, Cobra in MAIN row 0; his name pressed on the other MAIN seat (crew list said: struck YES · printed \"Torch C crew rest — not clear until 12:30\" · tooltip \"Torch — crew rest — not clear until 12:30\" ·) → seat holds \"ignite\", toast \"Torch — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"; then the shift retimed to 19:00–07:00 (night) and OL all Tuesday filed (iid imuwfetix8cmz2f); shift now B \"05:00\" start \"19:00\" end \"07:00\" · rows MAIN:taipan/- MAIN:ignite/- SPARE:-/- SPARE:-/-",
+   "saw": "bar \"⚠ 10 issues · 6 warning · tap to collapse ▲\" · lines naming him: [\"On leave + flying Torch — On leave but tasked — SC AM — reason: Overseas\",\"Crew rest (<12h) Torch — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\",\"SC currency — wrong shift Torch — SC NIGHT currency needed for SC AM (19:00–07:00) — Torch is not current\",\"Breaks Wednesday Torch — had to leave by 19:35. Crew rest breach — Tuesday ended 07:00 → crew rest clear at 19:00, but told to report 07:35 — only 0h35 rest.\",\"Long work day Torch — Torch has a long work day: 26h00, 05:00 → 07:00\"] · codes [\"LEAVE_FLY\",\"CREW_REST\",\"SC_QUAL\",\"LONGDAY\"] · his pucks [flying line:SOLID-ring DOTTED chip Q; Unavailable row:SOLID-ring chip Q]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-03-s36-1-all-three-list.png",
+    "dk-02-s36-1-all-three-puck.png"
+   ],
+   "src": "bta-C-4.json:bta-C-4-dk"
+  },
+  {
+   "id": "S36.2",
+   "did": "cause 1 removed: B retyped 12:45 (after his 12:30 clearance); the shift is B \"12:45\" start \"19:00\" end \"07:00\" · rows MAIN:taipan/- MAIN:ignite/- SPARE:-/- SPARE:-/-",
+   "saw": "bar \"⚠ 9 issues · 5 warning · tap to collapse ▲\" · lines naming him: [\"On leave + flying Torch — On leave but tasked — SC AM — reason: Overseas\",\"SC currency — wrong shift Torch — SC NIGHT currency needed for SC AM (19:00–07:00) — Torch is not current\",\"Breaks Wednesday Torch — had to leave by 19:35. Crew rest breach — Tuesday ended 07:00 → crew rest clear at 19:00, but told to report 07:35 — only 0h35 rest.\",\"Long work day Torch — Torch has a long work day: 18h15, 12:45 → 07:00\"] · codes [\"LEAVE_FLY\",\"SC_QUAL\",\"LONGDAY\"] · his pucks [flying line:SOLID-ring DOTTED chip Q; Unavailable row:SOLID-ring chip Q]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-05-s36-2-rest-removed-list.png",
+    "dk-04-s36-2-rest-removed-puck.png"
+   ],
+   "src": "bta-C-4.json:bta-C-4-dk"
+  },
+  {
+   "id": "S36.3",
+   "did": "cause 2 removed: shift retimed back to 13:00–19:00 (B \"12:45\" start \"13:00\" end \"19:00\" · rows MAIN:taipan/- MAIN:ignite/- SPARE:-/- SPARE:-/-)",
+   "saw": "bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · lines naming him: [\"On leave + flying Torch — On leave but tasked — SC AM — reason: Overseas\"] · codes [\"LEAVE_FLY\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-07-s36-3-qual-removed-list.png",
+    "dk-06-s36-3-qual-removed-puck.png"
+   ],
+   "src": "bta-C-4.json:bta-C-4-dk"
+  },
+  {
+   "id": "S36.4",
+   "did": "cause 3 removed: the OL deleted on the Inputs page (the row's ✕ pressed: gone; input gone true)",
+   "saw": "bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" · lines naming him: [] · codes [] · his pucks [flying line:no-solid; Available crew:no-solid; Available crew:no-solid]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-09-s36-4-ol-removed-list.png",
+    "dk-08-s36-4-ol-removed-puck.png"
+   ],
+   "src": "bta-C-4.json:bta-C-4-dk"
+  },
+  {
+   "id": "S36.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-4.json:bta-C-4-dk"
+  },
+  {
+   "id": "PHONE S08.1",
+   "did": "phone Vandal lands 22:30 Monday (seated true); Tuesday SC wave SC: B \"05:00\" start \"13:00\" end \"19:00\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-, Cobra seated true; the OTHER MAIN seat (1.2.0.1.p) tapped → armed 1.2.0.1.p",
+   "saw": "crew list, before any drop: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+   "verdict": "PASS",
+   "pics": [
+    "ph-01-s08-armed-main.png"
+   ],
+   "src": "bta-C-ph.json:bta-C-1-s08-ph"
+  },
+  {
+   "id": "PHONE S08.2",
+   "did": "phone his name pressed in the crew list → placed true",
+   "saw": "toast \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\" · crew-rest warnings naming him on Tuesday: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"] · day's list lines: [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest. ✕\"] · pucks [flying line:SOLID-ring chip R; Available crew:SOLID-ring chip R; Available crew:SOLID-ring chip R]",
+   "verdict": "PASS",
+   "pics": [
+    "ph-04-s08-placed-list.png",
+    "ph-02-s08-placed-puck.png",
+    "ph-03-s08-placed-prev-puck.png"
+   ],
+   "src": "bta-C-ph.json:bta-C-1-s08-ph"
+  },
+  {
+   "id": "PHONE H-04",
+   "did": "phone after X is placed on the SC MAIN seat: the crew-rest line's words (which time is the \"start\")",
+   "saw": "the shift: B \"05:00\" start \"13:00\" end \"19:00\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/-; the warning: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"]",
+   "verdict": "RECORDED",
+   "pics": [],
+   "src": "bta-C-ph.json:bta-C-1-s08-ph"
+  },
+  {
+   "id": "PHONE S08.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-ph.json:bta-C-1-s08-ph"
+  },
+  {
+   "id": "PHONE S10.1",
+   "did": "phone SC SPARE seat (1.2.0.2.p) armed (B 05:00, shift 13:00–19:00, Cobra in MAIN, he lands 22:30 Monday)",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 25 FREE Ace A Anvil IP Blade IP Cinch IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston IP Ranger IP Reaper\"",
+   "verdict": "PASS",
+   "pics": [
+    "ph-01-s10-spare-armed.png"
+   ],
+   "src": "bta-C-ph.json:bta-C-1-s10-ph"
+  },
+  {
+   "id": "PHONE S10.2",
+   "did": "phone placed on the SC SPARE seat (took true)",
+   "saw": "toast \"Vandal planned\" · crew-rest warnings naming him: []",
+   "verdict": "PASS",
+   "pics": [
+    "ph-02-s10-spare-placed.png"
+   ],
+   "src": "bta-C-ph.json:bta-C-1-s10-ph"
+  },
+  {
+   "id": "PHONE S10.avalon.1",
+   "did": "phone a AVALON wave AVALON (B \"\" start \"19:00\" end \"07:00\"; B 05:00 typed); its first seat (1.3.0.0.p) armed",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 18 FREE Ace A Anvil IP Blade IP Cinch IP Comet IP Drifter A Forge IP Havoc IP Hunter IP Piston IP Ranger IP Reaper IR Saber IP C Saint B Sidewinder IP \"",
+   "verdict": "PASS",
+   "pics": [
+    "ph-03-s10-avalon-armed.png"
+   ],
+   "src": "bta-C-ph.json:bta-C-1-s10-ph"
+  },
+  {
+   "id": "PHONE S10.avalon.2",
+   "did": "phone placed on the AVALON seat (took true)",
+   "saw": "crew-rest warnings naming him: []",
+   "verdict": "PASS",
+   "pics": [
+    "ph-04-s10-avalon-placed.png"
+   ],
+   "src": "bta-C-ph.json:bta-C-1-s10-ph"
+  },
+  {
+   "id": "PHONE S10.bb.1",
+   "did": "phone a BB wave BB (B \"\" start \"\" end \"\"; B 05:00 typed); its first seat (1.4.0.0.p) armed",
+   "saw": "crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP L Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston IP Range\"",
+   "verdict": "PASS",
+   "pics": [
+    "ph-05-s10-bb-armed.png"
+   ],
+   "src": "bta-C-ph.json:bta-C-1-s10-ph"
+  },
+  {
+   "id": "PHONE S10.bb.2",
+   "did": "phone placed on the BB seat (took true)",
+   "saw": "crew-rest warnings naming him: []",
+   "verdict": "PASS",
+   "pics": [
+    "ph-06-s10-bb-placed.png"
+   ],
+   "src": "bta-C-ph.json:bta-C-1-s10-ph"
+  },
+  {
+   "id": "PHONE S10.err",
+   "did": "browser errors",
+   "saw": "none",
+   "verdict": "PASS",
+   "pics": [],
+   "src": "bta-C-ph.json:bta-C-1-s10-ph"
+  }
+ ]
+}

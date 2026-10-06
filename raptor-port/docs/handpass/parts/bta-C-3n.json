@@ -1,0 +1,43 @@
+{
+ "parts": {
+  "bta-C-3-s29n-dk": {
+   "at": "2026-10-06T08:41:41.202Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "S29.none.0",
+     "did": "Vandal: none all Tuesday filed (iid null, asked nothing); \"+ Wave\" → flying wave, he is seated on its blank line (took true)",
+     "saw": "his warnings: []",
+     "verdict": "FAIL",
+     "pics": []
+    },
+    {
+     "id": "S29.none.1",
+     "did": "ALL AVAIL placed on the 15:00–16:00 Ground Programme row (took true); its count chip \"36\" (title \"36 with nothing else on at that time — tap to see them (who is free as things stand now)\") pressed → the window",
+     "saw": "window \"LATER BRIEF Jul 14 · 15:00–16:00\" tabs [] · note \"Who’s available 36\" · rows 36: his row flag none, reason \"\" · flagged rows Outlaw:RED · foot \"Tap a puck for why. One man is flagged.\"",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-s29-none-window.png"
+     ]
+    },
+    {
+     "id": "S29.none.2",
+     "did": "his row in the window tapped",
+     "saw": "foot \"Vandal — nothing else on the programme at that time.\" · toast \"ALL AVAIL planned\" · the day's warnings naming him: []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-s29-none-tapped.png"
+     ]
+    },
+    {
+     "id": "S29.none.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

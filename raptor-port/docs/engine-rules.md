@@ -295,10 +295,16 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   the seat's hours, so a man on all-day leave or a downchit seated on a line or row with no times raised nothing in the
   list until a time was typed — the crew list's struck name was the only warning. His ruling: he is flagged the moment
   he is seated anywhere that day; a PART-day absence against a seat with no times stays silent (nothing to compare).
-  **One predicate, `events.ts wholeDay`:** a `day.input` entry of THIS day (never a neighbour's `nx` / `pv` copy) whose
-  window is the whole day — the All day tick, a record with no usable hours (`inpWin` fails closed to `[0,1439]`), or
-  hours typed 00:00–23:59. **Where it is asked, one place per kind of seat** (`validate.ts`; each loop keeps its own
-  types, exemptions and words — only the overlap gains "or the seat has no usable window and the input is whole-day"):
+  **One list, `day.whole` (`events.ts buildDay`, the predicate `wholeDay`):** THIS day's inputs (never a neighbour's
+  `nx` / `pv` copy — shifted a day, it cannot pass) whose window is the whole day — the All day tick, a record with no
+  usable hours (`inpWin` fails closed to `[0,1439]`), or hours typed 00:00–23:59 or to 24:00. It is built through the
+  same gate as `day.input` (`inpShow` — dormancy, the frozen filing on a published face) but asked UNDEFERRED: a
+  timed request put on the Ground Programme normally speaks as its landed row so a clash is said once, and a row
+  cannot clash with a seat that has no hours — so a whole-day request typed 00:00–23:59 would have gone silent
+  against such a seat the moment it was accepted, where the All day tick (never deferred) kept its voice (Astra's
+  scenario read, F2). **Where it is read, one place per kind of seat** (`validate.ts`; each loop keeps its own types,
+  exemptions and words — a seat with no usable window is judged against `day.whole` instead of overlapping
+  `day.input`):
   (1) a flying line ("+ Line" / "+ Wave" mint one with no take-off; garbage in the take-off box is the same) — the
   sortie loop "C via input clash", on `e.step` / `e.dekit`; (2) an SC MAIN whose shift times were cleared — the duty /
   sim / ground loop (a shift is the one event that reaches it with no hours), the Meeting's amber `SHIFT_SOFT` printed
@@ -315,8 +321,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   request put on the Ground Programme makes a time-less row and keeps its own voice (`inputs.ts inputFlags`), so `abs`
   leaves out the input the row was landed from (`row.src` against the input's id) — its man is not "Training but
   tasked" on the row that IS his Training; a second man on that row with his own leave is flagged. **The sentence:**
-  the timed loop's own words; a seat with no name yet reads "this line" / "this row" in the three absence sentences
-  (with times too — the same line must not change its sentence when a time is typed). **The agent's readings, told to
+  the timed loop's own words; a seat with no name yet reads "this line" (a flying line) or names its kind — "this duty
+  row", "this sim row", "this ground row" — in the absence sentences, the standby desk's included (with times too — the
+  same seat must not change its sentence when a time is typed). The kind matters: the list folds identical sentences
+  into one line, and a plain "this row" made one line of a man's three new rows (walkers A and B). An unnamed sim or
+  duty row counts as unnamed although its label is built 'Sim '+name and role+' duty' (Astra's F4).
+  **An Upchit is never an absence** — nor is SANS Availability: `inpShow` turns both away at its head. The Upchit used
+  to slip back in through the accepted-row fall-through ("no landed row, so it keeps its voice") and read "Upchit
+  clashes with …" / "Upchit but tasked — …" on the day a man was cleared fit, on a seat WITH times too — OLD, found by
+  Astra's scenario read (F1) and closed here before D605 could carry it to every seat without. **The agent's readings, told to
   him:** it reaches every input type the timed check flags (a whole-day course, overseas duty, an all-day meeting), not
   only leave and medical — none of those answers depended on the missing time; and the crew list is NOT changed — before
   a drop it still reads a seat with no hours as unknown and strikes a man for any absence that day (`avail.ts slotBar`,

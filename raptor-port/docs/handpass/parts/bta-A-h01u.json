@@ -1,0 +1,111 @@
+{
+ "parts": {
+  "bta-A-h01u-dk": {
+   "at": "2026-10-06T09:10:07.909Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-01 Upchit × fly",
+     "did": "Upchit filed for Tuesday (Inputs page), then X on a new flying line (+ Wave → Flying wave)",
+     "saw": "filed Upchit ({\"iid\":false,\"asked\":[\"certificate\"],\"note\":\"ATT C Mon–Wed filed first, then Upchit effective Tue; its sheet said \\\"Upchit — Vandal, Jul 14 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 15 → now ends Jul 13 Fit for full duty from Jul 14. Cancel Save upchit\\\"; his inputs after: {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 14\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"Upchit\\\",\\\"remarks\\\":\\\"x-Upchit\\\",\\\"mod\\\":\\\"2026-10-06\\\",\\\"ord\\\":-1024 | {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 13\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"ATT C\\\",\\\"remarks\\\":\\\"ATT C Mon-Wed till 13 Jul\\\",\\\"mod\\\":\\\"2026-10\"}); a new flying line (+ Wave → Flying wave); state cs \"\" take-off \"\" landing \"\"; crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal planned\". BLANK: warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid; Available crew:no-solid] cls  ;  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (cs \"\" take-off \"10:00\" landing \"11:00\"):warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-Upchit_fly_1blank-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 Upchit × scMain",
+     "did": "Upchit filed for Tuesday (Inputs page), then X on SC MAIN seat (+ Wave → SC, shift start and end cleared)",
+     "saw": "filed Upchit ({\"iid\":false,\"asked\":[\"certificate\"],\"note\":\"ATT C Mon–Wed filed first, then Upchit effective Tue; its sheet said \\\"Upchit — Vandal, Jul 14 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 15 → now ends Jul 13 Fit for full duty from Jul 14. Cancel Save upchit\\\"; his inputs after: {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 14\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"Upchit\\\",\\\"remarks\\\":\\\"x-Upchit\\\",\\\"mod\\\":\\\"2026-10-06\\\",\\\"ord\\\":-1024 | {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 13\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"ATT C\\\",\\\"remarks\\\":\\\"ATT C Mon-Wed till 13 Jul\\\",\\\"mod\\\":\\\"2026-10\"}); SC MAIN seat (+ Wave → SC, shift start and end cleared); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal planned\". BLANK: warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid; Available crew:no-solid; Available crew:no-solid] cls  ;  ;  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-Upchit_scMain_1blank-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 Upchit × scSpare",
+     "did": "Upchit filed for Tuesday (Inputs page), then X on SC SPARE seat (+ Wave → SC, shift start and end cleared)",
+     "saw": "filed Upchit ({\"iid\":false,\"asked\":[\"certificate\"],\"note\":\"ATT C Mon–Wed filed first, then Upchit effective Tue; its sheet said \\\"Upchit — Vandal, Jul 14 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 15 → now ends Jul 13 Fit for full duty from Jul 14. Cancel Save upchit\\\"; his inputs after: {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 14\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"Upchit\\\",\\\"remarks\\\":\\\"x-Upchit\\\",\\\"mod\\\":\\\"2026-10-06\\\",\\\"ord\\\":-1024 | {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 13\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"ATT C\\\",\\\"remarks\\\":\\\"ATT C Mon-Wed till 13 Jul\\\",\\\"mod\\\":\\\"2026-10\"}); SC SPARE seat (+ Wave → SC, shift start and end cleared); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal planned\". BLANK: warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-Upchit_scSpare_1blank-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 Upchit × bbMain",
+     "did": "Upchit filed for Tuesday (Inputs page), then X on BB MAIN seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "filed Upchit ({\"iid\":false,\"asked\":[\"certificate\"],\"note\":\"ATT C Mon–Wed filed first, then Upchit effective Tue; its sheet said \\\"Upchit — Vandal, Jul 14 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 15 → now ends Jul 13 Fit for full duty from Jul 14. Cancel Save upchit\\\"; his inputs after: {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 14\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"Upchit\\\",\\\"remarks\\\":\\\"x-Upchit\\\",\\\"mod\\\":\\\"2026-10-06\\\",\\\"ord\\\":-1024 | {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 13\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"ATT C\\\",\\\"remarks\\\":\\\"ATT C Mon-Wed till 13 Jul\\\",\\\"mod\\\":\\\"2026-10\"}); BB MAIN seat (+ Wave → BB, shift start and end as it comes up); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal planned\". BLANK: warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid; Available crew:no-solid] cls  ;  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-Upchit_bbMain_1blank-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 Upchit × bbSpare",
+     "did": "Upchit filed for Tuesday (Inputs page), then X on BB SPARE seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "filed Upchit ({\"iid\":false,\"asked\":[\"certificate\"],\"note\":\"ATT C Mon–Wed filed first, then Upchit effective Tue; its sheet said \\\"Upchit — Vandal, Jul 14 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 15 → now ends Jul 13 Fit for full duty from Jul 14. Cancel Save upchit\\\"; his inputs after: {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 14\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"Upchit\\\",\\\"remarks\\\":\\\"x-Upchit\\\",\\\"mod\\\":\\\"2026-10-06\\\",\\\"ord\\\":-1024 | {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 13\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"ATT C\\\",\\\"remarks\\\":\\\"ATT C Mon-Wed till 13 Jul\\\",\\\"mod\\\":\\\"2026-10\"}); BB SPARE seat (+ Wave → BB, shift start and end as it comes up); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal planned\". BLANK: warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid; Available crew:no-solid] cls  ;  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-Upchit_bbSpare_1blank-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 Upchit × duty",
+     "did": "Upchit filed for Tuesday (Inputs page), then X on a new duty row (\"+ Row\")",
+     "saw": "filed Upchit ({\"iid\":false,\"asked\":[\"certificate\"],\"note\":\"ATT C Mon–Wed filed first, then Upchit effective Tue; its sheet said \\\"Upchit — Vandal, Jul 14 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 15 → now ends Jul 13 Fit for full duty from Jul 14. Cancel Save upchit\\\"; his inputs after: {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 14\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"Upchit\\\",\\\"remarks\\\":\\\"x-Upchit\\\",\\\"mod\\\":\\\"2026-10-06\\\",\\\"ord\\\":-1024 | {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 13\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"ATT C\\\",\\\"remarks\\\":\\\"ATT C Mon-Wed till 13 Jul\\\",\\\"mod\\\":\\\"2026-10\"}); a new duty row (\"+ Row\"); state role \"\" start \"\" end \"\" who \"split\"; crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal planned\". BLANK: warnings naming him: none · his pucks [duty:no-solid; Available crew:no-solid; Available crew:no-solid] cls  ;  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (role \"\" start \"08:00\" end \"12:00\" who \"split\"):warnings naming him: none · his pucks [duty:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-Upchit_duty_1blank-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 Upchit × sim",
+     "did": "Upchit filed for Tuesday (Inputs page), then X on a new sim (OFT) row (\"+ Row\")",
+     "saw": "filed Upchit ({\"iid\":false,\"asked\":[\"certificate\"],\"note\":\"ATT C Mon–Wed filed first, then Upchit effective Tue; its sheet said \\\"Upchit — Vandal, Jul 14 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 15 → now ends Jul 13 Fit for full duty from Jul 14. Cancel Save upchit\\\"; his inputs after: {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 14\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"Upchit\\\",\\\"remarks\\\":\\\"x-Upchit\\\",\\\"mod\\\":\\\"2026-10-06\\\",\\\"ord\\\":-1024 | {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 13\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"ATT C\\\",\\\"remarks\\\":\\\"ATT C Mon-Wed till 13 Jul\\\",\\\"mod\\\":\\\"2026-10\"}); a new sim (OFT) row (\"+ Row\"); state label \"\" start \"\" end \"\" p \"split\" w \"\" who \"\"; crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal planned\". BLANK: warnings naming him: none · his pucks [sim:no-solid; Available crew:no-solid; Available crew:no-solid] cls  ;  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (label \"\" start \"08:00\" end \"12:00\" p \"split\" w \"\" who \"\"):warnings naming him: none · his pucks [sim:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-Upchit_sim_1blank-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 Upchit × ground",
+     "did": "Upchit filed for Tuesday (Inputs page), then X on a new Ground Programme row (\"+ Item\")",
+     "saw": "filed Upchit ({\"iid\":false,\"asked\":[\"certificate\"],\"note\":\"ATT C Mon–Wed filed first, then Upchit effective Tue; its sheet said \\\"Upchit — Vandal, Jul 14 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 15 → now ends Jul 13 Fit for full duty from Jul 14. Cancel Save upchit\\\"; his inputs after: {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 14\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"Upchit\\\",\\\"remarks\\\":\\\"x-Upchit\\\",\\\"mod\\\":\\\"2026-10-06\\\",\\\"ord\\\":-1024 | {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 13\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"ATT C\\\",\\\"remarks\\\":\\\"ATT C Mon-Wed till 13 Jul\\\",\\\"mod\\\":\\\"2026-10\"}); a new Ground Programme row (\"+ Item\"); state name \"\" start \"\" end \"\" who \"split\"; crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal planned\". BLANK: warnings naming him: none · his pucks [ground row:no-solid; Available crew:no-solid; Available crew:no-solid] cls  ;  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (name \"\" start \"08:00\" end \"12:00\" who \"split\"):warnings naming him: none · his pucks [ground row:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-Upchit_ground_1blank-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 Upchit × prog",
+     "did": "Upchit filed for Tuesday (Inputs page), then X on a new Common Programme row (\"+ Item\")",
+     "saw": "filed Upchit ({\"iid\":false,\"asked\":[\"certificate\"],\"note\":\"ATT C Mon–Wed filed first, then Upchit effective Tue; its sheet said \\\"Upchit — Vandal, Jul 14 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 15 → now ends Jul 13 Fit for full duty from Jul 14. Cancel Save upchit\\\"; his inputs after: {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 14\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"Upchit\\\",\\\"remarks\\\":\\\"x-Upchit\\\",\\\"mod\\\":\\\"2026-10-06\\\",\\\"ord\\\":-1024 | {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 13\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"ATT C\\\",\\\"remarks\\\":\\\"ATT C Mon-Wed till 13 Jul\\\",\\\"mod\\\":\\\"2026-10\"}); a new Common Programme row (\"+ Item\"); state name \"\" start \"\" end \"\" who \"split\" crowd null; crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal planned\". BLANK: warnings naming him: none · his pucks [programme:no-solid; Available crew:no-solid; Available crew:no-solid] cls  ;  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (name \"\" start \"08:00\" end \"12:00\" who \"split\" crowd null):warnings naming him: none · his pucks [programme:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-Upchit_prog_1blank-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 Upchit × bbDesk",
+     "did": "Upchit filed for Tuesday (Inputs page), then X on a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times)",
+     "saw": "filed Upchit ({\"iid\":false,\"asked\":[\"certificate\"],\"note\":\"ATT C Mon–Wed filed first, then Upchit effective Tue; its sheet said \\\"Upchit — Vandal, Jul 14 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 15 → now ends Jul 13 Fit for full duty from Jul 14. Cancel Save upchit\\\"; his inputs after: {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 14\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"Upchit\\\",\\\"remarks\\\":\\\"x-Upchit\\\",\\\"mod\\\":\\\"2026-10-06\\\",\\\"ord\\\":-1024 | {\\\"person\\\":\\\"split\\\",\\\"date\\\":\\\"Jul 13\\\",\\\"allday\\\":true,\\\"s\\\":0,\\\"e\\\":1439,\\\"yr\\\":2026,\\\"type\\\":\\\"ATT C\\\",\\\"remarks\\\":\\\"ATT C Mon-Wed till 13 Jul\\\",\\\"mod\\\":\\\"2026-10\"}); a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times); state block \"BB DESK\" row role \"\" start \"\" end \"\"; crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; placed true, toast \"Vandal planned\". BLANK: warnings naming him: none · his pucks [duty:no-solid; Available crew:no-solid; Available crew:no-solid] cls  ;  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (block \"BB DESK\" row role \"\" start \"08:00\" end \"12:00\"):warnings naming him: none · his pucks [duty:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true. [template note: The BB desk — the same rules as the AVALON desk: checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-Upchit_bbDesk_1blank-list.png"
+     ],
+     "oracle": "silent"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,54 @@
+{
+ "parts": {
+  "bta-D-s37b-all-dk": {
+   "at": "2026-10-06T09:29:39.721Z",
+   "base": "http://localhost:4241",
+   "phone": false,
+   "table": [
+    {
+     "id": "S37.5b",
+     "did": "as the member, the scheduler board reached by the probe bridge's openScheduler (no Edit Schedule tab exists for him): its doors, then a try at typing a callsign and picking a sign-off name",
+     "saw": "page \"editsched\", board drawn true · buttons drawn on the board: [\"Calendar\",\"Highlight by category / quals\",\"↶\\nUndo\",\"↷\\nRedo\",\"History\",\"Sync · slow\",\"Notifications\",\"Insights\",\"✓\\nDone\",\"CAT\",\"TYPE\",\"QUALS\",\"Live working copy\\n▾\",\"i\"] · sign-off selects [{\"role\":\"cur\",\"disabled\":false,\"shown\":true},{\"role\":\"sked\",\"disabled\":false,\"shown\":true},{\"role\":\"plan\",\"disabled\":false,\"shown\":true},{\"role\":\"appr\",\"disabled\":false,\"shown\":true}] · callsign box {\"tag\":\"TEXTAREA\",\"readOnly\":false,\"disabled\":true,\"ce\":\"inherit\",\"val\":\"VL\"} · focused and typed ZZ; the line's callsign \"VL\" → \"VL\" · sign-off: tried to pick \"dj\": the box now reads \"Ace\"; day sign state after: {}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-dk-s37-6-member-board.png"
+     ]
+    },
+    {
+     "id": "S37.5b.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S37.6",
+     "did": "admin: Admin → Users → \"Let people waiting for access view the schedule (read only)\" switched on (was false)",
+     "saw": "switch now true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-dk-s37-7-guest-switch.png"
+     ]
+    },
+    {
+     "id": "S37.7",
+     "did": "a new name asks for access on the sign-in card (request form shown: true; waiting screen: true; \"View the schedule\" button: true), then \"View the schedule\" is pressed — the guest view of Tuesday (published WITH the warning, the leave since lifted)",
+     "saw": "guest page {\"page\":\"viewsched\",\"body\":\"142 RAPTOR Waiting for access — view only Sign out Jul 06 Jul 13 Jul 20 Jul 27 Monday Jul 13 · Today DRAFT 4 X 4 Draft COMMON PROGRAMME EP: ENGINE FIRE ON TAKE OFF ORDERS: FLYING ORDERS SECTION 2 NAME START END PEOPLE RMKS SODB 07:45 08:15 MET + NOTAM BRIEF 08:15 08:30 Warden IP FLIGHT SAFETY STAND-\",\"hasDay\":true,\"dayHead\":\"Tuesday Jul 14 ORIG 4 X 4 X 1\",\"bar\":\"(no warnings bar drawn)\",\"lines\":[],\"info\":false,\"writeDoors\":0,\"pucks\":[{\"cls\":\"puck warn hard boxred\",\"shadow\":\"rgb(240, 85, 95) 0px 0px 0px 2px\",\"chip\":\"C\"},{\"cls\":\"puck sm warn hard boxred\",\"shadow\":\"rgb(240, 85, 95) 0px 0px 0px 2px\",\"chip\":\"C\"}]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-dk-s37-8-guest-waiting.png",
+      "dk-04-dk-s37-9-guest-view.png",
+      "dk-05-dk-s37-10-guest-tuesday.png"
+     ]
+    },
+    {
+     "id": "S37.7.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,22 @@
+/* WALKER C debug probe (read only): what are Vandal's quals; does retiming a line change the warning */
+import * as X from './bta-C-lib.mjs'
+const { B, K, W, ID, MON, TUE, sleep } = X
+const { browser, p, errors } = await K.fresh()
+const q = await p.evaluate(() => { const x = window.PEOPLE.split; return JSON.stringify({ cs: x.cs, q: x.q, seat: x.seat, aar: x.aar, sc: x.sc, quals: x.quals, keys: Object.keys(x) }).slice(0, 600) })
+console.log('PERSON', q)
+const m = await K.addFlyWave(p, MON)
+await K.ff(p, MON, m.gi, 0, 'cs', 'ZM'); await K.ff(p, MON, m.gi, 0, 'msn', 'BFM'); await K.ff(p, MON, m.gi, 0, 'to', '21:00'); await K.ff(p, MON, m.gi, 0, 'ld', '22:30')
+await K.seat(p, MON, m.gi, 0, 0, 'p', ID)
+const t = await K.addFlyWave(p, TUE)
+await K.ff(p, TUE, t.gi, 0, 'cs', 'ZT'); await K.ff(p, TUE, t.gi, 0, 'msn', 'BFM'); await K.ff(p, TUE, t.gi, 0, 'br', '05:00'); await K.ff(p, TUE, t.gi, 0, 'to', '07:00'); await K.ff(p, TUE, t.gi, 0, 'ld', '08:00')
+await K.seat(p, TUE, t.gi, 0, 0, 'p', ID)
+console.log('1', await X.lineNow(p, TUE, t.gi, 0), JSON.stringify((await X.fullWarnsX(p, TUE)).map(w => w.code + ': ' + w.msg.slice(0, 120))))
+await K.ff(p, TUE, t.gi, 0, 'br', '13:30'); await K.ff(p, TUE, t.gi, 0, 'to', '14:30'); await K.ff(p, TUE, t.gi, 0, 'ld', '15:30')
+console.log('2', await X.lineNow(p, TUE, t.gi, 0), JSON.stringify((await X.fullWarnsX(p, TUE)).map(w => w.code + ': ' + w.msg.slice(0, 120))))
+await K.boardTo(p, TUE)
+await W.boardText(p, `fr:${TUE}.${t.gi}.0.0`, 'AAR')
+console.log('3 AAR typed', JSON.stringify((await X.fullWarnsX(p, TUE)).map(w => w.code + ': ' + w.msg.slice(0, 160))))
+const ws = await p.evaluate(([i, g]) => JSON.stringify(window.DAYS[i].waves[g].formations[0].aircraft.map(a => ({ rmks: a.rmks, aar: a.aar, p: a.p }))), [TUE, t.gi])
+console.log('ac', ws)
+console.log('errors', errors)
+await browser.close()

@@ -1,0 +1,11 @@
+const fs = require('fs')
+const f = 'C:/Users/User/projects/Raptor/.claude/worktrees/rulings-slim-d391-078ad2/raptor-port/scripts/handpass/bta-B-s25c.mjs'
+let s = fs.readFileSync(f, 'utf8')
+s = s.replace("const lw = async (label) => {", "const lw = async (label, date = '2026-07-14') => {")
+s = s.replace("const c = p.locator(cell); await c.evaluate", "const c = p.locator(`[data-testid=\"cell-split-${date}\"]`); await c.evaluate")
+s = s.replace("const s4 = await lw('4-before-delete')", "const nowRec = JSON.stringify(await T.recAll(p)); const delDate = /Jul 15/.test(nowRec) ? '2026-07-15' : '2026-07-14'\n    const s4 = await lw('4-before-delete', delDate)")
+s = s.replace("await L.go(p, 'editsched'); const l4 = await Q.readDay(p, TU, 'l4', { noPics: false })", "await L.go(p, 'editsched'); const l4 = await Q.readDay(p, TU, 'l4', { noPics: false }); const l4w = await Q.readDay(p, 2, 'l4', { noPics: false })")
+s = s.replace("one(l4), fl(l4).length === 0 ? 'PASS' : 'FAIL', [s4.shot, ...l4.s.pics])", "`${one(l4)} || ${Q.shortDay(2, l4w)}`, fl(l4).length === 0 && fl(l4w).length === 0 ? 'PASS' : 'FAIL', [s4.shot, ...l4.s.pics, ...l4w.s.pics])")
+s = s.replace("const toastLw = await T.W.toasts ? '' : ''\n", "")
+fs.writeFileSync(f, s)
+console.log('ok')

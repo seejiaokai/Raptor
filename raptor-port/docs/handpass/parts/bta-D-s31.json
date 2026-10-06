@@ -1,0 +1,72 @@
+{
+ "parts": {
+  "bta-D-s31-dk": {
+   "at": "2026-10-06T09:36:39.555Z",
+   "base": "http://localhost:4241",
+   "phone": false,
+   "table": [
+    {
+     "id": "S31.1",
+     "did": "LL all Tuesday filed; Vandal on a blank flying line (took true); 1 LL input(s) of his, 47 inputs in all",
+     "saw": "[DRAFT · 3 changes · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-dk-s31-1.png"
+     ]
+    },
+    {
+     "id": "S31.2",
+     "did": "Tuesday's plans menu → \"+ Alt Plan\" (toast: \"Tuesday — \"Plan B\" is now the live day, edit over it\"); the copy is now the live day",
+     "saw": "[DRAFT · 4 changes · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · LL inputs of his 1, all inputs 47",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-dk-s31-2.png"
+     ]
+    },
+    {
+     "id": "S31.3",
+     "did": "on the copy a new wave added (+ Wave) and the wave holding him dragged below it (dragged)",
+     "saw": "waves before: 0:WAVE 1[VL@08:40/RU@09:40]  1:WAVE 2[VL@14:40/RU@14:40]  2:WAVE 3[(blank)] · after: 0:WAVE 1[VL@08:40/RU@09:40]  1:WAVE 2[VL@14:40/RU@14:40]  2:WAVE 4[(blank)]  3:WAVE 3[(blank)] · [DRAFT · 5 changes · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-dk-s31-3.png"
+     ]
+    },
+    {
+     "id": "S31.4",
+     "did": "the leave lifted on the Inputs page (gone)",
+     "saw": "[DRAFT · 6 changes · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring] · LL inputs of his 0",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-dk-s31-4.png"
+     ]
+    },
+    {
+     "id": "S31.5",
+     "did": "the plans menu: the first saved plan (\"Plan A\") picked to be the live day again (menu offered [\"Templates\",\"Templates\",\"Plan B\\n▾\",\"Templates\",\"Templates\",\"Templates\",\"Templates\",\"Templates\",\"Plan Atap to make it the live day\",\"Plan B ●live now — this is what publishes\",\"+ Alt Plan\",\"✎ Manage plans\"]; toast \"Switched to \"Plan A\" — this is now the live Tuesday\")",
+     "saw": "waves now: 0:WAVE 1[VL@08:40/RU@09:40]  1:WAVE 2[VL@14:40/RU@14:40]  2:WAVE 3[(blank)] · [DRAFT · 7 changes · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-dk-s31-5.png"
+     ]
+    },
+    {
+     "id": "S31.6",
+     "did": "the leave filed again (LL inputs of his now 1, inputs in all 47; before the lift 1 / 47)",
+     "saw": "[DRAFT · 8 changes · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D again\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-dk-s31-6.png"
+     ]
+    },
+    {
+     "id": "S31.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

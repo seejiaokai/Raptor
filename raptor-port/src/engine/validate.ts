@@ -834,13 +834,17 @@ function validateCore(){
        (events.ts buildDay / wholeDay — the All day tick, a record with no usable hours, hours typed 00:00–23:59 or to
        24:00; asked undeferred, so a whole-day request already put on the programme still counts). Whether such an
        input overlaps the seat never depended on the missing hours. Nothing else about any check moves: the same
-       types, the same exemptions, the same words — said without a clock, and "this line" / "this row" where the seat
+       types, the same exemptions, the same words — said without a clock, and "this line" / "this duty row" (sim, ground …) where the seat
        has no name yet either. Pins: blankabsence.test.ts. */
     const noWin=(s:any,e:any)=>!(isFinite(s)&&isFinite(e));
     const whole:any[]=day.whole||[];
     /* a seat with no name yet: an empty label, or the bare word the label is built round (events.ts — 'Sim '+its
-       name, its role+' duty'; a new sim or duty row comes up with neither a name nor hours) */
+       name, its role+' duty'; a new sim or duty row comes up with neither a name nor hours). A row says WHICH kind
+       it is — the list folds identical sentences into one line, and "this row" for a man on a new duty row, a new
+       sim row and a new ground item was one line for three places (walkers A and B, 6 Oct 26). */
     const named=(label:any,alt:string)=>{const t=String(label==null?'':label).trim(); return !t||t==='Sim'||t==='duty'?alt:label;};
+    const ROWWORD:any={duty:'this duty row',sim:'this sim row',ground:'this ground row',prog:'this programme row'};
+    const rowName=(x:any)=>named(x.label,ROWWORD[x.kind]||'this row');
     day.fly.forEach((e:any)=>(noWin(e.step,e.dekit)?whole:day.input).forEach((inp:any)=>{ if(inp.id!==e.id)return;
       if(e.shift)return;
       if(noWin(e.step,e.dekit)||overlap(e.step,e.dekit,inp.s,inp.e)){
@@ -910,7 +914,7 @@ function validateCore(){
         { const wc=dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY'; markChip(di,e.id,'C',wc); markRing(di,e.id,'hard',wc); }
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
-          (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${named(e.label,'this row')}${why}`,kOf(e)); }); });
+          (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${rowName(e)}${why}`,kOf(e)); }); });
     /* …AND THE ROWS THAT NEVER BECAME AN EVENT, because they have no start to make a window from (D605, above;
        events.ts `blank`): a duty desk, a sim seat, a ground or Common Programme row, an AVALON / BB seat or desk
        with no shift times. `abs` is that man's whole-day inputs for THIS day, already cleared of the request the row
@@ -924,13 +928,13 @@ function validateCore(){
         if(b.work&&canWork(inp.type))return;
         const wc=dn?'DNIF_FLY':'LEAVE_FLY';
         markChip(di,b.id,'C',wc); markRing(di,b.id,'hard',wc);
-        add('hard',wc,[b.id],`${inp.type} but on ${b.label} — ${dn?'medically down':'overseas'}${why}`,b.key);
+        add('hard',wc,[b.id],`${inp.type} but on ${rowName(b)} — ${dn?'medically down':'overseas'}${why}`,b.key);
         return;
       }
       if(canWork(inp.type))return;
       { const wc=dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY'; markChip(di,b.id,'C',wc); markRing(di,b.id,'hard',wc); }
       add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[b.id],
-        (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${named(b.label,'this row')}${why}`,b.key); }));
+        (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${rowName(b)}${why}`,b.key); }));
     /* AVALON'S ONE CHECK (owner, 11 Aug 26; three more joined it on 7 Sep 26,
        right below, and BB became AVALON's twin the same day). The wave and its desk keep their
        noconf exemption — nothing on them is cross-checked against tasks, rest or
@@ -952,7 +956,7 @@ function validateCore(){
         markChip(di,sa.id,'C',wc); markRing(di,sa.id,'hard',wc);
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[sa.id],
-          `${inp.type} but on ${sa.label} — ${dn?'medically down':'overseas'}${why}`,sa.key);
+          `${inp.type} but on ${named(sa.label,sa.role==='DUTY'?'this duty row':'this row')} — ${dn?'medically down':'overseas'}${why}`,sa.key);   /* a desk with no role yet (D605's note, the sortie loop) */
       });
     });
     /* THE THREE AVALON CHECKS OF 7 SEP 26 (owner — "Avalon main will also be

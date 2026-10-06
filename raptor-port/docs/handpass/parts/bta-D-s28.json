@@ -1,0 +1,119 @@
+{
+ "parts": {
+  "bta-D-s28-dk": {
+   "at": "2026-10-06T09:20:30.886Z",
+   "base": "http://localhost:4241",
+   "phone": false,
+   "table": [
+    {
+     "id": "S28.1",
+     "did": "LL all Tuesday filed; Vandal on a blank flying line (took true)",
+     "saw": "WORKING: [DRAFT · 3 changes · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  FACE (View-only Sched): [DRAFT · 3 changes · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · the app holds: [\"LEAVE_FLY\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-dk-s28-1-W.png",
+      "dk-02-dk-s28-1-V.png"
+     ]
+    },
+    {
+     "id": "S28.2",
+     "did": "the line's ✕ pressed (pressed); before: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\"",
+     "saw": "WORKING: [DRAFT · 4 changes · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring]  ||  FACE (View-only Sched): [DRAFT · 4 changes · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring] · the app holds: [\"LEAVE_FLY (off)\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-dk-s28-2-W.png",
+      "dk-04-dk-s28-2-V.png"
+     ]
+    },
+    {
+     "id": "S28.3",
+     "did": "page reloaded and signed in again as the admin",
+     "saw": "WORKING: [DRAFT · 4 changes · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring]  ||  FACE (View-only Sched): [DRAFT · 4 changes · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring] · the app holds: [\"LEAVE_FLY (off)\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-dk-s28-3-W.png",
+      "dk-06-dk-s28-3-V.png"
+     ]
+    },
+    {
+     "id": "S28.4",
+     "did": "page reloaded and signed in as the member (View-only Sched)",
+     "saw": "MEMBER'S FACE: [DRAFT · 4 new · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring] · ✕/↺ buttons in the list: 0",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-dk-s28-4-member.png"
+     ]
+    },
+    {
+     "id": "S28.5",
+     "did": "signed in as the admin again; the line's ↺ pressed (pressed)",
+     "saw": "WORKING: [DRAFT · 5 changes · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  FACE (View-only Sched): [DRAFT · 5 changes · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · the app holds: [\"LEAVE_FLY\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-dk-s28-5-W.png",
+      "dk-09-dk-s28-5-V.png"
+     ]
+    },
+    {
+     "id": "S28.6",
+     "did": "the line hidden again (pressed) and the day published ({\"pressed\":true,\"label\":\"Publish day\"})",
+     "saw": "WORKING: [ORIG · 11 changes · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring]  ||  LOOK (👁 Original): [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring] · the app holds: [\"LEAVE_FLY (off)\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-dk-s28-6-W.png",
+      "dk-11-dk-s28-6-V.png",
+      "dk-12-dk-s28-6-L.png"
+     ]
+    },
+    {
+     "id": "S28.7",
+     "did": "after publishing: the ↺ pressed on the working copy (pressed)",
+     "saw": "WORKING: [ORIG · 1 pending · Not yet signed · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring]  ||  LOOK (👁 Original): [ORIG · 1 pending · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring] · the app holds: [\"LEAVE_FLY\"] · pending chip \"1 pending\" · Not yet signed",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-dk-s28-7-W.png",
+      "dk-14-dk-s28-7-V.png"
+     ]
+    },
+    {
+     "id": "S28.8",
+     "did": "page reloaded",
+     "saw": "WORKING: [ORIG · 1 pending · Not yet signed · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring]  ||  LOOK (👁 Original): [ORIG · 1 pending · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring] · the app holds: [\"LEAVE_FLY\"] · pending chip \"1 pending\" · Not yet signed",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-dk-s28-8-W.png",
+      "dk-16-dk-s28-8-V.png"
+     ]
+    },
+    {
+     "id": "S28.9",
+     "did": "Publish AL1 ({\"pressed\":true,\"label\":\"Publish AL1\"})",
+     "saw": "WORKING: [AL1 · 17 changes · SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  FACE (View-only Sched): [AL1 · SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  LOOK (👁 Original): [AL1 · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring] · the app holds: [\"LEAVE_FLY\"] · versions [\"Original\",\"AL1\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-dk-s28-9-W.png",
+      "dk-18-dk-s28-9-V.png",
+      "dk-19-dk-s28-9-L.png"
+     ]
+    },
+    {
+     "id": "S28.10",
+     "did": "hidden again after AL1 (pressed)",
+     "saw": "WORKING: [AL1 · 1 pending · Not yet signed · SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring]  ||  FACE (View-only Sched): [AL1 · SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  LOOK (👁 Original): [AL1 · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[HIDDEN] On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:no-ring; Unavailable row:no-ring] · the app holds: [\"LEAVE_FLY (off)\"] · pending chip \"1 pending\" · Not yet signed",
+     "verdict": "PASS",
+     "pics": [
+      "dk-20-dk-s28-10-W.png",
+      "dk-21-dk-s28-10-V.png"
+     ]
+    },
+    {
+     "id": "S28.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

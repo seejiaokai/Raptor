@@ -266,7 +266,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        loop, the crew picker's busy scan, Insights' hours and OIL still read a time-less row as occupying no time — and
        validate() asks them the ONE question that needs no hours: is he away for the whole of this day? `av` marks an
        AVALON / BB place (its own exemptions and its own words), `work` its desk, `src` the request a ground row was
-       landed from. Port-only, like sacrew (the parity gate excises it whole). A flying line or an SC line with no
+       landed from, `kind` what sort of row it is (for the words of a row with no name yet). Port-only, like sacrew (the parity gate excises it whole). A flying line or an SC line with no
        times is NOT here: those are in day.fly / day.events / day.forms already, with times that are not numbers —
        validate() judges them against the same `whole` list (returned beside `blank`). */
     const blank:any[]=[];
@@ -401,7 +401,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
       const sw=win(st,en,VCONF.simLen);
       [s.p,s.w].concat(s.pax||[]).concat(s.more||[])   // sim who is free text (1C), not a person
         .forEach((id:any)=>{ if(!id||!PEOPLE[id]||isSpecial(id))return;
-          if(!sw){blank.push({id,label:'Sim '+s.label,key:'s:'+di+'.'+k+'.'+ri});return;}   // a box with no start — D605, `blank` above
+          if(!sw){blank.push({id,label:'Sim '+s.label,key:'s:'+di+'.'+k+'.'+ri,kind:'sim'});return;}   // a box with no start — D605, `blank` above
           events.push({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim',key:'s:'+di+'.'+k+'.'+ri}); }); }));
     /* ---- sim brief / debrief windows -------------------------------------
        An EP profile on the OFT briefs 15 min before the box — unless its
@@ -446,7 +446,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        ground event or a programme item only an Advisory. */
     const push=(id:any,st:any,en:any,label:any,kind:any,key?:any,src?:any)=>{
       if(!id||!PEOPLE[id]||isSpecial(id))return;
-      const w2=win(st,en); if(!w2){blank.push({id,label,key,src});return;}   // a row with no start — D605, `blank` above
+      const w2=win(st,en); if(!w2){blank.push({id,label,key,src,kind});return;}   // a row with no start — D605, `blank` above
       /* the same man in the row's seat AND in its more[] is one commitment, not
          two — he used to be flagged as clashing with himself */
       if(events.some((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label))return;
@@ -462,7 +462,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
         if(saExemptKind(dw.sa)){
           const w2=win(parseHM(r.str),parseHM(r.end));
           if(w2)[r.id].concat(extras(r)).forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:w2[0],e:w2[1],label:r.role+' duty',key:`d:${di}.${dwi}.${ri}`,work:true,role:'DUTY',seat:null,kind:dw.sa}); });
-          else [r.id].concat(extras(r)).forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))blank.push({id,label:r.role+' duty',key:`d:${di}.${dwi}.${ri}`,av:true,work:true}); });   // D605
+          else [r.id].concat(extras(r)).forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))blank.push({id,label:r.role+' duty',key:`d:${di}.${dwi}.${ri}`,av:true,work:true,kind:'duty'}); });   // D605
         }
         return;
       }

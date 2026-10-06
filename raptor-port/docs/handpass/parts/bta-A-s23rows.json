@@ -1,0 +1,211 @@
+{
+ "parts": {
+  "bta-A-s23rows-dk": {
+   "at": "2026-10-06T09:04:50.291Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "S23 ALL AVAIL on duty row by tap",
+     "did": "1440×900 desktop: a blank duty row (no name, no times); seat armed, the placeholder pressed in the crew list",
+     "saw": "armed d:1.0.3.+; the app said \"ALL AVAIL planned\"; the row took it: {\"role\":\"\",\"id\":\"allavail\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg50lzyt21ju\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s23-duty-allavail-tap-list.png",
+      "dk-02-s23-duty-allavail-tap-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on duty row by drag",
+     "did": "1440×900 desktop: a blank duty row (no name, no times); a real pointer drag from the crew list onto the row",
+     "saw": "armed -; the app said nothing; the row took it: {\"role\":\"\",\"id\":\"allavail\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg5986vdt0d4\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s23-duty-allavail-drag-list.png",
+      "dk-04-s23-duty-allavail-drag-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on duty row by tap",
+     "did": "1440×900 desktop: a blank duty row (no name, no times); seat armed, the placeholder pressed in the crew list",
+     "saw": "armed d:1.0.3.+; the app said \"ALL planned\"; the row took it: {\"role\":\"\",\"id\":\"all\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg5k2ee8mm36\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s23-duty-all-tap-list.png",
+      "dk-06-s23-duty-all-tap-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on duty row by drag",
+     "did": "1440×900 desktop: a blank duty row (no name, no times); a real pointer drag from the crew list onto the row",
+     "saw": "armed -; the app said nothing; the row took it: {\"role\":\"\",\"id\":\"all\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg5skg17904o\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s23-duty-all-drag-list.png",
+      "dk-08-s23-duty-all-drag-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on sim (OFT) row by tap",
+     "did": "1440×900 desktop: a blank sim (OFT) row (no name, no times); seat armed, the placeholder pressed in the crew list",
+     "saw": "armed s:1.oft.2.p; the app said \"ALL AVAIL planned\"; the row took it: {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg63ofxa7n6h\",\"p\":\"allavail\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s23-oft-allavail-tap-list.png",
+      "dk-10-s23-oft-allavail-tap-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on sim (OFT) row by drag",
+     "did": "1440×900 desktop: a blank sim (OFT) row (no name, no times); a real pointer drag from the crew list onto the row",
+     "saw": "armed -; the app said nothing; the row took it: {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg6znb6ww3im\",\"p\":\"allavail\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s23-oft-allavail-drag-list.png",
+      "dk-12-s23-oft-allavail-drag-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on sim (OFT) row by tap",
+     "did": "1440×900 desktop: a blank sim (OFT) row (no name, no times); seat armed, the placeholder pressed in the crew list",
+     "saw": "armed s:1.oft.2.p; the app said \"ALL planned\"; the row took it: {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg7xuqzhlfwp\",\"p\":\"all\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s23-oft-all-tap-list.png",
+      "dk-14-s23-oft-all-tap-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on sim (OFT) row by drag",
+     "did": "1440×900 desktop: a blank sim (OFT) row (no name, no times); a real pointer drag from the crew list onto the row",
+     "saw": "armed -; the app said nothing; the row took it: {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg8tv3you9pi\",\"p\":\"all\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-s23-oft-all-drag-list.png",
+      "dk-16-s23-oft-all-drag-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on Ground Programme row by tap",
+     "did": "1440×900 desktop: a blank Ground Programme row (no name, no times); seat armed, the placeholder pressed in the crew list",
+     "saw": "armed g:1.4.+; the app said \"ALL AVAIL planned\"; the row took it: {\"prog\":\"\",\"str\":\"\",\"end\":\"\",\"who\":\"allavail\",\"rid\":\"rmuwg9s5p4k9p69\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-s23-ground-allavail-tap-list.png",
+      "dk-18-s23-ground-allavail-tap-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on Ground Programme row by drag",
+     "did": "1440×900 desktop: a blank Ground Programme row (no name, no times); a real pointer drag from the crew list onto the row",
+     "saw": "armed -; the app said nothing; the row took it: {\"prog\":\"\",\"str\":\"\",\"end\":\"\",\"who\":\"allavail\",\"rid\":\"rmuwga0pykbd335\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-s23-ground-allavail-drag-list.png",
+      "dk-20-s23-ground-allavail-drag-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on Ground Programme row by tap",
+     "did": "1440×900 desktop: a blank Ground Programme row (no name, no times); seat armed, the placeholder pressed in the crew list",
+     "saw": "armed g:1.4.+; the app said \"ALL planned\"; the row took it: {\"prog\":\"\",\"str\":\"\",\"end\":\"\",\"who\":\"all\",\"rid\":\"rmuwgabjrlqaqe3\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-s23-ground-all-tap-list.png",
+      "dk-22-s23-ground-all-tap-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on Ground Programme row by drag",
+     "did": "1440×900 desktop: a blank Ground Programme row (no name, no times); a real pointer drag from the crew list onto the row",
+     "saw": "armed -; the app said nothing; the row took it: {\"prog\":\"\",\"str\":\"\",\"end\":\"\",\"who\":\"all\",\"rid\":\"rmuwgak6uid5zst\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-23-s23-ground-all-drag-list.png",
+      "dk-24-s23-ground-all-drag-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on Common Programme row by tap",
+     "did": "1440×900 desktop: a blank Common Programme row (no name, no times); seat armed, the placeholder pressed in the crew list",
+     "saw": "armed a:1.2.+; the app said \"ALL AVAIL planned\"; the row took it: {\"prog\":\"\",\"sub\":\"\",\"str\":\"\",\"end\":\"\",\"who\":\"allavail\",\"rmks\":\"\",\"rid\":\"rmuwgav6o7562z1\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-s23-prog-allavail-tap-list.png",
+      "dk-26-s23-prog-allavail-tap-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on Common Programme row by drag",
+     "did": "1440×900 desktop: a blank Common Programme row (no name, no times); a real pointer drag from the crew list onto the row",
+     "saw": "armed -; the app said nothing; the row took it: {\"prog\":\"\",\"sub\":\"\",\"str\":\"\",\"end\":\"\",\"who\":\"allavail\",\"rmks\":\"\",\"rid\":\"rmuwgb3qifdmmzs\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-27-s23-prog-allavail-drag-list.png",
+      "dk-28-s23-prog-allavail-drag-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on Common Programme row by tap",
+     "did": "1440×900 desktop: a blank Common Programme row (no name, no times); seat armed, the placeholder pressed in the crew list",
+     "saw": "armed a:1.2.+; the app said \"ALL planned\"; the row took it: {\"prog\":\"\",\"sub\":\"\",\"str\":\"\",\"end\":\"\",\"who\":\"all\",\"rmks\":\"\",\"rid\":\"rmuwgbemm8evgb2\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-29-s23-prog-all-tap-list.png",
+      "dk-30-s23-prog-all-tap-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on Common Programme row by drag",
+     "did": "1440×900 desktop: a blank Common Programme row (no name, no times); a real pointer drag from the crew list onto the row",
+     "saw": "armed -; the app said nothing; the row took it: {\"prog\":\"\",\"sub\":\"\",\"str\":\"\",\"end\":\"\",\"who\":\"all\",\"rmks\":\"\",\"rid\":\"rmuwgbn7wg8mhtx\"}; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-31-s23-prog-all-drag-list.png",
+      "dk-32-s23-prog-all-drag-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on BB desk by tap",
+     "did": "1440×900 desktop: a blank BB desk (no name, no times); seat armed, the placeholder pressed in the crew list",
+     "saw": "armed d:1.2.0.+; the app said \"ALL AVAIL planned\"; the row took it: [[{\"role\":\"SDO\",\"id\":\"boosh\",\"str\":\"0530\",\"end\":\"1200\",\"rid\":\"rs130720261xm\"},{\"role\":\"SXO\",\"id\":\"snap\",\"str\":\"0500\",\"en; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-34-s23-bbd-allavail-tap-list.png",
+      "dk-35-s23-bbd-allavail-tap-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL AVAIL on BB desk by drag",
+     "did": "1440×900 desktop: a blank BB desk (no name, no times); a real pointer drag from the crew list onto the row",
+     "saw": "armed -; the app said nothing; the row took it: [[{\"role\":\"SDO\",\"id\":\"boosh\",\"str\":\"0530\",\"end\":\"1200\",\"rid\":\"rs130720261xm\"},{\"role\":\"SXO\",\"id\":\"snap\",\"str\":\"0500\",\"en; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-37-s23-bbd-allavail-drag-list.png",
+      "dk-38-s23-bbd-allavail-drag-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on BB desk by tap",
+     "did": "1440×900 desktop: a blank BB desk (no name, no times); seat armed, the placeholder pressed in the crew list",
+     "saw": "armed d:1.2.0.+; the app said \"ALL planned\"; the row took it: [[{\"role\":\"SDO\",\"id\":\"boosh\",\"str\":\"0530\",\"end\":\"1200\",\"rid\":\"rs130720261xm\"},{\"role\":\"SXO\",\"id\":\"snap\",\"str\":\"0500\",\"en; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-40-s23-bbd-all-tap-list.png",
+      "dk-41-s23-bbd-all-tap-chip.png"
+     ]
+    },
+    {
+     "id": "S23 ALL on BB desk by drag",
+     "did": "1440×900 desktop: a blank BB desk (no name, no times); a real pointer drag from the crew list onto the row",
+     "saw": "armed -; the app said nothing; the row took it: [[{\"role\":\"SDO\",\"id\":\"boosh\",\"str\":\"0530\",\"end\":\"1200\",\"rid\":\"rs130720261xm\"},{\"role\":\"SXO\",\"id\":\"snap\",\"str\":\"0500\",\"en; warnings naming him: none · his pucks [Available crew:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; \"?\" count chip: {\"text\":\"?\",\"title\":\"No start time — give it a time to count who can attend\",\"toast\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-43-s23-bbd-all-drag-list.png",
+      "dk-44-s23-bbd-all-drag-chip.png"
+     ]
+    }
+   ]
+  }
+ }
+}

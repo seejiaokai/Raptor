@@ -17,7 +17,8 @@
        tomorrow's or yesterday's whole-day absence; an info-only row, a cancelled row and a placeholder puck;
      - an all-day request already put on the programme is not flagged against its OWN row (that row has no times by
        construction — inputs.ts inputFlags), while a second man on that row with his own leave is;
-     - the sentence: no clock that is not there, and "this line" / "this row" where the seat has no name yet either.
+     - the sentence: no clock that is not there, and "this line" / "this duty row" (sim, ground) where the seat has no
+       name yet either — each kind its own words, so a man on three unnamed rows is three lines.
 
    The blank shapes are the app's own: board.ts addLine for the flying line, waves.ts makeStandalone for SC and BB (BB
    comes up with no shift times), dutytpl.ts blockFromTpl for the BB desk. The browser test drives the real buttons
@@ -229,24 +230,45 @@ describe('the sentence — nothing printed that is not there', () => {
     expect(codes()).toEqual(['hard:DNIF_FLY'])
   })
 
-  it('a row with no name yet reads "this row"; with a name, its name', () => {
+  it('a row with no name yet reads "this ground row"; with a name, its name', () => {
     const g = groundRow(false, ''); g.seat(); file('LL')
-    expect(abs().map((w: any) => w.msg)).toEqual(['On leave but tasked — this row'])
+    expect(abs().map((w: any) => w.msg)).toEqual(['On leave but tasked — this ground row'])
     g.row.prog = 'RANGE SWEEP'
     expect(abs().map((w: any) => w.msg)).toEqual(['On leave but tasked — RANGE SWEEP'])
     expect(abs()[0].key).toBe(g.key)
   })
 
-  it('a sim row and a duty row with no name yet read "this row" too — not "Sim " or " duty" — with and without times', () => {
+  it('one man on three brand-new rows — a duty row, a sim row, a ground item, no names, no times — is THREE lines', () => {
+    /* walkers A (H-02) and B: the list folds identical sentences into one line, so "this row" three times was one
+       line for three places (all three pucks ringed, the count rose by one) — and adding the second row made the
+       first one's line seem to go. Each kind names itself. */
+    const d = dutyRow(); d.row.role = ''; d.seat(); const s = simSeat(); s.row.label = ''; s.seat(); const g = groundRow(false, ''); g.seat()
+    file('OL')
+    expect(abs().map((w: any) => w.msg).sort()).toEqual(['On leave but tasked — this duty row', 'On leave but tasked — this ground row', 'On leave but tasked — this sim row'])
+    expect(abs().map((w: any) => w.key).sort(), 'each line goes to its own row').toEqual([d.key, g.key, s.key.replace(/\.p$/, '')].sort())
+  })
+
+  it('a sim row and a duty row with no name yet say which row — not "Sim " or " duty" — with and without times', () => {
     /* Astra's scenario read, F4: the engine builds these labels as 'Sim ' + its name and its role + ' duty', so an
        unnamed row's label was not empty and the hole was printed. A new row comes up with no name AND no times. */
     const d = dutyRow(); d.row.role = ''; d.seat(); const s = simSeat(); s.row.label = ''; s.seat(Y)
     file('LL'); file('ATT C', {}, Y)
-    expect(abs().map((w: any) => w.msg)).toEqual(['On leave but tasked — this row'])
-    expect(abs(Y).map((w: any) => w.msg)).toEqual(['Downchit but tasked — this row'])
+    expect(abs().map((w: any) => w.msg)).toEqual(['On leave but tasked — this duty row'])
+    expect(abs(Y).map((w: any) => w.msg)).toEqual(['Downchit but tasked — this sim row'])
     d.time(); s.time()
-    expect(abs().map((w: any) => w.msg), 'the same sentence once times are typed').toEqual(['On leave but tasked — this row'])
-    expect(abs(Y).map((w: any) => w.msg)).toEqual(['Downchit but tasked — this row'])
+    expect(abs().map((w: any) => w.msg), 'the same sentence once times are typed').toEqual(['On leave but tasked — this duty row'])
+    expect(abs(Y).map((w: any) => w.msg)).toEqual(['Downchit but tasked — this sim row'])
+  })
+
+  it('an AVALON / BB desk with no role yet reads "this duty row" as well — never "on  duty"', () => {
+    /* walker A, H-01: a BB desk made from a template with no role typed printed "OL but on  duty — overseas", with
+       hours and without (the standby look had its own sentence, outside the fallback) */
+    const d = bbDesk(); d.row.role = ''; d.seat(); file('OL')
+    expect(abs().map((w: any) => w.msg)).toEqual(['OL but on this duty row — overseas'])
+    d.time()
+    expect(abs().map((w: any) => w.msg), 'the same sentence with its hours typed').toEqual(['OL but on this duty row — overseas'])
+    d.row.role = 'SXO'
+    expect(abs().map((w: any) => w.msg)).toEqual(['OL but on SXO duty — overseas'])
   })
 
   it('a duty desk, a sim seat and a Common Programme row use the words their timed rows use', () => {

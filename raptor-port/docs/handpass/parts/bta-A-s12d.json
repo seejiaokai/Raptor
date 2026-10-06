@@ -1,0 +1,221 @@
+{
+ "parts": {
+  "bta-A-s12-dk": {
+   "at": "2026-10-06T08:55:40.024Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "S12 OL × AVALON MAIN front seat",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON MAIN front seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on 1.2.0.0.p, toast \"Vandal — OL but on AVALON NIGHT — overseas — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"OL but on AVALON NIGHT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — MISMATCH expected red \"but on (BB|AVALON) SHIFT — (overseas|medically down)\": got 0 matching, list LACKS it, ring solid, other abs 1.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-02-s12_OL_AVALON_MAIN_front_seat-list.png",
+      "dk-01-s12_OL_AVALON_MAIN_front_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 OL × AVALON MAIN rear seat",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON MAIN rear seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on 1.2.0.0.w, toast \"Vandal — OL but on AVALON NIGHT — overseas — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"OL but on AVALON NIGHT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — MISMATCH expected red \"but on (BB|AVALON) SHIFT — (overseas|medically down)\": got 0 matching, list LACKS it, ring solid, other abs 1.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-04-s12_OL_AVALON_MAIN_rear_seat-list.png",
+      "dk-03-s12_OL_AVALON_MAIN_rear_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 OL × AVALON SPARE front seat",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON SPARE front seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on 1.2.0.2.p, toast \"Vandal — OL but on AVALON NIGHT — overseas — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"OL but on AVALON NIGHT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — MISMATCH expected red \"but on (BB|AVALON) SHIFT — (overseas|medically down)\": got 0 matching, list LACKS it, ring solid, other abs 1.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-06-s12_OL_AVALON_SPARE_front_seat-list.png",
+      "dk-05-s12_OL_AVALON_SPARE_front_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 OL × AVALON SPARE rear seat",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON SPARE rear seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on 1.2.0.2.w, toast \"Vandal — OL but on AVALON NIGHT — overseas — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"OL but on AVALON NIGHT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — MISMATCH expected red \"but on (BB|AVALON) SHIFT — (overseas|medically down)\": got 0 matching, list LACKS it, ring solid, other abs 1.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-08-s12_OL_AVALON_SPARE_rear_seat-list.png",
+      "dk-07-s12_OL_AVALON_SPARE_rear_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 OL × AVALON desk, primary person",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON desk, primary person",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on d:1.2.0.+, toast \"Vandal — OL but on SXO duty — overseas — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"OL but on SXO duty — overseas — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s12_OL_AVALON_desk_primary_person-list.png",
+      "dk-09-s12_OL_AVALON_desk_primary_person-puck.png"
+     ]
+    },
+    {
+     "id": "S12 OL × AVALON desk, extra person (another man first)",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON desk, extra person (another man first)",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on d:1.2.0.+, toast \"Vandal — OL but on SXO duty — overseas — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"OL but on SXO duty — overseas — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s12_OL_AVALON_desk_extra_person_another_man_first_-list.png",
+      "dk-11-s12_OL_AVALON_desk_extra_person_another_man_first_-puck.png"
+     ]
+    },
+    {
+     "id": "S12 OL × AVALON desk after the AVALON wave is deleted",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON desk after the AVALON wave is deleted",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on d:1.2.0.+, toast \"Vandal — OL but on SXO duty — overseas — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"OL but on SXO duty — overseas — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches. After \"✕ Wave\": waves now WAVE 1, WAVE 2; desk row now {\"id\":\"split\"}.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-s12-OL-after-wave-delete-list.png",
+      "dk-13-s12-OL-after-wave-delete-puck.png"
+     ]
+    },
+    {
+     "id": "S12 ATT B × AVALON MAIN front seat",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON MAIN front seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP medically down — no flying, may still work (ATT B) — x-ATT B\" · tooltip \"Vandal — medically down — no flying, may still work (ATT B) — x-ATT B\"; placed true on 1.2.0.0.p, toast \"Vandal — ATT B but on AVALON NIGHT — medically down — reason: x-ATT B\". warnings naming him: [hard/DNIF_FLY] \"ATT B but on AVALON NIGHT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — MISMATCH expected red \"but on (BB|AVALON) SHIFT — (overseas|medically down)\": got 0 matching, list LACKS it, ring solid, other abs 1.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-16-s12_ATT_B_AVALON_MAIN_front_seat-list.png",
+      "dk-15-s12_ATT_B_AVALON_MAIN_front_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 ATT B × AVALON MAIN rear seat",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON MAIN rear seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP medically down — no flying, may still work (ATT B) — x-ATT B\" · tooltip \"Vandal — medically down — no flying, may still work (ATT B) — x-ATT B\"; placed true on 1.2.0.0.w, toast \"Vandal — ATT B but on AVALON NIGHT — medically down — reason: x-ATT B\". warnings naming him: [hard/DNIF_FLY] \"ATT B but on AVALON NIGHT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — MISMATCH expected red \"but on (BB|AVALON) SHIFT — (overseas|medically down)\": got 0 matching, list LACKS it, ring solid, other abs 1.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-18-s12_ATT_B_AVALON_MAIN_rear_seat-list.png",
+      "dk-17-s12_ATT_B_AVALON_MAIN_rear_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 ATT B × AVALON SPARE front seat",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON SPARE front seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP medically down — no flying, may still work (ATT B) — x-ATT B\" · tooltip \"Vandal — medically down — no flying, may still work (ATT B) — x-ATT B\"; placed true on 1.2.0.2.p, toast \"Vandal — ATT B but on AVALON NIGHT — medically down — reason: x-ATT B\". warnings naming him: [hard/DNIF_FLY] \"ATT B but on AVALON NIGHT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — MISMATCH expected red \"but on (BB|AVALON) SHIFT — (overseas|medically down)\": got 0 matching, list LACKS it, ring solid, other abs 1.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-20-s12_ATT_B_AVALON_SPARE_front_seat-list.png",
+      "dk-19-s12_ATT_B_AVALON_SPARE_front_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 ATT B × AVALON SPARE rear seat",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON SPARE rear seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP medically down — no flying, may still work (ATT B) — x-ATT B\" · tooltip \"Vandal — medically down — no flying, may still work (ATT B) — x-ATT B\"; placed true on 1.2.0.2.w, toast \"Vandal — ATT B but on AVALON NIGHT — medically down — reason: x-ATT B\". warnings naming him: [hard/DNIF_FLY] \"ATT B but on AVALON NIGHT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — MISMATCH expected red \"but on (BB|AVALON) SHIFT — (overseas|medically down)\": got 0 matching, list LACKS it, ring solid, other abs 1.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-22-s12_ATT_B_AVALON_SPARE_rear_seat-list.png",
+      "dk-21-s12_ATT_B_AVALON_SPARE_rear_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 ATT B × AVALON desk, primary person",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON desk, primary person",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on d:1.2.0.+, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-24-s12_ATT_B_AVALON_desk_primary_person-list.png",
+      "dk-23-s12_ATT_B_AVALON_desk_primary_person-puck.png"
+     ]
+    },
+    {
+     "id": "S12 ATT B × AVALON desk, extra person (another man first)",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON desk, extra person (another man first)",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on d:1.2.0.+, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-26-s12_ATT_B_AVALON_desk_extra_person_another_man_first_-list.png",
+      "dk-25-s12_ATT_B_AVALON_desk_extra_person_another_man_first_-puck.png"
+     ]
+    },
+    {
+     "id": "S12 ATT B × AVALON desk after the AVALON wave is deleted",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON desk after the AVALON wave is deleted",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on d:1.2.0.+, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches. After \"✕ Wave\": waves now WAVE 1, WAVE 2; desk row now {\"id\":\"split\"}.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-28-s12-ATT B-after-wave-delete-list.png",
+      "dk-27-s12-ATT B-after-wave-delete-puck.png"
+     ]
+    },
+    {
+     "id": "S12 LL × AVALON MAIN front seat",
+     "did": "1440×900 desktop: LL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON MAIN front seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP local leave (LL) — x-LL\" · tooltip \"Vandal — local leave (LL) — x-LL\"; placed true on 1.2.0.0.p, toast \"Vandal — local leave (LL) — x-LL\". warnings naming him: none · his pucks [flying line:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-30-s12_LL_AVALON_MAIN_front_seat-list.png",
+      "dk-29-s12_LL_AVALON_MAIN_front_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 LL × AVALON MAIN rear seat",
+     "did": "1440×900 desktop: LL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON MAIN rear seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP local leave (LL) — x-LL\" · tooltip \"Vandal — local leave (LL) — x-LL\"; placed true on 1.2.0.0.w, toast \"Vandal — local leave (LL) — x-LL\". warnings naming him: none · his pucks [flying line:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-32-s12_LL_AVALON_MAIN_rear_seat-list.png",
+      "dk-31-s12_LL_AVALON_MAIN_rear_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 LL × AVALON SPARE front seat",
+     "did": "1440×900 desktop: LL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON SPARE front seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP local leave (LL) — x-LL\" · tooltip \"Vandal — local leave (LL) — x-LL\"; placed true on 1.2.0.2.p, toast \"Vandal — local leave (LL) — x-LL\". warnings naming him: none · his pucks [flying line:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-34-s12_LL_AVALON_SPARE_front_seat-list.png",
+      "dk-33-s12_LL_AVALON_SPARE_front_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 LL × AVALON SPARE rear seat",
+     "did": "1440×900 desktop: LL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON SPARE rear seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP local leave (LL) — x-LL\" · tooltip \"Vandal — local leave (LL) — x-LL\"; placed true on 1.2.0.2.w, toast \"Vandal — local leave (LL) — x-LL\". warnings naming him: none · his pucks [flying line:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-36-s12_LL_AVALON_SPARE_rear_seat-list.png",
+      "dk-35-s12_LL_AVALON_SPARE_rear_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S12 LL × AVALON desk, primary person",
+     "did": "1440×900 desktop: LL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON desk, primary person",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on d:1.2.0.+, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-38-s12_LL_AVALON_desk_primary_person-list.png",
+      "dk-37-s12_LL_AVALON_desk_primary_person-puck.png"
+     ]
+    },
+    {
+     "id": "S12 LL × AVALON desk, extra person (another man first)",
+     "did": "1440×900 desktop: LL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON desk, extra person (another man first)",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on d:1.2.0.+, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-40-s12_LL_AVALON_desk_extra_person_another_man_first_-list.png",
+      "dk-39-s12_LL_AVALON_desk_extra_person_another_man_first_-puck.png"
+     ]
+    },
+    {
+     "id": "S12 LL × AVALON desk after the AVALON wave is deleted",
+     "did": "1440×900 desktop: LL filed for X for Tuesday; AVALON wave (shift start \"19:00\" end \"07:00\" → cleared: start \"\" end \"\"); AVALON desk by + Block from the AVALON template (rows SXO 19:00-07:00, OPS O 19:00-07:00, RUNNER 19:00-07:00, LOG CELL 19:00-07:00; row 1 cleared: role \"SXO\" start \"\" end \"\"); X put on AVALON desk after the AVALON wave is deleted",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on d:1.2.0.+, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches. After \"✕ Wave\": waves now WAVE 1, WAVE 2; desk row now {\"id\":\"split\"}.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-42-s12-LL-after-wave-delete-list.png",
+      "dk-41-s12-LL-after-wave-delete-puck.png"
+     ]
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,84 @@
+{
+ "parts": {
+  "bta-D-1-s06-ph": {
+   "at": "2026-10-06T08:51:40.030Z",
+   "base": "http://localhost:4241",
+   "phone": true,
+   "table": [
+    {
+     "id": "S06ph.1",
+     "did": "\"+ Wave\" → blank flying line, Vandal seated (took true); no absence; the day signed and published",
+     "saw": "WORKING: [ORIG · 7 changes · SIGNED ORIG Ace Anvil Anvil Anvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]  ||  LOOK (👁 Original): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-ph-s06LL-0-published-W.png",
+      "ph-03-ph-s06LL-0-published-V.png",
+      "ph-05-ph-s06LL-0-published-L.png"
+     ]
+    },
+    {
+     "id": "S06ph.2",
+     "did": "LL all Tuesday filed AFTER publishing (asked: nothing)",
+     "saw": "WORKING: [ORIG · 1 pending · Not yet signed · SIGNED ORIG Ace Anvil Anvil Anvil · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: After publishnew once signed\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]  ||  LOOK (👁 Original): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-ph-s06LL-1-filed-W.png",
+      "ph-09-ph-s06LL-1-filed-V.png",
+      "ph-11-ph-s06LL-1-filed-L.png"
+     ]
+    },
+    {
+     "id": "S06ph.3",
+     "did": "Undo (top bar: {\"t\":\"Undo — a personal input\",\"pressed\":true,\"toasts\":[]})",
+     "saw": "WORKING: [ORIG · 9 changes · SIGNED ORIG Ace Anvil Anvil Anvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]  ||  LOOK (👁 Original): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring] · inputs [\"imuwfq7cvgn8z5m:divot:OML:Jul 13 allday\",\"imuwfq7cvso3isq:bane:Appointment:Jul 16\",\"imuwfq7cvaibob5:salsa:Appointment:Jul 14\",\"imuwfq7cv97i57k:taipan:OL:Jul 15 allday\",\"imuwfq7cvh67qjj:nasty:LL:Jul 14 allday\",\"imuwfq7cv251rpj:shrek:OIL:Jul 14 allday\",\"imuwfq7cvxfd7hf:sufa:ATT C:Jul 13→Jul 17 allday\",\"imuwfq7cvh982xv:bruise:Fly with:Jul 13 allday\",\"imuwfq7cv3g9e90:vinci:Meeting:Jul 13\",\"imuwfq7cvwtrbuj:pike:OD:Jul 15→Jul 17 allday\",\"imuwfq7cvope9w2:yeti:Appointment:Jul 13\",\"imuwfq7cvymueh4:bruise:OML:Jul 23 allday\",\"imuwfq7cv59oq16:vegas:Appointment:Jul 20\",\"imuwfq7cvbwkq9y:nick:LL:Jul 24 allday\",\"imuwfq7cv8owil2:nick:SANS Availability:Jul 13\",\"imuwfq7cvc1d0ly:romeo:SANS Availability:Jul 14 allday\",\"imuwfq7cv4oggds:vinci:SANS Availability:Jul 15→Jul 16 allday\",\"imuwfq7cv0wdhoh:waldo:SANS Availability:Jul 15\",\"imuwfq7cv4jmtaj:krait:SANS Availability:Jul 15 allday\",\"imuwfq7cvtii7mz:bullet:SANS Availability:Jul 14 allday\",\"imuwfq7cvakzp1r:nasty:OML:Jul 6→Jul 9 allday\",\"imuwfq7cv6ylhlv:vinci:ATT B:Jun 15→Jun 19 allday\",\"imuwfq7cv6ry521:vinci:Upchit:Jun 20 allday\",\"imuwfq7djlrq5ba:slipway:OL:Jan 1 allday\",\"imuwfq7dj0fhrux:prowler:OIL:Jan 9 allday\",\"imuwfq7djtbe0d4:dj:OL:Jan 16→Jan 17 allday\",\"imuwfq7djv1cqo8:bruise:LL:Jan 8 allday\",\"imuwfq7dj8081co:pain:CSE:Jan 12→Jan 13 allday\",\"imuwfq7djdvra3f:dirty:CCL:Jan 15 allday\",\"imuwfq7djx5p473:ammo:OIL:May 4 allday\",\"imuwfq7djbuc0gt:slipway:OIL:May 11 allday\",\"imuwfq7djn0ald6:slipway:OIL:May 12 allday\",\"imuwfq7djodlah0:slipway:OIL:Jun 13 allday\",\"imuwfq7dj5v4rfi:prowler:OIL:Mar 2 allday\",\"imuwfq7djvey7aq:prowler:OIL:Mar 30 allday\",\"imuwfq7djn5ltt9:bruise:OIL:Jul 15 allday\",\"imuwfq7djjsx47w:bruise:OIL:Jul 16 allday\",\"imuwfq7djz09gou:slash:OIL:Jun 1 allday\",\"imuwfq7djsizkls:slash:OIL:Jun 2 allday\",\"imuwfq7djpihld5:slash:OIL:Jun 3 allday\",\"imuwfq7djjmyh5i:harpoon:OIL:Feb 15 allday\",\"imuwfq7dj0204rr:pike:OIL:Jan 14 allday\",\"imuwfq7djmtk3xf:wolf:ATT C:Jan 5 allday\",\"imuwfq7djga8qwq:wolf:OML:Jan 6 allday\",\"imuwfq7dj0w2ox4:wolf:Upchit:Jan 7 allday\",\"imuwfq7djlq4epk:ammo:Duty:Jul 4 allday\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-13-ph-s06-2-undo-W.png",
+      "ph-15-ph-s06-2-undo-V.png",
+      "ph-17-ph-s06-2-undo-L.png"
+     ]
+    },
+    {
+     "id": "S06ph.4",
+     "did": "Redo ({\"t\":\"Redo — a personal input\",\"pressed\":true,\"toasts\":[]})",
+     "saw": "WORKING: [ORIG · 1 pending · Not yet signed · SIGNED ORIG Ace Anvil Anvil Anvil · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: After publishnew once signed\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]  ||  LOOK (👁 Original): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-19-ph-s06-3-redo-W.png",
+      "ph-21-ph-s06-3-redo-V.png",
+      "ph-23-ph-s06-3-redo-L.png"
+     ]
+    },
+    {
+     "id": "S06ph.5",
+     "did": "page reloaded and signed in again",
+     "saw": "WORKING: [ORIG · 1 pending · Not yet signed · SIGNED ORIG Ace Anvil Anvil Anvil · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: After publishnew once signed\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]  ||  LOOK (👁 Original): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-25-ph-s06-4-reload-W.png",
+      "ph-27-ph-s06-4-reload-V.png",
+      "ph-29-ph-s06-4-reload-L.png"
+     ]
+    },
+    {
+     "id": "S06ph.6",
+     "did": "Publish AL1 ({\"pressed\":true,\"label\":\"Publish AL1\"})",
+     "saw": "WORKING: [AL1 · 15 changes · SIGNED AL1 Ace Anvil Anvil Anvil · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: After publish\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  FACE (View-only Sched): [AL1 · SIGNED AL1 Ace Anvil Anvil Anvil · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: After publish\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  LOOK (👁 Original): [AL1 · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring] · versions [\"Original\",\"AL1\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-31-ph-s06-5-AL1-W.png",
+      "ph-33-ph-s06-5-AL1-V.png",
+      "ph-35-ph-s06-5-AL1-L.png"
+     ]
+    },
+    {
+     "id": "S06ph.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

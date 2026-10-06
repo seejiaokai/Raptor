@@ -1,0 +1,56 @@
+{
+ "parts": {
+  "bta-A-s19-dk": {
+   "at": "2026-10-06T09:00:56.065Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "S19 LL morning only (AM) × flying line: blank",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored LL allday false half \"am\" 0–720); a new flying line, X put on it (true); blank [seat now: cs \"\" take-off \"\" landing \"\"]",
+     "saw": "warnings naming him: none · his pucks [flying line:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s19_LL_fly_blank-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × flying line: landing 11:00 typed alone (no take-off)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored LL allday false half \"am\" 0–720); a new flying line, X put on it (true); landing 11:00 typed alone (no take-off) [seat now: cs \"\" take-off \"\" landing \"11:00\"]",
+     "saw": "warnings naming him: none absence-type (other: DEBRIEF) · his pucks [flying line:SOLID-ring chip D; Unavailable row:SOLID-ring chip D] cls warn ; warn · day's bar \"⚠ 5 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s19_LL_fly_landing_11_0-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × flying line: that end cleared again",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored LL allday false half \"am\" 0–720); a new flying line, X put on it (true); that end cleared again [seat now: cs \"\" take-off \"\" landing \"\"]",
+     "saw": "warnings naming him: none · his pucks [flying line:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s19_LL_fly_that_end_cle-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × flying line: take-off 08:00 typed alone (inside the morning)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored LL allday false half \"am\" 0–720); a new flying line, X put on it (true); take-off 08:00 typed alone (inside the morning) [seat now: cs \"\" take-off \"08:00\" landing \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly this line — reason: x-LL-AM\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 7 issues · 3 warning · tap to collapse ▲\" → expected (observation only)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-s19_LL_fly_take_off_08_-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × flying line: take-off 15:00 instead (afternoon, after the morning leave)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored LL allday false half \"am\" 0–720); a new flying line, X put on it (true); take-off 15:00 instead (afternoon, after the morning leave) [seat now: cs \"\" take-off \"15:00\" landing \"\"]",
+     "saw": "warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid; Unavailable row:no-solid] cls  ;  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected (observation only)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-s19_LL_fly_take_off_15_-list.png"
+     ]
+    }
+   ]
+  }
+ }
+}

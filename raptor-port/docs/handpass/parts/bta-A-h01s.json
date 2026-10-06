@@ -1,0 +1,131 @@
+{
+ "parts": {
+  "bta-A-h01s-dk": {
+   "at": "2026-10-06T09:10:22.291Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-01 SANS Availability × fly",
+     "did": "SANS Availability filed for Tuesday (Inputs page), then X on a new flying line (+ Wave → Flying wave)",
+     "saw": "filed SANS Availability ({\"iid\":false,\"asked\":[],\"note\":\"FLY, AMT and OFT ticked\"}); a new flying line (+ Wave → Flying wave); state cs \"\" take-off \"\" landing \"\"; crew list before he is placed: struck no · printed \"Zulu O\" · tooltip \"Zulu\" · row \"Zulu O F/O/A\"; placed true, toast \"Zulu — OCU in with no IP\". BLANK: warnings naming him: none absence-type (other: OCU_NO_IP) · his pucks [flying line:SOLID-ring chip CP; SANS card:SOLID-ring chip CP] cls warn ; warn · day's bar \"⚠ 5 issues · 2 warning · tap to collapse ▲\" → MISMATCH expected silence but 0 absence-type warning(s) and a solid ring. TIMED (cs \"\" take-off \"10:00\" landing \"11:00\"):warnings naming him: none absence-type (other: OCU_NO_IP) · his pucks [flying line:SOLID-ring chip CP; SANS card:SOLID-ring chip CP] cls warn ; warn · day's bar \"⚠ 5 issues · 2 warning · tap to collapse ▲\" → MISMATCH expected silence but 0 absence-type warning(s) and a solid ring; same sentence as blank: true.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-02-SANS_Availability_fly_1blank-list.png",
+      "dk-01-SANS_Availability_fly_1blank-puck.png",
+      "dk-03-SANS_Availability_fly_2timed-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 SANS Availability × scMain",
+     "did": "SANS Availability filed for Tuesday (Inputs page), then X on SC MAIN seat (+ Wave → SC, shift start and end cleared)",
+     "saw": "filed SANS Availability ({\"iid\":false,\"asked\":[],\"note\":\"FLY, AMT and OFT ticked\"}); SC MAIN seat (+ Wave → SC, shift start and end cleared); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck no · printed \"Zulu O\" · tooltip \"Zulu\" · row \"Zulu O F/O/A\"; placed true, toast \"Zulu — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Zulu is not current (+1 more)\". BLANK: warnings naming him: none absence-type (other: SC_QUAL,OCU_NO_IP) · his pucks [flying line:SOLID-ring chip Q; SANS card:SOLID-ring chip Q] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" → MISMATCH expected silence but 0 absence-type warning(s) and a solid ring. TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: none absence-type (other: SC_QUAL,OCU_NO_IP) · his pucks [flying line:SOLID-ring chip Q; SANS card:SOLID-ring chip Q] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" → MISMATCH expected silence but 0 absence-type warning(s) and a solid ring; same sentence as blank: true.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-05-SANS_Availability_scMain_1blank-list.png",
+      "dk-04-SANS_Availability_scMain_1blank-puck.png",
+      "dk-06-SANS_Availability_scMain_2timed-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 SANS Availability × scSpare",
+     "did": "SANS Availability filed for Tuesday (Inputs page), then X on SC SPARE seat (+ Wave → SC, shift start and end cleared)",
+     "saw": "filed SANS Availability ({\"iid\":false,\"asked\":[],\"note\":\"FLY, AMT and OFT ticked\"}); SC SPARE seat (+ Wave → SC, shift start and end cleared); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck no · printed \"Zulu O\" · tooltip \"Zulu\" · row \"Zulu O F/O/A\"; placed true, toast \"Zulu — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Zulu is not current\". BLANK: warnings naming him: none absence-type (other: SC_QUAL) · his pucks [flying line:SOLID-ring chip Q; SANS card:SOLID-ring chip Q] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → MISMATCH expected silence but 0 absence-type warning(s) and a solid ring. TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: none absence-type (other: SC_QUAL) · his pucks [flying line:SOLID-ring chip Q; SANS card:SOLID-ring chip Q] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → MISMATCH expected silence but 0 absence-type warning(s) and a solid ring; same sentence as blank: true.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-08-SANS_Availability_scSpare_1blank-list.png",
+      "dk-07-SANS_Availability_scSpare_1blank-puck.png",
+      "dk-09-SANS_Availability_scSpare_2timed-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 SANS Availability × bbMain",
+     "did": "SANS Availability filed for Tuesday (Inputs page), then X on BB MAIN seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "filed SANS Availability ({\"iid\":false,\"asked\":[],\"note\":\"FLY, AMT and OFT ticked\"}); BB MAIN seat (+ Wave → BB, shift start and end as it comes up); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck no · printed \"Zulu O\" · tooltip \"Zulu\" · row \"Zulu O F/O/A\"; placed true, toast \"Zulu planned\". BLANK: warnings naming him: none · his pucks [flying line:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: none absence-type (other: SC_QUAL) · his pucks [flying line:SOLID-ring chip Q; SANS card:SOLID-ring chip Q] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → MISMATCH expected silence but 0 absence-type warning(s) and a solid ring; same sentence as blank: true.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-11-SANS_Availability_bbMain_1blank-list.png",
+      "dk-10-SANS_Availability_bbMain_1blank-puck.png",
+      "dk-12-SANS_Availability_bbMain_2timed-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 SANS Availability × bbSpare",
+     "did": "SANS Availability filed for Tuesday (Inputs page), then X on BB SPARE seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "filed SANS Availability ({\"iid\":false,\"asked\":[],\"note\":\"FLY, AMT and OFT ticked\"}); BB SPARE seat (+ Wave → BB, shift start and end as it comes up); state shift start \"\" end \"\" B \"\"; crew list before he is placed: struck no · printed \"Zulu O\" · tooltip \"Zulu\" · row \"Zulu O F/O/A\"; placed true, toast \"Zulu planned\". BLANK: warnings naming him: none · his pucks [flying line:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (shift start \"08:00\" end \"12:00\" B \"\"):warnings naming him: none absence-type (other: SC_QUAL) · his pucks [flying line:SOLID-ring chip Q; SANS card:SOLID-ring chip Q] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → MISMATCH expected silence but 0 absence-type warning(s) and a solid ring; same sentence as blank: true.",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-14-SANS_Availability_bbSpare_1blank-list.png",
+      "dk-13-SANS_Availability_bbSpare_1blank-puck.png",
+      "dk-15-SANS_Availability_bbSpare_2timed-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 SANS Availability × duty",
+     "did": "SANS Availability filed for Tuesday (Inputs page), then X on a new duty row (\"+ Row\")",
+     "saw": "filed SANS Availability ({\"iid\":false,\"asked\":[],\"note\":\"FLY, AMT and OFT ticked\"}); a new duty row (\"+ Row\"); state role \"\" start \"\" end \"\" who \"bullet\"; crew list before he is placed: struck no · printed \"Zulu O\" · tooltip \"Zulu\" · row \"Zulu O F/O/A\"; placed true, toast \"Zulu planned\". BLANK: warnings naming him: none · his pucks [duty:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (role \"\" start \"08:00\" end \"12:00\" who \"bullet\"):warnings naming him: none · his pucks [duty:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-SANS_Availability_duty_1blank-list.png",
+      "dk-16-SANS_Availability_duty_1blank-puck.png",
+      "dk-18-SANS_Availability_duty_2timed-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 SANS Availability × sim",
+     "did": "SANS Availability filed for Tuesday (Inputs page), then X on a new sim (OFT) row (\"+ Row\")",
+     "saw": "filed SANS Availability ({\"iid\":false,\"asked\":[],\"note\":\"FLY, AMT and OFT ticked\"}); a new sim (OFT) row (\"+ Row\"); state label \"\" start \"\" end \"\" p \"\" w \"bullet\" who \"\"; crew list before he is placed: struck no · printed \"Zulu O\" · tooltip \"Zulu\" · row \"Zulu O F/O/A\"; placed true, toast \"Zulu planned\". BLANK: warnings naming him: none · his pucks [sim:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (label \"\" start \"08:00\" end \"12:00\" p \"\" w \"bullet\" who \"\"):warnings naming him: none · his pucks [sim:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-20-SANS_Availability_sim_1blank-list.png",
+      "dk-19-SANS_Availability_sim_1blank-puck.png",
+      "dk-21-SANS_Availability_sim_2timed-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 SANS Availability × ground",
+     "did": "SANS Availability filed for Tuesday (Inputs page), then X on a new Ground Programme row (\"+ Item\")",
+     "saw": "filed SANS Availability ({\"iid\":false,\"asked\":[],\"note\":\"FLY, AMT and OFT ticked\"}); a new Ground Programme row (\"+ Item\"); state name \"\" start \"\" end \"\" who \"bullet\"; crew list before he is placed: struck no · printed \"Zulu O\" · tooltip \"Zulu\" · row \"Zulu O F/O/A\"; placed true, toast \"Zulu planned\". BLANK: warnings naming him: none · his pucks [ground row:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (name \"\" start \"08:00\" end \"12:00\" who \"bullet\"):warnings naming him: none · his pucks [ground row:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-23-SANS_Availability_ground_1blank-list.png",
+      "dk-22-SANS_Availability_ground_1blank-puck.png",
+      "dk-24-SANS_Availability_ground_2timed-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 SANS Availability × prog",
+     "did": "SANS Availability filed for Tuesday (Inputs page), then X on a new Common Programme row (\"+ Item\")",
+     "saw": "filed SANS Availability ({\"iid\":false,\"asked\":[],\"note\":\"FLY, AMT and OFT ticked\"}); a new Common Programme row (\"+ Item\"); state name \"\" start \"\" end \"\" who \"bullet\" crowd null; crew list before he is placed: struck no · printed \"Zulu O\" · tooltip \"Zulu\" · row \"Zulu O F/O/A\"; placed true, toast \"Zulu planned\". BLANK: warnings naming him: none · his pucks [programme:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (name \"\" start \"08:00\" end \"12:00\" who \"bullet\" crowd null):warnings naming him: none · his pucks [programme:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-26-SANS_Availability_prog_1blank-list.png",
+      "dk-25-SANS_Availability_prog_1blank-puck.png",
+      "dk-27-SANS_Availability_prog_2timed-list.png"
+     ],
+     "oracle": "silent"
+    },
+    {
+     "id": "H-01 SANS Availability × bbDesk",
+     "did": "SANS Availability filed for Tuesday (Inputs page), then X on a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times)",
+     "saw": "filed SANS Availability ({\"iid\":false,\"asked\":[],\"note\":\"FLY, AMT and OFT ticked\"}); a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times); state block \"BB DESK\" row role \"\" start \"\" end \"\"; crew list before he is placed: struck no · printed \"Zulu O\" · tooltip \"Zulu\" · row \"Zulu O F/O/A\"; placed true, toast \"Zulu planned\". BLANK: warnings naming him: none · his pucks [duty:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches oracle (silent). TIMED (block \"BB DESK\" row role \"\" start \"08:00\" end \"12:00\"):warnings naming him: none · his pucks [duty:no-solid; SANS card:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → matches; same sentence as blank: true. [template note: The BB desk — the same rules as the AVALON desk: checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-30-SANS_Availability_bbDesk_1blank-list.png",
+      "dk-29-SANS_Availability_bbDesk_1blank-puck.png",
+      "dk-31-SANS_Availability_bbDesk_2timed-list.png"
+     ],
+     "oracle": "silent"
+    }
+   ]
+  }
+ }
+}
