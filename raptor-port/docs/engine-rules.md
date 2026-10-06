@@ -273,6 +273,23 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   Exact arithmetic/world/provenance pins: `rally-consumers.test.ts` and
   `rally-dated-rest.test.ts`. Full dispositions: Rally rest-repair plan.
 
+- **A line with nothing to measure neither raises a breach nor hides one** (`[REST-BLANK-LINE]`, D602, 6 Oct 26).
+  "+ Line" and "+ Wave" mint a BLANK flying line; its times reach the engine as not-a-number and every comparison
+  with not-a-number is false, so a man seated on one lost the breach his OTHER line raised — the warning, the ring,
+  the dotted mark, the picker's pre-drop line, the SC seat's clock. Three places in `validate.ts`, one rule:
+  (1) YESTERDAY — an event whose end is not a real number is not an end (`crewRestDay`, the `rawEnd` guard); a
+  landing typed with no take-off still is one. (2) TODAY — `insOf` is the earliest of the instructions that EXIST
+  (a typed Brief, the wave's In-time / Rally, an SC line's typed B or shift start); a leg with none is left out of
+  `legs`, and only legs with a take-off (`noms`) bear the nominal report and the tight-turning advisory. A man whose
+  every line is blank still FLIES that day: an earlier commitment inside his rest (a meeting, a sim, a duty post, a
+  typed input) binds the breach, worded "his day starts HH:MM (…), and he is on a line with no take-off yet" — no
+  report is invented (Astra's scenario read, S10); with nothing else to measure he is left alone, and `REST[di]`
+  still carries when he is clear. The late-show tail is
+  dropped when the binding leg has no take-off to name a step for. (3) THE SAME-DAY TURN pairs only legs with both
+  times; the DT chip still counts a timeless leg on purpose (`dturns`). With every time present all three are
+  value-for-value the old arithmetic (the reference parity holds). Said on the Logic page (Crew rest, "no take-off
+  yet"). Pins: `engine/restblank.test.ts`, `e2e/restblank.spec.ts`.
+
 ### How crew-rest, long-day and turn warnings are worded and marked
 
 - **A sortie-caused breach spells out the debrief assumption** (owner, 15 Aug

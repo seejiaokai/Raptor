@@ -119,6 +119,10 @@ export function lgRules(){
      t:()=>`Rest is measured off the last commitment of <b>any kind</b> the day before — a sortie, a shift, a duty post, a sim, a ground event, a programme item, or a <b>duty-and-commitments input</b> all count.<span class="why">A sortie ends for rest purposes at landing + the debrief; everything else ends at its written end, with no tail added. This is the owner's 21 Aug 26 ruling: anything that ends the day prior and eats into the ${lgT(VCONF.crewRest)} is a warning, whatever kind of row it was. For inputs the same ruling names its own limits: only the Duty &amp; other commitments types except <b>Personal</b> and <b>SANS Availability</b> — leave and medical never count — and only when the input carries <b>typed times</b>; an all-day record has no timing to measure to.</span>`},
     {sev:'set',src:()=>`nomOf · insOf`,
      t:()=>`A shift's <b>own start time is its report time</b>: no ${lgT(VCONF.reportLead)} lead and no brief lead come off it.`},
+    /* [REST-BLANK-LINE] (D602, 6 Oct 26) — the missing-input default, said where the scheduler can read it
+       (the robustness doctrine: every default is stated somewhere the user can see). */
+    {sev:'set',src:()=>`insOf · crewRestDay`,
+     t:()=>`A flying line with <b>no take-off yet</b> is not measured: it neither breaks crew rest nor hides a breach another line raises, and it is not the end of the day before. If it already carries an instruction — a typed <b>Brief</b>, or its wave's <b>In-time / Rally</b> — that instruction is read as the report; and anything scheduled earlier that day still starts his day.<span class="why">A new line comes up blank. A man seated on one while its times are still being decided keeps every crew-rest warning his other commitments raise; the blank line is checked the moment a take-off is typed.</span>`},
     {sev:'set',src:()=>`saExempt · scSpare`,
      t:()=>`An <b>SC SPARE</b> carries no crew rest in either direction — standing spare buys none for the next day, and it never closes a spare slot to anyone.`},
    ]},
