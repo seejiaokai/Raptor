@@ -38,7 +38,7 @@ async function closeBoard(page: Page) {
   await page.locator('#sbDone:visible, #sbClose:visible').first().click()
   await expect(page.locator('#schedBoard')).toBeHidden()
 }
-async function type(page: Page, di: number, gi: number, field: 'cs' | 'to' | 'ld', value: string) {
+async function type(page: Page, di: number, gi: number, field: 'cs' | 'to' | 'ld' | 'br', value: string) {
   const el = page.locator(`#schedBoard [data-bfld="ff:${di}.${gi}.0.${field}"]:visible`).first()
   await el.scrollIntoViewIfNeeded(); await el.click(); await el.fill(value); await el.evaluate(e => (e as HTMLElement).blur())
   await expect.poll(() => page.evaluate(([i, g, f]) => String((window as any).DAYS[i].waves[g].formations[0][f] || ''), [di, gi, field] as const)).toBe(value)
@@ -155,5 +155,46 @@ test.describe('a published day keeps the OIL it went out with (D592)', () => {
     expect(await oilCell(page)).toBe('HO')
     await showDay(page, SAT)
     await expect(pendChip(page)).toContainText('1 pending')
+  })
+
+  /* D606 (owner, 7 Oct 26): "SC B if filled u can count it as work hours as well and OIL earned." Through the board's
+     own controls: "+ Wave" → SC, Ranger on the first MAIN row of the 07:00–13:00 shift, published — six hours, HO. Then
+     the shift's B box (the crew's in-time) typed 06:00 on the published day: the OIL holds, the day reads pending; the
+     amendment makes it seven hours — FO. Red before the D606 build: the cell stayed HO after the amendment. */
+  test('OWS12 — an SC MAIN published on its written hours is a half day; its B typed 06:00 reads pending, and the amendment makes it a full day', async ({ page }) => {
+    await login(page)
+    await go(page, 'editsched')
+    await board(page, SAT)
+    const gi = await page.evaluate(i => (window as any).DAYS[i].waves.length, SAT)
+    const add = page.locator(`#schedBoard [data-wvadd="${SAT}"]`).first()
+    await add.scrollIntoViewIfNeeded(); await add.click()
+    await page.locator('.wavemenu [data-wmkind="sc"]').first().click()
+    await expect.poll(() => page.evaluate(i => (window as any).DAYS[i].waves.length, SAT)).toBe(gi + 1)
+    expect(await page.evaluate(([i, g]) => { const f = (window as any).DAYS[i].waves[g].formations[0]; return [f.to, f.ld, f.br || ''] }, [SAT, gi] as const)).toEqual(['07:00', '13:00', ''])
+    const seat = page.locator(`#schedBoard [data-slot="${SAT}.${gi}.0.0.p"]`).first()
+    await seat.scrollIntoViewIfNeeded(); await seat.click()
+    const puck = page.locator(`#sbRoster .rpuck[data-person="${WHO}"]:visible`).first()
+    await puck.scrollIntoViewIfNeeded(); await puck.click()
+    await expect.poll(() => page.evaluate(([i, g]) => (window as any).DAYS[i].waves[g].formations[0].aircraft[0].p, [SAT, gi] as const)).toBe(WHO)
+    await page.keyboard.press('Escape')
+
+    await signFour(page)
+    const pub = page.locator(`${day} [data-beak="${SAT}"]`).first()
+    await pub.evaluate(e => e.scrollIntoView({ block: 'center' })); await pub.click()
+    await expect(page.locator(`${day} .verchip`).first()).toContainText('ORIG')
+    expect(await oilCell(page), '07:00 to 13:00 — six hours, a half day').toBe('HO')
+
+    /* the in-time, typed on the published day */
+    await board(page, SAT)
+    await type(page, SAT, gi, 'br', '06:00')
+    expect(await oilCell(page), 'not published yet: the OIL has not moved').toBe('HO')
+    await showDay(page, SAT)
+    await expect(pendChip(page), 'and the day says a change is waiting').toContainText('pending')
+
+    await signFour(page)
+    const al = page.locator(`${day} [data-alpub="${SAT}"]`).first()
+    await al.evaluate(e => e.scrollIntoView({ block: 'center' })); await al.click()
+    await expect(page.locator(`${day} .verchip`).first()).toContainText('AL1')
+    expect(await oilCell(page), 'published again: 06:00 to 13:00 — seven hours, a full day').toBe('FO')
   })
 })
