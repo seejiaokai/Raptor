@@ -48,6 +48,22 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   live app from `main`. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green on
   his PC → the Production deployment for that commit READY (`gh api repos/<owner>/<repo>/deployments?environment=Production`,
   then its statuses) → one notification with the link. The whole loop: `.claude/rules/shipping.md`.
+- **VERCEL CAN MISS A MERGE — check that a Production deployment actually STARTED** (met 6 Oct 26, PR #482, the crew-rest
+  fix). The merge to `main` was green everywhere and Vercel started NO Production deployment for it, while every branch
+  push that day had made its preview within a minute and the previous merge had gone live in about two.
+  **How to tell, a few minutes after the merge:** the newest Production deployment is still the PREVIOUS merge's commit
+  (`gh api repos/<owner>/<repo>/deployments?environment=Production`), and the merge commit carries no Vercel status at
+  all (`gh api repos/<owner>/<repo>/commits/<sha>/statuses`). Waiting longer does not bring one.
+  **What works — he does it, on his PC** (the phone layout hides the Deployments tab): Vercel → the project →
+  Deployments (`https://vercel.com/kai-e2f5/raptor/deployments`) → the ⋯ menu of the TOP row, which is the branch's
+  head commit as a Preview → **Promote to Production**. Its content is the merge's when `main` had no other new commit
+  (check that first: `git diff <branch head> <merge commit>` is empty). Vercel then shows the live version as coming
+  from the branch; the next merge to `main` puts that right. "Create Deployment" from `main` is the other way.
+  **What does NOT work:** an empty commit pushed to `main` by the agent to nudge it — the app's safety check refuses a
+  direct push to `main` even with his "nudge it" in the chat, and `main` is his word alone anyway (D60). Do not offer it.
+  **Checking afterwards:** the agent cannot open the live app (it sits behind his Vercel sign-in), but the promotion
+  DOES show in GitHub's record — a new `Production` deployment for the branch-head commit with a `success` status. Look
+  for that after he says it is done, then send the one "it is live" notification (D143).
 - **Docs-only changes skip the gates** (`paths-ignore`: `**.md`, `.claude/**`, `raptor-port/scripts/docsize*.mjs`,
   `backlog-archive.mjs`, `docs-guard.yml`); the Docs guard (`docs-guard.yml`) still runs on every PR and every push
   to `main`, and a docs-only change still merges only on his "merge live".

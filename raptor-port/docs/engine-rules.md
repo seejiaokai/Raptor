@@ -290,13 +290,56 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   value-for-value the old arithmetic (the reference parity holds). Said on the Logic page (Crew rest, "no take-off
   yet"). Pins: `engine/restblank.test.ts`, `e2e/restblank.spec.ts`.
 
-- **An absence that covers the whole day does not need the seat's times (owner, D605, 6 Oct 26) — NOT YET BUILT**
-  (`OUTSTANDING.md` `[BLANK-TIMES-ABSENCE]`). Today every absence check asks whether the absence OVERLAPS the event's
-  times (the sortie loop "C via input clash", the duty / sim / ground loop under it, the SC SPARE and AVALON / BB looks),
-  so a man on all-day leave or a downchit seated on a line or row with no times raises nothing in the list until a time is
-  typed — the crew list's struck name is the only warning. His ruling: he is flagged the moment he is seated anywhere that
-  day; a part-day absence against a seat with no times stays silent. Each kind's exemptions are unchanged, and a published
-  day still freezes these warnings (D177–D179). The crew-rest half of the same family is the bullet above.
+- **An absence that covers the whole day does not need the seat's times (owner, D605, 6 Oct 26 — "4 yes as
+  recommended"; `[BLANK-TIMES-ABSENCE]`, built the same day).** Every absence check asked whether the absence OVERLAPS
+  the seat's hours, so a man on all-day leave or a downchit seated on a line or row with no times raised nothing in the
+  list until a time was typed — the crew list's struck name was the only warning. His ruling: he is flagged the moment
+  he is seated anywhere that day; a PART-day absence against a seat with no times stays silent (nothing to compare).
+  **One predicate, `events.ts wholeDay`:** a `day.input` entry of THIS day (never a neighbour's `nx` / `pv` copy) whose
+  window is the whole day — the All day tick, a record with no usable hours (`inpWin` fails closed to `[0,1439]`), or
+  hours typed 00:00–23:59. **Where it is asked, one place per kind of seat** (`validate.ts`; each loop keeps its own
+  types, exemptions and words — only the overlap gains "or the seat has no usable window and the input is whole-day"):
+  (1) a flying line ("+ Line" / "+ Wave" mint one with no take-off; garbage in the take-off box is the same) — the
+  sortie loop "C via input clash", on `e.step` / `e.dekit`; (2) an SC MAIN whose shift times were cleared — the duty /
+  sim / ground loop (a shift is the one event that reaches it with no hours), the Meeting's amber `SHIFT_SOFT` printed
+  WITHOUT a clock; (3) an SC SPARE on such a shift — the "who may not stand an SC SPARE" look, on `f.s` / `f.e`;
+  (4) every seat that never became an event or a `sacrew` entry because it has no start — a duty desk, a sim seat or
+  body, a ground or Common Programme row, an AVALON / BB seat or desk with no shift times (BB is minted so) — collected
+  by `buildDay` as **`day.blank`** (port-only, excised by the parity gate like `sacrew`; never in `day.events`, so the
+  clash loop, the crew list's busy scan, Insights' hours and OIL still read a time-less row as occupying no time), each
+  entry carrying `abs`, that man's whole-day inputs, and judged in one loop with the timed loops' own two branches
+  (`av` — the AVALON / BB look: only what cannot spare, ATT B allowed at its desk; otherwise the ordinary look: ATT B
+  may work). **Unchanged, on purpose:** an ⓘ info-only row and a cancelled row or line are still never checked; a
+  placeholder puck is nobody; a standby line with no hours still asks nothing about currency or two places; a row with a
+  start and no end already had a window (the open-ended default). **Its own request is not a clash:** an all-day
+  request put on the Ground Programme makes a time-less row and keeps its own voice (`inputs.ts inputFlags`), so `abs`
+  leaves out the input the row was landed from (`row.src` against the input's id) — its man is not "Training but
+  tasked" on the row that IS his Training; a second man on that row with his own leave is flagged. **The sentence:**
+  the timed loop's own words; a seat with no name yet reads "this line" / "this row" in the three absence sentences
+  (with times too — the same line must not change its sentence when a time is typed). **The agent's readings, told to
+  him:** it reaches every input type the timed check flags (a whole-day course, overseas duty, an all-day meeting), not
+  only leave and medical — none of those answers depended on the missing time; and the crew list is NOT changed — before
+  a drop it still reads a seat with no hours as unknown and strikes a man for any absence that day (`avail.ts slotBar`,
+  "unknown is not never-clashes"), so a part-day absence, and a local leave on a standby seat with blank shift times
+  (`OUTSTANDING.md` `[BLANK-STANDBY-STRIKE]`), are struck before and silent after; no man the list flags was offered
+  clean. A published day still freezes these warnings (D177–D179): an issued version keeps the list it went out with
+  (`snap.w`), and seating a man or filing an absence afterwards is a pending change like any other. Said on the Logic
+  page (the leave group, "A seat with no times yet"). Pins: `engine/blankabsence.test.ts` (every input type on every
+  kind of seat, with and without times), `e2e/blankabsence.spec.ts`; the three older pins that had written the silence
+  down as known (`audit-c-times.test.ts`, `avalon-rules.test.ts`, `overnight.test.ts`) now say the rule. The crew-rest
+  half of the same family is the bullet above.
+
+- **The crew list's crew-rest question answers for an SC MAIN seat (`[SC-PICKER-INTIME-REST]`, Sol 6.1's read of the
+  crew-rest fix; built 6 Oct 26).** `restIfPlaced` clones the candidate leg from a sibling of the same formation, and
+  looked for that sibling among events of kind `fly` only — an SC seat's event is kind `shift`, so the question answered
+  nothing for ANY SC seat, and the crew list's own SC check compares a man's clearance with the shift's START only. A man
+  clear at 12:30 was offered a seat on a shift with a typed 05:00 in-time (the B box) without a word, and the breach
+  appeared when he was placed. Now a `shift` sibling counts as a sortie sibling does (the in-time and the shift's hours
+  are the formation's), backward and forward, so the line the crew list prints and the warning placing him raises are
+  one sentence. **The negative control:** an SC line holds its MAIN and SPARE rows in ONE formation, so a spare seat
+  would have borrowed the MAIN's report — `restIfPlaced` answers null for any seat the conflict engine leaves alone
+  (`saExempt`: an SC SPARE, anything on AVALON / BB), as `slotBar` already did before asking. An EMPTY SC formation
+  still has no sibling and answers nothing (`[REST-FIRST-CREW-HINT]`). Pins: `engine/scpickerrest.test.ts`.
 
 ### How crew-rest, long-day and turn warnings are worded and marked
 
@@ -869,7 +912,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   standalone wave's seats and every `sa:'avalon'`/`'bb'` desk row into
   `day.sacrew`, so there is no BB-specific code anywhere; the only difference
   is that BB's hours are TYPED, and a BB line left with blank hours has no
-  window and is not collected at all — fail closed, inert.
+  window and is not collected into `day.sacrew` — the currency, front-seat and
+  two-places looks stay inert. *(Corrected 6 Oct 26, D605: its men ARE kept, in
+  `day.blank`, for the one look that needs no hours — a whole-day absence; §Crew
+  rest, "An absence that covers the whole day".)*
   **The desk this applies to is the one a template marked AVALON's (or BB's)**
   (7 Sep 26). Since the 13 Aug decoupling no UI path minted an `sa:'avalon'` desk,
   so a placed "AVALON" template came out PLAIN and fully cross-checked —
@@ -1062,7 +1108,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   where it breaks, off the published `RUNLEN`/`RUNSEED`/`NEXTON` (null when he
   is already on that day); `restIfPlaced(id, key)` re-runs `crewRestDay` in
   PROBE mode (every write suppressed, the breach handed back) on a copy of the
-  day with the candidate leg cloned from a sibling of the same formation,
+  day with the candidate leg cloned from a sibling of the same formation (a
+  sortie's, or since 6 Oct 26 an SC MAIN's shift — `[SC-PICKER-INTIME-REST]`),
   backward against yesterday and forward against tomorrow (next Monday's seed
   past Sunday); `crossDayIfPlaced` folds both into the one line `slotBar`
   prints last. Both use the same rest evaluator, but **an empty formation has

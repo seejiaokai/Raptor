@@ -885,3 +885,41 @@ describe('D187, the board\'s look — the whole record, and an exempt desk keeps
     dutyTplReset()
   })
 })
+
+/* D605 ON A PUBLISHED DAY (6 Oct 26). "A man away for the whole day is flagged on a seat with no times" changes WHEN a
+   leave or downchit warning is raised; D177–D179 still decide WHERE it shows once a day is published: the issued face
+   keeps the list it went out with, and whatever happens afterwards waits on the working copy as a pending change. */
+describe('D605 on a published day — the warning on a seat with no times freezes like every leave warning', () => {
+  const X = 'split'                       // idle across the seed week, no input of his own
+  const blankLine = (who: string) => {
+    const d: any = DAYS[WED]
+    d.waves.push({ label: 'ZB', night: false, intimes: [], traffic: [], formations: [{ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: who, w: '', area: '', rmks: '', opts: {} }] }] })
+  }
+  const flagged = (b: any, who: string) => ((b.byDay[WED] && b.byDay[WED].warns) || [])
+    .filter((w: any) => (w.code === 'LEAVE_FLY' || w.code === 'DNIF_FLY') && (w.who || []).includes(who))
+
+  it('seated on a blank line while already on leave, then published: the day goes out WITH the warning, nothing pending', () => {
+    blankLine('taipan'); validate()          // the seed's own whole-day OL, Wed 15 Jul
+    expect(flagged(WARN, 'taipan').map((w: any) => w.msg), 'flagged before any time is typed').toEqual(['On leave but planned to fly this line — reason: Overseas leave — off island'])
+    publishDay(WED); signBound(WED)
+    expect(flagged(officialWarn(), 'taipan').length, 'the issued face carries it').toBe(1)
+    expect(dayShownPendCount(WED), 'nothing waits').toBe(0)
+    expect(daySigned(WED), 'the four sign-offs hold').toBe(true)
+  })
+
+  it('a leave filed AFTER publishing for a man seated on a blank line: the issued face says nothing, the working copy does, 1 pending', () => {
+    blankLine(X); validate()
+    expect(flagged(WARN, X)).toEqual([])
+    publishDay(WED); signBound(WED)
+    expect(commitNewInput({ ...leaveDraft(X, '2026-07-15', 'LEAVE AFTER PUBLISH', 'LL') })).toBe(true)
+    validate()
+    expect(flagged(WARN, X).length, 'the working copy flags him at once, with no time on his line').toBe(1)
+    expect(flagged(officialWarn(), X), 'the issued face keeps what it went out with').toEqual([])
+    expect(dayShownPendCount(WED), 'the filing is the one pending change').toBe(1)
+    expect(daySigned(WED), 'and the sign-offs fall (D103)').toBe(false)
+    /* the amendment takes it out: now the issued face says it */
+    signBound(WED); publishALDay(WED); validate()
+    expect(flagged(officialWarn(), X).length, 'after the amendment the issued face carries it').toBe(1)
+    expect(dayShownPendCount(WED)).toBe(0)
+  })
+})

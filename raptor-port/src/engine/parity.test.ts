@@ -46,8 +46,12 @@ const stripKeys = (o: any): any => {
    spare rows beside the reference's own deduped spareCrew, feeding the 31 Aug
    26 SC SPARE rules). Same idiom as stripKeys above — excise from BOTH
    sides — and pinned positively in overnight.test.ts ("positive pins for the
-   parity excision") and scspare-rules.test.ts. */
-const noPortOnly = (days: any) => days.map(({ sacrew, ...d }: any) =>
+   parity excision") and scspare-rules.test.ts.
+   A fourth and fifth since 6 Oct 26: `day.blank`, the men on seats with no hours
+   of their own, and `day.whole`, the day's whole-day inputs they are judged
+   against (owner, D605) — pinned positively, one kind of seat at a time, in
+   blankabsence.test.ts. */
+const noPortOnly = (days: any) => days.map(({ sacrew, blank, whole, ...d }: any) =>
   ({ ...d, input: (d.input || []).filter((i: any) => !i.nx && !i.pv),
      forms: (d.forms || []).map(({ spareAcs, ...f }: any) => f) }))
 

@@ -121,6 +121,15 @@ describe('the Logic tab, read-only (tfin B50)', () => {
     expect(t).not.toContain('no take-off yet is not measured')
   })
 
+  it('[BLANK-TIMES-ABSENCE] the leave group says what a seat with no times does — the whole day yes, part of a day not yet (D605)', () => {
+    const t = text()
+    expect(t).toContain('A seat with no times yet')
+    expect(t).toContain('is still checked against an absence that covers the whole day')
+    expect(t).toContain('flagged the moment he is seated there')
+    expect(t).toContain('the same warning and the same exceptions as on a seat with times')
+    expect(t).toContain('An absence for only part of the day waits until the seat has times')
+  })
+
   it('the firing counts come from the live WARN', () => {
     validate()
     const n = $$('#lgBody .lgfired.on').length

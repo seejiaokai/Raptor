@@ -1,5 +1,16 @@
 # The file map — where each source file lives and what it does
 
+`[BLANK-TIMES-ABSENCE]` (D605, 6 Oct 26) with `[SC-PICKER-INTIME-REST]`: a man away for the whole day is flagged on a
+seat with no times, and the crew list asks about crew rest for an SC MAIN seat. The fixes are in `src/engine/events.ts`
+(`wholeDay`; `buildDay`'s `day.blank` — the men on seats with no hours) and `src/engine/validate.ts` (the three absence
+loops and the time-less rows' own look; `restIfPlaced`'s shift sibling and its exempt-seat guard); the Logic page's row
+is in `src/ui/logic-html.ts`. Pinned by `src/engine/blankabsence.test.ts` (every input type on every kind of seat),
+`src/engine/scpickerrest.test.ts` and, in a real browser through "+ Wave", a seat and the struck name in the crew list,
+by `e2e/blankabsence.spec.ts` (in the `raptor` browser-test project). `scripts/handpass/bta-host.mjs` is the host's
+walk; `scripts/handpass/bta-{A,B,C}-*.mjs` the walkers'. The record: `docs/handpass/2026-10-06-blank-times-absence.md`,
+pictures under `docs/img/handpass/2026-10-06-blank-times-absence/`; the scenario list, the walk brief and the two code
+reads: `docs/superpowers/briefs/2026-10-06-blank-times-absence-*.md`.
+
 `[REST-BLANK-LINE]` (D602, 6 Oct 26): the crew-rest rule and a line with no times. The fix is in `src/engine/validate.ts`
 (`crewRestDay` — yesterday's end, today's instructed report — and the same-day turn pairing); pinned by
 `src/engine/restblank.test.ts` and, in a real browser through "+ Wave", "+ Line", the time boxes and the crew list, by
