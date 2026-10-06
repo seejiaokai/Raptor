@@ -2667,3 +2667,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** (1) Fix the selector in the helper the next time the helper file is touched (it was left untouched here because walkers were about to read it). (2) In the walker brief template, a standing section "Known traps in the drivers", fed from the host's own short run before the walkers start. (3) The host's short run goes first precisely to find these.
 
 **Principle:** Run the host's own short walk on shared helpers before fanning out; every helper trap it meets goes into the walkers' brief by name.
+
+### Observation 444: A one-file browser test started during a gate run took the built files from under the gate's server
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Chasing a browser test that had failed once inside the full gate run, the host ran that one test file in a loop while the same gate run was still going (its browser-test gate had finished; its Tracker smoke was in flight).
+**Skill:** New skill candidate: running the gates on one machine (the project's gate-lock rule and bug-check order)
+**Type:** internal
+**Phase/Area:** The lock rule's exemption for "one test file"
+
+**Issue:** The lock rule says one test file needs no lock, on the reasoning that it is light. But the browser-test runner builds the app before it serves it, so even one file rewrites the built folder — and the Tracker smoke's own server was serving from that folder. The smoke aborted waiting for a sign-in box that was never served, and the gate run reported a failure that was not the app's. It cost a further full gate run and had to be explained in the evidence sheet.
+
+**Suggested improvement:** In the lock rule (shipping guide, "The checks") and the bug-check order: the "one test file needs no lock" exemption applies to UNIT test files only; anything that builds (a browser-test run of any size, a build, a preview) waits for the lock to be free. Optionally make the browser-test config refuse to build while the lock folder exists and is held by another run.
+
+**Principle:** An exemption written for cost ("it is light") does not cover interference ("it rewrites what another run is reading"); name the shared artefact, not the size of the job.
+
+### Observation 445: "Wait until the app holds the value" turned a flaky step into a clear failure, but did not fix it; widening the gap between two actions reproduced it on demand
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** A new browser test failed once per two full gate runs at one step (type a setting, press Tab). The first repair followed the standing rule — wait on what the step needs, not on a fixed time — by polling for the value the app should then hold.
+**Skill:** New skill candidate: repairing a browser test that fails only on a busy machine (the project's e2e conventions)
+**Type:** internal
+**Phase/Area:** Diagnosing an intermittent browser-test failure before repairing it
+
+**Issue:** The poll was a correct assertion and the wrong repair: the value never arrived, because the page had redrawn its boxes between the typing and the Tab and the typed text went with the old box. Page-side CPU throttling did not reproduce it (it slows the page, not the gap between the runner's two commands). What reproduced it every time was a deliberate pause inserted between the two actions, plus a marker on the element and a watcher on its parent to show the element had been replaced. Only then was the right repair clear (repeat the gesture until the app holds the value; raise the test's own time budget, measured), and only then could the underlying redraw be filed as its own item with evidence.
+
+**Suggested improvement:** Add to the e2e conventions, beside the "wait on what it needs" rule: (1) an intermittent failure between two consecutive actions is reproduced by putting a pause BETWEEN them — a busy machine widens that gap, page throttling does not; (2) before repairing, show which of the two it is: the app never did it (mark the element, watch for replacement) or the test looked too early; (3) a repair is proven by running it WITH the pause that used to break it; (4) what the trace finds in the app is filed, even when a person could never trigger it.
+
+**Principle:** Reproduce the race before choosing the wait: a test that fails only under load is telling you which gap matters, and the same pause that reproduces it is the proof of the repair.

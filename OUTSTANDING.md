@@ -50,7 +50,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
 count from its entered in-time / Rally (D591), and a published weekend must keep the earned leave it went out with when a Logic value
-changes (today it moves at once). **BUILT 6 Oct 26 and FULL-checked on its own branch (D591, D592) — his look and "merge live" are left.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn). [INTIME-LINES-DRAG] (D593, his ask of
+changes (today it moves at once). **BUILT 6 Oct 26 and FULL-checked on its own branch (D591, D592) — his look and "merge live" are left.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn); low, older than it, found by its browser test: [LOGIC-REDRAW-DROPS-TYPING] (the Logic page redraws its rules just after it opens, and a value being typed at that instant is dropped). [INTIME-LINES-DRAG] (D593, his ask of
 5 Oct 26 — drag a wave's In-time / Rally lines into order on the Scheduler Board, Auto sort too; proposed in the same batch). Low, from the same
 check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip over a phone request card's date), [BOARD-TIME-ESCAPE]
 (Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
@@ -1891,7 +1891,7 @@ put to him: `raptor-port/docs/handpass/2026-10-06-oil-work-start.md`. Beyond the
 challenges: a published weekend reads pending when anyone's OIL amount OR worked times would change; the four sign-offs
 fall when a later Logic change would alter the OIL of the day they signed. Fixed with it, from the scenario read: the OIL
 tracker printed only the first worked period of a day; the Logic page said standby lines can never earn. Filed beside it:
-`[OIL-ZERO-SPAN-SORTIE]`, `[UNPUB-WARN-AL-RESTORES]`.
+`[OIL-ZERO-SPAN-SORTIE]`, `[UNPUB-WARN-AL-RESTORES]`, `[LOGIC-REDRAW-DROPS-TYPING]`.
 The text below is the item as filed.
 **His ruling (D591, 5 Oct 26):** *"it should take the actual intime/rally time right? not the nominal report timing"* — a flying
 line's earned leave (OIL) is worked out from its actual in-time / Rally time. Full row: `.claude/decisions-full/oil.md` D591.
@@ -1927,6 +1927,24 @@ tells the scheduler the line "still earns from the report and debrief", and the 
 Reached only with a debrief of zero, which no squadron sets. **To build:** word the advisory from what the line actually
 measures, and name the line in the "no usable times" list when it measures nothing. **Tier:** WALK (the warning list).
 **Place (the agent's line):** low — with the next change to the OIL warnings.
+
+### [LOGIC-REDRAW-DROPS-TYPING] The Logic page redraws its rules about half a second after it opens — a value being typed into a box at that instant is dropped (found 6 Oct 26 by `[OIL-WORK-START]`'s browser test; OLD, not that job's doing; LOW)
+**Seen:** the browser test of `[OIL-WORK-START]` failed once in two full runs on the busy PC at one step — Logic opened with
+"Edit rules" already on, "Nominal report before T/O" typed, Tab — and the box read the OLD value afterwards, the setting
+unchanged. Traced with a watcher on the page's body: shortly after the page opens (about half a second on a free machine) the
+list of rules is replaced by the same markup — new boxes, nothing visibly different — and whatever sits half-typed in a box
+goes with the old box. With a pause put between the typing and the Tab it happens every time; in a second trace the box lost
+its place about two seconds after "Edit rules" was pressed and the value was SAVED without a Tab. **Not traced:** what asks
+for that redraw (a late re-check of the week after the page change is the likely cause — the page redraws whenever the app's
+state moves, and its body is rebuilt as one piece), and whether anything can set it off LATER, while a person is typing —
+that is the question that decides whether this matters outside a test. A person's hands cannot reach the half-second after
+opening. **Why it may matter later:** once the app is in the database, other people's changes arrive by themselves every 30
+seconds (D356); if such an arrival redraws this page, a value being typed is dropped with no message. **To do:** (1) find
+what asks for the redraw; (2) either stop the page redrawing when nothing in it changed, or keep a box that is being typed in
+out of the redraw, as the schedule's text boxes are; (3) a test that types, lets the app's state move, and finds the typing
+still there. The browser test now types again until the app holds the value (`raptor-port/e2e/oilworkstart.spec.ts`,
+`logicLead`) — take that retry out when this is fixed. **Tier:** WALK (the Logic page, a typed value, both sizes).
+**Place (the agent's line):** low — with the next change to the Logic page, and before the database step for the reason above.
 
 ### [UNPUB-WARN-AL-RESTORES] The Unpublish warning assumes the day's OIL disappears — when withdrawing an AMENDMENT puts the earlier version's OIL back (found 6 Oct 26, the scenario read of `[OIL-WORK-START]` — Astra's F2; OLD, the same on the live app; LOW-MEDIUM)
 Unpublish on a published weekend warns when taking the day's OIL away would leave a man who has already spent it below
@@ -2026,6 +2044,12 @@ ruling; (4) the change, read by Astra and Sol before he approves it (D70), with 
 unseen. **The test of every option (D602): never at the cost of the quality of the work** — D68 (correctness beats context
 economy), D136 (no live ruling leaves the list a chat reads), D138 (a summary never changes the meaning), D141 (no size targets).
 **Place (D602):** after the crew-rest fix (`[REST-BLANK-LINE]`), in a fresh chat on its own branch — documents only.
+**A measurement to start step (1) from (the `[OIL-WORK-START]` chat, 6 Oct 26, read off the app's own context meter before any
+work was done):** that chat had used about a fifth of its room — roughly 197 thousand tokens — after its opening instruction
+(read the handoff, check the branch): about 97 thousand in messages (the handoff, the rule files, the project guide and the area
+rulings its first reads pulled in), about 38 thousand in the tool list, about 29 thousand in the memory files, about 17 thousand
+in the connected services' tool descriptions. The handoff alone is some 29 thousand, most of it the seven blocks of branches
+that merged with PR #481 (`[STACK-MERGED-TIDY]`).
 
 ### [REST-BLANK-LINE] A man put on a flying line with no take-off loses his crew-rest check (reader AB's second pass, 6 Oct 26 — OLD, the same on `main`; MEDIUM)
 Mon: X on a line landing 22:30; Tue: X on a line taking off 07:00 → the red "Crew rest breach", its ring, Monday's dotted mark. Now

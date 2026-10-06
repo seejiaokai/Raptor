@@ -80,7 +80,8 @@ out or draws it:
 | Leave War grid — the FO / HO cell | **YES** — written by the credit pass from each date's own published record | read only (a tap opens the day's sheet) | a leave or bid on the same day sits beside it | published test (`cellOf`); host H1–H7; `e2e/oilworkstart.spec.ts` |
 | Leave War — the day's sheet and the day's list ("worked 07:00–13:15") | **YES** — the stored record's own times | read only | — | published test (`worked`); walker C |
 | OIL tracker — the credit's row and the balance | **YES** — and now EVERY worked period (it printed only the first: Astra's F1, fixed) | read only for a member | the row's reason and "N left" | `leavewar/ui/oiltracker.test.tsx`; host pictures; walker C S01 |
-| Leave War clash strip (a credit against leave or a bid) | **YES, by construction** — it reads the stored record's times, which now hold still | as before | — | NOT separately walked (see §Not walked) |
+| Leave War clash strip (a credit against leave or a bid) | **YES** — it reads the stored record's times, which now hold still | as before | — | published test "the clash with an afternoon leave follows the PUBLISHED worked times, and moves only with the amendment" (added after Sol's read); not walked in a browser (see §Not walked) |
+| The Inputs page — the note to the filer when leave is filed over work ALREADY published ("… is recorded as working 07:00–13:15 on 18 Jul — this … is filed anyway and flagged"), and the day going amber | **YES** — the door reads the stored record's times, so the stretch only the published times cover still counts | as before: filed, flagged, never refused | — | published test "a leave filed in the stretch only the PUBLISHED times cover is still flagged, and the note names those times", through the real Inputs door (the row Astra's read found missing); not walked in a browser |
 | The board's and the week's green edge on a puck | **YES** — the face being shown: a published face its own kept values, the working copy today's | — | the warning ring and the C chip (unchanged) | `ui/oilworkstart.test.tsx` OWS6; host H3; walker D H-05 |
 | OIL Earn mode — the FO / HO figures and the switches | **YES** for the figures; the switches unchanged | admin, working copy only (as before) | — | `ui/oilworkstart.test.tsx`; walker D S38, H-05 |
 | ALL AVAIL window — "Who earns OIL" | **YES** — it reads the same figure body | as before | — | walker C S03 |
@@ -265,8 +266,10 @@ not evidence.
   version" against a version other than the one paying.
 - **Undo → Redo → reload after EVERY step** of the numbered scenarios — done for the 120 pair runs, S18, S31 and H-01,
   not around each step of the rest.
-- **The Leave War's clash strip** against a credit whose times held still (roll-call: "by construction") and **the
-  publish-time toast** — neither was set up with a leave or a bid on the same day.
+- **The Leave War's clash strip, the Inputs page's "recorded as working" note and the publish-time toast, in a
+  browser.** After the two code reads the first two are proven by tests through the real stores and the real Inputs
+  door (a leave beside the published work, and over it); neither was looked at on screen in this job, and the toast
+  (a bid already standing when work is published over it) was not set up at all.
 - **A guest's own pages and the phone's OIL Earn figure** in S42 (walker C did not reach them); a guest's waiting
   screen was seen with no write control.
 - **Copy day** — Astra's S21 names it; the app has no such control (a day template and "+ Alt Plan" were walked).
@@ -275,3 +278,116 @@ not evidence.
 - **The demo seed was not extended** with a weekend flying line carrying an in-time (order §7.1): the demo weekend is
   duty crew only by design, in both demo weeks, and the first week must match the original app line for line. The case
   is built through the app's controls each time (the host's walk, the browser test, every walker).
+
+## The two code reads
+
+Astra and Sol 6.1 (D590 — Opus wrote the code), each on the frozen code and this sheet as it then stood, blind to the
+other, one brief (`docs/superpowers/briefs/2026-10-06-oil-work-start-read-brief.md`, which carries the D56 exclusion).
+Their reports are filed as written: `…-oil-work-start-read-astra.md`, `…-oil-work-start-read-sol.md`. Neither can run
+the app or the tests; each read the code against ten claims the brief put to it and said so claim by claim.
+
+| Reader | Verdict | What it asked for | Disposition |
+|---|---|---|---|
+| Sol 6.1 | **PASS — required changes: none** | optional: the "not a list" reporting test should assert the exact span, not just "something" | done (`engine/oilworkstart.test.ts`) |
+| Astra | **CHANGES REQUIRED — none of them in the app** ("No production-code repair is established by this read") | **F1 (low):** the browser test's "the four sign-offs fell" proved nothing — publishing hands the four back empty, so none were standing when the Logic value changed | **fixed** — the test now signs the published day again, counts four, changes the value, counts none, and checks the amendment cannot go out until the four sign again (`e2e/oilworkstart.spec.ts`) |
+| | | a roll-call row was missing: leave filed over work ALREADY published (the Inputs door reads the stored credit — a different order from publishing work over a bid) | **added**, with a test through the real Inputs door (the roll-call's new row) |
+| | | the sheet had no §Status and no gates yet | this section, §The gates and §Status |
+
+**Both passed the three owed meaning reads (D138):** D591's short line; D592's readings (6)–(10), as the agent's
+readings and not his words; the three sentences changed on the Logic page.
+
+**Neither found a fault in the rule.** Both traced every reader of a published day's OIL and found none still reading
+today's three values; both checked the pending comparison, the sign-offs' binding and the moved worked-times function
+and found no defect. Neither reported anything under D56.
+
+**The cases each reader ranked for the host, and what became of them** (they are checks to run, not findings):
+
+| Case | Ran as |
+|---|---|
+| Leave filed in the stretch only the published times cover (Astra 1) | new test, through the real Inputs door — flagged, the note names 07:00–13:15 |
+| The clash with something in the afternoon moves only with the amendment (Sol 1) | new test, with an afternoon LEAVE; with a BID, and the publish-time toast (Astra 2): **not run** |
+| Four sign-offs standing → none → amendment locked → signed → amendment (Astra 3) | the browser test, as repaired |
+| A cancelled formation's line does not become the wave's (Astra 7) | new test |
+| A change that moves only hours past midnight raises nothing (Astra 6, Sol 6) | new test |
+| Malformed reporting lines; an unreadable landing (Astra 8, Sol 11) | `engine/oilworkstart.test.ts` (OWS2, OWS5) |
+| Two Saturdays, one off screen; amend only one (Astra 10, Sol 4) | published test (off-screen week); walker C S05 |
+| A request edit and a Logic change together, both orders (Astra 5, Sol 8) | walker C S14 and its pairs |
+| Two worked periods in one day; the debrief moves only the second (Sol 5) | walker C S01; published test (worked times pending) |
+| A report on the evening before (Sol 7) | walker B; published test OWS9 |
+| SC, AVALON and the other seats never gain flight padding (Sol 10) | walker D S36; `engine` OWS5 |
+| Three versions side by side — Original, the amendment, the working copy under a third value (Astra 4, Sol 3) | **partly**: each face reads its own values (`ui/oilworkstart.test.tsx`; walker D S19, S20); the three-way case as written **not run** |
+| Sign-offs on two saved plans, switching between them under a changed value (Sol 2) | **not run** (a saved plan was walked; its sign-offs across a switch were not) |
+| A weekday signed and published, then declared a holiday (Sol 9) | **not run** here — older behaviour (D2), unchanged |
+| The setting's limits: 0 / 0 / 720 and 480 / 480 / 720 (Astra 9, Sol 10) | **not run** as written |
+| A second tab opened cold (Sol 12) | **not run** — a reload was (host H6, the walkers) |
+
+**After the two reads** the only changes are to tests and documents: four new tests, one tightened assertion, the browser test's F1 repair and
+its helper (§The gates). No app code changed after the reads, so nothing built is unread; the tests added after them have
+had no independent read (the cap of two is spent).
+
+## The gates
+
+All under the PC's one lock, each count from a run watched in this chat.
+
+| Run | On | Result |
+|---|---|---|
+| 1 | the build as walked | unit 8032 / 8032 · build · tfin 728 / 0 · e2e 617 passed, 50 skipped, **1 failed** — this job's own new browser test, at its last step · smoke 445 / 0 · rulecheck · docsize |
+| 2 | after the test's helper was made to wait on the value | e2e **618 passed, 50 skipped, 0 failed** · perf 4 / 0 (week DOM 5131 ≤ 5450, board DOM 1018 ≤ 1150) · the six adapted probes passed (155 checks) |
+| 3 | after the reads' test fixes | unit 8034 / 8034 · build · tfin 728 / 0 · e2e 617 passed, **1 failed — the same test, the same step** · smoke **aborted** (see below) |
+| 4 | after that step was traced and the helper repaired | **unit 8034 / 8034 (499 files) · build clean · tfin 728 / 0 · e2e 618 passed, 0 failed, 50 skipped · smoke 445 / 0 · rulecheck OK · docsize OK** |
+| 5 | after two more tests (the readers' cases) | the full unit suite again: **8036 / 8036 (499 files)** |
+
+**Speed:** one edit of the week costs the same as on `main` — 190.6 ms against 187.8 ms on `main`'s own build, measured
+back to back on the same machine, inside the spread of three trials each.
+
+**The test that failed twice, and why.** Both failures were the same step of `e2e/oilworkstart.spec.ts`: Logic opened,
+"Nominal report before T/O" typed, Tab — and the app still held the old value. The first repair (wait until the app
+holds the value) only turned a silent wrong state into a clear failure. Traced the second time with a watcher on the
+Logic page's body: about half a second after the page opens, its list of rules is replaced by the same markup — new
+boxes, nothing visibly different — and a value typed into a box at that instant goes with the old box. It reproduces
+every time with a pause put between the typing and the Tab, and never by a person's hands. The helper now types again
+until the app holds the value (no fixed wait), and the test has the time its length needs: it is one chain of a dozen
+page changes, about 20 seconds on a free machine, 70 with the page slowed four times over and eight copies at once
+(8 of 8 passed that way; 6 of 6 at full speed; 3 of 3 with the pause that used to break it). **The redraw is older
+than this job and not in anything it changed** — filed, `[LOGIC-REDRAW-DROPS-TYPING]`, with what is not yet traced
+(what asks for it, and whether it can happen later while a person is typing).
+
+**The aborted smoke run (run 3) was the host's own mistake, not the app's:** while the Tracker smoke was running, the
+host ran the browser test in a loop to chase the failure above; that run rebuilds the app's files, and it did so under
+the smoke's server, which then served nothing. Run 4 was made with nothing else running. (Logged for the working
+guides: a browser-test run of even one file rebuilds the app, so it must not start while any gate is in flight.)
+
+## His look — five minutes
+
+On the branch's preview, signed in as admin, on the demo week:
+
+1. **Edit Schedule → Saturday → the board → "+ Wave", a flying line 10:00–11:15 with one man in it → the four sign →
+   Publish.** Leave War: his Saturday reads **FO**.
+2. **Logic → Edit rules → "Nominal report before T/O" 3h → 2h30.** Leave War: **still FO** (it used to turn HO at
+   once). Edit Schedule: the Saturday reads **"1 pending"** and the four sign-offs are empty; tap the count → "To go
+   out" names the value and the man ("OIL as published, under today's values").
+3. **Sign the four again → Publish AL1.** Leave War: now **HO** — the new value applies only once it goes out.
+4. **Sunday: a line 12:00–13:00, "+ In-time / Rally" typed 08:30, publish.** Leave War: **FO**; the OIL tracker reads
+   worked 08:30–15:00 (with nothing typed it is 09:00–15:00, a half day).
+5. **Logic:** read the three reworded rows — the nominal report, OIL, AVALON.
+
+The four readings at the head of this sheet are his to overrule; none blocks.
+
+## Status
+
+**BUILT; FULL-checked; ready for his look. Not merged; `main` untouched; nothing reaches `main` without his "merge
+live".** Branch `claude/oil-work-start-build-35a0e3`, pushed, one pull request open — not for merging until his word.
+
+- **The rule:** no fault found by the walk (four walkers, 47 scenarios and 120 ordered pairs, no browser error), by
+  the 22 break tests, or by either code read.
+- **Found and fixed in this job:** the fault itself (a published day's OIL moved the moment a Logic value changed; a
+  flying line's OIL day ignored its typed in-time / Rally); the OIL tracker printing only the first worked period of a
+  day; the Logic page saying standby lines can never earn; the pending line's wording (walk W1).
+- **Found and filed, none of it this job's doing:** `[OIL-ZERO-SPAN-SORTIE]`, `[UNPUB-WARN-AL-RESTORES]`,
+  `[LOGIC-REDRAW-DROPS-TYPING]`.
+- **Gates:** run 4 above, all green on the final app code; the unit suite again after the last two tests:
+  **8036 / 8036 (499 files)**.
+- **Not proven:** §What was NOT walked, and the "not run" rows of the readers' cases above — chiefly a bid (not a
+  leave) standing when work is published over it, sign-offs across two saved plans, and a real iPhone.
+
+`Walk: docs/handpass/2026-10-06-oil-work-start.md · 1,995 pictures · 21 surfaces · 47 scenarios + 120 ordered pairs · MISSING: none — two "NO, because" rows (the change history: filed [HIST-PER-PAGE]; CSV / print: no OIL column)`
