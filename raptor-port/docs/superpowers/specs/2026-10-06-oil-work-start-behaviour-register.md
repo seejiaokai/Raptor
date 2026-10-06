@@ -18,7 +18,7 @@ The rules as written: `../../engine-rules.md` §Weekend/PH work earns OIL. The c
 | OWS9 | An in-time or Rally changed after publishing reads pending (it is day content) and moves the OIL only when the day goes out again — the credit reads the published version's own lines | D592 (4) | `leavewar/oilworkstart-published.test.ts` |
 | OWS10 | A version published before the values were kept still loads and reads — with today's values, as that build did — and raises nothing pending | D56 | `leavewar/oilworkstart-published.test.ts` |
 | OWS11 | The four sign-offs fall when a Logic change made after they signed would alter the OIL of the day as it stands — a day not yet published, or an amendment waiting — and stand again when the value is put back; a change that moves nobody's OIL leaves them | D45, D103 (the plan challenge's finding 1) | `leavewar/oilworkstart-published.test.ts` |
-| OWS12 | An SC shift's typed B (its in-time), where filled, starts the shift's OIL span: the earlier of the B and the written start, to the shift's end — for the MAIN by default and a SPARE once switched on; a blank B, AVALON and BB are their written window; a B typed after the day is published moves the OIL only when the day goes out again; the work-hours bar already counts it | D606 | `engine/oilscintime.test.ts`; `leavewar/oilworkstart-published.test.ts` |
+| OWS12 | An SC shift's typed B (its in-time), where filled, starts the shift's OIL span: the earlier of the B and the written start, to the shift's end — for the shift's MAIN rows only (a SPARE, switched on, earns the written hours); a blank B, AVALON and BB are their written window; a B typed after the day is published moves the OIL only when the day goes out again; the work-hours bar already counts it | D606 | `engine/oilscintime.test.ts`; `leavewar/oilworkstart-published.test.ts` |
 
 **The builder's readings** (each named in the plan, tested as built, and put to him on the look card):
 - a time entered LATER than the nominal one shortens the day (OWS1) — D591's own words, and what the work-hours bar does;
@@ -29,7 +29,7 @@ The rules as written: `../../engine-rules.md` §Weekend/PH work earns OIL. The c
 - a line the app cannot read as a clock, or "rally after in-time" with no in-time, counts as nothing entered (OWS2);
 - ~~an SC shift's typed B does not move its OIL (OWS5) — D591 says "a flying line".~~ **Overruled by him, 7 Oct 26
   (D606): a filled B counts — OWS12.** What remains the builder's reading there: the EARLIER of the B and the written
-  start (a later B shortens nothing); a SPARE's B counts only once the SPARE is switched on.
+  start (a later B shortens nothing); the B is the MAIN's only — a SPARE switched on earns the shift's written hours.
 
 **What this register replaces:** RT8's "nominal OIL unaffected by reporting-only edits"
 (`2026-10-02-rally-behaviour-register.md`) — D591 narrowed D498; its other half (ordinary busy, the SANS window and the

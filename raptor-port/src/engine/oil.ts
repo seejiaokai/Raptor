@@ -3,7 +3,7 @@ import { parseHM } from './time'
 import { isStandalone, saExemptKind } from './waves'
 import { PEOPLE, realP, whoId, isSpecial } from './people'
 import { whoArr } from './slots'
-import { parseReportingLines, resolveReporting } from './reporting'
+import { parseReportingLines, resolveReporting, scIntime } from './reporting'
 /* =====================================================================
    WEEKEND / PUBLIC-HOLIDAY WORK EARNS OIL — Leave War sync wire 4
    (owner, 16-17 Aug 26, REWRITTEN 28 Aug 26: "It will just use the same
@@ -233,8 +233,15 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
       /* the line's report: its earliest applicable entered in-time / Rally — the evening before when the clock is later
          than the take-off (D503), which lengthens THIS day's span and no other's (D42) — else the nominal time (D592) */
       const rep=sc||st==null||en==null?null:resolveReporting(wv,f,st,lines!).report;
-      /* SC shift = its written window; a flying line = report → land+debrief */
-      const win=sc?w2(st,en)
+      /* SC shift = its written window, started at its typed B — the crew's in-time — where that is EARLIER (owner, D606,
+         7 Oct 26: "SC B if filled u can count it as work hours as well and OIL earned"; the one body crew rest reads it
+         with, on the lead this walk was handed, so a published day's evening-before reading is its own — D592 (4)). A
+         later B shortens nothing, a shift that measures nothing still measures nothing, and AVALON / BB have no
+         in-time. It is the MAIN's in-time only — "a SPARE reports nowhere, so his B does nothing" (24 Aug 26): a SPARE
+         row, switched on, takes the shift's written window (`seatWin` below). A flying line = report → land+debrief */
+      const scWin=sc?w2(st,en):null;
+      const scB=scWin&&wv.kind==='sc'?scIntime(f.br,scWin[0],lead):null;
+      const win=sc?(scWin&&scB!=null&&scB<scWin[0]?[scB,scWin[1]] as [number,number]:scWin)
                   :(st==null||en==null?null
                     :w2(rep!=null?rep:st-lead,(en<st?en+1440:en)+deb));
       if(!win)return;
@@ -261,7 +268,8 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
            hours wider each side than availability: handing it to the expander
            would gather the men the squadron deliberately schedules around an ops
            brief (D36, plan §5a) and credit every one of them. */
-        [ac.p,ac.w].forEach((v:any)=>put(v,win));
+        const seatWin=scWin&&(f.spare||ac.spare)?scWin:win;   // D606: the B is the MAIN's in-time, never a SPARE's
+        [ac.p,ac.w].forEach((v:any)=>put(v,seatWin));
       });
     });
   });

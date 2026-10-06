@@ -5,7 +5,8 @@ it was (byte for byte) whether the run passes, fails or throws. Run from raptor-
 Writes docs/handpass/parts/ows-break.json."""
 import io, json, os, subprocess, sys
 
-TESTS = ['src/engine/oilworkstart.test.ts', 'src/leavewar/oilworkstart-published.test.ts', 'src/ui/oilworkstart.test.tsx']
+TESTS = ['src/engine/oilworkstart.test.ts', 'src/leavewar/oilworkstart-published.test.ts', 'src/ui/oilworkstart.test.tsx',
+         'src/engine/oilscintime.test.ts', 'src/engine/scintime.test.ts']   # the last two: D606 (7 Oct 26), cuts B24–B30
 # (id, what is cut, file, the exact text, what it becomes)
 CUTS = [
  ('B01', 'the flying line stops reading its entered in-time / Rally', 'src/engine/oil.ts',
@@ -52,7 +53,22 @@ CUTS = [
  ('B22', 'the Logic line names no man', 'src/ui/pendlist.ts',
   "oilRuleShift(d, ev).forEach(r => rows.push(", "oilRuleShift(null, ev).forEach(r => rows.push("),
  ('B23', 'a standalone wave (SC, AVALON, BB) is measured like a flying line', 'src/engine/oil.ts',
-  "const win=sc?w2(st,en)", "const win=sc&&false?w2(st,en)"),
+  "const win=sc?(scWin&&scB!=null", "const win=sc&&false?(scWin&&scB!=null"),
+ # D606 (7 Oct 26) — an SC shift's typed B, its in-time, starts the shift's OIL span
+ ('B24', 'an SC shift\'s OIL ignores its typed B', 'src/engine/oil.ts',
+  "const scB=scWin&&wv.kind==='sc'?scIntime(f.br,scWin[0],lead):null;", "const scB=null as number|null;"),
+ ('B25', 'a B typed later than the shift\'s start shortens the shift', 'src/engine/oil.ts',
+  "scB!=null&&scB<scWin[0]?[scB,", "scB!=null?[scB,"),
+ ('B26', 'AVALON and BB read their B box as an in-time too', 'src/engine/oil.ts',
+  "const scB=scWin&&wv.kind==='sc'?scIntime(", "const scB=scWin?scIntime("),
+ ('B27', 'a SPARE takes the shift\'s B as well', 'src/engine/oil.ts',
+  "const seatWin=scWin&&(f.spare||ac.spare)?scWin:win;", "const seatWin=win;"),
+ ('B28', 'the evening-before reading of a B uses today\'s lead, not the published day\'s own', 'src/engine/oil.ts',
+  "scIntime(f.br,scWin[0],lead)", "scIntime(f.br,scWin[0])"),
+ ('B29', 'the shared reader no longer reads a B on the evening before', 'src/engine/reporting.ts',
+  "<0&&t>toM?t-1440:t;", "<0&&false?t-1440:t;"),
+ ('B30', 'crew rest stops reading an SC line\'s B', 'src/engine/events.ts',
+  "const scIn=(w&&w.kind==='sc')?scIntime(f.br,toM):null;", "const scIn=null as number|null;"),
 ]
 
 def run():

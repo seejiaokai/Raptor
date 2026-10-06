@@ -18,6 +18,8 @@ import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
 import { SCHED, signOf, setSign, setDayApproved, publishALDay, unpublishDay, dayDelta, dayShownPendCount, daySigned, signMissing, daySnapOf, dayCurVer } from '../engine/publish'
 import { VCONF } from '../engine/rules'
+import { makeStandalone } from '../engine/waves'
+import { validate, workSpan, dayEvents } from '../engine/validate'
 import { stashClear } from '../engine/weekstash'
 import { initStore as raptorInitStore, loadWeek, writeInputs } from '../state/store'
 import { setSession } from '../state/auth'
@@ -298,6 +300,56 @@ describe('OWS9 — an in-time changed after publishing reads pending and moves t
    CANDIDATE — a day not yet published, or an amendment waiting — and a Logic change after they signed could publish OIL
    they never saw: sign a Saturday desk as a full day, raise the full-day line, publish — a half day goes out on four
    signatures given for a full one. `main` does the same; the build that makes OIL keep its values is the one to close it. */
+/* D606 (owner, 7 Oct 26): "SC B if filled u can count it as work hours as well and OIL earned." The engine half is
+   engine/oilscintime.test.ts; here, the published day — through the real publish path, read at the Leave War. */
+describe('OWS12 — an SC shift with its B (in-time) filled earns OIL from that in-time (D606)', () => {
+  /* a Saturday holding only the app's own SC wave: Bane on the first MAIN row of the 07:00–13:00 shift */
+  const scDay = (di: number, to: string, ld: string, br = '') => {
+    const w: any = makeStandalone('sc')
+    w.formations.length = 1
+    Object.assign(w.formations[0], { to, ld, br })
+    w.formations[0].aircraft[0].p = 'bane'
+    Object.assign(DAYS[di], { waves: [w], dutywaves: [], sims: { amt: [], oft: [] }, ground: [], allhands: [] })
+  }
+  it('published with the B filled: a full day, worked from the in-time — and the work-hours day starts there too', () => {
+    scDay(5, '07:00', '13:00')
+    publish(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['HO', [[[420, 780]]]])       // six hours, as written
+    unpublishDay(5)
+    scDay(5, '07:00', '13:00', '06:00')
+    publish(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[360, 780]]]])       // seven, from the in-time
+    validate()
+    expect(workSpan(dayEvents(5, 'bane'))!.s, 'the work-hours day has started at the B since 24 Aug 26').toBe(360)
+  })
+  it('a B typed AFTER the day is published is a pending change: the OIL holds, and moves with the amendment', () => {
+    scDay(5, '07:00', '13:00')
+    publish(5); signBound(5); runOilPass()
+    DAYS[5].waves[0].formations[0].br = '06:00'
+    runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)], 'not yet published — the OIL has not moved').toEqual(['HO', [[[420, 780]]]])
+    expect(dayDelta(5).length, 'and the day says something is waiting').toBeGreaterThan(0)
+    expect(daySigned(5), 'the four sign again (D103)').toBe(false)
+    signBound(5); publishALDay(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[360, 780]]]])
+    expect(dayDelta(5)).toEqual([])
+  })
+  it('a B on the evening before is read on the published day\'s OWN lead: a Logic change holds it, and reads pending', () => {
+    scDay(5, '01:00', '07:00', '23:00')                      // within the 3h lead of midnight: 23:00 is Friday evening
+    publish(5); signBound(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[0, 420]]]])          // seven hours of Saturday
+    expect(cellOf('bane', '2026-07-17'), 'Friday earns nothing from it (D42)').toBeFalsy()
+    VCONF.reportLead = 30                                    // today 01:00 is outside the lead: 23:00 would be a LATER clock
+    runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)], 'the published day keeps what it went out with').toEqual(['FO', [[[0, 420]]]])
+    expect(oilPending(5).length, 'and says a Logic change is waiting').toBe(1)
+    expect(daySigned(5)).toBe(false)
+    VCONF.reportLead = 180
+    expect(oilPending(5)).toEqual([])
+    expect(daySigned(5)).toBe(true)
+  })
+})
+
 describe('OWS11 — sign-offs fall when a Logic change would alter the OIL of the day they signed', () => {
   it('a day not yet published: signed as a full day, the full-day line raised — the four fall; put back, they stand', () => {
     build(5, '', '')                                          // no flying times: only Stiff's desk earns

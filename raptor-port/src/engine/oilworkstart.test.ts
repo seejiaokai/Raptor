@@ -161,9 +161,10 @@ describe('OWS4 — the day still runs from his first event to his last end, brea
 })
 
 describe('OWS5 — what did NOT change', () => {
-  it('an SC shift is its written window — neither a reporting line nor its typed B box moves it', () => {
+  /* its typed B box is another matter since D606 (7 Oct 26): a filled B starts the shift's span — engine/oilscintime.test.ts */
+  it('an SC shift is its written window — a wave reporting line does not move it', () => {
     const sc = { label: 'SC', kind: 'sc', standalone: true, noconf: false, intimes: ['IN TIME 0500'],
-      formations: [{ cs: 'SC', msn: 'X', shift: 'AM', to: '08:00', ld: '14:00', br: '06:00', aircraft: [{ ...jet('bane'), spare: false, role: 'MAIN' }] }] }
+      formations: [{ cs: 'SC', msn: 'X', shift: 'AM', to: '08:00', ld: '14:00', br: '', aircraft: [{ ...jet('bane'), spare: false, role: 'MAIN' }] }] }
     expect(dayOilSpans(day([sc])).bane).toEqual([[h(8), h(14)]])
   })
   it('AVALON and BB: the written window, and still off by default', () => {

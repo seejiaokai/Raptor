@@ -1,4 +1,4 @@
-import { parseReportingLines, resolveReporting, flightBrief, type ReportingLine } from './reporting'
+import { parseReportingLines, resolveReporting, flightBrief, scIntime, type ReportingLine } from './reporting'
 import { DAYS } from './data'
 import { INPUTS, inputsOn, inputOn, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, isDownchit, isUpchit } from './inputs'
 import { fileAcc, filingActive } from './world'
@@ -226,8 +226,8 @@ function standaloneHits(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly
    existing typed-B priority and bounded shift-date rule remain separate. */
 export { intimeTime, intimeFold } from './reporting'
 export function seatIntime(w:any,f:any,toM:any,parsed?:ReportingLine[]){
-  const scIn=(w&&w.kind==='sc')?parseHM(f.br):null;
-  if(scIn!=null)return toM-VCONF.reportLead<0&&scIn>toM?scIn-1440:scIn;
+  const scIn=(w&&w.kind==='sc')?scIntime(f.br,toM):null;
+  if(scIn!=null)return scIn;
   return resolveReporting(w,f,toM,parsed).report;
 }
 /* "BRIEF 30 PRIOR", "brief 30", "30 mins prior" — an OFT remark that names its

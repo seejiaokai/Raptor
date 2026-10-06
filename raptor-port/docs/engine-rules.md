@@ -1986,10 +1986,10 @@ were `FS`/`HS` until the 28 Aug 26 rename.
       (a B typed later than the start shortens nothing — the guard crew rest and the
       long-day note already put on it), read by the one body crew rest reads it with
       (`events.ts seatIntime`, the same evening-before roll, D42 for the day it
-      lengthens), for every crew row of the shift that earns (MAIN by default, a
-      SPARE once an admin has switched it on — D24); a shift whose written start and
-      end are the same still measures nothing; AVALON and BB have no in-time
-      (24 Aug 26). The work-hours bar and the long-work-day note have counted an SC
+      lengthens), for the shift's MAIN rows only — "a SPARE reports nowhere, so
+      his B does nothing" (24 Aug 26): a SPARE an admin has switched on (D24)
+      earns the shift's WRITTEN hours; a shift whose written start and end are the
+      same still measures nothing; AVALON and BB have no in-time (24 Aug 26). The work-hours bar and the long-work-day note have counted an SC
       MAIN's B since 24 Aug 26 (`workSpan`). Pins: `engine/oilscintime.test.ts`;
     - the work-hours bar with no line entered starts at STEP; OIL with no line
       entered starts at the nominal report. The two differ there by ruling.
