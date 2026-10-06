@@ -5,7 +5,8 @@ own full check. His instruction for this chat named the crew-rest fault alone, s
 had proposed doing beside it — was NOT built here and stays next. Branch `claude/rest-blank-line`, cut from `main` at
 the merge of PR #481. Nothing merged; `main` untouched.
 
-**Status:** GATES_STATUS_LINE
+**Status: BUILT, WALKED, EVERY GATE GREEN on the final code, the TWO independent reads done and their finding fixed.
+His look is left. Not merged; `main` untouched.**
 
 ## Questions waiting for him
 
@@ -116,6 +117,8 @@ dispositioned. "Reaches" = did the fault reach this place.
 | The drop toast | yes | names the breach after the drop | C S11 |
 | The SC seat's "not clear yet" clock | yes (yesterday's side) | carries the right time | unit test (`restClear`); B S27 crew list "not clear until 11:30" |
 | A hidden breach | yes | stays struck, uncounted, unflagged through blank lines, Undo, Redo, reload, sign-in | B S12 |
+| The ALL AVAIL window — his puck in the crowd, its reason, the flagged count, a tap on him | yes (his day-wide flag) | listed red with the full breach sentence, "2 men are flagged", unchanged when he is seated on a blank line | D D-01, desktop and phone (missing from the first roll-call — both readers) |
+| A guest's view-only face of a published day | yes | his pucks ringed red, Monday's dotted; no warning list and no controls, as built | D D-03 |
 | Insights' issue counts | yes | counts it once; "none" when the rule is loosened | B S03, S27 |
 | The Logic page | states the rule | the new row is there, readable at both sizes, found by search | B H-02 |
 | SANS card, Personal Inputs row, Unavailable row, crew-list copy of his puck | the warning yes; **the dotted and dashed rings are not drawn there** | unchanged — an OLD gap in those drawers | C S01 → FILED `[CREW-REST-MARK-COPIES]` |
@@ -134,11 +137,22 @@ Their reports, tables and scripts: `docs/handpass/parts/rbl-{A,B,C}.md`, `.json`
 | A | S05, S04, S09, S06, S07, S08, S10, H-01, S13, S14, S24, S21; five action pairs in both orders, Undo / Redo / reload; desktop, and phone for S05, S04, S10, H-01, S13 | 297 | 290 PASS, 7 recorded, 0 FAIL |
 | B | S03 (admin and member), the two published-day independence walks, S12, S23, S02, S27, H-02; four action pairs in both orders; desktop, and phone for S03, S12, H-02 | 142 | 136 PASS, 6 recorded, 0 FAIL |
 | C | S11, S01, S15, S26, S25, S16–S20, S22, S28, H-03, S29; desktop, and phone for S11, S01, S26; S29 at four sizes | 85 | 70 PASS, 12 recorded, 3 marked FAIL by its script — none an app failure, below |
+| D — on the FINAL build, the scenarios both code reads said nobody had walked (`…-walk-additions.md`) | D-01 the ALL AVAIL window; D-02 the crew list on a line with no take-off (a typed Brief, the wave's In-time, a meeting, nothing); D-03 a guest; D-04 a louder qualification flag beside the crew-rest one; D-05 the corrected Logic row; D-06 a landing typed alone; D-07 a published day with Undo / Redo / reload | 62 | 53 PASS, 7 recorded, 1 FAIL and 1 PARTIAL — both the scenario's own wording, below |
 
 **Walker C's three FAIL rows, read by the host:** two are its scripted finger-drag from the phone's crew drawer, which
 picked nothing up (nothing placed, no toast) — NOT WALKED, not a defect call; the third is its script expecting the
 crew-rest reason beside Scribe's name where the crew list printed his SANS reason first (he is a SANS man with nothing
 filed) — recorded; after placing him the breach toast and line were right.
+
+**Walker D's FAIL and PARTIAL, read by the host — neither is an app failure.** (1) D-02 "meeting, empty line": the host's
+scenario expected the crew list to strike X before the drop on a line with NOBODY on it; the crew list measures from a man
+already on the line and has none there — the documented empty-formation case (`[REST-FIRST-CREW-HINT]`, already filed); with a
+man on the line X was struck "crew rest — not clear until 12:30", and after the drop the toast and the list were right both
+ways. (2) D-07 step 3: the host's scenario expected "1 pending" to clear after ONE Undo; the first Undo takes only the man
+off, the new blank line is still a real change to a published day, and the second Undo clears it — as it should (picture
+opened: `D/dk-05-D-07.3-E-tue-day.png`, the empty line still there). D also saw: the changes count in the day's head read 12
+after publishing and 16 after Undo ×2 (a count of what is new to him, not of pending changes — not this job); a tapped
+crew-rest line draws Monday's puck dashed while it is lit (as built: the previous day traced from a clicked warning).
 
 **What the walkers found, and each disposition** (a walker's conclusion is not a finding until the host reproduces it):
 
@@ -151,11 +165,13 @@ filed) — recorded; after placing him the breach toast and line were right.
 | Debrief, Brief lead and Step settings make published days read "1 pending" — with or without a breach (B, S27) | as ruled: a published day keeps the brief time it printed and reads pending when a setting moves it (D186); the Crew rest setting did not | not a finding; the OIL half of it is `[OIL-WORK-START]` |
 | The crew list shows no crew-rest reason for an EMPTY formation's seat (B, C) | documented: no sibling leg to measure from; the toast and the list catch it after the drop | as built — `[REST-FIRST-CREW-HINT]` is already filed |
 
-**Pictures the host opened itself** (13): the fault before and after (`before/dk-05…`, `after/dk-05…`); A — H-01's
+**Pictures the host opened itself** (16; the last three are D's: the ALL AVAIL window after the blank line, the guest's
+published Tuesday, the published day after one Undo): the fault before and after (`before/dk-05…`, `after/dk-05…`); A — H-01's
 list at desktop and phone (the new sentence), S04's Monday pucks, the crew list's struck "not clear until 12:30"; B —
 the published Tuesday on View-only Sched, the Sunday "Breaks Monday" line, the MEMBER's View-only face of a published
 Tuesday with a blank line on it, the hidden breach struck with its ↺; C — S15's list with nothing in it, Monday's SANS
-card, the NaN currency line. Each showed what its walker reported. The walkers opened 25 (A), about 65 (B) and 36 (C).
+card, the NaN currency line. Each showed what its walker reported. The walkers opened 25 (A), about 65 (B), 36 (C) and
+all 53 of its own (D).
 
 ### The five gotcha families
 
@@ -176,31 +192,37 @@ plan or a loaded version (B). The same final words, rings and marks in both orde
 
 ## Tests, red first
 
-- `src/engine/restblank.test.ts` — 28 cases. Written before the fix: 12 of its first 22 failed on the unfixed rule.
+- `src/engine/restblank.test.ts` — 33 cases. Written before the fix: 12 of its first 22 failed on the unfixed rule.
   Added with the build, each red before its part of the fix: the meeting case, the SC in-time case, the tight-turning
-  note beside a Brief-only line, the reverse-drawn turn. Seven of the 28 pin what was LEFT AS IT WAS (a landing-only
+  note beside a Brief-only line, the reverse-drawn turn. Added from the two code reads: the crew list's question on a
+  line with no take-off of its own (four cases), the meeting's exact leave-by time and where its warning points, a
+  typed Meeting request. Seven of the 33 pin what was LEFT AS IT WAS (a landing-only
   line is still yesterday's end; a typed Brief alone still breaches; a meeting with no flying line needs no rest; the
   double-turn chip; the old sentence when a report exists).
 - `e2e/restblank.spec.ts` — 4 browser tests through the real controls, the ring and the dotted mark asserted as PAINTED:
   3 of the first 3 red on the build as it is live; the fourth red on the build before its fix; 8 of 8 green over two
   repeats on the final build (and 9 of 9 over three on the build before).
-- The whole rules-engine folder, the comparison with the original app included: 1,913 of 1,913.
+- `src/ui/logic.test.tsx` — one new case: the Logic page's row says "no times yet", keeps a typed landing as the end
+  of that day, and the withdrawn wording appears nowhere.
+- The whole rules-engine folder, the comparison with the original app included: green at every step (the full unit
+  suite is in the gate table).
 
 ### Break tests — each part of the fix cut once, on purpose
 
 | Part cut | Went red |
 |---|---|
 | yesterday: an end that is not a time is skipped | 3 — the blank Monday line first, in the same wave, the cleared SC shift |
-| today: only instructions that exist are read | 2 — the wave's In-time, the SC in-time |
-| today: a line with no instruction leaves the minimum | 8 — "+ Line" after, a blank wave before, a landing alone, the cleared SC shift, the tight-turning note, the crew list's question, the meeting case, the old sentence |
+| today: only instructions that exist are read | 3 — the wave's In-time (in the list, and in the crew list's question), the SC in-time |
+| today: a line with no instruction leaves the minimum | 9 — "+ Line" after, a blank wave before, a landing alone, the cleared SC shift, the tight-turning note, the crew list's question, the meeting cases, the old sentence |
 | today: only lines with a take-off bear the nominal report | 1 — the tight-turning note beside a Brief-only line (no test at first: written, then red) |
-| the binding line when no line tells him anything | 1 — the meeting case |
-| the meeting sentence | 1 — the meeting case |
+| the binding line when no line tells him anything | 3 — the meeting, the meeting request, the crew list's question with a meeting |
+| the meeting sentence | 3 — the same three |
 | the late-show tail needs a take-off | 1 |
-| the turn pairs only lines with times | 1 — the blank line between two legs |
+| the turn pairs only lines with times | 2 — the blank line between two legs, drawn either way |
+| the turn: set aside first, sorted after | 1 — the later leg drawn first |
 | a guard for "nothing to measure" | none — proved to do nothing, so it was REMOVED rather than left untested |
 
-BREAKS_FINAL_NOTE
+Counts from the run on the final code (33 cases), `breaks.py` in the session's scratch folder — nine cuts, every one red.
 
 ## What was NOT walked, and why
 
@@ -211,13 +233,16 @@ BREAKS_FINAL_NOTE
   S25, S28): the rule's result does not depend on the screen; the places that DRAW it were walked at both sizes.
 - **S29's overlays in full**: no higher-priority chip stood beside the crew-rest one in C's fixture, and the browser
   started with the 125% argument reported a scale of 1 — only the context scaled to 1.25 is a true 125% read.
-- **The final build by the three walkers**: they walked the build before the reverse-drawn-turn fix and before a guard
-  that did nothing was removed; the host re-ran its whole walk (H1–H4) and the browser tests on the final build.
+- **The final build by walkers A, B and C**: they walked the build before the reverse-drawn-turn fix, before a guard
+  that did nothing was removed and before the Logic row was reworded; the host re-ran its whole walk (H1–H4) and the
+  browser tests on the final build, and walker D walked the final build.
+- **The crew list's question for an SC seat with an early typed in-time** — by reading only (Sol F1), filed.
 - **The next-week peek and the exports** — they draw no crew-rest mark, by design.
 
 ## Found and filed — none of it this fix's doing (each is in `OUTSTANDING.md` with its place)
 
-`[BLANK-TIMES-ABSENCE]` (MEDIUM, his question) · `[SC-BLANK-SHIFT-QUAL]` (low) · `[CREW-REST-MARK-COPIES]` (low, his
+`[BLANK-TIMES-ABSENCE]` (MEDIUM, his question) · `[SC-PICKER-INTIME-REST]` (low–medium, from Sol's read) ·
+`[SC-BLANK-SHIFT-QUAL]` (low) · `[CREW-REST-MARK-COPIES]` (low, his
 question) · `[BLANK-LINE-SANS-WORDS]` (low) · `[TAB-LAST-BOX-TEST-GAPS]` (low, tests only — from the owed read below).
 
 ## The two owed reads (`[R3-OWED-READS]`) — done by Astra with the scenario design
@@ -228,14 +253,73 @@ in this change, and read again by both readers below.
 
 ## The gates
 
-GATES_TABLE
+Run twice under the PC's one lock (`gatelock.mjs run`), each about 15 minutes: once before the two reads, and again on the
+FINAL code (app code as committed at `a11e7d23`) — the counts below are the second run's, watched.
+
+| Gate | Result |
+|---|---|
+| Unit tests | **7862 / 7862** (494 files) |
+| Typecheck + build | clean |
+| The original app's assertions (`tfin`) | **728 / 0** |
+| Browser tests (e2e) | **615 passed, 0 failed, 50 skipped** — the four new ones among them |
+| The Tracker's browser suite | **445 / 0** |
+| Rule coverage (`rulecheck`) | OK |
+| Documents (`docsize`) | OK — every record accounted for; over its size markers by 10,729, put off on a branch that carries code (D29) |
+| Page-size ceilings (`perf`), on the final build | **4 / 0** — week 5131 ≤ 5450, board 1018 ≤ 1150 |
+| The six adapted probes, on the final build | all passed (36 checks) |
+
+First run (before the Logic row was reworded and six test cases were added): unit 7856 / 7856, the rest identical.
 
 ## The two code reads (Astra, and Sol 6.1 second, each blind to the other — D590, D601)
 
-READS_SECTION
+The brief: `docs/superpowers/briefs/2026-10-06-rest-blank-line-read-brief.md`; the reports, verbatim:
+`…-read-astra.md`, `…-read-sol.md`. Neither saw the other's. Neither could run the one test file its sandbox allowed
+(read-only) — both read the source and the saved pictures.
+
+| | Astra | Sol 6.1 |
+|---|---|---|
+| Verdict | CHANGES REQUIRED | CHANGES REQUIRED |
+| The arithmetic (the six claims) | holds — complete-times equivalence by inspection; no new numerical defect | holds — by source comparison; no new numerical defect |
+| Finding | the new Logic row said a line with "no take-off" is "not the end of the day before" — false for a landing typed alone | the same, found independently; then F1 below |
+| D602's short line (D138) | PASS | PASS |
+
+**Dispositions.**
+- **The Logic row's wording — confirmed, NEW (this change's own), FIXED.** Reworded to "no times yet … whatever it does
+  carry is still read — a typed Brief, its wave's In-time / Rally or an SC line's typed B as the report, and a typed
+  landing as the end of that day"; pinned in `logic.test.tsx`; walked at both sizes on the final build (D-05), with the
+  landing-only case beside it (D-06). Sol re-read the replacement and its test during its read: "no longer open".
+- **Sol F1 — the crew list ignores an SC line's typed in-time when it asks about crew rest before a drop — confirmed by
+  reading (`avail.ts`, the SC seat's check compares with the shift start only), OLD (the same on `main`, with a fully
+  timed shift too), FILED `[SC-PICKER-INTIME-REST]`**, not fixed here: its fix has a trap of its own (an SC SPARE seat must
+  not borrow the MAIN's answer) and belongs with the next small job. So the claim "every reader agrees" is qualified: the
+  crew list's question before a drop agrees for a flying line; for an SC seat with an early typed in-time it says
+  nothing until he is placed.
+- **Absences both named** — the ALL AVAIL window, a guest, a louder flag beside the crew-rest one, the crew list on a
+  line with no take-off: walked by D on the final build (above), and the last pinned by four unit cases.
+- **Sol: the meeting test's "trace exists" was weaker than its figures** — the test now pins the leave-by time (20:00) and
+  the row the warning points to; a typed Meeting request anchors on his blank line.
+- **Not done, named by both:** Undo / Redo / reload after EVERY change of EVERY scenario on a published day (walked for
+  S05, S04, S12 and D-07; the orders table on an unpublished day); a real 125% Windows screen; his iPhone.
+
+The cap of two reads is spent. What changed after them: the Logic row's wording (specified by both, re-read by Sol) and
+tests. No engine line changed after the reads.
 
 ## His look — the "look here" card
 
-LOOK_CARD
+On the branch's preview, on your phone or PC — two minutes:
 
-`Walk:` WALK_LINE
+1. **Edit Schedule → open Tuesday's board → "+ Line"** on any wave, and put a man who already has a red crew-rest warning
+   that day (the demo week's Tuesday: **Outlaw**) in the new blank line's seat. *Expect:* his red "Crew rest breach" line
+   stays in Tuesday's list, his pucks keep the red ring, and Monday's puck keeps its dotted ring. (On the live app today
+   all three vanish.)
+2. **Type a take-off on that blank line**, then clear it again. *Expect:* nothing about his warning changes either way.
+3. **Logic page → Crew rest.** *Expect:* a row beginning "A flying line with no times yet is not measured…".
+4. Not for your phone to prove, but say if it reads wrong to you: a man whose ONLY line that day is still blank, with an
+   earlier meeting inside his 12 hours, is now flagged — "his day starts 08:00 (SQN BRIEF), and he is on a line with no
+   take-off yet".
+
+Only a real iPhone can show the rings as Safari paints them; everything above was walked in Chromium's phone size.
+
+`Walk: docs/handpass/2026-10-06-rest-blank-line.md · 1,298 pictures · 20 surfaces · 14 orders · MISSING: none in this rule's
+own places — 6 old gaps found beside it, all filed (`[BLANK-TIMES-ABSENCE]`, `[SC-PICKER-INTIME-REST]`, `[SC-BLANK-SHIFT-QUAL]`,
+`[CREW-REST-MARK-COPIES]`, `[BLANK-LINE-SANS-WORDS]`, `[TAB-LAST-BOX-TEST-GAPS]`)`

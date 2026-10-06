@@ -770,7 +770,7 @@ asked on 5 Oct 26 why the branch showed about 680,000 added lines. About 585,000
 two measurement files of about 122,000 lines each and two of about 33,000 under
 `raptor-port/docs/handpass/css-split/`, a 29,000-line test log under `raptor-port/docs/handpass/insights-mission-mix/`,
 and the evidence archives beside them. They do not run in the app or slow it; they make the repository heavier to
-fetch and to search. *(6 Oct 26: the crew-rest fix's walk added about 145 MB of pictures — three walkers', about 1,190 —
+fetch and to search. *(6 Oct 26: the crew-rest fix's walk added about 150 MB of pictures — four walkers' and the host's, 1,298 —
 under `raptor-port/docs/img/handpass/2026-10-06-rest-blank-line/`, kept whole as the Codex stack check's 224 MB were; the same
 question covers them.)* **The question for him:** keep them whole, or keep each check's evidence sheet and pictures and
 move the raw measurement files and logs out of the repository (their fingerprints stay in the sheets). Nothing is
