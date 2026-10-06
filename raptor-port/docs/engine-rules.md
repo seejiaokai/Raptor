@@ -290,6 +290,14 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   value-for-value the old arithmetic (the reference parity holds). Said on the Logic page (Crew rest, "no take-off
   yet"). Pins: `engine/restblank.test.ts`, `e2e/restblank.spec.ts`.
 
+- **An absence that covers the whole day does not need the seat's times (owner, D605, 6 Oct 26) — NOT YET BUILT**
+  (`OUTSTANDING.md` `[BLANK-TIMES-ABSENCE]`). Today every absence check asks whether the absence OVERLAPS the event's
+  times (the sortie loop "C via input clash", the duty / sim / ground loop under it, the SC SPARE and AVALON / BB looks),
+  so a man on all-day leave or a downchit seated on a line or row with no times raises nothing in the list until a time is
+  typed — the crew list's struck name is the only warning. His ruling: he is flagged the moment he is seated anywhere that
+  day; a part-day absence against a seat with no times stays silent. Each kind's exemptions are unchanged, and a published
+  day still freezes these warnings (D177–D179). The crew-rest half of the same family is the bullet above.
+
 ### How crew-rest, long-day and turn warnings are worded and marked
 
 - **A sortie-caused breach spells out the debrief assumption** (owner, 15 Aug
