@@ -50,7 +50,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
 count from its entered in-time / Rally (D591), and a published weekend must keep the earned leave it went out with when a Logic value
-changes (today it moves at once). **BUILT 6 Oct 26 and FULL-checked on its own branch (D591, D592) — his look and "merge live" are left.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn); low, older than it, found by its browser test: [LOGIC-REDRAW-DROPS-TYPING] (the Logic page redraws its rules just after it opens, and a value being typed at that instant is dropped). [INTIME-LINES-DRAG] (D593, his ask of
+changes (today it moves at once). **BUILT 6 Oct 26 and FULL-checked on its own branch (D591, D592) — his look and "merge live" are left.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn); low, older than it, found by its browser test: [LOGIC-REDRAW-DROPS-TYPING] (the Logic page redraws its rules just after it opens, and a value being typed at that instant is dropped); low, words only, from its walks: [OIL-EARN-DAY-SWITCH-WORDS] (OIL Earn's "Nothing today earns" button reads like a status), [SC-B-CHANGE-SAYS-BRIEF] (the changes window calls an SC shift's in-time "brief"). **D606 (7 Oct 26 — an SC shift's typed in-time counts for OIL) was built and checked on the same branch.** [INTIME-LINES-DRAG] (D593, his ask of
 5 Oct 26 — drag a wave's In-time / Rally lines into order on the Scheduler Board, Auto sort too; proposed in the same batch). Low, from the same
 check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip over a phone request card's date), [BOARD-TIME-ESCAPE]
 (Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
@@ -1891,7 +1891,9 @@ put to him: `raptor-port/docs/handpass/2026-10-06-oil-work-start.md`. Beyond the
 challenges: a published weekend reads pending when anyone's OIL amount OR worked times would change; the four sign-offs
 fall when a later Logic change would alter the OIL of the day they signed. Fixed with it, from the scenario read: the OIL
 tracker printed only the first worked period of a day; the Logic page said standby lines can never earn. Filed beside it:
-`[OIL-ZERO-SPAN-SORTIE]`, `[UNPUB-WARN-AL-RESTORES]`, `[LOGIC-REDRAW-DROPS-TYPING]`.
+`[OIL-ZERO-SPAN-SORTIE]`, `[UNPUB-WARN-AL-RESTORES]`, `[LOGIC-REDRAW-DROPS-TYPING]`, `[OIL-EARN-DAY-SWITCH-WORDS]`,
+`[SC-B-CHANGE-SAYS-BRIEF]`. **Added on the same branch, 7 Oct 26 (D606):** an SC shift's typed B — its in-time — where
+filled and earlier than the shift's start, starts the MAIN's OIL day (register OWS12; the sheet's §D606).
 The text below is the item as filed.
 **His ruling (D591, 5 Oct 26):** *"it should take the actual intime/rally time right? not the nominal report timing"* — a flying
 line's earned leave (OIL) is worked out from its actual in-time / Rally time. Full row: `.claude/decisions-full/oil.md` D591.
@@ -1945,6 +1947,22 @@ out of the redraw, as the schedule's text boxes are; (3) a test that types, lets
 still there. The browser test now types again until the app holds the value (`raptor-port/e2e/oilworkstart.spec.ts`,
 `logicLead`) — take that retry out when this is fixed. **Tier:** WALK (the Logic page, a typed value, both sizes).
 **Place (the agent's line):** low — with the next change to the Logic page, and before the database step for the reason above.
+
+### [OIL-EARN-DAY-SWITCH-WORDS] OIL Earn's "Nothing today earns" button reads like a status — two walkers took it for one (found 6–7 Oct 26, the walks of `[OIL-WORK-START]`; OLD; LOW, words)
+On the Scheduler Board in OIL Earn mode the bar carries a button labelled "Nothing today earns". It is a SWITCH — pressed, it
+makes nothing on that day earn — and its label does not change with the day's state (only its tooltip does). With a man on the
+day plainly earning (his puck reads FO), the bar still says "Nothing today earns" beside it. Two walkers, on separate walks and
+without seeing each other's work, each reported it as the app contradicting itself (the first walk's W8; the D606 walk's E03 —
+picture `raptor-port/docs/img/handpass/2026-10-06-oil-work-start/E/dk-08-E03-oilearn-board.png`). **To build:** word the button
+as the action it is, and say the day's state apart from it — a product wording choice, so a picture and his word first.
+**Tier:** WALK (a control's label on the board, both sizes). **Place (the agent's line):** low — with the next change to OIL Earn.
+
+### [SC-B-CHANGE-SAYS-BRIEF] The changes window calls an SC shift's in-time "brief" (found 7 Oct 26, the D606 walk — E02, E06, E15; OLD; LOW, words)
+On an SC line the B box is the crew's in-time, not a brief (owner, 24 Aug 26), and since D606 (7 Oct 26) it moves OIL. A B typed
+or changed on a published day is listed under "To go out" as "SC · brief  06:00" (and "06:00 → 08:00") — the box's general name.
+**To build:** on an SC line, name the change "in-time" in the changes window, the pending list and the edit history; every other
+line keeps "brief". **Tier:** WALK (the changes window's words, a published day, both sizes). **Place (the agent's line):** low —
+with the next change to the changes window's wording, or with `[OIL-EARN-DAY-SWITCH-WORDS]`.
 
 ### [UNPUB-WARN-AL-RESTORES] The Unpublish warning assumes the day's OIL disappears — when withdrawing an AMENDMENT puts the earlier version's OIL back (found 6 Oct 26, the scenario read of `[OIL-WORK-START]` — Astra's F2; OLD, the same on the live app; LOW-MEDIUM)
 Unpublish on a published weekend warns when taking the day's OIL away would leave a man who has already spent it below

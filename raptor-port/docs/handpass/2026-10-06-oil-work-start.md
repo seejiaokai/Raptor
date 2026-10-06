@@ -377,6 +377,9 @@ The four readings at the head of this sheet are his to overrule; none blocks.
 
 ## Status
 
+*(As it stood on 6 Oct 26, before D606. What was built after it — an SC shift's typed in-time — has its own check and
+its own status in §D606, at the foot.)*
+
 **BUILT; FULL-checked; ready for his look. Not merged; `main` untouched; nothing reaches `main` without his "merge
 live".** Branch `claude/oil-work-start-build-35a0e3`, pushed, one pull request open — not for merging until his word.
 
@@ -393,3 +396,95 @@ live".** Branch `claude/oil-work-start-build-35a0e3`, pushed, one pull request o
   leave) standing when work is published over it, sign-offs across two saved plans, and a real iPhone.
 
 `Walk: docs/handpass/2026-10-06-oil-work-start.md · 1,995 pictures · 21 surfaces · 47 scenarios + 120 ordered pairs · MISSING: none — two "NO, because" rows (the change history: filed [HIST-PER-PAGE]; CSV / print: no OIL column)`
+
+## D606 — an SC shift's typed B (its in-time) counts for OIL (7 Oct 26)
+
+**Authority: D606** (owner, 7 Oct 26 — *"It rarely happens but SC B if filled u can count it as work hours as well and
+OIL earned."*), his answer to reading 4 at the head of this sheet. Built on this branch AFTER the check above had
+closed and the branch had been pushed; this section is that change's own check. Everything above describes the build
+before it — where it says an SC shift's B "moves nothing", this section is what now stands.
+
+**The readings the agent made, for him to overrule** (D606's full row; each tested as built):
+1. the EARLIER of the B and the shift's written start is used — a B typed later than the start shortens nothing (the
+   guard his 24 Aug rule already put on it: "if B is filled earlier than TO for main only");
+2. it is the MAIN's in-time only — the app's standing sentence is "a SPARE reports nowhere, so his B does nothing": a
+   SPARE earns nothing by default, and one switched on in OIL Earn earns the shift's WRITTEN hours;
+3. a shift that starts within the nominal lead of midnight reads a later B as the evening before — as crew rest has
+   read it since 24 Aug — and that lengthens the shift's own day only;
+4. AVALON and BB are untouched; 5. the work-hours day already started at an SC MAIN's B (24 Aug 26) — nothing new was
+   built for it; 6. a B typed after the day is published is a pending change, and the OIL moves with the amendment.
+
+**The eight questions → FULL** (1 YES — what a man is owed; 4 YES — the one work walk feeds every OIL surface; 2, 3 —
+NO new saved field and no new kind of pending change: the B is a line's own box, already in the published record; 5,
+6, 7 NO; 8 — two sentences on the Logic page, no warning added or reworded). Sized to the change: one walker on a
+frozen build, the break tests, the gates, both readers on the diff.
+
+**The roll-call — an SC MAIN's OIL where its B is filled:**
+
+| Where | Shows it? | Proof |
+|---|---|---|
+| Leave War grid — the FO / HO cell | **YES** | walker E01–E10; published tests (OWS12); `e2e` OWS12 |
+| OIL tracker — the row's worked times and the balance | **YES** — "FLT · 06:00–13:00", "00:00–07:00" for an evening-before B | E04, E08, E10 (host opened E04's tracker) |
+| The board's and the week's green edge; OIL Earn's figures | **YES** — the working copy reads FO the moment the B is typed, the published face keeps its half-day edge | E03; E14 (the member's face) |
+| OIL Earn's switches — a SPARE seat, an AVALON seat | **YES** — a SPARE switched on earns 07:00–13:00, never from the B; AVALON 19:00–23:59 with 17:00 in its B box | E09, E12; engine test "MAIN only", "AVALON and BB" |
+| "N pending", the Amendments box, To go out | **YES** — a B typed on a published day is the line's own change ("SC · brief 06:00"; the word "brief" for an SC in-time is older wording — FILED); the evening-before case raises the Logic line when the lead changes | E02, E06, E11 (host opened E11's list) |
+| The four sign-offs | **YES** — fall with the B change; fall and return with the Logic value | E02, E11; published tests |
+| The Inputs page's "recorded as working" note; the day going amber | **YES** — "recorded as working 06:00–13:00 on 18 Jul", the amber mark on the Leave War day | E16 |
+| Insights — Work hours | **AS BEFORE** — 20h → 21h with the B; built 24 Aug 26, untouched | E13 (recorded); published test (`workSpan` 360) |
+| The Logic page's words | **YES** — its OIL row and its SC in-time row | read in the source; not pictured |
+| ALL AVAIL window "Who earns OIL"; the publish-time toast; the Leave War's clash strip | **YES, by construction** — the same work walk and the stored record | NOT walked |
+| Edit Schedule's desktop WEEK | **NO, because** the week has never drawn an SC line's B (his call of 24 Aug 26 — "raise mirroring only if he asks"): a B typed on the board now moves OIL and the week gives no sign of it; the OIL tracker's worked times do | told to him in the report — his to raise |
+| The published face (View-only Sched) | **NO, because** the published face draws no B column for SC either (E14) — the same seam | recorded |
+| CSV / print | **NO, because** neither carries an OIL column | unchanged |
+
+**The door check:** type, change or clear the B — the board's B box on the SC line, at desktop and phone width (E15:
+four boxes, one per crew row, between MSN and TO); an unreadable entry is refused with "abc is not a time — try 0900
+or 09:00" and the box goes back (E07). No state was found where the data allows an action with no control.
+
+**Red first:** `engine/oilscintime.test.ts` — 8 of 14 failed on the code before the change (the six that passed are the
+"nothing changes" cases); the browser test OWS12 fails with the change cut out ("Expected FO, Received HO") and passes
+with it; the older pin "an SC shift is its written window — neither a reporting line nor its typed B box moves it"
+was changed to what D606 rules (its reporting-line half kept). **Break tests:** the whole script re-run — 29 cuts, 29
+red, restored green; seven new — B24 (the OIL ignores the B) 11 red, B25 (a later B shortens) 4, B26 (AVALON / BB read
+theirs) 1, B27 (a SPARE takes it) 1, B28 (today's lead, not the day's own) 2, B29 (no evening-before reading) 3, B30
+(crew rest stops reading it) 6; B23 re-aimed at the new line, 18.
+
+**The walk — one walker (Sonnet 5.5, D588), letter E, on the frozen build (73f89786, port 4294):**
+`docs/superpowers/briefs/2026-10-07-oil-sc-intime-walk-brief.md`; report `docs/handpass/parts/ows-E.md`, table
+`…/ows-E.json`, pictures `docs/img/handpass/2026-10-06-oil-work-start/E/` (98 saved, 35 opened by the walker).
+Sixteen scenarios through the app's own controls, desktop and (E15) phone; browser errors: **none**.
+
+| # | What | The screen |
+|---|---|---|
+| E01 | SC MAIN 07:00–13:00, B blank, published | HO · worked 07:00–13:00 |
+| E02 | B 06:00 typed on the published day | HO holds · 1 pending · sign-offs empty · "SC · brief 06:00" |
+| E03 | OIL Earn on the working copy; the published face | FO on the working copy · the half-day edge on the published face |
+| E04 | Publish AL | FO · worked 06:00–13:00 · nothing pending |
+| E05 | Undo, Redo, reload | Undo: back to ORIG's HO with the B waiting · Redo and reload: AL1, FO · ONE row for the day throughout |
+| E06 | B → 08:00, AL2 | FO holds until it goes out · then HO, 07:00–13:00 |
+| E07 | `abc`, `25:90` | refused, the box goes back · nothing pending |
+| E08 | B 06:00 before the first publish | FO · 06:00–13:00 |
+| E09 | a SPARE with B 06:00; then switched on | nothing · then HO, 07:00–13:00 (not 06:00) |
+| E10 | shift 01:00–07:00, B 23:00 | FO · 00:00–07:00 · Friday nothing |
+| E11 | lead 3h → 30 min under E10's day, unsigned and signed | holds · 1 pending · "Ranger · OIL as published, under today's values: full day · 00:00–07:00 → half day · 01:00–07:00" · the four fall, and return with the value |
+| E12 | AVALON, B 17:00, seat switched on | FO · 19:00–23:59 — no 17:00 anywhere |
+| E13 | Insights before and after the B | 20h → 21h (recorded) |
+| E14 | the member's View-only Sched | the published line and its edge; nothing to type into |
+| E15 | phone: E01 → E02 → E04 | the same numbers; the B box is there |
+| E16 | leave 06:00–06:30 filed over the published FO | "Ranger is recorded as working 06:00–13:00 on 18 Jul — this LL is filed anyway and flagged" · the amber mark |
+
+**The walker's notes, each looked at by the host:**
+- *OIL Earn's bar says "Nothing today earns" while Ranger's puck reads FO* (E03; host opened
+  `E/dk-08-E03-oilearn-board`). It is the bar's day SWITCH — a button that would make nothing on the day earn — not a
+  status; the first walk's W8 is the same thing. Two walkers have now read it as a status, so it is **filed**:
+  `[OIL-EARN-DAY-SWITCH-WORDS]` (low, words). Older than this job.
+- *The changes window calls an SC shift's B "brief"* (E02, E06, E15). Older wording; on an SC line the B is the
+  in-time, and since D606 it moves OIL. **Filed:** `[SC-B-CHANGE-SAYS-BRIEF]` (low, words).
+
+**The host opened** `E/dk-08-E03-oilearn-board`, `E/dk-11-E04-tracker` (the row reads "+1 18 Jul AUTO Weekend/PH ·
+FLT · 06:00–13:00 · 1 left") and `E/dk-20-E11-signed-0h30-togoout` (the Logic line as quoted above).
+
+**NOT walked:** the ALL AVAIL window's OIL tab, the publish-time toast and the clash strip with an SC B; an SC MAIN and
+another event of his on the same day (tested: `engine/oilscintime.test.ts`, "first start to last end"); the PM shift
+and both MAIN rows at once; E05–E14 at phone width; the next day's cell after E12's overnight AVALON; a real `us`
+sign-in for E14 (the admin's member view was used); a real iPhone.
