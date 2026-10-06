@@ -175,10 +175,15 @@ const FILES = [
 const RULING_BYTES = [
   ['.claude/rules/decisions/how-we-work.md', 0, 22000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
-  ['.claude/rules/decisions/scheduler.md', 2, 62000],
+  /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
+     that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
+     D565); what is left - 161 and 34 rulings, and the scheduler's settled notes - is live, and a ruling is never
+     trimmed (D136). The scheduler's real answer is to split its rulings by screen: option 8 of [START-CONTEXT-AUDIT],
+     which he has NOT ruled (D609) - when he does, this marker comes down with the split. */
+  ['.claude/rules/decisions/scheduler.md', 2, 69000],
   ['.claude/rules/decisions/oil.md',     2, 12000],
   ['.claude/rules/decisions/leave-war.md', 2, 32000],
-  ['.claude/rules/decisions/tracker.md', 2, 18000],
+  ['.claude/rules/decisions/tracker.md', 2, 19000],
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */
