@@ -64,11 +64,16 @@ async function oilCell(page: Page) {
   await go(page, 'editsched')
   return (/\b(FO|HO)\b/.exec(t) || [''])[0]
 }
-async function logicLead(page: Page, value: string) {
+/* the Logic page's own box for "Nominal report before T/O": Edit rules (once — the page keeps it on), type, Tab. It
+   WAITS on what it needs (D87): the box drawn before it is typed in, and the value the app then holds before the page
+   is left — a fixed pause let a busy machine leave the page with the old value still in force. */
+async function logicLead(page: Page, value: string, minutes: number) {
   await go(page, 'logic')
-  if (!(await page.locator('[data-lgset="reportLead"]').count())) await page.locator('#lgEdit').click()
   const f = page.locator('input[data-lgset="reportLead"]').first()
+  if (!(await f.isVisible().catch(() => false))) await page.locator('#lgEdit').click()
+  await expect(f).toBeVisible()
   await f.scrollIntoViewIfNeeded(); await f.fill(value); await f.press('Tab')
+  await expect.poll(() => page.evaluate(() => (window as any).VCONF.reportLead)).toBe(minutes)
   await go(page, 'editsched')
 }
 const pendChip = (page: Page) => page.locator(`${day} .dpend:not(.dnew):not(.dchg)`).first()
@@ -103,8 +108,7 @@ test.describe('a published day keeps the OIL it went out with (D592)', () => {
     expect(await oilCell(page), 'a full day: 07:00 to 13:15').toBe('FO')
 
     /* the Logic value changes under the published day */
-    await logicLead(page, '2h30')
-    expect(await page.evaluate(() => (window as any).VCONF.reportLead)).toBe(150)
+    await logicLead(page, '2h30', 150)
     expect(await oilCell(page), 'the published day keeps the OIL it went out with').toBe('FO')
     await showDay(page, SAT)
     await expect(pendChip(page), 'and the day says a change is waiting').toContainText('1 pending')
@@ -130,7 +134,7 @@ test.describe('a published day keeps the OIL it went out with (D592)', () => {
     await expect(pendChip(page)).toHaveCount(0)
 
     /* and back: the amendment now holds its half day, and the day says so */
-    await logicLead(page, '3h')
+    await logicLead(page, '3h', 180)
     expect(await oilCell(page)).toBe('HO')
     await showDay(page, SAT)
     await expect(pendChip(page)).toContainText('1 pending')
