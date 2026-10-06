@@ -275,6 +275,7 @@ const RULES = {
   OWS9: 'an in-time changed after publishing moves OIL only when the day goes out again',
   OWS10: 'a version with no kept values still reads, and raises nothing',
   OWS11: 'sign-offs fall when a later Logic change would alter the OIL of the day they signed',
+  OWS12: 'an SC shift with its B (in-time) filled earns OIL from that in-time (D606)',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

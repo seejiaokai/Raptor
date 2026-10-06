@@ -1978,8 +1978,19 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     - where no line gives a clock — none entered, one the reader cannot read,
       "rally after in-time" with no in-time — the NOMINAL time, T-O −
       `VCONF.reportLead` (D592 (2));
-    - a standalone wave (SC, AVALON, BB) is untouched: its span is its written
-      window, and neither a reporting line nor an SC's typed B moves it;
+    - a standalone wave (SC, AVALON, BB) reads no reporting line: its span is its
+      written window — except that **an SC shift's typed B, its in-time, where
+      filled, starts the shift's span** (owner, D606, 7 Oct 26 — "SC B if filled u
+      can count it as work hours as well and OIL earned"; it withdrew the builder's
+      reading that the B moved nothing): the EARLIER of the B and the written start
+      (a B typed later than the start shortens nothing — the guard crew rest and the
+      long-day note already put on it), read by the one body crew rest reads it with
+      (`events.ts seatIntime`, the same evening-before roll, D42 for the day it
+      lengthens), for every crew row of the shift that earns (MAIN by default, a
+      SPARE once an admin has switched it on — D24); a shift whose written start and
+      end are the same still measures nothing; AVALON and BB have no in-time
+      (24 Aug 26). The work-hours bar and the long-work-day note have counted an SC
+      MAIN's B since 24 Aug 26 (`workSpan`). Pins: `engine/oilscintime.test.ts`;
     - the work-hours bar with no line entered starts at STEP; OIL with no line
       entered starts at the nominal report. The two differ there by ruling.
     `reporting.ts` is pure, so a frozen snapshot answers from its own lines.

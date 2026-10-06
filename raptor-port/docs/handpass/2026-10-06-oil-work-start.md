@@ -27,6 +27,8 @@ D592's full row as readings (6)–(10); each is tested as built and can be chang
    published, or with an amendment waiting — and stand again when the value is put back. Recommended: keep; without it
    a day signed as a full day could go out as a half day. (Both plan challenges asked for it.)
 4. **An SC shift's typed B (its in-time) does not move its OIL** — he said "a flying line". Recommended: leave it.
+   **ANSWERED 7 Oct 26 — D606, the other way:** *"It rarely happens but SC B if filled u can count it as work hours
+   as well and OIL earned."* Built on this branch after the first check closed; its own check is §D606 at the foot.
 
 ## The eight questions (bug-check order §5) → tier FULL
 
