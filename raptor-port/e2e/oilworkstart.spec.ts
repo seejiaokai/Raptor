@@ -107,12 +107,18 @@ test.describe('a published day keeps the OIL it went out with (D592)', () => {
     await expect(page.locator(`${day} .verchip`).first()).toContainText('ORIG')
     expect(await oilCell(page), 'a full day: 07:00 to 13:15').toBe('FO')
 
+    /* Publishing hands the four sign-offs back empty, so "they fell" proves nothing unless four are STANDING when the
+       value changes (Astra's read, F1 — 6 Oct 26): sign the published day again first, and count them. */
+    await signFour(page)
+    expect(await signed(page), 'four current sign-offs before the Logic edit').toBe(4)
+
     /* the Logic value changes under the published day */
     await logicLead(page, '2h30', 150)
     expect(await oilCell(page), 'the published day keeps the OIL it went out with').toBe('FO')
     await showDay(page, SAT)
     await expect(pendChip(page), 'and the day says a change is waiting').toContainText('1 pending')
     expect(await signed(page), 'the four sign-offs fell (D103)').toBe(0)
+    await expect(page.locator(`${day} [data-alpub="${SAT}"]`).first(), 'and the amendment cannot go out unsigned').toBeDisabled()
     await pendChip(page).click()
     await page.locator('.chgwin:not([hidden]) .win-tab', { hasText: 'To go out' }).first().click()
     const list = page.locator('.chgwin:not([hidden]) .pl-list').first()

@@ -112,7 +112,8 @@ describe('OWS2 — nothing typed, or nothing readable: the nominal report time (
   it('whatever a saved day holds in its lines, the walk does not break', () => {
     for (const lines of [[null], [undefined], [{}], [[]], [NaN], [true]] as any[])
       expect(dayOilSpans(sat(lines)).bane, JSON.stringify(lines)).toEqual([[h(9), h(15)]])
-    expect(dayOilSpans(day([{ label: 'W', intimes: 'IN TIME 0830', formations: [line('VL', '12:00', '13:00', [jet('bane')])] }])).bane).toBeTruthy()
+    /* (not a list at all — a bare string is not read as a line: the nominal time; Sol's read asked for the exact span) */
+    expect(dayOilSpans(day([{ label: 'W', intimes: 'IN TIME 0830', formations: [line('VL', '12:00', '13:00', [jet('bane')])] }])).bane).toEqual([[h(9), h(15)]])
     expect(dayOilSpans(day([{ label: 'W', intimes: null, formations: [line('VL', '12:00', '13:00', [jet('bane')])] }])).bane).toEqual([[h(9), h(15)]])
   })
 })

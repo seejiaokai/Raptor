@@ -14,16 +14,18 @@
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
+import { HOOKS } from '../engine/hooks'
 import { DAYS } from '../engine/data'
 import { SCHED, signOf, setSign, setDayApproved, publishALDay, unpublishDay, dayDelta, dayShownPendCount, daySigned, signMissing, daySnapOf, dayCurVer } from '../engine/publish'
 import { VCONF } from '../engine/rules'
 import { stashClear } from '../engine/weekstash'
-import { initStore as raptorInitStore, loadWeek } from '../state/store'
+import { initStore as raptorInitStore, loadWeek, writeInputs } from '../state/store'
+import { setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
-import { getState, initStore as lwInitStore, setPeople } from './state/store'
+import { getState, initStore as lwInitStore, setPeople, setRole, setCell, setBidState } from './state/store'
 import { memoryBackend } from './state/storage'
 import { recsAt } from './engine/warrecs'
-import { runOilPass } from './sync'
+import { getClashes, runOilPass, wireLeaveWarSync } from './sync'
 
 const ISNAP = JSON.stringify(INPUTS)
 const DSNAP = JSON.stringify(DAYS)
@@ -102,6 +104,49 @@ describe('OWS6 — a published day\'s OIL does not move when a Logic value chang
     publish(5)
     expect(keptOn(5)).toEqual({ reportLead: 170, debrief: 130, oilFullMin: 370 })
     expect((DAYS[5] as any).oilev).toBeUndefined()
+  })
+  /* Sol's read, case 1 (6 Oct 26) — the roll-call's "by construction" row, now run: the Leave War sets a credit's WORKED
+     TIMES against leave on the same day, so a Logic change must not move a published day's clash either; the amendment
+     that applies the new value is what brings the overlap, and the day then says so. */
+  it('the clash with an afternoon leave follows the PUBLISHED worked times, and moves only with the amendment', () => {
+    setRole('admin')
+    setCell('bane', SAT, 'LL*'); setBidState('bane', SAT, 'approved')     // approved local leave, the afternoon
+    build(5, '08:00', '09:30')                                           // 05:00–11:30: a full day, all of it in the morning
+    publish(5); runOilPass()
+    const amber = () => !!getState().wars[0].views['bane']?.[SAT]?.amber
+    const clash = () => getClashes().some((c: any) => c.kind === 'duty' && c.person === 'bane' && c.date === SAT)
+    expect(cellOf('bane', SAT), 'the leave keeps the cell; the credit sits beside it').toBeTruthy()
+    expect(worked('bane', SAT)).toEqual([[[300, 690]]])
+    expect([amber(), clash()], 'morning work, afternoon leave: no clash').toEqual([false, false])
+    VCONF.debrief = 240                                                  // today's value would run his day to 13:30
+    runOilPass()
+    expect(worked('bane', SAT), 'the published times hold').toEqual([[[300, 690]]])
+    expect([amber(), clash()], 'and so does the day: still no clash').toEqual([false, false])
+    expect(oilPending(5).length, 'the change is waiting to be acknowledged').toBe(1)
+    sign(5); publishALDay(5); runOilPass()
+    expect(worked('bane', SAT)).toEqual([[[300, 810]]])
+    expect([amber(), clash()], 'published again: his work now runs into his leave, and the day says so').toEqual([true, true])
+  })
+  /* Astra's read, host case 1 (6 Oct 26) — the roll-call's row "leave filed over already-published work": the Inputs
+     door tells the filer he is recorded as working, reading the times off the stored credit. A leave in the quarter-hour
+     today's value would no longer count (07:00–07:15, the lead now 2h30) must still be flagged, and name the PUBLISHED
+     times. Through the real door (writeInputs, both stores wired). LAST in its group: the wiring stays on. */
+  it('a leave filed in the stretch only the PUBLISHED times cover is still flagged, and the note names those times', () => {
+    const toast = HOOKS.toast, said: string[] = []
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try {
+      setSession({ user: 'ad', role: 'admin' }); setRole('admin'); wireLeaveWarSync()
+      build(5, '10:00', '11:15')
+      publish(5); runOilPass()
+      expect(worked('bane', SAT)).toEqual([[[420, 795]]])
+      VCONF.reportLead = 150                                             // today's value would start his day at 07:30
+      runOilPass()
+      const row: any = { iid: 'ows-ll', person: 'bane', type: 'LL', date: 'Jul 18', yr: 2026, s: 420, e: 435, remarks: '', mod: '2026-07-01' }
+      expect(writeInputs(() => { INPUTS.unshift(row) }), 'filed anyway — flagged, not refused').toBe(true)
+      expect(said.join(' | ')).toMatch(/is recorded as working 07:00–13:15 on 18 Jul/)
+      expect(worked('bane', SAT), 'and the published times still stand').toEqual([[[420, 795]]])
+      expect(!!getState().wars[0].views['bane']?.[SAT]?.amber, 'the day goes amber from this pair').toBe(true)
+    } finally { HOOKS.toast = toast; setSession(null) }
   })
   it('a week that is off screen keeps its published OIL too', () => {
     try {
