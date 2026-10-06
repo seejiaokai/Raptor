@@ -3771,3 +3771,26 @@ All 18 final phone/desktop/short-phone design pictures inspected; independent
 Astra design read PASS after corrections. Gallery `raptor-port/docs/img/insights-final-look/index.html`; complete evidence
 and responses `raptor-port/docs/superpowers/plans/2026-10-03-insights-final-look.md`. D532 recorded before source work; D533 next.
 
+
+*Moved here 2026-10-07 by backlog-archive.mjs ([STACK-MERGED-TIDY]). Forward facts: `raptor-port/docs/superpowers/specs/2026-10-07-start-context-audit.md`.*
+
+### [STACK-MERGED-TIDY] The Codex stack is live (PR #481, 6 Oct 26) — its finished items still stand in the backlog and its branches' blocks in the handoff (filed 6 Oct 26)
+Documents only. (1) The stack's own backlog items are built, checked and merged and still read as open — among them
+`[DISCARD-MARKS-REMOVE]`, `[WORKSPAN-NEGATIVE]`, `[RALLY-TIME]`, `[RALLY-REVIEW-FIXES]`, `[INSIGHTS-MISSION-MIX]`, `[INSIGHTS-BOARD-DOOR]`,
+`[CSS-SPLIT-BY-SCREEN]`, `[SCHEDULE-TAB-ROW-FLOW]`, `[SCHEDULE-INSIGHTS-MENU]`, `[SAVE-NOTE-COVERS]`, `[SONNET-WALKER-TRIAL]` (Trial 1 is decided —
+the check's sheet §11): each leaves by `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>` after EVERY deliverable it
+ever named is walked — done, filed as its own item, or dropped by a ruling (the handoff guide, Step 3) — and the priority list's
+sentences about them are brought up to date. (2) `HANDOFF.md` `## Now` still carries seven blocks of branches that merged with
+PR #481 (named in the `claude/rest-blank-line` block): each is removed once its residue is confirmed filed. (3) The D496 banners
+("until Monday 5 Oct 26, 19:00 …") at the head of `raptor-port/CLAUDE.md`, in `AGENTS.md` and in `raptor-port/docs/codex-review-workflow.md`
+are expired — a working-guide change, so read by Astra and Sol before he approves it (D70). (4) Six files stand over their size markers
+(6 Oct 26: `OUTSTANDING.md` by 409 lines, `HANDOFF.md` by 8, `.claude/rules/bug-check.md` by 2; the rulings of How we work by about 4,100
+bytes, the scheduler's by 5,700, the Tracker's by 440) — put off while every branch carried code (D29); on a documents-only change the
+document check FAILS on them, and this pass is where they are answered: move what does not belong, split an area, or raise a marker
+with its reason (D141, D136) — never trim a ruling. **Place:** the first step of
+`[START-CONTEXT-AUDIT]` — the same pass, since both are about what a new chat is made to read. **Ordered by him on 7 Oct 26
+(D609) and carried out on `claude/docs-tidy-7-oct`: ALL FOUR PARTS DONE — (1) nineteen items archived, (2) the seven blocks
+moved to `raptor-port/docs/archive/handoff-merged-blocks-2026-10-07.md`, (3) the banners moved out after Astra's and Sol's
+reads (`raptor-port/docs/superpowers/specs/2026-10-07-expired-guide-text.md`), (4) the six markers answered — the
+document check is green.**
+

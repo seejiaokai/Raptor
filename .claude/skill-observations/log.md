@@ -2727,3 +2727,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the session-handoff skill's opening-line step, tell him in plain words to TYPE a word of his own after pasting ("go", or "I'm away - run it"), and say why; or shape the line so its first words are ones he types. Where the run is meant to be unattended (D596), the handoff should say so in the line he types, not only in the pasted text.
 
 **Principle:** An instruction that will reach the next agent as pasted content needs one typed word from the person beside it; plan handoffs so the authorising word is the user's own keystroke.
+
+### Observation 448: A ruling archived as "spent" still carried one condition in force — found only by the independent reader
+
+**Status:** OPEN
+**Date:** 7 Oct 26
+**Session context:** A documents tidy in which 28 rulings were marked SPENT or REPLACED and archived, each full row opened first by the host.
+**Skill:** session-handoff (its Step for retiring merged work) — and the recording steps at the head of DECISIONS.md
+**Type:** internal
+**Phase/Area:** Marking a ruling SPENT (DECISIONS.md step 2)
+
+**Issue:** The host read each full row and judged it by its heading: "the build this permitted is merged, so the ruling is spent". One row (a build permission) also held a sentence about the future — what is done if a later answer from another party falls short. The heading was spent; that sentence was not, and no live ruling stated it. The second reviewer sampled the same row and passed it; the first caught it.
+
+**Suggested improvement:** In the step that marks a ruling SPENT or REPLACED, add a check done sentence by sentence, not by heading: for every "if", "until", "when", "waits" or "still" in the full row, name the live ruling or document that now carries it, or keep the ruling live with only the used part marked spent. Give the archived list to a reviewer as a matter of course when more than a handful move at once.
+
+**Principle:** A record is spent only when every forward-looking sentence in it is either used up or stated elsewhere; judge by the conditions it contains, not by its title.
