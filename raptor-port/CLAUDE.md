@@ -1,7 +1,5 @@
 # RAPTOR — 142 Flying Programme (React app)
 
-**D496 temporary Codex model mapping (2 Oct 26):** until Monday 5 Oct 26, 19:00, Astra plans/coordinates, Sol 6.1 challenges plans and builds/fixes, and a fresh Astra inspector reads Sol code. This narrows the model/count mapping below only; Claude's further read remains owed before main. Exact roles: `docs/codex-review-workflow.md`.
-
 A flying-schedule planner for a fighter squadron: a week of flying waves,
 duty crews, sims, ground events and personal inputs, with a validation
 engine that flags crew-rest breaches, double bookings, missing briefs and

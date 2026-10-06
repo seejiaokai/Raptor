@@ -1,7 +1,5 @@
 # The project guide — full text (D391, 28 Sep 26)
 
-**D496 temporary Codex model mapping (2 Oct 26):** until Monday 5 Oct 26, 19:00, Astra plans/coordinates, Sol 6.1 challenges plans and builds/fixes, and a fresh Astra inspector reads Sol code. This narrows the model/count mapping below only; Claude's further read remains owed before main. Exact roles: `codex-review-workflow.md`.
-
 **Never loaded by itself; searched, or read at the heading you need.** The project guide, `raptor-port/CLAUDE.md`,
 holds each of these rules as ONE line — its short form — ending `· full text: docs/guide-full.md §<heading>`; the text
 under that heading here is what stood in the guide until 28 Sep 26, moved whole, byte for byte, by

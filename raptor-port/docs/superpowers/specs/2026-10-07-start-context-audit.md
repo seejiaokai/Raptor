@@ -198,3 +198,23 @@ memory index get a marker like the rule files'. Markers stay tripwires, never ta
 - It did not open the full rows of the 21 rulings sorted as spent (option 2's work).
 - It did not sort the scheduler's 165 rulings into parts (option 8's design step).
 - It changed no guide and trimmed nothing.
+
+## What was done under his ruling (D609), 7 Oct 26
+
+| Option | Done | Measured |
+|---|---|---|
+| 1 — the seven merged blocks out of the handoff | moved whole to `docs/archive/handoff-merged-blocks-2026-10-07.md` | `HANDOFF.md` 66,700 → about 17,000 characters: about 16,500 tokens off every chat |
+| 2 — spent rulings to the archive | 27: 21 general, 4 of the scheduler's, 2 of the Tracker's, each full row opened first. (28 were marked; D465 came back the same day on Astra's read — one of its conditions is still in force.) | the general rulings 26,470 → 21,200 bytes: about 1,700 tokens off every chat |
+| 3 — finished backlog items to the archive | 19, each read in full first; what four of them still named as open is filed as `[STACK-LEFTOVERS]` | `OUTSTANDING.md` 2,496 → about 2,080 lines |
+| 4 — his memory notes | 21 of 47 that only repeated an always-loaded rule moved to a retired folder on his PC — not deleted | the index 12,100 → 6,100 bytes: about 2,000 tokens off every chat |
+| 5 and 6 — the Codex bridge brought up to date; the expired notices and spent trial paragraphs out | applied after Astra's and Sol's reads: `specs/2026-10-07-expired-guide-text.md` | `AGENTS.md` 8,360 → 7,550 bytes; the checking guide about 700 tokens lighter on every bug check |
+| 7 — say each rule once | NOT done: read side by side, the rule files repeat subjects, not words (both readers: the longest match is twelve words) | — |
+| 8 — split the scheduler's rulings | NOT done — his ruling (D611) | — |
+
+**Before the first message: 96,800 → about 92,900 tokens. After the usual opening line: about 16,500 less again. A
+scheduler build before any work: about 189,000 → about 168,000.** The document check passes. Four size markers were
+raised, each with its reason beside it in the check's own table (the backlog — 135 open items; the scheduler's and the
+Tracker's rulings — only live rulings left; the always-loaded bug-check reminder — the approved sizing sentence).
+
+**Still open:** the check that stops it growing back (the section above) is not built — `[START-CONTEXT-AUDIT]` stays
+open for it; options 9 and 10 are his own settings.

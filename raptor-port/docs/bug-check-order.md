@@ -1,11 +1,5 @@
 # HOW THIS PROJECT BUG-CHECKS — the standing order
 
-**Temporary Codex mapping — D496 (2 Oct 26), until Monday 5 Oct 26 at 19:00:** Astra plans and designs scenarios;
-Sol 6.1 challenges Astra's plans and builds; a fresh independent Astra inspector reads Sol's final code.
-The temporary same-provider reads replace the model/count mapping only, preserve every applicable check below,
-and do not count as cross-provider approval. Claude's further reads are owed before main (D494).
-Exact roles and bounded review/fix loop: `codex-review-workflow.md`. Existing Claude skills remain unchanged.
-
 Adopted 21 Sep 26, after the OIL build. Merged from two independent proposals written by models
 that did not build the code: Fable 5.1 and Astra/Codex (D8). Both are kept verbatim beside this file
 (`superpowers/briefs/2026-09-21-bugcheck-method-fable.md`, `…-codex.md`) so the reasoning behind
@@ -294,33 +288,19 @@ bundle under them and mixes pre-fix and post-fix behaviour in one walk. The host
 without writing output and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait for the
 walkers' reports.
 
-**A TRIAL, ON THE NEXT WALK ONLY (owner, D476, 1 Oct 26 — "Trial", to save tokens: the three walkers of one FULL
-check cost about 1.9 million).** ONE extra walker runs on Sonnet 5.5 beside the Opus ones — the same brief, the same
-scenario list, the same frozen build as ONE of the Opus walkers, in its own world; it replaces nobody. The host
-reproduces every finding of both, as above, and reports to him in plain words: what each found, what each missed
-that the other found, the false alarms, whether each opened its pictures, and the tokens each cost. Until he rules
-on that report nothing else goes to a cheaper model (the 17 Sep 26 rule, `guide-full.md` §Models): every other
-walker, the build, the roll-call and the reviews stay as they are. The open job: `OUTSTANDING.md`
-`[SONNET-WALKER-TRIAL]`.
-**A SECOND TRIAL (owner, D480, 1 Oct 26 — "One more trial").** The first ran on `[INSIGHTS-WHICH-COPY]`'s walk: the same
-verdict from both walkers on all 19 scenarios, no false alarm, about half the cost — on a build with nothing in it to catch.
-So on the NEXT walk one Sonnet 5.5 walker runs beside an Opus walker again, the same way, **on a build with known
-defects**: the build as it stood BEFORE its fix (or an earlier commit whose walk found real ones), neither walker told
-what is wrong, and the report says what each CAUGHT apart from whether each followed the brief. Until he rules on that
-second report nothing else goes to a cheaper model.
-**ONE EXCEPTION, ONCE (owner, D508, 3 Oct 26 — his allowance at 94% before the reset).** For the two Codex builds
-(`codex/discard-marks-remove`, `codex/rally-workspan`) Opus 5.5 plans a small, targeted check and Sonnet 5.5 does the
-reading and the walking, with no Fable; the host reproduces every find. It is an early signal on Codex's reliability,
-NOT a bug check: the full check, this second trial and the second reads stay owed after the reset, before "merge live".
 **FROM 5 OCT 26 THE WALKERS ARE SONNET 5.5 (owner, D588 — "Walk, checks, chores + one trial fix").** A walk's helpers
 are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
 chores, may go to a Sonnet helper too. Unchanged, and the price of it: each walker returns PICTURES and a filled table,
 and the host opens the pictures and REPRODUCES every finding before it enters the evidence sheet. **Sonnet never reads
 code to find bugs** (in one outside code-review test it caught 6 of 13 known bugs where Opus caught 8 to 10, with more
-false alarms), never decides whether a finding is real, never writes the roll-call, a plan or a scenario list. The
-second trial above still runs — in the check of the Codex stack (D589): one Opus walker and one Sonnet walker on the same
-scenarios, on the frozen Rally build as it stood before its review fixes, neither told what is wrong — and its report
-adds his weekly allowance, read before and after each walker. One building trial rides with it: ONE small low-risk fix
+false alarms), never decides whether a finding is real, never writes the roll-call, a plan or a scenario list. Two trials led here (D476, D480 — both run — and the one check made before the reset, D508; their text:
+`docs/archive/codex-arrangement-2026-10-07.md`). Following the second, on a build with five known faults, the agent kept
+Sonnet 5.5 as the walk helpers, without an Opus walker beside them for comparison (D595; told to him the same night);
+the sizing step still lets the host run a short walk itself (§7.0, D608). Every helper's walk brief carries three
+conditions: the host opens the pictures behind every FAIL and every high-consequence PASS (OIL, a published day, a role,
+saved data); a scenario with an EXPECTED line is judged PASS or FAIL — "RECORDED" is only for scenarios the host marks
+so, and the host re-judges any RECORDED row that has an EXPECTED line; a walker's conclusion is a finding only after the
+host reproduces it. One building trial is still to run: ONE small low-risk fix
 (`[OG-TAG-OVER-COUNT]`) built by a Sonnet helper to a precise spec, its diff and tests read by Opus, checked as its tier
 requires, and touching nothing of earned leave, permissions, the published record, saved data or the rules engine. The host
 also checks what a check run or a document chore hands back before accepting it (D588). **Since D595 (the same night — "make a

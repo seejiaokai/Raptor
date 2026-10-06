@@ -1,5 +1,9 @@
 # Expired text in the working guides — what moves out, and what the guides say after (`[START-CONTEXT-AUDIT]` options 5 and 6, D609)
 
+**APPLIED 7 Oct 26 on `claude/docs-tidy-7-oct`, after the two reads — both CHANGES REQUIRED, every finding taken (the
+table at the foot). Where a finding changed the wording, the guides carry the corrected wording, not the text below;
+the text below is the proposal as the readers saw it. His "merge live" on the pull request is his approval (D609).**
+
 **A PROPOSAL, 7 Oct 26, on `claude/docs-tidy-7-oct`. Nothing in it has been applied.** It changes working guides, so it
 is read by Astra and by Sol 6.1, one round each, apart (D70, D590), before it goes in; his "merge live" on the pull
 request is his approval of the wording (D609). Written by Opus 5.5 — neither reader is its writer.
@@ -203,3 +207,26 @@ edit is proposed. *(If he wants that one section shortened to a pointer, it is a
 opens the project guide, and as much again on every bug check; the three trial paragraphs about 700 on every bug
 check; the three short lines about 100 in every chat. Small in tokens — its worth is that no chat, and no Codex
 session, reads an ended arrangement as the rule.
+
+## The two reads — 7 Oct 26, each alone, one round each (D70)
+
+Reports, as returned: `raptor-port/docs/superpowers/briefs/2026-10-07-expired-guide-text-read-astra.md`, `…-read-sol.md`;
+the brief: `…-read-brief.md`. Both: **CHANGES REQUIRED**. Neither read the other's report. Both found nothing live lost
+in the three banners, the Codex review guide's ended section or the old bridge file's limits; both confirmed the three
+"owed" sentences were paid (the stack check's sheet §10.4); both found no passage of size repeated word for word across
+the always-loaded rule files (the longest match: twelve words) — so option 7 stays not done.
+
+| Finding | Who | What was done |
+|---|---|---|
+| The new `AGENTS.md`'s "When you stop" told a read-only reviewer to rewrite the handoff, commit and push | both | **Taken** — two cases written apart: after a review, return the report and change nothing; after an authorised build, the handoff block and the push |
+| For work Codex BUILDS, "read Astra as Opus" left Sol as second reader of Sol's own code | Sol | **Taken** — the builder's bullet now keeps every required independent read: Opus beside a fresh Codex inspector whose model did not write it (the checking order's §4a); the writer never counts as a reader |
+| "Take the next free number — the newest handoff block names it" was already false (it named D609 as free) | Astra | **Taken** — check the live rulings, the archive and the ranges held by other branches; the handoff's number is a hint |
+| D465 was archived as wholly spent, but one of its conditions is still in force (if the IT side's reports cannot reproduce the worked-out picture, a reportable piece is added; nothing built is undone) | Astra (Sol sampled it without objection) | **Taken** — D465 is back on the live list, only its build permission marked spent |
+| D610's short line kept "do not delete" and lost "no chat reviews, rebuilds or merges it until he calls it back" | both | **Taken** — the short line and the full row's heading reworded |
+| D608's short line said version 2 was read by both readers; they read version 1 | both | **Taken** — "corrected after Astra and Sol read version 1", in the short line and the full row |
+| D609's short line lost "a part he changes is read again" | Sol | **Taken** |
+| Edit 4 made Sonnet compulsory for every walk (D608 lets the host run a short one), and lost the rule that the host re-judges a "RECORDED" row that has an expected result | Astra (Sol: the three conditions are quoted faithfully) | **Taken** — the passage in the checking guide's §4 uses Astra's wording |
+| The D499 addendum still ended "OWED: Claude's working-guide read" — paid on 6 Oct | Sol | **Taken** — the sentence now says where it was paid |
+
+**Not taken: nothing.** These corrections have had no read of their own (the cap of one round, D70); each is the
+reader's own replacement wording or a closer copy of the record it quotes.
