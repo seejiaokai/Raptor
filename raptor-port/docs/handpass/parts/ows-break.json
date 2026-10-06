@@ -1,0 +1,369 @@
+{
+ "tests": [
+  "src/engine/oilworkstart.test.ts",
+  "src/leavewar/oilworkstart-published.test.ts",
+  "src/ui/oilworkstart.test.tsx",
+  "src/engine/oilscintime.test.ts",
+  "src/engine/scintime.test.ts"
+ ],
+ "cuts": [
+  {
+   "id": "B01",
+   "what": "the flying line stops reading its entered in-time / Rally",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 24,
+   "first": [
+    "his worked Saturday: an in-time typed 08:30 makes 6h30, a full day — where the nominal 09:00 gives 6h, half a day 12ms",
+    "a Rally with no in-time is the report (D497) 1ms",
+    "an in-time and a Rally: the EARLIER of the two stages, whichever line comes first 1ms"
+   ]
+  },
+  {
+   "id": "B02",
+   "what": "the walk ignores the kept report lead",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 19,
+   "first": [
+    "that evening-before reading follows the Logic value HANDED IN — a published day's own — not today's 10ms",
+    "a handed-in lead of ZERO is a value, not \"none\": no evening-before reading — while crew rest, on today's 3h, still reads one 1ms",
+    "kept values outrank today's: the nominal start and the debrief end 9ms"
+   ]
+  },
+  {
+   "id": "B03",
+   "what": "the walk ignores the kept debrief",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 8,
+   "first": [
+    "kept values outrank today's: the nominal start and the debrief end 8ms",
+    "\"Flight debrief after land\" 2h → 2h30 does not turn a published half day into a full one 41ms",
+    "the clash with an afternoon leave follows the PUBLISHED worked times, and moves only with the amendment 43ms"
+   ]
+  },
+  {
+   "id": "B04",
+   "what": "the threshold ignores the value handed in",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 10,
+   "first": [
+    "the threshold can be handed in too 8ms",
+    "the full-day threshold, both ways — for a flying line and for a desk 35ms",
+    "a week that is off screen keeps its published OIL too 60ms"
+   ]
+  },
+  {
+   "id": "B05",
+   "what": "the block no longer keeps the three values",
+   "file": "src/engine/oilev.ts",
+   "verdict": "RED",
+   "red": 28,
+   "first": [
+    "the finding itself: \"Nominal report before T/O\" 3h → 2h30 leaves the published full day a full day 79ms",
+    "\"Flight debrief after land\" 2h → 2h30 does not turn a published half day into a full one 33ms",
+    "the full-day threshold, both ways — for a flying line and for a desk 35ms"
+   ]
+  },
+  {
+   "id": "B06",
+   "what": "the work walk is not handed the block's kept values",
+   "file": "src/engine/oilev.ts",
+   "verdict": "RED",
+   "red": 20,
+   "first": [
+    "the finding itself: \"Nominal report before T/O\" 3h → 2h30 leaves the published full day a full day 78ms",
+    "\"Flight debrief after land\" 2h → 2h30 does not turn a published half day into a full one 32ms",
+    "the clash with an afternoon leave follows the PUBLISHED worked times, and moves only with the amendment 46ms"
+   ]
+  },
+  {
+   "id": "B07",
+   "what": "the amount reads today's full-day line",
+   "file": "src/engine/oilev.ts",
+   "verdict": "RED",
+   "red": 9,
+   "first": [
+    "the full-day threshold, both ways — for a flying line and for a desk 38ms",
+    "a week that is off screen keeps its published OIL too 58ms",
+    "each of the three values, each way 23ms"
+   ]
+  },
+  {
+   "id": "B08",
+   "what": "the credit pass does not face each date's own block",
+   "file": "src/leavewar/sync.ts",
+   "verdict": "RED",
+   "red": 2,
+   "first": [
+    "the full-day threshold, both ways — for a flying line and for a desk 38ms",
+    "a week that is off screen keeps its published OIL too 65ms"
+   ]
+  },
+  {
+   "id": "B09",
+   "what": "the board's figures read today's full-day line",
+   "file": "src/ui/oilmode.ts",
+   "verdict": "RED",
+   "red": 1,
+   "first": [
+    "the full-day line: the face reads its own 25ms"
+   ]
+  },
+  {
+   "id": "B10",
+   "what": "no pending entry for a Logic change",
+   "file": "src/engine/publish.ts",
+   "verdict": "RED",
+   "red": 14,
+   "first": [
+    "the clash with an afternoon leave follows the PUBLISHED worked times, and moves only with the amendment 49ms",
+    "it reads pending, takes the four sign-offs down, and clears when the value is put back 33ms",
+    "each of the three values, each way 26ms"
+   ]
+  },
+  {
+   "id": "B11",
+   "what": "the Logic entry is not listed as its own item",
+   "file": "src/engine/publish.ts",
+   "verdict": "RED",
+   "red": 8,
+   "first": [
+    "it reads pending, takes the four sign-offs down, and clears when the value is put back 36ms",
+    "a change that moves only a man's WORKED TIMES is pending too; the record holds until the day goes out again 25ms",
+    "\"Nominal report before T/O\" 3h → 2h30: 1 pending on every count, the list says what and who, the four fall; put back, all clear 202ms"
+   ]
+  },
+  {
+   "id": "B12",
+   "what": "the Logic entry is folded with the request's",
+   "file": "src/engine/publish.ts",
+   "verdict": "RED",
+   "red": 7,
+   "first": [
+    "it reads pending, takes the four sign-offs down, and clears when the value is put back 30ms",
+    "a change that moves only a man's WORKED TIMES is pending too; the record holds until the day goes out again 25ms",
+    "\"Nominal report before T/O\" 3h → 2h30: 1 pending on every count, the list says what and who, the four fall; put back, all clear 196ms"
+   ]
+  },
+  {
+   "id": "B13",
+   "what": "the pending line loses its own words",
+   "file": "src/ui/pendlist.ts",
+   "verdict": "RED",
+   "red": 6,
+   "first": [
+    "\"Nominal report before T/O\" 3h → 2h30: 1 pending on every count, the list says what and who, the four fall; put back, all clear 168ms",
+    "the debrief and the full-day line are named the same way 33ms",
+    "a man who would lose the day altogether reads \"full day → nothing\" 28ms"
+   ]
+  },
+  {
+   "id": "B14",
+   "what": "a sign-off no longer keeps the values it was given under",
+   "file": "src/engine/publish.ts",
+   "verdict": "RED",
+   "red": 4,
+   "first": [
+    "a day not yet published: signed as a full day, the full-day line raised — the four fall; put back, they stand 20ms",
+    "an amendment waiting: the published desk unchanged by the new line, the signed change not — the four still fall 26ms",
+    "a Logic change that would write the signed day's OIL exactly as it stands leaves the four standing 11ms"
+   ]
+  },
+  {
+   "id": "B15",
+   "what": "a sign-off is not checked against the values it kept",
+   "file": "src/engine/publish.ts",
+   "verdict": "RED",
+   "red": 4,
+   "first": [
+    "a day not yet published: signed as a full day, the full-day line raised — the four fall; put back, they stand 22ms",
+    "an amendment waiting: the published desk unchanged by the new line, the signed change not — the four still fall 26ms",
+    "a Logic change that would write the signed day's OIL exactly as it stands leaves the four standing 14ms"
+   ]
+  },
+  {
+   "id": "B16",
+   "what": "the comparison is on the amount alone (worked times dropped)",
+   "file": "src/engine/oilev.ts",
+   "verdict": "RED",
+   "red": 5,
+   "first": [
+    "the clash with an afternoon leave follows the PUBLISHED worked times, and moves only with the amendment 45ms",
+    "a change that moves only a man's WORKED TIMES is pending too; the record holds until the day goes out again 22ms",
+    "a Logic change that keeps the amount but moves the stored start is pending too — and the amendment stores the new start 20ms"
+   ]
+  },
+  {
+   "id": "B17",
+   "what": "the comparison fires whenever a value differs, whatever it would write",
+   "file": "src/engine/oilev.ts",
+   "verdict": "RED",
+   "red": 7,
+   "first": [
+    "a change that would write no record on this day differently raises nothing 31ms",
+    "a change that only moves hours past midnight — which the day never stores — raises nothing 23ms",
+    "a line with an entered in-time is not moved by the nominal lead at all 21ms"
+   ]
+  },
+  {
+   "id": "B18",
+   "what": "\"could he earn here\" reads today's values on a published face",
+   "file": "src/ui/oilmode.ts",
+   "verdict": "RED",
+   "red": 1,
+   "first": [
+    "\"could he earn here\" answers for the face being shown, not for today 26ms"
+   ]
+  },
+  {
+   "id": "B20",
+   "what": "\"can this row earn\" ignores the values handed in",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 1,
+   "first": [
+    "\"can this row earn\" reads the handed-in values too 6ms"
+   ]
+  },
+  {
+   "id": "B21",
+   "what": "a malformed kept value is trusted",
+   "file": "src/engine/oilev.ts",
+   "verdict": "RED",
+   "red": 1,
+   "first": [
+    "kept values that are not three real numbers are not trusted: read as none kept 25ms"
+   ]
+  },
+  {
+   "id": "B22",
+   "what": "the Logic line names no man",
+   "file": "src/ui/pendlist.ts",
+   "verdict": "RED",
+   "red": 5,
+   "first": [
+    "\"Nominal report before T/O\" 3h → 2h30: 1 pending on every count, the list says what and who, the four fall; put back, all clear 184ms",
+    "the debrief and the full-day line are named the same way 37ms",
+    "a man who would lose the day altogether reads \"full day → nothing\" 30ms"
+   ]
+  },
+  {
+   "id": "B23",
+   "what": "a standalone wave (SC, AVALON, BB) is measured like a flying line",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 25,
+   "first": [
+    "an SC shift is its written window — a wave reporting line does not move it 6ms",
+    "AVALON and BB: the written window, and still off by default 1ms",
+    "his case: an SC MAIN on 07:00–13:00 called in at 06:00 — seven hours, a full day, where six was half 12ms"
+   ]
+  },
+  {
+   "id": "B24",
+   "what": "an SC shift's OIL ignores its typed B",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 16,
+   "first": [
+    "his case: an SC MAIN on 07:00–13:00 called in at 06:00 — seven hours, a full day, where six was half 10ms",
+    "every way the box takes a time gives the same start 1ms",
+    "a shift that starts just after midnight, its B on the evening before: its own day grows, read as crew rest reads it 1ms"
+   ]
+  },
+  {
+   "id": "B25",
+   "what": "a B typed later than the shift's start shortens the shift",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 7,
+   "first": [
+    "a blank B, or one the app cannot read as a time: the written start, as before 8ms",
+    "a B typed LATER than the shift's start shortens nothing; one equal to it changes nothing 1ms",
+    "a shift that starts just after midnight, its B on the evening before: its own day grows, read as crew rest reads it 1ms"
+   ]
+  },
+  {
+   "id": "B26",
+   "what": "AVALON and BB read their B box as an in-time too",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 1,
+   "first": [
+    "AVALON and BB: a time in the B box moves nothing — theirs was never an in-time (24 Aug 26) 8ms"
+   ]
+  },
+  {
+   "id": "B27",
+   "what": "a SPARE takes the shift's B as well",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 3,
+   "first": [
+    "MAIN only — a SPARE on the same shift is off by default, and its window is the written one, not the B 8ms",
+    "a SPARE marked on the FORMATION, with no mark on its rows, keeps the written window too 1ms",
+    "the PM shift, both MAIN rows and a SPARE: each MAIN from the B, the SPARE from the written start 1ms"
+   ]
+  },
+  {
+   "id": "B28",
+   "what": "the evening-before reading of a B uses today's lead, not the published day's own",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 4,
+   "first": [
+    "that evening-before reading follows the Logic value HANDED IN — a published day's own — not today's 10ms",
+    "a handed-in lead of ZERO is a value, not \"none\": no evening-before reading — while crew rest, on today's 3h, still reads one 1ms",
+    "a B on the evening before is read on the published day's OWN lead: a Logic change holds it, and reads pending 31ms"
+   ]
+  },
+  {
+   "id": "B29",
+   "what": "the shared reader no longer reads a B on the evening before",
+   "file": "src/engine/reporting.ts",
+   "verdict": "RED",
+   "red": 6,
+   "first": [
+    "a shift that starts just after midnight, its B on the evening before: its own day grows, read as crew rest reads it 8ms",
+    "that evening-before reading follows the Logic value HANDED IN — a published day's own — not today's 1ms",
+    "the evening-before reading starts strictly INSIDE the lead: 03:00 under a 3h lead is not rolled back; under 3h01 it is 1ms"
+   ]
+  },
+  {
+   "id": "B30",
+   "what": "crew rest stops reading an SC line's B",
+   "file": "src/engine/events.ts",
+   "verdict": "RED",
+   "red": 7,
+   "first": [
+    "a handed-in lead of ZERO is a value, not \"none\": no evening-before reading — while crew rest, on today's 3h, still reads one 5ms",
+    "a typed early B (05:00) pulls the report onto it (7h30 rest) 17ms",
+    "B 05:00 starts the day at 05:00; blank B keeps the 07:00 shift start 9ms"
+   ]
+  },
+  {
+   "id": "B31",
+   "what": "a SPARE marked on the formation only takes the shift's B",
+   "file": "src/engine/oil.ts",
+   "verdict": "RED",
+   "red": 1,
+   "first": [
+    "a SPARE marked on the FORMATION, with no mark on its rows, keeps the written window too 8ms"
+   ]
+  },
+  {
+   "id": "B32",
+   "what": "a handed-in lead of zero is read as none",
+   "file": "src/engine/reporting.ts",
+   "verdict": "RED",
+   "red": 1,
+   "first": [
+    "a handed-in lead of ZERO is a value, not \"none\": no evening-before reading — while crew rest, on today's 3h, still reads one 8ms"
+   ]
+  }
+ ],
+ "restored_green": true
+}

@@ -1,0 +1,95 @@
+{
+ "parts": {
+  "ows-host-dk": {
+   "at": "2026-10-06T12:43:37.321Z",
+   "base": "http://localhost:4292",
+   "phone": false,
+   "table": [
+    {
+     "id": "H1",
+     "did": "Ranger on a new Saturday flying line VIPER, take-off 10:00, landing 11:15, no in-time; the four signed, published",
+     "saw": "✓ he was seated through the crew list [[\"bane\"]] · ✓ published as ORIG [ORIG] · ✓ Leave War: a full day (FO) [FO*] · ✓ the OIL tracker shows the day, worked 07:00–13:15 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-H1-cell.png",
+      "dk-02-H1-tracker.png"
+     ]
+    },
+    {
+     "id": "H2",
+     "did": "Logic → Edit rules → \"Nominal report before T/O\" 3h → 2h30; back to the Saturday and the Leave War",
+     "saw": "✓ the value really changed [{\"set\":\"2h30\",\"lead\":150}] · ✓ Leave War: STILL a full day [FO*] · ✓ the tracker still says worked 07:00–13:15 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left] · ✓ the Saturday reads 1 pending [1 pending] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ the To go out list names the Logic value, old and new [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → half day · 07:30] · ✓ …and the man, full day → half day [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → half day · 07:30]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-H2-logic.png",
+      "dk-04-H2-day.png",
+      "dk-05-H2-togoout.png",
+      "dk-06-H2-cell.png",
+      "dk-07-H2-tracker.png"
+     ]
+    },
+    {
+     "id": "H3",
+     "did": "View-only Sched, the published Saturday, with the Logic value still changed",
+     "saw": "✓ Ranger's puck is drawn [{\"tag\":\"ORIG\",\"puck\":\"puck oilbar oilbar-fo\",\"title\":\"Ranger · IP · instructor pilot · SXO · earns a full day of OIL\"}] · ✓ it wears the FULL-day green edge it went out with [puck oilbar oilbar-fo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-H3-viewonly.png"
+     ]
+    },
+    {
+     "id": "H4",
+     "did": "the four sign again and the amendment is published",
+     "saw": "✓ it went out as AL1 [AL1] · ✓ Leave War: now a half day (HO) [HO*] · ✓ the tracker says worked 07:30–13:15 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:30–13:15 0.5 left] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-H4-day.png",
+      "dk-10-H4-cell.png",
+      "dk-11-H4-tracker.png"
+     ]
+    },
+    {
+     "id": "H5",
+     "did": "Logic back to 3h",
+     "saw": "✓ Leave War: the amendment keeps its half day [HO*] · ✓ the day reads 1 pending again (it would be a full day) [1 pending] · ✓ the list says half day → full day [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 2h30 → 3h Ranger · OIL half day · 07:30–13:15 → full day · 07:00]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-H5-day.png",
+      "dk-13-H5-togoout.png",
+      "dk-14-H5-cell.png",
+      "dk-15-H5-tracker.png"
+     ]
+    },
+    {
+     "id": "H6",
+     "did": "the page reloaded, signed in again",
+     "saw": "✓ Leave War: still the half day [HO*] · ✓ still 1 pending [1 pending]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-H6-day.png",
+      "dk-17-H6-togoout.png",
+      "dk-18-H6-cell.png",
+      "dk-19-H6-tracker.png"
+     ]
+    },
+    {
+     "id": "H7",
+     "did": "Sunday: a new line COBRA 12:00–13:00 for the second man, published; then \"+ In-time / Rally\" typed IN TIME 0830; then the amendment",
+     "saw": "✓ seated and published [{\"got\":[\"stiff\"],\"tag\":\"ORIG\"}] · ✓ with no in-time: a half day, worked 09:00–15:00 [{\"cell\":\"HO*\",\"row\":\"Saber IP 0.5 + 0.5 +0.5 19 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"}] · ✓ the line reads IN TIME 0830 (as the box folds it) [[\"IN TIME 08:30\"]] · ✓ typed on the working copy: the day reads pending [1 pending] · ✓ …and the published half day has not moved [{\"cell\":\"HO*\",\"row\":\"Saber IP 0.5 + 0.5 +0.5 19 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"}] · ✓ the amendment goes out [AL1] · ✓ now a FULL day, worked 08:30–15:00 [{\"cell\":\"FO*\",\"row\":\"Saber IP 1 + 1 +1 19 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-20-H7a-cell.png",
+      "dk-21-H7a-tracker.png",
+      "dk-22-H7b-day.png",
+      "dk-23-H7b-togoout.png",
+      "dk-24-H7b-cell.png",
+      "dk-25-H7b-tracker.png",
+      "dk-26-H7c-cell.png",
+      "dk-27-H7c-tracker.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

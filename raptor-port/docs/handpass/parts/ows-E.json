@@ -1,0 +1,493 @@
+{
+ "parts": {
+  "ows-E-s1-dk": {
+   "at": "2026-10-06T16:38:37.673Z",
+   "base": "http://localhost:4294/",
+   "phone": false,
+   "table": [
+    {
+     "id": "E01",
+     "did": "Saturday: + Wave → SC; Ranger seated on the first MAIN row of the AM shift (crew list); B blank; four sign-offs, Publish day",
+     "saw": "✓ seated [SC AM 07:00-13:00 B \"undefined\" rows MAIN:bane MAIN:- SPARE:- SPARE:-] · ✓ published ORIG [ORIG] · ✓ Leave War cell HO [HO*] · ✓ tracker worked 07:00–13:00 [[\"07:00–13:00\"]] · ✓ tracker +0.5 shown [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:00 0.5 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-E01-cell.png",
+      "dk-02-E01-tracker.png",
+      "dk-03-E01-day.png"
+     ]
+    },
+    {
+     "id": "E02",
+     "did": "on the board, typed 06:00 in the AM shift's B box (published day)",
+     "saw": "✓ the B box holds 06:00 [{\"stored\":\"06:00\",\"box\":\"06:00\",\"cls\":\"tm\",\"title\":\"Edited — goes out as AL1\"}] · ✓ Leave War still HO [HO*] · ✓ tracker still 07:00–13:00 [[\"07:00–13:00\"]] · ✓ balance unchanged [{\"was\":\"0.5\",\"now\":\"0.5\"}] · ✓ day reads pending >= 1 [1 pending] · ✓ four sign-offs empty [all four empty]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-E02-cell.png",
+      "dk-05-E02-tracker.png",
+      "dk-06-E02-day.png",
+      "dk-07-E02-togoout.png"
+     ]
+    },
+    {
+     "id": "E02.list",
+     "did": "RECORD: the To go out words for this change",
+     "saw": "SC · brief Saber 7/10 00:36 06:00",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-E02-cell.png",
+      "dk-05-E02-tracker.png",
+      "dk-06-E02-day.png",
+      "dk-07-E02-togoout.png"
+     ]
+    },
+    {
+     "id": "E03",
+     "did": "board OIL Earn on (working copy): Ranger's puck; off; View-only Sched published Saturday puck edge",
+     "saw": "OIL Earn working copy: puck [{\"txt\":\"Ranger FO\",\"cls\":\"puck sm oilglow\",\"title\":\"Ranger · IP · instructor pilot · SXO\"}] · bars [\"none | Ranger · IP · instructor pilot · SXO\"] · switches [\"SC|\",\"SC|\",\"SDO|\"] · View-only Sched published face: tag ORIG, Ranger puck(s) [\"oilbar-ho\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-08-E03-oilearn-board.png",
+      "dk-09-face-bane.png"
+     ]
+    },
+    {
+     "id": "E03.exp",
+     "did": "expected: working copy a FULL day; published face still the HALF day",
+     "saw": "✓ working copy shows a full day (the puck reads FO) [[\"Ranger FO\"]] · ✓ published face still half day [[\"oilbar-ho\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-E03-oilearn-board.png",
+      "dk-09-face-bane.png"
+     ]
+    },
+    {
+     "id": "E04",
+     "did": "four sign-offs, Publish AL",
+     "saw": "✓ AL1 [AL1] · ✓ Leave War FO [FO*] · ✓ tracker worked 06:00–13:00 [[\"06:00–13:00\"]] · ✓ balance +1 over before (HO 0.5 → FO 1) [{\"was\":\"0.5\",\"now\":\"1\"}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-E04-cell.png",
+      "dk-11-E04-tracker.png",
+      "dk-12-E04-day.png"
+     ]
+    },
+    {
+     "id": "E05.undo",
+     "did": "top bar Undo once",
+     "saw": "undo door {\"title\":\"Undo — publishing an amendment\",\"pressed\":true,\"toasts\":[]} · B stored \"06:00\" · cell HO · tracker worked 07:00–13:00 bal 0.5 (rows for 18 Jul: 1) · day tag ORIG · pending \"1 pending\" · sign-offs all four empty · To go out: \"SC · brief Saber 7/10 00:36 06:00\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-13-E05-undo-cell.png",
+      "dk-14-E05-undo-tracker.png",
+      "dk-15-E05-undo-day.png",
+      "dk-16-E05-undo-togoout.png"
+     ]
+    },
+    {
+     "id": "E05.redo",
+     "did": "top bar Redo once",
+     "saw": "redo door {\"title\":\"Redo — publishing an amendment\",\"pressed\":true,\"toasts\":[]} · cell FO · tracker worked 06:00–13:00 bal 1 (rows for 18 Jul: 1) · day tag AL1 · pending \"\" · sign-offs all four empty",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-17-E05-redo-cell.png",
+      "dk-18-E05-redo-tracker.png",
+      "dk-19-E05-redo-day.png"
+     ]
+    },
+    {
+     "id": "E05",
+     "did": "Undo, Redo, reload — expected after Undo ORIG/HO 07:00–13:00 (recorded above); after Redo and reload AL1/FO 06:00–13:00; one tracker row",
+     "saw": "✓ after Undo: HO, 07:00–13:00 [{\"cell\":\"HO\",\"times\":[\"07:00–13:00\"],\"tag\":\"ORIG\"}] · ✓ after Redo: FO, 06:00–13:00, AL1 [{\"cell\":\"FO\",\"times\":[\"06:00–13:00\"],\"tag\":\"AL1\"}] · ✓ after reload: FO, 06:00–13:00, AL1 [{\"cell\":\"FO\",\"times\":[\"06:00–13:00\"],\"tag\":\"AL1\"}] · ✓ one tracker row for 18 Jul each time [[1,1,1]] · ✓ balance after Redo / reload = AL1's [{\"bal1\":\"1\",\"redo\":\"1\",\"reload\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-E05-undo-cell.png",
+      "dk-14-E05-undo-tracker.png",
+      "dk-15-E05-undo-day.png",
+      "dk-16-E05-undo-togoout.png",
+      "dk-17-E05-redo-cell.png",
+      "dk-18-E05-redo-tracker.png",
+      "dk-19-E05-redo-day.png",
+      "dk-20-E05-reload-cell.png",
+      "dk-21-E05-reload-tracker.png",
+      "dk-22-E05-reload-day.png"
+     ]
+    },
+    {
+     "id": "E06",
+     "did": "B changed to 08:00 (later than start); before publishing, then four sign-offs + Publish AL",
+     "saw": "✓ B holds 08:00 [{\"stored\":\"08:00\",\"box\":\"08:00\",\"cls\":\"tm\",\"title\":\"Edited — goes out as AL2\"}] · ✓ before publishing: FO holds [{\"cell\":\"FO\",\"times\":[\"06:00–13:00\"]}] · ✓ before publishing: pending >= 1 [1 pending] · ✓ AL2 [AL2] · ✓ after AL2: HO [HO*] · ✓ after AL2: worked 07:00–13:00 [[\"07:00–13:00\"]] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-23-E06-pre-cell.png",
+      "dk-24-E06-pre-tracker.png",
+      "dk-25-E06-pre-day.png",
+      "dk-26-E06-pre-togoout.png",
+      "dk-27-E06-post-cell.png",
+      "dk-28-E06-post-tracker.png",
+      "dk-29-E06-post-day.png"
+     ]
+    },
+    {
+     "id": "E06.list",
+     "did": "RECORD: the To go out words before AL2",
+     "saw": "SC · brief Saber 7/10 00:38 06:00 → 08:00",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-23-E06-pre-cell.png",
+      "dk-24-E06-pre-tracker.png",
+      "dk-25-E06-pre-day.png",
+      "dk-26-E06-pre-togoout.png"
+     ]
+    },
+    {
+     "id": "E07.box",
+     "did": "typed abc, then 25:90 into the AM shift's B box",
+     "saw": "abc → stored \"08:00\", box shows \"08:00\", box class \"tm\", toast abc is not a time — try 0900 or 09:00; 25:90 → stored \"08:00\", box shows \"08:00\", class \"tm\", toast 25:90 is not a time — try 0900 or 09:00",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-30-E07-abc.png",
+      "dk-31-E07-2590.png"
+     ]
+    },
+    {
+     "id": "E07",
+     "did": "OIL unchanged after the unreadable Bs",
+     "saw": "✓ Leave War HO [HO*] · ✓ worked 07:00–13:00 [[\"07:00–13:00\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-32-E07-cell.png",
+      "dk-33-E07-tracker.png",
+      "dk-34-E07-day.png"
+     ]
+    },
+    {
+     "id": "E07.pending",
+     "did": "RECORD: does the day read pending after the unreadable Bs",
+     "saw": "pending \"\" · sign-offs all four empty · To go out: ",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-32-E07-cell.png",
+      "dk-33-E07-tracker.png",
+      "dk-34-E07-day.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 34
+  },
+  "ows-E-s2-dk": {
+   "at": "2026-10-06T16:29:50.004Z",
+   "base": "http://localhost:4294/",
+   "phone": false,
+   "table": [
+    {
+     "id": "E08",
+     "did": "Saturday SC wave; Ranger first MAIN row AM; B 06:00 typed BEFORE publishing; four sign-offs, Publish",
+     "saw": "✓ seated + B typed [SC AM 07:00-13:00 B \"06:00\" rows MAIN:bane MAIN:- SPARE:- SPARE:-] · ✓ published ORIG [ORIG] · ✓ Leave War FO [FO*] · ✓ tracker worked 06:00–13:00 [[\"06:00–13:00\"]] · ✓ tracker +1 [{\"bal\":\"1\",\"row\":\"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 06:00–13:00 1 left\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-E08-cell.png",
+      "dk-02-E08-tracker.png",
+      "dk-03-E08-day.png"
+     ]
+    },
+    {
+     "id": "E14",
+     "did": "member (role switched in place): View-only Sched Saturday",
+     "saw": "✓ the published SC line is shown with Ranger's puck [[\"oilbar-fo\"]] · ✓ puck wears the green edge FO [[\"oilbar-fo\"]] · ✓ no control of his changes the B / OIL (no publish / unpublish / editable box; a version picker is view-only) [[\"SELECT  cls=dver attrs=data-vwork options=Original — as issued/Working draft — not issued\"]] · ✓ the B is unchanged (06:00) [{\"after\":[[\"06:00\",null]],\"typed\":\"no box to type into\"}] · ✓ Leave War cell FO for the member too [{\"text\":\"FO*\",\"cls\":\"duty weekend act\",\"title\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-E14-member-viewsched.png",
+      "dk-05-E14-member-leavewar.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 5
+  },
+  "ows-E-s3-dk": {
+   "at": "2026-10-06T16:30:26.585Z",
+   "base": "http://localhost:4294/",
+   "phone": false,
+   "table": [
+    {
+     "id": "E09.orig",
+     "did": "Sunday SC wave; Ranger on the first SPARE row (3rd) of the AM shift; B 06:00; four sign-offs, Publish",
+     "saw": "✓ seated on the 3rd row + B typed [SC AM 07:00-13:00 B \"06:00\" rows MAIN:- MAIN:- SPARE:bane SPARE:-] · ✓ published ORIG [ORIG] · ✓ Leave War cell empty (no OIL) [[object Object]] · ✓ no tracker row for Ranger [Ranger IP 0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-E09-orig-cell.png",
+      "dk-02-E09-orig-tracker.png",
+      "dk-03-E09-orig-day.png"
+     ]
+    },
+    {
+     "id": "E09.control",
+     "did": "RECORD which control: OIL Earn mode, tapped Ranger's own seat chip on the SPARE row (the \"seat oilpk\" switch)",
+     "saw": "before [\"LINE: lin oilitem dflt | This kind of event earns nothing — tap to make it earn\",\"bane: seat oilpk off | Ranger — this kind of event earns nothing by default; tap to credit him\",\"LINE: lin oilitem on | Earns OIL — tap to stop this item earning\"] → after the tap [\"LINE: lin oilitem dflt | This kind of event earns nothing — tap to make it earn\",\"bane: seat oilpk on | Ranger earns half a day — tap to take him off this event\",\"LINE: lin oilitem on | Earns OIL — tap to stop this item earning\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-E09-oilearn-before.png",
+      "dk-05-E09-oilearn-after-seat.png"
+     ]
+    },
+    {
+     "id": "E09.al",
+     "did": "OIL Earn seat switched ON; four sign-offs, Publish AL",
+     "saw": "✓ AL1 [AL1] · ✓ Leave War HO [HO*] · ✓ worked 07:00–13:00 (the written hours, not 06:00) [[\"07:00–13:00\"]] · ✓ balance +0.5 [{\"bal\":\"0.5\",\"row\":\"Ranger IP 0.5 + 0.5 +0.5 19 Jul AUTO Weekend/PH FLT · 07:00–13:00 0.5 left\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-E09-al-cell.png",
+      "dk-07-E09-al-tracker.png",
+      "dk-08-E09-al-day.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 8
+  },
+  "ows-E-s4-dk": {
+   "at": "2026-10-06T16:32:20.538Z",
+   "base": "http://localhost:4294/",
+   "phone": false,
+   "table": [
+    {
+     "id": "E10",
+     "did": "Saturday SC; AM shift re-timed 01:00–07:00 (start / end boxes), B 23:00, Ranger first MAIN; four sign-offs, Publish",
+     "saw": "✓ line as typed [SC AM 01:00-07:00 B \"23:00\" rows MAIN:bane MAIN:- SPARE:- SPARE:-] · ✓ published ORIG [ORIG] · ✓ Saturday Leave War FO [FO*] · ✓ tracker worked 00:00–07:00 [[\"00:00–07:00\"]] · ✓ Friday 17 Jul: nothing for Ranger (cell empty, no 17 Jul in the tracker) [{\"cell\":{\"text\":\"\",\"cls\":\" act\",\"title\":\"\"},\"row\":\"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 00:00–07:00 1 left\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-E10-cell.png",
+      "dk-02-E10-tracker.png",
+      "dk-03-E10-day.png",
+      "dk-04-E10-fri-cell.png",
+      "dk-05-E10-fri-tracker.png"
+     ]
+    },
+    {
+     "id": "E11.box",
+     "did": "RECORD what the Logic box accepted when typed 0h30 (Edit rules → Nominal report before T/O)",
+     "saw": "box reads \"30 min\", the stored value 30 minutes, text \"IN TIME + WX/NOTAMS\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-06-E11-logic-0h30.png"
+     ]
+    },
+    {
+     "id": "E11.a",
+     "did": "Logic: Nominal report before T/O 3h → 0h30; back to Saturday and the Leave War (day was published with its four sign-offs empty)",
+     "saw": "✓ Leave War holds FO [FO*] · ✓ tracker holds 00:00–07:00 [[\"00:00–07:00\"]] · ✓ the Saturday reads 1 pending [1 pending] · ✓ four sign-offs empty [all four empty] · ✓ To go out carries \"OIL on this day · Logic values changed since it was published\" [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 30 min Ranger · OIL as published, under today's values full] · ✓ …names the value and Ranger [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 30 min Ranger · OIL as published, under today's values full]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-E11-0h30-cell.png",
+      "dk-08-E11-0h30-tracker.png",
+      "dk-09-E11-0h30-day.png",
+      "dk-10-E11-0h30-togoout.png"
+     ]
+    },
+    {
+     "id": "E11.list",
+     "did": "RECORD the To go out words (0h30)",
+     "saw": "OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 30 min Ranger · OIL as published, under today's values full day · 00:00–07:00 → half day · 01:00–07:00",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-07-E11-0h30-cell.png",
+      "dk-08-E11-0h30-tracker.png",
+      "dk-09-E11-0h30-day.png",
+      "dk-10-E11-0h30-togoout.png"
+     ]
+    },
+    {
+     "id": "E11.b",
+     "did": "value back to 3h (sign-offs were never signed since the publish)",
+     "saw": "✓ pending clears [] · ✓ Leave War FO, 00:00–07:00 [{\"c\":\"FO\",\"t\":[\"00:00–07:00\"]}] · ✓ sign-offs: still empty (nothing to return) [all four empty]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-E11-back-unsigned-cell.png",
+      "dk-12-E11-back-unsigned-tracker.png",
+      "dk-13-E11-back-unsigned-day.png"
+     ]
+    },
+    {
+     "id": "E11.c",
+     "did": "I SIGNED the four on the published Saturday first (nothing pending), then 3h → 0h30, then back to 3h",
+     "saw": "✓ signed: four standing, nothing pending [{\"signs\":\"all four standing\",\"pend\":\"\",\"picked\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}}] · ✓ 0h30: 1 pending, sign-offs fell [{\"pend\":\"1 pending\",\"signs\":\"all four empty\"}] · ✓ 0h30: Leave War holds FO 00:00–07:00 [{\"c\":\"FO\",\"t\":[\"00:00–07:00\"]}] · ✓ back to 3h: pending clears, sign-offs return [{\"pend\":\"\",\"signs\":\"all four standing\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-E11-signed-cell.png",
+      "dk-15-E11-signed-tracker.png",
+      "dk-16-E11-signed-day.png",
+      "dk-17-E11-signed-0h30-cell.png",
+      "dk-18-E11-signed-0h30-tracker.png",
+      "dk-19-E11-signed-0h30-day.png",
+      "dk-20-E11-signed-0h30-togoout.png",
+      "dk-21-E11-signed-back-cell.png",
+      "dk-22-E11-signed-back-tracker.png",
+      "dk-23-E11-signed-back-day.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 23
+  },
+  "ows-E-s5-dk": {
+   "at": "2026-10-06T16:33:13.892Z",
+   "base": "http://localhost:4294/",
+   "phone": false,
+   "table": [
+    {
+     "id": "E12.control",
+     "did": "RECORD which control: OIL Earn mode, Ranger's own seat chip on the AVALON line",
+     "saw": "before [\"LINE: lin oilitem dflt | This kind of event earns nothing — tap to make it earn\",\"bane: seat oilpk off | Ranger — this kind of event earns nothing by default; tap to credit him\",\"LINE: ain oilitem on | Earns OIL — tap to stop this item earning\",\"spaceman: seat oilpk on | Dash earns a full day — tap to take him off this event\"] → after [\"LINE: lin oilitem dflt | This kind of event earns nothing — tap to make it earn\",\"bane: seat oilpk on | Ranger earns a full day — tap to take him off this event\",\"LINE: ain oilitem on | Earns OIL — tap to stop this item earning\",\"spaceman: seat oilpk on | Dash earns a full day — tap to take him off this event\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-E12-oilearn-before.png",
+      "dk-02-E12-oilearn-after.png"
+     ]
+    },
+    {
+     "id": "E12",
+     "did": "Sunday AVALON wave; Ranger first MAIN row; typed 17:00 in its B box; OIL Earn seat ON; four sign-offs, Publish",
+     "saw": "line AV NIGHT 19:00-07:00 B \"undefined\" rows MAIN:bane MAIN:- SPARE:- SPARE:- → AV NIGHT 19:00-07:00 B \"17:00\" rows MAIN:bane MAIN:- SPARE:- SPARE:- · cell FO · tracker worked 19:00–23:59 bal 1 (rows for 18 Jul: 0) · day tag ORIG · pending \"\" · sign-offs all four empty",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-E12-cell.png",
+      "dk-04-E12-tracker.png",
+      "dk-05-E12-day.png"
+     ]
+    },
+    {
+     "id": "E12.exp",
+     "did": "expected: worked times start 19:00 (the written shift), never 17:00",
+     "saw": "✓ seated + B typed [AV NIGHT 19:00-07:00 B \"17:00\" rows MAIN:bane MAIN:- SPARE:- SPARE:-] · ✓ published ORIG [ORIG] · ✓ worked times start at 19:00 [[\"19:00–23:59\"]] · ✓ never 17:00 [Ranger IP 1 + 1 +1 19 Jul AUTO Weekend/PH FLT · 19:00–23:59 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-E12-cell.png",
+      "dk-04-E12-tracker.png",
+      "dk-05-E12-day.png"
+     ]
+    },
+    {
+     "id": "E13",
+     "did": "Saturday SC, Ranger first MAIN AM, unpublished; Insights (week) work hours before and after typing B 06:00",
+     "saw": "before: Ranger \"20h\" (tooltip \"3 days on the programme\"), bar 68%; after: Ranger \"21h\" (tooltip \"3 days on the programme\"), bar 71%; whole list before {\"Bolt\":\"29h25\",\"Ridge\":\"28h\",\"Static\":\"25h55\",\"Ace\":\"25h35\",\"Vector\":\"24h30\",\"Echo\":\"21h25\",\"Dash\":\"21h05\",\"Relay\":\"20h55\",\"Zenith\":\"20h50\",\"Basher\":\"20h30\",\"Ranger\":\"20h\",\"Hex\":\"19h55\",\"Scope\":\"18h55\",\"Fable\":\"17h55\",\"Saber\":\"17h10\",\"Wildcard\":\"16h20\",\"Anvil\":\"15h\",\"Torch\":\"13h50\",\"Forge\":\"13h30\",\"Gambit\":\"13h30\",\"Pixel\":\"12h50\",\"Wisp\":\"12h50\",\"Warden\":\"12h45\",\"Drifter\":\"12h30\",\"Outlaw\":\"12h30\",\"Saint\":\"12h30\",\"Piston\":\"12h05\",\"Sidewinder\":\"12h\",\"Comet\":\"10h\",\"Kraken\":\"9h25\",\"Trident\":\"9h20\",\"Quill\":\"8h55\",\"Vapor\":\"8h55\",\"Cinch\":\"8h30\",\"Havoc\":\"8h\",\"Blade\":\"7h55\",\"Cutter\":\"7h25\",\"Ledger\":\"7h25\",\"Rebel\":\"6h45\",\"Cinder\":\"6h25\",\"Marlin\":\"6h25\",\"Nomad\":\"6h25\",\"Otter\":\"6h25\",\"Tally\":\"6h25\",\"Rune\":\"6h05\",\"Talisman\":\"4h30\",\"Diesel\":\"4h\",\"Recon\":\"3h\",\"Ghost\":\"1h30\",\"Grit\":\"1h30\",\"Ryder\":\"1h30\",\"Scribe\":\"1h30\",\"Cobra\":\"1h\",\"Hunter\":\"1h\",\"Jester\":\"1h\",\"Reaper\":\"1h\"} after {\"Bolt\":\"29h25\",\"Ridge\":\"28h\",\"Static\":\"25h55\",\"Ace\":\"25h35\",\"Vector\":\"24h30\",\"Echo\":\"21h25\",\"Dash\":\"21h05\",\"Ranger\":\"21h\",\"Relay\":\"20h55\",\"Zenith\":\"20h50\",\"Basher\":\"20h30\",\"Hex\":\"19h55\",\"Scope\":\"18h55\",\"Fable\":\"17h55\",\"Saber\":\"17h10\",\"Wildcard\":\"16h20\",\"Anvil\":\"15h\",\"Torch\":\"13h50\",\"Forge\":\"13h30\",\"Gambit\":\"13h30\",\"Pixel\":\"12h50\",\"Wisp\":\"12h50\",\"Warden\":\"12h45\",\"Drifter\":\"12h30\",\"Outlaw\":\"12h30\",\"Saint\":\"12h30\",\"Piston\":\"12h05\",\"Sidewinder\":\"12h\",\"Comet\":\"10h\",\"Kraken\":\"9h25\",\"Trident\":\"9h20\",\"Quill\":\"8h55\",\"Vapor\":\"8h55\",\"Cinch\":\"8h30\",\"Havoc\":\"8h\",\"Blade\":\"7h55\",\"Cutter\":\"7h25\",\"Ledger\":\"7h25\",\"Rebel\":\"6h45\",\"Cinder\":\"6h25\",\"Marlin\":\"6h25\",\"Nomad\":\"6h25\",\"Otter\":\"6h25\",\"Tally\":\"6h25\",\"Rune\":\"6h05\",\"Talisman\":\"4h30\",\"Diesel\":\"4h\",\"Recon\":\"3h\",\"Ghost\":\"1h30\",\"Grit\":\"1h30\",\"Ryder\":\"1h30\",\"Scribe\":\"1h30\",\"Cobra\":\"1h\",\"Hunter\":\"1h\",\"Jester\":\"1h\",\"Reaper\":\"1h\"}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-06-E13-before.png",
+      "dk-07-E13-after.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 5
+  },
+  "ows-E-s7-ph": {
+   "at": "2026-10-06T16:41:45.776Z",
+   "base": "http://localhost:4294/",
+   "phone": true,
+   "table": [
+    {
+     "id": "E15.E01",
+     "did": "PHONE: Saturday SC; Ranger first MAIN AM; B blank; sign + Publish",
+     "saw": "✓ seated [SC AM 07:00-13:00 B \"undefined\" rows MAIN:bane MAIN:- SPARE:- SPARE:-] · ✓ ORIG [ORIG] · ✓ HO, worked 07:00–13:00 [{\"c\":\"HO\",\"t\":[\"07:00–13:00\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-E15-board-sc.png",
+      "ph-02-E15-e01-cell.png",
+      "ph-03-E15-e01-tracker.png",
+      "ph-04-E15-e01-day.png"
+     ]
+    },
+    {
+     "id": "E15.E02",
+     "did": "PHONE: typed 06:00 in the B box (published day)",
+     "saw": "✓ B holds 06:00 [{\"stored\":\"06:00\",\"box\":\"06:00\",\"cls\":\"tm\",\"title\":\"Edited — goes out as AL1\"}] · ✓ HO holds, 07:00–13:00 [{\"c\":\"HO\",\"t\":[\"07:00–13:00\"]}] · ✓ pending >= 1, sign-offs empty [{\"p\":\"1 pending\",\"s\":\"all four empty\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-E15-e02-cell.png",
+      "ph-06-E15-e02-tracker.png",
+      "ph-07-E15-e02-day.png",
+      "ph-08-E15-e02-togoout.png"
+     ]
+    },
+    {
+     "id": "E15.E02.list",
+     "did": "RECORD (phone): To go out words",
+     "saw": "SC · brief Saber 7/10 00:41 06:00",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-05-E15-e02-cell.png",
+      "ph-06-E15-e02-tracker.png",
+      "ph-07-E15-e02-day.png",
+      "ph-08-E15-e02-togoout.png"
+     ]
+    },
+    {
+     "id": "E15.E04",
+     "did": "PHONE: sign + Publish AL",
+     "saw": "✓ AL1 [AL1] · ✓ FO, worked 06:00–13:00, nothing pending [{\"c\":\"FO\",\"t\":[\"06:00–13:00\"],\"p\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-E15-e04-cell.png",
+      "ph-10-E15-e04-tracker.png",
+      "ph-11-E15-e04-day.png"
+     ]
+    },
+    {
+     "id": "E15.B-box",
+     "did": "RECORD: does the phone board show the SC line's B box, and how reached",
+     "saw": "board opened by tapping the day's date (\"Jul 18\" on the Edit Schedule day, opened=5) → \"+ Wave\" → SC; B box visible on the phone board: {\"visibleBoxes\":4,\"w\":46,\"vw\":390}",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-E15-board-sc.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 11
+  },
+  "ows-E-s8-dk": {
+   "at": "2026-10-06T16:40:38.049Z",
+   "base": "http://localhost:4294/",
+   "phone": false,
+   "table": [
+    {
+     "id": "E16.a",
+     "did": "Saturday SC, Ranger first MAIN, B 06:00, published",
+     "saw": "✓ ORIG [ORIG] · ✓ FO, 06:00–13:00 [{\"c\":\"FO\",\"t\":[\"06:00–13:00\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-E16-before-cell.png",
+      "dk-02-E16-before-tracker.png",
+      "dk-03-E16-before-day.png"
+     ]
+    },
+    {
+     "id": "E16.note",
+     "did": "RECORD the note the app gives when the leave 06:00–06:30 on 18 Jul is filed for Ranger (Inputs page)",
+     "saw": "type \"LL\"; filed {\"iid\":\"imuwwn3pshcpkni\",\"asked\":[],\"clash\":false}; toasts [\"Ranger is recorded as working 06:00–13:00 on 18 Jul — this LL is filed anyway and flagged for someone to resolve\"]; notes seen [\"Llong work day\",\"Llong work day\",\"Ranger is recorded as working 06:00–13:00 on 18 Jul — this LL is filed anyway and flagged for someone to resolve\",\"Ranger 18 Jul 06:00–06:30 LL LATEwalker E leave now ✎ ✕\"]; the row reads \"Ranger 18 Jul 06:00–06:30 LL LATEwalker E leave now ✎ ✕\"; text on the page about it: \" Availability 📅 7 Oct → 21 Oct 🔍 Export to Excel NAME START▲ END TYPE REMARKS LAST MODIFIED Ranger 18 Jul 06:00–06:30 LL LATEwalker E leave now ✎ ✕ Ranger is recorded as working 06:00–13:00 on 18 Jul — this LL is filed anyway and flagged for someone to resolve\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-E16-inputs-form.png",
+      "dk-05-E16-inputs-after.png"
+     ]
+    },
+    {
+     "id": "E16.lw",
+     "did": "RECORD whether the Leave War day goes amber, and the cell / tracker / day after the leave is filed",
+     "saw": "Leave War cell {\"bg\":\"rgba(6, 8, 11, 0.55)\",\"cls\":\"weekend act mkd\",\"text\":\"<LL\\n!\",\"title\":null,\"kids\":[\"SPAN.c appr am raptor \\\"<LL\\\" color rgb(143, 224, 168) bg rgba(87, 201, 122, 0.16) border rgb(143, 224, 168)\",\"SPAN.mk warn \\\"!\\\" color rgb(58, 37, 0) bg rgb(242, 200, 121) border rgb(58, 37, 0)\"]} (a plain Friday for comparison {\"bg\":\"rgba(0, 0, 0, 0)\",\"cls\":\" act\"}); cell <LL\n! · tracker worked 06:00–13:00 bal 1 (rows for 18 Jul: 1) · day tag ORIG · pending \"1 pending\" · sign-offs all four empty · To go out: \"Ranger · LL Saber 7/10 00:40 filed\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-10-E16-leavewar-day.png",
+      "dk-06-E16-after-cell.png",
+      "dk-07-E16-after-tracker.png",
+      "dk-08-E16-after-day.png",
+      "dk-09-E16-after-togoout.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 10
+  }
+ }
+}

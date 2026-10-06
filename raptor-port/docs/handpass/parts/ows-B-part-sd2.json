@@ -1,0 +1,37 @@
+{
+ "parts": {
+  "ows-B-sD-dk": {
+   "at": "2026-10-06T13:15:26.171Z",
+   "base": "http://localhost:4294",
+   "phone": false,
+   "table": [
+    {
+     "id": "S31.1",
+     "did": "Mon 20 Jul declared PH (Leave War event row, text \"PH\"); on the week \"Jul 20\" a new flying line 01:00–02:00, Vandal, line IN TIME 21:59; published",
+     "saw": "✓ PH declared [{\"done\":true,\"before\":\"＋\",\"cell\":\"PH\"}] · ✓ the week opened is Monday 20 Jul [Monday\nJul 20\nTemplates\nLive working cop] · ✓ line kept [[\"IN TIME 21:59\"]] · ✓ published ORIG [ORIG] · ✓ Monday FO [FO*] · ✓ worked 00:00–04:00 [Vandal IP 1 + 1 +1 20 Jul AUTO Weekend/PH FLT · 00:00–04:00 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}] · ✓ Sunday 19 Jul: nothing from it [{\"text\":\"\",\"cls\":\"weekend act\",\"title\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S31-ph.png",
+      "dk-02-S31-board.png",
+      "dk-03-S31a-mon-cell.png",
+      "dk-04-S31a-mon-tracker.png"
+     ]
+    },
+    {
+     "id": "S31.2",
+     "did": "Edit Schedule moved to the week \"Jul 13\" and back to \"Jul 20\"; then the page reloaded and signed in again",
+     "saw": "✓ after the week moves: Monday still FO 00:00–04:00 [{\"cell\":\"FO*\",\"row\":\"Vandal IP 1 + 1 +1 20 Jul AUTO Weekend/PH FLT · 00:00–04:00 1 left\"}] · ✓ after the reload: Monday still FO 00:00–04:00 [{\"cell\":\"FO*\",\"row\":\"Vandal IP 1 + 1 +1 20 Jul AUTO Weekend/PH FLT · 00:00–04:00 1 left\"}] · ✓ balance still +1 [{\"base\":\"0\",\"now\":\"1\"}] · ✓ Sunday still nothing [{\"text\":\"\",\"cls\":\"weekend act\",\"title\":\"\"}] · ✓ Monday still ORIG, nothing pending [{\"tag\":\"ORIG\",\"pending\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-S31b-weeks-cell.png",
+      "dk-06-S31b-weeks-tracker.png",
+      "dk-07-S31c-reload-cell.png",
+      "dk-08-S31c-reload-tracker.png",
+      "dk-09-S31c-day-day.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

@@ -43,8 +43,10 @@ recurring in this app).
 **Reporting flow added2 Oct26 (D497–D507):** existing `w.intimes` strings →
 `engine/reporting.ts` first-valid clock + own-wave formation/activity scope →
 per-formation signed actual report → `events.ts` → workSpan/LONGDAY/Insights,
-crew-rest and SANS. Ordinary busy remains step/dekit; OIL remains nominal
-reportLead/debrief. The same pure resolved stages feed draft inline preview,
+crew-rest and SANS. Ordinary busy remains step/dekit; ~~OIL remains nominal
+reportLead/debrief~~ *(changed 6 Oct 26 — D591, D592, `[OIL-WORK-START]`: OIL reads the same resolved report —
+`engine/oil.ts dayOilWork` → `resolveReporting` — and the nominal lead only where no line gives a clock; a published
+day keeps the three Logic values its OIL was worked out from, `engine-rules.md` §Weekend/PH work earns OIL)*. The same pure resolved stages feed draft inline preview,
 validator warnings. D509 supersedes the timing publication guard: first publish,
 AL and correcting issue proceed with a red timing warning, frozen normally;
 no timing check refuses the command or raw engine doors. Headers state previous
@@ -63,7 +65,8 @@ take-off minus live reportLead → clock + live reportText → existing `it:` wr
 marks/history and plain-string storage → same parser/consumer chain above.
 reportText adds a text-kind spec inside existing rules.v, one line/max60/default
 IN TIME + WX/NOTAMS. Logic escaping, normalisation, reset/load, snapshot/export
-and Undo use the established settings seam; numeric values and OIL remain separate.
+and Undo use the established settings seam; numeric values and OIL remain separate *(the report lead now reaches OIL
+only where a line has no entered in-time / Rally, and never a published day's — 6 Oct 26, `[OIL-WORK-START]`)*.
 
 **Dated-rest extension,2 Oct26:** the report's resolved date feeds a shared lookup
 of up to four authored source dates, including existing adjacent-week issued/working
@@ -73,7 +76,16 @@ source date and every affected target; external trace hides use that target's
 week/day, and multiple crew-rest targets coexist with the running-away trace.
 The original one-day descriptions below are historical where this extension applies.
 Prior-origin bands ending at00:00 have zero members/total while the separate global
-all-day list is retained. Neither extension changes normal busy windows or OIL.
+all-day list is retained. Neither extension changes normal busy windows or OIL *(OIL since changed by its own job —
+D591, D592, 6 Oct 26)*.
+
+**OIL's two drift-seams, closed 6 Oct 26 (`[OIL-WORK-START]`).** (1) "When does this crew report" has one reader
+(`reporting.ts resolveReporting`); OIL was the last consumer doing its own arithmetic and now asks it. (2) A published
+day's OIL was worked out from its frozen content but TODAY's Logic values; the three values now ride the day's evidence
+block, and the readers of a published day's OIL — the Leave War credit and its worked times, the tracker, the green
+edge, the OIL Earn figures, the publish toast, the Unpublish warning — all go through `oilev.ts oilDayWork` /
+`oilAmount`. A NEW reader of a published day's OIL must go through those two, never `VCONF` directly; a new Logic value
+that enters the OIL arithmetic joins `OilRuleVals` (`engine/oil.ts`) so it is kept, read and compared with the rest.
 
 **Keep this true in the same PR** (same rule as `HANDOFF.md`). A feature that
 adds a surface, a flow, or a new drift-seam adds a line here. Stale is worse

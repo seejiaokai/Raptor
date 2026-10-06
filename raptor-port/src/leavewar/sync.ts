@@ -29,8 +29,8 @@ import { persistPeopleProjection, commitPeopleEdit } from '../state/people-setti
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf } from '../engine/publish'
-import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork } from '../engine/oil'
-import { oilEarnedWork, type OilEvidence } from '../engine/oilev'
+import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, oilWorkWhy, type OilWork } from '../engine/oil'
+import { oilEarnedWork, oilAmount, oilWorkSpans as workSpans, type OilEvidence } from '../engine/oilev'
 import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
@@ -977,13 +977,15 @@ export interface DesiredOil {
    is exactly what §7.5 forbids), so the date is PROTECTED rather than guessed
    at: the landed credit stands and nothing new is derived — the same rule the
    pass already applies to an unresolvable snapshot. Returns false to say so. */
-function creditFrom(day: any, iso: string, add: (p: string, iso: string, sp: OilWork[], via?: 'schedule' | 'input') => void): boolean {
+function creditFrom(day: any, iso: string, add: (p: string, iso: string, sp: OilWork[], via?: 'schedule' | 'input') => void, blocks?: Map<string, OilEvidence>): boolean {
   const ev: OilEvidence | undefined = day && day.oilev
   /* the block's own date must be the date we are crediting. The evidence carries
      its ISO precisely so this binding can be checked, and a block that does not
      match the date it was found under is a misfiled document, not a licence to
      pay against it — so the date is PROTECTED, exactly like a missing block. */
   if (!ev || ev.iso !== iso) return false
+  /* the block this date's OIL comes from — its own full-day line faces the pooled envelope below ([OIL-WORK-START]) */
+  if (blocks) blocks.set(iso, ev)
   for (const [person, sp] of Object.entries(oilEarnedWork(day, ev))) {
     /* the two halves POOL into one envelope per person per date, and the credit
        reads as the SCHEDULE's when the schedule earned any of it — that is the
@@ -1021,6 +1023,11 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
   }
   /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
   const pool = new Map<string, OilWork[]>()
+  /* iso -> the issued block that date's work was read from. One date comes from exactly one version (the loaded week's
+     or one stashed week's), and the full-day line its envelopes face is THAT version's own — the Logic value as it
+     stood when the day was published, never today's ([OIL-WORK-START] — owner, D592 (4): "a published day keeps the OIL
+     it went out with"). The work spans are already measured with the version's own leads (oilev.ts oilDayWork). */
+  const blocks = new Map<string, OilEvidence>()
   /* which of those days the PUBLISHED SCHEDULE earned, as opposed to a duty
      input the owner accepted — what the credit's giver reads as on screen
      (owner, 21 Sep 26). A day backed by both is the schedule's: that is the
@@ -1065,7 +1072,7 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
        No snapshot (an orphaned approved day) → protect it (P2-IMPL-01). */
     const snap = daySnapOf(di, dayCurVer(di))
     if (!snap || !snap.d) { protectedDates.add(iso); continue }
-    if (!creditFrom(snap.d, iso, add)) protectedDates.add(iso)
+    if (!creditFrom(snap.d, iso, add, blocks)) protectedDates.add(iso)
   }
   /* every OTHER week, out of its stash entry — the loaded week is skipped
      (its stash is at best a stale copy of the live model read above) and a
@@ -1095,31 +1102,21 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
          protect the date, never fall back to its stashed draft (P2-IMPL-01). */
       const snap = daySnapIn(wk!.sc, di, dayCurVerIn(wk!.sc, di, String(v)), String(v))
       if (!snap || !snap.d) { protectedDates.add(iso); continue }
-      if (!creditFrom(snap.d, iso, add)) protectedDates.add(iso)
+      if (!creditFrom(snap.d, iso, add, blocks)) protectedDates.add(iso)
     }
   }
   const out = new Map<string, DesiredOil>()
   for (const [k, spans] of pool) {
     if (protectedDates.has(k.slice(k.indexOf('|') + 1))) continue   // never desire a protected date (P2-IMPL-01)
-    const amt = uniformOil(envMin(spans.map(w => [w.s, w.e] as [number, number])))
+    const amt = oilAmount(blocks.get(k.slice(k.indexOf('|') + 1)), spans)
     if (amt) out.set(k, { code: amt === 1 ? 'FO' : 'HO', why: oilWorkWhy(spans), spans: workSpans(spans), via: fromSchedule.has(k) ? 'schedule' : 'input' })
   }
   return { desired: out, protectedDates }
 }
 
-/* the day's work spans clipped to the date and merged where they touch — the
-   stored shape of an auto credit's times */
-function workSpans(spans: OilWork[]): Array<[number, number]> {
-  const clipped = spans.map(w => [Math.max(0, w.s), Math.min(1439, w.e)] as [number, number]).filter(([a, b]) => a <= b)
-  clipped.sort((a, b) => a[0] - b[0])
-  const out: Array<[number, number]> = []
-  for (const [a, b] of clipped) {
-    const last = out[out.length - 1]
-    if (last && a <= last[1] + 1) last[1] = Math.max(last[1], b)
-    else out.push([a, b])
-  }
-  return out
-}
+/* the day's work spans clipped to the date and merged where they touch — the stored shape of an auto credit's times:
+   `workSpans` is engine/oilev.ts oilWorkSpans (moved there 6 Oct 26, [OIL-WORK-START], unchanged — the comparison that
+   says a published record would change under today's Logic values reads the same body the record is written with) */
 
 /* THE PUBLISH DOOR ([ARCH-STACK] step 4).
  *

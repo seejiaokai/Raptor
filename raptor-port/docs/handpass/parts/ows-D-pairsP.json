@@ -1,0 +1,145 @@
+{
+ "parts": {
+  "ows-D-pairs-P-dk": {
+   "at": "2026-10-06T14:22:35.742Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "PR-P-Op-Lr",
+     "did": "published Saturday; first Op, then Lr",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Op: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Op: the day reads pending [1 pending] · ✓ after Lr: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-PR-P-Op-Lr-after-2.png",
+      "dk-02-PR-P-Op-Lr-final-cell.png",
+      "dk-03-PR-P-Op-Lr-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Lr-Op",
+     "did": "published Saturday; first Lr, then Op",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Lr: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"OIL on this day · Logic values changed since it was published Logic · N] · ✓ after Lr: the day reads pending [1 pending] · ✓ after Op: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"OIL on this day · Logic values ] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-PR-P-Lr-Op-after-2.png",
+      "dk-05-PR-P-Lr-Op-final-cell.png",
+      "dk-06-PR-P-Lr-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Op-Ld",
+     "did": "published Saturday; first Op, then Ld",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Op: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Op: the day reads pending [1 pending] · ✓ after Ld: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-PR-P-Op-Ld-after-2.png",
+      "dk-08-PR-P-Op-Ld-final-cell.png",
+      "dk-09-PR-P-Op-Ld-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Ld-Op",
+     "did": "published Saturday; first Ld, then Op",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Ld: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"OIL on this day · Logic values changed since it was published Logic · F] · ✓ after Ld: the day reads pending [1 pending] · ✓ after Op: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"OIL on this day · Logic values ] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-PR-P-Ld-Op-after-2.png",
+      "dk-11-PR-P-Ld-Op-final-cell.png",
+      "dk-12-PR-P-Ld-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Op-A",
+     "did": "published Saturday; first Op, then A",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Op: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Op: the day reads pending [1 pending] · ✓ A: the amendment went out as AL1 [{\"absent\":false,\"said\":\"AL1\",\"signedFirst\":\"{\\\"cur\\\":\\\"Ace\\\",\\\"sked\\\":\\\"Anvil\\\",\\\"plan\\\":\\\"Anvil\\\",\\\"appr\\\":\\\"Anvil\\\"}\",\"note\":\"Publish AL control: {\\\"text\\\":\\\"] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (the pair's own A published it)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-PR-P-Op-A-after-2.png",
+      "dk-14-PR-P-Op-A-final-cell.png",
+      "dk-15-PR-P-Op-A-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-A-Op",
+     "did": "published Saturday; first A, then Op",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Op: paid still holds [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ A first (nothing waiting): no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: none)\"}] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"\\\"\",\"redoPressed\":true,\"afterRedo\":\"chip \\\"1 pending\\\" marker \\\"No] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-PR-P-A-Op-after-2.png",
+      "dk-17-PR-P-A-Op-final-cell.png",
+      "dk-18-PR-P-A-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Or-Lr",
+     "did": "published Saturday; first Or, then Lr",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Or: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Or: the day reads pending [1 pending] · ✓ after Lr: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-PR-P-Or-Lr-after-2.png",
+      "dk-20-PR-P-Or-Lr-final-cell.png",
+      "dk-21-PR-P-Or-Lr-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Lr-Or",
+     "did": "published Saturday; first Lr, then Or",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Lr: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"OIL on this day · Logic values changed since it was published Logic · N] · ✓ after Lr: the day reads pending [1 pending] · ✓ after Or: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"OIL on this day · Logic values ] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-PR-P-Lr-Or-after-2.png",
+      "dk-23-PR-P-Lr-Or-final-cell.png",
+      "dk-24-PR-P-Lr-Or-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Or-Ld",
+     "did": "published Saturday; first Or, then Ld",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Or: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Or: the day reads pending [1 pending] · ✓ after Ld: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-PR-P-Or-Ld-after-2.png",
+      "dk-26-PR-P-Or-Ld-final-cell.png",
+      "dk-27-PR-P-Or-Ld-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Ld-Or",
+     "did": "published Saturday; first Ld, then Or",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Ld: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"OIL on this day · Logic values changed since it was published Logic · F] · ✓ after Ld: the day reads pending [1 pending] · ✓ after Or: paid still holds [chip \"2 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed OIL on this day · Logic values changed sinc] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"OIL on this day · Logic values ] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-28-PR-P-Ld-Or-after-2.png",
+      "dk-29-PR-P-Ld-Or-final-cell.png",
+      "dk-30-PR-P-Ld-Or-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-Or-A",
+     "did": "published Saturday; first Or, then A",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Or: paid cell and worked times hold (HO 09:00-15:00, bal 0.5) [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ after Or: the day reads pending [1 pending] · ✓ A: the amendment went out as AL1 [{\"absent\":false,\"said\":\"AL1\",\"signedFirst\":\"{\\\"cur\\\":\\\"Ace\\\",\\\"sked\\\":\\\"Anvil\\\",\\\"plan\\\":\\\"Anvil\\\",\\\"appr\\\":\\\"Anvil\\\"}\",\"note\":\"Publish AL control: {\\\"text\\\":\\\"] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"1 pending\\\" marker \\\"Not yet signed\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"What this day earns changed\\\"\",] · ✓ final record after issue: none [ | Ranger IP 0 (the pair's own A published it)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-31-PR-P-Or-A-after-2.png",
+      "dk-32-PR-P-Or-A-final-cell.png",
+      "dk-33-PR-P-Or-A-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-P-A-Or",
+     "did": "published Saturday; first A, then Or",
+     "saw": "✓ fixture: Ranger seated, published ORIG [{\"took\":true,\"tag\":\"ORIG\"}] · ✓ after Or: paid still holds [chip \"1 pending\" marker \"Not yet signed\" | paid cell \"HO*\" | 09:00–15:00 bal 0.5 | list \"What this day earns changed\"] · ✓ A first (nothing waiting): no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: none)\"}] · ✓ Undo, Redo, reload: the pending count follows (after Undo = after the first action; after Redo and reload = after the second) [{\"undoPressed\":true,\"afterUndo\":\"chip \\\"\\\" | paid cell \\\"HO*\\\" | 09:00–15:00 bal 0.5 | list \\\"\\\"\",\"redoPressed\":true,\"afterRedo\":\"chip \\\"1 pending\\\" marker \\\"No] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish AL)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-34-PR-P-A-Or-after-2.png",
+      "dk-35-PR-P-A-Or-final-cell.png",
+      "dk-36-PR-P-A-Or-final-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 36
+  }
+ }
+}

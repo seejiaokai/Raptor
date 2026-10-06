@@ -1,0 +1,123 @@
+{
+ "parts": {
+  "ows-B-sB-S30S32S34-dk": {
+   "at": "2026-10-06T13:13:32.582Z",
+   "base": "http://localhost:4294",
+   "phone": false,
+   "table": [
+    {
+     "id": "S30.1",
+     "did": "Saturday flight 01:00–02:00, line IN TIME 22:00; published",
+     "saw": "✓ published ORIG [ORIG] · ✓ line kept [[\"IN TIME 22:00\"]] · ✓ Saturday HO [HO*] · ✓ worked 00:00–04:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 00:00–04:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}] · ✓ Friday 17 Jul: no credit from this flight [{\"text\":\"\",\"cls\":\" act\",\"title\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S30a-sat-cell.png",
+      "dk-02-S30a-sat-tracker.png"
+     ]
+    },
+    {
+     "id": "S30.2",
+     "did": "the line changed to IN TIME 21:59, then Publish AL",
+     "saw": "✓ line reads 21:59 [[\"IN TIME 21:59\"]] · ✓ 1 pending [1 pending] · ✓ paid HO holds, worked 00:00–04:00 [{\"cell\":\"HO*\",\"row\":\"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 00:00–04:00 0.5 left\"}] · ✓ AL1 [AL1] · ✓ now FO, worked 00:00–04:00 [{\"cell\":\"FO*\",\"row\":\"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 00:00–04:00 1 left\"}] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}] · ✓ Friday still no credit [{\"text\":\"\",\"cls\":\" act\",\"title\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-S30b-day-day.png",
+      "dk-04-S30b-day-togoout.png",
+      "dk-05-S30b-held-cell.png",
+      "dk-06-S30b-held-tracker.png",
+      "dk-07-S30c-am-cell.png",
+      "dk-08-S30c-am-tracker.png"
+     ]
+    },
+    {
+     "id": "S32.1",
+     "did": "Saturday flight 22:00–01:00, line IN TIME 20:00; published",
+     "saw": "✓ published ORIG [ORIG] · ✓ line kept [[\"IN TIME 20:00\"]] · ✓ Saturday FO [FO*] · ✓ worked 20:00–23:59 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 20:00–23:59 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}] · ✓ Sunday: nothing from it [{\"text\":\"\",\"cls\":\"weekend act\",\"title\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-S32a-sat-cell.png",
+      "dk-10-S32a-sat-tracker.png",
+      "dk-11-S32a-day-day.png"
+     ]
+    },
+    {
+     "id": "S32.2",
+     "did": "Logic → \"Flight debrief after land\" 2h → 1h30",
+     "saw": "✓ value changed (minutes) [{\"set\":\"1h30\",\"debrief\":90}] · ✓ no OIL pending (0 pending) [] · ✗ sign-offs still stand [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ paid holds: FO, 20:00–23:59 [{\"cell\":\"FO*\",\"row\":\"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 20:00–23:59 1 left\"}] · ✓ balance holds [{\"was\":\"1\",\"now\":\"1\"}] · ✓ Sunday: still nothing [{\"text\":\"\",\"cls\":\"weekend act\",\"title\":\"\"}]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-12-S32b-day-day.png",
+      "dk-13-S32b-sat-cell.png",
+      "dk-14-S32b-sat-tracker.png"
+     ]
+    },
+    {
+     "id": "S32.2-list",
+     "did": "the day head after the Logic change",
+     "saw": "{\"head\":{\"tag\":\"ORIG\",\"pending\":\"\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-12-S32b-day-day.png"
+     ]
+    },
+    {
+     "id": "S34.1",
+     "did": "Saturday flight 12:00–12:00 (take-off = landing), no In-time/Rally; published",
+     "saw": "✓ published ORIG [ORIG] · ✓ HO [HO*] · ✓ worked 09:00–14:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–14:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-S34-board.png",
+      "dk-16-S34a-cell.png",
+      "dk-17-S34a-tracker.png"
+     ]
+    },
+    {
+     "id": "S34.1-words",
+     "did": "the day's warning list on the unpublished fixture (board), all words",
+     "saw": "[\"adv/FLT_NO_LEN: VIPER takes off and lands at the same time (12:00) — one of the two is wrong; the day still earns from the report and debrief\",\"adv/OIL_UNPUBLISHED: This day is not published yet, so nobody earns their OIL for it — publish it before the day is out\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-15-S34-board.png"
+     ]
+    },
+    {
+     "id": "S34.2",
+     "did": "IN TIME 12:00 typed (take-off), then Publish AL",
+     "saw": "✓ line kept [[\"IN TIME 12:00\"]] · ✓ 1 pending before the amendment [1 pending] · ✓ AL1 [AL1] · ✓ HO [HO*] · ✓ worked 12:00–14:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 12:00–14:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-S34b-day-day.png",
+      "dk-19-S34b-day-togoout.png",
+      "dk-20-S34b-cell.png",
+      "dk-21-S34b-tracker.png"
+     ]
+    },
+    {
+     "id": "S34.3",
+     "did": "Logic → \"Flight debrief after land\" set to 0; then Publish AL",
+     "saw": "✓ debrief now 0 [{\"set\":\"0 min\",\"debrief\":0}] · ✓ paid holds HO 12:00–14:00 [{\"cell\":\"HO*\",\"row\":\"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 12:00–14:00 0.5 left\"}] · ✓ 1 pending (it would now earn nothing) [1 pending] · ✓ AL2 [AL2] · ✓ no credit: cell empty [{\"text\":\"\",\"cls\":\"weekend act\",\"title\":\"\"}] · ✓ balance back to baseline [{\"base\":\"0\",\"now\":\"0\",\"row\":\"Ranger IP 0\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-S34c-day-day.png",
+      "dk-23-S34c-day-togoout.png",
+      "dk-24-S34c-held-cell.png",
+      "dk-25-S34c-held-tracker.png",
+      "dk-26-S34c-cell.png",
+      "dk-27-S34c-tracker.png"
+     ]
+    },
+    {
+     "id": "S34.3-words",
+     "did": "To go out list on the Logic change; the day's warning words after",
+     "saw": "{\"list\":\"OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 0 min Ranger · OIL half day · 12:00–14:00 → nothing\",\"warns\":[\"hard/REPORT_ORDER: VIPER: in-time 12:00 is later than suggested brief 09:40.\",\"adv/FLT_NO_LEN: VIPER takes off and lands at the same time (12:00) — one of the two is wrong; the day still earns from the report and debrief\"]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-22-S34c-day-day.png",
+      "dk-23-S34c-day-togoout.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

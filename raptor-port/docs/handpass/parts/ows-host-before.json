@@ -1,0 +1,92 @@
+{
+ "parts": {
+  "ows-host-dk": {
+   "at": "2026-10-06T12:41:33.590Z",
+   "base": "http://localhost:4291",
+   "phone": false,
+   "table": [
+    {
+     "id": "H1",
+     "did": "Ranger on a new Saturday flying line VIPER, take-off 10:00, landing 11:15, no in-time; the four signed, published",
+     "saw": "✓ he was seated through the crew list [[\"bane\"]] · ✓ published as ORIG [ORIG] · ✓ Leave War: a full day (FO) [FO*] · ✓ the OIL tracker shows the day, worked 07:00–13:15 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-H1-cell.png",
+      "dk-02-H1-tracker.png"
+     ]
+    },
+    {
+     "id": "H2",
+     "did": "Logic → Edit rules → \"Nominal report before T/O\" 3h → 2h30; back to the Saturday and the Leave War",
+     "saw": "✓ the value really changed [{\"set\":\"2h30\",\"lead\":150}] · ✗ Leave War: STILL a full day [HO*] · ✗ the tracker still says worked 07:00–13:15 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:30–13:15 0.5 left] · ✗ the Saturday reads 1 pending [10 changes] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✗ the To go out list names the Logic value, old and new [] · ✗ …and the man, full day → half day []",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-03-H2-logic.png",
+      "dk-04-H2-day.png",
+      "dk-05-H2-cell.png",
+      "dk-06-H2-tracker.png"
+     ]
+    },
+    {
+     "id": "H3",
+     "did": "View-only Sched, the published Saturday, with the Logic value still changed",
+     "saw": "✓ Ranger's puck is drawn [{\"tag\":\"ORIG\",\"puck\":\"puck oilbar oilbar-ho\",\"title\":\"Ranger · IP · instructor pilot · SXO · earns half a day of OIL\"}] · ✗ it wears the FULL-day green edge it went out with [puck oilbar oilbar-ho]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-07-H3-viewonly.png"
+     ]
+    },
+    {
+     "id": "H4",
+     "did": "the four sign again and the amendment is published",
+     "saw": "✗ it went out as AL1 [ORIG] · ✓ Leave War: now a half day (HO) [HO*] · ✓ the tracker says worked 07:30–13:15 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:30–13:15 0.5 left] · ✗ nothing pending [14 changes]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-08-H4-day.png",
+      "dk-09-H4-cell.png",
+      "dk-10-H4-tracker.png"
+     ]
+    },
+    {
+     "id": "H5",
+     "did": "Logic back to 3h",
+     "saw": "✗ Leave War: the amendment keeps its half day [FO*] · ✗ the day reads 1 pending again (it would be a full day) [14 changes] · ✗ the list says half day → full day []",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-11-H5-day.png",
+      "dk-12-H5-cell.png",
+      "dk-13-H5-tracker.png"
+     ]
+    },
+    {
+     "id": "H6",
+     "did": "the page reloaded, signed in again",
+     "saw": "✗ Leave War: still the half day [FO*] · ✗ still 1 pending [14 changes]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-14-H6-day.png",
+      "dk-15-H6-cell.png",
+      "dk-16-H6-tracker.png"
+     ]
+    },
+    {
+     "id": "H7",
+     "did": "Sunday: a new line COBRA 12:00–13:00 for the second man, published; then \"+ In-time / Rally\" typed IN TIME 0830; then the amendment",
+     "saw": "✓ seated and published [{\"got\":[\"stiff\"],\"tag\":\"ORIG\"}] · ✓ with no in-time: a half day, worked 09:00–15:00 [{\"cell\":\"HO*\",\"row\":\"Saber IP 0.5 + 0.5 +0.5 19 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"}] · ✓ the line reads IN TIME 0830 (as the box folds it) [[\"IN TIME 08:30\"]] · ✓ typed on the working copy: the day reads pending [1 pending] · ✓ …and the published half day has not moved [{\"cell\":\"HO*\",\"row\":\"Saber IP 0.5 + 0.5 +0.5 19 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"}] · ✓ the amendment goes out [AL1] · ✗ now a FULL day, worked 08:30–15:00 [{\"cell\":\"HO*\",\"row\":\"Saber IP 0.5 + 0.5 +0.5 19 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"}]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-17-H7a-cell.png",
+      "dk-18-H7a-tracker.png",
+      "dk-19-H7b-day.png",
+      "dk-20-H7b-togoout.png",
+      "dk-21-H7b-cell.png",
+      "dk-22-H7b-tracker.png",
+      "dk-23-H7c-cell.png",
+      "dk-24-H7c-tracker.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

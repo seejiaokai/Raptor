@@ -72,6 +72,9 @@ Rules: `docs/engine-rules.md` §AAR, and who may teach it.
 
 ## The In-time / Rally lines — at the top of a wave
 
+*(Since 6 Oct 26 — D591, D592: on a weekend or public holiday the line's report also starts the OIL day of the men on
+that formation's flying line; with no readable clock the nominal report does. `engine-rules.md` §Weekend/PH work earns OIL.)*
+
 Each free-text line carries its **first valid clock** and its activity. These
 rules include the original in-time spellings and the approved Rally extension
 (D497–D507, narrowed for publication by D509). Words and remarks stay as typed.

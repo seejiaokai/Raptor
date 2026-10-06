@@ -50,7 +50,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
 count from its entered in-time / Rally (D591), and a published weekend must keep the earned leave it went out with when a Logic value
-changes (today it moves at once). Proposed: its own job, straight after the stack goes live. [INTIME-LINES-DRAG] (D593, his ask of
+changes (today it moves at once). **BUILT 6 Oct 26 and FULL-checked on its own branch (D591, D592) — his look and "merge live" are left.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn); low, older than it, found by its browser test: [LOGIC-REDRAW-DROPS-TYPING] (the Logic page redraws its rules just after it opens, and a value being typed at that instant is dropped); low, words only, from its walks: [OIL-EARN-DAY-SWITCH-WORDS] (OIL Earn's "Nothing today earns" button reads like a status), [SC-B-CHANGE-SAYS-BRIEF] (the changes window calls an SC shift's in-time "brief"). **D606 (7 Oct 26 — an SC shift's typed in-time counts for OIL) was built and checked on the same branch.** **From his D607 (7 Oct 26 — a walk is sized per change by Opus, from a record of past walks), next, with [START-CONTEXT-AUDIT]:** [WALK-LEDGER-HISTORY] (compile the past walks into the record and write its figures), [WALK-SIZING-GUIDE] (the checking guide's wording, read by Astra and Sol before he approves it). [INTIME-LINES-DRAG] (D593, his ask of
 5 Oct 26 — drag a wave's In-time / Rally lines into order on the Scheduler Board, Auto sort too; proposed in the same batch). Low, from the same
 check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip over a phone request card's date), [BOARD-TIME-ESCAPE]
 (Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
@@ -1884,6 +1884,17 @@ import, compare every record and id; cancel; a conflicting syllabus; no partial 
 **Place — D493, D485: with the Tracker batch (`[FEATURE-WISHLIST]` item 4).**
 
 ### [OIL-WORK-START] A flying line's earned leave counts from its entered in-time / Rally, and a published day keeps what it went out with (D591; found 5 Oct 26 by Claude's check of the Codex stack)
+**BUILT 6 Oct 26 on `claude/oil-work-start-build-35a0e3` (D591, D592) — FULL-checked; his look and "merge live" are left; not merged.**
+What was built, line by line: `raptor-port/docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md` (OWS1–OWS11); the
+rules as written: `raptor-port/docs/engine-rules.md` §Weekend/PH work earns OIL; the check, its look card and the readings
+put to him: `raptor-port/docs/handpass/2026-10-06-oil-work-start.md`. Beyond the two halves below, from the plan's two
+challenges: a published weekend reads pending when anyone's OIL amount OR worked times would change; the four sign-offs
+fall when a later Logic change would alter the OIL of the day they signed. Fixed with it, from the scenario read: the OIL
+tracker printed only the first worked period of a day; the Logic page said standby lines can never earn. Filed beside it:
+`[OIL-ZERO-SPAN-SORTIE]`, `[UNPUB-WARN-AL-RESTORES]`, `[LOGIC-REDRAW-DROPS-TYPING]`, `[OIL-EARN-DAY-SWITCH-WORDS]`,
+`[SC-B-CHANGE-SAYS-BRIEF]`. **Added on the same branch, 7 Oct 26 (D606):** an SC shift's typed B — its in-time — where
+filled and earlier than the shift's start, starts the MAIN's OIL day (register OWS12; the sheet's §D606).
+The text below is the item as filed.
 **His ruling (D591, 5 Oct 26):** *"it should take the actual intime/rally time right? not the nominal report timing"* — a flying
 line's earned leave (OIL) is worked out from its actual in-time / Rally time. Full row: `.claude/decisions-full/oil.md` D591.
 **What the app does today (not his ruling, and not this stack's doing — the same on `main`):** earned leave starts at take-off less
@@ -1907,6 +1918,68 @@ first event's start to the last event's end with the breaks counted (the 29 Aug 
 and any earlier event of his.
 **Tier:** FULL — earned leave, the published record, saved data. **Place (the agent's proposal, his to set):** its own branch, straight
 after the Codex stack goes live; until then, do not change those three Logic values once a weekend is published.
+
+### [OIL-ZERO-SPAN-SORTIE] A take-off-equals-landing line whose report is also its take-off, with the debrief setting at zero, earns nothing — and the day's advisory still says it "earns from the report and debrief" (found 6 Oct 26, the plan challenge of `[OIL-WORK-START]` — Astra's finding 4; LOW)
+A flying line typed with the SAME take-off and landing earns from the report before it and the debrief after it (D49). Where
+there is neither — the Logic page's "Flight debrief after land" set to zero AND the line's entered in-time equal to its
+take-off (or, as before this build, both the debrief and "Nominal report before T/O" set to zero) — the line measures nothing
+and its crew earn nothing: correct by the standing rule that OIL comes only from written times (D31), and pinned as built in
+`raptor-port/src/engine/oilworkstart.test.ts`. What is wrong is the WORDS: the day's "Flight times — the same" advisory still
+tells the scheduler the line "still earns from the report and debrief", and the day's "no usable times" list does not name it.
+Reached only with a debrief of zero, which no squadron sets. **To build:** word the advisory from what the line actually
+measures, and name the line in the "no usable times" list when it measures nothing. **Tier:** WALK (the warning list).
+**Place (the agent's line):** low — with the next change to the OIL warnings.
+
+### [LOGIC-REDRAW-DROPS-TYPING] The Logic page redraws its rules about half a second after it opens — a value being typed into a box at that instant is dropped (found 6 Oct 26 by `[OIL-WORK-START]`'s browser test; OLD, not that job's doing; LOW)
+**Seen:** the browser test of `[OIL-WORK-START]` failed once in two full runs on the busy PC at one step — Logic opened with
+"Edit rules" already on, "Nominal report before T/O" typed, Tab — and the box read the OLD value afterwards, the setting
+unchanged. Traced with a watcher on the page's body: shortly after the page opens (about half a second on a free machine) the
+list of rules is replaced by the same markup — new boxes, nothing visibly different — and whatever sits half-typed in a box
+goes with the old box. With a pause put between the typing and the Tab it happens every time; in a second trace the box lost
+its place about two seconds after "Edit rules" was pressed and the value was SAVED without a Tab. **Not traced:** what asks
+for that redraw (a late re-check of the week after the page change is the likely cause — the page redraws whenever the app's
+state moves, and its body is rebuilt as one piece), and whether anything can set it off LATER, while a person is typing —
+that is the question that decides whether this matters outside a test. A person's hands cannot reach the half-second after
+opening. **Why it may matter later:** once the app is in the database, other people's changes arrive by themselves every 30
+seconds (D356); if such an arrival redraws this page, a value being typed is dropped with no message. **To do:** (1) find
+what asks for the redraw; (2) either stop the page redrawing when nothing in it changed, or keep a box that is being typed in
+out of the redraw, as the schedule's text boxes are; (3) a test that types, lets the app's state move, and finds the typing
+still there. The browser test now types again until the app holds the value (`raptor-port/e2e/oilworkstart.spec.ts`,
+`logicLead`) — take that retry out when this is fixed. **Tier:** WALK (the Logic page, a typed value, both sizes).
+**Place (the agent's line):** low — with the next change to the Logic page, and before the database step for the reason above.
+
+### [OIL-EARN-DAY-SWITCH-WORDS] OIL Earn's "Nothing today earns" button reads like a status — two walkers took it for one (found 6–7 Oct 26, the walks of `[OIL-WORK-START]`; OLD; LOW, words)
+On the Scheduler Board in OIL Earn mode the bar carries a button labelled "Nothing today earns". It is a SWITCH — pressed, it
+makes nothing on that day earn — and its label does not change with the day's state (only its tooltip does). With a man on the
+day plainly earning (his puck reads FO), the bar still says "Nothing today earns" beside it. Two walkers, on separate walks and
+without seeing each other's work, each reported it as the app contradicting itself (the first walk's W8; the D606 walk's E03 —
+picture `raptor-port/docs/img/handpass/2026-10-06-oil-work-start/E/dk-08-E03-oilearn-board.png`). **To build:** word the button
+as the action it is, and say the day's state apart from it — a product wording choice, so a picture and his word first.
+**Tier:** WALK (a control's label on the board, both sizes). **Place (the agent's line):** low — with the next change to OIL Earn.
+
+### [SC-B-CHANGE-SAYS-BRIEF] The changes window calls an SC shift's in-time "brief" (found 7 Oct 26, the D606 walk — E02, E06, E15; OLD; LOW, words)
+On an SC line the B box is the crew's in-time, not a brief (owner, 24 Aug 26), and since D606 (7 Oct 26) it moves OIL. A B typed
+or changed on a published day is listed under "To go out" as "SC · brief  06:00" (and "06:00 → 08:00") — the box's general name.
+**To build:** on an SC line, name the change "in-time" in the changes window, the pending list and the edit history; every other
+line keeps "brief". **Tier:** WALK (the changes window's words, a published day, both sizes). **Place (the agent's line):** low —
+with the next change to the changes window's wording, or with `[OIL-EARN-DAY-SWITCH-WORDS]`.
+
+### [UNPUB-WARN-AL-RESTORES] The Unpublish warning assumes the day's OIL disappears — when withdrawing an AMENDMENT puts the earlier version's OIL back (found 6 Oct 26, the scenario read of `[OIL-WORK-START]` — Astra's F2; OLD, the same on the live app; LOW-MEDIUM)
+Unpublish on a published weekend warns when taking the day's OIL away would leave a man who has already spent it below
+zero (`leavewar/sync.ts oilCreditBidAgainst`, asked by the Unpublish button — `ui/interactions.ts`). It works that out by
+rebuilding his OIL with the day's credit LEFT OUT. That is right for withdrawing an ORIGINAL (the day becomes a draft and
+earns nothing). It is wrong for withdrawing an AMENDMENT: the version before it becomes the published one again
+(`engine/publish.ts unpublishDay`) and ITS OIL pays — so withdrawing a half-day amendment that restores a full-day
+original RAISES his balance, and the warning still says the withdrawal would strand his leave. It errs toward warning,
+never toward silence. **Seen on screen (the walk of `[OIL-WORK-START]`, walker C, S02):** the first tap said "Heads up —
+Saturday's OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish"; the second,
+"AL1 withdrawn … its OIL credits leave the Leave War until it is published again" — while the Original's full day came
+back and his balance went from 0 to 0.5. Both sentences are wrong for an amendment. Astra's steps: find the version that survives the withdrawal; work out its OIL records from its own
+kept evidence and values; rebuild the man's OIL with THAT in place of today's; warn only if the real result goes below
+zero; and word the warning and the done-message for "back to a draft" and "back to the earlier version" apart. Checks: an
+ORIGINAL withdrawn; an AL withdrawn to a higher, a lower and an equal credit; a credit that never landed.
+**Tier:** FULL (OIL, the published record). **Place (the agent's line):** low-medium — with the next change to Unpublish or
+to the OIL tracker.
 
 ### [INTIME-LINES-DRAG] Drag a wave's In-time / Rally lines into order on the Scheduler Board; Auto sort orders them too (D593, 5 Oct 26)
 **His ruling (D593):** *"I also want the option to be able to [drag] and rearrange in Time/rally. In the schedule board. And the auto sort
@@ -1974,6 +2047,29 @@ specified; its test is in `raptor-port/src/ui/schedule-tab.test.tsx`, "D597 when
 nothing trimmed before he rules") and was reworded the same day — the new wording is read again by both readers of the fix
 (the sheet `raptor-port/docs/handpass/2026-10-06-rest-blank-line.md`). This item leaves at the next documents-only pass (D29).
 
+### [WALK-SIZING-GUIDE] The checking guide still says "the full walk" for every FULL check — word it to D607: the walk is sized per change, by Opus, from the record (owner, D607, 7 Oct 26)
+D607: before any walk the agent says what type of change it is, Opus decides what kind of walk it needs, and every walk is
+recorded so the figures show where a walk is useful. The ruling's one line loads in every chat and governs from now; the record
+and the five-line sizing step are in `raptor-port/docs/walk-ledger.md`. What still says otherwise: `raptor-port/docs/bug-check-order.md`
+§5 (the FULL tier's "the full walk"; the tier table's costs), §7 (the walk) and §4 (where the walkers are spent), and
+`.claude/rules/bug-check.md` (step 4's order names "walk" with no sizing step). **To do:** draft the wording — a sizing step
+between the roll-call and the walk, pointing at the ledger; the tier table's FULL row reading "a walk sized by the sizing step";
+D16 kept for how a long pass is run — have Astra and Sol 6.1 read it, one round each (D70), then put it to him. Nothing else of
+the order changes. **Place (the agent's line):** with `[START-CONTEXT-AUDIT]` — the same documents-only pass, the same readers.
+
+### [WALK-LEDGER-HISTORY] The walk ledger holds two rows — compile the past walks into it, then write its figures (owner, D607, 7 Oct 26)
+`raptor-port/docs/walk-ledger.md` was started on 7 Oct 26 with the two walks of `[OIL-WORK-START]`. His ask is for the HISTORY:
+"statistics of which type of change a walk is useful". **To do:** for every bug check that walked the app — the evidence sheets in
+`raptor-port/docs/handpass/` (about sixty; leave out the readers' reports, the scenario lists and the plans) — add one row: the
+date, the job, the type of change (the ledger's list A–H), the walk (who walked, how many scenarios and pictures, which sizes),
+the tokens where a figure was recorded, and what the walk found, sorted three ways — real faults in the app (fixed or filed),
+wording or cosmetic finds, and finds that proved false, already known or as ruled — plus what ELSE found faults on that job (a
+test, a code read, his own look). Where a sheet does not say, the cell says "not stated" — never a guess. Then write the ledger's
+"The figures": by type of change, how many walks, what they cost and what they found, and one plain paragraph for him on which
+types a walk has paid for itself. A documents chore: a Sonnet helper may extract the rows (D588), the host checks a sample
+against the sheets and writes the figures. **Place (the agent's line):** next, with `[START-CONTEXT-AUDIT]`'s chat — before the
+next walk is sized, since the sizing step reads these figures.
+
 ### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
 His words: *"why I am at 30% context the moment I start a new chat? Is it required? Is there a way we can optimise how the repo is
 structured so that we only read what's required? Or summarise it. Or u suggest. A lot of tokens are wasted if we carry on like this.
@@ -1989,6 +2085,12 @@ ruling; (4) the change, read by Astra and Sol before he approves it (D70), with 
 unseen. **The test of every option (D602): never at the cost of the quality of the work** — D68 (correctness beats context
 economy), D136 (no live ruling leaves the list a chat reads), D138 (a summary never changes the meaning), D141 (no size targets).
 **Place (D602):** after the crew-rest fix (`[REST-BLANK-LINE]`), in a fresh chat on its own branch — documents only.
+**A measurement to start step (1) from (the `[OIL-WORK-START]` chat, 6 Oct 26, read off the app's own context meter before any
+work was done):** that chat had used about a fifth of its room — roughly 197 thousand tokens — after its opening instruction
+(read the handoff, check the branch): about 97 thousand in messages (the handoff, the rule files, the project guide and the area
+rulings its first reads pulled in), about 38 thousand in the tool list, about 29 thousand in the memory files, about 17 thousand
+in the connected services' tool descriptions. The handoff alone is some 29 thousand, most of it the seven blocks of branches
+that merged with PR #481 (`[STACK-MERGED-TIDY]`).
 
 ### [REST-BLANK-LINE] A man put on a flying line with no take-off loses his crew-rest check (reader AB's second pass, 6 Oct 26 — OLD, the same on `main`; MEDIUM)
 Mon: X on a line landing 22:30; Tue: X on a line taking off 07:00 → the red "Crew rest breach", its ring, Monday's dotted mark. Now

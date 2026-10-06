@@ -43,6 +43,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   the shift itself (that is the hard clash loop's business), plus timed
   personal inputs through the same `restsInput` gate crew rest uses. A SPARE
   row has no event stream, so both stay MAIN-only by construction.
+  **A third, since D606 (owner, 7 Oct 26):** on a weekend or public holiday the
+  same in-time, where earlier than the shift's start, starts the MAIN's OIL day
+  too — §Weekend/PH work earns OIL. The one body that reads an SC line's B, for
+  crew rest and for OIL alike, is `reporting.ts scIntime`.
 - **Typed pre-flight clocks follow a small-hours T/O across midnight.** When
   the configured brief lead already puts the default brief on the previous
   evening, an indicated B later on the clock than T/O is shifted back one day;
@@ -1918,13 +1922,12 @@ the mark useless.
 
 ## Weekend/PH work earns OIL (`engine/oil.ts`, owner 16–17 Aug 26, REWRITTEN 28 Aug 26 — Leave War sync wire 4)
 
-**RULED 5 Oct 26 (D591) — NOT YET BUILT.** A flying line's earned leave is to be worked out from its actual In-time /
-Rally time, not from the nominal report time (`VCONF.reportLead` before take-off) that this section describes; the
-detail is settled (D592, the same day — "all 4 as recommended"): the earliest in-time or Rally that applies to the
-formation; the nominal time where none is typed; an evening-before report lengthens the line's own day only; a published
-day keeps the OIL it went out with until it is published again; and the day is still measured from the first event's
-start to the last event's end, gaps included (the 29 Aug 26 envelope rule below, which he restated). Until it is built, the text below is what the app
-does. The build and the finding that raised it: `OUTSTANDING.md` `[OIL-WORK-START]`.
+**BUILT 6 Oct 26 — `[OIL-WORK-START]` (owner, D591, D592, 5 Oct 26).** A flying line's OIL is worked out from its actual
+In-time / Rally, not from the nominal report time, and a published day keeps the OIL it went out with. Both halves are
+stated where they belong below — "What pools" (the flying seat) and §Which published version pays (the kept values) —
+and line by line in `docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md` (OWS1–OWS11). The day is still
+measured from the first event's start to the last event's end, gaps included (the 29 Aug 26 envelope rule below, which
+he restated in D592).
 
 Work stood on a NON-WORKING day credits OIL into Leave War as an FO
 ('full day OIL', earns 1) or HO ('half day OIL', 0.5) cell. Like the
@@ -1960,11 +1963,42 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   name, do not resurrect it.
 - **What pools (the 28 Aug 26 widened set).** By each row's WRITTEN times:
   - an **SC MAIN** seat, by its shift's `to`→`ld`;
-  - any **ordinary FLYING seat**, by the working day the sortie costs:
-    T-O − `VCONF.reportLead` through LD + `VCONF.debrief` — the owner's
-    report-to-debrief pick (28 Aug 26). Typed in-time lines are
-    deliberately NOT consulted (a stated simplification; the snapshot-pure
-    read stays free of the `events.ts` machinery);
+  - any **ordinary FLYING seat**, by the working day the sortie costs: its
+    REPORT through LD + `VCONF.debrief` — the owner's report-to-debrief
+    pick (28 Aug 26). **The report is the line's entered In-time / Rally
+    (owner, D591, D592, 5 Oct 26 — `[OIL-WORK-START]`; it used to be the
+    nominal time always, the typed lines "deliberately NOT consulted"):**
+    - the EARLIEST stage that applies to the formation, read by the one shared
+      reader (`engine/reporting.ts resolveReporting` — the body the day's events,
+      the work-hours bar, crew rest and the wave header read): a line naming the
+      formation outranks a wave-wide one, each activity (in-time, Rally) apart,
+      and two lines for one activity give the earlier whatever their order
+      (D505, D506);
+    - a time entered LATER than the nominal one shortens the day — "the actual
+      intime/rally time … not the nominal report timing" (D591);
+    - a clock later than the take-off is the evening before (D503): it lengthens
+      THIS line's own day and earns the day before nothing (D42 — the walk is
+      per day);
+    - where no line gives a clock — none entered, one the reader cannot read,
+      "rally after in-time" with no in-time — the NOMINAL time, T-O −
+      `VCONF.reportLead` (D592 (2));
+    - a standalone wave (SC, AVALON, BB) reads no reporting line: its span is its
+      written window — except that **an SC shift's typed B, its in-time, where
+      filled, starts the shift's span** (owner, D606, 7 Oct 26 — "SC B if filled u
+      can count it as work hours as well and OIL earned"; it withdrew the builder's
+      reading that the B moved nothing): the EARLIER of the B and the written start
+      (a B typed later than the start shortens nothing — the guard crew rest and the
+      long-day note already put on it), read by the one body crew rest reads it with
+      (`events.ts seatIntime`, the same evening-before roll, D42 for the day it
+      lengthens), for the shift's MAIN rows only — "a SPARE reports nowhere, so
+      his B does nothing" (24 Aug 26): a SPARE an admin has switched on (D24)
+      earns the shift's WRITTEN hours; a shift whose written start and end are the
+      same still measures nothing; AVALON and BB have no in-time (24 Aug 26). The work-hours bar and the long-work-day note have counted an SC
+      MAIN's B since 24 Aug 26 (`workSpan`). Pins: `engine/oilscintime.test.ts`;
+    - the work-hours bar with no line entered starts at STEP; OIL with no line
+      entered starts at the nominal report. The two differ there by ruling.
+    `reporting.ts` is pure, so a frozen snapshot answers from its own lines.
+    Pins: `engine/oilworkstart.test.ts`;
   - a **sim row** (AMT and OFT), by its `str`→`end`;
   - a **duty row** (`dutywaves[].rows`), by its `str`→`end`;
   - a **ground-programme row**, by its `str`→`end`;
@@ -2188,6 +2222,34 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   is what happened: a later amendment or EOD that takes a man off a past day takes that day’s OIL away
   (confirmed by him), and an issued EOD is the final word on the day. It superseded the 11 Sep "lock earned
   OIL on an already-worked day" lean (backlog item `[OIL]`, archived 24 Sep 26); there is no lock to build.
+- **A PUBLISHED DAY KEEPS THE LOGIC VALUES ITS OIL WAS WORKED OUT FROM** (owner, D592 (4), 5 Oct 26 —
+  `[OIL-WORK-START]`; D48, D142). Three Logic values enter the arithmetic: the nominal report lead (read only where a
+  line has no in-time or Rally entered), the flight debrief after landing, and the full-day line (`VCONF.reportLead`,
+  `debrief`, `oilFullMin`). Until 6 Oct 26 all three were read LIVE on the path from an issued day to its credit, so
+  changing "Nominal report before T/O" from 3h to 2h30 took a published full day to a half at once — nothing pending,
+  the four sign-offs standing (W1 of the Codex stack check). Now:
+  - **kept:** the evidence block carries them (`OilEvidence.rv`, on a day that earns), written from today's values
+    whenever the block is built — so `daySnap` freezes them with the rest at every publication (first publish, an
+    amendment, Unpublish then publish; a future EOD must use the same freeze point);
+  - **read:** every reader of a block's OIL uses the block's own — the work walk (`oilev.ts oilDayWork` → `oil.ts
+    dayOilWork`'s `rv`), the amount (`oilev.ts oilAmount`, the ONE body the credit, the board's figures and the publish
+    reminder call), the credit pass per date (`leavewar/sync.ts desiredOilCells`), the green edge and OIL Earn figures
+    on an issued face (`ui/oilmode.ts`), and the "can this row earn" reads. The working copy's block always carries
+    today's. A block with none (an earlier build's) reads today's, as before, and is compared on nothing (D56);
+  - **told:** where today's values WOULD write some man's OIL record for the issued day differently — his amount OR the
+    worked times stored beside it, which the Leave War's clash check and the day's sheet read — the day has ONE pending
+    change of its own (`publish.ts oilRuleDelta`, address `oilrv:<di>`, beside and never folded into the decisions
+    entry or an edited request's line). It reads "OIL on this day · Logic values changed since it was published", with
+    the value (old → new) and each man (old → new) under it; the sign-offs fall with it (D103) and it clears when the
+    value is put back (D98). A Logic change that would write every record on that day exactly as it stands raises
+    nothing — the rule D186's printed brief lead follows. The next publication applies today's values and keeps them;
+  - **signed:** each sign-off's binding keeps the three values as they stood at signing (`orv`, earning days only) and
+    falls when the day as it now stands would be written differently under those values than under today's
+    (`publish.ts oilRvBoundOk`) — so a day not yet published, or an amendment waiting, cannot go out as a half day on
+    four signatures given for a full one.
+  An in-time or Rally changed after publishing needs none of this: it is day content, pending as ever, and the credit
+  reads the published version's own lines until the day goes out again. Insights' hours still move at once (D482).
+  Pins: `leavewar/oilworkstart-published.test.ts`, `ui/oilworkstart.test.tsx`.
 - **ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS** (owner, 21 Sep 26 — R-1, D2,
   from the cross-provider bug check; triage in
   `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`). The credit pass
@@ -2249,7 +2311,9 @@ this obeys, and the two clashes it found, is
 
 Tests: `src/engine/oilev.test.ts` (the evidence block, publishability, the three
 states), `src/ui/oilmode.test.tsx` (the board mode and the green edge),
-`src/engine/oil.test.ts` (the computation),
+`src/engine/oil.test.ts` (the computation), `src/engine/oilworkstart.test.ts` (where a
+flying line's day starts), `src/leavewar/oilworkstart-published.test.ts` and
+`src/ui/oilworkstart.test.tsx` (a published day keeps its OIL; the pending line),
 `src/leavewar/oilsync.test.ts` (the wire, the partition, the clashes, the
 input claims), `src/ui/oilconfirm.test.tsx` (the ask sheet),
 `counters.test.ts` (earned OIL in the balance and the OIL BAL figure).

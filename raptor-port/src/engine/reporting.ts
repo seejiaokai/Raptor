@@ -3,6 +3,14 @@
 import { VCONF } from './rules'
 import { hm24, parseHM } from './time'
 
+/* AN SC LINE'S TYPED B IS ITS CREW'S IN-TIME (owner, 24 Aug 26) - the ONE body crew rest (events.ts seatIntime) and
+   OIL (oil.ts, D606) read it with. The bounded evening-before rule, unchanged: only a shift that starts within the
+   nominal lead of midnight rolls a later clock back a day. `lead` is handed in by a reader facing a published day's
+   own kept value (D592 (4)); every other reader leaves it out and gets today's. */
+export function scIntime(br:any,toM:number,lead?:number|null){
+  const t=parseHM(br); if(t==null)return null;
+  return toM-(lead==null?VCONF.reportLead:lead)<0&&t>toM?t-1440:t;
+}
 export function intimeTime(s:any){
   const re=/(?:^|[^A-Za-z0-9])(?:(\d{1,2}):(\d{2})|(\d{3,4}))\s*[HL]?(?![A-Za-z0-9])/gi;
   let m:any;

@@ -1,0 +1,102 @@
+{
+ "parts": {
+  "ows-B-sP-unpub_Tp-dk": {
+   "at": "2026-10-06T13:24:34.690Z",
+   "base": "http://localhost:4294",
+   "phone": false,
+   "table": [
+    {
+     "id": "T+→P from unpub",
+     "did": "T+ (add IN TIME 10:00) then P (first publish), starting on an unpublished day; flight 12:00–13:00 Ranger, no reporting line",
+     "saw": "[start] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n   [1:T+ (add IN TIME 10:00)] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n       model: pending no · chip shows \"0\"\n   [2:P (first publish) (button \"Publish day\" was locked until the four signed; signed + pressed → {\"pressed\":true,\"label\":\"Publish day\"})] cell HO · worked 10:00–15:00 · balance 0.5 (B 0) · tag ORIG · pending \"0\" · sign-offs stand (SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi)  ⇒ expected paid HO 10:00–15:00 (300 min): ok\n       model: pending no · chip shows \"0\"\n   [undo → []] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none\n   [redo → []] cell HO · worked 10:00–15:00 · balance 0.5 (B 0) · tag ORIG · pending \"0\" · sign-offs stand (SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi)\n   [reload] cell HO · worked 10:00–15:00 · balance 0.5 (B 0) · tag ORIG · pending \"0\" · sign-offs stand (SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-pair_Tp_P_unpub-0-day-day.png",
+      "dk-02-pair_Tp_P_unpub-1-day-day.png",
+      "dk-03-pair_Tp_P_unpub-2-cell.png",
+      "dk-04-pair_Tp_P_unpub-2-tracker.png",
+      "dk-05-pair_Tp_P_unpub-2-day-day.png",
+      "dk-08-pair_Tp_P_unpub-reload-cell.png",
+      "dk-09-pair_Tp_P_unpub-reload-tracker.png"
+     ]
+    },
+    {
+     "id": "P→T+ from unpub",
+     "did": "P (first publish) then T+ (add IN TIME 10:00), starting on an unpublished day; flight 12:00–13:00 Ranger, no reporting line",
+     "saw": "[start] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n   [1:P (first publish) (button \"Publish day\" was locked until the four signed; signed + pressed → {\"pressed\":true,\"label\":\"Publish day\"})] cell HO · worked 09:00–15:00 · balance 0.5 (B 0) · tag ORIG · pending \"0\" · sign-offs stand (SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvi)  ⇒ expected paid HO 09:00–15:00 (360 min): ok\n       model: pending no · chip shows \"0\"\n   [2:T+ (add IN TIME 10:00)] cell HO · worked 09:00–15:00 · balance 0.5 (B 0) · tag ORIG · pending \"1 pending\" · sign-offs fallen (\"Not yet signed\") · list: WAVE 1 · In-time / Rally Saber 6/10 21:19 0 In-time / Rally lines → 1 In-time / Rally line  ⇒ expected paid HO 09:00–15:00 (360 min): ok\n       model: pending yes · chip shows \"1 pending\"\n   [undo → []] cell HO · worked 09:00–15:00 · balance 0.5 (B 0) · tag ORIG · pending \"1 pending\" · sign-offs fallen (\"Not yet signed\") · list: WAVE 1 · In-time / Rally Saber 6/10 21:19 0 In-time / Rally lines → 1 In-time / Rally line\n   [redo → []] cell HO · worked 09:00–15:00 · balance 0.5 (B 0) · tag ORIG · pending \"1 pending\" · sign-offs fallen (\"Not yet signed\") · list: WAVE 1 · In-time / Rally Saber 6/10 21:19 0 In-time / Rally lines → 1 In-time / Rally line\n   [reload] cell HO · worked 09:00–15:00 · balance 0.5 (B 0) · tag ORIG · pending \"1 pending\" · sign-offs fallen (\"Not yet signed\") · list: WAVE 1 · In-time / Rally Saber 6/10 21:19 0 In-time / Rally lines → 1 In-time / Rally line",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-pair_P_Tp_unpub-0-day-day.png",
+      "dk-12-pair_P_Tp_unpub-1-day-day.png",
+      "dk-13-pair_P_Tp_unpub-2-cell.png",
+      "dk-14-pair_P_Tp_unpub-2-tracker.png",
+      "dk-16-pair_P_Tp_unpub-2-day-togoout.png",
+      "dk-21-pair_P_Tp_unpub-reload-cell.png",
+      "dk-22-pair_P_Tp_unpub-reload-tracker.png"
+     ]
+    },
+    {
+     "id": "T+→A from unpub",
+     "did": "T+ (add IN TIME 10:00) then A (publish amendment), starting on an unpublished day; flight 12:00–13:00 Ranger, no reporting line",
+     "saw": "[start] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n   [1:T+ (add IN TIME 10:00)] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n       model: pending no · chip shows \"0\"\n   [2:A (publish amendment) (button absent)] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n       model: pending no · chip shows \"0\"\n   [undo → []] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none\n   [redo → []] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none\n   [reload] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-pair_Tp_A_unpub-0-day-day.png",
+      "dk-26-pair_Tp_A_unpub-1-day-day.png",
+      "dk-27-pair_Tp_A_unpub-2-cell.png",
+      "dk-28-pair_Tp_A_unpub-2-tracker.png",
+      "dk-29-pair_Tp_A_unpub-2-day-day.png",
+      "dk-32-pair_Tp_A_unpub-reload-cell.png",
+      "dk-33-pair_Tp_A_unpub-reload-tracker.png"
+     ]
+    },
+    {
+     "id": "A→T+ from unpub",
+     "did": "A (publish amendment) then T+ (add IN TIME 10:00), starting on an unpublished day; flight 12:00–13:00 Ranger, no reporting line",
+     "saw": "[start] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n   [1:A (publish amendment) (button absent)] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n       model: pending no · chip shows \"0\"\n   [2:T+ (add IN TIME 10:00)] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n       model: pending no · chip shows \"0\"\n   [undo → []] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none\n   [redo → []] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none\n   [reload] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-35-pair_A_Tp_unpub-0-day-day.png",
+      "dk-36-pair_A_Tp_unpub-1-day-day.png",
+      "dk-37-pair_A_Tp_unpub-2-cell.png",
+      "dk-38-pair_A_Tp_unpub-2-tracker.png",
+      "dk-39-pair_A_Tp_unpub-2-day-day.png",
+      "dk-42-pair_A_Tp_unpub-reload-cell.png",
+      "dk-43-pair_A_Tp_unpub-reload-tracker.png"
+     ]
+    },
+    {
+     "id": "T+→Lr from unpub",
+     "did": "T+ (add IN TIME 10:00) then Lr (lead 180→150), starting on an unpublished day; flight 12:00–13:00 Ranger, no reporting line",
+     "saw": "[start] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n   [1:T+ (add IN TIME 10:00)] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n       model: pending no · chip shows \"0\"\n   [2:Lr (lead 180→150) (box says 2h30)] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n       model: pending no · chip shows \"0\"\n   [undo → []] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none\n   [redo → []] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none\n   [reload] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-45-pair_Tp_Lr_unpub-0-day-day.png",
+      "dk-46-pair_Tp_Lr_unpub-1-day-day.png",
+      "dk-47-pair_Tp_Lr_unpub-2-cell.png",
+      "dk-48-pair_Tp_Lr_unpub-2-tracker.png",
+      "dk-49-pair_Tp_Lr_unpub-2-day-day.png",
+      "dk-52-pair_Tp_Lr_unpub-reload-cell.png",
+      "dk-53-pair_Tp_Lr_unpub-reload-tracker.png"
+     ]
+    },
+    {
+     "id": "Lr→T+ from unpub",
+     "did": "Lr (lead 180→150) then T+ (add IN TIME 10:00), starting on an unpublished day; flight 12:00–13:00 Ranger, no reporting line",
+     "saw": "[start] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n   [1:Lr (lead 180→150) (box says 2h30)] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n       model: pending no · chip shows \"0\"\n   [2:T+ (add IN TIME 10:00)] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none  ⇒ expected paid none: ok\n       model: pending no · chip shows \"0\"\n   [undo → []] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none\n   [redo → []] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none\n   [reload] cell none · worked — · balance 0 (B 0) · tag DRAFT · pending \"0\" · sign-offs none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-55-pair_Lr_Tp_unpub-0-day-day.png",
+      "dk-56-pair_Lr_Tp_unpub-1-day-day.png",
+      "dk-57-pair_Lr_Tp_unpub-2-cell.png",
+      "dk-58-pair_Lr_Tp_unpub-2-tracker.png",
+      "dk-59-pair_Lr_Tp_unpub-2-day-day.png",
+      "dk-62-pair_Lr_Tp_unpub-reload-cell.png",
+      "dk-63-pair_Lr_Tp_unpub-reload-tracker.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

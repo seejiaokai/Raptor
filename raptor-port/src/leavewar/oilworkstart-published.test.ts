@@ -1,0 +1,469 @@
+// [OIL-WORK-START] half 2 — A PUBLISHED DAY KEEPS THE OIL IT WENT OUT WITH (owner, D592 (4), 5 Oct 26; D48, D142).
+//
+// The finding that raised it (W1 of the Codex stack check, docs/handpass/2026-10-05-codex-stack-check.md §5.2): Ranger
+// on a published Saturday, take-off 10:00, landing 11:15 — a full day, 07:00–13:15. Changing the Logic page's "Nominal
+// report before T/O" from 3h to 2h30 made it half a day at once: nothing pending, ORIG, the four sign-offs standing.
+// "Flight debrief after land" and the full-day threshold did the same.
+//
+// Now each published version keeps the three values its OIL was worked out from (the evidence block's `rv`), every
+// reader of an issued day's OIL uses them, and a Logic change that WOULD move somebody's OIL reads as one pending change
+// until the day is published again. Driven through the real publish path (setDayApproved / publishALDay /
+// unpublishDay) and read where the OIL lands — the Leave War's own cell and record.
+// Register: docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md (OWS6–OWS10). Half 1 (where a flying line's
+// day starts): src/engine/oilworkstart.test.ts.
+
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { INPUTS } from '../engine/inputs'
+import { HOOKS } from '../engine/hooks'
+import { DAYS } from '../engine/data'
+import { SCHED, signOf, setSign, setDayApproved, publishALDay, unpublishDay, dayDelta, dayShownPendCount, daySigned, signMissing, daySnapOf, dayCurVer } from '../engine/publish'
+import { VCONF } from '../engine/rules'
+import { makeStandalone } from '../engine/waves'
+import { validate, workSpan, dayEvents } from '../engine/validate'
+import { stashClear } from '../engine/weekstash'
+import { initStore as raptorInitStore, loadWeek, writeInputs } from '../state/store'
+import { setSession } from '../state/auth'
+import { projectPeople } from './state/raptorRoster'
+import { getState, initStore as lwInitStore, setPeople, setRole, setCell, setBidState } from './state/store'
+import { memoryBackend } from './state/storage'
+import { recsAt } from './engine/warrecs'
+import { getClashes, runOilPass, wireLeaveWarSync } from './sync'
+
+const ISNAP = JSON.stringify(INPUTS)
+const DSNAP = JSON.stringify(DAYS)
+const RULES0 = { reportLead: VCONF.reportLead, debrief: VCONF.debrief, oilFullMin: VCONF.oilFullMin }
+const SAT = '2026-07-18', SUN = '2026-07-19'
+
+beforeEach(() => {
+  Object.assign(VCONF, RULES0)
+  INPUTS.length = 0
+  JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+  DAYS.length = 0
+  JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
+  SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
+  SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.signBind = {}; SCHED.orig = {}; SCHED.cur = {}
+  stashClear()
+  raptorInitStore()
+  lwInitStore(memoryBackend())
+  setPeople(projectPeople())
+})
+afterEach(() => Object.assign(VCONF, RULES0))
+
+const FOUR: Array<[string, string]> = [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']]
+const sign = (di: number) => { const g = signOf(di); for (const [r, w] of FOUR) (g as any)[r] = w }
+/* the four, bound to what they signed (the Shell's one write path), so a pending change can take them down */
+const signBound = (di: number) => { for (const [r, w] of FOUR) setSign(di, r, w) }
+const publish = (di: number) => { sign(di); setDayApproved(di, true) }
+const cellOf = (person: string, date: string) => getState().wars[0].grid[person]?.[date]
+const worked = (person: string, date: string) =>
+  recsAt(getState().wars[0].recs, person, date).filter((r: any) => r.oil === 'auto').map((r: any) => r.spans)
+const jet = (p: string) => ({ p, w: '', area: '', rmks: '', opts: {} })
+/* a weekend day holding exactly this: one flying line for Bane, and a six-hour desk for Stiff (the control) */
+const build = (di: number, to: string, ld: string, intimes: string[] = []) => {
+  Object.assign(DAYS[di], {
+    waves: [{ label: 'WAVE 1', intimes, formations: [{ cs: 'VL', msn: 'X', to, ld, br: '', aircraft: [jet('bane')] }] }],
+    dutywaves: [{ label: 'Duty', rows: [{ role: 'SDO', id: 'stiff', str: '0800', end: '1400' }] }],
+    sims: { amt: [], oft: [] }, ground: [], allhands: [],
+  })
+}
+const oilPending = (di: number) => dayDelta(di).filter((e: any) => e.kind === 'oil')
+const keptOn = (di: number) => (daySnapOf(di, dayCurVer(di)) as any).d.oilev.rv
+
+describe('OWS6 — a published day\'s OIL does not move when a Logic value changes (D592 (4), D48)', () => {
+  it('the finding itself: "Nominal report before T/O" 3h → 2h30 leaves the published full day a full day', () => {
+    build(5, '10:00', '11:15')
+    publish(5); runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')                   // 07:00–13:15, six and a quarter hours
+    expect(worked('bane', SAT)).toEqual([[[420, 795]]])
+    VCONF.reportLead = 150
+    runOilPass()
+    expect(cellOf('bane', SAT), 'the published day keeps what it went out with').toBe('FO')
+    expect(worked('bane', SAT), 'and the times it was worked out from').toEqual([[[420, 795]]])
+  })
+  it('"Flight debrief after land" 2h → 2h30 does not turn a published half day into a full one', () => {
+    build(5, '10:00', '11:00')
+    publish(5); runOilPass()
+    expect(cellOf('bane', SAT)).toBe('HO')                   // 07:00–13:00, six hours exactly
+    VCONF.debrief = 150
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('HO')
+    expect(worked('bane', SAT)).toEqual([[[420, 780]]])
+  })
+  it('the full-day threshold, both ways — for a flying line and for a desk', () => {
+    build(5, '10:00', '11:15')
+    publish(5); runOilPass()
+    expect([cellOf('bane', SAT), cellOf('stiff', SAT)]).toEqual(['FO', 'HO'])
+    VCONF.oilFullMin = 300                                   // five hours would make Stiff's six a full day
+    runOilPass()
+    expect([cellOf('bane', SAT), cellOf('stiff', SAT)]).toEqual(['FO', 'HO'])
+    VCONF.oilFullMin = 480                                   // eight hours would make Bane's 6h15 a half
+    runOilPass()
+    expect([cellOf('bane', SAT), cellOf('stiff', SAT)]).toEqual(['FO', 'HO'])
+  })
+  it('the version keeps the three values it was published with — on the snapshot, never on the working copy', () => {
+    build(5, '10:00', '11:15')
+    VCONF.reportLead = 170; VCONF.debrief = 130; VCONF.oilFullMin = 370
+    publish(5)
+    expect(keptOn(5)).toEqual({ reportLead: 170, debrief: 130, oilFullMin: 370 })
+    expect((DAYS[5] as any).oilev).toBeUndefined()
+  })
+  /* Sol's read, case 1 (6 Oct 26) — the roll-call's "by construction" row, now run: the Leave War sets a credit's WORKED
+     TIMES against leave on the same day, so a Logic change must not move a published day's clash either; the amendment
+     that applies the new value is what brings the overlap, and the day then says so. */
+  it('the clash with an afternoon leave follows the PUBLISHED worked times, and moves only with the amendment', () => {
+    setRole('admin')
+    setCell('bane', SAT, 'LL*'); setBidState('bane', SAT, 'approved')     // approved local leave, the afternoon
+    build(5, '08:00', '09:30')                                           // 05:00–11:30: a full day, all of it in the morning
+    publish(5); runOilPass()
+    const amber = () => !!getState().wars[0].views['bane']?.[SAT]?.amber
+    const clash = () => getClashes().some((c: any) => c.kind === 'duty' && c.person === 'bane' && c.date === SAT)
+    expect(cellOf('bane', SAT), 'the leave keeps the cell; the credit sits beside it').toBeTruthy()
+    expect(worked('bane', SAT)).toEqual([[[300, 690]]])
+    expect([amber(), clash()], 'morning work, afternoon leave: no clash').toEqual([false, false])
+    VCONF.debrief = 240                                                  // today's value would run his day to 13:30
+    runOilPass()
+    expect(worked('bane', SAT), 'the published times hold').toEqual([[[300, 690]]])
+    expect([amber(), clash()], 'and so does the day: still no clash').toEqual([false, false])
+    expect(oilPending(5).length, 'the change is waiting to be acknowledged').toBe(1)
+    sign(5); publishALDay(5); runOilPass()
+    expect(worked('bane', SAT)).toEqual([[[300, 810]]])
+    expect([amber(), clash()], 'published again: his work now runs into his leave, and the day says so').toEqual([true, true])
+  })
+  /* Astra's read, host case 1 (6 Oct 26) — the roll-call's row "leave filed over already-published work": the Inputs
+     door tells the filer he is recorded as working, reading the times off the stored credit. A leave in the quarter-hour
+     today's value would no longer count (07:00–07:15, the lead now 2h30) must still be flagged, and name the PUBLISHED
+     times. Through the real door (writeInputs, both stores wired). LAST in its group: the wiring stays on. */
+  it('a leave filed in the stretch only the PUBLISHED times cover is still flagged, and the note names those times', () => {
+    const toast = HOOKS.toast, said: string[] = []
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try {
+      setSession({ user: 'ad', role: 'admin' }); setRole('admin'); wireLeaveWarSync()
+      build(5, '10:00', '11:15')
+      publish(5); runOilPass()
+      expect(worked('bane', SAT)).toEqual([[[420, 795]]])
+      VCONF.reportLead = 150                                             // today's value would start his day at 07:30
+      runOilPass()
+      const row: any = { iid: 'ows-ll', person: 'bane', type: 'LL', date: 'Jul 18', yr: 2026, s: 420, e: 435, remarks: '', mod: '2026-07-01' }
+      expect(writeInputs(() => { INPUTS.unshift(row) }), 'filed anyway — flagged, not refused').toBe(true)
+      expect(said.join(' | ')).toMatch(/is recorded as working 07:00–13:15 on 18 Jul/)
+      expect(worked('bane', SAT), 'and the published times still stand').toEqual([[[420, 795]]])
+      expect(!!getState().wars[0].views['bane']?.[SAT]?.amber, 'the day goes amber from this pair').toBe(true)
+    } finally { HOOKS.toast = toast; setSession(null) }
+  })
+  it('a week that is off screen keeps its published OIL too', () => {
+    try {
+      build(5, '10:00', '11:15')
+      publish(5); runOilPass()
+      loadWeek('20/07/2026')
+      VCONF.reportLead = 150; VCONF.oilFullMin = 480
+      runOilPass()
+      expect(cellOf('bane', SAT)).toBe('FO')
+      expect(worked('bane', SAT)).toEqual([[[420, 795]]])
+    } finally { loadWeek('13/07/2026') }
+  })
+})
+
+describe('OWS7 — a Logic change that would move a published day\'s OIL is ONE pending change (D45, D98, D103)', () => {
+  it('it reads pending, takes the four sign-offs down, and clears when the value is put back', () => {
+    build(5, '10:00', '11:15')
+    publish(5); signBound(5)
+    expect(dayShownPendCount(5)).toBe(0)
+    expect(daySigned(5)).toBe(true)
+    VCONF.reportLead = 150
+    expect(oilPending(5).map((e: any) => e.addr)).toEqual(['oilrv:5'])
+    expect(dayShownPendCount(5)).toBe(1)
+    expect(daySigned(5), 'something waiting means sign again (D103)').toBe(false)
+    VCONF.reportLead = 180
+    expect(oilPending(5)).toEqual([])
+    expect(dayShownPendCount(5)).toBe(0)
+    expect(daySigned(5), 'back to what was published: the four stand again (D98)').toBe(true)
+  })
+  it('each of the three values, each way', () => {
+    build(5, '10:00', '11:15')
+    publish(5)
+    for (const [k, v] of [['reportLead', 150], ['debrief', 60], ['oilFullMin', 300], ['oilFullMin', 480]] as Array<[string, number]>) {
+      Object.assign(VCONF, RULES0); (VCONF as any)[k] = v
+      expect(oilPending(5).length, `${k} → ${v}`).toBe(1)
+    }
+  })
+  /* both plan challenges (Astra's finding 2, Sol's finding 2): the OIL record is its amount AND its worked times — the
+     Leave War's clash check and the day's sheet read the times — so a change that moves only the times is pending too */
+  it('a change that moves only a man\'s WORKED TIMES is pending too; the record holds until the day goes out again', () => {
+    build(5, '10:00', '11:15')
+    publish(5); signBound(5); runOilPass()
+    VCONF.reportLead = 170                                   // 07:10–13:15 is still a full day
+    expect(oilPending(5).length).toBe(1)
+    expect(dayShownPendCount(5)).toBe(1)
+    expect(daySigned(5)).toBe(false)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    expect(worked('bane', SAT), 'the record stays exactly as published').toEqual([[[420, 795]]])
+    signBound(5); publishALDay(5); runOilPass()              // signed again, for what the day now says — then it goes out
+    expect(cellOf('bane', SAT)).toBe('FO')
+    expect(worked('bane', SAT), 'published again: the times follow today\'s value').toEqual([[[430, 795]]])
+    expect(oilPending(5)).toEqual([])
+  })
+  it('a change that would write no record on this day differently raises nothing', () => {
+    build(5, '', '')                                          // no flying times: only Stiff\'s desk earns, 08:00–14:00
+    publish(5); signBound(5); runOilPass()
+    VCONF.reportLead = 60; VCONF.debrief = 300               // neither touches a desk
+    expect(oilPending(5)).toEqual([])
+    expect(dayShownPendCount(5)).toBe(0)
+    expect(daySigned(5)).toBe(true)
+    VCONF.oilFullMin = 330                                   // still a full day at six hours… and it was a half: this one moves
+    expect(oilPending(5).length).toBe(1)
+    VCONF.oilFullMin = 365                                   // a different line that leaves six hours a half day
+    expect(oilPending(5)).toEqual([])
+    expect(daySigned(5)).toBe(true)
+  })
+  /* The two reads, case 6 (6 Oct 26): the day stores only its own hours — what runs past midnight earns the next day
+     nothing (D42) and is not kept. A change that moves only that unstored end leaves the record exactly as it is, so
+     there is nothing to acknowledge. */
+  it('a change that only moves hours past midnight — which the day never stores — raises nothing', () => {
+    build(5, '22:00', '01:00', ['IN TIME 2000'])              // 20:00 to 03:00 the next morning: seven hours, a full day (D42)
+    publish(5); runOilPass()
+    const kept = worked('bane', SAT)
+    expect(cellOf('bane', SAT)).toBe('FO')
+    expect(kept).toEqual([[[1200, 1439]]])
+    VCONF.debrief = 90                                        // would end it at 02:30 — still past midnight
+    runOilPass()
+    expect(oilPending(5)).toEqual([])
+    expect(worked('bane', SAT)).toEqual(kept)
+    expect(cellOf('bane', SAT)).toBe('FO')
+  })
+  it('a line with an entered in-time is not moved by the nominal lead at all', () => {
+    build(5, '10:00', '11:15', ['IN TIME 0700'])
+    publish(5)
+    VCONF.reportLead = 60
+    expect(oilPending(5)).toEqual([])
+  })
+  it('a day that earns nothing (a published Monday) keeps no values and raises nothing', () => {
+    build(0, '10:00', '11:15')
+    publish(0)
+    expect(keptOn(0)).toBeUndefined()
+    VCONF.reportLead = 150; VCONF.debrief = 60; VCONF.oilFullMin = 300
+    expect(oilPending(0)).toEqual([])
+  })
+})
+
+describe('OWS8 — publishing again applies today\'s values, and keeps them', () => {
+  it('the next amendment moves the OIL and stores the new values', () => {
+    build(5, '10:00', '11:15')
+    publish(5); runOilPass()
+    VCONF.reportLead = 150
+    expect(oilPending(5).length).toBe(1)
+    sign(5); publishALDay(5)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('HO')                   // 07:30–13:15, five and three-quarter hours
+    expect(worked('bane', SAT)).toEqual([[[450, 795]]])
+    expect(keptOn(5)).toEqual({ reportLead: 150, debrief: 120, oilFullMin: 361 })
+    expect(oilPending(5)).toEqual([])
+    VCONF.reportLead = 180                                   // and it is now THIS version that holds still
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('HO')
+    expect(oilPending(5).length).toBe(1)
+  })
+  it('Unpublish, then publish again, does the same', () => {
+    build(5, '10:00', '11:15')
+    publish(5); runOilPass()
+    VCONF.reportLead = 150
+    unpublishDay(5)
+    publish(5); runOilPass()
+    expect(cellOf('bane', SAT)).toBe('HO')
+    expect(keptOn(5).reportLead).toBe(150)
+  })
+})
+
+describe('OWS9 — an in-time changed after publishing reads pending and moves the OIL only when it goes out', () => {
+  it('the credit reads the published version\'s own lines', () => {
+    build(5, '10:00', '11:15', ['IN TIME 0700'])
+    publish(5); runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    DAYS[5].waves[0].intimes[0] = 'IN TIME 0800'             // the working copy: 08:00–13:15 would be a half day
+    runOilPass()
+    expect(cellOf('bane', SAT), 'not yet published — the OIL has not moved').toBe('FO')
+    expect(dayDelta(5).length, 'and the day says something is waiting').toBeGreaterThan(0)
+    sign(5); publishALDay(5); runOilPass()
+    expect(cellOf('bane', SAT)).toBe('HO')
+    expect(worked('bane', SAT)).toEqual([[[480, 795]]])
+  })
+  it('a report on the evening before lengthens its own day and credits the day before nothing (D592 (3), D42)', () => {
+    build(5, '', '')                                          // Saturday: Bane's line has no times — it earns him nothing
+    build(6, '01:00', '02:00', ['IN TIME 2100'])              // Sunday 01:00, reporting 21:00 on the Saturday evening
+    publish(5); publish(6); runOilPass()
+    expect(cellOf('bane', SUN)).toBe('FO')                   // 21:00 → 04:00, seven hours
+    expect(cellOf('bane', SAT)).toBeUndefined()
+  })
+})
+
+/* Astra's plan challenge, finding 1 (6 Oct 26): the pending comparison above protects the ISSUED day. The four also sign a
+   CANDIDATE — a day not yet published, or an amendment waiting — and a Logic change after they signed could publish OIL
+   they never saw: sign a Saturday desk as a full day, raise the full-day line, publish — a half day goes out on four
+   signatures given for a full one. `main` does the same; the build that makes OIL keep its values is the one to close it. */
+/* D606 (owner, 7 Oct 26): "SC B if filled u can count it as work hours as well and OIL earned." The engine half is
+   engine/oilscintime.test.ts; here, the published day — through the real publish path, read at the Leave War. */
+describe('OWS12 — an SC shift with its B (in-time) filled earns OIL from that in-time (D606)', () => {
+  /* a Saturday holding only the app's own SC wave: Bane on the first MAIN row of the 07:00–13:00 shift */
+  const scDay = (di: number, to: string, ld: string, br = '') => {
+    const w: any = makeStandalone('sc')
+    w.formations.length = 1
+    Object.assign(w.formations[0], { to, ld, br })
+    w.formations[0].aircraft[0].p = 'bane'
+    Object.assign(DAYS[di], { waves: [w], dutywaves: [], sims: { amt: [], oft: [] }, ground: [], allhands: [] })
+  }
+  it('published with the B filled: a full day, worked from the in-time — and the work-hours day starts there too', () => {
+    scDay(5, '07:00', '13:00')
+    publish(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['HO', [[[420, 780]]]])       // six hours, as written
+    unpublishDay(5)
+    scDay(5, '07:00', '13:00', '06:00')
+    publish(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[360, 780]]]])       // seven, from the in-time
+    validate()
+    expect(workSpan(dayEvents(5, 'bane'))!.s, 'the work-hours day has started at the B since 24 Aug 26').toBe(360)
+  })
+  it('a B typed AFTER the day is published is a pending change: the OIL holds, and moves with the amendment', () => {
+    scDay(5, '07:00', '13:00')
+    publish(5); signBound(5); runOilPass()
+    DAYS[5].waves[0].formations[0].br = '06:00'
+    runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)], 'not yet published — the OIL has not moved').toEqual(['HO', [[[420, 780]]]])
+    expect(dayDelta(5).length, 'and the day says something is waiting').toBeGreaterThan(0)
+    expect(daySigned(5), 'the four sign again (D103)').toBe(false)
+    signBound(5); publishALDay(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[360, 780]]]])
+    expect(dayDelta(5)).toEqual([])
+  })
+  it('a B on the evening before is read on the published day\'s OWN lead: a Logic change holds it, and reads pending', () => {
+    scDay(5, '01:00', '07:00', '23:00')                      // within the 3h lead of midnight: 23:00 is Friday evening
+    publish(5); signBound(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[0, 420]]]])          // seven hours of Saturday
+    expect(cellOf('bane', '2026-07-17'), 'Friday earns nothing from it (D42)').toBeFalsy()
+    VCONF.reportLead = 30                                    // today 01:00 is outside the lead: 23:00 would be a LATER clock
+    runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)], 'the published day keeps what it went out with').toEqual(['FO', [[[0, 420]]]])
+    expect(oilPending(5).length, 'and says a Logic change is waiting').toBe(1)
+    expect(daySigned(5)).toBe(false)
+    VCONF.reportLead = 180
+    expect(oilPending(5)).toEqual([])
+    expect(daySigned(5)).toBe(true)
+  })
+})
+
+/* The cases the two readers of the D606 change ranked for the host (7 Oct 26 — both PASS). */
+describe('OWS12 — the readers\' cases, on a published day', () => {
+  const scDay = (di: number, to: string, ld: string, br = '') => {
+    const w: any = makeStandalone('sc')
+    w.formations.length = 1
+    Object.assign(w.formations[0], { to, ld, br })
+    w.formations[0].aircraft[0].p = 'bane'
+    Object.assign(DAYS[di], { waves: [w], dutywaves: [], sims: { amt: [], oft: [] }, ground: [], allhands: [] })
+  }
+  it('a B typed and then taken out again, unpublished: pending while it is there, nothing pending and the four standing once it is gone', () => {
+    scDay(5, '07:00', '13:00')
+    publish(5); signBound(5); runOilPass()
+    DAYS[5].waves[0].formations[0].br = '06:00'
+    expect(dayDelta(5).map((e: any) => e.addr), 'ONE change — the box itself, no second OIL line for it').toEqual(['ff:5.0.0.br'])
+    expect(daySigned(5)).toBe(false)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('HO')
+    DAYS[5].waves[0].formations[0].br = ''
+    expect(dayDelta(5)).toEqual([])
+    expect(daySigned(5)).toBe(true)
+  })
+  it('a Logic change that keeps the amount but moves the stored start is pending too — and the amendment stores the new start', () => {
+    scDay(5, '01:00', '08:00', '23:00')                      // the evening before: nine hours, 00:00–08:00 of Saturday
+    publish(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[0, 480]]]])
+    VCONF.reportLead = 30                                    // today: 01:00–08:00, seven hours — still a full day
+    runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[0, 480]]]])
+    expect(oilPending(5).length, 'full day either way — the worked times differ, so it is still told').toBe(1)
+    sign(5); publishALDay(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[60, 480]]]])
+    expect(oilPending(5)).toEqual([])
+  })
+  it('an overnight shift with an earlier B: a full day on its own date, stored to midnight; the next day gets nothing', () => {
+    scDay(5, '19:00', '07:00', '18:00')
+    publish(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[1080, 1439]]]])
+    expect(cellOf('bane', SUN)).toBeFalsy()
+  })
+})
+
+describe('OWS11 — sign-offs fall when a Logic change would alter the OIL of the day they signed', () => {
+  it('a day not yet published: signed as a full day, the full-day line raised — the four fall; put back, they stand', () => {
+    build(5, '', '')                                          // no flying times: only Stiff's desk earns
+    DAYS[5].dutywaves[0].rows[0].end = '1500'                // 08:00–15:00, seven hours — a full day at the standard line
+    signBound(5)
+    expect(daySigned(5)).toBe(true)
+    VCONF.oilFullMin = 480
+    expect(daySigned(5), 'they signed a full day; this would publish a half').toBe(false)
+    VCONF.oilFullMin = 361
+    expect(daySigned(5)).toBe(true)
+  })
+  it('an amendment waiting: the published desk unchanged by the new line, the signed change not — the four still fall', () => {
+    build(5, '', '')
+    DAYS[5].dutywaves[0].rows[0].end = '1000'                // published: two hours, a half day under any line here
+    publish(5)
+    DAYS[5].dutywaves[0].rows[0].end = '1500'                // the amendment: seven hours, a full day
+    signBound(5)
+    expect(daySigned(5)).toBe(true)
+    VCONF.oilFullMin = 480
+    expect(oilPending(5), 'nothing about the PUBLISHED two hours moves').toEqual([])
+    expect(daySigned(5), 'but the amendment they signed would now go out as a half day').toBe(false)
+    VCONF.oilFullMin = 361
+    expect(daySigned(5)).toBe(true)
+  })
+  it('a Logic change that would write the signed day\'s OIL exactly as it stands leaves the four standing', () => {
+    build(5, '10:00', '11:15', ['IN TIME 0700'])              // an entered in-time: the nominal lead is not read at all
+    signBound(5)
+    VCONF.reportLead = 150
+    expect(daySigned(5)).toBe(true)
+    VCONF.oilFullMin = 370                                   // 6h15 is over either line
+    expect(daySigned(5)).toBe(true)
+    VCONF.debrief = 150                                      // …but a longer debrief moves his worked times: sign again
+    expect(daySigned(5)).toBe(false)
+  })
+  it('a value changed between two signatures: the earlier ones fall, the later ones stand (Sol\'s finding 1)', () => {
+    build(5, '10:00', '11:15')
+    setSign(5, 'cur', 'ignite'); setSign(5, 'sked', 'bane')
+    VCONF.reportLead = 150                                   // a full day becomes a half
+    setSign(5, 'plan', 'stiff'); setSign(5, 'appr', 'pump')
+    expect(signMissing(5), 'the two who signed the full day').toEqual(['CUR CK', 'SKED CK'])
+    VCONF.reportLead = 180                                   // back: the first two stand, the last two signed the other value
+    expect(signMissing(5)).toEqual(['PLANNED BY', 'APPROVED BY'])
+  })
+  it('a day that earns nothing is signed for no OIL, and no Logic value touches its sign-offs', () => {
+    build(0, '10:00', '11:15')
+    signBound(0)
+    VCONF.reportLead = 150; VCONF.debrief = 60; VCONF.oilFullMin = 300
+    expect(daySigned(0)).toBe(true)
+  })
+})
+
+describe('OWS10 — a version published before the values were kept still reads, and raises nothing', () => {
+  it('no kept values: today\'s are used, as before, and nothing is pending', () => {
+    build(5, '10:00', '11:15')
+    publish(5)
+    delete (SCHED.orig[5] as any).d.oilev.rv                 // as an earlier build wrote it
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    VCONF.reportLead = 150
+    expect(() => runOilPass()).not.toThrow()
+    expect(oilPending(5)).toEqual([])
+    expect(cellOf('bane', SAT)).toBe('HO')                   // the old behaviour, for that old record only
+  })
+  it('kept values that are not three real numbers are not trusted: read as none kept', () => {
+    for (const bad of [{ reportLead: '180', debrief: 120, oilFullMin: 361 }, { reportLead: 180, debrief: 120 }, { reportLead: 180, debrief: -5, oilFullMin: 361 }, { reportLead: NaN, debrief: 120, oilFullMin: 361 }, 'x', 7]) {
+      Object.assign(VCONF, RULES0); SCHED.orig = {}; SCHED.dayOK = {}; SCHED.cur = {}
+      build(5, '10:00', '11:15')
+      publish(5)
+      ;(SCHED.orig[5] as any).d.oilev.rv = bad               // a stored record somebody edited by hand, or half-written
+      VCONF.reportLead = 150
+      expect(() => runOilPass(), JSON.stringify(bad)).not.toThrow()
+      expect(oilPending(5), JSON.stringify(bad)).toEqual([])
+      expect(cellOf('bane', SAT), `${JSON.stringify(bad)} — today's values, as for a record with none`).toBe('HO')
+    }
+  })
+})

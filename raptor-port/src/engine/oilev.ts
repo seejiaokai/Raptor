@@ -48,7 +48,7 @@ import { stashHas, standingRowIn } from './weekstash'
 import { standsOn } from './overlay'
 import { PEOPLE, whoId, isSpecial } from './people'
 import { HOOKS } from './hooks'
-import { dayOilWork, oilItemDefaults, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, openEndRows, type OilWork } from './oil'
+import { dayOilWork, oilItemDefaults, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, openEndRows, oilRuleValsNow, type OilWork, type OilRuleVals } from './oil'
 
 /* the item-address grammar lives in engine/oil.ts, beside the walk that tags
    every span with it — re-exported here so callers of the evidence block have
@@ -143,6 +143,17 @@ export interface OilEvidence {
    *  not recorded" and invent nothing. Same shape, and the same reason, as
    *  `stand` on a claim. */
   mem?: 1
+  /** THE LOGIC VALUES THIS DAY'S OIL IS WORKED OUT FROM ([OIL-WORK-START] — owner, D592 (4), 5 Oct 26: "a published day
+   *  keeps the OIL it went out with"; D48, D142). The nominal report lead, the debrief after landing and the full-day
+   *  line, as they stood when the block was built — so on an ISSUED day, as they stood at publication. Every reader of
+   *  the block's OIL uses THESE (oilDayWork, oilAmount below), which is what stops a Logic change moving published OIL
+   *  with nothing pending: "Nominal report before T/O" 3h → 2h30 took a published full day to a half, the four
+   *  sign-offs standing (the Codex stack check's W1).
+   *
+   *  Only on a day that earns — a day that credits nobody has no OIL for a value to move. ABSENT on a block frozen by
+   *  an earlier build: its readers fall back to today's values, as that build did, and nothing reads pending for it
+   *  (oilRuleShift) — demo data, D56; it must still load and read. */
+  rv?: OilRuleVals
 }
 
 export const EMPTY_OIL_EVIDENCE: OilEvidence = { iso: '', earns: false, d: {}, inputs: [], sent: {}, mem: 1 }
@@ -594,8 +605,93 @@ export function oilEvidence(di: any, day?: any): OilEvidence {
      `earns` false, so every reader of what a day CREDITS is byte-identical to
      before. Only the membership is now kept. */
   if (!earns) return { iso, earns: false, d: dec, inputs: [], sent, mem: 1 }
-  return { iso: iso as string, earns: true, d: dec, inputs: ins, sent, mem: 1 }
+  /* …and the Logic values the day's OIL is worked out from, as they stand now — frozen with the rest of the block when
+     the day is published ([OIL-WORK-START], D592 (4)). The live candidate always carries today's. */
+  return { iso: iso as string, earns: true, d: dec, inputs: ins, sent, mem: 1, rv: oilRuleValsNow() }
 }
+
+/* ---- the Logic values a block kept ([OIL-WORK-START], D592 (4)) ------------ */
+
+/** The values a block's OIL is worked out from: its own kept three — or null, which every reader takes as "today's".
+ *  A block is stored, and storage is untrusted (rules.ts rulesLoad says why): three real numbers or nothing, so a
+ *  hand-edited or half-written record can never push text into the arithmetic. */
+export function oilKeptVals(ev: OilEvidence | null | undefined): OilRuleVals | null {
+  const r: any = ev && ev.rv
+  const n = (v: any) => typeof v === 'number' && isFinite(v) && v >= 0
+  return r && n(r.reportLead) && n(r.debrief) && n(r.oilFullMin) ? { reportLead: r.reportLead, debrief: r.debrief, oilFullMin: r.oilFullMin } : null
+}
+
+/** WHAT ONE MAN'S DAY IS WORTH under a block — nothing, a half (0.5) or a full day (1): the envelope of his earning
+ *  work against the block's OWN full-day line. The ONE body the credit (leavewar/sync.ts), the board's figures
+ *  (ui/oilmode.ts) and the publish reminder below read, so a published day's screen and its credit cannot answer with
+ *  two different thresholds. */
+export function oilAmount(ev: OilEvidence | null | undefined, spans: OilWork[]): number {
+  const kept = oilKeptVals(ev)
+  return uniformOil(envMin(spans.map(w => [w.s, w.e] as [number, number])), kept ? kept.oilFullMin : null)
+}
+
+/** A man's work on the day as an OIL record keeps it: clipped to the date and merged where the pieces touch — the
+ *  stored shape of a credit's worked times (leavewar/sync.ts writes exactly this beside the FO / HO). Here, and not in
+ *  the sync wire where it began, so the record that is WRITTEN and the comparison that says a published record would
+ *  change are one body. */
+export function oilWorkSpans(spans: OilWork[]): Array<[number, number]> {
+  const clipped = spans.map(w => [Math.max(0, w.s), Math.min(1439, w.e)] as [number, number]).filter(([a, b]) => a <= b)
+  clipped.sort((a, b) => a[0] - b[0])
+  const out: Array<[number, number]> = []
+  for (const [a, b] of clipped) {
+    const last = out[out.length - 1]
+    if (last && a <= last[1] + 1) last[1] = Math.max(last[1], b)
+    else out.push([a, b])
+  }
+  return out
+}
+
+/** One man's OIL record for a day: what he is credited (0.5 | 1) and the worked times written beside it. */
+export interface OilRec { amt: number; spans: Array<[number, number]> }
+/** person → his record, for every man this day credits under this block */
+function oilRecordsOf(day: any, ev: OilEvidence): Record<string, OilRec> {
+  const out: Record<string, OilRec> = {}
+  const work = oilEarnedWork(day, ev)
+  for (const p of Object.keys(work)) { const v = oilAmount(ev, work[p]); if (v) out[p] = { amt: v, spans: oilWorkSpans(work[p]) } }
+  return out
+}
+const recKey = (r: OilRec | null) => r ? `${r.amt}:${r.spans.map(x => x.join('-')).join('+')}` : ''
+
+/** WOULD TODAY'S LOGIC VALUES WRITE THIS DAY'S OIL DIFFERENTLY? Each man whose OIL record for the day would change if it
+ *  were published again with nothing else touched: the record under the values the block kept (`was`) and under today's
+ *  (`now`) — null for no credit at all. Empty when nothing would move.
+ *
+ *  THIS IS HOW A LOGIC CHANGE IS TOLD (owner, D592 (4): "a typed time or a Logic value changed afterwards reads as a
+ *  pending change"; D45 — nothing on a published schedule changes unacknowledged): publish.ts oilDelta turns a non-empty
+ *  answer into ONE pending change on the day, which takes the sign-offs down (D103) and clears the moment the value is
+ *  put back (D98). The same body answers for a day the four have signed and not yet published (publish.ts oilRvBoundOk).
+ *
+ *  THE RECORD, NOT ONLY THE AMOUNT (both plan challenges, 6 Oct 26 — Astra's finding 2, Sol's finding 2; the builder's
+ *  first cut compared amounts alone). A credit is written with its worked times, and those times are read downstream:
+ *  the Leave War's clash check sets them against a leave or a bid on the same day, and the day's sheet prints them. A
+ *  debrief raised from two hours to four leaves a full day a full day and moves "worked until 11:00" to 13:00 — a
+ *  change to the published record, which D592 says reads pending and D45 says must be acknowledged. Comparing amounts
+ *  alone froze the record correctly and then left no door to put the new value through.
+ *  AND NOT THE BARE VALUES EITHER: a Logic change that would write this day's records exactly as they stand raises
+ *  nothing here — an amendment that changes nothing a reader could see is the shape this file has refused since
+ *  oilEvidenceKey ("the key records what the day credits"), and D186's printed brief lead is compared the same way,
+ *  only where the day prints one (publish.ts faceRuleValsCompared).
+ *
+ *  Both sides are the SAME day and the SAME block — its own content, decisions, claims and crowd; only the three values
+ *  differ, so nothing else that moved since can read as this. A block with no kept values (an earlier build's) has
+ *  nothing to compare and answers empty. */
+export function oilRuleShift(day: any, ev: OilEvidence | null | undefined): Array<{ person: string; was: OilRec | null; now: OilRec | null }> {
+  const kept = oilKeptVals(ev)
+  if (!day || !ev || !ev.earns || !kept) return []
+  const now = oilRuleValsNow()
+  if (kept.reportLead === now.reportLead && kept.debrief === now.debrief && kept.oilFullMin === now.oilFullMin) return []
+  const a = oilRecordsOf(day, ev), b = oilRecordsOf(day, { ...ev, rv: now })
+  return [...new Set([...Object.keys(a), ...Object.keys(b)])].sort()
+    .filter(p => recKey(a[p] || null) !== recKey(b[p] || null)).map(p => ({ person: p, was: a[p] || null, now: b[p] || null }))
+}
+/** one side of that answer as a stable string — what the pending entry and the sign-offs' binding carry */
+export const oilShiftKey = (rows: Array<{ person: string; was: OilRec | null; now: OilRec | null }>, side: 'was' | 'now') =>
+  rows.map(r => `${r.person}:${recKey(r[side])}`).join(',')
 
 /* ---- the read-only render pass ([OIL-SEATS-CAN-EARN] §5 step 1) -----------
    Consolidating the mode's item guard onto the evidence turns an O(1) property
@@ -652,7 +748,9 @@ export function oilDayWork(day: any, ev: OilEvidence): Record<string, OilWork[]>
     const hit = OIL_WORK.get(ev)
     if (hit && hit.d === day) return hit.work
   }
-  const work = dayOilWork(day, { expandAll: (_win, item) => (item && ev.sent[item]) || [] })
+  /* …under the Logic values the block kept ([OIL-WORK-START], D592 (4)): an issued day's work is measured with the
+     report lead and the debrief it went out with; a block with none (the working copy's always has today's) reads today's */
+  const work = dayOilWork(day, { expandAll: (_win, item) => (item && ev.sent[item]) || [], rv: oilKeptVals(ev) })
   if (OIL_WORK) OIL_WORK.set(ev, { d: day, work })
   return work
 }
@@ -1087,7 +1185,7 @@ export function oilWouldEarn(di: any): boolean {
   if (!ev.earns) return false
   const work = oilEarnedWork(d, ev)
   for (const p of Object.keys(work)) {
-    if (uniformOil(envMin(work[p].map(w => [w.s, w.e] as [number, number])))) return true
+    if (oilAmount(ev, work[p])) return true
   }
   return false
 }

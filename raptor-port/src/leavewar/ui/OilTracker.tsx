@@ -480,7 +480,10 @@ export function OilTracker({ person, onClose, onGranted }: {
                    too, where no hover title shows — that a tap adds one (Fable's final read, F1) */
                 ? <span className="rt muted" data-testid={`oil-noreason-${tid(c.id, c.ledgerId)}`}>{admin ? 'no reason — tap to add one' : 'no reason given'}</span>
                 : '')}
-              {c.hours?.[0] && <span className="oil-hrs"> · {hhmm(c.hours[0][0])}–{hhmm(c.hours[0][1])}</span>}
+              {/* EVERY worked period, as the day's sheet and the day's list print them (BidPicker, DayList) — this printed
+                  only the first, so a full day earned from a morning desk and an afternoon sortie read "06:00–06:30"
+                  (Astra's scenario read of [OIL-WORK-START], F1, 6 Oct 26) */}
+              {c.hours?.[0] && <span className="oil-hrs"> · {c.hours.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}</span>}
             </span>
           </div>
           <div className="l3">

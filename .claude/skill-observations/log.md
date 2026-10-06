@@ -2622,3 +2622,93 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the read brief template: either say plainly "you cannot run anything — read the source; name the exact input you would run and the host runs it", or launch the reader with a sandbox that allows writes to a scratch directory only and point the test runner's cache and temp there. And add to the host's steps: "run every 'would run' case the readers name before dispositioning the finding".
 
 **Principle:** Do not offer a reviewer a verification step its environment cannot perform; turn "I could not run it" into a named case the host is obliged to run.
+
+### Observation 441: One plan-challenge round overturned the builder's own reading before the code hardened around it
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** A FULL-tier build touching earned leave, the published record and saved data ([OIL-WORK-START]). The builder wrote a short plan, named its two "builder's readings" out loud in the plan and its brief, and sent it to two reviewers blind to each other while it wrote the first failing tests.
+**Skill:** claudex-loop / codex-review (plan review); the project's bug-check order §4 rank 3
+**Type:** open-source
+**Phase/Area:** Plan review before a high-consequence build
+
+**Issue:** Positive signal. Both reviewers independently rejected the same builder's reading (compare a published record on its amount only), gave the same concrete counter-case (a value that leaves the amount and moves the recorded times), and both found a missing protection the plan had not listed (approvals given before a rule change). The plan had flagged the reading as its own, which is what made it a target rather than an assumption buried in the design. Cost: one round, about 25 minutes of wall-clock that the builder spent writing red tests for the half that did not depend on the answer.
+
+**Suggested improvement:** In the plan-review brief template: a section "The builder's readings — attack them", listing every place the builder interpreted a requirement rather than read it, each with its one-line alternative; and ask each reviewer to rule each one "supported / contradicted / the owner's to decide". Run the round in the background while writing tests for the parts no reading touches.
+
+**Principle:** Name your own interpretations as interpretations and hand them to the reviewer as targets; an interpretation stated as a design fact is reviewed as a fact.
+
+### Observation 442: A repo-wide rename rewrote a reviewer's verbatim report and its brief
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Renaming a new spec file to satisfy a document gate, then replacing the old name everywhere it was mentioned with one scripted find-and-replace across the repo.
+**Skill:** New skill candidate: evidence-preserving edits (or a rule in the project's doc-structure / bug-check guidance)
+**Type:** open-source
+**Phase/Area:** Mechanical edits across a repository that holds review evidence
+
+**Issue:** The replace also touched the reviewer's report (kept verbatim as evidence) and the brief that reviewer had already run against — two files whose value is that they are exactly what was written and read. Caught only because the tool printed every file it changed; both were put back and the rename recorded beside them instead.
+
+**Suggested improvement:** Before any scripted repo-wide replace, list the matches and exclude evidence paths (reviewer reports, briefs after their run, frozen snapshots, archives); where an excluded file now names something that moved, say so in the live document that cites it, not inside the frozen one.
+
+**Principle:** Evidence files are immutable inputs: a mechanical edit excludes them by path, and a later rename is noted beside them, never inside them.
+
+### Observation 443: A shared walk helper read the wrong element because a CSS class had since gained a second use
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Re-using an earlier job's scripted-browser helpers for a new walk. The helper that reports a day's "N pending" chip selects the first element of a class that a later feature also put on a different chip ("N changes"), so on a day with nothing pending it reported "10 changes" as the pending count.
+**Skill:** New skill candidate: scripted hand-pass walks (the project's walk drivers and walker brief)
+**Type:** internal
+**Phase/Area:** Reusing driver helpers across walks; writing the walker brief
+
+**Issue:** The host's own before/after run produced a wrong reading on the unfixed build ("pending: 10 changes"), which would have looked like a real observation in a table. It was noticed because the number was implausible. Four walkers were about to inherit the same helper.
+
+**Suggested improvement:** (1) Fix the selector in the helper the next time the helper file is touched (it was left untouched here because walkers were about to read it). (2) In the walker brief template, a standing section "Known traps in the drivers", fed from the host's own short run before the walkers start. (3) The host's short run goes first precisely to find these.
+
+**Principle:** Run the host's own short walk on shared helpers before fanning out; every helper trap it meets goes into the walkers' brief by name.
+
+### Observation 444: A one-file browser test started during a gate run took the built files from under the gate's server
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Chasing a browser test that had failed once inside the full gate run, the host ran that one test file in a loop while the same gate run was still going (its browser-test gate had finished; its Tracker smoke was in flight).
+**Skill:** New skill candidate: running the gates on one machine (the project's gate-lock rule and bug-check order)
+**Type:** internal
+**Phase/Area:** The lock rule's exemption for "one test file"
+
+**Issue:** The lock rule says one test file needs no lock, on the reasoning that it is light. But the browser-test runner builds the app before it serves it, so even one file rewrites the built folder — and the Tracker smoke's own server was serving from that folder. The smoke aborted waiting for a sign-in box that was never served, and the gate run reported a failure that was not the app's. It cost a further full gate run and had to be explained in the evidence sheet.
+
+**Suggested improvement:** In the lock rule (shipping guide, "The checks") and the bug-check order: the "one test file needs no lock" exemption applies to UNIT test files only; anything that builds (a browser-test run of any size, a build, a preview) waits for the lock to be free. Optionally make the browser-test config refuse to build while the lock folder exists and is held by another run.
+
+**Principle:** An exemption written for cost ("it is light") does not cover interference ("it rewrites what another run is reading"); name the shared artefact, not the size of the job.
+
+### Observation 445: "Wait until the app holds the value" turned a flaky step into a clear failure, but did not fix it; widening the gap between two actions reproduced it on demand
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** A new browser test failed once per two full gate runs at one step (type a setting, press Tab). The first repair followed the standing rule — wait on what the step needs, not on a fixed time — by polling for the value the app should then hold.
+**Skill:** New skill candidate: repairing a browser test that fails only on a busy machine (the project's e2e conventions)
+**Type:** internal
+**Phase/Area:** Diagnosing an intermittent browser-test failure before repairing it
+
+**Issue:** The poll was a correct assertion and the wrong repair: the value never arrived, because the page had redrawn its boxes between the typing and the Tab and the typed text went with the old box. Page-side CPU throttling did not reproduce it (it slows the page, not the gap between the runner's two commands). What reproduced it every time was a deliberate pause inserted between the two actions, plus a marker on the element and a watcher on its parent to show the element had been replaced. Only then was the right repair clear (repeat the gesture until the app holds the value; raise the test's own time budget, measured), and only then could the underlying redraw be filed as its own item with evidence.
+
+**Suggested improvement:** Add to the e2e conventions, beside the "wait on what it needs" rule: (1) an intermittent failure between two consecutive actions is reproduced by putting a pause BETWEEN them — a busy machine widens that gap, page throttling does not; (2) before repairing, show which of the two it is: the app never did it (mark the element, watch for replacement) or the test looked too early; (3) a repair is proven by running it WITH the pause that used to break it; (4) what the trace finds in the app is filed, even when a person could never trigger it.
+
+**Principle:** Reproduce the race before choosing the wait: a test that fails only under load is telling you which gap matters, and the same pause that reproduces it is the proof of the repair.
+
+### Observation 446: A reading written into a fresh ruling contradicted a sentence the app itself prints; it was caught only when that sentence came up for editing
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** The owner ruled in one line that a filled in-time box on a standby shift counts for earned leave. Recording it, the builder added its own readings of the edge cases — among them that a spare crew row, once switched on, takes the in-time too — and filed the ruling with that reading before building.
+**Skill:** New skill candidate: recording an owner ruling with the builder's readings (the project's record-decisions rule)
+**Type:** internal
+**Phase/Area:** Writing the "agent's readings" under a new ruling, before the build
+
+**Issue:** The rulings and the backlog were searched before the row was written, as the rule requires — but not the app's own on-screen rule text or the older settled-decisions section for the SUBJECT (the in-time box on that shift kind). Both already said the box belongs to the main crew only ("a spare reports nowhere, so his box does nothing"), in the owner's own earlier words. The reading was reversed within the hour, before anything was built on it, and both independent readers later judged the reversed reading the better one; but the first version sat in the filed ruling, the rules document and the register for that hour, and each had to be corrected.
+
+**Suggested improvement:** In the record-decisions rule, where it tells the agent to label its own readings: before writing a reading about an edge case, search for the edge case's SUBJECT in (1) the settled-decisions sections of the area files, (2) the app's own rule text (the page that prints every rule), and (3) the rules document — and quote the sentence found beside the reading. A reading with no sentence found says so.
+
+**Principle:** A builder's reading of a new ruling must be checked against what the product already tells its users about the same subject, not only against the ledger of rulings.

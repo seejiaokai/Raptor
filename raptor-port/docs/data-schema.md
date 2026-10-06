@@ -92,7 +92,11 @@ Two fields, and the difference between them is the whole design (`engine/oilev.t
   turned on and off again is DELETED rather than left as an empty object.
 - **`oilev` — the FROZEN evidence. On an ISSUED SNAPSHOT'S day copy ONLY.**
   `{ iso, earns, d: <the decisions>, inputs: [{ iid, person, type, asks, acc, win,
-  ans }], sent: { <itemKey>: personId[] } }`. Attached by `publish.ts:daySnap` and
+  ans }], sent: { <itemKey>: personId[] }, rv?: { reportLead, debrief, oilFullMin } }` — `rv` (6 Oct 26,
+  `[OIL-WORK-START]`, D592 (4)): the three Logic values the day's OIL was worked out from, in minutes, as they stood at
+  publication; on a day that earns only. Every reader of the block's OIL uses them, so a later Logic change moves a
+  published day's OIL only when the day is published again. A block without it (an earlier build's) reads today's
+  values. Attached by `publish.ts:daySnap` and
   stripped from every clone back onto a working copy (`drafts.ts:liveDay`). It is the
   ONLY thing the credit pass reads on a published day. **Never present on a live day**
   — there it is derived on read, so it cannot go stale and a plan restored months
@@ -306,7 +310,7 @@ each request's own `acc: 'r'` mark, `store.ts takenOff` — `[DB-READINESS]` gro
 | `al` | `al` | the week's AL bookkeeping |
 | `ok` | `dayOK` | per-day published state |
 | `sg` | `sign` | the four live sign-off slots per day |
-| **`sb`** | **`signBind`** | **what each signature signed — digest, date, issued base id, plan revision. A signature is valid only while all four still match** |
+| **`sb`** | **`signBind`** | **what each signature signed — digest, date, issued base id, plan revision. A signature is valid only while all four still match** — and, since 6 Oct 26 (`[OIL-WORK-START]`), `orv`: the three Logic values the day's OIL was worked out from when it was signed (`{ reportLead, debrief, oilFullMin }`, earning days only, else null); the signature falls while the day as it stands would write anyone's OIL record differently under those values than under today's |
 | `o` | `orig` | the frozen Original per day |
 | `cv` | `cur` | which version each day shows (a verId) |
 | `dr` | `drafts` | the parked alternate plans per day |
