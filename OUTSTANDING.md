@@ -50,7 +50,7 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
 count from its entered in-time / Rally (D591), and a published weekend must keep the earned leave it went out with when a Logic value
-changes (today it moves at once). **BUILT 6 Oct 26 and FULL-checked on its own branch (D591, D592) — his look and "merge live" are left.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn); low, older than it, found by its browser test: [LOGIC-REDRAW-DROPS-TYPING] (the Logic page redraws its rules just after it opens, and a value being typed at that instant is dropped); low, words only, from its walks: [OIL-EARN-DAY-SWITCH-WORDS] (OIL Earn's "Nothing today earns" button reads like a status), [SC-B-CHANGE-SAYS-BRIEF] (the changes window calls an SC shift's in-time "brief"). **D606 (7 Oct 26 — an SC shift's typed in-time counts for OIL) was built and checked on the same branch.** [INTIME-LINES-DRAG] (D593, his ask of
+changes (today it moves at once). **BUILT 6 Oct 26 and FULL-checked on its own branch (D591, D592) — his look and "merge live" are left.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn); low, older than it, found by its browser test: [LOGIC-REDRAW-DROPS-TYPING] (the Logic page redraws its rules just after it opens, and a value being typed at that instant is dropped); low, words only, from its walks: [OIL-EARN-DAY-SWITCH-WORDS] (OIL Earn's "Nothing today earns" button reads like a status), [SC-B-CHANGE-SAYS-BRIEF] (the changes window calls an SC shift's in-time "brief"). **D606 (7 Oct 26 — an SC shift's typed in-time counts for OIL) was built and checked on the same branch.** **From his D607 (7 Oct 26 — a walk is sized per change by Opus, from a record of past walks), next, with [START-CONTEXT-AUDIT]:** [WALK-LEDGER-HISTORY] (compile the past walks into the record and write its figures), [WALK-SIZING-GUIDE] (the checking guide's wording, read by Astra and Sol before he approves it). [INTIME-LINES-DRAG] (D593, his ask of
 5 Oct 26 — drag a wave's In-time / Rally lines into order on the Scheduler Board, Auto sort too; proposed in the same batch). Low, from the same
 check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip over a phone request card's date), [BOARD-TIME-ESCAPE]
 (Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
@@ -2046,6 +2046,29 @@ specified; its test is in `raptor-port/src/ui/schedule-tab.test.tsx`, "D597 when
 `[TAB-LAST-BOX-TEST-GAPS]`. (2) D603 and D604 pass; D602's short line had lost a condition of its full row ("options first,
 nothing trimmed before he rules") and was reworded the same day — the new wording is read again by both readers of the fix
 (the sheet `raptor-port/docs/handpass/2026-10-06-rest-blank-line.md`). This item leaves at the next documents-only pass (D29).
+
+### [WALK-SIZING-GUIDE] The checking guide still says "the full walk" for every FULL check — word it to D607: the walk is sized per change, by Opus, from the record (owner, D607, 7 Oct 26)
+D607: before any walk the agent says what type of change it is, Opus decides what kind of walk it needs, and every walk is
+recorded so the figures show where a walk is useful. The ruling's one line loads in every chat and governs from now; the record
+and the five-line sizing step are in `raptor-port/docs/walk-ledger.md`. What still says otherwise: `raptor-port/docs/bug-check-order.md`
+§5 (the FULL tier's "the full walk"; the tier table's costs), §7 (the walk) and §4 (where the walkers are spent), and
+`.claude/rules/bug-check.md` (step 4's order names "walk" with no sizing step). **To do:** draft the wording — a sizing step
+between the roll-call and the walk, pointing at the ledger; the tier table's FULL row reading "a walk sized by the sizing step";
+D16 kept for how a long pass is run — have Astra and Sol 6.1 read it, one round each (D70), then put it to him. Nothing else of
+the order changes. **Place (the agent's line):** with `[START-CONTEXT-AUDIT]` — the same documents-only pass, the same readers.
+
+### [WALK-LEDGER-HISTORY] The walk ledger holds two rows — compile the past walks into it, then write its figures (owner, D607, 7 Oct 26)
+`raptor-port/docs/walk-ledger.md` was started on 7 Oct 26 with the two walks of `[OIL-WORK-START]`. His ask is for the HISTORY:
+"statistics of which type of change a walk is useful". **To do:** for every bug check that walked the app — the evidence sheets in
+`raptor-port/docs/handpass/` (about sixty; leave out the readers' reports, the scenario lists and the plans) — add one row: the
+date, the job, the type of change (the ledger's list A–H), the walk (who walked, how many scenarios and pictures, which sizes),
+the tokens where a figure was recorded, and what the walk found, sorted three ways — real faults in the app (fixed or filed),
+wording or cosmetic finds, and finds that proved false, already known or as ruled — plus what ELSE found faults on that job (a
+test, a code read, his own look). Where a sheet does not say, the cell says "not stated" — never a guess. Then write the ledger's
+"The figures": by type of change, how many walks, what they cost and what they found, and one plain paragraph for him on which
+types a walk has paid for itself. A documents chore: a Sonnet helper may extract the rows (D588), the host checks a sample
+against the sheets and writes the figures. **Place (the agent's line):** next, with `[START-CONTEXT-AUDIT]`'s chat — before the
+next walk is sized, since the sizing step reads these figures.
 
 ### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
 His words: *"why I am at 30% context the moment I start a new chat? Is it required? Is there a way we can optimise how the repo is

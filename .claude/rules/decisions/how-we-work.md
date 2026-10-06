@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D607 | 7 Oct 26 | BEFORE ANY WALK IS RUN, THE AGENT SAYS WHAT TYPE OF CHANGE IT IS AND OPUS DECIDES WHAT KIND OF WALK IT NEEDS — HOW WIDE, OR ONLY A SHORT ONE; AND A RECORD IS KEPT OF EVERY WALK — THE TYPE OF CHANGE, THE WALK'S SIZE AND COST, WHAT IT FOUND — SO THE FIGURES SHOW WHICH TYPES OF CHANGE A WALK IS USEFUL FOR. |
 | D604 | 6 Oct 26 | HIS LOOK AT THE CODEX STACK'S PREVIEW IS DONE — "ALL LOOKS GOOD" — AND THE WORKING-GUIDE WORDING WRITTEN FOR D588–D590, D596 AND D601 IS APPROVED; HE THEN SAID "MERGE LIVE" AND THE STACK MERGED AS ONE (PR #481, 6 OCT 26); THE WORK CARRIES ON IN A NEW CHAT. |
 | D602 | 6 Oct 26 | AFTER THE CODEX STACK: THE CREW-REST FAULT (A MAN ON A FLYING LINE WITH NO TAKE-OFF LOSES HIS CREW-REST WARNING) IS FIXED FIRST, IN A NEW CHAT; THEN WHAT A NEW CHAT LOADS AT ITS START IS MEASURED AND PUT TO HIM AS OPTIONS WITH THEIR SAVINGS AND RISKS — NOTHING IS TRIMMED BEFORE HE RULES, NEVER AT THE COST OF THE QUALITY OF THE WORK. |
 | D601 | 6 Oct 26 | SOL 6.1 KEEPS THE SECOND REVIEWER'S SEAT: FOR WORK OPUS WROTE, ASTRA REVIEWS AND SOL 6.1 READS SECOND AND BLIND WHERE TWO ARE REQUIRED; THE ONE SIDE-BY-SIDE WITH FABLE IS DONE AND IS NOT REPEATED; FABLE STAYS ON CALL ONLY, ON HIS WORD EACH TIME. |
@@ -113,7 +114,7 @@ never pay or money).
 | D10 | 21 Sep 26 | The bug-check order supersedes the 16 Sep scenario rule, the 20 Sep rules sweep and the 21 Sep test-like-a-human rule — one method, not four. |
 | D9 | 21 Sep 26 | The bug-check order fires itself: the agent states the tier and the checks; he never has to pick them. |
 | D8 | 21 Sep 26 | The bug-check order is the merged result of Fable's and Codex's independent proposals. |
-| D7 | 21 Sep 26 | Run all three kinds of check — code read, automated tests, a hand pass — scaled by what the change touches. |
+| D7 | 21 Sep 26 | Run all three kinds of check — code read, automated tests, a hand pass — scaled by what the change touches. — changed by D607 |
 | D6 | 21 Sep 26 | The other providers design the test scenarios; Opus executes them in the running app. |
 | D5 | 21 Sep 26 | Driving the running app IS the bug test; a code review plus green tests is not one. |
 | D4 | 21 Sep 26 | Every earlier feature checked the review-plus-tests way is likely carrying the same class of defect — sweep them ([HUMAN-RETEST]) after OIL closes. |
