@@ -13,6 +13,7 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { dayOilCredits, dayOilSpans, dayOilWork } from './oil'
 import { makeStandalone } from './waves'
+import { seatIntime } from './events'
 import { VCONF } from './rules'
 
 const SAVE = { oilFullMin: VCONF.oilFullMin, reportLead: VCONF.reportLead, debrief: VCONF.debrief }
@@ -47,8 +48,11 @@ describe('OWS12 — an SC shift with its B (in-time) filled earns OIL from that 
       expect(spans(sc('07:00', '13:00', b)).bane, b).toEqual([[h(6), h(13)]])
   })
   it('a blank B, or one the app cannot read as a time: the written start, as before', () => {
-    for (const b of ['', '   ', 'abc', '25:90', null, undefined, 42, {}])
+    for (const b of ['', '   ', 'abc', null, undefined, 42, {}])
       expect(spans(sc('07:00', '13:00', b)).bane, JSON.stringify(b)).toEqual([[h(7), h(13)]])
+    /* "25:90" is another case (Sol's read): the engine's parser does not refuse it — the board's box does, at the door
+       (walk E07: "25:90 is not a time") — so here it is a LATER clock, and shortens nothing for that reason */
+    expect(spans(sc('07:00', '13:00', '25:90')).bane).toEqual([[h(7), h(13)]])
   })
   it('a B typed LATER than the shift\'s start shortens nothing; one equal to it changes nothing', () => {
     expect(spans(sc('07:00', '13:00', '08:00')).bane).toEqual([[h(7), h(13)]])
@@ -87,7 +91,8 @@ describe('OWS12 — an SC shift with its B (in-time) filled earns OIL from that 
     expect(work.bane.map(x => [x.s, x.e, x.dflt])).toEqual([[h(6), h(13), true]])
     expect(work.stiff.map(x => [x.s, x.e, x.dflt])).toEqual([[h(7), h(13), false]])
   })
-  it('the two Logic times do not move it: an SC shift has no nominal report and no debrief', () => {
+  /* a DAYTIME shift: the lead's one part in an SC shift's day is the evening-before reading, two tests above */
+  it('the two Logic times do not move a daytime shift: an SC shift has no nominal report and no debrief', () => {
     VCONF.reportLead = 60; VCONF.debrief = 300
     expect(spans(sc('07:00', '13:00', '06:00')).bane).toEqual([[h(6), h(13)]])
     expect(spans(sc('07:00', '13:00')).bane).toEqual([[h(7), h(13)]])
@@ -111,5 +116,49 @@ describe('OWS12 — an SC shift with its B (in-time) filled earns OIL from that 
     expect(dayOilSpans(day([sc('07:00', '13:00', '06:00')], desk('14:00', '16:00'))).bane).toEqual([[h(6), h(13)], [h(14), h(16)]])
     expect(dayOilCredits(day([sc('07:00', '13:00', '06:00')], desk('14:00', '16:00')))).toEqual({ bane: 1 })   // 06:00–16:00
     expect(dayOilCredits(day([sc('07:00', '13:00', '06:00')], desk('05:00', '05:30')))).toEqual({ bane: 1 })   // 05:00–13:00
+    /* …and a case only the START-TO-FINISH measure answers this way (Astra's read): a three-hour shift and a one-hour
+       desk are four hours summed; from the written start to the desk's end, five and a half; from the B, six and a half */
+    expect(dayOilCredits(day([sc('07:00', '10:00')], desk('11:30', '12:30')))).toEqual({ bane: 0.5 })
+    expect(dayOilCredits(day([sc('07:00', '10:00', '06:00')], desk('11:30', '12:30')))).toEqual({ bane: 1 })
+  })
+})
+
+/* The cases the two readers of this change ranked for the host (7 Oct 26 — both PASS; these close their test limits). */
+describe('OWS12 — the readers\' cases', () => {
+  const rows = (w: any, who: string) => (dayOilWork(day([w]), { expandAll: () => [] })[who] || []).map((x: any) => [x.s, x.e, x.dflt])
+  it('a SPARE marked on the FORMATION, with no mark on its rows, keeps the written window too', () => {
+    const w = sc('07:00', '13:00', '06:00')
+    w.formations[0].spare = true
+    w.formations[0].aircraft.forEach((a: any) => { a.spare = false })
+    expect(rows(w, 'bane')).toEqual([[h(7), h(13), false]])
+  })
+  it('the evening-before reading starts strictly INSIDE the lead: 03:00 under a 3h lead is not rolled back; under 3h01 it is', () => {
+    const w = sc('03:00', '09:00', '23:00')
+    expect(spans(w).bane).toEqual([[h(3), h(9)]])
+    expect(dayOilCredits(day([w]))).toEqual({ bane: 0.5 })
+    VCONF.reportLead = 181
+    expect(spans(w).bane).toEqual([[-60, h(9)]])
+    expect(dayOilCredits(day([w]))).toEqual({ bane: 1 })
+  })
+  it('a handed-in lead of ZERO is a value, not "none": no evening-before reading — while crew rest, on today\'s 3h, still reads one', () => {
+    const w = sc('01:00', '07:00', '23:00')
+    const kept = dayOilWork(day([w]), { expandAll: () => [], rv: { reportLead: 0, debrief: 120, oilFullMin: 361 } })
+    expect(kept.bane.map(x => [x.s, x.e])).toEqual([[h(1), h(7)]])
+    expect(seatIntime(w, w.formations[0], h(1))).toBe(-60)
+  })
+  it('the PM shift, both MAIN rows and a SPARE: each MAIN from the B, the SPARE from the written start', () => {
+    const w: any = makeStandalone('sc')
+    const f = w.formations[1]                                  // PM, 13:00–19:00
+    f.br = '12:00'; f.aircraft[0].p = 'bane'; f.aircraft[1].p = 'split'; f.aircraft[2].p = 'stiff'
+    expect(rows(w, 'bane')).toEqual([[h(12), h(19), true]])
+    expect(rows(w, 'split')).toEqual([[h(12), h(19), true]])
+    expect(rows(w, 'stiff')).toEqual([[h(13), h(19), false]])
+  })
+  it('a cancelled shift earns nothing; a cancelled row earns its man nothing and leaves the other MAIN his in-time', () => {
+    const a = sc('07:00', '13:00', '06:00'); a.formations[0].cx = true
+    expect(spans(a).bane).toBeUndefined()
+    const b = sc('07:00', '13:00', '06:00'); b.formations[0].aircraft[0].cx = true; b.formations[0].aircraft[1].p = 'split'
+    expect(spans(b).bane).toBeUndefined()
+    expect(spans(b).split).toEqual([[h(6), h(13)]])
   })
 })

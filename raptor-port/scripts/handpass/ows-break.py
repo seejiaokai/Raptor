@@ -69,6 +69,10 @@ CUTS = [
   "<0&&t>toM?t-1440:t;", "<0&&false?t-1440:t;"),
  ('B30', 'crew rest stops reading an SC line\'s B', 'src/engine/events.ts',
   "const scIn=(w&&w.kind==='sc')?scIntime(f.br,toM):null;", "const scIn=null as number|null;"),
+ ('B31', 'a SPARE marked on the formation only takes the shift\'s B', 'src/engine/oil.ts',
+  "const seatWin=scWin&&(f.spare||ac.spare)?scWin:win;", "const seatWin=scWin&&ac.spare?scWin:win;"),
+ ('B32', 'a handed-in lead of zero is read as none', 'src/engine/reporting.ts',
+  "return toM-(lead==null?VCONF.reportLead:lead)<0", "return toM-(lead||VCONF.reportLead)<0"),
 ]
 
 def run():

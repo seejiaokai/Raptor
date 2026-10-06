@@ -35,7 +35,8 @@ import { parseReportingLines, resolveReporting, scIntime } from './reporting'
    stays DELETED — do not resurrect it; the owner removed it by name.
 
    What pools, exactly:
-   - An SC MAIN seat, by its shift's written times (to→ld).
+   - An SC MAIN seat, by its shift's written times (to→ld) — from the shift's
+     typed B, the crew's in-time, where that is filled and earlier (D606).
    - Any ORDINARY flying seat, by the working day the sortie costs: report
      through landing plus VCONF.debrief — the owner's pick (28 Aug 26).
      THE REPORT IS THE ENTERED IN-TIME / RALLY ([OIL-WORK-START] — owner, D591,

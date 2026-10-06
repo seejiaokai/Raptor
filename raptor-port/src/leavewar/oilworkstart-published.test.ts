@@ -350,6 +350,47 @@ describe('OWS12 — an SC shift with its B (in-time) filled earns OIL from that 
   })
 })
 
+/* The cases the two readers of the D606 change ranked for the host (7 Oct 26 — both PASS). */
+describe('OWS12 — the readers\' cases, on a published day', () => {
+  const scDay = (di: number, to: string, ld: string, br = '') => {
+    const w: any = makeStandalone('sc')
+    w.formations.length = 1
+    Object.assign(w.formations[0], { to, ld, br })
+    w.formations[0].aircraft[0].p = 'bane'
+    Object.assign(DAYS[di], { waves: [w], dutywaves: [], sims: { amt: [], oft: [] }, ground: [], allhands: [] })
+  }
+  it('a B typed and then taken out again, unpublished: pending while it is there, nothing pending and the four standing once it is gone', () => {
+    scDay(5, '07:00', '13:00')
+    publish(5); signBound(5); runOilPass()
+    DAYS[5].waves[0].formations[0].br = '06:00'
+    expect(dayDelta(5).map((e: any) => e.addr), 'ONE change — the box itself, no second OIL line for it').toEqual(['ff:5.0.0.br'])
+    expect(daySigned(5)).toBe(false)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('HO')
+    DAYS[5].waves[0].formations[0].br = ''
+    expect(dayDelta(5)).toEqual([])
+    expect(daySigned(5)).toBe(true)
+  })
+  it('a Logic change that keeps the amount but moves the stored start is pending too — and the amendment stores the new start', () => {
+    scDay(5, '01:00', '08:00', '23:00')                      // the evening before: nine hours, 00:00–08:00 of Saturday
+    publish(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[0, 480]]]])
+    VCONF.reportLead = 30                                    // today: 01:00–08:00, seven hours — still a full day
+    runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[0, 480]]]])
+    expect(oilPending(5).length, 'full day either way — the worked times differ, so it is still told').toBe(1)
+    sign(5); publishALDay(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[60, 480]]]])
+    expect(oilPending(5)).toEqual([])
+  })
+  it('an overnight shift with an earlier B: a full day on its own date, stored to midnight; the next day gets nothing', () => {
+    scDay(5, '19:00', '07:00', '18:00')
+    publish(5); runOilPass()
+    expect([cellOf('bane', SAT), worked('bane', SAT)]).toEqual(['FO', [[[1080, 1439]]]])
+    expect(cellOf('bane', SUN)).toBeFalsy()
+  })
+})
+
 describe('OWS11 — sign-offs fall when a Logic change would alter the OIL of the day they signed', () => {
   it('a day not yet published: signed as a full day, the full-day line raised — the four fall; put back, they stand', () => {
     build(5, '', '')                                          // no flying times: only Stiff's desk earns
