@@ -1935,7 +1935,10 @@ rebuilding his OIL with the day's credit LEFT OUT. That is right for withdrawing
 earns nothing). It is wrong for withdrawing an AMENDMENT: the version before it becomes the published one again
 (`engine/publish.ts unpublishDay`) and ITS OIL pays — so withdrawing a half-day amendment that restores a full-day
 original RAISES his balance, and the warning still says the withdrawal would strand his leave. It errs toward warning,
-never toward silence. Astra's steps: find the version that survives the withdrawal; work out its OIL records from its own
+never toward silence. **Seen on screen (the walk of `[OIL-WORK-START]`, walker C, S02):** the first tap said "Heads up —
+Saturday's OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish"; the second,
+"AL1 withdrawn … its OIL credits leave the Leave War until it is published again" — while the Original's full day came
+back and his balance went from 0 to 0.5. Both sentences are wrong for an amendment. Astra's steps: find the version that survives the withdrawal; work out its OIL records from its own
 kept evidence and values; rebuild the man's OIL with THAT in place of today's; warn only if the real result goes below
 zero; and word the warning and the done-message for "back to a draft" and "back to the earlier version" apart. Checks: an
 ORIGINAL withdrawn; an AL withdrawn to a higher, a lower and an equal credit; a credit that never landed.

@@ -188,3 +188,90 @@ backlog (it was filed minutes after its read).
 
 *(Astra's report and its brief name the register `…-oil-work-start-register.md`; the file was renamed
 `…-oil-work-start-behaviour-register.md` afterwards so the document check reads it. The two files are kept as written.)*
+
+## The walk
+
+**Four walkers (Sonnet 5.5 — D588), each in its own world, on the frozen build (bf92e003, ports 4293–4296), under the
+PC's one lock.** One brief for all four (`docs/superpowers/briefs/2026-10-06-oil-work-start-walk-brief.md`), Astra's 42
+scenarios shared out by subject, the host's five additions, and a slice of Astra's ordered pairs each. None was told
+whether anything was wrong. Their reports: `docs/handpass/parts/ows-{A,B,C,D}.md`; their step tables
+`…/ows-{A,B,C,D}.json` (these keep the rows of runs a walker later re-did — see "Rows marked FAIL" below); pictures
+`docs/img/handpass/2026-10-06-oil-work-start/{A,B,C,D}/`. Every fixture through the app's own controls; desktop
+1440×900, and phone 390×844 where the share named it. Browser errors (console, page, 4xx) in any run of any walker:
+**none**.
+
+| Walker | Its share | Result | Pictures saved / opened by it |
+|---|---|---|---|
+| A — a Logic change under a published day; the pending line; the sign-offs | S08, S10, S11 (a flight and a desk), S12, S13, S04, S06, S07, S41; S08 and S10 on a phone; H-01 (Undo, Redo, Reset to standard), H-02 (the Logic page's words, desktop and phone); 36 ordered-pair runs {lead, debrief, threshold} × {sign, publish, amend} | every scenario PASS; S12 PARTIAL (below); 36 of 36 pairs as the rules say | 578 / 26 |
+| B — the In-time / Rally lines and where the day starts | S09, S33, S25, S26, S27, S28, S29, S30, S31, S32, S23, S24, S34; S09 and S24 on a phone; H-03; 36 ordered-pair runs {add, change, remove a line} × {publish, amend, lead} | 81 PASS, 0 FAIL, 17 RECORDED | 654 / 21 |
+| C — downstream: the tracker, the Leave War, Unpublish, requests, a member | S01, S03, S05, S02, S16, S17, S18, S14, S15, S42; S01 and S42 on a phone; H-04 (the member's face); 24 ordered-pair runs {Unpublish, load an older version, a member's request edit} × {lead, change a line} | every OIL number PASS; S14 PARTIAL (below); S02's warning words RECORDED | 328 / about 43 |
+| D — the other seats and doors | S35, S36 (13 men on every kind of seat), S37, S38, S39, S40, S19, S20, S21, S22; S38 on a phone; H-05; 24 ordered-pair runs {a man off, a row off} × {lead, debrief, amend} | PASS, with two finds (below) | 357 / 31 |
+
+**What the walk saw, in the app's words** (each read where the OIL lands — the Leave War cell, the worked times, the
+tracker's balance — as well as on the day):
+- A sortie 12:00–13:00 with nothing typed: half day, worked 09:00–15:00. IN TIME 08:59: full day, 08:59–15:00. Every
+  accepted spelling (0830, 08:30, 0830H, 0830L, 830) gives 08:30; `8h30`, `25:90`, `FL240`, words only and "rally after
+  in-time" with no in-time give the nominal 09:00. A formation's own line beats the wave's; a wave-wide Rally still
+  applies to it. Two in-times across midnight, either order: the evening before. Saturday 01:00–02:00 reporting 22:00 on
+  Friday: half day, worked 00:00–04:00, Friday empty; 21:59: full day. A public-holiday Monday reads the Sunday evening
+  across the week edge, and Sunday earns nothing from it.
+- A Logic value changed under a published day: the cell, the worked times and the balance HOLD; the day reads 1 pending
+  with the Logic line naming the value and the man; "Not yet signed"; Undo, Redo and Reset to standard behave as
+  putting the value back; the amendment applies it, still ONE credit. Both edit boxes for the lead edit the one value;
+  bad entries are refused. A second week that is off screen holds the same way, and amending one Saturday leaves the
+  other alone. An SC shift's B box, a duty desk, a sim and a ground row never gain flight padding.
+- Sign-offs: on a day not yet published, signed then a value changed → the four go blank and Publish locks; put back →
+  they return. Two signed before a change and two after: only the pair whose value is current stand.
+- Publish → Undo → Redo → reload, and the same around an amendment: the credit follows the version that stands, no
+  stale credit. Unpublish an Original: the credit goes. Unpublish an amendment: the Original's OIL comes back.
+- A member editing his own earning request after publishing: the published OIL holds, his edit and the Logic change
+  are two separate lines, and the amendment lands both once. A member's View-only Sched keeps the published full-day
+  edge and offers no control that moves OIL.
+- The tracker prints both worked periods of a day ("06:00–06:30, 10:00–15:00"), wrapped cleanly on a phone.
+
+**Finds, each reproduced or settled by the host before it is written here:**
+
+| # | From | What the screen did | Disposition |
+|---|---|---|---|
+| W1 | D, S38 (and the pairs with a man or a row switched off) | with another change also waiting — his flight row switched off, not yet published — the Logic line's "Ranger · OIL full day · … → full day · …15:30" read as what the amendment would give him; it is his PUBLISHED OIL under today's values | **fixed** — the man's line now reads "Ranger · OIL as published, under today's values"; `ui/oilworkstart.test.tsx`, `e2e/oilworkstart.spec.ts`; the host's re-walk on the rebuilt build (7 of 7, picture `host-rewalk/dk-05-H2-togoout.png`, opened) |
+| W2 | D, S39 D2 / D3 | "Off day" set on a published earning Saturday: the credit held and the day read nothing pending | **not a fault — the scenario's expectation was wrong.** A weekend earns as a weekend whatever is tagged on it, and an Off day is deliberately inert for OIL (D21; `leavewar/engine/eventdefs.ts isNonWorkingDay`: a weekend first). Nothing changed, so nothing is pending. Unchanged from `main` |
+| W3 | A, S12 | a debrief change on a published day where a ground row sits inside the debrief window: no OIL line (the record does not change), but the day reads 1 pending for "Not enough time to attend the VIPER debrief … (land + 2h30) changed" | **as ruled, older than this job** — a warning's words on a published face are frozen and a rule change that rewrites them reads pending (D179). The OIL clause of S12 holds |
+| W4 | C, S14 | with a member's request edit AND a Logic change waiting, no screen prints the amendment's combined worked times before it goes out | **left** — each change has its own line; what the day WILL earn is the working copy's figure in OIL Earn (FO / HO, not the minutes). Landed correctly at the amendment |
+| W5 | C, S02 and S16 | the Unpublish warning and its done-message say the day's OIL "leaves the Leave War" when withdrawing an AMENDMENT brought the Original's OIL back (balance 0 → 0.5) | **filed before the walk** — `[UNPUB-WARN-AL-RESTORES]`; the walker's words are now in the item |
+| W6 | B, S34 | a 12:00–12:00 line with its in-time at 12:00 and the debrief at zero earns nothing, and the day's advisory still says it "earns from the report and debrief" | **filed before the walk** — `[OIL-ZERO-SPAN-SORTIE]` |
+| W7 | B, S26 | `IN TIME FL240` and plain words raise no "no recognised clock" warning (`8h30` and `25:90` do) | **as built by the Rally work** (a flight level is not an attempted clock); OIL falls back to nominal in every case |
+| W8 | D | OIL Earn's day switch keeps the label "Nothing today earns" while it is on (only its tooltip changes) | older, not this job's — noted, not filed (cosmetic) |
+| W9 | B, H-03 (recorded) | Insights' work hours for the man moved 18h → 20h30 when the 08:30 in-time was published, his OIL day 6h00 → 6h30 | **as ruled** — with nothing typed the bar starts at step and OIL at the nominal report (D592 (2), D482) |
+
+**Rows marked FAIL in the walkers' own tables, each accounted for** (the JSON keeps superseded runs): A — S12.2 (W3)
+and twelve rows of its first pair script, whose expectations it corrected and re-ran (`ows-A-pairsY-*.json`); B —
+S32.2, its first read of sign-offs from the wrong element, re-read; C — S14.c (W4) and the phone's OIL Earn button it
+did not find (NOT WALKED); D — S36's SC SPARE (it needed the row's own switch; re-walked alone, PASS), S37's window
+(its selector; redone), S38.8 desktop and phone (W1), S39 D2 / D3 (W2), S40.1 (a label check of its own), S20 (it read
+the live copy's line instead of the preview; the picture shows 08:30).
+
+**The host opened** the pictures behind each find and each kind of "holds" step: `host-after/dk-05-H2-togoout`,
+`host-before/dk-06-H2-tracker`, `host-after/dk-07-H2-tracker`, `host-rewalk/dk-05-H2-togoout`,
+`A/dk-10-S12-b2-togoout`, `A/dk-04-S07-4-restored-6h01`, `B/ph-06-S09phb-day-togoout`, `B/dk-23-S34c-day-togoout`,
+`C/ph-13-S01-3-tracker`, `C/dk-14-S14-3-togoout`, `D/dk-37-S38-8-flightoff-debrief-togoout`, `D/dk-06-S36-al-tracker`
+— twelve. The walkers opened about 121 of their 1,917 between them and say so; a picture nobody opened is a record,
+not evidence.
+
+## What was NOT walked, and why
+
+- **Astra's full ordered-pair expansion** — 364 short runs; 120 were walked (the four slices above), chosen so every
+  action letter meets a publish, an amendment or a Logic change in both orders. Not walked: the pairs among the three
+  reporting-line actions themselves, among the three Logic values themselves, and most pairs with "load an older
+  version" against a version other than the one paying.
+- **Undo → Redo → reload after EVERY step** of the numbered scenarios — done for the 120 pair runs, S18, S31 and H-01,
+  not around each step of the rest.
+- **The Leave War's clash strip** against a credit whose times held still (roll-call: "by construction") and **the
+  publish-time toast** — neither was set up with a leave or a bid on the same day.
+- **A guest's own pages and the phone's OIL Earn figure** in S42 (walker C did not reach them); a guest's waiting
+  screen was seen with no write control.
+- **Copy day** — Astra's S21 names it; the app has no such control (a day template and "+ Alt Plan" were walked).
+- **The pairs and S05, S18 at phone width.**
+- **A real iPhone** — every phone picture is Chromium at 390×844; his look covers it.
+- **The demo seed was not extended** with a weekend flying line carrying an in-time (order §7.1): the demo weekend is
+  duty crew only by design, in both demo weeks, and the first week must match the original app line for line. The case
+  is built through the app's controls each time (the host's walk, the browser test, every walker).
