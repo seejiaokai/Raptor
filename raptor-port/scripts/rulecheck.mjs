@@ -263,6 +263,18 @@ const RULES = {
   RT6: 'first publication, AL and reissue refuse atomically, independent of warning visibility',
   RT7: 'existing reporting editor doors, Escape/delete, history and read-only authority stay intact',
   RT8: 'nominal OIL and ordinary busy versus SANS windows retain their own definitions',
+  /* [OIL-WORK-START] — D591, D592; 2026-10-06-oil-work-start-register.md (it replaces RT8's "nominal OIL" half) */
+  OWS1: 'the OIL day of a flying line starts at its earliest applicable entered in-time / Rally',
+  OWS2: 'nothing entered or readable: the nominal report time',
+  OWS3: 'an evening-before report lengthens its own day only',
+  OWS4: 'the day still runs first start to last end, breaks included',
+  OWS5: 'standby lines, other rows, cancelled and unreadable lines and D49 are unchanged',
+  OWS6: 'a published version keeps the three Logic values; credit, times and face figures hold still',
+  OWS7: 'a Logic change that would move published OIL is one pending change; sign-offs fall; clears when put back',
+  OWS8: 'publishing again applies and keeps the values of the day it is published',
+  OWS9: 'an in-time changed after publishing moves OIL only when the day goes out again',
+  OWS10: 'a version with no kept values still reads, and raises nothing',
+  OWS11: 'sign-offs fall when a later Logic change would alter the OIL of the day they signed',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set

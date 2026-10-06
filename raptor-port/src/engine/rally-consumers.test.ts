@@ -102,7 +102,11 @@ describe('RT4/RT8 independent Rally consumer arithmetic',()=>{
     expect(dayHTML(0,true)).toMatch(/1st wave[^]*?· 0 can fly/)
     expect(dayHTML(0,true)).toContain(`Available all day · ${A.anyWave.filter((id:any)=>!PEOPLE[id].san).length}`)
   })
-  it('ordinary busy and nominal OIL stay distinct from the earlier reporting work span and SANS window',()=>{
+  /* RT8, AS D591 CHANGED IT (owner, 5 Oct 26 — [OIL-WORK-START]): the last line of this test pinned "nominal OIL
+     unaffected by reporting-only edits" — [[540,900]] after the Rally moved to 07:00. He ruled the opposite: OIL reads the
+     entered in-time / Rally (D591, narrowing D498), so the OIL day now starts with the work span, at 07:00. The other
+     half of RT8 stands and is still pinned here: ordinary busy stays step to dekit, whatever the lines say. */
+  it('ordinary busy stays distinct from the reporting work span and SANS window; OIL follows the entered report (RT8, D591)',()=>{
     const d=DAYS[0];d.waves=[flight()]
     expect(workSpan(eventDay(d))?.span).toBe(360)
     expect(personBusy(d,'bane')).toEqual([[660,810]])
@@ -112,7 +116,7 @@ describe('RT4/RT8 independent Rally consumer arithmetic',()=>{
     expect(workSpan(eventDay(d))?.span).toBe(480)
     expect(slotRules('0.0.0.0.p').sansStart).toBe(420)
     expect(personBusy(d,'bane')).toEqual([[660,810]])
-    expect(dayOilSpans(d).bane).toEqual([[540,900]])
+    expect(dayOilSpans(d).bane).toEqual([[420,900]])
   })
   it('a scheduled earlier commitment extends work span; an unaccepted qualifying input affects rest only',()=>{
     DAYS[0].dutywaves=[{label:'Duty',rows:[{role:'Duty',id:'bane',str:'2130',end:'2130'}]}]

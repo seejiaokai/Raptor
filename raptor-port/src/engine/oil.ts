@@ -3,6 +3,7 @@ import { parseHM } from './time'
 import { isStandalone, saExemptKind } from './waves'
 import { PEOPLE, realP, whoId, isSpecial } from './people'
 import { whoArr } from './slots'
+import { parseReportingLines, resolveReporting } from './reporting'
 /* =====================================================================
    WEEKEND / PUBLIC-HOLIDAY WORK EARNS OIL — Leave War sync wire 4
    (owner, 16-17 Aug 26, REWRITTEN 28 Aug 26: "It will just use the same
@@ -36,11 +37,15 @@ import { whoArr } from './slots'
    What pools, exactly:
    - An SC MAIN seat, by its shift's written times (to→ld).
    - Any ORDINARY flying seat, by the working day the sortie costs: report
-     (T-O minus VCONF.reportLead) through landing plus VCONF.debrief — the
-     owner's pick (28 Aug 26), the same family of definition as the
-     Insights work-hours span. Typed in-time lines are deliberately NOT
-     consulted here (a stated simplification; the snapshot-pure read keeps
-     this file free of the events.ts machinery).
+     through landing plus VCONF.debrief — the owner's pick (28 Aug 26).
+     THE REPORT IS THE ENTERED IN-TIME / RALLY ([OIL-WORK-START] — owner, D591,
+     D592, 5 Oct 26: "it should take the actual intime/rally time right? not
+     the nominal report timing"): the earliest stage that applies to the
+     formation, read by the ONE shared reader (reporting.ts resolveReporting —
+     the body the day's events, the work-hours bar and crew rest read; pure, so
+     a frozen snapshot answers from its own lines). Only where no line gives a
+     clock is it the nominal time, T-O minus VCONF.reportLead. Until then the
+     typed lines were never consulted ("a stated simplification").
    - A sim row (AMT and OFT), by its written str→end.
    - A duty row, by its written str→end — stretching the same envelope.
    - A ground-programme row, by its written str→end — EXCEPT a row carrying
@@ -78,9 +83,15 @@ export function envMin(spans:[number,number][]){
   for(const [a,b] of spans){ if(a<lo)lo=a; if(b>hi)hi=b; }
   return hi-lo;
 }
+/* THE LOGIC VALUES A DAY'S OIL IS WORKED OUT FROM ([OIL-WORK-START], D592 (4) — "a published day keeps the OIL it went
+   out with"): the nominal report lead (read only where a line has no in-time or Rally entered), the debrief after
+   landing, and the full-day line. A published day keeps the three it went out with (oilev.ts — the evidence block's
+   `rv`) and every reader of its OIL hands them back in here; with none handed in, today's are read. */
+export interface OilRuleVals{reportLead:number;debrief:number;oilFullMin:number}
+export const oilRuleValsNow=():OilRuleVals=>({reportLead:VCONF.reportLead,debrief:VCONF.debrief,oilFullMin:VCONF.oilFullMin});
 /* the one threshold: 0 for no measured work, HO under the line, FO at it */
-export function uniformOil(min:number){
-  return min<=0?0:(min>=VCONF.oilFullMin?1:0.5);
+export function uniformOil(min:number,full?:number|null){
+  return min<=0?0:(min>=(full==null?VCONF.oilFullMin:full)?1:0.5);
 }
 /* an INPUT's own standing under the same law (the ask-flow's suggestion):
    all-day is a full day (owner, 28 Aug 26 — "ask as FO"), a timed record by
@@ -134,8 +145,10 @@ export const groundItemKey=(g:any)=>(g&&g.src)?inputItemKey(g.src):rowItemKey(g&
    on — ground rows, duty desks, sim seats and passengers, the Common Programme,
    and every extras line — but NEVER on a flying line's cockpit, and never for a
    row that has no id yet (see `putAny`). */
-export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[];onItem?:(item:string,dflt:boolean)=>void}){
+export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[];onItem?:(item:string,dflt:boolean)=>void;rv?:OilRuleVals|null}){
   const out:Record<string,OilWork[]>={};
+  /* the two leads this walk reads: the day's own kept ones when the caller holds an issued block, else today's */
+  const lead=opts&&opts.rv?opts.rv.reportLead:VCONF.reportLead, deb=opts&&opts.rv?opts.rv.debrief:VCONF.debrief;
   /* EVERY ROW THIS WALK REACHES WITH REAL TIMES, whether or not anybody is
      sitting on it (21 Sep 26). The mode needs to know which events CAN earn so
      it does not offer a switch on one that never could — an AVALON line, its
@@ -211,14 +224,19 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
        which is F1's silent OIL. */
     const exemptWave=isStandalone(wv)&&wv.kind!=='sc';
     const sc=isStandalone(wv);
+    /* the wave's In-time / Rally lines, parsed once; a standalone wave's are never read here (D591 is a flying line's) */
+    const lines=sc?null:parseReportingLines({...wv,intimes:Array.isArray(wv.intimes)?wv.intimes:[]});
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;
       item=rowItemKey(f.rid);                            // the LINE is the item a scheduler taps
       const st=parseHM(f.to),en=parseHM(f.ld);
+      /* the line's report: its earliest applicable entered in-time / Rally — the evening before when the clock is later
+         than the take-off (D503), which lengthens THIS day's span and no other's (D42) — else the nominal time (D592) */
+      const rep=sc||st==null||en==null?null:resolveReporting(wv,f,st,lines!).report;
       /* SC shift = its written window; a flying line = report → land+debrief */
       const win=sc?w2(st,en)
                   :(st==null||en==null?null
-                    :w2(st-VCONF.reportLead,(en<st?en+1440:en)+VCONF.debrief));
+                    :w2(rep!=null?rep:st-lead,(en<st?en+1440:en)+deb));
       if(!win)return;
       /* A SPARE LINE IS CAPABLE NOW, so the switch is drawn on it (D24/D32:
          wherever a puck may land the switch must be offered). It used to be
@@ -479,9 +497,10 @@ export function dayOilCredits(day:any,opts?:{expandAll?:(win:[number,number],ite
  *  that already say they earn nothing, and on a published day tapping it would
  *  cost a real amendment for a decision that moves no OIL (Fable, 21 Sep 26).
  *  Derived from dayOilWork's own walk, so it cannot drift from the credit. */
-export function oilCapableItems(day:any):Set<string>{
+export function oilCapableItems(day:any,rv?:OilRuleVals|null):Set<string>{
   const out=new Set<string>();
-  dayOilWork(day,{expandAll:()=>[],onItem:(it:string)=>{if(it)out.add(it);}});
+  /* `rv`: the values the day's block kept, when the caller is showing an issued day — the same ones the credit's walk reads */
+  dayOilWork(day,{expandAll:()=>[],onItem:(it:string)=>{if(it)out.add(it);},rv});
   return out;
 }
 /** WHAT A MAN PUT ON THIS ROW WOULD GET, before anybody decides anything —
@@ -490,8 +509,8 @@ export function oilCapableItems(day:any):Set<string>{
  *  through to "earns", and on an exempt kind that is the screen telling the
  *  admin something false about OIL. Same walk as `oilCapableItems` and the
  *  credit itself, so it cannot disagree with either. */
-export function oilItemDefaults(day:any):Map<string,boolean>{
+export function oilItemDefaults(day:any,rv?:OilRuleVals|null):Map<string,boolean>{
   const out=new Map<string,boolean>();
-  dayOilWork(day,{expandAll:()=>[],onItem:(it:string,dfl:boolean)=>{if(it&&!out.has(it))out.set(it,dfl);}});
+  dayOilWork(day,{expandAll:()=>[],onItem:(it:string,dfl:boolean)=>{if(it&&!out.has(it))out.set(it,dfl);},rv});
   return out;
 }

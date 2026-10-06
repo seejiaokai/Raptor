@@ -28,7 +28,9 @@ import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow
 import type { PendItem } from '../engine/publish'
 import { ELOG, elogWhen, elogWho, keyLabel, rowTouches, weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
-import { oilEvidence } from '../engine/oilev'
+import { oilEvidence, oilKeptVals, oilRuleShift } from '../engine/oilev'
+import { oilRuleValsNow } from '../engine/oil'
+import { RULE_SPEC, ruleFmt } from '../engine/rules'
 import { standsOn } from '../engine/overlay'
 import { esc } from '../state/view'
 
@@ -351,12 +353,33 @@ export function pendItemWords(di: number, it: PendItem): Words {
      the very hunt D99 exists to end). The issued version froze who each ALL / ALL AVAIL puck stood for (D44); the
      live evidence says who it stands for now; the difference names the row and the men. A change in the scheduler's
      own earning decisions keeps the plain wording. */
+  if (String(e.addr || '').startsWith('oilrv:')) return oilRuleWords(di)
   const crowd = crowdChange(di)
   if (crowd && crowd.length === 1) return { ...crowd[0]!, ...none, jump: crowd[0]!.keys.length > 0 }
   /* several placeholders' crowds moved: still ONE change (what the day earns is one item, D109's count), but each row
      is named and reachable on its own line (Astra's code read, 25 Sep 26 — "+ N more" hid the rest) */
   if (crowd && crowd.length > 1) return { where: `${crowd.length} placeholders · who they stand for`, from: '', to: '', ...none, jump: false, rows: crowd } as any
   return { where: 'What this day earns', from: '', to: 'changed', ...none, jump: false }
+}
+/* THE DAY'S OIL, WORKED OUT AGAIN WITH TODAY'S LOGIC VALUES ([OIL-WORK-START] — owner, D592 (4), 5 Oct 26: "a published
+   day keeps the OIL it went out with"; engine/publish.ts oilRuleDelta). The version keeps the three values its OIL was
+   worked out from, and a change to one that WOULD move somebody's OIL on this day reads as this ONE change — so the line
+   says which value moved, by the name its box carries on the Logic page (rules.ts RULE_SPEC, the one source — less its
+   bracketed note), and each man whose OIL record would move, in words: full day, half day or nothing, with the worked
+   times the record carries — so a change that leaves his day a full day and moves only "worked until" still reads as
+   what it is. A man whose record stays as it is is not named. No place on the schedule to go to: the value lives on the
+   Logic page. */
+const OIL_VALS = ['reportLead', 'debrief', 'oilFullMin'] as const
+const oilRecWords = (r: { amt: number, spans: Array<[number, number]> } | null) => !r ? 'nothing'
+  : `${r.amt === 1 ? 'full day' : 'half day'}${r.spans.length ? ` · ${r.spans.map(([a, b]) => `${hm(a)}–${hm(b)}`).join(', ')}` : ''}`
+function oilRuleWords(di: number): Words & { rows: CrowdRow[] } {
+  const snap: any = daySnapOf(di, dayCurVer(di)), d: any = snap && snap.d, ev: any = d && d.oilev
+  const kept = oilKeptVals(ev), now = oilRuleValsNow()
+  const rows: CrowdRow[] = []
+  if (kept) OIL_VALS.forEach(k => { if (kept[k] !== now[k])
+    rows.push({ where: `Logic · ${String(RULE_SPEC[k].t).replace(/\s*\(.*\)\s*$/, '')}`, from: String(ruleFmt(k, kept[k])), to: String(ruleFmt(k, now[k])), keys: [] }) })
+  oilRuleShift(d, ev).forEach(r => rows.push({ where: `${cs(r.person)} · OIL`, from: oilRecWords(r.was), to: oilRecWords(r.now), keys: [] }))
+  return { where: 'OIL on this day · Logic values changed since it was published', from: '', to: '', who: '', when: '', jump: false, rows }
 }
 /* the rows whose placeholder crowd differs from what the day went out with: its name, who left, who joined, and the
    row's cells to jump to */

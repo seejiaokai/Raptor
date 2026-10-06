@@ -49,8 +49,8 @@ import { INPUTS, inpId, inpWin, inpMeta, inpLabel, oilAsks } from '../engine/inp
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
-import { envMin, uniformOil, dayOilWork, oilCapableItems, openEndRows, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
-import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilInputEligible, oilSentOf, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
+import { dayOilWork, oilCapableItems, openEndRows, rowItemKey, groundItemKey, inputItemKey, type OilWork } from '../engine/oil'
+import { landedExtras, oilEvidence, oilEvidenceOf, oilEarnedWork, oilAmount, oilKeptVals, oilInputEligible, oilSentOf, personDecision, itemMasked, itemMark, itemState, spanDefault, type OilEvidence, type OilDecisions } from '../engine/oilev'
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { parseHM, win, hm24 } from '../engine/time'
 import { VCONF } from '../engine/rules'
@@ -123,8 +123,10 @@ export function oilUndoBoundary(): boolean {
 export function evOf(di: any): OilEvidence { return oilEvidenceOf(+di) }
 
 export type OilAmt = 'FO' | 'HO' | null
-const amtOf = (spans: OilWork[]): OilAmt => {
-  const v = uniformOil(envMin(spans.map(w => [w.s, w.e] as [number, number])))
+/* against the full-day line of the block the day is SHOWING — an issued day's own kept value, today's on a working
+   copy ([OIL-WORK-START], D592 (4); engine/oilev.ts oilAmount, the body the credit reads) */
+const amtOf = (ev: OilEvidence, spans: OilWork[]): OilAmt => {
+  const v = oilAmount(ev, spans)
   return v === 1 ? 'FO' : v === 0.5 ? 'HO' : null
 }
 
@@ -143,9 +145,9 @@ function oilDaySpans(di: any): Record<string, OilWork[]> {
  *  so a man on four rows has ONE figure. Where that figure is SHOWN is O-1's
  *  question, answered in oilFigureFor below. */
 export function oilDayFigures(di: any): Record<string, OilAmt> {
-  const work = oilDaySpans(di)
+  const work = oilDaySpans(di), ev = evOf(di)
   const out: Record<string, OilAmt> = {}
-  for (const person of Object.keys(work)) { const a = amtOf(work[person]); if (a) out[person] = a }
+  for (const person of Object.keys(work)) { const a = amtOf(ev, work[person]); if (a) out[person] = a }
   return out
 }
 
@@ -168,7 +170,7 @@ export function oilDayFigures(di: any): Record<string, OilAmt> {
  *  This SUPERSEDES §2.10 / OIL21, which repeated it on every puck he wore. */
 export function oilFigureFor(di: any, person: any, item?: string): OilAmt {
   const spans = oilDaySpans(di)[String(person)] || []
-  const a = amtOf(spans)
+  const a = amtOf(evOf(di), spans)
   if (!a || item == null) return a
   return spans.some(w => String(w.item || '') === item) ? a : null
 }
@@ -519,7 +521,7 @@ export function oilItemCellHTML(di: any, item: string, name: any, cls: string): 
      decision, so the day grew an amendment for something that moves no OIL.
      An EMPTY ordinary row keeps its switch — put a man on it and he earns, and
      OIL7 says the switch covers later additions too. */
-  if (!oilCapableItems(DAYS[+di] || {}).has(item)) {
+  if (!oilCapableItems(DAYS[+di] || {}, oilKeptVals(evOf(di))).has(item)) {
     /* A CLAIM ROW IS NOT AN INERT ROW, AND MUST NOT BORROW ITS WORDS (walk
        find, 22 Sep 26 — hand-pass finding 13). `oilCapableItems` is derived
        from the SCHEDULE walk, and a request's credit never goes through it:
@@ -707,7 +709,7 @@ export function oilEligible(di: any, person: any, item: string): boolean {
   const claim = ev.inputs.find(i => inputItemKey(i.iid) === item)
   if (claim && claim.win && oilInputEligible(d, claim)
       && landedExtras(d, claim.iid, String(claim.person), ev.sent[item]).includes(String(person))) return true
-  const work = dayOilWork(d, { expandAll: (win, it) => oilSentinelPeople(di, it, win) })
+  const work = dayOilWork(d, { expandAll: (win, it) => oilSentinelPeople(di, it, win), rv: oilKeptVals(ev) })
   return (work[String(person)] || []).some(w => String(w.item || '') === item)
 }
 
