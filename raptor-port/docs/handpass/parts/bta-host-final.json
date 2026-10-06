@@ -1,7 +1,7 @@
 {
  "parts": {
   "bta-host-dk": {
-   "at": "2026-10-06T09:48:25.300Z",
+   "at": "2026-10-06T10:29:45.170Z",
    "base": "http://localhost:4233",
    "phone": false,
    "table": [

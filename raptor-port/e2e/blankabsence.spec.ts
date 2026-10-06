@@ -88,8 +88,14 @@ async function listLines(page: Page, di: number) {
 const seatPuck = (page: Page, key: string) => page.evaluate(([k, who]) => {
   const e = [...document.querySelectorAll(`#eWeek [data-slot="${k}"] .puck[data-person="${who}"], #eWeek .puck[data-slot="${k}"][data-person="${who}"]`)].find(x => (x as HTMLElement).offsetParent !== null)
   if (!e) return null
-  const cs = getComputedStyle(e)
-  return { hard: e.classList.contains('warn') && e.classList.contains('hard'), ring: cs.boxShadow !== 'none' }
+  /* the red warning ring itself — its colour and a width — not merely "some shadow" (Astra's read: a transparent or
+     unrelated shadow must fail). scheduler/04-pucks-sections.css: `.puck.warn.hard{box-shadow:0 0 0 1.5px var(--hard)}`,
+     --hard #F0555F. */
+  const sh = getComputedStyle(e).boxShadow
+  const rgb = (/rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(sh) || []).slice(1).map(Number)
+  const px = (sh.match(/-?[\d.]+px/g) || []).map(parseFloat)
+  const red = rgb.length === 3 && rgb[0] > 200 && rgb[1] < 120 && rgb[2] < 130
+  return { hard: e.classList.contains('warn') && e.classList.contains('hard'), ring: red && px.length >= 4 && px[3] >= 1, shadow: sh }
 }, [key, WHO] as const)
 
 test.describe('a man away for the whole day is flagged the moment he is seated on a seat with no times', () => {

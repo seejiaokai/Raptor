@@ -53,17 +53,25 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   push that day had made its preview within a minute and the previous merge had gone live in about two.
   **How to tell, a few minutes after the merge:** the newest Production deployment is still the PREVIOUS merge's commit
   (`gh api repos/<owner>/<repo>/deployments?environment=Production`), and the merge commit carries no Vercel status at
-  all (`gh api repos/<owner>/<repo>/commits/<sha>/statuses`). Waiting longer does not bring one.
-  **What works — he does it, on his PC** (the phone layout hides the Deployments tab): Vercel → the project →
-  Deployments (`https://vercel.com/kai-e2f5/raptor/deployments`) → the ⋯ menu of the TOP row, which is the branch's
-  head commit as a Preview → **Promote to Production**. Its content is the merge's when `main` had no other new commit
-  (check that first: `git diff <branch head> <merge commit>` is empty). Vercel then shows the live version as coming
-  from the branch; the next merge to `main` puts that right. "Create Deployment" from `main` is the other way.
+  all (`gh api repos/<owner>/<repo>/commits/<sha>/statuses`). On that day waiting longer did not bring one.
+  **What works — he does it, on his PC** (the phone layout hides the Deployments tab), and ONLY for the deployment that
+  IS the approved change — chosen by its commit, never by its place in the list (another chat's branch may have pushed
+  since and sit on top; promoting that would put unapproved work live — both code readers, 6 Oct 26):
+  (1) the agent gives him the merged branch's name and the first seven characters of its head commit
+  (`git rev-parse --short origin/<branch>`), after checking that this commit's content IS the merge's
+  (`git diff <that commit> <merge commit>` prints nothing) and that `main` has not moved past that merge
+  (`git rev-parse origin/main` is the merge commit);
+  (2) Vercel → the project → Deployments (`https://vercel.com/kai-e2f5/raptor/deployments`) → he finds the row that
+  shows THAT branch and THAT commit and reads **Ready** → its ⋯ menu → **Promote to Production**;
+  (3) if no row shows that commit, or the check in (1) fails, he uses **Create Deployment** from `main` instead —
+  never the nearest-looking preview.
+  Vercel then shows the live version as coming from the branch; the next merge to `main` puts that right.
   **What does NOT work:** an empty commit pushed to `main` by the agent to nudge it — the app's safety check refuses a
   direct push to `main` even with his "nudge it" in the chat, and `main` is his word alone anyway (D60). Do not offer it.
   **Checking afterwards:** the agent cannot open the live app (it sits behind his Vercel sign-in), but the promotion
-  DOES show in GitHub's record — a new `Production` deployment for the branch-head commit with a `success` status. Look
-  for that after he says it is done, then send the one "it is live" notification (D143).
+  DOES show in GitHub's record — a new `Production` deployment with a `success` status. Check that its commit is the
+  one named in (1) — not merely that a deployment appeared — after he says it is done, then send the one "it is live"
+  notification (D143). If it is some other commit, say so at once: the wrong thing is live.
 - **Docs-only changes skip the gates** (`paths-ignore`: `**.md`, `.claude/**`, `raptor-port/scripts/docsize*.mjs`,
   `backlog-archive.mjs`, `docs-guard.yml`); the Docs guard (`docs-guard.yml`) still runs on every PR and every push
   to `main`, and a docs-only change still merges only on his "merge live".

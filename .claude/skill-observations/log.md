@@ -2607,3 +2607,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In session-handoff's opening-line template: for a NEW job on a worktree from main write "run `git fetch origin` and check this branch is level with `origin/main`" (and say what to do if it is behind: `git merge --ff-only origin/main`); keep "git pull" only for a chat continuing an existing pushed branch.
 
 **Principle:** A handoff instruction is written for the state the next session will actually start in, not the state the writing session is in.
+
+### Observation 440: The read brief offers "you may run one test file" to a reviewer whose sandbox cannot run anything
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** The two final code reads of a FULL bug check ([BLANK-TIMES-ABSENCE]) by the Codex-side reviewers, run with `codex exec -s read-only`. The same happened on the previous check the day before.
+**Skill:** claudex-loop / codex-review (and the project's bug-check order, raptor-port/docs/bug-check-order.md §4 "The brief that turns a reviewer into a finder")
+**Type:** internal
+**Phase/Area:** Writing the final-inspection brief
+
+**Issue:** The brief tells each reader it may run a single test file to settle a doubt. Under the read-only sandbox the test runner cannot create its temporary directory, so zero tests run; both readers spent effort trying, then reported "no tests completed" — and one of their findings (a label fallback folding two warnings into one) was exactly the kind a thirty-second run would have confirmed. The host confirmed it instead, by a red test.
+
+**Suggested improvement:** In the read brief template: either say plainly "you cannot run anything — read the source; name the exact input you would run and the host runs it", or launch the reader with a sandbox that allows writes to a scratch directory only and point the test runner's cache and temp there. And add to the host's steps: "run every 'would run' case the readers name before dispositioning the finding".
+
+**Principle:** Do not offer a reviewer a verification step its environment cannot perform; turn "I could not run it" into a named case the host is obliged to run.

@@ -325,17 +325,21 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   row", "this sim row", "this ground row" — in the absence sentences, the standby desk's included (with times too — the
   same seat must not change its sentence when a time is typed). The kind matters: the list folds identical sentences
   into one line, and a plain "this row" made one line of a man's three new rows (walkers A and B). An unnamed sim or
-  duty row counts as unnamed although its label is built 'Sim '+name and role+' duty' (Astra's F4).
+  duty row counts as unnamed although its label is built 'Sim '+name and role+' duty' (Astra's F4) — for those two
+  kinds only: a Ground or Common Programme item really titled "Sim" or "duty" keeps its title (Sol 6.1's F2).
   **An Upchit is never an absence** — nor is SANS Availability: `inpShow` turns both away at its head. The Upchit used
   to slip back in through the accepted-row fall-through ("no landed row, so it keeps its voice") and read "Upchit
   clashes with …" / "Upchit but tasked — …" on the day a man was cleared fit, on a seat WITH times too — OLD, found by
   Astra's scenario read (F1) and closed here before D605 could carry it to every seat without. **The agent's readings, told to
   him:** it reaches every input type the timed check flags (a whole-day course, overseas duty, an all-day meeting), not
   only leave and medical — none of those answers depended on the missing time; and the crew list is NOT changed — before
-  a drop it still reads a seat with no hours as unknown and strikes a man for any absence that day (`avail.ts slotBar`,
-  "unknown is not never-clashes"), so a part-day absence, and a local leave on a standby seat with blank shift times
-  (`OUTSTANDING.md` `[BLANK-STANDBY-STRIKE]`), are struck before and silent after; no man the list flags was offered
-  clean. A published day still freezes these warnings (D177–D179): an issued version keeps the list it went out with
+  a drop it still reads a seat with no hours as unknown and strikes a man for any ABSENCE that day — a leave, a
+  downchit, an overseas duty (`avail.ts slotBar`, "unknown is not never-clashes") — so a part-day absence, and a local
+  leave on a standby seat with blank shift times (`OUTSTANDING.md` `[BLANK-STANDBY-STRIKE]`), are struck before and
+  silent after; no man the list flags FOR AN ABSENCE was offered clean. A whole-day ACTIVITY (a course, a meeting) is
+  the other way round: the crew list only ever advised against one where the seat has hours ("already on Training"), so
+  on a seat with none it says nothing before and the list flags after — the drop's own toast says it at once
+  (`[BLANK-SEAT-ACTIVITY-HINT]`, filed; both pinned in `blankabsence.test.ts`). A published day still freezes these warnings (D177–D179): an issued version keeps the list it went out with
   (`snap.w`), and seating a man or filing an absence afterwards is a pending change like any other. Said on the Logic
   page (the leave group, "A seat with no times yet"). Pins: `engine/blankabsence.test.ts` (every input type on every
   kind of seat, with and without times), `e2e/blankabsence.spec.ts`; the three older pins that had written the silence

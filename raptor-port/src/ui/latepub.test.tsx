@@ -922,4 +922,56 @@ describe('D605 on a published day — the warning on a seat with no times freeze
     expect(flagged(officialWarn(), X).length, 'after the amendment the issued face carries it').toBe(1)
     expect(dayShownPendCount(WED)).toBe(0)
   })
+
+  /* the three below were asked for by the two code reads (Astra, Sol 6.1 — 6 Oct 26): an order with the amendment
+     BEFORE the absence; a whole-day request already on the programme, through a published day; an Upchit on the
+     published (official) run */
+  it('seat, publish, an amendment for something else, THEN the leave: still one pending change, the face as AL1 left it', () => {
+    blankLine(X); validate()
+    publishDay(WED); signBound(WED)
+    ;(DAYS[WED] as any).waves[(DAYS[WED] as any).waves.length - 1].formations[0].cs = 'ZQ'   // a callsign typed on his line
+    setSlotVal(`${WED}.${(DAYS[WED] as any).waves.length - 1}.0.0.w`, 'bullet'); validate()
+    expect(dayShownPendCount(WED), 'something to amend').toBeGreaterThan(0)
+    signBound(WED); publishALDay(WED); validate()
+    expect(dayShownPendCount(WED), 'AL1 took it').toBe(0)
+    expect(commitNewInput({ ...leaveDraft(X, '2026-07-15', 'AFTER AL1', 'OL') })).toBe(true)
+    validate()
+    expect(flagged(WARN, X).length, 'the working copy flags him').toBe(1)
+    expect(flagged(officialWarn(), X), 'AL1\'s face says nothing of it').toEqual([])
+    expect(dayShownPendCount(WED)).toBe(1)
+    expect(daySigned(WED), 'the sign-offs fall').toBe(false)
+  })
+
+  it('a Training typed 00:00–23:59 and put on the programme, his other seat a blank line: published WITH the warning; taken off afterwards, the face keeps it', () => {
+    const inp: any = { person: X, date: 'Jul 15', allday: false, s: 0, e: 1439, type: 'Training', remarks: 'CRM', mod: '' }
+    INPUTS.push(inp); inpId(inp)
+    expect(acceptInput(WED, inp, 'g'), 'the request lands').toBe(true)
+    blankLine(X); validate()
+    const said = (b: any) => ((b.byDay[WED] && b.byDay[WED].warns) || []).filter((w: any) => w.code === 'INPUT_FLY' && (w.who || []).includes(X) && /Training clashes with this line/.test(w.msg))
+    expect(said(WARN).length, 'flagged on the blank line although its row speaks for it elsewhere').toBe(1)
+    publishDay(WED); signBound(WED)
+    expect(said(officialWarn()).length, 'the day goes out with it').toBe(1)
+    expect(dayShownPendCount(WED)).toBe(0)
+    /* the request deleted after publishing: the working copy loses the line, the issued face does not */
+    expect(removeInput(inp)).toBeTruthy()
+    validate()
+    expect(said(WARN), 'the working copy').toEqual([])
+    expect(said(officialWarn()).length, 'the issued face keeps what it went out with').toBe(1)
+    expect(dayShownPendCount(WED), 'and the day reads pending').toBeGreaterThan(0)
+  })
+
+  it('an Upchit is no absence on the published run either: a day published with one says nothing of it, on a blank line or a timed one', () => {
+    const up: any = { person: X, date: 'Jul 15', allday: true, type: 'Upchit', remarks: 'fit again', mod: '' }
+    INPUTS.push(up); inpId(up)
+    blankLine(X)
+    ;(DAYS[WED] as any).waves[0].formations[0].aircraft[0].p = X          // and a seat with times
+    validate()
+    const upchit = (b: any) => ((b.byDay[WED] && b.byDay[WED].warns) || []).filter((w: any) => /Upchit/.test(w.msg))
+    expect(upchit(WARN), 'the working copy').toEqual([])
+    publishDay(WED); signBound(WED)
+    expect(!!SCHED.dayOK[WED], 'the fixture publishes').toBe(true)
+    expect(upchit(officialWarn()), 'the issued face').toEqual([])
+    expect(upchit(officialRaw()), 'and the detector behind it').toEqual([])
+  })
 })
+

@@ -248,6 +248,27 @@ describe('the sentence — nothing printed that is not there', () => {
     expect(abs().map((w: any) => w.key).sort(), 'each line goes to its own row').toEqual([d.key, g.key, s.key.replace(/\.p$/, '')].sort())
   })
 
+  it('a row REALLY named "Sim" or "duty" keeps its name — two rows, two lines, each to its own row', () => {
+    /* Sol 6.1's read, F2: the fallback took the bare words "Sim" and "duty" for "no name" on EVERY kind of row, so a
+       Ground Programme item titled "Sim" and another titled "duty" both read "this ground row" — and the list folded
+       the two into one line. Only a SIM row's bare "Sim" and a DUTY row's bare "duty" are the engine's own padding. */
+    const g1 = groundRow(false, 'Sim'); g1.seat(); const g2 = groundRow(false, 'duty'); g2.seat()
+    file('LL')
+    expect(abs().map((w: any) => w.msg).sort()).toEqual(['On leave but tasked — Sim', 'On leave but tasked — duty'])
+    expect(abs().map((w: any) => w.key).sort()).toEqual([g1.key, g2.key].sort())
+    g1.row.str = '09:00'; g1.row.end = '10:00'; g2.row.str = '11:00'; g2.row.end = '12:00'
+    expect(abs().map((w: any) => w.msg).sort(), 'with hours typed').toEqual(['On leave but tasked — Sim', 'On leave but tasked — duty'])
+    expect(abs().map((w: any) => w.key).sort()).toEqual([g1.key, g2.key].sort())
+  })
+
+  it('…the same on the Common Programme', () => {
+    const p1 = progRow(); p1.row.prog = 'Sim'; p1.seat(); const p2 = progRow(); p2.row.prog = 'duty'; p2.seat()
+    file('OL')
+    expect(abs().map((w: any) => w.msg).sort()).toEqual(['On leave but tasked — Sim', 'On leave but tasked — duty'])
+    p1.time(); p2.row.str = '20:00'; p2.row.end = '21:00'
+    expect(abs().map((w: any) => w.msg).sort(), 'with hours typed').toEqual(['On leave but tasked — Sim', 'On leave but tasked — duty'])
+  })
+
   it('a sim row and a duty row with no name yet say which row — not "Sim " or " duty" — with and without times', () => {
     /* Astra's scenario read, F4: the engine builds these labels as 'Sim ' + its name and its role + ' duty', so an
        unnamed row's label was not empty and the hole was printed. A new row comes up with no name AND no times. */
@@ -424,10 +445,13 @@ describe('a request already on the programme is not flagged against its own row'
   })
 })
 
-/* BEFORE AND AFTER HE IS SEATED. The crew list reads a seat with no hours as UNKNOWN and fails closed: any absence that
-   day strikes the name (avail.ts slotBar — "unknown is not never-clashes"; pinned in slotrules.test.ts). So the promise
-   that must hold is one-way: NO MAN THE LIST FLAGS WAS OFFERED CLEAN. For every seat that is not a standby place the
-   two agree exactly on a whole-day absence. On a standby place with no shift times the crew list is stricter than the
+/* BEFORE AND AFTER HE IS SEATED. The crew list reads a seat with no hours as UNKNOWN and fails closed: any ABSENCE that
+   day — a leave, a medical downchit, an overseas duty: the types that strike a name — strikes it (avail.ts slotBar,
+   "unknown is not never-clashes"; pinned in slotrules.test.ts). So the promise that holds is one-way and about those
+   types: NO MAN THE LIST FLAGS FOR AN ABSENCE WAS OFFERED CLEAN. For every seat that is not a standby place the two
+   agree exactly on a whole-day absence. (A whole-day ACTIVITY — a course, a meeting — is another matter, pinned in the
+   last test of this block: the crew list only ever advised against one where the seat has hours, so on a seat with
+   none it says nothing before and the list flags after. Astra's read, F2; filed as [BLANK-SEAT-ACTIVITY-HINT].) On a standby place with no shift times the crew list is stricter than the
    rule: it strikes a man on LOCAL leave, whom the warning list — with hours or without — lets stand by. That is the
    crew list's own old reading of a blank shift (it tells standby places apart by their hours), left as it was here
    and filed as [BLANK-STANDBY-STRIKE]; a part-day absence is the same shape by his ruling (struck before, silent
@@ -453,4 +477,15 @@ describe('the crew list and the warning list on a seat with no times', () => {
       }
     })
   }
+
+  it('a whole-day ACTIVITY (a course) on a seat with no times: the crew list says nothing before — the list flags after (the filed gap)', () => {
+    const s = flyLine(); const r = file('Training'); validate()
+    expect(isAway(r), 'a course is a commitment, not an absence').toBe(false)
+    expect(slotBar(X, s.key), 'the crew list: no reason against him').toBe('')
+    s.seat()
+    expect(codes(), 'the day\'s list, the moment he is seated').toEqual(['hard:INPUT_FLY'])
+    /* with hours on the seat the crew list does advise ("already on Training") — the difference is the missing hours */
+    s.row.aircraft[0].p = ''; s.time(); validate()
+    expect(slotBar(X, s.key)).toMatch(/already on Training/)
+  })
 })

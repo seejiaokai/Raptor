@@ -7,7 +7,8 @@ loops and the time-less rows' own look; `restIfPlaced`'s shift sibling and its e
 is in `src/ui/logic-html.ts`. Pinned by `src/engine/blankabsence.test.ts` (every input type on every kind of seat),
 `src/engine/scpickerrest.test.ts` and, in a real browser through "+ Wave", a seat and the struck name in the crew list,
 by `e2e/blankabsence.spec.ts` (in the `raptor` browser-test project). `scripts/handpass/bta-host.mjs` is the host's
-walk; `scripts/handpass/bta-{A,B,C}-*.mjs` the walkers'. The record: `docs/handpass/2026-10-06-blank-times-absence.md`,
+walk (run on the build before the fix and after it), `bta-host2.mjs` its additions after the code reads, `bta-env.mjs`
+who the walk's man is; `scripts/handpass/bta-{A,B,C,D}-*.mjs` the four walkers'. The record: `docs/handpass/2026-10-06-blank-times-absence.md`,
 pictures under `docs/img/handpass/2026-10-06-blank-times-absence/`; the scenario list, the walk brief and the two code
 reads: `docs/superpowers/briefs/2026-10-06-blank-times-absence-*.md`.
 

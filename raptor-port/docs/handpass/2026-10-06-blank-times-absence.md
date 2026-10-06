@@ -6,8 +6,8 @@ seat with no times stays silent. His instruction for this chat: build it togethe
 its own full check; add the "Vercel missed a merge" trap to the deploy notes; merge nothing. Branch
 `claude/blank-times-absence-picker-2cebae`, cut from `main` at the merge of PR #482. Nothing merged; `main` untouched.
 
-**Status: BUILT, WALKED, EVERY GATE GREEN on the final code, the TWO independent reads done. His look is left. Not
-merged; `main` untouched.** *(Filled in as each step closed — see §The gates and §The two code reads.)*
+**Status: BUILT, WALKED, EVERY GATE GREEN on the final code, the TWO independent reads done and their findings fixed.
+His look is left. Not merged; `main` untouched.**
 
 ## Questions waiting for him
 
@@ -156,7 +156,8 @@ From Astra's roll-call (`docs/superpowers/briefs/2026-10-06-blank-times-absence-
 | View-only Sched's published face; the 👁 look at a version | only what the day went out with — frozen | `latepub.test.tsx`; host H4; D |
 | The day's "N pending" and the four sign-offs | a filing after publication is the one pending change; the sign-offs fall | `latepub.test.tsx`; host H4.1; D |
 | A hidden warning | follows the shared hide | D S28 |
-| The ALL AVAIL window's flagged count and reasons | yes, when he stands in the crowd | C S29 |
+| The ALL AVAIL window's flagged count and reasons | yes — a man on whole-day ATT B stays in the crowd and is listed RED with the sentence; a man on leave or a course all day is not in the crowd at all | host H6; C S29 |
+| The day-details window ("i" on the day's head) | yes — its issue lines carry it | host H8 |
 | Insights' issue counts | counts it, by the page's copy | D S30 |
 | The Logic page | states the rule | unit; B H-03 |
 | The PDF / CSV exports; the next-week peek | draw no warning, by design | D S38 (recorded) |
@@ -193,18 +194,28 @@ No browser error in any walker's run.
 | **B F-B3 — ONE run of its S03 script showed no warning at all after the downchit was filed**; two earlier and seven later runs of the same script were normal; its pictures were overwritten | not reproduced: the host ran that script five more times on the final build — the downchit flagged every time | UNEXPLAINED, not reproduced in 14 runs; recorded here, nothing to fix or file |
 | C H-05 — one man in a MAIN and a SPARE seat of one SC line, local leave: the SPARE puck wears the red ring too, blank and typed | reproduced (Astra's F3) | OLD — FILED `[SC-SPARE-RING-BORROWS]` |
 | C H-04 — the placed crew-rest line reads "… but SC AM starts 05:00" where 05:00 is the in-time | seen by the host too (H5.3) | OLD wording — FILED `[SC-INTIME-REST-WORDS]` |
-| C S29 — the ALL AVAIL window never shows a man with a whole-day input: he is not in the crowd at all | by design — a man away or committed all day is not available, so this reader cannot carry the warning | not a finding (the roll-call row says so) |
+| C S29 — the ALL AVAIL window never shows a man with a whole-day leave or course: he is not in the crowd at all | true for those five types, by design — but NOT for a whole-day ATT B (Sol 6.1's read: grounded, not absent — he stays in the crowd) | walked by the host on the final build (H6, below): his row is RED in the window with the downchit sentence — the reader works |
 | C S34 — an EMPTY SC formation with an early in-time says nothing before the drop | the known limit | already filed `[REST-FIRST-CREW-HINT]` |
 | D — the 👁 look at the Original read "1 pending" in its head while the working copy read "2 pending" (a man seated and a leave filed after publishing) | not reproduced by the host; not this rule | FILED `[LOOK-PENDING-COUNT]` (low) |
 | The crew list strikes a name where the list then says nothing — a part-day absence on any seat with no times (B S18), a local leave on a blank standby seat (A H-01) | as the brief said | recorded; the second is `[BLANK-STANDBY-STRIKE]` |
 
 **The re-walk on the FINAL build** (after the two wording fixes above — the walkers' fixes touched sentences only):
-the host's whole walk again, H1–H5, 23 rows, all PASS (`…/rewalk/`, 36 pictures); walker A's H-02 script: three lines
+the host's whole walk again, H1–H5, 23 rows, all PASS — run once more after the readers' fixes (`…/final/`); walker A's H-02 script: three lines
 for the three unnamed rows, each renamed in turn (`…/rewalk-rows/` — its judge still expected the old words, so its
 own verdicts read FAIL; the screen's words are quoted in the table above); walker B's S03 script five times
 (`…/rewalk-s03/1/` kept).
 
-**Pictures the host opened itself** (15): the fault before and after (the blank line's puck and the day's list on both
+**The host's additions after the two code reads, on the final build** (`scripts/handpass/bta-host2.mjs`, pictures
+`…/final/`) — the readers Sol named as still unproven, and its F2:
+
+| Step | What was done | Result |
+|---|---|---|
+| H6 | ATT B all Tuesday for Vandal; "+ Wave", seated on its blank line; ALL AVAIL put on a ground row 15:00–16:00 and its count pressed | the window lists 36 men; his row is RED, "Downchit but planned to fly this line — reason: Grounded"; tapping him says the same in the window's foot — PASS |
+| H7 | he lands 22:30 Monday; Tuesday SC 13:00–19:00, B 05:00, Cobra in the first MAIN row's rear seat, Vandal in its front seat (the breach stands); his puck dragged to the SECOND MAIN row of the same shift | held: the bubble gives no new reason; dropped: he is in the second row, the same single crew-rest line, nothing doubled, nothing lost — PASS |
+| H8 | OL all Tuesday, seated on a new blank line; the day's "i" on Edit Schedule | the day-details window lists "Vandal — On leave but planned to fly this line — reason: Abroad" — PASS |
+| H9 | LL all Tuesday; two Ground Programme items really named "Sim" and "duty", no times, he is put on both; then hours typed | two lines, "… but tasked — Sim" and "… but tasked — duty", with hours and without — PASS |
+
+**Pictures the host opened itself** (17, with the ALL AVAIL window and the day-details window from the steps above; the first 15): the fault before and after (the blank line's puck and the day's list on both
 builds), the crew list with the seat armed, the BB seat's own puck, the ground row, the published face, the armed SC
 MAIN seat; C — the armed SC seat with "crew rest — not clear until 12:30" (and five other men struck the same way for
 the same 05:00 in-time), the forward "breaks Wednesday: he must be gone by 18:00", the MAIN-and-SPARE pucks; D — the
@@ -230,7 +241,7 @@ lift, publish, amend} — twelve orders (D). The same final words, rings and pen
 
 ## Tests, red first
 
-- `src/engine/blankabsence.test.ts` — 82 cases. The `SEATS` table is the roll-call: thirteen kinds of seat, each made
+- `src/engine/blankabsence.test.ts` — 85 cases. The `SEATS` table is the roll-call: thirteen kinds of seat, each made
   with no times in the app's own shape. Written before the fix: 36 of its first 54 failed on the unfixed rule. The
   loops: every input type raises the same codes with and without times; **the exact oracle** (every type × every seat,
   nine groups × six families, no times and times typed — added after Astra showed "the same before and after" passes on
@@ -243,10 +254,12 @@ lift, publish, amend} — twelve orders (D). The same final words, rings and pen
   cleared); the crew list's strike against the list's flag on every kind.
 - `src/engine/scpickerrest.test.ts` — 10 cases: 3 red before the fix (a typed in-time with the shift typed and blank;
   forward), the negative control (a SPARE seat — red when the guard is cut), and the half left as it was.
-- `src/ui/latepub.test.tsx` — 2 new cases on a published day (goes out WITH the warning; a leave filed afterwards).
+- `src/ui/latepub.test.tsx` — 5 new cases on a published day: goes out WITH the warning; a leave filed afterwards;
+  and three asked for by the code reads — an amendment BEFORE the leave; a Training typed 00:00–23:59 and put on the
+  programme, published, then deleted; an Upchit on the published run.
 - `src/ui/logic.test.tsx` — 1 new case: the Logic page's row.
-- `e2e/blankabsence.spec.ts` — 2 browser tests through the real controls, the ring asserted as PAINTED: both red on
-  the unfixed rule, both green on the fix.
+- `e2e/blankabsence.spec.ts` — 2 browser tests through the real controls, the ring asserted as PAINTED RED with a
+  width (its computed colour, not merely "a shadow" — Astra's read): both red on the unfixed rule, both green on the fix.
 - Three older tests had written the silence down as known and now state the rule: `audit-c-times.test.ts` ("KNOWN
   HOLE, now pinned … the line vanishes from the conflict engine rather than failing closed"), `avalon-rules.test.ts`
   ("a BB shift with BLANK times checks nothing"), `overnight.test.ts` (two cases). Each keeps its other half — the
@@ -254,28 +267,29 @@ lift, publish, amend} — twelve orders (D). The same final words, rings and pen
 
 ### Break tests — each part of the fix cut once, on purpose
 
-`breaks.py` in the session's scratch folder, against the seven pinning files (267 cases): 24 cuts, every one red.
+`breaks.py` in the session's scratch folder, against the seven pinning files (275 cases on the final code): 27 cuts,
+every one red (the counts below are the final run's).
 
 | Part cut | Went red |
 |---|---|
-| the flying-line check: a seat with no usable hours | 14 |
-| …judged against the whole-day list, not every input | 4 |
+| the flying-line check: a seat with no usable hours | 17 |
+| …judged against the whole-day list, not every input | 5 |
 | the duty / sim / ground check: an SC MAIN with cleared times | 8 |
 | the Meeting's amber sentence prints no clock | 2 |
 | the SC SPARE check | 5 |
-| the time-less rows: the whole look | 44 |
+| the time-less rows: the whole look | 48 |
 | …a standby place bars only what cannot spare | 10 |
 | …ATT B may work an AVALON / BB desk | 3 |
 | …ATT B may work a desk, a sim or a ground row | 15 |
 | …the ring and the chip | 7 (no test at first — written, then red) |
 | "this line" | 2 |
-| "this row" | 2 |
-| an unnamed sim / duty row | 1 |
+| a row with no name names its kind · an unnamed sim / duty row · the kind words themselves | 3 · 3 · 4 |
+| a row REALLY named "Sim" / "duty" keeps its name | 2 |
 | whole day, not part of it | 15 |
-| collect: an AVALON / BB seat · its desk · a sim box · a duty / ground / programme row | 12 · 5 · 11 · 22 |
+| collect: an AVALON / BB seat · its desk · a sim box · a duty / ground / programme row | 12 · 6 · 12 · 25 |
 | its own request is not a clash | 2 |
-| a whole-day request already on the programme still counts | 3 |
-| an Upchit is turned away | 4 |
+| a whole-day request already on the programme still counts | 4 |
+| an Upchit is turned away | 5 |
 | the crew list: a shift sibling counts | 3 |
 | the crew list: an exempt seat borrows nothing | 2 |
 | the Logic page row | 1 |
@@ -307,8 +321,13 @@ was not yet true when it read — the item is filed now.
   nine of the twelve orders (D), the sibling in S34 (C), the Inputs-page edits (B); not after each cell of the oracle.
 - **The whole pairwise matrix of actions** in Astra's "broader action-order requirement": the pairs in §Orders were
   walked; the rest (a MAIN / SPARE flip, a day template, a plan) only where a scenario of its own carried them.
-- **The ALL AVAIL window as a reader of the new warning** (S29): a man away all day is not in the crowd — nothing to read.
 - **AVALON / BB crew-rest drag bubbles** (C used the armed list and placement); a crew-list drag for S11, S33, S34.
+- **Twelve of the designer's twenty-four publication orders**: the ones where an amendment comes BEFORE the last seat or
+  absence step were not walked on screen (D walked six with a leave filed and six with one lifted); one of them
+  (seat → publish → amend → file) is pinned as a unit test through the app's own publishing calls.
+- **The SANS card's and the crew list's own copy of his puck, a short screen, and every overlay beside the ring**
+  (selection, his own fill, a qualification chip, an amendment tag, the OIL mark): the ring and chip were asserted as
+  painted on the seat's puck and the Unavailable row's copy; the copies named here were not looked at one by one.
 - **The Sunday before the demo week** (S17's far neighbour), **hours to 24:00** (no control accepts it — pinned in the
   unit test instead), **the browser's own print preview and a PDF** (the app's print page and the CSV were read).
 - **An AMT block's BRIEF and DEBRIEF rows**: a new block gives them no place for a person.
@@ -319,16 +338,94 @@ was not yet true when it read — the item is filed now.
 blank) · `[SC-SPARE-RING-BORROWS]` (low — Astra's F3) · `[REQ-ROW-SELF-CLASH]` (low — times typed on an all-day
 request's own row flag its own man) · `[SC-INTIME-REST-WORDS]` (low — the crew-rest sentence calls an SC line's in-time
 its "start") · `[UPCHIT-MOVE-NO-REGROW]` (low, a question for him — walker B) · `[OFT-ADD-TWICE-SILENT]` (low — walker
-A) · `[LOOK-PENDING-COUNT]` (low — walker D).
+A) · `[LOOK-PENDING-COUNT]` (low — walker D) · `[BLANK-SEAT-ACTIVITY-HINT]` (low — Astra's code read: the crew list
+says nothing before a man with a whole-day course is put on a seat with no times).
 
 ## The gates
 
-*(Filled in from the run on the final code.)*
+Run twice under the PC's one lock (`gatelock.mjs run`), each about 15 minutes: once after the walk, before the two
+reads, and again on the FINAL code (after the readers' fixes) — the counts below are the second run's, watched. The
+page-size check and the six probes ran against the frozen final build, under the same lock.
+
+| Gate | Result |
+|---|---|
+| Unit tests | **7964 / 7964** (496 files) |
+| Typecheck + build | clean |
+| The original app's assertions (`tfin`) | **728 / 0** |
+| Browser tests (e2e) | **617 passed, 0 failed, 50 skipped** — the two new ones among them |
+| The Tracker's browser suite | **445 / 0** |
+| Rule coverage (`rulecheck`) | OK |
+| Documents (`docsize`) | OK — every record accounted for; over its size markers by 11,087, put off on a branch that carries code (D29) |
+| Page-size ceilings (`perf`), on the final build | **4 / 0** — week 5131 ≤ 5450, board 1018 ≤ 1150 |
+| The six adapted probes, on the final build | all passed (155 checks) |
+
+First run (before the readers' fixes and six test cases): unit 7958 / 7958, the rest identical. `main` before this
+branch: unit 7862 / 7862 (494 files), e2e 615 passed and 50 skipped.
 
 ## The two code reads (Astra, and Sol 6.1 second, each blind to the other — D590, D601)
 
-*(Filled in when both reports were in.)*
+The brief: `docs/superpowers/briefs/2026-10-06-blank-times-absence-read-brief.md`; the reports, verbatim:
+`…-read-astra.md`, `…-read-sol.md`. Neither saw the other's. Both read the code after the walk, with this sheet in hand
+(its gates and reads sections still empty then — both said so). Neither could run the one test file its sandbox
+allowed (read-only) — both read the source.
+
+| | Astra | Sol 6.1 |
+|---|---|---|
+| Verdict | CHANGES REQUIRED | CHANGES REQUIRED |
+| The rule's logic (collection, the whole-day list, exemptions, the published freeze, the crew list's question) | holds — "no additional scheduler defect" | holds, but for F2 below |
+| The Vercel note (documents only) | F1 — "the TOP row" can be another branch's preview | F1 — the same, independently |
+| Its own find | F2 — "no man the list flags was offered clean" is not true of a whole-day COURSE | F2 — a Ground item really named "Sim" or "duty" was renamed "this ground row", and two became one line |
+| D605's short line (D138) | PASS | PASS |
+
+**Dispositions.**
+- **The Vercel note, both readers — confirmed (a documents fault, this change's own), FIXED.** The deployment to promote
+  is chosen by its COMMIT, checked against the merge, never by its place in the list; "Create Deployment" from `main`
+  when that commit has no row; the check afterwards compares the commit. "Waiting longer does not bring one" now says
+  what was seen on the day.
+- **Sol F2 — confirmed, NEW, FIXED red-first.** Only a SIM row's bare "Sim" and a DUTY row's bare "duty" (the padding
+  the engine adds round an empty name) count as no name; any other row keeps the title it was given. Two unit cases
+  (Ground and Common Programme, with hours and without); walked by the host (H9).
+- **Astra F2 — confirmed, a gap the build left on purpose; the claim NARROWED and the gap PINNED and FILED
+  (`[BLANK-SEAT-ACTIVITY-HINT]`).** The crew list strikes a name for an absence — leave, a downchit, overseas duty —
+  and for those no man the list flags was offered clean. A whole-day course or meeting it only ever advised against
+  where the seat has hours; on a seat with none it says nothing before, and the list (and the drop's toast) flag after.
+  Not fixed here: the crew list is deliberately unchanged in this build (D605's reading (7), told to him).
+- **Astra — the browser test checked "some shadow":** it now checks the red and its width.
+- **Coverage both asked for:** an order with the amendment before the absence, a whole-day request on the programme
+  through a published day, an Upchit on the published run — three unit cases through the app's own publishing calls;
+  the ALL AVAIL window (Sol: reachable with ATT B — it is), a drag between two MAIN rows of one shift, the day-details
+  window — walked by the host on the final build (H6–H8).
+- **Astra, claim 1 "timed seats unchanged except Upchit" does not hold literally** — a timed seat with NO NAME now
+  reads "this line" / "this duty row" instead of a hole. Deliberate, documented (§What was built (4)); no arithmetic
+  moved.
+- **Not done, named by both:** the other twelve publication orders on screen; every overlay beside the ring; a short
+  screen; the browser's print preview; his iPhone (§What was NOT walked).
+
+The cap of two reads is spent. What changed after them: the Vercel note; `named` / `rowName` in `validate.ts` (Sol's
+exact steps — the one app-code change after the reads, 5 lines, pinned by two red-first cases and a break test);
+tests; documents. That last change has had no independent read; it was walked (H9) and the gates ran on it.
 
 ## His look — the "look here" card
 
-*(Written last.)*
+On the branch's preview, on your phone or PC — three minutes:
+
+1. **Edit Schedule → open Wednesday's board → "+ Wave" → Flying wave**, and put **Cobra** (he is on overseas leave all
+   Wednesday in the demo week) in the new blank line's seat. His name is struck in the crew list — press it anyway.
+   *Expect:* at once, with no time typed, a red line in Wednesday's list — "Cobra — On leave but planned to fly this
+   line — reason: Overseas leave — off island" — and a red ring with a C on his puck. (On the live app today: nothing,
+   until a take-off is typed.)
+2. **Type a callsign, then a take-off, then clear the take-off.** *Expect:* the line names the callsign once it has one,
+   and never goes away.
+3. **"+ Wave" → BB**, and put Cobra in a BB seat. *Expect:* "OL but on BB SHIFT — overseas" — BB comes up with no
+   shift times, and it used to say nothing.
+4. **Logic page → Leave, downchit and personal inputs.** *Expect:* a row beginning "A seat with no times yet…".
+5. Say if either of these reads wrong to you (§Questions): a whole-day **course or meeting** is flagged on a blank line
+   the same way a leave is; and the **crew list** is as it was — it still strikes a man who is away only part of the
+   day when the seat has no times, though the list then says nothing.
+
+Only a real iPhone can show the ring as Safari paints it; everything above was walked in Chromium's phone size.
+
+`Walk: docs/handpass/2026-10-06-blank-times-absence.md · 1,552 pictures · 15 surfaces · 20 orders · MISSING: none in this
+rule's own places — 8 old or deliberate gaps found beside it, all filed (`[BLANK-STANDBY-STRIKE]`,
+`[BLANK-SEAT-ACTIVITY-HINT]`, `[SC-SPARE-RING-BORROWS]`, `[REQ-ROW-SELF-CLASH]`, `[SC-INTIME-REST-WORDS]`,
+`[UPCHIT-MOVE-NO-REGROW]`, `[OFT-ADD-TWICE-SILENT]`, `[LOOK-PENDING-COUNT]`)`

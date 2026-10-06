@@ -838,13 +838,16 @@ function validateCore(){
        has no name yet either. Pins: blankabsence.test.ts. */
     const noWin=(s:any,e:any)=>!(isFinite(s)&&isFinite(e));
     const whole:any[]=day.whole||[];
-    /* a seat with no name yet: an empty label, or the bare word the label is built round (events.ts — 'Sim '+its
-       name, its role+' duty'; a new sim or duty row comes up with neither a name nor hours). A row says WHICH kind
-       it is — the list folds identical sentences into one line, and "this row" for a man on a new duty row, a new
-       sim row and a new ground item was one line for three places (walkers A and B, 6 Oct 26). */
-    const named=(label:any,alt:string)=>{const t=String(label==null?'':label).trim(); return !t||t==='Sim'||t==='duty'?alt:label;};
+    /* A SEAT WITH NO NAME YET. A flying line: an empty label -> "this line". A row says WHICH kind it is — the list
+       folds identical sentences into one line, and a plain "this row" for a man on a new duty row, a new sim row and a
+       new ground item was one line for three places (walkers A and B, 6 Oct 26). A sim row's label is built 'Sim '+its
+       name and a duty row's its role+' duty' (events.ts), so for THOSE kinds alone the bare word left behind means "no
+       name": a Ground or Common Programme item really titled "Sim" or "duty" keeps its title (Sol 6.1's read, F2 —
+       the first cut took the bare words for no-name on every kind, and two such items became one line). */
+    const named=(label:any,alt:string)=>String(label==null?'':label).trim()?label:alt;
     const ROWWORD:any={duty:'this duty row',sim:'this sim row',ground:'this ground row',prog:'this programme row'};
-    const rowName=(x:any)=>named(x.label,ROWWORD[x.kind]||'this row');
+    const BARE:any={sim:'Sim',duty:'duty'};
+    const rowName=(x:any)=>{const t=String(x.label==null?'':x.label).trim(); return !t||t===BARE[x.kind]?(ROWWORD[x.kind]||'this row'):x.label;};
     day.fly.forEach((e:any)=>(noWin(e.step,e.dekit)?whole:day.input).forEach((inp:any)=>{ if(inp.id!==e.id)return;
       if(e.shift)return;
       if(noWin(e.step,e.dekit)||overlap(e.step,e.dekit,inp.s,inp.e)){
@@ -956,7 +959,7 @@ function validateCore(){
         markChip(di,sa.id,'C',wc); markRing(di,sa.id,'hard',wc);
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[sa.id],
-          `${inp.type} but on ${named(sa.label,sa.role==='DUTY'?'this duty row':'this row')} — ${dn?'medically down':'overseas'}${why}`,sa.key);   /* a desk with no role yet (D605's note, the sortie loop) */
+          `${inp.type} but on ${sa.role==='DUTY'?rowName({label:sa.label,kind:'duty'}):sa.label} — ${dn?'medically down':'overseas'}${why}`,sa.key);   /* a desk with no role yet (D605's note, the sortie loop) */
       });
     });
     /* THE THREE AVALON CHECKS OF 7 SEP 26 (owner — "Avalon main will also be
