@@ -2059,8 +2059,10 @@ nothing trimmed before he rules") and was reworded the same day — the new word
 (the sheet `raptor-port/docs/handpass/2026-10-06-rest-blank-line.md`). This item leaves at the next documents-only pass (D29).
 
 ### [WALK-SIZING-GUIDE] The checking guide still says "the full walk" for every FULL check — word it to D607: the walk is sized per change, by Opus, from the record (owner, D607, 7 Oct 26)
-**DRAFTED 7 Oct 26 on `claude/docs-tidy-7-oct` — NOT in the guide; it waits for his word.** The proposed wording,
-edit by edit: `raptor-port/docs/superpowers/specs/2026-10-07-walk-sizing-guide-wording.md`; the readers' brief and
+**DRAFTED 7 Oct 26 on `claude/docs-tidy-7-oct` — NOT in the guide; it waits for his word.** Both readers said CHANGES
+REQUIRED on the first draft (a test could stand in for a control that must be pressed; seven sentences still ordered
+the unsized walk); every finding was taken — the file is VERSION 2, sixteen edits, which has had no read of its own
+(the cap of one round each). The proposed wording, edit by edit: `raptor-port/docs/superpowers/specs/2026-10-07-walk-sizing-guide-wording.md`; the readers' brief and
 their two reports (Astra, Sol 6.1 — one round each, apart, D70):
 `raptor-port/docs/superpowers/briefs/2026-10-07-walk-sizing-wording-read-brief.md`, `…-read-astra.md`, `…-read-sol.md`;
 what each asked for and what was done with it is at the foot of the wording file. The text below is the item as filed.

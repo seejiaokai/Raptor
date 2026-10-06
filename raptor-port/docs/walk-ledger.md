@@ -29,18 +29,20 @@ step 3). A walk started without them is a walk nobody sized.
 
 | Type | What it is | Where a walk has something to find |
 |---|---|---|
-| A | A rule inside ONE shared calculation — no new screen, control or mark | little: every screen reads the one answer; the host's scripted run and a browser test through the real controls show the wire |
+| A | A rule inside ONE shared calculation — no new screen, control or mark | the ways in, the readers of the answer and what each shows can still disagree or be unwired: settle which of them share the calculation and which need their own proof on screen before sizing — shared arithmetic cuts the repeated cases, it does not prove the readers are wired |
 | B | A new screen, window, panel or kind of row | the surface itself, at each size, with its empty, error and read-only states |
 | C | A new control, gesture or mode | both orders, every state the data allows, the phone |
 | D | A mark or figure DRAWN in several places, each by its own code | each place — the classic "never wired up" |
-| E | Layout or look — a stylesheet change | every screen at phone and desktop size; pictures opened |
+| E | Layout or look — styles, markup or the geometry of a drawing | the affected surfaces and what lies over them, at phone and desktop size and the short screen where it applies, pictures opened; shared styling can make that the whole app |
 | F | Words only | none beyond reading the words where they show |
 | G | Saved data, the publish path, undo, a reload | orders around publish, undo, redo and a reload |
 | H | Who may do or see something | each role's own face |
-| R | No change at all — a re-test of an area built before walks existed (D4's sweep), or a look to find the cause of a reported fault | everything: the area has never been driven |
+| R | No change at all — a re-test of an area built before walks existed (D4's sweep), or a look to find the cause of a reported fault | for an area never walked, its unproved surfaces and flows, broadly; for a reported fault, its route and the likely shared causes — say which case it is, and use what earlier walks already covered |
 
 *(The list and the right-hand column are the agent's first draft, 7 Oct 26 — corrected as the record grows. R was
-added the same day, when the past walks were compiled: five of them had no change to give a type to.)*
+added the same day, when the past walks were compiled: five of them had no change to give a type to. Rows A, E and R
+were reworded the same day on Astra's and Sol's read — each had read as an instruction rather than a question. The
+types supply questions for the sizing step; none prescribes a walk.)*
 
 ## The record — one row per walk
 
@@ -151,11 +153,17 @@ these as a guide to where to look, not as a rule.**
 
 No walk had words-only (F) as its leading type.
 
-**What a walk costs** is recorded for few: nine walkers were measured, 4.5 million tokens between them — about half a
-million each (a Sonnet walker 360 to 550 thousand; an Opus walker about 620 thousand). All the measured walks were of
-type A: 1.88 million (`[OIL-WORK-START]`, four walkers), 0.36 million (D606, one), 1.23 million
-(`[INSIGHTS-WHICH-COPY]`, two). The 20 fanned-out walks used 77 walkers in all; the 44 others were the host's own
-scripted run, whose cost no sheet records.
+**What a walk costs** is recorded for few. Seven walkers on the three ordinary measured walks used about 3.47 million
+tokens — 1.88 million (`[OIL-WORK-START]`, four walkers), 0.36 million (D606, one), 1.23 million
+(`[INSIGHTS-WHICH-COPY]`, two) — all three of leading type A. The trial of 5 Oct, kept apart, adds two walkers and
+about 1.07 million: nine measured walkers, about 4.54 million in all. A measured Sonnet walker cost 360 to 613
+thousand, a measured Opus walker 620 to 627 thousand. These few do not set a standard cost for a walker, and say
+nothing of the other types or of the host's own scripted run, whose cost no sheet records. The 20 fanned-out walks
+used 77 walkers in all; the 44 others were the host's own run.
+
+**The counts are the sheets' own, not a reconciled count of separate faults.** The 225 is the sum of the rows as
+recorded, with only the stack walkers' five own finds counted: the first row's 27 mixes wording finds it does not
+split out, one row says "at least 6", and the same fault can appear in two walks.
 
 **What the rows say, by type:**
 
@@ -172,10 +180,11 @@ scripted run, whose cost no sheet records.
 - **Layout (E): four of ten, six faults.** On layout the owner's own look has found what a walk did not: the window
   top under his phone's address bar (D536), the gap above a tall window (D537), the wing's shape (D564), a cut
   callsign (D367).
-- **A rule inside one calculation (A): the least.** Nine walks, five of them fanned out. In the change itself: two
-  finds, both in the wording of one job's new warning (`[BLANK-TIMES-ABSENCE]`); no walk found a fault in a rule's
-  arithmetic. What those walks did find was twelve OLDER faults elsewhere in the app, met in passing — a fanned-out
-  walk of a rule change has worked as a sweep of the app, not as a test of the rule.
+- **A rule inside one calculation (A): the least in the change itself.** Nine walks, five of them fanned out. Two
+  counted finds concern the change — both in the output of one job's new warning (`[BLANK-TIMES-ABSENCE]`); none of
+  the nine rows records a newly found fault in the changed calculation's arithmetic. Twelve finds are OLDER faults met
+  in passing, and one of those was a calculation fault (negative work hours) — so walks have found wrong arithmetic
+  too. The record does not show what a smaller walk would have caught or missed.
 
 **Who walked:** the host's own scripted run found a fault on 25 of its 44 walks (58 faults); the fanned-out walks on
 18 of 20 (167 faults) — but helpers were sent on the widest jobs, so the two are not like for like.
@@ -185,13 +194,14 @@ jobs where the walk found none or little — the drag below zero (walk 0; Astra'
 (walk 0; the two reads 7), the Insights count (a fault both walkers missed), the request's row worked out on read
 (Astra's read, two serious), the Tracker's leftovers (Fable's read: an undo that could blank the app). A test written
 first reproduced the fault before the fix on most jobs. And the owner's own look found something on at least eight
-jobs. A walk finds what is MISSING or WRONG ON SCREEN; it has not been where wrong arithmetic was found.
+jobs.
 
-**For him, in one paragraph.** A walk has paid for itself whenever the change put something on screen in more than
+**For him, in one paragraph.** Walks found faults most often where the change put something on screen in more than
 one place, added a screen, a control or a rule about who may do what — and above all on areas nobody had ever driven.
-It has paid least on a change to a rule inside one calculation: nine walks, no fault found in a rule, at about half a
-million tokens a walker where it was measured — though those walkers did turn up twelve older faults elsewhere. On
-those jobs the fault was found by a test written first, by the host's own short run, or by the two code reads. So for
-a rule-only change the record supports a small walk — the host's own run, at most one walker — and spending the
-saving on the reads; for anything drawn in several places, a new screen or control, or roles, it supports walking
-every place. Each change is still sized by itself (D607): the record informs the choice, it does not make it.
+They found least in the change itself where it was a rule inside one calculation: nine walks, two finds in the change,
+at about half a million tokens a walker where it was measured — though those walkers also turned up twelve older
+faults elsewhere. On those jobs the fault in the rule was found by a test written first, by a short run, or by the
+code reads. So for some rule-only changes the record can support a smaller walk; it sets no ceiling on walkers and
+does not show that every large walk paid for itself — most have no cost recorded, and the largest jobs got the most
+walkers. Each change is sized by itself (D607): Opus chooses from the change's own routes, readers and risks, and this
+record informs the choice, it does not make it.
