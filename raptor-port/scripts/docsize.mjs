@@ -94,7 +94,9 @@ const FILES = [
      means no walk, and a test that changes the data directly never stands in for pressing a control. They belong
      in the always-loaded copy (Astra's read: the marker is a tripwire, not a limit - D141). The file was already
      2 over before this and still is; that excess waits for his ruling on [START-CONTEXT-AUDIT]. */
-  ['.claude/rules/bug-check.md',         0,   78],
+  /* 78 -> 80, 7 Oct 26 (D609): the two lines it stood over since 5 Oct are the model line of D590 (who reviews now) -
+     a live rule that belongs in the always-loaded copy. Nothing in the file is spent. */
+  ['.claude/rules/bug-check.md',         0,   80],
   /* 60 -> 100, 23 Sep 26 ([DOCS-GUARD] step 1). The file had ALREADY grown to 95 with the ceiling
      unmoved — the D53 "read it before you ask him anything" rule, a genuinely live rule — and
      nothing noticed, because this gate ran nowhere. Raised to what is true plus a little room,
@@ -146,7 +148,11 @@ const FILES = [
      three tidy-ups he approved (D493) were filed as their own items; nothing here is finished ([DOCS-SIZE-PASS] read
      every item the same day). He is giving his features and bugs to be FILED until the reset, so what crosses belongs
      here (D141) — set with room for those items. */
-  ['OUTSTANDING.md',                     1, 1750],
+  /* 1750 -> 2150, 7 Oct 26 (owner, D609 - the documents pass he ordered): nineteen finished items went to the archive
+     first (2,496 -> 2,062 lines). What is left is 134 open items and their priority list - every one an open job, a
+     found-not-fixed or a question for him; none belongs anywhere else, and an open item is never trimmed to fit
+     (D141, D29). The backlog is searched, not loaded whole: a chat reads its priority list and the item it works on. */
+  ['OUTSTANDING.md',                     1, 2150],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only
