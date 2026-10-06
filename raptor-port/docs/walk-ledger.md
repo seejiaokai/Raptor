@@ -21,8 +21,10 @@ step 3). A walk started without them is a walk nobody sized.
 2. **What only a walk could find here** — the surfaces that DRAW the thing separately, the new controls or modes, the
    sizes, the orders of action — and what the tests and the reads already cover.
 3. **What this ledger says** about walks of that type: how many, what they cost, what they found.
-4. **The walk chosen** — the host's own scripted before-and-after run only / one walker / several — with the number of
-   scenarios, the sizes (desktop, phone), and what is deliberately left to the tests.
+4. **The walk chosen** — who walks (the host, one helper, several), the number of scenarios, any sizes BEYOND the
+   required phone and desktop (and the short screen where it applies), and which repeated cases a test carries — each
+   with its test and what that test proves. A test that changes the data directly never stands in for pressing a
+   control on screen (the order's §7.0 — the wording approved D608).
 5. **After the walk:** its row is added to the record below, with what it found — before the closing report.
 
 ## The types of change

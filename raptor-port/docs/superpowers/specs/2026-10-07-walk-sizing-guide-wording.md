@@ -1,5 +1,9 @@
 # The walk is sized per change — proposed wording for the checking guide (`[WALK-SIZING-GUIDE]`, D607)
 
+**APPROVED BY HIM, 7 Oct 26 (D608 — "Approve"), and put into the guide the same day, edit for edit as written below
+(one exception, said at edit 15: the project guide's short line is worded shorter, to keep within its length).** What
+follows is the text as it stood when he approved it.
+
 **A DRAFT — version 2, 7 Oct 26, on `claude/docs-tidy-7-oct`. No guide has been changed.** It is a change to a working
 guide, so it was read by Astra and by Sol 6.1, one round each, apart (D70, D590). **Both said CHANGES REQUIRED;** this
 version is the draft with their findings worked in — what each asked for and what was done is at the foot. The cap is
@@ -206,7 +210,9 @@ alone do not satisfy this; …"
 
 **Its short line in `raptor-port/CLAUDE.md`, now:** "…list them for him, hand-test the running build against each,
 pass or fail, …" **Proposed:** "…list them for him, check the running build against each — pass or fail, by the walk
-or by a test the bug-check order allows — …"
+or by a test the bug-check order allows — …" *(As put in, 7 Oct 26: "…check the running build against each (§7.0),
+pass or fail, …" — the longer wording took the line past the 350 characters a short line may have; the full text it
+points to carries the rest.)*
 
 **"The bug-check standing order", now:** "…a WALK of the running app across those surfaces and both orders of every
 gesture, …" **Proposed:** "…a WALK of the running app across those surfaces, sized for the change (the order's

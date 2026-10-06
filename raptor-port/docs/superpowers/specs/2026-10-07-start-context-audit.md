@@ -9,8 +9,8 @@ leaves the list a chat reads), D138 (a move never rewords), D141 (no size target
 
 - **A new chat has used about 97 thousand tokens before you type anything** — about a tenth of its room. After the
   usual opening line ("read the handoff, check the branch") and the first files of a build, it stands at about
-  **190 thousand — about a fifth**. (You said 30%. The meter I can read does not reach that; if you saw 30% on a
-  particular chat, tell me which and I will measure that one.)
+  **190 thousand — about a fifth**. (He said 30% when he raised this; asked, he answered on 7 Oct 26 that most chats start around 20% —
+  which is what the meter shows.)
 - **About a third of it is the app itself** — its tool list and connected services, 68 thousand. Nothing in the repo
   changes that; one setting of yours can (option 9).
 - **The largest piece that is plain waste is in the handoff notes:** seven blocks about branches that merged on

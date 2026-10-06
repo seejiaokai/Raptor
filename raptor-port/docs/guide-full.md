@@ -85,11 +85,13 @@ current one").** On EVERY build, four steps, in order:
    across every doc and every earlier session. A rule missing from the task's
    own spec is not evidence it does not apply.
 2. **LIST them down** and show him the list, in the words the app uses.
-3. **HAND-TEST the build against that list** in the running app (the live-view
-   pass below — real bundle, phone and desktop), walking the list ruling by
-   ruling and reporting pass/fail per ruling. Unit tests alone do not satisfy
-   this; the 16 Sep 26 scenario rule already says the same thing, and this adds
-   *against the enumerated rules*.
+3. **CHECK the build against that list** under the bug-check order, reporting
+   pass/fail per ruling and what proved it — what was seen in the running app
+   (real bundle, phone and desktop), or a test the order's §7.0 allows to carry
+   it (D607, D608). The walk is sized there; tests do not replace its screen and
+   control checks, and unit tests alone do not satisfy this; the 16 Sep 26
+   scenario rule already says the same thing, and this adds *against the
+   enumerated rules*.
 4. **FLAG A CLASH THE MOMENT IT APPEARS** — any new ruling that contradicts or
    NARROWS an existing one. Name both, say which is newer, put it to him. This
    is the active half of the newest-instruction-wins rule above.
@@ -115,8 +117,9 @@ short form, because it is the one that keeps being broken: **a code review plus 
 a bug check.** Two frontier models reviewed the OIL build and passed it; the owner then found three
 defects by opening the app, all of them surfaces that were never wired up, which reading code
 cannot find. Every bug check now needs a ROLL-CALL (every place the app draws the thing, each with
-a written yes / no-because / MISSING), a WALK of the running app across those surfaces and both
-orders of every gesture, and an evidence sheet with pictures. The closing report carries a
+a written yes / no-because / MISSING), a WALK of the running app across those surfaces, sized for
+the change (the order's §7.0 — D607, D608), with every required order accounted for, and an evidence
+sheet with pictures. The closing report carries a
 mandatory `Walk:` line; without it a change cannot be reported ready for "merge live". §4 of that
 file says which jobs to spend Fable and Codex on, and — just as important — which jobs are a waste
 of them.
@@ -304,6 +307,10 @@ Also standing: prefer a `VCONF` + `RULE_SPEC` setting over a hard-coded
 number for anything a squadron could plausibly set policy on, and put the
 edit box on the Logic-tab row where the number is QUOTED, not only where it
 is defined.
+
+The five families stay in the coverage list of every engine change — his words. HOW each is checked — driven in
+the walk, or carried by a test — is assigned in the bug-check order's sizing step (`docs/bug-check-order.md` §7.0,
+D607, D608); it is one walk, not a second one beside it.
 
 ### Task-observer activation
 

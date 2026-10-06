@@ -90,7 +90,11 @@ const FILES = [
   ['.claude/rules/raptor-executor.md',   0,  108],
   /* 63 -> 76, 23 Sep 26 (owner, D56): data-only problems are not findings, in the always-loaded
      copy so it is in force before the order is opened. */
-  ['.claude/rules/bug-check.md',         0,   76],
+  /* 76 -> 78, 7 Oct 26 (owner, D608): the approved walk-sizing wording adds two lines to step 4 - sizing never
+     means no walk, and a test that changes the data directly never stands in for pressing a control. They belong
+     in the always-loaded copy (Astra's read: the marker is a tripwire, not a limit - D141). The file was already
+     2 over before this and still is; that excess waits for his ruling on [START-CONTEXT-AUDIT]. */
+  ['.claude/rules/bug-check.md',         0,   78],
   /* 60 -> 100, 23 Sep 26 ([DOCS-GUARD] step 1). The file had ALREADY grown to 95 with the ceiling
      unmoved — the D53 "read it before you ask him anything" rule, a genuinely live rule — and
      nothing noticed, because this gate ran nowhere. Raised to what is true plus a little room,
