@@ -1,0 +1,69 @@
+{
+ "parts": {
+  "ows-D-s35-dk": {
+   "at": "2026-10-06T13:04:50.115Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S35.1",
+     "did": "SC wave through + Wave → SC; Ranger seated on the first (MAIN) jet 07:00–13:00 through the crew list; four sign-offs, Publish day",
+     "saw": "✓ seated [SC 07:00-13:00 br \"undefined\" p \"bane\"] · ✓ published ORIG [ORIG] · ✓ Leave War cell HO [HO*] · ✓ tracker worked 07:00–13:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:00 0.5 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S35-pub-cell.png",
+      "dk-02-S35-pub-tracker.png"
+     ]
+    },
+    {
+     "id": "S35.B06",
+     "did": "typed the SC line's B box 06:00 on the working copy of the published day",
+     "saw": "✓ the box holds 06:00 [06:00] · ✓ Leave War still HO [HO*] · ✓ tracker still worked 07:00–13:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:00 0.5 left] · ✓ balance unchanged [{\"was\":\"0.5\",\"now\":\"0.5\"}] · ✓ no \"OIL on this day\" line in To go out [SC · brief Saber 6/10 21:04 06:00]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-S35-B06-day.png",
+      "dk-04-S35-B06-togoout.png",
+      "dk-05-S35-B06-cell.png",
+      "dk-06-S35-B06-tracker.png"
+     ]
+    },
+    {
+     "id": "S35.B08",
+     "did": "typed the SC line's B box 08:00 on the working copy of the published day",
+     "saw": "✓ the box holds 08:00 [08:00] · ✓ Leave War still HO [HO*] · ✓ tracker still worked 07:00–13:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:00 0.5 left] · ✓ balance unchanged [{\"was\":\"0.5\",\"now\":\"0.5\"}] · ✓ no \"OIL on this day\" line in To go out [SC · brief Saber 6/10 21:04 08:00]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-S35-B08-day.png",
+      "dk-08-S35-B08-togoout.png",
+      "dk-09-S35-B08-cell.png",
+      "dk-10-S35-B08-tracker.png"
+     ]
+    },
+    {
+     "id": "S35.L",
+     "did": "Logic: Nominal report before T/O 3h → 2h30 and Flight debrief after land 2h → 2h30 (the SC line is on the day, B typed 08:00)",
+     "saw": "✓ values changed [{\"reportLead\":150,\"reportText\":\"IN TIME + WX/NOTAMS\",\"debrief\":150}] · ✓ Leave War still HO [HO*] · ✓ tracker still worked 07:00–13:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:00 0.5 left] · ✓ balance unchanged [{\"was\":\"0.5\",\"now\":\"0.5\"}] · ✓ no \"OIL on this day\" line (no OIL-record change) [SC · brief Saber 6/10 21:04 08:00]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-S35-logic-day.png",
+      "dk-12-S35-logic-togoout.png",
+      "dk-13-S35-logic-cell.png",
+      "dk-14-S35-logic-tracker.png"
+     ]
+    },
+    {
+     "id": "S35.AL",
+     "did": "the four sign again and Publish AL: still HO, written window",
+     "saw": "✓ AL1 [AL1] · ✓ Leave War HO [HO*] · ✓ tracker worked 07:00–13:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:00 0.5 left] · ✓ balance unchanged [{\"was\":\"0.5\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-S35-al-cell.png",
+      "dk-16-S35-al-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 16
+  }
+ }
+}

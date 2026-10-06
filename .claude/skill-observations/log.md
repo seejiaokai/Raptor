@@ -2622,3 +2622,48 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the read brief template: either say plainly "you cannot run anything — read the source; name the exact input you would run and the host runs it", or launch the reader with a sandbox that allows writes to a scratch directory only and point the test runner's cache and temp there. And add to the host's steps: "run every 'would run' case the readers name before dispositioning the finding".
 
 **Principle:** Do not offer a reviewer a verification step its environment cannot perform; turn "I could not run it" into a named case the host is obliged to run.
+
+### Observation 441: One plan-challenge round overturned the builder's own reading before the code hardened around it
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** A FULL-tier build touching earned leave, the published record and saved data ([OIL-WORK-START]). The builder wrote a short plan, named its two "builder's readings" out loud in the plan and its brief, and sent it to two reviewers blind to each other while it wrote the first failing tests.
+**Skill:** claudex-loop / codex-review (plan review); the project's bug-check order §4 rank 3
+**Type:** open-source
+**Phase/Area:** Plan review before a high-consequence build
+
+**Issue:** Positive signal. Both reviewers independently rejected the same builder's reading (compare a published record on its amount only), gave the same concrete counter-case (a value that leaves the amount and moves the recorded times), and both found a missing protection the plan had not listed (approvals given before a rule change). The plan had flagged the reading as its own, which is what made it a target rather than an assumption buried in the design. Cost: one round, about 25 minutes of wall-clock that the builder spent writing red tests for the half that did not depend on the answer.
+
+**Suggested improvement:** In the plan-review brief template: a section "The builder's readings — attack them", listing every place the builder interpreted a requirement rather than read it, each with its one-line alternative; and ask each reviewer to rule each one "supported / contradicted / the owner's to decide". Run the round in the background while writing tests for the parts no reading touches.
+
+**Principle:** Name your own interpretations as interpretations and hand them to the reviewer as targets; an interpretation stated as a design fact is reviewed as a fact.
+
+### Observation 442: A repo-wide rename rewrote a reviewer's verbatim report and its brief
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Renaming a new spec file to satisfy a document gate, then replacing the old name everywhere it was mentioned with one scripted find-and-replace across the repo.
+**Skill:** New skill candidate: evidence-preserving edits (or a rule in the project's doc-structure / bug-check guidance)
+**Type:** open-source
+**Phase/Area:** Mechanical edits across a repository that holds review evidence
+
+**Issue:** The replace also touched the reviewer's report (kept verbatim as evidence) and the brief that reviewer had already run against — two files whose value is that they are exactly what was written and read. Caught only because the tool printed every file it changed; both were put back and the rename recorded beside them instead.
+
+**Suggested improvement:** Before any scripted repo-wide replace, list the matches and exclude evidence paths (reviewer reports, briefs after their run, frozen snapshots, archives); where an excluded file now names something that moved, say so in the live document that cites it, not inside the frozen one.
+
+**Principle:** Evidence files are immutable inputs: a mechanical edit excludes them by path, and a later rename is noted beside them, never inside them.
+
+### Observation 443: A shared walk helper read the wrong element because a CSS class had since gained a second use
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Re-using an earlier job's scripted-browser helpers for a new walk. The helper that reports a day's "N pending" chip selects the first element of a class that a later feature also put on a different chip ("N changes"), so on a day with nothing pending it reported "10 changes" as the pending count.
+**Skill:** New skill candidate: scripted hand-pass walks (the project's walk drivers and walker brief)
+**Type:** internal
+**Phase/Area:** Reusing driver helpers across walks; writing the walker brief
+
+**Issue:** The host's own before/after run produced a wrong reading on the unfixed build ("pending: 10 changes"), which would have looked like a real observation in a table. It was noticed because the number was implausible. Four walkers were about to inherit the same helper.
+
+**Suggested improvement:** (1) Fix the selector in the helper the next time the helper file is touched (it was left untouched here because walkers were about to read it). (2) In the walker brief template, a standing section "Known traps in the drivers", fed from the host's own short run before the walkers start. (3) The host's short run goes first precisely to find these.
+
+**Principle:** Run the host's own short walk on shared helpers before fanning out; every helper trap it meets goes into the walkers' brief by name.
