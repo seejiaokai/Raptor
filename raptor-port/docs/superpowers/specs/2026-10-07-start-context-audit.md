@@ -6,7 +6,7 @@ down at the expense of losing the quality of work"* — D68 (correctness beats c
 leaves the list a chat reads), D138 (a move never rewords), D141 (no size targets).
 
 **HIS RULING, 7 Oct 26 (D609):** options 1 to 4 now; then 5 to 7 with Astra and Sol reading; all on the one branch, the
-document check green, then a pull request for his "merge live". Option 8 is not ruled; 9 and 10 are his own settings;
+document check green, then a pull request for his "merge live". Option 8: not done — his ruling the same day (D611); 9 and 10 are his own settings;
 11 to 13 are not done. Nothing of the SANS calendar work is touched (D610). What was done under it is at the foot.
 
 ## For him — the short version
@@ -135,7 +135,7 @@ being broken (`plain-language.md`'s check before sending, `record-decisions.md`'
 
 ### Larger — wants a design step of its own
 
-**8. Split the scheduler's rulings by screen.** Any scheduler file loads all 165 rulings and nine blocks of settled
+**8. Split the scheduler's rulings by screen. — HIS RULING, 7 Oct 26 (D611): NOT DONE. They stay in one file; look again only if that file grows by about half again.** Any scheduler file loads all 165 rulings and nine blocks of settled
 decisions — 22,400, the largest thing a build loads. Split into four or five parts (the board; the week and Edit
 Schedule; publishing and amendments; inputs and requests; warnings and rules), a typical job would load one or two:
 a saving of about **8,000 to 14,000** on scheduler jobs. Risk: medium, and the real one — a ruling in a part that

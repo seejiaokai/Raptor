@@ -184,8 +184,9 @@ const RULING_BYTES = [
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
      D565); what is left - 161 and 34 rulings, and the scheduler's settled notes - is live, and a ruling is never
-     trimmed (D136). The scheduler's real answer is to split its rulings by screen: option 8 of [START-CONTEXT-AUDIT],
-     which he has NOT ruled (D609) - when he does, this marker comes down with the split. */
+     trimmed (D136). Splitting the scheduler's rulings by screen (option 8 of [START-CONTEXT-AUDIT]) was put to him and he
+     ruled NO the same day (D611): they stay in one file; this marker is the tripwire that brings the question back
+     if the file grows by about half again (about 100,000 bytes). */
   ['.claude/rules/decisions/scheduler.md', 2, 69000],
   ['.claude/rules/decisions/oil.md',     2, 12000],
   ['.claude/rules/decisions/leave-war.md', 2, 32000],
