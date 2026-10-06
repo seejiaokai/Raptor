@@ -43,6 +43,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   the shift itself (that is the hard clash loop's business), plus timed
   personal inputs through the same `restsInput` gate crew rest uses. A SPARE
   row has no event stream, so both stay MAIN-only by construction.
+  **A third, since D606 (owner, 7 Oct 26):** on a weekend or public holiday the
+  same in-time, where earlier than the shift's start, starts the MAIN's OIL day
+  too — §Weekend/PH work earns OIL. The one body that reads an SC line's B, for
+  crew rest and for OIL alike, is `reporting.ts scIntime`.
 - **Typed pre-flight clocks follow a small-hours T/O across midnight.** When
   the configured brief lead already puts the default brief on the previous
   evening, an indicated B later on the clock than T/O is shifted back one day;
