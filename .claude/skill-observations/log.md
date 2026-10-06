@@ -2562,3 +2562,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the walk section: every assertion's note prints the observed value it judged (the text of the box, the focused element), so a FAIL can be read without a rerun; and "a key that moves the caret (End, Home, arrows) means something different once text wraps — use the document-level one (Control+End) in scripts".
 
 **Principle:** A failing step reports what it saw, not only that it failed; the first question about a red walk step is what the script did, not what the app did.
+
+### Observation 437: A reviewer's "skip the record that lacks field X" fix spec loses the cases the rule already handled from the record's OTHER fields
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Fixing a rules-engine fault ([REST-BLANK-LINE]): a flying line with no take-off carried not-a-number times into the crew-rest arithmetic and silenced a breach raised by the man's other line. The finding came from a code reader with a step-by-step fix ("build the list only from legs with a finite take-off").
+**Skill:** receiving-code-review (and the project's bug-check order, raptor-port/docs/bug-check-order.md §4 "What to do with what they hand back")
+**Type:** open-source
+**Phase/Area:** Turning a reviewer's fix instructions into the change
+
+**Issue:** The reviewer's fix was correct for the reported symptom and wrong as a rule: a leg with no take-off could still carry a typed brief time or its wave's report time, and the unfixed code ALREADY raised the warning from the typed brief when that leg was the man's only one. Applying the spec as written would have traded one missing warning for another. It was caught by listing, per derived quantity, which inputs each needs (nominal report needs the take-off; instructed report needs brief OR in-time; yesterday's end needs the landing), and then confirmed independently by the scenario designer, who was asked "what does a naive skip get wrong?" as an explicit item of its brief.
+
+**Suggested improvement:** In receiving-code-review (and bug-check-order §4's disposition list), add a step before implementing a reviewer's fix: "If the fix drops, skips or filters a RECORD because one field is missing, list every quantity the rule derives from that record and what each one needs; write a test for each case that works today from the record's other fields, and watch it stay green." And in the scenario-design brief template, keep the explicit item "the cases a simple skip would get WRONG".
+
+**Principle:** A missing field invalidates the quantities that depend on it, not the record. Filter the unusable VALUES, keep the record — and before changing a rule, pin the cases it gets right by accident, because a fix spec is written from the failing case and never from those.

@@ -3,7 +3,7 @@
    script is the defect's evidence on the old build and the re-walk on the fixed one (bug-check order §5).
    Everything goes through the app's own controls: + Wave, + Line, the text boxes, the crew list (§7.7).
    Env: HP_URL (the served build), HP_SHOTS (pictures), HP_OUT (the JSON part file), HP_PHONE=1.
-   Usage: node scripts/handpass/rbl-host.mjs [h1|h2|h3|all] */
+   Usage: node scripts/handpass/rbl-host.mjs [h1|h2|h3|h4|all] */
 import * as K from './stk-B-lib.mjs'
 const { B, L, W, R, pic, picEl, sleep } = K
 const which = process.argv[2] || 'all'
@@ -128,8 +128,31 @@ async function h3() {
   await browser.close()
 }
 
+/* H4 — the same turn with the LATER leg drawn first: ZC 09:30–11:00, a blank line, ZA 07:30–09:00 (found by the host re-reading
+   its own fix, 6 Oct 26: a sort cannot place a line with no times, so the real legs stayed in drawn order and paired backwards) */
+async function h4() {
+  const { browser, p, errors } = await K.fresh()
+  try {
+    const cs = await B.csOf(p, ID)
+    const t = await K.addFlyWave(p, TUE)
+    await K.ff(p, TUE, t.gi, 0, 'cs', 'ZC'); await K.ff(p, TUE, t.gi, 0, 'to', '09:30'); await K.ff(p, TUE, t.gi, 0, 'ld', '11:00')
+    const c = await K.seat(p, TUE, t.gi, 0, 0, 'w', ID)
+    await K.addLine(p, TUE, t.gi)
+    const bl = await K.seat(p, TUE, t.gi, 1, 0, 'w', ID)
+    await K.addLine(p, TUE, t.gi)
+    await K.ff(p, TUE, t.gi, 2, 'cs', 'ZA'); await K.ff(p, TUE, t.gi, 2, 'to', '07:30'); await K.ff(p, TUE, t.gi, 2, 'ld', '09:00')
+    const a = await K.seat(p, TUE, t.gi, 2, 0, 'w', ID)
+    const s = await see(p, 'h4-turn-reversed')
+    const ok = s.turn && s.listLines.some(x => /Tight turn ZA/.test(x))
+    R('H4.1', `Tuesday one new wave, three lines drawn in this order: ZC 09:30–11:00, a blank line, ZA 07:30–09:00 — ${cs} in all three (took ${c.took}, ${bl.took}, ${a.took})`, says(s), ok ? 'PASS' : 'FAIL', s.pics)
+  } catch (e) { R('H4', 'script', String(e.stack || e).slice(0, 600), 'FAIL', [await pic(p, 'h4-X')]) }
+  R('H4.err', 'browser errors', errors.join(' | ') || 'none', errors.length ? 'FAIL' : 'PASS')
+  await browser.close()
+}
+
 if (which === 'h1' || which === 'all') await h1()
 if (which === 'h2' || which === 'all') await h2()
 if (which === 'h3' || which === 'all') await h3()
+if (which === 'h4' || which === 'all') await h4()
 B.savePart('rbl-host')
 for (const r of B.TABLE) console.log(`${r.verdict}  ${r.id}  ${r.did}\n      → ${r.saw}`)

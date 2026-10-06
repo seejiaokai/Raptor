@@ -1,0 +1,90 @@
+{
+ "parts": {
+  "s23-plans-dk": {
+   "at": "2026-10-06T00:43:48.150Z",
+   "base": "http://localhost:4175",
+   "phone": false,
+   "table": [
+    {
+     "id": "S23.P0",
+     "did": "Baseline B plus a blank \"+ Line\" on Tuesday (line 1), Scribe seated (took true) — the saved plan's contents",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s23p-0-orig-tue-puck.png",
+      "dk-02-s23p-0-orig-tue-list.png",
+      "dk-03-s23p-0-orig-mon-puck.png",
+      "dk-04-s23p-0-orig-mon-list.png"
+     ]
+    },
+    {
+     "id": "S23.P1",
+     "did": "the plans menu \"+ Alt Plan\" (menu before: Live working copy ●live now — this is wh / + Alt Plan; after: Plan Atap to make it the live day / Plan B ●live now — this is what publishe / + Alt Plan) — the copy is now the live day",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s23p-1-alt-tue-puck.png",
+      "dk-06-s23p-1-alt-tue-list.png",
+      "dk-07-s23p-1-alt-mon-puck.png",
+      "dk-08-s23p-1-alt-mon-list.png"
+     ]
+    },
+    {
+     "id": "S23.P2",
+     "did": "in the copy, Scribe dragged off Tuesday's ZT line (dragged off 1.2.0.0.w); he stays only on the blank line",
+     "saw": "held: none · list bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · Tue pucks [flying line:plain] painted [no-ring] · Mon pucks [flying line:plain] painted [no-ring] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s23p-2-clean-tue-puck.png",
+      "dk-10-s23p-2-clean-tue-list.png",
+      "dk-11-s23p-2-clean-mon-puck.png",
+      "dk-12-s23p-2-clean-mon-list.png"
+     ]
+    },
+    {
+     "id": "S23.P3",
+     "did": "the plans menu: switched to \"Plan Atap to make it the live day\" (the first plan)",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s23p-3-switch-orig-tue-puck.png",
+      "dk-14-s23p-3-switch-orig-tue-list.png",
+      "dk-15-s23p-3-switch-orig-mon-puck.png",
+      "dk-16-s23p-3-switch-orig-mon-list.png"
+     ]
+    },
+    {
+     "id": "S23.P4",
+     "did": "switched back to \"Plan Btap to make it the live day\" (the clean copy)",
+     "saw": "held: none · list bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · Tue pucks [flying line:plain] painted [no-ring] · Mon pucks [flying line:plain] painted [no-ring] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-s23p-4-switch-clean-tue-puck.png",
+      "dk-18-s23p-4-switch-clean-tue-list.png",
+      "dk-19-s23p-4-switch-clean-mon-puck.png",
+      "dk-20-s23p-4-switch-clean-mon-list.png"
+     ]
+    },
+    {
+     "id": "S23.P5",
+     "did": "switched to the first plan again, then the page reloaded and signed in again",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-s23p-5-reload-tue-puck.png",
+      "dk-22-s23p-5-reload-tue-list.png",
+      "dk-23-s23p-5-reload-mon-puck.png",
+      "dk-24-s23p-5-reload-mon-list.png"
+     ]
+    },
+    {
+     "id": "S23.P.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

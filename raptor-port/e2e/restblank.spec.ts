@@ -164,4 +164,16 @@ test.describe('a blank crewed line does not hide a crew-rest breach', () => {
     const tue = await listLines(page, TUE)
     expect(tue.filter(x => /Tight turn ZA/.test(x) && /ZC/.test(x)), 'the tight turn between ZA and ZC is said').toHaveLength(1)
   })
+
+  test('…and with the LATER leg drawn first (ZC, a blank line, then ZA) the turn is still ZA → ZC', async ({ page }) => {
+    /* a sort cannot place a line with no times: the two real legs must be put in time order after it is set aside */
+    await login(page)
+    await go(page, 'editsched')
+    const t = await addWave(page, TUE); await flight(page, TUE, t, 0, 'ZC', '09:30', '11:00')
+    const bl = await addLine(page, TUE, t); await seat(page, TUE, t, bl)
+    const a = await addLine(page, TUE, t); await flight(page, TUE, t, a, 'ZA', '07:30', '09:00')
+    await closeBoard(page)
+    const tue = await listLines(page, TUE)
+    expect(tue.filter(x => /Tight turn ZA/.test(x) && /ZC/.test(x) && /30 min/.test(x)), 'the tight turn between ZA and ZC is said').toHaveLength(1)
+  })
 })

@@ -1,0 +1,66 @@
+{
+ "parts": {
+  "orders-plan-dk": {
+   "at": "2026-10-06T00:38:29.460Z",
+   "base": "http://localhost:4175",
+   "phone": false,
+   "table": [
+    {
+     "id": "ORD-PLAN.0",
+     "did": "Baseline B (took true/true); plans menu \"+ Alt Plan\" on Tuesday (the copy is now live)",
+     "saw": "held: hard/CREW_REST · list bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red] painted [shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-ord-q-0-tue-puck.png",
+      "dk-02-ord-q-0-tue-list.png",
+      "dk-03-ord-q-0-mon-puck.png",
+      "dk-04-ord-q-0-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-PLAN.1",
+     "did": "inside the copy: a blank \"+ Line\", Scribe seated (took true)",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-ord-q-1-tue-puck.png",
+      "dk-06-ord-q-1-tue-list.png",
+      "dk-07-ord-q-1-mon-puck.png",
+      "dk-08-ord-q-1-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-PLAN.2",
+     "did": "switched to the first plan \"Plan Atap to make it the live day\" (no blank line there: Tuesday's last wave now has 1 line(s))",
+     "saw": "held: hard/CREW_REST · list bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red] painted [shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-ord-q-2-tue-puck.png",
+      "dk-10-ord-q-2-tue-list.png",
+      "dk-11-ord-q-2-mon-puck.png",
+      "dk-12-ord-q-2-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-PLAN.3",
+     "did": "switched back to the copy \"Plan Btap to make it the live day\" (Tuesday's last wave has 2 lines)",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-ord-q-3-tue-puck.png",
+      "dk-14-ord-q-3-tue-list.png",
+      "dk-15-ord-q-3-mon-puck.png",
+      "dk-16-ord-q-3-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-PLAN.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

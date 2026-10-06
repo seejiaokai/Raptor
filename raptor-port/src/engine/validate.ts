@@ -547,8 +547,9 @@ function validateCore(){
            ones with a take-off bear the NOMINAL report. A man whose every line is still blank is still a man
            who flies today: `legs` is empty, `instructed` is Infinity, and the first-commitment rule below runs
            on whatever else starts his day — an 05:00 meeting inside his rest is a breach whatever time the
-           line ends up with (Astra's scenario read, S10). With nothing at all to measure, `first` is not a
-           number and he is left alone; REST[di] above already carries when he is clear. */
+           line ends up with (Astra's scenario read, S10). With nothing at all to measure, `first` is
+           Infinity, neither test below can be true and he is left alone; REST[di] above already carries
+           when he is clear. */
         const legs=byR[id].filter((e:any)=>isFinite(insOf(e)));
         const noms=legs.filter((e:any)=>isFinite(nomOf(e)));
         const nominal=Math.min.apply(null,noms.map(nomOf));
@@ -577,7 +578,6 @@ function validateCore(){
         const fi=day.input.reduce((m:any,i:any)=>i.id===id&&!i.nx&&!i.pv&&restsInput(i.type)&&i.s!=null&&isFinite(i.s)&&i.e!=null&&i.e-i.s<1439&&(m==null||i.s<m.s)?i:m,null);
         const fe=fi!=null&&(fe0==null||fi.s<fe0.s)?{s:fi.s,label:inpLabel(fi)}:fe0;
         const first=Math.min(instructed,fe!=null?fe.s:Infinity);
-        if(!isFinite(first))return;                    // [REST-BLANK-LINE] no report and no earlier commitment — nothing to measure
         const evBound=first<instructed;
         const onShift=legs.some((e:any)=>e.shift);
         /* SPELL OUT THE ASSUMPTION when a sortie set the rest-end: show the
@@ -709,13 +709,15 @@ function validateCore(){
          rides two rear seats in a day raises no DT/TT. A genuine overlap is
          still caught below as a hard conflict. */
       if(PEOPLE[id]&&PEOPLE[id].pers)return;
-      const all=byP[id].slice().sort((a:any,b:any)=>a.to-b.to);
+      const all=byP[id];
       if(all.length>=2&&dturns(all))markChip(di,id,'DT','DT_SUM');
       /* [REST-BLANK-LINE] (D602, 6 Oct 26): the TURN is measured between legs that HAVE times. A blank crewed
          line sorts nowhere (every compare with not-a-number is "equal"), so it could stay between two real legs
-         and both of its pairs read not-a-number — the tight turn either side of it was never said. The DT chip
-         above still counts the timeless leg, on purpose (dturns). With every time present `es` is `all`. */
-      const es=all.filter((e:any)=>isFinite(e.to)&&isFinite(e.ld));
+         and both of its pairs read not-a-number — the tight turn either side of it was never said. Set aside
+         FIRST, sorted AFTER: a sort that met a not-a-number leaves the real legs in drawn order too, and
+         [09:30, blank, 07:30] would pair backwards. The DT chip above still counts the timeless leg, on purpose
+         (dturns asks every pair, so it needs no order). With every time present `es` is the old sorted list. */
+      const es=all.filter((e:any)=>isFinite(e.to)&&isFinite(e.ld)).sort((a:any,b:any)=>a.to-b.to);
       for(let i=0;i<es.length-1;i++){ const turn=es[i+1].to-es[i].ld;   // land → next T/O; need 30m dekit + 60m step = 90m
         /* The threshold and the mechanics are edited independently, so either
            can be the binding one: a 60 min threshold with 30 dekit + 60 step

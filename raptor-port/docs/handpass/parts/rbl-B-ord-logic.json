@@ -1,0 +1,97 @@
+{
+ "parts": {
+  "orders-logic-dk": {
+   "at": "2026-10-06T00:39:13.065Z",
+   "base": "http://localhost:4175",
+   "phone": false,
+   "table": [
+    {
+     "id": "ORD-LOGIC.1a",
+     "did": "setting first: Logic \"Crew rest\" 12h -> 10h, then Baseline B built (took true/true)",
+     "saw": "held: hard/CREW_REST · list bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<10h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red] painted [shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 20:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 19:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · warning \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 10:30, but told to report 05:00 — only 4h30 rest.\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-ord-l1-a-tue-puck.png",
+      "dk-02-ord-l1-a-tue-list.png",
+      "dk-03-ord-l1-a-mon-puck.png",
+      "dk-04-ord-l1-a-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-LOGIC.1b",
+     "did": "then a blank \"+ Line\" on Tuesday, Scribe seated (took true)",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<10h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 20:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 19:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · warning \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 10:30, but told to report 05:00 — only 4h30 rest.\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-ord-l1-b-tue-puck.png",
+      "dk-06-ord-l1-b-tue-list.png",
+      "dk-07-ord-l1-b-mon-puck.png",
+      "dk-08-ord-l1-b-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-LOGIC.1c",
+     "did": "then the setting restored to 12h",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · warning \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-ord-l1-c-tue-puck.png",
+      "dk-10-ord-l1-c-tue-list.png",
+      "dk-11-ord-l1-c-mon-puck.png",
+      "dk-12-ord-l1-c-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-LOGIC.1.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "ORD-LOGIC.2a",
+     "did": "blank first: Baseline B built (took true/true), a blank Tuesday line with Scribe (took true)",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · warning \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-ord-l2-a-tue-puck.png",
+      "dk-14-ord-l2-a-tue-list.png",
+      "dk-15-ord-l2-a-mon-puck.png",
+      "dk-16-ord-l2-a-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-LOGIC.2b",
+     "did": "then Logic \"Crew rest\" 12h -> 10h",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<10h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 20:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 19:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · warning \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 10:30, but told to report 05:00 — only 4h30 rest.\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-ord-l2-b-tue-puck.png",
+      "dk-18-ord-l2-b-tue-list.png",
+      "dk-19-ord-l2-b-mon-puck.png",
+      "dk-20-ord-l2-b-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-LOGIC.2c",
+     "did": "then the setting restored to 12h",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · warning \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-ord-l2-c-tue-puck.png",
+      "dk-22-ord-l2-c-tue-list.png",
+      "dk-23-ord-l2-c-mon-puck.png",
+      "dk-24-ord-l2-c-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-LOGIC.2.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

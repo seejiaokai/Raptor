@@ -1,5 +1,13 @@
 # The file map — where each source file lives and what it does
 
+`[REST-BLANK-LINE]` (D602, 6 Oct 26): the crew-rest rule and a line with no times. The fix is in `src/engine/validate.ts`
+(`crewRestDay` — yesterday's end, today's instructed report — and the same-day turn pairing); pinned by
+`src/engine/restblank.test.ts` and, in a real browser through "+ Wave", "+ Line", the time boxes and the crew list, by
+`e2e/restblank.spec.ts` (in the `raptor` browser-test project). `scripts/handpass/rbl-host.mjs` is the host's walk — run on
+the build before the fix and on the build after it; `scripts/handpass/rbl-{A,B,C}-*.mjs` are the three walkers' scripts.
+The record: `docs/handpass/2026-10-06-rest-blank-line.md`, pictures under `docs/img/handpass/2026-10-06-rest-blank-line/`;
+the scenario list, the walk brief and the two code reads: `docs/superpowers/briefs/2026-10-06-rest-blank-line-*.md`.
+
 D558 phone schedule navigation: `src/ui/ScheduleInsightsMenu.tsx` is the local,
 live-context-aware shared ellipsis menu mounted in both Shell week filter strips;
 `src/ui/schedule-insights-menu.test.tsx` pins placement/lifecycle/silent state.

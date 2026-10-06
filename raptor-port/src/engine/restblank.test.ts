@@ -136,6 +136,20 @@ describe('TODAY — a blank crewed line does not hide the breach his other line 
 })
 
 describe('TODAY — a line with no take-off is measured on the instruction it does carry', () => {
+  it('a typed Brief on a line with no take-off does not cost his OTHER line its tight-turning note', () => {
+    /* the nominal report is read off the legs that have a take-off; a leg that only carries a (late, harmless)
+       Brief must not turn that minimum into not-a-number (break test: `noms` cut back to `legs`) */
+    lateMonday()
+    const to = clear() + VCONF.reportLead - 20
+    const b = blank(); b.br = '18:00'
+    add(TUE, wave('ZT', [line('ZT', hm24(to), hm24(to + 90)), b])); validate()
+    const tight = mine(TUE).find((x: any) => x.code === 'CREW_TIGHT')
+    expect(tight, 'the advisory off his real line').toBeTruthy()
+    expect(tight.msg).toContain(`T/O ${hm24(to)}`)
+    expect(breach(), 'and it is the advisory, not the breach').toBeFalsy()
+    noNaN()
+  })
+
   it('a typed Brief on his only line raises the breach (it did before the fix — it must not be lost)', () => {
     lateMonday(); const b = blank(); b.br = '06:00'; add(TUE, wave('ZT', [b])); validate()
     const cr = breach()
@@ -288,6 +302,16 @@ describe('THE SAME-DAY TIGHT TURN', () => {
     const t = turnDay(true)
     expect(t, 'still raised').toBeTruthy()
     expect(t.msg).toBe(base)
+    noNaN()
+  })
+  it('…nor when the LATER leg is drawn first — the legs are put in time order after the blank one is set aside', () => {
+    /* a sort cannot place not-a-number: [09:30, blank, 07:30] "sorted" stays as drawn, and setting the blank line
+       aside afterwards would pair 09:30 → 07:30, a negative turn that says nothing */
+    add(TUE, wave('ZT', [line('ZC', '09:30', '11:00'), blank(), line('ZA', '07:30', '09:00')])); validate()
+    const t = mine(TUE).find((x: any) => x.code === 'TURN')
+    expect(t, 'still raised').toBeTruthy()
+    expect(t.msg).toContain('ZA BFM→ZC BFM')
+    expect(t.msg).toContain('30 min')
     noNaN()
   })
   it('LEFT AS IT WAS: one real leg and one timeless leg still wear the double-turn chip', () => {
