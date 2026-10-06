@@ -186,7 +186,11 @@ memory index get a marker like the rule files'. Markers stay tripwires, never ta
 
 ## What this pass did not do
 
-- It did not check the seven blocks for unfiled points (option 1's work) — the options were asked for first.
+- It checked the seven blocks for unfiled points only in part (option 1's work): every backlog item they name — 20
+  tags — has its own heading in the backlog or its archive; the reads they say are owed were paid in the one stack
+  check (D589, D604). **One caution stood nowhere a new chat reads** — a branch on his PC holding his phone photos
+  that must never be pushed; it is now filed (`[PRIVATE-BRANCH-NEVER-PUSH]`). Still to read line by line before the
+  blocks go: their "not proven" caveats against the evidence sheets, and the folders they say to leave untouched.
 - It did not open the full rows of the 21 rulings sorted as spent (option 2's work).
 - It did not sort the scheduler's 165 rulings into parts (option 8's design step).
 - It changed no guide and trimmed nothing.

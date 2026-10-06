@@ -2712,3 +2712,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the record-decisions rule, where it tells the agent to label its own readings: before writing a reading about an edge case, search for the edge case's SUBJECT in (1) the settled-decisions sections of the area files, (2) the app's own rule text (the page that prints every rule), and (3) the rules document — and quote the sentence found beside the reading. A reading with no sentence found says so.
 
 **Principle:** A builder's reading of a new ruling must be checked against what the product already tells its users about the same subject, not only against the ledger of rulings.
+
+### Observation 447: A ready-to-paste opening line that arrives with nothing typed beside it stalls an unattended start
+
+**Status:** OPEN
+**Date:** 7 Oct 26
+**Session context:** A documents-only run started from the previous chat's ready-to-paste opening line, pasted by the owner just before he went to sleep.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** The ready-to-paste opening line (the handoff's last step)
+
+**Issue:** The whole first message was pasted text, with nothing typed by the owner. The app marks pasted text as possibly not written by the user, so the new chat did only read-only checks and asked him to confirm before acting. He was already away; the run stood still until he answered "I'm asleep".
+
+**Suggested improvement:** In the session-handoff skill's opening-line step, tell him in plain words to TYPE a word of his own after pasting ("go", or "I'm away - run it"), and say why; or shape the line so its first words are ones he types. Where the run is meant to be unattended (D596), the handoff should say so in the line he types, not only in the pasted text.
+
+**Principle:** An instruction that will reach the next agent as pasted content needs one typed word from the person beside it; plan handoffs so the authorising word is the user's own keystroke.
