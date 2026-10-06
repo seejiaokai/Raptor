@@ -1,0 +1,37 @@
+{
+ "parts": {
+  "h02-dk": {
+   "at": "2026-10-06T00:26:28.789Z",
+   "base": "http://localhost:4175",
+   "phone": false,
+   "table": [
+    {
+     "id": "H02-desktop.1",
+     "did": "desktop: Logic page, typed \"take-off\" in the search box",
+     "saw": "rows shown 12; text mentions \"no take-off yet\" / \"not measured\" / Brief / In-time / Rally / earlier: true; clipped boxes: []; row rect [219,302,1330,1346] within width true; page scrolls sideways: false; the row, word for word: \"SETTING A flying line with no take-off yet is not measured: it neither breaks crew rest nor hides a breach another line raises, and it is not the end of the day before. If it already carries an instruction — a typed Brief, or its wave's In-time / Rally — that instruction is read as the report; and anything scheduled earlier that day still starts his day. A new line comes up blank. A man seated on one while its times are still being decided keeps every crew-rest warning his other commitments raise; the blank line is checked the moment a take-off is typed. insOf · crewRestDay\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-h02-search-take-off.png",
+      "dk-02-h02-row.png"
+     ]
+    },
+    {
+     "id": "H02-desktop.2",
+     "did": "desktop: searched \"crew rest\": the group's six rows",
+     "saw": "row openings present: [[\"Aircrew flying today must have\",true],[\"If the nominal\",true],[\"Rest is measured off the last commitment\",true],[\"A shift's own start time is its report time\",true],[\"A flying line with no take-off yet\",true],[\"An SC SPARE carries no crew rest\",true]]; stray \"undefined/NaN\" text: false; page scrolls sideways: false",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-h02-search-crew-rest.png"
+     ]
+    },
+    {
+     "id": "H02-desktop.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,107 @@
+{
+ "parts": {
+  "s03-blank-ph": {
+   "at": "2026-10-06T00:34:42.280Z",
+   "base": "http://localhost:4175",
+   "phone": true,
+   "table": [
+    {
+     "id": "S03b-phone.0",
+     "did": "phone: Baseline B (Mon ZM 20:00-22:30, Tue ZT 07:00-08:00 Brief 05:00, Scribe on both, took true/true) + a blank \"+ Line\" on Monday (line 1, Scribe seated: true) and on Tuesday (line 1, Scribe seated: true); working copy before publishing",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · tag \"DRAFT\" · chip \"9 changes\" · marker \"none\" · signed line \"none\" · sign-off boxes [· | · | · | ·] · Insights Crew rest row [\"Crew rest (<12h) 2\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s03b-0-work-tue-puck.png",
+      "ph-02-s03b-0-work-tue-list.png",
+      "ph-03-s03b-0-work-mon-puck.png",
+      "ph-04-s03b-0-work-mon-list.png",
+      "ph-05-s03b-0-ins.png"
+     ]
+    },
+    {
+     "id": "S03b-phone.1",
+     "did": "phone: sign-offs + Publish on Monday ({\"pressed\":true,\"label\":\"Publish day\"}) then Tuesday ({\"pressed\":true,\"label\":\"Publish day\"}); Edit Schedule face",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · Tue tag \"ORIG\" · chip \"14 changes\" · marker \"none\" · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · sign-off boxes [· | · | · | ·] · Mon tag \"ORIG\" · chip \"13 changes\" · marker \"none\" · signed line \"SIGNED ORIG Ace Anvil Anvil Anvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-s03b-1-pub-tue-puck.png",
+      "ph-08-s03b-1-pub-tue-list.png",
+      "ph-09-s03b-1-pub-mon-puck.png",
+      "ph-10-s03b-1-pub-mon-list.png",
+      "ph-11-s03b-1-pub-head.png"
+     ]
+    },
+    {
+     "id": "S03b-phone.2",
+     "did": "phone: the current issued version's 👁 look on Edit Schedule's week (menu: Original)",
+     "saw": "look Original · face {\"cls\":\"day  dok preview\",\"bar\":\"← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy\",\"woff\":0,\"nys\":\"\",\"pend\":\"\",\"signs\":0,\"oilper\":0,\"sel\":\"👁 Original ▾\"} · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" lines [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 \"] · his pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-s03b-2-look-week.png"
+     ]
+    },
+    {
+     "id": "S03b-phone.3",
+     "did": "phone: the current issued version's 👁 look on the Board (menu Original)",
+     "saw": "look Original · board head \"▾ ⚠ 6 issues · 3 warnings · tap to collapse\" · his crew rest lines [\"Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear\"] · his pucks on the board [flying line:ring(hard) R, flying line:ring(hard) R, crew list:ring(hard) R]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-13-s03b-3-look-board.png"
+     ]
+    },
+    {
+     "id": "S03b-phone.4",
+     "did": "phone: View-only Sched (signed in as admin), Tuesday and Monday",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · Tue head {\"tag\":\"ORIG\",\"pend\":\"\",\"nys\":\"\",\"signed\":\"SIGNED ORIG Ace Anvil Anvil Anvil\",\"woff\":0}",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-s03b-4-view-admin-tue-puck.png",
+      "ph-15-s03b-4-view-admin-tue-list.png",
+      "ph-16-s03b-4-view-admin-mon-puck.png",
+      "ph-17-s03b-4-view-admin-mon-list.png"
+     ]
+    },
+    {
+     "id": "S03b-phone.5",
+     "did": "phone: the day-details panel on Edit Schedule and on View-only Sched",
+     "saw": "edit: \"3 WARNING 2 ADVISORY 1 NOTE\" · 6 lines: plain plain plain plain plain plain [\"Warning · Conflict — two events at once Saint — VL SAT & APPOINTMENT c\",\"Warning · Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 2\",\"Warning · Crew rest (<12h) Scribe — Crew rest breach — Monday landed 2\",\"Advisory · No time for the flight brief Saint — No time for the VL SAT\",\"Advisory · Double turning Scribe — 1 person is double turning: Scribe\",\"Note · Long work day Static — Static has a long work day: 13h05, 05:00\"] · view: \"3 WARNING 2 ADVISORY 1 NOTE\" · 6 lines: plain plain plain plain plain plain [\"Warning · Conflict — two events at once Saint — VL SAT & APPOINTMENT c\",\"Warning · Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 2\",\"Warning · Crew rest (<12h) Scribe — Crew rest breach — Monday landed 2\",\"Advisory · No time for the flight brief Saint — No time for the VL SAT\",\"Advisory · Double turning Scribe — 1 person is double turning: Scribe\",\"Note · Long work day Static — Static has a long work day: 13h05, 05:00\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-18-s03b-5-details-edit.png",
+      "ph-19-s03b-5-details-view.png"
+     ]
+    },
+    {
+     "id": "S03b-phone.6",
+     "did": "phone: Insights after publishing (week), Conflicts by type",
+     "saw": "before publishing: [\"Conflict — two events at once 6\",\"No time for the flight brief 5\",\"Long work day 5\",\"Double turning 3\",\"Downchit + flying 2\",\"Personal input clash 2\",\"Crew rest (<12h) 2\",\"Tight turn 2\",\"Crew combination — CO approval required 2\",\"No time for the flight debrief 2\",\"OIL waiting — this day is not published 2\",\"No time for the sim brief 1\",\"No time for the sim debrief 1\",\"Crew solo — only allowed under syllabus 1\",\"On leave + flying 1\",\"Illegal aircrew combination 1\"] · after: [\"Conflict — two events at once 6\",\"No time for the flight brief 5\",\"Long work day 5\",\"Double turning 3\",\"Downchit + flying 2\",\"Personal input clash 2\",\"Crew rest (<12h) 2\",\"Tight turn 2\",\"Crew combination — CO approval required 2\",\"No time for the flight debrief 2\",\"OIL waiting — this day is not published 2\",\"No time for the sim brief 1\",\"No time for the sim debrief 1\",\"Crew solo — only allowed under syllabus 1\",\"On leave + flying 1\",\"Illegal aircrew combination 1\"] · tile \"38 14 WARNING\" (before \"38 14 WARNING\") · by day [\"Monday 10 sorties · 6 formations · 17 issues\",\"Tuesday 10 sorties · 6 formations · 6 issues\",\"Wednesday 8 sorties · 4 formations · 7 issues\",\"Thursday 8 sorties · 4 formations · 6 issues\",\"Friday 0 sorties · 0 formations · clear\",\"Saturday 0 sorties · 0 formations · 1 issue\",\"Sunday 0 sorties · 0 formations · 1 issue\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-20-s03b-6-ins.png",
+      "ph-21-s03b-6-ins-byday.png"
+     ]
+    },
+    {
+     "id": "S03b-phone.7",
+     "did": "phone: signed in as the member (us/us), View-only Sched, Tuesday then Monday",
+     "saw": "role undefined · Tue bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" lines [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 \"] · his Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [solid R, solid R] · his Mon pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R] · Tue head {\"cls\":\"day  dok issued\",\"tag\":\"ORIG\",\"pend\":\"\",\"nys\":\"\",\"sel\":\"Original — as issued\",\"signed\":\"SIGNED ORIG Ace Anvil Anvil Anvil\",\"woff\":0} · ✕/↺ buttons on the day: 0 · Mon head {\"cls\":\"day today dok issued\",\"tag\":\"ORIG\",\"pend\":\"\",\"nys\":\"\",\"sel\":\"Original — as issued\",\"signed\":\"SIGNED ORIG Ace Anvil Anvil Anvil\",\"woff\":0}",
+     "verdict": "PASS",
+     "pics": [
+      "ph-22-s03b-7-member-tue.png",
+      "ph-23-s03b-7-member-tue-puck.png",
+      "ph-24-s03b-7-member-mon.png",
+      "ph-25-s03b-7-member-mon-puck.png",
+      "ph-26-s03b-7-member-mon-listshut-puck.png"
+     ]
+    },
+    {
+     "id": "S03b-phone.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

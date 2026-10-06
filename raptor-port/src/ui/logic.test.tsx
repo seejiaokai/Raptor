@@ -107,6 +107,20 @@ describe('the Logic tab, read-only (tfin B50)', () => {
     expect(missing, missing.join(',')).toEqual([])
   })
 
+  it('[REST-BLANK-LINE] the Crew rest group says what a line with no times does — and does not deny a typed landing', () => {
+    /* Astra's final read, 6 Oct 26: the first wording said a line with "no take-off" is "not the end of the day
+       before", while the engine (rightly) still ends the day on a landing typed alone — restblank.test.ts
+       "LEFT AS IT WAS: a landing typed with no take-off is still the end of his Monday". */
+    const t = text()
+    expect(t).toContain('A flying line with no times yet is not measured')
+    expect(t).toContain('neither breaks crew rest nor hides a breach')
+    expect(t).toMatch(/typed Brief, its wave's In-time \/ Rally or an SC line's typed B as the report/)
+    expect(t).toContain('a typed landing as the end of that day, debrief included')
+    expect(t).toContain('anything scheduled earlier that day still starts his day')
+    expect(t, 'the withdrawn wording').not.toContain('not the end of the day before')
+    expect(t).not.toContain('no take-off yet is not measured')
+  })
+
   it('the firing counts come from the live WARN', () => {
     validate()
     const n = $$('#lgBody .lgfired.on').length

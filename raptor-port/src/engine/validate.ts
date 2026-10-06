@@ -455,7 +455,12 @@ function validateCore(){
            reads is built from the same set, so they cannot disagree. */
         const rests=true;
         const rawEnd=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift/duty ends when it ends
-        if(rawEnd==null)return;
+        /* [REST-BLANK-LINE] (D602, 6 Oct 26): a crewed line with no times yet ("+ Line" mints it blank) carries
+           not-a-number here, and it is NOT an end. Kept, it sat in prevEnd as the man's first event of the day and
+           every later `end>prevEnd` was false — his real 22:30 landing never replaced it, the `isFinite(pe)` guard
+           below then dropped him, and the next day's breach, ring, dotted mark and SC-seat clock all went quiet.
+           A landing typed with no take-off still has a real end and still counts. Pin: restblank.test.ts. */
+        if(rawEnd==null||!isFinite(rawEnd))return;
         const end=rawEnd+offset;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
         if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?e.ld+offset:null; prevSource[e.id]=source;}
@@ -514,7 +519,15 @@ function validateCore(){
          is honoured (the earlier of it and the shift start, so a later value
          cannot push the report past when the watch actually begins); when blank
          e.intime is null and this is byte-identical to the old `e.to`. */
-      const insOf=(e:any)=>e.shift?(e.intime!=null?Math.min(e.intime,e.to):e.to):Math.min(e.intime!=null?e.intime:Infinity,briefOf(e));
+      /* [REST-BLANK-LINE] (D602, 6 Oct 26): THE EARLIEST OF THE INSTRUCTIONS THAT EXIST. A line with no take-off
+         has no suggested brief (to − briefLead is not-a-number), and Math.min of anything with not-a-number is
+         not-a-number — so one blank crewed line poisoned the minimum over ALL his legs below and both tests went
+         false: the breach his other line raised vanished the moment he was seated on a new "+ Line". The same
+         arithmetic also threw away an instruction the line DID carry — its wave's In-time, an SC line's typed B.
+         So each candidate is taken only when it is a real number; a leg with none answers NaN and is left out of
+         `legs` below (nothing to measure — neither a breach of its own nor a mask over another's). With every
+         time present this is the old line, value for value. Pin: restblank.test.ts. */
+      const insOf=(e:any)=>{const c=(e.shift?[e.intime,e.to]:[e.intime,briefOf(e)]).filter((v:any)=>v!=null&&isFinite(v)); return c.length?Math.min.apply(null,c):NaN;};
       Object.keys(byR).forEach((id:any)=>{
         if(probe&&id!==probe.id)return;
         /* Personnel (ground crew) hold no crew-rest rule — an incentive ride
@@ -530,8 +543,16 @@ function validateCore(){
         const earliest=pe+VCONF.crewRest-1440;         // minutes into TODAY that crew rest expires
         // Do not assume clearance by midnight means a prior-day report is clear.
         // The actual first commitment below is compared on the same signed axis.
-        const legs=byR[id];
-        const nominal=Math.min.apply(null,legs.map(nomOf));
+        /* [REST-BLANK-LINE]: only the legs that tell him to be somewhere (insOf above), and of those only the
+           ones with a take-off bear the NOMINAL report. A man whose every line is still blank is still a man
+           who flies today: `legs` is empty, `instructed` is Infinity, and the first-commitment rule below runs
+           on whatever else starts his day — an 05:00 meeting inside his rest is a breach whatever time the
+           line ends up with (Astra's scenario read, S10). With nothing at all to measure, `first` is
+           Infinity, neither test below can be true and he is left alone; REST[di] above already carries
+           when he is clear. */
+        const legs=byR[id].filter((e:any)=>isFinite(insOf(e)));
+        const noms=legs.filter((e:any)=>isFinite(nomOf(e)));
+        const nominal=Math.min.apply(null,noms.map(nomOf));
         const instructed=Math.min.apply(null,legs.map(insOf));
         /* THE DAY STARTS AT ITS FIRST COMMITMENT (owner, 21 Aug 26 — "if
            they have anything earlier like a meeting that busts crew rest
@@ -570,7 +591,9 @@ function validateCore(){
           ? `${source.dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`
           : `${source.dow} ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`;
         if(pfly[id]&&first<earliest){
-          const bl=legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m);   // the leg told to report earliest is the breach
+          /* [REST-BLANK-LINE]: when no leg tells him anything the breach is the earlier commitment's (evBound);
+             the blank line only lends its key as the fallback anchor, and can sanction nothing */
+          const bl=legs.length?legs.reduce((m:any,e:any)=>insOf(e)<insOf(m)?e:m):byR[id][0];   // the leg told to report earliest is the breach
           /* The LEAVE-BY: the latest the previous day could have ended for this
              man to be clear. It is what the scheduler actually needs — "he is
              short" is a complaint, "he had to be gone by 00:00" is an
@@ -606,11 +629,13 @@ function validateCore(){
           const rest=first+1440-pe, endDow=DAYS[((targetIndex+Math.floor(pe/1440)-1)%7+7)%7].dow;
           const restWords=rest<0?`${dur(-rest)} before his ${endDow} duty ends`:`only ${dur(rest)} rest`;
           const crMsg=`Crew rest breach — ${tail}, but `
-            +(evBound?`his day starts ${stated(first)} (${fe.label}) before the ${stated(instructed)} report — ${restWords}.`
+            +(evBound?(legs.length?`his day starts ${stated(first)} (${fe.label}) before the ${stated(instructed)} report — ${restWords}.`
+                                  :`his day starts ${stated(first)} (${fe.label}), and he is on a line with no take-off yet — ${restWords}.`)
              :onShift?`${legs.filter((e:any)=>e.shift).map((e:any)=>e.label)[0]} starts ${stated(instructed)} — ${restWords}.`
              :`told to report ${stated(instructed)} — ${restWords}.`)
             +(dashed?` Late show — he still makes the ${hm24(bl.to-VCONF.step)} step.`
-                    :(!evBound&&bl.lateShow?` Late show cannot save it — the ${hm24(bl.to-VCONF.step)} step is still before rest clears.`:''));
+                    /* no take-off, no step to name ([REST-BLANK-LINE]) — the breach is said without the tail */
+                    :(!evBound&&bl.lateShow&&isFinite(bl.to)?` Late show cannot save it — the ${hm24(bl.to-VCONF.step)} step is still before rest clears.`:''));
           /* the warning anchors on what binds it: the early event's own slot
              key when a meeting caused the breach, the leg otherwise — the
              jump then pans to the row the scheduler has to move */
@@ -635,9 +660,11 @@ function validateCore(){
              rest-bearing (pfly is true whenever pe exists) — the ternary
              stays because the patched reference carries the identical line
              and neither side can emit it */
-          if(!phantom)add('adv','CREW_TIGHT',[id],`Tight turning — T/O ${hm24(Math.min.apply(null,legs.map((e:any)=>e.to)))} puts the ${lgT(VCONF.reportLead)} report at ${hm24(nominal)}, inside ${lgT(VCONF.crewRest)}. ${tail}`
+          /* `noms`, not `legs` ([REST-BLANK-LINE]): this branch is reached only through a real nominal report,
+             so the take-off it prints and the leg it anchors on are the ones that have one */
+          if(!phantom)add('adv','CREW_TIGHT',[id],`Tight turning — T/O ${hm24(Math.min.apply(null,noms.map((e:any)=>e.to)))} puts the ${lgT(VCONF.reportLead)} report at ${hm24(nominal)}, inside ${lgT(VCONF.crewRest)}. ${tail}`
             +(pfly[id]?'':' (prior day ended on a sim or ground event, so crew rest itself does not apply)'),
-            legs.reduce((m:any,e:any)=>nomOf(e)<nomOf(m)?e:m).key);
+            noms.reduce((m:any,e:any)=>nomOf(e)<nomOf(m)?e:m).key);
         }
       });
   };
@@ -682,8 +709,15 @@ function validateCore(){
          rides two rear seats in a day raises no DT/TT. A genuine overlap is
          still caught below as a hard conflict. */
       if(PEOPLE[id]&&PEOPLE[id].pers)return;
-      const es=byP[id].slice().sort((a:any,b:any)=>a.to-b.to);
-      if(es.length>=2&&dturns(es))markChip(di,id,'DT','DT_SUM');
+      const all=byP[id];
+      if(all.length>=2&&dturns(all))markChip(di,id,'DT','DT_SUM');
+      /* [REST-BLANK-LINE] (D602, 6 Oct 26): the TURN is measured between legs that HAVE times. A blank crewed
+         line sorts nowhere (every compare with not-a-number is "equal"), so it could stay between two real legs
+         and both of its pairs read not-a-number — the tight turn either side of it was never said. Set aside
+         FIRST, sorted AFTER: a sort that met a not-a-number leaves the real legs in drawn order too, and
+         [09:30, blank, 07:30] would pair backwards. The DT chip above still counts the timeless leg, on purpose
+         (dturns asks every pair, so it needs no order). With every time present `es` is the old sorted list. */
+      const es=all.filter((e:any)=>isFinite(e.to)&&isFinite(e.ld)).sort((a:any,b:any)=>a.to-b.to);
       for(let i=0;i<es.length-1;i++){ const turn=es[i+1].to-es[i].ld;   // land → next T/O; need 30m dekit + 60m step = 90m
         /* The threshold and the mechanics are edited independently, so either
            can be the binding one: a 60 min threshold with 30 dekit + 60 step

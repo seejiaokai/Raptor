@@ -1,0 +1,108 @@
+{
+ "parts": {
+  "s02-dk": {
+   "at": "2026-10-06T00:34:36.180Z",
+   "base": "http://localhost:4175",
+   "phone": false,
+   "table": [
+    {
+     "id": "S02.1",
+     "did": "Monday 20 Jul built first (week chip \"Jul 20\" → 20/07/2026; ZT 07:00-08:00 Brief 05:00, Scribe took true); back on week 13 Jul (13/07/2026); Sunday 19 Jul ZS 20:00-22:30, Scribe took true",
+     "saw": "Sunday: held [none] · bar \"⚠ 1 issue · tap to collapse ▲\" · his lines [] · \"Breaks\" lines [\"Breaks Monday Scribe — had to leave by 17:00. Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 \"] · pucks [flying line:plain chip R dotted] painted [dotted R]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s02-1-sunday-puck.png",
+      "dk-02-s02-1-sunday-list.png"
+     ]
+    },
+    {
+     "id": "S02.2",
+     "did": "week chip \"Jul 20\": Monday 20 Jul as loaded",
+     "saw": "Monday: held [hard/CREW_REST: Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told] · bar \"⚠ 11 issues · 3 warning · tap to collapse ▲\" · his lines [\"Crew rest (<12h) Scribe — Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · \"Breaks\" lines [] · pucks [flying line:ring(hard) chip R red] painted [shadow R]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s02-1-monday-puck.png",
+      "dk-04-s02-1-monday-list.png"
+     ]
+    },
+    {
+     "id": "S02.3",
+     "did": "Monday 20 Jul: \"+ Wave\" (blank line) drawn AFTER the timed wave, Scribe seated (took true)",
+     "saw": "Monday: held [hard/CREW_REST: Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told ; adv/DT_SUM: 3 people are double turning: Ranger, Echo, Scribe] · bar \"⚠ 11 issues · 3 warning · tap to collapse ▲\" · his lines [\"Crew rest (<12h) Scribe — Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · \"Breaks\" lines [] · pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s02-2-monday-puck.png",
+      "dk-06-s02-2-monday-list.png"
+     ]
+    },
+    {
+     "id": "S02.3b",
+     "did": "Monday 20 Jul: the blank wave dragged above ZT (dragged the last of 4 wave grips onto the one above it); the last waves now run WAVE 2:VL  then  WAVE 4:(blank)  then  WAVE 3:ZT",
+     "saw": "Monday: held [hard/CREW_REST: Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told ; adv/DT_SUM: 3 people are double turning: Ranger, Echo, Scribe] · bar \"⚠ 11 issues · 3 warning · tap to collapse ▲\" · his lines [\"Crew rest (<12h) Scribe — Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · \"Breaks\" lines [] · pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s02-2b-monday-puck.png",
+      "dk-08-s02-2b-monday-list.png"
+     ]
+    },
+    {
+     "id": "S02.4",
+     "did": "week chip \"Jul 13\": Sunday \"+ Wave\" (blank line) drawn AFTER ZS, Scribe seated (took true); drawn order: WAVE 1:ZS  then  WAVE 2:(blank)",
+     "saw": "Sunday: held [adv/DT_SUM: 1 person is double turning: Scribe] · bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" · his lines [] · \"Breaks\" lines [\"Breaks Monday Scribe — had to leave by 17:00. Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 \"] · pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s02-3-sunday-puck.png",
+      "dk-10-s02-3-sunday-list.png"
+     ]
+    },
+    {
+     "id": "S02.4b",
+     "did": "Sunday: dragged the blank wave above ZS with the wave grip (dragged grip 1 onto grip 0 (of 2)); the waves now run WAVE 2:(blank)  then  WAVE 1:ZS",
+     "saw": "Sunday: held [adv/DT_SUM: 1 person is double turning: Scribe] · bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" · his lines [] · \"Breaks\" lines [\"Breaks Monday Scribe — had to leave by 17:00. Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 \"] · pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s02-3b-sunday-puck.png",
+      "dk-12-s02-3b-sunday-list.png"
+     ]
+    },
+    {
+     "id": "S02.5",
+     "did": "Sunday: Sort all (sorted); the last waves now run WAVE 1:ZS  then  WAVE 2:(blank)",
+     "saw": "Sunday: held [adv/DT_SUM: 1 person is double turning: Scribe] · bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" · his lines [] · \"Breaks\" lines [\"Breaks Monday Scribe — had to leave by 17:00. Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 \"] · pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s02-4-sunday-sorted-puck.png",
+      "dk-14-s02-4-sunday-sorted-list.png"
+     ]
+    },
+    {
+     "id": "S02.6",
+     "did": "week chip \"Jul 20\" again, after the Sunday blank wave and Sort all",
+     "saw": "Monday: held [hard/CREW_REST: Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told ; adv/DT_SUM: 3 people are double turning: Ranger, Echo, Scribe] · bar \"⚠ 11 issues · 3 warning · tap to collapse ▲\" · his lines [\"Crew rest (<12h) Scribe — Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · \"Breaks\" lines [] · pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-s02-5-monday-puck.png",
+      "dk-16-s02-5-monday-list.png"
+     ]
+    },
+    {
+     "id": "S02.7",
+     "did": "the page reloaded and signed in again, week \"Jul 13\"",
+     "saw": "Sunday: held [adv/DT_SUM: 1 person is double turning: Scribe] · bar \"⚠ 3 issues · 1 warning · tap to collapse ▲\" · his lines [] · \"Breaks\" lines [\"Breaks Monday Scribe — had to leave by 17:00. Crew rest breach — Sunday landed 22:30, +2h debrief assumed → ended 00:30 \"] · pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-s02-6-sunday-reload-puck.png",
+      "dk-18-s02-6-sunday-reload-list.png"
+     ]
+    },
+    {
+     "id": "S02.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

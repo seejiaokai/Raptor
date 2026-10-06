@@ -1,0 +1,150 @@
+{
+ "parts": {
+  "s27-dk": {
+   "at": "2026-10-06T00:58:36.133Z",
+   "base": "http://localhost:4175",
+   "phone": false,
+   "table": [
+    {
+     "id": "S27.0",
+     "did": "Baseline B + Nomad (idle on Tuesday) in Monday's ZM front seat (took true) + a blank Tuesday line (Scribe seated, took true) + a timed line ZU 07:00-08:00 (line 2) with only Vandal in its rear seat (took true) and its front seat left empty; Monday and Tuesday published; settings as they stand",
+     "saw": "Edit: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" (ring shadow R, shadow R; Monday dotted true) · View-only: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · crew list: the man on Monday only: Nomad — crew rest — not clear until 12:30 | Nomad C crew rest — not clear until 12:30 | not struck | PILOTS · 16 FREE Blade IP Cobra IP Comet IP Diesel D Gambit C Hunter IP Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Talisman O Torch C Trident I || Scribe (already on Tuesday): Scribe — WSO — cannot fly front seat | R Scribe D WSO — cannot fly front seat | not struck | R Scribe D WSO — cannot fly front seat · Insights \"Crew rest (<12h) 2\", his work hours {\"Scribe\":\"11h\"} · Tue tag \"ORIG\" · chip \"19 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s27-0-base-edit.png",
+      "dk-02-s27-0-base-view.png",
+      "dk-03-s27-picker-1.png",
+      "dk-04-s27-0-base-ins.png"
+     ]
+    },
+    {
+     "id": "S27.1-debrief",
+     "did": "Logic page: Debrief after landing \"2h\" typed -> \"1h\" (the box then read \"1h\")",
+     "saw": "Edit: \"Crew rest breach — Monday landed 22:30, +1h debrief assumed → ended 23:30 → crew rest clear at 11:30, but told to report 05:00 — only 5h30 rest.\" (ring shadow R, shadow R; Monday dotted true) · View-only: \"Crew rest breach — Monday landed 22:30, +1h debrief assumed → ended 23:30 → crew rest clear at 11:30, but told to report 05:00 — only 5h30 rest.\" · crew list: the man on Monday only: Nomad — crew rest — not clear until 11:30 | Nomad C crew rest — not clear until 11:30 | not struck | PILOTS · 17 FREE Blade IP Cobra IP Comet IP Diesel D Drifter A Gambit C Hunter IP Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Talisman O Torch C || Scribe (already on Tuesday): Scribe — WSO — cannot fly front seat | R Scribe D WSO — cannot fly front seat | not struck | R Scribe D WSO — cannot fly front seat · Insights \"Crew rest (<12h) 2\", his work hours {\"Scribe\":\"9h\"} · Tue tag \"ORIG\" · chip \"1 pending\" · marker \"Not yet signed\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s27-1-debrief-edit.png",
+      "dk-06-s27-1-debrief-view.png",
+      "dk-07-s27-picker-2.png",
+      "dk-08-s27-1-debrief-ins.png"
+     ]
+    },
+    {
+     "id": "S27.2-debrief-back",
+     "did": "Logic page: Debrief after landing restored to \"2h\" (the box read \"2h\")",
+     "saw": "Edit: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" (ring shadow R, shadow R; Monday dotted true) · View-only: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · crew list: the man on Monday only: Nomad — crew rest — not clear until 12:30 | Nomad C crew rest — not clear until 12:30 | not struck | PILOTS · 16 FREE Blade IP Cobra IP Comet IP Diesel D Gambit C Hunter IP Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Talisman O Torch C Trident I || Scribe (already on Tuesday): Scribe — WSO — cannot fly front seat | R Scribe D WSO — cannot fly front seat | not struck | R Scribe D WSO — cannot fly front seat · Insights \"Crew rest (<12h) 2\", his work hours {\"Scribe\":\"11h\"} · Tue tag \"ORIG\" · chip \"19 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s27-2-debrief-back-edit.png",
+      "dk-10-s27-2-debrief-back-view.png",
+      "dk-11-s27-picker-3.png",
+      "dk-12-s27-2-debrief-back-ins.png"
+     ]
+    },
+    {
+     "id": "S27.3-crewrest10",
+     "did": "Logic page: Crew rest \"12h\" typed -> \"10h\" (the box then read \"10h\")",
+     "saw": "Edit: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 10:30, but told to report 05:00 — only 4h30 rest.\" (ring shadow R, shadow R; Monday dotted true) · View-only: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 10:30, but told to report 05:00 — only 4h30 rest.\" · crew list: the man on Monday only: Nomad — crew rest — not clear until 10:30 | Nomad C crew rest — not clear until 10:30 | not struck | PILOTS · 19 FREE Ace A Anvil IP Blade IP Cobra IP Comet IP Diesel D Drifter A Gambit C Hunter IP Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Tal || Scribe (already on Tuesday): Scribe — WSO — cannot fly front seat | R Scribe D WSO — cannot fly front seat | not struck | R Scribe D WSO — cannot fly front seat · Insights \"Crew rest (<10h) 2\", his work hours {\"Scribe\":\"11h\"} · Tue tag \"ORIG\" · chip \"19 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s27-3-crewrest10-edit.png",
+      "dk-14-s27-3-crewrest10-view.png",
+      "dk-15-s27-picker-4.png",
+      "dk-16-s27-3-crewrest10-ins.png"
+     ]
+    },
+    {
+     "id": "S27.4-crewrest4",
+     "did": "Logic page: Crew rest (lower again) \"10h\" typed -> \"4h\" (the box then read \"4h\")",
+     "saw": "Edit: \"(no crew-rest warning)\" (ring no-ring TT, no-ring TT; Monday dotted false) · View-only: \"(no crew-rest warning)\" · crew list: the man on Monday only: Nomad | Nomad C | not struck | PILOTS · 24 FREE Ace A Anvil IP Blade IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Hunter IP Nomad C Piston IP Ranger IP Reaper IR Recon O Ridge C  || Scribe (already on Tuesday): Scribe — WSO — cannot fly front seat | TT Scribe D WSO — cannot fly front seat | not struck | TT Scribe D WSO — cannot fly front seat · Insights \"Crew rest: none\", his work hours {\"Scribe\":\"11h\"} · Tue tag \"ORIG\" · chip \"19 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-s27-4-crewrest4-edit.png",
+      "dk-18-s27-4-crewrest4-view.png",
+      "dk-19-s27-picker-5.png",
+      "dk-20-s27-4-crewrest4-ins.png"
+     ]
+    },
+    {
+     "id": "S27.5-crewrest-back",
+     "did": "Logic page: Crew rest restored to \"12h\" (the box read \"12h\")",
+     "saw": "Edit: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" (ring shadow R, shadow R; Monday dotted true) · View-only: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · crew list: the man on Monday only: Nomad — crew rest — not clear until 12:30 | Nomad C crew rest — not clear until 12:30 | not struck | PILOTS · 16 FREE Blade IP Cobra IP Comet IP Diesel D Gambit C Hunter IP Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Talisman O Torch C Trident I || Scribe (already on Tuesday): Scribe — WSO — cannot fly front seat | R Scribe D WSO — cannot fly front seat | not struck | R Scribe D WSO — cannot fly front seat · Insights \"Crew rest (<12h) 2\", his work hours {\"Scribe\":\"11h\"} · Tue tag \"ORIG\" · chip \"19 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-s27-5-crewrest-back-edit.png",
+      "dk-22-s27-5-crewrest-back-view.png",
+      "dk-23-s27-picker-6.png",
+      "dk-24-s27-5-crewrest-back-ins.png"
+     ]
+    },
+    {
+     "id": "S27.6-briefLead",
+     "did": "Logic page: Flight brief before T/O (the suggested brief) \"2h20\" typed -> \"1h\" (the box then read \"1h\")",
+     "saw": "Edit: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" (ring shadow R, shadow R; Monday dotted true) · View-only: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · crew list: the man on Monday only: Nomad — crew rest — not clear until 12:30 | Nomad C crew rest — not clear until 12:30 | not struck | PILOTS · 18 FREE Ace A Blade IP Cobra IP Comet IP Diesel D Drifter A Gambit C Hunter IP Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Talisman O T || Scribe (already on Tuesday): Scribe — WSO — cannot fly front seat | R Scribe D WSO — cannot fly front seat | not struck | R Scribe D WSO — cannot fly front seat · Insights \"Crew rest (<12h) 2\", his work hours {\"Scribe\":\"11h\"} · Tue tag \"ORIG\" · chip \"1 pending\" · marker \"Not yet signed\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-25-s27-6-briefLead-edit.png",
+      "dk-26-s27-6-briefLead-view.png",
+      "dk-27-s27-picker-7.png",
+      "dk-28-s27-6-briefLead-ins.png"
+     ]
+    },
+    {
+     "id": "S27.7-briefLead-back",
+     "did": "Logic page: Flight brief before T/O restored to \"2h20\" (the box read \"2h20\")",
+     "saw": "Edit: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" (ring shadow R, shadow R; Monday dotted true) · View-only: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · crew list: the man on Monday only: Nomad — crew rest — not clear until 12:30 | Nomad C crew rest — not clear until 12:30 | not struck | PILOTS · 16 FREE Blade IP Cobra IP Comet IP Diesel D Gambit C Hunter IP Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Talisman O Torch C Trident I || Scribe (already on Tuesday): Scribe — WSO — cannot fly front seat | R Scribe D WSO — cannot fly front seat | not struck | R Scribe D WSO — cannot fly front seat · Insights \"Crew rest (<12h) 2\", his work hours {\"Scribe\":\"11h\"} · Tue tag \"ORIG\" · chip \"19 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-29-s27-7-briefLead-back-edit.png",
+      "dk-30-s27-7-briefLead-back-view.png",
+      "dk-31-s27-picker-8.png",
+      "dk-32-s27-7-briefLead-back-ins.png"
+     ]
+    },
+    {
+     "id": "S27.8-step",
+     "did": "Logic page: Step before take-off \"1h\" typed -> \"30 min\" (the box then read \"30 min\")",
+     "saw": "Edit: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" (ring shadow R, shadow R; Monday dotted true) · View-only: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · crew list: the man on Monday only: Nomad — crew rest — not clear until 12:30 | Nomad C crew rest — not clear until 12:30 | not struck | PILOTS · 16 FREE Blade IP Cobra IP Comet IP Diesel D Gambit C Hunter IP Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Talisman O Torch C Trident I || Scribe (already on Tuesday): Scribe — WSO — cannot fly front seat | R Scribe D WSO — cannot fly front seat | not struck | R Scribe D WSO — cannot fly front seat · Insights \"Crew rest (<12h) 2\", his work hours {\"Scribe\":\"10h\"} · Tue tag \"ORIG\" · chip \"1 pending\" · marker \"Not yet signed\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-33-s27-8-step-edit.png",
+      "dk-34-s27-8-step-view.png",
+      "dk-35-s27-picker-9.png",
+      "dk-36-s27-8-step-ins.png"
+     ]
+    },
+    {
+     "id": "S27.9-step-back",
+     "did": "Logic page: Step before take-off restored to \"1h\" (the box read \"1h\")",
+     "saw": "Edit: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" (ring shadow R, shadow R; Monday dotted true) · View-only: \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · crew list: the man on Monday only: Nomad — crew rest — not clear until 12:30 | Nomad C crew rest — not clear until 12:30 | not struck | PILOTS · 16 FREE Blade IP Cobra IP Comet IP Diesel D Gambit C Hunter IP Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Talisman O Torch C Trident I || Scribe (already on Tuesday): Scribe — WSO — cannot fly front seat | R Scribe D WSO — cannot fly front seat | not struck | R Scribe D WSO — cannot fly front seat · Insights \"Crew rest (<12h) 2\", his work hours {\"Scribe\":\"11h\"} · Tue tag \"ORIG\" · chip \"19 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-37-s27-9-step-back-edit.png",
+      "dk-38-s27-9-step-back-view.png",
+      "dk-39-s27-picker-10.png",
+      "dk-40-s27-9-step-back-ins.png"
+     ]
+    },
+    {
+     "id": "S27.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S27.CTL",
+     "did": "CONTROL, no breach anywhere (Monday ZM 09:00-10:30, Tuesday ZT 07:00 Brief 05:00, both published): each Logic setting changed and put back",
+     "saw": "before: Tue \"12 changes\" / \"no marker\", Mon \"11 changes\" · debrief 2h -> 1h: Tue chip \"1 pending\" marker \"Not yet signed\", Mon chip \"1 pending\" marker \"Not yet signed\" · briefLead 2h20 -> 1h: Tue chip \"1 pending\" marker \"Not yet signed\", Mon chip \"1 pending\" marker \"Not yet signed\" · step 1h -> 30 min: Tue chip \"1 pending\" marker \"Not yet signed\", Mon chip \"1 pending\" marker \"Not yet signed\" · crewRest 12h -> 10h: Tue chip \"12 changes\" marker \"none\", Mon chip \"11 changes\" marker \"none\" · after all restored: Tue \"12 changes\" / \"no marker\", Mon \"11 changes\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-41-s27-ctl-debrief.png",
+      "dk-42-s27-ctl-briefLead.png",
+      "dk-43-s27-ctl-step.png",
+      "dk-44-s27-ctl-crewRest.png"
+     ]
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,138 @@
+{
+ "parts": {
+  "s12-hidefirst-ph": {
+   "at": "2026-10-06T00:36:44.583Z",
+   "base": "http://localhost:4175",
+   "phone": true,
+   "table": [
+    {
+     "id": "S12-hidefirst-phone.0",
+     "did": "phone: Baseline B (took true/true), nothing hidden",
+     "saw": "held: hard/CREW_REST · list bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red] painted [shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · issues 5",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s12hidefirst-0-base-tue-puck.png",
+      "ph-02-s12hidefirst-0-base-tue-list.png",
+      "ph-03-s12hidefirst-0-base-mon-puck.png",
+      "ph-04-s12hidefirst-0-base-mon-list.png"
+     ]
+    },
+    {
+     "id": "S12-hidefirst-phone.2",
+     "did": "phone: press ✕ on Scribe's breach line on Tuesday (pressed)",
+     "saw": "held: hard/CREW_REST/HIDDEN · list bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[STRUCK] Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:plain] painted [no-ring] · Mon pucks [flying line:plain] painted [no-ring] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · issues 4",
+     "verdict": "PASS",
+     "pics": [
+      "ph-05-s12hidefirst-2-hidden-tue-puck.png",
+      "ph-06-s12hidefirst-2-hidden-tue-list.png",
+      "ph-07-s12hidefirst-2-hidden-mon-puck.png",
+      "ph-08-s12hidefirst-2-hidden-mon-list.png"
+     ]
+    },
+    {
+     "id": "S12-hidefirst-phone.3",
+     "did": "phone: then \"+ Line\" on Tuesday, Scribe seated on it (took true)",
+     "saw": "held: hard/CREW_REST/HIDDEN, adv/DT_SUM · list bar \"⚠ 5 issues · 2 warning · tap to collapse ▲\" [\"[STRUCK] Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:plain chip DT, flying line:plain chip DT] painted [no-ring DT, no-ring DT] · Mon pucks [flying line:plain] painted [no-ring] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · issues 5",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-s12hidefirst-3-blankTue-tue-puck.png",
+      "ph-10-s12hidefirst-3-blankTue-tue-list.png",
+      "ph-11-s12hidefirst-3-blankTue-mon-puck.png",
+      "ph-12-s12hidefirst-3-blankTue-mon-list.png"
+     ]
+    },
+    {
+     "id": "S12-hidefirst-phone.3u",
+     "did": "phone: top-bar Undo (pressed) then Redo (pressed)",
+     "saw": "after Undo: held: hard/CREW_REST/HIDDEN · list bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [\"[STRUCK] Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:plain] painted [no-ring] · Mon pucks [flying line:plain] painted [no-ring] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · issues 4 || after Redo: held: hard/CREW_REST/HIDDEN, adv/DT_SUM · list bar \"⚠ 5 issues · 2 warning · tap to collapse ▲\" [\"[STRUCK] Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:plain chip DT, flying line:plain chip DT] painted [no-ring DT, no-ring DT] · Mon pucks [flying line:plain] painted [no-ring] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · issues 5",
+     "verdict": "PASS",
+     "pics": [
+      "ph-13-s12hidefirst-3-redo-tue-puck.png",
+      "ph-14-s12hidefirst-3-redo-tue-list.png",
+      "ph-15-s12hidefirst-3-redo-mon-puck.png",
+      "ph-16-s12hidefirst-3-redo-mon-list.png"
+     ]
+    },
+    {
+     "id": "S12-hidefirst-phone.4",
+     "did": "phone: \"+ Line\" on Monday, Scribe seated (took true)",
+     "saw": "held: hard/CREW_REST/HIDDEN, adv/DT_SUM · list bar \"⚠ 5 issues · 2 warning · tap to collapse ▲\" [\"[STRUCK] Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:plain chip DT, flying line:plain chip DT] painted [no-ring DT, no-ring DT] · Mon pucks [flying line:plain chip DT, flying line:plain chip DT] painted [no-ring DT, no-ring DT] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · issues 5",
+     "verdict": "PASS",
+     "pics": [
+      "ph-17-s12hidefirst-4-blankMon-tue-puck.png",
+      "ph-18-s12hidefirst-4-blankMon-tue-list.png",
+      "ph-19-s12hidefirst-4-blankMon-mon-puck.png",
+      "ph-20-s12hidefirst-4-blankMon-mon-list.png"
+     ]
+    },
+    {
+     "id": "S12-hidefirst-phone.5",
+     "did": "phone: took Scribe off the blank Tuesday line (dragged off 1.2.1.0.w), \"+ Wave\" with Scribe on its blank line (took true), Sort all (pressed via ... menu + confirmed)",
+     "saw": "held: hard/CREW_REST/HIDDEN, adv/DT_SUM · list bar \"⚠ 5 issues · 2 warning · tap to collapse ▲\" [\"[STRUCK] Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:plain chip DT, flying line:plain chip DT] painted [no-ring DT, no-ring DT] · Mon pucks [flying line:plain chip DT, flying line:plain chip DT] painted [no-ring DT, no-ring DT] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · issues 5",
+     "verdict": "PASS",
+     "pics": [
+      "ph-21-s12hidefirst-5-wave-sort-tue-puck.png",
+      "ph-22-s12hidefirst-5-wave-sort-tue-list.png",
+      "ph-23-s12hidefirst-5-wave-sort-mon-puck.png",
+      "ph-24-s12hidefirst-5-wave-sort-mon-list.png"
+     ]
+    },
+    {
+     "id": "S12-hidefirst-phone.6",
+     "did": "phone: the page reloaded and signed in again",
+     "saw": "held: hard/CREW_REST/HIDDEN, adv/DT_SUM · list bar \"⚠ 5 issues · 2 warning · tap to collapse ▲\" [\"[STRUCK] Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:plain chip DT, flying line:plain chip DT] painted [no-ring DT, no-ring DT] · Mon pucks [flying line:plain chip DT, flying line:plain chip DT] painted [no-ring DT, no-ring DT] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · issues 5",
+     "verdict": "PASS",
+     "pics": [
+      "ph-25-s12hidefirst-6-reload-tue-puck.png",
+      "ph-26-s12hidefirst-6-reload-tue-list.png",
+      "ph-27-s12hidefirst-6-reload-mon-puck.png",
+      "ph-28-s12hidefirst-6-reload-mon-list.png"
+     ]
+    },
+    {
+     "id": "S12-hidefirst-phone.7",
+     "did": "phone: signed out and signed in again",
+     "saw": "held: hard/CREW_REST/HIDDEN, adv/DT_SUM · list bar \"⚠ 5 issues · 2 warning · tap to collapse ▲\" [\"[STRUCK] Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:plain chip DT, flying line:plain chip DT] painted [no-ring DT, no-ring DT] · Mon pucks [flying line:plain chip DT, flying line:plain chip DT] painted [no-ring DT, no-ring DT] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · issues 5",
+     "verdict": "PASS",
+     "pics": [
+      "ph-29-s12hidefirst-7-signout-tue-puck.png",
+      "ph-30-s12hidefirst-7-signout-tue-list.png",
+      "ph-31-s12hidefirst-7-signout-mon-puck.png",
+      "ph-32-s12hidefirst-7-signout-mon-list.png"
+     ]
+    },
+    {
+     "id": "S12-hidefirst-phone.8",
+     "did": "phone: press ↺ on the struck line (pressed)",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R] · Mon list trace [\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\",\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · issues 6",
+     "verdict": "PASS",
+     "pics": [
+      "ph-33-s12hidefirst-8-unhid-tue-puck.png",
+      "ph-34-s12hidefirst-8-unhid-tue-list.png",
+      "ph-35-s12hidefirst-8-unhid-mon-puck.png",
+      "ph-36-s12hidefirst-8-unhid-mon-list.png"
+     ]
+    },
+    {
+     "id": "S12-hidefirst-phone.10",
+     "did": "phone: hid it again (pressed; hidden: true), then typed the Tuesday Brief 05:00 -> 05:30 (a real report-time change)",
+     "saw": "held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R] · Mon list trace [\"Breaks Tuesday Scribe — had to leave by 17:30. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\",\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · issues 6 · live warning \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:30 — only 5h00 rest.\"",
+     "verdict": "PASS",
+     "pics": [
+      "ph-37-s12hidefirst-10-newtime-tue-puck.png",
+      "ph-38-s12hidefirst-10-newtime-tue-list.png",
+      "ph-39-s12hidefirst-10-newtime-mon-puck.png",
+      "ph-40-s12hidefirst-10-newtime-mon-list.png"
+     ]
+    },
+    {
+     "id": "S12-hidefirst-phone.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

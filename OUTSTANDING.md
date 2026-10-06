@@ -56,7 +56,7 @@ check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip
 (Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
 changed text box on Edit Schedule, the first click into another box lands on the page and a second is needed; the same on the live
 app; with the next change to the schedule's text boxes). **The same check's three parked questions were answered on 6 Oct 26 (D597–D599) and built on the stack branch** — the items
-are in `OUTSTANDING-ARCHIVE.md`; the sheet's §13 has the walk. Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; the same on the live app; **fixed FIRST after the stack, in a new chat — D602**, with [OIL-WORK-START]), then [START-CONTEXT-AUDIT] (what a new chat loads at its start, measured and cut to what a job needs, never at the cost of quality — D602), (the two small Blue/Red fixes that stood here were built in the check's third round, 6 Oct 26, and archived; `[ROLE-NOT-CHOSEN]` was answered "leave it" — D603), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
+are in `OUTSTANDING-ARCHIVE.md`; the sheet's §13 has the walk. Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; **BUILT and FULL-checked 6 Oct 26 on `claude/rest-blank-line` (D602) — his look and "merge live" left**; [OIL-WORK-START] was NOT built with it — his instruction for that chat named the crew-rest fault alone — and stays next, its own job), **found by that check and filed, none of them this fix's doing: [BLANK-TIMES-ABSENCE] (MEDIUM — a man on all-day leave or a downchit seated on a line with no times gets no line in the warning list until a time is typed; **answered YES, flag him at once — D605; to build NEXT, the agent's proposal**), [SC-PICKER-INTIME-REST] (low–medium — the crew list does not warn of crew rest before a man is put on an SC seat whose typed in-time is early; from Sol's read of the fix), [SC-BLANK-SHIFT-QUAL] (low), [CREW-REST-MARK-COPIES] (low, a question for him), [BLANK-LINE-SANS-WORDS] (low), [TAB-LAST-BOX-TEST-GAPS] (low, tests only)**, then [START-CONTEXT-AUDIT] (what a new chat loads at its start, measured and cut to what a job needs, never at the cost of quality — D602; its first step is [STACK-MERGED-TIDY] — the stack went live as PR #481 on 6 Oct 26 and its finished items and handoff blocks still stand), [R3-OWED-READS] (both reads done 6 Oct 26 with the crew-rest fix's scenario read — it leaves at the next documents-only pass), (the two small Blue/Red fixes that stood here were built in the check's third round, 6 Oct 26, and archived; `[ROLE-NOT-CHOSEN]` was answered "leave it" — D603), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
 
 **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
 are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
@@ -770,7 +770,9 @@ asked on 5 Oct 26 why the branch showed about 680,000 added lines. About 585,000
 two measurement files of about 122,000 lines each and two of about 33,000 under
 `raptor-port/docs/handpass/css-split/`, a 29,000-line test log under `raptor-port/docs/handpass/insights-mission-mix/`,
 and the evidence archives beside them. They do not run in the app or slow it; they make the repository heavier to
-fetch and to search. **The question for him:** keep them whole, or keep each check's evidence sheet and pictures and
+fetch and to search. *(6 Oct 26: the crew-rest fix's walk added about 150 MB of pictures — four walkers' and the host's, 1,298 —
+under `raptor-port/docs/img/handpass/2026-10-06-rest-blank-line/`, kept whole as the Codex stack check's 224 MB were; the same
+question covers them.)* **The question for him:** keep them whole, or keep each check's evidence sheet and pictures and
 move the raw measurement files and logs out of the repository (their fingerprints stay in the sheets). Nothing is
 deleted without his word.
 
@@ -1944,6 +1946,34 @@ that code (the row's boxes are the scheduler's own layer over the request — `r
 scheduler re-time the row on the programme and leave the member's request as filed (as now)? With the next change to requests on the
 programme.
 
+### [STACK-MERGED-TIDY] The Codex stack is live (PR #481, 6 Oct 26) — its finished items still stand in the backlog and its branches' blocks in the handoff (filed 6 Oct 26)
+Documents only. (1) The stack's own backlog items are built, checked and merged and still read as open — among them
+`[DISCARD-MARKS-REMOVE]`, `[WORKSPAN-NEGATIVE]`, `[RALLY-TIME]`, `[RALLY-REVIEW-FIXES]`, `[INSIGHTS-MISSION-MIX]`, `[INSIGHTS-BOARD-DOOR]`,
+`[CSS-SPLIT-BY-SCREEN]`, `[SCHEDULE-TAB-ROW-FLOW]`, `[SCHEDULE-INSIGHTS-MENU]`, `[SAVE-NOTE-COVERS]`, `[SONNET-WALKER-TRIAL]` (Trial 1 is decided —
+the check's sheet §11): each leaves by `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>` after EVERY deliverable it
+ever named is walked — done, filed as its own item, or dropped by a ruling (the handoff guide, Step 3) — and the priority list's
+sentences about them are brought up to date. (2) `HANDOFF.md` `## Now` still carries seven blocks of branches that merged with
+PR #481 (named in the `claude/rest-blank-line` block): each is removed once its residue is confirmed filed. (3) The D496 banners
+("until Monday 5 Oct 26, 19:00 …") at the head of `raptor-port/CLAUDE.md`, in `AGENTS.md` and in `raptor-port/docs/codex-review-workflow.md`
+are expired — a working-guide change, so read by Astra and Sol before he approves it (D70). (4) Six files stand over their size markers
+(6 Oct 26: `OUTSTANDING.md` by 409 lines, `HANDOFF.md` by 8, `.claude/rules/bug-check.md` by 2; the rulings of How we work by about 4,100
+bytes, the scheduler's by 5,700, the Tracker's by 440) — put off while every branch carried code (D29); on a documents-only change the
+document check FAILS on them, and this pass is where they are answered: move what does not belong, split an area, or raise a marker
+with its reason (D141, D136) — never trim a ruling. **Place:** the first step of
+`[START-CONTEXT-AUDIT]` — the same pass, since both are about what a new chat is made to read.
+
+### [R3-OWED-READS] Two small reads the stack check's third round still owes (filed 6 Oct 26)
+(1) The last fix of the round had no independent read of its own — the cap of two reads: `raptor-port/src/ui/schedule-tab.ts`, where
+the Tab that keeps the caret in a day's last box looks its day up again when the redraw replaced it (it is the fix both readers
+specified; its test is in `raptor-port/src/ui/schedule-tab.test.tsx`, "D597 when the redraw at that Tab replaces the whole day …").
+(2) The short lines of D602, D603 and D604 have not been read against their full rows by a reviewer who did not write them (D138).
+**Place:** in the brief of the next read Astra is given — the crew-rest fix's (`[REST-BLANK-LINE]`).
+**BOTH DONE, 6 Oct 26** (Astra, in the crew-rest fix's scenario read — `raptor-port/docs/superpowers/briefs/2026-10-06-rest-blank-line-scenarios-astra.md` §5):
+(1) the Tab fix is sound for the redraw it was written for — no defect; what its test does not cover is filed as
+`[TAB-LAST-BOX-TEST-GAPS]`. (2) D603 and D604 pass; D602's short line had lost a condition of its full row ("options first,
+nothing trimmed before he rules") and was reworded the same day — the new wording is read again by both readers of the fix
+(the sheet `raptor-port/docs/handpass/2026-10-06-rest-blank-line.md`). This item leaves at the next documents-only pass (D29).
+
 ### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
 His words: *"why I am at 30% context the moment I start a new chat? Is it required? Is there a way we can optimise how the repo is
 structured so that we only read what's required? Or summarise it. Or u suggest. A lot of tokens are wasted if we carry on like this.
@@ -1974,6 +2004,89 @@ missing crew-rest warning is the kind of fault that harms people; it is not the 
 **His word (D602, 6 Oct 26): fixed first after the stack, in a new chat.** Run through the rule itself that day (not on screen): the
 warning goes when he is put on a line with no take-off — on his own day or the day before — and comes back the moment a take-off is
 typed on that line, a landing not needed; a landing alone does not bring it back.
+**BUILT 6 Oct 26 on `claude/rest-blank-line`, FULL check done — his look and "merge live" left.** Seen on screen on the live
+build first (the warning, the ring and Monday's dotted mark go when he is seated on a new blank line), gone on the fixed one.
+NOT built the way F1 proposed: skipping every line without a take-off would have lost the breach a typed Brief already raised
+and kept ignoring the wave's In-time (Astra's scenario read) — each time is used only when it exists, and a man whose only
+line is blank still breaks crew rest on an earlier meeting. The record, with what was walked and what was not:
+`raptor-port/docs/handpass/2026-10-06-rest-blank-line.md`; the rule: `raptor-port/docs/engine-rules.md` §Crew rest. This item
+leaves when the branch merges (D29).
+
+### [BLANK-TIMES-ABSENCE] A man on all-day leave or a downchit, seated on a line or row with no times, gets no line in the warning list until a time is typed (found 6 Oct 26, the crew-rest fix's check — OLD, the same on the live app; MEDIUM; a question for him)
+Tuesday: file an all-day LL (or OL, or a downchit — ATT C) for a man; "+ Wave" (its line comes up blank); put him in its seat.
+The crew list does warn before he is placed — his name is struck with "local leave (LL)" / "medically down — cannot report to
+work (ATT C)", and the toast says so — but once he is seated the day's list says nothing and his puck is plain. Type a take-off
+or a landing and the red "On leave but planned to fly …" / "Downchit but planned to fly …" line, the ring and the C chip
+appear; clear the times and they go again; the same after a reload. Run by the host through the rule and walked on screen
+(walker C, S15 — `raptor-port/docs/handpass/parts/rbl-C.md`, pictures `…/2026-10-06-rest-blank-line/C/dk-0{1,3,5}-s15-leave-*.png`).
+**Cause:** every absence check asks whether the absence OVERLAPS the event's times (`raptor-port/src/engine/validate.ts` — the
+sortie loop "C via input clash", the duty / sim / ground loop under it, the SC SPARE and AVALON / BB looks), and a comparison
+with a time that is not there is false. For an absence that covers the whole day the answer does not depend on the missing
+time. It is the crew-rest fault's sibling (Astra's scenario read §4), NOT fixed with it: the same silence holds for a duty desk,
+a sim seat, a ground row and the standby lines, where it was written down as the rule ("a BB shift with blank times … is
+simply not collected", `avalon-rules.test.ts`), and a leave warning on a published day is FROZEN (D177–D179), so changing it
+touches the published record. **ANSWERED — D605 (6 Oct 26, "4 yes as recommended"): YES.** A man who is away or grounded for the
+whole day is flagged the moment he is seated anywhere that day, times or no times; a part-day absence against a seat with no
+times stays silent (nothing to compare). Nothing is left to ask before building. **To build:** in each absence check, an
+absence that covers the whole day counts against a seat whose times are missing — the sortie loop, the duty / sim / ground
+loop, the SC SPARE and AVALON / BB looks — with each kind's exemptions as they are; the standby lines' "blank times check
+nothing" pin (`avalon-rules.test.ts`) changes for whole-day absences only; a published day keeps freezing these warnings
+(D177–D179) — walk that it reads pending there and never rewrites the issued face; red tests first, one per kind of seat.
+Full row: `grep -h '^| D605 |' .claude/decisions-full/*.md`. **Owed with this job's first read:** D605's short line read against its full row by a reviewer who did not write it (D138). **Tier:** FULL (the warning list, the published record).
+**Place (the agent's proposal, his to change):** its own small job, NEXT — before `[OIL-WORK-START]`, with
+`[SC-PICKER-INTIME-REST]` — since a missing "grounded but flying" warning is the kind of fault that harms people.
+
+### [SC-PICKER-INTIME-REST] Before a man is put on an SC seat, the crew list ignores the shift's typed in-time when it asks about crew rest (Sol's read of the crew-rest fix, 6 Oct 26 — OLD, the same on the live app; low–medium)
+Monday: X lands 22:30 (clear 12:30 on Tuesday). Tuesday: an SC wave with someone already in a MAIN seat, B (the in-time) typed
+05:00, shift 13:00–19:00 — or its start and end blank. Arm the other MAIN seat: the crew list prints no "crew rest — not clear
+until 12:30" beside X, although placing him raises the breach against the 05:00 report (the toast and the list then say so).
+By reading, not run on screen. **Cause:** the SC seat's own check compares his clearance with the shift's START and never with
+its typed B (`raptor-port/src/engine/avail.ts`, "SC is treated as flying for crew rest" — `cl>r.scStart`), and the shared
+pre-drop question cannot answer for an SC seat because it measures from a sibling event of kind `fly` only
+(`raptor-port/src/engine/validate.ts` `restIfPlaced`, `sibE`). Not the empty-formation case (`[REST-FIRST-CREW-HINT]`): here a
+sibling is seated. **Fix (Sol's steps):** two red tests first — B 05:00 with blank shift times, and B 05:00 with 13:00–19:00,
+a MAIN sibling seated: the pre-drop answer is "not clear until 12:30" and matches the placed warning; let `restIfPlaced` take
+a `shift` sibling as well as a `fly` one (same formation, another person) — **with an SC SPARE seat as the negative control: a
+spare carries no crew rest, and the sibling lookup goes by formation, so a spare seat must not borrow the MAIN's answer**; walk
+the armed crew list and the drag bubble for both. **Place (the agent's line):** with `[BLANK-TIMES-ABSENCE]` — the next small
+job, both are about what the app says before and after a man is seated where a time is early or missing.
+
+### [SC-BLANK-SHIFT-QUAL] An SC line whose shift times were cleared prints "(NaN:NaN–NaN:NaN)" in its currency warning, and asks for NIGHT currency (found 6 Oct 26, the crew-rest fix's check — OLD; low)
+Tuesday "+ Wave" → SC; clear the first shift's start and end boxes; put a man who holds SC DAY currency only in its first MAIN
+seat: the list says "SC currency — wrong shift — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current"
+(walkers A and C, and the host's unit run; picture `…/2026-10-06-rest-blank-line/C/dk-01-h03-plain-list.png`). With no shift
+times there is no day or night to tell (`validate.ts`, the SC currency check). Clearing an SC shift's times is a rare act — the
+wave is minted with them. **Fix:** with no usable shift window, say nothing about day or night currency (or say the shift has
+no times) — never print a clock that is not there; a red test first. **Place:** low — with the next change to the SC rules, or
+with `[BLANK-TIMES-ABSENCE]` (the same family: a rule reading times that are not there).
+
+### [CREW-REST-MARK-COPIES] The dotted "breaks tomorrow" ring and the dashed late-show ring are drawn on the cockpit and row pucks only — the same man's other pucks show a solid red ring; and an open day list paints over both (found 6 Oct 26, the crew-rest fix's check — OLD; low; a question for him)
+Seen by all three walkers, none of it this fix's doing (nothing that draws a puck was touched). (1) On the day that CAUSES a
+breach (Monday, when Tuesday's rest is broken) the man's cockpit puck and ground-row puck wear the dotted red ring — but his
+SANS card, his Unavailable row and his Personal Inputs row wear a SOLID red ring with the R chip, which reads as a breach ON
+Monday; the crew list's copy shows neither. (2) A sanctioned late show (the dashed ring) is dashed on the cockpit and the row
+and SOLID on the SANS card, the Unavailable and Personal Inputs rows and the crew list (walker C, S01 — pictures
+`…/2026-10-06-rest-blank-line/C/dk-06…26-s01-*.png`; the builders pass no dash or trace to those copies: `ui/html.ts`,
+`ui/board-html.ts`, `ui/palette-html.ts` — Astra's roll-call). (3) While a day's issue list is OPEN, every puck it names is lit
+with a solid ring, which covers the dotted and the dashed ring until the list is shut (walkers A, B and C). **The question for
+him:** should every copy of a man's puck wear the same crew-rest ring as his seat does, and should an open list leave the
+dotted and dashed rings readable? **Place:** low — with the next change to how pucks are drawn (D94 put all three rings on the
+board; these copies were not in its roll-call).
+
+### [BLANK-LINE-SANS-WORDS] On a line with no times a SANS man's offer is still worded as a clash, and a line with no callsign leaves holes in sentences (found 6 Oct 26, the crew-rest fix's check — OLD; low)
+(1) A SANS man offering Fly 14:00–16:00, seated on a blank line: the list says "… planned for   — available 14:00–16:00 only"
+although there is no time yet to compare with his offer; the crew list does not strike him (it has no window to test) — the two
+disagree (walker C, S28c). (2) A line with no callsign or mission prints its blank name into sentences: "cannot fly FCP ( )",
+"OCU in   with no IP", "planned for   —". **Place:** low — with `[BLANK-TIMES-ABSENCE]` (what each rule says when a seat has no
+times) or the next change to those sentences; "this line" where the name is blank.
+
+### [TAB-LAST-BOX-TEST-GAPS] The Tab that keeps the caret in a day's last box (D597): what its test does not cover (Astra's owed read, 6 Oct 26 — no defect found; low, tests only)
+From `[R3-OWED-READS]` (1): the fix in `raptor-port/src/ui/schedule-tab.ts` is sound for the redraw it was written for. Not
+covered by `schedule-tab.test.tsx`: the reverse change (the day's LAST warning going away at that Tab, not only its first
+appearing); the caret seen in a real browser after the day is replaced (the short phone board, a window open over it); the
+fallback when the exact box no longer exists; a day replaced during the box's own blur (the earlier same-scope check exits
+first — a coverage boundary, not a shown failure). The read: `raptor-port/docs/superpowers/briefs/2026-10-06-rest-blank-line-scenarios-astra.md` §5(a).
+**Place:** low — with the next change to the Tab route.
 
 ### [PEND-INTIME-WORDS] "To go out" words an edited reporting line as "2 In-time / Rally lines → 2 In-time / Rally lines" (reader AB's second pass, 6 Oct 26 — OLD)
 A line's clock changed on a published day, with the number of lines unchanged: the pending list shows the same words before and
@@ -2112,7 +2225,8 @@ a question for him first.
 Walker A's O3 (pictures `…/2026-10-01-dbr-phase7/a/R4b-*.png`, `R4-1.png`): on the member's View-only Sched, the dotted "OG" tag on
 a changed seat overlaps the count chip's top edge; the number stays legible close up, crowded at normal size. The admin's view
 is clean. Cosmetic, older than phase 7 (D172's tag, D37's chip). **Place:** low — with the next change to the tag or the chip;
-measure both at phone width.
+measure both at phone width. **It is also Trial 2 of D588 (not started):** ONE Sonnet 5.5 helper builds this fix to a precise spec; Opus reads
+its diff and tests, decides what that model takes, and tells him what it decided and why (D595).
 
 ### [MEMBER-EDITPAGE-CHECK] A member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons — a check (walk note, 1 Oct 26)
 Walker A's O5 (picture `…/2026-10-01-dbr-phase7/a/R4-4.png`). No control leads a member to Edit Schedule; reached through the

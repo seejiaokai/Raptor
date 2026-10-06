@@ -7,7 +7,7 @@ against `main` at `de470db5`. Five pieces, built 2–5 Oct 26 while Claude waite
 the Logic search and the Insights cross) · **the failed-save warning's band** (D586, D587). The Inputs/SANS calendar
 (`codex/inputs-sans-calendar`) is on hold and outside this check.
 
-**STATE OF THIS SHEET: THE CHECK IS DONE, 6 Oct 26, AND SO IS ITS THIRD ROUND (§13 — his four answers built, his own find fixed, read twice by Astra and Sol) — his look is what is left (§12's look card and §13.9). Nothing is merged.** *(What follows in this paragraph is the sheet's history.)* **Earlier: IN PROGRESS.** It is written as the check goes (order §9). A section that says "to come" has not
+**MERGED 6 Oct 26 — PR #481, one merge for the whole stack (D589), on his "merge live"; `main`'s own checks green, Vercel's Production deployment ready.** One thing came up on the way: PR #481's first run on GitHub's Linux machine was red on ONE browser test — "the burger drawer at 390px scrolls only itself" stopped at its own premise (the drawer taller than the test's screen): the stack had removed the drawer's Week section (D558), and what still overhung a 460px screen by 65px on his PC no longer overhung by the 40 the premise asks on Linux, where letters set a little smaller. The test's screen went to 360px, the rule and every assertion unchanged; the re-run was green throughout. *(What follows is the sheet as it stood before the merge.)* **STATE OF THIS SHEET: THE CHECK IS DONE, 6 Oct 26, AND SO IS ITS THIRD ROUND (§13 — his four answers built, his own find fixed, read twice by Astra and Sol) — his look is what is left (§12's look card and §13.9). Nothing is merged.** *(What follows in this paragraph is the sheet's history.)* **Earlier: IN PROGRESS.** It is written as the check goes (order §9). A section that says "to come" has not
 been done; nothing here is a result until its section is filled. **6 Oct 26: the fix round is done (§5.3 — sixteen
 findings fixed, each with a test that was red first), the host has looked at the fixes in a real browser (§5.4), the
 re-walk is under way (§5.5), and three questions wait for him at the head of §12.**
@@ -651,7 +651,7 @@ Added to §12's look card:
    should show, each under its own line; answer one and the other should stay.
 **HIS REPLY, 6 Oct 26 — "All looks good and as recommended. We can handoff to a new chat continue":** his look is done
 (D604); question 2 → leave it (D603); the guide wording → approved (D604, the agent's reading of "as recommended", told to
-him). **He has not said "merge live"** — the stack waits for those words. The questions as put:
+him). He had not said "merge live" in that reply; **he said it later the same day, and the stack merged as PR #481.** The questions as put:
 1. *(answered — D602: the crew-rest fault is fixed first after the stack, in a new chat.)*
 2. **Once the sign-in ends, a Blue/Red answer can be changed to the other colour but not cleared** (`[ROLE-NOT-CHOSEN]`).
    **(A, recommended) leave it** — a wrong answer is corrected, and Undo clears it while he is signed in. (B) add a way

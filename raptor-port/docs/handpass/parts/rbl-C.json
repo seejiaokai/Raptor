@@ -1,0 +1,1045 @@
+{
+ "parts": {
+  "rbl-C-s11-dk": {
+   "at": "2026-10-06T00:42:22.011Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S11.tap",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday ZT 07:00–08:00 Brief 05:00 with Ranger in the front seat; Vandal first put on a blank Tuesday line (took true). Tapped the timed seat, read his name in the crew list, then pressed his name. Took: true",
+     "saw": "BEFORE placing — struck YES · name box \"Vandal IP crew rest — not clear until 12:30\" · row text \"PILOTS · 17 FREE Blade IP Cobra IP Comet IP Diesel D Gambit C Hunter IP Nomad C Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Talisman O Torch C Trident IP Vapor D Ace A crew rest — not clear until 06:00 An\" · beside it \"Warden IP already on VL BFM 07:40–10:35\" · tooltip \"Vandal — crew rest — not clear until 12:30\" (armed seat: 1.2.0.0.p). TOAST after: \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest. (+1 more)\". His Tuesday warnings before: []; after: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Vandal\"]. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s11-tap-0-fixture.png",
+      "dk-02-s11-tap-1-armed-crewlist.png",
+      "dk-03-s11-tap-2-after-tap.png"
+     ]
+    },
+    {
+     "id": "S11.drag",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday ZT 07:00–08:00 Brief 05:00 with Ranger in the front seat; Vandal first put on a blank Tuesday line (took true). Real pointer drag from the crew list onto Tuesday's timed seat. Took: true",
+     "saw": "BEFORE placing — struck no · name box \"Vandal IP\" · row text \"PILOTS · 15 FREE Anvil IP Blade IP Cobra IP Diesel D Forge IP Hunter IP Nomad C Piston IP Ranger IP Recon O Saber IP Sidewinder IP Torch C Trident IP Wildcard O Ace A Cinch IP Comet IP Drifter A Gambit C Havoc IP R Outla\" · beside it \"Vapor D\" · tooltip \"Vandal — already tasked today, but you can still plan him\" (MID-DRAG, the bubble under the seat: \"crew rest — not clear until 12:30\"). TOAST after: \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest. (+1 more)\". His Tuesday warnings before: []; after: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Vandal\"]. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s11-drag-0-fixture.png",
+      "dk-05-s11-drag-1-during-drag.png",
+      "dk-06-s11-drag-2-after-drop.png"
+     ]
+    },
+    {
+     "id": "S11.empty",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday ZT 07:00–08:00 Brief 05:00 with nobody. Tapped the timed seat, read his name in the crew list, then pressed his name. Took: true",
+     "saw": "BEFORE placing — struck no · name box \"Vandal IP\" · row text \"PILOTS · 25 FREE Ace A Anvil IP Blade IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Hunter IP Nomad C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP C Saint B Sidewinder IP Talisman O Torch C Trident \" · beside it \"Vapor D\" · tooltip \"Vandal\" (armed seat: 1.2.0.0.p). TOAST after: \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\". His Tuesday warnings before: []; after: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"]. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s11-empty-formation-0-fixture.png",
+      "dk-08-s11-empty-formation-1-armed-crewlist.png",
+      "dk-09-s11-empty-formation-2-after-tap.png"
+     ]
+    }
+   ]
+  },
+  "rbl-C-s01-dk": {
+   "at": "2026-10-06T00:44:13.649Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S01.solid",
+     "did": "Baseline B (Monday ZM 20:00–22:30, Tuesday ZT Brief 05:00 take-off 07:00–08:00) with Scribe on both; filed for him on Monday and Tuesday a SANS availability (Fly, all day), a part-day Personal input (Mon 06:30–07:30, Tue 15:30–16:30) and a part-day LL (Mon 05:00–06:00, Tue 14:00–15:00) through the Inputs page (all filed: true,true,true,true,true,true); then \"+ Line\" on Tuesday's wave and Scribe seated on it (took true).",
+     "saw": "His Tuesday warnings before the blank line: [hard/CREW_REST]; after: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Scribe\"]. Tuesday's list (the lines naming him): [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest. ✕\"]. WEEK Tuesday copies: flying line x2: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] / SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · ground row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · SANS card: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · WEEK Monday copies: flying line: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · ground row: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · SANS card: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · BOARD Tuesday copies: flying line x2: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] / SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · ground row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Personal Inputs row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · SANS card: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · crew list: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · BOARD Monday copies: flying line: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · ground row: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · Personal Inputs row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · SANS card: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · crew list: SOLID chip L [warn note | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px]. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s01-solid-week1.png",
+      "dk-02-s01-solid-week0.png",
+      "dk-05-s01-solid-list-list.png",
+      "dk-03-s01-solid-list-puck.png",
+      "dk-04-s01-solid-list-prev-puck.png",
+      "dk-06-s01-solid-board1-sans.png",
+      "dk-07-s01-solid-board1-pinp.png",
+      "dk-08-s01-solid-board1-unav.png",
+      "dk-09-s01-solid-board1-crew.png",
+      "dk-10-s01-solid-board0-sans.png",
+      "dk-11-s01-solid-board0-pinp.png",
+      "dk-12-s01-solid-board0-unav.png",
+      "dk-13-s01-solid-board0-crew.png"
+     ]
+    },
+    {
+     "id": "S01.dashed",
+     "did": "Monday ZM 15:00–17:00, Tuesday ZT Brief 05:00 take-off 08:00 with LATE SHOW typed in its remarks with Scribe on both; filed for him on Monday and Tuesday a SANS availability (Fly, all day), a part-day Personal input (Mon 06:30–07:30, Tue 15:30–16:30) and a part-day LL (Mon 05:00–06:00, Tue 14:00–15:00) through the Inputs page (all filed: true,true,true,true,true,true); then \"+ Line\" on Tuesday's wave and Scribe seated on it (took true).",
+     "saw": "His Tuesday warnings before the blank line: [hard/CREW_REST]; after: [\"hard/CREW_REST: Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but told to report 05:00 — only 10h00 rest. Late show — he still makes the 07:00 step.\",\"adv/DT_SUM: 1 person is double turning: Scribe\"]. Tuesday's list (the lines naming him): [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but told to report 05:00 — only 10h00 rest. Late show — he still makes t\"]. WEEK Tuesday copies: flying line x2: no-solid+DASHED chip R [warn hard boxdash | shadow none] / no-solid+DASHED chip R [warn hard boxdash | shadow none] · ground row: no-solid+DASHED chip R [warn hard boxdash | shadow none] · SANS card: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · WEEK Monday copies: flying line: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · ground row: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · SANS card: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · BOARD Tuesday copies: flying line x2: no-solid+DASHED chip R [warn hard boxdash | shadow none] / no-solid+DASHED chip R [warn hard boxdash | shadow none] · ground row: no-solid+DASHED chip R [warn hard boxdash | shadow none] · Personal Inputs row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · SANS card: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · crew list: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · BOARD Monday copies: flying line: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · ground row: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · Personal Inputs row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · SANS card: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · crew list: SOLID chip L [warn note | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px]. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-s01-dashed-week1.png",
+      "dk-15-s01-dashed-week0.png",
+      "dk-18-s01-dashed-list-list.png",
+      "dk-16-s01-dashed-list-puck.png",
+      "dk-17-s01-dashed-list-prev-puck.png",
+      "dk-19-s01-dashed-board1-sans.png",
+      "dk-20-s01-dashed-board1-pinp.png",
+      "dk-21-s01-dashed-board1-unav.png",
+      "dk-22-s01-dashed-board1-crew.png",
+      "dk-23-s01-dashed-board0-sans.png",
+      "dk-24-s01-dashed-board0-pinp.png",
+      "dk-25-s01-dashed-board0-unav.png",
+      "dk-26-s01-dashed-board0-crew.png"
+     ]
+    }
+   ]
+  },
+  "rbl-C-s01-ph": {
+   "at": "2026-10-06T00:47:08.662Z",
+   "base": "http://localhost:4176",
+   "phone": true,
+   "table": [
+    {
+     "id": "S01.solid",
+     "did": "Baseline B (Monday ZM 20:00–22:30, Tuesday ZT Brief 05:00 take-off 07:00–08:00) with Scribe on both; filed for him on Monday and Tuesday a SANS availability (Fly, all day), a part-day Personal input (Mon 06:30–07:30, Tue 15:30–16:30) and a part-day LL (Mon 05:00–06:00, Tue 14:00–15:00) through the Inputs page (all filed: true,true,true,true,true,true); then \"+ Line\" on Tuesday's wave and Scribe seated on it (took true).",
+     "saw": "His Tuesday warnings before the blank line: [hard/CREW_REST]; after: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Scribe\"]. Tuesday's list (the lines naming him): [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest. ✕\"]. WEEK Tuesday copies: flying line x2: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] / SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · ground row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · SANS card: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · WEEK Monday copies: flying line: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · ground row: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · SANS card: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · BOARD Tuesday copies: flying line x2: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] / SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · ground row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Personal Inputs row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · SANS card: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · crew list: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · BOARD Monday copies: flying line: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · ground row: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · Personal Inputs row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · SANS card: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · crew list: SOLID chip L [warn note | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px]. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s01-solid-week1.png",
+      "ph-02-s01-solid-week0.png",
+      "ph-05-s01-solid-list-list.png",
+      "ph-03-s01-solid-list-puck.png",
+      "ph-04-s01-solid-list-prev-puck.png",
+      "ph-06-s01-solid-board1-sans.png",
+      "ph-07-s01-solid-board1-pinp.png",
+      "ph-08-s01-solid-board1-unav.png",
+      "ph-09-s01-solid-board1-crew.png",
+      "ph-10-s01-solid-board0-sans.png",
+      "ph-11-s01-solid-board0-pinp.png",
+      "ph-12-s01-solid-board0-unav.png",
+      "ph-13-s01-solid-board0-crew.png"
+     ]
+    },
+    {
+     "id": "S01.dashed",
+     "did": "Monday ZM 15:00–17:00, Tuesday ZT Brief 05:00 take-off 08:00 with LATE SHOW typed in its remarks with Scribe on both; filed for him on Monday and Tuesday a SANS availability (Fly, all day), a part-day Personal input (Mon 06:30–07:30, Tue 15:30–16:30) and a part-day LL (Mon 05:00–06:00, Tue 14:00–15:00) through the Inputs page (all filed: true,true,true,true,true,true); then \"+ Line\" on Tuesday's wave and Scribe seated on it (took true).",
+     "saw": "His Tuesday warnings before the blank line: [hard/CREW_REST]; after: [\"hard/CREW_REST: Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but told to report 05:00 — only 10h00 rest. Late show — he still makes the 07:00 step.\",\"adv/DT_SUM: 1 person is double turning: Scribe\"]. Tuesday's list (the lines naming him): [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but told to report 05:00 — only 10h00 rest. Late show — he still makes t\"]. WEEK Tuesday copies: flying line x2: no-solid+DASHED chip R [warn hard boxdash | shadow none] / no-solid+DASHED chip R [warn hard boxdash | shadow none] · ground row: no-solid+DASHED chip R [warn hard boxdash | shadow none] · SANS card: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · WEEK Monday copies: flying line: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · ground row: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · SANS card: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · BOARD Tuesday copies: flying line x2: no-solid+DASHED chip R [warn hard boxdash | shadow none] / no-solid+DASHED chip R [warn hard boxdash | shadow none] · ground row: no-solid+DASHED chip R [warn hard boxdash | shadow none] · Personal Inputs row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · SANS card: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · crew list: SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · BOARD Monday copies: flying line: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · ground row: SOLID+DOTTED chip R [warn note boxdot | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px] · Personal Inputs row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · SANS card: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · Unavailable row: SOLID chip R [warn note boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2px] · crew list: SOLID chip L [warn note | shadow rgb(138, 150, 163) 0px 0px 0px 1.5px]. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-s01-dashed-week1.png",
+      "ph-15-s01-dashed-week0.png",
+      "ph-18-s01-dashed-list-list.png",
+      "ph-16-s01-dashed-list-puck.png",
+      "ph-17-s01-dashed-list-prev-puck.png",
+      "ph-19-s01-dashed-board1-sans.png",
+      "ph-20-s01-dashed-board1-pinp.png",
+      "ph-21-s01-dashed-board1-unav.png",
+      "ph-22-s01-dashed-board1-crew.png",
+      "ph-23-s01-dashed-board0-sans.png",
+      "ph-24-s01-dashed-board0-pinp.png",
+      "ph-25-s01-dashed-board0-unav.png",
+      "ph-26-s01-dashed-board0-crew.png"
+     ]
+    }
+   ]
+  },
+  "rbl-C-s26-dk": {
+   "at": "2026-10-06T00:54:42.031Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S26.a",
+     "did": "Monday ZM lands 15:00 (end 17:00, clear 05:00); Tuesday ZT take-off 07:00, NO Brief and no In-time typed; Vandal on both",
+     "saw": "Tuesday lines naming him: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 15:00, +2h debrief assumed → ended 17:00 → crew rest clear at 05:00, but told to report 04:40 — only 11h40 rest.\"}]; codes held hard/CREW_REST; Tuesday cockpit puck (list shut): SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2]; list OPEN: SOLID chip R [warn hard boxred | outline solid 2px rgb(240, 85, 95) | shadow rgb(240, 85, 95) 0px 0px 0px 2]; Monday cockpit puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s26-a-nominal-list.png",
+      "dk-01-s26-a-nominal-puck.png",
+      "dk-02-s26-a-nominal-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.b",
+     "did": "Brief typed 05:00 on Tuesday (take-off 07:00; Monday clear at 05:00) — expect NO breach (exactly twelve hours is legal for 05:00; later is legal)",
+     "saw": "Tuesday lines naming him: [{\"sev\":\"adv\",\"text\":\"Tight turning — crew rest Vandal — Tight turning — T/O 07:00 puts the 3h report at 04:00, inside 12h. Monday landed 15:00, +2h debrief assumed → ended 17:00 → crew rest clear at 05:00\"}]; codes held adv/CREW_TIGHT; Tuesday cockpit puck (list shut): no ring chip TT []; list OPEN: no ring chip TT [ | outline solid 2px rgb(240, 85, 95) | shadow rgb(11, 13, 16) 0px 0px 0px 1p]; Monday cockpit puck: no ring []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s26-b-brief-0500-list.png",
+      "dk-04-s26-b-brief-0500-puck.png",
+      "dk-05-s26-b-brief-0500-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.c",
+     "did": "Brief typed 04:59 on Tuesday (take-off 07:00; Monday clear at 05:00) — expect a breach, one minute short",
+     "saw": "Tuesday lines naming him: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 15:00, +2h debrief assumed → ended 17:00 → crew rest clear at 05:00, but told to report 04:59 — only 11h59 rest.\"}]; codes held hard/CREW_REST; Tuesday cockpit puck (list shut): SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2]; list OPEN: SOLID chip R [warn hard boxred | outline solid 2px rgb(240, 85, 95) | shadow rgb(240, 85, 95) 0px 0px 0px 2]; Monday cockpit puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s26-c-brief-0459-list.png",
+      "dk-07-s26-c-brief-0459-puck.png",
+      "dk-08-s26-c-brief-0459-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.d",
+     "did": "Brief typed 05:01 on Tuesday (take-off 07:00; Monday clear at 05:00) — expect NO breach (exactly twelve hours is legal for 05:00; later is legal)",
+     "saw": "Tuesday lines naming him: [{\"sev\":\"adv\",\"text\":\"Tight turning — crew rest Vandal — Tight turning — T/O 07:00 puts the 3h report at 04:00, inside 12h. Monday landed 15:00, +2h debrief assumed → ended 17:00 → crew rest clear at 05:00\"}]; codes held adv/CREW_TIGHT; Tuesday cockpit puck (list shut): no ring chip TT []; list OPEN: no ring chip TT [ | outline solid 2px rgb(240, 85, 95) | shadow rgb(11, 13, 16) 0px 0px 0px 1p]; Monday cockpit puck: no ring []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S26.e",
+     "did": "Brief typed 05:00 on Tuesday (take-off 07:00; Monday clear at 05:00) — expect NO breach (exactly twelve hours is legal for 05:00; later is legal)",
+     "saw": "Tuesday lines naming him: [{\"sev\":\"adv\",\"text\":\"Tight turning — crew rest Vandal — Tight turning — T/O 07:00 puts the 3h report at 04:00, inside 12h. Monday landed 15:00, +2h debrief assumed → ended 17:00 → crew rest clear at 05:00\"}]; codes held adv/CREW_TIGHT; Tuesday cockpit puck (list shut): no ring chip TT []; list OPEN: no ring chip TT [ | outline solid 2px rgb(240, 85, 95) | shadow rgb(11, 13, 16) 0px 0px 0px 1p]; Monday cockpit puck: no ring []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S26.f",
+     "did": "Monday lands 17:00 (clear 07:00); Tuesday take-off 08:00, Brief 05:00, no late show",
+     "saw": "lines: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but told to report 05:00 — only 10h00 rest.\"}]; codes hard/CREW_REST; Tuesday puck (list shut): SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2]; with the list OPEN: SOLID chip R [warn hard boxred | outline solid 2px rgb(240, 85, 95) | shadow rgb(240, 85, 95) 0px 0px 0px 2]; Monday puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s26-f-noshow-list.png",
+      "dk-10-s26-f-noshow-puck.png",
+      "dk-11-s26-f-noshow-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.g",
+     "did": "the same, with LATE SHOW typed in the line's remarks (step 07:00, rest clears 07:00 — achievable)",
+     "saw": "lines: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but told to report 05:00 — only 10h00 rest. Late show — he still makes the 07:00 step.\"}]; codes hard/CREW_REST; Tuesday puck (list shut): DASHED chip R [warn hard boxdash | outline dashed 2px rgb(240, 85, 95)]; with the list OPEN: no ring chip R [warn hard boxdash | outline solid 2px rgb(240, 85, 95)]; Monday puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-s26-g-lateshow-achievable-list.png",
+      "dk-13-s26-g-lateshow-achievable-puck.png",
+      "dk-14-s26-g-lateshow-achievable-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.h",
+     "did": "LATE SHOW still typed, take-off moved to 06:30 (step 05:30 is before rest clears at 07:00 — not achievable)",
+     "saw": "lines: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but told to report 05:00 — only 10h00 rest. Late show cannot save it — the 05:30 step is still before rest clears.\"}]; codes hard/CREW_REST; Tuesday puck (list shut): SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2]; with the list OPEN: SOLID chip R [warn hard boxred | outline solid 2px rgb(240, 85, 95) | shadow rgb(240, 85, 95) 0px 0px 0px 2]; Monday puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-s26-h-lateshow-not-achievable-list.png",
+      "dk-16-s26-h-lateshow-not-achievable-puck.png",
+      "dk-17-s26-h-lateshow-not-achievable-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.i",
+     "did": "take-off back at 08:00 with LATE SHOW (dashed in step g); then a Meeting 04:00–04:30 for Vandal filed on the Inputs page (filed: true)",
+     "saw": "lines: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but his day starts 04:00 (MEETING) before the 05:00 report — only 9h00 rest.\"}]; codes hard/CREW_REST; Tuesday puck (list shut): SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2]; with the list OPEN: SOLID chip R [warn hard boxred | outline solid 2px rgb(240, 85, 95) | shadow rgb(240, 85, 95) 0px 0px 0px 2]; Monday puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-s26-i-meeting-bound-list.png",
+      "dk-19-s26-i-meeting-bound-puck.png",
+      "dk-20-s26-i-meeting-bound-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "rbl-C-s25-dk": {
+   "at": "2026-10-06T00:27:15.459Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S25.a",
+     "did": "Monday Ground Programme row LATE DUTY 14:00–22:00 with Vandal (seated true); Tuesday ZT take-off 01:00, landing 02:00, Brief 00:30, Vandal seated (true); no In-time line",
+     "saw": "held: [\"hard/CREW_REST: Crew rest breach — Monday ended 22:00 → crew rest clear at 10:00, but told to report 00:30 — only 2h30 rest.\"]; Tuesday puck flying line:SOLID chip R; Monday ground row:no ring+DOTTED chip R",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s25-a-brief-only-list.png",
+      "dk-02-s25-a-brief-only-puck.png",
+      "dk-03-s25-a-brief-only-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S25.b",
+     "did": "\"+ In-time / Rally\" → typed \"23:00 IN TIME\" (box feedback while typing: none; after: none)",
+     "saw": "held: [\"hard/CREW_REST: Crew rest breach — Monday ended 22:00 → crew rest clear at 10:00, but told to report 23:00 (previous day) — only 1h00 rest.\"]; list lines: [\"Crew rest (<12h) Vandal — Crew rest breach — Monday ended 22:00 → crew rest clear at 10:00, but told to report 23:00 (previous day) — only 1h00 rest.\"]; Tuesday puck flying line:SOLID chip R; Monday ground row:no ring+DOTTED chip R",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s25-b-intime-2300-list.png",
+      "dk-05-s25-b-intime-2300-puck.png",
+      "dk-06-s25-b-intime-2300-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S25.c",
+     "did": "\"+ Line\" on Tuesday's wave, Vandal seated on the blank line (took true)",
+     "saw": "held: [\"hard/CREW_REST: Crew rest breach — Monday ended 22:00 → crew rest clear at 10:00, but told to report 23:00 (previous day) — only 1h00 rest.\",\"adv/DT_SUM: 1 person is double turning: Vandal\"]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S25.d",
+     "did": "\"+ Wave\" → another flying wave, line blank, Vandal seated on it (took true)",
+     "saw": "held: [\"hard/CREW_REST: Crew rest breach — Monday ended 22:00 → crew rest clear at 10:00, but told to report 23:00 (previous day) — only 1h00 rest.\",\"adv/DT_SUM: 1 person is double turning: Vandal\"]; Tuesday puck flying line:SOLID chip R / flying line:SOLID chip R / flying line:SOLID chip R; Monday ground row:no ring+DOTTED chip R",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s25-d-blank-wave-list.png",
+      "dk-08-s25-d-blank-wave-puck.png",
+      "dk-09-s25-d-blank-wave-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S25.e",
+     "did": "a second reporting line \"22:30 ZT RALLY\" beside the whole-wave \"23:00 IN TIME\" (two activities: D505 resolves each separately; D506 takes the earliest)",
+     "saw": "intimes [\"23:00 IN TIME\",\"22:30 ZT RALLY\"]; held: [\"hard/CREW_REST: Crew rest breach — Monday ended 22:00 → crew rest clear at 10:00, but told to report 22:30 (previous day) — only 0h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Vandal\"]; Tuesday puck flying line:SOLID chip R / flying line:SOLID chip R / flying line:SOLID chip R",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s25-e-rally-2230-list.png",
+      "dk-11-s25-e-rally-2230-puck.png",
+      "dk-12-s25-e-rally-2230-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S25.f",
+     "did": "two same-activity scoped lines \"23:00 ZT IN TIME\" and \"22:45 ZT IN TIME\" in one order, then the other",
+     "saw": "order 1 (23:00 then 22:45): hard/CREW_REST: Crew rest breach — Monday ended 22:00 → crew rest clear at 10:00, but told to report 22:45 (previous day) — only 0h45 rest.; order 2 (22:45 then 23:00): hard/CREW_REST: Crew rest breach — Monday ended 22:00 → crew rest clear at 10:00, but told to report 22:45 (previous day) — only 0h45 rest.; intimes now [\"22:45 ZT IN TIME\",\"23:00 ZT IN TIME\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s25-f2-dup-order2-list.png",
+      "dk-14-s25-f2-dup-order2-puck.png",
+      "dk-15-s25-f2-dup-order2-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S25.g",
+     "did": "a second formation ZU (another man, Ranger) on the same wave, with \"21:00 ZU RALLY\" scoped to it; Vandal is on ZT only",
+     "saw": "intimes [\"22:45 ZT IN TIME\",\"23:00 ZT IN TIME\",\"21:00 ZU RALLY\"]; held: [\"hard/CREW_REST: Crew rest breach — Monday ended 22:00 → crew rest clear at 10:00, but told to report 22:45 (previous day) — only 0h45 rest.\",\"adv/DT_SUM: 1 person is double turning: Vandal\"]; Tuesday puck flying line:SOLID chip R / flying line:SOLID chip R / flying line:SOLID chip R",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-s25-g-other-formation-list.png",
+      "dk-17-s25-g-other-formation-puck.png",
+      "dk-18-s25-g-other-formation-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S25.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "rbl-C-s15-dk": {
+   "at": "2026-10-06T00:28:18.442Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S15.leave",
+     "did": "leave (LL) all day Tuesday for Vandal, fresh blank flying line, seat armed then name pressed; times typed then cleared; reload",
+     "saw": "filed LL all day on Tuesday for Vandal through the Inputs page (row: Vandal 14 Jul LL LATES15 leave now ✎ ✕; asked: nothing)  ||  \"+ Wave\" → Flying wave (its first line comes up blank: cs \"\" br \"\" to \"\" ld \"\")  ||  armed the seat (1.2.0.0.p); in the crew list his name: struck YES · printed \"Vandal IP local leave (LL) — S15 leave\" · tooltip \"Vandal — local leave (LL) — S15 leave\"; pressed his name → took true, toast: \"Vandal — local leave (LL) — S15 leave\"  ||  placed on the blank line: bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; his warnings held: none; lines in Tuesday's list naming him: none; his puck(s) that day: [flying line:no-solid; Unavailable row:no-solid]  ||  take-off 10:00, landing 11:00 typed: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\"; his warnings held: [\"hard/LEAVE_FLY: On leave but planned to fly ZL BFM — reason: S15 leave\"]; lines in Tuesday's list naming him: [\"On leave + flying Vandal — On leave but planned to fly ZL BFM — reason: S15 leave\"]; his puck(s) that day: [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  (boxes now cs \"ZL\" br \"\" to \"\" ld \"\")  ||  both times cleared again: bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; his warnings held: none; lines in Tuesday's list naming him: none; his puck(s) that day: [flying line:no-solid; Unavailable row:no-solid]  ||  after a reload: bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; his warnings held: none; lines in Tuesday's list naming him: none; his puck(s) that day: [flying line:no-solid; Unavailable row:no-solid]  ||  Errors: none",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s15-leave-1-armed-crewlist.png",
+      "dk-02-s15-leave-2-placed.png",
+      "dk-03-s15-leave-placed-list.png",
+      "dk-04-s15-leave-placed-puck.png",
+      "dk-05-s15-leave-timed-list.png",
+      "dk-06-s15-leave-timed-puck.png",
+      "dk-07-s15-leave-cleared-list.png",
+      "dk-08-s15-leave-cleared-puck.png",
+      "dk-09-s15-leave-reload-list.png",
+      "dk-10-s15-leave-reload-puck.png"
+     ]
+    },
+    {
+     "id": "S15.downchit",
+     "did": "downchit (ATT C) all day Tuesday for Vandal, fresh blank flying line, seat armed then name pressed; times typed then cleared; reload",
+     "saw": "filed ATT C all day on Tuesday for Vandal through the Inputs page (row: Vandal 14 Jul ATT C S15 downchit now ✎ ✕; asked: certificate)  ||  \"+ Wave\" → Flying wave (its first line comes up blank: cs \"\" br \"\" to \"\" ld \"\")  ||  armed the seat (1.2.0.0.p); in the crew list his name: struck YES · printed \"Vandal IP medically down — cannot report to work (ATT C) — S15 downchit\" · tooltip \"Vandal — medically down — cannot report to work (ATT C) — S15 downchit\"; pressed his name → took true, toast: \"Vandal — medically down — cannot report to work (ATT C) — S15 downchit\"  ||  placed on the blank line: bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; his warnings held: none; lines in Tuesday's list naming him: none; his puck(s) that day: [flying line:no-solid; Unavailable row:no-solid]  ||  take-off 10:00, landing 11:00 typed: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\"; his warnings held: [\"hard/DNIF_FLY: Downchit but planned to fly ZL BFM — reason: S15 downchit\"]; lines in Tuesday's list naming him: [\"Downchit + flying Vandal — Downchit but planned to fly ZL BFM — reason: S15 downchit\"]; his puck(s) that day: [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  (boxes now cs \"ZL\" br \"\" to \"\" ld \"\")  ||  both times cleared again: bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; his warnings held: none; lines in Tuesday's list naming him: none; his puck(s) that day: [flying line:no-solid; Unavailable row:no-solid]  ||  after a reload: bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\"; his warnings held: none; lines in Tuesday's list naming him: none; his puck(s) that day: [flying line:no-solid; Unavailable row:no-solid]  ||  Errors: none",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-11-s15-downchit-1-armed-crewlist.png",
+      "dk-12-s15-downchit-2-placed.png",
+      "dk-13-s15-downchit-placed-list.png",
+      "dk-14-s15-downchit-placed-puck.png",
+      "dk-15-s15-downchit-timed-list.png",
+      "dk-16-s15-downchit-timed-puck.png",
+      "dk-17-s15-downchit-cleared-list.png",
+      "dk-18-s15-downchit-cleared-puck.png",
+      "dk-19-s15-downchit-reload-list.png",
+      "dk-20-s15-downchit-reload-puck.png"
+     ]
+    }
+   ]
+  },
+  "rbl-C-s16-dk": {
+   "at": "2026-10-06T00:36:56.449Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S16.0",
+     "did": "reference: Monday ZM 20:00–22:30, Tuesday ZT take-off 07:00 landing 08:00 (no Brief), Vandal on both",
+     "saw": "his rest line(s): [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:40 — only 4h10 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s16-0-ref.png"
+     ]
+    },
+    {
+     "id": "S16.board",
+     "did": "take-off box typed on the Board: 700 · 0700 · 7:00 · 07:00 · 0700H (each committed by clicking away)",
+     "saw": "\"700\" → stored \"07:00\", box shows \"07:00\", rest line [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:40 — only 4h10 rest.\"] | \"0700\" → stored \"07:00\", box shows \"07:00\", rest line [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:40 — only 4h10 rest.\"] | \"7:00\" → stored \"07:00\", box shows \"07:00\", rest line [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:40 — only 4h10 rest.\"] | \"07:00\" → stored \"07:00\", box shows \"07:00\", rest line [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:40 — only 4h10 rest.\"] | \"0700H\" → stored \"07:00\", box shows \"07:00\", rest line [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:40 — only 4h10 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s16-board-after.png"
+     ]
+    },
+    {
+     "id": "S16.week",
+     "did": "take-off box typed on the week: 700 · 0700 · 7:00 · 07:00 · 0700H (each committed by clicking away)",
+     "saw": "\"700\" → stored \"07:00\", box shows \"07:00\", rest line [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:40 — only 4h10 rest.\"] | \"0700\" → stored \"07:00\", box shows \"07:00\", rest line [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:40 — only 4h10 rest.\"] | \"7:00\" → stored \"07:00\", box shows \"07:00\", rest line [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:40 — only 4h10 rest.\"] | \"07:00\" → stored \"07:00\", box shows \"07:00\", rest line [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:40 — only 4h10 rest.\"] | \"0700H\" → stored \"07:00\", box shows \"07:00\", rest line [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:40 — only 4h10 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s16-week-after.png"
+     ]
+    },
+    {
+     "id": "S16.it-board",
+     "did": "In-time / Rally line typed on the Board: 04:00 IN TIME · 0400H IN TIME · 0400L IN TIME · 0400H RALLY · 0400L RALLY",
+     "saw": "\"04:00 IN TIME\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\"] | \"0400H IN TIME\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\"] | \"0400L IN TIME\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\"] | \"0400H RALLY\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\"] | \"0400L RALLY\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s16-it-board.png"
+     ]
+    },
+    {
+     "id": "S16.it-week",
+     "did": "In-time / Rally line typed on the week: 04:00 IN TIME · 0400H IN TIME · 0400L IN TIME · 0400H RALLY · 0400L RALLY",
+     "saw": "\"04:00 IN TIME\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\"] | \"0400H IN TIME\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\"] | \"0400L IN TIME\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\"] | \"0400H RALLY\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\"] | \"0400L RALLY\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s16-it-week.png"
+     ]
+    },
+    {
+     "id": "S17.a",
+     "did": "Tuesday wave now has the timed ZT and a blank second line (Vandal on both; blank took true); one reporting line replaced by: 04:00 IN TIME · 04:00 IN-TIME · 04:00 INTIME · 04:00 ZT RALLY · 04:00 IN TIME + RALLY · 04:00",
+     "saw": "\"04:00 IN TIME\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Vanda | \"04:00 IN-TIME\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Vanda | \"04:00 INTIME\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Vanda | \"04:00 ZT RALLY\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Vanda | \"04:00 IN TIME + RALLY\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Vanda | \"04:00\" → [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 04:00 — only 3h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Vanda",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s17-a.png"
+     ]
+    },
+    {
+     "id": "S17.b",
+     "did": "two reporting lines \"04:00 IN TIME\" + \"03:30 ZT RALLY\", then the same two in the reverse order",
+     "saw": "order 1: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 03:30 — only 3h00 rest.\",\"adv/DT_SUM: 1 person is double turning: Vandal\"] | order 2 (reversed): [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 03:30 — only 3h00 rest.\",\"adv/DT_SUM: 1 person is double turning: Vandal\"]; lines now [\"03:30 ZT RALLY\",\"04:00 IN TIME\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s17-b-order1.png",
+      "dk-08-s17-b-order2.png"
+     ]
+    },
+    {
+     "id": "S16.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "rbl-C-s18-dk": {
+   "at": "2026-10-06T00:32:37.649Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S18.0",
+     "did": "Baseline B (Monday 20:00–22:30; Tuesday Brief 05:00, take-off 07:00, landing 08:00), Vandal on both",
+     "saw": "his rest line: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s18-0-base.png"
+     ]
+    },
+    {
+     "id": "S18.board",
+     "did": "18 attempts on the Board: morning · 25:90 · 1260 into take-off, landing and Brief, each committed by Tab and by clicking away",
+     "saw": "every attempt restored the prior value and his rest line stayed the same (18 checked); sample: to morning/tab: stored \"07:00\" box \"07:00\" | to morning/blur: stored \"07:00\" box \"07:00\" | to 25:90/tab: stored \"07:00\" box \"07:00\" | to 25:90/blur: stored \"07:00\" box \"07:00\" | to 1260/tab: stored \"07:00\" box \"07:00\" | to 1260/blur: stored \"07:00\" box \"07:00\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s18-board-end.png"
+     ]
+    },
+    {
+     "id": "S18.week",
+     "did": "18 attempts on the week: morning · 25:90 · 1260 into take-off, landing and Brief, each committed by Tab and by clicking away",
+     "saw": "every attempt restored the prior value and his rest line stayed the same (18 checked); sample: to morning/tab: stored \"07:00\" box \"07:00\" | to morning/blur: stored \"07:00\" box \"07:00\" | to 25:90/tab: stored \"07:00\" box \"07:00\" | to 25:90/blur: stored \"07:00\" box \"07:00\" | to 1260/tab: stored \"07:00\" box \"07:00\" | to 1260/blur: stored \"07:00\" box \"07:00\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s18-week-end.png"
+     ]
+    },
+    {
+     "id": "S18.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "rbl-C-s19-dk": {
+   "at": "2026-10-06T00:33:12.490Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S19.0",
+     "did": "Baseline B plus \"+ Line\" on Tuesday's wave with Vandal seated on the blank line (took true)",
+     "saw": "his rest line: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s19-0.png"
+     ]
+    },
+    {
+     "id": "S19.a",
+     "did": "a reporting line typed in the wave's In-time / Rally box: 8h00 IN TIME · 25:90 RALLY · 08.00 IN TIME",
+     "saw": "\"8h00 IN TIME\": box says while typing \"ZT: reporting line 1 has no recognised clock. Check the time. WAVE 3: reporting line 1 has no recognised clock. Check the time.\", after \"ZT: reporting line 1 has no recognised clock. Check the time. WAVE 3: reporting line 1 has no recognised clock. Check the time.\"; day warnings about it [\"adv/REPORT_UNRESOLVED: ZT: reporting line 1 has no recognised clock. Check the time.\",\"adv/REPORT_UNRESOLVED: WAVE 3: reporting line 1 has no recognised clock. Check the time.\"]; his rest line kept | \"25:90 RALLY\": box says while typing \"ZT: reporting line 1 has no recognised clock. Check the time. WAVE 3: reporting line 1 has no recognised clock. Check the time.\", after \"ZT: reporting line 1 has no recognised clock. Check the time. WAVE 3: reporting line 1 has no recognised clock. Check the time.\"; day warnings about it [\"adv/REPORT_UNRESOLVED: ZT: reporting line 1 has no recognised clock. Check the time.\",\"adv/REPORT_UNRESOLVED: WAVE 3: reporting line 1 has no recognised clock. Check the time.\"]; his rest line kept | \"08.00 IN TIME\": box says while typing \"ZT: reporting line 1 has no recognised clock. Check the time. WAVE 3: reporting line 1 has no recognised clock. Check the time.\", after \"ZT: reporting line 1 has no recognised clock. Check the time. WAVE 3: reporting line 1 has no recognised clock. Check the time.\"; day warnings about it [\"adv/REPORT_UNRESOLVED: ZT: reporting line 1 has no recognised clock. Check the time.\",\"adv/REPORT_UNRESOLVED: WAVE 3: reporting line 1 has no recognised clock. Check the time.\"]; his rest line kept",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s19-8h00INTIME.png",
+      "dk-03-s19-2590RALLY.png",
+      "dk-04-s19-0800INTIME.png"
+     ]
+    },
+    {
+     "id": "S19.b",
+     "did": "with the breach and \"25:90 RALLY\" still standing: the four sign-offs and Publish day (Vandal on Tuesday)",
+     "saw": "signed {\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}; button pressed {\"pressed\":true,\"label\":\"Publish day\"}; the day's head now: tag \"ORIG\", pending \"19 changes\", sign-offs [— name — | — name — | — name — | — name —]; his rest line after publishing: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s19-b-published.png"
+     ]
+    },
+    {
+     "id": "S19.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "rbl-C-s20-dk": {
+   "at": "2026-10-06T00:34:16.289Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S20.0",
+     "did": "Baseline B with Vandal",
+     "saw": "rest line: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s20-0-base-list.png",
+      "dk-02-s20-0-base-puck.png"
+     ]
+    },
+    {
+     "id": "S20.1",
+     "did": "Inputs page: a Meeting 04:00–04:30 on Tuesday for Vandal (filed true)",
+     "saw": "rest line now: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but his day starts 04:00 (MEETING) before the 05:00 report — only 3h30 rest.; his Tuesday cockpit puck SOLID chip R; lit after pressing the line: dsec:split, dsec:split, dsec:split, dsec:split, dsec:split, dsec:split, dsec:split, dsec:split",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s20-1-meeting-0400-list.png",
+      "dk-04-s20-1-meeting-0400-puck.png"
+     ]
+    },
+    {
+     "id": "S20.2",
+     "did": "Inputs ✎: the Meeting's time changed to 03:00–03:30",
+     "saw": "rest line now: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but his day starts 03:00 (MEETING) before the 05:00 report — only 2h30 rest.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s20-2-meeting-0300-list.png",
+      "dk-06-s20-2-meeting-0300-puck.png"
+     ]
+    },
+    {
+     "id": "S20.3",
+     "did": "Inputs ✎: the Meeting's date moved from Tuesday to Wednesday",
+     "saw": "calendar read \"15 Jul\"; Tuesday rest line now: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s20-3-meeting-moved-list.png",
+      "dk-08-s20-3-meeting-moved-puck.png"
+     ]
+    },
+    {
+     "id": "S20.3b",
+     "did": "moved back to Tuesday",
+     "saw": "Tuesday rest line: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but his day starts 03:00 (MEETING) before the 05:00 report — only 2h30 rest.",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S20.4",
+     "did": "Inputs ✕: the Meeting deleted",
+     "saw": "the row says \"gone\"; Tuesday rest line now: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.; his puck SOLID chip R",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s20-4-meeting-deleted-list.png",
+      "dk-10-s20-4-meeting-deleted-puck.png"
+     ]
+    },
+    {
+     "id": "S20.5",
+     "did": "a second Meeting 04:00–04:30 filed again (it lands on the Ground Programme)",
+     "saw": "landed row index 4; rest line: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but his day starts 04:00 (MEETING) before the 05:00 report — only 3h30 rest.",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S20.6",
+     "did": "the landed row removed with its own ✕ on the Board's Ground Programme",
+     "saw": "pressed; row still in the programme: false; Tuesday rest line now: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s20-6-ground-removed-list.png",
+      "dk-12-s20-6-ground-removed-puck.png"
+     ]
+    },
+    {
+     "id": "S20.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "rbl-C-s22-dk": {
+   "at": "2026-10-06T00:50:08.980Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S22.0",
+     "did": "Baseline B with Vandal",
+     "saw": "Tuesday rest line: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S22.1",
+     "did": "wave template BLANKTPL made through ⚙ → \"+ New wave template\" (callsign TP, mission BFM, T/O and LD boxes left empty: [\"\",\"\"]); placed with \"+ Wave\" → its template; Vandal seated on its first line (took true); the new wave has 1 line(s): cs \"TP\" br \"\" to \"\" ld \"\"",
+     "saw": "templates offered: [\"w1:BLANKTPLFlying wave · 1 line\"]; Tuesday rest line now: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.; Tuesday lines naming him: [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"]; his cockpit pucks: SOLID/SOLID; Monday dotted: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s22-1-template-editor.png",
+      "dk-04-s22-2-from-template-list.png",
+      "dk-02-s22-2-from-template-puck.png",
+      "dk-03-s22-2-from-template-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S22.2",
+     "did": "Tuesday saved as a day template (the app said: \"Day templates ✕ TEMPLATE 1 4 waves · 2 duty blocks · 4 ground rows · 5 sims Reset — delete all Delete template Done\"); the Templates menu on Wednesday offered [\"▤ Templates\",\"Template 14 waves · 2 duty blocks · 4 ground rows · 5 sims\",\"+ Save this day as a template\",\"✎ Manage templates\"]; Template 1 pressed (other buttons on offer: [\"+ ADD\",\"+ ADD\"])",
+     "saw": "Wednesday had 2 waves, now: [\"WAVE 1:VL/08:40-10:05/br,RU/09:40-11:05/br\",\"WAVE 2:VL/14:40-16:05/br,RU/14:40-16:05/br\",\"WAVE 3:ZT/07:00-08:00/br05:00\",\"BLANKTPL:TP/-/br\"]; Vandal on any of Wednesday's waves after applying: false",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-s22-3-apply-ask.png",
+      "dk-06-s22-4-wed-after.png"
+     ]
+    },
+    {
+     "id": "S22.3",
+     "did": "Vandal put back (from the crew list) on Wednesday's copied ZT line and on the template's blank TP line (took: ZT true, TP true); Tuesday has, added AFTER the template was saved, a late flight ZV 20:00–22:30 for him (took true), so Wednesday's first report must fall inside twelve hours",
+     "saw": "Wednesday rest line: Crew rest breach — Tuesday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.; lines naming him: [\"Crew rest (<12h) Vandal — Crew rest breach — Tuesday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"]; his Wednesday cockpit pucks SOLID/SOLID; Tuesday's puck dotted: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s22-5-wed-reassigned-list.png",
+      "dk-07-s22-5-wed-reassigned-puck.png",
+      "dk-08-s22-5-wed-reassigned-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S22.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "rbl-C-h03-dk": {
+   "at": "2026-10-06T00:38:26.876Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "H-03.plain",
+     "did": "Tuesday \"+ Wave\" → SC (first shift came as to \"07:00\" ld \"13:00\"); cleared both boxes (now to \"\" ld \"\"); Scribe put in the first MAIN seat (took true, app said \"Scribe — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current\"; seat holds \"waldo\").",
+     "saw": "Tuesday bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\"; week list lines naming him or the SC shift: [\"[hard] SC currency — wrong shift Scribe — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current\"]; warnings the app holds that name him or the shift: [\"hard/SC_QUAL: SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current\"]; his pucks on the week: [flying line:SOLID-ring chip Q]; Monday: [(no puck drawn)]; Board panel \"⚠ 5 issues · 3 warnings · tap to review\" lines: [\"Scribe — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current ✕\"]; his pucks on the Board: [flying line:SOLID-ring chip Q; crew list:SOLID-ring chip Q]. Errors: none",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-h03-plain-list.png",
+      "dk-02-h03-plain-puck.png",
+      "dk-03-h03-plain-prev-puck.png",
+      "dk-04-h03-plain-board-seat.png",
+      "dk-05-h03-plain-board-warnings.png"
+     ]
+    },
+    {
+     "id": "H-03.late-monday",
+     "did": "Tuesday \"+ Wave\" → SC (first shift came as to \"07:00\" ld \"13:00\"); cleared both boxes (now to \"\" ld \"\"); Scribe put in the first MAIN seat (took true, app said \"Scribe — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current\"; seat holds \"waldo\"). Monday first: ZM 20:00–22:30 with Scribe (took true).",
+     "saw": "Tuesday bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\"; week list lines naming him or the SC shift: [\"[hard] SC currency — wrong shift Scribe — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current\"]; warnings the app holds that name him or the shift: [\"hard/SC_QUAL: SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current\"]; his pucks on the week: [flying line:SOLID-ring chip Q]; Monday: [flying line:no-solid]; Board panel \"⚠ 5 issues · 3 warnings · tap to review\" lines: [\"Scribe — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current ✕\"]; his pucks on the Board: [flying line:SOLID-ring chip Q; crew list:SOLID-ring chip Q]. Errors: none",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-06-h03-late-monday-list.png",
+      "dk-07-h03-late-monday-puck.png",
+      "dk-08-h03-late-monday-prev-puck.png",
+      "dk-09-h03-late-monday-board-seat.png",
+      "dk-10-h03-late-monday-board-warnings.png"
+     ]
+    }
+   ]
+  },
+  "rbl-C-s28-dk": {
+   "at": "2026-10-06T00:51:48.575Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S28.a",
+     "did": "Monday ZM 20:00–22:30 with Scribe; then on Tuesday, one after another: \"+ Wave\" → SC (first shift's times cleared, Scribe in a MAIN seat; then the same wave's SPARE aircraft), AVALON (times cleared), BB — each seat taken from the crew list",
+     "saw": "SC MAIN: took true (app said \"Scribe — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current\"); warnings naming him: [\"hard/SC_QUAL: SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current\"] | SC SPARE: took true (app said \"Scribe planned\"); warnings naming him: [\"hard/SC_QUAL: SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current\"] | AVALON: took true (app said \"Scribe planned\"); warnings naming him: [\"hard/SC_QUAL: SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current\"] | BB: took true (app said \"Scribe planned\"); warnings naming him: [\"hard/SC_QUAL: SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current\"]. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s28-a-sc-0.png",
+      "dk-02-s28-a-sc-2.png",
+      "dk-03-s28-a-avalon-0.png",
+      "dk-04-s28-a-bb-0.png"
+     ]
+    },
+    {
+     "id": "S28.b",
+     "did": "ordinary BLANK flying lines (no times): a wrong seat, an AAR remark with an unqualified man, an OCU student with no instructor",
+     "saw": "front-seat pilot Vandal put in the BACK seat of a blank line (took true, app said \"Vandal planned\"): new warnings none | remark \"AAR\" typed on the blank line, Scribe (not AAR-qualified) put in the front seat (took true): new warnings [\"hard/QUAL [waldo]: Scribe is a WSO — cannot fly FCP ( )\",\"hard/AAR_INSTR [split,waldo]: Vandal is not cleared to instruct DAAR — Scribe is not DAAR current and   remarks call for\"] | a second blank flying line: OCU student Tally in the back seat with no instructor (took true): OCU/IP warnings [\"adv/OCU_NO_IP [nick]: OCU in   with no IP\"]. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s28-b-wrongseat.png",
+      "dk-06-s28-b-aar.png",
+      "dk-07-s28-b-ocu.png"
+     ]
+    },
+    {
+     "id": "S28.c.amt-only-blank",
+     "did": "SANS (Scribe): availability filed on Tuesday — Scribe 14 Jul SANS AVAILABILITYA LATE now ✎ ✕; a BLANK flying line; seat armed then name pressed",
+     "saw": "crew list before placing: struck no · printed \"Scribe D\" · tooltip \"Scribe\"; took true; toast \"Scribe planned for   — not offering Fly today\"; warnings naming him: [\"adv/SANS_AVAIL: Scribe planned for   — not offering Fly today\"]; Tuesday list lines naming him: [\"SANS availability — planned outside the availability filed Scribe — Scribe planned for — not offering Fly today\"]; his puck(s): [flying line:SOLID-ring chip A; SANS card:SOLID-ring chip A]. Errors: none",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-08-s28-c-amt-only-blank-armed.png",
+      "dk-10-s28-c-amt-only-blank-list.png",
+      "dk-09-s28-c-amt-only-blank-puck.png"
+     ]
+    },
+    {
+     "id": "S28.c.amt-only-timed",
+     "did": "SANS (Scribe): availability filed on Tuesday — Scribe 14 Jul SANS AVAILABILITYA LATE now ✎ ✕; a TIMED flying line 10:00–11:00; seat armed then name pressed",
+     "saw": "crew list before placing: struck YES · printed \"Scribe D SANS — not offering Fly\" · tooltip \"Scribe — SANS — not offering Fly\"; took true; toast \"Scribe planned for ZS BFM — not offering Fly today\"; warnings naming him: [\"adv/SANS_AVAIL: Scribe planned for ZS BFM — not offering Fly today\"]; Tuesday list lines naming him: [\"SANS availability — planned outside the availability filed Scribe — Scribe planned for ZS BFM — not offering Fly today\"]; his puck(s): [flying line:SOLID-ring chip A; SANS card:SOLID-ring chip A]. Errors: none",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-11-s28-c-amt-only-timed-armed.png",
+      "dk-13-s28-c-amt-only-timed-list.png",
+      "dk-12-s28-c-amt-only-timed-puck.png"
+     ]
+    },
+    {
+     "id": "S28.c.fly-1400-blank",
+     "did": "SANS (Scribe): availability filed on Tuesday — Scribe 14 Jul 14:00–16:00 SANS AVAILABILITYF LATE now ✎ ✕; a BLANK flying line; seat armed then name pressed",
+     "saw": "crew list before placing: struck no · printed \"Scribe D\" · tooltip \"Scribe\"; took true; toast \"Scribe planned for   — available 14:00–16:00 only\"; warnings naming him: [\"adv/SANS_AVAIL: Scribe planned for   — available 14:00–16:00 only\"]; Tuesday list lines naming him: [\"SANS availability — planned outside the availability filed Scribe — Scribe planned for — available 14:00–16:00 only\"]; his puck(s): [flying line:SOLID-ring chip A; SANS card:SOLID-ring chip A]. Errors: none",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-14-s28-c-fly-1400-blank-armed.png",
+      "dk-16-s28-c-fly-1400-blank-list.png",
+      "dk-15-s28-c-fly-1400-blank-puck.png"
+     ]
+    },
+    {
+     "id": "S28.c.fly-1400-timed",
+     "did": "SANS (Scribe): availability filed on Tuesday — Scribe 14 Jul 14:00–16:00 SANS AVAILABILITYF LATE now ✎ ✕; a TIMED flying line 10:00–11:00; seat armed then name pressed",
+     "saw": "crew list before placing: struck YES · printed \"Scribe D SANS — available 14:00–16:00 only\" · tooltip \"Scribe — SANS — available 14:00–16:00 only\"; took true; toast \"Scribe planned for ZS BFM — available 14:00–16:00 only\"; warnings naming him: [\"adv/SANS_AVAIL: Scribe planned for ZS BFM — available 14:00–16:00 only\"]; Tuesday list lines naming him: [\"SANS availability — planned outside the availability filed Scribe — Scribe planned for ZS BFM — available 14:00–16:00 only\"]; his puck(s): [flying line:SOLID-ring chip A; SANS card:SOLID-ring chip A]. Errors: none",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-17-s28-c-fly-1400-timed-armed.png",
+      "dk-19-s28-c-fly-1400-timed-list.png",
+      "dk-18-s28-c-fly-1400-timed-puck.png"
+     ]
+    }
+   ]
+  },
+  "rbl-C-s29-dk": {
+   "at": "2026-10-06T00:56:56.528Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S29.0",
+     "did": "fixture built once at desktop, admin Saber",
+     "saw": "Tuesday ZT 07:00–08:00 Brief 05:00, remark AAR, Saber seated in the front seat (took true, app said \"Saber — Crew rest breach — Monday landed 21:10, +2h debrief assumed → ended 23:10 → crew rest clear at 11:10, but told to report 05:00 — only 5h50 rest.\") | a Ground Programme row CROWD ROW 08:00–09:00 with an ALL AVAIL placeholder put on it (took true) | the four sign-offs and Publish day ({\"pressed\":true,\"label\":\"Publish day\"}) | then the line's mission changed to ACM → the day's head: tag \"ORIG\", pending \"1 pending\" | Saber's Tuesday warnings: [\"hard/CREW_REST: Crew rest breach — Monday landed 21:10, +2h debrief assumed → ended 23:10 → crew rest clear at 11:10, but told to report 05:00 — only 5h50 rest.\"]; Monday: [\"hard/DOUBLE_BOOK\",\"adv/NO_BRIEF\",\"adv/DT_SUM\",\"note/LONGDAY\"]. Errors: none",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s29-0-fixture.png"
+     ]
+    },
+    {
+     "id": "S29.desktop125-ctx",
+     "did": "desktop 1440×900, context deviceScaleFactor 1.25 (the page measured 1440×900 @1.25); reads: week Tuesday, tap the breach line, the pending chip's changes window, the board, the ALL AVAIL crowd",
+     "saw": "Tuesday lines naming Saber: [\"[hard] Crew rest (<12h) Saber — Crew rest breach — Monday landed 21:10, +2h debrief assumed → ended 23:10 → crew rest clear at 11:10, but told to report 05:00 — only 5h50 rest.\"]; his Tuesday cockpit pucks: [\"SOLID chip R [me]\"]; Monday: [\"SOLID+DOTTED chip C [me] outline dotted 1px rgb(240, 85, 95)\",\"SOLID+DOTTED chip C [me] outline dotted 1px rgb(240, 85, 95)\"]; Tuesday's head: tag \"ORIG\", pending \"1 pending\"; finger lands on the line; lit after the tap: stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff; pending chip reachable; changes window: title \"Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1\", tabs New to you 0/All changes 19/To go out · AL1 1, text \"⠿ Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 19 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change ZT · mission Saber 6/10 08:56 BFM → ACM Tap a change to go to it. Tap a \"; its close reachable; board panel \"⚠ 5 issues · 3 warnings · tap to review\", lines naming him [\"Saber — Crew rest breach — Monday landed 21:10, +2h debrief assumed → ended 23:10 → crew rest clear at 11:10, \"]; his pucks on the board [\"flying line: SOLID chip R outline solid 2px rgb(240, 85, 95)\",\"Available crew: SOLID chip R outline solid 2px rgb(240, 85, 95)\",\"crew list: SOLID chip R [me]\"]; ALL AVAIL: open — ⠿ CROWD ROW Jul 14 · 08:00–09:00 ✕ Who’s available 34 PILOTS · 23 Reaper IR Anvil IP Blade IP Cobra IP Comet IP Forge IP … his entry: not listed; its close reachable. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s29-desktop125-ctx-list.png",
+      "dk-02-s29-desktop125-ctx-puck.png",
+      "dk-03-s29-desktop125-ctx-prev-puck.png",
+      "dk-05-s29-desktop125-ctx-linetap.png",
+      "dk-06-s29-desktop125-ctx-changes.png",
+      "dk-07-s29-desktop125-ctx-board.png",
+      "dk-08-s29-desktop125-ctx-allavail.png"
+     ]
+    },
+    {
+     "id": "S29.desktop125-arg",
+     "did": "desktop 1440×900, browser launched with --force-device-scale-factor=1.25 (the page measured 1440×900 @1.0000000149011612); reads: week Tuesday, tap the breach line, the pending chip's changes window, the board, the ALL AVAIL crowd",
+     "saw": "Tuesday lines naming Saber: [\"[hard] Crew rest (<12h) Saber — Crew rest breach — Monday landed 21:10, +2h debrief assumed → ended 23:10 → crew rest clear at 11:10, but told to report 05:00 — only 5h50 rest.\"]; his Tuesday cockpit pucks: [\"SOLID chip R [me]\"]; Monday: [\"SOLID+DOTTED chip C [me] outline dotted 0.8px rgb(240, 85, 95)\",\"SOLID+DOTTED chip C [me] outline dotted 0.8px rgb(240, 85, 95)\"]; Tuesday's head: tag \"ORIG\", pending \"1 pending\"; finger lands on the line; lit after the tap: stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff; pending chip reachable; changes window: title \"Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1\", tabs New to you 0/All changes 19/To go out · AL1 1, text \"⠿ Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 19 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change ZT · mission Saber 6/10 08:56 BFM → ACM Tap a change to go to it. Tap a \"; its close reachable; board panel \"⚠ 5 issues · 3 warnings · tap to review\", lines naming him [\"Saber — Crew rest breach — Monday landed 21:10, +2h debrief assumed → ended 23:10 → crew rest clear at 11:10, \"]; his pucks on the board [\"flying line: SOLID chip R outline solid 1.6px rgb(240, 85, 95)\",\"Available crew: SOLID chip R outline solid 1.6px rgb(240, 85, 95)\",\"crew list: SOLID chip R [me]\"]; ALL AVAIL: open — ⠿ CROWD ROW Jul 14 · 08:00–09:00 ✕ Who’s available 34 PILOTS · 23 Reaper IR Anvil IP Blade IP Cobra IP Comet IP Forge IP … his entry: not listed; its close reachable. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s29-desktop125-arg-list.png",
+      "dk-09-s29-desktop125-arg-puck.png",
+      "dk-10-s29-desktop125-arg-prev-puck.png",
+      "dk-12-s29-desktop125-arg-linetap.png",
+      "dk-13-s29-desktop125-arg-changes.png",
+      "dk-14-s29-desktop125-arg-board.png",
+      "dk-15-s29-desktop125-arg-allavail.png"
+     ]
+    },
+    {
+     "id": "S29.phone",
+     "did": "phone 390×844 (the page measured 390×844 @1); reads: week Tuesday, tap the breach line, the pending chip's changes window, the board, the ALL AVAIL crowd",
+     "saw": "Tuesday lines naming Saber: [\"[hard] Crew rest (<12h) Saber — Crew rest breach — Monday landed 21:10, +2h debrief assumed → ended 23:10 → crew rest clear at 11:10, but told to report 05:00 — only 5h50 rest.\"]; his Tuesday cockpit pucks: [\"SOLID chip R [me]\"]; Monday: [\"SOLID+DOTTED chip C [me] outline dotted 1px rgb(240, 85, 95)\",\"SOLID+DOTTED chip C [me] outline dotted 1px rgb(240, 85, 95)\"]; Tuesday's head: tag \"ORIG\", pending \"1 pending\"; finger lands on the line; lit after the tap: stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff; pending chip reachable; changes window: title \"Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1\", tabs New to you 0/All changes 19/To go out · AL1 1, text \"⠿ Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 19 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change ZT · mission Saber 6/1\"; its close reachable; board panel \"▸ ⚠ 5 issues · 3 warnings · tap to review\", lines naming him [\"Saber — Crew rest breach — Monday landed 21:10, +2h debrief assumed → ended 23:10 → crew rest clear at 11:10, \"]; his pucks on the board [\"flying line: SOLID chip R outline solid 2px rgb(240, 85, 95)\",\"Available crew: SOLID chip R outline solid 2px rgb(240, 85, 95)\",\"crew list: SOLID chip R [me]\"]; ALL AVAIL: open — ⠿ CROWD ROW Jul 14 · 08:00–09:00 ✕ Who’s available 34 PILOTS · 23 Reaper IR Anvil IP Blade IP Cobra IP Comet IP Forge IP … his entry: not listed; its close reachable. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-s29-phone-list.png",
+      "dk-16-s29-phone-puck.png",
+      "dk-17-s29-phone-prev-puck.png",
+      "dk-19-s29-phone-linetap.png",
+      "dk-20-s29-phone-changes.png",
+      "dk-21-s29-phone-board.png",
+      "dk-22-s29-phone-allavail.png"
+     ]
+    },
+    {
+     "id": "S29.landscape",
+     "did": "short landscape 844×390 (the page measured 844×390 @1); reads: week Tuesday, tap the breach line, the pending chip's changes window, the board, the ALL AVAIL crowd",
+     "saw": "Tuesday lines naming Saber: [\"[hard] Crew rest (<12h) Saber — Crew rest breach — Monday landed 21:10, +2h debrief assumed → ended 23:10 → crew rest clear at 11:10, but told to report 05:00 — only 5h50 rest.\"]; his Tuesday cockpit pucks: [\"SOLID chip R [me]\"]; Monday: [\"SOLID+DOTTED chip C [me] outline dotted 1px rgb(240, 85, 95)\",\"SOLID+DOTTED chip C [me] outline dotted 1px rgb(240, 85, 95)\"]; Tuesday's head: tag \"ORIG\", pending \"1 pending\"; finger lands on the line; lit after the tap: stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff,stiff; pending chip reachable; changes window: title \"Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1\", tabs New to you 0/All changes 19/To go out · AL1 1, text \"⠿ Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 19 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change ZT · mission Saber 6/10 08:56 BFM → ACM Tap a change to go to it. Tap a \"; its close reachable; board panel \"⚠ 5 issues · 3 warnings · tap to review\", lines naming him [\"Saber — Crew rest breach — Monday landed 21:10, +2h debrief assumed → ended 23:10 → crew rest clear at 11:10, \"]; his pucks on the board [\"flying line: SOLID chip R outline solid 2px rgb(240, 85, 95)\",\"Available crew: SOLID chip R outline solid 2px rgb(240, 85, 95)\",\"crew list: SOLID chip R [me]\"]; ALL AVAIL: open — ⠿ CROWD ROW Jul 14 · 08:00–09:00 ✕ Who’s available 34 PILOTS · 23 Reaper IR Anvil IP Blade IP Cobra IP Comet IP Forge IP … his entry: not listed; its close reachable. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-s29-landscape-list.png",
+      "dk-23-s29-landscape-puck.png",
+      "dk-24-s29-landscape-prev-puck.png",
+      "dk-26-s29-landscape-linetap.png",
+      "dk-27-s29-landscape-changes.png",
+      "dk-28-s29-landscape-board.png",
+      "dk-29-s29-landscape-allavail.png"
+     ]
+    }
+   ]
+  },
+  "rbl-C-s11-ph": {
+   "at": "2026-10-06T00:45:22.813Z",
+   "base": "http://localhost:4176",
+   "phone": true,
+   "table": [
+    {
+     "id": "S11.tap",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday ZT 07:00–08:00 Brief 05:00 with Ranger in the front seat; Vandal first put on a blank Tuesday line (took true). Tapped the timed seat, read his name in the crew list, then pressed his name. Took: true",
+     "saw": "BEFORE placing — struck YES · name box \"Vandal IP crew rest — not clear until 12:30\" · row text \"PILOTS · 17 FREE Blade IP Cobra IP Comet IP Diesel D Gambit C Hunter IP Nomad C Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Talisman O Torch C Trident IP Vapor D Ace A crew rest — not clear until 06:00 An\" · beside it \"Warden IP already on VL BFM 07:40–10:35\" · tooltip \"Vandal — crew rest — not clear until 12:30\" (armed seat: 1.2.0.0.p). TOAST after: \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest. (+1 more)\". His Tuesday warnings before: []; after: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Vandal\"]. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-s11-tap-0-fixture.png",
+      "ph-02-s11-tap-1-armed-crewlist.png",
+      "ph-03-s11-tap-2-after-tap.png"
+     ]
+    },
+    {
+     "id": "S11.drag",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday ZT 07:00–08:00 Brief 05:00 with Ranger in the front seat; Vandal first put on a blank Tuesday line (took true). Real pointer drag from the crew list onto Tuesday's timed seat. Took: false",
+     "saw": "BEFORE placing — struck no · name box \"Vandal IP\" · row text \"PILOTS · 15 FREE Anvil IP Blade IP Cobra IP Diesel D Forge IP Hunter IP Nomad C Piston IP Ranger IP Recon O Saber IP Sidewinder IP Torch C Trident IP Wildcard O Ace A Cinch IP Comet IP Drifter A Gambit C Havoc IP R Outla\" · beside it \"Vapor D\" · tooltip \"Vandal — already tasked today, but you can still plan him\" (MID-DRAG, the bubble under the seat: \"\"). TOAST after: none on screen. His Tuesday warnings before: []; after: []. Errors: none",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-04-s11-drag-0-fixture.png",
+      "ph-05-s11-drag-1-during-drag.png",
+      "ph-06-s11-drag-2-after-drop.png"
+     ]
+    },
+    {
+     "id": "S11.empty",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday ZT 07:00–08:00 Brief 05:00 with nobody. Tapped the timed seat, read his name in the crew list, then pressed his name. Took: true",
+     "saw": "BEFORE placing — struck no · name box \"Vandal IP\" · row text \"PILOTS · 25 FREE Ace A Anvil IP Blade IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Hunter IP Nomad C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP C Saint B Sidewinder IP Talisman O Torch C Trident \" · beside it \"Vapor D\" · tooltip \"Vandal\" (armed seat: 1.2.0.0.p). TOAST after: \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\". His Tuesday warnings before: []; after: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"]. Errors: none",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-s11-empty-formation-0-fixture.png",
+      "ph-08-s11-empty-formation-1-armed-crewlist.png",
+      "ph-09-s11-empty-formation-2-after-tap.png"
+     ]
+    }
+   ]
+  },
+  "rbl-C-s26-ph": {
+   "at": "2026-10-06T00:48:36.737Z",
+   "base": "http://localhost:4176",
+   "phone": true,
+   "table": [
+    {
+     "id": "S26.a",
+     "did": "Monday ZM lands 15:00 (end 17:00, clear 05:00); Tuesday ZT take-off 07:00, NO Brief and no In-time typed; Vandal on both",
+     "saw": "Tuesday lines naming him: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 15:00, +2h debrief assumed → ended 17:00 → crew rest clear at 05:00, but told to report 04:40 — only 11h40 rest.\"}]; codes held hard/CREW_REST; Tuesday cockpit puck (list shut): SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2]; list OPEN: SOLID chip R [warn hard boxred | outline solid 2px rgb(240, 85, 95) | shadow rgb(240, 85, 95) 0px 0px 0px 2]; Monday cockpit puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-03-s26-a-nominal-list.png",
+      "ph-01-s26-a-nominal-puck.png",
+      "ph-02-s26-a-nominal-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.b",
+     "did": "Brief typed 05:00 on Tuesday (take-off 07:00; Monday clear at 05:00) — expect NO breach (exactly twelve hours is legal for 05:00; later is legal)",
+     "saw": "Tuesday lines naming him: [{\"sev\":\"adv\",\"text\":\"Tight turning — crew rest Vandal — Tight turning — T/O 07:00 puts the 3h report at 04:00, inside 12h. Monday landed 15:00, +2h debrief assumed → ended 17:00 → crew rest clear at 05:00\"}]; codes held adv/CREW_TIGHT; Tuesday cockpit puck (list shut): no ring chip TT []; list OPEN: no ring chip TT [ | outline solid 2px rgb(240, 85, 95) | shadow rgb(11, 13, 16) 0px 0px 0px 1p]; Monday cockpit puck: no ring []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-s26-b-brief-0500-list.png",
+      "ph-04-s26-b-brief-0500-puck.png",
+      "ph-05-s26-b-brief-0500-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.c",
+     "did": "Brief typed 04:59 on Tuesday (take-off 07:00; Monday clear at 05:00) — expect a breach, one minute short",
+     "saw": "Tuesday lines naming him: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 15:00, +2h debrief assumed → ended 17:00 → crew rest clear at 05:00, but told to report 04:59 — only 11h59 rest.\"}]; codes held hard/CREW_REST; Tuesday cockpit puck (list shut): SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2]; list OPEN: SOLID chip R [warn hard boxred | outline solid 2px rgb(240, 85, 95) | shadow rgb(240, 85, 95) 0px 0px 0px 2]; Monday cockpit puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-09-s26-c-brief-0459-list.png",
+      "ph-07-s26-c-brief-0459-puck.png",
+      "ph-08-s26-c-brief-0459-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.d",
+     "did": "Brief typed 05:01 on Tuesday (take-off 07:00; Monday clear at 05:00) — expect NO breach (exactly twelve hours is legal for 05:00; later is legal)",
+     "saw": "Tuesday lines naming him: [{\"sev\":\"adv\",\"text\":\"Tight turning — crew rest Vandal — Tight turning — T/O 07:00 puts the 3h report at 04:00, inside 12h. Monday landed 15:00, +2h debrief assumed → ended 17:00 → crew rest clear at 05:00\"}]; codes held adv/CREW_TIGHT; Tuesday cockpit puck (list shut): no ring chip TT []; list OPEN: no ring chip TT [ | outline solid 2px rgb(240, 85, 95) | shadow rgb(11, 13, 16) 0px 0px 0px 1p]; Monday cockpit puck: no ring []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S26.e",
+     "did": "Brief typed 05:00 on Tuesday (take-off 07:00; Monday clear at 05:00) — expect NO breach (exactly twelve hours is legal for 05:00; later is legal)",
+     "saw": "Tuesday lines naming him: [{\"sev\":\"adv\",\"text\":\"Tight turning — crew rest Vandal — Tight turning — T/O 07:00 puts the 3h report at 04:00, inside 12h. Monday landed 15:00, +2h debrief assumed → ended 17:00 → crew rest clear at 05:00\"}]; codes held adv/CREW_TIGHT; Tuesday cockpit puck (list shut): no ring chip TT []; list OPEN: no ring chip TT [ | outline solid 2px rgb(240, 85, 95) | shadow rgb(11, 13, 16) 0px 0px 0px 1p]; Monday cockpit puck: no ring []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S26.f",
+     "did": "Monday lands 17:00 (clear 07:00); Tuesday take-off 08:00, Brief 05:00, no late show",
+     "saw": "lines: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but told to report 05:00 — only 10h00 rest.\"}]; codes hard/CREW_REST; Tuesday puck (list shut): SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2]; with the list OPEN: SOLID chip R [warn hard boxred | outline solid 2px rgb(240, 85, 95) | shadow rgb(240, 85, 95) 0px 0px 0px 2]; Monday puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-s26-f-noshow-list.png",
+      "ph-10-s26-f-noshow-puck.png",
+      "ph-11-s26-f-noshow-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.g",
+     "did": "the same, with LATE SHOW typed in the line's remarks (step 07:00, rest clears 07:00 — achievable)",
+     "saw": "lines: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but told to report 05:00 — only 10h00 rest. Late show — he still makes the 07:00 step.\"}]; codes hard/CREW_REST; Tuesday puck (list shut): DASHED chip R [warn hard boxdash | outline dashed 2px rgb(240, 85, 95)]; with the list OPEN: no ring chip R [warn hard boxdash | outline solid 2px rgb(240, 85, 95)]; Monday puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-15-s26-g-lateshow-achievable-list.png",
+      "ph-13-s26-g-lateshow-achievable-puck.png",
+      "ph-14-s26-g-lateshow-achievable-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.h",
+     "did": "LATE SHOW still typed, take-off moved to 06:30 (step 05:30 is before rest clears at 07:00 — not achievable)",
+     "saw": "lines: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but told to report 05:00 — only 10h00 rest. Late show cannot save it — the 05:30 step is still before rest clears.\"}]; codes hard/CREW_REST; Tuesday puck (list shut): SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2]; with the list OPEN: SOLID chip R [warn hard boxred | outline solid 2px rgb(240, 85, 95) | shadow rgb(240, 85, 95) 0px 0px 0px 2]; Monday puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-18-s26-h-lateshow-not-achievable-list.png",
+      "ph-16-s26-h-lateshow-not-achievable-puck.png",
+      "ph-17-s26-h-lateshow-not-achievable-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.i",
+     "did": "take-off back at 08:00 with LATE SHOW (dashed in step g); then a Meeting 04:00–04:30 for Vandal filed on the Inputs page (filed: true)",
+     "saw": "lines: [{\"sev\":\"hard\",\"text\":\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 17:00, +2h debrief assumed → ended 19:00 → crew rest clear at 07:00, but his day starts 04:00 (MEETING) before the 05:00 report — only 9h00 rest.\"}]; codes hard/CREW_REST; Tuesday puck (list shut): SOLID chip R [warn hard boxred | shadow rgb(240, 85, 95) 0px 0px 0px 2]; with the list OPEN: SOLID chip R [warn hard boxred | outline solid 2px rgb(240, 85, 95) | shadow rgb(240, 85, 95) 0px 0px 0px 2]; Monday puck: no ring+DOTTED chip R [boxdot | outline dotted 1px rgb(240, 85, 95)]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-21-s26-i-meeting-bound-list.png",
+      "ph-19-s26-i-meeting-bound-puck.png",
+      "ph-20-s26-i-meeting-bound-prev-puck.png"
+     ]
+    },
+    {
+     "id": "S26.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "rbl-C-s11-waldo-dk": {
+   "at": "2026-10-06T00:49:06.098Z",
+   "base": "http://localhost:4176",
+   "phone": false,
+   "table": [
+    {
+     "id": "S11.tap-waldo",
+     "did": "Monday ZM 20:00–22:30 with Scribe; Tuesday ZT 07:00–08:00 Brief 05:00 with Ranger in the front seat; Scribe first put on a blank Tuesday line (took true). Tapped the timed seat, read his name in the crew list, then pressed his name. Took: true",
+     "saw": "BEFORE placing — struck YES · name box \"Scribe D SANS — no availability filed for today\" · row text \"Scribe D SANS — no availability filed for today\" · beside it \"\" · tooltip \"Scribe — SANS — no availability filed for today\" (armed seat: 1.2.0.0.w). TOAST after: \"Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest. (+1 more)\". His Tuesday warnings before: []; after: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"adv/DT_SUM: 1 person is double turning: Scribe\"]. Errors: none",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-s11-tap-waldo-0-fixture.png",
+      "dk-02-s11-tap-waldo-1-armed-crewlist.png",
+      "dk-03-s11-tap-waldo-2-after-tap.png"
+     ]
+    }
+   ]
+  },
+  "rbl-C-s11-r2-ph": {
+   "at": "2026-10-06T00:55:37.533Z",
+   "base": "http://localhost:4176",
+   "phone": true,
+   "table": [
+    {
+     "id": "S11.drag-r2",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday ZT 07:00–08:00 Brief 05:00 with Ranger in the front seat; Vandal first put on a blank Tuesday line (took true). Real pointer drag from the crew list onto Tuesday's timed seat. Took: false",
+     "saw": "BEFORE placing — struck no · name box \"Vandal IP\" · row text \"PILOTS · 15 FREE Anvil IP Blade IP Cobra IP Diesel D Forge IP Hunter IP Nomad C Piston IP Ranger IP Recon O Saber IP Sidewinder IP Torch C Trident IP Wildcard O Ace A Cinch IP Comet IP Drifter A Gambit C Havoc IP R Outla\" · beside it \"Vapor D\" · tooltip \"Vandal — already tasked today, but you can still plan him\" (MID-DRAG, the bubble under the seat: \"\"). TOAST after: none on screen. His Tuesday warnings before: []; after: []. Errors: none",
+     "verdict": "FAIL",
+     "pics": [
+      "ph-01-s11-drag-r2-0-fixture.png",
+      "ph-02-s11-drag-r2-1-during-drag.png",
+      "ph-03-s11-drag-r2-2-after-drop.png"
+     ]
+    }
+   ]
+  }
+ }
+}

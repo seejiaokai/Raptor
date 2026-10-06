@@ -1,0 +1,26 @@
+import * as C from './rbl-C-lib.mjs'
+const { B, L, W, K, ID, MON, TUE } = C
+const { browser, p, errors } = await K.fresh()
+try {
+  const { m, t } = await C.baselineB(p)
+  console.log('baseline seated', m.took, t.took, await C.lineNow(p, TUE, t.gi, 0))
+  let s = await C.seeWeek(p, TUE, 'p2-base')
+  console.log('BASE', C.sayWeek(s))
+  console.log('pics', s.pics)
+  console.log('held', JSON.stringify(s.held), 'prev', JSON.stringify(s.prevHeld))
+  const x = await C.extraLine(p, TUE, t.gi)
+  console.log('extra', x)
+  s = await C.seeWeek(p, TUE, 'p2-blank')
+  console.log('BLANK', C.sayWeek(s))
+  console.log('held', JSON.stringify(s.held))
+  const f = await C.fileInput(p, { type: 'SANS Availability', di: TUE, allday: true, remarks: '' })
+  console.log('sans filed', JSON.stringify(f), await C.inputRowText(p, f.iid))
+  const f2 = await C.fileInput(p, { type: 'Meeting', di: TUE, allday: false, from: '10:00', to: '11:00', remarks: 'probe' })
+  console.log('meeting filed', JSON.stringify(f2), await C.inputRowText(p, f2.iid))
+  await B.toEdit(p); await W.showDay(p, TUE)
+  const html = await p.evaluate(() => { const d = document.querySelector('#eWeek .day[data-day="1"]'); return [...d.querySelectorAll('.puck[data-person="waldo"]')].map(e => e.offsetParent !== null ? (e.closest('[class]').className + ' > ' + e.parentElement.className + ' / ' + e.parentElement.parentElement.className + ' / ' + e.parentElement.parentElement.parentElement.className) : 'hidden') })
+  console.log('puck parents', html.join('\n'))
+  await B.pic(p, 'p2-after-inputs')
+  console.log('ERR', errors.join(' | '))
+} catch (e) { console.log('ERR', e.stack) }
+await browser.close()
