@@ -12,7 +12,7 @@
 // Register: docs/superpowers/specs/2026-10-06-oil-work-start-register.md (OWS1–OWS5 here).
 
 import { afterEach, describe, expect, it } from 'vitest'
-import { dayOilCredits, dayOilSpans, dayOilWork, uniformOil } from './oil'
+import { dayOilCredits, dayOilSpans, dayOilWork, uniformOil, oilCapableItems } from './oil'
 import { VCONF } from './rules'
 
 const SAVE = { oilFullMin: VCONF.oilFullMin, reportLead: VCONF.reportLead, debrief: VCONF.debrief }
@@ -224,6 +224,14 @@ describe('OWS6 — the walk can be handed the values a published day kept (the e
     expect(uniformOil(360)).toBe(1)
     expect(uniformOil(360, kept.oilFullMin)).toBe(0.5)
     expect(uniformOil(0, kept.oilFullMin)).toBe(0)
+  })
+  it('"can this row earn" reads the handed-in values too', () => {
+    /* a nought-minute sortie is all report and debrief: under the kept three hours and two it can earn; under a
+       today of zero and zero it measures nothing — the helper must answer for the values it was handed */
+    const d = day([wave([], { ...line('VL', '12:00', '12:00', [jet('bane')]), rid: 'L1' })])
+    VCONF.reportLead = 0; VCONF.debrief = 0
+    expect(oilCapableItems(d).has('r:L1'), 'today: nothing to measure').toBe(false)
+    expect(oilCapableItems(d, kept).has('r:L1'), 'as published: it earns').toBe(true)
   })
   it('with nothing handed in, today\'s values are read — as before', () => {
     expect(dayOilWork(sat([]), {}).bane.map(x => [x.s, x.e])).toEqual([[h(9), h(15)]])

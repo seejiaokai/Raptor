@@ -320,7 +320,7 @@ export function itemState(day: any, ev: OilEvidence, item: string): 'on' | 'off'
   if (off) return 'off'
   if (on) return 'on'
   /* nobody on the row: its own kind is the only honest answer */
-  return oilItemDefaults(day, oilKeptVals(ev)).get(item) === false ? 'off' : 'on'
+  return oilItemDefaults(day).get(item) === false ? 'off' : 'on'
 }
 
 /* ---- building the block -------------------------------------------------- */

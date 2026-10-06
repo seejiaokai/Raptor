@@ -301,4 +301,16 @@ describe('OWS10 — a version published before the values were kept still reads,
     expect(oilPending(5)).toEqual([])
     expect(cellOf('bane', SAT)).toBe('HO')                   // the old behaviour, for that old record only
   })
+  it('kept values that are not three real numbers are not trusted: read as none kept', () => {
+    for (const bad of [{ reportLead: '180', debrief: 120, oilFullMin: 361 }, { reportLead: 180, debrief: 120 }, { reportLead: 180, debrief: -5, oilFullMin: 361 }, { reportLead: NaN, debrief: 120, oilFullMin: 361 }, 'x', 7]) {
+      Object.assign(VCONF, RULES0); SCHED.orig = {}; SCHED.dayOK = {}; SCHED.cur = {}
+      build(5, '10:00', '11:15')
+      publish(5)
+      ;(SCHED.orig[5] as any).d.oilev.rv = bad               // a stored record somebody edited by hand, or half-written
+      VCONF.reportLead = 150
+      expect(() => runOilPass(), JSON.stringify(bad)).not.toThrow()
+      expect(oilPending(5), JSON.stringify(bad)).toEqual([])
+      expect(cellOf('bane', SAT), `${JSON.stringify(bad)} — today's values, as for a record with none`).toBe('HO')
+    }
+  })
 })

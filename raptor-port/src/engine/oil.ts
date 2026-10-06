@@ -509,8 +509,8 @@ export function oilCapableItems(day:any,rv?:OilRuleVals|null):Set<string>{
  *  through to "earns", and on an exempt kind that is the screen telling the
  *  admin something false about OIL. Same walk as `oilCapableItems` and the
  *  credit itself, so it cannot disagree with either. */
-export function oilItemDefaults(day:any,rv?:OilRuleVals|null):Map<string,boolean>{
+export function oilItemDefaults(day:any):Map<string,boolean>{
   const out=new Map<string,boolean>();
-  dayOilWork(day,{expandAll:()=>[],onItem:(it:string,dfl:boolean)=>{if(it&&!out.has(it))out.set(it,dfl);},rv});
+  dayOilWork(day,{expandAll:()=>[],onItem:(it:string,dfl:boolean)=>{if(it&&!out.has(it))out.set(it,dfl);}});
   return out;
 }

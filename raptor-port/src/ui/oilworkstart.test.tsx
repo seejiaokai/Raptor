@@ -27,7 +27,7 @@ import { setPage, DPREV, VWORK, setUnpubArm, setRestArm } from '../state/view'
 import { dayHTML, dayInfoHTML, withDaySnap } from './html'
 import { boardSignHTML } from './board'
 import { pendListHTML } from './pendlist'
-import { oilDayFigures } from './oilmode'
+import { oilDayFigures, oilEligible } from './oilmode'
 
 const PEND_CHIP = '.dpend:not(.dnew):not(.dchg)'
 const SAT = 5
@@ -225,6 +225,22 @@ describe('OWS6 — the published face keeps the OIL figures it went out with; th
     VCONF.oilFullMin = 480; validate()
     expect(issuedFigures(SAT)).toEqual({ bane: 'FO', stiff: 'HO' })
     expect(oilDayFigures(SAT)).toEqual({ bane: 'HO', stiff: 'HO' })
+  })
+  it('"could he earn here" answers for the face being shown, not for today', () => {
+    /* a nought-minute sortie published under a long report and debrief earns; with both set to zero today the same
+       line measures nothing — the published face must go on saying he could earn there */
+    VCONF.reportLead = 200; VCONF.debrief = 200
+    build('10:00', '10:00')
+    publishDay(SAT)
+    const item = rowItemKey((DAYS[SAT] as any).waves[0].formations[0].rid)
+    VCONF.reportLead = 0; VCONF.debrief = 0; validate()
+    expect(oilEligible(SAT, 'bane', item), 'the working copy, today: nothing to earn from').toBe(false)
+    const face = withDaySnap(SAT, dayCurVer(SAT), () => ({
+      eligible: oilEligible(SAT, 'bane', item),
+      figures: oilDayFigures(SAT),
+    }))
+    expect(face.eligible, 'the published face: he could, and did').toBe(true)
+    expect(face.figures.bane).toBe('FO')
   })
   it('an entered in-time shows on both: the day starts where it was typed (OWS1)', () => {
     build('12:00', '13:00', ['IN TIME 0830'])
