@@ -1,0 +1,92 @@
+{
+ "parts": {
+  "ows-C-s01-dk": {
+   "at": "2026-10-06T13:07:05.589Z",
+   "base": "http://localhost:4295",
+   "phone": false,
+   "table": [
+    {
+     "id": "S01.a",
+     "did": "Saturday: duty desk row \"Test desk\" 06:00–06:30 (+ Row), flying wave VIPER 12:00–13:00 (+ Wave), \"+ In-time / Rally\" typed IN TIME 10:00, Ranger in both; four signed, Published",
+     "saw": "✓ seated in the duty row and the wave [{\"duty\":true,\"got\":[\"bane\"]}] · ✓ published as ORIG [ORIG] · ✓ Leave War: a full day (FO), balance B+1 [{\"cell\":\"FO*\",\"b0\":\"0\",\"bal\":\"1\"}] · ✓ tracker prints BOTH worked periods 06:00–06:30 and 10:00–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-S01-1-cell.png",
+      "dk-03-S01-1-sheet.png",
+      "dk-04-S01-1-tracker.png"
+     ]
+    },
+    {
+     "id": "S01.b",
+     "did": "Logic → Flight debrief after land 2h → 2h30 (paid record must hold)",
+     "saw": "✓ the value changed [2h30] · ✓ Leave War still FO and tracker still 06:00–06:30, 10:00–15:00 (not 15:30) [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ the day reads 1 pending [1 pending] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ the To go out line names Debrief and Ranger 06:00–06:30, 10:00–15:00 → …15:30 [OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 06:00–06:30, 10:00–15:00 → ful]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-S01-2-cell.png",
+      "dk-07-S01-2-sheet.png",
+      "dk-08-S01-2-tracker.png",
+      "dk-09-S01-2-day.png",
+      "dk-10-S01-2-togoout.png"
+     ]
+    },
+    {
+     "id": "S01.c",
+     "did": "sign again and publish the amendment (Publish AL)",
+     "saw": "✓ went out as AL1 [AL1] · ✓ Leave War still FO [FO*] · ✓ tracker prints 06:00–06:30 and 10:00–15:30 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:30 1 left] · ✓ balance still B+1 (no second credit) [{\"o1\":\"1\",\"o3\":\"1\"}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-S01-3-cell.png",
+      "dk-12-S01-3-sheet.png",
+      "dk-13-S01-3-tracker.png",
+      "dk-14-S01-3-day.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "ows-C-s01-ph": {
+   "at": "2026-10-06T13:09:23.378Z",
+   "base": "http://localhost:4295",
+   "phone": true,
+   "table": [
+    {
+     "id": "S01.a",
+     "did": "Saturday: duty desk row \"Test desk\" 06:00–06:30 (+ Row), flying wave VIPER 12:00–13:00 (+ Wave), \"+ In-time / Rally\" typed IN TIME 10:00, Ranger in both; four signed, Published",
+     "saw": "✓ seated in the duty row and the wave [{\"duty\":true,\"got\":[\"bane\"]}] · ✓ published as ORIG [ORIG] · ✓ Leave War: a full day (FO), balance B+1 [{\"cell\":\"FO*\",\"b0\":\"0\",\"bal\":\"1\"}] · ✓ tracker prints BOTH worked periods 06:00–06:30 and 10:00–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-S01-1-cell.png",
+      "ph-03-S01-1-sheet.png",
+      "ph-04-S01-1-tracker.png"
+     ]
+    },
+    {
+     "id": "S01.b",
+     "did": "Logic → Flight debrief after land 2h → 2h30 (paid record must hold)",
+     "saw": "✓ the value changed [2h30] · ✓ Leave War still FO and tracker still 06:00–06:30, 10:00–15:00 (not 15:30) [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:00 1 left] · ✓ the day reads 1 pending [1 pending] · ✓ the four sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ the To go out line names Debrief and Ranger 06:00–06:30, 10:00–15:00 → …15:30 [OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 06:00–06:30, 10:00–15:00 → ful]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-S01-2-cell.png",
+      "ph-07-S01-2-sheet.png",
+      "ph-08-S01-2-tracker.png",
+      "ph-09-S01-2-day.png",
+      "ph-10-S01-2-togoout.png"
+     ]
+    },
+    {
+     "id": "S01.c",
+     "did": "sign again and publish the amendment (Publish AL)",
+     "saw": "✓ went out as AL1 [AL1] · ✓ Leave War still FO [FO*] · ✓ tracker prints 06:00–06:30 and 10:00–15:30 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT + Duty · 06:00–06:30, 10:00–15:30 1 left] · ✓ balance still B+1 (no second credit) [{\"o1\":\"1\",\"o3\":\"1\"}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-11-S01-3-cell.png",
+      "ph-12-S01-3-sheet.png",
+      "ph-13-S01-3-tracker.png",
+      "ph-14-S01-3-day.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

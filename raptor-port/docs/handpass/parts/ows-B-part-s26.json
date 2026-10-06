@@ -1,0 +1,99 @@
+{
+ "parts": {
+  "ows-B-sA-S26-dk": {
+   "at": "2026-10-06T13:12:44.087Z",
+   "base": "http://localhost:4294",
+   "phone": false,
+   "table": [
+    {
+     "id": "S26 IN TIME 8h30",
+     "did": "Saturday flight 12:00–13:00; the line typed \"IN TIME 8h30\"; published",
+     "saw": "✓ lines on the wave [[\"IN TIME 8h30\"]] · ✓ published ORIG [ORIG] · ✓ the line as kept: [\"IN TIME 8h30\"] [[\"IN TIME 8h30\"]] · ✓ Leave War cell HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-S26_IN_TIME_8h30-pub-cell.png",
+      "dk-03-S26_IN_TIME_8h30-pub-tracker.png",
+      "dk-04-S26_IN_TIME_8h30-day-day.png",
+      "dk-01-S26_IN_TIME_8h30-board.png"
+     ]
+    },
+    {
+     "id": "S26 IN TIME 8h30-words",
+     "did": "the box and the day say, about the reporting lines",
+     "saw": "{\"box\":[\"VIPER: reporting line 1 has no recognised clock. Check the time.\"],\"day\":[\"adv/REPORT_UNRESOLVED: VIPER: reporting line 1 has no recognised clock. Check the time.\"]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-S26_IN_TIME_8h30-board.png"
+     ]
+    },
+    {
+     "id": "S26 IN TIME 25:90",
+     "did": "Saturday flight 12:00–13:00; the line typed \"IN TIME 25:90\"; published",
+     "saw": "✓ lines on the wave [[\"IN TIME 25:90\"]] · ✓ published ORIG [ORIG] · ✓ the line as kept: [\"IN TIME 25:90\"] [[\"IN TIME 25:90\"]] · ✓ Leave War cell HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-S26_IN_TIME_25_90-pub-cell.png",
+      "dk-07-S26_IN_TIME_25_90-pub-tracker.png",
+      "dk-08-S26_IN_TIME_25_90-day-day.png",
+      "dk-05-S26_IN_TIME_25_90-board.png"
+     ]
+    },
+    {
+     "id": "S26 IN TIME 25:90-words",
+     "did": "the box and the day say, about the reporting lines",
+     "saw": "{\"box\":[\"VIPER: reporting line 1 has no recognised clock. Check the time.\"],\"day\":[\"adv/REPORT_UNRESOLVED: VIPER: reporting line 1 has no recognised clock. Check the time.\"]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-05-S26_IN_TIME_25_90-board.png"
+     ]
+    },
+    {
+     "id": "S26 IN TIME FL240",
+     "did": "Saturday flight 12:00–13:00; the line typed \"IN TIME FL240\"; published",
+     "saw": "✓ lines on the wave [[\"IN TIME FL240\"]] · ✓ published ORIG [ORIG] · ✓ the line as kept: [\"IN TIME FL240\"] [[\"IN TIME FL240\"]] · ✓ Leave War cell HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-S26_IN_TIME_FL240-pub-cell.png",
+      "dk-11-S26_IN_TIME_FL240-pub-tracker.png",
+      "dk-12-S26_IN_TIME_FL240-day-day.png",
+      "dk-09-S26_IN_TIME_FL240-board.png"
+     ]
+    },
+    {
+     "id": "S26 THE USUAL BRIEF IN THE USUAL PLACE",
+     "did": "Saturday flight 12:00–13:00; the line typed \"THE USUAL BRIEF IN THE USUAL PLACE\"; published",
+     "saw": "✓ lines on the wave [[\"THE USUAL BRIEF IN THE USUAL PLACE\"]] · ✓ published ORIG [ORIG] · ✓ the line as kept: [\"THE USUAL BRIEF IN THE USUAL PLACE\"] [[\"THE USUAL BRIEF IN THE USUAL PLACE\"]] · ✓ Leave War cell HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-S26_THE_USUAL_BRIEF_IN_THE_USUAL_PLACE-pub-cell.png",
+      "dk-15-S26_THE_USUAL_BRIEF_IN_THE_USUAL_PLACE-pub-tracker.png",
+      "dk-16-S26_THE_USUAL_BRIEF_IN_THE_USUAL_PLACE-day-day.png",
+      "dk-13-S26_THE_USUAL_BRIEF_IN_THE_USUAL_PLACE-board.png"
+     ]
+    },
+    {
+     "id": "S26 RALLY AFTER IN TIME",
+     "did": "Saturday flight 12:00–13:00; the line typed \"RALLY AFTER IN TIME\"; published",
+     "saw": "✓ lines on the wave [[\"RALLY AFTER IN TIME\"]] · ✓ published ORIG [ORIG] · ✓ the line as kept: [\"RALLY AFTER IN TIME\"] [[\"RALLY AFTER IN TIME\"]] · ✓ Leave War cell HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-S26_RALLY_AFTER_IN_TIME-pub-cell.png",
+      "dk-19-S26_RALLY_AFTER_IN_TIME-pub-tracker.png",
+      "dk-20-S26_RALLY_AFTER_IN_TIME-day-day.png",
+      "dk-17-S26_RALLY_AFTER_IN_TIME-board.png"
+     ]
+    },
+    {
+     "id": "S26 RALLY AFTER IN TIME-words",
+     "did": "the box and the day say, about the reporting lines",
+     "saw": "{\"box\":[\"VIPER: rally after in-time has no applicable in-time clock.\"],\"day\":[\"adv/REPORT_UNRESOLVED: VIPER: rally after in-time has no applicable in-time clock.\"]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-17-S26_RALLY_AFTER_IN_TIME-board.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

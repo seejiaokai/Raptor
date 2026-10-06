@@ -133,9 +133,8 @@ const amtOf = (ev: OilEvidence, spans: OilWork[]): OilAmt => {
 /* the day's earning work per person, in ONE place — every figure on every
    surface is measured from this, so the bar, the mode and the count chip can
    never disagree about what a man earned or about which events earned it. */
-function oilDaySpans(di: any): Record<string, OilWork[]> {
+function oilDaySpans(di: any, ev: OilEvidence = evOf(di)): Record<string, OilWork[]> {
   const d = DAYS[+di]
-  const ev = evOf(di)
   if (!d || !ev.earns) return {}
   return oilEarnedWork(d, ev)
 }
@@ -145,7 +144,7 @@ function oilDaySpans(di: any): Record<string, OilWork[]> {
  *  so a man on four rows has ONE figure. Where that figure is SHOWN is O-1's
  *  question, answered in oilFigureFor below. */
 export function oilDayFigures(di: any): Record<string, OilAmt> {
-  const work = oilDaySpans(di), ev = evOf(di)
+  const ev = evOf(di), work = oilDaySpans(di, ev)      // ONE evidence read for the day's work and its full-day line
   const out: Record<string, OilAmt> = {}
   for (const person of Object.keys(work)) { const a = amtOf(ev, work[person]); if (a) out[person] = a }
   return out
@@ -169,8 +168,8 @@ export function oilDayFigures(di: any): Record<string, OilAmt> {
  *  off. A man on four rows where two counted shows the figure twice.
  *  This SUPERSEDES §2.10 / OIL21, which repeated it on every puck he wore. */
 export function oilFigureFor(di: any, person: any, item?: string): OilAmt {
-  const spans = oilDaySpans(di)[String(person)] || []
-  const a = amtOf(evOf(di), spans)
+  const ev = evOf(di), spans = oilDaySpans(di, ev)[String(person)] || []
+  const a = amtOf(ev, spans)
   if (!a || item == null) return a
   return spans.some(w => String(w.item || '') === item) ? a : null
 }

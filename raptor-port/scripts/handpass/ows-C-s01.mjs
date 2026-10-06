@@ -32,7 +32,7 @@ const o2 = await C.oilOf(p, 'bane', SAT, 'S01-2')
 const d2 = await C.dayState(p, di, 'S01-2')
 console.log('O2', C.say(o2, d2))
 judge('S01.b', 'Logic → Flight debrief after land 2h → 2h30 (paid record must hold)', [
-  ['the value changed', set.after && /2h30|2h 30|150/.test(set.after), set],
+  ['the value changed', /2h30|2h 30|150/.test(String(set)), set],
   ['Leave War still FO and tracker still 06:00–06:30, 10:00–15:00 (not 15:30)', o2.letters === 'FO' && /10:00.15:00/.test(o2.row) && !/15:30/.test(o2.row), o2.row.slice(0, 260)],
   ['the day reads 1 pending', C.pendOf(d2.head) === '1', d2.head.pending],
   ['the four sign-offs fell', d2.signsEmpty, d2.head.signs],

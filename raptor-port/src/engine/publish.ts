@@ -17,6 +17,7 @@ import { standsOn } from './overlay'   // functions only both ways
 import { inputProtected } from './quarantine'   // functions only both ways, so the import loop is safe
 import { rosterIds } from './faceattrs'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals } from './oilev'
+import { oilRuleValsNow } from './oil'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -1385,6 +1386,10 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
    signed, or one signed before this build — binds nothing here; putting the value back restores the four (AM11). */
 function oilRvBoundOk(di:any,was:any){
   if(!was)return true;
+  /* the common case first — nothing changed since he signed — before any evidence is built: this runs for every signed
+     role on every repaint (docs/performance.md Part 1) */
+  const n=oilRuleValsNow();
+  if(was.reportLead===n.reportLead&&was.debrief===n.debrief&&was.oilFullMin===n.oilFullMin)return true;
   return oilRuleShift(DAYS[+di],{...oilEvidence(di),rv:was}).length===0;}
 /* A BINDING WRITTEN BEFORE `stand` EXISTED stores the OIL key in the old
    six-part form, which can never equal today's seven-part one — so every

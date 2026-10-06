@@ -41,7 +41,12 @@ export async function dayState(p, di, name, { shots = true, list = true } = {}) 
   const al = await S.alPanel(p)
   return { head, list: lst, pend: (/\d+/.exec(head.pending || '') || ['0'])[0], al: al && al.text ? al.text.slice(0, 200) : '', pics }
 }
-export const signsWords = h => (h && h.signs || []).map(s => (!s || /name/i.test(s)) ? '–' : s).join('/')
+export const signsWords = h => (h && h.signs || []).map(s => (!s || /name/i.test(s)) ? '–' : s).join('/') + (h && h.nys ? ' + chip "' + h.nys + '"' : ' + no Not-yet-signed chip') + (h && h.alpub ? ' + button "' + h.alpub + '"' : '')
+/* a PUBLISHED day's four selects are the NEXT amendment's, blank before and after; its sign-offs "stand" while there is no
+   "Not yet signed" chip and fall when the chip shows. An unpublished day's selects hold the names. */
+const isPub = h => !!h && /ORIG|AL\s*\d/.test(h.tag || '')
+export const signFell = h => isPub(h) ? !!h.nys : W.signsEmpty(h)
+export const signStand = h => isPub(h) ? !h.nys : W.signsFull(h)
 
 /* View-only Sched: the man's puck on the published day */
 export async function faceOf(p, di, id, name) {
@@ -84,3 +89,49 @@ export function say(o, d) {
   if (d) parts.push(`day tag ${d.head && d.head.tag}; pending chip "${d.head && d.head.pending}"; sign-offs ${signsWords(d.head)}; list "${(d.list || '').slice(0, 330)}"`)
   return parts.join(' || ')
 }
+
+/* ---------- builders & the scenario frame (walker A) ---------- */
+/* a Saturday (or any day) flying line for one man, with an optional typed In-time / Rally line, through the board's own controls */
+export async function flyLine(p, { di = 5, cs = 'VIPER', to = '12:00', ld = '13:00', report = null, p1 = 'bane', w1 = null } = {}) {
+  await S.L.go(p, 'editsched'); await sleep(400)
+  const w = await S.addFlyingWave(p, di, { cs, to, ld, p1, w1 })
+  if (report) { await S.addItBtn(p, di, w.wi); await S.setItLine(p, di, w.wi, 0, report) }
+  return w
+}
+/* a bundle: the Leave War + tracker for the man, and the day */
+export async function snap(p, di, id, iso, name, o = {}) {
+  const lw = await oilOf(p, id, iso, name, { shots: o.shots !== false })
+  const d = await dayState(p, di, name, { shots: o.shots !== false, list: o.list !== false })
+  return { lw, d, pics: [...lw.pics, ...d.pics] }
+}
+export const sayS = s => say(s.lw, s.d)
+export const hasW = (s, re) => re.test(s.d.list)
+export const spans = s => spansOf(s.lw.row)
+export const credits = (row, dateRe = /18 Jul|19 Jul/g) => ((String(row).match(dateRe)) || []).length
+/* sign one role's select on the visible surface (week or board); returns what it shows */
+export async function signRole(p, di, role, pick = 0) {
+  const r = (await p.locator('#schedBoard:visible').count()) ? '#schedBoard' : '#eWeek'
+  const sel = p.locator(`${r} select[data-sign="${role}"][data-signday="${di}"]:visible`).first()
+  if (!(await sel.count())) return 'NO SELECT'
+  await sel.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'nearest' }))
+  const opts = await sel.locator('option').evaluateAll(os => os.map(o => o.value).filter(Boolean))
+  await sel.selectOption(opts[Math.min(pick, opts.length - 1)]); await sleep(300)
+  return sel.evaluate(s => s.options[s.selectedIndex]?.text || '')
+}
+/* the four selects' words, as the week shows them */
+export async function selWords(p, di) {
+  await S.toWeek(p); await W.showDay(p, di)
+  return p.evaluate(i => [...document.querySelectorAll(`#eWeek .day[data-day="${i}"] select[data-sign]`)].map(s => (s.options[s.selectedIndex] ? s.options[s.selectedIndex].text : '').replace(/\s+/g, ' ')).join(' / '), di)
+}
+/* a scenario frame: a fresh world, caught errors, NOT WALKED on a throw */
+export async function frame(id, fn) {
+  const w = await S.world()
+  try { await fn(w) } catch (e) {
+    S.row(id, 'the script stopped', String(e && e.stack || e).slice(0, 700), 'NOT WALKED', [])
+    try { await pic(w.p, id + '-stopped') } catch {}
+  }
+  console.log(id, 'ERRORS', JSON.stringify(w.errors))
+  S.savePart(id, { errors: w.errors })
+  await w.browser.close()
+}
+export const BASE_HP = process.env.HP_URL

@@ -1,0 +1,238 @@
+{
+ "parts": {
+  "S08-dk": {
+   "at": "2026-10-06T13:06:23.121Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "S08.1",
+     "did": "Ranger on Saturday VIPER 10:00–11:15, no in-time; four signed; published",
+     "saw": "✓ seated [[\"bane\"]] · ✓ ORIG [ORIG] · ✓ cell FO [FO*] · ✓ worked 07:00–13:15 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left] · ✓ nothing pending [] · ✓ four sign-offs standing (no Not-yet-signed chip) [–/–/–/– + no Not-yet-signed chip]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S08-a-cell.png",
+      "dk-02-S08-a-tracker.png",
+      "dk-03-S08-a-day.png"
+     ]
+    },
+    {
+     "id": "S08.2",
+     "did": "Logic: Nominal report before T/O 3h → 2h30 (Edit rules → box → Tab); then Saturday, the Leave War, View-only Sched",
+     "saw": "✓ value is 2h30 (150) [{\"set\":\"2h30\",\"lg\":{\"lead\":150,\"debrief\":120,\"full\":361}}] · ✓ cell still FO [FO*] · ✓ worked still 07:00–13:15 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left] · ✓ balance unmoved [[1,1]] · ✓ 1 pending [1 pending] · ✓ sign-offs fell (Not yet signed chip) [–/–/–/– + chip \"Not yet signed\" + button \"Publish AL1\"] · ✓ list: OIL on this day · Logic values changed since it was published [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → half day · 07:30] · ✓ sub-line Logic · Nominal report before T/O 3h → 2h30 [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → half day · 07:30] · ✓ man line Ranger · OIL full day · 07:00–13:15 → half day · 07:30–13:15 [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → half day · 07:30] · ✓ published face keeps FO green edge [{\"tag\":\"ORIG\",\"puck\":\"puck oilbar oilbar-fo\",\"title\":\"Ranger · IP · instructor pilot · SXO · earns a full day of OIL\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-S08-b-logic.png",
+      "dk-05-S08-b-day.png",
+      "dk-06-S08-b-togoout.png",
+      "dk-07-S08-b-cell.png",
+      "dk-08-S08-b-tracker.png",
+      "dk-09-S08-b-viewonly.png"
+     ]
+    },
+    {
+     "id": "S08.3",
+     "did": "Logic put back 2h30 → 3h",
+     "saw": "✓ value 3h (180) [{\"lead\":180,\"debrief\":120,\"full\":361}] · ✓ nothing pending, list cleared [{\"chip\":\"\",\"list\":\"\"}] · ✓ four sign-offs stand again [–/–/–/– + no Not-yet-signed chip] · ✓ cell FO, 07:00–13:15, balance same [cell FO; tracker row \"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left\"; worked 07:00–13:15; balance 1; war record \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-S08-c-day.png",
+      "dk-11-S08-c-cell.png",
+      "dk-12-S08-c-tracker.png"
+     ]
+    },
+    {
+     "id": "H-01.1",
+     "did": "lead 3h → 2h30 (pending), then the top bar's Undo",
+     "saw": "✓ before Undo: 1 pending [1 pending] · ✓ Undo was pressable [{\"present\":true,\"title\":\"Undo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]}] · ✓ value is 3h again [{\"lead\":180,\"debrief\":120,\"full\":361}] · ✓ nothing pending [] · ✓ sign-offs back [–/–/–/– + no Not-yet-signed chip]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-H01-b-logic-before-undo.png",
+      "dk-15-H01-c-after-undo.png",
+      "dk-16-H01-c-day.png"
+     ]
+    },
+    {
+     "id": "H-01.2",
+     "did": "the top bar's Redo",
+     "saw": "✓ Redo pressable [{\"present\":true,\"title\":\"Redo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]}] · ✓ value 2h30 again [{\"lead\":150,\"debrief\":120,\"full\":361}] · ✓ 1 pending again [1 pending] · ✓ sign-offs fell [–/–/–/– + chip \"Not yet signed\" + button \"Publish AL1\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-H01-d-day.png",
+      "dk-18-H01-d-togoout.png"
+     ]
+    },
+    {
+     "id": "H-01.3",
+     "did": "Logic page \"Reset to standard\" after the change",
+     "saw": "✓ Reset pressed [pressed] · ✓ values 180/120/361 [{\"lead\":180,\"debrief\":120,\"full\":361}] · ✓ nothing pending, sign-offs stand [{\"pend\":\"\",\"signs\":\"–/–/–/– + no Not-yet-signed chip\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-H01-e-after-reset.png",
+      "dk-20-H01-e-day.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "S08ph-ph": {
+   "at": "2026-10-06T13:09:29.824Z",
+   "base": "http://localhost:4293",
+   "phone": true,
+   "table": [
+    {
+     "id": "S08ph.1",
+     "did": "Ranger on Saturday VIPER 10:00–11:15, no in-time; four signed; published",
+     "saw": "✓ seated [[\"bane\"]] · ✓ ORIG [ORIG] · ✓ cell FO [FO*] · ✓ worked 07:00–13:15 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left] · ✓ nothing pending [] · ✓ four sign-offs standing (no Not-yet-signed chip) [–/–/–/– + no Not-yet-signed chip]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-S08ph-a-cell.png",
+      "ph-02-S08ph-a-tracker.png",
+      "ph-03-S08ph-a-day.png"
+     ]
+    },
+    {
+     "id": "S08ph.2",
+     "did": "Logic: Nominal report before T/O 3h → 2h30 (Edit rules → box → Tab); then Saturday, the Leave War, View-only Sched",
+     "saw": "✓ value is 2h30 (150) [{\"set\":\"2h30\",\"lg\":{\"lead\":150,\"debrief\":120,\"full\":361}}] · ✓ cell still FO [FO*] · ✓ worked still 07:00–13:15 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left] · ✓ balance unmoved [[1,1]] · ✓ 1 pending [1 pending] · ✓ sign-offs fell (Not yet signed chip) [–/–/–/– + chip \"Not yet signed\" + button \"Publish AL1\"] · ✓ list: OIL on this day · Logic values changed since it was published [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → half day · 07:30] · ✓ sub-line Logic · Nominal report before T/O 3h → 2h30 [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → half day · 07:30] · ✓ man line Ranger · OIL full day · 07:00–13:15 → half day · 07:30–13:15 [OIL on this day · Logic values changed since it was published Logic · Nominal report before T/O 3h → 2h30 Ranger · OIL full day · 07:00–13:15 → half day · 07:30] · ✓ published face keeps FO green edge [{\"tag\":\"ORIG\",\"puck\":\"puck oilbar oilbar-fo\",\"title\":\"Ranger · IP · instructor pilot · SXO · earns a full day of OIL\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-S08ph-b-logic.png",
+      "ph-05-S08ph-b-day.png",
+      "ph-06-S08ph-b-togoout.png",
+      "ph-07-S08ph-b-cell.png",
+      "ph-08-S08ph-b-tracker.png",
+      "ph-09-S08ph-b-viewonly.png"
+     ]
+    },
+    {
+     "id": "S08ph.3",
+     "did": "Logic put back 2h30 → 3h",
+     "saw": "✓ value 3h (180) [{\"lead\":180,\"debrief\":120,\"full\":361}] · ✓ nothing pending, list cleared [{\"chip\":\"\",\"list\":\"\"}] · ✓ four sign-offs stand again [–/–/–/– + no Not-yet-signed chip] · ✓ cell FO, 07:00–13:15, balance same [cell FO; tracker row \"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 07:00–13:15 1 left\"; worked 07:00–13:15; balance 1; war record \"\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-S08ph-c-day.png",
+      "ph-11-S08ph-c-cell.png",
+      "ph-12-S08ph-c-tracker.png"
+     ]
+    },
+    {
+     "id": "H-01.1",
+     "did": "lead 3h → 2h30 (pending), then the top bar's Undo",
+     "saw": "✓ before Undo: 1 pending [1 pending] · ✓ Undo was pressable [{\"present\":true,\"title\":\"Undo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]}] · ✓ value is 3h again [{\"lead\":180,\"debrief\":120,\"full\":361}] · ✓ nothing pending [] · ✓ sign-offs back [–/–/–/– + no Not-yet-signed chip]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-H01-b-logic-before-undo.png",
+      "ph-15-H01-c-after-undo.png",
+      "ph-16-H01-c-day.png"
+     ]
+    },
+    {
+     "id": "H-01.2",
+     "did": "the top bar's Redo",
+     "saw": "✓ Redo pressable [{\"present\":true,\"title\":\"Redo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]}] · ✓ value 2h30 again [{\"lead\":150,\"debrief\":120,\"full\":361}] · ✓ 1 pending again [1 pending] · ✓ sign-offs fell [–/–/–/– + chip \"Not yet signed\" + button \"Publish AL1\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-17-H01-d-day.png",
+      "ph-18-H01-d-togoout.png"
+     ]
+    },
+    {
+     "id": "H-01.3",
+     "did": "Logic page \"Reset to standard\" after the change",
+     "saw": "✓ Reset pressed [pressed] · ✓ values 180/120/361 [{\"lead\":180,\"debrief\":120,\"full\":361}] · ✓ nothing pending, sign-offs stand [{\"pend\":\"\",\"signs\":\"–/–/–/– + no Not-yet-signed chip\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-19-H01-e-after-reset.png",
+      "ph-20-H01-e-day.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "S11a-dk": {
+   "at": "2026-10-06T13:12:23.270Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "S11a.1",
+     "did": "flight 12:00–13:00, no report (nominal 09:00 → 15:00); four signed; published",
+     "saw": "✓ ORIG [ORIG] · ✓ HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S11a-a-cell.png",
+      "dk-02-S11a-a-tracker.png",
+      "dk-03-S11a-a-day.png"
+     ]
+    },
+    {
+     "id": "S11a.2",
+     "did": "Logic: Full-day OIL threshold 6h01 → 6h",
+     "saw": "✓ value 360 [{\"set\":\"6h\",\"lg\":{\"lead\":180,\"debrief\":120,\"full\":360}}] · ✓ cell still HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ balance unmoved [[0.5,0.5]] · ✓ one pending [1 pending] · ✓ sign-offs fell [–/–/–/– + chip \"Not yet signed\" + button \"Publish AL1\"] · ✓ list: threshold sub-line and man half day → full day [OIL on this day · Logic values changed since it was published Logic · Full-day OIL threshold 6h01 → 6h Ranger · OIL half day · 09:00–15:00 → full day · 09:00–15]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-S11a-b-cell.png",
+      "dk-05-S11a-b-tracker.png",
+      "dk-06-S11a-b-day.png",
+      "dk-07-S11a-b-togoout.png"
+     ]
+    },
+    {
+     "id": "S11a.3",
+     "did": "sign again; publish the amendment",
+     "saw": "✓ AL1 [AL1] · ✓ cell FO [FO*] · ✓ worked unchanged 09:00–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 1 left] · ✓ balance higher by 0.5 [[0.5,1]] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-S11a-c-cell.png",
+      "dk-09-S11a-c-tracker.png",
+      "dk-10-S11a-c-day.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "S10-dk": {
+   "at": "2026-10-06T13:12:29.898Z",
+   "base": "http://localhost:4293",
+   "phone": false,
+   "table": [
+    {
+     "id": "S10.1",
+     "did": "Ranger on Saturday line 12:00–13:00, \"+ In-time / Rally\" typed IN TIME 0830; four signed; published",
+     "saw": "✓ ORIG [ORIG] · ✓ FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S10-a-cell.png",
+      "dk-02-S10-a-tracker.png",
+      "dk-03-S10-a-day.png"
+     ]
+    },
+    {
+     "id": "S10.2",
+     "did": "Logic: Flight debrief after land 2h → 2h30; Saturday, Leave War, tracker",
+     "saw": "✓ value 150 [{\"lead\":180,\"debrief\":150,\"full\":361}] · ✓ cell still FO [FO*] · ✓ worked still 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance unmoved [[1,1]] · ✓ one pending [1 pending] · ✓ sign-offs fell [–/–/–/– + chip \"Not yet signed\" + button \"Publish AL1\"] · ✓ list: OIL on this day · Logic values changed… + debrief 2h → 2h30 [OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 08:30–15:00 → full day · 08:30] · ✓ man: full day 08:30–15:00 → full day 08:30–15:30 [OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 08:30–15:00 → full day · 08:30]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-S10-b-cell.png",
+      "dk-05-S10-b-tracker.png",
+      "dk-06-S10-b-day.png",
+      "dk-07-S10-b-togoout.png"
+     ]
+    },
+    {
+     "id": "S10.3",
+     "did": "sign again; publish the amendment",
+     "saw": "✓ AL1 [AL1] · ✓ cell FO [FO*] · ✓ worked now 08:30–15:30 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:30 1 left] · ✓ balance not raised (no second FO) [{\"bal\":1,\"credits\":1}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-S10-c-cell.png",
+      "dk-09-S10-c-tracker.png",
+      "dk-10-S10-c-day.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

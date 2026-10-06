@@ -49,8 +49,12 @@ export async function dayState(p, di, name, { list = true } = {}) {
   }
   return { head, list: lst, pics, pend: (/\d+/.exec(head.pending || '') || ['0'])[0] }
 }
-export const signsStand = h => S.W.signsFull(h)
-export const signsFall = h => S.W.signsEmpty(h)
+/* sign-offs: on a PUBLISHED day the signed line stands and a "Not yet signed" mark means they fell (the four selects are the next
+   amendment's, empty either way); on an unpublished day the four selects themselves carry the names */
+const isPub = h => !!h && /ORIG|AL\s*\d/.test(h.tag || '')
+export const signsStand = h => isPub(h) ? !h.nys : S.W.signsFull(h)
+export const signsFall = h => isPub(h) ? !!h.nys : S.W.signsEmpty(h)
+export const signsWord = h => isPub(h) ? (h.nys ? 'fallen ("' + h.nys + '")' : 'stand (' + (h.signed || '').slice(0, 60) + ')') : (S.W.signsFull(h) ? 'four names' : S.W.signsEmpty(h) ? 'none' : 'some')
 
 /* ---- the fixture, through the controls ---- */
 /* a flying wave on the board with ONE line (callsign, take-off, landing) and a man seated through the crew list */
@@ -89,3 +93,34 @@ export const stamp = (...a) => a.filter(x => x != null && x !== '').join(' · ')
 /* the table row for one oil read: cell, worked, balance, and the day */
 export function sayOil(o, base) { return `cell ${o.letters} · worked ${o.worked || '—'} · balance ${o.bal}${base != null ? ` (was ${base})` : ''}` }
 export { judge, row, savePart, sleep, pic, world, L, W }
+
+/* ---- one fixture, start to finish: a fresh world, the wave, the reporting lines, publish, read ---- */
+export async function addLines(p, di, wi, texts) {
+  const trace = []
+  for (let i = 0; i < texts.length; i++) {
+    await S.addItBtn(p, di, wi)
+    const lines = await S.intimes(p, di, wi)
+    trace.push(lines.length)
+    if (lines.length <= i) { trace.push('no new line after press ' + (i + 1)); continue }
+    await S.setItLine(p, di, wi, i, texts[i])
+  }
+  return { trace, lines: await S.intimes(p, di, wi) }
+}
+/* spec: { to, ld, p1, w1, cs, di, iso, lines: [...], publish: true } -> everything the screen said */
+export async function runCase(name, spec = {}) {
+  const { to = '12:00', ld = '13:00', p1 = 'bane', w1, cs = 'VIPER', di = 5, iso = S.SAT, lines = [], pub = true, phone = false, keepWorld = false } = spec
+  const wd = await world({ phone })
+  const { p, errors, browser } = wd
+  const out = { p, errors, browser, name, di, iso, p1 }
+  out.base = await baseline(p, p1)
+  await S.L.go(p, 'editsched'); await sleep(300)
+  out.w = await flight(p, di, { cs, to, ld, p1, w1 })
+  out.add = lines.length ? await addLines(p, di, out.w.wi, lines) : { trace: [], lines: [] }
+  out.fb = await feedbackText(p, di, out.w.wi)
+  out.warns = await warnWords(p, di)
+  out.pre = await pic(p, name + '-board')
+  if (pub) { out.pubr = await S.publishNew(p, di); await S.closeBoard(p); out.o = await oilOf(p, p1, iso, name + '-pub') ; out.d = await dayState(p, di, name + '-day', { list: false }) }
+  else await S.closeBoard(p)
+  if (!keepWorld) await browser.close()
+  return out
+}

@@ -64,6 +64,73 @@
    ],
    "errors": [],
    "pics": 16
+  },
+  "ows-D-s36-dk": {
+   "at": "2026-10-06T13:12:21.827Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "S36.enabled",
+     "did": "published: the enabled seat kinds — OFT seat and extra, AMT passenger, duty main and extra, ground main and extra, Common Programme name, SC MAIN",
+     "saw": "✓ all fixture seats were taken through the crew list [{\"oftSeat\":true,\"oftExtra\":true,\"amtPax\":true,\"dutyMain\":true,\"dutyExtra\":true,\"gndMain\":true,\"gndExtra\":true,\"cp\":true,\"scMain\":true,\"scSpare\":true,\"avLine\":tr] · ✓ OFT seat (snap): HO, worked 09:00–15:00 [HO* | Cinch IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH SIM · 09:00–15:00 0.5 left] · ✓ OFT extra (shaft): HO, worked 09:00–15:00 [HO* | Anvil IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH SIM · 09:00–15:00 0.5 left] · ✓ AMT pax (dice): HO, worked 09:00–15:00 [HO* | Reaper IR 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH SIM · 09:00–15:00 0.5 left] · ✓ duty main (pump): HO, worked 09:00–15:00 [HO* | Piston IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH Duty · 09:00–15:00 0.5 left] · ✓ duty extra (nact): HO, worked 09:00–15:00 [HO* | Warden IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH Duty · 09:00–15:00 0.5 left] · ✓ ground main (mamba): HO, worked 09:00–15:00 [HO* | Sidewinder IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH Duty · 09:00–15:00 0.5 left] · ✓ ground extra (slipway): HO, worked 09:00–15:00 [HO* | Drifter A 4.5 + 7 − 2.5 +3 carried in opening figure −0.5 10 Feb −1 11 May −1 12 May 0.5 left +1 3 Jan Weekend recovery ] · ✓ Common Programme (razer): HO, worked 09:00–15:00 [HO* | Ridge C 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH Duty · 09:00–15:00 0.5 left] · ✓ SC MAIN (bane): HO, worked 07:00–13:00 [HO* | Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 07:00–13:00 0.5 left]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-S36-pub-grid.png",
+      "dk-03-S36-pub-tracker.png"
+     ]
+    },
+    {
+     "id": "S36.exempt-default",
+     "did": "published: SC SPARE, AVALON line, AVALON desk, BB line left on their default",
+     "saw": "✓ SC SPARE (stiff): no OIL while default off [ | Saber IP 0] · ✓ AVALON line (split): no OIL while default off [ | Vandal IP 0] · ✓ AVALON desk (glass): no OIL while default off [ | Basher IW 0] · ✓ BB line (freak): no OIL while default off [ | Echo IW 0]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-S36-pub-grid.png",
+      "dk-03-S36-pub-tracker.png"
+     ]
+    },
+    {
+     "id": "S36.exempt-optin",
+     "did": "OIL Earn: switched each exempt item on (SC SPARE, AVALON line, AVALON desk, BB line); four sign again; Publish AL",
+     "saw": "✓ AL1 [AL1] · ✗ SC SPARE (stiff): HO 07:00–13:00 [ | Saber IP 0] · ✓ AVALON line (split): FO, worked 19:00–23:59 [FO* | Vandal IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 19:00–23:59 1 left] · ✓ AVALON desk (glass): credited [FO* | Basher IW 1 + 1 +1 18 Jul AUTO Weekend/PH Duty · 19:00–23:59 1 left | SXO 19:00-07:00 glass] · ✓ BB line (freak): HO 09:00–15:00 [HO* | Echo IW 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ the enabled men held [snap:HO shaft:HO dice:HO pump:HO nact:HO mamba:HO slipway:HO razer:HO bane:HO]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-05-S36-al-grid.png",
+      "dk-06-S36-al-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "who": {
+    "oftSeat": true,
+    "oftExtra": true,
+    "amtPax": true,
+    "dutyMain": true,
+    "dutyExtra": true,
+    "gndMain": true,
+    "gndExtra": true,
+    "cp": true,
+    "scMain": true,
+    "scSpare": true,
+    "avLine": true,
+    "bbLine": true,
+    "avBlock": {
+     "bi": 1,
+     "label": "AVALON",
+     "sa": "avalon",
+     "rows": [
+      "SXO|19:00-07:00|",
+      "OPS O|19:00-07:00|",
+      "RUNNER|19:00-07:00|",
+      "LOG CELL|19:00-07:00|"
+     ]
+    },
+    "avDesk": true,
+    "avDeskRow": "SXO 19:00-07:00 glass"
+   },
+   "logicText": "openEnd 60 SETTING A standby shift (SC, AVALON, BB) occupies exactly the hours written on the line — no step, no dekit, no brief, no debrief tail. |  insOf · crewRestDay SETTING An SC SPARE carries no crew rest in either direction — standing spare buys none for the next day, and it never closes a spare slot to anyone. |  LL local leave — cannot be planned, but may still stand an SC SPARE OL overseas leave — out of reach — cannot be planned for anything, an SC SPARE included OIL off in lieu — cannot be planned, but may still stand an SC SPARE CCL childcare leave — cannot be planned, but may still stand an SC SPARE PL paternity leave — cannot be planned, but may still stand an SC SPARE FCL family care leave — cannot be planned, but may still stand an SC SPARE EL embarkation leave — cannot be",
+   "pics": 8
   }
  }
 }
