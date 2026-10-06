@@ -2697,3 +2697,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** Add to the e2e conventions, beside the "wait on what it needs" rule: (1) an intermittent failure between two consecutive actions is reproduced by putting a pause BETWEEN them — a busy machine widens that gap, page throttling does not; (2) before repairing, show which of the two it is: the app never did it (mark the element, watch for replacement) or the test looked too early; (3) a repair is proven by running it WITH the pause that used to break it; (4) what the trace finds in the app is filed, even when a person could never trigger it.
 
 **Principle:** Reproduce the race before choosing the wait: a test that fails only under load is telling you which gap matters, and the same pause that reproduces it is the proof of the repair.
+
+### Observation 446: A reading written into a fresh ruling contradicted a sentence the app itself prints; it was caught only when that sentence came up for editing
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** The owner ruled in one line that a filled in-time box on a standby shift counts for earned leave. Recording it, the builder added its own readings of the edge cases — among them that a spare crew row, once switched on, takes the in-time too — and filed the ruling with that reading before building.
+**Skill:** New skill candidate: recording an owner ruling with the builder's readings (the project's record-decisions rule)
+**Type:** internal
+**Phase/Area:** Writing the "agent's readings" under a new ruling, before the build
+
+**Issue:** The rulings and the backlog were searched before the row was written, as the rule requires — but not the app's own on-screen rule text or the older settled-decisions section for the SUBJECT (the in-time box on that shift kind). Both already said the box belongs to the main crew only ("a spare reports nowhere, so his box does nothing"), in the owner's own earlier words. The reading was reversed within the hour, before anything was built on it, and both independent readers later judged the reversed reading the better one; but the first version sat in the filed ruling, the rules document and the register for that hour, and each had to be corrected.
+
+**Suggested improvement:** In the record-decisions rule, where it tells the agent to label its own readings: before writing a reading about an edge case, search for the edge case's SUBJECT in (1) the settled-decisions sections of the area files, (2) the app's own rule text (the page that prints every rule), and (3) the rules document — and quote the sentence found beside the reading. A reading with no sentence found says so.
+
+**Principle:** A builder's reading of a new ruling must be checked against what the product already tells its users about the same subject, not only against the ledger of rulings.

@@ -9,6 +9,8 @@ each date's own block), `src/ui/oilmode.ts` (the figures) and `src/ui/pendlist.t
 words in `src/ui/logic-html.ts`. Pinned by `src/engine/oilworkstart.test.ts` (where the day starts),
 `src/leavewar/oilworkstart-published.test.ts` (a published day, through the real publish path, read at the Leave War's
 own cell and record), `src/ui/oilworkstart.test.tsx` (every count and the To go out list) and `e2e/oilworkstart.spec.ts`.
+**D606 (7 Oct 26):** an SC shift's typed B, its in-time, starts the MAIN's OIL day - `src/engine/reporting.ts scIntime` (the one
+body crew rest and OIL read it with), `src/engine/oil.ts`; pinned by `src/engine/oilscintime.test.ts`.
 `scripts/handpass/ows-host.mjs` is the host's walk (the build before the fix and after it); `scripts/handpass/ows-*.mjs`
 the walkers'. The register: `docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md`; the plan and what its two
 challenges changed: `docs/superpowers/plans/2026-10-06-oil-work-start-plan.md`; the record:

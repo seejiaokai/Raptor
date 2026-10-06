@@ -488,3 +488,50 @@ FLT · 06:00–13:00 · 1 left") and `E/dk-20-E11-signed-0h30-togoout` (the Logi
 another event of his on the same day (tested: `engine/oilscintime.test.ts`, "first start to last end"); the PM shift
 and both MAIN rows at once; E05–E14 at phone width; the next day's cell after E12's overnight AVALON; a real `us`
 sign-in for E14 (the admin's member view was used); a real iPhone.
+
+**The two code reads (D590 — Astra, and Sol 6.1 second, each blind to the other), on the change and this section:**
+brief `docs/superpowers/briefs/2026-10-07-oil-sc-intime-read-brief.md` (it carries the D56 exclusion); reports, filed as
+written, `…-oil-sc-intime-read-astra.md` and `…-oil-sc-intime-read-sol.md`. Neither can run the app or the tests.
+
+| Reader | Verdict | What it said |
+|---|---|---|
+| Astra | **PASS** | "No blocking application defect found." The six readings are supported; **MAIN only is the stronger reading** — his 24 Aug words say "earlier than TO for main only". No reader of an SC crew's start disagrees with the new one; no published reader takes the B on today's lead; a B typed after publication needs no second OIL line. |
+| Sol 6.1 | **PASS — required changes: none** | "No blocking defect found in the changed calculation. The MAIN-only interpretation fits the standing SC rules better than giving an activated SPARE the B time." The same traces, the same conclusions. |
+
+Both passed the owed meaning read: D606's short line against its full row (D138).
+
+**What they asked to be tightened — all done, tests and one comment only; no behaviour changed** (the built app is
+byte-for-byte the one they read and the gates ran on: the same hash before and after the comment):
+
+| Their point | Done |
+|---|---|
+| A SPARE marked on the FORMATION only was not separately tested (both) | test "a SPARE marked on the FORMATION … keeps the written window too"; its own break cut B31 (1 red) |
+| The "first start to last end" test's two full days proved nothing — the shift alone was already a full day (Astra) | a case only the start-to-finish measure answers that way: a 3-hour shift and a 1-hour desk — half a day from the written start, a full day from the B |
+| "25:90" is not unreadable to the engine — it parses as a later clock; the box refuses it at the door (Sol) | taken out of the "cannot read" list and labelled as what it is (the walk's E07 shows the door refusing it) |
+| A test title broader than its fixture (both) | renamed — "a daytime shift" |
+| One stale comment in the engine (Astra) | corrected |
+
+**Their ranked cases, and what became of each:** the strict lead boundary (03:00 under a 3h lead, and 3h01) — test; a
+handed-in lead of zero — test, and break cut B32; the PM shift with both MAIN rows and a SPARE — test; a cancelled shift
+and a cancelled row — test; on a published day: a B typed and taken out again (pending, then nothing, the four
+standing), a Logic change that keeps the amount but moves the stored start (pending; the amendment stores the new
+start), an overnight shift (stored 18:00–23:59, the next day nothing) — three tests; four standing → B → amendment — the
+browser test and E02–E04; the Logic change under an evening-before B — E11. **Not run:** a leave filed 00:00–00:30
+against an evening-before B (the daytime twin was walked, E16); a row cancelled AFTER publication and amended; a
+formation-level SPARE through OIL Earn's switch on screen (the row-level one was walked, E09).
+
+**Break tests, final:** 31 cuts, 31 red, restored green.
+
+**The gates, on the D606 build, under the PC's one lock, each count from a run watched in this chat:** unit
+**8053 / 8053 (500 files)** · build clean · tfin **728 / 0** · e2e **619 passed, 0 failed, 50 skipped** · smoke
+**445 / 0** · rulecheck OK · docsize OK. After the readers' tests the full unit suite again: **8061 / 8061 (500 files)**. **NOT run again
+for D606:** the speed check and the six adapted probes — the change draws nothing new and adds one clock read per SC
+shift; their last run is the one in §The gates above, before D606.
+
+**Status of D606: BUILT; FULL-checked for its size; ready for his look with the rest of the branch. Not merged; `main`
+untouched.** No fault found by the walk, the 31 break tests or either read. Filed beside it, both older and words
+only: `[OIL-EARN-DAY-SWITCH-WORDS]`, `[SC-B-CHANGE-SAYS-BRIEF]`. For his look, one more step on the card above:
+**Saturday → the board → "+ Wave" → SC, a man on the first MAIN row of the 07:00–13:00 shift, sign, Publish — Leave War
+HO; type 06:00 in that shift's B box — still HO, the day reads pending; sign, Publish AL1 — FO.**
+
+`Walk: docs/handpass/2026-10-06-oil-work-start.md · 2,093 pictures · 21 surfaces · 63 scenarios + 120 ordered pairs · MISSING: none — "NO, because" rows: the change history (filed [HIST-PER-PAGE]); CSV / print (no OIL column); the desktop week and the published face draw no SC in-time (his call of 24 Aug 26)`
