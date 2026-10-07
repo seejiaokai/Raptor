@@ -224,6 +224,13 @@ was typed — with nothing saying which does what. He also asked that a long nam
 short form ("ND") that opens to the full name and its kind at a click. This is the tidy D634 left for him to ask for: a
 mock-up first, on a real picture; the colours and "Edit types" are kept; nothing goes without his pick.
 
+**Fewer words, and "Presets", not "Type" (D644).** Shown the sixth set he found the sheet wordy and the row's title misleading:
+the buttons are ready-made events the squadron set up, not "types". Redrawn the same night: the row is "Presets" and the button
+"Edit presets" ("Saved" and "Quick picks" offered beside it; "template" is already Admin's word for duty, day and wave templates);
+every helper sentence is gone — a read-out of a few words stays under the lit preset for the one fact that changes a decision
+(whether work on the day earns OIL); the short form's box is labelled "On grid"; under "Other…" the question is just "Kind".
+D643's two questions stay open.
+
 **The sixth set (7 Oct 26, night) is at the head of the private page** - the Event sheet, D643: the real sheet as built, with
 "National Day" typed, and the real grid stretched by that name, beside the proposed sheet (one Type row, the picked type lit, an
 optional Name and Short form; "Other..." opening the kind question) and the grid showing "ND" with the small box a tap opens. Drawn
