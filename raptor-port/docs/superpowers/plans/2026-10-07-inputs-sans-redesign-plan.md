@@ -262,9 +262,10 @@ the gear of either calendar or from the Leave War's ⚙; admin only. Two parts s
   underlined; session-only view state, in `VIEW_RESET`. **The SANS tab has no filters** (the Highlight does that job,
   and the counts ignore filters by ruling — D581).
 - **A day opened:** the working (required, available, SANS committed to fly, still needed — both seats); the
-  commitments, grouped WSOs and pilots, **each person drawn as his puck with his CAT chip (D647)** — the scheduler's own
-  `puck()` markup for the callsign in his seat's colour, and the CAT from the roster in the Leave War's CAT colours, one
-  small shared builder used here and in the Highlight list — then his letters, his hours (D572) and who placed it and
+  commitments, grouped WSOs and pilots, **each person drawn as the schedule's own puck (D647, D649)** — `ui/html.ts
+  puck()` itself, never a look-alike: the callsign on his seat's colour, his CAT chip joined to its end in the
+  schedule's CAT colours, every puck the one fixed size, **in proportion with the row's own letters (D650 — not
+  scaled up; its size is a look-card item on his iPhone)** — here and in the Highlight list; then his letters, his hours (D572) and who placed it and
   when (§3.8); "+ Commitment" (a SANS member his own, an admin anyone's — the existing rules); for an admin, a button
   "Days", which opens Days on that month. A man with no CAT on the roster shows his puck alone.
   **Everyone is listed and the list scrolls (D648) — never a "+ more" line:** three groups, WSOs to fly, pilots to fly,

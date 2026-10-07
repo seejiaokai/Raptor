@@ -248,6 +248,21 @@ glance; the Highlight list shows the same. The grouping by WSOs and pilots stays
 The admin's button there is "Days" (it was drawn as "Day settings"): it opens Days on that month — the required numbers are
 typed on the Leave War, not there. Redrawn the same night, with D646's shorter fold.
 
+**The schedule's own puck, the chip attached (D649).** The first redraw for D647 drew a coloured name with a round badge beside it;
+he asked for the puck the schedule uses, chip attached, all one size. Read from the running app (7 Oct 26): `puck()` gives
+`<span class="puck sm"><span class="nm">…</span><span class="role q-…">IP</span></span>` — every puck 74 by 15 px, radius 3, the
+callsign on the seat's colour (pilot rgb 110 106 46, WSO rgb 31 110 82), the chip joined at the right in the CAT's colour:
+instructor (IP, IW, IR) purple rgb 159 74 223, A red, B amber, C cyan, D blue, OCU violet. The build calls that one builder.
+**Its size (D650):** drawn large at first, he asked for it smaller and in proportion — the callsign at about the size of the
+row's own letters, the puck never the biggest thing on the row; checked on his iPhone in the job's check.
+
+**Asked, not yet ruled - the phone Inputs month, more compact, and filling the screen.** He asked how the month looks more compact, then
+proposed slimming the tools row (month, Today, Calendar / List, filter) and stretching the month to the foot of a phone screen. Drawn
+three ways at 390 by 844: as drawn, 3 inputs a day (98-point week rows); stretched to the foot with a 32-point tools row, 4 a day
+(130-point rows); stretched with thin bars (12 points, words about 9), 6 a day. Where the room comes from: the stretch gives one
+more a day, thin bars two more, the slimmer row 8 points in all - under 2 a week row. Put to him: stretch (recommended yes), thin
+bars on a phone (yes), slimmer row (no - it buys nothing and makes the buttons harder to press; D487). Source: mock2e.html.
+
 **The opened day lists everyone and scrolls (D648).** The drawing ended "+ 4 more pilots · 2 more offer OFT or AMT only" — the
 drawing running out of room, not a design. Everyone who has committed is listed and the list scrolls; no "+ more". The window
 does not open full screen (D641 keeps the calendar behind it usable): on a phone it opens about two-thirds high and is pulled up
