@@ -776,8 +776,8 @@ role question; (2) and (3) with their own jobs; (4) only if he raises it.
 `codex/inputs-sans-calendar`'s own `HANDOFF.md` block (read it with `git show origin/codex/inputs-sans-calendar:HANDOFF.md`).
 That branch is 124 commits behind the live version: bring it level FIRST — it meets `main` in the rulings files (use
 `backlog-archive.mjs --rulings --merge`), `AGENTS.md`, `HANDOFF.md`, `OUTSTANDING.md`, `raptor-port/docs/ui-contracts.md`,
-`raptor-port/playwright.config.ts` and `raptor-port/src/ui/InputsCal.tsx` (the failed-save band, D587). Who builds — Codex
-or Opus — is his to say (asked 7 Oct 26). Nothing of it is deleted (D610). Size the walk first (D607, D608).
+`raptor-port/playwright.config.ts` and `raptor-port/src/ui/InputsCal.tsx` (the failed-save band, D587). **Opus 5.5 builds it, in Claude Code (D615, 7 Oct 26)** — it reads
+what Codex built first; Astra and Sol 6.1 review what Opus adds. Nothing of it is deleted (D610). Size the walk first (D607, D608).
 His words: *"That's still work in progress and I may call it back to work on it anytime. So don't delete"*. The work is on
 the branch `codex/inputs-sans-calendar` (on his PC and on GitHub; checked 7 Oct 26) — its own handoff block, its rulings
 D567–D585 and its records are on that branch, not on `main`; Codex recorded his hold there (D585) and D589 kept it outside
