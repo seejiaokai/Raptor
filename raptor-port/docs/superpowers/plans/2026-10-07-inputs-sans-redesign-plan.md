@@ -462,7 +462,8 @@ The box is a small menu, not a window: it closes on a press outside, on Escape a
 **Everywhere else a holiday is named.** `dayFacts` returns the name and the short form; the calendars' date tag is the
 short form in the kind's colour (so "PH", "OFF" or "ND" — the earlier drawings' fixed "PH" / "OFF" tags are this
 rule's commonest case); an opened day and the Holidays list show the full name and the kind; the Holidays list's add
-form has Name and "On grid", suggested the same way.
+form has Name and "On grid", suggested the same way (D652 — his ruling; one `normShort`, one suggestion rule, shared with the
+Event sheet), and offers Public holiday and Off day only.
 
 **Unchanged, and tested as unchanged:** which days are non-working and which earn OIL (`isNonWorkingDay`,
 `columnKindFor` read the KIND, never the text or the short form); the column's colour; an existing event's text.
