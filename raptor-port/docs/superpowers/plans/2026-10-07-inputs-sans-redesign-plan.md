@@ -372,6 +372,19 @@ opening and back to the opener on closing); a click brings a window to the front
   demo seed is rewritten to carry them.
 - Found on the way, fixed with it (a test that fails first): a change to the F / O / A ticks alone writes no
   change-history line.
+- **AS BUILT (7 Oct 26, night — step 1, piece (e)).** Two bodies in `src/state/inputstamp.ts`, `stampPlaced` and
+  `stampChanged`, called at each door of the table by name — not one catch-all at the write funnel, which would also
+  have stamped the doors the table deliberately leaves out. WHO is the running command's own person (the one its record
+  names), so a restore stamps nothing by construction; WHEN is one moment per command. A piece is a copy of its record,
+  so it keeps who placed that. Rows 1 to 9 and 13 are built and tested (`src/leavewar/whoplaced.test.ts`, one case a
+  row, with Undo / Redo of each; `src/ui/whoplaced.test.tsx` for the List's Add form, its edit in place and an OIL answer
+  alone); rows 10 to 12 (the group's) come with its writer (§3.13). **Decided by the builder where the table was
+  silent, each told to him (§8):** an approval that EXTENDS a leave re-states who placed it (the table's row 5, read to
+  the letter); a posting that runs BY ITSELF on its date records the moment and no name (the person whose visit
+  triggered it changed nothing); a Save that changes nothing still counts as a change, as it already moves `mod`;
+  where a request is FILED (`acc` — on the programme, under Unavailable, taken off) is not a change to the record;
+  with nobody signed in nothing is written. **Left for step 5, with the line itself:** the demo seed's records carry
+  no stamps yet — who each is shown as placed by is seen when it is drawn.
 
 ### 3.9 The late cut-offs — D628, D639
 
@@ -977,6 +990,13 @@ with a picture of today's SANS calendar on his iPhone, the month in a short box 
 §3.5, §3.6 and §5. The readings told to him: it holds for both calendars and for the Days month; where a month cannot
 fit at a readable size the whole page scrolls, never a box inside it (this narrows D653's "the month scrolls instead");
 what he saw is today's build, replaced at steps 4 and 5 — nothing is patched before then.
+
+**Added while building step 1, piece (e) (7 Oct 26, night) — who placed it, to tell him the same way:** a leave made
+longer by approving the next day shows as placed by whoever made that latest approval; an input shortened by a posting
+out that runs by itself on its date says when, and names nobody; pressing Save with nothing changed still shows as a
+change by you (it already counts for the LATE mark); the scheduler putting a request on the programme, under
+Unavailable or taking it off does not show as "changed by"; the demo squadron's own inputs show no "placed by" until
+the line is drawn (step 5); an input filed before this was built shows none (D56).
 
 **The group input's readings (§3.13), to tell him the same way:** (on the schedule he has since ruled ONE row
 holding everyone — D661; it was "one row for each man"); (the changes window he has since ruled shows a group filing as ONE item — D663; it was

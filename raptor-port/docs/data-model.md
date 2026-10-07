@@ -562,6 +562,8 @@ appointment, duty, SANS availability.
 | `sansEvents` | JSON | no | `sans`: which of Fly / OFT / AMT are offered |
 | `handCount` | int | no | `hand` — how many times the request has changed hands (+1 at every change of person; absent = 0). An OIL decision about it records the holding it was made under (the day's `oild.pa`) — `[DB-READINESS]` group A phase 6 (a), 30 Sep 26 (section 9 rule 9) |
 | `leftAt` | JSON | no | person id → the holding at which the request LEFT him — written by the hand-over; an OIL decision about him made under an earlier holding reads as nothing, so a hand-over writes no day (phase 6 (a)) |
+| `filedBy` / `filedAt` | FK → Person / datetime | no | `by` / `at`: who PLACED it and when (owner D629, 7 Oct 26) — the signed-in person who filed it, who can differ from `personId` (an admin filing for a member; the approver of a leave on the Leave War). Set once at creation; a piece the app cuts from a record carries that record's. Null on a record filed before the fields existed. NOT the platform's own created-by column: Undo and Redo re-make a record and must give these back as they were |
+| `changedBy` / `changedAt` | FK → Person / datetime | no | `modBy` / `modAt`: who last changed it and when; equal to `filedBy` / `filedAt` on a record nobody has changed; `changedBy` null when the last change was the app's own act (a posting that ran on its date). Beside `modified` (the DATE the late rule reads), never instead of it. NOT the platform's modified-by column, for the same reason |
 | `isDeleted` | bool | yes | undo can resurrect an input |
 
 `InputType` is a reference table, not free text: `code` (PK), `group`

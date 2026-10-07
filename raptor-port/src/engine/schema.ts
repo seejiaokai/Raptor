@@ -217,6 +217,19 @@ export type Input = {
    *  commitInputEdit). An OIL decision about him made under an earlier holding reads as nothing (engine/oilev.ts
    *  pruneHandedOverDecisions) — the old write-side clear, said on the request instead of every day (phase 6 (a)). */
   leftAt?: Record<string, number>
+  /** Who PLACED it: the signed-in person (a PEOPLE id) who filed it — which can differ from `person`, the man it is
+   *  for (an admin filing for a member, an approval on the Leave War). Absent on a record filed before 7 Oct 26, or
+   *  with nobody signed in — it then shows no "placed by" line. Never changed by an edit; a piece cut from a record
+   *  carries that record's — screen (state/inputstamp.ts stampPlaced; owner D629). */
+  by?: string
+  /** When it was placed — the moment, ms since the epoch (never a calendar day) — screen (state/inputstamp.ts). */
+  at?: number
+  /** Who last CHANGED it (a PEOPLE id); equal to `by` on a record nobody has changed. Absent when the last change was
+   *  the app's own act — a posting that ran by itself on its date — screen (state/inputstamp.ts stampChanged). */
+  modBy?: string
+  /** When it was last changed, ms; equal to `at` on a record nobody has changed. Beside `mod`, never instead of it:
+   *  `mod` is the DATE the late rule reads and is written exactly as before — screen (state/inputstamp.ts). */
+  modAt?: number
 }
 
 /* ---------------------------------------------------------------------------

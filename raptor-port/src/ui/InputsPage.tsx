@@ -37,6 +37,7 @@ import {
 } from './inputedit'
 import { DocConfirm } from './DocConfirm'
 import { docFields, docHas, rowDocIds } from '../state/docs'
+import { stampPlaced, stampChanged } from '../state/inputstamp'
 import { useVersion } from './useStore'
 import { exportCSV, inputRows } from './export'
 import { RangeCal } from './RangeCal'
@@ -456,7 +457,8 @@ export function InputsPage() {
     /* one row body for every segment the save files (the clash sheet can
        split an entry around a kept status) — dates and remarks vary, the
        rest is the form's state verbatim */
-    const rowBody = (d: string, ed: string | undefined, rem: string) => withId({
+    /* …and who placed it, and when (D629): this form is its own maker, not the editor's — state/inputstamp.ts */
+    const rowBody = (d: string, ed: string | undefined, rem: string) => stampPlaced(withId({
       /* yr anchors the bare labels to the year they were picked under —
          the same stamp every other creation path writes (24 Aug 26) */
       person: filedFor(), date: d, allday, s, e, yr: baseYear(),
@@ -472,7 +474,7 @@ export function InputsPage() {
          the leave row */
       ...(needsDoc(type) ? docFields(docIds) : {}),
       type, remarks: rem, mod: nowStamp(),
-    })
+    }))
     /* the row INPUTS.unshift just made — pin it to the top of the table and
        light it, so the add is visible even from a view that would filter it
        out. The flash comes off on a timer; the pin waits for the user. The
@@ -689,7 +691,9 @@ export function InputsPage() {
     setOilConf({
       ...g,
       commit: (dec: Record<string, number>) => {
-        writeInputsBatch(() => { r.oil = dec })
+        /* an answer alone is a change to the record: who gave it, and when (D629). `mod` — the date the late rule
+           reads — is NOT moved by it, as before */
+        writeInputsBatch(() => { r.oil = dec; stampChanged(r) })
         HOOKS.toast('OIL decision updated', 'ok')
       },
     })

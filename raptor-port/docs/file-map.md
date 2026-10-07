@@ -469,6 +469,15 @@ while it is still what the line said. The store's half is `state/store.ts` `holi
 The two late cut-offs (D628, D639): `engine/rules.ts` holds their eight values and ranges; `engine/inputs.ts` `cutSetOf`
 (which set judges an input), `cutBackDays` inside `dueOfWeekISO`, and `cutRuleText` (the rule in words, one source);
 `ui/logic-html.ts` states both on the Logic page; `engine/latecut.test.ts` pins them - `lateinput.test.ts` is untouched.
+Who placed an input, and when (D629; the plan §3.8): `src/state/inputstamp.ts` - the two bodies every door calls,
+`stampPlaced` (a record filed: `by`, `at`, and its last change the same) and `stampChanged` (`modBy`, `modAt`; who placed
+it never touched); who is the running command's own person, one moment per command, nothing on a restore, a name left
+out for the app's own act. Called from `ui/inputedit.tsx` (`commitNewInput`, `commitInputEdit`, `applyMedPlan`,
+`mintMedSegments`), `ui/InputsPage.tsx` (the List's Add form, an OIL answer alone), `leavewar/sync.ts` (`doorApprove`,
+and `sliceInput` - every cut or move of a leave, the medical's cut of one in `inputgate.ts` too) and
+`state/person-delete.ts` (a posting's trim). `src/leavewar/whoplaced.test.ts` is §3.8's table, one case a row, with
+Undo / Redo of each; `src/ui/whoplaced.test.tsx` the doors that are screens' own. `state/changelines.ts` gained the
+line for a change to a SANS availability's F / O / A ticks.
 D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
 through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
 thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.

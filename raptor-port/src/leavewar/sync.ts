@@ -115,6 +115,7 @@ import { schedStore, schedApplyEnd, resyncSchedBaseline } from '../state/sched-c
 import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate } from '../state/inputgate-hook'
+import { stampPlaced, stampChanged } from '../state/inputstamp'
 import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
 import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer } from '../state/flyplan-model'
 import { getFlyPlan, getTones, sansFly } from '../state/flyplan'
@@ -378,6 +379,8 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       lwMoved: moved, mod: nowStamp(),
     })
     inpId(row)
+    /* placed by whoever approved it, now (D629 — state/inputstamp.ts) */
+    stampPlaced(row)
     return row
   })
   let ok = false
@@ -401,6 +404,8 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       const merged = sliceInput({ ...keep, lwMoved: { ...(before?.lwMoved ?? {}), ...(r.lwMoved ?? {}), ...(after?.lwMoved ?? {}) } }, from, to, true)
       merged.remarks = withRemarksTail(keep.remarks ?? '', from, to, 'on')
       merged.mod = nowStamp()
+      /* an approval that EXTENDS a leave is still an approval: placed by this approver, now (the plan §3.8) */
+      stampPlaced(merged)
       INPUTS.splice(INPUTS.indexOf(keep), 1, merged)
       if (before && after) INPUTS.splice(INPUTS.indexOf(after), 1)
     }
@@ -440,6 +445,10 @@ export function sliceInput(row: any, from: string, to: string, keepIid: boolean)
   const word = remarksTailWord(row.remarks)
   if (word) out.remarks = withRemarksTail(row.remarks, from, to, word)
   if (!keepIid) { delete out.iid; inpId(out) }
+  /* WHO CUT OR MOVED IT, AND WHEN (D629 — state/inputstamp.ts). Every caller of this body is a change to the leave — a
+     day un-approved, deleted or moved on the war, a medical cutting it (inputgate.ts) — and each piece is a copy of the
+     record, so it keeps who PLACED that (`by`, `at`) and takes the change here. `mod` is carried as it was. */
+  stampChanged(out)
   return out
 }
 

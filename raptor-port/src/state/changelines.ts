@@ -35,7 +35,7 @@ import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
-import { dateOrd, INPUTS } from '../engine/inputs'
+import { dateOrd, INPUTS, isSansAvail, sansLetters } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
@@ -85,6 +85,8 @@ const oilWords = (o: any) => {
   return !v.length ? 'not asked' : v.some(x => x > 0) ? (v.every(x => x === 1) ? 'earns OIL' : 'earns part OIL') : 'earns no OIL'
 }
 const same = (a: any, b: any) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null)
+/* what a SANS availability offers, as its row prints it: "F/O/A" — '' when it offers nothing (or is not one) */
+const offerWords = (inp: any) => (inp && isSansAvail(inp.type) ? sansLetters(inp) : '')
 
 function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   const b: any = c.before, a: any = c.after, iid = String(c.id)
@@ -123,6 +125,11 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   if (!same(b.remarks || '', a.remarks || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: String(b.remarks || '—'), to: String(a.remarks || '—') }))
   if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(accNow(a)) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
+  /* WHAT A SANS AVAILABILITY OFFERS (found building D629, 7 Oct 26 — the plan §3.8): a change to the Fly / OFT / AMT
+     ticks alone wrote no line at all — the one thing a person reads on that record that the list above never compared.
+     Only where both sides are a SANS availability: a change of type is the type line's to say. */
+  if (isSansAvail(b.type) && isSansAvail(a.type) && offerWords(b) !== offerWords(a))
+    logAction(null, `${who} · ${what} ${spanWords(sa)} · F / O / A`, base({ from: offerWords(b) || '—', to: offerWords(a) || '—' }))
 }
 
 /* A FILING DONE UNDER THE DAY'S OWN COMMAND (accepting a request onto the programme, under Unavailable, taking it off):

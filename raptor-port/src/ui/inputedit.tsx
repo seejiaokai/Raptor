@@ -26,6 +26,7 @@ import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep, todayIso } from '../engine/editlog'
 import { elogReason } from '../state/changelines'
+import { stampPlaced, stampChanged } from '../state/inputstamp'
 import { writeInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
@@ -346,6 +347,8 @@ export function applyMedPlan(plan: any[]) {
       else delete t.endDate
       t.remarks = withRemarksTail(r.remarks, ordISO(p.tail.startOrd), ordISO(p.tail.endOrd), 'till')
       inpId(t)
+      /* a piece of the old record: it keeps who placed that (the copy carries `by` and `at`), changed now (D629) */
+      stampChanged(t)
       INPUTS.push(t)
       elogReason(t.iid, 'the tail of a split medical entry')
     }
@@ -369,6 +372,7 @@ export function applyMedPlan(plan: any[]) {
     else r.endDate = ordLabel(p.newEndOrd, r.yr)
     r.remarks = withRemarksTail(r.remarks, a != null ? ordISO(a) : '', ordISO(p.newEndOrd), 'till')
     r.mod = nowStamp()
+    stampChanged(r)
     elogReason(r.iid, 'cut by a medical')
   }
 }
@@ -408,6 +412,8 @@ export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd
     else delete t.endDate
     t.remarks = withRemarksTail(base.remarks, ordISO(g.startOrd), ordISO(g.endOrd), 'till')
     inpId(t)
+    /* a sibling of `base`: who placed it is base's (a new filing's own filer, or the edited record's — D629) */
+    stampChanged(t)
     INPUTS.push(t)
     elogReason(t.iid, 'a kept piece of a split medical entry')
     applyMedPlan(newMedTrimPlan(t.person, t.type, g.startOrd, g.endOrd, t, keepTail, entryEnd))
@@ -838,6 +844,8 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
   inpId(row)
+  /* who placed it, and when (D629 — state/inputstamp.ts): the signed-in person, whoever it is filed FOR */
+  stampPlaced(row)
   /* the medical trim cascade, computed and PREFLIGHTED before the batch (P2-QREV-01):
      it mutates existing rows and fires Leave War withdrawals the funnel cannot undo,
      so a plan touching a protected-date row is refused whole, before anything runs. */
@@ -999,6 +1007,8 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     const word = redated ? remarksTailWord(rem) : null
     if (word) rem = withRemarksTail(rem, ordISO(dateOrd(date, baseYear())), ordISO(dateOrd(endDate || date, baseYear())), word)
     r.s = s; r.e = e; r.date = date; r.remarks = rem; r.mod = nowStamp()
+    /* …and who changed it, and when — `by` and `at` are never touched by a change (D629 — state/inputstamp.ts) */
+    stampChanged(r)
     /* the edit re-derived its labels against the CURRENT loaded year (fmt),
        so the anchor moves with them — an edit is a re-statement of the date */
     r.yr = baseYear()

@@ -1236,3 +1236,12 @@ after success. Calendar/List retain that live correct-mode row despite remembere
 filters; deliberate filter/mode/leave/session intent releases it. Restored-image
 Undo/Redo finds the actual live ID, never resurrects removed rows, and planning-only
 Undo/Redo selects Member Calendar. This is feedback state, not persistent data.
+**Who placed an input, and when (D629, 7 Oct 26 — the redesign's plan §3.8).** Every Input carries `by` / `at` and
+`modBy` / `modAt`, written by two bodies in `state/inputstamp.ts`. **The drift seam is the list of doors:** a NEW door
+that makes an input must call `stampPlaced`, one that changes an input `stampChanged`, and one that cuts a piece from
+a record must copy the record (so the piece keeps who placed it) before stamping the change — a door that forgets
+leaves a record nobody is named on, and, once an input can be filed for a group (§3.13), one its filer cannot change.
+`leavewar/whoplaced.test.ts` and `ui/whoplaced.test.tsx` are the table; add the door's row there with it. Not a door,
+by design: where a request is FILED (on the programme, under Unavailable, taken off — `acc`), which is the
+scheduler's decision about the request and already a line in the change history; and Undo / Redo, which put the four
+back as recorded. `mod` — the date the late rule reads — is not touched by any of this.
