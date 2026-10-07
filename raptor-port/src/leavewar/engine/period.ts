@@ -263,3 +263,25 @@ export function buildDays(start: string, end: string): DayInfo[] {
   }
   return days
 }
+
+/** Copy a day's event lines and write one, padding with '' so a row beyond the
+ *  stored array's end (a just-added row) can be written into rather than
+ *  silently dropped. The one place events are mutated. */
+function writeEventLine(events: string[], line: number, text: string): string[] {
+  const out = [...events]
+  while (out.length <= line) out.push('')
+  out[line] = text
+  return out
+}
+
+/** A day with one event slot written — text AND its instance tag together
+ *  (owner, 18 Aug 26: the tag rides the event, not the type library). Every
+ *  write sets both: an edit that drops the tag must clear the stored one, or
+ *  yesterday's tag would silently colour today's different word.
+ *  (Moved here from state/store.ts, 7 Oct 26 — the store's writers and engine/holidays.ts share it.) */
+export function writeDayEvent(d: DayInfo, line: number, text: string, kind: EventKind | null): DayInfo {
+  const kinds = [...(d.eventKinds ?? [])]
+  while (kinds.length <= line) kinds.push(null)
+  kinds[line] = text ? kind : null // a cleared event keeps no tag behind
+  return { ...d, events: writeEventLine(d.events, line, text), eventKinds: kinds }
+}

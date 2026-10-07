@@ -131,6 +131,14 @@ import {
   AVAIL_P,
   AVAIL_W,
   AVAIL_DELETE_MSG,
+  writeDayEvent,
+  freeEventLine,
+  withHoliday,
+  withoutHoliday,
+  validDate,
+  MAX_HOLIDAY_NAME,
+  type HolidayDraft,
+  type HolidayRef,
   isAvailId,
   availRuleOf,
   cleanAvailRule,
@@ -1462,6 +1470,9 @@ function lwRegisterCommands(): void {
      are their OWN commands, so the command gate asks the right row of the permissions table (perms.ts COMMAND_OPS:
      the award's, the ledger's) rather than the bid's */
   for (const t of ['lw.award', 'lw.ledger', 'lw.clear']) cmdDefinePermission(t, cmdAnyone)
+  /* the Holidays list's three writers (holidayAdd / holidayChange / holidayRemove below): their own types so Undo can
+     say "a public holiday on 9 Aug"; admin only, by perms.ts COMMAND_OPS and by the writers themselves */
+  for (const t of ['lw.holiday.add', 'lw.holiday.change', 'lw.holiday.remove']) cmdDefinePermission(t, cmdAnyone)
   for (const c of LW_COLLS) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
   /* [DB-READINESS] group A, phase 3 — THE WAR'S ROWS, WRITTEN FROM THE COMMAND STREAM (state/rows.ts): every command's
      changes to the war, mapped to the rows they land in and written through the war's own door at phase 9 — inside the
@@ -2602,11 +2613,14 @@ export function absenceDoor(): AbsenceDoor | null { return DOOR }
 /** Run a war gesture as ONE command — every cell it touches, requests and
  *  approved leave alike, lands in one envelope and one undo step (design §5.2
  *  OA-003). Inside an already-running command it simply joins. */
-function gesture<T>(type: string, fn: () => T): T {
+function gesture<T>(type: string, fn: () => T, opts: { warId?: string; note?: string } = {}): T {
   if (cmdIsCommitting() || !LW_READY || LW_RESTORING) return fn()
   let out!: T
   const r = cmdCommit({
-    type, scope: { module: 'lw', warId: state.currentId } as CmdScope,
+    /* `warId` — the period the gesture writes, where that is not the one on screen (an Undo then returns to IT);
+       `note` — what it did, kept on the Undo step for its words (the command's `meta.key`, as a text box's is) */
+    type, scope: { module: 'lw', warId: opts.warId ?? state.currentId } as CmdScope,
+    ...(opts.note ? { meta: { key: opts.note } } : {}),
     apply: (t) => {
       t.enlist(lwStore)
       out = fn()
@@ -3268,26 +3282,8 @@ export function setDayEvent(date: string, line: number, text: string, kind: Even
   return true
 }
 
-/** Copy a day's event lines and write one, padding with '' so a row beyond the
- *  stored array's end (a just-added row) can be written into rather than
- *  silently dropped. The one place events are mutated. */
-function writeEventLine(events: string[], line: number, text: string): string[] {
-  const out = [...events]
-  while (out.length <= line) out.push('')
-  out[line] = text
-  return out
-}
-
-/** A day with one event slot written — text AND its instance tag together
- *  (owner, 18 Aug 26: the tag rides the event, not the type library). Every
- *  write sets both: an edit that drops the tag must clear the stored one, or
- *  yesterday's tag would silently colour today's different word. */
-function writeDayEvent(d: DayInfo, line: number, text: string, kind: EventKind | null): DayInfo {
-  const kinds = [...(d.eventKinds ?? [])]
-  while (kinds.length <= line) kinds.push(null)
-  kinds[line] = text ? kind : null // a cleared event keeps no tag behind
-  return { ...d, events: writeEventLine(d.events, line, text), eventKinds: kinds }
-}
+/* (`writeEventLine` and `writeDayEvent` — the one place a day's events are mutated — moved whole to engine/period.ts on
+   7 Oct 26, so the Holidays list's writers (engine/holidays.ts) and the writers here share the ONE body.) */
 
 /**
  * Write one event line across a RANGE of days — the "repeat" mode: the same
@@ -3363,6 +3359,82 @@ export function removeEventBand(line: number, date: string): boolean {
  *  range writer above; the engine's `bandAt` is the exported one. */
 function bandCoversDate(bands: EventBand[], line: number, date: string): boolean {
   return bands.some(b => b.line === line && b.from <= date && date <= b.to)
+}
+
+/* =====================================================================
+   THE HOLIDAYS LIST'S THREE WRITERS (the build plan docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md
+   §3.4; owner D631, D638) — a public holiday or an Off day added, changed or removed from the year's list in Days.
+   ---------------------------------------------------------------------
+   The list is this store's own record seen as a list (sync.ts holidaysIn), and these write that same record — a tagged
+   day event for one day, a merged band for a run (engine/holidays.ts) — so the Leave War's Event row and the list are
+   two doors onto one thing (D638). What sets them apart from the Event sheet's writers above:
+   - they write to the period HOLDING the date, which need not be the one on screen (the list shows a year, and the
+     calendars any month);
+   - they FIND their own Event row: the first one free across the whole range;
+   - each is ONE named command — one Undo step, whose words say what it was;
+   - a refusal is a sentence, with a reason the list's form can act on (`noperiod` offers to make the period);
+   - a change is checked WHOLE before anything is taken away, so a refused change leaves the holiday as it was.
+   Admin only, as every write to a period is. */
+export type HolidayFail = 'forbidden' | 'bad' | 'noperiod' | 'crosses' | 'full' | 'gone'
+export type HolidayResult = { ok: true } | { ok: false; reason: HolidayFail; message: string }
+const HOL_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+/* the day-first date voice of the war's own sentences ("9 Aug 26") */
+const holDate = (iso: string) => `${+iso.slice(8, 10)} ${HOL_MON[+iso.slice(5, 7) - 1]} ${iso.slice(2, 4)}`
+const holFail = (reason: HolidayFail, message: string): HolidayResult => ({ ok: false, reason, message })
+
+/* What a holiday write would do, worked out and checked before anything changes: the periods to write, or the refusal.
+   `replacing` = the line being changed (its record is taken away first, and its own days then count as free). */
+function holidayPlan(h: HolidayDraft, replacing: HolidayRef | null): HolidayResult | { writes: Array<[string, Period]>; draft: HolidayDraft } {
+  if (state.role !== 'admin') return holFail('forbidden', 'Only an admin can change the holidays.')
+  if (!h || typeof h !== 'object' || (h.kind !== 'ph' && h.kind !== 'off') || !validDate(h.from) || !validDate(h.to) || h.to < h.from)
+    return holFail('bad', 'Choose public holiday or Off day, and a first and last day — the last cannot be before the first.')
+  const typed = typeof h.name === 'string' ? h.name.trim().replace(/\s+/g, ' ') : ''
+  if (typed.length > MAX_HOLIDAY_NAME) return holFail('bad', `A holiday's name is at most ${MAX_HOLIDAY_NAME} letters.`)
+  /* no name typed: the squadron's own word for the kind (its first event type of that kind), else the standard one */
+  const kind = h.kind === 'ph' ? 'off' : 'free'
+  const name = typed || state.eventDefs.find(d => d.kind === kind)?.name || (h.kind === 'ph' ? 'PH' : 'Off day')
+  const draft: HolidayDraft = { kind: h.kind, name, from: h.from, to: h.to }
+
+  let source: LeaveWar | undefined, cleared: Period | null = null
+  if (replacing) {
+    source = state.wars.find(w => w.period.id === replacing.warId)
+    cleared = source ? withoutHoliday(source.period, replacing) : null
+    if (!source || !cleared) return holFail('gone', 'That holiday is no longer there — it was changed on the Leave War.')
+  }
+  const target = warHolding(state.wars, draft.from)
+  if (!target) return holFail('noperiod', `No leave period covers ${holDate(draft.from)} yet.`)
+  if (draft.to > target.period.end) return holFail('crosses', `Those dates run past ${holDate(target.period.end)}, the end of the leave period "${target.period.name}" — add each part to its own period.`)
+  const base = source && source === target ? cleared! : target.period
+  const line = freeEventLine(base, state.eventRows, draft.from, draft.to)
+  if (line < 0) return holFail('full', 'Every Event row is already used on those dates — add an Event row in the Leave War’s ⚙ Settings, then try again.')
+  const writes: Array<[string, Period]> = []
+  if (source && source !== target) writes.push([source.period.id, cleared!])
+  writes.push([target.period.id, withHoliday(base, line, draft)])
+  return { writes, draft }
+}
+function holidayRun(type: string, op: 'add' | 'change' | 'remove', writes: Array<[string, Period]>, what: { kind: string; from: string; to: string }): HolidayResult {
+  /* the note Undo's words are made from (undo/describe.ts lwLabel) and its landing reads (state/undo-wire.ts) */
+  const note = JSON.stringify({ op, kind: what.kind, from: what.from, to: what.to })
+  gesture(type, () => { for (const [id, period] of writes) updateWar(id, w => ({ ...w, period })) }, { warId: writes[writes.length - 1]![0], note })
+  return { ok: true }
+}
+export function holidayAdd(h: HolidayDraft): HolidayResult {
+  const plan = holidayPlan(h, null)
+  if ('ok' in plan) return plan
+  return holidayRun('lw.holiday.add', 'add', plan.writes, plan.draft)
+}
+export function holidayChange(line: HolidayRef, h: HolidayDraft): HolidayResult {
+  if (!line || typeof line !== 'object') return holFail('gone', 'That holiday is no longer there — it was changed on the Leave War.')
+  const plan = holidayPlan(h, line)
+  if ('ok' in plan) return plan
+  return holidayRun('lw.holiday.change', 'change', plan.writes, plan.draft)
+}
+export function holidayRemove(line: HolidayRef): HolidayResult {
+  if (state.role !== 'admin') return holFail('forbidden', 'Only an admin can change the holidays.')
+  const war = line && typeof line === 'object' ? state.wars.find(w => w.period.id === line.warId) : undefined
+  const cleared = war ? withoutHoliday(war.period, line) : null
+  if (!war || !cleared) return holFail('gone', 'That holiday is no longer there — it was changed on the Leave War.')
+  return holidayRun('lw.holiday.remove', 'remove', [[war.period.id, cleared]], line)
 }
 
 /** Why an event move was refused. Mirrors `MoveResult` for the roster. */

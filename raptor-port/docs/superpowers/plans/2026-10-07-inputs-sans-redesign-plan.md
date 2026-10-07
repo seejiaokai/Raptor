@@ -953,6 +953,13 @@ filters; the "Select dates" button goes; there is no one-day sheet — "Day sett
 dragging window on the Inputs page only; each press of a day button is its own Undo step; an Available row can be
 renamed and re-defined but not deleted.
 
+**Added while building step 1 (7 Oct 26) — the Holidays list, to tell him the same way:** two holidays of the same
+name on neighbouring days show as ONE line ("PH, 9–10 Aug"), and are changed or removed as that one line; a holiday
+added with no name takes the squadron's usual word for its kind ("PH", "Off day"); removing a holiday the demo year
+came with removes it for good; a holiday changed on the Leave War since the list was drawn is refused as "no longer
+there" rather than guessed at; a man who is no longer SANS is not counted among the SANS committed to fly (the Leave
+War's Available rows count him instead — never both).
+
 **The group input's readings (§3.13), to tell him the same way:** (on the schedule he has since ruled ONE row
 holding everyone — D661; it was "one row for each man"); (the changes window he has since ruled shows a group filing as ONE item — D663; it was
 "one line per man"); whoever files for other people answers the OIL question for all of them at the save (his ruling, D660 — it was

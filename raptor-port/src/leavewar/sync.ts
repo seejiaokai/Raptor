@@ -72,6 +72,7 @@ import {
   type DayInfo,
   type EventBand,
   type EventKind,
+  type HolidayRef,
 } from './engine'
 import {
   absencesChanged,
@@ -2107,21 +2108,12 @@ export interface WarDayFacts extends DayFacts {
   /** a Saturday or a Sunday */
   weekend: boolean
 }
-/** one line of the Holidays list: a public holiday or an Off day, over one date or a run of dates */
-export interface HolidayLine {
-  id: string
-  /** the leave period that holds it */
-  warId: string
-  from: string
-  to: string
-  kind: 'ph' | 'off'
-  name: string
-  /** where the record is: a day's own Event line (one day, or the same word repeated over a run), a merged band, or
-   *  the seeded holiday flag with no event on it */
-  src: 'day' | 'band' | 'flag'
-  /** its Event row; null for a flag */
-  line: number | null
-}
+/** one line of the Holidays list: a public holiday or an Off day, over one date or a run of dates — the record it
+ *  stands for (engine/holidays.ts HolidayRef: its period, where it is, its dates, kind and name) and an id for the list.
+ *  The list's three writers take the line itself: holidayChange(line, …), holidayRemove(line). */
+export interface HolidayLine extends HolidayRef { id: string }
+export { holidayAdd, holidayChange, holidayRemove, type HolidayResult, type HolidayFail } from './state/store'
+export { MAX_HOLIDAY_NAME, type HolidayDraft, type HolidayRef } from './engine'
 
 let WF_VER = 0
 let WF_SIG: readonly unknown[] = []

@@ -185,8 +185,21 @@ function lwCellLabel(entry: UndoEntry): string | null {
   if (removed.req && !added.req) return who ? `removing ${who}’s bid` : 'removing a bid'
   return who ? `${who}’s leave` : 'leave on the Leave War'
 }
+/* THE HOLIDAYS LIST'S STEPS, in his words (the Inputs / SANS redesign, plan §3.4) — from the note the command left
+   (leavewar/state/store.ts holidayRun): what it did, the kind, the dates */
+function holidayLabel(entry: UndoEntry): string {
+  let d: any = null
+  try { d = JSON.parse(entry.detail || 'null') } catch { /* no note */ }
+  const dated = d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.from)) && /^\d{4}-\d{2}-\d{2}$/.test(String(d.to))
+  const on = dated ? ` on ${flySpan([String(d.from), String(d.to)])}` : ''
+  const off = d && d.kind === 'off'
+  if (entry.type === 'lw.holiday.remove') return `removing the ${off ? 'Off day' : 'public holiday'}${on}`
+  if (entry.type === 'lw.holiday.change') return `a change to the ${off ? 'Off day' : 'public holiday'}${on}`
+  return `${off ? 'an Off day' : 'a public holiday'}${on}`
+}
 function lwLabel(entry: UndoEntry): string {
   if (entry.type === 'lw.stage') return stageLabel(entry) || 'a stage change on the Leave War'
+  if (entry.type.startsWith('lw.holiday.')) return holidayLabel(entry)
   if (TYPE_PHRASE[entry.type]) return TYPE_PHRASE[entry.type]
   const colls = new Set(entry.forward.map(c => c.collection))
   const cell = lwCellLabel(entry)

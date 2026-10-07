@@ -459,6 +459,13 @@ SANS people committed to F, O and A on a date, per seat, each once a day, never 
 roster marks SANS (`sansfly.test.ts`); it replaces `ui/sans-calendar-model.ts activityPeopleOn` when the SANS calendar is
 re-made (step 4). The same block of `sync.ts` re-exports the plan's readers and writers for the war's rows and holds the
 ONE join, `flyAnswer(iso)` / `flyMonth(y, m)` (`src/leavewar/flyanswer.test.ts`).
+`src/leavewar/engine/holidays.ts` - the pure half of the Holidays list's three writers: the first free Event row across
+a range, a holiday written as a tagged day event or a merged band, and the record a list line stands for taken away only
+while it is still what the line said. The store's half is `state/store.ts` `holidayAdd` / `holidayChange` /
+`holidayRemove` - each ONE named command (`lw.holiday.add` / `.change` / `.remove`: `perms.ts COMMAND_OPS`, Undo's words
+`undo/describe.ts holidayLabel`, its landing `undo-wire.ts lwDateOf`), written to the period HOLDING the date;
+`sync.ts` hands them on to the calendars. `engine/period.ts` now holds `writeDayEvent` (moved whole from the store).
+`src/leavewar/holidays.test.ts` pins them; `permsparity.test.ts` holds them to the permissions list.
 D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
 through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
 thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.

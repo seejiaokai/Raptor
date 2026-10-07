@@ -339,4 +339,7 @@ renames and re-defines, summed by ONE function that never counts a SANS man, nev
 records and typed commands only through the re-export at the foot of `sync.ts`, and every screen that shows a day's
 class, required figures or how many more are needed asks `sync.ts flyAnswer(iso)` / `flyMonth(y, m)` — the plan, the
 war's facts and the SANS committed to fly (`state/flyplan.ts sansFly`: only a SANS man, never one archived) handed to the
-ONE resolver.
+ONE resolver. **The Holidays list writes the war's own record** (D638 — two doors, one record): `holidayAdd` /
+`holidayChange` / `holidayRemove` (`state/store.ts`, pure half `engine/holidays.ts`) write a tagged day event or a merged
+band into the period HOLDING the date, on the first Event row free across the range, each ONE named command
+(`lw.holiday.*`); a change is checked whole before anything is taken away.
