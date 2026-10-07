@@ -67,13 +67,12 @@ export const SETTINGS_KEYS = [
   /* [ACCOUNTS] (D166, D204, 26 Sep 26): the guest switch — one `Setting` (data-model §3, §11). Written ONLY by
      state/accounts.ts, through its intent commands. */
   'guestview', 'insights', 'sanscalendar',
-  /* the Leave War's Required rows' names (the Inputs / SANS redesign, plan §3.2 — D640's free-text names). Listed HERE
-     or it would be written raw, outside permission and Undo (the hook below writes an unlisted key straight through).
-     Written ONLY by state/flyplan.ts, through `settings.flynames`. */
-  'flynames',
+  /* (`flynames` — a saved name for each of the Leave War's Required rows — stood here from step 1 of the Inputs / SANS
+     redesign until 8 Oct 26: D668, the Required rows keep their names.) */
   /* the members' switch — "members may file duties and commitments for other people" (D654, D655; the plan §3.13).
-     A boolean, absent = ON. Listed HERE for the same reason as `flynames`. Written ONLY by state/memberfile.ts,
-     through `settings.memberfile`; read by state/perms.ts membersFileOn. */
+     A boolean, absent = ON. Listed HERE or it would be written raw, outside permission and Undo (the hook below
+     writes an unlisted key straight through). Written ONLY by state/memberfile.ts, through `settings.memberfile`;
+     read by state/perms.ts membersFileOn. */
   'memberfile',
 ] as const
 /* THE SETTINGS RECORDS KEPT ONE ROW PER THING ([DB-READINESS] group A, phase 4 — plan §2.5's matrix, §2.9: the command
@@ -336,7 +335,7 @@ export function registerPeopleSettingsCommandLayer(): void {
   setSettingsWriteHook((k, v, raw) => {
     if (k.startsWith('missionrole:')) throw new Error('Mission-role rows require the typed annotation command')
     if (!isCommitting() && (k.startsWith('sansday:') || k === 'sanscalendar')) throw new Error('SANS calendar settings require the typed settings command')
-    if (!isCommitting() && (k === 'flynames' || FLY_ROW_PREFIXES.some(p => k.startsWith(p)))) throw new Error('The flying plan is written only by its typed commands')
+    if (!isCommitting() && FLY_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('The flying plan is written only by its typed commands')
     if (!isCommitting() && k === 'memberfile') throw new Error('The switch for members filing for other people is written only by its typed command')
     if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(k, v); return }
     commitSettings(settingsType(k), () => raw(k, v))

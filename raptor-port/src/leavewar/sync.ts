@@ -2270,13 +2270,13 @@ export function holidaysIn(year: number | string): HolidayLine[] {
    A screen that puts the halves together itself is a defect (the plan's risk 1) — two screens would then be free to
    show two answers for one day. */
 export {
-  getFlyPlan, getTones, getFlyNames, sansFly, sansCommittedOn, setFlyDays, setFlyRun, dropFlyRun, saveFlyNames, FLY_NAME_DEFAULTS,
+  getFlyPlan, getTones, sansFly, sansCommittedOn, setFlyDays, setFlyRun, dropFlyRun,
   type FlyDayPatch, type FlySave, type SansCommitted, type SeatIds,
 } from '../state/flyplan'
 export type { DayAnswer, FlyCls, Tone } from '../state/flyplan-model'
 
 /** THE PLAN'S OWN CHANGE SIGNAL, for a component of the war (the plan §3.3 "Repaint"): the scheduler's version, which
- *  moves when a plan row, a SANS commitment or the Required rows' names move. The war's rows hear the scheduler HERE,
+ *  moves when a plan row or a SANS commitment moves. The war's rows hear the scheduler HERE,
  *  as they reach its records here — beside `useWarFacts()` for the war's own half. */
 export function usePlanVersion(): number {
   return useSyncExternalStore(raptorSubscribe, raptorVersion, raptorVersion)

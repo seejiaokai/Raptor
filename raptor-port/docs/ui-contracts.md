@@ -6388,8 +6388,10 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   Required; a tap opens the working — required, available, SANS committed to fly, still needed — a small read-only menu
   for everyone (a press outside, Escape, a scroll or a second tap closes it).
 - **Names:** Available P / W are the two count rows' own names — his to change (D640). **Required P / W are FIXED — D668
-  (8 Oct 26: "1 as recommended")**: no control renames them, and the saved name step 1 made room for (`flynames`, its
-  command and permission) is to be taken out with the rest of step 2. While a name is still the one it started with, a
+  (8 Oct 26: "1 as recommended")**: no control renames them, and the saved name step 1 had made room for (`flynames`, its
+  command, permission row, reader, writer and Undo's words) was TAKEN OUT on 8 Oct 26 — the rows read `REQ_NAME`
+  (`ui/FlyEdit.tsx`), never a store; a record that build left behind is read by nothing (`ui/flyrows.test.tsx`,
+  `state/flyplan.test.ts`). While a name is still the one it started with, a
   phone (≤430px) shows its short form (Req P, Req W, Avail P, Avail W).
 - **Repaint:** the component subscribes itself to the scheduler's signal and to `useWarFacts()`; Matrix and its memo
   firewall are untouched. Each drawn month's cells are memoised on a signature of what they SHOW, built from the

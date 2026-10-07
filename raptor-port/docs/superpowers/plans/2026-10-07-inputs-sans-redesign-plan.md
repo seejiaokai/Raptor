@@ -327,6 +327,14 @@ row is now read as the rows read it, `availRuleOf`); and a NEW counter named "av
 over it (`mintId` now holds both ids as taken). **NOT BUILT YET in step 2:** `flynames` out (D668 — next); the "Days…"
 line, which waits for Days (step 3).
 
+**AS BUILT (8 Oct 26, the overnight run — `flynames` TAKEN OUT: D668).** Read §3.2's `settings.flynames`, the "Names"
+bullet of §3.3, §3.11's key list and §10's finding 5 with this: the Required rows' free-text name was the builder's
+own addition (D640's reading 2), and he left the names fixed. Out: the `flynames` key (`SETTINGS_KEYS`,
+`SETTINGS_KEYS_ALL`, the write hook's guard), `settings.flynames` and its permission row, `getFlyNames`,
+`saveFlyNames`, `FLY_NAME_DEFAULTS`, Undo's words for it and its landing, the re-export in `sync.ts`. `FlyRows` reads
+the two names from a constant (`REQ_NAME`). A record that build left in a store is read by nothing — pinned, with the
+key's absence from every list. **STEP 2 IS BUILT but for the "Days…" line, which opens Days and so waits for step 3.**
+
 ### 3.4 Days — Month and Holidays
 
 One window (`src/ui/DaysWindow.tsx`), mounted once in the shell like the input editor, opened by `pops.ts` state from

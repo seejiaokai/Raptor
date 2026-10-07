@@ -13,7 +13,7 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { storeBackend } from '../../engine/hooks'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setSession } from '../../state/auth'
-import { saveFlyNames, setFlyDays, setFlyRun } from '../../state/flyplan'
+import { setFlyDays, setFlyRun } from '../../state/flyplan'
 import { getState, initStore as lwInitStore, setCell, setPeople, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
@@ -194,13 +194,20 @@ describe('their names', () => {
     expect(name('avail-p').querySelector('.frl-long')!.textContent).toBe('Available P')
     expect(name('avail-w').querySelector('.frl-short')!.textContent).toBe('Avail W')
   })
-  it('a name of his own shows as typed, at every width', () => {
-    saveFlyNames({ p: 'Pilots to fly', w: 'Required W' })
+  /* THE REQUIRED ROWS KEEP THEIR NAMES (owner, D668, 8 Oct 26). Until then a saved name could replace one (the builder's
+     own addition, with no screen); a record that build left in a store changes nothing now. The Available rows' names
+     ARE his to change — availform.test.tsx. */
+  it('the Required rows read Required P and Required W whatever an earlier build left in the store', () => {
+    mem.set('sqn142_flynames', JSON.stringify({ p: 'Pilots to fly', w: 'WSOs to fly' }))
+    raptorInitStore()
+    setSession({ user: 'admin-test', role: 'admin' })
     render(<Matrix />)
-    const who = screen.getByTestId('fly-row-req-p').querySelector('.who')!
-    expect(who.textContent).toBe('Pilots to fly')
-    expect(who.querySelector('.frl-short')).toBeNull()
-    expect(screen.getByTestId('fly-row-req-w').querySelector('.frl-short')!.textContent).toBe('Req W')
+    for (const [row, long, short] of [['req-p', 'Required P', 'Req P'], ['req-w', 'Required W', 'Req W']] as const) {
+      const who = screen.getByTestId(`fly-row-${row}`).querySelector('.who')!
+      expect(who.querySelector('.frl-long')!.textContent).toBe(long)
+      expect(who.querySelector('.frl-short')!.textContent).toBe(short)
+      expect(who.textContent).not.toContain('to fly')
+    }
   })
 })
 

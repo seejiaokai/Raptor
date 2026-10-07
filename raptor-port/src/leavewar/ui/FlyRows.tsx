@@ -38,12 +38,12 @@ import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type Mutab
 import { createPortal } from 'react-dom'
 import type { DayInfo } from '../engine'
 import {
-  availRowNames, dayFacts, FLY_NAME_DEFAULTS, flyAnswer, flyMonth, getFlyNames, sansFly, usePlanVersion, useWarFacts,
+  availRowNames, dayFacts, flyAnswer, flyMonth, sansFly, usePlanVersion, useWarFacts,
   type DayAnswer,
 } from '../sync'
 import { dayLabel } from './dates'
 import { popAt } from './popat'
-import { FlyEditor, type FlyEditAt, type ReqRow } from './FlyEdit'
+import { FlyEditor, REQ_NAME, type FlyEditAt, type ReqRow } from './FlyEdit'
 import { ReqPanel } from './ReqPanel'
 import { planPick } from './reqpick'
 import type { ReqSelection } from './select'
@@ -140,7 +140,7 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
   /** open the counter form for one of the two Available rows (`availp` / `availw`) — an admin's tap on its name */
   onEditAvail?: (ruleId: 'availp' | 'availw') => void
 }) {
-  /* the two signals: the scheduler's (the plan's rows, the SANS commitments, the Required rows' names) and the war's
+  /* the two signals: the scheduler's (the plan's rows, the SANS commitments) and the war's
      (who is available, a holiday, the Available rows' own names) */
   const planV = usePlanVersion()
   const warV = useWarFacts()
@@ -159,10 +159,11 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
   }, [days, planV, warV])
 
   const names = useMemo(() => {
-    const req = getFlyNames(), av = availRowNames()
+    const av = availRowNames()
     return {
-      'req-p': { name: req.p, std: req.p === FLY_NAME_DEFAULTS.p },
-      'req-w': { name: req.w, std: req.w === FLY_NAME_DEFAULTS.w },
+      /* the Required rows' names are FIXED (D668): never read from a store */
+      'req-p': { name: REQ_NAME['req-p'], std: true },
+      'req-w': { name: REQ_NAME['req-w'], std: true },
       'avail-p': { name: av.p, std: av.p === AVAIL_DEFAULTS.p },
       'avail-w': { name: av.w, std: av.w === AVAIL_DEFAULTS.w },
     } as Record<RowId, { name: string; std: boolean }>

@@ -827,7 +827,7 @@ Relationships: none.
 From today: the `raptor:settings/*` keys and the ~20 `raptor:leavewar/*`
 preference keys.
 **The flying plan (7 Oct 26, D617–D642 — `docs/data-schema.md` has the stored shapes).** Kept today as rows of this
-Setting table (`flyday:<ISO>`, `flyrule:<id>`, `flyrun:<ISO>`, and the keys `flynames`, `sanscalendar`), all written by
+Setting table (`flyday:<ISO>`, `flyrule:<id>`, `flyrun:<ISO>`, and the key `sanscalendar` — a second key, `flynames`, was dropped on 8 Oct 26 before it shipped: D668, the Required rows keep their names), all written by
 admin commands under this table's permissions (§11: `Setting` — Admin C R U D, Member R). **For the IT side: the three
 row kinds are per-date records and want tables of their own, not Setting rows** — `FlyingDay` (`date` PK, `flyingClass`,
 `requiredPilots`, `requiredWsos`), `FlyingRule` (`id`, `weekday`, `flyingClass`, `fromDate`, `untilDate`), `RequiredRun`

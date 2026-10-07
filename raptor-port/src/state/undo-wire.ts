@@ -197,10 +197,10 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
     /* THE FLYING PLAN (state/flyplan.ts; the plan §3.2): a required figure is typed on the Leave War, so its Undo
        lands there, on its date (snapView reads the date off the row — flyDateOf); a day's class or a weekday's rule
        shows on the Leave War and on both calendars, so it stays where he is if that page shows it, else the SANS month */
-    else if (ids.some(k => k.startsWith('flyday:') || k.startsWith('flyrun:') || k.startsWith('flyrule:') || k === 'flynames')) {
+    else if (ids.some(k => k.startsWith('flyday:') || k.startsWith('flyrun:') || k.startsWith('flyrule:'))) {
       const rows = fwd.filter(c => c.collection === 'settings')
       const fig = (v: any, s: string) => (v && v[s] != null ? v[s] : null)
-      const figures = ids.includes('flynames') || ids.some(k => k.startsWith('flyrun:')) ||
+      const figures = ids.some(k => k.startsWith('flyrun:')) ||
         rows.some(c => c.id.startsWith('flyday:') && (fig(c.before, 'p') !== fig(c.after, 'p') || fig(c.before, 'w') !== fig(c.after, 'w')))
       if (figures) primary = 'leavewar'
       else {

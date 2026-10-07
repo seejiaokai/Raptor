@@ -441,11 +441,12 @@ D581/D582 header/counts addendum: docs/superpowers/plans/2026-10-05-inputs-sans-
 D580 independent Sol plan/picture challenge: `docs/superpowers/plans/2026-10-05-inputs-sans-plan-challenge.md`; corrected plan PASS, source/review authority qualified.
 
 The Inputs / SANS redesign (D617-D657; the plan `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md`), step 1: `src/state/flyplan-model.ts` - the flying plan's records (a day, a weekday rule, a running figure) and the ONE resolver `planFor` every surface calls for a day's class, required pilots and WSOs, how many more are needed and its colour; pure, ISO dates through UTC. Its tests are one body, `src/state/flyplan-model.suite.ts`, run by `flyplan-model.test.ts` and again under the Leave War suite's hostile time zone by `src/leavewar/flyplan-model-tz.test.ts`.
-`src/state/flyplan.ts` - the flying plan's store: the reads (`getFlyPlan`, `getTones`, `getFlyNames`) and the typed admin
+`src/state/flyplan.ts` - the flying plan's store: the reads (`getFlyPlan`, `getTones`) and the typed admin
 commands (`setFlyDays` - one date or a picked block, one Undo step; `setFlyRule` / `removeFlyRule`; `setFlyRun` / `dropFlyRun`;
-`saveTones`; `saveFlyNames`), each row read back inside its command; `flyplan.test.ts` pins refusals, a raw write, the block as
+`saveTones`), each row read back inside its command (`getFlyNames` / `saveFlyNames` and the `flynames` key came out on
+8 Oct 26 - D668: the Required rows keep their names); `flyplan.test.ts` pins refusals, a raw write, the block as
 one step, Undo / Redo and its words, a reload, and the earlier build's leftover rows. Its guards: `people-settings-commit.ts`
-(row kinds, the `flynames` key, the write hook, the loader), `perms.ts` `COMMAND_OPS`; Undo's words `undo/describe.ts describeFly`,
+(row kinds, the write hook, the loader), `perms.ts` `COMMAND_OPS`; Undo's words `undo/describe.ts describeFly`,
 its landing `undo-wire.ts`.
 `src/leavewar/engine/availrows.ts` - the two Available rows the SANS calendar reads (`availp`, `availw` - D640): their
 built-in definitions, the check that keeps a stored one a people count with no amber or red, and `availHave`, the ONE sum

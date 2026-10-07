@@ -12,8 +12,12 @@
      flyday:<iso>   what is set for one date             fly.day.set   (one date or MANY — a picked block is one Undo step)
      flyrule:<id>   every <weekday> from a date onward   fly.rule.set / fly.rule.remove
      flyrun:<iso>   a figure running from that date      fly.run.set
-   KEYS: `sanscalendar` — the three colour figures (settings.sanscalendar); `flynames` — the Required rows' names
-   (settings.flynames). All admin only: state/perms.ts COMMAND_OPS, mirrored by docs/data-model.md §11 (D200).
+   KEY: `sanscalendar` — the three colour figures (settings.sanscalendar). All admin only: state/perms.ts COMMAND_OPS,
+   mirrored by docs/data-model.md §11 (D200).
+   (A second key, `flynames`, held a free-text name for each Required row from step 1 until 8 Oct 26 — the builder's
+   own addition, with no screen. D668: the Required rows keep their names; the key, its command `settings.flynames`,
+   its reader and writer, its permission row and Undo's words all came out. A record that build left behind is read
+   by nothing.)
 
    UNTIL STEP 4 OF THE BUILD the calendar Codex built still reads state/sans-calendar.ts (its `sansday:` rows and a
    two-figure `sanscalendar`); nothing here reads those, and a two-figure colour record reads here as the defaults. That
@@ -29,8 +33,6 @@ import {
   type FlyPlan, type FlyDay, type FlyRule, type FlyRun, type FlyCls, type Tones, type SeatCount,
 } from './flyplan-model'
 
-export const FLY_NAME_DEFAULTS: Readonly<{ p: string; w: string }> = Object.freeze({ p: 'Required P', w: 'Required W' })
-const NAME_MAX = 40
 export interface FlySave { ok: boolean; message?: string; id?: string; pending?: Promise<FlySave> }
 
 /* ---- the reads ------------------------------------------------------------------------------------------------------
@@ -62,12 +64,6 @@ export function getFlyPlan(): FlyPlan {
 export function getTones(): Tones {
   const v: unknown = store.get('sanscalendar', null)
   return validTones(v) ? { yellowFrom: v.yellowFrom, amberFrom: v.amberFrom, redFrom: v.redFrom } : { ...DEFAULT_TONES }
-}
-/** the Required rows' names as the admin set them; a row never named reads its default */
-export function getFlyNames(): { p: string; w: string } {
-  const v: any = store.get('flynames', null)
-  const one = (x: unknown, d: string) => typeof x === 'string' && x.trim() && x.length <= NAME_MAX ? x.trim() : d
-  return { p: one(v && v.p, FLY_NAME_DEFAULTS.p), w: one(v && v.w, FLY_NAME_DEFAULTS.w) }
 }
 
 /* ---- the one save body ---------------------------------------------------------------------------------------------
@@ -175,20 +171,10 @@ export function dropFlyRun(iso: string, seats: Array<'p' | 'w'>): FlySave {
   return save('fly.run.set', { from: iso }, [['flyrun:' + iso, Object.keys(row).length ? row : null]])
 }
 
-/* ---- the three colours; the Required rows' names ------------------------------------------------------------------- */
+/* ---- the three colours ----------------------------------------------------------------------------------------------- */
 export function saveTones(t: Tones): FlySave {
   if (!validTones(t)) return no('Use whole numbers of 1 or more, each above the last: yellow, then amber, then red.')
   return save('settings.sanscalendar', null, [['sanscalendar', { yellowFrom: t.yellowFrom, amberFrom: t.amberFrom, redFrom: t.redFrom }]])
-}
-export function saveFlyNames(n: { p: string; w: string }): FlySave {
-  const clean = (x: unknown) => typeof x === 'string' ? x.trim() : null
-  const p = clean(n && n.p), w = clean(n && n.w)
-  if (p == null || w == null || p.length > NAME_MAX || w.length > NAME_MAX) return no(`A row's name is at most ${NAME_MAX} letters.`)
-  /* an emptied name goes back to its default; the record goes when both do */
-  const row: Record<string, string> = {}
-  if (p && p !== FLY_NAME_DEFAULTS.p) row.p = p
-  if (w && w !== FLY_NAME_DEFAULTS.w) row.w = w
-  return save('settings.flynames', null, [['flynames', Object.keys(row).length ? row : null]])
 }
 
 /* ---- the SANS committed, per seat ------------------------------------------------------------------------------------

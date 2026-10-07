@@ -830,8 +830,9 @@ date onward, with or without a last day (`fly.rule.set`, `fly.rule.remove`). `se
 "From <date> on" on the Leave War, also takes that date's own `p` / `w` out of its `flyday:` row in the same command, so
 the run shows on the day it starts: one command, two rows, one Undo step; applied to a PICKED BLOCK it does the same for
 every picked flying weekday — one command, the run's row and each of those `flyday:` rows). Whole numbers of
-zero or more; a row that fails the check is read as nothing. `settings/flynames` = `{p?, w?}` — the Required rows' names
-where they differ from the defaults (`settings.flynames`). From the same change `settings/sanscalendar` is read by the
+zero or more; a row that fails the check is read as nothing. *(`settings/flynames` = `{p?, w?}`, a saved name for each Required row, was written by this branch's step 1 and is
+GONE since 8 Oct 26 — D668: the Required rows keep their names. Nothing reads or writes the key; it never reached
+`main`, so no table needs a column for it.)* From the same change `settings/sanscalendar` is read by the
 flying plan as THREE figures, `{yellowFrom, amberFrom, redFrom}`, whole numbers, `1 <= yellow < amber < red`, defaults
 1 / 3 / 5 — the two-figure record and the `sansday:` rows described next belong to the earlier calendar build, are read
 only by `src/state/sans-calendar.ts`, and go when the SANS calendar is re-made on the resolver (the build plan §3.10).

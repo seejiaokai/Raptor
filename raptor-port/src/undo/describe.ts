@@ -94,7 +94,6 @@ const SETTING_PHRASE: Record<string, string> = {
   cxreasons: 'the cancel reasons',
   guestview: 'the guest switch',
   sanscalendar: 'the SANS calendar shortage colours',
-  flynames: 'the names of the Required rows',
 }
 
 /* a safe generic label from the entry's module, used when the type is unknown. */

@@ -13,9 +13,10 @@ import { commandStream, setConflictChecker } from '../command'
 import { SETTINGS_ROW_PREFIXES, SETTINGS_KEYS } from './people-settings-commit'
 import { COMMAND_OPS } from './perms'
 import {
-  getFlyPlan, getTones, getFlyNames, setFlyDays, setFlyRule, removeFlyRule, setFlyRun, dropFlyRun, saveTones, saveFlyNames,
-  flyplanLoad, FLY_NAME_DEFAULTS,
+  getFlyPlan, getTones, setFlyDays, setFlyRule, removeFlyRule, setFlyRun, dropFlyRun, saveTones,
+  flyplanLoad,
 } from './flyplan'
+import * as flyplan from './flyplan'
 import { planFor } from './flyplan-model'
 
 const mem = new Map<string, string>()
@@ -35,11 +36,26 @@ const cls = (iso: string) => planFor(iso, getFlyPlan(), facts, { p: 0, w: 0 }).c
 const MON = '2026-01-12', THU = '2026-01-15'
 
 describe('the flying plan is three kinds of settings row, each written by its own admin command', () => {
-  it('is registered where every guard reads it: the row kinds, the permission list, the key for the rows\' names', () => {
+  it('is registered where every guard reads it: the row kinds and the permission list', () => {
     for (const p of ['flyday:', 'flyrule:', 'flyrun:']) expect(SETTINGS_ROW_PREFIXES).toContain(p)
-    expect(SETTINGS_KEYS).toContain('flynames')
-    for (const t of ['fly.day.set', 'fly.rule.set', 'fly.rule.remove', 'fly.run.set', 'settings.flynames', 'settings.sanscalendar'])
+    for (const t of ['fly.day.set', 'fly.rule.set', 'fly.rule.remove', 'fly.run.set', 'settings.sanscalendar'])
       expect(COMMAND_OPS[t], t).toMatchObject({ table: 'Setting, SchemaVersion', act: 'U', own: 'never' })
+  })
+  /* THE REQUIRED P AND REQUIRED W ROWS KEEP THEIR NAMES (owner, D668, 8 Oct 26 — "1 as recommended"). A free-text name
+     for them was the builder's own addition (D640's reading 2), built in step 1 with no screen: a settings key, its
+     command, a writer, a reader, a permission row, Undo's words. He left the names fixed, so all of it came out again —
+     nothing can set a name no screen offers. */
+  it('there is no saved name for the Required rows: no key, no command, no permission row, no reader or writer', () => {
+    expect(SETTINGS_KEYS as readonly string[]).not.toContain('flynames')
+    expect(COMMAND_OPS['settings.flynames']).toBeUndefined()
+    for (const gone of ['getFlyNames', 'saveFlyNames', 'FLY_NAME_DEFAULTS']) expect((flyplan as Record<string, unknown>)[gone], gone).toBeUndefined()
+  })
+  it('a name record an earlier build of this branch left in a store is read by nothing, and breaks nothing', () => {
+    mem.set('sqn142_flynames', JSON.stringify({ p: 'Pilots to fly', w: 'x'.repeat(500) }))
+    initStore()
+    expect(getFlyPlan()).toEqual({ days: {}, rules: [], runs: {} })
+    expect(setFlyDays([{ iso: MON, p: 4 }]).ok).toBe(true)
+    expect(req(MON)).toEqual({ p: 4, w: null })
   })
   it('a typed figure for one date is one row, and a second date is untouched', () => {
     expect(setFlyDays([{ iso: MON, p: 16, w: 14 }]).ok).toBe(true)
@@ -125,7 +141,6 @@ describe('what is refused, and that a refusal writes nothing', () => {
     expect(setFlyRule({ wd: 3, cls: 'nf', from: THU }).ok).toBe(false)
     expect(setFlyRun(MON, { p: 5 }).ok).toBe(false)
     expect(saveTones({ yellowFrom: 2, amberFrom: 4, redFrom: 6 }).ok).toBe(false)
-    expect(saveFlyNames({ p: 'Pilots needed', w: 'WSOs needed' }).ok).toBe(false)
     setSession({ user: 'admin-test', role: 'admin' }); setEffectiveRole('main')
     expect(setFlyDays([{ iso: MON, p: 5 }]).ok).toBe(false)
     expect(getFlyPlan()).toEqual({ days: {}, rules: [], runs: {} })
@@ -134,7 +149,6 @@ describe('what is refused, and that a refusal writes nothing', () => {
     expect(() => store.set('flyday:' + MON, { p: 9 })).toThrow()
     expect(() => store.set('flyrule:x', { id: 'x', wd: 3, cls: 'nf', from: THU })).toThrow()
     expect(() => store.set('flyrun:' + MON, { p: 9 })).toThrow()
-    expect(() => store.set('flynames', { p: 'x', w: 'y' })).toThrow()
     expect(setFlyDays([{ iso: MON, p: 5 }]).ok).toBe(true)
   })
   it('a refused update goes back to exactly what was there', () => {
@@ -218,20 +232,14 @@ describe('Undo, Redo, and the words they say', () => {
     expect(globalUndo().ok).toBe(true)
     expect(req('2026-01-14')).toEqual({ p: 9, w: 9 }); expect(req(MON)).toEqual({ p: 16, w: null })
   })
-  it('the three colours and the rows\' names', () => {
+  it('the three colours', () => {
     expect(getTones()).toEqual({ yellowFrom: 1, amberFrom: 3, redFrom: 5 })
     expect(saveTones({ yellowFrom: 2, amberFrom: 4, redFrom: 6 }).ok).toBe(true)
     for (const bad of [{ yellowFrom: 0, amberFrom: 3, redFrom: 5 }, { yellowFrom: 2, amberFrom: 2, redFrom: 5 }, { amberFrom: 1, redFrom: 3 }])
       expect(saveTones(bad as any).ok).toBe(false)
     expect(getTones()).toEqual({ yellowFrom: 2, amberFrom: 4, redFrom: 6 })
     expect(globalUndo().ok).toBe(true); expect(getTones()).toEqual({ yellowFrom: 1, amberFrom: 3, redFrom: 5 })
-    expect(getFlyNames()).toEqual(FLY_NAME_DEFAULTS)
-    expect(saveFlyNames({ p: '  Pilots to fly ', w: '' }).ok).toBe(true)
-    expect(getFlyNames()).toEqual({ p: 'Pilots to fly', w: FLY_NAME_DEFAULTS.w })
-    expect(undoState().undoLabel).toContain('the names of the Required rows')
-    expect(saveFlyNames({ p: 'x'.repeat(41), w: 'W' }).ok).toBe(false)
-    expect(globalUndo().ok).toBe(true); expect(getFlyNames()).toEqual(FLY_NAME_DEFAULTS)
-    expect(globalRedo().ok).toBe(true); expect(getFlyNames().p).toBe('Pilots to fly')
+    expect(globalRedo().ok).toBe(true); expect(getTones()).toEqual({ yellowFrom: 2, amberFrom: 4, redFrom: 6 })
   })
 })
 
@@ -240,10 +248,10 @@ describe('a reload, and what an older store holds', () => {
     setFlyDays([{ iso: MON, p: 16, w: 14 }, { iso: THU, cls: 'night' }])
     setFlyRule({ wd: 4, cls: 'nf', from: '2026-02-06' })
     setFlyRun('2026-03-02', { p: 20, w: null })
-    saveTones({ yellowFrom: 2, amberFrom: 4, redFrom: 6 }); saveFlyNames({ p: 'Req pilots', w: 'Req WSOs' })
-    const was = JSON.stringify([getFlyPlan(), getTones(), getFlyNames()])
+    saveTones({ yellowFrom: 2, amberFrom: 4, redFrom: 6 })
+    const was = JSON.stringify([getFlyPlan(), getTones()])
     initStore()                                                   // the same storage, a new page life
-    expect(JSON.stringify([getFlyPlan(), getTones(), getFlyNames()])).toBe(was)
+    expect(JSON.stringify([getFlyPlan(), getTones()])).toBe(was)
   })
   it('a `sansday:` row and a two-figure colour record left by the earlier build break nothing and are read as nothing', () => {
     mem.set('sqn142_sansday:2026-10-09', JSON.stringify({ required: 5, flying: 'both' }))
