@@ -1,0 +1,51 @@
+{
+ "parts": {
+  "bta-D-1-h06-ph": {
+   "at": "2026-10-06T08:46:36.857Z",
+   "base": "http://localhost:4241",
+   "phone": true,
+   "table": [
+    {
+     "id": "H-06ph.1",
+     "did": "Vandal: LL all Tuesday filed (Inputs page, asked: nothing); \"+ Wave\" → flying wave, Vandal seated on its blank line (took true); the day signed and published (Original). Read working, face, 👁 Original",
+     "saw": "WORKING: [ORIG · 8 changes · SIGNED ORIG Ace Anvil Anvil Anvil · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Wedding\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Wedding\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  LOOK (👁 Original): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Wedding\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-ph-h06-0-published-W.png",
+      "ph-03-ph-h06-0-published-V.png",
+      "ph-05-ph-h06-0-published-L.png"
+     ]
+    },
+    {
+     "id": "H-06ph.2",
+     "did": "the leave lifted on the Inputs page (gone)",
+     "saw": "WORKING: [ORIG · 1 pending · Not yet signed · SIGNED ORIG Ace Anvil Anvil Anvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] + goes-away-once-signed [\"On leave + flying Vandal goes away once signed\"] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Wedding\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]  ||  LOOK (👁 Original): [ORIG · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Wedding\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-ph-h06-1-lifted-W.png",
+      "ph-09-ph-h06-1-lifted-V.png",
+      "ph-11-ph-h06-1-lifted-L.png"
+     ]
+    },
+    {
+     "id": "H-06ph.3",
+     "did": "Publish AL1 ({\"pressed\":true,\"label\":\"Publish AL1\"})",
+     "saw": "WORKING: [AL1 · 14 changes · SIGNED AL1 Ace Anvil Anvil Anvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring]  ||  FACE (View-only Sched): [AL1 · SIGNED AL1 Ace Anvil Anvil Anvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]  ||  LOOK (👁 Original): [AL1 · SIGNED ORIG Ace Anvil Anvil Anvil · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Wedding\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · versions [\"Original\",\"AL1\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-13-ph-h06-2-AL1-W.png",
+      "ph-15-ph-h06-2-AL1-V.png",
+      "ph-17-ph-h06-2-AL1-L.png"
+     ]
+    },
+    {
+     "id": "H-06ph.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

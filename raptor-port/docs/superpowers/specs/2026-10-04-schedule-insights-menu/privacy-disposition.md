@@ -31,3 +31,7 @@ local and ask the owner to approve publication; do not try another workaround.
 This records a tool approval limitation, not a new owner ruling. D558 subsequently
 accepts the D557 pictured UI proposal and build, while this private-picture
 publication boundary remains. Build approval is not main/live approval.
+
+**7 Oct 26 — the branch is gone (owner, D613: "Delete the photos branch").** `codex/private-insights-menu-materials` was
+deleted from his PC on his word, after he was told what it held. It had never been pushed. The four screenshots stay in
+his phone's photos; the two mock-up pictures made from them are not kept. The feature they were for is live (PR #481).

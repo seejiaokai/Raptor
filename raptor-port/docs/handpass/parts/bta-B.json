@@ -1,0 +1,1588 @@
+{
+ "parts": {
+  "bta-B-s03-dk": {
+   "at": "2026-10-06T09:35:58.949Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S03.0",
+     "did": "fresh world; Mon blank line took true; Tue blank line took true; Tue new duty row (no name, no times) took true; Wed blank line took true; nothing filed yet",
+     "saw": "Mon warnings naming him: none · the day's list \"⚠ 17 issues · 6 warning · tap to collapse ▲\" lines naming him [] · his pucks [flying line:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored [] || Tue warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [flying line:no-solid; duty:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored [] || Wed warnings naming him: none · the day's list \"⚠ 7 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [flying line:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-S03-0-tue-list.png",
+      "dk-03-S03-0-tue-puck.png"
+     ]
+    },
+    {
+     "id": "S03.1",
+     "did": "Inputs page: ATT C Mon 13 → Wed 15 July filed for Vandal, All day, remarks Flu (stored: ATT C Jul 13→Jul 15 allday true half \"\" –1439; asked certificate)",
+     "saw": "Mon warnings naming him: [\"hard/DNIF_FLY: Downchit but planned to fly this line — reason: Flu\"] · the day's list \"⚠ 18 issues · 7 warning · tap to collapse ▲\" lines naming him [\"Downchit + flying Vandal — Downchit but planned to fly this line — reason: Flu\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"DNIF_FLY @0.2.0.0.p: Downchit but planned to fly this line —\"] || Tue warnings naming him: [\"hard/DNIF_FLY: Downchit but planned to fly this line — reason: Flu\",\"hard/DNIF_FLY: Downchit but tasked — this row — reason: Flu\"] · the day's list \"⚠ 6 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Downchit + flying Vandal — Downchit but planned to fly this line — reason: Flu\",\"Downchit + flying Vandal — Downchit but tasked — this row — reason: Flu\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"DNIF_FLY @1.2.0.0.p: Downchit but planned to fly this line —\",\"DNIF_FLY @d:1.0.3: Downchit but tasked — this row — reason: \"] || Wed warnings naming him: [\"hard/DNIF_FLY: Downchit but planned to fly this line — reason: Flu\"] · the day's list \"⚠ 8 issues · 3 warning · tap to collapse ▲\" lines naming him [\"Downchit + flying Vandal — Downchit but planned to fly this line — reason: Flu\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"DNIF_FLY @2.2.0.0.p: Downchit but planned to fly this line —\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-S03-1-tue-list.png",
+      "dk-09-S03-1-tue-puck.png",
+      "dk-08-S03-1-mon-list.png",
+      "dk-07-S03-1-mon-puck.png"
+     ]
+    },
+    {
+     "id": "S03.2",
+     "did": "Inputs page: an Upchit filed for Vandal effective Tuesday 14 July (stored: Upchit Jul 14 allday true half \"\" –1439; asked certificate,upchit-sheet; the Upchit sheet read \"Upchit — Vandal, Jul 14 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 15 → now ends Jul 13 Fit for full duty from Jul 14. Cancel Save upchit\"; all his inputs now: [\"imuwhgs9kc7vvr7:Upchit Jul 14 allday\",\"imuwhggynah29q0:ATT C Jul 13 allday\"])",
+     "saw": "Mon warnings naming him: [\"hard/DNIF_FLY: Downchit but planned to fly this line — reason: Flu till 13 Jul\"] · the day's list \"⚠ 18 issues · 7 warning · tap to collapse ▲\" lines naming him [\"Downchit + flying Vandal — Downchit but planned to fly this line — reason: Flu till 13 Jul\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"DNIF_FLY @0.2.0.0.p: Downchit but planned to fly this line —\"] || Tue warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [flying line:no-solid; duty:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored [] || Wed warnings naming him: none · the day's list \"⚠ 7 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [flying line:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-upchit-sheet.png",
+      "dk-17-S03-2-tue-list.png",
+      "dk-16-S03-2-tue-puck.png",
+      "dk-15-S03-2-mon-list.png",
+      "dk-14-S03-2-mon-puck.png",
+      "dk-19-S03-2-wed-list.png",
+      "dk-18-S03-2-wed-puck.png"
+     ]
+    },
+    {
+     "id": "S03.2a",
+     "did": "Upchit: any \"Upchit clashes\" / \"Upchit but tasked\" line anywhere in the three days",
+     "saw": "[]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S03.3",
+     "did": "the page reloaded and signed in again",
+     "saw": "Mon warnings naming him: [\"hard/DNIF_FLY: Downchit but planned to fly this line — reason: Flu till 13 Jul\"] · the day's list \"⚠ 18 issues · 7 warning · tap to collapse ▲\" lines naming him [\"Downchit + flying Vandal — Downchit but planned to fly this line — reason: Flu till 13 Jul\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"DNIF_FLY @0.2.0.0.p: Downchit but planned to fly this line —\"] || Tue warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [flying line:no-solid; duty:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored [] || Wed warnings naming him: none · the day's list \"⚠ 7 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [flying line:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-23-S03-3-tue-list.png",
+      "dk-22-S03-3-tue-puck.png"
+     ]
+    },
+    {
+     "id": "S03.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s04-both-dk": {
+   "at": "2026-10-06T08:37:20.388Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S04-dk-custom.0",
+     "did": "Custom-0000-2359: Training filed for Vandal for Tuesday on the Inputs page — form read {\"dates\":\"14 Jul\",\"span\":null,\"s\":\"00:00\",\"e\":\"23:59\"}; stored: Training Jul 14 allday false half \"\" –1439 acc g; asked nothing",
+     "saw": "warnings naming him: [\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 5 issues · 2 warning · tap to collapse ▲\" lines naming him [\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [ground row:SOLID-ring chip L] · where each is anchored []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-Custom-0000-2359-0-filed-list.png",
+      "dk-01-Custom-0000-2359-0-filed-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-custom.1",
+     "did": "Custom-0000-2359: the request on the Ground Programme (already on the Ground Programme when filed (acc g), no button needed); its row: [{\"ri\":4,\"prog\":\"TRAINING\",\"str\":\"00:00\",\"end\":\"23:59\",\"who\":\"split\",\"src\":\"imuwfbry7oiuyik\",\"info\":false}]",
+     "saw": "warnings naming him: [\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 5 issues · 2 warning · tap to collapse ▲\" lines naming him [\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [ground row:SOLID-ring chip L] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-Custom-0000-2359-1-ground-list.png",
+      "dk-03-Custom-0000-2359-1-ground-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-custom.2",
+     "did": "Custom-0000-2359: Vandal put on a new flying line (+ Wave → Flying wave, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Custom-0000-2359\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 6 issues · 3 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Custom-0000-2359\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-Custom-0000-2359-anewflyinglineWaveFlyingwavenotimes-list.png",
+      "dk-05-Custom-0000-2359-anewflyinglineWaveFlyingwavenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-custom.3",
+     "did": "Custom-0000-2359: Vandal put on a new duty desk row (\"+ Row\", no name, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Custom-0000-2359\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 7 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — this row — reason: Custom-0000-2359\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @d:1.0.3: Training but tasked — this row — reason:\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-Custom-0000-2359-anewdutydeskrowRownonamenotimes-list.png",
+      "dk-07-Custom-0000-2359-anewdutydeskrowRownonamenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-custom.4",
+     "did": "Custom-0000-2359: Vandal put on a new sim row (\"+ Row\" on the AMT block, no name, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Custom-0000-2359\",\"adv/SIM_BRIEF: No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"adv/SIM_DEBRIEF: No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 9 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — this row — reason: Custom-0000-2359\",\"No time for the sim brief Vandal — No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"No time for the sim debrief Vandal — No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-Custom-0000-2359-anewsimrowRowontheAMTblocknonamenotimes-list.png",
+      "dk-09-Custom-0000-2359-anewsimrowRowontheAMTblocknonamenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-custom.5",
+     "did": "Custom-0000-2359: Vandal put on an SC MAIN seat (+ Wave → SC, shift start and end cleared) (shift start \"\" end \"\" B \"\"; took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — SC AM — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Custom-0000-2359\",\"adv/SIM_BRIEF: No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"adv/SIM_DEBRIEF: No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 10 issues · 5 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — SC AM — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — this row — reason: Custom-0000-2359\",\"No time for the sim brief Vandal — No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"No time for the sim debrief Vandal — No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @1.3.0.0.p: Training but tasked — SC AM — reason: \",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-Custom-0000-2359-anSCMAINseatWaveSCshiftstartandendcleared-list.png",
+      "dk-11-Custom-0000-2359-anSCMAINseatWaveSCshiftstartandendcleared-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-custom.6",
+     "did": "Custom-0000-2359: the whole Tuesday list for Vandal with all five seats placed",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — SC AM — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Custom-0000-2359\",\"adv/SIM_BRIEF: No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"adv/SIM_DEBRIEF: No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 10 issues · 5 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — SC AM — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — this row — reason: Custom-0000-2359\",\"No time for the sim brief Vandal — No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"No time for the sim debrief Vandal — No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @1.3.0.0.p: Training but tasked — SC AM — reason: \",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-Custom-0000-2359-6-all-list.png",
+      "dk-13-Custom-0000-2359-6-all-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-custom.err",
+     "did": "Custom-0000-2359: browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S04-dk-allday.0",
+     "did": "Allday-tick: Training filed for Vandal for Tuesday on the Inputs page — form read {\"dates\":\"14 Jul\",\"span\":null,\"s\":\"06:00\",\"e\":\"18:00\"}; stored: Training Jul 14 allday true half \"\" –1439 acc g; asked nothing",
+     "saw": "warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [ground row:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-16-Allday-tick-0-filed-list.png",
+      "dk-15-Allday-tick-0-filed-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-allday.1",
+     "did": "Allday-tick: the request on the Ground Programme (already on the Ground Programme when filed (acc g), no button needed); its row: [{\"ri\":4,\"prog\":\"TRAINING\",\"str\":\"\",\"end\":\"\",\"who\":\"split\",\"src\":\"imuwfcvco6o2ocu\",\"info\":false}]",
+     "saw": "warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [ground row:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-Allday-tick-1-ground-list.png",
+      "dk-17-Allday-tick-1-ground-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-allday.2",
+     "did": "Allday-tick: Vandal put on a new flying line (+ Wave → Flying wave, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Allday-tick\"] · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Allday-tick\"] · his pucks [flying line:SOLID-ring chip C; ground row:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-20-Allday-tick-anewflyinglineWaveFlyingwavenotimes-list.png",
+      "dk-19-Allday-tick-anewflyinglineWaveFlyingwavenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-allday.3",
+     "did": "Allday-tick: Vandal put on a new duty desk row (\"+ Row\", no name, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Allday-tick\"] · the day's list \"⚠ 6 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — this row — reason: Allday-tick\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @d:1.0.3: Training but tasked — this row — reason:\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-Allday-tick-anewdutydeskrowRownonamenotimes-list.png",
+      "dk-21-Allday-tick-anewdutydeskrowRownonamenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-allday.4",
+     "did": "Allday-tick: Vandal put on a new sim row (\"+ Row\" on the AMT block, no name, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Allday-tick\"] · the day's list \"⚠ 6 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — this row — reason: Allday-tick\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-24-Allday-tick-anewsimrowRowontheAMTblocknonamenotimes-list.png",
+      "dk-23-Allday-tick-anewsimrowRowontheAMTblocknonamenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-allday.5",
+     "did": "Allday-tick: Vandal put on an SC MAIN seat (+ Wave → SC, shift start and end cleared) (shift start \"\" end \"\" B \"\"; took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — SC AM — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Allday-tick\"] · the day's list \"⚠ 7 issues · 5 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — SC AM — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — this row — reason: Allday-tick\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @1.3.0.0.p: Training but tasked — SC AM — reason: \",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-26-Allday-tick-anSCMAINseatWaveSCshiftstartandendcleared-list.png",
+      "dk-25-Allday-tick-anSCMAINseatWaveSCshiftstartandendcleared-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-allday.6",
+     "did": "Allday-tick: the whole Tuesday list for Vandal with all five seats placed",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — SC AM — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Allday-tick\"] · the day's list \"⚠ 7 issues · 5 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — SC AM — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — this row — reason: Allday-tick\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @1.3.0.0.p: Training but tasked — SC AM — reason: \",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-28-Allday-tick-6-all-list.png",
+      "dk-27-Allday-tick-6-all-puck.png"
+     ]
+    },
+    {
+     "id": "S04-dk-allday.err",
+     "did": "Allday-tick: browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s04-both-ph": {
+   "at": "2026-10-06T08:39:15.187Z",
+   "base": "http://localhost:4232",
+   "phone": true,
+   "table": [
+    {
+     "id": "S04-ph-custom.0",
+     "did": "Custom-0000-2359: Training filed for Vandal for Tuesday on the Inputs page — form read {\"dates\":\"14 Jul\",\"span\":null,\"s\":\"00:00\",\"e\":\"23:59\"}; stored: Training Jul 14 allday false half \"\" –1439 acc g; asked nothing",
+     "saw": "warnings naming him: [\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 5 issues · 2 warning · tap to collapse ▲\" lines naming him [\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [ground row:SOLID-ring chip L] · where each is anchored []",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-02-Custom-0000-2359-0-filed-list.png",
+      "ph-01-Custom-0000-2359-0-filed-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-custom.1",
+     "did": "Custom-0000-2359: the request on the Ground Programme (already on the Ground Programme when filed (acc g), no button needed); its row: [{\"ri\":4,\"prog\":\"TRAINING\",\"str\":\"00:00\",\"end\":\"23:59\",\"who\":\"split\",\"src\":\"imuwfebr5ha0equ\",\"info\":false}]",
+     "saw": "warnings naming him: [\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 5 issues · 2 warning · tap to collapse ▲\" lines naming him [\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [ground row:SOLID-ring chip L] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-Custom-0000-2359-1-ground-list.png",
+      "ph-03-Custom-0000-2359-1-ground-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-custom.2",
+     "did": "Custom-0000-2359: Vandal put on a new flying line (+ Wave → Flying wave, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Custom-0000-2359\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 6 issues · 3 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Custom-0000-2359\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-Custom-0000-2359-anewflyinglineWaveFlyingwavenotimes-list.png",
+      "ph-05-Custom-0000-2359-anewflyinglineWaveFlyingwavenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-custom.3",
+     "did": "Custom-0000-2359: Vandal put on a new duty desk row (\"+ Row\", no name, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Custom-0000-2359\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 7 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — this row — reason: Custom-0000-2359\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @d:1.0.3: Training but tasked — this row — reason:\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-Custom-0000-2359-anewdutydeskrowRownonamenotimes-list.png",
+      "ph-07-Custom-0000-2359-anewdutydeskrowRownonamenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-custom.4",
+     "did": "Custom-0000-2359: Vandal put on a new sim row (\"+ Row\" on the AMT block, no name, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Custom-0000-2359\",\"adv/SIM_BRIEF: No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"adv/SIM_DEBRIEF: No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 9 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — this row — reason: Custom-0000-2359\",\"No time for the sim brief Vandal — No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"No time for the sim debrief Vandal — No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-10-Custom-0000-2359-anewsimrowRowontheAMTblocknonamenotimes-list.png",
+      "ph-09-Custom-0000-2359-anewsimrowRowontheAMTblocknonamenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-custom.5",
+     "did": "Custom-0000-2359: Vandal put on an SC MAIN seat (+ Wave → SC, shift start and end cleared) (shift start \"\" end \"\" B \"\"; took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — SC AM — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Custom-0000-2359\",\"adv/SIM_BRIEF: No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"adv/SIM_DEBRIEF: No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 10 issues · 5 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — SC AM — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — this row — reason: Custom-0000-2359\",\"No time for the sim brief Vandal — No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"No time for the sim debrief Vandal — No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @1.3.0.0.p: Training but tasked — SC AM — reason: \",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-12-Custom-0000-2359-anSCMAINseatWaveSCshiftstartandendcleared-list.png",
+      "ph-11-Custom-0000-2359-anSCMAINseatWaveSCshiftstartandendcleared-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-custom.6",
+     "did": "Custom-0000-2359: the whole Tuesday list for Vandal with all five seats placed",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — SC AM — reason: Custom-0000-2359\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Custom-0000-2359\",\"adv/SIM_BRIEF: No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"adv/SIM_DEBRIEF: No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 10 issues · 5 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — SC AM — reason: Custom-0000-2359\",\"Personal input clash Vandal — Training but tasked — this row — reason: Custom-0000-2359\",\"No time for the sim brief Vandal — No time for the AMT brief — TRAINING sits inside 14:00–14:30\",\"No time for the sim debrief Vandal — No time for the AMT debrief — TRAINING sits inside 15:30–16:00\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @1.3.0.0.p: Training but tasked — SC AM — reason: \",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-14-Custom-0000-2359-6-all-list.png",
+      "ph-13-Custom-0000-2359-6-all-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-custom.err",
+     "did": "Custom-0000-2359: browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S04-ph-allday.0",
+     "did": "Allday-tick: Training filed for Vandal for Tuesday on the Inputs page — form read {\"dates\":\"14 Jul\",\"span\":null,\"s\":\"06:00\",\"e\":\"18:00\"}; stored: Training Jul 14 allday true half \"\" –1439 acc g; asked nothing",
+     "saw": "warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [ground row:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-16-Allday-tick-0-filed-list.png",
+      "ph-15-Allday-tick-0-filed-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-allday.1",
+     "did": "Allday-tick: the request on the Ground Programme (already on the Ground Programme when filed (acc g), no button needed); its row: [{\"ri\":4,\"prog\":\"TRAINING\",\"str\":\"\",\"end\":\"\",\"who\":\"split\",\"src\":\"imuwffdkn8bfpiv\",\"info\":false}]",
+     "saw": "warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [ground row:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-18-Allday-tick-1-ground-list.png",
+      "ph-17-Allday-tick-1-ground-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-allday.2",
+     "did": "Allday-tick: Vandal put on a new flying line (+ Wave → Flying wave, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Allday-tick\"] · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Allday-tick\"] · his pucks [flying line:SOLID-ring chip C; ground row:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-20-Allday-tick-anewflyinglineWaveFlyingwavenotimes-list.png",
+      "ph-19-Allday-tick-anewflyinglineWaveFlyingwavenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-allday.3",
+     "did": "Allday-tick: Vandal put on a new duty desk row (\"+ Row\", no name, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Allday-tick\"] · the day's list \"⚠ 6 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — this row — reason: Allday-tick\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @d:1.0.3: Training but tasked — this row — reason:\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-22-Allday-tick-anewdutydeskrowRownonamenotimes-list.png",
+      "ph-21-Allday-tick-anewdutydeskrowRownonamenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-allday.4",
+     "did": "Allday-tick: Vandal put on a new sim row (\"+ Row\" on the AMT block, no name, no times) (took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Allday-tick\"] · the day's list \"⚠ 6 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — this row — reason: Allday-tick\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-24-Allday-tick-anewsimrowRowontheAMTblocknonamenotimes-list.png",
+      "ph-23-Allday-tick-anewsimrowRowontheAMTblocknonamenotimes-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-allday.5",
+     "did": "Allday-tick: Vandal put on an SC MAIN seat (+ Wave → SC, shift start and end cleared) (shift start \"\" end \"\" B \"\"; took true)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — SC AM — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Allday-tick\"] · the day's list \"⚠ 7 issues · 5 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — SC AM — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — this row — reason: Allday-tick\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @1.3.0.0.p: Training but tasked — SC AM — reason: \",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-26-Allday-tick-anSCMAINseatWaveSCshiftstartandendcleared-list.png",
+      "ph-25-Allday-tick-anSCMAINseatWaveSCshiftstartandendcleared-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-allday.6",
+     "did": "Allday-tick: the whole Tuesday list for Vandal with all five seats placed",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Training clashes with this line — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — SC AM — reason: Allday-tick\",\"hard/INPUT_FLY: Training but tasked — this row — reason: Allday-tick\"] · the day's list \"⚠ 7 issues · 5 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Training clashes with this line — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — SC AM — reason: Allday-tick\",\"Personal input clash Vandal — Training but tasked — this row — reason: Allday-tick\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Training clashes with this line — reas\",\"INPUT_FLY @1.3.0.0.p: Training but tasked — SC AM — reason: \",\"INPUT_FLY @s:1.amt.3: Training but tasked — this row — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-28-Allday-tick-6-all-list.png",
+      "ph-27-Allday-tick-6-all-puck.png"
+     ]
+    },
+    {
+     "id": "S04-ph-allday.err",
+     "did": "Allday-tick: browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s05-dk": {
+   "at": "2026-10-06T08:45:50.180Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S05-dk-meeting.pre",
+     "did": "the Inputs form: Meeting, Custom, the End time box clicked and 2400 then AM typed from the keyboard (what a person can do to get 24:00)",
+     "saw": "the box then read \"14:40\" after 2400, \"02:40\" after AM; the app's time box is a native time field",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-try-24-00.png"
+     ]
+    },
+    {
+     "id": "S05-dk-meeting.0",
+     "did": "Meeting filed for Vandal for Tuesday, Custom, end box typed 00:00 → 24:00; form read {\"dates\":\"14 Jul\",\"span\":null,\"s\":\"00:00\",\"e\":\"23:59\"}; stored: Meeting Jul 14 allday false half \"\" –1439 acc g; asked nothing; Ground Programme rows from it: [{\"ri\":4,\"prog\":\"MEETING\",\"str\":\"00:00\",\"end\":\"23:59\",\"who\":\"split\",\"src\":\"imuwfm8pzv8ehmk\",\"info\":false}]",
+     "saw": "warnings naming him: [\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 5 issues · 2 warning · tap to collapse ▲\" lines naming him [\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [ground row:SOLID-ring chip L] · where each is anchored []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-m-0-filed-list.png",
+      "dk-02-m-0-filed-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-meeting.1",
+     "did": "no warning against its own Ground Programme row",
+     "saw": "warnings naming him: [\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 5 issues · 2 warning · tap to collapse ▲\" lines naming him [\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [ground row:SOLID-ring chip L] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S05-dk-meeting.2",
+     "did": "X put on a new blank flying line",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Meeting clashes with this line — reason: Mtg0000-2400\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 6 issues · 3 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Meeting clashes with this line — reason: Mtg0000-2400\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Meeting clashes with this line — reaso\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-m-2-line-list.png",
+      "dk-04-m-2-line-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-meeting.3",
+     "did": "X put on a new blank duty row (no name, no times)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Meeting clashes with this line — reason: Mtg0000-2400\",\"hard/INPUT_FLY: Meeting but tasked — this row — reason: Mtg0000-2400\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 7 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Meeting clashes with this line — reason: Mtg0000-2400\",\"Personal input clash Vandal — Meeting but tasked — this row — reason: Mtg0000-2400\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Meeting clashes with this line — reaso\",\"INPUT_FLY @d:1.0.3: Meeting but tasked — this row — reason: \"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-m-3-desk-list.png",
+      "dk-06-m-3-desk-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-meeting.4",
+     "did": "X put on a new blank sim row (no name, no times)",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Meeting clashes with this line — reason: Mtg0000-2400\",\"hard/INPUT_FLY: Meeting but tasked — this row — reason: Mtg0000-2400\",\"adv/SIM_BRIEF: No time for the AMT brief — MEETING sits inside 14:00–14:30\",\"adv/SIM_DEBRIEF: No time for the AMT debrief — MEETING sits inside 15:30–16:00\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 9 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Meeting clashes with this line — reason: Mtg0000-2400\",\"Personal input clash Vandal — Meeting but tasked — this row — reason: Mtg0000-2400\",\"No time for the sim brief Vandal — No time for the AMT brief — MEETING sits inside 14:00–14:30\",\"No time for the sim debrief Vandal — No time for the AMT debrief — MEETING sits inside 15:30–16:00\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Meeting clashes with this line — reaso\",\"INPUT_FLY @s:1.amt.3: Meeting but tasked — this row — reason\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-m-4-sim-list.png",
+      "dk-08-m-4-sim-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-meeting.5",
+     "did": "X put on an SC MAIN seat, shift start \"\" end \"\" B \"\"",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Meeting clashes with this line — reason: Mtg0000-2400\",\"hard/INPUT_FLY: Meeting but tasked — this row — reason: Mtg0000-2400\",\"adv/SHIFT_SOFT: Vandal is on SC AM and also down for Meeting\",\"adv/SIM_BRIEF: No time for the AMT brief — MEETING sits inside 14:00–14:30\",\"adv/SIM_DEBRIEF: No time for the AMT debrief — MEETING sits inside 15:30–16:00\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 10 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Meeting clashes with this line — reason: Mtg0000-2400\",\"Personal input clash Vandal — Meeting but tasked — this row — reason: Mtg0000-2400\",\"On shift — also down for a ground event Vandal — Vandal is on SC AM and also down for Meeting\",\"No time for the sim brief Vandal — No time for the AMT brief — MEETING sits inside 14:00–14:30\",\"No time for the sim debrief Vandal — No time for the AMT debrief — MEETING sits inside 15:30–16:00\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Meeting clashes with this line — reaso\",\"INPUT_FLY @s:1.amt.3: Meeting but tasked — this row — reason\",\"SHIFT_SOFT @1.3.0.0.p: Vandal is on SC AM and also down for \"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-m-5-sc-list.png",
+      "dk-10-m-5-sc-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-meeting.6",
+     "did": "the card's Undo pressed (pressed); Ground rows from it now []; stored Meeting Jul 14 allday false half \"\" –1439 acc r",
+     "saw": "warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [flying line:no-solid; flying line:no-solid; duty:no-solid; sim:no-solid; other:no-solid; Available crew:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-m-6-undo-list.png",
+      "dk-12-m-6-undo-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-meeting.7",
+     "did": "Accept pressed again (pressed); Ground rows from it [{\"ri\":4,\"prog\":\"MEETING\",\"str\":\"00:00\",\"end\":\"23:59\",\"who\":\"split\",\"src\":\"imuwfm8pzv8ehmk\",\"info\":false}]",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Meeting clashes with this line — reason: Mtg0000-2400\",\"hard/INPUT_FLY: Meeting but tasked — this row — reason: Mtg0000-2400\",\"adv/SHIFT_SOFT: Vandal is on SC AM and also down for Meeting\",\"adv/SIM_BRIEF: No time for the AMT brief — MEETING sits inside 14:00–14:30\",\"adv/SIM_DEBRIEF: No time for the AMT debrief — MEETING sits inside 15:30–16:00\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 10 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Meeting clashes with this line — reason: Mtg0000-2400\",\"Personal input clash Vandal — Meeting but tasked — this row — reason: Mtg0000-2400\",\"On shift — also down for a ground event Vandal — Vandal is on SC AM and also down for Meeting\",\"No time for the sim brief Vandal — No time for the AMT brief — MEETING sits inside 14:00–14:30\",\"No time for the sim debrief Vandal — No time for the AMT debrief — MEETING sits inside 15:30–16:00\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; other:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Meeting clashes with this line — reaso\",\"INPUT_FLY @s:1.amt.3: Meeting but tasked — this row — reason\",\"SHIFT_SOFT @1.3.0.0.p: Vandal is on SC AM and also down for \"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-m-7-reaccept-list.png",
+      "dk-14-m-7-reaccept-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-meeting.8",
+     "did": "the landed row's ✕ pressed on the board (removed); stored Meeting Jul 14 allday false half \"\" –1439 acc r",
+     "saw": "warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [flying line:no-solid; flying line:no-solid; duty:no-solid; sim:no-solid; other:no-solid; Available crew:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-m-8-drop-list.png",
+      "dk-16-m-8-drop-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-meeting.9",
+     "did": "Accept pressed again after the ✕ (pressed); Ground rows [{\"ri\":4,\"prog\":\"MEETING\",\"str\":\"00:00\",\"end\":\"23:59\",\"who\":\"split\",\"src\":\"imuwfm8pzv8ehmk\",\"info\":false}]",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Meeting clashes with this line — reason: Mtg0000-2400\",\"hard/INPUT_FLY: Meeting but tasked — this row — reason: Mtg0000-2400\",\"adv/SHIFT_SOFT: Vandal is on SC AM and also down for Meeting\",\"adv/SIM_BRIEF: No time for the AMT brief — MEETING sits inside 14:00–14:30\",\"adv/SIM_DEBRIEF: No time for the AMT debrief — MEETING sits inside 15:30–16:00\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 10 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Meeting clashes with this line — reason: Mtg0000-2400\",\"Personal input clash Vandal — Meeting but tasked — this row — reason: Mtg0000-2400\",\"On shift — also down for a ground event Vandal — Vandal is on SC AM and also down for Meeting\",\"No time for the sim brief Vandal — No time for the AMT brief — MEETING sits inside 14:00–14:30\",\"No time for the sim debrief Vandal — No time for the AMT debrief — MEETING sits inside 15:30–16:00\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C; other:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Meeting clashes with this line — reaso\",\"INPUT_FLY @s:1.amt.3: Meeting but tasked — this row — reason\",\"SHIFT_SOFT @1.3.0.0.p: Vandal is on SC AM and also down for \"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-m-9-reaccept2-list.png",
+      "dk-18-m-9-reaccept2-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-meeting.10",
+     "did": "reload and sign in again",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Meeting clashes with this line — reason: Mtg0000-2400\",\"hard/INPUT_FLY: Meeting but tasked — this row — reason: Mtg0000-2400\",\"adv/SHIFT_SOFT: Vandal is on SC AM and also down for Meeting\",\"adv/SIM_BRIEF: No time for the AMT brief — MEETING sits inside 14:00–14:30\",\"adv/SIM_DEBRIEF: No time for the AMT debrief — MEETING sits inside 15:30–16:00\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 10 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Meeting clashes with this line — reason: Mtg0000-2400\",\"Personal input clash Vandal — Meeting but tasked — this row — reason: Mtg0000-2400\",\"On shift — also down for a ground event Vandal — Vandal is on SC AM and also down for Meeting\",\"No time for the sim brief Vandal — No time for the AMT brief — MEETING sits inside 14:00–14:30\",\"No time for the sim debrief Vandal — No time for the AMT debrief — MEETING sits inside 15:30–16:00\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; sim:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Meeting clashes with this line — reaso\",\"INPUT_FLY @s:1.amt.3: Meeting but tasked — this row — reason\",\"SHIFT_SOFT @1.3.0.0.p: Vandal is on SC AM and also down for \"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-m-10-reload-list.png",
+      "dk-20-m-10-reload-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-meeting.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S05-dk-other.0",
+     "did": "\"Other\" filed for Vandal for Tuesday, Custom 00:00 → 24:00; form {\"dates\":\"14 Jul\",\"span\":null,\"s\":\"00:00\",\"e\":\"23:59\"}; stored Other Jul 14 allday false half \"\" –1439 acc g; Ground rows from it [{\"ri\":4,\"prog\":\"OTH0000-2400\",\"str\":\"00:00\",\"end\":\"23:59\",\"who\":\"split\",\"src\":\"imuwfnvardfykut\",\"info\":false}]",
+     "saw": "filed",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "S05-dk-other.1",
+     "did": "X on a blank flying line, a blank duty row and an SC MAIN seat; the request not yet put anywhere",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Other clashes with this line — reason: Oth0000-2400\",\"hard/INPUT_FLY: Other but tasked — SC AM — reason: Oth0000-2400\",\"hard/INPUT_FLY: Other but tasked — this row — reason: Oth0000-2400\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 8 issues · 5 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Other clashes with this line — reason: Oth0000-2400\",\"Personal input clash Vandal — Other but tasked — SC AM — reason: Oth0000-2400\",\"Personal input clash Vandal — Other but tasked — this row — reason: Oth0000-2400\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Other clashes with this line — reason:\",\"INPUT_FLY @1.3.0.0.p: Other but tasked — SC AM — reason: Oth\",\"INPUT_FLY @d:1.0.3: Other but tasked — this row — reason: Ot\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-23-o-1-seated-list.png",
+      "dk-22-o-1-seated-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-other.2",
+     "did": "the card's Undo pressed (takes the landed row off the Ground Programme) (pressed); stored now: Other Jul 14 allday false half \"\" –1439 acc r; Ground rows from it: []",
+     "saw": "warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [flying line:no-solid; flying line:no-solid; duty:no-solid; other:no-solid; Available crew:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-o-2-list.png",
+      "dk-24-o-2-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-other.3",
+     "did": "→ Unavail pressed on the card (pressed); stored now: Other Jul 14 allday false half \"\" –1439 acc u; Ground rows from it: []",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Other clashes with this line — reason: Oth0000-2400\",\"hard/INPUT_FLY: Other but tasked — SC AM — reason: Oth0000-2400\",\"hard/INPUT_FLY: Other but tasked — this row — reason: Oth0000-2400\"] · the day's list \"⚠ 7 issues · 5 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Other clashes with this line — reason: Oth0000-2400\",\"Personal input clash Vandal — Other but tasked — SC AM — reason: Oth0000-2400\",\"Personal input clash Vandal — Other but tasked — this row — reason: Oth0000-2400\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C; Available crew:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Other clashes with this line — reason:\",\"INPUT_FLY @1.3.0.0.p: Other but tasked — SC AM — reason: Oth\",\"INPUT_FLY @d:1.0.3: Other but tasked — this row — reason: Ot\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-27-o-3-list.png",
+      "dk-26-o-3-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-other.4",
+     "did": "the card's Undo pressed again (takes it out of Unavailable) (pressed); stored now: Other Jul 14 allday false half \"\" –1439 acc r; Ground rows from it: []",
+     "saw": "warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [flying line:no-solid; flying line:no-solid; duty:no-solid; other:no-solid; Available crew:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-29-o-4-list.png",
+      "dk-28-o-4-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-other.5",
+     "did": "→ Ground pressed on the card (pressed); stored now: Other Jul 14 allday false half \"\" –1439 acc g; Ground rows from it: [{\"ri\":4,\"prog\":\"OTH0000-2400\",\"str\":\"00:00\",\"end\":\"23:59\",\"who\":\"split\",\"src\":\"imuwfnvardfykut\",\"info\":false}]",
+     "saw": "warnings naming him: [\"hard/INPUT_FLY: Other clashes with this line — reason: Oth0000-2400\",\"hard/INPUT_FLY: Other but tasked — SC AM — reason: Oth0000-2400\",\"hard/INPUT_FLY: Other but tasked — this row — reason: Oth0000-2400\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 8 issues · 5 warning · tap to collapse ▲\" lines naming him [\"Personal input clash Vandal — Other clashes with this line — reason: Oth0000-2400\",\"Personal input clash Vandal — Other but tasked — SC AM — reason: Oth0000-2400\",\"Personal input clash Vandal — Other but tasked — this row — reason: Oth0000-2400\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip C; flying line:SOLID-ring chip C; duty:SOLID-ring chip C; ground row:SOLID-ring chip C; other:SOLID-ring chip C] · where each is anchored [\"INPUT_FLY @1.2.0.0.p: Other clashes with this line — reason:\",\"INPUT_FLY @1.3.0.0.p: Other but tasked — SC AM — reason: Oth\",\"INPUT_FLY @d:1.0.3: Other but tasked — this row — reason: Ot\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-31-o-5-list.png",
+      "dk-30-o-5-puck.png"
+     ]
+    },
+    {
+     "id": "S05-dk-other.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s05b-dk": {
+   "at": "2026-10-06T08:47:01.566Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S05b-dk-custom.1",
+     "did": "Meeting (custom) filed; X on an SC MAIN seat only, shift start \"\" end \"\" B \"\"; took true",
+     "saw": "warnings naming him: [\"adv/SHIFT_SOFT: Vandal is on SC AM and also down for Meeting\",\"note/LONGDAY: Vandal has a long work day: 23h59, 00:00 → 23:59\"] · the day's list \"⚠ 6 issues · 2 warning · tap to collapse ▲\" lines naming him [\"On shift — also down for a ground event Vandal — Vandal is on SC AM and also down for Meeting\",\"Long work day Vandal — Vandal has a long work day: 23h59, 00:00 → 23:59\"] · his pucks [flying line:SOLID-ring chip A; ground row:SOLID-ring chip A] · where each is anchored [\"SHIFT_SOFT @1.2.0.0.p: Vandal is on SC AM and also down for \"] · his SC puck as painted: [\"ring solid shadow \\\"rgb(229, 168, 59) 0px 0px 0px 1.5px\\\" chip \\\"A\\\" class \\\"puck warn flagnew\\\"\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-sc-custom-list.png",
+      "dk-01-sc-custom-puck.png"
+     ]
+    },
+    {
+     "id": "S05b-dk-custom.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S05b-dk-allday.1",
+     "did": "Meeting (allday) filed; X on an SC MAIN seat only, shift start \"\" end \"\" B \"\"; took true",
+     "saw": "warnings naming him: [\"adv/SHIFT_SOFT: Vandal is on SC AM and also down for Meeting\"] · the day's list \"⚠ 5 issues · 2 warning · tap to collapse ▲\" lines naming him [\"On shift — also down for a ground event Vandal — Vandal is on SC AM and also down for Meeting\"] · his pucks [flying line:SOLID-ring chip A; ground row:SOLID-ring chip A; Available crew:SOLID-ring chip A; Available crew:SOLID-ring chip A; Available crew:SOLID-ring chip A] · where each is anchored [\"SHIFT_SOFT @1.2.0.0.p: Vandal is on SC AM and also down for \"] · his SC puck as painted: [\"ring solid shadow \\\"rgb(229, 168, 59) 0px 0px 0px 1.5px\\\" chip \\\"A\\\" class \\\"puck warn flagnew\\\"\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-sc-allday-list.png",
+      "dk-03-sc-allday-puck.png"
+     ]
+    },
+    {
+     "id": "S05b-dk-allday.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s15-dk": {
+   "at": "2026-10-06T08:48:54.569Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S15.0",
+     "did": "Training, All day, filed for Vandal (Tuesday); its Ground Programme row: [{\"ri\":4,\"prog\":\"TRAINING\",\"str\":\"\",\"end\":\"\",\"who\":\"split\",\"src\":\"imuwfrtf8jrbjuw\",\"info\":false}]",
+     "saw": "warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [ground row:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s15-0-owner-list.png",
+      "dk-01-s15-0-owner-puck.png"
+     ]
+    },
+    {
+     "id": "S15.1",
+     "did": "Zulu put on that row from the crew list (took true; the app said \"Zulu planned\"; row's extra people [\"bullet\"]); no leave filed for him yet",
+     "saw": "Zulu: warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [ground row:no-solid; SANS card:no-solid] · where each is anchored [] || Vandal: warnings naming him: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [ground row:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s15-1-zulu-list.png",
+      "dk-03-s15-1-zulu-puck.png"
+     ]
+    },
+    {
+     "id": "S15.2",
+     "did": "OL, All day, filed for Zulu for Tuesday on the Inputs page (stored: OL Jul 14 allday true half \"\" –1439; asked nothing)",
+     "saw": "Zulu: warnings naming him: [\"hard/LEAVE_FLY: On leave but tasked — TRAINING — reason: Overseas course\"] · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" lines naming him [\"On leave + flying Zulu — On leave but tasked — TRAINING — reason: Overseas course\"] · his pucks [ground row:SOLID-ring chip C; SANS card:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"LEAVE_FLY @g:1.4: On leave but tasked — TRAINING — reason: O\"] || Vandal: warnings naming him: none · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" lines naming him [] · his pucks [ground row:no-solid; Available crew:no-solid; Available crew:no-solid] · where each is anchored []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s15-2-zulu-list.png",
+      "dk-07-s15-2-zulu-puck.png",
+      "dk-10-s15-2-owner-list.png",
+      "dk-09-s15-2-owner-puck.png"
+     ]
+    },
+    {
+     "id": "S15.3",
+     "did": "ATT C, All day, filed for Vandal for Tuesday (stored: ATT C Jul 14 allday true half \"\" –1439); his Training row stands on the Ground Programme",
+     "saw": "Zulu: warnings naming him: [\"hard/LEAVE_FLY: On leave but tasked — TRAINING — reason: Overseas course\"] · the day's list \"⚠ 6 issues · 4 warning · tap to collapse ▲\" lines naming him [\"On leave + flying Zulu — On leave but tasked — TRAINING — reason: Overseas course\"] · his pucks [ground row:SOLID-ring chip C; SANS card:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"LEAVE_FLY @g:1.4: On leave but tasked — TRAINING — reason: O\"] || Vandal: warnings naming him: [\"hard/DNIF_FLY: Downchit but tasked — TRAINING — reason: Fever\"] · the day's list \"⚠ 6 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Downchit + flying Vandal — Downchit but tasked — TRAINING — reason: Fever\"] · his pucks [ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"DNIF_FLY @g:1.4: Downchit but tasked — TRAINING — reason: Fe\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-s15-3-owner-list.png",
+      "dk-13-s15-3-owner-puck.png",
+      "dk-12-s15-3-zulu-list.png",
+      "dk-11-s15-3-zulu-puck.png"
+     ]
+    },
+    {
+     "id": "S15.3a",
+     "did": "any \"Training clashes\" / \"Training but tasked\" line against its own row, for either man",
+     "saw": "[]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S15.4",
+     "did": "reload and sign in again",
+     "saw": "Zulu: warnings naming him: [\"hard/LEAVE_FLY: On leave but tasked — TRAINING — reason: Overseas course\"] · the day's list \"⚠ 6 issues · 4 warning · tap to collapse ▲\" lines naming him [\"On leave + flying Zulu — On leave but tasked — TRAINING — reason: Overseas course\"] · his pucks [ground row:SOLID-ring chip C; SANS card:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"LEAVE_FLY @g:1.4: On leave but tasked — TRAINING — reason: O\"] || Vandal: warnings naming him: [\"hard/DNIF_FLY: Downchit but tasked — TRAINING — reason: Fever\"] · the day's list \"⚠ 6 issues · 4 warning · tap to collapse ▲\" lines naming him [\"Downchit + flying Vandal — Downchit but tasked — TRAINING — reason: Fever\"] · his pucks [ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"DNIF_FLY @g:1.4: Downchit but tasked — TRAINING — reason: Fe\"]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S15.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s17-dk": {
+   "at": "2026-10-06T08:50:42.963Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S17.1",
+     "did": "five days of blank seats first (Mon–Fri: a new flying line and a new duty row each, Vandal on both; took {\"0\":[true,true],\"1\":[true,true],\"2\":[true,true],\"3\":[true,true],\"4\":[true,true]}); then LL, All day, Tue 14 → Thu 16 July filed on the Inputs page (stored: LL Jul 14→Jul 16 allday true half \"\" –1439)",
+     "saw": "Mon 13: silent || Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Leave Tue-Thu\",\"LEAVE_FLY: On leave but tasked — this row — reason: Leave Tue-Thu\"] [ring] chip C || Wed 15: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Leave Tue-Thu\",\"LEAVE_FLY: On leave but tasked — this row — reason: Leave Tue-Thu\"] [ring] chip C || Thu 16: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Leave Tue-Thu\",\"LEAVE_FLY: On leave but tasked — this row — reason: Leave Tue-Thu\"] [ring] chip C || Fri 17: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s17-Mon-list.png",
+      "dk-01-s17-Mon-puck.png",
+      "dk-04-s17-Tue-list.png",
+      "dk-03-s17-Tue-puck.png",
+      "dk-10-s17-Fri-list-noel.png",
+      "dk-09-s17-Fri-puck.png"
+     ]
+    },
+    {
+     "id": "S17.2",
+     "did": "first (Tue), middle (Wed), last (Thu) covered day and the two neighbours (Mon, Fri), flying line and duty row separately",
+     "saw": "Mon 13 line silent, row silent | Tue 14 line flagged, row flagged | Wed 15 line flagged, row flagged | Thu 16 line flagged, row flagged | Fri 17 line silent, row silent",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S17.3",
+     "did": "reload and sign in again",
+     "saw": "Mon 13: silent || Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Leave Tue-Thu\",\"LEAVE_FLY: On leave but tasked — this row — reason: Leave Tue-Thu\"] [ring] chip C || Wed 15: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Leave Tue-Thu\",\"LEAVE_FLY: On leave but tasked — this row — reason: Leave Tue-Thu\"] [ring] chip C || Thu 16: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Leave Tue-Thu\",\"LEAVE_FLY: On leave but tasked — this row — reason: Leave Tue-Thu\"] [ring] chip C || Fri 17: silent",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S17.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s18-all-dk": {
+   "at": "2026-10-06T08:55:07.890Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S18-dk-am.1",
+     "did": "AM: blank flying lines Mon–Fri with Vandal on each (took true/true/true/true/true); LL Tue 14 → Thu 16 filed (form read {\"dates\":\"14 Jul → 16 Jul\",\"span\":\"AM\",\"s\":\"00:00\",\"e\":\"12:00\"}; stored: LL Jul 14→Jul 16 allday false half \"am\" –720)",
+     "saw": "Mon 13: silent || Tue 14: silent || Wed 15: silent || Thu 16: silent || Fri 17: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s18-am-Wed-list.png",
+      "dk-01-s18-am-Wed-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-am.2",
+     "did": "AM: a second blank line on Tuesday, its seat armed (1.2.1.0.p) — his name in the crew list",
+     "saw": "struck YES · printed \"Vandal IP local leave (LL) (AM) — Part am\" · tooltip \"Vandal — local leave (LL) (AM) — Part am\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-s18-am-crewlist.png"
+     ]
+    },
+    {
+     "id": "S18-dk-am.t1",
+     "did": "AM: Tue 14 line timed 08:00–09:30 (inside the morning)",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Part am\"] [ring] chip C",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s18-am-t1-Tue-list.png",
+      "dk-04-s18-am-t1-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-am.t2",
+     "did": "AM: Tue 14 line timed 15:00–16:30 (afternoon, outside it)",
+     "saw": "Tue 14: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s18-am-t2-Tue-list.png",
+      "dk-06-s18-am-t2-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-am.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S18-dk-pm.1",
+     "did": "PM: blank flying lines Mon–Fri with Vandal on each (took true/true/true/true/true); LL Tue 14 → Thu 16 filed (form read {\"dates\":\"14 Jul → 16 Jul\",\"span\":\"PM\",\"s\":\"12:01\",\"e\":\"23:59\"}; stored: LL Jul 14→Jul 16 allday false half \"pm\" 721–1439)",
+     "saw": "Mon 13: silent || Tue 14: silent || Wed 15: silent || Thu 16: silent || Fri 17: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s18-pm-Wed-list.png",
+      "dk-08-s18-pm-Wed-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-pm.2",
+     "did": "PM: a second blank line on Tuesday, its seat armed (1.2.1.0.p) — his name in the crew list",
+     "saw": "struck YES · printed \"Vandal IP local leave (LL) (PM) — Part pm\" · tooltip \"Vandal — local leave (LL) (PM) — Part pm\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-10-s18-pm-crewlist.png"
+     ]
+    },
+    {
+     "id": "S18-dk-pm.t1",
+     "did": "PM: Tue 14 line timed 15:00–16:30 (inside the afternoon)",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Part pm\"] [ring] chip C",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s18-pm-t1-Tue-list.png",
+      "dk-11-s18-pm-t1-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-pm.t2",
+     "did": "PM: Tue 14 line timed 08:00–09:30 (morning, outside it)",
+     "saw": "Tue 14: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-s18-pm-t2-Tue-list.png",
+      "dk-13-s18-pm-t2-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-pm.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S18-dk-near.1",
+     "did": "Custom 00:01-23:59: blank flying lines Mon–Fri with Vandal on each (took true/true/true/true/true); LL Tue 14 → Thu 16 filed (form read {\"dates\":\"14 Jul → 16 Jul\",\"span\":\"Custom\",\"s\":\"00:01\",\"e\":\"23:59\"}; stored: LL Jul 14→Jul 16 allday false half \"\" 1–1439)",
+     "saw": "Mon 13: silent || Tue 14: silent || Wed 15: silent || Thu 16: silent || Fri 17: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-s18-near-Wed-list.png",
+      "dk-15-s18-near-Wed-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-near.2",
+     "did": "Custom 00:01-23:59: a second blank line on Tuesday, its seat armed (1.2.1.0.p) — his name in the crew list",
+     "saw": "struck YES · printed \"Vandal IP local leave (LL) — Part near\" · tooltip \"Vandal — local leave (LL) — Part near\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-17-s18-near-crewlist.png"
+     ]
+    },
+    {
+     "id": "S18-dk-near.t1",
+     "did": "Custom 00:01-23:59: Tue 14 line timed 10:00–11:30 (inside it)",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Part near\"] [ring] chip C",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-s18-near-t1-Tue-list.png",
+      "dk-18-s18-near-t1-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-near.t2",
+     "did": "Custom 00:01-23:59: Tue 14 line timed 00:00–00:00 (a take-off and landing both at 00:00, before 00:01)",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Part near\"] [ring] chip C",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-21-s18-near-t2-Tue-list.png",
+      "dk-20-s18-near-t2-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-near.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S18-dk-night.1",
+     "did": "Custom 22:00-02:00: blank flying lines Mon–Fri with Vandal on each (took true/true/true/true/true); LL Tue 14 → Thu 16 filed (form read {\"dates\":\"14 Jul → 16 Jul\",\"span\":\"Custom\",\"s\":\"22:00\",\"e\":\"02:00\"}; stored: LL Jul 14→Jul 16 allday false half \"\" 1320–120)",
+     "saw": "Mon 13: silent || Tue 14: silent || Wed 15: silent || Thu 16: silent || Fri 17: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-23-s18-night-Wed-list.png",
+      "dk-22-s18-night-Wed-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-night.2",
+     "did": "Custom 22:00-02:00: a second blank line on Tuesday, its seat armed (1.2.1.0.p) — his name in the crew list",
+     "saw": "struck YES · printed \"Vandal IP local leave (LL) — Part night\" · tooltip \"Vandal — local leave (LL) — Part night\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-24-s18-night-crewlist.png"
+     ]
+    },
+    {
+     "id": "S18-dk-night.t1",
+     "did": "Custom 22:00-02:00: Tue 14 line timed 23:00–23:30 (inside the evening part)",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Part night\"] [ring] chip C",
+     "verdict": "PASS",
+     "pics": [
+      "dk-26-s18-night-t1-Tue-list.png",
+      "dk-25-s18-night-t1-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-night.t2",
+     "did": "Custom 22:00-02:00: Tue 14 line timed 03:00–04:00 (after the tail, outside)",
+     "saw": "Tue 14: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-28-s18-night-t2-Tue-list.png",
+      "dk-27-s18-night-t2-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-night.t3",
+     "did": "Custom 22:00-02:00: Fri 17 line timed 00:30–01:30 (Friday's early hours — the tail of Thursday's 22:00-02:00)",
+     "saw": "Fri 17: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Part night\"] [ring] chip C",
+     "verdict": "PASS",
+     "pics": [
+      "dk-30-s18-night-t3-Fri-list.png",
+      "dk-29-s18-night-t3-Fri-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-night.t4",
+     "did": "Custom 22:00-02:00: Mon 13 line timed 22:30–23:30 (Monday evening — Monday is not covered)",
+     "saw": "Mon 13: silent chip R",
+     "verdict": "PASS",
+     "pics": [
+      "dk-32-s18-night-t4-Mon-list.png",
+      "dk-31-s18-night-t4-Mon-puck.png"
+     ]
+    },
+    {
+     "id": "S18-dk-night.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s26-dk": {
+   "at": "2026-10-06T09:06:02.994Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S26.0",
+     "did": "blank flying lines Mon–Fri (Vandal on each, took true/true/true/true/true); ATT C Mon 13 → Fri 17 filed (stored: ATT C Jul 13→Jul 17 allday true half \"\" –1439; asked certificate)",
+     "saw": "Mon 13: working DOWN (Downchit but planned to fly this line) · version \"DRAFT\" · pending \"3 changes\" · sign-offs filled 0/4 || Tue 14: working DOWN (Downchit but planned to fly this line) · version \"DRAFT\" · pending \"3 changes\" · sign-offs filled 0/4 || Wed 15: working DOWN (Downchit but planned to fly this line) · version \"DRAFT\" · pending \"3 changes\" · sign-offs filled 0/4 || Thu 16: working DOWN (Downchit but planned to fly this line) · version \"DRAFT\" · pending \"3 changes\" · sign-offs filled 0/4 || Fri 17: working DOWN (Downchit but planned to fly this line) · version \"DRAFT\" · pending \"3 changes\" · sign-offs filled 0/4",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S26.1",
+     "did": "all five days signed (the four selects) and published (Mon: {\"pressed\":true,\"label\":\"Publish day\"}; Tue: {\"pressed\":true,\"label\":\"Publish day\"}; Wed: {\"pressed\":true,\"label\":\"Publish day\"}; Thu: {\"pressed\":true,\"label\":\"Publish day\"}; Fri: {\"pressed\":true,\"label\":\"Publish day\"})",
+     "saw": "Mon 13: working DOWN (Downchit but planned to fly this line) · version \"ORIG\" · pending \"8 changes\" · sign-offs filled 0/4 || Tue 14: working DOWN (Downchit but planned to fly this line) · version \"ORIG\" · pending \"8 changes\" · sign-offs filled 0/4 || Wed 15: working DOWN (Downchit but planned to fly this line) · version \"ORIG\" · pending \"8 changes\" · sign-offs filled 0/4 || Thu 16: working DOWN (Downchit but planned to fly this line) · version \"ORIG\" · pending \"8 changes\" · sign-offs filled 0/4 || Fri 17: working DOWN (Downchit but planned to fly this line) · version \"ORIG\" · pending \"8 changes\" · sign-offs filled 0/4",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s26-1-Wed-list.png",
+      "dk-05-s26-1-Wed-puck.png"
+     ]
+    },
+    {
+     "id": "S26.2",
+     "did": "the pending lists the day's own count opens — Mon: Waiting to go out as AL1 · 1 change — Vandal · ATT C “Flu week” → “Flu week till 14 Jul” | Wed: Waiting to go out as AL1 · 1 change — Vandal · ATT C moved off this day; an Upchit filed effective Wed 15 (sheet: \"Upchit — Vandal, Jul 15 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 17 → now ends Jul 14 Fit for full duty from Jul 15. Cancel Save upchit\"; stored: Upchit Jul 15 allday true half \"\" –1439; his inputs now [\"imuwgcwjoqopp8y:Upchit Jul 15 allday\",\"imuwgbnz39ix4so:ATT C Jul 13→Jul 14 allday\"])",
+     "saw": "Mon 13: working DOWN (Downchit but planned to fly this line) · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Tue 14: working DOWN (Downchit but planned to fly this line) · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Wed 15: working silent · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Thu 16: working silent · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Fri 17: working silent · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-11-upchit-sheet.png",
+      "dk-17-s26-2-Wed-list.png",
+      "dk-16-s26-2-Wed-puck.png",
+      "dk-15-s26-2-Tue-list.png",
+      "dk-14-s26-2-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S26.3",
+     "did": "the pending lists after the move — Mon: Waiting to go out as AL1 · 1 change — Vandal · ATT C “Flu week” → “Flu week till 14 Jul” | Wed: Waiting to go out as AL1 · 1 change — Vandal · ATT C moved off this day | Thu: Waiting to go out as AL1 · 1 change — Vandal · ATT C moved off this day; the Upchit's date moved from Wed 15 to Thu 16 in the Inputs row editor (toasts [\"Input updated\"]; editor calendar read \"16 Jul\"; asked upchit-sheet: Upchit — Vandal, Jul 16 ✕ SAVING THIS UPCHIT WILL Close the pending medical-down period — no current entry needs shortening. Fit for full duty from Jul 16. Cancel Save upchit); his inputs now [\"imuwgcwjoqopp8y:Upchit Jul 16 allday\",\"imuwgbnz39ix4so:ATT C Jul 13→Jul 14 allday\"]",
+     "saw": "Mon 13: working DOWN (Downchit but planned to fly this line) · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Tue 14: working DOWN (Downchit but planned to fly this line) · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Wed 15: working silent · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Thu 16: working silent · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Fri 17: working silent · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-33-s26-3-Wed-list.png",
+      "dk-32-s26-3-Wed-puck.png",
+      "dk-35-s26-3-Thu-list.png",
+      "dk-34-s26-3-Thu-puck.png"
+     ]
+    },
+    {
+     "id": "S26.4",
+     "did": "reload and sign in again",
+     "saw": "Mon 13: working DOWN (Downchit but planned to fly this line) · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Tue 14: working DOWN (Downchit but planned to fly this line) · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Wed 15: working silent · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Thu 16: working silent · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4 || Fri 17: working silent · version \"ORIG\" · pending \"1 pending\" · sign-offs filled 0/4",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S26.5",
+     "did": "View-only Sched (signed in as the member) — the issued face of Wed 15 and Thu 16",
+     "saw": "Wed 15: bar \"⚠ 8 issues · 3 warning · tap to collapse ▲\" lines [\"Downchit + flying Vandal — Downchit but planned to fly this line — reason: Flu week\"] pucks flying line:ring(hard) chip C red, other:ring(hard) chip C red head {\"tag\":\"ORIG\",\"pend\":\"\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"} || Thu 16: bar \"⚠ 7 issues · 4 warning · tap to collapse ▲\" lines [\"Downchit + flying Vandal — Downchit but planned to fly this line — reason: Flu week\"] pucks flying line:ring(hard) chip C red, other:ring(hard) chip C red head {\"tag\":\"ORIG\",\"pend\":\"\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-44-s26-face-Wed.png",
+      "dk-46-s26-face-Thu.png"
+     ]
+    },
+    {
+     "id": "S26.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s27-dk": {
+   "at": "2026-10-06T09:08:11.439Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S27.0",
+     "did": "SANS Availability, All day, Fly + AMT + OFT ticked, filed for Zulu for Wed 15 July on the Inputs page (stored: {\"person\":\"bullet\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"yr\":2026,\"sans\":{\"f\":true,\"a\":true,\"o\":true},\"type\":\"SANS Availability\",\"remarks\":\"offer all\",\"mod\":\"2026-10-06\",\"iid\":\"imuwggixhckx6b9\",\"ord\":0})",
+     "saw": "warnings naming him: none · the day's list \"⚠ 7 issues · 2 warning · tap to collapse ▲\" lines naming him [] · his pucks [SANS card:no-solid] · where each is anchored []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-s27-0-list.png",
+      "dk-01-s27-0-puck.png"
+     ]
+    },
+    {
+     "id": "S27.1",
+     "did": "Zulu put on a new blank flying line (took true) and a new blank duty row (took true)",
+     "saw": "warnings naming him: [\"adv/OCU_NO_IP: OCU in   with no IP\"] · the day's list \"⚠ 8 issues · 2 warning · tap to collapse ▲\" lines naming him [\"OCU without IP Zulu — OCU in with no IP\"] · his pucks [flying line:SOLID-ring chip CP; duty:SOLID-ring chip CP; SANS card:SOLID-ring chip CP] · where each is anchored [] · SANS lines: []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s27-1-blank-list.png",
+      "dk-03-s27-1-blank-puck.png"
+     ]
+    },
+    {
+     "id": "S27.2",
+     "did": "take-off 10:00 and landing 11:30 typed on his line",
+     "saw": "warnings naming him: [\"adv/OCU_NO_IP: OCU in   with no IP\"] · the day's list \"⚠ 8 issues · 2 warning · tap to collapse ▲\" lines naming him [\"OCU without IP Zulu — OCU in with no IP\"] · his pucks [flying line:SOLID-ring chip CP; duty:SOLID-ring chip CP; SANS card:SOLID-ring chip CP] · where each is anchored [] · SANS lines: []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s27-2-timed-list.png",
+      "dk-05-s27-2-timed-puck.png"
+     ]
+    },
+    {
+     "id": "S27.3",
+     "did": "the offer edited in the Inputs row editor: the first SANS tick (Fly) taken off and the PM span picked (saved); stored now: {\"person\":\"bullet\",\"date\":\"Jul 15\",\"allday\":false,\"s\":721,\"e\":1439,\"yr\":2026,\"sans\":{\"a\":true,\"o\":true},\"type\":\"SANS Availability\",\"remarks\":\"offer all\",\"mod\":\"2026-10-06\",\"iid\":\"imuwggixhckx6b9\",\"ord\":0,\"half\":\"pm\"}",
+     "saw": "warnings naming him: [\"adv/OCU_NO_IP: OCU in   with no IP\",\"adv/SANS_AVAIL: Zulu planned for   — not offering Fly today\"] · the day's list \"⚠ 9 issues · 2 warning · tap to collapse ▲\" lines naming him [\"OCU without IP Zulu — OCU in with no IP\",\"SANS availability — planned outside the availability filed Zulu — Zulu planned for — not offering Fly today\"] · his pucks [flying line:SOLID-ring chip CP; duty:SOLID-ring chip CP; SANS card:SOLID-ring chip CP] · where each is anchored [] · SANS lines: [\"adv/SANS_AVAIL: Zulu planned for   — not offering Fly today\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s27-3-edited-list.png",
+      "dk-08-s27-3-edited-puck.png"
+     ]
+    },
+    {
+     "id": "S27.4",
+     "did": "the offer's hours changed to Custom 09:00–10:30 (saved); stored now: {\"person\":\"bullet\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":630,\"yr\":2026,\"sans\":{\"a\":true,\"o\":true},\"type\":\"SANS Availability\",\"remarks\":\"offer all\",\"mod\":\"2026-10-06\",\"iid\":\"imuwggixhckx6b9\",\"ord\":0}",
+     "saw": "warnings naming him: [\"adv/OCU_NO_IP: OCU in   with no IP\",\"adv/SANS_AVAIL: Zulu planned for   — not offering Fly today\"] · the day's list \"⚠ 9 issues · 2 warning · tap to collapse ▲\" lines naming him [\"OCU without IP Zulu — OCU in with no IP\",\"SANS availability — planned outside the availability filed Zulu — Zulu planned for — not offering Fly today\"] · his pucks [flying line:SOLID-ring chip CP; duty:SOLID-ring chip CP; SANS card:SOLID-ring chip CP] · where each is anchored [] · SANS lines: [\"adv/SANS_AVAIL: Zulu planned for   — not offering Fly today\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s27-4-hours-list.png",
+      "dk-11-s27-4-hours-puck.png"
+     ]
+    },
+    {
+     "id": "S27.5",
+     "did": "OL, All day, filed separately for Zulu for Wed 15 July (stored: OL Jul 15 allday true half \"\" –1439) — the SANS offer still on file",
+     "saw": "warnings naming him: [\"hard/LEAVE_FLY: On leave but planned to fly this line — reason: Overseas\",\"hard/LEAVE_FLY: On leave but tasked — this row — reason: Overseas\",\"adv/OCU_NO_IP: OCU in   with no IP\",\"adv/SANS_AVAIL: Zulu planned for   — not offering Fly today\"] · the day's list \"⚠ 11 issues · 4 warning · tap to collapse ▲\" lines naming him [\"On leave + flying Zulu — On leave but planned to fly this line — reason: Overseas\",\"On leave + flying Zulu — On leave but tasked — this row — reason: Overseas\",\"OCU without IP Zulu — OCU in with no IP\",\"SANS availability — planned outside the availability filed Zulu — Zulu planned for — not offering Fly today\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; SANS card:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"LEAVE_FLY @2.2.0.0.w: On leave but planned to fly this line \",\"LEAVE_FLY @d:2.0.3: On leave but tasked — this row — reason:\"] · SANS lines: [\"adv/SANS_AVAIL: Zulu planned for   — not offering Fly today\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-s27-5-ol-list.png",
+      "dk-13-s27-5-ol-puck.png"
+     ]
+    },
+    {
+     "id": "S27.6",
+     "did": "reload and sign in again",
+     "saw": "warnings naming him: [\"hard/LEAVE_FLY: On leave but planned to fly this line — reason: Overseas\",\"hard/LEAVE_FLY: On leave but tasked — this row — reason: Overseas\",\"adv/OCU_NO_IP: OCU in   with no IP\",\"adv/SANS_AVAIL: Zulu planned for   — not offering Fly today\"] · the day's list \"⚠ 11 issues · 4 warning · tap to collapse ▲\" lines naming him [\"On leave + flying Zulu — On leave but planned to fly this line — reason: Overseas\",\"On leave + flying Zulu — On leave but tasked — this row — reason: Overseas\",\"OCU without IP Zulu — OCU in with no IP\",\"SANS availability — planned outside the availability filed Zulu — Zulu planned for — not offering Fly today\"] · his pucks [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; SANS card:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · where each is anchored [\"LEAVE_FLY @2.2.0.0.w: On leave but planned to fly this line \",\"LEAVE_FLY @d:2.0.3: On leave but tasked — this row — reason:\"]",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S27.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-h03-dk": {
+   "at": "2026-10-06T09:09:44.632Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "H03-dk.1",
+     "did": "the Logic page opened, no search: the group \"Leave, downchit and personal inputs\" — its rows in order",
+     "saw": "group intro \"\"; 17 rows: 1. [SETTING] An absence is booked as one of 23 things. Every one of them closes the man for the hours it covers — flying, s | 2. [WARNING] On leave but planned to fly, sit a sim, stand a duty or take a ground slot — a Warning, and the reason is prin | 3. [WARNING] Medically down and planned anyway — a Warning. HL, OML and ATT C close everything, an SC spare included. ATT B | 4. [WARNING] Any other input clashing with a sortie, a sim, a duty or a ground slot — a course, a meeting, an appointment,  | 5. [SETTING] A seat with no times yet — a new flying line, a duty, sim, ground or programme row with no start, a standby sh | 6. [ADVISORY] SANS Availability is the opposite of every type above — it says which events a SANS body is offering, Fly / AM | 7. [NOTE] A member's input is due 14 days before its own week starts. One last changed after that deadline is marked LAT | 8. [NOTE] Work on a weekend or public holiday earns OIL, credited automatically into Leave War when the day is published | 9. [WARNING] On a weekend or public holiday, a duty desk with somebody on it and no start and end times earns him nothing — | 10. [ADVISORY] A weekend or public holiday you already published can say it has something pending the first time this app cou | 11. [ADVISORY] A weekend or public holiday with work on it that no Leave War period covers can earn nobody any OIL — the cred | 12. [ADVISORY] A weekend or public holiday with somebody down to earn OIL that is not published yet earns nobody anything unt | 13. [ADVISORY] A day published as an ordinary working day that the Leave War later calls a public holiday keeps earning what  | 14. [ADVISORY] The mirror of the one above: a day published as a holiday that the Leave War no longer calls one keeps its OIL | 15. [ADVISORY] An ordinary flying line typed with the same take-off and landing time still earns the crew their OIL; a standb | 16. [SETTING] Local keeps the man reachable, so he may still be raised as an SC SPARE — standby is not a task, and it raises | 17. [NOTE] Leave and medical absences can be booked AM (00:00–12:00), PM (12:01 onwards) or all day, and a half-day only ",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "H03-dk.2",
+     "did": "that group scrolled to the top of the window, no search",
+     "saw": "new row is row 5 of 17; rows above it: [SETTING] An absence is booked as one of 23 things. Every one of them closes the | [WARNING] On leave but planned to fly, sit a sim, stand a duty or take a ground  | [WARNING] Medically down and planned anyway — a Warning. HL, OML and ATT C close | [WARNING] Any other input clashing with a sortie, a sim, a duty or a ground slot",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-logic-group.png"
+     ]
+    },
+    {
+     "id": "H03-dk.3",
+     "did": "search box: \"no times\" typed (4 of 77 rules · 16 fired on this week's schedule)",
+     "saw": "{\"pageScrollsSideways\":false,\"vw\":1440,\"rows\":[{\"text\":\"A flying line with no times yet is not measured: it neither breaks crew rest nor hides a breach another line raises. Whatever it does carry is still read — a typed Brief, its wave's In-time / Rally or an SC line's typed B as the report, and a typed landing as the end of that day, debrief included — and anything scheduled earlier that day still starts his day. A new line comes up blank. A man seated on one while its times are still being decided keeps every crew-rest warning his other commitments raise; the line is measured as soon as it carries a time.\",\"left\":125,\"right\":917,\"fitsWindow\":true,\"overflow\":\"visible\",\"ellipsis\":\"clip\",\"clippedParts\":0,\"rowH\":117},{\"text\":\"A seat with no times yet — a new flying line, a duty, sim, ground or programme row with no start, a standby shift with blank hours — is still checked against an absence that covers the whole day: a man on leave, medically down or away all day is flagged the moment he is seated there, with the same warning and the same exceptions as on a seat with times. An absence for only part of the day waits until the seat has times. A new line or row comes up blank, and the struck name in the crew list used to be the only warning until a time was typed (owner, 6 Oct 26). A whole-day absence does not depend on the missing time; a part-day one has nothing to be compared with yet.\",\"left\":125,\"right\":917,\"fitsWindow\":true,\"overflow\":\"visible\",\"ellipsis\":\"clip\",\"clippedParts\":0,\"rowH\":117},{\"text\":\"Work on a weekend or public holiday earns OIL, credited automatically into Leave War when the day is published. ONE rule for everything: a person's worked hours for the day run START TO FINISH — from the first thing they do to the end of the last, gaps between events inclu",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-logic-search.png"
+     ]
+    },
+    {
+     "id": "H03-dk.4",
+     "did": "the new row, word for word",
+     "saw": "A seat with no times yet — a new flying line, a duty, sim, ground or programme row with no start, a standby shift with blank hours — is still checked against an absence that covers the whole day: a man on leave, medically down or away all day is flagged the moment he is seated there, with the same warning and the same exceptions as on a seat with times. An absence for only part of the day waits until the seat has times. A new line or row comes up blank, and the struck name in the crew list used to be the only warning until a time was typed (owner, 6 Oct 26). A whole-day absence does not depend on the missing time; a part-day one has nothing to be compared with yet.",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "H03-dk.5",
+     "did": "no clipped words and no sideways page scroll",
+     "saw": "page scrolls sideways: false; fits window true, overflow visible, ellipsis clip, clipped parts 0, height 117px | fits window true, overflow visible, ellipsis clip, clipped parts 0, height 117px | fits window true, overflow visible, ellipsis clip, clipped parts 0, height 289px | fits window true, overflow visible, ellipsis clip, clipped parts 0, height 114px",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-logic-search.png"
+     ]
+    },
+    {
+     "id": "H03-dk.6",
+     "did": "a close picture of the row",
+     "saw": "see picture",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-logic-row-dk.png"
+     ]
+    },
+    {
+     "id": "H03-dk.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-h03-ph": {
+   "at": "2026-10-06T09:09:50.069Z",
+   "base": "http://localhost:4232",
+   "phone": true,
+   "table": [
+    {
+     "id": "H03-ph.1",
+     "did": "the Logic page opened, no search: the group \"Leave, downchit and personal inputs\" — its rows in order",
+     "saw": "group intro \"\"; 17 rows: 1. [SETTING] An absence is booked as one of 23 things. Every one of them closes the man for the hours it covers — flying, s | 2. [WARNING] On leave but planned to fly, sit a sim, stand a duty or take a ground slot — a Warning, and the reason is prin | 3. [WARNING] Medically down and planned anyway — a Warning. HL, OML and ATT C close everything, an SC spare included. ATT B | 4. [WARNING] Any other input clashing with a sortie, a sim, a duty or a ground slot — a course, a meeting, an appointment,  | 5. [SETTING] A seat with no times yet — a new flying line, a duty, sim, ground or programme row with no start, a standby sh | 6. [ADVISORY] SANS Availability is the opposite of every type above — it says which events a SANS body is offering, Fly / AM | 7. [NOTE] A member's input is due 14 days before its own week starts. One last changed after that deadline is marked LAT | 8. [NOTE] Work on a weekend or public holiday earns OIL, credited automatically into Leave War when the day is published | 9. [WARNING] On a weekend or public holiday, a duty desk with somebody on it and no start and end times earns him nothing — | 10. [ADVISORY] A weekend or public holiday you already published can say it has something pending the first time this app cou | 11. [ADVISORY] A weekend or public holiday with work on it that no Leave War period covers can earn nobody any OIL — the cred | 12. [ADVISORY] A weekend or public holiday with somebody down to earn OIL that is not published yet earns nobody anything unt | 13. [ADVISORY] A day published as an ordinary working day that the Leave War later calls a public holiday keeps earning what  | 14. [ADVISORY] The mirror of the one above: a day published as a holiday that the Leave War no longer calls one keeps its OIL | 15. [ADVISORY] An ordinary flying line typed with the same take-off and landing time still earns the crew their OIL; a standb | 16. [SETTING] Local keeps the man reachable, so he may still be raised as an SC SPARE — standby is not a task, and it raises | 17. [NOTE] Leave and medical absences can be booked AM (00:00–12:00), PM (12:01 onwards) or all day, and a half-day only ",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "H03-ph.2",
+     "did": "that group scrolled to the top of the window, no search",
+     "saw": "new row is row 5 of 17; rows above it: [SETTING] An absence is booked as one of 23 things. Every one of them closes the | [WARNING] On leave but planned to fly, sit a sim, stand a duty or take a ground  | [WARNING] Medically down and planned anyway — a Warning. HL, OML and ATT C close | [WARNING] Any other input clashing with a sortie, a sim, a duty or a ground slot",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-logic-group.png"
+     ]
+    },
+    {
+     "id": "H03-ph.3",
+     "did": "search box: \"no times\" typed (4 of 77 rules · 16 fired on this week's schedule)",
+     "saw": "{\"pageScrollsSideways\":false,\"vw\":390,\"rows\":[{\"text\":\"A flying line with no times yet is not measured: it neither breaks crew rest nor hides a breach another line raises. Whatever it does carry is still read — a typed Brief, its wave's In-time / Rally or an SC line's typed B as the report, and a typed landing as the end of that day, debrief included — and anything scheduled earlier that day still starts his day. A new line comes up blank. A man seated on one while its times are still being decided keeps every crew-rest warning his other commitments raise; the line is measured as soon as it carries a time.\",\"left\":98,\"right\":367,\"fitsWindow\":true,\"overflow\":\"visible\",\"ellipsis\":\"clip\",\"clippedParts\":0,\"rowH\":268},{\"text\":\"A seat with no times yet — a new flying line, a duty, sim, ground or programme row with no start, a standby shift with blank hours — is still checked against an absence that covers the whole day: a man on leave, medically down or away all day is flagged the moment he is seated there, with the same warning and the same exceptions as on a seat with times. An absence for only part of the day waits until the seat has times. A new line or row comes up blank, and the struck name in the crew list used to be the only warning until a time was typed (owner, 6 Oct 26). A whole-day absence does not depend on the missing time; a part-day one has nothing to be compared with yet.\",\"left\":98,\"right\":367,\"fitsWindow\":true,\"overflow\":\"visible\",\"ellipsis\":\"clip\",\"clippedParts\":0,\"rowH\":323},{\"text\":\"Work on a weekend or public holiday earns OIL, credited automatically into Leave War when the day is published. ONE rule for everything: a person's worked hours for the day run START TO FINISH — from the first thing they do to the end of the last, gaps between events included",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-logic-search.png"
+     ]
+    },
+    {
+     "id": "H03-ph.4",
+     "did": "the new row, word for word",
+     "saw": "A seat with no times yet — a new flying line, a duty, sim, ground or programme row with no start, a standby shift with blank hours — is still checked against an absence that covers the whole day: a man on leave, medically down or away all day is flagged the moment he is seated there, with the same warning and the same exceptions as on a seat with times. An absence for only part of the day waits until the seat has times. A new line or row comes up blank, and the struck name in the crew list used to be the only warning until a time was typed (owner, 6 Oct 26). A whole-day absence does not depend on the missing time; a part-day one has nothing to be compared with yet.",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "H03-ph.5",
+     "did": "no clipped words and no sideways page scroll",
+     "saw": "page scrolls sideways: false; fits window true, overflow visible, ellipsis clip, clipped parts 0, height 268px | fits window true, overflow visible, ellipsis clip, clipped parts 0, height 323px | fits window true, overflow visible, ellipsis clip, clipped parts 0, height 778px | fits window true, overflow visible, ellipsis clip, clipped parts 0, height 259px",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-logic-search.png"
+     ]
+    },
+    {
+     "id": "H03-ph.6",
+     "did": "a close picture of the row",
+     "saw": "see picture",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-03-logic-row-ph.png"
+     ]
+    },
+    {
+     "id": "H03-ph.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s25a-dk": {
+   "at": "2026-10-06T09:16:18.723Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S25a.0",
+     "did": "Vandal on a blank flying line Tue and Wed and a blank duty row Tue; nothing filed",
+     "saw": "Tue 14: silent || Wed 15: silent",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S25a.1",
+     "did": "Inputs page form: LL, All day, Tue 14 → Wed 15 filed (stored: LL Jul 14→Jul 15 allday true half \"\" –1439)",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Reason one\",\"LEAVE_FLY: On leave but tasked — this row — reason: Reason one\"] [ring] chip C || Wed 15: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Reason one\"] [ring] chip C || the board's warning panel for Tuesday, lines naming him: [\"Vandal — On leave but planned to fly this line — reason: Reason one ✕\",\"Vandal — On leave but tasked — this row — reason: Reason one ✕\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-a1-Tue-list.png",
+      "dk-01-a1-Tue-puck.png",
+      "dk-03-s25a-a1-board.png"
+     ]
+    },
+    {
+     "id": "S25a.2",
+     "did": "✎ on its row in the Inputs table: the dates shortened to Tue 14 only (calendar read \"14 Jul\"; stored: LL Jul 14 allday true half \"\" –1439)",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Reason one till 14 Jul\",\"LEAVE_FLY: On leave but tasked — this row — reason: Reason one till 14 Jul\"] [ring] chip C || Wed 15: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-a2-Wed-list.png",
+      "dk-06-a2-Wed-puck.png"
+     ]
+    },
+    {
+     "id": "S25a.3",
+     "did": "✎: the remarks changed to \"Reason two\" (saved)",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Reason two\",\"LEAVE_FLY: On leave but tasked — this row — reason: Reason two\"] [ring] chip C || Wed 15: silent",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S25a.4",
+     "did": "✎: the date moved to Wed 15 only (calendar read \"15 Jul\"; stored: LL Jul 15 allday true half \"\" –1439)",
+     "saw": "Tue 14: silent || Wed 15: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Reason two till 15 Jul\"] [ring] chip C",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-a4-Tue-list.png",
+      "dk-08-a4-Tue-puck.png",
+      "dk-11-a4-Wed-list.png",
+      "dk-10-a4-Wed-puck.png"
+     ]
+    },
+    {
+     "id": "S25a.5",
+     "did": "✕ on its row in the Inputs table (gone)",
+     "saw": "Tue 14: silent || Wed 15: silent || board panel for Wednesday, lines naming him: []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-a5-Wed-list.png",
+      "dk-14-a5-Wed-puck.png",
+      "dk-16-s25a-a5-board.png"
+     ]
+    },
+    {
+     "id": "S25a.6",
+     "did": "the top bar's Undo pressed once after the delete ({\"present\":true,\"title\":\"Undo — a personal input\",\"pressed\":true,\"toasts\":[]})",
+     "saw": "Tue 14: silent || Wed 15: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Reason two till 15 Jul\"] [ring] chip C",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "S25a.7",
+     "did": "reload and sign in again",
+     "saw": "Tue 14: silent || Wed 15: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Reason two till 15 Jul\"] [ring] chip C",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "S25a.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s25b-dk": {
+   "at": "2026-10-06T09:17:58.859Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S25b.1",
+     "did": "LL, All day, Tue 14 filed on the Inputs form (stored: LL Jul 14 allday true half \"\" –1439)",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Cal one\",\"LEAVE_FLY: On leave but tasked — this row — reason: Cal one\"] [ring] chip C || Wed 15: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-b1-Tue-list.png",
+      "dk-01-b1-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S25b.2",
+     "did": "calendar view → 14 Jul → the row → the editor: span set to AM (editor ready; saved); stored: LL Jul 14 allday false half \"am\" –720",
+     "saw": "Tue 14: silent || Wed 15: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-b2-Tue-list.png",
+      "dk-04-b2-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S25b.3",
+     "did": "the editor again: span back to All day, remarks \"Cal two\" (editor ready; saved); stored: LL Jul 14 allday true half \"\" –1439",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Cal two\",\"LEAVE_FLY: On leave but tasked — this row — reason: Cal two\"] [ring] chip C || Wed 15: silent",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S25b.4",
+     "did": "the editor: the type changed from LL to ATT B (editor ready; saved (asked certificate)); stored: ATT B Jul 14 allday true half \"\" –1439",
+     "saw": "Tue 14: [\"DNIF_FLY: Downchit but planned to fly this line — reason: Cal two\"] [ring] chip C || Wed 15: silent",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S25b.5",
+     "did": "calendar view → 15 Jul → \"+ Input\": the form read \"15 Jul ✕ + Note + Pucks + Input Cobra OL Overseas leave — off island Gambit OIL Grit ATT C Medically down till 17 Jul Nomad OD Overseas duty — exercise, off island Kraken F Zenith F Scribe O 00:00–12:00 | saved\"; Vandal set, type LL, remarks \"Cal add\"; all his inputs now [\"imuwgtronmxehn0:LL Jul 15 allday\",\"imuwgsvtxd4o088:ATT B Jul 14 allday\"]",
+     "saw": "Tue 14: [\"DNIF_FLY: Downchit but planned to fly this line — reason: Cal two\"] [ring] chip C || Wed 15: [\"LEAVE_FLY: On leave but planned to fly this line — reason: Cal add\"] [ring] chip C",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-b5-Wed-list.png",
+      "dk-09-b5-Wed-puck.png"
+     ]
+    },
+    {
+     "id": "S25b.6",
+     "did": "calendar view → 15 Jul → the row → Delete (editor ready; after Delete the screen said \"15 Jul ✕ + Note + Pucks + Input Cobra OL Overseas leave — off island Gambit OIL Grit ATT C Medically down till 17 Jul Nomad OD Overseas duty — exercise, off island Kraken F Zenith F Scribe O 00:00–12:\"); his inputs now [\"imuwgsvtxd4o088:ATT B Jul 14 allday\"]",
+     "saw": "Tue 14: [\"DNIF_FLY: Downchit but planned to fly this line — reason: Cal two\"] [ring] chip C || Wed 15: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-b6-Wed-list.png",
+      "dk-12-b6-Wed-puck.png"
+     ]
+    },
+    {
+     "id": "S25b.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s25c-dk": {
+   "at": "2026-10-06T09:30:07.680Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S25c.M1",
+     "did": "ATT C, All day, Tue 14 → Wed 15 filed on the Inputs form (stored: ATT C Jul 14→Jul 15 allday true half \"\" –1439)",
+     "saw": "Tue 14: [\"DNIF_FLY: Downchit but planned to fly this line — reason: Med one\",\"DNIF_FLY: Downchit but tasked — this row — reason: Med one\"] [ring] chip C",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-m1-Tue-list.png",
+      "dk-01-m1-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S25c.M2",
+     "did": "Medical view (as of 14 Jul) → his card → document viewer → \"Edit input\" (editor open: ): the type changed ATT C → ATT B and saved; stored: ATT B Jul 14→Jul 15 allday true half \"\" –1439",
+     "saw": "Tue 14: [\"DNIF_FLY: Downchit but planned to fly this line — reason: Med one\"] [ring] chip C",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-m2-Tue-list.png",
+      "dk-05-m2-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S25c.M3",
+     "did": "Medical view → card → Edit input → Delete (editor open: ; Delete pressed; the screen said \"\"); his inputs now []",
+     "saw": "Tue 14: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-m3-Tue-list.png",
+      "dk-08-m3-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S25c.Merr",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "S25c.L0",
+     "did": "Leave War (stage → BIDDING CLOSED): Vandal's cell for Tue 14 Jul tapped — the sheet",
+     "saw": "Vandal Tue 14 Jul ✕ HOW MANY Just this day Pick a range HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-10-s25c-lw-0-sheet.png"
+     ]
+    },
+    {
+     "id": "S25c.L1",
+     "did": "the sheet's LL pressed (pressed LL (the sheet said \"That takes Vandal to -1 LVE. Tap the same leave again to go ahead. +OIL PO PI\") then pressed LL again: pressed LL) — a leave bid while bidding is OPEN; the cell reads \"LL\" class \" act\"; his inputs: []",
+     "saw": "Tue 14: silent",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "S25c.L2",
+     "did": "stage button \"→ BIDDING CLOSED\" pressed; the cell's sheet then read \"Vandal Tue 14 Jul NOW LL ✕ HOW MANY Just this day Pick a range DECIDE Ack Approve Refuse SELECTED ⇄Move Delete HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI\"; Approve: pressed Approve; his inputs: [\"imuwh8xgjka6ev6:LL Jul 14 allday\"]",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: on 14 Jul\",\"LEAVE_FLY: On leave but tasked — this row — reason: on 14 Jul\"] [ring] chip C",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s25c-lw-2-closed.png",
+      "dk-14-l2-Tue-list.png",
+      "dk-13-l2-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S25c.L3",
+     "did": "the approved cell tapped again — the sheet read \"Vandal Tue 14 Jul NOW LL ✕ HOW MANY Just this day Pick a range DECIDE Ack Approve Refuse SELECTED ⇄Move Delete HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI\"; then AM pressed (pressed AM; the sheet then read: Vandal Tue 14 Jul NOW LL ✕ HOW MANY Just this day Pick a range DECIDE Ack Approve Refuse SELECTED ⇄Move Delete HOW MUCH Whole day AM PM WHICH LEAVE <LL <OL <OIL <CCL <FCL <PL <EL <CL +OIL PO PI); then LL pressed (pressed <LL; the sheet then read: Vandal Tue 14 Jul NOW LL ✕ HOW MANY Just this day Pick a range DECIDE Ack Approve Refuse SELECTED ⇄Move Delete HOW MUCH Whole day AM PM WHICH LEAVE <LL <OL <OIL <CCL <FCL <PL <EL <CL That time is already taken by LL — clear it first. +OIL PO PI); his inputs: [\"imuwh8xgjka6ev6:LL Jul 14 allday\"]",
+     "saw": "Tue 14: [\"LEAVE_FLY: On leave but planned to fly this line — reason: on 14 Jul\",\"LEAVE_FLY: On leave but tasked — this row — reason: on 14 Jul\"] [ring] chip C",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-15-s25c-lw-3-approved.png",
+      "dk-19-l3-Tue-list.png",
+      "dk-18-l3-Tue-puck.png"
+     ]
+    },
+    {
+     "id": "S25c.L3b",
+     "did": "the approved cell tapped: pressed ⇄Move; then Wednesday's cell tapped (the screen then: (no sheet)); his inputs: [\"imuwh9cmfoobv50:LL Jul 15 allday\"]",
+     "saw": "Tue 14: silent || Wed 15: [\"LEAVE_FLY: On leave but planned to fly this line — reason: on 15 Jul\"] [ring] chip C",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-20-s25c-lw-3b-before-move.png",
+      "dk-23-l3b-Tue-list.png",
+      "dk-22-l3b-Tue-puck.png",
+      "dk-25-l3b-Wed-list.png",
+      "dk-24-l3b-Wed-puck.png"
+     ]
+    },
+    {
+     "id": "S25c.L4",
+     "did": "the cell tapped (sheet: \"Vandal Wed 15 Jul NOW LL ✕ HOW MANY Just this day Pick a range DECIDE Ack Approve Refuse moved from 14 Jul 26 SELECTED ⇄Move Delete HOW MUCH Whole day AM PM WHICH LEAVE LL OL OIL CCL FCL PL EL CL +OIL PO PI\"); Delete: pressed Delete; his inputs: []",
+     "saw": "Tue 14: silent || Wed 15: silent",
+     "verdict": "PASS",
+     "pics": [
+      "dk-26-s25c-lw-4-before-delete.png",
+      "dk-29-l4-Tue-list.png",
+      "dk-28-l4-Tue-puck.png",
+      "dk-31-l4-Wed-list.png",
+      "dk-30-l4-Wed-puck.png"
+     ]
+    },
+    {
+     "id": "S25c.Lerr",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-B-s25d-dk": {
+   "at": "2026-10-06T09:42:49.299Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "S25d.1",
+     "did": "LL, All day, Tue filed on the Inputs page; the board for Tuesday opened (stored: LL Jul 14 allday true half \"\" –1439)",
+     "saw": "after leaving the board and opening it again: the board's warning panel (heading \"⚠ 6 issues · 4 warnings · tap to review\"), lines naming him: [\"Vandal — On leave but planned to fly this line — reason: Board one\",\"Vandal — On leave but tasked — this row — reason: Board one\"] · his pucks on the board: [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s25d-d1-board.png"
+     ]
+    },
+    {
+     "id": "S25d.2",
+     "did": "on the board's Unavailable row for him, typed in place: start 14:00, end 15:00 — the board not left (stored: LL Jul 14 allday false half \"\" 840–900)",
+     "saw": "read straight away without leaving the board: [] (heading \"⚠ 4 issues · 2 warnings · tap to review\"); after leaving the board and opening it again: the board's warning panel (heading \"⚠ 4 issues · 2 warnings · tap to review\"), lines naming him: [] · his pucks on the board: [flying line:no-solid; duty:no-solid; Available crew:no-solid; Unavailable row:no-solid]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s25d-d2-live.png",
+      "dk-03-s25d-d2-board.png"
+     ]
+    },
+    {
+     "id": "S25d.3",
+     "did": "both times cleared again (all day) (stored: LL Jul 14 allday true half \"\" –1439)",
+     "saw": "read straight away without leaving the board: [\"Vandal — On leave but planned to fly this line — reason: Board one\",\"Vandal — On leave but tasked — this row — reason: Board one\"] (heading \"⚠ 6 issues · 4 warnings · tap to review\"); after leaving the board and opening it again: the board's warning panel (heading \"⚠ 6 issues · 4 warnings · tap to review\"), lines naming him: [\"Vandal — On leave but planned to fly this line — reason: Board one\",\"Vandal — On leave but tasked — this row — reason: Board one\"] · his pucks on the board: [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s25d-d3-live.png",
+      "dk-05-s25d-d3-board.png"
+     ]
+    },
+    {
+     "id": "S25d.4",
+     "did": "the remarks changed in place to \"Board two\"",
+     "saw": "read straight away without leaving the board: [\"Vandal — On leave but planned to fly this line — reason: Board two\",\"Vandal — On leave but tasked — this row — reason: Board two\"] (heading \"⚠ 6 issues · 4 warnings · tap to review\"); after leaving the board and opening it again: the board's warning panel (heading \"⚠ 6 issues · 4 warnings · tap to review\"), lines naming him: [\"Vandal — On leave but planned to fly this line — reason: Board two\",\"Vandal — On leave but tasked — this row — reason: Board two\"] · his pucks on the board: [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s25d-d4-live.png",
+      "dk-07-s25d-d4-board.png"
+     ]
+    },
+    {
+     "id": "S25d.5",
+     "did": "the type button → the editor (\"no editor\"): span set to AM and saved (stored: LL Jul 14 allday false half \"am\" –720)",
+     "saw": "read straight away without leaving the board: [] (heading \"⚠ 4 issues · 2 warnings · tap to review\"); after leaving the board and opening it again: the board's warning panel (heading \"⚠ 4 issues · 2 warnings · tap to review\"), lines naming him: [] · his pucks on the board: [flying line:no-solid; duty:no-solid; Unavailable row:no-solid]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s25d-d5-live.png",
+      "dk-10-s25d-d5-board.png"
+     ]
+    },
+    {
+     "id": "S25d.6",
+     "did": "the editor again: span back to All day (stored: LL Jul 14 allday true half \"\" –1439)",
+     "saw": "read straight away without leaving the board: [\"Vandal — On leave but planned to fly this line — reason: Board two\",\"Vandal — On leave but tasked — this row — reason: Board two\"] (heading \"⚠ 6 issues · 4 warnings · tap to review\"); after leaving the board and opening it again: the board's warning panel (heading \"⚠ 6 issues · 4 warnings · tap to review\"), lines naming him: [\"Vandal — On leave but planned to fly this line — reason: Board two\",\"Vandal — On leave but tasked — this row — reason: Board two\"] · his pucks on the board: [flying line:SOLID-ring chip C; duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s25d-d6-live.png",
+      "dk-12-s25d-d6-board.png"
+     ]
+    },
+    {
+     "id": "S25d.7",
+     "did": "the editor → Delete (afterwards: (no dialog)); his inputs now []",
+     "saw": "read straight away without leaving the board: [] (heading \"⚠ 4 issues · 2 warnings · tap to review\"); after leaving the board and opening it again: the board's warning panel (heading \"⚠ 4 issues · 2 warnings · tap to review\"), lines naming him: [] · his pucks on the board: [flying line:no-solid; duty:no-solid; Available crew:no-solid; Available crew:no-solid]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s25d-d7-live.png",
+      "dk-14-s25d-d7-board.png"
+     ]
+    },
+    {
+     "id": "S25d.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

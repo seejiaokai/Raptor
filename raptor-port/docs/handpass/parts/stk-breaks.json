@@ -1,0 +1,396 @@
+[
+ {
+  "id": "A1",
+  "surface": "Discard marks: no button in the amendments box",
+  "verdict": "NOT RUN",
+  "why": "no wire to cut (a removed control)",
+  "red": []
+ },
+ {
+  "id": "B1",
+  "surface": "a crew's report time reads the In-time / Rally lines (events → resolveReporting)",
+  "file": "src/engine/events.ts",
+  "tests": [
+   "src/engine/rally-workspan.test.ts"
+  ],
+  "verdict": "RED",
+  "red": [
+   "D497 rally alone can report and missing report still falls back to step",
+   "D503 applies the previous-day decision to daytime take-off independently of reportLead",
+   "D503/D506 resolves date before comparing wide and specific duplicates",
+   "D505 a specific IN replaces wide IN without losing the wide RALLY",
+   "D505 scopes IN and RALLY separately, preserving a wide IN under specific RALLY",
+   "D506 duplicate specific activity chooses earliest regardless of row order",
+   "W3 D505 a formation RALLY AFTER IN TIME typed WITH a clock is its rally only — the whole-wave in-time still starts its day, in either order",
+   "WORKSPAN-NEGATIVE retains the actual reporting instruction and exposes the long day"
+  ],
+  "notes": []
+ },
+ {
+  "id": "B3",
+  "surface": "the \"+ In-time / Rally\" button fills the Logic words",
+  "file": "src/ui/interactions.ts",
+  "tests": [
+   "src/ui/intimesadd.test.tsx",
+   "src/ui/rally-feedback.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "review D2 mints the configured literal text and lets the ordinary first-clock parser decide it"
+  ],
+  "notes": []
+ },
+ {
+  "id": "B4",
+  "surface": "the week's wave header says the previous day",
+  "file": "src/ui/html.ts",
+  "tests": [
+   "src/ui/rally-feedback.test.tsx",
+   "src/ui/schedule-tab.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "review E both headers and the view day state the previous day without changing raw text",
+   "week: the wave header follows an In-time / Rally line changed on the way through (W16)"
+  ],
+  "notes": []
+ },
+ {
+  "id": "B5",
+  "surface": "the board's wave header note",
+  "file": "src/ui/html.ts",
+  "tests": [
+   "src/ui/rally-feedback.test.tsx",
+   "src/ui/board.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "review E both headers and the view day state the previous day without changing raw text"
+  ],
+  "notes": []
+ },
+ {
+  "id": "C1",
+  "surface": "Insights splits a person's bar by Blue / Red",
+  "file": "src/engine/insights.ts",
+  "tests": [
+   "src/engine/insights-mission-mix.test.ts",
+   "src/ui/insights-mix.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "MIX4 MIX14 MIX15 four seats split two/two, one unresolved makes ordinary four; member and guest reads match admin",
+   "a conditional role affects the whole formation; cancelled aircraft cue context but never count",
+   "a person in both seats counts twice; a crew-empty aircraft still counts as a sortie"
+  ],
+  "notes": []
+ },
+ {
+  "id": "C2",
+  "surface": "the Blue/Red question after his own edit (week and board)",
+  "file": "src/ui/mission-role-offer.ts",
+  "tests": [
+   "src/ui/mission-role-offer.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "MIX6 R1 Change saves dirty Remarks before role action in Board",
+   "MIX6 R1 Change saves dirty Remarks before role action in week",
+   "MIX6 R1 Choose saves dirty Remarks before role action in Board",
+   "MIX6 R1 Choose saves dirty Remarks before role action in week",
+   "MIX6 R1 Later saves dirty Remarks before role action in Board",
+   "MIX6 R1 Later saves dirty Remarks before role action in week",
+   "MIX6 R1 an open question saves dirty exact-DS Mission and retires the conditional offer in Board",
+   "MIX6 R1 an open question saves dirty exact-DS Mission and retires the conditional offer in week"
+  ],
+  "notes": []
+ },
+ {
+  "id": "C3",
+  "surface": "the published board's read-only Remarks door",
+  "file": "src/ui/board.ts",
+  "tests": [
+   "src/ui/mission-role-interim-fixes.test.tsx",
+   "src/ui/mission-role-offer.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "F1 — the read-only Remarks door on the latest published Board keeps its \"Changed at AL\" mark"
+  ],
+  "notes": []
+ },
+ {
+  "id": "C4",
+  "surface": "a saved answer comes back at boot",
+  "file": "src/state/persist.ts",
+  "tests": [
+   "src/state/mission-role-persist.test.ts"
+  ],
+  "verdict": "RED",
+  "red": [
+   "MIX12 two independently answered contexts survive the actual backend flush and boot",
+   "an interrupted template group recovers day and annotation together, even when first boot replay fails",
+   "one accepted annotation is a sealed save group, reloads intact, and does not write programme rows"
+  ],
+  "notes": []
+ },
+ {
+  "id": "C5",
+  "surface": "only an admin may answer (the permissions table)",
+  "file": "src/state/perms.ts",
+  "tests": [
+   "src/state/perms.test.ts",
+   "src/state/mission-roles.test.ts"
+  ],
+  "verdict": "RED",
+  "red": [
+   "a guest, a pending person and an account switched off run no forward command"
+  ],
+  "notes": []
+ },
+ {
+  "id": "C8",
+  "surface": "an answer's line in the change history",
+  "file": "src/state/changelines.ts",
+  "tests": [
+   "src/state/mission-roles.test.ts",
+   "src/ui/mission-role-interim-fixes.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "D525/D530 answer/correction history names actor, date and sides, while no-op/refusal creates no role line",
+   "F3 — a role copied by a day template is named in History by its formation, not by a row id"
+  ],
+  "notes": []
+ },
+ {
+  "id": "D2",
+  "surface": "Tab on the schedule takes the route",
+  "file": "src/ui/textedit.ts",
+  "tests": [
+   "src/ui/schedule-tab.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "Board refreshes repeated flight fields from a prior row commit before focus",
+   "Board repeats all flight fields for each aircraft and preserves a native text caret",
+   "Board: the warning list of the day follows a Tab commit; the boxes of the board are not redrawn under the caret",
+   "D555 duty text and its next section follow full displayed order without no-op writes",
+   "D555 ground text and its next section follow full displayed order without no-op writes",
+   "D555 inputs text and its next section follow full displayed order without no-op writes",
+   "D555 prog text and its next section follow full displayed order without no-op writes",
+   "D555 sims text and its next section follow full displayed order without no-op writes"
+  ],
+  "notes": []
+ },
+ {
+  "id": "D3",
+  "surface": "the phone ⋯ menu's Insights item",
+  "file": "src/ui/ScheduleInsightsMenu.tsx",
+  "tests": [
+   "src/ui/schedule-insights-menu.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "editsched: More after Highlight, only Insights, toggle/Escape and modal focus return",
+   "viewsched: More after Highlight, only Insights, toggle/Escape and modal focus return"
+  ],
+  "notes": []
+ },
+ {
+  "id": "F1",
+  "surface": "W11: spacing alone is no change",
+  "file": "src/engine/slots.ts",
+  "tests": [
+   "src/ui/schedule-tab.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "week: no write, no pending mark, no history step; a real edit still saves, folded"
+  ],
+  "notes": []
+ },
+ {
+  "id": "F2",
+  "surface": "W15: the day keeps up while he tabs (week)",
+  "file": "src/ui/EditWeek.tsx",
+  "tests": [
+   "src/ui/schedule-tab.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "week: a Tab commit that makes a warning updates the bar of the day at once, the caret staying in the next box"
+  ],
+  "notes": []
+ },
+ {
+  "id": "F3",
+  "surface": "W15: the day keeps up while he tabs (board)",
+  "file": "src/ui/SchedBoard.tsx",
+  "tests": [
+   "src/ui/schedule-tab.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "Board: the warning list of the day follows a Tab commit; the boxes of the board are not redrawn under the caret"
+  ],
+  "notes": []
+ },
+ {
+  "id": "F4",
+  "surface": "W8: the built-in weeks' repeatable row ids",
+  "file": "src/engine/weeks-data.ts",
+  "tests": [
+   "src/engine/rowids.test.ts",
+   "src/state/mission-role-seedweek.test.ts"
+  ],
+  "verdict": "RED",
+  "red": [
+   "W8 an answer on a demo day NOBODY has edited survives the real save and a fresh boot",
+   "W8 the same answer survives a visit to the next week and back, and Insights still counts it",
+   "the same row, the same id, on every hand-out — and no id twice across both weeks"
+  ],
+  "notes": []
+ },
+ {
+  "id": "F6",
+  "surface": "W10: the OIL question keeps open through a drag-out",
+  "file": "src/ui/OilConfirm.tsx",
+  "tests": [
+   "src/ui/outside.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "W10 the four confirmation windows: a drag from inside to the surround does NOT close them; an honest surround click does"
+  ],
+  "notes": []
+ },
+ {
+  "id": "F7",
+  "surface": "W7: an answer is filed under its formation",
+  "file": "src/ui/changesmodel.ts",
+  "tests": [
+   "src/ui/changesmodel.test.ts"
+  ],
+  "verdict": "RED",
+  "red": [
+   "W7 a Blue/Red answer is filed under its formation — never under \"Leave War\" or a hidden code"
+  ],
+  "notes": []
+ },
+ {
+  "id": "F8",
+  "surface": "W2: the button's words are not a modified rule",
+  "file": "src/ui/Shell.tsx",
+  "tests": [
+   "src/ui/logic.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [],
+  "notes": [
+   "\n FAIL  |raptor| src/ui/logic.test.tsx [ src/ui/logic.test.tsx ]"
+  ]
+ },
+ {
+  "id": "B2",
+  "surface": "a timing pair out of order reaches the day's warning list",
+  "file": "src/engine/validate.ts",
+  "tests": [
+   "src/engine/rally-consumers.test.ts",
+   "src/ui/rally-feedback.test.tsx",
+   "src/ui/schedule-tab.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "Board: the warning list of the day follows a Tab commit; the boxes of the board are not redrawn under the caret",
+   "week: a Tab commit that makes a warning updates the bar of the day at once, the caret staying in the next box"
+  ],
+  "notes": []
+ },
+ {
+  "id": "C6",
+  "surface": "the Logic switch \"Track Blue/Red sorties\"",
+  "file": "src/ui/LogicPage.tsx",
+  "tests": [
+   "src/ui/logic.test.tsx",
+   "src/ui/insights-mix.test.tsx",
+   "src/ui/mission-role-offer.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "MIX1 the actual Logic edit switch changes its durable setting"
+  ],
+  "notes": []
+ },
+ {
+  "id": "C7",
+  "surface": "the Scheduler Board's own way into Insights",
+  "file": "src/ui/SchedBoard.tsx",
+  "tests": [
+   "src/ui/board.test.tsx",
+   "src/ui/insights-mix.test.tsx",
+   "src/ui/schedule-insights-menu.test.tsx",
+   "src/ui/mission-role-offer.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "MIX16 both real Board entry callbacks open the shared modal and close preserves the Board"
+  ],
+  "notes": []
+ },
+ {
+  "id": "D1",
+  "surface": "the stylesheet parts are all loaded, in order",
+  "file": "src/ui/scheduler.css",
+  "tests": [
+   "src/ui/scheduler-css-order.test.ts"
+  ],
+  "verdict": "RED",
+  "red": [
+   "each part parses independently and contains no nested import",
+   "imports every physical part exactly once in the declared order"
+  ],
+  "notes": []
+ },
+ {
+  "id": "F5",
+  "surface": "W12: the Tab route stops at a window",
+  "file": "src/ui/schedule-tab.ts",
+  "tests": [
+   "src/ui/schedule-tab.test.tsx"
+  ],
+  "verdict": "RED",
+  "red": [
+   "Board: the warning list of the day follows a Tab commit; the boxes of the board are not redrawn under the caret",
+   "Sort all open: Tab in a board box behind it is not routed, and comes back into the dialog; closed: the route is back",
+   "Tab out of a weekend duty request’s time: the OIL question opens, the caret is not behind it, and the window holds the keys",
+   "week: a Tab commit that makes a warning updates the bar of the day at once, the caret staying in the next box",
+   "week: the wave header follows an In-time / Rally line changed on the way through (W16)"
+  ],
+  "notes": []
+ },
+ {
+  "id": "E1",
+  "surface": "the failed-save band on the Scheduler Board (browser test)",
+  "file": "src/ui/SchedBoard.tsx",
+  "tests": [
+   "e2e/save-note.spec.ts"
+  ],
+  "verdict": "RED",
+  "red": [
+   "e2e\\save-note.spec.ts:186:9 › a failed save at desktop 1440 › the full-screen board, the Inputs calendar and the Medical view each show it under their own bar"
+  ]
+ },
+ {
+  "id": "E2",
+  "surface": "the failed-save band on the Inputs calendar (browser test)",
+  "file": "src/ui/InputsCal.tsx",
+  "tests": [
+   "e2e/save-note.spec.ts"
+  ],
+  "verdict": "RED",
+  "red": [
+   "e2e\\save-note.spec.ts:186:9 › a failed save at desktop 1440 › the full-screen board, the Inputs calendar and the Medical view each show it under their own bar"
+  ]
+ }
+]

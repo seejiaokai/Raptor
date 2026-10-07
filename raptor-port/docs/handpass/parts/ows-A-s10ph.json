@@ -1,0 +1,46 @@
+{
+ "parts": {
+  "S10ph-ph": {
+   "at": "2026-10-06T13:25:52.839Z",
+   "base": "http://localhost:4293",
+   "phone": true,
+   "table": [
+    {
+     "id": "S10ph.1",
+     "did": "Ranger on Saturday line 12:00–13:00, \"+ In-time / Rally\" typed IN TIME 0830; four signed; published",
+     "saw": "✓ ORIG [ORIG] · ✓ FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-S10ph-a-cell.png",
+      "ph-02-S10ph-a-tracker.png",
+      "ph-03-S10ph-a-day.png"
+     ]
+    },
+    {
+     "id": "S10ph.2",
+     "did": "Logic: Flight debrief after land 2h → 2h30; Saturday, Leave War, tracker",
+     "saw": "✓ value 150 [{\"lead\":180,\"debrief\":150,\"full\":361}] · ✓ cell still FO [FO*] · ✓ worked still 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance unmoved [[1,1]] · ✓ one pending [1 pending] · ✓ sign-offs fell [–/–/–/– + chip \"Not yet signed\" + button \"Publish AL1\"] · ✓ list: OIL on this day · Logic values changed… + debrief 2h → 2h30 [OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 08:30–15:00 → full day · 08:30] · ✓ man: full day 08:30–15:00 → full day 08:30–15:30 [OIL on this day · Logic values changed since it was published Logic · Flight debrief after land 2h → 2h30 Ranger · OIL full day · 08:30–15:00 → full day · 08:30]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-04-S10ph-b-cell.png",
+      "ph-05-S10ph-b-tracker.png",
+      "ph-06-S10ph-b-day.png",
+      "ph-07-S10ph-b-togoout.png"
+     ]
+    },
+    {
+     "id": "S10ph.3",
+     "did": "sign again; publish the amendment",
+     "saw": "✓ AL1 [AL1] · ✓ cell FO [FO*] · ✓ worked now 08:30–15:30 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:30 1 left] · ✓ balance not raised (no second FO) [{\"bal\":1,\"credits\":1}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "ph-08-S10ph-c-cell.png",
+      "ph-09-S10ph-c-tracker.png",
+      "ph-10-S10ph-c-day.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

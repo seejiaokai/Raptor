@@ -1,0 +1,642 @@
+{
+ "parts": {
+  "d05-dk": {
+   "at": "2026-10-06T01:22:56.157Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-05-desktop.1",
+     "did": "desktop: Logic page, typed \"times\" in the search box",
+     "saw": "rows shown 9; the row found: \"SETTING A flying line with no times yet is not measured: it neither breaks crew rest nor hides a breach another line raises. Whatever it does carry is still read — a typed Brief, its wave's In-time / Rally or an SC line's typed B as the report, and a typed landing as the end of that day, debrief included — and anything scheduled earlier that day still starts his day. A new line comes up blank. A man seated on one while its times are still being decided keeps every crew-rest warning his other commitments raise; the line is measured as soon as it carries a time. insOf · crewRestDay\"; word for word as EXPECTED: true; row box scrollWidth 1036 / clientWidth 1036; within window width: true; clipped boxes: []; page scrolls sideways: false",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-d05-search-times.png"
+     ]
+    },
+    {
+     "id": "D-05-desktop.2",
+     "did": "desktop: searched \"crew rest\" — the row sits under Crew rest",
+     "saw": "row found: true; its group heading: {\"groupHead\":\"CREW REST\",\"near\":\"CREW REST\"}; word for word as EXPECTED: true; page scrolls sideways: false; clipped boxes: []; rows shown 9",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-d05-search-crew-rest-row.png"
+     ]
+    },
+    {
+     "id": "D-05-desktop.3",
+     "did": "desktop: the words \"not the end of the day before\" anywhere on the Logic page (full text, empty search; and the page's own search on \"end of the day before\")",
+     "saw": "whole page text contains \"not the end of the day before\": false; contains \"end of the day before\": false; the page's search on that phrase shows 0 rows",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "D-05-desktop.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d05-ph": {
+   "at": "2026-10-06T01:23:04.669Z",
+   "base": "http://localhost:4174",
+   "phone": true,
+   "table": [
+    {
+     "id": "D-05-phone.1",
+     "did": "phone: Logic page, typed \"times\" in the search box",
+     "saw": "rows shown 9; the row found: \"SETTING A flying line with no times yet is not measured: it neither breaks crew rest nor hides a breach another line raises. Whatever it does carry is still read — a typed Brief, its wave's In-time / Rally or an SC line's typed B as the report, and a typed landing as the end of that day, debrief included — and anything scheduled earlier that day still starts his day. A new line comes up blank. A man seated on one while its times are still being decided keeps every crew-rest warning his other commitments raise; the line is measured as soon as it carries a time. insOf · crewRestDay\"; word for word as EXPECTED: true; row box scrollWidth 362 / clientWidth 362; within window width: true; clipped boxes: []; page scrolls sideways: false",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-d05-search-times.png"
+     ]
+    },
+    {
+     "id": "D-05-phone.2",
+     "did": "phone: searched \"crew rest\" — the row sits under Crew rest",
+     "saw": "row found: true; its group heading: {\"groupHead\":\"CREW REST\",\"near\":\"CREW REST\"}; word for word as EXPECTED: true; page scrolls sideways: false; clipped boxes: []; rows shown 9",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-d05-search-crew-rest-row.png"
+     ]
+    },
+    {
+     "id": "D-05-phone.3",
+     "did": "phone: the words \"not the end of the day before\" anywhere on the Logic page (full text, empty search; and the page's own search on \"end of the day before\")",
+     "saw": "whole page text contains \"not the end of the day before\": false; contains \"end of the day before\": false; the page's search on that phrase shows 0 rows",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "D-05-phone.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d06-dk": {
+   "at": "2026-10-06T01:24:00.127Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-06.1",
+     "did": "Vandal: Monday, ONE line with a landing 22:30 typed and no take-off (took true); Tuesday ZT 07:00–08:00 with Brief 05:00 (took true)",
+     "saw": "breach YES · solid ring Tue yes · dotted Mon yes · Tue list line yes · text \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-D-06.1-mon-puck.png",
+      "dk-03-D-06.1-tue-list.png"
+     ]
+    },
+    {
+     "id": "D-06.1r",
+     "did": "reload: the same state read again",
+     "saw": "breach YES · solid ring Tue yes · dotted Mon yes · Tue list line yes · text \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\"",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "D-06.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d02-brief-dk": {
+   "at": "2026-10-06T01:31:13.189Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-02-brief-desk.0",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), Brief 05:00 typed, no take-off, no landing; Nomad in the FRONT seat (took true); arm the BACK seat of the same aircraft and read Vandal's name in the crew list before placing anything",
+     "saw": "back seat armed (arm 1.2.0.0.w): struck YES (text-decoration \"none\", opacity 1, class \"rpuck no haswhy\") · beside it [\"Wildcard O crew rest — not clear until 11:10\"] · tooltip \"Vandal — crew rest — not clear until 12:30 | Vandal · IP · instructor pilot\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-brief-1-back-seat-armed-crewlist.png"
+     ]
+    },
+    {
+     "id": "D-02-brief-desk.1",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), Brief 05:00 typed, no take-off, no landing; Nomad in the FRONT seat (took true); arm 1.2.0.1.p (arm took: 1.2.0.1.p) and read Vandal's name in the crew list BEFORE placing — the Tuesday line now: cs \"\" msn \"\" br \"05:00\" to \"\" ld \"\" seats p \"pike\" w \"\"",
+     "saw": "struck YES (text-decoration \"none\", opacity 1, class \"rpuck no haswhy\") · beside it [\"Wildcard O crew rest — not clear until 11:10\"] · tooltip \"Vandal — crew rest — not clear until 12:30 | Vandal · IP · instructor pilot\" · full list entry: {\"own\":\"Vandal IP crew rest — not clear until 12:30\",\"parent\":\"PILOTS · 20 FREE Blade IP Cinch IP Cobra IP Comet IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Ta\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-brief-2-armed-crewlist.png"
+     ]
+    },
+    {
+     "id": "D-02-brief-desk.2",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), Brief 05:00 typed, no take-off, no landing; Nomad in the FRONT seat (took true): tap his name in the crew list to place him in 1.2.0.1.p",
+     "saw": "placed: true · toast \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · breach line in Tuesday's list: [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest. ✕\"] · held sentence \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · solid ring on his Tuesday flying puck: true · dotted on Monday's: true · toast and breach sentence agree: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-brief-3-after-tap-toast.png",
+      "dk-05-brief-4-tue-list.png"
+     ]
+    },
+    {
+     "id": "D-02-brief-desk.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d02-intime-dk": {
+   "at": "2026-10-06T01:31:44.588Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-02-intime-desk.1",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), an In-time / Rally line \"05:00 IN TIME\" typed on the wave (no Brief); Nomad in the FRONT seat (took true); arm 1.2.0.1.p (arm took: 1.2.0.1.p) and read Vandal's name in the crew list BEFORE placing — the Tuesday line now: cs \"\" msn \"\" br \"\" to \"\" ld \"\" seats p \"pike\" w \"\"",
+     "saw": "struck YES (text-decoration \"none\", opacity 1, class \"rpuck no haswhy\") · beside it [\"Wildcard O crew rest — not clear until 11:10\"] · tooltip \"Vandal — crew rest — not clear until 12:30 | Vandal · IP · instructor pilot\" · full list entry: {\"own\":\"Vandal IP crew rest — not clear until 12:30\",\"parent\":\"PILOTS · 20 FREE Blade IP Cinch IP Cobra IP Comet IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Ta\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-intime-2-armed-crewlist.png"
+     ]
+    },
+    {
+     "id": "D-02-intime-desk.2",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), an In-time / Rally line \"05:00 IN TIME\" typed on the wave (no Brief); Nomad in the FRONT seat (took true): tap his name in the crew list to place him in 1.2.0.1.p",
+     "saw": "placed: true · toast \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · breach line in Tuesday's list: [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest. ✕\"] · held sentence \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · solid ring on his Tuesday flying puck: true · dotted on Monday's: true · toast and breach sentence agree: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-intime-4-tue-list.png"
+     ]
+    },
+    {
+     "id": "D-02-intime-desk.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d02-meeting-dk": {
+   "at": "2026-10-06T01:32:15.512Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-02-meeting-desk.1",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), Vandal put on a Ground Programme row \"SQN BRIEF\" 08:00–09:00 who \"split\" (placed: true); arm 1.2.0.0.p (arm took: 1.2.0.0.p) and read Vandal's name in the crew list BEFORE placing — the Tuesday line now: cs \"\" msn \"\" br \"\" to \"\" ld \"\" seats p \"\" w \"\"",
+     "saw": "struck no (text-decoration \"none\", opacity 1, class \"rpuck \") · beside it [\"Vapor D\",\"Warden IP\"] · tooltip \"Vandal | Vandal · IP · instructor pilot\" · full list entry: {\"own\":\"Vandal IP\",\"parent\":\"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston IP Ranger \"}",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-meeting-2-armed-crewlist.png"
+     ]
+    },
+    {
+     "id": "D-02-meeting-desk.2",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), Vandal put on a Ground Programme row \"SQN BRIEF\" 08:00–09:00 who \"split\" (placed: true): tap his name in the crew list to place him in 1.2.0.0.p",
+     "saw": "placed: true · toast \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but his day starts 08:00 (SQN BRIEF), and he is on a line with no take-off yet — only 7h30 rest.\" · breach line in Tuesday's list: [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but his day starts 08:00 (SQN BRIEF), and he is on a line with no take-off yet — only 7h30 rest. ✕\"] · held sentence \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but his day starts 08:00 (SQN BRIEF), and he is on a line with no take-off yet — only 7h30 rest.\" · solid ring on his Tuesday flying puck: true · dotted on Monday's: true · toast and breach sentence agree: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-meeting-4-tue-list.png"
+     ]
+    },
+    {
+     "id": "D-02-meeting-desk.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d02-blank-dk": {
+   "at": "2026-10-06T01:33:10.394Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-02-blank-desk.1",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank); arm 1.2.0.0.p (arm took: 1.2.0.0.p) and read Vandal's name in the crew list BEFORE placing — the Tuesday line now: cs \"\" msn \"\" br \"\" to \"\" ld \"\" seats p \"\" w \"\"",
+     "saw": "struck no (text-decoration \"none\", opacity 1, class \"rpuck \") · beside it [\"Vapor D\",\"Warden IP\"] · tooltip \"Vandal | Vandal · IP · instructor pilot\" · full list entry: {\"own\":\"Vandal IP\",\"parent\":\"PILOTS · 29 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston IP Ranger \"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-blank-2-armed-crewlist.png"
+     ]
+    },
+    {
+     "id": "D-02-blank-desk.2",
+     "did": "wholly blank line, no meeting: tap his name in the crew list to place him in 1.2.0.0.p",
+     "saw": "placed: true · toast \"Vandal planned\" · breach line in Tuesday's list: [] · held sentence \"\" · solid ring on his Tuesday flying puck: false · dotted on Monday's: false · toast and breach sentence agree: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-blank-3-after-tap-toast.png",
+      "dk-04-blank-4-tue-list.png"
+     ]
+    },
+    {
+     "id": "D-02-blank-desk.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d02-meeting2-dk": {
+   "at": "2026-10-06T01:32:49.339Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-02-meeting2-desk.1",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), Vandal put on a Ground Programme row \"SQN BRIEF\" 08:00–09:00 who \"split\" (placed: true); Nomad in the FRONT seat (took true); arm 1.2.0.1.p (arm took: 1.2.0.1.p) and read Vandal's name in the crew list BEFORE placing — the Tuesday line now: cs \"\" msn \"\" br \"\" to \"\" ld \"\" seats p \"pike\" w \"\"",
+     "saw": "struck YES (text-decoration \"none\", opacity 1, class \"rpuck no haswhy\") · beside it [] · tooltip \"Vandal — crew rest — not clear until 12:30 | Vandal · IP · instructor pilot\" · full list entry: {\"own\":\"Vandal IP crew rest — not clear until 12:30\",\"parent\":\"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston IP Ranger \"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-meeting2-2-armed-crewlist.png"
+     ]
+    },
+    {
+     "id": "D-02-meeting2-desk.2",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), Vandal put on a Ground Programme row \"SQN BRIEF\" 08:00–09:00 who \"split\" (placed: true); Nomad in the FRONT seat (took true): tap his name in the crew list to place him in 1.2.0.1.p",
+     "saw": "placed: true · toast \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but his day starts 08:00 (SQN BRIEF), and he is on a line with no take-off yet — only 7h30 rest.\" · breach line in Tuesday's list: [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but his day starts 08:00 (SQN BRIEF), and he is on a line with no take-off yet — only 7h30 rest. ✕\"] · held sentence \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but his day starts 08:00 (SQN BRIEF), and he is on a line with no take-off yet — only 7h30 rest.\" · solid ring on his Tuesday flying puck: true · dotted on Monday's: true · toast and breach sentence agree: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-meeting2-3-after-tap-toast.png",
+      "dk-04-meeting2-4-tue-list.png"
+     ]
+    },
+    {
+     "id": "D-02-meeting2-desk.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d02-brief-ph": {
+   "at": "2026-10-06T01:33:41.113Z",
+   "base": "http://localhost:4174",
+   "phone": true,
+   "table": [
+    {
+     "id": "D-02-brief-phone.0",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), Brief 05:00 typed, no take-off, no landing; Nomad in the FRONT seat (took true); arm the BACK seat of the same aircraft and read Vandal's name in the crew list before placing anything",
+     "saw": "back seat armed (arm 1.2.0.0.w): struck YES (text-decoration \"none\", opacity 1, class \"rpuck no haswhy\") · beside it [\"Wildcard O crew rest — not clear until 11:10\"] · tooltip \"Vandal — crew rest — not clear until 12:30 | Vandal · IP · instructor pilot\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "ph-01-brief-1-back-seat-armed-crewlist.png"
+     ]
+    },
+    {
+     "id": "D-02-brief-phone.1",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), Brief 05:00 typed, no take-off, no landing; Nomad in the FRONT seat (took true); arm 1.2.0.1.p (arm took: 1.2.0.1.p) and read Vandal's name in the crew list BEFORE placing — the Tuesday line now: cs \"\" msn \"\" br \"05:00\" to \"\" ld \"\" seats p \"pike\" w \"\"",
+     "saw": "struck YES (text-decoration \"none\", opacity 1, class \"rpuck no haswhy\") · beside it [\"Wildcard O crew rest — not clear until 11:10\"] · tooltip \"Vandal — crew rest — not clear until 12:30 | Vandal · IP · instructor pilot\" · full list entry: {\"own\":\"Vandal IP crew rest — not clear until 12:30\",\"parent\":\"PILOTS · 20 FREE Blade IP Cinch IP Cobra IP Comet IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Recon O Ridge C C Saint B Sidewinder IP Ta\"}",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-brief-2-armed-crewlist.png"
+     ]
+    },
+    {
+     "id": "D-02-brief-phone.2",
+     "did": "Monday ZM 20:00–22:30 with Vandal; Tuesday + Wave (a new wave, its one line blank), Brief 05:00 typed, no take-off, no landing; Nomad in the FRONT seat (took true): tap his name in the crew list to place him in 1.2.0.1.p",
+     "saw": "placed: true · toast \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · breach line in Tuesday's list: [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest. ✕\"] · held sentence \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · solid ring on his Tuesday flying puck: true · dotted on Monday's: true · toast and breach sentence agree: true",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-brief-3-after-tap-toast.png",
+      "ph-05-brief-4-tue-list.png"
+     ]
+    },
+    {
+     "id": "D-02-brief-phone.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d04-dk": {
+   "at": "2026-10-06T01:40:32.436Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-04-desk.0",
+     "did": "Baseline B for Ryder (Monday ZM 20:00–22:30; Tuesday ZT 07:00–08:00, Brief 05:00)",
+     "saw": "breach YES · solid ring Tue yes · dotted Mon yes · Tue list line yes · text \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · his list lines [\"[hard] Crew rest (<12h) Ryder — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:0\"] · his Tuesday pucks flying:SOLID-red chip R, other:SOLID-red chip R · Monday flying:DOTTED-red chip R, other:DOTTED-red chip R",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "D-04-desk.1",
+     "did": "Ryder also put in the FRONT seat of a second Tuesday aircraft (new wave ZQ 10:00–11:00; seat took true, app said \"Ryder is a WSO — cannot fly FCP (ZQ BFM) (+1 more)\")",
+     "saw": "held: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"hard/QUAL: Ryder is a WSO — cannot fly FCP (ZQ BFM)\",\"adv/DT_SUM: 1 person is double turning: Ryder\"] · his list lines [\"[hard] Crew rest (<12h) Ryder — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:0\",\"[hard] Qualification — illegal seat Ryder — Ryder is a WSO — cannot fly FCP (ZQ BFM) ✕\",\"[adv] Double turning Ryder — 1 person is double turning: Ryder ✕\"] · bar \"⚠ 7 issues · 4 warning · tap to collapse ▲\" · his Tuesday pucks flying:SOLID-red chip Q, flying:SOLID-red chip Q, other:SOLID-red chip Q · Monday flying:DOTTED-red chip R, other:DOTTED-red chip R · tapped the crew-rest line: {\"tapped\":true,\"ix\":2,\"hit\":true,\"lit\":[\"xray/Q\",\"xray/Q\",\"xray/Q\"]}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-b1-tue-list-tapped.png"
+     ]
+    },
+    {
+     "id": "D-04-desk.2",
+     "did": "then a blank crewed line too: + Line on ZQ, Ryder in its back seat (took true); read his pucks with every list shut and nothing tapped, then Tuesday's list, then tap the crew-rest line",
+     "saw": "held: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"hard/QUAL: Ryder is a WSO — cannot fly FCP (ZQ BFM)\",\"adv/DT_SUM: 1 person is double turning: Ryder\"] · crew-rest line in the list: \"Crew rest (<12h) Ryder — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest. \" · qualification line: \"Qualification — illegal seat Ryder — Ryder is a WSO — cannot fly FCP (ZQ BFM) ✕\" · his Tuesday pucks (resting): flying:SOLID-red chip Q, flying:SOLID-red chip Q, flying:SOLID-red chip Q, other:SOLID-red chip Q (chips [\"Q\",\"Q\",\"Q\"]) · Monday (resting): flying:DOTTED-red chip R, other:DOTTED-red chip R (classes: puck r boxdot dim | puck r  m boxdot dim) · after tapping the crew-rest line: lit Tuesday pucks [\"xray/Q\",\"xray/Q\",\"xray/Q\",\"xray/Q\"]; Monday's pucks then read: flying:DASHED-red chip R, other:DASHED-red chip R (classes: puck r boxdot wfoc echo | puck r sm boxdot wfoc echo)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-b2-tue-list-tapped.png",
+      "dk-04-b2-tue-puck.png"
+     ]
+    },
+    {
+     "id": "D-04-desk.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d04-ph": {
+   "at": "2026-10-06T01:41:45.086Z",
+   "base": "http://localhost:4174",
+   "phone": true,
+   "table": [
+    {
+     "id": "D-04-phone.0",
+     "did": "Baseline B for Ryder (Monday ZM 20:00–22:30; Tuesday ZT 07:00–08:00, Brief 05:00)",
+     "saw": "breach YES · solid ring Tue yes · dotted Mon yes · Tue list line yes · text \"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · his list lines [\"[hard] Crew rest (<12h) Ryder — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:0\"] · his Tuesday pucks flying:SOLID-red chip R, other:SOLID-red chip R · Monday flying:DOTTED-red chip R, other:DOTTED-red chip R",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "D-04-phone.1",
+     "did": "Ryder also put in the FRONT seat of a second Tuesday aircraft (new wave ZQ 10:00–11:00; seat took true, app said \"Ryder is a WSO — cannot fly FCP (ZQ BFM) (+1 more)\")",
+     "saw": "held: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"hard/QUAL: Ryder is a WSO — cannot fly FCP (ZQ BFM)\",\"adv/DT_SUM: 1 person is double turning: Ryder\"] · his list lines [\"[hard] Crew rest (<12h) Ryder — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:0\",\"[hard] Qualification — illegal seat Ryder — Ryder is a WSO — cannot fly FCP (ZQ BFM) ✕\",\"[adv] Double turning Ryder — 1 person is double turning: Ryder ✕\"] · bar \"⚠ 7 issues · 4 warning · tap to collapse ▲\" · his Tuesday pucks flying:SOLID-red chip Q, flying:SOLID-red chip Q, other:SOLID-red chip Q · Monday flying:DOTTED-red chip R, other:DOTTED-red chip R · tapped the crew-rest line: {\"tapped\":true,\"ix\":2,\"hit\":true,\"lit\":[\"xray/Q\",\"xray/Q\",\"xray/Q\"]}",
+     "verdict": "RECORDED",
+     "pics": []
+    },
+    {
+     "id": "D-04-phone.2",
+     "did": "then a blank crewed line too: + Line on ZQ, Ryder in its back seat (took true); read his pucks with every list shut and nothing tapped, then Tuesday's list, then tap the crew-rest line",
+     "saw": "held: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"hard/QUAL: Ryder is a WSO — cannot fly FCP (ZQ BFM)\",\"adv/DT_SUM: 1 person is double turning: Ryder\"] · crew-rest line in the list: \"Crew rest (<12h) Ryder — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest. \" · qualification line: \"Qualification — illegal seat Ryder — Ryder is a WSO — cannot fly FCP (ZQ BFM) ✕\" · his Tuesday pucks (resting): flying:SOLID-red chip Q, flying:SOLID-red chip Q, flying:SOLID-red chip Q, other:SOLID-red chip Q (chips [\"Q\",\"Q\",\"Q\"]) · Monday (resting): flying:DOTTED-red chip R, other:DOTTED-red chip R (classes: puck r boxdot dim | puck r  m boxdot dim) · after tapping the crew-rest line: lit Tuesday pucks [\"xray/Q\",\"xray/Q\",\"xray/Q\",\"xray/Q\"]; Monday's pucks then read: flying:DASHED-red chip R, other:DASHED-red chip R (classes: puck r boxdot wfoc echo | puck r sm boxdot wfoc echo)",
+     "verdict": "PASS",
+     "pics": [
+      "ph-06-b2-tue-list-tapped.png",
+      "ph-04-b2-tue-puck.png"
+     ]
+    },
+    {
+     "id": "D-04-phone.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d07-dk": {
+   "at": "2026-10-06T01:45:48.416Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-07.1",
+     "did": "Vandal: Monday ZM 20:00–22:30, Tuesday ZT 07:00–08:00 Brief 05:00; both days signed (four sign-offs) and published (Publish: Publish day/Publish day); Tuesday head tag \"ORIG\" before — the published state",
+     "saw": "pending chip on Edit Schedule: \"12 changes\" / marker \"\" (expected no pending, no Not-yet-signed: as expected); the published face carries no pending chip: true · Edit Schedule: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R, other:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R, other:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"12 changes\" marker \"\"  ||  View-only Sched: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"\" marker \"\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-D-07.1-E-tue-day.png",
+      "dk-02-D-07.1-V-tue-day.png"
+     ]
+    },
+    {
+     "id": "D-07.2",
+     "did": "Tuesday working copy: + Line, Vandal seated on the blank line (took true; line: cs \"\" msn \"\" br \"\" to \"\" ld \"\" seats p \"split\" w \"\")",
+     "saw": "pending chip on Edit Schedule: \"1 pending\" / marker \"Not yet signed\" (expected 1 pending + Not yet signed: as expected); the published face carries no pending chip: true · Edit Schedule: bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R, flying:SOLID-red chip R, other:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R, other:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"1 pending\" marker \"Not yet signed\"  ||  View-only Sched: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"\" marker \"\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-D-07.2-E-tue-day.png",
+      "dk-04-D-07.2-V-tue-day.png"
+     ]
+    },
+    {
+     "id": "D-07.3",
+     "did": "top-bar Undo, the first one (pressed true; the blank line's seat now \"\", lines on the wave 2)",
+     "saw": "pending chip on Edit Schedule: \"1 pending\" / marker \"Not yet signed\" (expected no pending, no Not-yet-signed: NOT as expected); the published face carries no pending chip: true · Edit Schedule: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R, other:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R, other:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"1 pending\" marker \"Not yet signed\"  ||  View-only Sched: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"\" marker \"\"",
+     "verdict": "PARTIAL",
+     "pics": [
+      "dk-05-D-07.3-E-tue-day.png",
+      "dk-06-D-07.3-V-tue-day.png"
+     ]
+    },
+    {
+     "id": "D-07.3b",
+     "did": "top-bar Undo, a second time (pressed true; lines on the wave 1)",
+     "saw": "pending chip on Edit Schedule: \"16 changes\" / marker \"\" (expected no pending, no Not-yet-signed: as expected); the published face carries no pending chip: true · Edit Schedule: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R, other:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R, other:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"16 changes\" marker \"\"  ||  View-only Sched: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"\" marker \"\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-D-07.3b-E-tue-day.png",
+      "dk-08-D-07.3b-V-tue-day.png"
+     ]
+    },
+    {
+     "id": "D-07.4",
+     "did": "top-bar Redo, the first one (pressed true; the blank line's seat now \"\", lines on the wave 2)",
+     "saw": "pending chip on Edit Schedule: \"1 pending\" / marker \"Not yet signed\" (expected 1 pending + Not yet signed: as expected); the published face carries no pending chip: true · Edit Schedule: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R, other:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R, other:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"1 pending\" marker \"Not yet signed\"  ||  View-only Sched: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"\" marker \"\"",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "D-07.4b",
+     "did": "top-bar Redo, a second time (pressed true; the blank line's seat now \"split\", lines on the wave 2)",
+     "saw": "pending chip on Edit Schedule: \"1 pending\" / marker \"Not yet signed\" (expected 1 pending + Not yet signed: as expected); the published face carries no pending chip: true · Edit Schedule: bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R, flying:SOLID-red chip R, other:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R, other:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"1 pending\" marker \"Not yet signed\"  ||  View-only Sched: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"\" marker \"\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-D-07.4b-E-tue-day.png"
+     ]
+    },
+    {
+     "id": "D-07.5",
+     "did": "the page reloaded and signed in again (lines on the wave 2; the blank line's seat \"split\")",
+     "saw": "pending chip on Edit Schedule: \"1 pending\" / marker \"Not yet signed\" (expected no expectation: as expected); the published face carries no pending chip: true · Edit Schedule: bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R, flying:SOLID-red chip R, other:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R, other:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"1 pending\" marker \"Not yet signed\"  ||  View-only Sched: bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" · his line [\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tuesday pucks [flying:SOLID-red chip R] · Monday pucks [flying:DOTTED-red chip R] · Monday \"Breaks\" [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Vandal — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · head tag \"ORIG\" chip \"\" marker \"\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-D-07.5-V-tue-day.png"
+     ]
+    },
+    {
+     "id": "D-07.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d01-dk": {
+   "at": "2026-10-06T01:47:21.186Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-01-desk.1",
+     "did": "Vandal: Monday ZM 20:00–22:30; Tuesday ZT 07:00–08:00 Brief 05:00 (baseline breach: true); Tuesday Ground Programme row \"OPS BRIEF\" 14:00–15:00 who \"allavail\" with the ALL AVAIL puck in it (placed: true, app said \"ALL AVAIL planned\"); tapped the count on that puck",
+     "saw": "count chip \"35\" · title \"OPS BRIEF Jul 14 · 14:00–15:00\" · tabs [] · line \"Who’s available 35\" · lost \"\" · foot \"Tap a puck for why. 2 men are flagged.\" · 35 men listed; flagged: Vandal RED (Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.); Outlaw RED (Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.) · X: {\"flag\":\"RED\",\"why\":\"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"chip\":\"R\",\"cls\":\"puck sm warn hard boxred\",\"ring\":\"rgb(240, 85, 95) 0px 0px 0px 2px / none 3px\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-win-before.png"
+     ]
+    },
+    {
+     "id": "D-01-desk.2",
+     "did": "tapped Vandal in the window",
+     "saw": "foot \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · line \"Who’s available 35\" · toast null · his pucks lit behind (selected on board 3, warning-lit 0, week 9) · window still open: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-win-tapped-X.png"
+     ]
+    },
+    {
+     "id": "D-01-desk.3",
+     "did": "+ Line on Tuesday, Vandal seated on the blank line (took true; cs \"\" msn \"\" br \"\" to \"\" ld \"\" seats p \"split\" w \"\"); the week still reads breach true; the window reopened",
+     "saw": "count chip \"35\" · title \"OPS BRIEF Jul 14 · 14:00–15:00\" · tabs [] · line \"Who’s available 35\" · lost \"\" · foot \"Tap a puck for why. 2 men are flagged.\" · 35 men listed; flagged: Vandal RED (Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.); Outlaw RED (Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.) · X: {\"flag\":\"RED\",\"why\":\"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"chip\":\"R\",\"cls\":\"puck sm warn hard boxred\",\"ring\":\"rgb(240, 85, 95) 0px 0px 0px 2px / none 3px\"} · BEFORE X: {\"flag\":\"RED\",\"why\":\"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"chip\":\"R\"} · AFTER X: {\"flag\":\"RED\",\"why\":\"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"chip\":\"R\"} · flagged count before 2, after 2 · men listed before 35, after 35",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-win-after-blank-line.png"
+     ]
+    },
+    {
+     "id": "D-01-desk.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d01-ph": {
+   "at": "2026-10-06T01:48:12.723Z",
+   "base": "http://localhost:4174",
+   "phone": true,
+   "table": [
+    {
+     "id": "D-01-phone.1",
+     "did": "Vandal: Monday ZM 20:00–22:30; Tuesday ZT 07:00–08:00 Brief 05:00 (baseline breach: true); Tuesday Ground Programme row \"OPS BRIEF\" 14:00–15:00 who \"allavail\" with the ALL AVAIL puck in it (placed: true, app said \"ALL AVAIL planned\"); tapped the count on that puck",
+     "saw": "count chip \"35\" · title \"OPS BRIEF Jul 14 · 14:00–15:00\" · tabs [] · line \"Who’s available 35\" · lost \"\" · foot \"Tap a puck for why. 2 men are flagged.\" · 35 men listed; flagged: Vandal RED (Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.); Outlaw RED (Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.) · X: {\"flag\":\"RED\",\"why\":\"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"chip\":\"R\",\"cls\":\"puck sm warn hard boxred\",\"ring\":\"rgb(240, 85, 95) 0px 0px 0px 2px / none 3px\"}",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-win-before.png"
+     ]
+    },
+    {
+     "id": "D-01-phone.2",
+     "did": "tapped Vandal in the window",
+     "saw": "foot \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\" · line \"Who’s available 35\" · toast null · his pucks lit behind (selected on board 3, warning-lit 0, week 9) · window still open: true",
+     "verdict": "PASS",
+     "pics": [
+      "ph-02-win-tapped-X.png"
+     ]
+    },
+    {
+     "id": "D-01-phone.3",
+     "did": "+ Line on Tuesday, Vandal seated on the blank line (took true; cs \"\" msn \"\" br \"\" to \"\" ld \"\" seats p \"split\" w \"\"); the week still reads breach true; the window reopened",
+     "saw": "count chip \"35\" · title \"OPS BRIEF Jul 14 · 14:00–15:00\" · tabs [] · line \"Who’s available 35\" · lost \"\" · foot \"Tap a puck for why. 2 men are flagged.\" · 35 men listed; flagged: Vandal RED (Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.); Outlaw RED (Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest.) · X: {\"flag\":\"RED\",\"why\":\"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"chip\":\"R\",\"cls\":\"puck sm warn hard boxred\",\"ring\":\"rgb(240, 85, 95) 0px 0px 0px 2px / none 3px\"} · BEFORE X: {\"flag\":\"RED\",\"why\":\"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"chip\":\"R\"} · AFTER X: {\"flag\":\"RED\",\"why\":\"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but told to report 05:00 — only 4h30 rest.\",\"chip\":\"R\"} · flagged count before 2, after 2 · men listed before 35, after 35",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-win-after-blank-line.png"
+     ]
+    },
+    {
+     "id": "D-01-phone.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d03-dk": {
+   "at": "2026-10-06T01:50:40.330Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-03.0",
+     "did": "Vandal: Monday ZM 20:00–22:30; Tuesday ZT 07:00–08:00 Brief 05:00 and a blank crewed line (took true); both days signed and published (Publish day/Publish day; admin sees breach true, ring true, dotted true); Admin → Users guest switch (was false, now true); signed out; the sign-in card",
+     "saw": "the card offers: [\"Sign in\"] · text \"RAPTOR READINESS · AVAILABILITY · PLANNING TRACKING & OPS REPORTING USERNAME PASSWORD Sign in build 29JUL·B55\" — no separate guest button or \"ask for access\" link is on the card itself; the way in is a name on no list, which lands on Request access",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-admin-guest-switch.png",
+      "dk-02-sign-in-card.png"
+     ]
+    },
+    {
+     "id": "D-03.1",
+     "did": "a name on no list (g@mail) signed in from the card, asked for access (Request access form filled and sent), signed out, signed in again",
+     "saw": "request screen shown: true · after asking: {\"waiting\":true,\"guestApp\":false} · after signing in again: guest view true — note \"Waiting for access — view only\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-request-access-screen.png",
+      "dk-04-after-asking.png"
+     ]
+    },
+    {
+     "id": "D-03.2",
+     "did": "the guest reads the published week (View-only guest page): Tuesday Vandal's pucks and Monday's",
+     "saw": "Tuesday pucks: flying:SOLID-red chip R, flying:SOLID-red chip R (rings as painted: none 3px | rgb(240, 85, 95) 0px 0px 0px 2px ; none 3px | rgb(240, 85, 95) 0px 0px 0px 2px) · Monday pucks: flying:DOTTED-red chip R (dotted 1px | none) · controls in the guest page: day warning lists 0, hide/flag-again buttons 0, editable boxes / selects 0, \"add line/wave/row\" buttons 0, draggable pucks 0, seat addresses drawn (display only) 61, input boxes [], sign-off selects 0, publish buttons 0 · head: tag \"ORIG,ORIG\" pending \"\" marker \"\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-guest-tuesday.png",
+      "dk-05-guest-monday.png"
+     ]
+    },
+    {
+     "id": "D-03.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "d02x-dk": {
+   "at": "2026-10-06T01:51:18.312Z",
+   "base": "http://localhost:4174",
+   "phone": false,
+   "table": [
+    {
+     "id": "D-02x.1",
+     "did": "Vandal: Monday ZM 20:00–22:30; Tuesday + Wave, its one line blank except a typed Brief 05:00, NOBODY on it; arm its front seat (arm 1.2.0.0.p) and read Vandal's name in the crew list",
+     "saw": "struck no · class \"rpuck \" · text \"Vandal IP\" · tooltip \"Vandal | Vandal · IP · instructor pilot\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-empty-line-armed.png"
+     ]
+    },
+    {
+     "id": "D-02x.2",
+     "did": "the same Brief line, now with Nomad in its front seat (took true); arm its back seat (arm 1.2.0.0.w) and read Vandal's name",
+     "saw": "struck YES · class \"rpuck no haswhy\" · text \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30 | Vandal · IP · instructor pilot\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-crewed-line-armed.png"
+     ]
+    },
+    {
+     "id": "D-02x.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

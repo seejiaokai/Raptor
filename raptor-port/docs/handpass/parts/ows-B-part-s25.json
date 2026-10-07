@@ -1,0 +1,94 @@
+{
+ "parts": {
+  "ows-B-sA-S25-dk": {
+   "at": "2026-10-06T13:13:31.854Z",
+   "base": "http://localhost:4294",
+   "phone": false,
+   "table": [
+    {
+     "id": "S25 IN TIME 0830",
+     "did": "Saturday flight 12:00–13:00; the line typed \"IN TIME 0830\"; published",
+     "saw": "✓ lines on the wave [[\"IN TIME 08:30\"]] · ✓ published ORIG [ORIG] · ✓ the line as the box kept it: [\"IN TIME 08:30\"] [[\"IN TIME 08:30\"]] · ✓ Leave War cell FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-S25_IN_TIME_0830-pub-cell.png",
+      "dk-03-S25_IN_TIME_0830-pub-tracker.png",
+      "dk-04-S25_IN_TIME_0830-day-day.png",
+      "dk-01-S25_IN_TIME_0830-board.png"
+     ]
+    },
+    {
+     "id": "S25 IN TIME 08:30",
+     "did": "Saturday flight 12:00–13:00; the line typed \"IN TIME 08:30\"; published",
+     "saw": "✓ lines on the wave [[\"IN TIME 08:30\"]] · ✓ published ORIG [ORIG] · ✓ the line as the box kept it: [\"IN TIME 08:30\"] [[\"IN TIME 08:30\"]] · ✓ Leave War cell FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-S25_IN_TIME_08_30-pub-cell.png",
+      "dk-07-S25_IN_TIME_08_30-pub-tracker.png",
+      "dk-08-S25_IN_TIME_08_30-day-day.png",
+      "dk-05-S25_IN_TIME_08_30-board.png"
+     ]
+    },
+    {
+     "id": "S25 IN TIME 0830H",
+     "did": "Saturday flight 12:00–13:00; the line typed \"IN TIME 0830H\"; published",
+     "saw": "✓ lines on the wave [[\"IN TIME 08:30H\"]] · ✓ published ORIG [ORIG] · ✓ the line as the box kept it: [\"IN TIME 08:30H\"] [[\"IN TIME 08:30H\"]] · ✓ Leave War cell FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-S25_IN_TIME_0830H-pub-cell.png",
+      "dk-11-S25_IN_TIME_0830H-pub-tracker.png",
+      "dk-12-S25_IN_TIME_0830H-day-day.png",
+      "dk-09-S25_IN_TIME_0830H-board.png"
+     ]
+    },
+    {
+     "id": "S25 IN TIME 0830L",
+     "did": "Saturday flight 12:00–13:00; the line typed \"IN TIME 0830L\"; published",
+     "saw": "✓ lines on the wave [[\"IN TIME 08:30L\"]] · ✓ published ORIG [ORIG] · ✓ the line as the box kept it: [\"IN TIME 08:30L\"] [[\"IN TIME 08:30L\"]] · ✓ Leave War cell FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-S25_IN_TIME_0830L-pub-cell.png",
+      "dk-15-S25_IN_TIME_0830L-pub-tracker.png",
+      "dk-16-S25_IN_TIME_0830L-day-day.png",
+      "dk-13-S25_IN_TIME_0830L-board.png"
+     ]
+    },
+    {
+     "id": "S25 IN TIME 830",
+     "did": "Saturday flight 12:00–13:00; the line typed \"IN TIME 830\"; published",
+     "saw": "✓ lines on the wave [[\"IN TIME 08:30\"]] · ✓ published ORIG [ORIG] · ✓ the line as the box kept it: [\"IN TIME 08:30\"] [[\"IN TIME 08:30\"]] · ✓ Leave War cell FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-S25_IN_TIME_830-pub-cell.png",
+      "dk-19-S25_IN_TIME_830-pub-tracker.png",
+      "dk-20-S25_IN_TIME_830-day-day.png",
+      "dk-17-S25_IN_TIME_830-board.png"
+     ]
+    },
+    {
+     "id": "S25 bare 08:30",
+     "did": "Saturday flight 12:00–13:00; the line typed literally \"08:30\" (no IN TIME words); published",
+     "saw": "kept as [\"08:30\"] · cell FO · worked 08:30–15:00 · balance 1 (was 0) · box says [] · day says []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-22-S25_bare_0830-pub-cell.png",
+      "dk-23-S25_bare_0830-pub-tracker.png",
+      "dk-21-S25_bare_0830-board.png"
+     ]
+    },
+    {
+     "id": "S25 bare 830",
+     "did": "Saturday flight 12:00–13:00; the line typed literally \"830\" (no IN TIME words); published",
+     "saw": "kept as [\"08:30\"] · cell FO · worked 08:30–15:00 · balance 1 (was 0) · box says [] · day says []",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-26-S25_bare_830-pub-cell.png",
+      "dk-27-S25_bare_830-pub-tracker.png",
+      "dk-25-S25_bare_830-board.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

@@ -380,6 +380,159 @@
         "--strictPort"
       ],
       "port": 4214
+    },
+    {
+      "name": "raptor-stack-a",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-stack",
+        "--port",
+        "4221",
+        "--strictPort"
+      ],
+      "port": 4221
+    },
+    {
+      "name": "raptor-stack-b",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-stack",
+        "--port",
+        "4222",
+        "--strictPort"
+      ],
+      "port": 4222
+    },
+    {
+      "name": "raptor-rallyold-o",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-rallyold",
+        "--port",
+        "4226",
+        "--strictPort"
+      ],
+      "port": 4226
+    },
+    {
+      "name": "raptor-rallyold-s",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-rallyold",
+        "--port",
+        "4227",
+        "--strictPort"
+      ],
+      "port": 4227
+    },
+    {
+      "name": "raptor-main-cmp",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-main",
+        "--port",
+        "4228",
+        "--strictPort"
+      ],
+      "port": 4228
+    },
+    {
+      "name": "raptor-fix-a",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-fix",
+        "--port",
+        "4231",
+        "--strictPort"
+      ],
+      "port": 4231
+    },
+    {
+      "name": "raptor-fix-b",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-fix",
+        "--port",
+        "4232",
+        "--strictPort"
+      ],
+      "port": 4232
+    },
+    {
+      "name": "raptor-fix-host",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-fix",
+        "--port",
+        "4233",
+        "--strictPort"
+      ],
+      "port": 4233
+    },
+    {
+      "name": "raptor-next",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-fix",
+        "--port",
+        "4241",
+        "--strictPort"
+      ],
+      "port": 4241
     }
   ]
 }

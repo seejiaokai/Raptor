@@ -1,0 +1,38 @@
+{
+ "parts": {
+  "bta-A-nan-dk": {
+   "at": "2026-10-06T09:14:48.781Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "NaN blank shift times (placed true; shift start \"\" end \"\" B \"\")",
+     "did": "Zulu (not SC-current) on SC MAIN, blank shift times (placed true; shift start \"\" end \"\" B \"\")",
+     "saw": "his warnings: [hard/SC_QUAL] \"SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Zulu is not current\" || [adv/OCU_NO_IP] \"OCU in SC AM with no IP\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-nan-blank shift times (placed true; shift start \"\" end \"\" B \"\")-list.png"
+     ]
+    },
+    {
+     "id": "NaN shift typed 08:00–12:00",
+     "did": "Zulu (not SC-current) on SC MAIN, shift typed 08:00–12:00",
+     "saw": "his warnings: [hard/SC_QUAL] \"SC DAY currency needed for SC AM (08:00–12:00) — Zulu is not current\" || [adv/OCU_NO_IP] \"OCU in SC AM with no IP\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-nan-shift typed 08:00–12:00-list.png"
+     ]
+    },
+    {
+     "id": "NaN shift cleared again",
+     "did": "Zulu (not SC-current) on SC MAIN, shift cleared again",
+     "saw": "his warnings: [hard/SC_QUAL] \"SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Zulu is not current\" || [adv/OCU_NO_IP] \"OCU in SC AM with no IP\"",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-nan-shift cleared again-list.png"
+     ]
+    }
+   ]
+  }
+ }
+}

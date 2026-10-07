@@ -130,3 +130,55 @@ describe('work hours for the week', () => {
     expect(mine.mins, "whose week is at least that one day's span").toBeGreaterThanOrEqual(sp.span)
   })
 })
+
+/* W4 (the Codex stack check, 5 Oct 26 — a walker's find, old on `main` too): a man on a flying line that has no
+   take-off or landing yet has no span that day. His week total read "NaN min", and one such line poisoned the whole
+   total of a man who also had real, timed work. */
+describe('W4 a flying line with no times yet adds no hours — never NaN', () => {
+  it('an untimed line on every flying day moves nobody’s hours or days, idle or busy', () => {
+    const base = computeInsights()
+    const of = (I: any, id: string) => { const h = I.hours.find((x: any) => x.id === id); return h ? [h.mins, h.days] : [0, 0] }
+    const busy = base.hours[0].id
+    for (const who of ['waldo', busy]) {
+      DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
+      let planted = 0
+      DAYS.forEach((d: any) => { const w = (d.waves || []).find((x: any) => !x.standalone); if (!w) return; planted++
+        w.formations.push({ cs: 'NT', msn: 'BFM', to: '', ld: '', br: '', aircraft: [{ p: who, w: '', area: '', rmks: '', opts: {} }] }) })
+      expect(planted).toBeGreaterThan(2)
+      const after = computeInsights()
+      expect(after.hours.every((h: any) => Number.isFinite(h.mins)), 'no NaN in the list').toBe(true)
+      expect(of(after, who), who).toEqual(of(base, who))
+    }
+    expect(workSpan([{ kind: 'fly', to: NaN, ld: NaN, report: NaN }])).toBe(null)
+    expect(workSpan([{ kind: 'fly', to: NaN, ld: NaN, report: 480 }]), 'a reporting clock alone is no span').toBe(null)
+  })
+})
+
+/* RF1 (Astra's and Sol's reads of the fix round, 6 Oct 26): W4 stopped the NaN, but an unfinished flight whose wave
+   carries a reporting clock still lent that clock to the day — 08:00 from the flight, 14:00 from a ground row, "six
+   hours" for a man with one hour of work. An event counts only when BOTH its ends are real. */
+describe('RF1 an unfinished flying line lends nothing to the span of other work', () => {
+  it('a reporting clock on an untimed line beside timed ground work: the ground work alone, in either order', () => {
+    const ground = { kind: 'ground', s: 13 * 60, e: 14 * 60 }
+    const unfinished = { kind: 'fly', to: NaN, ld: NaN, report: 8 * 60 }
+    for (const evs of [[unfinished, ground], [ground, unfinished]]) {
+      const sp = workSpan(evs)!
+      expect([sp.s, sp.e, sp.span]).toEqual([13 * 60, 14 * 60, 60])
+    }
+    /* a finished flight still counts whole, and an overnight one keeps its negative report */
+    expect(workSpan([{ kind: 'fly', to: 600, ld: 660, report: 420 }, ground])!.span).toBe(14 * 60 - 420)
+    expect(workSpan([{ kind: 'fly', to: 30, ld: 90, report: -90 }])!.s).toBe(-90)
+  })
+  it('in the app: a man with one ground hour, put on an untimed line of a wave that has an in-time, still shows one hour', () => {
+    const before = computeInsights()
+    const w = DAYS[0].waves.find((x: any) => !x.standalone)
+    w.intimes = ['08:00 IN TIME + WX/NOTAMS']   // a whole-wave line: every formation of the wave reads it
+    DAYS[0].ground.push({ prog: 'RF1 MEETING', str: '1900', end: '2000', who: 'waldo' })
+    const alone = computeInsights().hours.find((h: any) => h.id === 'waldo')
+    w.formations.push({ cs: 'NT', msn: 'BFM', to: '', ld: '', br: '', aircraft: [{ p: 'waldo', w: '', area: '', rmks: '', opts: {} }] })
+    const both = computeInsights().hours.find((h: any) => h.id === 'waldo')
+    expect(alone, 'the ground hour is counted').toBeTruthy()
+    expect(both!.mins, 'the untimed line adds nothing to it').toBe(alone!.mins)
+    expect(before.hours.length).toBeGreaterThan(0)
+  })
+})

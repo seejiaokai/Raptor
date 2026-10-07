@@ -11,6 +11,7 @@ import { StoreAheadError } from './storage/schema'
 import { setSaveStatusSource } from './ui/SaveStatus'
 import { bootApp, BootConfigError } from './boot'
 import { bootPolicyFrom } from './bootpolicy'
+import { installDotRing } from './ui/dotring'
 
 /* THE COMPOSITION ROOT. It chooses the two things only a page can: the backend (storage/boot.ts chooseBackend) and
    the boot policy ([DB-READINESS] group A, phase 5 — src/bootpolicy.ts: the demo, or a shared store that nothing demo
@@ -33,6 +34,8 @@ async function boot(): Promise<void> {
      console open cannot sidestep who they signed in as. Nothing in the app itself
      reads a bridge global (checked 26 Sep 26). */
   if (isLocalHost()) installProbeBridge()
+  /* the dotted crew-rest ring's thickness on a scaled screen — before the first paint ([PUCK-DOT-ZOOM]) */
+  installDotRing()
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />

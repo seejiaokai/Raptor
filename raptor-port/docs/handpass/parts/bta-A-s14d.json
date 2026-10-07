@@ -1,0 +1,171 @@
+{
+ "parts": {
+  "bta-A-s14-dk": {
+   "at": "2026-10-06T09:02:16.338Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "S14 OL × ordinary duty row — main person",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new duty row (\"+ Row\") — role \"\" start \"\" end \"\" who \"\"; X put on it",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on d:1.0.3.+, toast \"Vandal — On leave but tasked — this row — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s14_OL_ordinary_duty_row_main_person-list.png",
+      "dk-01-s14_OL_ordinary_duty_row_main_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 OL × ordinary duty row — extra person",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new duty row (\"+ Row\") — role \"\" start \"\" end \"\" who \"\"; another man put on it first; X put on it",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on d:1.0.3.+, toast \"Vandal — On leave but tasked — this row — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s14_OL_ordinary_duty_row_extra_person-list.png",
+      "dk-03-s14_OL_ordinary_duty_row_extra_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 OL × SC-linked duty desk — main person",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; SC Shift block rows SXO AM 07:00-13:00, OPS O AM 07:00-13:00, SXO PM 13:00-19:00, OPS O PM 13:00-19:00; row 1 start/end cleared; X put on it",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on d:1.2.0.+, toast \"Vandal — On leave but tasked — SXO AM duty — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — SXO AM duty — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s14_OL_SC_linked_duty_desk_main_person-list.png",
+      "dk-05-s14_OL_SC_linked_duty_desk_main_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 OL × SC-linked duty desk — extra person",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; SC Shift block rows SXO AM 07:00-13:00, OPS O AM 07:00-13:00, SXO PM 13:00-19:00, OPS O PM 13:00-19:00; row 1 start/end cleared; another man put on it first; X put on it",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on d:1.2.0.+, toast \"Vandal — On leave but tasked — SXO AM duty — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — SXO AM duty — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s14_OL_SC_linked_duty_desk_extra_person-list.png",
+      "dk-07-s14_OL_SC_linked_duty_desk_extra_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 OL × Ground Programme row — main person",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new Ground Programme row (\"+ Item\") — name \"\" start \"\" end \"\" who \"\"; X put on it",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on g:1.4.+, toast \"Vandal — On leave but tasked — this row — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s14_OL_Ground_Programme_row_main_person-list.png",
+      "dk-09-s14_OL_Ground_Programme_row_main_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 OL × Ground Programme row — extra person",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new Ground Programme row (\"+ Item\") — name \"\" start \"\" end \"\" who \"\"; another man put on it first; X put on it",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on g:1.4.+, toast \"Vandal — On leave but tasked — this row — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s14_OL_Ground_Programme_row_extra_person-list.png",
+      "dk-11-s14_OL_Ground_Programme_row_extra_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 OL × Common Programme row — first crowd member",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new Common Programme row (\"+ Item\") — name \"\" start \"\" end \"\" who \"\" crowd null; X put on it",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on a:1.2.+, toast \"Vandal — On leave but tasked — programme — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — programme — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-s14_OL_Common_Programme_row_first_crowd_member-list.png",
+      "dk-13-s14_OL_Common_Programme_row_first_crowd_member-puck.png"
+     ]
+    },
+    {
+     "id": "S14 OL × Common Programme row — second crowd member",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new Common Programme row (\"+ Item\") — name \"\" start \"\" end \"\" who \"\" crowd null; another man put on it first; X put on it",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on a:1.2.+, toast \"Vandal — On leave but tasked — programme — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — programme — reason: x-OL\" · his pucks [programme:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-s14_OL_Common_Programme_row_second_crowd_member-list.png",
+      "dk-15-s14_OL_Common_Programme_row_second_crowd_member-puck.png"
+     ]
+    },
+    {
+     "id": "S14 ATT B × ordinary duty row — main person",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new duty row (\"+ Row\") — role \"\" start \"\" end \"\" who \"\"; X put on it",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on d:1.0.3.+, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-s14_ATT_B_ordinary_duty_row_main_person-list.png",
+      "dk-17-s14_ATT_B_ordinary_duty_row_main_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 ATT B × ordinary duty row — extra person",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new duty row (\"+ Row\") — role \"\" start \"\" end \"\" who \"\"; another man put on it first; X put on it",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on d:1.0.3.+, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-20-s14_ATT_B_ordinary_duty_row_extra_person-list.png",
+      "dk-19-s14_ATT_B_ordinary_duty_row_extra_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 ATT B × SC-linked duty desk — main person",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; SC Shift block rows SXO AM 07:00-13:00, OPS O AM 07:00-13:00, SXO PM 13:00-19:00, OPS O PM 13:00-19:00; row 1 start/end cleared; X put on it",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on d:1.2.0.+, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-s14_ATT_B_SC_linked_duty_desk_main_person-list.png",
+      "dk-21-s14_ATT_B_SC_linked_duty_desk_main_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 ATT B × SC-linked duty desk — extra person",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; SC Shift block rows SXO AM 07:00-13:00, OPS O AM 07:00-13:00, SXO PM 13:00-19:00, OPS O PM 13:00-19:00; row 1 start/end cleared; another man put on it first; X put on it",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on d:1.2.0.+, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-24-s14_ATT_B_SC_linked_duty_desk_extra_person-list.png",
+      "dk-23-s14_ATT_B_SC_linked_duty_desk_extra_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 ATT B × Ground Programme row — main person",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new Ground Programme row (\"+ Item\") — name \"\" start \"\" end \"\" who \"\"; X put on it",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on g:1.4.+, toast \"Vandal planned\". warnings naming him: none · his pucks [ground row:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-26-s14_ATT_B_Ground_Programme_row_main_person-list.png",
+      "dk-25-s14_ATT_B_Ground_Programme_row_main_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 ATT B × Ground Programme row — extra person",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new Ground Programme row (\"+ Item\") — name \"\" start \"\" end \"\" who \"\"; another man put on it first; X put on it",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on g:1.4.+, toast \"Vandal planned\". warnings naming him: none · his pucks [ground row:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-28-s14_ATT_B_Ground_Programme_row_extra_person-list.png",
+      "dk-27-s14_ATT_B_Ground_Programme_row_extra_person-puck.png"
+     ]
+    },
+    {
+     "id": "S14 ATT B × Common Programme row — first crowd member",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new Common Programme row (\"+ Item\") — name \"\" start \"\" end \"\" who \"\" crowd null; X put on it",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on a:1.2.+, toast \"Vandal planned\". warnings naming him: none · his pucks [programme:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-30-s14_ATT_B_Common_Programme_row_first_crowd_member-list.png",
+      "dk-29-s14_ATT_B_Common_Programme_row_first_crowd_member-puck.png"
+     ]
+    },
+    {
+     "id": "S14 ATT B × Common Programme row — second crowd member",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new Common Programme row (\"+ Item\") — name \"\" start \"\" end \"\" who \"\" crowd null; another man put on it first; X put on it",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on a:1.2.+, toast \"Vandal planned\". warnings naming him: none · his pucks [programme:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-32-s14_ATT_B_Common_Programme_row_second_crowd_member-list.png",
+      "dk-31-s14_ATT_B_Common_Programme_row_second_crowd_member-puck.png"
+     ]
+    }
+   ]
+  }
+ }
+}

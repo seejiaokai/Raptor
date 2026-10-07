@@ -43,6 +43,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   the shift itself (that is the hard clash loop's business), plus timed
   personal inputs through the same `restsInput` gate crew rest uses. A SPARE
   row has no event stream, so both stay MAIN-only by construction.
+  **A third, since D606 (owner, 7 Oct 26):** on a weekend or public holiday the
+  same in-time, where earlier than the shift's start, starts the MAIN's OIL day
+  too — §Weekend/PH work earns OIL. The one body that reads an SC line's B, for
+  crew rest and for OIL alike, is `reporting.ts scIntime`.
 - **Typed pre-flight clocks follow a small-hours T/O across midnight.** When
   the configured brief lead already puts the default brief on the previous
   evening, an indicated B later on the clock than T/O is shifted back one day;
@@ -206,7 +210,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   and publication. Bounded, case-insensitive IN TIME / IN-TIME / INTIME and
   RALLY identify each activity. One first-valid clock bearing both labels
   applies to both. A clock-only legacy instruction remains IN; a clockless
-  `RALLY AFTER IN TIME` (or `RALLY AFTER IN`) inherits its applicable IN.
+  `RALLY AFTER IN TIME` (or `RALLY AFTER IN`) inherits its applicable IN, and the same
+  words typed WITH a clock are that rally's own time — never a second in-time (W3, 5 Oct 26).
+  A wave's header time (`waveInTime`) reads a formation with no take-off yet as the day's
+  checks do — the typed clock on its own day (W5, 5 Oct 26).
   Other clockless notes stay inert. Formation matching is bounded against only
   this wave's actual formation names anywhere in the whole line, including
   remarks; unmatched words and personal names do not create another target.
@@ -245,7 +252,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   reads as a positive overlap before the named actual duty-end day. The add
   button retains an existing report; without one it uses earliest uncancelled
   valid take-off minus reportLead (D510), followed by the configured reportText
-  (D511). No valid take-off keeps a text-only line. Band boundaries alone clip to [0,1440].
+  (D511). Retaining an existing report means a SECOND press on a wave that already has a line copies that line's clock,
+  never take-off minus reportLead again — left as built on his answer (D600, 6 Oct 26, narrowing D510). No valid take-off keeps a text-only line. Band boundaries alone clip to [0,1440].
   A bucket made empty by previous-day boundaries carries `priorEmpty` and has
   no available members or wave-specific all-day total; the global Available
   all day list remains. This includes a negative-origin first band ending
@@ -268,6 +276,91 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   Default positive-time results retain parity; no report rolls back two days.
   Exact arithmetic/world/provenance pins: `rally-consumers.test.ts` and
   `rally-dated-rest.test.ts`. Full dispositions: Rally rest-repair plan.
+
+- **A line with nothing to measure neither raises a breach nor hides one** (`[REST-BLANK-LINE]`, D602, 6 Oct 26).
+  "+ Line" and "+ Wave" mint a BLANK flying line; its times reach the engine as not-a-number and every comparison
+  with not-a-number is false, so a man seated on one lost the breach his OTHER line raised — the warning, the ring,
+  the dotted mark, the picker's pre-drop line, the SC seat's clock. Three places in `validate.ts`, one rule:
+  (1) YESTERDAY — an event whose end is not a real number is not an end (`crewRestDay`, the `rawEnd` guard); a
+  landing typed with no take-off still is one. (2) TODAY — `insOf` is the earliest of the instructions that EXIST
+  (a typed Brief, the wave's In-time / Rally, an SC line's typed B or shift start); a leg with none is left out of
+  `legs`, and only legs with a take-off (`noms`) bear the nominal report and the tight-turning advisory. A man whose
+  every line is blank still FLIES that day: an earlier commitment inside his rest (a meeting, a sim, a duty post, a
+  typed input) binds the breach, worded "his day starts HH:MM (…), and he is on a line with no take-off yet" — no
+  report is invented (Astra's scenario read, S10); with nothing else to measure he is left alone, and `REST[di]`
+  still carries when he is clear. The late-show tail is
+  dropped when the binding leg has no take-off to name a step for. (3) THE SAME-DAY TURN pairs only legs with both
+  times; the DT chip still counts a timeless leg on purpose (`dturns`). With every time present all three are
+  value-for-value the old arithmetic (the reference parity holds). Said on the Logic page (Crew rest, "no take-off
+  yet"). Pins: `engine/restblank.test.ts`, `e2e/restblank.spec.ts`.
+
+- **An absence that covers the whole day does not need the seat's times (owner, D605, 6 Oct 26 — "4 yes as
+  recommended"; `[BLANK-TIMES-ABSENCE]`, built the same day).** Every absence check asked whether the absence OVERLAPS
+  the seat's hours, so a man on all-day leave or a downchit seated on a line or row with no times raised nothing in the
+  list until a time was typed — the crew list's struck name was the only warning. His ruling: he is flagged the moment
+  he is seated anywhere that day; a PART-day absence against a seat with no times stays silent (nothing to compare).
+  **One list, `day.whole` (`events.ts buildDay`, the predicate `wholeDay`):** THIS day's inputs (never a neighbour's
+  `nx` / `pv` copy — shifted a day, it cannot pass) whose window is the whole day — the All day tick, a record with no
+  usable hours (`inpWin` fails closed to `[0,1439]`), or hours typed 00:00–23:59 or to 24:00. It is built through the
+  same gate as `day.input` (`inpShow` — dormancy, the frozen filing on a published face) but asked UNDEFERRED: a
+  timed request put on the Ground Programme normally speaks as its landed row so a clash is said once, and a row
+  cannot clash with a seat that has no hours — so a whole-day request typed 00:00–23:59 would have gone silent
+  against such a seat the moment it was accepted, where the All day tick (never deferred) kept its voice (Astra's
+  scenario read, F2). **Where it is read, one place per kind of seat** (`validate.ts`; each loop keeps its own types,
+  exemptions and words — a seat with no usable window is judged against `day.whole` instead of overlapping
+  `day.input`):
+  (1) a flying line ("+ Line" / "+ Wave" mint one with no take-off; garbage in the take-off box is the same) — the
+  sortie loop "C via input clash", on `e.step` / `e.dekit`; (2) an SC MAIN whose shift times were cleared — the duty /
+  sim / ground loop (a shift is the one event that reaches it with no hours), the Meeting's amber `SHIFT_SOFT` printed
+  WITHOUT a clock; (3) an SC SPARE on such a shift — the "who may not stand an SC SPARE" look, on `f.s` / `f.e`;
+  (4) every seat that never became an event or a `sacrew` entry because it has no start — a duty desk, a sim seat or
+  body, a ground or Common Programme row, an AVALON / BB seat or desk with no shift times (BB is minted so) — collected
+  by `buildDay` as **`day.blank`** (port-only, excised by the parity gate like `sacrew`; never in `day.events`, so the
+  clash loop, the crew list's busy scan, Insights' hours and OIL still read a time-less row as occupying no time), each
+  entry carrying `abs`, that man's whole-day inputs, and judged in one loop with the timed loops' own two branches
+  (`av` — the AVALON / BB look: only what cannot spare, ATT B allowed at its desk; otherwise the ordinary look: ATT B
+  may work). **Unchanged, on purpose:** an ⓘ info-only row and a cancelled row or line are still never checked; a
+  placeholder puck is nobody; a standby line with no hours still asks nothing about currency or two places; a row with a
+  start and no end already had a window (the open-ended default). **Its own request is not a clash:** an all-day
+  request put on the Ground Programme makes a time-less row and keeps its own voice (`inputs.ts inputFlags`), so `abs`
+  leaves out the input the row was landed from (`row.src` against the input's id) — its man is not "Training but
+  tasked" on the row that IS his Training; a second man on that row with his own leave is flagged. **The sentence:**
+  the timed loop's own words; a seat with no name yet reads "this line" (a flying line) or names its kind — "this duty
+  row", "this sim row", "this ground row" — in the absence sentences, the standby desk's included (with times too — the
+  same seat must not change its sentence when a time is typed). The kind matters: the list folds identical sentences
+  into one line, and a plain "this row" made one line of a man's three new rows (walkers A and B). An unnamed sim or
+  duty row counts as unnamed although its label is built 'Sim '+name and role+' duty' (Astra's F4) — for those two
+  kinds only: a Ground or Common Programme item really titled "Sim" or "duty" keeps its title (Sol 6.1's F2).
+  **An Upchit is never an absence** — nor is SANS Availability: `inpShow` turns both away at its head. The Upchit used
+  to slip back in through the accepted-row fall-through ("no landed row, so it keeps its voice") and read "Upchit
+  clashes with …" / "Upchit but tasked — …" on the day a man was cleared fit, on a seat WITH times too — OLD, found by
+  Astra's scenario read (F1) and closed here before D605 could carry it to every seat without. **The agent's readings, told to
+  him:** it reaches every input type the timed check flags (a whole-day course, overseas duty, an all-day meeting), not
+  only leave and medical — none of those answers depended on the missing time; and the crew list is NOT changed — before
+  a drop it still reads a seat with no hours as unknown and strikes a man for any ABSENCE that day — a leave, a
+  downchit, an overseas duty (`avail.ts slotBar`, "unknown is not never-clashes") — so a part-day absence, and a local
+  leave on a standby seat with blank shift times (`OUTSTANDING.md` `[BLANK-STANDBY-STRIKE]`), are struck before and
+  silent after; no man the list flags FOR AN ABSENCE was offered clean. A whole-day ACTIVITY (a course, a meeting) is
+  the other way round: the crew list only ever advised against one where the seat has hours ("already on Training"), so
+  on a seat with none it says nothing before and the list flags after — the drop's own toast says it at once
+  (`[BLANK-SEAT-ACTIVITY-HINT]`, filed; both pinned in `blankabsence.test.ts`). A published day still freezes these warnings (D177–D179): an issued version keeps the list it went out with
+  (`snap.w`), and seating a man or filing an absence afterwards is a pending change like any other. Said on the Logic
+  page (the leave group, "A seat with no times yet"). Pins: `engine/blankabsence.test.ts` (every input type on every
+  kind of seat, with and without times), `e2e/blankabsence.spec.ts`; the three older pins that had written the silence
+  down as known (`audit-c-times.test.ts`, `avalon-rules.test.ts`, `overnight.test.ts`) now say the rule. The crew-rest
+  half of the same family is the bullet above.
+
+- **The crew list's crew-rest question answers for an SC MAIN seat (`[SC-PICKER-INTIME-REST]`, Sol 6.1's read of the
+  crew-rest fix; built 6 Oct 26).** `restIfPlaced` clones the candidate leg from a sibling of the same formation, and
+  looked for that sibling among events of kind `fly` only — an SC seat's event is kind `shift`, so the question answered
+  nothing for ANY SC seat, and the crew list's own SC check compares a man's clearance with the shift's START only. A man
+  clear at 12:30 was offered a seat on a shift with a typed 05:00 in-time (the B box) without a word, and the breach
+  appeared when he was placed. Now a `shift` sibling counts as a sortie sibling does (the in-time and the shift's hours
+  are the formation's), backward and forward, so the line the crew list prints and the warning placing him raises are
+  one sentence. **The negative control:** an SC line holds its MAIN and SPARE rows in ONE formation, so a spare seat
+  would have borrowed the MAIN's report — `restIfPlaced` answers null for any seat the conflict engine leaves alone
+  (`saExempt`: an SC SPARE, anything on AVALON / BB), as `slotBar` already did before asking. An EMPTY SC formation
+  still has no sibling and answers nothing (`[REST-FIRST-CREW-HINT]`). Pins: `engine/scpickerrest.test.ts`.
 
 ### How crew-rest, long-day and turn warnings are worded and marked
 
@@ -840,7 +933,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   standalone wave's seats and every `sa:'avalon'`/`'bb'` desk row into
   `day.sacrew`, so there is no BB-specific code anywhere; the only difference
   is that BB's hours are TYPED, and a BB line left with blank hours has no
-  window and is not collected at all — fail closed, inert.
+  window and is not collected into `day.sacrew` — the currency, front-seat and
+  two-places looks stay inert. *(Corrected 6 Oct 26, D605: its men ARE kept, in
+  `day.blank`, for the one look that needs no hours — a whole-day absence; §Crew
+  rest, "An absence that covers the whole day".)*
   **The desk this applies to is the one a template marked AVALON's (or BB's)**
   (7 Sep 26). Since the 13 Aug decoupling no UI path minted an `sa:'avalon'` desk,
   so a placed "AVALON" template came out PLAIN and fully cross-checked —
@@ -1033,7 +1129,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   where it breaks, off the published `RUNLEN`/`RUNSEED`/`NEXTON` (null when he
   is already on that day); `restIfPlaced(id, key)` re-runs `crewRestDay` in
   PROBE mode (every write suppressed, the breach handed back) on a copy of the
-  day with the candidate leg cloned from a sibling of the same formation,
+  day with the candidate leg cloned from a sibling of the same formation (a
+  sortie's, or since 6 Oct 26 an SC MAIN's shift — `[SC-PICKER-INTIME-REST]`),
   backward against yesterday and forward against tomorrow (next Monday's seed
   past Sunday); `crossDayIfPlaced` folds both into the one line `slotBar`
   prints last. Both use the same rest evaluator, but **an empty formation has
@@ -1825,6 +1922,13 @@ the mark useless.
 
 ## Weekend/PH work earns OIL (`engine/oil.ts`, owner 16–17 Aug 26, REWRITTEN 28 Aug 26 — Leave War sync wire 4)
 
+**BUILT 6 Oct 26 — `[OIL-WORK-START]` (owner, D591, D592, 5 Oct 26).** A flying line's OIL is worked out from its actual
+In-time / Rally, not from the nominal report time, and a published day keeps the OIL it went out with. Both halves are
+stated where they belong below — "What pools" (the flying seat) and §Which published version pays (the kept values) —
+and line by line in `docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md` (OWS1–OWS11). The day is still
+measured from the first event's start to the last event's end, gaps included (the 29 Aug 26 envelope rule below, which
+he restated in D592).
+
 Work stood on a NON-WORKING day credits OIL into Leave War as an FO
 ('full day OIL', earns 1) or HO ('half day OIL', 0.5) cell. Like the
 late-input mark this grades no
@@ -1859,11 +1963,42 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   name, do not resurrect it.
 - **What pools (the 28 Aug 26 widened set).** By each row's WRITTEN times:
   - an **SC MAIN** seat, by its shift's `to`→`ld`;
-  - any **ordinary FLYING seat**, by the working day the sortie costs:
-    T-O − `VCONF.reportLead` through LD + `VCONF.debrief` — the owner's
-    report-to-debrief pick (28 Aug 26). Typed in-time lines are
-    deliberately NOT consulted (a stated simplification; the snapshot-pure
-    read stays free of the `events.ts` machinery);
+  - any **ordinary FLYING seat**, by the working day the sortie costs: its
+    REPORT through LD + `VCONF.debrief` — the owner's report-to-debrief
+    pick (28 Aug 26). **The report is the line's entered In-time / Rally
+    (owner, D591, D592, 5 Oct 26 — `[OIL-WORK-START]`; it used to be the
+    nominal time always, the typed lines "deliberately NOT consulted"):**
+    - the EARLIEST stage that applies to the formation, read by the one shared
+      reader (`engine/reporting.ts resolveReporting` — the body the day's events,
+      the work-hours bar, crew rest and the wave header read): a line naming the
+      formation outranks a wave-wide one, each activity (in-time, Rally) apart,
+      and two lines for one activity give the earlier whatever their order
+      (D505, D506);
+    - a time entered LATER than the nominal one shortens the day — "the actual
+      intime/rally time … not the nominal report timing" (D591);
+    - a clock later than the take-off is the evening before (D503): it lengthens
+      THIS line's own day and earns the day before nothing (D42 — the walk is
+      per day);
+    - where no line gives a clock — none entered, one the reader cannot read,
+      "rally after in-time" with no in-time — the NOMINAL time, T-O −
+      `VCONF.reportLead` (D592 (2));
+    - a standalone wave (SC, AVALON, BB) reads no reporting line: its span is its
+      written window — except that **an SC shift's typed B, its in-time, where
+      filled, starts the shift's span** (owner, D606, 7 Oct 26 — "SC B if filled u
+      can count it as work hours as well and OIL earned"; it withdrew the builder's
+      reading that the B moved nothing): the EARLIER of the B and the written start
+      (a B typed later than the start shortens nothing — the guard crew rest and the
+      long-day note already put on it), read by the one body crew rest reads it with
+      (`events.ts seatIntime`, the same evening-before roll, D42 for the day it
+      lengthens), for the shift's MAIN rows only — "a SPARE reports nowhere, so
+      his B does nothing" (24 Aug 26): a SPARE an admin has switched on (D24)
+      earns the shift's WRITTEN hours; a shift whose written start and end are the
+      same still measures nothing; AVALON and BB have no in-time (24 Aug 26). The work-hours bar and the long-work-day note have counted an SC
+      MAIN's B since 24 Aug 26 (`workSpan`). Pins: `engine/oilscintime.test.ts`;
+    - the work-hours bar with no line entered starts at STEP; OIL with no line
+      entered starts at the nominal report. The two differ there by ruling.
+    `reporting.ts` is pure, so a frozen snapshot answers from its own lines.
+    Pins: `engine/oilworkstart.test.ts`;
   - a **sim row** (AMT and OFT), by its `str`→`end`;
   - a **duty row** (`dutywaves[].rows`), by its `str`→`end`;
   - a **ground-programme row**, by its `str`→`end`;
@@ -2087,6 +2222,34 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   is what happened: a later amendment or EOD that takes a man off a past day takes that day’s OIL away
   (confirmed by him), and an issued EOD is the final word on the day. It superseded the 11 Sep "lock earned
   OIL on an already-worked day" lean (backlog item `[OIL]`, archived 24 Sep 26); there is no lock to build.
+- **A PUBLISHED DAY KEEPS THE LOGIC VALUES ITS OIL WAS WORKED OUT FROM** (owner, D592 (4), 5 Oct 26 —
+  `[OIL-WORK-START]`; D48, D142). Three Logic values enter the arithmetic: the nominal report lead (read only where a
+  line has no in-time or Rally entered), the flight debrief after landing, and the full-day line (`VCONF.reportLead`,
+  `debrief`, `oilFullMin`). Until 6 Oct 26 all three were read LIVE on the path from an issued day to its credit, so
+  changing "Nominal report before T/O" from 3h to 2h30 took a published full day to a half at once — nothing pending,
+  the four sign-offs standing (W1 of the Codex stack check). Now:
+  - **kept:** the evidence block carries them (`OilEvidence.rv`, on a day that earns), written from today's values
+    whenever the block is built — so `daySnap` freezes them with the rest at every publication (first publish, an
+    amendment, Unpublish then publish; a future EOD must use the same freeze point);
+  - **read:** every reader of a block's OIL uses the block's own — the work walk (`oilev.ts oilDayWork` → `oil.ts
+    dayOilWork`'s `rv`), the amount (`oilev.ts oilAmount`, the ONE body the credit, the board's figures and the publish
+    reminder call), the credit pass per date (`leavewar/sync.ts desiredOilCells`), the green edge and OIL Earn figures
+    on an issued face (`ui/oilmode.ts`), and the "can this row earn" reads. The working copy's block always carries
+    today's. A block with none (an earlier build's) reads today's, as before, and is compared on nothing (D56);
+  - **told:** where today's values WOULD write some man's OIL record for the issued day differently — his amount OR the
+    worked times stored beside it, which the Leave War's clash check and the day's sheet read — the day has ONE pending
+    change of its own (`publish.ts oilRuleDelta`, address `oilrv:<di>`, beside and never folded into the decisions
+    entry or an edited request's line). It reads "OIL on this day · Logic values changed since it was published", with
+    the value (old → new) and each man (old → new) under it; the sign-offs fall with it (D103) and it clears when the
+    value is put back (D98). A Logic change that would write every record on that day exactly as it stands raises
+    nothing — the rule D186's printed brief lead follows. The next publication applies today's values and keeps them;
+  - **signed:** each sign-off's binding keeps the three values as they stood at signing (`orv`, earning days only) and
+    falls when the day as it now stands would be written differently under those values than under today's
+    (`publish.ts oilRvBoundOk`) — so a day not yet published, or an amendment waiting, cannot go out as a half day on
+    four signatures given for a full one.
+  An in-time or Rally changed after publishing needs none of this: it is day content, pending as ever, and the credit
+  reads the published version's own lines until the day goes out again. Insights' hours still move at once (D482).
+  Pins: `leavewar/oilworkstart-published.test.ts`, `ui/oilworkstart.test.tsx`.
 - **ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS** (owner, 21 Sep 26 — R-1, D2,
   from the cross-provider bug check; triage in
   `docs/superpowers/specs/2026-09-21-oil-bugcheck-fixplan.md`). The credit pass
@@ -2148,7 +2311,9 @@ this obeys, and the two clashes it found, is
 
 Tests: `src/engine/oilev.test.ts` (the evidence block, publishability, the three
 states), `src/ui/oilmode.test.tsx` (the board mode and the green edge),
-`src/engine/oil.test.ts` (the computation),
+`src/engine/oil.test.ts` (the computation), `src/engine/oilworkstart.test.ts` (where a
+flying line's day starts), `src/leavewar/oilworkstart-published.test.ts` and
+`src/ui/oilworkstart.test.tsx` (a published day keeps its OIL; the pending line),
 `src/leavewar/oilsync.test.ts` (the wire, the partition, the clashes, the
 input claims), `src/ui/oilconfirm.test.tsx` (the ask sheet),
 `counters.test.ts` (earned OIL in the balance and the OIL BAL figure).

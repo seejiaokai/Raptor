@@ -43,8 +43,10 @@ recurring in this app).
 **Reporting flow added2 Oct26 (D497–D507):** existing `w.intimes` strings →
 `engine/reporting.ts` first-valid clock + own-wave formation/activity scope →
 per-formation signed actual report → `events.ts` → workSpan/LONGDAY/Insights,
-crew-rest and SANS. Ordinary busy remains step/dekit; OIL remains nominal
-reportLead/debrief. The same pure resolved stages feed draft inline preview,
+crew-rest and SANS. Ordinary busy remains step/dekit; ~~OIL remains nominal
+reportLead/debrief~~ *(changed 6 Oct 26 — D591, D592, `[OIL-WORK-START]`: OIL reads the same resolved report —
+`engine/oil.ts dayOilWork` → `resolveReporting` — and the nominal lead only where no line gives a clock; a published
+day keeps the three Logic values its OIL was worked out from, `engine-rules.md` §Weekend/PH work earns OIL)*. The same pure resolved stages feed draft inline preview,
 validator warnings. D509 supersedes the timing publication guard: first publish,
 AL and correcting issue proceed with a red timing warning, frozen normally;
 no timing check refuses the command or raw engine doors. Headers state previous
@@ -63,7 +65,8 @@ take-off minus live reportLead → clock + live reportText → existing `it:` wr
 marks/history and plain-string storage → same parser/consumer chain above.
 reportText adds a text-kind spec inside existing rules.v, one line/max60/default
 IN TIME + WX/NOTAMS. Logic escaping, normalisation, reset/load, snapshot/export
-and Undo use the established settings seam; numeric values and OIL remain separate.
+and Undo use the established settings seam; numeric values and OIL remain separate *(the report lead now reaches OIL
+only where a line has no entered in-time / Rally, and never a published day's — 6 Oct 26, `[OIL-WORK-START]`)*.
 
 **Dated-rest extension,2 Oct26:** the report's resolved date feeds a shared lookup
 of up to four authored source dates, including existing adjacent-week issued/working
@@ -73,7 +76,16 @@ source date and every affected target; external trace hides use that target's
 week/day, and multiple crew-rest targets coexist with the running-away trace.
 The original one-day descriptions below are historical where this extension applies.
 Prior-origin bands ending at00:00 have zero members/total while the separate global
-all-day list is retained. Neither extension changes normal busy windows or OIL.
+all-day list is retained. Neither extension changes normal busy windows or OIL *(OIL since changed by its own job —
+D591, D592, 6 Oct 26)*.
+
+**OIL's two drift-seams, closed 6 Oct 26 (`[OIL-WORK-START]`).** (1) "When does this crew report" has one reader
+(`reporting.ts resolveReporting`); OIL was the last consumer doing its own arithmetic and now asks it. (2) A published
+day's OIL was worked out from its frozen content but TODAY's Logic values; the three values now ride the day's evidence
+block, and the readers of a published day's OIL — the Leave War credit and its worked times, the tracker, the green
+edge, the OIL Earn figures, the publish toast, the Unpublish warning — all go through `oilev.ts oilDayWork` /
+`oilAmount`. A NEW reader of a published day's OIL must go through those two, never `VCONF` directly; a new Logic value
+that enters the OIL arithmetic joins `OilRuleVals` (`engine/oil.ts`) so it is kept, read and compared with the rest.
 
 **Keep this true in the same PR** (same rule as `HANDOFF.md`). A feature that
 adds a surface, a flow, or a new drift-seam adds a line here. Stale is worse
@@ -121,6 +133,8 @@ history names an ACCOUNT, not a person). Both are the same server-shaped hole;
 `HANDOFF.md`'s first bullets carry it.
 
 ---
+
+- **The failed-save warning's band** (`[SAVE-NOTE-COVERS]`, 5 Oct 26 — D587): one line along the bottom of the top bar, and the same line under the bar of each full-screen surface that covers it — the scheduler board, the Inputs calendar, the Medical view, the Leave War's OIL tracker (`ui-contracts.md` §The failed-save warning has a band of its own). When the warning comes or goes `Shell` fires one window `resize`, so whatever measured itself against the bar re-measures: a NEW thing that measures the bar must listen for a resize too. A NEW full-screen surface carries `SaveBand` under its own bar; a NEW thing pinned at a fixed height near the top moves down with the band, as the week's side arrows and the CREW tab do; `e2e/save-note.spec.ts` walks every page.
 
 - **A shared store's empty pages** (`[DB-READINESS]` group A phase 5, 30 Sep 26): the Leave War's "No leave period yet" and the Tracker's "No course yet" (`ui-contracts.md` §A shared store's empty pages). A change to the war's or the Tracker's first screen, or to what an empty store starts with (`src/boot.ts`, `src/state/seeds.ts`), checks both under the blank policy — `src/boot-walk.test.tsx` walks every page of an empty store.
 
@@ -688,6 +702,15 @@ ON these, don't route around them):
 **Where the wiring is a drift-seam** (two copies of one truth that a change can
 split — these are where this app's recurring bugs come from; touch one side and
 check the other):
+
+#### A seat with hours and the same seat without (D605, 6 Oct 26)
+
+- **Every kind of seat is collected twice in `events.ts buildDay`: with a window, as an event (or a `sacrew` entry); with
+  none, in `day.blank`** — and `validate.ts` gives each its absence look twice, timed and time-less, with the same
+  types, exemptions and words. A NEW kind of row that can hold a person, or a new exemption on an existing one, must
+  land on BOTH sides, or a man away for the whole day goes unflagged there until a time is typed (the fault D605
+  closed). The roll-call that proves it is `engine/blankabsence.test.ts`'s `SEATS` table — add the new kind to it; its
+  "same codes with and without times" loop then checks every input type against it by itself.
 
 #### Who may write — the Leave War's guards, the role and the signed-in account
 

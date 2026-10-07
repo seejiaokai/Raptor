@@ -35,7 +35,10 @@ import { HOOKS } from '../engine/hooks'
 import { elogRows } from '../engine/editlog'
 import { dayHTML } from './html'
 import { VCONF } from '../engine/rules'
-import { reportingIssuesForWave,resolveReporting } from '../engine/reporting'
+import { reportingIssuesForWave,resolveReporting,REPORTING_LABEL } from '../engine/reporting'
+import { valueWords } from './pendlist'
+import { itemOf } from './changesmodel'
+import { textLabel } from '../undo/describe'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -216,7 +219,9 @@ describe('adding and removing in-time lines', () => {
     expect(line).not.toMatch(/\b[A-Z]{2}\s+IN\s+TIME/)
     const row = elogRows(0).find(r => r.key === rk('it:0.0'))
     expect(row, 'the changes list carries the it: row').toBeTruthy()
-    expect(row!.lbl).toContain('in-times')
+    /* W6 (D504): the box has ONE name wherever it is drawn — the change record's label included */
+    expect(row!.lbl).toBe(`${w.label} · ${REPORTING_LABEL}`)
+    expect(itemOf(row!).detail, 'the changes window names it the same').toBe(REPORTING_LABEL)
     await drain()
     /* put the seed back so later tests read the pristine wave */
     w.intimes = w.intimes.slice(0, before)
@@ -250,11 +255,39 @@ describe('adding and removing in-time lines', () => {
       await click($(`#eWeek [data-itdel="0|0|0"]`))
       expect(w.intimes.length).toBe(keep.length - 1)
       expect(w.intimes[0], 'the SECOND line survived').toBe(keep[1])
-      expect(TOASTS.join(' ')).toContain('In-time line removed')
+      expect(TOASTS.join(' ')).toContain(`${REPORTING_LABEL} line removed`)
     } finally {
       w.intimes = keep.slice()
       await act(async () => { notify() })
     }
+  })
+
+  /* W6 (the Codex stack check, 5 Oct 26; D498, D504): the box was renamed "In-time / Rally" on the box, the button,
+     the warning and Undo — and stayed "in-times" in the changes window, the pending list, the gold-dot bubble and the
+     ✕ toast. One shared name (engine/reporting.ts REPORTING_LABEL); this draws every place that prints it. */
+  it('W6 every place that names the box says "In-time / Rally" — none says "in-times"', async () => {
+    expect(REPORTING_LABEL).toBe('In-time / Rally')
+    await act(async () => { notify() })
+    const ed = dayHTML(0, true)
+    expect(ed, 'the + button and its hint').toContain(`title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`)
+    expect(ed, 'the ✕ of a line').toContain(`aria-label="Remove this ${REPORTING_LABEL} line"`)
+    expect(valueWords('it:0.0', JSON.stringify(['a', 'b'])), 'the pending list, two lines').toBe(`2 ${REPORTING_LABEL} lines`)
+    expect(valueWords('it:0.0', JSON.stringify(['a'])), 'the pending list, one line').toBe(`1 ${REPORTING_LABEL} line`)
+    expect(textLabel('it:0.0'), 'Undo').toBe(`an ${REPORTING_LABEL} line`)
+    expect(itemOf({ key: 'it:0.0', lbl: 'x', date: '2026-07-13' } as any).detail, 'the changes window').toBe(REPORTING_LABEL)
+    /* and nothing a person reads still carries the old name: every quoted string of the shipped source */
+    const { readdirSync, readFileSync } = await import('node:fs')
+    const { join } = await import('node:path')
+    const walk = (d: string): string[] => readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(join(d, e.name)) : /\.(ts|tsx)$/.test(e.name) && !/\.test\./.test(e.name) ? [join(d, e.name)] : [])
+    const hits: string[] = []
+    for (const f of walk('src/ui').concat(walk('src/engine'), walk('src/undo'), walk('src/state'))) {
+      readFileSync(f, 'utf8').split('\n').forEach((line, i) => {
+        const code = line.replace(/\/\*.*?\*\//g, '')
+        if (/^\s*(\/\/|\/\*|\*)/.test(code)) return
+        for (const m of code.matchAll(/(['"`])((?:(?!\1).)*)\1/g)) if (/\bin-times\b|\bin-time line\b/i.test(m[2]!)) hits.push(`${f}:${i + 1} ${m[2]}`)
+      })
+    }
+    expect(hits).toEqual([])
   })
 
   it('a member is refused at routeClick, even with a hand-made button', async () => {

@@ -46,7 +46,6 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 | # | Date | The rule |
 |---|---|---|
 | D566 | 4 Oct 26 | THE OWNER ACCEPTS THE SHOWN TAPERED-WING PICTURE AND AUTHORIZES USING THAT SHAPE FOR THE FLIGHT SYMBOL. |
-| D565 | 4 Oct 26 | THE OWNER PROPOSES A TAPERED WING LEADING EDGE, USING DRAWN LINES ON THE SMOOTH-WING OPTION TO SHOW THE DIRECTION. — changed by D566 |
 | D564 | 4 Oct 26 | THE OWNER REJECTS THE BLOCKY WIDE-WING FLIGHT SYMBOL AS UGLY AND ASKS TO SEE BETTER DESIGN OPTIONS. — changed by D565 |
 | D560 | 4 Oct 26 | THE OWNER REQUESTS CLEARER LABELS INSIDE TRACKER BLUE FLIGHT BALLS AND PROPOSES A WING WITH MORE TEXT AREA AND STRONGER CONTRAST. — changed by D564, D563 |
 | D474 | 1 Oct 26 | A SYLLABUS (A CHART) IS ONE SHARED THING: AN EDIT TO IT REACHES EVERY COURSE AND EVERY STUDENT ON IT — NEVER A COPY PER COURSE — AND MARKS BELONG TO THE INDIVIDUAL STUDENT, NOT TO THE CHART. |
@@ -62,7 +61,6 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 | D371 | 28 Sep 26 | A student's failures on an event are kept in the order of their days: the earliest is the plain code (ST-02), the next adds an X, and so on; − takes back the one with the latest day, and re-dating re-orders them. Failures with no day follow the dated ones; failures on the same day keep the order they were recorded. |
 | D370 | 28 Sep 26 | The Failures card leaves out failures on an event marked N.A., as the ball does — no chip, not in the total or the full list — and they come back, days and all, if the event is graded again. |
 | D191 | 25 Sep 26 | In the Tracker's add box, when the search matches nobody on the roster and the callsign box is empty, OK (or Enter) adds what was typed in the search as a new, unlinked crew member — and the "Nobody on the roster matches" line says so first. |
-| D190 | 25 Sep 26 | [TRK-SMOKE-ADD-RACE] goes ahead of its place, on its own branch in parallel with the D175 chat — the job is the app, not the test: find out whether the Tracker can lose a typed name and fix the cause, never a longer wait that hides it. |
 | D158 | 24 Sep 26 | Not a real-device problem: [TRK-TAP-AFTER-DRAG] is closed as a quirk of the test browser's touch emulation — reopen only if he sees it on a real phone. |
 | D157 | 24 Sep 26 | THE TRACKER TAKES RAPTOR'S COLOURS FULLY — backgrounds, text AND the event colours |
 | D134 | 24 Sep 26 | THE PINCH TAKE-BACK STAYS AS BUILT. |

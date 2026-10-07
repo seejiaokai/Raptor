@@ -1,0 +1,140 @@
+{
+ "parts": {
+  "bta-A-s13-dk": {
+   "at": "2026-10-06T08:58:32.049Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "S13 — controls",
+     "did": "1440×900 desktop: \"+ Row\" in OFT; \"+ Block\" (AMT block: BRIEF, BOX, DEBRIEF)",
+     "saw": "new person controls offered by the new rows: [\"s:1.amt.4.+\",\"s:1.amt.4.pax.0\",\"s:1.amt.4.pax.1\",\"s:1.oft.2.+\",\"s:1.oft.2.p\",\"s:1.oft.2.w\"]; AMT rows now 0:BRIEF 1400/- | 1:BOX 1430/1530 | 2:DEBRIEF 1530/- | 3:BRIEF -/- | 4:BOX -/- | 5:DEBRIEF -/-",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s13-controls.png"
+     ]
+    },
+    {
+     "id": "S13 OL × OFT row front seat",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on OFT row front seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on s:1.oft.2.p, toast \"Vandal — On leave but tasked — this row — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg1p6l4tdf18\",\"p\":\"split\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s13_OL_OFT_row_front_seat-list.png",
+      "dk-02-s13_OL_OFT_row_front_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S13 OL × OFT row rear seat",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on OFT row rear seat",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on s:1.oft.2.w, toast \"Vandal — On leave but tasked — this row — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg1zay8o49zx\",\"w\":\"split\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s13_OL_OFT_row_rear_seat-list.png",
+      "dk-04-s13_OL_OFT_row_rear_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S13 OL × OFT row extra person (front and rear taken by two others)",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on OFT row extra person (front and rear taken by two others)",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on s:1.oft.2.+, toast \"Vandal — On leave but tasked — this row — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg29g8ilstsl\",\"p\":\"taipan\",\"w\":\"bullet\",\"more\":[\"\",\"split\"]}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s13_OL_OFT_row_extra_person_front_and_rear_taken_by_two_others_-list.png",
+      "dk-06-s13_OL_OFT_row_extra_person_front_and_rear_taken_by_two_others_-puck.png"
+     ]
+    },
+    {
+     "id": "S13 OL × AMT block control row 4.+",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on AMT block control row 4.+",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on s:1.amt.4.+, toast \"Vandal — On leave but tasked — Sim BOX — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — Sim BOX — reason: x-OL\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg2m1henbt03\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s13_OL_AMT_block_control_row_4_-list.png",
+      "dk-08-s13_OL_AMT_block_control_row_4_-puck.png"
+     ]
+    },
+    {
+     "id": "S13 OL × AMT block control row 4.pax.0",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on AMT block control row 4.pax.0",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on s:1.amt.4.pax.0, toast \"Vandal — On leave but tasked — Sim BOX — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — Sim BOX — reason: x-OL\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg2wbcasvchf\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s13_OL_AMT_block_control_row_4_pax_0-list.png",
+      "dk-10-s13_OL_AMT_block_control_row_4_pax_0-puck.png"
+     ]
+    },
+    {
+     "id": "S13 OL × AMT block control row 4.pax.1",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on AMT block control row 4.pax.1",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true on s:1.amt.4.pax.1, toast \"Vandal — On leave but tasked — Sim BOX — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — Sim BOX — reason: x-OL\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg36h2q9vkvs\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s13_OL_AMT_block_control_row_4_pax_1-list.png",
+      "dk-12-s13_OL_AMT_block_control_row_4_pax_1-puck.png"
+     ]
+    },
+    {
+     "id": "S13 ATT B × OFT row front seat",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on OFT row front seat",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on s:1.oft.2.p, toast \"Vandal planned\". warnings naming him: none · his pucks [sim:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg3h2kyh19s0\",\"p\":\"split\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-s13_ATT_B_OFT_row_front_seat-list.png",
+      "dk-14-s13_ATT_B_OFT_row_front_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S13 ATT B × OFT row rear seat",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on OFT row rear seat",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on s:1.oft.2.w, toast \"Vandal planned\". warnings naming him: none · his pucks [sim:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg3rka6jmuno\",\"w\":\"split\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-s13_ATT_B_OFT_row_rear_seat-list.png",
+      "dk-16-s13_ATT_B_OFT_row_rear_seat-puck.png"
+     ]
+    },
+    {
+     "id": "S13 ATT B × OFT row extra person (front and rear taken by two others)",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on OFT row extra person (front and rear taken by two others)",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on s:1.oft.2.+, toast \"Vandal planned\". warnings naming him: none · his pucks [sim:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg41tq7c7s9f\",\"p\":\"taipan\",\"w\":\"bullet\",\"more\":[\"\",\"split\"]}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-s13_ATT_B_OFT_row_extra_person_front_and_rear_taken_by_two_others_-list.png",
+      "dk-18-s13_ATT_B_OFT_row_extra_person_front_and_rear_taken_by_two_others_-puck.png"
+     ]
+    },
+    {
+     "id": "S13 ATT B × AMT block control row 4.+",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on AMT block control row 4.+",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on s:1.amt.4.+, toast \"Vandal planned\". warnings naming him: none · his pucks [sim:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg4evw0r4nld\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-s13_ATT_B_AMT_block_control_row_4_-list.png",
+      "dk-20-s13_ATT_B_AMT_block_control_row_4_-puck.png"
+     ]
+    },
+    {
+     "id": "S13 ATT B × AMT block control row 4.pax.0",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on AMT block control row 4.pax.0",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on s:1.amt.4.pax.0, toast \"Vandal planned\". warnings naming him: none · his pucks [sim:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg4p6etr4pvl\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-23-s13_ATT_B_AMT_block_control_row_4_pax_0-list.png",
+      "dk-22-s13_ATT_B_AMT_block_control_row_4_pax_0-puck.png"
+     ]
+    },
+    {
+     "id": "S13 ATT B × AMT block control row 4.pax.1",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; a new OFT row (no name, no times) and a new AMT block; X put on AMT block control row 4.pax.1",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true on s:1.amt.4.pax.1, toast \"Vandal planned\". warnings naming him: none · his pucks [sim:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches. OFT row now {\"label\":\"\",\"str\":\"\",\"end\":\"\",\"rid\":\"rmuwg4zsc8icb7o\"}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-s13_ATT_B_AMT_block_control_row_4_pax_1-list.png",
+      "dk-24-s13_ATT_B_AMT_block_control_row_4_pax_1-puck.png"
+     ]
+    }
+   ]
+  }
+ }
+}

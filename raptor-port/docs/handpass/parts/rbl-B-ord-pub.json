@@ -1,0 +1,83 @@
+{
+ "parts": {
+  "orders-pub-dk": {
+   "at": "2026-10-06T00:39:02.902Z",
+   "base": "http://localhost:4175",
+   "phone": false,
+   "table": [
+    {
+     "id": "ORD-PUB.0",
+     "did": "Baseline B (took true/true); Monday and Tuesday published (Original)",
+     "saw": "held: hard/CREW_REST · list bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red] painted [shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · Tue tag \"ORIG\" · chip \"12 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·] · Mon tag \"ORIG\" · chip \"11 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-ord-p-0-tue-puck.png",
+      "dk-02-ord-p-0-tue-list.png",
+      "dk-03-ord-p-0-mon-puck.png",
+      "dk-04-ord-p-0-mon-list.png",
+      "dk-05-ord-p-0-head.png"
+     ]
+    },
+    {
+     "id": "ORD-PUB.1",
+     "did": "after publishing: a blank \"+ Line\" on the PUBLISHED Monday, Scribe seated (took true) — a real edit of Monday's lines",
+     "saw": "Edit: held: hard/CREW_REST · list bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red] painted [shadow R] · Mon pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · Tue tag \"ORIG\" · chip \"12 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·] (was tag \"ORIG\" · chip \"12 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]) · Mon tag \"ORIG\" · chip \"1 pending\" · marker \"Not yet signed\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·] (was tag \"ORIG\" · chip \"11 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]) || View-only: held: hard/CREW_REST · list bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red] painted [shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-ord-p-1-tue-puck.png",
+      "dk-07-ord-p-1-tue-list.png",
+      "dk-08-ord-p-1-mon-puck.png",
+      "dk-09-ord-p-1-mon-list.png",
+      "dk-10-ord-p-1-tuehead.png",
+      "dk-11-ord-p-1-monhead.png",
+      "dk-12-ord-p-1-view-tue-puck.png",
+      "dk-13-ord-p-1-view-tue-list.png",
+      "dk-14-ord-p-1-view-mon-puck.png",
+      "dk-15-ord-p-1-view-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-PUB.2",
+     "did": "a blank \"+ Line\" on the PUBLISHED Tuesday too, Scribe seated (took true) — a real edit of Tuesday's lines",
+     "saw": "Edit: held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · Tue tag \"ORIG\" · chip \"1 pending\" · marker \"Not yet signed\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·] || View-only (the issued face): held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red] painted [shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-ord-p-2-tue-puck.png",
+      "dk-17-ord-p-2-tue-list.png",
+      "dk-18-ord-p-2-mon-puck.png",
+      "dk-19-ord-p-2-mon-list.png",
+      "dk-20-ord-p-2-tuehead.png",
+      "dk-21-ord-p-2-view-tue-puck.png",
+      "dk-22-ord-p-2-view-tue-list.png",
+      "dk-23-ord-p-2-view-mon-puck.png",
+      "dk-24-ord-p-2-view-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-PUB.3",
+     "did": "Publish AL on Monday ({\"pressed\":true,\"label\":\"Publish AL1\"}) then on Tuesday ({\"pressed\":true,\"label\":\"Publish AL1\"})",
+     "saw": "Edit: held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · Tue tag \"AL1\" · chip \"19 changes\" · marker \"none\" · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·] · Mon tag \"AL1\" · chip \"18 changes\" · marker \"none\" · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·] || View-only: held: hard/CREW_REST, adv/DT_SUM · list bar \"⚠ 6 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red, flying line:ring(hard) chip R red] painted [shadow R, shadow R] · Mon pucks [flying line:plain chip R dotted, flying line:plain chip R dotted] painted [dotted R, dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-ord-p-3-tue-puck.png",
+      "dk-26-ord-p-3-tue-list.png",
+      "dk-27-ord-p-3-mon-puck.png",
+      "dk-28-ord-p-3-mon-list.png",
+      "dk-29-ord-p-3-tuehead.png",
+      "dk-30-ord-p-3-view-tue-puck.png",
+      "dk-31-ord-p-3-view-tue-list.png",
+      "dk-32-ord-p-3-view-mon-puck.png",
+      "dk-33-ord-p-3-view-mon-list.png"
+     ]
+    },
+    {
+     "id": "ORD-PUB.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,84 @@
+{
+ "parts": {
+  "ows-B-S09-dk": {
+   "at": "2026-10-06T13:16:28.944Z",
+   "base": "http://localhost:4294",
+   "phone": false,
+   "table": [
+    {
+     "id": "S09.1",
+     "did": "Ranger seated through the crew list on a new Saturday flying line 12:00–13:00, no In-time/Rally; four signed; published ORIG",
+     "saw": "✓ seated [[\"bane\"]] · ✓ published ORIG [ORIG] · ✓ HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S09a-pub-cell.png",
+      "dk-02-S09a-pub-tracker.png",
+      "dk-04-S09a-day-day.png"
+     ]
+    },
+    {
+     "id": "H-03.a",
+     "did": "Insights → Work hours for Ranger, published, no In-time/Rally typed",
+     "saw": "{\"Ranger\":\"18h\",\"bar\":\"61%\",\"tip\":\"3 days on the programme\"}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-03-S09a-insights.png"
+     ]
+    },
+    {
+     "id": "S09.2",
+     "did": "on the working copy: \"+ In-time / Rally\", the line typed IN TIME 08:30",
+     "saw": "✓ the + button put a line in [[\"09:00H: IN TIME + WX/NOTAMS\"]] · ✓ the line reads 08:30 [[\"IN TIME 08:30\"]] · ✓ the day reads 1 pending (waiting chip) [1 pending] · ✓ the sign-offs fell [[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]] · ✓ paid HO holds in the cell [HO*] · ✓ worked holds 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ balance holds [{\"was\":\"0.5\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-S09b-typed.png",
+      "dk-06-S09b-day-day.png",
+      "dk-07-S09b-day-togoout.png",
+      "dk-08-S09b-typed-cell.png",
+      "dk-09-S09b-typed-tracker.png"
+     ]
+    },
+    {
+     "id": "S09.2-list",
+     "did": "To go out list words after typing",
+     "saw": "WAVE 1 · In-time / Rally Saber 6/10 21:16 0 In-time / Rally lines → 1 In-time / Rally line",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-06-S09b-day-day.png",
+      "dk-07-S09b-day-togoout.png"
+     ]
+    },
+    {
+     "id": "H-03.b",
+     "did": "Insights → Work hours for Ranger with IN TIME 08:30 typed (working copy, not yet amended)",
+     "saw": "{\"Ranger\":\"18h\",\"bar\":\"61%\",\"tip\":\"3 days on the programme\"}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-10-S09b-insights.png"
+     ]
+    },
+    {
+     "id": "S09.3",
+     "did": "the four sign again; Publish AL",
+     "saw": "✓ AL1 [AL1] · ✓ FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance +1 over baseline [{\"base\":\"0\",\"now\":\"1\"}] · ✓ nothing pending []",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-S09c-am-cell.png",
+      "dk-12-S09c-am-tracker.png",
+      "dk-13-S09c-day-day.png"
+     ]
+    },
+    {
+     "id": "H-03.c",
+     "did": "Insights → Work hours for Ranger after the amendment (IN TIME 08:30 published)",
+     "saw": "{\"Ranger\":\"20h30\",\"bar\":\"70%\",\"tip\":\"3 days on the programme\"}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-14-S09c-insights.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

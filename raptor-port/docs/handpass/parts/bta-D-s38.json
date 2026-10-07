@@ -1,0 +1,54 @@
+{
+ "parts": {
+  "bta-D-s38-dk": {
+   "at": "2026-10-06T09:31:46.263Z",
+   "base": "http://localhost:4241",
+   "phone": false,
+   "table": [
+    {
+     "id": "S38.0",
+     "did": "before anything is published: a blank flying line with Vandal on it (took true); CSV and print page opened from Edit Schedule",
+     "saw": "CSV \"142-schedule.csv\": 34 lines, hash 2f1a2d79, widths [16], malformed cells [], rows naming Vandal: [\"\\\"Tuesday\\\",\\\"Jul 14\\\",\\\"WAVE 3\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"Vandal\\\",\\\"IP\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\"\"] · PRINT PAGE: 3288 characters, hash ebacf40a, Tuesday heading \"Tuesday Jul 14\", lines naming Vandal [\"WAVE 3\\t\\t\\t\\t\\tVandal IP\\t\\t\\t\\t\\t\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-dk-s38-0-unpublished.png"
+     ]
+    },
+    {
+     "id": "S38.1",
+     "did": "LL filed; Tuesday published (the day goes out with the red line); exports again",
+     "saw": "CSV \"142-schedule.csv\": 34 lines, hash 2f1a2d79, widths [16], malformed cells [], rows naming Vandal: [\"\\\"Tuesday\\\",\\\"Jul 14\\\",\\\"WAVE 3\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"Vandal\\\",\\\"IP\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\"\"] · PRINT PAGE: 3278 characters, hash 6ebcbc69, Tuesday heading \"Tuesday Jul 14\", lines naming Vandal [\"WAVE 3\\t\\t\\t\\t\\tVandal IP\\t\\t\\t\\t\\t\"] · CSV differs from before publishing: false · mentions any warning wording: false",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-dk-s38-1-published.png"
+     ]
+    },
+    {
+     "id": "S38.2",
+     "did": "after the issue the line's callsign ZQ typed (working copy reads \"1 pending\"); exports again",
+     "saw": "CSV \"142-schedule.csv\": 34 lines, hash 2f1a2d79, widths [16], malformed cells [], rows naming Vandal: [\"\\\"Tuesday\\\",\\\"Jul 14\\\",\\\"WAVE 3\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"Vandal\\\",\\\"IP\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\"\"] · PRINT PAGE: 3278 characters, hash 6ebcbc69, Tuesday heading \"Tuesday Jul 14\", lines naming Vandal [\"WAVE 3\\t\\t\\t\\t\\tVandal IP\\t\\t\\t\\t\\t\"] · CSV unchanged from the issued one: true · print page unchanged: true · ZQ appears in CSV: false, in print page: false",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-dk-s38-2-W-W.png"
+     ]
+    },
+    {
+     "id": "S38.3",
+     "did": "Publish AL1 ({\"pressed\":true,\"label\":\"Publish AL1\"}); exports again",
+     "saw": "CSV \"142-schedule.csv\": 34 lines, hash d68e8cb3, widths [16], malformed cells [], rows naming Vandal: [\"\\\"Tuesday\\\",\\\"Jul 14\\\",\\\"WAVE 3\\\",\\\"ZQ\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"Vandal\\\",\\\"IP\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\"\"] · PRINT PAGE: 3275 characters, hash fea7ca21, Tuesday heading \"Tuesday Jul 14\", lines naming Vandal [\"WAVE 3\\tZQ\\t\\t\\t\\tVandal IP\\t\\t\\t\\t\\t\"] · CSV differs from the issued one: true · ZQ in CSV: true, in print page: true",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-dk-s38-3-after-AL1.png"
+     ]
+    },
+    {
+     "id": "S38.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

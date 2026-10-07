@@ -34,6 +34,7 @@ import { fmtDay, unfmt } from './inputedit'
 import { monthCells } from './InputsCal'
 import { TODAY, keyToIso } from './weeknav'
 import { CalIcon } from './icons'
+import { SaveBand } from './SaveStatus'
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -179,6 +180,9 @@ export function MedicalView({ onClose }: { onClose: () => void }) {
           </div>
         </>}
       </div>
+      {/* a failed save's warning, under this full-screen surface's own bar — it lies over the top bar, whose own
+          warning cannot be seen from here ([SAVE-NOTE-COVERS], D587; ui/SaveStatus.tsx) */}
+      <SaveBand />
       <div className="med-body">
         <section className="medsec med-down">
           <div className="medsec-h">Medically Down<span className="medsec-n">{down.length}</span>

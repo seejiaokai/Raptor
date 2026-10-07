@@ -112,7 +112,9 @@ describe('D270 / D272 — on his own puck, any other ring wins over the purple "
     expect(shadowWin(['boxred'])).toBe('0 0 0 2px var(--hard)')
     expect(shadowWin(['warn'])).toBe('0 0 0 1.5px var(--adv)')
     expect(shadowWin(['me'])).toBe(PURPLE)
-    expect(outlineWin(['boxdot'])).toBe('1.5px dotted var(--hard)')
+    /* the width is `--dot-w`, falling back to the 1.5px it always was ([PUCK-DOT-ZOOM], 6 Oct 26 — ui/dotring.ts hands
+       in two screen pixels on a scaled screen only); still the hard red, still dotted */
+    expect(outlineWin(['boxdot'])).toBe('var(--dot-w,1.5px) dotted var(--hard)')
   })
   it('flagged or earning, his puck wears exactly the ring another man\'s puck wears — every set of ring classes on the puck itself', () => {
     const sets = SETS.filter(RINGED)
@@ -128,7 +130,7 @@ describe('D270 / D272 — on his own puck, any other ring wins over the purple "
     expect(shadowWin(['me', 'warn', 'hard'])).toBe('0 0 0 1.5px var(--hard)')
     expect(shadowWin(['me', 'warn', 'note'])).toBe('0 0 0 1.5px #8A96A3')
     expect(shadowWin(['me', 'boxdot']), 'the dotted ring alone, nothing purple behind it').toBe('none')
-    expect(outlineWin(['me', 'boxdot'])).toBe('1.5px dotted var(--hard)')
+    expect(outlineWin(['me', 'boxdot'])).toBe('var(--dot-w,1.5px) dotted var(--hard)')
     expect(shadowWin(['me', 'warn', 'hard', 'boxred'])).toBe('0 0 0 2px var(--hard)')
     expect(shadowWin(['me', 'oilglow'])).toBe('0 0 0 2px var(--oil),0 0 8px rgba(47,166,92,.5)')
     expect(shadowWin(['me', 'oilglow', 'half'])).toBe('0 0 0 2px var(--oil)')

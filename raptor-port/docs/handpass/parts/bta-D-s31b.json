@@ -1,0 +1,76 @@
+{
+ "parts": {
+  "bta-D-s31b-dk": {
+   "at": "2026-10-06T09:38:07.444Z",
+   "base": "http://localhost:4241",
+   "phone": false,
+   "table": [
+    {
+     "id": "S31.7",
+     "did": "Tuesday (LL filed, Vandal on a blank line, took true) saved as a day template through its Templates menu",
+     "saw": "toast \"Saved as \"Template 1\"\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-dk-s31-7b-tpl-window.png"
+     ]
+    },
+    {
+     "id": "S31.8",
+     "did": "Wednesday's Templates menu offered [\"Templates\",\"Templates\",\"Templates\",\"Templates\",\"Templates\",\"Templates\",\"Templates\",\"Template 13 waves · 2 duty blocks · 4 ground rows · 5 sims\",\"+ Save this day as a template\",\"✎ Manage templates\"]; applied: pressed; toast \"Applied \"Template 1\" to Wednesday\"",
+     "saw": "Wednesday now: waves WAVE 1[VL/RU]  WAVE 2[VL/RU]  WAVE 3[(blank)]; seats holding Vandal: [] · [DRAFT · 1 change · signs ·|·|·|·] list \"(no bar)\" [] · pucks [Available crew:no-ring] (his leave covers Tuesday only, so Wednesday should be silent)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-dk-s31-8-wed-templates-menu.png",
+      "dk-03-dk-s31-9-wed.png"
+     ]
+    },
+    {
+     "id": "S31.9",
+     "did": "LL filed for Wednesday too",
+     "saw": "WEDNESDAY: [DRAFT · 2 changes · signs ·|·|·|·] list \"(no bar)\" [] · pucks [Unavailable row:no-ring] || TUESDAY: [DRAFT · 3 changes · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-04-dk-s31-10-wed-leave.png",
+      "dk-05-dk-s31-10-tue.png"
+     ]
+    },
+    {
+     "id": "S31.10",
+     "did": "Tuesday published ({\"pressed\":true,\"label\":\"Publish day\"}); then the template pressed in Tuesday's Templates menu (offered [\"Templates\",\"Templates\",\"Templates\",\"Templates\",\"Templates\",\"Templates\",\"Templates\",\"Template 13 waves · 2 duty blocks · 4 ground rows · 5 sims\",\"+ Save this day as a template\",\"✎ Manage templates\"])",
+     "saw": "the template's button is greyed out (disabled), its tooltip says: \"Tuesday is published — a template can't be applied to a published day. Edit the working copy, or Unpublish it first.\" · Tuesday's waves before/after: unchanged [\"WAVE 12\",\"WAVE 22\",\"WAVE 31\"] · [ORIG · 8 changes · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-dk-s31-11a-tue-templates-menu.png",
+      "dk-07-dk-s31-11-tue-after-apply.png"
+     ]
+    },
+    {
+     "id": "S31.11",
+     "did": "Tuesday's leave lifted (gone; working copy \"1 pending\"), then the 👁 Original looked at and \"Load onto working copy\" pressed ([\"Load onto working copy\"])",
+     "saw": "after loading: [ORIG · 1 pending · Not yet signed · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] + goes-away-once-signed [\"On leave + flying Vandal goes away once signed\"] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-08-dk-s31-12-lifted.png",
+      "dk-09-dk-s31-13-loaded.png"
+     ]
+    },
+    {
+     "id": "S31.12",
+     "did": "the Tuesday leave filed again after the load (his LL inputs now 2: one for Tuesday and one for Wednesday expected)",
+     "saw": "[ORIG · 10 changes · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-10-dk-s31-14-refiled.png"
+     ]
+    },
+    {
+     "id": "S31.p2.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

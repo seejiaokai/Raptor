@@ -1,0 +1,3671 @@
+{
+ "base": "http://localhost:4173",
+ "css": false,
+ "results": [
+  {
+   "size": "phone-390",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "name / callsign",
+     "tag": "input",
+     "id": "searchV",
+     "pts": 96,
+     "itself": 61,
+     "retry": 35,
+     "other": 0,
+     "hidden": 100,
+     "middle": "RETRY",
+     "box": [
+      273,
+      61,
+      96,
+      16
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "Warden",
+     "tag": "span",
+     "id": "",
+     "pts": 7,
+     "itself": 7,
+     "retry": 0,
+     "other": 0,
+     "hidden": 23,
+     "middle": "itself",
+     "box": [
+      205,
+      48,
+      57,
+      13
+     ]
+    },
+    {
+     "name": "IP",
+     "tag": "span",
+     "id": "",
+     "pts": 4,
+     "itself": 4,
+     "retry": 0,
+     "other": 0,
+     "hidden": 46,
+     "middle": "itself",
+     "box": [
+      262,
+      48,
+      15,
+      13
+     ]
+    },
+    {
+     "name": "Warden · IP · instructor pilot · SXO",
+     "tag": "span",
+     "id": "",
+     "pts": 11,
+     "itself": 11,
+     "retry": 0,
+     "other": 0,
+     "hidden": 28,
+     "middle": "itself",
+     "box": [
+      204,
+      47,
+      74,
+      15
+     ]
+    },
+    {
+     "name": "Ranger",
+     "tag": "span",
+     "id": "",
+     "pts": 7,
+     "itself": 7,
+     "retry": 0,
+     "other": 0,
+     "hidden": 15,
+     "middle": "itself",
+     "box": [
+      219,
+      88,
+      43,
+      13
+     ]
+    },
+    {
+     "name": "IP",
+     "tag": "span",
+     "id": "",
+     "pts": 4,
+     "itself": 4,
+     "retry": 0,
+     "other": 0,
+     "hidden": 23,
+     "middle": "itself",
+     "box": [
+      262,
+      88,
+      15,
+      13
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "editsched",
+   "scrolled": 0,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "name / callsign",
+     "tag": "input",
+     "id": "searchE",
+     "pts": 96,
+     "itself": 49,
+     "retry": 47,
+     "other": 0,
+     "hidden": 100,
+     "middle": "RETRY",
+     "box": [
+      273,
+      63,
+      96,
+      16
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "editsched",
+   "scrolled": 320,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "EP: ENGINE FIRE ON TAKE OFF",
+     "tag": "div",
+     "id": "",
+     "pts": 30,
+     "itself": 30,
+     "retry": 0,
+     "other": 0,
+     "hidden": 5,
+     "middle": "itself",
+     "box": [
+      20,
+      89,
+      334,
+      14
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "qDate",
+     "tag": "input",
+     "id": "qDate",
+     "pts": 36,
+     "itself": 36,
+     "retry": 0,
+     "other": 0,
+     "hidden": 19,
+     "middle": "itself",
+     "box": [
+      136,
+      65,
+      120,
+      21
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "Sort by flight — groups each flight toge",
+     "tag": "th",
+     "id": "",
+     "pts": 56,
+     "itself": 56,
+     "retry": 0,
+     "other": 0,
+     "hidden": 62,
+     "middle": "itself",
+     "box": [
+      221,
+      50,
+      70,
+      23
+     ]
+    },
+    {
+     "name": "Sort by CAT — most senior first",
+     "tag": "th",
+     "id": "",
+     "pts": 60,
+     "itself": 45,
+     "retry": 15,
+     "other": 0,
+     "hidden": 76,
+     "middle": "itself",
+     "box": [
+      291,
+      50,
+      59,
+      23
+     ]
+    },
+    {
+     "name": "SANS · click to bring the qualified to t",
+     "tag": "th",
+     "id": "",
+     "pts": 20,
+     "itself": 12,
+     "retry": 8,
+     "other": 0,
+     "hidden": 33,
+     "middle": "other",
+     "box": [
+      350,
+      50,
+      61,
+      23
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "Notes",
+     "tag": "button",
+     "id": "",
+     "pts": 8,
+     "itself": 8,
+     "retry": 0,
+     "other": 0,
+     "hidden": 7,
+     "middle": "itself",
+     "box": [
+      216,
+      88,
+      51,
+      28
+     ]
+    },
+    {
+     "name": "Fired this week",
+     "tag": "button",
+     "id": "",
+     "pts": 25,
+     "itself": 25,
+     "retry": 0,
+     "other": 0,
+     "hidden": 11,
+     "middle": "itself",
+     "box": [
+      273,
+      88,
+      105,
+      28
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "+ New",
+     "tag": "button",
+     "id": "",
+     "pts": 22,
+     "itself": 22,
+     "retry": 0,
+     "other": 0,
+     "hidden": 21,
+     "middle": "itself",
+     "box": [
+      186,
+      57,
+      60,
+      30
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "20242026Tx 2026A/G - A/A 2026",
+     "tag": "select",
+     "id": "sylSel",
+     "pts": 132,
+     "itself": 125,
+     "retry": 7,
+     "other": 0,
+     "hidden": 96,
+     "middle": "itself",
+     "box": [
+      238,
+      54,
+      88,
+      26
+     ]
+    },
+    {
+     "name": "Edit the syllabus — chart layout, duplic",
+     "tag": "button",
+     "id": "sylMenuBtn",
+     "pts": 44,
+     "itself": 14,
+     "retry": 30,
+     "other": 0,
+     "hidden": 100,
+     "middle": "RETRY",
+     "box": [
+      332,
+      56,
+      28,
+      22
+     ]
+    },
+    {
+     "name": "Save your changes to the syllabus — even",
+     "tag": "button",
+     "id": "saveChanges",
+     "pts": 24,
+     "itself": 24,
+     "retry": 0,
+     "other": 0,
+     "hidden": 20,
+     "middle": "itself",
+     "box": [
+      277,
+      86,
+      105,
+      23
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "20242026Tx 2026A/G - A/A 2026",
+     "tag": "select",
+     "id": "sylSel",
+     "pts": 132,
+     "itself": 125,
+     "retry": 7,
+     "other": 0,
+     "hidden": 96,
+     "middle": "itself",
+     "box": [
+      238,
+      54,
+      88,
+      26
+     ]
+    },
+    {
+     "name": "Edit the syllabus — chart layout, duplic",
+     "tag": "button",
+     "id": "sylMenuBtn",
+     "pts": 44,
+     "itself": 14,
+     "retry": 30,
+     "other": 0,
+     "hidden": 100,
+     "middle": "RETRY",
+     "box": [
+      332,
+      56,
+      28,
+      22
+     ]
+    },
+    {
+     "name": "Save your changes to the syllabus — even",
+     "tag": "button",
+     "id": "saveChanges",
+     "pts": 24,
+     "itself": 24,
+     "retry": 0,
+     "other": 0,
+     "hidden": 20,
+     "middle": "itself",
+     "box": [
+      277,
+      86,
+      105,
+      23
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "admin",
+   "scrolled": 0,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "page": "admin",
+   "scrolled": 320,
+   "note": [
+    233,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    320,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-390",
+   "presses": [
+    {
+     "page": "viewsched",
+     "control": "name / callsign",
+     "got": "RETRY"
+    },
+    {
+     "page": "editsched",
+     "control": "name / callsign",
+     "got": "RETRY"
+    },
+    {
+     "page": "quals",
+     "control": "qDate",
+     "got": "qDate"
+    },
+    {
+     "page": "leavewar",
+     "control": "+ New",
+     "got": "+ New"
+    },
+    {
+     "page": "tracker",
+     "control": "20242026Tx 2026A/G - A/A 2026",
+     "got": "20242026Tx 2026A/G - A/A 2026"
+    },
+    {
+     "page": "tracker",
+     "control": "Edit the syllabus — chart layout, duplic",
+     "got": "RETRY"
+    },
+    {
+     "page": "tracker",
+     "control": "Save your changes to the syllabus — even",
+     "got": "✓ Save changes ●"
+    }
+   ]
+  },
+  {
+   "size": "phone-320",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "name / callsign",
+     "tag": "input",
+     "id": "searchV",
+     "pts": 96,
+     "itself": 61,
+     "retry": 35,
+     "other": 0,
+     "hidden": 100,
+     "middle": "RETRY",
+     "box": [
+      203,
+      61,
+      96,
+      16
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "Warden",
+     "tag": "span",
+     "id": "",
+     "pts": 15,
+     "itself": 15,
+     "retry": 0,
+     "other": 0,
+     "hidden": 46,
+     "middle": "itself",
+     "box": [
+      205,
+      48,
+      57,
+      13
+     ]
+    },
+    {
+     "name": "IP",
+     "tag": "span",
+     "id": "",
+     "pts": 3,
+     "itself": 3,
+     "retry": 0,
+     "other": 0,
+     "hidden": 46,
+     "middle": "itself",
+     "box": [
+      262,
+      48,
+      15,
+      13
+     ]
+    },
+    {
+     "name": "Warden · IP · instructor pilot · SXO",
+     "tag": "span",
+     "id": "",
+     "pts": 19,
+     "itself": 19,
+     "retry": 0,
+     "other": 0,
+     "hidden": 47,
+     "middle": "itself",
+     "box": [
+      204,
+      47,
+      74,
+      15
+     ]
+    },
+    {
+     "name": "Conflict (two events at once)",
+     "tag": "span",
+     "id": "",
+     "pts": 4,
+     "itself": 4,
+     "retry": 0,
+     "other": 0,
+     "hidden": 23,
+     "middle": "itself",
+     "box": [
+      205,
+      88,
+      14,
+      13
+     ]
+    },
+    {
+     "name": "Ranger",
+     "tag": "span",
+     "id": "",
+     "pts": 11,
+     "itself": 11,
+     "retry": 0,
+     "other": 0,
+     "hidden": 23,
+     "middle": "itself",
+     "box": [
+      219,
+      88,
+      43,
+      13
+     ]
+    },
+    {
+     "name": "IP",
+     "tag": "span",
+     "id": "",
+     "pts": 3,
+     "itself": 3,
+     "retry": 0,
+     "other": 0,
+     "hidden": 23,
+     "middle": "itself",
+     "box": [
+      262,
+      88,
+      15,
+      13
+     ]
+    },
+    {
+     "name": "Ranger · IP · instructor pilot · SXO · C",
+     "tag": "span",
+     "id": "",
+     "pts": 1,
+     "itself": 1,
+     "retry": 0,
+     "other": 0,
+     "hidden": 27,
+     "middle": "itself",
+     "box": [
+      204,
+      87,
+      74,
+      15
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "editsched",
+   "scrolled": 0,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "Highlight filters",
+     "tag": "button",
+     "id": "",
+     "pts": 13,
+     "itself": 13,
+     "retry": 0,
+     "other": 0,
+     "hidden": 39,
+     "middle": "itself",
+     "box": [
+      145,
+      58,
+      30,
+      26
+     ]
+    },
+    {
+     "name": "More schedule options",
+     "tag": "button",
+     "id": "editSchedMore",
+     "pts": 46,
+     "itself": 46,
+     "retry": 0,
+     "other": 0,
+     "hidden": 100,
+     "middle": "itself",
+     "box": [
+      180,
+      58,
+      30,
+      26
+     ]
+    },
+    {
+     "name": "[object SVGAnimatedString]",
+     "tag": "svg",
+     "id": "",
+     "pts": 3,
+     "itself": 3,
+     "retry": 0,
+     "other": 0,
+     "hidden": 29,
+     "middle": "itself",
+     "box": [
+      152,
+      63,
+      16,
+      16
+     ]
+    },
+    {
+     "name": "name / callsign",
+     "tag": "input",
+     "id": "searchE",
+     "pts": 56,
+     "itself": 9,
+     "retry": 47,
+     "other": 0,
+     "hidden": 100,
+     "middle": "RETRY",
+     "box": [
+      245,
+      63,
+      54,
+      16
+     ]
+    },
+    {
+     "name": "[object SVGAnimatedString]",
+     "tag": "path",
+     "id": "",
+     "pts": 1,
+     "itself": 1,
+     "retry": 0,
+     "other": 0,
+     "hidden": 37,
+     "middle": "other",
+     "box": [
+      158,
+      66,
+      9,
+      9
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "editsched",
+   "scrolled": 320,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "⚠ 17 issues · 6 warning · tap to review▼",
+     "tag": "div",
+     "id": "",
+     "pts": 73,
+     "itself": 65,
+     "retry": 8,
+     "other": 0,
+     "hidden": 16,
+     "middle": "itself",
+     "box": [
+      11,
+      80,
+      274,
+      31
+     ]
+    },
+    {
+     "name": "tap to review",
+     "tag": "span",
+     "id": "",
+     "pts": 15,
+     "itself": 15,
+     "retry": 0,
+     "other": 0,
+     "hidden": 19,
+     "middle": "itself",
+     "box": [
+      160,
+      88,
+      65,
+      15
+     ]
+    },
+    {
+     "name": "▼",
+     "tag": "span",
+     "id": "",
+     "pts": 2,
+     "itself": 2,
+     "retry": 0,
+     "other": 0,
+     "hidden": 18,
+     "middle": "itself",
+     "box": [
+      264,
+      89,
+      9,
+      14
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "10 Jul 2026",
+     "tag": "button",
+     "id": "",
+     "pts": 4,
+     "itself": 4,
+     "retry": 0,
+     "other": 0,
+     "hidden": 14,
+     "middle": "itself",
+     "box": [
+      141,
+      53,
+      26,
+      20
+     ]
+    },
+    {
+     "name": "11 Jul 2026",
+     "tag": "button",
+     "id": "",
+     "pts": 28,
+     "itself": 28,
+     "retry": 0,
+     "other": 0,
+     "hidden": 90,
+     "middle": "itself",
+     "box": [
+      169,
+      53,
+      26,
+      20
+     ]
+    },
+    {
+     "name": "12 Jul 2026",
+     "tag": "button",
+     "id": "",
+     "pts": 28,
+     "itself": 28,
+     "retry": 0,
+     "other": 0,
+     "hidden": 90,
+     "middle": "itself",
+     "box": [
+      198,
+      53,
+      26,
+      20
+     ]
+    },
+    {
+     "name": "17 Jul 2026",
+     "tag": "button",
+     "id": "",
+     "pts": 4,
+     "itself": 4,
+     "retry": 0,
+     "other": 0,
+     "hidden": 12,
+     "middle": "itself",
+     "box": [
+      141,
+      75,
+      26,
+      20
+     ]
+    },
+    {
+     "name": "18 Jul 2026",
+     "tag": "button",
+     "id": "",
+     "pts": 28,
+     "itself": 28,
+     "retry": 0,
+     "other": 0,
+     "hidden": 80,
+     "middle": "itself",
+     "box": [
+      169,
+      75,
+      26,
+      20
+     ]
+    },
+    {
+     "name": "19 Jul 2026",
+     "tag": "button",
+     "id": "",
+     "pts": 27,
+     "itself": 27,
+     "retry": 0,
+     "other": 0,
+     "hidden": 80,
+     "middle": "itself",
+     "box": [
+      198,
+      75,
+      26,
+      20
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "qDate",
+     "tag": "input",
+     "id": "qDate",
+     "pts": 138,
+     "itself": 130,
+     "retry": 8,
+     "other": 0,
+     "hidden": 77,
+     "middle": "itself",
+     "box": [
+      136,
+      65,
+      120,
+      21
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "Personnel",
+     "tag": "button",
+     "id": "qViewG",
+     "pts": 63,
+     "itself": 63,
+     "retry": 0,
+     "other": 0,
+     "hidden": 43,
+     "middle": "itself",
+     "box": [
+      159,
+      40,
+      90,
+      28
+     ]
+    },
+    {
+     "name": "All",
+     "tag": "button",
+     "id": "qViewA",
+     "pts": 33,
+     "itself": 22,
+     "retry": 11,
+     "other": 0,
+     "hidden": 45,
+     "middle": "itself",
+     "box": [
+      251,
+      40,
+      46,
+      28
+     ]
+    },
+    {
+     "name": "Add a new person on Admin → Users",
+     "tag": "button",
+     "id": "qAddToggle",
+     "pts": 73,
+     "itself": 63,
+     "retry": 10,
+     "other": 0,
+     "hidden": 33,
+     "middle": "itself",
+     "box": [
+      197,
+      82,
+      103,
+      28
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "search the rules — “crew rest”, “brief”,",
+     "tag": "input",
+     "id": "lgSearch",
+     "pts": 32,
+     "itself": 32,
+     "retry": 0,
+     "other": 0,
+     "hidden": 22,
+     "middle": "itself",
+     "box": [
+      47,
+      63,
+      150,
+      16
+     ]
+    },
+    {
+     "name": "Advisories",
+     "tag": "button",
+     "id": "",
+     "pts": 11,
+     "itself": 11,
+     "retry": 0,
+     "other": 0,
+     "hidden": 6,
+     "middle": "itself",
+     "box": [
+      130,
+      88,
+      79,
+      28
+     ]
+    },
+    {
+     "name": "Notes",
+     "tag": "button",
+     "id": "",
+     "pts": 11,
+     "itself": 11,
+     "retry": 0,
+     "other": 0,
+     "hidden": 11,
+     "middle": "itself",
+     "box": [
+      216,
+      88,
+      51,
+      28
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "Period — which leave war",
+     "tag": "select",
+     "id": "",
+     "pts": 26,
+     "itself": 26,
+     "retry": 0,
+     "other": 0,
+     "hidden": 12,
+     "middle": "itself",
+     "box": [
+      57,
+      57,
+      121,
+      30
+     ]
+    },
+    {
+     "name": "+ New",
+     "tag": "button",
+     "id": "",
+     "pts": 116,
+     "itself": 116,
+     "retry": 0,
+     "other": 0,
+     "hidden": 100,
+     "middle": "itself",
+     "box": [
+      186,
+      57,
+      60,
+      30
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "26ABSG",
+     "tag": "select",
+     "id": "courseSel",
+     "pts": 52,
+     "itself": 52,
+     "retry": 0,
+     "other": 0,
+     "hidden": 41,
+     "middle": "itself",
+     "box": [
+      117,
+      54,
+      81,
+      26
+     ]
+    },
+    {
+     "name": "Course 26ABSG",
+     "tag": "label",
+     "id": "",
+     "pts": 2,
+     "itself": 2,
+     "retry": 0,
+     "other": 0,
+     "hidden": 41,
+     "middle": "itself",
+     "box": [
+      117,
+      54,
+      81,
+      26
+     ]
+    },
+    {
+     "name": "Edit courses — add, rename, reorder or d",
+     "tag": "button",
+     "id": "courseMenuBtn",
+     "pts": 40,
+     "itself": 40,
+     "retry": 0,
+     "other": 0,
+     "hidden": 100,
+     "middle": "itself",
+     "box": [
+      204,
+      56,
+      28,
+      22
+     ]
+    },
+    {
+     "name": "Bring a file in, or export a copy",
+     "tag": "button",
+     "id": "fileMenuBtn",
+     "pts": 12,
+     "itself": 12,
+     "retry": 0,
+     "other": 0,
+     "hidden": 12,
+     "middle": "itself",
+     "box": [
+      170,
+      89,
+      54,
+      21
+     ]
+    },
+    {
+     "name": "Find an event on the chart",
+     "tag": "button",
+     "id": "hSearchBtn",
+     "pts": 6,
+     "itself": 6,
+     "retry": 0,
+     "other": 0,
+     "hidden": 15,
+     "middle": "itself",
+     "box": [
+      230,
+      88,
+      29,
+      23
+     ]
+    },
+    {
+     "name": "Hide this bar to make more room for the ",
+     "tag": "button",
+     "id": "barHideBtn",
+     "pts": 4,
+     "itself": 4,
+     "retry": 0,
+     "other": 0,
+     "hidden": 14,
+     "middle": "itself",
+     "box": [
+      265,
+      88,
+      22,
+      22
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "26ABSG",
+     "tag": "select",
+     "id": "courseSel",
+     "pts": 52,
+     "itself": 52,
+     "retry": 0,
+     "other": 0,
+     "hidden": 41,
+     "middle": "itself",
+     "box": [
+      117,
+      54,
+      81,
+      26
+     ]
+    },
+    {
+     "name": "Course 26ABSG",
+     "tag": "label",
+     "id": "",
+     "pts": 2,
+     "itself": 2,
+     "retry": 0,
+     "other": 0,
+     "hidden": 41,
+     "middle": "itself",
+     "box": [
+      117,
+      54,
+      81,
+      26
+     ]
+    },
+    {
+     "name": "Edit courses — add, rename, reorder or d",
+     "tag": "button",
+     "id": "courseMenuBtn",
+     "pts": 40,
+     "itself": 40,
+     "retry": 0,
+     "other": 0,
+     "hidden": 100,
+     "middle": "itself",
+     "box": [
+      204,
+      56,
+      28,
+      22
+     ]
+    },
+    {
+     "name": "Bring a file in, or export a copy",
+     "tag": "button",
+     "id": "fileMenuBtn",
+     "pts": 12,
+     "itself": 12,
+     "retry": 0,
+     "other": 0,
+     "hidden": 12,
+     "middle": "itself",
+     "box": [
+      170,
+      89,
+      54,
+      21
+     ]
+    },
+    {
+     "name": "Find an event on the chart",
+     "tag": "button",
+     "id": "hSearchBtn",
+     "pts": 6,
+     "itself": 6,
+     "retry": 0,
+     "other": 0,
+     "hidden": 15,
+     "middle": "itself",
+     "box": [
+      230,
+      88,
+      29,
+      23
+     ]
+    },
+    {
+     "name": "Hide this bar to make more room for the ",
+     "tag": "button",
+     "id": "barHideBtn",
+     "pts": 4,
+     "itself": 4,
+     "retry": 0,
+     "other": 0,
+     "hidden": 14,
+     "middle": "itself",
+     "box": [
+      265,
+      88,
+      22,
+      22
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [
+    {
+     "name": "Category",
+     "tag": "label",
+     "id": "",
+     "pts": 60,
+     "itself": 60,
+     "retry": 0,
+     "other": 0,
+     "hidden": 21,
+     "middle": "itself",
+     "box": [
+      37,
+      85,
+      246,
+      14
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "admin",
+   "scrolled": 0,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "page": "admin",
+   "scrolled": 320,
+   "note": [
+    163,
+    55,
+    143,
+    36
+   ],
+   "retry": [
+    250,
+    62,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 49,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "phone-320",
+   "presses": [
+    {
+     "page": "viewsched",
+     "control": "name / callsign",
+     "got": "RETRY"
+    },
+    {
+     "page": "editsched",
+     "control": "Highlight filters",
+     "got": "svg"
+    },
+    {
+     "page": "editsched",
+     "control": "More schedule options",
+     "got": "⋯"
+    },
+    {
+     "page": "editsched",
+     "control": "[object SVGAnimatedString]",
+     "got": "svg"
+    },
+    {
+     "page": "editsched",
+     "control": "name / callsign",
+     "got": "RETRY"
+    },
+    {
+     "page": "editsched",
+     "control": "[object SVGAnimatedString]",
+     "got": "svg"
+    },
+    {
+     "page": "quals",
+     "control": "qDate",
+     "got": "qDate"
+    },
+    {
+     "page": "leavewar",
+     "control": "Period — which leave war",
+     "got": "12"
+    },
+    {
+     "page": "leavewar",
+     "control": "+ New",
+     "got": "13"
+    },
+    {
+     "page": "tracker",
+     "control": "26ABSG",
+     "got": "26ABSG"
+    },
+    {
+     "page": "tracker",
+     "control": "Course 26ABSG",
+     "got": "26ABSG"
+    },
+    {
+     "page": "tracker",
+     "control": "Edit courses — add, rename, reorder or d",
+     "got": "✎"
+    },
+    {
+     "page": "tracker",
+     "control": "Bring a file in, or export a copy",
+     "got": "⇪ File ▾"
+    },
+    {
+     "page": "tracker",
+     "control": "Find an event on the chart",
+     "got": "🔍"
+    },
+    {
+     "page": "tracker",
+     "control": "Hide this bar to make more room for the ",
+     "got": "⌃"
+    }
+   ]
+  },
+  {
+   "size": "desk-1200",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [
+    {
+     "name": "name / callsign",
+     "tag": "input",
+     "id": "searchV",
+     "pts": 132,
+     "itself": 85,
+     "retry": 47,
+     "other": 0,
+     "hidden": 88,
+     "middle": "itself",
+     "box": [
+      1019,
+      118,
+      150,
+      16
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "editsched",
+   "scrolled": 0,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 104,
+   "under": [
+    {
+     "name": "name / callsign",
+     "tag": "input",
+     "id": "searchE",
+     "pts": 132,
+     "itself": 85,
+     "retry": 47,
+     "other": 0,
+     "hidden": 88,
+     "middle": "itself",
+     "box": [
+      1019,
+      119,
+      150,
+      16
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "editsched",
+   "scrolled": 320,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 104,
+   "under": [
+    {
+     "name": "Cinder",
+     "tag": "span",
+     "id": "",
+     "pts": 9,
+     "itself": 9,
+     "retry": 0,
+     "other": 0,
+     "hidden": 10,
+     "middle": "itself",
+     "box": [
+      1018,
+      143,
+      57,
+      13
+     ]
+    },
+    {
+     "name": "B",
+     "tag": "span",
+     "id": "",
+     "pts": 4,
+     "itself": 4,
+     "retry": 0,
+     "other": 0,
+     "hidden": 15,
+     "middle": "itself",
+     "box": [
+      1075,
+      143,
+      15,
+      13
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [
+    {
+     "name": "filter",
+     "tag": "input",
+     "id": "qFilter",
+     "pts": 132,
+     "itself": 86,
+     "retry": 46,
+     "other": 0,
+     "hidden": 88,
+     "middle": "itself",
+     "box": [
+      1019,
+      121,
+      150,
+      16
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [
+    {
+     "name": "Save your changes to the syllabus — even",
+     "tag": "button",
+     "id": "saveChanges",
+     "pts": 149,
+     "itself": 92,
+     "retry": 57,
+     "other": 0,
+     "hidden": 96,
+     "middle": "RETRY",
+     "box": [
+      1077,
+      117,
+      107,
+      23
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [
+    {
+     "name": "Save your changes to the syllabus — even",
+     "tag": "button",
+     "id": "saveChanges",
+     "pts": 149,
+     "itself": 92,
+     "retry": 57,
+     "other": 0,
+     "hidden": 96,
+     "middle": "RETRY",
+     "box": [
+      1077,
+      117,
+      107,
+      23
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "admin",
+   "scrolled": 0,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "page": "admin",
+   "scrolled": 320,
+   "note": [
+    1037,
+    109,
+    143,
+    36
+   ],
+   "retry": [
+    1124,
+    116,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 103,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1200",
+   "presses": [
+    {
+     "page": "viewsched",
+     "control": "name / callsign",
+     "got": "searchV"
+    },
+    {
+     "page": "editsched",
+     "control": "name / callsign",
+     "got": "searchE"
+    },
+    {
+     "page": "quals",
+     "control": "filter",
+     "got": "qFilter"
+    },
+    {
+     "page": "tracker",
+     "control": "Save your changes to the syllabus — even",
+     "got": "RETRY"
+    }
+   ]
+  },
+  {
+   "size": "desk-1366",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [
+    {
+     "name": "name / callsign",
+     "tag": "input",
+     "id": "searchV",
+     "pts": 132,
+     "itself": 85,
+     "retry": 47,
+     "other": 0,
+     "hidden": 88,
+     "middle": "itself",
+     "box": [
+      1185,
+      72,
+      150,
+      16
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "editsched",
+   "scrolled": 0,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 104,
+   "under": [
+    {
+     "name": "Logout",
+     "tag": "button",
+     "id": "logout",
+     "pts": 12,
+     "itself": 12,
+     "retry": 0,
+     "other": 0,
+     "hidden": 10,
+     "middle": "itself",
+     "box": [
+      1144,
+      61,
+      67,
+      28
+     ]
+    },
+    {
+     "name": "Switch to the member view",
+     "tag": "button",
+     "id": "roleBadge",
+     "pts": 186,
+     "itself": 139,
+     "retry": 47,
+     "other": 0,
+     "hidden": 91,
+     "middle": "itself",
+     "box": [
+      1219,
+      61,
+      127,
+      28
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "editsched",
+   "scrolled": 320,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 104,
+   "under": [
+    {
+     "name": "Logout",
+     "tag": "button",
+     "id": "logout",
+     "pts": 12,
+     "itself": 12,
+     "retry": 0,
+     "other": 0,
+     "hidden": 10,
+     "middle": "itself",
+     "box": [
+      1144,
+      61,
+      67,
+      28
+     ]
+    },
+    {
+     "name": "Switch to the member view",
+     "tag": "button",
+     "id": "roleBadge",
+     "pts": 186,
+     "itself": 139,
+     "retry": 47,
+     "other": 0,
+     "hidden": 91,
+     "middle": "itself",
+     "box": [
+      1219,
+      61,
+      127,
+      28
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [
+    {
+     "name": "filter",
+     "tag": "input",
+     "id": "qFilter",
+     "pts": 132,
+     "itself": 86,
+     "retry": 46,
+     "other": 0,
+     "hidden": 88,
+     "middle": "itself",
+     "box": [
+      1185,
+      75,
+      150,
+      16
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [
+    {
+     "name": "Save your changes to the syllabus — even",
+     "tag": "button",
+     "id": "saveChanges",
+     "pts": 149,
+     "itself": 92,
+     "retry": 57,
+     "other": 0,
+     "hidden": 96,
+     "middle": "RETRY",
+     "box": [
+      1243,
+      71,
+      107,
+      23
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [
+    {
+     "name": "Save your changes to the syllabus — even",
+     "tag": "button",
+     "id": "saveChanges",
+     "pts": 149,
+     "itself": 92,
+     "retry": 57,
+     "other": 0,
+     "hidden": 96,
+     "middle": "RETRY",
+     "box": [
+      1243,
+      71,
+      107,
+      23
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "admin",
+   "scrolled": 0,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "page": "admin",
+   "scrolled": 320,
+   "note": [
+    1203,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1290,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1366",
+   "presses": [
+    {
+     "page": "viewsched",
+     "control": "name / callsign",
+     "got": "searchV"
+    },
+    {
+     "page": "editsched",
+     "control": "Logout",
+     "got": "Logout"
+    },
+    {
+     "page": "editsched",
+     "control": "Switch to the member view",
+     "got": "Saber · Admin"
+    },
+    {
+     "page": "quals",
+     "control": "filter",
+     "got": "qFilter"
+    },
+    {
+     "page": "tracker",
+     "control": "Save your changes to the syllabus — even",
+     "got": "RETRY"
+    }
+   ]
+  },
+  {
+   "size": "desk-1440",
+   "page": "viewsched",
+   "scrolled": 0,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [
+    {
+     "name": "name / callsign",
+     "tag": "input",
+     "id": "searchV",
+     "pts": 132,
+     "itself": 85,
+     "retry": 47,
+     "other": 0,
+     "hidden": 88,
+     "middle": "itself",
+     "box": [
+      1259,
+      72,
+      150,
+      16
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "viewsched",
+   "scrolled": 320,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "editsched",
+   "scrolled": 0,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 58,
+   "under": [
+    {
+     "name": "name / callsign",
+     "tag": "input",
+     "id": "searchE",
+     "pts": 132,
+     "itself": 85,
+     "retry": 47,
+     "other": 0,
+     "hidden": 88,
+     "middle": "itself",
+     "box": [
+      1259,
+      73,
+      150,
+      16
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "editsched",
+   "scrolled": 320,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 58,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "inputs",
+   "scrolled": 0,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "inputs",
+   "scrolled": 320,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "quals",
+   "scrolled": 0,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [
+    {
+     "name": "filter",
+     "tag": "input",
+     "id": "qFilter",
+     "pts": 132,
+     "itself": 86,
+     "retry": 46,
+     "other": 0,
+     "hidden": 88,
+     "middle": "itself",
+     "box": [
+      1259,
+      75,
+      150,
+      16
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "quals",
+   "scrolled": 320,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "logic",
+   "scrolled": 0,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "logic",
+   "scrolled": 320,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "leavewar",
+   "scrolled": 0,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "leavewar",
+   "scrolled": 320,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "tracker",
+   "scrolled": 0,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [
+    {
+     "name": "Save your changes to the syllabus — even",
+     "tag": "button",
+     "id": "saveChanges",
+     "pts": 149,
+     "itself": 92,
+     "retry": 57,
+     "other": 0,
+     "hidden": 96,
+     "middle": "RETRY",
+     "box": [
+      1317,
+      71,
+      107,
+      23
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "tracker",
+   "scrolled": 320,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [
+    {
+     "name": "Save your changes to the syllabus — even",
+     "tag": "button",
+     "id": "saveChanges",
+     "pts": 149,
+     "itself": 92,
+     "retry": 57,
+     "other": 0,
+     "hidden": 96,
+     "middle": "RETRY",
+     "box": [
+      1317,
+      71,
+      107,
+      23
+     ]
+    }
+   ],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "help",
+   "scrolled": 0,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "help",
+   "scrolled": 320,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "admin",
+   "scrolled": 0,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "page": "admin",
+   "scrolled": 320,
+   "note": [
+    1277,
+    63,
+    143,
+    36
+   ],
+   "retry": [
+    1364,
+    70,
+    45,
+    22
+   ],
+   "text": "Not saved — Retry",
+   "seen": true,
+   "barBottom": 57,
+   "under": [],
+   "sideways": false
+  },
+  {
+   "size": "desk-1440",
+   "presses": [
+    {
+     "page": "viewsched",
+     "control": "name / callsign",
+     "got": "searchV"
+    },
+    {
+     "page": "editsched",
+     "control": "name / callsign",
+     "got": "searchE"
+    },
+    {
+     "page": "quals",
+     "control": "filter",
+     "got": "qFilter"
+    },
+    {
+     "page": "tracker",
+     "control": "Save your changes to the syllabus — even",
+     "got": "RETRY"
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

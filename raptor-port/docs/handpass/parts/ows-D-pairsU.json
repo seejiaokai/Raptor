@@ -1,0 +1,145 @@
+{
+ "parts": {
+  "ows-D-pairs-U-dk": {
+   "at": "2026-10-06T14:09:58.118Z",
+   "base": "http://localhost:4296",
+   "phone": false,
+   "table": [
+    {
+     "id": "PR-U-Op-Lr",
+     "did": "unpublished Saturday; first Op, then Lr",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Op: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-PR-U-Op-Lr-after-2.png",
+      "dk-02-PR-U-Op-Lr-final-cell.png",
+      "dk-03-PR-U-Op-Lr-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Lr-Op",
+     "did": "unpublished Saturday; first Lr, then Op",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Lr: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-PR-U-Lr-Op-after-2.png",
+      "dk-05-PR-U-Lr-Op-final-cell.png",
+      "dk-06-PR-U-Lr-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Op-Ld",
+     "did": "unpublished Saturday; first Op, then Ld",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Op: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-PR-U-Op-Ld-after-2.png",
+      "dk-08-PR-U-Op-Ld-final-cell.png",
+      "dk-09-PR-U-Op-Ld-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Ld-Op",
+     "did": "unpublished Saturday; first Ld, then Op",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Ld: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-PR-U-Ld-Op-after-2.png",
+      "dk-11-PR-U-Ld-Op-final-cell.png",
+      "dk-12-PR-U-Ld-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Op-A",
+     "did": "unpublished Saturday; first Op, then A",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Op: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ A second on an unpublished day: no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: {\\\"text\\\":\\\"Publish day\\\",\\\"disabled\\\":true})\"}] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-PR-U-Op-A-after-2.png",
+      "dk-14-PR-U-Op-A-final-cell.png",
+      "dk-15-PR-U-Op-A-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-A-Op",
+     "did": "unpublished Saturday; first A, then Op",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after A: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ A first on an unpublished day: no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: {\\\"text\\\":\\\"Publish day\\\",\\\"disabled\\\":true})\"}] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-PR-U-A-Op-after-2.png",
+      "dk-17-PR-U-A-Op-final-cell.png",
+      "dk-18-PR-U-A-Op-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Or-Lr",
+     "did": "unpublished Saturday; first Or, then Lr",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Or: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-19-PR-U-Or-Lr-after-2.png",
+      "dk-20-PR-U-Or-Lr-final-cell.png",
+      "dk-21-PR-U-Or-Lr-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Lr-Or",
+     "did": "unpublished Saturday; first Lr, then Or",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Lr: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-PR-U-Lr-Or-after-2.png",
+      "dk-23-PR-U-Lr-Or-final-cell.png",
+      "dk-24-PR-U-Lr-Or-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Or-Ld",
+     "did": "unpublished Saturday; first Or, then Ld",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Or: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-PR-U-Or-Ld-after-2.png",
+      "dk-26-PR-U-Or-Ld-final-cell.png",
+      "dk-27-PR-U-Or-Ld-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Ld-Or",
+     "did": "unpublished Saturday; first Ld, then Or",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Ld: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-28-PR-U-Ld-Or-after-2.png",
+      "dk-29-PR-U-Ld-Or-final-cell.png",
+      "dk-30-PR-U-Ld-Or-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-Or-A",
+     "did": "unpublished Saturday; first Or, then A",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after Or: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ A second on an unpublished day: no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: {\\\"text\\\":\\\"Publish day\\\",\\\"disabled\\\":true})\"}] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-31-PR-U-Or-A-after-2.png",
+      "dk-32-PR-U-Or-A-final-cell.png",
+      "dk-33-PR-U-Or-A-final-tracker.png"
+     ]
+    },
+    {
+     "id": "PR-U-A-Or",
+     "did": "unpublished Saturday; first A, then Or",
+     "saw": "✓ fixture: Ranger seated, unpublished [{\"took\":true,\"tag\":\"draft\"}] · ✓ after A: nothing paid (day unpublished), no Leave War credit [chip \"\" | paid cell n/a  | list \"\"] · ✓ A first on an unpublished day: no Publish AL control [{\"absent\":true,\"note\":\"no Publish AL control on the day (first-publish button: {\\\"text\\\":\\\"Publish day\\\",\\\"disabled\\\":true})\"}] · ✓ final record after issue: none [ | Ranger IP 0 (readout (not part of the pair): signed the four and Publish day (ORIG))]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-34-PR-U-A-Or-after-2.png",
+      "dk-35-PR-U-A-Or-final-cell.png",
+      "dk-36-PR-U-A-Or-final-tracker.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": 36
+  }
+ }
+}

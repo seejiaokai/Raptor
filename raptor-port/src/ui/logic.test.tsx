@@ -107,6 +107,29 @@ describe('the Logic tab, read-only (tfin B50)', () => {
     expect(missing, missing.join(',')).toEqual([])
   })
 
+  it('[REST-BLANK-LINE] the Crew rest group says what a line with no times does — and does not deny a typed landing', () => {
+    /* Astra's final read, 6 Oct 26: the first wording said a line with "no take-off" is "not the end of the day
+       before", while the engine (rightly) still ends the day on a landing typed alone — restblank.test.ts
+       "LEFT AS IT WAS: a landing typed with no take-off is still the end of his Monday". */
+    const t = text()
+    expect(t).toContain('A flying line with no times yet is not measured')
+    expect(t).toContain('neither breaks crew rest nor hides a breach')
+    expect(t).toMatch(/typed Brief, its wave's In-time \/ Rally or an SC line's typed B as the report/)
+    expect(t).toContain('a typed landing as the end of that day, debrief included')
+    expect(t).toContain('anything scheduled earlier that day still starts his day')
+    expect(t, 'the withdrawn wording').not.toContain('not the end of the day before')
+    expect(t).not.toContain('no take-off yet is not measured')
+  })
+
+  it('[BLANK-TIMES-ABSENCE] the leave group says what a seat with no times does — the whole day yes, part of a day not yet (D605)', () => {
+    const t = text()
+    expect(t).toContain('A seat with no times yet')
+    expect(t).toContain('is still checked against an absence that covers the whole day')
+    expect(t).toContain('flagged the moment he is seated there')
+    expect(t).toContain('the same warning and the same exceptions as on a seat with times')
+    expect(t).toContain('An absence for only part of the day waits until the seat has times')
+  })
+
   it('the firing counts come from the live WARN', () => {
     validate()
     const n = $$('#lgBody .lgfired.on').length
@@ -219,6 +242,33 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
     expect($$('#lgBody [data-lgset], #lgBody [data-lgkind]').length).toBe(0)
     expect(($('#lgEdit') as HTMLElement).hidden).toBe(true)
     await act(async () => { setSession({ user: 'a', role: 'admin' }); setLgEdit(false); notify(); rulesReset() })
+  })
+})
+
+/* W2 (the Codex stack check, 5 Oct 26): the button's WORDS are a squadron's wording preference (D511), not a rule
+   any check reads — so they never light the RULES MODIFIED stamp or the "schedule is being checked against these
+   values" strip; the count, the cell's own tag and Reset to standard still know them. */
+describe('W2 the words the + In-time / Rally button fills in are not a modified RULE', () => {
+  it('words alone: no stamp, no strip, Reset still offered; a number brings both back', async () => {
+    const { VCONF, rulesReset } = await import('../engine/rules')
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
+    await act(async () => { rulesReset(); VCONF.reportText = 'RALLY'; notify() })
+    expect(document.body.classList.contains('page-rules-off')).toBe(false)
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
+    expect(($('#lgReset') as HTMLElement).hidden).toBe(false)
+    expect($('#lgCount').textContent).toContain('1 off standard')
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='viewsched')!)
+    expect(document.body.classList.contains('page-rules-off')).toBe(false)
+    expect($('#vBanner').classList.contains('rules-off')).toBe(false)
+    await act(async () => { VCONF.crewRest = 600; notify() })
+    expect(document.body.classList.contains('page-rules-off')).toBe(true)
+    expect($('#vBanner').classList.contains('rules-off')).toBe(true)
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(false)
+    expect($('#lgOff').textContent).toContain('1 rule changed')
+    expect($('#lgCount').textContent).toContain('2 off standard')
+    await act(async () => { rulesReset(); notify() })
+    expect(document.body.classList.contains('page-rules-off')).toBe(false)
   })
 })
 

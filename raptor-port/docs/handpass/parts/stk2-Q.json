@@ -1,0 +1,567 @@
+{
+ "walker": "Q",
+ "base": "http://localhost:4232",
+ "at": "2026-10-05T16:54:52.213Z",
+ "judged": [
+  {
+   "id": "R-01",
+   "verdict": "PASS"
+  },
+  {
+   "id": "P3-01",
+   "verdict": "PASS"
+  },
+  {
+   "id": "P3-02",
+   "verdict": "PASS"
+  },
+  {
+   "id": "P3-04",
+   "verdict": "PASS"
+  },
+  {
+   "id": "P3-05",
+   "verdict": "PASS"
+  },
+  {
+   "id": "P3-07 (Board, Week)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "P3-08 (Board all cases; Week the cases that exist there)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "P3-16",
+   "verdict": "PASS"
+  },
+  {
+   "id": "P3-18",
+   "verdict": "PASS"
+  },
+  {
+   "id": "H-02",
+   "verdict": "PASS"
+  },
+  {
+   "id": "H-03",
+   "verdict": "PASS"
+  },
+  {
+   "id": "H-07",
+   "verdict": "PASS"
+  },
+  {
+   "id": "X-01 (week, board, board on a phone)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "X-03",
+   "verdict": "PASS"
+  },
+  {
+   "id": "X-04 (week, board)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "X-05",
+   "verdict": "PASS"
+  },
+  {
+   "id": "X-09",
+   "verdict": "PASS"
+  },
+  {
+   "id": "H-Q1 week Tue 14 Jul",
+   "verdict": "PASS"
+  },
+  {
+   "id": "H-Q1 board Wed 15 Jul",
+   "verdict": "PASS"
+  },
+  {
+   "id": "H-Q1 phone 390x844 week Tue 14 Jul",
+   "verdict": "PASS"
+  }
+ ],
+ "parts": {
+  "a:a": {
+   "at": "2026-10-05T16:43:15.764Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "P3-01",
+     "did": "ACM VL \"DS FOR RU\" unanswered, published Mon; working remarks → \"DS FROM RU\"; Red on the latest-published view (version menu, read-only Remarks → Choose mission role); back to working copy, Blue; then Publish AL",
+     "saw": "base Saber:-b/-r/total2  Echo:-b/-r/total3. After publish (head {\"chips\":\"ORIG | ORIG | 7 changes\",\"alpub\":\"\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\",\"pend\":0}): Saber:-b/-r/total2  Echo:-b/-r/total3. Working edit → head {\"chips\":\"ORIG | ORIG | 1 pending\",\"alpub\":\"Publish AL1\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"pend\":1} pending {\"pend\":1,\"ver\":\"2026-07-13#0\"}; working question {\"q\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"nQ\":1,\"sides\":[\"blue\",\"red\",\"later\"],\"choose\":null,\"nUi\":1}. Published question {\"q\":\"Published · Original VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"nQ\":1,\"sides\":[\"blue\",\"red\",\"later\"],\"choose\":null,\"nUi\":1}; after Red: Insights Saber:1b/1r/total2  Echo:2b/1r/total3; head {\"chips\":\"ORIG | ORIG\",\"alpub\":\"\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\",\"pend\":1}; days/signature book unchanged by Red: true. Back on working copy head {\"chips\":\"ORIG | ORIG | 1 pending\",\"alpub\":\"Publish AL1\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"pend\":1} (before Red it was {\"chips\":\"ORIG | ORIG | 1 pending\",\"alpub\":\"Publish AL1\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"pend\":1}). Working question {\"q\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"nQ\":1,\"sides\":[\"blue\",\"red\",\"later\"],\"choose\":null,\"nUi\":1}; after Blue head {\"chips\":\"ORIG | ORIG | 1 pending\",\"alpub\":\"Publish AL1\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"pend\":1} pending {\"pend\":1,\"ver\":\"2026-07-13#0\"}; Insights while amendment pending: Saber:1b/1r/total2  Echo:2b/1r/total3; days/book unchanged by Blue: true. After Publish AL {\"s\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"},\"r\":{\"pressed\":true,\"label\":\"Publish AL1\"},\"ver\":\"2026-07-13#1\"} head {\"chips\":\"AL1 | AL1 | 15 changes\",\"alpub\":\"\",\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\",\"pend\":0}: Insights Saber:2b/0r/total2  Echo:3b/0r/total3",
+     "verdict": "PASS",
+     "pics": [
+      "a-02-p301-base.png",
+      "a-04-p301-published.png",
+      "a-05-p301-working-edit.png",
+      "a-06-p301-published-question.png",
+      "a-08-p301-published-red.png",
+      "a-09-p301-working-question.png",
+      "a-11-p301-working-blue.png",
+      "a-13-p301-after-al.png"
+     ]
+    },
+    {
+     "id": "P3-02",
+     "did": "published Original (DS FOR RU) then AL1 (DS FROM RU) through Publish / Publish AL; opened each version in the board's version menu and focused its Remarks",
+     "saw": "versions listed [\"2026-07-13#0|Originalread-only — look, don't change\",\"2026-07-13#1|AL1read-only — look, don't change\"]. Original(2026-07-13#0) preview: role-remarks boxes 0, text null, question UI after click null, editable inputs on board 188. Latest AL1(2026-07-13#1) preview: role-remarks boxes 2, text \"DS FROM RU\", readonly attr \"\", after click {\"q\":null,\"nQ\":0,\"sides\":[],\"choose\":\"Choose mission role\",\"nUi\":1}",
+     "verdict": "PASS",
+     "pics": [
+      "a-14-p302-versions.png",
+      "a-15-p302-original.png",
+      "a-16-p302-latest.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "b:b": {
+   "at": "2026-10-05T16:45:06.019Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "P3-04",
+     "did": "saved Mon (VL ACM \"DS FOR RU\", answered Red) as a day template; applied it to Tue from Templates; on Tue pressed Change mission role → Blue; looked at Mon; Undo ×2 then Redo ×2 on the board bar; read the Changes window",
+     "saw": "before: Insights Saber:1b/1r/total2  Echo:2b/1r/total3; template modal \"Day templates ✕ TEMPLATE 1 2 waves · 2 duty blocks · 9 ground rows · 8 sims Reset — delete all Delete template Done\" (templates listed 1). Tue before: VL/BFM/1B: BFM-3[nact,glass] ; 2A: BFM-6[casper,rocky], Insights Saber:1b/1r/total2  Echo:2b/1r/total3. Applied: Tue VL/ACM/DS FOR RU[,] ; 2A: BFM-5[,] (crew placed by hand: true/true, now VL/ACM/DS FOR RU[stiff,freak] ; 2A: BFM-5[,]); confirm null; Tue Remarks door: {\"q\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"nQ\":1,\"sides\":[\"blue\",\"red\",\"later\"],\"choose\":null,\"nUi\":1}; Insights Saber:1b/2r/total3  Echo:2b/2r/total4. Tue answer → Blue: Insights Saber:2b/1r/total3  Echo:3b/1r/total4. Monday: Remarks door {\"q\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"nQ\":1,\"sides\":[\"blue\",\"red\",\"later\"],\"choose\":null,\"nUi\":1}, Insights Saber:2b/1r/total3  Echo:3b/1r/total4. Changes window (All changes): ⠿ Changes · Tuesday 14/7 Not yet published ✕ New to you 0 All changes 5 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Flying · VL ACM · 4 00:44 Mission roleWorking copy Red → Blue Saber · 6/10 00:44 #1 RCPEcho put on Saber · 6/10 00:43 #1 FCPSaber put on Saber · 6/10 00:43 Mission rolecopied with the day template Unresolved → Red Saber · 6/10 00:43 The day Saber · 6/10 00:43 Day template \"Template 1\" applied Tap a change to go to it — the window stays open.. Undo/Redo steps: undo1 \"Undid: the mission role for VL — Blue\" → Tue VL/ACM/DS FOR RU[stiff,freak] ; 2A: BFM-5[,], Insights Saber:1b/2r/total3  Echo:2b/2r/total4 || undo2 \"Undid: a change to the schedule\" → Tue VL/ACM/DS FOR RU[stiff,] ; 2A: BFM-5[,], Insights Saber:1b/2r/total3  Echo:2b/1r/total3 || undo3 \"Undid: a change to the schedule\" → Tue VL/ACM/DS FOR RU[,] ; 2A: BFM-5[,], Insights Saber:1b/1r/total2  Echo:2b/1r/total3 || undo4 \"Undid: a change to the schedule\" → Tue VL/BFM/1B: BFM-3[nact,glass] ; 2A: BFM-6[casper,rocky], Insights Saber:1b/1r/total2  Echo:2b/1r/total3 || redo1 \"Redid: a change to the schedule\" → Tue VL/ACM/DS FOR RU[,] ; 2A: BFM-5[,], Insights Saber:1b/1r/total2  Echo:2b/1r/total3 || redo2 \"Redid: a change to the schedule\" → Tue VL/ACM/DS FOR RU[stiff,] ; 2A: BFM-5[,], Insights Saber:1b/2r/total3  Echo:2b/1r/total3 || redo3 \"Redid: a change to the schedule\" → Tue VL/ACM/DS FOR RU[stiff,freak] ; 2A: BFM-5[,], Insights Saber:1b/2r/total3  Echo:2b/2r/total4 || redo4 \"Redid: the mission role for VL — Blue\" → Tue VL/ACM/DS FOR RU[stiff,freak] ; 2A: BFM-5[,], Insights Saber:2b/1r/total3  Echo:3b/1r/total4. Changes after: ⠿ Changes · Tuesday 14/7 Not yet published ✕ New to you 0 All changes 13 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ The day · 9 00:44 Redo — the mission role for VL — Blue Saber · 6/10 00:44 Redo — a change to the schedule Saber · 6/10 00:44 Redo — a change to the schedule Saber · 6/10 00:44 Redo — a change to the schedule Saber · 6/10 00:44 Undo — a change to the schedule Saber · 6/10 00:44 Undo — a change to the schedule Saber · 6/10 00:44 Undo — a change to the schedule Saber · 6/10 00:44 Undo — the mission role for VL — Blue Saber · 6/10 00:44 Day template \"Template 1\" applied Saber · 6/10 00:43 ▾ Flying · VL ACM · 4 00:44 Mission roleWorking copy Red → Blue Saber · 6/10 00:44 #1 RCPEcho put on Saber · 6/10 00:43 #1 FCPSaber put on Saber · 6/10 00:43 Mission rolecopied with the day template Unresolved → Red Saber · 6/10 00:43 Tap a change to go to it — the window stays open.",
+     "verdict": "RECORD",
+     "pics": [
+      "b-02-p304-save.png",
+      "b-04-p304-tue-applied.png",
+      "b-07-p304-tue-blue.png",
+      "b-08-p304-mon.png",
+      "b-15-p304-after-4-undo.png",
+      "b-20-p304-after-4-redo.png"
+     ]
+    },
+    {
+     "id": "P3-05",
+     "did": "Mon VL ACM \"DS FOR RU\" answered Red (the live working copy = plan A); + Alt Plan from the plan menu → plan B, wording → \"DS FROM RU\", answered Blue; switched A→B→A through the menu; reload; B again",
+     "saw": "A before: Saber:1b/1r/total2  Echo:2b/1r/total3. menu before: [\"data-plangolive=0|Live working copy ●live now — this is what publish\",\"data-plandup=1|+ Alt Plan\"]; after dup the formation on screen: VL/ACM/DS FOR RU[stiff,freak] ; 2A: BFM-5[bane,wolf]. B after edits: Insights Saber:2b/0r/total2  Echo:3b/0r/total3; menu: [\"data-plansel=dr1|Plan Atap to make it the live day\",\"data-planedit=dr1|✎\",\"data-plangolive=0|Plan B ●live now — this is what publishes\",\"data-planedit=dr2|✎\",\"data-plandup=1|+ Alt Plan\",\"data-planmanage=1|✎ Manage plans\"]. B-current: formation VL/ACM/DS FROM RU[stiff,freak] ; 2A: BFM-5[bane,wolf]; question on arrival 0; Remarks door says \"Change mission role\" (question open 0); Insights Saber:2b/0r/total2  Echo:3b/0r/total3 || →A: switched to Plan A || A-after-switch: formation VL/ACM/DS FOR RU[stiff,freak] ; 2A: BFM-5[bane,wolf]; question on arrival 0; Remarks door says \"Change mission role\" (question open 0); Insights Saber:1b/1r/total2  Echo:2b/1r/total3 || →B: switched to Plan B || B-after-switch: formation VL/ACM/DS FROM RU[stiff,freak] ; 2A: BFM-5[bane,wolf]; question on arrival 0; Remarks door says \"Change mission role\" (question open 0); Insights Saber:2b/0r/total2  Echo:3b/0r/total3 || →A: switched to Plan A || A-again: formation VL/ACM/DS FOR RU[stiff,freak] ; 2A: BFM-5[bane,wolf]; question on arrival 0; Remarks door says \"Change mission role\" (question open 0); Insights Saber:1b/1r/total2  Echo:2b/1r/total3 || after reload after-reload-A: formation VL/ACM/DS FOR RU[stiff,freak] ; 2A: BFM-5[bane,wolf]; question on arrival 0; Remarks door says \"Change mission role\" (question open 0); Insights Saber:1b/1r/total2  Echo:2b/1r/total3 || →B: switched to Plan B || after-reload-B: formation VL/ACM/DS FROM RU[stiff,freak] ; 2A: BFM-5[bane,wolf]; question on arrival 0; Remarks door says \"Change mission role\" (question open 0); Insights Saber:2b/0r/total2  Echo:3b/0r/total3",
+     "verdict": "CHECK",
+     "pics": [
+      "b-23-p305-dup.png",
+      "b-25-p305-planB.png",
+      "b-27-p305-B-current.png",
+      "b-29-p305-A-after-switch.png",
+      "b-31-p305-B-after-switch.png",
+      "b-33-p305-A-again.png",
+      "b-35-p305-after-reload-A.png",
+      "b-37-p305-after-reload-B.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "c:c": {
+   "at": "2026-10-05T16:43:59.824Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "P3-07(Board)",
+     "did": "Board: question opened on VL (ACM, \"DS FOR RU\"); edited RU's take-off (13:50), then VL's own take-off (12:45); pressed Red",
+     "saw": "question after opening \"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\" (finger reach: blue:ok red:ok later:ok); after RU's take-off edit (now 13:50) 1 question \"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\"; after VL's own take-off edit (now 12:45) 1 question \"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\"; after Red: 0 question left; Insights Saber:1b/1r/total2  Echo:2b/1r/total3",
+     "verdict": "PASS",
+     "pics": [
+      "c-01-p307-Board-open.png",
+      "c-02-p307-Board-after-edits.png",
+      "c-04-p307-Board-answered.png"
+     ]
+    },
+    {
+     "id": "P3-07(Week)",
+     "did": "Week: question opened on VL (ACM, \"DS FOR RU\"); edited RU's take-off (13:50), then VL's own take-off (12:45); pressed Red",
+     "saw": "question after opening \"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\" (finger reach: blue:ok red:ok later:ok); after RU's take-off edit (now 13:50) 1 question \"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\"; after VL's own take-off edit (now 12:45) 1 question \"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\"; after Red: 0 question left; Insights Saber:1b/1r/total2  Echo:2b/1r/total3",
+     "verdict": "PASS",
+     "pics": [
+      "c-05-p307-Week-open.png",
+      "c-06-p307-Week-after-edits.png",
+      "c-08-p307-Week-answered.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "d:d": {
+   "at": "2026-10-05T16:47:40.698Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "P3-08",
+     "did": "a question opened by an own edit, then each invalidating action in turn: wording change, Undo/Redo, day change, tracking Off/On, week change, formation delete, wave drag, version change, sign-out",
+     "saw": "[Board] question opened by own Remarks edit: question count 1 || [Board] cue wording changed to a wording with no cue: question count 0 || [Board] Undo with the question open (before 1; \"Undid: a change to the schedule\"): question count 0 || [Board] Redo afterwards (\"Redid: a change to the schedule\") — a delayed question?: question count 0 || [Board] day change Mon→Tue→Mon (question before 1; on day 1): question count 0 → 0 || [Board] tracking switched Off then On (question before 1): question count 0 → 0 || [Board] week change via the board's Calendar (week now 20/07/2026; question before 1); back to 13/07/2026: question count 0 → 0 || [Board] sign-out and sign in again (question before 1): question count 0 || [Board] manual door after sign-in says: question count \"Choose mission role\" → 0 || [Board] formation VL removed line by line (question before 1; after the first line 0 [\"VL:1\",\"RU:2\"]; after the second [\"RU:2\"]): question count 0 || [Board] Go 1 wave dragged below Go 2 (waves [\"WAVE 1\",\"WAVE 2\"] → [\"WAVE 2\",\"WAVE 1\"]; question before 1): question count 0 || [Board] version change: published question open (1) → Back to live copy: question count 0 || [Week] question opened by own Remarks edit: question count 1 || [Week] cue wording changed to no-cue wording: question count 0 || [Week] Undo (top bar) with the question open (before 1): question count 0 || [Week] Redo (top bar) — a delayed question?: question count 0 || [Week] tracking Off then On (question before 1): question count 0 → 0 || [Week] week change (to 06/07/2026; question before 1): question count 0 || [Week] sign-out and sign in (question before 1): question count 0",
+     "verdict": "CHECK",
+     "pics": [
+      "d-02-b-wording.png",
+      "d-03-b-undo.png",
+      "d-04-b-redo.png",
+      "d-05-b-day.png",
+      "d-06-b-tracking.png",
+      "d-07-b-weekchange.png",
+      "d-08-b-signout.png",
+      "d-09-b-delete.png",
+      "d-10-b-move.png",
+      "d-11-b-version.png",
+      "d-13-w-wording.png",
+      "d-14-w-undo.png",
+      "d-15-w-tracking.png",
+      "d-16-w-weekchange.png",
+      "d-17-w-signout.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "g:g": {
+   "at": "2026-10-05T16:46:41.831Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "P3-18",
+     "did": "admin A (ad): Red then Change → Blue on Mon VL; Undo/Redo ×2 on the board bar; Admin → Users gave Anvil a sign-in as admin; signed in as Anvil, answered Red; signed back in as A; looked at History and Undo; reload",
+     "saw": "first question 1; Insights after Red Saber:1b/1r/total2  Echo:2b/1r/total3  Ranger:1b/1r/total2; after Blue Saber:2b/0r/total2  Echo:3b/0r/total3  Ranger:2b/0r/total2. Changes window (A): ⠿ Changes · Monday 13/7 Not yet published ✕ New to you 0 All changes 4 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Flying · VL ACM · 4 00:46 Mission roleWorking copy Red → Blue Saber · 6/10 00:46 Mission roleWorking copy Unresolved → Red Saber · 6/10 00:46 #1 remarks1B: BFM-6 → DS FOR RU Saber · 6/10 00:46 MissionBFM → ACM Saber · 6/10 00:46 Tap a change to go to it — the window stays open.. Undo \"Undid: the mission role for VL — Blue\" → Saber:1b/1r/total2  Echo:2b/1r/total3  Ranger:1b/1r/total2; Redo \"Redid: the mission role for VL — Blue\" → Saber:2b/0r/total2  Echo:3b/0r/total3  Ranger:2b/0r/total2; Undo \"Undid: the mission role for VL — Blue\" → Saber:1b/1r/total2  Echo:2b/1r/total3  Ranger:1b/1r/total2; Redo \"Redid: the mission role for VL — Blue\" → Saber:2b/0r/total2  Echo:3b/0r/total3  Ranger:2b/0r/total2. Roles offered: [\"main|Member — own inputs, quals and bids\",\"admin|Admin — schedules and manages\"]. Signed in as Anvil badge \"ANVIL · ADMIN\"; Remarks door/question \"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\"; B's answer Red → Saber:1b/1r/total2  Echo:2b/1r/total3  Ranger:1b/1r/total2; Undo button for B (fresh session) {\"disabled\":false,\"title\":\"Undo — the mission role for VL — Red\"}. Changes window (B): ⠿ Changes · Monday 13/7 Not yet published ✕ New to you 0 All changes 9 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Flying · VL ACM · 5 00:46 Mission roleWorking copy Blue → Red Anvil · 6/10 00:46 Mission roleWorking copy Red → Blue Saber · 6/10 00:46 Mission roleWorking copy Unresolved → Red Saber · 6/10 00:46 #1 remarks1B: BFM-6 → DS FOR RU Saber · 6/10 00:46 MissionBFM → ACM Saber · 6/10 00:46 ▾ The day · 4 00:46 Redo — the mission role for VL — Blue Saber · 6/10 00:46 Undo — the mission role for VL — Blue Saber · 6/10 00:46 Redo — the mission role for VL — Blue Saber · 6/10 00:46 Undo — the mission role for VL — Blue Saber · 6/10 00:46 Tap a change to go to it — the window stays open.. Back as A: Undo button {\"disabled\":true,\"title\":\"Undo\"}; pressing Undo gave {\"present\":true,\"title\":\"Undo\",\"disabled\":true,\"pressed\":false}; Insights Saber:1b/1r/total2  Echo:2b/1r/total3  Ranger:1b/1r/total2; Changes window (A again): ⠿ Changes · Monday 13/7 Not yet published ✕ New to you 1 All changes 9 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Flying · VL ACM · 5 NEW 00:46 Mission roleWorking copy Blue → Red Anvil · 6/10 00:46 Mission roleWorking copy Red → Blue Saber · 6/10 00:46 Mission roleWorking copy Unresolved → Red Saber · 6/10 00:46 #1 remarks1B: BFM-6 → DS FOR RU Saber · 6/10 00:46 MissionBFM → ACM Saber · 6/10 00:46 ▾ The day · 4 00:46 Redo — the mission role for VL — Blue Saber · 6/10 00:46 Undo — the mission role for VL — Blue Saber · 6/10 00:46 Redo — the mission role for VL — Blue Saber · 6/10 00:46 Undo — the mission role for VL — Blue Saber · 6/10 00:46 Tap a change to go to it — the window stays open.. After reload: Saber:1b/1r/total2  Echo:2b/1r/total3  Ranger:1b/1r/total2",
+     "verdict": "CHECK",
+     "pics": [
+      "g-03-p318-A-blue.png",
+      "g-09-p318-giveadmin.png",
+      "g-10-p318-given.png",
+      "g-12-p318-B-red.png",
+      "g-15-p318-A-again.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "h:h": {
+   "at": "2026-10-05T16:48:42.268Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "P3-16",
+     "did": "38 flying people already in the demo week (many equal totals), tracking On: opened Insights through desktop direct (Edit Schedule, View-only Sched), Board desktop button, and at 390×844 the Edit Schedule ⋯ menu, the View-only Sched ⋯ menu and the Board ⋯ More; pressed Show all / Show less on each",
+     "saw": "desktop-edit: [32 SORTIES / 16 FORMATIONS / 38 AIRCREW FLYING / 36 13 WARNING] twelve=12 first=Relay 4,Echo 3,Hex 3 … last12=Ranger 2; button \"Show all 38 ↓\"; all=38; ordered(12)=true ordered(all)=true; after Show less 12 rows, button now \"Show all 38 ↓\"; close cross is what a finger lands on: true || desktop-view: [32 SORTIES / 16 FORMATIONS / 38 AIRCREW FLYING / 36 13 WARNING] twelve=12 first=Relay 4,Echo 3,Hex 3 … last12=Ranger 2; button \"Show all 38 ↓\"; all=38; ordered(12)=true ordered(all)=true; after Show less 12 rows, button now \"Show all 38 ↓\"; close cross is what a finger lands on: true || board-desktop: [32 SORTIES / 16 FORMATIONS / 38 AIRCREW FLYING / 36 13 WARNING] twelve=12 first=Relay 4,Echo 3,Hex 3 … last12=Ranger 2; button \"Show all 38 ↓\"; all=38; ordered(12)=true ordered(all)=true; after Show less 12 rows, button now \"Show all 38 ↓\"; close cross is what a finger lands on: true || phone-edit-menu: [32 SORTIES / 16 FORMATIONS / 38 AIRCREW FLYING / 36 13 WARNING] twelve=12 first=Relay 4,Echo 3,Hex 3 … last12=Ranger 2; button \"Show all 38 ↓\"; all=38; ordered(12)=true ordered(all)=true; after Show less 12 rows, button now \"Show all 38 ↓\"; close cross is what a finger lands on: true || phone-view-menu: [32 SORTIES / 16 FORMATIONS / 38 AIRCREW FLYING / 36 13 WARNING] twelve=12 first=Relay 4,Echo 3,Hex 3 … last12=Ranger 2; button \"Show all 38 ↓\"; all=38; ordered(12)=true ordered(all)=true; after Show less 12 rows, button now \"Show all 38 ↓\"; close cross is what a finger lands on: true || board-phone-more: [32 SORTIES / 16 FORMATIONS / 38 AIRCREW FLYING / 36 13 WARNING] twelve=12 first=Relay 4,Echo 3,Hex 3 … last12=Ranger 2; button \"Show all 38 ↓\"; all=38; ordered(12)=true ordered(all)=true; after Show less 12 rows, button now \"Show all 38 ↓\"; close cross is what a finger lands on: true || The first twelve are exactly the first twelve of the full list on every door: true. Same first-twelve list on every door: true; same full list: true; same tiles: true. Tied-total people in the full list (equal totals): [[\"1\",17],[\"2\",17],[\"3\",3],[\"4\",1]]",
+     "verdict": "PASS",
+     "pics": [
+      "h-01-p316-desktop-edit-12.png",
+      "h-03-p316-desktop-view-12.png",
+      "h-05-p316-board-desktop-12.png",
+      "h-07-p316-phone-edit-menu-12.png",
+      "h-09-p316-phone-view-menu-12.png",
+      "h-11-p316-board-phone-more-12.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "h07:h07": {
+   "at": "2026-10-05T16:48:42.277Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "H-07",
+     "did": "Logic: changed the nominal report (to 2h), the button words (to WALK WORDS) and the Track Blue/RED switch (On) one at a time; after each, top-bar Undo then Redo; then reload and sign in again",
+     "saw": "OK nominal report before T/O (-> 2h): Undo put back exactly that one value and the bar said \"Undid: a rule on the Logic page\"; Redo restored it (true) [{\"before\":{\"lead\":\"3h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false},\"mid\":{\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false},\"afterU\":{\"lead\":\"3h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false},\"afterR\":{\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false},\"undoTitle\":\"Undo — a rule on the Logic page\",\"toast\":[\"Undid: a rule on the Logic page\"],\"redoToast\":[\"Redid: a rule on the Logic page\"]}] || OK the '+ In-time / Rally' button's words (-> WALK WORDS): Undo put back exactly that one value and the bar said \"Undid: a rule on the Logic page\"; Redo restored it (true) [{\"before\":{\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false},\"mid\":{\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false},\"afterU\":{\"lead\":\"2h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false},\"afterR\":{\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false},\"undoTitle\":\"Undo — a rule on the Logic page\",\"toast\":[\"Undid: a rule on the Logic page\"],\"redoToast\":[\"Redid: a rule on the Logic page\"]}] || OK Track Blue/RED sorties switch (-> On): Undo put back exactly that one value and the bar said \"Undid: Blue/Red sortie tracking\"; Redo restored it (true) [{\"before\":{\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false},\"mid\":{\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true},\"afterU\":{\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":false},\"afterR\":{\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true},\"undoTitle\":\"Undo — Blue/Red sortie tracking\",\"toast\":[\"Undid: Blue/Red sortie tracking\"],\"redoToast\":[\"Redid: Blue/Red sortie tracking\"]}] || OK after a reload and fresh sign-in the three changed values are still there [{\"v0\":{\"lead\":\"3h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false},\"now\":{\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true},\"after\":{\"lead\":\"2h\",\"words\":\"WALK WORDS\",\"track\":true}}] || start {\"lead\":\"3h\",\"words\":\"IN TIME + WX/NOTAMS\",\"track\":false}",
+     "verdict": "PASS",
+     "pics": [
+      "h07-01-h07-lead-after-undo.png",
+      "h07-02-h07-lead-after-redo.png",
+      "h07-03-h07-words-after-undo.png",
+      "h07-04-h07-words-after-redo.png",
+      "h07-05-h07-track-after-undo.png",
+      "h07-06-h07-track-after-redo.png",
+      "h07-07-h07-reloaded.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "hq1b:hq1-board": {
+   "at": "2026-10-05T16:48:04.000Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "H-Q1(board, day 2)",
+     "did": "Logic tracking On; Scheduler Board, day 2: typed \"DS FOR RU\" in VL's Remarks (first wave) and clicked empty page (question under VL, not answered); clicked into the Remarks of the RU line (RED AIR); pressed the button under it; pressed Blue; Insights; VL's Remarks selected again",
+     "saw": "OK 1: after \"DS FOR RU\" in VL and a click on empty page one question opens, under VL [[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[26,620,1096,689],\"under\":\"fr:2.0.0.1\"}]] || OK 2: with VL's question open, RU's Remarks shows ONE \"Choose mission role\" button under RU, and VL's question is still there (one question, one button) [{\"q\":[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[26,406,1096,475],\"under\":\"fr:2.0.0.1\"}],\"b\":[{\"text\":\"Choose mission role\",\"box\":[964,630,1084,660],\"under\":\"fr:2.0.1.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}]}] || OK 3: pressing RU's button leaves exactly ONE question on screen, RU's [{\"q\":[{\"text\":\"Working copy RU: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[26,535,1096,604],\"under\":\"fr:2.0.1.1\"}],\"b\":[]}] || OK 4a: Blue answers RU only — no question left on screen [[]] || OK 4b: Insights: RU's crew bars split Blue/Red; VL's crew still total-only (VL unanswered) [{\"ru\":\"Torch:2b/0r/total2  Cutter:1b/0r/total1  Kraken:1b/0r/total1  Otter:1b/0r/total1\",\"vl\":\"Trident:-b/-r/total2  Relay:-b/-r/total4  Gambit:-b/-r/total2  Hex:-b/-r/total3\"}] || OK 5: VL's Remarks selected again: its button reads \"Choose mission role\" (not Change) [{\"b\":[{\"text\":\"Choose mission role\",\"box\":[964,630,1084,660],\"under\":\"fr:2.0.0.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}],\"q\":[]}] || LOG: formations {\"A\":{\"g\":0,\"f\":0,\"ai\":0,\"cs\":\"VL\",\"key\":\"fr:2.0.0.0\",\"crew\":[\"Trident\",\"Relay\",\"Gambit\",\"Hex\"],\"msn\":\"ACM\",\"rmk\":[\"1B: ACM-4\",\"2A: ACM ADD\"]},\"B\":{\"g\":0,\"f\":1,\"ai\":0,\"cs\":\"RU\",\"key\":\"fr:2.0.1.0\",\"crew\":[\"Torch\",\"Cutter\",\"Kraken\",\"Otter\"],\"msn\":\"ACM\",\"rmk\":[\"RED AIR\",\"2A: ACM-8\"]}} ;; empty click at {\"x\":40,\"y\":120,\"el\":\"sb-ph\"} ;; 1-VL-question: {\"q\":[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[26,620,1096,689],\"under\":\"fr:2.0.0.1\"}],\"b\":[],\"nUi\":1,\"active\":\"BODY\"} ;; 2-RU-box-selected: {\"q\":[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[26,406,1096,475],\"under\":\"fr:2.0.0.1\"}],\"b\":[{\"text\":\"Choose mission role\",\"box\":[964,630,1084,660],\"under\":\"fr:2.0.1.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}],\"nUi\":2,\"active\":\"fr:2.0.1.0\"} ;; 3-after-RU-button: {\"q\":[{\"text\":\"Working copy RU: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[26,535,1096,604],\"under\":\"fr:2.0.1.1\"}],\"b\":[],\"nUi\":1,\"active\":\"fr:2.0.1.0\"} ;; 4-after-Blue: {\"q\":[],\"b\":[],\"nUi\":0,\"active\":\"fr:2.0.1.0\"} ;; Insights: VL crew Trident:-b/-r/total2  Relay:-b/-r/total4  Gambit:-b/-r/total2  Hex:-b/-r/total3 || RU crew Torch:2b/0r/total2  Cutter:1b/0r/total1  Kraken:1b/0r/total1  Otter:1b/0r/total1 ;; 5-VL-box-selected-again: {\"q\":[],\"b\":[{\"text\":\"Choose mission role\",\"box\":[964,630,1084,660],\"under\":\"fr:2.0.0.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}],\"nUi\":1,\"active\":\"fr:2.0.0.0\"} ;; stored Remarks: VL [\"DS FOR RU\",\"2A: ACM ADD\"] RU [\"RED AIR\",\"2A: ACM-8\"]; chooseText \"Choose mission role\"",
+     "verdict": "PASS",
+     "pics": [
+      "hq1b-01-hq1-board-1-VL-question.png",
+      "hq1b-02-hq1-board-2-RU-box-selected.png",
+      "hq1b-03-hq1-board-3-after-RU-button.png",
+      "hq1b-04-hq1-board-4-after-Blue.png",
+      "hq1b-05-insights.png",
+      "hq1b-06-hq1-board-5-VL-box-selected-again.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "hq1p:hq1-phone": {
+   "at": "2026-10-05T16:48:43.031Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "H-Q1(phone 390x844, day 1)",
+     "did": "Logic tracking On; Edit Schedule week, day 1: typed \"DS FOR RU\" in VL's Remarks (first wave) and clicked empty page (question under VL, not answered); clicked into the Remarks of the RU line (RED AIR); pressed the button under it; pressed Blue; Insights; VL's Remarks selected again",
+     "saw": "OK 1: after \"DS FOR RU\" in VL and a click on empty page one question opens, under VL [[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[23,544,345,653],\"under\":\"fr:1.0.0.1\"}]] || OK 2: with VL's question open, RU's Remarks shows ONE \"Choose mission role\" button under RU, and VL's question is still there (one question, one button) [{\"q\":[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[23,-52,345,57],\"under\":\"fr:1.0.0.1\"}],\"b\":[{\"text\":\"Choose mission role\",\"box\":[213,539,333,569],\"under\":\"fr:1.1.1.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}]}] || OK 3: pressing RU's button leaves exactly ONE question on screen, RU's [{\"q\":[{\"text\":\"Working copy RU: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[23,529,345,638],\"under\":\"fr:1.1.1.1\"}],\"b\":[]}] || OK 4a: Blue answers RU only — no question left on screen [[]] || OK 4b: Insights: RU's crew bars split Blue/Red; VL's crew still total-only (VL unanswered) [{\"ru\":\"Rebel:1b/0r/total1  Cinder:1b/0r/total1  Vapor:1b/0r/total1  Marlin:1b/0r/total1\",\"vl\":\"Warden:-b/-r/total2  Basher:-b/-r/total2  Outlaw:-b/-r/total2  Hex:-b/-r/total3\"}] || OK 5: VL's Remarks selected again: its button reads \"Choose mission role\" (not Change) [{\"b\":[{\"text\":\"Choose mission role\",\"box\":[213,554,333,584],\"under\":\"fr:1.0.0.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}],\"q\":[]}] || LOG: formations {\"A\":{\"g\":0,\"f\":0,\"ai\":0,\"cs\":\"VL\",\"key\":\"fr:1.0.0.0\",\"crew\":[\"Warden\",\"Basher\",\"Outlaw\",\"Hex\"],\"msn\":\"BFM\",\"rmk\":[\"1B: BFM-3\",\"2A: BFM-6\"]},\"B\":{\"g\":1,\"f\":1,\"ai\":0,\"cs\":\"RU\",\"key\":\"fr:1.1.1.0\",\"crew\":[\"Rebel\",\"Cinder\",\"Vapor\",\"Marlin\"],\"msn\":\"ACM\",\"rmk\":[\"RED AIR\",\"2A: ACM-2\"]}} ;; empty click at {\"x\":71,\"y\":120,\"el\":\"nm\"} ;; 1-VL-question: {\"q\":[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[23,544,345,653],\"under\":\"fr:1.0.0.1\"}],\"b\":[],\"nUi\":1,\"active\":\"BODY\"} ;; 2-RU-box-selected: {\"q\":[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[23,-52,345,57],\"under\":\"fr:1.0.0.1\"}],\"b\":[{\"text\":\"Choose mission role\",\"box\":[213,539,333,569],\"under\":\"fr:1.1.1.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}],\"nUi\":2,\"active\":\"fr:1.1.1.0\"} ;; 3-after-RU-button: {\"q\":[{\"text\":\"Working copy RU: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[23,529,345,638],\"under\":\"fr:1.1.1.1\"}],\"b\":[],\"nUi\":1,\"active\":\"fr:1.1.1.0\"} ;; 4-after-Blue: {\"q\":[],\"b\":[],\"nUi\":0,\"active\":\"fr:1.1.1.0\"} ;; Insights: VL crew Warden:-b/-r/total2  Basher:-b/-r/total2  Outlaw:-b/-r/total2  Hex:-b/-r/total3 || RU crew Rebel:1b/0r/total1  Cinder:1b/0r/total1  Vapor:1b/0r/total1  Marlin:1b/0r/total1 ;; 5-VL-box-selected-again: {\"q\":[],\"b\":[{\"text\":\"Choose mission role\",\"box\":[213,554,333,584],\"under\":\"fr:1.0.0.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}],\"nUi\":1,\"active\":\"fr:1.0.0.0\"} ;; stored Remarks: VL [\"DS FOR RU\",\"2A: BFM-6\"] RU [\"RED AIR\",\"2A: ACM-2\"]; chooseText \"Choose mission role\"",
+     "verdict": "PASS",
+     "pics": [
+      "hq1p-01-hq1-phone-1-VL-question.png",
+      "hq1p-02-hq1-phone-2-RU-box-selected.png",
+      "hq1p-03-hq1-phone-3-after-RU-button.png",
+      "hq1p-04-hq1-phone-4-after-Blue.png",
+      "hq1p-05-insights.png",
+      "hq1p-06-hq1-phone-5-VL-box-selected-again.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "hq1w:hq1-week": {
+   "at": "2026-10-05T16:48:03.826Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "H-Q1(week, day 1)",
+     "did": "Logic tracking On; Edit Schedule week, day 1: typed \"DS FOR RU\" in VL's Remarks (first wave) and clicked empty page (question under VL, not answered); clicked into the Remarks of the RU line (RED AIR); pressed the button under it; pressed Blue; Insights; VL's Remarks selected again",
+     "saw": "OK 1: after \"DS FOR RU\" in VL and a click on empty page one question opens, under VL [[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[159,547,667,616],\"under\":\"fr:1.0.0.1\"}]] || OK 2: with VL's question open, RU's Remarks shows ONE \"Choose mission role\" button under RU, and VL's question is still there (one question, one button) [{\"q\":[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[159,45,667,114],\"under\":\"fr:1.0.0.1\"}],\"b\":[{\"text\":\"Choose mission role\",\"box\":[535,557,655,587],\"under\":\"fr:1.1.1.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}]}] || OK 3: pressing RU's button leaves exactly ONE question on screen, RU's [{\"q\":[{\"text\":\"Working copy RU: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[159,547,667,616],\"under\":\"fr:1.1.1.1\"}],\"b\":[]}] || OK 4a: Blue answers RU only — no question left on screen [[]] || OK 4b: Insights: RU's crew bars split Blue/Red; VL's crew still total-only (VL unanswered) [{\"ru\":\"Rebel:1b/0r/total1  Cinder:1b/0r/total1  Vapor:1b/0r/total1  Marlin:1b/0r/total1\",\"vl\":\"Warden:-b/-r/total2  Basher:-b/-r/total2  Outlaw:-b/-r/total2  Hex:-b/-r/total3\"}] || OK 5: VL's Remarks selected again: its button reads \"Choose mission role\" (not Change) [{\"b\":[{\"text\":\"Choose mission role\",\"box\":[535,557,655,587],\"under\":\"fr:1.0.0.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}],\"q\":[]}] || LOG: formations {\"A\":{\"g\":0,\"f\":0,\"ai\":0,\"cs\":\"VL\",\"key\":\"fr:1.0.0.0\",\"crew\":[\"Warden\",\"Basher\",\"Outlaw\",\"Hex\"],\"msn\":\"BFM\",\"rmk\":[\"1B: BFM-3\",\"2A: BFM-6\"]},\"B\":{\"g\":1,\"f\":1,\"ai\":0,\"cs\":\"RU\",\"key\":\"fr:1.1.1.0\",\"crew\":[\"Rebel\",\"Cinder\",\"Vapor\",\"Marlin\"],\"msn\":\"ACM\",\"rmk\":[\"RED AIR\",\"2A: ACM-2\"]}} ;; empty click at {\"x\":40,\"y\":120,\"el\":\"SPAN\"} ;; 1-VL-question: {\"q\":[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[159,547,667,616],\"under\":\"fr:1.0.0.1\"}],\"b\":[],\"nUi\":1,\"active\":\"BODY\"} ;; 2-RU-box-selected: {\"q\":[{\"text\":\"Working copy VL: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[159,45,667,114],\"under\":\"fr:1.0.0.1\"}],\"b\":[{\"text\":\"Choose mission role\",\"box\":[535,557,655,587],\"under\":\"fr:1.1.1.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}],\"nUi\":2,\"active\":\"fr:1.1.1.0\"} ;; 3-after-RU-button: {\"q\":[{\"text\":\"Working copy RU: Blue or Red? Mission or remarks mention DS or RED. Blue Red Later\",\"box\":[159,547,667,616],\"under\":\"fr:1.1.1.1\"}],\"b\":[],\"nUi\":1,\"active\":\"fr:1.1.1.0\"} ;; 4-after-Blue: {\"q\":[],\"b\":[],\"nUi\":0,\"active\":\"fr:1.1.1.0\"} ;; Insights: VL crew Warden:-b/-r/total2  Basher:-b/-r/total2  Outlaw:-b/-r/total2  Hex:-b/-r/total3 || RU crew Rebel:1b/0r/total1  Cinder:1b/0r/total1  Vapor:1b/0r/total1  Marlin:1b/0r/total1 ;; 5-VL-box-selected-again: {\"q\":[],\"b\":[{\"text\":\"Choose mission role\",\"box\":[535,557,655,587],\"under\":\"fr:1.0.0.1\",\"html\":\"<button type=\\\"button\\\" data-role-choose=\\\"\\\">Choose mission role</button>\"}],\"nUi\":1,\"active\":\"fr:1.0.0.0\"} ;; stored Remarks: VL [\"DS FOR RU\",\"2A: BFM-6\"] RU [\"RED AIR\",\"2A: ACM-2\"]; chooseText \"Choose mission role\"",
+     "verdict": "PASS",
+     "pics": [
+      "hq1w-01-hq1-week-1-VL-question.png",
+      "hq1w-02-hq1-week-2-RU-box-selected.png",
+      "hq1w-03-hq1-week-3-after-RU-button.png",
+      "hq1w-04-hq1-week-4-after-Blue.png",
+      "hq1w-05-insights.png",
+      "hq1w-06-hq1-week-5-VL-box-selected-again.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "j:j": {
+   "at": "2026-10-05T16:49:20.187Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "H-02",
+     "did": "Mon VL formation (ACM, \"DS FOR RU\") taken through unanswered (Later) → Red → Blue via the Remarks door; after each, the Board wave, Edit Schedule day and View-only Sched day were captured (HTML text and picture); then three formations Red/Blue/unanswered side by side; then Monday published and Export as PDF (print) read",
+     "saw": "board: unanswered 11621:e9abaea5/32760bd5, red 11621:e9abaea5/0378d661, blue 11621:e9abaea5/0378d661 → DOM identical true, picture identical false || week: unanswered 71181:5cfe16d5/40927d5b, red 71181:0db244f1/5e0d98a3, blue 71181:ead8b178/5e0d98a3 → DOM identical false, picture identical false || view: unanswered 30328:7a64f541/db8a5ae3, red 30328:acc3088c/db8a5ae3, blue 30328:2e9fba00/db8a5ae3 → DOM identical false, picture identical true || DIFFS: week unanswered→red: first difference at 987: «pup=\"dialog\" title=\"Every change on Monday and who made it\">2&nbsp;changes</button><button class=\"dinfobtn\" data-dayinfo=\"0\" title=\"Monday —» vs «pup=\"dialog\" title=\"Every change on Monday and who made it\">3&nbsp;changes</button><button class=\"dinfobtn\" data-dayinfo=\"0\" title=\"Monday —» || week red→blue: first difference at 987: «pup=\"dialog\" title=\"Every change on Monday and who made it\">3&nbsp;changes</button><button class=\"dinfobtn\" data-dayinfo=\"0\" title=\"Monday —» vs «pup=\"dialog\" title=\"Every change on Monday and who made it\">4&nbsp;changes</button><button class=\"dinfobtn\" data-dayinfo=\"0\" title=\"Monday —» || view unanswered→red: first difference at 623: «pup=\"dialog\" title=\"Every change on Monday and who made it\">2&nbsp;changes</button><button class=\"dinfobtn\" data-dayinfo=\"0\" title=\"Monday —» vs «pup=\"dialog\" title=\"Every change on Monday and who made it\">3&nbsp;changes</button><button class=\"dinfobtn\" data-dayinfo=\"0\" title=\"Monday —» || view red→blue: first difference at 623: «pup=\"dialog\" title=\"Every change on Monday and who made it\">3&nbsp;changes</button><button class=\"dinfobtn\" data-dayinfo=\"0\" title=\"Monday —» vs «pup=\"dialog\" title=\"Every change on Monday and who made it\">4&nbsp;changes</button><button class=\"dinfobtn\" data-dayinfo=\"0\" title=\"Monday —» || coloured/role-looking classes on the week and View-only Sched: {\"#eWeek\":[\"role q-ins\",\"puck sm warn hard boxred\",\"role q-ins\",\"role q-ins\",\"puck sm warn hard boxred\",\"role q-ins\",\"role q-ocu\",\"role q-b\"],\"#vWeek\":[\"role q-ins\",\"puck sm warn hard boxred\",\"role q-ins\",\"role q-ins\",\"puck sm warn hard boxred\",\"role q-ins\",\"role q-ocu\",\"role q-b\"]} || published 2026-07-13#0; print sheet captured (14825 chars, 3250 text chars); words Blue/Red/role in it (apart from the typed \"RED AIR\"): []; colour/role attributes in its HTML: false",
+     "verdict": "CHECK",
+     "pics": [
+      "j-01-h02-board-unanswered.png",
+      "j-02-h02-week-unanswered.png",
+      "j-03-h02-view-unanswered.png",
+      "j-04-h02-board-red.png",
+      "j-05-h02-week-red.png",
+      "j-06-h02-view-red.png",
+      "j-07-h02-board-blue.png",
+      "j-08-h02-week-blue.png",
+      "j-09-h02-view-blue.png",
+      "j-10-h02-three-board.png",
+      "j-11-h02-three-week.png",
+      "j-12-h02-three-view.png",
+      "j-13-h02-print-preview.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "j2:j2": {
+   "at": "2026-10-05T16:53:41.984Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "H-02",
+     "did": "Mon VL (ACM, \"DS FOR RU\") unanswered / Red / Blue; whole-viewport pictures of the Board, Edit Schedule and View-only Sched taken from a parked pointer and compared pixel by pixel; then three formations Red / Blue / unanswered; then Monday published and Export as PDF read",
+     "saw": "NOT OK board: nothing but the day's change count differs in the markup (unanswered / Red / Blue) || OK week: nothing but the day's change count differs in the markup (unanswered / Red / Blue) || OK view: nothing but the day's change count differs in the markup (unanswered / Red / Blue) || OK the printed sheet carries no Blue/Red/role words or attributes [print sheet captured (14825 chars); words Blue/Red/role in it apart from the typed \"RED AIR\": []; role attributes in its HTML: false] || PIXELS: board 1-unanswered vs 2-red: 5 px differ in box [797,434,829,811] (the element there now: DIV.acrow \"Gambit C Dash C\") || board 2-red vs 3-blue: 0 px differ || board 1-unanswered vs 3-blue: 5 px differ in box [797,434,829,811] (the element there now: DIV.acrow \"Gambit C Dash C\") || week 1-unanswered vs 2-red: 10 px differ in box [601,165,602,795] (the element there now: I. \"BFM\") || week 2-red vs 3-blue: 0 px differ || week 1-unanswered vs 3-blue: 10 px differ in box [601,165,602,795] (the element there now: I. \"BFM\") || view 1-unanswered vs 2-red: 0 px differ || view 2-red vs 3-blue: 0 px differ || view 1-unanswered vs 3-blue: 0 px differ || board: the surface's HTML apart from the day's \"N changes\" count is identical in the three states: false ;; board 1-unanswered->2-red first markup difference at 2918: �class=\"bi\">⇅</span><span class=\"bl\"> Sort all</span></button></span><button class=\"abtn hbtn\" id=\"sbUndo\" title=\"Undo — a change to the schedule\"><span class=\"bi\">↶</span><span class=\"bl\"> Undo</span></button><button cla� vs �class=\"bi\">⇅</span><span class=\"bl\"> Sort all</span></button></span><button class=\"abtn hbtn\" id=\"sbUndo\" title=\"Undo — the mission role for VL — Red\"><span class=\"bi\">↶</span><span class=\"bl\"> Undo</span></button><butto� ;; board 2-red->3-blue first markup difference at 2944: �lass=\"bl\"> Sort all</span></button></span><button class=\"abtn hbtn\" id=\"sbUndo\" title=\"Undo — the mission role for VL — Red\"><span class=\"bi\">↶</span><span class=\"bl\"> Undo</span></button><button class=\"abtn hbtn\" id=\"sb� vs �lass=\"bl\"> Sort all</span></button></span><button class=\"abtn hbtn\" id=\"sbUndo\" title=\"Undo — the mission role for VL — Blue\"><span class=\"bi\">↶</span><span class=\"bl\"> Undo</span></button><button class=\"abtn hbtn\" id=\"s� ;; week: the surface's HTML apart from the day's \"N changes\" count is identical in the three states: true ;; view: the surface's HTML apart from the day's \"N changes\" count is identical in the three states: true ;; print sheet captured (14825 chars); words Blue/Red/role in it apart from the typed \"RED AIR\": []; role attributes in its HTML: false",
+     "verdict": "FAIL",
+     "pics": [
+      "j2-01-h02b-board-1-unanswered.png",
+      "j2-02-h02b-week-1-unanswered.png",
+      "j2-03-h02b-view-1-unanswered.png",
+      "j2-04-h02b-board-2-red.png",
+      "j2-05-h02b-week-2-red.png",
+      "j2-06-h02b-view-2-red.png",
+      "j2-07-h02b-board-3-blue.png",
+      "j2-08-h02b-week-3-blue.png",
+      "j2-09-h02b-view-3-blue.png",
+      "j2-10-h02b-three-board.png",
+      "j2-11-h02b-three-week.png",
+      "j2-12-h02b-three-view.png",
+      "j2-13-h02b-print-preview.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "k:k": {
+   "at": "2026-10-05T16:51:00.994Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "H-03",
+     "did": "admin: tracking On, one formation unanswered (\"DS FOR RU\"), one answered Red; sign out; member (us) files a timed request from Inputs, opens View-only Sched, Inputs and Leave War doors to Insights on desktop and the phone ⋯ menu",
+     "saw": "admin: Remarks door on the unanswered formation says \"Choose mission role\"; Insights Relay:3b/1r/4,Echo:-b/-r/3,Hex:3b/0r/3,Static:-b/-r/3,Ace:-b/-r/2,Basher:2b/0r/2 … (38 people) [32 SORTIES/16 FORMATIONS/38 AIRCREW FLYING/36 13 WARNING] || member signed in; visible pages: viewsched,inputs,quals,logic,leavewar,tracker,help || member filed a Meeting request 10:00–11:00 on Mon 13 Jul (id \"imuvhkl896bujo8\"); role UI on the Inputs page: {\"ui\":0,\"choose\":0,\"side\":0,\"q\":0,\"remarksDoor\":0,\"text\":false} || View-only Sched, Monday: role UI before clicking {\"ui\":0,\"choose\":0,\"side\":0,\"q\":0,\"remarksDoor\":0,\"text\":false}; after clicking the Remarks text of the unanswered formation and typing: clicked and typed; text now \"DS FOR RU\"; {\"ui\":0,\"choose\":0,\"side\":0,\"q\":0,\"remarksDoor\":0,\"text\":false} || View-only Sched (desktop #insightBtn): Relay:3b/1r/4,Echo:-b/-r/3,Hex:3b/0r/3,Static:-b/-r/3,Ace:-b/-r/2,Basher:2b/0r/2 … (38) [32 SORTIES/16 FORMATIONS/38 AIRCREW FLYING/36 13 WARNING] same as admin: true; role UI {\"ui\":0,\"choose\":0,\"side\":0,\"q\":0,\"remarksDoor\":0,\"text\":false} | Inputs (desktop #insightBtn): Relay:3b/1r/4,Echo:-b/-r/3,Hex:3b/0r/3,Static:-b/-r/3,Ace:-b/-r/2,Basher:2b/0r/2 … (38) [32 SORTIES/16 FORMATIONS/38 AIRCREW FLYING/36 13 WARNING] same as admin: true; role UI {\"ui\":0,\"choose\":0,\"side\":0,\"q\":0,\"remarksDoor\":0,\"text\":false} | Leave War (desktop #insightBtn): Relay:3b/1r/4,Echo:-b/-r/3,Hex:3b/0r/3,Static:-b/-r/3,Ace:-b/-r/2,Basher:2b/0r/2 … (38) [32 SORTIES/16 FORMATIONS/38 AIRCREW FLYING/36 13 WARNING] same as admin: true; role UI {\"ui\":0,\"choose\":0,\"side\":0,\"q\":0,\"remarksDoor\":0,\"text\":false} || phone 390×844 View-only Sched ⋯ → Insights: Relay:3b/1r/4,Echo:-b/-r/3,Hex:3b/0r/3,Static:-b/-r/3,Ace:-b/-r/2,Basher:2b/0r/2 … (38) [32 SORTIES/16 FORMATIONS/38 AIRCREW FLYING/36 13 WARNING] same as admin (first twelve true; after Show all true and tiles true); role UI {\"ui\":0,\"choose\":0,\"side\":0,\"q\":0,\"remarksDoor\":0,\"text\":false}; drawer has an Insights item: 0",
+     "verdict": "CHECK",
+     "pics": [
+      "k-02-h03-inputs.png",
+      "k-03-h03-viewsched.png",
+      "k-07-h03-phone-view.png",
+      "k-08-h03-phone-insights.png",
+      "k-09-h03-phone-drawer.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "r01:r01": {
+   "at": "2026-10-05T16:44:51.627Z",
+   "base": "http://localhost:4232",
+   "table": [
+    {
+     "id": "R-01",
+     "did": "fresh world, nothing changed: stored week rows read, reload, read; Logic tracking On; Edit Schedule Tue 14 Jul, the RU line whose Remarks reads RED AIR: clicked into its Remarks, Choose mission role -> Red; Insights bars; reload; bars and button; week of 20 Jul and back; stored week rows again",
+     "saw": "OK (a) no day row of either week is stored by merely opening and reloading [{\"before\":[],\"after\":[]}] || OK (b) before the answer the crew had total-only bars and the button read \"Choose mission role\" [{\"bars\":\"Rebel:-b/-r/total1  Cinder:-b/-r/total1  Vapor:-b/-r/total1  Marlin:-b/-r/total1\",\"btn\":{\"btn\":\"Choose mission role\",\"q\":0,\"pic\":\"r01-02-r01-before-box.png\"}}] || OK (b) after Red the crew bars are split (blue/red counts shown) and the button reads \"Change mission role\" [{\"bars\":\"Rebel:0b/1r/total1  Cinder:0b/1r/total1  Vapor:0b/1r/total1  Marlin:0b/1r/total1\",\"btn\":{\"btn\":\"Change mission role\",\"q\":0,\"pic\":\"r01-06-r01-after-answer-box.png\"}}] || OK (b) after the reload the bars stay split and the button reads \"Change mission role\" [{\"bars\":\"Rebel:0b/1r/total1  Cinder:0b/1r/total1  Vapor:0b/1r/total1  Marlin:0b/1r/total1\",\"btn\":{\"btn\":\"Change mission role\",\"q\":0,\"pic\":\"r01-08-r01-after-reload-box.png\"}}] || OK (c) after the week of 20 Jul and back the bars stay split and the button reads \"Change mission role\" [{\"weeks\":[\"20/07/2026\",\"13/07/2026\"],\"bars\":\"Rebel:0b/1r/total1  Cinder:0b/1r/total1  Vapor:0b/1r/total1  Marlin:0b/1r/total1\",\"btn\":{\"btn\":\"Change mission role\",\"q\":0,\"pic\":\"r01-11-r01-after-week-switch-box.png\"}}] || OK (d) Tuesday's own day row is still not stored (an answer writes no day) [{\"weekKeys\":[],\"otherNewKeys\":[\"changes/cmuvhci38fg2jpk-0\",\"changes/cmuvhci38fg2jpk-1\",\"settings/elog:muvhcfn3no6o.000001\",\"settings/insights\",\"settings/missionrole:%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-14%22%2C%22rs130720261xd%22%2C%22%5B1%2C%5C%22ACM%5C%22%2C%5B%5C%22RED%20AIR%5C%22%5D%5D%22%5D\"]}] || LOG: (a) before reload: week keys [] (all keys 200) ;; after reload+sign-in: week keys [] (all keys 200) ;; target {\"g\":1,\"f\":1,\"cs\":\"RU\",\"msn\":\"ACM\",\"key\":\"fr:1.1.1.0\",\"people\":[\"Rebel\",\"Cinder\",\"Vapor\",\"Marlin\"]} ;; bars before-answer: Rebel:-b/-r/total1  Cinder:-b/-r/total1  Vapor:-b/-r/total1  Marlin:-b/-r/total1 ;; button before: {\"btn\":\"Choose mission role\",\"q\":0,\"pic\":\"r01-02-r01-before-box.png\"} ;; pressed \"Choose mission role\" -> Red. keys written by the answer: [\"changes/cmuvhci38fg2jpk-1\",\"settings/elog:muvhcfn3no6o.000001\",\"settings/missionrole:%5B1%2C%2213%2F07%2F2026%22%2C%222026-07-14%22%2C%22rs130720261xd%22%2C%22%5B1%2C%5C%22ACM%5C%22%2C%5B%5C%22RED%20AIR%5C%22%5D%5D%22%5D\"]; week keys now [] ;; bars after-answer: Rebel:0b/1r/total1  Cinder:0b/1r/total1  Vapor:0b/1r/total1  Marlin:0b/1r/total1 ;; button after-answer: {\"btn\":\"Change mission role\",\"q\":0,\"pic\":\"r01-06-r01-after-answer-box.png\"} ;; bars after-reload: Rebel:0b/1r/total1  Cinder:0b/1r/total1  Vapor:0b/1r/total1  Marlin:0b/1r/total1 ;; button after-reload: {\"btn\":\"Change mission role\",\"q\":0,\"pic\":\"r01-08-r01-after-reload-box.png\"} ;; bars after-week-switch: Rebel:0b/1r/total1  Cinder:0b/1r/total1  Vapor:0b/1r/total1  Marlin:0b/1r/total1 ;; button after-week-switch: {\"btn\":\"Change mission role\",\"q\":0,\"pic\":\"r01-11-r01-after-week-switch-box.png\"} ;; weeks: 20/07/2026 then 13/07/2026 ;; (d) week keys at the end []",
+     "verdict": "PASS",
+     "pics": [
+      "r01-01-insights.png",
+      "r01-02-r01-before-box.png",
+      "r01-03-r01-1-choose.png",
+      "r01-04-r01-2-question.png",
+      "r01-05-insights.png",
+      "r01-06-r01-after-answer-box.png",
+      "r01-07-insights.png",
+      "r01-08-r01-after-reload-box.png",
+      "r01-09-r01-3-next-week.png",
+      "r01-10-insights.png",
+      "r01-11-r01-after-week-switch-box.png"
+     ]
+    }
+   ],
+   "errors": []
+  },
+  "x1:x1-x1-dk": {
+   "at": "2026-10-05T16:49:56.168Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-01 (week, desk)",
+     "did": "tracking On; Friday ACM formation; typed \"DS for RU\" into Remarks, Tab, typed \"X1\" at once (edit week)",
+     "saw": "✓ Blue/Red tracking switched On on Logic · ✓ a Friday flying wave made on the board (crew bane/freak) · ✓ no question before the Remarks edit (after Mission ACM alone) [questions: 0] · ✓ Remarks saved as typed: \"DS for RU\" · ✓ exactly ONE question appeared [questions: 1 {\"top\":512,\"bottom\":581,\"left\":159,\"w\":508}] · ✓ the question sits below the Remarks row of the formation [{\"q\":{\"top\":512,\"bottom\":581,\"left\":159,\"w\":508},\"remarks\":{\"top\":444,\"bottom\":457}}] · ✓ typing stayed in the destination box (the next box after Remarks) — \"X1\" went there [{\"k\":\"bombs:4.0.0.0\",\"text\":\"X1\",\"visible\":true,\"box\":[515,459,34,12],\"caret\":true}] · ✓ the first keystroke was not consumed (text is exactly X1) [\"X1\"]",
+     "verdict": "PASS",
+     "pics": [
+      "x1-001-x01-week-desk.png"
+     ]
+    },
+    {
+     "id": "X-01 (board, desk)",
+     "did": "tracking On; Friday ACM formation; typed \"DS for RU\" into Remarks, Tab, typed \"X1\" at once (board)",
+     "saw": "✓ Blue/Red tracking switched On on Logic · ✓ a Friday flying wave made on the board (crew bane/freak) · ✓ no question before the Remarks edit (after Mission ACM alone) [questions: 0] · ✓ Remarks saved as typed: \"DS for RU\" · ✓ exactly ONE question appeared [questions: 1 {\"top\":567,\"bottom\":636,\"left\":26,\"w\":1070}] · ✓ the question sits below the Remarks row of the formation [{\"q\":{\"top\":567,\"bottom\":636,\"left\":26,\"w\":1070},\"remarks\":{\"top\":491,\"bottom\":515}}] · ✓ typing stayed in the destination box (the next box after Remarks) — \"X1\" went there [{\"k\":\"bombs:4.0.0.0\",\"text\":\"X1\",\"visible\":true,\"box\":[791,517,34,12],\"caret\":true}] · ✓ the first keystroke was not consumed (text is exactly X1) [\"X1\"]",
+     "verdict": "PASS",
+     "pics": [
+      "x1-002-x01-board-desk.png"
+     ]
+    },
+    {
+     "id": "X-01 (board, phone)",
+     "did": "tracking On; Friday ACM formation; typed \"DS for RU\" into Remarks, Tab, typed \"X1\" at once (board)",
+     "saw": "✓ Blue/Red tracking switched On on Logic · ✓ a Friday flying wave made on the board (crew bane/freak) · ✓ no question before the Remarks edit (after Mission ACM alone) [questions: 0] · ✓ Remarks saved as typed: \"DS for RU\" · ✓ exactly ONE question appeared [questions: 1 {\"top\":550,\"bottom\":659,\"left\":26,\"w\":324}] · ✓ the question sits below the Remarks row of the formation [{\"q\":{\"top\":550,\"bottom\":659,\"left\":26,\"w\":324},\"remarks\":{\"top\":447,\"bottom\":471}}] · ✓ typing stayed in the destination box (the next box after Remarks) — \"X1\" went there [{\"k\":\"bombs:4.0.0.0\",\"text\":\"X1\",\"visible\":true,\"box\":[212,473,34,12],\"caret\":true}] · ✓ the first keystroke was not consumed (text is exactly X1) [\"X1\"]",
+     "verdict": "PASS",
+     "pics": [
+      "x1-003-x01-board-phone.png"
+     ]
+    },
+    {
+     "id": "X-04 (week, desk)",
+     "did": "storage refusing from the first commit; Tab through callsign → mission → brief (typed slowly so the band lands mid-typing); Retry; reload (week)",
+     "saw": "✓ Friday wave made · ✓ the three edits are all in the schedule (cs, mission, brief) [{\"cs\":\"ABX\",\"msn\":\"BFM\",\"br\":\"09:30\"}] · ✓ each Tab moved focus to the next box, and it stayed visible (focus trace) [[{\"edit\":\"cs\",\"then\":\"ff:4.0.0.msn\",\"visible\":true,\"bandUp\":true},{\"edit\":\"msn\",\"then\":\"ff:4.0.0.br\",\"visible\":true,\"bandUp\":true},{\"edit\":\"br\",\"then\":\"ff:4.0.0] · ✓ the warning band came up during the sequence [band during trace: [true,true,true]] · ✓ Retry with storage restored saved: the warning went · ✓ after a reload and sign-in, all three values are still there [{\"cs\":\"ABX\",\"msn\":\"BFM\",\"br\":\"09:30\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x1-004-x04-week-failed.png",
+      "x1-005-x04-week-reloaded.png"
+     ]
+    },
+    {
+     "id": "X-04 (board, desk)",
+     "did": "storage refusing from the first commit; Tab through callsign → mission → brief (typed slowly so the band lands mid-typing); Retry; reload (board)",
+     "saw": "✓ Friday wave made · ✓ the three edits are all in the schedule (cs, mission, brief) [{\"cs\":\"ABX\",\"msn\":\"BFM\",\"br\":\"09:30\"}] · ✓ each Tab moved focus to the next box, and it stayed visible (focus trace) [[{\"edit\":\"cs\",\"then\":\"ff:4.0.0.msn\",\"visible\":true,\"bandUp\":true},{\"edit\":\"msn\",\"then\":\"ff:4.0.0.br\",\"visible\":true,\"bandUp\":true},{\"edit\":\"br\",\"then\":\"ff:4.0.0] · ✓ the warning band came up during the sequence [band during trace: [true,true,true]] · ✓ Retry with storage restored saved: the warning went · ✓ after a reload and sign-in, all three values are still there [{\"cs\":\"ABX\",\"msn\":\"BFM\",\"br\":\"09:30\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "x1-006-x04-board-failed.png",
+      "x1-007-x04-board-reloaded.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "x1-001-x01-week-desk.png",
+    "x1-002-x01-board-desk.png",
+    "x1-003-x01-board-phone.png",
+    "x1-004-x04-week-failed.png",
+    "x1-005-x04-week-reloaded.png",
+    "x1-006-x04-board-failed.png",
+    "x1-007-x04-board-reloaded.png"
+   ]
+  },
+  "x2:x2-x2-dk": {
+   "at": "2026-10-05T16:51:13.228Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-03 (board, desk)",
+     "did": "Friday published with a red Rally warning; Rally corrected on the working copy (pending); on the latest-published view answered Red; pending, sign-offs and Insights read before/after",
+     "saw": "✓ Friday published (all four signed): {\"label\":\"Publish day\",\"ver\":\"2026-07-17#0\"} [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ the published day carries a red Rally/brief warning [[\"hard VL: rally 10:00 is later than suggested brief 09:40.\"]] · ✓ a timing correction is pending on the working copy (1 pending) [{\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGN] · ✓ the question named the published context: \"Published · Original VL: Blue or Red? Mission or remarks mention DS or RED. Blue\" [Published · Original\nVL: Blue or Red?\n\nMission or remarks mention DS or RED.\n\nBlue\nRed\nLater] · ✓ programme bytes and the book of versions / sign-offs / pending are unchanged by the answer [days same true, book same true] · ✓ the timing correction is STILL pending (count 1 → 1) and the four sign-offs are untouched [{\"before\":{\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"sig] · ✓ Insights changed at once: the formation’s crew went from a total-only bar to a Blue/Red split [{\"before\":\"Ranger 3\",\"after\":\"Ranger 2 1 3\",\"echoBefore\":\"Echo 4\",\"echoAfter\":\"Echo 3 1 4\"}] · ✓ no amendment was made: one extra command only, a role-answer line [seq 20 → 21; role lines 0 → 1] · ✓ the working copy’s Rally is still 09:30 (not published by the answer) [[\"08:00 IN TIME\",\"09:30 RALLY\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "x2-001-x03-before.png",
+      "x2-002-x03-after-answer.png"
+     ]
+    },
+    {
+     "id": "X-05 (board, desk)",
+     "did": "published conditional formation; answered Red on the latest-published view with storage refusing; Retry failing twice; then restored + Retry; reload",
+     "saw": "✓ Friday published with four sign-offs [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ answered Red on the published view while storage refuses: the board shows the warning band [question: Published · Original VL: Blue or Red? Mission or remarks men] · ✓ the programme / book are unchanged and one role-history line exists after the answer [role lines 0 → 1] · ✓ Retry while still failing: the warning stays, nothing duplicated (role lines 1, commands 16 → 16) [] · ✓ Retry with storage restored saved: the warning went · ✓ after the successful Retry: programme, book and sign-offs as before; the amendment count (N pending) unchanged (0 → 0); exactly one role-history line (the day’s changes chip reads \"13 changes\" → \"14 changes\": the answer’s own history line) [{\"roleLines\":[0,1],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"}] · ✓ Insights shows the answer before the reload [\"Ranger 2 1 3\"] · ✓ after a reload and sign-in the answer is still there: the button reads \"Change mission role\" (not \"Choose\") [Change mission role] · ✓ Insights after the reload still shows the Red answer [\"Ranger 2 1 3\"] · ✓ exactly one role-history line after the reload [lines 1]",
+     "verdict": "PASS",
+     "pics": [
+      "x2-003-x05-failed.png",
+      "x2-004-x05-saved.png",
+      "x2-005-x05-reloaded.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "x2-001-x03-before.png",
+    "x2-002-x03-after-answer.png",
+    "x2-003-x05-failed.png",
+    "x2-004-x05-saved.png",
+    "x2-005-x05-reloaded.png"
+   ]
+  },
+  "x3:x3-x3-dk": {
+   "at": "2026-10-05T16:51:07.300Z",
+   "base": "http://localhost:4232",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-09 (desk)",
+     "did": "Saber: one Blue-answered flight, one exact-DS Red flight, then an SC MAIN shift; Insights read after each of: SC added, report earlier, answer flipped",
+     "saw": "✓ Saber (stiff) put in a VL flight 12:00–13:00 and an RU flight 15:00–16:00 (stiff/freak/stiff/pump) · ✓ VL (ACM + \"DS FOR RU\") asked once and answered Blue; RU Mission exactly \"DS\" asked nothing [q after VL 1, after RU 0] · ✓ SC MAIN put (stiff). Adding the SC MAIN shift: hours 24h10 → 27h10, sorties 4 → 4 (SC adds hours, not sorties) [Saber: start {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"24h10\",\"mins\":1450} · +SC MAIN {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"27h10\",\"mins\":1630} · report e] · ✓ Reporting time moved an hour earlier (line was \"09:00H: IN TIME + WX/NOTAMS\"): hours 27h10 → 28h10; sortie count 4 → 4 and the split (3/1 → 3/1) unchanged [Saber: start {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"24h10\",\"mins\":1450} · +SC MAIN {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"27h10\",\"mins\":1630} · report e] · ✓ Only the role answer changed (Blue → Red): split 3/1 → 2/2; hours 28h10 → 28h10 and sorties 4 → 4 unchanged [Saber: start {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"24h10\",\"mins\":1450} · +SC MAIN {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"27h10\",\"mins\":1630} · report e]",
+     "verdict": "PASS",
+     "pics": [
+      "x3-001-x09-insights-final.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "x3-001-x09-insights-final.png"
+   ]
+  }
+ }
+}

@@ -1,0 +1,465 @@
+{
+ "rows": [
+  {
+   "id": "L-09",
+   "part": "medclash-desk",
+   "did": "Inputs form: {\"person\":\"Grit\",\"type\":\"ATT B\",\"iso\":\"2026-07-16\",\"toIso\":\"2026-07-19\",\"remarks\":\"L09 clash\"}; pressed at (531,333) on header text \"ATT B — Grit, Jul 16 – Jul 19 ✕\", dragged to surround (250,153), released",
+   "saw": "window \"ATT B — Grit, Jul 16 – Jul 19 ✕\"; box [500,306,440,289]; after drag-out window CLOSED; (plain click not tried - already closed); INPUTS now 46",
+   "verdict": "FAIL (the drag closed the window)",
+   "pics": [
+    "dk-01-L09r2-desk-medclash-open.png",
+    "dk-02-L09r2-desk-medclash-afterdrag.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "medclash-deskclick",
+   "did": "Inputs form: {\"person\":\"Grit\",\"type\":\"ATT B\",\"iso\":\"2026-07-16\",\"toIso\":\"2026-07-19\",\"remarks\":\"L09 clash\"}; plain click on the dark surround only (no drag)",
+   "saw": "window \"ATT B — Grit, Jul 16 – Jul 19 ✕\"; box [500,306,440,289]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "RECORD (plain click on the surround: window closed)",
+   "pics": [
+    "dk-07-L09c-desk-medclash-open.png",
+    "dk-08-L09c-desk-medclash-afterdrag.png",
+    "dk-09-L09c-desk-medclash-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "medclash-phone",
+   "did": "Inputs form: {\"person\":\"Grit\",\"type\":\"ATT B\",\"iso\":\"2026-07-16\",\"toIso\":\"2026-07-19\",\"remarks\":\"L09 clash\"}; pressed at (53,297) on header text \"ATT B — Grit, Jul 16 – Jul 19 ✕\", dragged to surround (379,135), released",
+   "saw": "window \"ATT B — Grit, Jul 16 – Jul 19 ✕\"; box [22,270,346,305]; after drag-out window CLOSED; (plain click not tried - already closed); INPUTS now 46",
+   "verdict": "FAIL (the drag closed the window)",
+   "pics": [
+    "ph-05-L09p-phone-medclash-open.png",
+    "ph-06-L09p-phone-medclash-afterdrag.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "nodoc-desk",
+   "did": "Inputs form: {\"person\":\"Basher\",\"type\":\"ATT B\",\"iso\":\"2026-07-21\",\"remarks\":\"L09 nodoc\"}; pressed at (531,386) on header text \"No medical document — Basher, ATT B ✕\", dragged to surround (250,180), released",
+   "saw": "window \"No medical document — Basher, ATT B ✕\"; box [500,359,440,182]; after drag-out window CLOSED; (plain click not tried - already closed); INPUTS now 46",
+   "verdict": "FAIL (the drag closed the window)",
+   "pics": [
+    "dk-05-L09r2-desk-nodoc-open.png",
+    "dk-06-L09r2-desk-nodoc-afterdrag.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "nodoc-deskclick",
+   "did": "Inputs form: {\"person\":\"Basher\",\"type\":\"ATT B\",\"iso\":\"2026-07-21\",\"remarks\":\"L09 nodoc\"}; plain click on the dark surround only (no drag)",
+   "saw": "window \"No medical document — Basher, ATT B ✕\"; box [500,359,440,182]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "RECORD (plain click on the surround: window closed)",
+   "pics": [
+    "dk-10-L09c-desk-nodoc-open.png",
+    "dk-11-L09c-desk-nodoc-afterdrag.png",
+    "dk-12-L09c-desk-nodoc-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "nodoc-phone",
+   "did": "Inputs form: {\"person\":\"Basher\",\"type\":\"ATT B\",\"iso\":\"2026-07-21\",\"remarks\":\"L09 nodoc\"}; pressed at (53,358) on header text \"No medical document — Basher, ATT B ✕\", dragged to surround (379,166), released",
+   "saw": "window \"No medical document — Basher, ATT B ✕\"; box [22,331,346,182]; after drag-out window CLOSED; (plain click not tried - already closed); INPUTS now 46",
+   "verdict": "FAIL (the drag closed the window)",
+   "pics": [
+    "ph-07-L09p-phone-nodoc-open.png",
+    "ph-08-L09p-phone-nodoc-afterdrag.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "oil-desk",
+   "did": "Inputs form: {\"person\":\"Ace\",\"type\":\"Duty\",\"iso\":\"2026-07-18\",\"remarks\":\"L09 weekend duty\"}; pressed at (531,325) on header text \"OIL — Ace, Duty ✕\", dragged to surround (250,149), released",
+   "saw": "window \"OIL — Ace, Duty ✕\"; box [500,298,440,304]; after drag-out window CLOSED; (plain click not tried - already closed); INPUTS now 46",
+   "verdict": "FAIL (the drag closed the window)",
+   "pics": [
+    "dk-01-L09r2-desk-oil-open.png",
+    "dk-02-L09r2-desk-oil-afterdrag.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "oil-deskclick",
+   "did": "Inputs form: {\"person\":\"Ace\",\"type\":\"Duty\",\"iso\":\"2026-07-18\",\"remarks\":\"L09 weekend duty\"}; plain click on the dark surround only (no drag)",
+   "saw": "window \"OIL — Ace, Duty ✕\"; box [500,298,440,304]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "RECORD (plain click on the surround: window closed)",
+   "pics": [
+    "dk-01-L09c-desk-oil-open.png",
+    "dk-02-L09c-desk-oil-afterdrag.png",
+    "dk-03-L09c-desk-oil-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "oil-phone",
+   "did": "Inputs form: {\"person\":\"Ace\",\"type\":\"Duty\",\"iso\":\"2026-07-18\",\"remarks\":\"L09 weekend duty\"}; pressed at (53,297) on header text \"OIL — Ace, Duty ✕\", dragged to surround (379,135), released",
+   "saw": "window \"OIL — Ace, Duty ✕\"; box [22,270,346,304]; after drag-out window CLOSED; (plain click not tried - already closed); INPUTS now 46",
+   "verdict": "FAIL (the drag closed the window)",
+   "pics": [
+    "ph-01-L09p-phone-oil-open.png",
+    "ph-02-L09p-phone-oil-afterdrag.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "upchit-desk",
+   "did": "Inputs form: {\"person\":\"Grit\",\"type\":\"Upchit\",\"iso\":\"2026-07-15\",\"remarks\":\"L09 upchit\"}; pressed at (531,367) on header text \"Upchit — Grit, Jul 15 ✕\", dragged to surround (250,170), released",
+   "saw": "window \"Upchit — Grit, Jul 15 ✕\"; box [500,340,440,220]; after drag-out window CLOSED; (plain click not tried - already closed); INPUTS now 46",
+   "verdict": "FAIL (the drag closed the window)",
+   "pics": [
+    "dk-03-L09r2-desk-upchit-open.png",
+    "dk-04-L09r2-desk-upchit-afterdrag.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "upchit-deskclick",
+   "did": "Inputs form: {\"person\":\"Grit\",\"type\":\"Upchit\",\"iso\":\"2026-07-15\",\"remarks\":\"L09 upchit\"}; plain click on the dark surround only (no drag)",
+   "saw": "window \"Upchit — Grit, Jul 15 ✕\"; box [500,340,440,220]; after drag-out window STILL OPEN; then plain click on surround: window CLOSED; INPUTS now 46",
+   "verdict": "RECORD (plain click on the surround: window closed)",
+   "pics": [
+    "dk-04-L09c-desk-upchit-open.png",
+    "dk-05-L09c-desk-upchit-afterdrag.png",
+    "dk-06-L09c-desk-upchit-afterclick.png"
+   ]
+  },
+  {
+   "id": "L-09",
+   "part": "upchit-phone",
+   "did": "Inputs form: {\"person\":\"Grit\",\"type\":\"Upchit\",\"iso\":\"2026-07-15\",\"remarks\":\"L09 upchit\"}; pressed at (53,339) on header text \"Upchit — Grit, Jul 15 ✕\", dragged to surround (379,156), released",
+   "saw": "window \"Upchit — Grit, Jul 15 ✕\"; box [22,312,346,220]; after drag-out window CLOSED; (plain click not tried - already closed); INPUTS now 46",
+   "verdict": "FAIL (the drag closed the window)",
+   "pics": [
+    "ph-03-L09p-phone-upchit-open.png",
+    "ph-04-L09p-phone-upchit-afterdrag.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "a-published",
+   "did": "Monday signed (four names) and published; then control: wave 2 formation 1 take-off 19:45 -> 2000 left by blur; then formation 2 take-off 13:40 -> 1355 and a real click straight into its Area time box, then click on empty page",
+   "saw": "after publish head: {\"tag\":\"ORIG\",\"pending\":\"5 changes\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"}; after the control change: pending \"1 pending\"; while in the area box: pending \"2 pending\", area time \"1355-1505\"; after click away: pending \"2 pending\", take-off 13:55, area time 1355-1505, stored area override null; sign-off line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\", signs [\"— name —\",\"— name —\",\"— name —\",\"— name —\"]; history rows 5->6->7; changes window (To go out): [\"Waiting to go out as\",\"AL1\",\"· 2 changes\",\"RU · take-off\",\"Saber\",\"5/10 20:25\",\"13:40 → 13:55\",\"VL · take-off\",\"Saber\",\"5/10 20:25\",\"19:45 → 20:00\",\"Tap a change to go to it.\"]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-03-L10a-published-after.png",
+    "dk-04-L10a-published-changes.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "a-published-v2",
+   "did": "Monday signed (four names) and published; then control: wave 2 formation 1 take-off 19:45 -> 2000 left by blur; then formation 2 take-off 13:40 -> 1355 and a real click straight into its Area time box, then click on empty page",
+   "saw": "after publish head: {\"tag\":\"ORIG\",\"pending\":\"5 changes\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"}; after the control change: pending \"1 pending\"; while in the area box: pending \"2 pending\", area time \"1355-1505\"; after click away: pending \"2 pending\", take-off 13:55, area time 1355-1505, stored area override null; sign-off line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\", signs [\"— name —\",\"— name —\",\"— name —\",\"— name —\"]; history rows 5->6->7; changes window (To go out): [\"Waiting to go out as\",\"AL1\",\"· 2 changes\",\"RU · take-off\",\"Saber\",\"5/10 20:26\",\"13:40 → 13:55\",\"VL · take-off\",\"Saber\",\"5/10 20:26\",\"19:45 → 20:00\",\"Tap a change to go to it.\"]",
+   "verdict": "PASS",
+   "pics": [
+    "dk-03-L10a-published-v2-after.png",
+    "dk-04-L10a-published-v2-changes.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "a-unpublished",
+   "did": "Edit Schedule Mon, VL formation: clicked take-off (12:40), Ctrl+A, typed 1255, real click on its Area time box, then real click on empty page",
+   "saw": "before: take-off 12:40, area time 1240-1405; while in area box: take-off 12:55, area 1255-1405, caret in BODY; after click away: take-off 12:55, area time 1255-1405, stored area time override null; edit-history rows 0->1, command stream 1->2; new history rows: {\"t\":1791203103303,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":0,\"date\":\"2026-07-13\",\"key\":\"ff:0.rmuv82tmcmovipt.rmuv82tmckb7y2y.to\",\"lbl\":\"VL · take-off\",\"from\":\"12:40\",\"to\":\"12:55\",\"lineId\":\"muv82tlkpkw7.00000",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-L10a-in-area-box.png",
+    "dk-02-L10a-after-click-away.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "a-unpublished-v2",
+   "did": "Edit Schedule Mon, VL formation: clicked take-off (12:40), Ctrl+A, typed 1255, real click on its Area time box, then real click on empty page",
+   "saw": "before: take-off 12:40, area time 1240-1405; while in area box: take-off 12:55, area 1255-1405, caret after first click in BODY, after second click 0.0.0; after click away: take-off 12:55, area time 1255-1405, stored area time override null; edit-history rows 0->1, command stream 1->2; new history rows: {\"t\":1791203180282,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":0,\"date\":\"2026-07-13\",\"key\":\"ff:0.rmuv84h3iycryqf.rmuv84h3i6k5gs5.to\",\"lbl\":\"VL · take-off\",\"from\":\"12:40\",\"to\":\"12:55\",\"lineId\":\"muv84h2qbjzp.00000",
+   "verdict": "PASS",
+   "pics": [
+    "dk-01-L10a-in-area-v2-box.png",
+    "dk-02-L10a-after-click-v2-away.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "b-two-days",
+   "did": "pike OD Jul 15-17 shown on Wed, Thu, Fri: Wed's remark box typed \"NEW REMARK b1\" (was \"Overseas duty — exercise, off island\"), real click straight into Thu's remark box, then click on empty page",
+   "saw": "while in Thu's box: Wed shows \"NEW REMARK b1\", Thu shows \"NEW REMARK b1\"; after click away: Wed \"NEW REMARK b1\", Thu \"NEW REMARK b1\", Fri \"NEW REMARK b1\", stored remark \"NEW REMARK b1\"; history rows 0->1, commands 1->2",
+   "verdict": "PASS",
+   "pics": [
+    "dk-05-L10b-into-second.png",
+    "dk-06-L10b-after.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "b-two-days-v2",
+   "did": "pike OD Jul 15-17 shown on Wed, Thu, Fri: Wed's remark box typed \"NEW REMARK b1-v2\" (was \"Overseas duty — exercise, off island\"), real click straight into Thu's remark box, then click on empty page",
+   "saw": "first click into Thu left the caret in BODY; while in Thu's box: Wed shows \"NEW REMARK b1-v2\", Thu shows \"NEW REMARK b1-v2\"; after click away: Wed \"NEW REMARK b1-v2\", Thu \"NEW REMARK b1-v2\", Fri \"NEW REMARK b1-v2\", stored remark \"NEW REMARK b1-v2\"; history rows 0->1, commands 1->2",
+   "verdict": "PASS",
+   "pics": [
+    "dk-05-L10b-into-v2-second.png",
+    "dk-06-L10b-v2-after.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "b-variant",
+   "did": "same again: Thu typed \"NEW REMARK b2\", click straight into Fri, click away",
+   "saw": "Wed \"NEW REMARK b2\", Thu \"NEW REMARK b2\", Fri \"NEW REMARK b2\", stored \"NEW REMARK b2\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-07-L10b-variant-after.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "b-variant-v2",
+   "did": "same again: Thu typed \"NEW REMARK b2\", click straight into Fri, click away",
+   "saw": "Wed \"NEW REMARK b2\", Thu \"NEW REMARK b2\", Fri \"NEW REMARK b2\", stored \"NEW REMARK b2\"",
+   "verdict": "PASS",
+   "pics": [
+    "dk-07-L10b-variant-v2-after.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "c-ground",
+   "did": "salsa's Appointment (Tue 14 Jul, accepted to Ground, also in Personal Inputs): Personal Inputs remark typed \"NEW REMARK c1\" (was \"Dental appt\"; ground row showed \"Dental appt\"), real click straight into the Ground row's Remarks, then click on empty page",
+   "saw": "while in the Ground box: Personal Inputs shows \"NEW REMARK c1\", Ground shows \"NEW REMARK c1\"; after click away: Personal Inputs \"NEW REMARK c1\", Ground \"NEW REMARK c1\", stored request remark \"NEW REMARK c1\", stored ground row remark \"NEW REMARK c1\"; history rows 0->1, commands 1->2",
+   "verdict": "PASS",
+   "pics": [
+    "dk-08-L10c-into-ground.png",
+    "dk-09-L10c-after.png"
+   ]
+  },
+  {
+   "id": "L-10",
+   "part": "c-ground-v2",
+   "did": "salsa's Appointment (Tue 14 Jul, accepted to Ground, also in Personal Inputs): Personal Inputs remark typed \"NEW REMARK c1\" (was \"Dental appt\"; ground row showed \"Dental appt\"), real click straight into the Ground row's Remarks, then click on empty page",
+   "saw": "first click into Ground left the caret in BODY; while in the Ground box: Personal Inputs shows \"NEW REMARK c1\", Ground shows \"NEW REMARK c1\"; after click away: Personal Inputs \"NEW REMARK c1\", Ground \"NEW REMARK c1\", stored request remark \"NEW REMARK c1\", stored ground row remark \"NEW REMARK c1\"; history rows 0->1, commands 1->2",
+   "verdict": "PASS",
+   "pics": [
+    "dk-08-L10c-into-v2-ground.png",
+    "dk-09-L10c-v2-after.png"
+   ]
+  },
+  {
+   "id": "L-11",
+   "part": "tab-day",
+   "did": "Inputs: filed Ace Appointment Tue 14 Jul 10:00-11:00, remark typed with two spaces; accepted to Ground on the board; signed four names; published Tue; then Edit Schedule, real click into the day's first box (dn:1.0) and 146 Tabs, nothing typed",
+   "saw": "stored request remark \"Dental review.  Back by 1400\"; ground row \"Dental review.  Back by 1400\"; after publish head: pending \"6 changes\", tag \"ORIG\", sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"; after Tab run: pending \"1 pending\", tag \"ORIG\", sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\", Publish-AL button \"Publish AL1\"; stored remark now \"Dental review.  Back by 1400\", ground \"Dental review. Back by 1400\"; edit-history rows 6->7 new: {\"t\":1791204034904,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":1,\"date\":\"2026-07-14\",\"key\":\"gr:1.rimuv8ml2ppgwve1.rmks\",\"lbl\":\"Ground · APPOINTMENT · remarks\",\"from\":\"Dental review.  Back by 1400\",\"to\":\"Dental review. Back by 1400\"; changes window: [\"Waiting to go out as\",\"AL1\",\"· 1 change\",\"Ground · APPOINTMENT · remarks\",\"Saber\",\"5/10 20:40\",\"Dental review. Back by 1400 → Dental review. Back by 1400\",\"Tap a change to go to it.\"]; the history row first appeared at Tab number 122 (focus then on gr:1.2.prog, having just left gr:1.4.rmks); stops (147): dn:1.0 > ap:1.0.prog > ap:1.0.sub > ap:1.0.str > ap:1.0.end > ap:1.0.rmks > ap:1.1.prog > ap:1.1.sub > ap:1.1.str > ap:1.1.end > ap:1.1.rmks > pn:1 > wl:1.0 > 1|0|0 ... imuv8mjnydnp6gl.str > imuv8mjnydnp6gl.end > imuv8mjnydnp6gl.rmks > BODY",
+   "verdict": "FAIL",
+   "pics": [
+    "dk-01-L11-filed.png",
+    "dk-02-L11-after-tab.png",
+    "dk-03-L11-changes-window-open.png",
+    "dk-04-L11-changes.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "a-week-desk",
+   "did": "Edit Schedule, Monday (206 open boxes; last is imuv87za09cpijt.rmks), nothing changed: real click into the last box, Tab, half a second later, Tab again",
+   "saw": "last box focused: {\"kind\":\"span\",\"key\":\"imuv87za09cpijt.rmks\",\"words\":\"Medically down till 17 Jul\",\"cls\":\"ntx txed inpt\",\"inDay\":\"0\",\"inBoard\":false,\"top\":710,\"left\":424}; after the Tab: {\"kind\":\"nothing - the page body\"}; half a second later: {\"kind\":\"nothing - the page body\"}; after another Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":223,\"left\":706}, then {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":223,\"left\":706}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-01-L12a-desk-last-box-focused.png",
+    "dk-02-L12a-desk-after-first-tab.png",
+    "dk-03-L12a-desk-after-second-tab.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "b-week-desk",
+   "did": "Edit Schedule, Monday: changed the first formation's callsign VL -> VK, then Tab 150 times to the end of the day (nothing else typed)",
+   "saw": "focus at the end of the run: {\"kind\":\"nothing - the page body\"}; half a second later: {\"kind\":\"nothing - the page body\"}; callsign now VK; edit-history rows 0->1; one more Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":223,\"left\":706} / {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"Templates\",\"cls\":\"dhbtn\",\"inDay\":\"1\",\"inBoard\":false,\"top\":223,\"left\":706}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-05-L12b-desk-after-end.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "c-board-change-desk",
+   "did": "Scheduler Board (Mon): changed the first formation's callsign VK -> VL, then Tab 169 times to the end",
+   "saw": "focus at the end: {\"kind\":\"nothing - the page body\"}; half a second later: {\"kind\":\"nothing - the page body\"}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-08-L12c-desk-board-change-end.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "c-board-nochange-desk",
+   "did": "Scheduler Board (Mon): 214 open boxes; real click into the last (imuv87za09cpijt.rmks), Tab, half a second later, Tab again",
+   "saw": "last focused: {\"kind\":\"textarea:textarea\",\"key\":\"\",\"words\":\"Medically down till 17 Jul\",\"cls\":\"ain rmkin\",\"inDay\":null,\"inBoard\":true,\"top\":836,\"left\":764}; after Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"✕\",\"cls\":\"wln-mute\",\"inDay\":null,\"inBoard\":true,\"top\":152,\"left\":1405}; half a second later: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"✕\",\"cls\":\"wln-mute\",\"inDay\":null,\"inBoard\":true,\"top\":152,\"left\":1405}; after another Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"✕\",\"cls\":\"wln-mute\",\"inDay\":null,\"inBoard\":true,\"top\":196,\"left\":1405} / {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"✕\",\"cls\":\"wln-mute\",\"inDay\":null,\"inBoard\":true,\"top\":196,\"left\":1405}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-06-L12c-desk-board-last-box.png",
+    "dk-07-L12c-desk-board-after-tab.png"
+   ]
+  },
+  {
+   "id": "L-12",
+   "part": "d-board-desk",
+   "did": "Scheduler Board (Mon): real click into the first box (dn:0.0), Shift+Tab",
+   "saw": "first focused: {\"kind\":\"textarea:textarea\",\"key\":\"dn:0.0\",\"words\":\"EP: ENGINE FIRE ON TAKE OFF\",\"cls\":\"nin\",\"inDay\":null,\"inBoard\":true,\"top\":310,\"left\":82}; after Shift+Tab: {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"+ Note\",\"cls\":\"mbtn add\",\"inDay\":null,\"inBoard\":true,\"top\":269,\"left\":1045} then {\"kind\":\"button:submit\",\"key\":\"\",\"words\":\"+ Note\",\"cls\":\"mbtn add\",\"inDay\":null,\"inBoard\":true,\"top\":269,\"left\":1045}",
+   "verdict": "RECORD",
+   "pics": []
+  },
+  {
+   "id": "L-12",
+   "part": "d-week-desk",
+   "did": "Edit Schedule, Monday: real click into the day's first box (dn:0.0), Shift+Tab, then once more",
+   "saw": "first box focused: {\"kind\":\"div\",\"key\":\"dn:0.0\",\"words\":\"EP: ENGINE FIRE ON TAKE OFF\",\"cls\":\"ah-note txed\",\"inDay\":\"0\",\"inBoard\":false,\"top\":440,\"left\":40}; after Shift+Tab: {\"kind\":\"select:select-one\",\"key\":\"\",\"words\":\"— name — Anvil Basher Bolt Cinch Drifter\",\"cls\":\"\",\"inDay\":\"0\",\"inBoard\":false,\"top\":324,\"left\":428} then {\"kind\":\"select:select-one\",\"key\":\"\",\"words\":\"— name — Anvil Basher Bolt Cinch Drifter\",\"cls\":\"\",\"inDay\":\"0\",\"inBoard\":false,\"top\":324,\"left\":428}; after a second Shift+Tab: {\"kind\":\"select:select-one\",\"key\":\"\",\"words\":\"— name — Anvil Basher Bolt Cinch Drifter\",\"cls\":\"\",\"inDay\":\"0\",\"inBoard\":false,\"top\":324,\"left\":299}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-04-L12d-desk-after-shift-tab.png"
+   ]
+  },
+  {
+   "id": "L-13",
+   "part": "published",
+   "did": "Edit Schedule Mon (signed four names and published first): day's warning list opened; wave 2 VL take-off 19:45 -> 1230 typed (Saber also flies Wave 1 VL 12:40-14:05); Tab (never a click) 1, 3, then 7 times; Escape; then click on empty page",
+   "saw": "[before] focus BODY; day bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\" (18 lines; app holds 17 warnings, Saber's: [\"OPS SHARING + NAV SYS BRIEF & VL BFM clash\",\"No time for the VL BFM flight brief — OPS SHARING + NAV SYS BRIEF sits inside 17:25–19:45 \",\"4 people are double turning: Saber, Echo, Piston, Relay\",\"Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"5 changes\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [tab 1] focus ff:0.1.0.ld; day bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\" (18 lines; app holds 22 warnings, Saber's: [\"Saber is in two seats on VL BFM at once\",\"VL BFM & OPS SHARING + NAV SYS BRIEF clash\",\"Saber has a long work day: 30h25, 16:45 (previous day) → 23:10 (last landing 21:10 + 2h de\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"5 changes\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [tab 3] focus 0.1.0.0; day bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\" (18 lines; app holds 22 warnings, Saber's: [\"Saber is in two seats on VL BFM at once\",\"VL BFM & OPS SHARING + NAV SYS BRIEF clash\",\"Saber has a long work day: 30h25, 16:45 (previous day) → 23:10 (last landing 21:10 + 2h de\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"5 changes\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [tab 7] focus 0.1.0; day bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\" (18 lines; app holds 22 warnings, Saber's: [\"Saber is in two seats on VL BFM at once\",\"VL BFM & OPS SHARING + NAV SYS BRIEF clash\",\"Saber has a long work day: 30h25, 16:45 (previous day) → 23:10 (last landing 21:10 + 2h de\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"5 changes\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [after Escape] focus BODY; day bar \"⚠ 22 issues · 9 warning · tap to collapse ▲\" (23 lines; app holds 22 warnings, Saber's: [\"Saber is in two seats on VL BFM at once\",\"VL BFM & OPS SHARING + NAV SYS BRIEF clash\",\"Saber has a long work day: 30h25, 16:45 (previous day) → 23:10 (last landing 21:10 + 2h de\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"1 pending\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [after click away] focus BODY; day bar \"⚠ 22 issues · 9 warning · tap to review ▼\" (0 lines; app holds 22 warnings, Saber's: [\"Saber is in two seats on VL BFM at once\",\"VL BFM & OPS SHARING + NAV SYS BRIEF clash\",\"Saber has a long work day: 30h25, 16:45 (previous day) → 23:10 (last landing 21:10 + 2h de\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"1 pending\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"; stored take-off 12:30",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-05-L13-published-tab1.png",
+    "dk-06-L13-published-tab7.png",
+    "dk-07-L13-published-escape.png",
+    "dk-08-L13-published-clickaway.png"
+   ]
+  },
+  {
+   "id": "L-13",
+   "part": "tue-clean-published",
+   "did": "Tuesday 14 Jul (signed four names and published first): via the board RU take-off 09:40 -> 10:30 and nact (VL 08:40-10:05) put on RU's first seat; day's list open; then on the week RU take-off typed 0940, Tab 1, 3, then 7 times (never a click); Escape; then click on empty page",
+   "saw": "[before] focus BODY; day bar \"⚠ 6 issues · 2 warning · tap to collapse ▲\" (6 lines in the open list, mine: [\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 6 warnings, nact's: [\"Tight turn VL BFM→RU BFM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step \",\"1 person is double turning: Warden\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other chip TT\"]; chip \"7 changes\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [tab 1] focus ff:1.0.1.ld; day bar \"⚠ 6 issues · 2 warning · tap to collapse ▲\" (6 lines in the open list, mine: [\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other chip TT\"]; chip \"7 changes\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [tab 3] focus 1.0.1.0; day bar \"⚠ 6 issues · 2 warning · tap to collapse ▲\" (6 lines in the open list, mine: [\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other chip TT\"]; chip \"7 changes\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [tab 7] focus 1.0.1; day bar \"⚠ 6 issues · 2 warning · tap to collapse ▲\" (6 lines in the open list, mine: [\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other chip TT\"]; chip \"7 changes\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [after Escape] focus BODY; day bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" (5 lines in the open list, mine: [\"hard: Conflict — two events at once Warden — VL BFM & RU BFM clashnew once signed ✕\",\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line hard chip C red-ring\",\"flying line hard chip C red-ring\",\"other hard chip C red-ring\"]; chip \"1 pending\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"  ||  [after click away] focus BODY; day bar \"⚠ 5 issues · 3 warning · tap to review ▼\" (0 lines in the open list); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line hard chip C red-ring\",\"flying line hard chip C red-ring\",\"other hard chip C red-ring\"]; chip \"1 pending\"; sign line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"; stored RU take-off 09:40; handPut said {\"took\":true,\"msg\":\"dragged from the crew list\"}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-05-L13t-published-tab1.png",
+    "dk-06-L13t-published-tab7.png",
+    "dk-07-L13t-published-escape.png",
+    "dk-08-L13t-published-clickaway.png"
+   ]
+  },
+  {
+   "id": "L-13",
+   "part": "tue-clean-unpublished",
+   "did": "Tuesday 14 Jul: via the board RU take-off 09:40 -> 10:30 and nact (VL 08:40-10:05) put on RU's first seat; day's list open; then on the week RU take-off typed 0940, Tab 1, 3, then 7 times (never a click); Escape; then click on empty page",
+   "saw": "[before] focus BODY; day bar \"⚠ 6 issues · 2 warning · tap to collapse ▲\" (6 lines in the open list, mine: [\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 6 warnings, nact's: [\"Tight turn VL BFM→RU BFM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step \",\"1 person is double turning: Warden\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other chip TT\"]; chip \"2 changes\"; sign line \"\"  ||  [tab 1] focus ff:1.0.1.ld; day bar \"⚠ 6 issues · 2 warning · tap to collapse ▲\" (6 lines in the open list, mine: [\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other chip TT\"]; chip \"2 changes\"; sign line \"\"  ||  [tab 3] focus 1.0.1.0; day bar \"⚠ 6 issues · 2 warning · tap to collapse ▲\" (6 lines in the open list, mine: [\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other chip TT\"]; chip \"2 changes\"; sign line \"\"  ||  [tab 7] focus 1.0.1; day bar \"⚠ 6 issues · 2 warning · tap to collapse ▲\" (6 lines in the open list, mine: [\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line chip TT\",\"flying line chip TT\",\"other chip TT\"]; chip \"2 changes\"; sign line \"\"  ||  [after Escape] focus BODY; day bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" (5 lines in the open list, mine: [\"hard: Conflict — two events at once Warden — VL BFM & RU BFM clash ✕\",\"hard: Conflict — two events at once Saint — VL SAT & APPOINTMENT clash ✕\"]); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line hard chip C red-ring\",\"flying line hard chip C red-ring\",\"other hard chip C red-ring\"]; chip \"3 changes\"; sign line \"\"  ||  [after click away] focus BODY; day bar \"⚠ 5 issues · 3 warning · tap to review ▼\" (0 lines in the open list); app holds 5 warnings, nact's: [\"VL BFM & RU BFM clash\"]; nact's flagged pucks: [\"flying line hard chip C red-ring\",\"flying line hard chip C red-ring\",\"other hard chip C red-ring\"]; chip \"3 changes\"; sign line \"\"; stored RU take-off 09:40; handPut said {\"took\":true,\"msg\":\"dragged from the crew list\"}",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-01-L13t-unpublished-tab1.png",
+    "dk-02-L13t-unpublished-tab7.png",
+    "dk-03-L13t-unpublished-escape.png",
+    "dk-04-L13t-unpublished-clickaway.png"
+   ]
+  },
+  {
+   "id": "L-13",
+   "part": "unpublished",
+   "did": "Edit Schedule Mon: day's warning list opened; wave 2 VL take-off 19:45 -> 1230 typed (Saber also flies Wave 1 VL 12:40-14:05); Tab (never a click) 1, 3, then 7 times; Escape; then click on empty page",
+   "saw": "[before] focus BODY; day bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\" (18 lines; app holds 17 warnings, Saber's: [\"OPS SHARING + NAV SYS BRIEF & VL BFM clash\",\"No time for the VL BFM flight brief — OPS SHARING + NAV SYS BRIEF sits inside 17:25–19:45 \",\"4 people are double turning: Saber, Echo, Piston, Relay\",\"Saber has a long work day: 15h10, 08:00 → 23:10 (last landing 21:10 + 2h debrief assumed)\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"\"; sign line \"\"  ||  [tab 1] focus ff:0.1.0.ld; day bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\" (18 lines; app holds 22 warnings, Saber's: [\"Saber is in two seats on VL BFM at once\",\"VL BFM & OPS SHARING + NAV SYS BRIEF clash\",\"Saber has a long work day: 30h25, 16:45 (previous day) → 23:10 (last landing 21:10 + 2h de\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"\"; sign line \"\"  ||  [tab 3] focus 0.1.0.0; day bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\" (18 lines; app holds 22 warnings, Saber's: [\"Saber is in two seats on VL BFM at once\",\"VL BFM & OPS SHARING + NAV SYS BRIEF clash\",\"Saber has a long work day: 30h25, 16:45 (previous day) → 23:10 (last landing 21:10 + 2h de\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"\"; sign line \"\"  ||  [tab 7] focus 0.1.0; day bar \"⚠ 17 issues · 6 warning · tap to collapse ▲\" (18 lines; app holds 22 warnings, Saber's: [\"Saber is in two seats on VL BFM at once\",\"VL BFM & OPS SHARING + NAV SYS BRIEF clash\",\"Saber has a long work day: 30h25, 16:45 (previous day) → 23:10 (last landing 21:10 + 2h de\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"\"; sign line \"\"  ||  [after Escape] focus BODY; day bar \"⚠ 22 issues · 9 warning · tap to collapse ▲\" (23 lines; app holds 22 warnings, Saber's: [\"Saber is in two seats on VL BFM at once\",\"VL BFM & OPS SHARING + NAV SYS BRIEF clash\",\"Saber has a long work day: 30h25, 16:45 (previous day) → 23:10 (last landing 21:10 + 2h de\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"1 change\"; sign line \"\"  ||  [after click away] focus BODY; day bar \"⚠ 22 issues · 9 warning · tap to review ▼\" (0 lines; app holds 22 warnings, Saber's: [\"Saber is in two seats on VL BFM at once\",\"VL BFM & OPS SHARING + NAV SYS BRIEF clash\",\"Saber has a long work day: 30h25, 16:45 (previous day) → 23:10 (last landing 21:10 + 2h de\"]); Saber's flagged pucks: [\"other warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"flying line warn hard chip C red-ring\",\"other warn hard chip C red-ring\"]; chip \"1 change\"; sign line \"\"; stored take-off 12:30",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-01-L13-unpublished-tab1.png",
+    "dk-02-L13-unpublished-tab7.png",
+    "dk-03-L13-unpublished-escape.png",
+    "dk-04-L13-unpublished-clickaway.png"
+   ]
+  },
+  {
+   "id": "L-14",
+   "part": "tab-start-0900",
+   "did": "Duty (Ace, Sat 18 Jul, was {\"type\":\"Duty\",\"date\":\"Jul 18\",\"acc\":\"g\",\"oil\":{\"2026-07-18\":1}}) filed through Inputs, OIL asked Yes; Edit Schedule Sat, Personal Inputs: start-time box (was 08:00) clicked, typed 0900, Tab; then typed X, Tab, Tab",
+   "saw": "after the first Tab: OIL window did not open; focus: span imuv8ea38z9dw9t.end \"16:00\" (in the page, behind any window); after typing X: focus span imuv8ea38z9dw9t.end \"X16:00\" (in the page, behind any window); Tab -> span imuv8ea38z9dw9t.rmks \"L14 duty\" (in the page, behind any window); Tab -> BODY (nothing focused); window still open: false; behind the window: schedule days and requests unchanged since the first Tab; start-time box now \"09:00\", stored {\"rmks\":\"L14 duty\"}; edit-history rows 1->2->2; boxes ending in X on the page: [\"sr:0.amt.1.label=BOX\",\"fr:1.1.0.0=SAT 2VX\",\"sr:1.amt.1.label=BOX\",\"sr:2.amt.1.label=BOX\",\"sr:3.amt.1.label=BOX\"]",
+   "verdict": "RECORD (no window opened: 08:00-16:00 -> 09:00-16:00 keeps the same full-day size)",
+   "pics": [
+    "dk-01-L14-after-tab.png",
+    "dk-02-L14-after-X-and-two-tabs.png"
+   ]
+  },
+  {
+   "id": "L-14",
+   "part": "tab-start-1200",
+   "did": "Duty (Ace, Sat 18 Jul, was {\"type\":\"Duty\",\"date\":\"Jul 18\",\"acc\":\"g\",\"oil\":{\"2026-07-18\":1}}) filed through Inputs, OIL asked Yes; Edit Schedule Sat, Personal Inputs: start-time box (was 08:00) clicked, typed 1200, Tab; then typed X, Tab, Tab",
+   "saw": "after the first Tab: OIL window OPEN: OIL — Ace, Duty ✕ | THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to; focus: span imuv8fpt6xh2bb1.end \"16:00\" (in the page, behind any window); after typing X: focus span imuv8fpt6xh2bb1.end \"X16:00\" (in the page, behind any window); Tab -> span imuv8fpt6xh2bb1.rmks \"L14 duty\" (in the page, behind any window); Tab -> BODY (nothing focused); window still open: true; behind the window: schedule days and requests unchanged since the first Tab; start-time box now \"12:00\", stored {\"rmks\":\"L14 duty\"}; the request afterwards: {\"person\":\"dj\",\"date\":\"Jul 18\",\"allday\":false,\"s\":720,\"e\":960,\"yr\":2026,\"type\":\"Duty\",\"remarks\":\"L14 duty\",\"mod\":\"2026-10-05\",\"iid\":\"imuv8fpt6xh2bb1\",\"ord\":0,\"acc\":\"g\"}; the end-time box now reads \"16:00\"; edit-history rows 1->3->3; boxes ending in X on the page: [\"sr:0.amt.1.label=BOX\",\"fr:1.1.0.0=SAT 2VX\",\"sr:1.amt.1.label=BOX\",\"sr:2.amt.1.label=BOX\",\"sr:3.amt.1.label=BOX\"]",
+   "verdict": "FAIL",
+   "pics": [
+    "dk-01-L14-1200-after-tab.png",
+    "dk-02-L14-1200-after-X-and-two-tabs.png"
+   ]
+  },
+  {
+   "id": "L-14",
+   "part": "tab-start-1200-type-1500",
+   "did": "Duty (Ace, Sat 18 Jul, was {\"type\":\"Duty\",\"date\":\"Jul 18\",\"acc\":\"g\",\"oil\":{\"2026-07-18\":1}}) filed through Inputs, OIL asked Yes; Edit Schedule Sat, Personal Inputs: start-time box (was 08:00) clicked, typed 1200, Tab; then typed 1500, Tab, Tab",
+   "saw": "after the first Tab: OIL window OPEN: OIL — Ace, Duty ✕ | THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to; focus: span imuv8g9sln28vs7.end \"16:00\" (in the page, behind any window); after typing X: focus span imuv8g9sln28vs7.end \"150016:00\" (in the page, behind any window); Tab -> span imuv8g9sln28vs7.rmks \"L14 duty\" (in the page, behind any window); Tab -> BODY (nothing focused); window still open: true; behind the window: schedule days and requests unchanged since the first Tab; start-time box now \"12:00\", stored {\"rmks\":\"L14 duty\"}; the request afterwards: {\"person\":\"dj\",\"date\":\"Jul 18\",\"allday\":false,\"s\":720,\"e\":960,\"yr\":2026,\"type\":\"Duty\",\"remarks\":\"L14 duty\",\"mod\":\"2026-10-05\",\"iid\":\"imuv8g9sln28vs7\",\"ord\":0,\"acc\":\"g\"}; the end-time box now reads \"16:00\"; edit-history rows 1->3->3; boxes ending in X on the page: [\"sr:0.amt.1.label=BOX\",\"fr:1.1.0.0=SAT 2VX\",\"sr:1.amt.1.label=BOX\",\"sr:2.amt.1.label=BOX\",\"sr:3.amt.1.label=BOX\"]",
+   "verdict": "FAIL",
+   "pics": [
+    "dk-01-L14-1200-after-tab.png",
+    "dk-02-L14-1200-after-X-and-two-tabs.png"
+   ]
+  },
+  {
+   "id": "L-15",
+   "part": "callsign-desk",
+   "did": "Edit Schedule Mon at 1440x900: formation 0.0.0 callsign typed long (VIPERLEADERWRAPTEST); real click on the box before it (SPAN), then Tab into the callsign box",
+   "saw": "target box: {\"text\":\"VIPERLEADERWRAPTEST\",\"x\":38,\"y\":457,\"w\":65,\"h\":45,\"lines\":3.1,\"wraps\":true} (wraps: true, 3.1 lines); in plain view before Tab: true; before Tab: page scroll [0,882], scrolling parents [\"#eWeek.week [0,0]\"], target box at (38,510) 65x45; after Tab: focus on ff:0.0.0.cs, page scroll [0,882], scrolling parents [\"#eWeek.week [0,0]\"], target box at (38,510); page scroll moved by [0,0], box moved on screen by [0,0]",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-01-L15-desk-callsign-before.png",
+    "dk-02-L15-desk-callsign-after.png"
+   ]
+  },
+  {
+   "id": "L-15",
+   "part": "callsign-phone",
+   "did": "Edit Schedule Mon at 390x844: formation 0.0.0 callsign typed long (VIPERLEADERWRAPTEST); real click on the box before it (SPAN), then Tab into the callsign box",
+   "saw": "target box: {\"text\":\"VIPERLEADERWRAPTEST\",\"x\":16,\"y\":426,\"w\":43,\"h\":34,\"lines\":3.1,\"wraps\":true} (wraps: true, 3.1 lines); in plain view before Tab: true; before Tab: page scroll [0,776], scrolling parents [\"#eWeek.week [12,0]\"], target box at (16,475) 43x34; after Tab: focus on ff:0.0.0.cs, page scroll [0,776], scrolling parents [\"#eWeek.week [12,0]\"], target box at (16,475); page scroll moved by [0,0], box moved on screen by [0,0]",
+   "verdict": "RECORD",
+   "pics": [
+    "ph-01-L15-phone-callsign-before.png",
+    "ph-02-L15-phone-callsign-after.png"
+   ]
+  },
+  {
+   "id": "L-15",
+   "part": "remarks-desk",
+   "did": "Edit Schedule Mon at 1440x900: formation 0.0.0 remarks typed long (1B: BFM-6 with a very long rem...); real click on the box before it (ff:0.0.0.ld), then Tab into the remarks box",
+   "saw": "target box: {\"text\":\"1B: BFM-6 with a very long remark so that it has to wrap over two lines on the week\",\"x\":377,\"y\":497,\"w\":177,\"h\":38,\"lines\":3,\"wraps\":true} (wraps: true, 3 lines); in plain view before Tab: true; before Tab: page scroll [0,935], scrolling parents [\"#eWeek.week [0,0]\"], target box at (377,444) 177x38; after Tab: focus on fr:0.0.0.0, page scroll [0,935], scrolling parents [\"#eWeek.week [0,0]\"], target box at (377,444); page scroll moved by [0,0], box moved on screen by [0,0]",
+   "verdict": "RECORD",
+   "pics": [
+    "dk-03-L15-desk-remarks-before.png",
+    "dk-04-L15-desk-remarks-after.png"
+   ]
+  },
+  {
+   "id": "L-15",
+   "part": "remarks-phone",
+   "did": "Edit Schedule Mon at 390x844: formation 0.0.0 remarks typed long (1B: BFM-6 with a very long rem...); real click on the box before it (ff:0.0.0.ld), then Tab into the remarks box",
+   "saw": "target box: {\"text\":\"1B: BFM-6 with a very long remark so that it has to wrap over two lines on the week\",\"x\":298,\"y\":465,\"w\":52,\"h\":74,\"lines\":7,\"wraps\":true} (wraps: true, 7 lines); in plain view before Tab: true; before Tab: page scroll [0,824], scrolling parents [\"#eWeek.week [12,0]\"], target box at (298,417) 52x74; after Tab: focus on fr:0.0.0.0, page scroll [0,824], scrolling parents [\"#eWeek.week [12,0]\"], target box at (298,417); page scroll moved by [0,0], box moved on screen by [0,0]",
+   "verdict": "RECORD",
+   "pics": [
+    "ph-03-L15-phone-remarks-before.png",
+    "ph-04-L15-phone-remarks-after.png"
+   ]
+  },
+  {
+   "id": "L-16",
+   "part": "phone-desktop-layout",
+   "did": "Phone 390x844: Edit Schedule -> Mon on the Scheduler Board (tap) -> more menu -> Desktop layout; typed into the first overall note (real write), made storage refuse writes, typed in the second note; then looked, panned the board to its left edge and to its right edge, and tapped Retry",
+   "saw": "AS IT APPEARED (screen 390 wide, page 390 wide): board scrolled 82 of 1180: [savestat.failed] \"⚠Not saved — keep this page open\" spans 14..220 (w 206) at y 59-75, seen on top: false; Retry 314..376 (w 62) at y 54-80; a finger at its middle lands on: SPAN.sbday; ancestors: .savestat fixed < .topbar sticky < #shell.save-failed static < #root. static < .sb-lock static ## [saveband] \"⚠Not saved — keep this page open\" spans -68..138 (w 206) at y 89-105, seen on top: true; Retry 1022..1084 (w 62) at y 84-110; a finger at its middle lands on: off screen; ancestors: .saveband static < .sb-top static < #schedBoard.schedboard fixed < #root. static < .sb-lock static  ||| BOARD PANNED TO LEFT EDGE: board scrolled 0 of 1180: [savestat.failed] \"⚠Not saved — keep this page open\" spans 14..220 (w 206) at y 59-75, seen on top: false; Retry 314..376 (w 62) at y 54-80; a finger at its middle lands on: SPAN.sbday; ancestors: .savestat fixed < .topbar sticky < #shell.save-failed static < #root. static < .sb-lock static ## [saveband] \"⚠Not saved — keep this page open\" spans 14..220 (w 206) at y 89-105, seen on top: true; Retry 1104..1166 (w 62) at y 84-110; a finger at its middle lands on: off screen; ancestors: .saveband static < .sb-top static < #schedBoard.schedboard fixed < #root. static < .sb-lock static  ||| BOARD PANNED TO RIGHT EDGE: board scrolled 790 of 1180: [savestat.failed] \"⚠Not saved — keep this page open\" spans 14..220 (w 206) at y 59-75, seen on top: false; Retry 314..376 (w 62) at y 54-80; a finger at its middle lands on: #sbNextDay; ancestors: .savestat fixed < .topbar sticky < #shell.save-failed static < #root. static < .sb-lock static ## [saveband] \"⚠Not saved — keep this page open\" spans -776..-570 (w 206) at y 89-105, seen on top: true; Retry 314..376 (w 62) at y 84-110; a finger at its middle lands on: the Retry button; ancestors: .saveband static < .sb-top static < #schedBoard.schedboard fixed < #root. static < .sb-lock static  ||| panning was done by setting the board scroll position directly (a wheel turn did not move it)  ||| then tapped Retry at (345,97) with the board scrolled to 790; afterwards the note is GONE (saved)",
+   "verdict": "FAIL",
+   "pics": [
+    "ph-01-L16-desktop-layout-before-fail.png",
+    "ph-02-L16-failed-save-as-it-appeared.png",
+    "ph-03-L16-board-at-left-edge.png",
+    "ph-04-L16-board-at-right-edge.png",
+    "ph-05-L16-after-retry.png"
+   ]
+  }
+ ]
+}

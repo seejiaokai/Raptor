@@ -110,6 +110,10 @@
 }
 .sb-moremenu{position:absolute;top:calc(100% + 6px);left:0;z-index:30;display:flex;flex-direction:column;min-width:176px;
   padding:4px;background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.5)}
+/* W18 (the Codex stack check, 5 Oct 26): in the phone board's Desktop layout the board pans, and with the ⋯ button near
+   the screen's right edge the menu opened past it — Insights, Sort all and the layout switch cut off. SchedBoard.tsx
+   measures the menu as it opens and hangs it from the button's RIGHT edge when the left-hung menu would not fit. */
+.sb-moremenu.end{left:auto;right:0}
 .sb-moreitem{display:flex;align-items:center;gap:9px;min-height:38px;padding:8px 11px;background:none;border:0;border-radius:7px;
   color:var(--ink);font:inherit;font-size:13px;font-weight:500;text-align:left;cursor:pointer;white-space:nowrap}
 .sb-moreitem .bi{font-style:normal;width:18px;text-align:center}

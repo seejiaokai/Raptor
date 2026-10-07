@@ -159,7 +159,11 @@ for(const editor of ['week','Board'] as const) {
       expect(commands.filter(e=>e.type==='insights.role.set')).toHaveLength(action==='Later'?0:1)
       expect(commands.length).toBe(action==='Later'?1:2)
       if(action!=='Later')expect(commands.at(-1)?.type).toBe('insights.role.set')
-      expect(document.querySelector('[data-role-ui]')).toBeNull()
+      expect(document.querySelector('.mission-role-question'),'the question is gone').toBeNull()
+      /* [ROLE-BUTTON-AFTER-ANSWER] (6 Oct 26; D527, D529): the caret is still in that Remarks box, so its button is back —
+         to correct the answer, or to choose after Later. Until then this line pinned "nothing at all is offered". */
+      expect([...document.querySelectorAll('[data-role-ui]')].map(n=>n.className)).toEqual(['mission-role-action'])
+      expect(q('[data-role-choose]').textContent).toBe(action==='Later'?'Choose mission role':'Change mission role')
     }
     expect(q(fieldSelector())).toBe(field);expect(document.activeElement).toBe(field)
     if(field instanceof HTMLTextAreaElement)expect([field.selectionStart,field.selectionEnd]).toEqual([3,7])

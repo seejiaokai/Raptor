@@ -1,0 +1,101 @@
+{
+ "parts": {
+  "ows-B-sC-dk": {
+   "at": "2026-10-06T13:16:34.052Z",
+   "base": "http://localhost:4294",
+   "phone": false,
+   "table": [
+    {
+     "id": "S23-nominal",
+     "did": "Saturday flight 12:00–13:00, no report: \"+ In-time / Rally\" pressed on the week, on the board, and again on each; published",
+     "saw": "✓ every press leaves the clock at 09:00 (no line reads another clock) [[\"week +: [\\\"09:00H: IN TIME + WX/NOTAMS\\\"]\",\"board +: [\\\"09:00H: IN TIME + WX/NOTAMS\\\",\\\"09:00H: IN TIME + WX/NOTAMS\\\"]\",\"week + again: [\\\"09:00H: IN TIME + WX] · ✓ published ORIG [ORIG] · ✓ cell HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-S23-nominal-week1.png",
+      "dk-02-S23-nominal-board1.png",
+      "dk-03-S23-nominal-board2.png",
+      "dk-04-S23-nominal-pub-cell.png",
+      "dk-05-S23-nominal-pub-tracker.png"
+     ]
+    },
+    {
+     "id": "S23-resolved",
+     "did": "same flight, first line typed IN TIME 08:30, then \"+ In-time / Rally\" pressed on the week, the board and again on each; published",
+     "saw": "✓ every press leaves the clock at 08:30 (no line reads another clock) [[\"board +: [\\\"09:00H: IN TIME + WX/NOTAMS\\\"]\",\"line typed 08:30: [\\\"IN TIME 08:30\\\"]\",\"week +: [\\\"IN TIME 08:30\\\",\\\"08:30H: IN TIME + WX/NOTAMS\\\"]\",\"board +: [\\] · ✓ published ORIG [ORIG] · ✓ cell FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-S23-resolved-week1.png",
+      "dk-07-S23-resolved-board1.png",
+      "dk-08-S23-resolved-board2.png",
+      "dk-09-S23-resolved-pub-cell.png",
+      "dk-10-S23-resolved-pub-tracker.png"
+     ]
+    },
+    {
+     "id": "S23-notakeoff",
+     "did": "Saturday wave whose take-off and landing were blanked; \"+ In-time / Rally\" pressed (board, then week); then the day published",
+     "saw": "✓ no clock invented by the button [{\"board\":[\"IN TIME + WX/NOTAMS\"],\"week\":[\"IN TIME + WX/NOTAMS\",\"IN TIME + WX/NOTAMS\"]}] · ✓ no credit: cell empty [] · ✓ balance unchanged [{\"base\":\"0\",\"now\":\"0\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-S23-notakeoff-week.png",
+      "dk-12-S23-notakeoff-pub-cell.png",
+      "dk-13-S23-notakeoff-pub-tracker.png",
+      "dk-14-S23-notakeoff-day-day.png"
+     ]
+    },
+    {
+     "id": "S23-notakeoff-words",
+     "did": "the line's boxes, the day's warning words, what publishing did",
+     "saw": "{\"ff\":\"{\\\"label\\\":\\\"WAVE 1\\\",\\\"night\\\":false,\\\"intimes\\\":[],\\\"traffic\\\":[],\\\"formations\\\":[{\\\"cs\\\":\\\"VIPER\\\",\\\"msn\\\":\\\"\\\",\\\"to\\\":\\\"\\\",\\\"ld\\\":\\\"\\\",\\\"aircraft\\\":[{\\\"p\\\":\\\"bane\\\",\\\"w\\\":\\\"\\\",\\\"area\\\":\\\"\\\",\\\"rmks\\\":\\\"\\\",\\\"opts\\\":{},\\\"rid\\\":\\\"rmuwpa7jir1vpkz\\\"}],\\\"rid\\\":\\\"rmuwpa7jiu7yfpl\",\"warns\":[\"hard/OIL_NO_TIMES: the VIPER line has no usable times — nobody on it earns OIL for this day\",\"adv/OIL_UNPUBLISHED: This day is not published yet, so nobody earns their OIL for it — publish it before the day is out\"],\"pubr\":{\"pressed\":true,\"label\":\"Publish day\"},\"head\":{\"tag\":\"ORIG\",\"pending\":\"14 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\"}}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-11-S23-notakeoff-week.png"
+     ]
+    },
+    {
+     "id": "S24.a",
+     "did": "published IN TIME 08:30 (FO); the line typed over with 10:00 but Escape pressed",
+     "saw": "✓ base: published FO 08:30–15:00 [{\"cell\":\"FO*\",\"row\":\"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left\"}] · ✓ while typing the box read 10:00 [IN TIME 10:00] · ✓ after Escape the line holds [\"IN TIME 08:30\"] [{\"stored\":[\"IN TIME 08:30\"],\"shown\":\"IN TIME 08:30\"}] · ✓ no pending [] · ✓ paid FO 08:30 holds [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-S24a-escape.png",
+      "dk-18-S24a-esc-day-day.png",
+      "dk-19-S24a-esc-cell.png",
+      "dk-20-S24a-esc-tracker.png"
+     ]
+    },
+    {
+     "id": "S24.b",
+     "did": "the line then deleted with its own ✕; then Publish AL",
+     "saw": "✓ ✕ was there [1] · ✓ no In-time/Rally line left [[]] · ✓ 1 pending [1 pending] · ✓ paid FO 08:30 holds until amendment [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ AL1 [AL1] · ✓ now HO 09:00–15:00 (nominal) [{\"cell\":\"HO*\",\"row\":\"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"}] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-S24b-deleted.png",
+      "dk-22-S24b-del-day-day.png",
+      "dk-23-S24b-del-day-togoout.png",
+      "dk-24-S24b-del-cell.png",
+      "dk-25-S24b-del-tracker.png",
+      "dk-26-S24b-am-cell.png",
+      "dk-27-S24b-am-tracker.png"
+     ]
+    },
+    {
+     "id": "S24.c",
+     "did": "published IN TIME 08:30 (FO); the line committed as IN TIME 10:00; then Publish AL",
+     "saw": "✓ line reads 10:00 [[\"IN TIME 10:00\"]] · ✓ 1 pending [1 pending] · ✓ paid FO 08:30 holds [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance holds [{\"was\":\"1\",\"now\":\"1\"}] · ✓ AL1 [AL1] · ✓ now HO 10:00–15:00 [{\"cell\":\"HO*\",\"row\":\"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left\"}] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-30-S24c-board.png",
+      "dk-31-S24c-day-day.png",
+      "dk-32-S24c-day-togoout.png",
+      "dk-33-S24c-held-cell.png",
+      "dk-34-S24c-held-tracker.png",
+      "dk-35-S24c-am-cell.png",
+      "dk-36-S24c-am-tracker.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

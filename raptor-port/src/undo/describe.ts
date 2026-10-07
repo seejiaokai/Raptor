@@ -20,6 +20,7 @@
 import type { UndoEntry } from './types'
 import type { Change } from '../command'
 import { parseHideDetail } from '../engine/hidedetail'
+import { REPORTING_LABEL } from '../engine/reporting'
 
 /* a person's callsign by id, for the Leave War's records (its ids carry the person, not his name) — installed by the
    app (state/undo-wire.ts), read LIVE when the entry is recorded; null when none is installed (tests). `defaultOf` —
@@ -127,7 +128,7 @@ export function textLabel(key: string | undefined): string | null {
     case 'ff': return last === 'cs' ? 'a flying line’s callsign' : last === 'msn' ? 'a mission' : 'a flying line’s details'
     case 'fr': return 'a remark on a flying line'
     case 'dr': case 'sr': case 'gr': case 'ap': return 'a detail on the schedule'
-    case 'it': return 'an In-time / Rally line'
+    case 'it': return `an ${REPORTING_LABEL} line`
     case 'st': return 'the stores on a jet'
     case 'ar': return 'an area'
     case 'at': return 'an area time'

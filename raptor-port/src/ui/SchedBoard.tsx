@@ -2,7 +2,7 @@
    is 1:1 with the reference; the four panels are filled by the verbatim
    builders in an effect and re-hung on every store change, and the board's
    own delegated handlers are attached to #sbBoard. */
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { SBDAY, CURPAGE, DPREV, HISTMODE, esc, restArmed, HLSET, SEARCH, HLOPEN, toggleHlOpen, setSearch, ARM, navGen } from '../state/view'
@@ -18,7 +18,10 @@ import { daySnapOf, alColor, dayDiscardCount } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
-import { withDaySnap, withVersionFlags } from './html'
+import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
+import { holdingPlace } from './dayswap'
+import { useSheetFocus } from './sheetfocus'
+import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
 import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, dayTplMenu } from './board'
@@ -29,6 +32,7 @@ import { wireRowDrag } from './rowdrag'
 import { editingText } from './textedit'
 import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
 import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
+import { SaveBand } from './SaveStatus'
 import { clickedOutside } from './outside'
 
 export function SchedBoard() {
@@ -83,6 +87,20 @@ export function SchedBoard() {
     document.addEventListener('pointerdown', down, true)
     document.addEventListener('keydown', key, true)
     return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true) }
+  }, [moreOpen])
+  /* THE MENU OPENS WHOLE ON SCREEN (W18, 5 Oct 26). It hangs from the button's left edge; in the phone's Desktop layout
+     the board pans, and with the button near the right edge of the screen the menu ran off it. Measured as it opens,
+     before the first paint: if its right edge would pass the screen's, hang it from the button's right edge instead
+     (and back, should that side not fit either). The class lives on the menu's own node, which goes when it closes. */
+  useLayoutEffect(() => {
+    if (!moreOpen) return
+    const menu = moreRef.current?.querySelector<HTMLElement>('.sb-moremenu')
+    if (!menu) return
+    menu.classList.remove('end')
+    if (menu.getBoundingClientRect().right > window.innerWidth - 4) {
+      menu.classList.add('end')
+      if (menu.getBoundingClientRect().left < 4) menu.classList.remove('end')
+    }
   }, [moreOpen])
 
   /* LOCK THE PAGE WHILE THE BOARD IS OPEN (owner-reported, 11 Aug 26 — "I
@@ -258,13 +276,26 @@ export function SchedBoard() {
        whether the panels have a day to render, which SBDAY alone answers
        correctly. */
     if (SBDAY == null) { panelPrev.current = {}; pendingPaint.current = null; return }
-    if (editingText()) { pendingPaint.current = { di: SBDAY, nav: navGen() }; return }
-    pendingPaint.current = null
+    /* WHILE A TEXT BOX HAS THE CARET, EVERY PANEL THAT DOES NOT HOLD IT IS STILL WRITTEN (W15, the Codex stack check,
+       5 Oct 26; D509 — a timing warning "shows in the warning list"). The board used to write nothing at all until the
+       caret left text; on the Tab route that is a whole day, and the list said "No conflicts" beside a line it should
+       have named. The panel with the caret waits, as before (pendingPaint stays set and the paint after the caret
+       leaves writes it); inside it the wave header's clock is corrected in place (W16). A look at an older version,
+       and a caret that is not in the board's own panel, keep the old rule — nothing is written. */
+    let caret: HTMLElement | null = null
+    if (editingText()) {
+      pendingPaint.current = { di: SBDAY, nav: navGen() }
+      caret = document.activeElement as HTMLElement | null
+      if (!caret || DPREV.has(SBDAY) || !boardRef.current || !boardRef.current.contains(caret)) return
+    } else pendingPaint.current = null
     const di = SBDAY
-    const set = (el: HTMLElement, key: string, html: string) => {
+    const put = (el: HTMLElement, key: string, html: string) => {
       if (panelPrev.current[key] === html) return
+      if (caret && el.contains(caret)) return   // the caret's own panel: owed, written when the caret leaves
       el.innerHTML = html; panelPrev.current[key] = html
     }
+    /* with a caret, the writes above it must not move the box he is typing in */
+    const set = (el: HTMLElement, key: string, html: string) => { if (caret && caret.isConnected) holdingPlace(caret, () => put(el, key, html)); else put(el, key, html) }
     set(daysRef.current!, 'days', dayTabsHTML(di))
     /* same lazy orphan prune as the edit week */
     if (DPREV.has(di) && !daySnapOf(di, DPREV.get(di))) DPREV.delete(di)
@@ -311,9 +342,12 @@ export function SchedBoard() {
        answer — the armed slot's day, else the day the week behind is scrolled to — and the board draws no day name, so
        Thursday's board listed Monday's crew: a man on leave Thursday showed free. An armed slot still wins. */
     set(rosterRef.current!, 'roster', paletteHTML(ARM && ARM.di >= 0 ? ARM.di : di, { head: false }))
+    if (caret) refreshWaveReports(boardRef.current)
     refreshHighlights()
     /* the gold dots, as on the edit week ([HIST-PHONE-HIDE], D345) — over the board wrap, where the bubble is wired */
     refreshHistDots(wrapRef.current)
+    /* an open Blue/Red question hangs inside the board's own panel — put it back after a rewrite (P2-F3, as on the week) */
+    reconcileMissionRoleOffer()
     /* a repaint replaces a panel's markup wholesale, so a bubble that is up
        may have just lost the cell it hangs on — re-anchor it, or take it down
        if the row has gone (audit, 12 Aug 26). Before this it only noticed on
@@ -570,6 +604,10 @@ export function SchedBoard() {
             on a phone, where the fold makes its own geometry. */}
         <i className="sb-break" aria-hidden="true"></i>
         <div className={'sb-hl' + (HLOPEN ? ' open' : '')} id="sbHlStrip"><HlChips /></div>
+        {/* A FAILED SAVE'S WARNING ([SAVE-NOTE-COVERS], D587): the board lies over the top bar, so the bar's own
+            warning cannot be seen from here — the board carries it, on a line of its own at the bottom of its bar.
+            INSIDE .sb-top like the strip above, so --sb-topH follows it and nothing below is covered. */}
+        <SaveBand active={open} />
       </div>
       <div className="sb-main" ref={mainRef}>
         <div className={'sb-boardwrap' + (HISTMODE ? ' hist-on' : '')} ref={wrapRef}>
@@ -632,6 +670,9 @@ export function CxDialog() {
   const what = open ? (CXT.label || 'this line') : ''
   const canEdit = canEditSched()
   useEffect(() => { if (open && inRef.current) { inRef.current.value = (CXT.o.cxr || ''); inRef.current.focus() } }, [open])
+  /* the dialog keeps the keyboard while it is up (RF2 — ui/sheetfocus.ts) */
+  const cxBox = useRef<HTMLDivElement>(null)
+  useSheetFocus(cxBox, open)
   /* dropping edit mode when the dialog closes so it never reopens mid-edit */
   useEffect(() => { if (!open) { setEditing(false); setArmReset(false) } }, [open])
   const close = () => { setCxt(null); notify() }
@@ -651,7 +692,7 @@ export function CxDialog() {
   return (
     <div className="airpop" id="cxPop" hidden={!open}
       onClick={e => { if (clickedOutside(e, 'cxPop')) close() }}>
-      <div className="airpop-box cxbox">
+      <div className="airpop-box cxbox" ref={cxBox} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b id="cxTitle">{on ? (what.charAt(0).toUpperCase() + what.slice(1)) + ' is cancelled — reason' : 'Cancel ' + what}</b><button className="x" id="cxClose" aria-label="Close" onClick={close}>✕</button></div>
         <div className="cxbody">
           <label className="cxlead" htmlFor="cxReason">CX DUE</label>
@@ -716,10 +757,13 @@ export function SortAllDialog() {
   const open = di != null
   const d = open ? DAYS[di] : null
   const close = () => cancelSortAll()
+  /* the dialog takes the keyboard when it opens and keeps it (RF2 — ui/sheetfocus.ts) */
+  const sortBox = useRef<HTMLDivElement>(null)
+  useSheetFocus(sortBox, open)
   return (
     <div className="airpop" id="sortAllPop" hidden={!open}
       onClick={e => { if (clickedOutside(e, 'sortAllPop')) close() }}>
-      <div className="airpop-box">
+      <div className="airpop-box" ref={sortBox} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b id="sortAllTitle">Sort all — {d ? d.dow : ''}</b><button className="x" id="sortAllClose" aria-label="Close" onClick={close}>✕</button></div>
         <div className="airpop-body">
           Every section on {d ? d.dow : 'this day'} — flying, duties, sims, ground and the

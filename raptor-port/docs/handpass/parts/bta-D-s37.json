@@ -1,0 +1,74 @@
+{
+ "parts": {
+  "bta-D-s37-dk": {
+   "at": "2026-10-06T09:27:38.727Z",
+   "base": "http://localhost:4241",
+   "phone": false,
+   "table": [
+    {
+     "id": "S37.0",
+     "did": "admin: LL for Vandal filed, Vandal on a blank line, Tuesday published, then the leave lifted",
+     "saw": "WORKING: [ORIG · 1 pending · Not yet signed · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] + goes-away-once-signed [\"On leave + flying Vandal goes away once signed\"] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-02-dk-s37-1-admin-W.png"
+     ]
+    },
+    {
+     "id": "S37.1",
+     "did": "signed in as the member (us / Ranger): View-only Sched, Tuesday's published face",
+     "saw": "top bar {\"page\":\"viewsched\",\"tabs\":[\"View-only Sched\",\"Inputs\",\"Quals\",\"Logic\",\"Leave War\",\"Tracker\",\"Help\"]} · FACE: [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · write doors drawn in the day: {\"woff\":0,\"sign\":0,\"pub\":0} · ⓘ day details: \"3 WARNING 1 ADVISORY 1 NOTE\" · 5 lines: plain plain plain plain plain",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-dk-s37-2-member-face.png",
+      "dk-04-dk-s37-2-member-face-puck.png",
+      "dk-05-dk-s37-2-member-dayinfo.png"
+     ]
+    },
+    {
+     "id": "S37.2",
+     "did": "the member files an LL for Wednesday on the Inputs page",
+     "saw": "new rows: [\"imuwh5pw1gpozis:bane:LL:Jul 15 allday\"] ·  · page \"inputs\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-dk-s37-3-member-own-input.png"
+     ]
+    },
+    {
+     "id": "S37.2b",
+     "did": "Tuesday's face after the member's own filing",
+     "saw": "[ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Walker D\"] · pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-dk-s37-3b-member-face-V.png"
+     ]
+    },
+    {
+     "id": "S37.3",
+     "did": "the member looks for a way to change or remove someone else's input on the Inputs page",
+     "saw": "rows listed: 2 (people on them: [\"bane\",\"bane\"]; the whole demo world holds 47 inputs) · the member's own new row has ✕: true, edit: true · other people's rows with a ✕ or edit pen: 0 of 0",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-dk-s37-4-member-inputs-table.png"
+     ]
+    },
+    {
+     "id": "S37.4",
+     "did": "the member tries to reach Edit Schedule (the page and the board) to change the schedule",
+     "saw": "top bar [\"View-only Sched\",\"Inputs\",\"Quals\",\"Logic\",\"Leave War\",\"Tracker\",\"Help\"] (no Edit Schedule tab) · after the probe's go(\"editsched\") the page is \"editsched\", Edit Schedule week drawn: true, board opened: true, \"+ Wave\" doors drawn: 0 · a try at typing a callsign: could not type: TimeoutError: locator.click: Timeout 2500ms exceeded.\nCall log:\n\u001b[2m  - waiting ; first line's callsign before/after: \"VL\" / \"VL\" · Tuesday's waves before/after: unchanged",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-09-dk-s37-5-member-edit-attempt.png"
+     ]
+    },
+    {
+     "id": "S37.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

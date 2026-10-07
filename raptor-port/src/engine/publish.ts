@@ -16,7 +16,8 @@ import { isPreservedWeek, rowElsewhere } from './weekstash'
 import { standsOn } from './overlay'   // functions only both ways
 import { inputProtected } from './quarantine'   // functions only both ways, so the import loop is safe
 import { rosterIds } from './faceattrs'
-import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly } from './oilev'
+import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals } from './oilev'
+import { oilRuleValsNow } from './oil'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -243,7 +244,8 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
              line was drawn "still", with the row right there) */
           item.jump=(item.jump||[]).concat(u.jump||[]); item.keys=(item.keys||[]).concat(u.keys||[]);}}}});
   /* the OIL line folds into the inputs that moved it, when they are all that moved it (oilev.ts oilMovedInputsOnly) */
-  const oil=oilDelta(di,snap.d);
+  /* (the Logic-values entry — `oilrv:` — is never folded: it is nobody's input, and its own act; it is pushed below) */
+  const oilAll=oilDelta(di,snap.d), oil=oilAll.filter((e:any)=>!String(e.addr).startsWith('oilrv:'));
   if(oil.length){const w=(snap.d||{}).oilev, mem=!!(w&&(w.mem||w.earns));
     const moved=oilMovedInputsOnly(oilEvidence(di),DAYS[di],w,snap.d,mem);
     const who=new Set<string>(); ax.changed.forEach((x:any)=>{if(x.was)who.add(String(x.was.person)); if(x.now)who.add(String(x.now.person));});
@@ -251,6 +253,7 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
     if(!fold)oil.forEach((e:any)=>items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}));
     /* the record keeps the OIL entry; the line the admin reads says it moves with the input (D45: he SEES it) */
     else{const first:any=items.find((u:any)=>!!u.val); if(first)first.oilFold=true;}}
+  oilAll.forEach((e:any)=>{ if(String(e.addr).startsWith('oilrv:'))items.push({kind:'oil',addr:'',jump:[],keys:[],entry:e,axis:'oil'}); });
   /* …and the warnings the issued face froze, when today's judgement of the issued day differs (the live book only —
      a stashed week has no official pass of its own) */
   if(sc===SCHED)warnDelta(di).forEach((e:any)=>items.push({kind:'warn',addr:'',jump:[],keys:[],entry:e,axis:'warn'}));
@@ -488,7 +491,18 @@ function oilDelta(di:any,issuedDay:any):DeltaEntry[]{
      it — that signal is real and predates this step. */
   const mem=!!(w&&(w.mem||w.earns));
   const now=oilEvidenceKey(oilEvidence(di),DAYS[+di],mem), was=oilEvidenceKey(w,issuedDay,mem);
-  return now===was?[]:[{addr:`oil:${+di}`,kind:'oil',from:was,to:now}];}
+  return (now===was?[]:[{addr:`oil:${+di}`,kind:'oil',from:was,to:now} as DeltaEntry]).concat(oilRuleDelta(di,issuedDay));}
+/* …AND THE LOGIC VALUES THE VERSION'S OIL WAS WORKED OUT FROM ([OIL-WORK-START] — owner, D592 (4), 5 Oct 26: "a published
+   day keeps the OIL it went out with"). The version keeps them (oilev.ts — the block's `rv`) and its OIL goes on being
+   read with them, so a Logic change no longer moves a published day's OIL. This is the telling half (D45): where today's
+   values WOULD write a man's OIL record for the issued day differently — his amount, or the worked times beside it —
+   ONE entry under its own address: its own item in the count and the list, beside any change to the OIL decisions,
+   since the two are different acts. It rides dayDelta, so the sign-offs fall with it (D103, pendingKey) and it clears
+   when the value is put back (D98). `from` / `to` name each man and his record on either side, so the binding moves when
+   a further change moves anyone else. */
+function oilRuleDelta(di:any,issuedDay:any):DeltaEntry[]{
+  const rows=oilRuleShift(issuedDay,(issuedDay||{}).oilev);
+  return rows.length?[{addr:`oilrv:${+di}`,kind:'oil',from:oilShiftKey(rows,'was'),to:oilShiftKey(rows,'now')}]:[];}
 /* ---- Phase 2: the ONE normalized publication delta (F-02) ------------------
    Eligibility, the panel counts and the stored diff ALL derive from this — never
    from the accumulated pending marks. Compares the live day against the CURRENT
@@ -1308,7 +1322,16 @@ function currentBindNow(di:any){ const d=DAYS[di];
      another key and clears the four; a re-order only the array sees changes nothing. `gord` is retired (always ''): it
      only restated the order, and a binding stored while it existed re-signs once (demo data — D56). */
   const shown=d&&Array.isArray(d.ground)&&d.ground.length?{...d,ground:groundOrder(d.ground,d.gman).map((x:any)=>x.row)}:d;
-  return {dg:d?digest(shown,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oilEvidence(di),d), gord:'', pd:pendingKey(di)};}
+  /* …AND THE LOGIC VALUES THE SIGNED DAY'S OIL WAS WORKED OUT FROM (`orv` — [OIL-WORK-START], D592 (4); Astra's plan
+     challenge, finding 1, 6 Oct 26). The pending axis above protects the ISSUED day against a Logic change; the four also
+     sign a CANDIDATE — a day not yet published, or an amendment waiting — and a full-day line raised after they signed
+     could publish a half day on four signatures given for a full one. The binding keeps the three values as they stood
+     at signing (only on a day that earns; null otherwise) and signBoundOk asks the one question: would the day, as it
+     stands now, write anyone's OIL record differently under those values than under today's (oilRvBoundOk)? Not a plain
+     equality — a Logic change that touches no record on this day leaves the four standing (D103: only a change that
+     shows). Both plan challenges asked for it (Astra's finding 1, Sol's finding 1). */
+  const oev=oilEvidence(di);
+  return {dg:d?digest(shown,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di), oil:oilSignKey(oev,d), gord:'', pd:pendingKey(di), orv:oev.earns?oilKeptVals(oev):null};}
 /* ANY PENDING CHANGE WIPES THE SIGN-OFFS (owner, D103, 25 Sep 26 — his own idea: "why dont we just wipe the
    sign offs for any changes to the schedule?"). ONE rule: something waiting means sign again. So a signature on
    a PUBLISHED day also binds to the whole pending comparison itself — every entry of dayDelta, the same body
@@ -1356,7 +1379,18 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
      rides `dg`. Every new binding carries gord ''; one stored while it existed re-signs once (demo data — D56) */
   /* …and the pending comparison (D103): a binding written before it existed reads '' — which is exactly what a
      day with nothing waiting has, so it stands there and falls the moment anything is pending */
-  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&(x.gord||'')===(c.gord||'')&&(x.pd||'')===(c.pd||'')&&oilBoundOk(di,x.oil,c.oil);}
+  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil&&(x.gord||'')===(c.gord||'')&&(x.pd||'')===(c.pd||'')&&oilBoundOk(di,x.oil,c.oil)&&oilRvBoundOk(di,x.orv);}
+/* the day as it stands now, under the Logic values it was signed with against today's: the same question, and the same
+   body, the pending comparison asks of an issued day (oilev.ts oilRuleShift) — so the two cannot disagree about what
+   "this Logic change moves somebody's OIL" means. A binding with no kept values — a day that earned nothing when it was
+   signed, or one signed before this build — binds nothing here; putting the value back restores the four (AM11). */
+function oilRvBoundOk(di:any,was:any){
+  if(!was)return true;
+  /* the common case first — nothing changed since he signed — before any evidence is built: this runs for every signed
+     role on every repaint (docs/performance.md Part 1) */
+  const n=oilRuleValsNow();
+  if(was.reportLead===n.reportLead&&was.debrief===n.debrief&&was.oilFullMin===n.oilFullMin)return true;
+  return oilRuleShift(DAYS[+di],{...oilEvidence(di),rv:was}).length===0;}
 /* A BINDING WRITTEN BEFORE `stand` EXISTED stores the OIL key in the old
    six-part form, which can never equal today's seven-part one — so every
    signature given before this build fell off a day whose content had not moved,

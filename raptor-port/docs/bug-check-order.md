@@ -1,11 +1,5 @@
 # HOW THIS PROJECT BUG-CHECKS — the standing order
 
-**Temporary Codex mapping — D496 (2 Oct 26), until Monday 5 Oct 26 at 19:00:** Astra plans and designs scenarios;
-Sol 6.1 challenges Astra's plans and builds; a fresh independent Astra inspector reads Sol's final code.
-The temporary same-provider reads replace the model/count mapping only, preserve every applicable check below,
-and do not count as cross-provider approval. Claude's further reads are owed before main (D494).
-Exact roles and bounded review/fix loop: `codex-review-workflow.md`. Existing Claude skills remain unchanged.
-
 Adopted 21 Sep 26, after the OIL build. Merged from two independent proposals written by models
 that did not build the code: Fable 5.1 and Astra/Codex (D8). Both are kept verbatim beside this file
 (`superpowers/briefs/2026-09-21-bugcheck-method-fable.md`, `…-codex.md`) so the reasoning behind
@@ -18,9 +12,10 @@ rules sweep, and the 21 Sep "test like a human" rule. All three are inside it; n
 
 ## 0. The one sentence
 
-**A build is not checked until someone has driven the real app across every place the feature
-shows, in every order it can be used, on a day that has everything on it — and left the pictures
-and the table that prove it.** (D5)
+**A build is not checked until someone has driven the real app across every place the feature shows,
+on a day that has everything on it — every required surface seen and operated, every required order
+given a result by that walk or by a test allowed to carry it (§7.0) — and left the pictures and the
+table that prove it, the table saying which proof was used.** (D5, D607, D608)
 
 The rule that overrides all others: **a walk that left no picture did not happen.**
 
@@ -51,8 +46,8 @@ is the agent's job, answered out of §5.
 2. **Answer the eight questions in §5** against the actual change and **state the TIER out loud**:
    NONE / LOOK / WALK / FULL. If a question cannot be answered NO with a reason that could be
    written down, the answer is YES.
-3. **Tell him in one short block what that tier means you are about to do** — the checks, and
-   roughly how long. He reads it; he does not choose it. If he wants less, he will say so, and that
+3. **Tell him in one short block what that tier means you are about to do** — the checks, the size
+   of the walk and why (§7.0), and roughly how long. He reads it; he does not choose it. If he wants less, he will say so, and that
    is his call to make, not the agent's to assume.
 4. **Execute it in the order §5 gives**, and finish with the `Walk:` line from §9.
 
@@ -119,7 +114,9 @@ whole reason this order exists.
 The OIL build is only the evidence. Nothing in this order is specific to it (D12). It is keyed to the
 SHAPE of a change, not its subject, and the eight questions in §5 do the adapting for you.
 
-Read this table as "what kind of work am I doing" → "what this order will make me check":
+Read this table as "what kind of work am I doing" → "what this order will make me check". The table says
+what must be COVERED for each kind of work; how much of it is driven, at what sizes beyond the required ones,
+and by how many, is decided per change in the sizing step (§7.0, D607):
 
 | The kind of work | What the order makes you do | The thing it is looking for |
 |---|---|---|
@@ -186,7 +183,7 @@ before they start, so the finding is never produced.**
 | **The rules read** | The register of rulings is walked one by one against what the code does. | A ruling gone stale, or one quietly doing a job a later ruling took away. | The same blindness, plus its own: it is indexed by RULING, so it checks each on ONE surface and ticks it. |
 | **The roll-call** *(new)* | For the thing the feature attaches to — a man's puck, a row, a day — a list of EVERY place the app draws it, each with a written answer: has it / must not have it, because… / MISSING. | **Missing lines.** The single artefact that would have caught all three of the owner's finds before anyone opened the app. | A wrong line. Whether what IS wired looks right when painted. |
 | **The door check** *(new)* | For every action the data allows, the name of the screen control that lets a person do it — in every state, in every order. | A thing the data permits that no screen offers. An action that works before publishing and has no door after. | Whether the door does the right thing once opened. |
-| **The walk** | An agent drives the REAL built app in a real browser, phone and desktop width, on a day that has everything on it, through every surface in the roll-call and every line of the order list, taking pictures. | The seams: a mark painted over by a chip; a seat drawn but not tappable; a mode that strands the board; a control that does nothing. Anything that only exists when the whole app runs. | Money wrong by an amount the screen does not show. States it did not set up. Anything it did not think to walk — which is why it is DRIVEN by the roll-call, not by instinct. |
+| **The walk** | An agent drives the REAL built app in a real browser, phone and desktop width, on a day that has everything on it, through every surface in the roll-call and through the controls, states and orders the sizing step chose (§7.0), taking pictures. | The seams: a mark painted over by a chip; a seat drawn but not tappable; a mode that strands the board; a control that does nothing. Anything that only exists when the whole app runs. | Money wrong by an amount the screen does not show. States it did not set up. Anything it did not think to walk — which is why it is DRIVEN by the roll-call, not by instinct. |
 | **The owner's look** | Five minutes of the owner using the app on the seeded day, pictures first. | The gap between what was built and what he meant. He tests EXPECTATIONS where every other check tests IMPLEMENTATIONS. | Everything under the surface: money, the freeze, history. He is not the test department. |
 
 A screenshot proves appearance, never a gesture. A browser test is not the walk. A code read is not
@@ -211,6 +208,19 @@ first, because it runs on his ChatGPT/Codex account and not his Claude allowance
 red team of an important plan (rank 3) — BOTH; the code reads on high-consequence work (rank 2) — BOTH. Measured on
 28 Sep 26: three Fable runs cost ~1.4M Claude tokens and found the serious issues; the doubled scenario and side-question
 runs mostly repeated each other.
+
+**WHO THE TWO ARE NOW (owner, D590, 5 Oct 26 — "A").** Wherever this section says "Fable", "both" or "the other
+providers" about work OPUS wrote: **Astra reviews it, and Sol 6.1 is the second reader where two are required** — the
+code reads on high-consequence work (rank 2), an important plan's red team (rank 3), a changed working guide (D70).
+They read independently and blind to each other; where Astra is unavailable Sol takes the one-reviewer jobs. **Fable is
+on call only:** a bug Opus cannot crack, or a big open-ended plan, on his word each time. What Codex planned or built is
+read by Opus 5.5 (D67 (3)), unchanged. The price he was told: Astra and Sol come from one maker and tend to miss the
+same kinds of thing — a weaker pair than Fable and Astra — so the walk of the running app carries more, never less.
+**One side-by-side, once:** on the first high-consequence change Opus wrote, Astra, Sol AND Fable each read it; the
+report to him says what each found, each one's false alarms, and Fable's cost in his weekly allowance (read before and
+after). His answer is a new ruling on whether Sol keeps the seat.
+**Done, and answered (owner, D601, 6 Oct 26 — "ok sol can be a 2nd reviewer"):** the side-by-side ran once, on the Insights
+fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 keeps the second seat.** It is not repeated.
 
 **Do NOT spend them on:**
 
@@ -266,8 +276,10 @@ an area the other found a defect in is the cheapest possible pointer to a real b
 6. Settle disagreements with evidence, never by confidence or majority.
 7. Every confirmed defect gets a regression test and a row in the roll-call.
 
+**Opus sizes the coverage for this change (§7.0; owner, D607, 7 Oct 26). A short walk may be run by the host or
+by one helper; if the chosen pass is long, D16 requires parallel helpers, as below.**
 **A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
-helpers are Opus agents, and each walks its own WORLD — its own port, its own fresh browser context, its own
+helpers are Opus agents (Sonnet 5.5 since D588, 5 Oct 26 — the paragraph at the end of this block), and each walks its own WORLD — its own port, its own fresh browser context, its own
 copy of the demo data — so no two share a fixture; each is handed the fixture recipe rather than left to
 rediscover it. The price of the speed: a helper's "found nothing" is weaker evidence than the host's own look,
 so each returns PICTURES and a filled table, and the host REPRODUCES every finding before it enters the
@@ -276,24 +288,26 @@ bundle under them and mixes pre-fix and post-fix behaviour in one walk. The host
 without writing output and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait for the
 walkers' reports.
 
-**A TRIAL, ON THE NEXT WALK ONLY (owner, D476, 1 Oct 26 — "Trial", to save tokens: the three walkers of one FULL
-check cost about 1.9 million).** ONE extra walker runs on Sonnet 5.5 beside the Opus ones — the same brief, the same
-scenario list, the same frozen build as ONE of the Opus walkers, in its own world; it replaces nobody. The host
-reproduces every finding of both, as above, and reports to him in plain words: what each found, what each missed
-that the other found, the false alarms, whether each opened its pictures, and the tokens each cost. Until he rules
-on that report nothing else goes to a cheaper model (the 17 Sep 26 rule, `guide-full.md` §Models): every other
-walker, the build, the roll-call and the reviews stay as they are. The open job: `OUTSTANDING.md`
-`[SONNET-WALKER-TRIAL]`.
-**A SECOND TRIAL (owner, D480, 1 Oct 26 — "One more trial").** The first ran on `[INSIGHTS-WHICH-COPY]`'s walk: the same
-verdict from both walkers on all 19 scenarios, no false alarm, about half the cost — on a build with nothing in it to catch.
-So on the NEXT walk one Sonnet 5.5 walker runs beside an Opus walker again, the same way, **on a build with known
-defects**: the build as it stood BEFORE its fix (or an earlier commit whose walk found real ones), neither walker told
-what is wrong, and the report says what each CAUGHT apart from whether each followed the brief. Until he rules on that
-second report nothing else goes to a cheaper model.
-**ONE EXCEPTION, ONCE (owner, D508, 3 Oct 26 — his allowance at 94% before the reset).** For the two Codex builds
-(`codex/discard-marks-remove`, `codex/rally-workspan`) Opus 5.5 plans a small, targeted check and Sonnet 5.5 does the
-reading and the walking, with no Fable; the host reproduces every find. It is an early signal on Codex's reliability,
-NOT a bug check: the full check, this second trial and the second reads stay owed after the reset, before "merge live".
+**FROM 5 OCT 26 THE WALKERS ARE SONNET 5.5 (owner, D588 — "Walk, checks, chores + one trial fix").** A walk's helpers
+are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
+chores, may go to a Sonnet helper too. Unchanged, and the price of it: each walker returns PICTURES and a filled table,
+and the host opens the pictures and REPRODUCES every finding before it enters the evidence sheet. **Sonnet never reads
+code to find bugs** (in one outside code-review test it caught 6 of 13 known bugs where Opus caught 8 to 10, with more
+false alarms), never decides whether a finding is real, never writes the roll-call, a plan or a scenario list. Two trials led here (D476, D480 — both run — and the one check made before the reset, D508; their text:
+`docs/archive/codex-arrangement-2026-10-07.md`). Following the second, on a build with five known faults, the agent kept
+Sonnet 5.5 as the walk helpers, without an Opus walker beside them for comparison (D595; told to him the same night);
+the sizing step still lets the host run a short walk itself (§7.0, D608). Every helper's walk brief carries three
+conditions: the host opens the pictures behind every FAIL and every high-consequence PASS (OIL, a published day, a role,
+saved data); a scenario with an EXPECTED line is judged PASS or FAIL — "RECORDED" is only for scenarios the host marks
+so, and the host re-judges any RECORDED row that has an EXPECTED line; a walker's conclusion is a finding only after the
+host reproduces it. One building trial is still to run: ONE small low-risk fix
+(`[OG-TAG-OVER-COUNT]`) built by a Sonnet helper to a precise spec, its diff and tests read by Opus, checked as its tier
+requires, and touching nothing of earned leave, permissions, the published record, saved data or the rules engine. The host
+also checks what a check run or a document chore hands back before accepting it (D588). **Since D595 (the same night — "make a
+smaller comparison to make a decision from there yourself"): a trial of a cheaper model is kept SMALL — a handful of scenarios, never a
+full share walked twice — and the AGENT decides from the comparison what that model takes, writes the decision and its reasons in the
+evidence sheet and here, and tells him; he can overrule.** His answer to each
+report was to be a new ruling (D588); until then no other build or fix leaves Opus, and haiku stays closed.
 
 **The owner's trigger rule, in one line:**
 
@@ -309,14 +323,14 @@ NOT a bug check: the full check, this second trial and the second reads stay owe
 ## 4a. How this fits the Claudex loop
 
 They do not compete. **Claudex covers the plan and the code; this order covers the running app** (D11).
-Claudex's own rules stand unchanged — in particular *the provider that built never inspects*, and
+Claudex's own rules stand unchanged — in particular *the provider that built never inspects* (one exception: D588's ONE Sonnet trial fix, whose diff and tests Opus reads), and
 *never disable or bypass the workflow's independent reviewer* (`.claude/rules/raptor-executor.md`).
 This order adds checks; it never removes one of Claudex's.
 
 | Claudex stage | What it is | What this order says about it |
 |---|---|---|
 | **Plan review** — the host plans, the other provider attacks the plan before any code | The pre-build red team | This IS §4 rank 3, and Claudex is the machinery for it. The owner's cap of about three rounds still applies; after that, findings fold into the build. |
-| **Build** — one provider implements | — | Unchanged. The implementation stays in the main session (the executor rule). |
+| **Build** — one provider implements | — | Unchanged. The implementation stays in the main session (the executor rule) — one exception: D588's one Sonnet trial fix, its diff and tests read by Opus. |
 | **Final inspection** — a fresh session of the provider that did NOT build reads the finished code | The post-build code read | This is §4 rank 2 — but with two changes, below. |
 | *(nothing)* | — | **Claudex has no step that runs the app.** That is the gap this order fills, and it is where every defect the owner found tonight lived. |
 
@@ -328,7 +342,8 @@ This order adds checks; it never removes one of Claudex's.
    ran first, passed, and three unwired surfaces went out behind it.
 2. **On FULL-tier work, one inspector is not enough.** Claudex's default is a single fresh session
    of the other provider. Where money, entitlement, published records, permissions or persistence
-   are touched, run **both** providers independently and blind to each other (§4 rank 2). That is
+   are touched, run **two** readers independently and blind to each other (§4 rank 2 — for work Opus wrote
+   they are Astra and Sol 6.1, D590; what Codex built, Opus reads beside Codex's own inspector). That is
    what found five money defects here that driving the app would not have.
 3. **The inspection brief gets the finder wording from §4.** Claudex's inspector is asked whether
    the code is wrong. Add the sentence that asks what is MISSING, or it will answer only the first
@@ -339,7 +354,7 @@ bug check never re-opens an approved plan. If the walk finds behaviour the plan 
 that is a question for the owner (§11), not a change made under cover of a fix.
 
 **In one line:** run Claudex to harden the plan, build, then **walk the app**, then run Claudex's
-inspection — both providers if the change touches money — and only then report, with the `Walk:`
+inspection — two independent readers if the change touches money (§4, D590) — and only then report, with the `Walk:`
 line.
 
 ---
@@ -378,8 +393,11 @@ lived in a shared drawer and a new mode. **A cosmetic change to a shared drawer 
 |---|---|---|
 | **NONE** | Nothing. | 0 |
 | **LOOK** | The gates; one before/after picture at phone and desktop; a two-line evidence sheet. | 15–20 min |
-| **WALK** | The gates; the roll-call (if a shared drawer); the door check (if a gesture); the walk of the touched surfaces at both widths; the new gesture in both orders; a break test per surface; the sheet. | 1–1½ h |
-| **FULL** | Everything: the rules sweep; the other model designs the scenarios; the roll-call; the door check; the full walk; break tests; the case seeded into the demo data; **both** models read the code, given the sheet and asked for absences; re-walk what the fixes touched; the sheet with its pictures; then the owner's look. | 3–5 h of agent time |
+| **WALK** | The gates; the roll-call (if a shared drawer); the door check (if a gesture); a walk of the touched surfaces at both widths, sized by the sizing step (§7.0); the new gesture in both orders; a break test per surface; the sheet. | 1–1½ h |
+| **FULL** | Everything: the rules sweep; the other model designs the scenarios; the roll-call; the door check; a walk sized by the sizing step (§7.0); break tests; the case seeded into the demo data; **both** models read the code, given the sheet and asked for absences; re-walk what the fixes touched; the sheet with its pictures; then the owner's look. | 3–5 h of agent time |
+
+The walk is the dearest part and the part whose cost varies most: what past walks of each type of change cost
+and found is in `docs/walk-ledger.md` §The figures (D607).
 
 **One check for a batch (owner, D485, 2 Oct 26 — "batch the checks").** Related features are built together on one branch
 and checked ONCE: the tier is the highest any one change in the batch would get alone; the roll-call, the scenario list and
@@ -393,7 +411,7 @@ never fixed and checked just before a feature changes the same screens, which pa
 people now (a wrong published record, wrong earned leave, lost data) is still fixed at once. Once the features are in, and
 before the database step (D473), ONE check of the whole app is run; its shape is designed when it is due.
 
-**Order of steps in FULL:** build → gates → roll-call and door check → walk, and fix what it finds
+**Order of steps in FULL:** build → gates → roll-call and door check → **the sizing step (§7.0)** → walk, and fix what it finds
 → gates → the two reads, *with the evidence sheet in their hands* → fix → re-walk only what the
 fixes touched → gates → finish the sheet → the owner's look → his "merge live".
 
@@ -454,6 +472,36 @@ inside the puck, over exactly the strip the mark occupies (column 3).
 
 ## 7. The walk
 
+**7.0 Size the walk before it starts (owner, D607, 7 Oct 26; the wording approved D608).** A walk is the dearest
+part of a bug check and the only part that finds a screen nobody wired up, so its size is decided for THIS change —
+never by habit, in either direction. After the roll-call and before any walker starts, Opus (the host when the host
+is Opus, an Opus helper otherwise) writes the five sizing lines of `docs/walk-ledger.md` into the evidence sheet —
+the type of change, what only a walk could find here, what the ledger says about walks of that type, the walk
+chosen, and its row added afterwards — and the choice is told to him in the tier block (§0a, step 3).
+
+- **What can be chosen:** who walks — the host, one helper, or several (a long pass is fanned out, §4, D16); how
+  many scenarios; which sizes are useful BEYOND the required ones (phone and desktop width always, and §7.2's short
+  screen where it applies); and which repeated cases are driven and which are carried by a test.
+- **The floor.** A WALK or FULL change cannot have no walk. The host or the assigned helpers drive the required
+  real controls on the exact build and open the pictures; the host checks a helper's evidence and reproduces every
+  finding (§4, D588); the `Walk:` line is written (§9; D5). Every roll-call row still gets its mark by being SEEN
+  and OPERATED on its own surface (§7.3) — the roll-call is not sized.
+- **What a test may carry, and what it may not.** A named test may carry repeated cases of a calculation where the
+  sizing step says why their route on screen and their behaviour there are the same as a route already walked. It
+  cannot replace seeing and operating a distinct surface, door, role, gesture or order whose behaviour on screen
+  differs. For each case left to a test, the sheet names the test, the exact claim it proves, and whether it works
+  through the app's real controls or calls the calculation or the writer directly. **A test that changes the state
+  directly does not prove that the screen offers a working route** — that a control exists, can be reached, works
+  in that state and shows the right result is proved only in the running app. A claim carried by nothing is a gap,
+  not a saving.
+- **The size is looked at again when the evidence changes.** A real fault or a MISSING row has Opus review what
+  the sizing assumed, and write down its decision: widen the walk where the finding shows a surface, a state, a
+  route or a shared cause of THIS change that has no proof; otherwise record the finding's disposition and why the
+  scope still holds. An older fault met in passing does not by itself enlarge the walk.
+- **It sizes the walk and nothing else.** The tier, the roll-call, the door check, the tests, the gates, the code
+  reads and his look are as this order gives them. It applies to the WALK and FULL tiers; a LOOK is already one
+  before-and-after picture, and a re-walk is already "only what the fixes touched" (§5).
+
 **7.1 Build the day that has everything on it — never the convenient one.** A published Saturday, an
 unpublished Sunday, a weekday beside them, and a public holiday declared after the Saturday went
 out. Carrying every kind of row and every kind of man: a flying line; an SC shift with a MAIN and a
@@ -490,15 +538,17 @@ finding.
 
 **7.3 Walk the surfaces, not the rulings.** This is the difference that cost the OIL build three
 defects. A ruling about something SHOWN or TAPPED gets **one mark per surface**. A ruling about
-MONEY gets **one mark per order**.
+MONEY gets **one recorded result per required order**, saying whether the walk or a test allowed to carry it
+(§7.0) proved it.
 
-**7.4 Walk every order.** Each action from each state; every PAIR of the feature's own actions in
-BOTH orders, on a published day and an unpublished one; after each, undo, redo, reload; every action
-with an opposite walked in the opposite direction AFTER publishing, because that is where money
-freezes.
+**7.4 Account for every order.** List each action from each state; every PAIR of the feature's own
+actions in BOTH orders, on a published day and an unpublished one; after each, undo, redo, reload; every
+action with an opposite, in the opposite direction AFTER publishing, because that is where money
+freezes. Every line of that list gets a result. Each distinct order on screen is DRIVEN; repeated cases
+may be carried by a test within §7.0's limits, and the sheet says which is which.
 
 **7.5 You have walked enough when** every roll-call row has a mark in every column, every order line
-has a result, every MISSING has a disposition, the error list is empty or named, and the pictures
+has a result — from the walk, or from a test §7.0 allows to carry it — every MISSING has a disposition, the error list is empty or named, and the pictures
 exist. Not when it feels fine.
 
 **7.6 A MISSING has three dispositions and no fourth:** fixed with a test that was red before the
@@ -561,8 +611,9 @@ and put it on the owner's look card.
 One file per build, mostly tables, plus a folder of pictures, written DURING the walk:
 `docs/handpass/<date>-<feature>.md`, pictures in `docs/img/handpass/<date>-<feature>/`.
 
-It holds: the eight answers and the tier · the roll-call table · the orders walked, with what the
-screen said and what the money said · the pictures · the break tests · errors seen · **what was NOT
+It holds: the eight answers and the tier · the roll-call table · **the five sizing lines (§7.0)** · the
+orders walked, with what the screen said and what the money said · **the cases carried by a test, each
+with its test and what that test proves** · the pictures · the break tests · errors seen · **what was NOT
 walked and why** · the gate counts · what the walk found and each disposition.
 
 **The closing report gains one mandatory line:**
@@ -570,7 +621,8 @@ walked and why** · the gate counts · what the walk found and each disposition.
 `Walk: docs/handpass/<file> · <n> pictures · <k> surfaces · <m> orders · MISSING: <fixed/ruled/filed>`
 
 or, in those words, `Walk: NOT DONE — <reason>`. A WALK or FULL change with no Walk line **cannot**
-be reported as ready for "merge live". Silence is not an option the format allows.
+be reported as ready for "merge live". Silence is not an option the format allows. The `Walk:` line
+counts only the surfaces and orders actually walked; results carried by a test are listed apart (§7.0).
 
 **And two lines about the documents, copied from the output of `npm run docsize`, never retyped**
 ([DOCS-GUARD], Fable F3/F8, 23 Sep 26). The first says whether every filed record survived the
@@ -591,7 +643,8 @@ budget is a failure — that change IS the trim pass.
    ground row, a Common Programme row, an input, an ALL AVAIL, a man with a warning? Pictures of
    one kind of row mean it was not walked.
 3. Does every roll-call row have a mark in every column, and every MISSING a disposition?
-4. Does the order list show BOTH orders, and the after-publish ones?
+4. Does every order on the list — both directions, and the after-publish ones — have a result, with the
+   walked ones and the ones carried by a test told apart?
 5. Is there one red break test per wired surface?
 
 Any no, and the answer to "merge live" is no.
@@ -636,6 +689,12 @@ Use these names in reviews and reports.
     an outline or a highlight is asserted as PAINTED (a computed style on each element it must cover —
     a pinned column paints its own background over a row's outline), and every picture a step saves
     is opened before the step counts as looked at.
+22. **The walk by habit** *(owner, D607, 7 Oct 26)* — the same number of walkers and scenarios whatever the
+    change: five walkers on a rule inside one calculation, 2.24 million tokens, no fault found in the rule
+    (`[OIL-WORK-START]`, 6–7 Oct 26). The sizing step (§7.0) is the answer.
+23. **The walk sized to nothing** *(D607, D608)* — the sizing step used to skip the walk on a change that had a
+    surface to find, or a test of the arithmetic named as proof that a button works. "The tests cover it" is how
+    three unwired screens went out on 21 Sep 26.
 
 ---
 
@@ -669,7 +728,9 @@ No other check may be substituted for an unticked box.
 - [ ] The exact production build was driven, at both widths.
 - [ ] The fixture was created through the app's own controls.
 - [ ] Every required surface was both SEEN and OPERATED.
-- [ ] Every required order and route was walked, including after publishing.
+- [ ] The walk was sized in writing before it started (§7.0); every required surface and door was seen and
+      operated; every required order has a result — walked, or carried by a test §7.0 allows — including after
+      publishing.
 - [ ] The real downstream result was observed — the money, not just the screen.
 - [ ] Tests use production routes, or are renamed to say what they actually prove.
 - [ ] One red break test per wired surface.

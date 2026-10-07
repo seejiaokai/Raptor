@@ -19,3 +19,77 @@
 .topbar > .savestat button{pointer-events:auto}
 @media (max-width:820px){ .topbar > .savestat{right:14px} }   /* the phone bar's own side padding */
 
+/* A FAILED SAVE'S WARNING HAS A BAND OF ITS OWN ([SAVE-NOTE-COVERS] — D586, D587, 5 Oct 26). Floating like "Saving…" it
+   sat on whatever each page keeps under the bar's right end — the name search box on both schedule pages (a phone tap
+   on the box pressed Retry), the Tracker's ✓ Save changes (a click on it pressed Retry), Quals' filter, the Leave War's
+   "+ New" — for as long as the save kept failing. So while a save has failed the top bar is ONE LINE TALLER
+   (`.save-failed`, set by Shell) and the warning lies along that line, edge to edge: the page moves down by the band
+   and nothing is under it. Everything that follows the bar's height already (it is one line or two by page and width —
+   Quals' and the Leave War's frozen headers, Logic's pinned search, the phone drawer) follows this too. The page moves
+   ONCE, when a save fails, and back when it lands — a failed save is rare and stays failed until it lands
+   (storage/postman.ts), so this is not the per-change twitch the floating "Saving…" note was built to cure, and that
+   note is unchanged above. Still `position:fixed` (the phone bar is a sideways scroll box) with its top MEASURED
+   (ui/SaveStatus.tsx): the bar's bottom less this height. --save-band is that height, the one number both rules share.
+   Amber on the page's own dark, as before — a warning, not an error the person made.
+   `.saveband` is the same warning IN THE FLOW of a full-screen surface that lies over the top bar (the scheduler
+   board, the Inputs calendar, the Medical view), under that surface's own bar. Pinned by e2e/save-note.spec.ts. */
+:root{--save-band:36px}
+.topbar.save-failed{padding-bottom:calc(12px + var(--save-band))}
+.topbar > .savestat.failed, .saveband{box-sizing:border-box;height:var(--save-band);margin:0;padding:0 20px;display:flex;align-items:center;
+  justify-content:flex-end;gap:10px;border:0;border-top:1px solid rgba(229,194,74,.5);border-radius:0;box-shadow:none;
+  background:linear-gradient(180deg,rgba(229,194,74,.16),rgba(229,194,74,.09)),var(--bg);
+  font-size:12.5px;font-weight:600;color:#E5C24A;white-space:nowrap;pointer-events:auto}
+.topbar > .savestat.failed{left:0;right:0}
+/* TWO THINGS FLOAT AT A FIXED HEIGHT ABOVE THE BAR'S LAYER, and where the bar is three lines (a phone on its side, a
+   narrow desktop window) the taller bar would reach them: the week's two side arrows (mid-screen — on a short screen
+   the right-hand one would lie on Retry) and Edit Schedule's blue CREW tab (150px down the right edge). Both move down
+   with the page, by the same band, so each stands where it stood against the bar. So does the spot the two MOVABLE
+   windows open at (the changes window, the ALL AVAIL window — 96px down the right edge, and they stay open while a
+   person works): under a two-line bar they would open on Retry. Once a person has moved one it is where they put it
+   (its own inline place wins). Every other fixed thing is a window or a full-screen surface (D587: a window covers the
+   bar as it always did; a full-screen surface has its own band). */
+.topbar.save-failed ~ .week-nav{top:calc(52% + var(--save-band))}
+.topbar.save-failed ~ .page .ros-rail{top:calc(150px + var(--save-band))}
+/* DESKTOP ONLY (Astra's read, F2): under 621px both windows are bottom panels (`top:auto`), and this rule — an id
+   stronger than theirs — pulled them up to the top and stretched the changes window's slim "Hide" bar into a panel.
+   And lower by the band means shorter by the band, or on a short desktop window the foot would fall off the screen.
+   ONLY A WINDOW STILL AT ITS DEFAULT SPOT (Astra's second read, R2-2): one a person has moved or resized carries
+   `data-placed` (ui/floatwin.ts) and keeps its own box — capped here, its shrunken height would be recorded as the
+   size he chose and stay after the warning went. */
+@media (min-width:621px){
+  #shell.save-failed ~ .chgwin:not([data-placed]), #shell.save-failed ~ .availwin:not([data-placed]){top:calc(96px + var(--save-band));max-height:calc(100vh - 120px - var(--save-band))}   /* drawn beside the shell, not in it (ui/App.tsx) */
+}
+.savestat .sv-msg, .saveband .sv-msg{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.savestat .sv-ico, .saveband .sv-ico{margin-right:6px}
+.topbar > .savestat.failed button, .saveband button{flex:0 0 auto;margin:0;padding:4px 14px;border-radius:9px;border:1px solid currentColor;
+  background:rgba(229,194,74,.12);color:inherit;font:inherit;font-weight:700;cursor:pointer}
+/* on the board the band is the LAST line of the board's own bar (inside .sb-top, so --sb-topH follows it), let out to
+   the bar's edges past its padding; in the two calendars it is a line of the column, between the head and the body */
+.sb-top > .saveband{flex:0 0 auto;order:99;width:calc(100% + 32px);margin:2px -16px -10px}
+.inpcal > .saveband{flex:0 0 auto}
+/* …and in the Leave War's full-screen OIL tracker (grid and settings), a line of that sheet's column under its head */
+.bidsheet.full > .saveband{flex:0 0 auto}
+/* THE BOARD'S DESKTOP LAYOUT ABOVE THE PHONE WIDTH (the stylesheet reader's second pass, 6 Oct 26 — W13 again). That
+   layout is switched on from a phone and stays on for the session, so a phone turned on its side (844px and more) —
+   or a narrow window widened — still has a board 1180px wide that pans, while the phone rules below no longer apply.
+   The band is then a line as wide as the BAR, and its words and Retry sat together at the bar's far right end, off
+   the screen: an empty amber strip. The band keeps the bar's full width (so it keeps a line of its own — a band one
+   screen wide could join the buttons' line up here), and its two pieces are held to the screen's two edges instead:
+   the board itself is the sideways scroller, so sticky left / right pin them wherever it is panned. */
+@media (min-width:821px){
+  .schedboard.sb-wide .sb-top > .saveband{justify-content:space-between}
+  .schedboard.sb-wide .sb-top > .saveband > .sv-msg{position:sticky;left:20px}
+  .schedboard.sb-wide .sb-top > .saveband > button{position:sticky;right:20px}
+}
+@media (max-width:820px){
+  .topbar.save-failed{padding-bottom:calc(8px + var(--save-band))}   /* the phone bar's own 8px */
+  .topbar > .savestat.failed, .saveband{padding:0 14px;justify-content:space-between}
+  .sb-top > .saveband{width:calc(100% + 16px);margin:2px -8px -6px}   /* the phone board bar's 6px 8px */
+  /* W13 (the Codex stack check, 5 Oct 26; D587): the phone board's DESKTOP LAYOUT is 1180px wide and pans
+     (.schedboard.sb-wide>*, part 13), so a band as wide as that bar put its words at one end and Retry at the other —
+     about 700px apart on a 390px screen: a warning with no button. There the band is pinned to the SCREEN instead: the
+     board itself is the sideways scroller, so sticky left:0 holds it at the screen's left edge and 100vw makes it one
+     screen wide — words left, Retry right, at any pan. (e2e/save-note.spec.ts walks three pans.) */
+  .schedboard.sb-wide .sb-top > .saveband{position:sticky;left:0;width:100vw;max-width:100vw;margin:2px -8px -6px;box-sizing:border-box}   /* both side margins negative: at the far pan the band may reach the bar's own edge, past its 8px padding */
+}
+

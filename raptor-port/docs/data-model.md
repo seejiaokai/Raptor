@@ -611,7 +611,8 @@ row and its four `IssuedSignoff` rows — or nothing.
 
 - **Working sign-offs** — the four names on a day not yet (re)issued, and what each one signed. Today `SCHED.sign[di]`
   and `SCHED.signBind[di]` (the binding: the content digest, the date, the issued base and the plan revision each
-  signature promised; a signature is valid only while all four still match — D103). **At stage 1 they ride inside the
+  signature promised; a signature is valid only while all four still match — D103; since 6 Oct 26 the binding also
+  keeps `orv`, the three Logic values the day's OIL was worked out from at signing — `[OIL-WORK-START]`). **At stage 1 they ride inside the
   day's snapshot**, so the day lock protects them like any other change to the day; at stage 2, a `WorkingSignoff`
   row per (day, role): `personId`, `signedAt`, `binding` JSON. Their validity is always recomputed, never stored.
 - **`IssuedSignoff`** — append-only, written with its `Amendment`: `amendmentId`, `role` (`cur|sked|plan|appr`),

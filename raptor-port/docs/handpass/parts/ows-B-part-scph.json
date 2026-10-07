@@ -1,0 +1,54 @@
+{
+ "parts": {
+  "ows-B-sCph-S24-ph": {
+   "at": "2026-10-06T13:15:00.255Z",
+   "base": "http://localhost:4294",
+   "phone": true,
+   "table": [
+    {
+     "id": "S24ph.a",
+     "did": "published IN TIME 08:30 (FO); the line typed over with 10:00 but Escape pressed",
+     "saw": "✓ base: published FO 08:30–15:00 [{\"cell\":\"FO*\",\"row\":\"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left\"}] · ✓ while typing the box read 10:00 [IN TIME 10:00] · ✓ after Escape the line holds [\"IN TIME 08:30\"] [{\"stored\":[\"IN TIME 08:30\"],\"shown\":\"IN TIME 08:30\"}] · ✓ no pending [] · ✓ paid FO 08:30 holds [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance unchanged [{\"was\":\"1\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-03-S24pha-escape.png",
+      "ph-04-S24pha-esc-day-day.png",
+      "ph-05-S24pha-esc-cell.png",
+      "ph-06-S24pha-esc-tracker.png"
+     ]
+    },
+    {
+     "id": "S24ph.b",
+     "did": "the line then deleted with its own ✕; then Publish AL",
+     "saw": "✓ ✕ was there [1] · ✓ no In-time/Rally line left [[]] · ✓ 1 pending [1 pending] · ✓ paid FO 08:30 holds until amendment [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ AL1 [AL1] · ✓ now HO 09:00–15:00 (nominal) [{\"cell\":\"HO*\",\"row\":\"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"}] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-07-S24phb-deleted.png",
+      "ph-08-S24phb-del-day-day.png",
+      "ph-09-S24phb-del-day-togoout.png",
+      "ph-10-S24phb-del-cell.png",
+      "ph-11-S24phb-del-tracker.png",
+      "ph-12-S24phb-am-cell.png",
+      "ph-13-S24phb-am-tracker.png"
+     ]
+    },
+    {
+     "id": "S24ph.c",
+     "did": "published IN TIME 08:30 (FO); the line committed as IN TIME 10:00; then Publish AL",
+     "saw": "✓ line reads 10:00 [[\"IN TIME 10:00\"]] · ✓ 1 pending [1 pending] · ✓ paid FO 08:30 holds [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance holds [{\"was\":\"1\",\"now\":\"1\"}] · ✓ AL1 [AL1] · ✓ now HO 10:00–15:00 [{\"cell\":\"HO*\",\"row\":\"Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left\"}] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-16-S24phc-board.png",
+      "ph-17-S24phc-day-day.png",
+      "ph-18-S24phc-day-togoout.png",
+      "ph-19-S24phc-held-cell.png",
+      "ph-20-S24phc-held-tracker.png",
+      "ph-21-S24phc-am-cell.png",
+      "ph-22-S24phc-am-tracker.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

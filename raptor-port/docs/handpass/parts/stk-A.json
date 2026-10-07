@@ -1,0 +1,284 @@
+{
+ "parts": {
+  "p1a-dk": {
+   "at": "2026-10-05T12:20:01.811Z",
+   "base": "http://localhost:4221",
+   "phone": false,
+   "table": [
+    {
+     "id": "P1-01",
+     "did": "published Mon, changed its Remarks, changed Tue day note; previewed Mon Original; Load onto working copy (armed, then confirmed)",
+     "saw": "✓ Monday published (ORIG, orig=true) [ORIG] · ✓ Mon pending 1 before, Tue pending 1 before [{\"pendMon\":[\"fr:0.rmuv7vcgv54yk0k.rmuv7vcgv0ph216.rmuv7vcgvoirz8w\"],\"pendTue\":[\"dn:1.0\"]}] · ✓ preview banner offers Load onto working copy; first tap arms with a discard count [← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out; it never changes. Discard 1 edit & load — confirm Keep editing] · ✓ nothing changed before confirmation (Mon remarks still the edited text while armed) [[\"fr:0.rmuv7vcgv54yk0k.rmuv7vcgv0ph216.rmuv7vcgvoirz8w\"]] · ✓ Monday follows the existing load: remarks back to the original [1B: BFM-6] · ✓ Tuesday text kept [D488 TUE NOTE CHANGED] · ✓ Tuesday marks kept (pending keys still 1) [[\"dn:1.0\"]] · ✓ no Discard marks control anywhere [{\"alDrop\":0,\"textMatches\":[],\"bodyHasPhrase\":false}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-P1-01-a-before-load.png",
+      "dk-02-P1-01-c-preview-banner.png",
+      "dk-03-P1-01-d-armed.png",
+      "dk-04-P1-01-e-after-load.png"
+     ]
+    },
+    {
+     "id": "P1-02",
+     "did": "edited Mon (published) and Tue (unpublished); signed Mon; Publish AL1 in the Amendments box",
+     "saw": "✓ panel before: lists Monday only as a day with changes [AMENDMENTS 1 day with changes to publish Mon · 1 change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.] · ✓ Monday issued AL1 (als has an Mon entry), Tuesday has none [{\"alsMon\":[\"2026-07-13#1\"],\"alsTue\":[]}] · ✓ Monday pending now 0 [[]] · ✓ Tuesday keeps both notes and its pending marks [{\"tuePend2\":[\"dn:1.0\",\"pn:1\"],\"tueNotes2\":[\"D488 TUE NOTE CHANGED\",\"D488 TUE SECOND NOTE\"]}] · ✓ Tuesday still unpublished (no version) [null]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-P1-02-a-two-days-edited.png",
+      "dk-06-P1-02-b-after-AL1.png"
+     ]
+    },
+    {
+     "id": "P1-03",
+     "did": "Wed unpublished: changed Mission, a reporting line, the programme note; looked in week + board; published",
+     "saw": "✓ three edits are pending marks before publication [[\"ff:2.rmuv7vcgvc1ru1i.rmuv7vcgviholk0.msn\",\"it:2.rmuv7vcgvc1ru1i\",\"pn:2\"]] · ✓ published [ORIG] · ✓ marks cleared on publication [[]] · ✓ text survives [{\"msn\":\"D488 ACM\",\"it\":[\"07:00H: D488 RALLY TEST\",\"07:35H: FIRST WAVE RU IN TIME + WX/NOTAMS\"],\"pn\":\"D488 WED PROGRAMME NOTE\",\"orig\":true}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-P1-03-a-week-marks.png",
+      "dk-08-P1-03-b-board-marks.png",
+      "dk-09-P1-03-c-published.png",
+      "dk-10-P1-03-d-week-after.png"
+     ]
+    },
+    {
+     "id": "P1-04",
+     "did": "edited Thu day note; top-bar Undo, Redo; opened History; reloaded",
+     "saw": "✓ edit marked (1 pending) [{\"text\":\"D488 THU NOTE EDITED\",\"pend\":[\"dn:3.0\"]}] · ✓ Undo puts the old text back and clears its mark [{\"text\":\"EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H\",\"pend\":[]}] · ✓ Redo restores text and its mark [{\"text\":\"D488 THU NOTE EDITED\",\"pend\":[\"dn:3.0\"]}] · ✓ History names the actual edit (the note text) and has no marks-cleared line [⠿ Changes · week of 13/7 26 changes this week ✕ New to you 0 All changes 26 To go out 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Thu · The day · 2 2] · ✓ after reload text and mark are still there [{\"text\":\"D488 THU NOTE EDITED\",\"pend\":[\"dn:3.0\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-P1-04-a-edited.png",
+      "dk-12-P1-04-b-undone.png",
+      "dk-13-P1-04-c-history.png",
+      "dk-14-P1-04-d-reloaded.png"
+     ]
+    },
+    {
+     "id": "P1-05",
+     "did": "published Fri; amended (AL1); pressed Unpublish; edited the working copy; signed and republished",
+     "saw": "✓ Friday issued then amended to AL1 [{\"friV0\":\"2026-07-17#0\",\"friV1\":\"2026-07-17#1\"}] · ✓ Unpublish ran the existing confirm (armed first) [{\"pressed\":true,\"label\":\"Unpublish\"}] · ✓ Unpublish withdrew the latest issue: Friday is back at its Original with the amendment held as a pending change [{\"orig\":true,\"ver\":\"2026-07-17#0\",\"pend\":[\"dtn:4\"],\"head\":{\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"unpub\":\"Unpublish\",\"signs\":[\"] · ✓ edit on the working copy is marked, no clearing control anywhere [{\"friEdit\":{\"pend\":[\"dtn:4\"],\"note\":\"D488 FRI AFTER UNPUBLISH\"},\"disc5\":{\"alDrop\":0,\"textMatches\":[],\"bodyHasPhrase\":false}}] · ✓ republishing needed the four sign-offs and issued the amendment again (same version id) [{\"friRe\":{\"orig\":true,\"ver\":\"2026-07-17#1\",\"pend\":[],\"note\":\"D488 FRI AFTER UNPUBLISH\",\"als\":[\"2026-07-17#1\"]},\"signs\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-P1-05-a-friday-AL1.png",
+      "dk-16-P1-05-b-unpublished.png",
+      "dk-17-P1-05-c-republished.png"
+     ]
+    }
+   ]
+  },
+  "p1b-dk": {
+   "at": "2026-10-05T12:21:41.817Z",
+   "base": "http://localhost:4221",
+   "phone": false,
+   "table": [
+    {
+     "id": "P1-06-desk",
+     "did": "draft changes (Tue, Thu) + published Mon with a pending change; inspected as admin, admin-as-member, then real member",
+     "saw": "✓ fixture: a draft day and a published day each carry marks [{\"mon\":[\"fr:0.rmuv7y7wxuyysth.rmuv7y7wxtcs2xn.rmuv7y7wx4m6epb\"],\"tue\":[\"dn:1.0\"],\"thu\":[\"dn:3.0\"]}] · ✓ admin: no Discard marks anywhere (not even hidden) [{\"a\":0,\"b\":0}] · ✓ member view: none [{}] · ✓ real member: none, and no Publish AL / panel [{\"alpub\":0,\"panel\":false}] · ✓ admin: the Publish controls are what a finger lands on [{\"[data-alpub]\":{\"txt\":\"Publish AL1\",\"size\":\"105x25\",\"hit\":true,\"disabled\":true},\"[data-unpub]\":{\"txt\":\"Unpublish\",\"size\":\"70x22\",\"hit\":true,\"disabled\":false}}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-P1-06-a-admin-week.png",
+      "dk-02-P1-06-b-admin-board.png",
+      "dk-03-P1-06-c-member-view.png",
+      "dk-04-P1-06-d-member.png",
+      "dk-05-P1-06-e-member-nav.png"
+     ]
+    }
+   ]
+  },
+  "p1b-ph": {
+   "at": "2026-10-05T12:22:03.333Z",
+   "base": "http://localhost:4221",
+   "phone": true,
+   "table": [
+    {
+     "id": "P1-06-phone",
+     "did": "draft changes (Tue, Thu) + published Mon with a pending change; inspected as admin, admin-as-member, then real member",
+     "saw": "✓ fixture: a draft day and a published day each carry marks [{\"mon\":[\"fr:0.rmuv7yo6r7vu7h5.rmuv7yo6rlvjsa0.rmuv7yo6re53qf5\"],\"tue\":[\"dn:1.0\"],\"thu\":[\"dn:3.0\"]}] · ✓ admin: no Discard marks anywhere (not even hidden) [{\"a\":0,\"b\":0}] · ✓ member view: none [{}] · ✓ real member: none, and no Publish AL / panel [{\"alpub\":0,\"panel\":false}] · ✓ admin: the Publish controls are what a finger lands on [{\"[data-alpub]\":{\"txt\":\"Publish AL1\",\"size\":\"105x25\",\"hit\":true,\"disabled\":true},\"[data-unpub]\":{\"txt\":\"Unpublish\",\"size\":\"70x22\",\"hit\":true,\"disabled\":false}}]",
+     "verdict": "PASS",
+     "pics": [
+      "ph-01-P1-06-a-admin-week.png",
+      "ph-02-P1-06-b-admin-board.png",
+      "ph-03-P1-06-c-member-view.png",
+      "ph-04-P1-06-d-member.png",
+      "ph-05-P1-06-e-member-nav.png"
+     ]
+    }
+   ]
+  },
+  "p2a-dk": {
+   "at": "2026-10-05T12:26:03.984Z",
+   "base": "http://localhost:4221",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-01",
+     "did": "Saber on a Saturday flight 12:00-13:00 (lead 3h, debrief 2h), published; Logic lead set to 4h; revisited Leave War, switched weeks, reloaded",
+     "saw": "✓ published; the day is issued [ORIG] · ✓ after publication: HO, 0.5 earned (09:00-15:00) [{\"cell\":\"HO*\",\"oil\":\"Saber IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"}] · ✓ Logic lead really changed to 240 [{\"lg0\":{\"reportLead\":180,\"reportText\":\"IN TIME + WX/NOTAMS\",\"debrief\":120},\"lg1\":{\"reportLead\":240,\"reportText\":\"IN TIME + WX/NOTAMS\",\"debrief\":120}}] · ✗ still HO after the Logic change [FO*] · ✗ still HO after switching weeks [FO*] · ✗ still HO after reload (Logic value kept) [{\"cell\":\"FO*\",\"lead\":240}] · ✗ the OIL tracker line did not move to FO or change its span [[\"Saber IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:00–15:00 1 left\",\"Saber IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:00–15:00 1 left\",\"Saber IP 1 + 1 +1 18 J]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-P2-01-a-cell.png",
+      "dk-02-P2-01-a-oil.png",
+      "dk-03-P2-01-b-saturday-after-logic-change.png",
+      "dk-04-P2-01-c-cell.png",
+      "dk-05-P2-01-c-oil.png",
+      "dk-06-P2-01-d-cell.png",
+      "dk-08-P2-01-e-cell.png",
+      "dk-09-P2-01-e-oil.png"
+     ]
+    }
+   ]
+  },
+  "p2b-dk": {
+   "at": "2026-10-05T12:32:26.324Z",
+   "base": "http://localhost:4221",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-02",
+     "did": "Sat 18 Jul: Saber one flight 12:00-13:00 (lead 3h, debrief 2h), In-time 09:00H, published; changed only the In-time to 08:59H; then Publish AL1",
+     "saw": "P2-02 before the edit (published, In-time 09:00): line [\"09:00H: IN TIME + WX/NOTAMS\"]; Insights Work hours Saber 23h10 (3 days on the programme); Leave War cell HO*; OIL line \"Saber IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"; pending marks 0; head 11 changes  ||  P2-02 after the edit, before the amendment (In-time 08:59): line [\"08:59H: IN TIME + WX/NOTAMS\"]; Insights Work hours Saber 23h10 (3 days on the programme); Leave War cell HO*; OIL line \"Saber IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"; pending marks 1; head 11 changes  ||  P2-02 after the amendment (AL1): line [\"08:59H: IN TIME + WX/NOTAMS\"]; Insights Work hours Saber 23h11 (3 days on the programme); Leave War cell HO*; OIL line \"Saber IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"; pending marks 0; head 17 changes",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-P2-02-a-before-week.png",
+      "dk-02-P2-02-a-before-insights.png",
+      "dk-03-P2-02-a-before-cell.png",
+      "dk-04-P2-02-a-before-oil.png",
+      "dk-05-P2-02-b-edited-week.png",
+      "dk-06-P2-02-b-edited-insights.png",
+      "dk-07-P2-02-b-edited-cell.png",
+      "dk-08-P2-02-b-edited-oil.png",
+      "dk-09-P2-02-c-amended-week.png",
+      "dk-10-P2-02-c-amended-insights.png",
+      "dk-11-P2-02-c-amended-cell.png",
+      "dk-12-P2-02-c-amended-oil.png"
+     ]
+    },
+    {
+     "id": "P2-03",
+     "did": "Tue 14 Jul declared PH on the Leave War event row {\"done\":true,\"cell\":\"PH\"}; new wave 12:00-13:00 with Piston, wave carries only a Rally line 08:59H; published; changed Rally to 09:00H; Publish AL1",
+     "saw": "P2-03 before the edit (published, Rally 08:59): line [\"08:59H: RALLY\"]; Insights Work hours Piston 18h06 (2 days on the programme); Leave War cell HO*; OIL line \"Piston IP 0.5 + 0.5 +0.5 14 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"; pending marks 0  ||  P2-03 after the edit, before the amendment (Rally 09:00): line [\"09:00H: RALLY\"]; Insights Work hours Piston 18h06 (2 days on the programme); Leave War cell HO*; OIL line \"Piston IP 0.5 + 0.5 +0.5 14 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"; pending marks 1  ||  P2-03 after the amendment (AL1): line [\"09:00H: RALLY\"]; Insights Work hours Piston 18h05 (2 days on the programme); Leave War cell HO*; OIL line \"Piston IP 0.5 + 0.5 +0.5 14 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"; pending marks 0",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-13-P2-03-a-before-week.png",
+      "dk-14-P2-03-a-before-insights.png",
+      "dk-15-P2-03-a-before-cell.png",
+      "dk-16-P2-03-a-before-oil.png",
+      "dk-17-P2-03-b-edited-week.png",
+      "dk-18-P2-03-b-edited-insights.png",
+      "dk-19-P2-03-b-edited-cell.png",
+      "dk-20-P2-03-b-edited-oil.png",
+      "dk-21-P2-03-c-amended-week.png",
+      "dk-22-P2-03-c-amended-insights.png",
+      "dk-23-P2-03-c-amended-cell.png",
+      "dk-24-P2-03-c-amended-oil.png"
+     ]
+    }
+   ]
+  },
+  "p2c-dk": {
+   "at": "2026-10-05T12:36:52.722Z",
+   "base": "http://localhost:4221",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-06",
+     "did": "Fri: new wave VL + RU both 12:00-13:00; general In-time 08:00; added VL Rally 08:30; then VL In-time 09:00 (Insights Work hours deltas per crew, VL = Ranger/Echo, RU = Blade/Comet)",
+     "saw": "✓ general In-time 08:00 moves BOTH crews equally [{\"d01\":{\"Ranger\":180,\"Echo\":180,\"Blade\":180,\"Comet\":180}}] · ✓ VL Rally 08:30 beside the general 08:00 does not move anyone (both still report 08:00) [{\"d12\":{\"Ranger\":0,\"Echo\":0,\"Blade\":0,\"Comet\":0}}] · ✓ VL In-time 09:00 then moves ONLY VL: VL starts 08:30 (30 min later than 08:00), RU stays 08:00 [{\"d23\":{\"Ranger\":-30,\"Echo\":-30,\"Blade\":0,\"Comet\":0}}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-P2-06-a-no-lines.png",
+      "dk-02-P2-06-b-general-intime.png",
+      "dk-03-P2-06-c-vl-rally.png",
+      "dk-05-P2-06-d-vl-intime.png",
+      "dk-04-P2-06-d-week-lines.png"
+     ]
+    },
+    {
+     "id": "P2-07",
+     "did": "Tue: new wave VIPER 01:00-02:00 (Piston); In-time lines 23:00 and 00:15; then reversed their order by editing the two lines",
+     "saw": "✓ the work span changed from the no-line figure by the lines (the 23:00 previous-day report starts the day) [{\"t0\":{\"Piston\":\"16h05\"},\"t1\":{\"Piston\":\"17h05\"}}] · ✓ reversing the lines leaves Piston's work hours unchanged [{\"t1\":{\"Piston\":\"17h05\"},\"t2\":{\"Piston\":\"17h05\"}}] · ✓ the in-time warning names the 23:00 previous-day clock as the operative one in both orders [{\"warnsA\":\"hard:REPORT_ORDER:VIPER: in-time 23:00 (previous day) is later than suggested brief 22:40 (previous day).\",\"warnsB\":\"hard:REPORT_ORDER:VIPER: in-time]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-P2-07-a-no-lines.png",
+      "dk-07-P2-07-b-lines-23-0015.png",
+      "dk-08-P2-07-b-hours.png",
+      "dk-09-P2-07-c-lines-reversed.png",
+      "dk-10-P2-07-c-hours.png"
+     ]
+    },
+    {
+     "id": "P2-08",
+     "did": "a wave with take-offs 12:00 and 13:00 (Logic \"nominal report before T/O\" 3h): pressed \"+ In-time / Rally\"; edited the line to 08:00H; set Logic nominal report to 2h; pressed again — once on the Edit Schedule week (Thu), once on the Scheduler Board (Wed)",
+     "saw": "week: Logic nominal report 3h at first press -> first press filled [\"09:00H: IN TIME + WX/NOTAMS\"]; line edited to [\"08:00H: IN TIME + WX/NOTAMS\"]; Logic then 2h (box showed \"2h\") -> second press, lines now [\"08:00H: IN TIME + WX/NOTAMS\",\"08:00H: IN TIME + WX/NOTAMS\"]  ||  board: Logic nominal report 3h at first press -> first press filled [\"09:00H: IN TIME + WX/NOTAMS\"]; line edited to [\"08:00H: IN TIME + WX/NOTAMS\"]; Logic then 2h (box showed \"2h\") -> second press, lines now [\"08:00H: IN TIME + WX/NOTAMS\",\"08:00H: IN TIME + WX/NOTAMS\"]",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-11-P2-08-week-a-first-press.png",
+      "dk-12-P2-08-week-b-second-press.png",
+      "dk-13-P2-08-board-a-first-press.png",
+      "dk-14-P2-08-board-b-second-press.png"
+     ]
+    }
+   ]
+  },
+  "p2d-4-dk": {
+   "at": "2026-10-05T12:45:05.413Z",
+   "base": "http://localhost:4221",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-04",
+     "did": "Sun 19 Jul: Saber on a duty row 08:00-15:00 (published); Mon 20 Jul: flight 00:30-01:30 with the In-time line 22:30H (previous evening); published; Sunday -> Monday -> Sunday; Leave War and warnings",
+     "saw": "✓ the 22:30 clock is read as the previous day (rest warning on Monday names Sunday 22:30) [[\"hard:REPORT_ORDER:VIPER: in-time 22:30 (previous day) is later than suggested brief 22:10 (previous day).\",\"hard:CREW_REST:Crew rest breach — Sunday ended 15:] · ✓ the rest message measures from the Sunday 15:00 finish (not from a 24-hour guess) [[\"hard:REPORT_ORDER:VIPER: in-time 22:30 (previous day) is later than suggested brief 22:10 (previous day).\",\"hard:CREW_REST:Crew rest breach — Sunday ended 15:] · ✓ with a typed brief after the In-time (23:00) the rest message tells him to report at the entered 22:30 [{\"wV\":[\"hard:CREW_REST:Crew rest breach — Sunday ended 15:00 → crew rest clear at 03:00, but told to report 22:30\"],\"lines\":[\"Crew rest (<12h) Saber — Crew rest] · ✓ Sunday's earned leave line is unchanged by the Monday flight [{\"before\":{\"cell\":\"FO*\",\"cellMon\":{\"text\":\"\",\"cls\":\" act\",\"title\":\"\"},\"oil\":\"Saber IP 1 + 1 +1 19 Jul AUTO Weekend/PH Duty · 08:00–15:00 1 left\",\"pics\":[\"dk-01-] · ✓ Monday carries no leave cell of its own from that flight (ordinary day) [{\"text\":\"\",\"cls\":\" act\",\"title\":\"\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-P2-04-b-next-week-day.png",
+      "dk-04-P2-04-c-warning-list.png",
+      "dk-06-P2-04-d-sunday-again.png",
+      "dk-01-P2-04-a-sunday-before-cell.png",
+      "dk-02-P2-04-a-sunday-before-oil.png",
+      "dk-07-P2-04-e-sunday-after-cell.png",
+      "dk-08-P2-04-e-sunday-after-oil.png"
+     ]
+    }
+   ]
+  },
+  "p2d-5-dk": {
+   "at": "2026-10-05T12:44:16.954Z",
+   "base": "http://localhost:4221",
+   "phone": false,
+   "table": [
+    {
+     "id": "P2-05",
+     "did": "Sun 19 Jul: Reaper (Saber has a Monday sim in week 20) on a duty row 14:00-23:00 (published); next week Tue 21 Jul: flight 01:00-02:00 with the In-time line 08:00H (Monday morning); no Monday work; published",
+     "saw": "✓ Reaper has no Monday work in week 20 [[0,0]] · ✓ Tuesday carries a crew-rest breach against Sunday's finish (nine hours) [[\"hard:CREW_REST:Crew rest breach — Sunday ended 23:00 → crew rest clear at 11:00 (previous day), but told \"]] · ✓ the warning / trace names Sunday as the source, not Monday [[\"hard:CREW_REST:Crew rest breach — Sunday ended 23:00 → crew rest clear at 11:00 (previous day), but told \",\"adv:DT_SUM:2 people are double turning: Trident, T] · ✓ Sunday's earned leave line is not changed by the Tuesday flight [{\"before\":\"Reaper IR 1 + 1 +1 19 Jul AUTO Weekend/PH Duty · 14:00–23:00 1 left\",\"after\":\"Reaper IR 1 + 1 +1 19 Jul AUTO Weekend/PH Duty · 14:00–23:00 1 left\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-P2-05-b-next-week-day.png",
+      "dk-04-P2-05-c-warning-list.png",
+      "dk-05-P2-05-d-sunday-again.png",
+      "dk-01-P2-05-a-sunday-before-cell.png",
+      "dk-02-P2-05-a-sunday-before-oil.png",
+      "dk-06-P2-05-e-sunday-after-cell.png",
+      "dk-07-P2-05-e-sunday-after-oil.png"
+     ]
+    }
+   ]
+  },
+  "hdr-dk": {
+   "at": "2026-10-05T12:46:10.444Z",
+   "base": "http://localhost:4221",
+   "phone": false,
+   "table": [
+    {
+     "id": "F-A1",
+     "did": "new wave Mon 20 Jul 00:30-01:30; pressed + In-time / Rally (filled 21:30H), edited the line to 22:30H; read the week header and the board header",
+     "saw": "week line says [\"22:30H: IN TIME + WX/NOTAMS\"]; week wave header says [\"In-time / Rally 21:30 (prev day)\"]; board header says [\"In-time / Rally 22:30 (prev day) · 1 ac\"]",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-01-F-A1-week-header-after-line-edit.png",
+      "dk-02-F-A1-board-header-same-moment.png"
+     ]
+    }
+   ]
+  }
+ }
+}

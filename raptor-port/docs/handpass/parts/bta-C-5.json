@@ -1,0 +1,52 @@
+{
+ "parts": {
+  "bta-C-5-1-dk": {
+   "at": "2026-10-06T08:43:43.721Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "S35.4",
+     "did": "edit week: his Monday late flight seat (ZM 21:00–22:30) dragged onto Tuesday's other MAIN seat (Cobra in MAIN row 0; B 05:00, shift 14:00–19:00); held over it, then carried back and released on his own seat (Monday seat now \"split\")",
+     "saw": "the bubble under the dragged name: {\"ghost\":true,\"why\":null}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s35d-1-before.png",
+      "dk-02-s35d-1-held.png"
+     ]
+    },
+    {
+     "id": "S35d.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  },
+  "bta-C-5-2-dk": {
+   "at": "2026-10-06T08:44:13.812Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "S35.5",
+     "did": "edit week: his Monday late flight seat (ZM 21:00–22:30) dragged onto Tuesday's other MAIN seat (Cobra in MAIN row 0; B 05:00, shift 14:00–19:00) and ANOTHER late seat on Monday (ZN 23:00–23:45, took true); held over it, then carried back and released on his own seat (Monday seat now \"split\")",
+     "saw": "the bubble under the dragged name: {\"ghost\":true,\"why\":\"crew rest — not clear until 13:45\"}",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-01-s35d-2-before.png",
+      "dk-02-s35d-2-held.png"
+     ]
+    },
+    {
+     "id": "S35d.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

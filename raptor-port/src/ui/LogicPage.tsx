@@ -3,7 +3,7 @@
    the admin edit mode: thresholds parsed + bounded + applied live, the clash
    matrix toggles, Reset to standard, and the RULES MODIFIED stamp. */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse, ruleOff, kindOff, rulesOffCount, rulesSave, rulesReset } from '../engine/rules'
+import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse, ruleOff, kindOff, rulesOffCount, rulesCheckedOffCount, rulesSave, rulesReset } from '../engine/rules'
 import { WARN, validate, lgFired } from '../engine/validate'
 import { dowShort } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
@@ -98,10 +98,12 @@ export function LogicPage() {
   const admin = isAdmin()
   const b = logicBody(LGQ, LGF)
   const off = rulesOffCount()
+  /* W2: the stamp and the strip speak of RULES — the settings a check reads; the count and Reset speak of every setting */
+  const checkedOff = rulesCheckedOffCount()
 
   /* a modified rule set is never silent: the body class drives the
      RULES MODIFIED stamp on the week banner */
-  useEffect(() => { document.body.classList.toggle('page-rules-off', !!off) })
+  useEffect(() => { document.body.classList.toggle('page-rules-off', !!checkedOff) })
 
   /* the reference's change/pointerdown listeners on #lgBody, verbatim logic —
      native listeners, since the fields live inside the built markup */
@@ -195,8 +197,8 @@ export function LogicPage() {
           {`${b.shown} of ${b.total} rules · ${b.firedN} fired on this week's schedule` + (off ? ` · ${off} off standard` : '')}
         </span>
       </div>
-      <div className="lgoff" id="lgOff" hidden={!off}>
-        {off ? <><b>{off} rule{off > 1 ? 's' : ''} changed from the squadron standard.</b>{' '}
+      <div className="lgoff" id="lgOff" hidden={!checkedOff}>
+        {checkedOff ? <><b>{checkedOff} rule{checkedOff > 1 ? 's' : ''} changed from the squadron standard.</b>{' '}
           The schedule is being checked against these values, not the published ones
           {admin ? ' — “Reset to standard” puts them all back.' : '. Only an admin can change them.'}</> : null}
       </div>

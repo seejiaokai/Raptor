@@ -1,0 +1,73 @@
+{
+ "parts": {
+  "ows-B-sA-S33S27-dk": {
+   "at": "2026-10-06T13:12:39.605Z",
+   "base": "http://localhost:4294",
+   "phone": false,
+   "table": [
+    {
+     "id": "S33.a",
+     "did": "Saturday flight 12:00–13:00, no In-time/Rally, published (nominal 09:00 — exactly 6h00)",
+     "saw": "✓ lines on the wave [[]] · ✓ published ORIG [ORIG] · ✓ Leave War cell HO [HO*] · ✓ worked 09:00–15:00 [Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ balance +0.5 [{\"base\":\"0\",\"now\":\"0.5\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-S33_a-pub-cell.png",
+      "dk-03-S33_a-pub-tracker.png",
+      "dk-04-S33_a-day-day.png",
+      "dk-01-S33_a-board.png"
+     ]
+    },
+    {
+     "id": "S33.b",
+     "did": "same flight, one In-time/Rally line typed IN TIME 08:59 through \"+ In-time / Rally\", published (6h01)",
+     "saw": "✓ lines on the wave [[\"IN TIME 08:59\"]] · ✓ published ORIG [ORIG] · ✓ Leave War cell FO [FO*] · ✓ worked 08:59–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:59–15:00 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-S33_b-pub-cell.png",
+      "dk-07-S33_b-pub-tracker.png",
+      "dk-08-S33_b-day-day.png",
+      "dk-05-S33_b-board.png"
+     ]
+    },
+    {
+     "id": "S27.a",
+     "did": "Saturday flight 12:00–13:00; one line typed \"0830 IN TIME — brief 1000\"; published",
+     "saw": "✓ lines on the wave [[\"08:30 IN TIME — brief 10:00\"]] · ✓ published ORIG [ORIG] · ✓ Leave War cell FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-S27_a-pub-cell.png",
+      "dk-11-S27_a-pub-tracker.png",
+      "dk-12-S27_a-day-day.png",
+      "dk-09-S27_a-board.png"
+     ]
+    },
+    {
+     "id": "S27.b",
+     "did": "same; one line typed \"FL240 0830 IN TIME — brief 1000\"; published",
+     "saw": "✓ lines on the wave [[\"FL240 08:30 IN TIME — brief 10:00\"]] · ✓ published ORIG [ORIG] · ✓ Leave War cell FO [FO*] · ✓ worked 08:30–15:00 [Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left] · ✓ balance +1 [{\"base\":\"0\",\"now\":\"1\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-S27_b-pub-cell.png",
+      "dk-15-S27_b-pub-tracker.png",
+      "dk-16-S27_b-day-day.png",
+      "dk-13-S27_b-board.png"
+     ]
+    },
+    {
+     "id": "S27.c",
+     "did": "Saturday flight 12:00–13:00 with Ranger front and Echo (a WSO) rear; one line typed \"IN TIME 0830 — Ranger to brief\" (a callsign, no formation named); published",
+     "saw": "✓ both seated [[\"bane\",\"freak\"]] · ✓ line kept [[\"IN TIME 08:30 — Ranger to brief\"]] · ✓ Ranger: FO from 08:30 [{\"cell\":\"FO*\",\"row\":\"Ranger IP 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left\"}] · ✓ Echo (not named): FO from 08:30 too [{\"cell\":\"FO*\",\"row\":\"Echo IW 1 + 1 +1 18 Jul AUTO Weekend/PH FLT · 08:30–15:00 1 left\"}] · ✓ balances +1 each [{\"r\":[\"0\",\"1\"],\"e\":[\"0\",\"1\"]}]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-S27c-board.png",
+      "dk-18-S27c-ranger-cell.png",
+      "dk-19-S27c-ranger-tracker.png",
+      "dk-20-S27c-echo-cell.png",
+      "dk-21-S27c-echo-tracker.png"
+     ]
+    }
+   ],
+   "errors": []
+  }
+ }
+}

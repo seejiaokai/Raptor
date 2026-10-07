@@ -36,6 +36,7 @@ import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { landOn, markLand, paintLand } from './lift'
 import { useVersion } from './useStore'
+import { SaveBand } from './SaveStatus'
 
 const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December']
@@ -994,6 +995,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
         <button type="button" className="abtn" id="icClose" aria-label="Back to list"
           title="Back to list" onClick={onClose}>{embedded?'List':'✕'}</button>
       </div>
+      {/* a failed save's warning, under this full-screen surface's own bar — it lies over the top bar, whose own
+          warning cannot be seen from here ([SAVE-NOTE-COVERS], D587; ui/SaveStatus.tsx) */}
+      <SaveBand />
       {mode==='sans'&&<div className="sans-legend"><span>F Fly · O OFT · A AMT</span><span>F: available / required</span><span className="amber">Amber: {getSansCutoffs().amberFrom}+ more needed</span><span className="red">Red: {getSansCutoffs().redFrom}+ more needed</span><span><FlyingIcons period="day"/> day flying <FlyingIcons period="night"/> night flying</span></div>}
       {selectDates&&<div className="ic-range-bar" role="status"><span>{selected?`${fmtDay(selected.start)}${selected.end?' → '+fmtDay(selected.end):' — choose the last day'}`:'Choose the first and last day. Month arrows work here too.'}</span><button className="abtn primary" type="button" id="icRangeAdd" disabled={!selected?.end} onClick={()=>{if(selected?.end){openAdd(selected.start,selected.end);cancelSelection()}}}>+ {mode==='sans'?'Commitment':'Input'}</button><button className="abtn" type="button" onClick={cancelSelection}>Cancel</button></div>}
       <div className="ic-dow">{DOW.map(d => <span key={d}>{d}</span>)}</div>

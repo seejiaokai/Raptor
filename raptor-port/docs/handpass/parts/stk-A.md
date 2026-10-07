@@ -1,0 +1,44 @@
+# Walker A — Codex stack check, 5 Oct 26 (frozen build on :4221)
+
+Scenarios walked: P1-01 to P1-06 and P2-01 to P2-08, all on fresh worlds, every fixture through the app's own controls
+(board seats, text boxes, "+ In-time / Rally", Logic's boxes, the sign-off selects, Publish / Publish AL / Unpublish, the
+version picker, Load onto working copy, top-bar Undo/Redo, the Leave War's event row for the holiday). The probe bridge only
+read state. Desktop 1440x900 for everything; P1-06 also at phone 390x844. Scripts: `raptor-port/scripts/handpass/stk-A-*.mjs`;
+results `raptor-port/docs/handpass/parts/stk-A.json`; pictures `raptor-port/docs/img/handpass/2026-10-05-codex-stack/A/`.
+
+| # | What I did | What the screen said | Verdict | Pictures |
+|---|---|---|---|---|
+| P1-01 | Published Mon; changed its Remarks and Tue's day note; previewed Mon's Original; Load onto working copy (armed, then confirmed) | Banner offered "Load onto working copy"; first tap armed "Discard 1 edit & load — confirm" and nothing changed yet; second tap put Mon back to the original remarks ("1B: BFM-6"). Tue kept its text "D488 TUE NOTE CHANGED" and its 1 pending mark. No Discard marks control anywhere (not in the page text either) | PASS | dk-01..04 P1-01 |
+| P1-02 | Edited Mon (published) and Tue (unpublished, two notes); signed Mon; Publish AL1 in the Amendments box | Box said "1 day with changes to publish — Mon · 1 change"; AL1 issued for Mon only (2026-07-13#1); Tue still has no version, both notes and 2 pending marks | PASS | dk-05, dk-06 P1-02 |
+| P1-03 | Wed (unpublished): changed Mission, an In-time line, the programme note; looked at week and board; published | 3 pending marks in both editors ("3 changes" chip); after publishing 0 pending, ORIG, all three texts still there. The chip then reads "8 changes" — that is the history count (3 edits + 4 sign-offs + "Published — the Original"), the changes window says "Published · nothing waiting to go out" | PASS | dk-07..10 P1-03 |
+| P1-04 | Edited Thu day note; top-bar Undo, Redo; History; reload | Undo restored the old text and cleared the mark; Redo brought both back; History lists "Day note: EXAM PERIOD… → D488 THU NOTE EDITED" plus the Undo/Redo lines, no "marks cleared" line; after reload text and mark still there | PASS | dk-11..14 P1-04 |
+| P1-05 | Published Fri, amended and issued AL1, pressed Unpublish, edited, signed, republished | Unpublish withdrew AL1 in one press (toast: "AL1 withdrawn — its changes are back on the working copy as pending; Original is the issued schedule; publishing again reissues AL1"); my edit stayed 1 pending; republishing needed the four sign-offs and reissued 2026-07-17#1. No clearing control | PASS | dk-15..17 P1-05 |
+| P1-06 | Draft changes (Tue, Thu) + Mon published with a pending change; looked as admin, admin switched to member view, then real sign-in as member (desktop and phone) | No Discard marks control, button or text anywhere, hidden or visible; admin Publish AL / Unpublish are what a finger lands on; member sees no Amendments box and no Publish AL. A guest was NOT walked (needs the admin guest switch and the access screen) | PASS (member + member view); guest NOT WALKED | dk-01,02,03,04,05 P1-06; ph-01..05 P1-06 |
+| P2-01 | Saber on a Sat flight 12:00-13:00 (lead 3h, debrief 2h), published; Logic lead set to 4h; revisited Leave War, switched weeks, reloaded | After publishing: cell HO, OIL line "+0.5 · FLT 09:00–15:00 · 0.5 left", balance 0.5. After the Logic change, with NO amendment ("No pending changes"): cell **FO**, OIL line "+1 · FLT 08:00–15:00", balance 1.0; the same after switching weeks and after reload | **FAIL** | dk-01..09 P2-01 |
+| P2-02 | Same flight, In-time 09:00H, published; changed only the In-time to 08:59H; then Publish AL1 | RECORDED (Saber): before edit — line 09:00H, Work hours 23h10, cell HO, OIL 09:00–15:00 0.5; after edit, before amendment — line 08:59H, 1 pending, Work hours 23h10, cell HO, OIL 0.5 unchanged; after AL1 — Work hours 23h11, cell HO, OIL 09:00–15:00 0.5 unchanged. Earned leave never moved | RECORDED | dk-01..12 P2-02 |
+| P2-03 | Tue 14 Jul declared PH on the Leave War event row; new wave 12:00-13:00 with Piston (Saber was not free of ordinary demo events), Rally-only line 08:59H; published; Rally to 09:00H; Publish AL1 | RECORDED (Piston): before — Work hours 18h06, cell HO, OIL 14 Jul 09:00–15:00 0.5; after edit, pending — 18h06, HO, 0.5; after AL1 — 18h05, HO, 0.5. It was HO from the start (never FO) | RECORDED | dk-13..24 P2-03 |
+| P2-04 | Sun 19 Jul Saber duty 08:00-15:00 published; Mon 20 Jul flight 00:30-01:30 with In-time 22:30H; published; Sun→Mon→Sun | Wave header "In-time / Rally 22:30 (prev day)" on the board. Rest warning on Mon: "Sunday ended 15:00 → crew rest clear at 03:00, but told to report 22:10" (the suggested brief 22:10 is earlier than the entered 22:30, so a red timing line also shows: "in-time 22:30 (previous day) is later than suggested brief 22:10"). With a typed Brief 23:00 it reads "report 22:30 — only 7h30 rest". Sunday's cell FO and OIL line (08:00–15:00, 1) did not change; Mon has no leave cell; Saber's Sunday puck carries the dotted "breaks tomorrow" mark | PASS | dk-01..08 P2-04 |
+| P2-05 | Sun duty 14:00-23:00 published; Tue 21 Jul flight 01:00-02:00, In-time 08:00H, no Monday work. Reaper stood in: Saber has a Monday sim in the demo's second week | Tue: "Crew rest breach — Sunday ended 23:00 → crew rest clear at 11:00 (previous day), but told to report 08:00 (previous day) — only 9h00 rest"; Sunday's OIL line unchanged; Sunday puck dotted | PASS (with Reaper) | dk-01..07 P2-05 |
+| P2-06 | New Fri wave, VL and RU both 12:00; general In-time 08:00H; added VL Rally 08:30H; then VL In-time 09:00H | Work hours moved (all four crew) +3h00 with the general line, 0 with the VL Rally, then VL crew −30 min (Ranger 21h00→20h30, Echo 28h25→27h55) while RU crew unchanged (Blade 14h55, Comet 17h00). Read-only events: VL start report 08:30, RU 08:00 | PASS | dk-01..05 P2-06 |
+| P2-07 | New Tue wave 01:00-02:00 (Piston), In-time lines 23:00H and 00:15H, then reversed the order by editing | Work hours 16h05 (no lines) → 17h05 → 17h05 after the reversal; the timing warning names "in-time 23:00 (previous day)" in both orders | PASS | dk-06..10 P2-07 |
+| P2-08 | Wave with take-offs 12:00 and 13:00; pressed + In-time / Rally; edited the line to 08:00H; Logic nominal 3h→2h; pressed again (Edit Schedule and Scheduler Board) | RECORDED: Logic 3h → first press fills "09:00H: IN TIME + WX/NOTAMS"; after Logic 2h → second press fills "08:00H: IN TIME + WX/NOTAMS" (a copy of the existing line; 10:00 would be take-off minus 2h). Same on both surfaces | RECORDED | dk-11..14 P2-08 |
+
+## Findings
+**F1 (P2-01, high).** Steps: publish a Saturday with Saber on a 12:00-13:00 flight; Logic → "Nominal report before T/O" 3h → 4h. Expected: the issued day keeps HO (D48, D142). Saw: with no amendment the Leave War cell turned HO → FO and the OIL tracker line 09:00–15:00 / 0.5 became 08:00–15:00 / 1; it stays after changing weeks and reloading. Pictures dk-02-P2-01-a-oil vs dk-05-P2-01-c-oil.
+
+**F2 (low).** On Edit Schedule's week the wave header keeps the old clock after an In-time line is edited. Steps: new Mon 20 Jul wave 00:30-01:30, press "+ In-time / Rally" (fills 21:30H), edit the line to 22:30H. The line says 22:30H but the header still says "In-time / Rally 21:30 (prev day)" (unchanged after 1.2 s and after leaving the board and coming back); it corrects only on the next edit or a reload. The Scheduler Board's header says 22:30 at the same moment. Picture dk-01-F-A1-week-header-after-line-edit.
+
+## Notes for the host
+- P2-02/03: entered clocks move Insights' Work hours (by a minute at the 08:59/09:00 step) and nothing else; earned leave stayed on the nominal 09:00–15:00 span throughout. D591 (recorded while I walked) says this is not built yet.
+- P2-08: the second press copies the existing resolved line rather than using the new nominal lead — matches Astra's M3.
+- P2-04: the scenario's own times put the suggested brief before the entered In-time, so the red timing line appears and rest uses 22:10 until a Brief after 22:30 is typed.
+- P1-03: the "N changes" chip is the history count, not the pending count; after publishing it rises (8) while pending is 0.
+
+## Errors seen
+Browser console, page errors and 4xx lists were empty in every run. No native dialogs.
+
+## Not walked
+Guest role in P1-06; 844×390 / 1280×700 sizes for P1-06 and all P2 (desktop 1440×900 only; P1-06 also at 390×844). P2-01's Logic change was walked in one direction only (3h→4h; the reverse, debrief and threshold changes were not walked).
+
+## Pictures
+91 saved in the folder (some are earlier identical runs of a script); 22 opened and looked at (listed above by number; the ones not opened are the second cell/oil shots of the three-step records, which I read by text).

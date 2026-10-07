@@ -461,8 +461,9 @@ export function changeLinesFor(env: CommitEnvelope): void {
         let detail:any=null
         try { detail=JSON.parse(env.detail || 'null') } catch { /* a copy's enclosing command may carry other facts */ }
         /* a copy (a day template) rides the day's own command, which carries no name: read the formation's callsign off
-           the loaded week, where the copy has just landed — the row id is the last resort, never the usual wording */
-        const name=typeof detail?.name==='string'?detail.name.replace(/\s+/g,' ').trim().slice(0,80):(roleFormationName(role)||role.formationRid)
+           the loaded week, where the copy has just landed. A line with no callsign is "Line", the app's word for it
+           everywhere else (D340) — never its row code ([ROLE-BLANK-CALLSIGN], 6 Oct 26). */
+        const name=(typeof detail?.name==='string'&&detail.name.replace(/\s+/g,' ').trim().slice(0,80))||roleFormationName(role)||'Line'
         const origin=typeof detail?.origin==='string'?detail.origin.slice(0,80):'copied with the day template'
         const side=(value:any)=>value?.side==='blue'?'Blue':value?.side==='red'?'Red':'Unresolved'
         logAction(null,`${name} · mission role · ${origin}`,{date:role.dayISO,sect:'day',sub:role.formationRid,fld:'mission-role',from:side(c.before),to:side(c.after)})

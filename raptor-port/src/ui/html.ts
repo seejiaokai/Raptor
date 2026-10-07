@@ -5,7 +5,7 @@ import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
 import { INPUTS, inputsOn, inputOnAny, withFrozenInputs, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
-import { reportingIssuesForWave,stated } from '../engine/reporting'
+import { reportingIssuesForWave,stated,REPORTING_LABEL } from '../engine/reporting'
 import { waveInTime } from '../engine/events'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, acceptedDay } from '../engine/slots'
@@ -1182,6 +1182,52 @@ export function dayWarnHTML(di:any){
    stored lines byte-identical for parity (the html.test dayHTML compare
    folds the reference's own <b>NNNNH</b> the same way before comparing —
    its noItTime normaliser, a no-op on the port's already-folded output). */
+/* THE WAVE HEADER'S IN-TIME / RALLY CLOCK, AND ITS REFRESH IN PLACE (W16, the Codex stack check, 5 Oct 26). The header
+   sits in the same block as the wave's own text boxes, so while the caret is in one of them that block is not redrawn
+   (ui/dayswap.ts swapDayAround) — and the header went on showing the clock from before the line was edited ("21:30
+   (prev day)" beside a line reading 22:30H). refreshWaveReports rewrites the header's WORDS from the model: text
+   nodes only, no element replaced, nothing near the caret — and no new markup (the edit week is compared byte for
+   byte with the reference, html.test.ts). One body each for the builder and the refresh, so the two cannot drift:
+   on the week, what follows the wave's label (" · NIGHT", and the clock only when it falls on the previous day, as
+   before); on the board, the whole header note. Waves are found by the drag address every edit-mode wave carries. */
+export function waveHeadTail(w:any):string{
+  const sa=isStandalone(w);
+  const night=!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':'';
+  const r=sa?null:waveInTime(w);
+  return night+(r!=null&&r<0?` · ${REPORTING_LABEL} ${stated(r,true)}`:'');
+}
+export function waveHeadBoard(w:any):string{
+  const t=waveInTime(w), n=(w.formations||[]).reduce((k:number,f:any)=>k+f.aircraft.length,0);
+  return `${REPORTING_LABEL} ${t!=null?stated(t,true):'—'} · ${n} ac`;
+}
+export function refreshWaveReports(root:ParentNode|null|undefined):void{
+  if(!root)return;
+  /* …and the red explanation under a wave's lines (the Rally reader's second pass, 6 Oct 26; D509 "explained while
+     editing"): it was rewritten only by its block's redraw or by typing in a LINE, so a take-off or brief committed by
+     Tab left it stale beside a correct warning list. Text only; never the block the caret is typing in. */
+  root.querySelectorAll<HTMLElement>('.intimes[data-intimes]').forEach(blk=>{
+    if(blk.contains(document.activeElement))return;
+    const [di,gi]=String(blk.dataset.intimes).split('|').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
+    const note=blk.querySelector('[data-reporting-feedback]');
+    if(!w||!note)return;
+    const want=reportingIssuesForWave(w,gi).map(i=>i.msg).join(' ');
+    if(note.textContent!==want)note.textContent=want;
+  });
+  root.querySelectorAll<HTMLElement>('[data-move^="mv:w."]').forEach(go=>{
+    const [di,gi]=String(go.dataset.move).slice(5).split('.').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
+    if(!w)return;
+    if(go.classList.contains('sb-go')){
+      const note=go.querySelector(':scope > .sb-go-h > .asd'), want=waveHeadBoard(w);
+      if(note&&note.textContent!==want)note.textContent=want;
+      return;
+    }
+    const head=go.querySelector(':scope > .go-tab > .asd'); if(!head)return;
+    const want=waveHeadTail(w), texts=[...head.childNodes].filter(n=>n.nodeType===3);
+    if(texts.map(n=>n.nodeValue).join('')===want)return;
+    texts.forEach(n=>n.remove());
+    if(want){ const label=head.firstElementChild, node=document.createTextNode(want); if(label)label.after(node); else head.prepend(node); }
+  });
+}
 export function intimeLineHTML(t:any){
   return esc(t).replace(/^(\s*)((?:\d{1,2}:\d{2}|\d{3,4})\s*[HL]?)(?![0-9A-Za-z])/i,
     (_,sp,tok)=>`${sp}<b>${intimeFold(tok)}</b>`);}
@@ -1195,7 +1241,7 @@ export function intimeLineHTML(t:any){
 export function intimesInner(w:any,ek?:any){
   return ((w&&w.intimes)||[]).map((t:any,i:number)=> ek
     ? `<span class="itline" contenteditable="true" spellcheck="false" data-itline="${ek}|${i}">${intimeLineHTML(t)}</span>`
-      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this In-time / Rally line" aria-label="Remove this In-time / Rally line">✕</button>`
+      +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this ${REPORTING_LABEL} line" aria-label="Remove this ${REPORTING_LABEL} line">✕</button>`
     : `<span>${intimeLineHTML(t)}</span>`).join('')
     + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).map(i=>i.msg).join(' '))}</span>`:'');}
 /* AREA and TIME are not the model fields they are edited through. Until a
@@ -1664,12 +1710,11 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          last line and is about to add another — so never index formations[0] blind. */
       const f0=(w.formations||[])[0];
       const sa=isStandalone(w);
-      const report=sa?null:waveInTime(w);
       const edge=sa?'var(--san)':`var(--${mColor(f0?f0.msn:'')})`;
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
-        <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
-        +`${report!=null&&report<0?` · In-time / Rally ${stated(report,true)}`:''}${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
-        ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an In-time / Rally line to this wave">+ In-time / Rally</button>`}</div>`;
+        <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${waveHeadTail(w)}`
+        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
+        ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
          add control is the fix for the old trap where deleting the last line
          dropped the whole block with no way back (owner, 21 Aug 26). Standalone

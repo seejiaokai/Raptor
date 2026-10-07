@@ -1,0 +1,1168 @@
+{
+ "parts": {
+  "p5a-dk": {
+   "at": "2026-10-05T12:17:35.383Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-02 (844x390)",
+     "did": "Tracker → Edit chart layout, Tools ▾ open, + Test named, ✓ Save changes pressed with storage refusing, then Retry with storage restored",
+     "saw": "✓ an ordinary chart edit made (\"+ Test\" named F-WALK); \"✓ Save changes\" is showing [Tools open straight after choosing + Test: false] · ✓ Tools is open before the failure · ✓ \"✓ Save changes\" pressed (a chart save made to fail) [[731,156]] · ✓ the warning band came up (top bar one line taller) [bar 149 → 185] · ✗ Tools STAYS open through the band appearing [open after fail: false] · ✗ the chart is still in Edit chart layout mode · ✗ Tools buttons are still what a finger lands on (not under the band) [0/0] · ✓ storage restored on the Retry press; the warning goes [[762,154,62,26]] · ✗ Tools STAYS open through the band going away [open after Retry: false]",
+     "verdict": "FAIL",
+     "pics": [
+      "001-trk-tools-before.png",
+      "002-trk-tools-after-fail.png",
+      "003-trk-tools-after-retry.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "001-trk-tools-before.png",
+    "002-trk-tools-after-fail.png",
+    "003-trk-tools-after-retry.png"
+   ]
+  },
+  "p5a-b-dk": {
+   "at": "2026-10-05T12:18:37.735Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-02 (844x390)",
+     "did": "Tracker → Edit chart layout, Tools ▾ open, + Test named, ✓ Save changes pressed with storage refusing, then Retry with storage restored",
+     "saw": "✓ an ordinary chart edit made (\"+ Test\" named F-WALK); \"✓ Save changes\" is showing [Tools open straight after choosing + Test: false] · ✓ Tools is open before the failure · ✓ the Save press (a tap outside Tools) closed Tools by D373’s rule, then Tools ▾ was tapped open again before the failure surfaced [closed by press: true; open again: true; bar note at that moment: savestat] · ✓ \"✓ Save changes\" pressed (a chart save made to fail) [[731,156]] · ✓ the warning band came up (top bar one line taller) [bar 149 → 185] · ✓ Tools STAYS open through the band appearing [open after fail: true] · ✓ the chart is still in Edit chart layout mode · ✓ Tools buttons are still what a finger lands on (not under the band) [19/19] · ✓ storage put back, the app’s own retry saves; the warning goes (bar back to 149px) [bar 149 → 149] · ✓ Tools STAYS open through the band going away [open after the band left: true]",
+     "verdict": "PASS",
+     "pics": [
+      "b-001-trk-tools-before.png",
+      "b-002-trk-tools-after-fail.png",
+      "b-003-trk-tools-after-autoretry.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "b-001-trk-tools-before.png",
+    "b-002-trk-tools-after-fail.png",
+    "b-003-trk-tools-after-autoretry.png"
+   ]
+  },
+  "p5a-c-dk": {
+   "at": "2026-10-05T12:21:56.935Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-03 (1440x900)",
+     "did": "ALL AVAIL (chip on Saturday) and Changes (clock) windows opened, each dragged and resized, then storage broken + ordinary edit, Retry, closed and reopened",
+     "saw": "✓ ALL AVAIL chip made through the board (put: allavail) · ✓ both windows open at their default places [{\"a0\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"c0\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656}}] · ✓ ALL AVAIL moved/resized by hand (placed mark on) [{\"a0\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"a1\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628}}] · ✓ Changes moved/resized by hand (placed mark on) [{\"c0\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656},\"c1\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✓ the warning is up · ✓ ALL AVAIL keeps the size/place chosen during the failure [{\"a1\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628},\"a2\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628}}] · ✓ Changes keeps the size/place chosen during the failure [{\"c1\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648},\"c2\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✓ Retry succeeded; both windows unchanged after the warning left [{\"a3\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628},\"c3\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✗ reopened: both windows come back where and at the size chosen, on screen [{\"a4\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"c4\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656}}]",
+     "verdict": "FAIL",
+     "pics": [
+      "c-001-win-both-open.png",
+      "c-002-win-both-placed.png",
+      "c-003-win-during-fail.png",
+      "c-004-win-reopened.png"
+     ]
+    },
+    {
+     "id": "P5-03b (1440x900)",
+     "did": "both windows opened at their default places WHILE the warning is up",
+     "saw": "✓ warning up · ✓ ALL AVAIL opens below the enlarged bar, on screen [{\"x\":1212,\"y\":132,\"w\":212,\"h\":540,\"bottom\":672,\"placed\":false} bar 94] · ✓ Changes opens below the enlarged bar, on screen [{\"x\":1044,\"y\":132,\"w\":380,\"h\":560,\"bottom\":692,\"placed\":false}] · ✓ neither lies over Retry [[1358,63,1420,89]]",
+     "verdict": "PASS",
+     "pics": [
+      "c-005-win-default-during-fail.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "c-001-win-both-open.png",
+    "c-002-win-both-placed.png",
+    "c-003-win-during-fail.png",
+    "c-004-win-reopened.png",
+    "c-005-win-default-during-fail.png"
+   ]
+  },
+  "p5a-d-dk": {
+   "at": "2026-10-05T12:24:07.292Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-03 (1440x900)",
+     "did": "ALL AVAIL (chip on Saturday) and Changes (clock) windows opened, each dragged and resized, then storage broken + ordinary edit, Retry, closed and reopened",
+     "saw": "✓ ALL AVAIL chip made through the board (put: allavail) · ✓ both windows open at their default places [{\"a0\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"c0\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656}}] · ✓ ALL AVAIL moved/resized by hand (placed mark on) [{\"a0\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"a1\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628}}] · ✓ Changes moved/resized by hand (placed mark on) [{\"c0\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656},\"c1\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✓ the warning is up · ✓ ALL AVAIL keeps the size/place chosen during the failure [{\"a1\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628},\"a2\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628}}] · ✓ Changes keeps the size/place chosen during the failure [{\"c1\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648},\"c2\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✓ Retry succeeded; both windows unchanged after the warning left [{\"a3\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628},\"c3\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✓ reopened (closing forgets a placement, by design — view.ts): both windows come back at their default places and FULL default size — not left shortened or displaced by the failed-save band — on screen [{\"a4\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"c4\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656}}]",
+     "verdict": "PASS",
+     "pics": [
+      "d-001-win-both-open.png",
+      "d-002-win-both-placed.png",
+      "d-003-win-during-fail.png",
+      "d-004-win-reopened.png"
+     ]
+    },
+    {
+     "id": "P5-03b (1440x900)",
+     "did": "both windows opened at their default places WHILE the warning is up",
+     "saw": "✓ warning up · ✓ ALL AVAIL opens below the enlarged bar, on screen [{\"x\":1212,\"y\":132,\"w\":212,\"h\":540,\"bottom\":672,\"placed\":false} bar 94] · ✓ Changes opens below the enlarged bar, on screen [{\"x\":1044,\"y\":132,\"w\":380,\"h\":560,\"bottom\":692,\"placed\":false}] · ✓ neither lies over Retry [[1358,63,1420,89]]",
+     "verdict": "PASS",
+     "pics": [
+      "d-005-win-default-during-fail.png"
+     ]
+    },
+    {
+     "id": "P5-04 (desk)",
+     "did": "warning up (ordinary edit), then opened the Board (day 2), Inputs calendar and Medical view through their doors; first control pressed, Retry pressed, closed",
+     "saw": "✓ warning up through an ordinary edit · ✓ Board: warning under the board’s own bar, seen, covering nothing [[0,109,1440,36] ] · ✓ Board: exactly one reachable Retry (the board’s); the top bar’s copy is inert [band:board topInert=true] · ✓ Board: the band’s Retry takes keyboard focus; the bar’s copy cannot [{\"bandFocus\":true,\"topbarFocusable\":false}] · ✓ Board: first control (#sbInsights) pressed for real — it took the press, not Retry [{\"clickAt\":\"sbInsights\",\"focus\":\"sbInsights\"} bar: sbCal | sbHl | sbTpl | sbSortAll | sbUndo | sbRedo | sbHist | sbSync | sbBell | sbInsights | sbDone | CAT | T] · ✓ Board: Retry (storage still refusing) — warning stays · ✓ Board closed: the main warning is back, seen, one reachable Retry, no longer inert [topbar [0,57,1440,36]] · ✓ inputs-calendar: warning under its head, seen, covers no control [[0,65,1440,36]] · ✓ inputs-calendar: exactly one reachable Retry (its own) [band:inputs-cal] · ✓ inputs-calendar: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"icPrev\",\"focus\":\"icPrev\"}] · ✓ medical-view: warning under its head, seen, covers no control [[0,65,1440,36]] · ✓ medical-view: exactly one reachable Retry (its own) [band:medical] · ✓ medical-view: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"medCalBtn\",\"focus\":\"medCalBtn\"}] · ✗ after both closed: the main warning is back and is the one reachable Retry []",
+     "verdict": "FAIL",
+     "pics": [
+      "d-006-board-desk.png"
+     ]
+    },
+    {
+     "id": "P5-04 (phone)",
+     "did": "warning up (ordinary edit), then opened the Board (day 2), Inputs calendar and Medical view through their doors; first control pressed, Retry pressed, closed",
+     "saw": "✓ warning up through an ordinary edit · ✓ Board: warning under the board’s own bar, seen, covering nothing [[0,76,390,36] ] · ✓ Board: exactly one reachable Retry (the board’s); the top bar’s copy is inert [band:board topInert=true] · ✓ Board: the band’s Retry takes keyboard focus; the bar’s copy cannot [{\"bandFocus\":true,\"topbarFocusable\":false}] · ✓ Board: first control (#sbMore) pressed for real — it took the press, not Retry [{\"clickAt\":\"sbMore\",\"focus\":\"sbMore\"} bar: sbCal | sbPrevDay | sbHl | sbMore | sbNextDay | sbUndo | sbRedo | sbHist | sbSync | sbBell | sbDone | Retry] · ✓ Board: Retry (storage still refusing) — warning stays · ✓ Board closed: the main warning is back, seen, one reachable Retry, no longer inert [topbar [0,48,390,36]] · ✓ inputs-calendar: warning under its head, seen, covers no control [[0,61,390,36]] · ✓ inputs-calendar: exactly one reachable Retry (its own) [band:inputs-cal] · ✓ inputs-calendar: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"icPrev\",\"focus\":\"icPrev\"}] · ✓ medical-view: warning under its head, seen, covers no control [[0,61,390,36]] · ✓ medical-view: exactly one reachable Retry (its own) [band:medical] · ✓ medical-view: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"medCalBtn\",\"focus\":\"medCalBtn\"}] · ✗ after both closed: the main warning is back and is the one reachable Retry []",
+     "verdict": "FAIL",
+     "pics": [
+      "d-009-board-phone.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "d-001-win-both-open.png",
+    "d-002-win-both-placed.png",
+    "d-003-win-during-fail.png",
+    "d-004-win-reopened.png",
+    "d-005-win-default-during-fail.png",
+    "d-006-board-desk.png",
+    "d-007-inputs-calendar-desk.png",
+    "d-008-medical-view-desk.png",
+    "d-009-board-phone.png",
+    "d-010-inputs-calendar-phone.png",
+    "d-011-medical-view-phone.png"
+   ]
+  },
+  "p5a-e-dk": {
+   "at": "2026-10-05T12:30:06.166Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-04 (desk)",
+     "did": "warning up (ordinary edit), then opened the Board (day 2), Inputs calendar and Medical view through their doors; first control pressed, Retry pressed, closed",
+     "saw": "✓ warning up through an ordinary edit · ✓ Board: warning under the board’s own bar, seen, covering nothing [[0,109,1440,36] ] · ✓ Board: exactly one reachable Retry (the board’s); the top bar’s copy is inert [band:board topInert=true] · ✓ Board: the band’s Retry takes keyboard focus; the bar’s copy cannot [{\"bandFocus\":true,\"topbarFocusable\":false}] · ✓ Board: first control (#sbInsights) pressed for real — it took the press, not Retry [{\"clickAt\":\"sbInsights\",\"focus\":\"sbInsights\"} bar: sbCal | sbHl | sbTpl | sbSortAll | sbUndo | sbRedo | sbHist | sbSync | sbBell | sbInsights | sbDone | CAT | T] · ✓ Board: Retry (storage still refusing) — warning stays · ✓ Board closed: the main warning is back, seen, one reachable Retry, no longer inert [topbar [0,57,1440,36]] · ✓ inputs-calendar: warning under its head, seen, covers no control [[0,65,1440,36]] · ✓ inputs-calendar: exactly one reachable Retry (its own) [band:inputs-cal] · ✓ inputs-calendar: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"icPrev\",\"focus\":\"icPrev\"}] · ✓ medical-view: warning under its head, seen, covers no control [[0,65,1440,36]] · ✓ medical-view: exactly one reachable Retry (its own) [band:medical] · ✓ medical-view: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"medCalBtn\",\"focus\":\"medCalBtn\"}] · ✓ after both closed: the main warning is back and is the one reachable Retry [topbar {\"cur\":\"inputs\",\"med\":false,\"cal\":false,\"note\":\"savestat failed\",\"bands\":1,\"bar\":\"topbar has-undo save-failed\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "e-001-board-desk.png",
+      "e-002-inputs-calendar-desk.png",
+      "e-003-medical-view-desk.png",
+      "e-004-cover-end-desk.png"
+     ]
+    },
+    {
+     "id": "P5-04 (phone)",
+     "did": "warning up (ordinary edit), then opened the Board (day 2), Inputs calendar and Medical view through their doors; first control pressed, Retry pressed, closed",
+     "saw": "✓ warning up through an ordinary edit · ✓ Board: warning under the board’s own bar, seen, covering nothing [[0,76,390,36] ] · ✓ Board: exactly one reachable Retry (the board’s); the top bar’s copy is inert [band:board topInert=true] · ✓ Board: the band’s Retry takes keyboard focus; the bar’s copy cannot [{\"bandFocus\":true,\"topbarFocusable\":false}] · ✓ Board: first control (#sbMore) pressed for real — it took the press, not Retry [{\"clickAt\":\"sbMore\",\"focus\":\"sbMore\"} bar: sbCal | sbPrevDay | sbHl | sbMore | sbNextDay | sbUndo | sbRedo | sbHist | sbSync | sbBell | sbDone | Retry] · ✓ Board: Retry (storage still refusing) — warning stays · ✓ Board closed: the main warning is back, seen, one reachable Retry, no longer inert [topbar [0,48,390,36]] · ✓ inputs-calendar: warning under its head, seen, covers no control [[0,61,390,36]] · ✓ inputs-calendar: exactly one reachable Retry (its own) [band:inputs-cal] · ✓ inputs-calendar: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"icPrev\",\"focus\":\"icPrev\"}] · ✓ medical-view: warning under its head, seen, covers no control [[0,61,390,36]] · ✓ medical-view: exactly one reachable Retry (its own) [band:medical] · ✓ medical-view: its head’s first control pressed for real took the press (not Retry) [{\"clickAt\":\"medCalBtn\",\"focus\":\"medCalBtn\"}] · ✓ after both closed: the main warning is back and is the one reachable Retry [topbar {\"cur\":\"inputs\",\"med\":false,\"cal\":false,\"note\":\"savestat failed\",\"bands\":1,\"bar\":\"topbar has-undo save-failed\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "e-005-board-phone.png",
+      "e-006-inputs-calendar-phone.png",
+      "e-007-medical-view-phone.png",
+      "e-008-cover-end-phone.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "e-001-board-desk.png",
+    "e-002-inputs-calendar-desk.png",
+    "e-003-medical-view-desk.png",
+    "e-004-cover-end-desk.png",
+    "e-005-board-phone.png",
+    "e-006-inputs-calendar-phone.png",
+    "e-007-medical-view-phone.png",
+    "e-008-cover-end-phone.png"
+   ]
+  },
+  "p5a-a-dk": {
+   "at": "2026-10-05T12:30:40.050Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-01 (desk)",
+     "did": "broke storage, ordinary edit on Edit Schedule, opened Leave War → OIL tracker; scrolled, From first entry, Range, zoom ± ; Retry failing, then restoring",
+     "saw": "✓ the warning came up through an ordinary edit · ✓ one warning band is beneath the sheet’s own bar, seen whole and on top [[19,62,1402,36]] · ✓ it covers no control [] · ✓ every head control is its own target (a finger lands on it) [{\"oil-close\":{\"found\":true,\"own\":true,\"box\":[1402,28,19,17],\"top\":\"x\"},\"oil-range-first\":{\"found\":true,\"own\":true,\"box\":[63,106,109,30],\"top\":\"tchip on\"},\"oil-r] · ✓ exactly one Retry is reachable [topbar(under)(inert), band:oil, band:board(under)] · ✓ after scrolling the sheet the warning is still seen and covers nothing [{\"sc\":{\"cls\":\"oil-wrap\",\"top\":400},\"box\":[19,62,1402,36]}] · ✓ range controls worked (From first entry, Range pick pressed) with the warning still seen [{\"r1\":true,\"pickOpened\":true,\"seen\":[true,true]}] · ✓ zoom in / out pressed; zoom still its own target [{\"found\":true,\"own\":true,\"box\":[275,108,30,25],\"top\":\"tchip zoom\"}] · ✓ Retry pressed while storage still refuses: the warning stays (one band) [{\"pressed\":true,\"box\":[1339,68,62,26]}] · ✓ Retry with storage restored saves; every warning goes · ✓ the sheet’s close cross still closes it",
+     "verdict": "PASS",
+     "pics": [
+      "a-001-oil-open-desk.png",
+      "a-002-oil-range-desk.png",
+      "a-003-oil-after-retry-desk.png"
+     ]
+    },
+    {
+     "id": "P5-01 (phone)",
+     "did": "broke storage, ordinary edit on Edit Schedule, opened Leave War → OIL tracker; scrolled, From first entry, Range, zoom ± ; Retry failing, then restoring",
+     "saw": "✓ the warning came up through an ordinary edit · ✓ one warning band is beneath the sheet’s own bar, seen whole and on top [[8,51,374,36]] · ✓ it covers no control [] · ✓ every head control is its own target (a finger lands on it) [{\"oil-close\":{\"found\":true,\"own\":true,\"box\":[363,17,19,17],\"top\":\"x\"},\"oil-range-first\":{\"found\":true,\"own\":true,\"box\":[44,91,97,36],\"top\":\"tchip on\"},\"oil-rang] · ✓ exactly one Retry is reachable [topbar(under)(inert), band:oil, band:board(under)] · ✓ after scrolling the sheet the warning is still seen and covers nothing [{\"sc\":{\"cls\":\"oil-wrap\",\"top\":400},\"box\":[8,51,374,36]}] · ✓ range controls worked (From first entry, Range pick pressed) with the warning still seen [{\"r1\":true,\"pickOpened\":true,\"seen\":[true,true]}] · ✓ zoom in / out pressed; zoom still its own target [{\"found\":true,\"own\":true,\"box\":[229,91,26,36],\"top\":\"tchip zoom\"}] · ✓ Retry pressed while storage still refuses: the warning stays (one band) [{\"pressed\":true,\"box\":[306,57,62,26]}] · ✓ Retry with storage restored saves; every warning goes · ✓ the sheet’s close cross still closes it",
+     "verdict": "PASS",
+     "pics": [
+      "a-004-oil-open-phone.png",
+      "a-005-oil-range-phone.png",
+      "a-006-oil-after-retry-phone.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "a-001-oil-open-desk.png",
+    "a-002-oil-range-desk.png",
+    "a-003-oil-after-retry-desk.png",
+    "a-004-oil-open-phone.png",
+    "a-005-oil-range-phone.png",
+    "a-006-oil-after-retry-phone.png"
+   ]
+  },
+  "p5b-f-dk": {
+   "at": "2026-10-05T12:35:01.691Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-05 (desk)",
+     "did": "warning up (ordinary edit); every main page visited; at the top and scrolled 320px, the page’s topmost control pressed with a real mouse/touch press",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 93px, note bottom 92; first control [BUTTON] pressed for real → click went to [svg] [{\"page_top\":93,\"box\":[20,101,38,30]}] · ✓ viewsched scrolled: bar 93px, note bottom 92; first control [Traffic] pressed for real → click went to [Traffic] [{\"page_top\":93,\"box\":[1201,365,54,19]}] · ✓ editsched: bar 94px, note bottom 93; first control [BUTTON] pressed for real → click went to [svg] [{\"page_top\":94,\"box\":[20,102,38,30]}] · ✓ editsched scrolled: bar 94px, note bottom 93; first control [EP: ENGINE FIRE ON TAKE O] pressed for real → click went to [EP: ENGINE FIRE ON TAKE O] [{\"page_top\":94,\"box\":[20,156,520,14]}] · ✓ inputs: bar 93px, note bottom 92; first control [inCalBtn] pressed for real → click went to [inCalBtn] [{\"page_top\":93,\"box\":[199,109,141,37]}] · ✓ inputs scrolled: bar 93px, note bottom 92; first control [inCalBtn] pressed for real → click went to [inCalBtn] [{\"page_top\":93,\"box\":[199,109,141,37]}] · ✓ quals: bar 93px, note bottom 92; first control [qEdit] pressed for real → click went to [qEdit] [{\"page_top\":93,\"box\":[20,105,108,28]}] · ✓ quals scrolled: bar 93px, note bottom 92; first control [OCUDCBAIPIRFI] pressed for real → click went to [OCUDCBAIPIRFI] [{\"page_top\":93,\"box\":[453,119,55,20]}] · ✓ logic: bar 93px, note bottom 92; first control [All] pressed for real → click went to [All] [{\"page_top\":93,\"box\":[278,160,34,28]}] · ✓ logic scrolled: bar 93px, note bottom 92; first control [All] pressed for real → click went to [All] [{\"page_top\":93,\"box\":[278,101,34,28]}] · ✓ leavewar: bar 93px, note bottom 92; first control [→ BIDDING CLOSED] pressed for real → click went to [→ BIDDING CLOSED] [{\"page_top\":93,\"box\":[203,157,136,29]}] · ✓ leavewar scrolled: bar 93px, note bottom 92; first control [WM P] pressed for real → click went to [WM P] [{\"page_top\":93,\"box\":[33,96,103,14]}] · ✓ tracker: bar 93px, note bottom 92; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":93,\"box\":[46,103,111,30]}] · ✓ tracker scrolled: bar 93px, note bottom 92; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":93,\"box\":[46,103,111,30]}] · ✓ help: bar 93px, note bottom 92; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":93,\"box\":[397,239,646,35]}] · ✓ help scrolled: bar 93px, note bottom 92; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":93,\"box\":[397,239,646,35]}] · ✓ admin: bar 93px, note bottom 92; first control [UsersSign-in and roster›] pressed for real → click went to [UsersSign-in and roster] [{\"page_top\":93,\"box\":[280,155,244,58]}] · ✓ admin scrolled: bar 93px, note bottom 92; first control [Basherno sign-in · WSO · ] pressed for real → click went to [Basherno sign-in · WSO · ] [{\"page_top\":93,\"box\":[559,99,388,34]}]",
+     "verdict": "PASS",
+     "pics": [
+      "f-001-page-viewsched-desk.png",
+      "f-002-page-inputs-desk.png",
+      "f-003-page-logic-desk.png",
+      "f-004-page-tracker-desk.png"
+     ]
+    },
+    {
+     "id": "P5-05 (phone)",
+     "did": "warning up (ordinary edit); every main page visited; at the top and scrolled 320px, the page’s topmost control pressed with a real mouse/touch press",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 85px, note bottom 84; first control [BUTTON] pressed for real → click went to [svg] [{\"page_top\":85,\"box\":[12,92,34,26]}] · ✓ viewsched scrolled: bar 85px, note bottom 84; first control [Traffic] pressed for real → click went to [Traffic] [{\"page_top\":85,\"box\":[73,445,54,19]}] · ✓ editsched: bar 85px, note bottom 84; first control [exportSched] pressed for real → click went to [exportSched] [{\"page_top\":85,\"box\":[51,92,42,30]}] · ✓ editsched scrolled: bar 85px, note bottom 84; first control [EP: ENGINE FIRE ON TAKE O] pressed for real → click went to [EP: ENGINE FIRE ON TAKE O] [{\"page_top\":85,\"box\":[20,153,334,14]}] · ✓ inputs: bar 85px, note bottom 84; first control [inCalBtn] pressed for real → click went to [inCalBtn] [{\"page_top\":85,\"box\":[20,147,350,42]}] · ✓ inputs scrolled: bar 85px, note bottom 84; first control [6] pressed for real → click went to [6] [{\"page_top\":85,\"box\":[28,89,26,20]}] · ✓ quals: bar 85px, note bottom 84; first control [qEdit] pressed for real → click went to [qEdit] [{\"page_top\":85,\"box\":[20,97,108,28]}] · ✓ quals scrolled: bar 85px, note bottom 84; first control [INPUT] pressed for real → click went to [INPUT] [{\"page_top\":85,\"box\":[28,136,108,18]}] · ✓ logic: bar 85px, note bottom 84; first control [lgSearch] pressed for real → click went to [lgSearch] [{\"page_top\":85,\"box\":[47,200,150,16]}] · ✓ logic scrolled: bar 85px, note bottom 84; first control [lgSearch] pressed for real → click went to [lgSearch] [{\"page_top\":85,\"box\":[47,99,150,16]}] · ✓ leavewar: bar 85px, note bottom 84; first control [→ BIDDING CLOSED] pressed for real → click went to [→ BIDDING CLOSED] [{\"page_top\":85,\"box\":[168,174,125,25]}] · ✓ leavewar scrolled: bar 85px, note bottom 84; first control [JAN] pressed for real → click went to [JAN] [{\"page_top\":85,\"box\":[21,173,27,22]}] · ✓ tracker: bar 85px, note bottom 84; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":85,\"box\":[8,90,103,26]}] · ✓ tracker scrolled: bar 85px, note bottom 84; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":85,\"box\":[8,90,103,26]}] · ✓ help: bar 85px, note bottom 84; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":85,\"box\":[37,265,316,35]}] · ✓ help scrolled: bar 85px, note bottom 84; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":85,\"box\":[37,265,316,35]}] · ✓ admin: bar 85px, note bottom 84; first control [UsersSign-in and roster›] pressed for real → click went to [UsersSign-in and roster›] [{\"page_top\":85,\"box\":[20,147,350,58]}] · ✓ admin scrolled: bar 85px, note bottom 84; first control [Basherno sign-in · WSO · ] pressed for real → click went to [Basherno sign-in · WSO · ] [{\"page_top\":85,\"box\":[37,122,204,34]}]",
+     "verdict": "PASS",
+     "pics": [
+      "f-005-page-viewsched-phone.png",
+      "f-006-page-inputs-phone.png",
+      "f-007-page-logic-phone.png",
+      "f-008-page-tracker-phone.png"
+     ]
+    },
+    {
+     "id": "P5-06 (1366x800)",
+     "did": "warning up; the nine pages visited in turn, the warning’s place read against the bar’s bottom each time",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"viewsched\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\"] · ✗ viewsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows absent, crew COVERED by daywarn hard] · ✓ editsched: bar 140px (bottom 140); warning 103→139, follows the bar's bottom [{\"pg\":\"editsched\",\"barH\":140,\"barBottom\":140,\"noteTop\":103,\"noteBottom\":139,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"u] · ✓ editsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew own] · ✓ inputs: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"inputs\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"o] · ✗ inputs: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew COVERED by inbar] · ✓ quals: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"quals\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"ow] · ✗ quals: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew COVERED by qtablehead] · ✓ logic: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"logic\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"ow] · ✗ logic: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew COVERED by lg-insights] · ✓ leavewar: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"leavewar\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":] · ✗ leavewar: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew COVERED by stage] · ✓ tracker: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"tracker\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"] · ✗ tracker: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows absent, crew COVERED by card c-students] · ✓ help: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"help\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"abs] · ✗ help: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows absent, crew COVERED by page-help] · ✓ admin: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"admin\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"ow] · ✗ admin: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew COVERED by page-admin] · ✓ the bar differs in height between pages (so the follow was really exercised) [bar heights seen: 93, 140]",
+     "verdict": "FAIL",
+     "pics": [
+      "f-009-bar-viewsched-1366x800.png",
+      "f-010-bar-quals-1366x800.png",
+      "f-011-bar-leavewar-1366x800.png",
+      "f-012-bar-help-1366x800.png"
+     ]
+    },
+    {
+     "id": "P5-06 (844x390)",
+     "did": "walk",
+     "saw": "ERROR locator.boundingBox: Error: strict mode violation: locator('.topbar') resolved to 2 elements: <-     1) <div class=\"topbar save-failed\">…</div> aka getByText('142RAPTOREdit ScheduleView-') <-     2) <div class=\"topbar\">…</div> aka locator('div').filter({ hasText: 'PeriodJAN - DEC 26JAN - DEC' }).nth(2)",
+     "verdict": "NOT WALKED",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "f-001-page-viewsched-desk.png",
+    "f-002-page-inputs-desk.png",
+    "f-003-page-logic-desk.png",
+    "f-004-page-tracker-desk.png",
+    "f-005-page-viewsched-phone.png",
+    "f-006-page-inputs-phone.png",
+    "f-007-page-logic-phone.png",
+    "f-008-page-tracker-phone.png",
+    "f-009-bar-viewsched-1366x800.png",
+    "f-010-bar-quals-1366x800.png",
+    "f-011-bar-leavewar-1366x800.png",
+    "f-012-bar-help-1366x800.png",
+    "f-013-bar-viewsched-844x390.png",
+    "f-014-bar-quals-844x390.png",
+    "f-015-bar-leavewar-844x390.png",
+    "f-016-bar-help-844x390.png",
+    "f-017-p506-error-side.png"
+   ]
+  },
+  "p5b-g-dk": {
+   "at": "2026-10-05T12:36:19.359Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-06 (1366x800)",
+     "did": "warning up; the nine pages visited in turn, the warning’s place read against the bar’s bottom each time",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"viewsched\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\"] · ✓ viewsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows own, crew absent] · ✓ editsched: bar 140px (bottom 140); warning 103→139, follows the bar's bottom [{\"pg\":\"editsched\",\"barH\":140,\"barBottom\":140,\"noteTop\":103,\"noteBottom\":139,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"u] · ✓ editsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows own, crew own] · ✓ inputs: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"inputs\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"o] · ✓ inputs: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ quals: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"quals\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"ow] · ✓ quals: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ logic: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"logic\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"ow] · ✓ logic: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ leavewar: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"leavewar\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":] · ✓ leavewar: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ tracker: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"tracker\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"] · ✓ tracker: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows absent, crew absent] · ✓ help: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"help\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"abs] · ✓ help: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows absent, crew absent] · ✓ admin: bar 93px (bottom 93); warning 56→92, follows the bar's bottom [{\"pg\":\"admin\",\"barH\":93,\"barBottom\":93,\"noteTop\":56,\"noteBottom\":92,\"noteLeft\":0,\"noteW\":1366,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"ow] · ✓ admin: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ the bar differs in height between pages (so the follow was really exercised) [bar heights seen: 93, 140]",
+     "verdict": "PASS",
+     "pics": [
+      "g-001-bar-viewsched-1366x800.png",
+      "g-002-bar-quals-1366x800.png",
+      "g-003-bar-leavewar-1366x800.png",
+      "g-004-bar-help-1366x800.png"
+     ]
+    },
+    {
+     "id": "P5-06 (844x390)",
+     "did": "warning up; the nine pages visited in turn, the warning’s place read against the bar’s bottom each time; the bar scrolled sideways with a wheel gesture",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"viewsched\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"un] · ✓ viewsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows own, crew absent] · ✓ editsched: bar 186px (bottom 186); warning 149→185, follows the bar's bottom [{\"pg\":\"editsched\",\"barH\":186,\"barBottom\":186,\"noteTop\":149,\"noteBottom\":185,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"un] · ✓ editsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows own, crew own] · ✓ inputs: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"inputs\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\"] · ✓ inputs: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ quals: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"quals\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":] · ✓ quals: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ logic: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"logic\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":] · ✓ logic: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ leavewar: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"leavewar\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"und] · ✓ leavewar: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ tracker: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"tracker\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo] · ✓ tracker: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows absent, crew absent] · ✓ help: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"help\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":\"] · ✓ help: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo absent, arrows absent, crew absent] · ✓ admin: bar 185px (bottom 185); warning 148→184, follows the bar's bottom [{\"pg\":\"admin\",\"barH\":185,\"barBottom\":185,\"noteTop\":148,\"noteBottom\":184,\"noteLeft\":0,\"noteW\":844,\"noteH\":36,\"retry\":\"own\",\"account\":\"own\",\"logout\":\"own\",\"undo\":] · ✓ admin: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct own, logout own, undo own, arrows absent, crew absent] · ✓ the bar differs in height between pages (so the follow was really exercised) [bar heights seen: 185, 186] · ✓ phone bar scrolled sideways: the warning stays put (left 0, full width) and Retry is its own target [{\"scrollLeft\":0,\"scrollW\":844,\"clientW\":844,\"noteLeft\":0,\"noteW\":844,\"retryOwn\":true}] · ✓ controls on screen after the sideways scroll are their own targets (none covered) [#logout:own #roleBadge:own #undoBtn:absent #burger:offscreen-in-scroll]",
+     "verdict": "PASS",
+     "pics": [
+      "g-005-bar-viewsched-844x390.png",
+      "g-006-bar-quals-844x390.png",
+      "g-007-bar-leavewar-844x390.png",
+      "g-008-bar-help-844x390.png",
+      "g-009-bar-scrolled-844x390.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "g-001-bar-viewsched-1366x800.png",
+    "g-002-bar-quals-1366x800.png",
+    "g-003-bar-leavewar-1366x800.png",
+    "g-004-bar-help-1366x800.png",
+    "g-005-bar-viewsched-844x390.png",
+    "g-006-bar-quals-844x390.png",
+    "g-007-bar-leavewar-844x390.png",
+    "g-008-bar-help-844x390.png",
+    "g-009-bar-scrolled-844x390.png"
+   ]
+  },
+  "p5b-h-dk": {
+   "at": "2026-10-05T12:39:40.342Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-05 (desk)",
+     "did": "warning up (ordinary edit); every main page visited; at the top and scrolled 320px, the page’s topmost control pressed with a real mouse/touch press",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 93px, note bottom 92; first control [BUTTON] pressed for real → click went to [svg] [{\"page_top\":93,\"box\":[20,101,38,30]}] · ✓ viewsched scrolled: bar 93px, note bottom 92; first control [Traffic] pressed for real → click went to [Traffic] [{\"page_top\":93,\"box\":[1201,365,54,19]}] · ✓ editsched: bar 94px, note bottom 93; first control [BUTTON] pressed for real → click went to [svg] [{\"page_top\":94,\"box\":[20,102,38,30]}] · ✓ editsched scrolled: bar 94px, note bottom 93; first control [EP: ENGINE FIRE ON TAKE O] pressed for real → click went to [EP: ENGINE FIRE ON TAKE O] [{\"page_top\":94,\"box\":[20,156,520,14]}] · ✓ inputs: bar 93px, note bottom 92; first control [inCalBtn] pressed for real → click went to [inCalBtn] [{\"page_top\":93,\"box\":[199,109,141,37]}] · ✓ inputs scrolled: bar 93px, note bottom 92; first control [inCalBtn] pressed for real → click went to [inCalBtn] [{\"page_top\":93,\"box\":[199,109,141,37]}] · ✓ quals: bar 93px, note bottom 92; first control [qEdit] pressed for real → click went to [qEdit] [{\"page_top\":93,\"box\":[20,105,108,28]}] · ✓ quals scrolled: bar 93px, note bottom 92; first control [OCUDCBAIPIRFI] pressed for real → click went to [OCUDCBAIPIRFI] [{\"page_top\":93,\"box\":[453,119,55,20]}] · ✓ logic: bar 93px, note bottom 92; first control [All] pressed for real → click went to [All] [{\"page_top\":93,\"box\":[278,160,34,28]}] · ✓ logic scrolled: bar 93px, note bottom 92; first control [All] pressed for real → click went to [All] [{\"page_top\":93,\"box\":[278,101,34,28]}] · ✓ leavewar: bar 93px, note bottom 92; first control [→ BIDDING CLOSED] pressed for real → click went to [→ BIDDING CLOSED] [{\"page_top\":93,\"box\":[203,157,136,29]}] · ✓ leavewar scrolled: bar 93px, note bottom 92; first control [WM P] pressed for real → click went to [WM P] [{\"page_top\":93,\"box\":[33,96,103,14]}] · ✓ tracker: bar 93px, note bottom 92; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":93,\"box\":[46,103,111,30]}] · ✓ tracker scrolled: bar 93px, note bottom 92; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":93,\"box\":[46,103,111,30]}] · ✓ help: bar 93px, note bottom 92; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":93,\"box\":[397,239,646,35]}] · ✓ help scrolled: bar 93px, note bottom 92; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":93,\"box\":[397,239,646,35]}] · ✓ admin: bar 93px, note bottom 92; first control [UsersSign-in and roster›] pressed for real → click went to [UsersSign-in and roster] [{\"page_top\":93,\"box\":[280,155,244,58]}] · ✓ admin scrolled: bar 93px, note bottom 92; first control [Basherno sign-in · WSO · ] pressed for real → click went to [Basherno sign-in · WSO · ] [{\"page_top\":93,\"box\":[559,99,388,34]}]",
+     "verdict": "PASS",
+     "pics": [
+      "h-001-page-viewsched-desk.png",
+      "h-002-page-inputs-desk.png",
+      "h-003-page-logic-desk.png",
+      "h-004-page-tracker-desk.png"
+     ]
+    },
+    {
+     "id": "P5-05 (phone)",
+     "did": "warning up (ordinary edit); every main page visited; at the top and scrolled 320px, the page’s topmost control pressed with a real mouse/touch press",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 85px, note bottom 84; first control [BUTTON] pressed for real → click went to [svg] [{\"page_top\":85,\"box\":[12,92,34,26]}] · ✓ viewsched scrolled: bar 85px, note bottom 84; first control [Traffic] pressed for real → click went to [Traffic] [{\"page_top\":85,\"box\":[73,445,54,19]}] · ✓ editsched: bar 85px, note bottom 84; first control [exportSched] pressed for real → click went to [exportSched] [{\"page_top\":85,\"box\":[51,92,42,30]}] · ✓ editsched scrolled: bar 85px, note bottom 84; first control [EP: ENGINE FIRE ON TAKE O] pressed for real → click went to [EP: ENGINE FIRE ON TAKE O] [{\"page_top\":85,\"box\":[20,153,334,14]}] · ✓ inputs: bar 85px, note bottom 84; first control [inCalBtn] pressed for real → click went to [inCalBtn] [{\"page_top\":85,\"box\":[20,147,350,42]}] · ✓ inputs scrolled: bar 85px, note bottom 84; first control [6] pressed for real → click went to [6] [{\"page_top\":85,\"box\":[28,89,26,20]}] · ✓ quals: bar 85px, note bottom 84; first control [qEdit] pressed for real → click went to [qEdit] [{\"page_top\":85,\"box\":[20,97,108,28]}] · ✓ quals scrolled: bar 85px, note bottom 84; first control [INPUT] pressed for real → click went to [INPUT] [{\"page_top\":85,\"box\":[28,136,108,18]}] · ✓ logic: bar 85px, note bottom 84; first control [lgSearch] pressed for real → click went to [lgSearch] [{\"page_top\":85,\"box\":[47,200,150,16]}] · ✓ logic scrolled: bar 85px, note bottom 84; first control [lgSearch] pressed for real → click went to [lgSearch] [{\"page_top\":85,\"box\":[47,99,150,16]}] · ✓ leavewar: bar 85px, note bottom 84; first control [→ BIDDING CLOSED] pressed for real → click went to [→ BIDDING CLOSED] [{\"page_top\":85,\"box\":[168,174,125,25]}] · ✓ leavewar scrolled: bar 85px, note bottom 84; first control [JAN] pressed for real → click went to [JAN] [{\"page_top\":85,\"box\":[21,173,27,22]}] · ✓ tracker: bar 85px, note bottom 84; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":85,\"box\":[8,90,103,26]}] · ✓ tracker scrolled: bar 85px, note bottom 84; first control [activeSel] pressed for real → click went to [activeSel] [{\"page_top\":85,\"box\":[8,90,103,26]}] · ✓ help: bar 85px, note bottom 84; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":85,\"box\":[37,265,316,35]}] · ✓ help scrolled: bar 85px, note bottom 84; first control [bugCat] pressed for real → click went to [bugCat] [{\"page_top\":85,\"box\":[37,265,316,35]}] · ✓ admin: bar 85px, note bottom 84; first control [UsersSign-in and roster›] pressed for real → click went to [UsersSign-in and roster›] [{\"page_top\":85,\"box\":[20,147,350,58]}] · ✓ admin scrolled: bar 85px, note bottom 84; first control [Basherno sign-in · WSO · ] pressed for real → click went to [Basherno sign-in · WSO · ] [{\"page_top\":85,\"box\":[37,122,204,34]}]",
+     "verdict": "PASS",
+     "pics": [
+      "h-005-page-viewsched-phone.png",
+      "h-006-page-inputs-phone.png",
+      "h-007-page-logic-phone.png",
+      "h-008-page-tracker-phone.png"
+     ]
+    },
+    {
+     "id": "P5-07 (desk)",
+     "did": "warning up; Insights window, input sheet and the Changes window opened and closed, their buttons pressed",
+     "saw": "✓ warning up through an ordinary edit · ✓ insights-window: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 0 (none: the bar’s copy is under the surface, as the bar is); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,56,1440,36]}] · ✓ input-sheet: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 0 (none: the bar’s copy is under the surface, as the bar is); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,57,1440,36]}] · ✓ changes-window: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 1 (topbar); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,57,1440,36]}]",
+     "verdict": "PASS",
+     "pics": [
+      "h-009-short-insights-window-desk.png",
+      "h-010-short-input-sheet-desk.png",
+      "h-011-short-changes-window-desk.png"
+     ]
+    },
+    {
+     "id": "P5-07 (phone)",
+     "did": "warning up; Insights window, drawer, input sheet and the Changes window opened and closed, their buttons pressed",
+     "saw": "✓ warning up through an ordinary edit · ✓ insights-window: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 0 (none: the bar’s copy is under the surface, as the bar is); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,48,390,36]}] · ✓ drawer: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 0 (none: the bar’s copy is under the surface, as the bar is); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,48,390,36]}] · ✓ input-sheet: no extra band inside it (drawn bands: 0); reachable Retry buttons while open: 0 (none: the bar’s copy is under the surface, as the bar is); after closing the failure is still there and its warning seen [{\"nb\":0,\"sf\":true,\"back\":[0,48,390,36]}]",
+     "verdict": "PASS",
+     "pics": [
+      "h-012-short-insights-window-phone.png",
+      "h-013-short-drawer-phone.png",
+      "h-014-short-input-sheet-phone.png"
+     ]
+    },
+    {
+     "id": "P5-08 (main, 1440x900)",
+     "did": "real edit with storage refusing: Saving… recorded, then the warning; Retry ×3 while failing; storage restored on the Retry press",
+     "saw": "✓ order seen: Saving… first, then the failed warning (never the reverse) [none → SAVING → FAILED] · ✗ Saving… keeps its floating look: a small note, not a full-width band (height 30, the bar unchanged at 58) [{\"cls\":\"savestat\",\"t\":\"Saving…\",\"top\":64,\"h\":30,\"bar\":58}] · ✓ failed: one line added (top bar 57 → 94px, +37) and the warning is seen [{\"bar\":94,\"box\":[0,57,1440,36]}] · ✓ Retry pressed 3 times with the failure persisting: still one warning, the bar never grows past one added line [{\"heights\":[94,94,94],\"topNotes\":1,\"drawnBands\":0}] · ✓ the warning stays up through the app’s own retries while storage still refuses · ✗ confirmed success: warning gone everywhere, bar back to 57px [bar 58] · ✓ the edit made while failing is in storage now",
+     "verdict": "FAIL",
+     "pics": [
+      "h-015-states-failed-main.png",
+      "h-016-states-repeated-main.png",
+      "h-017-states-saved-main.png"
+     ]
+    },
+    {
+     "id": "P5-08 (board, 1440x900)",
+     "did": "real edit with storage refusing: Saving… recorded, then the warning; Retry ×3 while failing; storage restored on the Retry press",
+     "saw": "✓ order seen: Saving… first, then the failed warning (never the reverse) [none → SAVING → FAILED] · ✗ Saving… keeps its floating look: a small note, not a full-width band (height 30, the bar unchanged at 58) [{\"cls\":\"savestat\",\"t\":\"Saving…\",\"top\":64,\"h\":30,\"bar\":58}] · ✓ failed: one line added (top bar 57 → 94px, +37) and the warning is seen under the board’s own bar [{\"bar\":94,\"box\":[0,109,1440,36]}] · ✓ Retry pressed 3 times with the failure persisting: still one warning, the bar never grows past one added line [{\"heights\":[94,94,94],\"topNotes\":1,\"drawnBands\":1}] · ✓ the warning stays up through the app’s own retries while storage still refuses · ✗ confirmed success: warning gone everywhere, bar back to 57px [bar 58] · ✓ the edit made while failing is in storage now",
+     "verdict": "FAIL",
+     "pics": [
+      "h-018-states-failed-board.png",
+      "h-019-states-repeated-board.png",
+      "h-020-states-saved-board.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "h-001-page-viewsched-desk.png",
+    "h-002-page-inputs-desk.png",
+    "h-003-page-logic-desk.png",
+    "h-004-page-tracker-desk.png",
+    "h-005-page-viewsched-phone.png",
+    "h-006-page-inputs-phone.png",
+    "h-007-page-logic-phone.png",
+    "h-008-page-tracker-phone.png",
+    "h-009-short-insights-window-desk.png",
+    "h-010-short-input-sheet-desk.png",
+    "h-011-short-changes-window-desk.png",
+    "h-012-short-insights-window-phone.png",
+    "h-013-short-drawer-phone.png",
+    "h-014-short-input-sheet-phone.png",
+    "h-015-states-failed-main.png",
+    "h-016-states-repeated-main.png",
+    "h-017-states-saved-main.png",
+    "h-018-states-failed-board.png",
+    "h-019-states-repeated-board.png",
+    "h-020-states-saved-board.png"
+   ]
+  },
+  "p5b-i-dk": {
+   "at": "2026-10-05T12:41:29.205Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-08 (main, 1440x900)",
+     "did": "real edit with storage refusing: Saving… recorded, then the warning; Retry ×3 while failing; storage restored on the Retry press",
+     "saw": "✓ order seen: Saving… first, then the failed warning (never the reverse) [none → SAVING → FAILED] · ✓ Saving… keeps its floating look: a small note, not a full-width band (height 30, the bar unchanged at 58) [{\"cls\":\"savestat\",\"t\":\"Saving…\",\"top\":64,\"h\":30,\"bar\":58}] · ✓ failed: one line added (top bar 57 → 94px, +37) and the warning is seen [{\"bar\":94,\"box\":[0,57,1440,36]}] · ✓ Retry pressed 3 times with the failure persisting: still one warning, the bar never grows past one added line [{\"heights\":[94,94,94],\"topNotes\":1,\"drawnBands\":0}] · ✓ the warning stays up through the app’s own retries while storage still refuses · ✓ confirmed success: warning gone everywhere, bar back to 57px [bar 58 (was 57)] · ✓ the edit made while failing is in storage now",
+     "verdict": "PASS",
+     "pics": [
+      "i-001-states-failed-main.png",
+      "i-002-states-repeated-main.png",
+      "i-003-states-saved-main.png"
+     ]
+    },
+    {
+     "id": "P5-08 (board, 1440x900)",
+     "did": "real edit with storage refusing: Saving… recorded, then the warning; Retry ×3 while failing; storage restored on the Retry press",
+     "saw": "✓ order seen: Saving… first, then the failed warning (never the reverse) [none → SAVING → FAILED] · ✓ Saving… keeps its floating look: a small note, not a full-width band (height 30, the bar unchanged at 58) [{\"cls\":\"savestat\",\"t\":\"Saving…\",\"top\":64,\"h\":30,\"bar\":58}] · ✓ failed: one line added (top bar 57 → 94px, +37) and the warning is seen under the board’s own bar [{\"bar\":94,\"box\":[0,109,1440,36]}] · ✓ Retry pressed 3 times with the failure persisting: still one warning, the bar never grows past one added line [{\"heights\":[94,94,94],\"topNotes\":1,\"drawnBands\":1}] · ✓ the warning stays up through the app’s own retries while storage still refuses · ✓ confirmed success: warning gone everywhere, bar back to 57px [bar 58 (was 57)] · ✓ the edit made while failing is in storage now",
+     "verdict": "PASS",
+     "pics": [
+      "i-004-states-failed-board.png",
+      "i-005-states-repeated-board.png",
+      "i-006-states-saved-board.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "i-001-states-failed-main.png",
+    "i-002-states-repeated-main.png",
+    "i-003-states-saved-main.png",
+    "i-004-states-failed-board.png",
+    "i-005-states-repeated-board.png",
+    "i-006-states-saved-board.png"
+   ]
+  },
+  "x1-j-dk": {
+   "at": "2026-10-05T12:43:24.862Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-01 (week, desk)",
+     "did": "tracking On; Friday ACM formation; typed \"DS for RU\" into Remarks, Tab, typed \"X1\" at once (edit week)",
+     "saw": "✓ Blue/Red tracking switched On on Logic · ✓ a Friday flying wave made on the board (crew bane/freak) · ✓ no question before the Remarks edit (after Mission ACM alone) [questions: 0] · ✓ Remarks saved as typed: \"DS for RU\" · ✓ exactly ONE question appeared [questions: 1 {\"top\":512,\"bottom\":581,\"left\":159,\"w\":508}] · ✓ the question sits below the Remarks row of the formation [{\"q\":{\"top\":512,\"bottom\":581,\"left\":159,\"w\":508},\"remarks\":{\"top\":444,\"bottom\":457}}] · ✓ typing stayed in the destination box (the next box after Remarks) — \"X1\" went there [{\"k\":\"bombs:4.0.0.0\",\"text\":\"X1\",\"visible\":true,\"box\":[515,459,34,12],\"caret\":true}] · ✓ the first keystroke was not consumed (text is exactly X1) [\"X1\"]",
+     "verdict": "PASS",
+     "pics": [
+      "j-001-x01-week-desk.png"
+     ]
+    },
+    {
+     "id": "X-01 (board, desk)",
+     "did": "tracking On; Friday ACM formation; typed \"DS for RU\" into Remarks, Tab, typed \"X1\" at once (board)",
+     "saw": "✓ Blue/Red tracking switched On on Logic · ✓ a Friday flying wave made on the board (crew bane/freak) · ✓ no question before the Remarks edit (after Mission ACM alone) [questions: 0] · ✓ Remarks saved as typed: \"DS for RU\" · ✓ exactly ONE question appeared [questions: 1 {\"top\":567,\"bottom\":636,\"left\":26,\"w\":1070}] · ✓ the question sits below the Remarks row of the formation [{\"q\":{\"top\":567,\"bottom\":636,\"left\":26,\"w\":1070},\"remarks\":{\"top\":491,\"bottom\":515}}] · ✓ typing stayed in the destination box (the next box after Remarks) — \"X1\" went there [{\"k\":\"bombs:4.0.0.0\",\"text\":\"X1\",\"visible\":true,\"box\":[791,517,34,12],\"caret\":true}] · ✓ the first keystroke was not consumed (text is exactly X1) [\"X1\"]",
+     "verdict": "PASS",
+     "pics": [
+      "j-002-x01-board-desk.png"
+     ]
+    },
+    {
+     "id": "X-01 (board, phone)",
+     "did": "walk",
+     "saw": "ERROR locator.click: Timeout 30000ms exceeded. <- Call log: <- \u001b[2m  - waiting for locator('[data-role-side=\"later\"]').first()\u001b[22m",
+     "verdict": "NOT WALKED",
+     "pics": []
+    },
+    {
+     "id": "X-02 (week, desk)",
+     "did": "Friday wave, In-time 08:00 and Rally 10:00 (brief blank): Tab through, read the warning, Shift+Tab back and corrected to 09:30 (week)",
+     "saw": "✓ Friday wave made (TO 12:00, LD 13:00; brief left blank → suggested brief 09:40) · ✗ In-time line present, then \"+ In-time / Rally\" added a second [{\"before\":[],\"after\":[\"09:00H: IN TIME + WX/NOTAMS\"]}] · ✗ Tab from line 1 lands in line 2 (the next reporting line) [{\"k\":\"ff:4.0.0.cs\",\"text\":\"VL\",\"visible\":true,\"box\":[343,495,15,16],\"caret\":true}] · ✗ both lines committed as typed [[\"08:00 IN TIME\"]] · ✗ a red warning names the Rally/brief pair and says \"suggested brief\" [[\"hard Crew rest breach — Thursday landed 18:10, +2h debrief assumed → ended 20:10 → crew rest cl\",\"hard Crew rest breach — Thursday landed 18:10, +2h debrief a] · ✓ Tab after line 2 left the lines for the next box (not stuck / not blank) [{\"k\":\"ff:4.0.0.msn\",\"text\":\"\",\"visible\":true,\"box\":[336,525,67,12],\"caret\":true}] · ✓ each commit made exactly one command (2 edits → +2) [n0=8 now=10] · ✗ Shift+Tab goes back to the Rally line (line 2) [{\"k\":\"ff:4.0.0.cs\",\"text\":\"10:00 RALLY\",\"visible\":true,\"box\":[336,495,39,30],\"caret\":true}] · ✗ Rally corrected to 09:30 and committed; focus moved back to line 1 [{\"lines3\":[\"08:00 IN TIME\"],\"a4\":\"4|0|0\"}] · ✓ the red warning is gone (no stale warning) [[]] · ✓ correction made exactly one more command [now=11 was 10]",
+     "verdict": "FAIL",
+     "pics": [
+      "j-005-x02-week-outoforder.png",
+      "j-006-x02-week-corrected.png"
+     ]
+    },
+    {
+     "id": "X-02 (board, desk)",
+     "did": "Friday wave, In-time 08:00 and Rally 10:00 (brief blank): Tab through, read the warning, Shift+Tab back and corrected to 09:30 (board)",
+     "saw": "✓ Friday wave made (TO 12:00, LD 13:00; brief left blank → suggested brief 09:40) · ✗ In-time line present, then \"+ In-time / Rally\" added a second [{\"before\":[],\"after\":[\"09:00H: IN TIME + WX/NOTAMS\"]}] · ✗ Tab from line 1 lands in line 2 (the next reporting line) [{\"k\":\"ff:4.0.0.cs\",\"text\":\"VL\",\"visible\":true,\"box\":[54,551,64,24],\"caret\":true}] · ✗ both lines committed as typed [[\"08:00 IN TIME\"]] · ✗ a red warning names the Rally/brief pair and says \"suggested brief\" [[\"hard Crew rest breach — Thursday landed 18:10, +2h debrief assumed → ended 20:10 → crew rest cl\",\"hard Crew rest breach — Thursday landed 18:10, +2h debrief a] · ✓ Tab after line 2 left the lines for the next box (not stuck / not blank) [{\"k\":\"ff:4.0.0.msn\",\"text\":\"\",\"visible\":true,\"box\":[126,551,74,24],\"caret\":true}] · ✓ each commit made exactly one command (2 edits → +2) [n0=8 now=10] · ✗ Shift+Tab goes back to the Rally line (line 2) [{\"k\":\"ff:4.0.0.cs\",\"text\":\"10:00 RALLY\",\"visible\":true,\"box\":[54,545,64,36],\"caret\":true}] · ✗ Rally corrected to 09:30 and committed; focus moved back to line 1 [{\"lines3\":[\"08:00 IN TIME\"],\"a4\":\"4|0|0\"}] · ✓ the red warning is gone (no stale warning) [[]] · ✓ correction made exactly one more command [now=11 was 10]",
+     "verdict": "FAIL",
+     "pics": [
+      "j-007-x02-board-outoforder.png",
+      "j-008-x02-board-corrected.png"
+     ]
+    },
+    {
+     "id": "X-04 (week, desk)",
+     "did": "storage refusing from the first commit; Tab through callsign → mission → brief (typed slowly so the band lands mid-typing); Retry; reload (week)",
+     "saw": "✓ Friday wave made · ✓ the three edits are all in the schedule (cs, mission, brief) [{\"cs\":\"ABX\",\"msn\":\"BFM\",\"br\":\"09:30\"}] · ✓ each Tab moved focus to the next box, and it stayed visible (focus trace) [[{\"edit\":\"cs\",\"then\":\"ff:4.0.0.msn\",\"visible\":true,\"bandUp\":true},{\"edit\":\"msn\",\"then\":\"ff:4.0.0.br\",\"visible\":true,\"bandUp\":true},{\"edit\":\"br\",\"then\":\"ff:4.0.0] · ✓ the warning band came up during the sequence [band during trace: [true,true,true]] · ✓ Retry with storage restored saved: the warning went · ✓ after a reload and sign-in, all three values are still there [{\"cs\":\"ABX\",\"msn\":\"BFM\",\"br\":\"09:30\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "j-009-x04-week-failed.png",
+      "j-010-x04-week-reloaded.png"
+     ]
+    },
+    {
+     "id": "X-04 (board, desk)",
+     "did": "storage refusing from the first commit; Tab through callsign → mission → brief (typed slowly so the band lands mid-typing); Retry; reload (board)",
+     "saw": "✓ Friday wave made · ✓ the three edits are all in the schedule (cs, mission, brief) [{\"cs\":\"ABX\",\"msn\":\"BFM\",\"br\":\"09:30\"}] · ✓ each Tab moved focus to the next box, and it stayed visible (focus trace) [[{\"edit\":\"cs\",\"then\":\"ff:4.0.0.msn\",\"visible\":true,\"bandUp\":true},{\"edit\":\"msn\",\"then\":\"ff:4.0.0.br\",\"visible\":true,\"bandUp\":true},{\"edit\":\"br\",\"then\":\"ff:4.0.0] · ✓ the warning band came up during the sequence [band during trace: [true,true,true]] · ✓ Retry with storage restored saved: the warning went · ✓ after a reload and sign-in, all three values are still there [{\"cs\":\"ABX\",\"msn\":\"BFM\",\"br\":\"09:30\"}]",
+     "verdict": "PASS",
+     "pics": [
+      "j-011-x04-board-failed.png",
+      "j-012-x04-board-reloaded.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "j-001-x01-week-desk.png",
+    "j-002-x01-board-desk.png",
+    "j-003-x01-board-phone.png",
+    "j-004-x01-err-board.png",
+    "j-005-x02-week-outoforder.png",
+    "j-006-x02-week-corrected.png",
+    "j-007-x02-board-outoforder.png",
+    "j-008-x02-board-corrected.png",
+    "j-009-x04-week-failed.png",
+    "j-010-x04-week-reloaded.png",
+    "j-011-x04-board-failed.png",
+    "j-012-x04-board-reloaded.png"
+   ]
+  },
+  "x1-k-dk": {
+   "at": "2026-10-05T12:44:05.860Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-01 (board, phone)",
+     "did": "tracking On; Friday ACM formation; typed \"DS for RU\" into Remarks, Tab, typed \"X1\" at once (board)",
+     "saw": "✓ Blue/Red tracking switched On on Logic · ✓ a Friday flying wave made on the board (crew bane/freak) · ✓ no question before the Remarks edit (after Mission ACM alone) [questions: 0] · ✓ Remarks saved as typed: \"DS for RU\" · ✓ exactly ONE question appeared [questions: 1 {\"top\":550,\"bottom\":659,\"left\":26,\"w\":324}] · ✓ the question sits below the Remarks row of the formation [{\"q\":{\"top\":550,\"bottom\":659,\"left\":26,\"w\":324},\"remarks\":{\"top\":447,\"bottom\":471}}] · ✓ typing stayed in the destination box (the next box after Remarks) — \"X1\" went there [{\"k\":\"bombs:4.0.0.0\",\"text\":\"X1\",\"visible\":true,\"box\":[212,473,34,12],\"caret\":true}] · ✓ the first keystroke was not consumed (text is exactly X1) [\"X1\"]",
+     "verdict": "PASS",
+     "pics": [
+      "k-001-x01-board-phone.png"
+     ]
+    },
+    {
+     "id": "X-02 (week, desk)",
+     "did": "Friday wave, In-time 08:00 and Rally 10:00 (brief blank): Tab through, read the warning, Shift+Tab back and corrected to 09:30 (week)",
+     "saw": "✓ Friday wave made (TO 12:00, LD 13:00; brief left blank → suggested brief 09:40) · ✓ In-time line present, then \"+ In-time / Rally\" added a second [{\"before\":[\"09:00H: IN TIME + WX/NOTAMS\"],\"after\":[\"09:00H: IN TIME + WX/NOTAMS\",\"09:00H: IN TIME + WX/NOTAMS\"]}] · ✓ Tab from line 1 lands in line 2 (the next reporting line) [{\"k\":\"4|0|1\",\"text\":\"09:00H: IN TIME + WX/NOTAMS\",\"visible\":true,\"box\":[341,458,481,17],\"caret\":true}] · ✓ both lines committed as typed [[\"08:00 IN TIME\",\"10:00 RALLY\"]] · ✓ a red warning names the Rally/brief pair and says \"suggested brief\" [[\"hard VL: rally 10:00 is later than suggested brief 09:40.\"]] · ✓ Tab after line 2 left the lines for the next box (not stuck / not blank) [{\"k\":\"ff:4.0.0.cs\",\"text\":\"VL\",\"visible\":true,\"box\":[343,529,15,16],\"caret\":true}] · ✓ each commit made exactly one command (2 edits → +2) [n0=9 now=11] · ✓ Shift+Tab goes back to the Rally line (line 2) [{\"k\":\"4|0|1\",\"text\":\"10:00 RALLY\",\"visible\":true,\"box\":[341,458,481,17],\"caret\":true}] · ✓ Rally corrected to 09:30 and committed; focus moved back to line 1 [{\"lines3\":[\"08:00 IN TIME\",\"09:30 RALLY\"],\"a4\":\"4|0|0\"}] · ✓ the red warning is gone (no stale warning) [[]] · ✓ correction made exactly one more command [now=12 was 11]",
+     "verdict": "PASS",
+     "pics": [
+      "k-002-x02-week-outoforder.png",
+      "k-003-x02-week-corrected.png"
+     ]
+    },
+    {
+     "id": "X-02 (board, desk)",
+     "did": "Friday wave, In-time 08:00 and Rally 10:00 (brief blank): Tab through, read the warning, Shift+Tab back and corrected to 09:30 (board)",
+     "saw": "✓ Friday wave made (TO 12:00, LD 13:00; brief left blank → suggested brief 09:40) · ✓ In-time line present, then \"+ In-time / Rally\" added a second [{\"before\":[\"09:00H: IN TIME + WX/NOTAMS\"],\"after\":[\"09:00H: IN TIME + WX/NOTAMS\",\"09:00H: IN TIME + WX/NOTAMS\"]}] · ✓ Tab from line 1 lands in line 2 (the next reporting line) [{\"k\":\"4|0|1\",\"text\":\"09:00H: IN TIME + WX/NOTAMS\",\"visible\":true,\"box\":[26,512,1043,17],\"caret\":true}] · ✓ both lines committed as typed [[\"08:00 IN TIME\",\"10:00 RALLY\"]] · ✓ a red warning names the Rally/brief pair and says \"suggested brief\" [[\"hard VL: rally 10:00 is later than suggested brief 09:40.\"]] · ✓ Tab after line 2 left the lines for the next box (not stuck / not blank) [{\"k\":\"ff:4.0.0.cs\",\"text\":\"VL\",\"visible\":true,\"box\":[54,584,64,24],\"caret\":true}] · ✓ each commit made exactly one command (2 edits → +2) [n0=9 now=11] · ✓ Shift+Tab goes back to the Rally line (line 2) [{\"k\":\"4|0|1\",\"text\":\"10:00 RALLY\",\"visible\":true,\"box\":[26,512,1043,17],\"caret\":true}] · ✓ Rally corrected to 09:30 and committed; focus moved back to line 1 [{\"lines3\":[\"08:00 IN TIME\",\"09:30 RALLY\"],\"a4\":\"4|0|0\"}] · ✓ the red warning is gone (no stale warning) [[]] · ✓ correction made exactly one more command [now=12 was 11]",
+     "verdict": "PASS",
+     "pics": [
+      "k-004-x02-board-outoforder.png",
+      "k-005-x02-board-corrected.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "k-001-x01-board-phone.png",
+    "k-002-x02-week-outoforder.png",
+    "k-003-x02-week-corrected.png",
+    "k-004-x02-board-outoforder.png",
+    "k-005-x02-board-corrected.png"
+   ]
+  },
+  "x2-m-dk": {
+   "at": "2026-10-05T12:47:21.709Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-03 (board, desk)",
+     "did": "Friday published with a red Rally warning; Rally corrected on the working copy (pending); on the latest-published view answered Red; pending, sign-offs and Insights read before/after",
+     "saw": "✓ Friday published (all four signed): {\"label\":\"Publish day\",\"ver\":\"2026-07-17#0\"} [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ the published day carries a red Rally/brief warning [[\"hard VL: rally 10:00 is later than suggested brief 09:40.\"]] · ✓ a timing correction is pending on the working copy (1 pending) [{\"tag\":\"ORIG\",\"pending\":\"17 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CU] · ✓ the question named the published context: \"Published · Original VL: Blue or Red? Mission or remarks mention DS or RED. Blue\" [Published · Original\nVL: Blue or Red?\n\nMission or remarks mention DS or RED.\n\nBlue\nRed\nLater] · ✓ programme bytes and the book of versions / sign-offs / pending are unchanged by the answer [days same true, book same true] · ✗ the timing correction is STILL pending (count 1 → 1) and the four sign-offs are untouched [{\"before\":{\"tag\":\"ORIG\",\"pending\":\"17 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGN] · ✓ Insights changed at once: the formation’s crew went from a total-only bar to a Blue/Red split [{\"before\":\"Ranger 3\",\"after\":\"Ranger 2 1 3\",\"echoBefore\":\"Echo 4\",\"echoAfter\":\"Echo 3 1 4\"}] · ✓ no amendment was made: one extra command only, a role-answer line [seq 20 → 21; role lines 0 → 1] · ✓ the working copy’s Rally is still 09:30 (not published by the answer) [[\"08:00 IN TIME\",\"09:30 RALLY\"]]",
+     "verdict": "FAIL",
+     "pics": [
+      "m-001-x03-before.png",
+      "m-002-x03-after-answer.png"
+     ]
+    },
+    {
+     "id": "X-05 (board, desk)",
+     "did": "published conditional formation; answered Red on the latest-published view with storage refusing; Retry failing twice; then restored + Retry; reload",
+     "saw": "✓ Friday published with four sign-offs [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ answered Red on the published view while storage refuses: the board shows the warning band [question: Published · Original VL: Blue or Red? Mission or remarks men] · ✓ the programme / book are unchanged and one role-history line exists after the answer [role lines 0 → 1] · ✓ Retry while still failing: the warning stays, nothing duplicated (role lines 1, commands 16 → 16) [] · ✓ Retry with storage restored saved: the warning went · ✗ after the successful Retry: programme, book, sign-offs and pending are as before; exactly one role-history line [{\"h0\":{\"tag\":\"ORIG\",\"pending\":\"13 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED O] · ✓ Insights shows the answer before the reload [\"Ranger 2 1 3\"] · ✓ after a reload and sign-in the answer is still there: the button reads \"Change mission role\" (not \"Choose\") [Change mission role] · ✓ Insights after the reload still shows the Red answer [\"Ranger 2 1 3\"] · ✓ exactly one role-history line after the reload [lines 1]",
+     "verdict": "FAIL",
+     "pics": [
+      "m-003-x05-failed.png",
+      "m-004-x05-saved.png",
+      "m-005-x05-reloaded.png"
+     ]
+    },
+    {
+     "id": "X-06 (phone)",
+     "did": "walk",
+     "saw": "ERROR locator.boundingBox: Timeout 30000ms exceeded. <- Call log: <- \u001b[2m  - waiting for locator('#insightModal .modal-box').first()\u001b[22m",
+     "verdict": "NOT WALKED",
+     "pics": []
+    },
+    {
+     "id": "X-06 (p320)",
+     "did": "walk",
+     "saw": "ERROR locator.boundingBox: Timeout 30000ms exceeded. <- Call log: <- \u001b[2m  - waiting for locator('#insightModal .modal-box').first()\u001b[22m",
+     "verdict": "NOT WALKED",
+     "pics": []
+    },
+    {
+     "id": "X-07 (desk)",
+     "did": "warning up; Logic scrolled; searched \"report\", filters pressed; Retry succeeded; scrolled and searched \"rest\"",
+     "saw": "✓ warning up through an ordinary edit · ✓ scrolled with the band up: the page really scrolled and the search bar sits right under the bar (gap 0px) [{\"barBottom\":93,\"lgTop\":93,\"gap\":0,\"scrollY\":1872,\"searchOwn\":true,\"failed\":true,\"barH\":93}] · ✓ typed \"report\": rows narrowed (count: 12 of 75 rules · 16 fired on this week's schedule); filter buttons pressed (hard:59 adv:59 note:59 fired:59 all:59); search stays the thing a finger lands on [{\"c1\":\"12 of 75 rules · 16 fired on this week's schedule\",\"body1\":\"HOW A DAY IS MEASURED\\n\\nBefore any rule can fire, the engine has to decide how mu\"}] · ✗ Retry succeeded: the band is gone (bar 93 → 57px); the search bar follows the SHORTER bar without a return to the top (gap 59px, scrollY 0) [{\"barBottom\":57,\"lgTop\":116,\"gap\":59,\"scrollY\":0,\"searchOwn\":true,\"failed\":false,\"barH\":57}] · ✓ searched \"rest\" afterwards without scrolling back up: results 14 of 75 rules · 16 fired on this week's schedule, focus stayed in the search box (lgSearch), bar gap 0px [{\"barBottom\":57,\"lgTop\":57,\"gap\":0,\"scrollY\":300,\"searchOwn\":true,\"failed\":false,\"barH\":57}]",
+     "verdict": "FAIL",
+     "pics": [
+      "m-010-x07-scrolled-failed-desk.png",
+      "m-011-x07-after-retry-desk.png"
+     ]
+    },
+    {
+     "id": "X-07 (phone)",
+     "did": "warning up; Logic scrolled; searched \"report\", filters pressed; Retry succeeded; scrolled and searched \"rest\"",
+     "saw": "✓ warning up through an ordinary edit · ✓ scrolled with the band up: the page really scrolled and the search bar sits right under the bar (gap 0px) [{\"barBottom\":85,\"lgTop\":85,\"gap\":0,\"scrollY\":1732,\"searchOwn\":true,\"failed\":true,\"barH\":85}] · ✓ typed \"report\": rows narrowed (count: 12 of 75 rules · 16 fired on this week's schedule); filter buttons pressed (hard:0 adv:0 note:0 fired:0 all:0); search stays the thing a finger lands on [{\"c1\":\"12 of 75 rules · 16 fired on this week's schedule\",\"body1\":\"HOW A DAY IS MEASURED\\n\\nBefore any rule can fire, the engine has to decide how mu\"}] · ✓ Retry succeeded: the band is gone (bar 85 → 49px); the search bar follows the SHORTER bar without a return to the top (gap 0px, scrollY 206) [{\"barBottom\":49,\"lgTop\":49,\"gap\":0,\"scrollY\":206,\"searchOwn\":true,\"failed\":false,\"barH\":49}] · ✓ searched \"rest\" afterwards without scrolling back up: results 14 of 75 rules · 16 fired on this week's schedule, focus stayed in the search box (lgSearch), bar gap 0px [{\"barBottom\":49,\"lgTop\":49,\"gap\":0,\"scrollY\":506,\"searchOwn\":true,\"failed\":false,\"barH\":49}]",
+     "verdict": "PASS",
+     "pics": [
+      "m-012-x07-scrolled-failed-phone.png",
+      "m-013-x07-after-retry-phone.png"
+     ]
+    },
+    {
+     "id": "X-08 (phone 390x844)",
+     "did": "walk",
+     "saw": "ERROR locator.boundingBox: Timeout 30000ms exceeded. <- Call log: <- \u001b[2m  - waiting for locator('#sbMoreInsights').first()\u001b[22m",
+     "verdict": "NOT WALKED",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "m-001-x03-before.png",
+    "m-002-x03-after-answer.png",
+    "m-003-x05-failed.png",
+    "m-004-x05-saved.png",
+    "m-005-x05-reloaded.png",
+    "m-006-x06-viewsched-menu-phone.png",
+    "m-007-x06-err-phone.png",
+    "m-008-x06-viewsched-menu-p320.png",
+    "m-009-x06-err-p320.png",
+    "m-010-x07-scrolled-failed-desk.png",
+    "m-011-x07-after-retry-desk.png",
+    "m-012-x07-scrolled-failed-phone.png",
+    "m-013-x07-after-retry-phone.png",
+    "m-014-x08-wide-scrolled.png",
+    "m-015-x08-err.png"
+   ]
+  },
+  "x2-n-dk": {
+   "at": "2026-10-05T12:53:17.711Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-03 (board, desk)",
+     "did": "Friday published with a red Rally warning; Rally corrected on the working copy (pending); on the latest-published view answered Red; pending, sign-offs and Insights read before/after",
+     "saw": "✓ Friday published (all four signed): {\"label\":\"Publish day\",\"ver\":\"2026-07-17#0\"} [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ the published day carries a red Rally/brief warning [[\"hard VL: rally 10:00 is later than suggested brief 09:40.\"]] · ✓ a timing correction is pending on the working copy (1 pending) [{\"tag\":\"ORIG\",\"pending\":\"17 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CU] · ✓ the question named the published context: \"Published · Original VL: Blue or Red? Mission or remarks mention DS or RED. Blue\" [Published · Original\nVL: Blue or Red?\n\nMission or remarks mention DS or RED.\n\nBlue\nRed\nLater] · ✓ programme bytes and the book of versions / sign-offs / pending are unchanged by the answer [days same true, book same true] · ✗ the timing correction is STILL pending (count 1 → 1) and the four sign-offs are untouched [{\"before\":{\"tag\":\"ORIG\",\"pending\":\"17 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGN] · ✓ Insights changed at once: the formation’s crew went from a total-only bar to a Blue/Red split [{\"before\":\"Ranger 3\",\"after\":\"Ranger 2 1 3\",\"echoBefore\":\"Echo 4\",\"echoAfter\":\"Echo 3 1 4\"}] · ✓ no amendment was made: one extra command only, a role-answer line [seq 20 → 21; role lines 0 → 1] · ✓ the working copy’s Rally is still 09:30 (not published by the answer) [[\"08:00 IN TIME\",\"09:30 RALLY\"]]",
+     "verdict": "FAIL",
+     "pics": [
+      "n-001-x03-before.png",
+      "n-002-x03-after-answer.png"
+     ]
+    },
+    {
+     "id": "X-05 (board, desk)",
+     "did": "published conditional formation; answered Red on the latest-published view with storage refusing; Retry failing twice; then restored + Retry; reload",
+     "saw": "✓ Friday published with four sign-offs [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ answered Red on the published view while storage refuses: the board shows the warning band [question: Published · Original VL: Blue or Red? Mission or remarks men] · ✓ the programme / book are unchanged and one role-history line exists after the answer [role lines 0 → 1] · ✓ Retry while still failing: the warning stays, nothing duplicated (role lines 1, commands 16 → 16) [] · ✓ Retry with storage restored saved: the warning went · ✗ after the successful Retry: programme, book, sign-offs and pending are as before; exactly one role-history line [{\"h0\":{\"tag\":\"ORIG\",\"pending\":\"13 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED O] · ✓ Insights shows the answer before the reload [\"Ranger 2 1 3\"] · ✓ after a reload and sign-in the answer is still there: the button reads \"Change mission role\" (not \"Choose\") [Change mission role] · ✓ Insights after the reload still shows the Red answer [\"Ranger 2 1 3\"] · ✓ exactly one role-history line after the reload [lines 1]",
+     "verdict": "FAIL",
+     "pics": [
+      "n-003-x05-failed.png",
+      "n-004-x05-saved.png",
+      "n-005-x05-reloaded.png"
+     ]
+    },
+    {
+     "id": "X-06 (phone)",
+     "did": "warning up; on View-only Sched and Edit Schedule: ⋯ More → Insights → Show all → scrolled to the bottom → ✕",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: More button took its press [viewSchedMore]; menu item Insights is own; Insights took its press [viewSchedMoreInsights] [{\"o1\":{\"label\":\"More\",\"found\":true,\"clickAt\":\"viewSchedMore\",\"focus\":\"viewSchedMore\"},\"menuOwn\":\"own\",\"o2\":{\"label\":\"Insights\",\"found\":true,\"clickAt\":\"viewSched] · ✓ viewsched: Show all took its press [Show all 38 ↓]; scrolled to the bottom the cross is on screen and its own target [{\"o3\":{\"label\":\"Show all\",\"found\":true,\"clickAt\":\"Show all 38 ↓\",\"focus\":\"BUTTON\"},\"cross\":{\"own\":true,\"box\":[346,40,27,20],\"inView\":true}}] · ✓ viewsched: the cross took its press [insightClose] and closed the window; the failed-save warning is still seen on the bar [{\"closed\":true,\"back\":[0,48,390,36]}] · ✓ editsched: More button took its press [editSchedMore]; menu item Insights is own; Insights took its press [editSchedMoreInsights] [{\"o1\":{\"label\":\"More\",\"found\":true,\"clickAt\":\"editSchedMore\",\"focus\":\"editSchedMore\"},\"menuOwn\":\"own\",\"o2\":{\"label\":\"Insights\",\"found\":true,\"clickAt\":\"editSched] · ✓ editsched: Show all took its press [Show all 38 ↓]; scrolled to the bottom the cross is on screen and its own target [{\"o3\":{\"label\":\"Show all\",\"found\":true,\"clickAt\":\"Show all 38 ↓\",\"focus\":\"BUTTON\"},\"cross\":{\"own\":true,\"box\":[346,40,27,20],\"inView\":true}}] · ✓ editsched: the cross took its press [insightClose] and closed the window; the failed-save warning is still seen on the bar [{\"closed\":true,\"back\":[0,48,390,36]}]",
+     "verdict": "PASS",
+     "pics": [
+      "n-006-x06-viewsched-menu-phone.png",
+      "n-007-x06-viewsched-insights-bottom-phone.png",
+      "n-008-x06-editsched-menu-phone.png",
+      "n-009-x06-editsched-insights-bottom-phone.png"
+     ]
+    },
+    {
+     "id": "X-06 (p320)",
+     "did": "warning up; on View-only Sched and Edit Schedule: ⋯ More → Insights → Show all → scrolled to the bottom → ✕",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: More button took its press [viewSchedMore]; menu item Insights is own; Insights took its press [viewSchedMoreInsights] [{\"o1\":{\"label\":\"More\",\"found\":true,\"clickAt\":\"viewSchedMore\",\"focus\":\"viewSchedMore\"},\"menuOwn\":\"own\",\"o2\":{\"label\":\"Insights\",\"found\":true,\"clickAt\":\"viewSched] · ✓ viewsched: Show all took its press [Show all 38 ↓]; scrolled to the bottom the cross is on screen and its own target [{\"o3\":{\"label\":\"Show all\",\"found\":true,\"clickAt\":\"Show all 38 ↓\",\"focus\":\"BUTTON\"},\"cross\":{\"own\":true,\"box\":[276,40,27,20],\"inView\":true}}] · ✓ viewsched: the cross took its press [insightClose] and closed the window; the failed-save warning is still seen on the bar [{\"closed\":true,\"back\":[0,48,320,36]}] · ✓ editsched: More button took its press [editSchedMore]; menu item Insights is own; Insights took its press [editSchedMoreInsights] [{\"o1\":{\"label\":\"More\",\"found\":true,\"clickAt\":\"editSchedMore\",\"focus\":\"editSchedMore\"},\"menuOwn\":\"own\",\"o2\":{\"label\":\"Insights\",\"found\":true,\"clickAt\":\"editSched] · ✓ editsched: Show all took its press [Show all 38 ↓]; scrolled to the bottom the cross is on screen and its own target [{\"o3\":{\"label\":\"Show all\",\"found\":true,\"clickAt\":\"Show all 38 ↓\",\"focus\":\"BUTTON\"},\"cross\":{\"own\":true,\"box\":[276,40,27,20],\"inView\":true}}] · ✓ editsched: the cross took its press [insightClose] and closed the window; the failed-save warning is still seen on the bar [{\"closed\":true,\"back\":[0,48,320,36]}]",
+     "verdict": "PASS",
+     "pics": [
+      "n-010-x06-viewsched-menu-p320.png",
+      "n-011-x06-viewsched-insights-bottom-p320.png",
+      "n-012-x06-editsched-menu-p320.png",
+      "n-013-x06-editsched-insights-bottom-p320.png"
+     ]
+    },
+    {
+     "id": "X-07 (desk)",
+     "did": "warning up; Logic scrolled; searched \"report\", filters pressed; Retry succeeded; scrolled and searched \"rest\"",
+     "saw": "✓ warning up through an ordinary edit · ✓ scrolled with the band up: the page really scrolled and the search bar sits right under the bar (gap 0px) [{\"barBottom\":93,\"lgTop\":93,\"gap\":0,\"scrollY\":1872,\"searchOwn\":true,\"failed\":true,\"barH\":93}] · ✓ typed \"report\": rows narrowed (count: 12 of 75 rules · 16 fired on this week's schedule); filter buttons pressed (hard:59 adv:59 note:59 fired:59 all:59); search stays the thing a finger lands on [{\"c1\":\"12 of 75 rules · 16 fired on this week's schedule\",\"body1\":\"HOW A DAY IS MEASURED\\n\\nBefore any rule can fire, the engine has to decide how mu\"}] · ✓ search cleared and the page scrolled down again with the band still up (gap 0px, scrollY 900) [{\"barBottom\":93,\"lgTop\":93,\"gap\":0,\"scrollY\":900,\"searchOwn\":true,\"failed\":true,\"barH\":93}] · ✓ Retry succeeded: the band is gone (bar 93 → 57px); the search bar follows the SHORTER bar without a return to the top (gap 0px, scrollY 864) [{\"barBottom\":57,\"lgTop\":57,\"gap\":0,\"scrollY\":864,\"searchOwn\":true,\"failed\":false,\"barH\":57}] · ✓ searched \"rest\" afterwards without scrolling back up: results 14 of 75 rules · 16 fired on this week's schedule, focus stayed in the search box (lgSearch), bar gap 0px [{\"barBottom\":57,\"lgTop\":57,\"gap\":0,\"scrollY\":1164,\"searchOwn\":true,\"failed\":false,\"barH\":57}]",
+     "verdict": "PASS",
+     "pics": [
+      "n-014-x07-scrolled-failed-desk.png",
+      "n-015-x07-after-retry-desk.png"
+     ]
+    },
+    {
+     "id": "X-07 (phone)",
+     "did": "warning up; Logic scrolled; searched \"report\", filters pressed; Retry succeeded; scrolled and searched \"rest\"",
+     "saw": "✓ warning up through an ordinary edit · ✓ scrolled with the band up: the page really scrolled and the search bar sits right under the bar (gap 0px) [{\"barBottom\":85,\"lgTop\":85,\"gap\":0,\"scrollY\":1732,\"searchOwn\":true,\"failed\":true,\"barH\":85}] · ✓ typed \"report\": rows narrowed (count: 12 of 75 rules · 16 fired on this week's schedule); filter buttons pressed (hard:0 adv:0 note:0 fired:0 all:0); search stays the thing a finger lands on [{\"c1\":\"12 of 75 rules · 16 fired on this week's schedule\",\"body1\":\"HOW A DAY IS MEASURED\\n\\nBefore any rule can fire, the engine has to decide how mu\"}] · ✓ search cleared and the page scrolled down again with the band still up (gap 0px, scrollY 1142) [{\"barBottom\":85,\"lgTop\":85,\"gap\":0,\"scrollY\":1142,\"searchOwn\":true,\"failed\":true,\"barH\":85}] · ✓ Retry succeeded: the band is gone (bar 85 → 49px); the search bar follows the SHORTER bar without a return to the top (gap 0px, scrollY 1106) [{\"barBottom\":49,\"lgTop\":49,\"gap\":0,\"scrollY\":1106,\"searchOwn\":true,\"failed\":false,\"barH\":49}] · ✓ searched \"rest\" afterwards without scrolling back up: results 14 of 75 rules · 16 fired on this week's schedule, focus stayed in the search box (lgSearch), bar gap 0px [{\"barBottom\":49,\"lgTop\":49,\"gap\":0,\"scrollY\":1406,\"searchOwn\":true,\"failed\":false,\"barH\":49}]",
+     "verdict": "PASS",
+     "pics": [
+      "n-016-x07-scrolled-failed-phone.png",
+      "n-017-x07-after-retry-phone.png"
+     ]
+    },
+    {
+     "id": "X-08 (phone 390x844)",
+     "did": "walk",
+     "saw": "ERROR page.waitForSelector: Timeout 6000ms exceeded. <- Call log: <- \u001b[2m  - waiting for locator('#insightModal') to be visible\u001b[22m",
+     "verdict": "NOT WALKED",
+     "pics": []
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "n-001-x03-before.png",
+    "n-002-x03-after-answer.png",
+    "n-003-x05-failed.png",
+    "n-004-x05-saved.png",
+    "n-005-x05-reloaded.png",
+    "n-006-x06-viewsched-menu-phone.png",
+    "n-007-x06-viewsched-insights-bottom-phone.png",
+    "n-008-x06-editsched-menu-phone.png",
+    "n-009-x06-editsched-insights-bottom-phone.png",
+    "n-010-x06-viewsched-menu-p320.png",
+    "n-011-x06-viewsched-insights-bottom-p320.png",
+    "n-012-x06-editsched-menu-p320.png",
+    "n-013-x06-editsched-insights-bottom-p320.png",
+    "n-014-x07-scrolled-failed-desk.png",
+    "n-015-x07-after-retry-desk.png",
+    "n-016-x07-scrolled-failed-phone.png",
+    "n-017-x07-after-retry-phone.png",
+    "n-018-x08-wide-scrolled-far.png",
+    "n-019-x08-err.png"
+   ]
+  },
+  "x3-o-dk": {
+   "at": "2026-10-05T12:57:09.437Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-09 (desk)",
+     "did": "Saber: one Blue-answered flight, one exact-DS Red flight, then an SC MAIN shift; Insights read after each of: SC added, report earlier, answer flipped",
+     "saw": "✓ Saber (stiff) put in a VL flight 12:00–13:00 and an RU flight 15:00–16:00 (stiff/freak/stiff/pump) · ✓ VL (ACM + \"DS FOR RU\") asked once and answered Blue; RU Mission exactly \"DS\" asked nothing [q after VL 1, after RU 0] · ✓ SC MAIN put (stiff). Adding the SC MAIN shift: hours 24h10 → 27h10, sorties 4 → 4 (SC adds hours, not sorties) [Saber: start {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"24h10\",\"mins\":1450} · +SC MAIN {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"27h10\",\"mins\":1630} · report e] · ✓ Reporting time moved an hour earlier (line was \"09:00H: IN TIME + WX/NOTAMS\"): hours 27h10 → 28h10; sortie count 4 → 4 and the split (3/1 → 3/1) unchanged [Saber: start {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"24h10\",\"mins\":1450} · +SC MAIN {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"27h10\",\"mins\":1630} · report e] · ✓ Only the role answer changed (Blue → Red): split 3/1 → 2/2; hours 28h10 → 28h10 and sorties 4 → 4 unchanged [Saber: start {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"24h10\",\"mins\":1450} · +SC MAIN {\"sorties\":4,\"blue\":\"3\",\"red\":\"1\",\"hours\":\"27h10\",\"mins\":1630} · report e]",
+     "verdict": "PASS",
+     "pics": [
+      "o-001-x09-insights-final.png"
+     ]
+    },
+    {
+     "id": "X-10 (desk)",
+     "did": "tracking Off; ACM + cue published; tracking On (no burst; total only); answered Red on the published view (split at once); Off; On again",
+     "saw": "✓ tracking Off: Mission ACM + Remarks \"DS FOR VL\" asked nothing [questions 0] · ✓ Friday published while tracking is Off [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ tracking Off: Insights has no Blue/Red rows (as before) [FLYING LOAD · SORTIES THIS WEEK:38 | WORK HOURS · REPORT TO DEBRIEF, THIS WEEK:56 | NOT ON THE FLYING PROGRAMME · 20 AVAILABLE:0 | CONFLICTS BY TYPE:0 | BY DAY:] · ✓ tracking switched On (true): no question anywhere — week 0, board 0 (offered buttons: 0/0) [] · ✓ Insights: the cue formation’s crew show a total only (Ranger {\"sorties\":3,\"blue\":null,\"red\":null,\"hours\":\"18h\",\"mins\":1080}), no guessed split [{\"ranger\":{\"sorties\":3,\"blue\":null,\"red\":null,\"hours\":\"18h\",\"mins\":1080},\"echo\":{\"sorties\":4,\"blue\":null,\"red\":null,\"hours\":\"25h25\",\"mins\":1525}}] · ✓ switching On rewrote nothing: programme, book and sign-offs identical [] · ✓ answered Red through the latest-published Remarks door (\"Published · Original VL: Blue or Red? Mission or r\"): the split shows at once (Ranger {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"18h\",\"mins\":1080}) [] · ✗ signatures, wording and pending unchanged by the answer [{\"h0\":{\"tag\":\"ORIG\",\"pending\":\"13 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED O] · ✓ turned Off: Insights is plain again (true); turned On again: the Red answer is still there (Ranger {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"18h\",\"mins\":1080}) and no question burst [] · ✓ programme and book still identical after Off/On []",
+     "verdict": "FAIL",
+     "pics": [
+      "o-002-x10-on-unresolved.png",
+      "o-003-x10-answered.png",
+      "o-004-x10-off-on-again.png"
+     ]
+    },
+    {
+     "id": "X-11 (desk)",
+     "did": "walk",
+     "saw": "ERROR locator.textContent: Timeout 30000ms exceeded. <- Call log: <- \u001b[2m  - waiting for locator('[data-lgset=\"reportLead\"]').first()\u001b[22m",
+     "verdict": "NOT WALKED",
+     "pics": []
+    },
+    {
+     "id": "X-12 (desk)",
+     "did": "Friday with an answered Red cue, two reporting lines, stores and a note saved as a day template; applied to Monday of next week; Tab through; answer changed to Blue with storage failing; Undo/Redo; Retry; reload; source week checked",
+     "saw": "✓ source Friday built: {\"rmks\":\"DS FOR VL\",\"lines\":[\"08:00 IN TIME\",\"09:20 RALLY\"]} · Ranger on Insights {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"21h\",\"mins\":1260} [] · ✓ next week loaded (20/07/2026) and the template applied to Monday: {\"waves\":1,\"rmks\":\"DS FOR VL\",\"lines\":[\"08:00 IN TIME\",\"09:20 RALLY\"]} [template dt1] · ✓ the copied day carries its OWN answer: focusing its Remarks offers \"Change mission role\" (answered, not \"Choose\") [Change mission role] · ✓ Tab through the copied day (40 presses): no change, no command, no new question [seq 19 → 19] · ✓ answer changed to Blue with storage failing → the band showed (true); one Undo took back only that answer (template content still there: 2 lines, \"DS FOR VL\"); Redo restored it [role lines 3 → undo 3 → redo 3; button after undo \"Change mission role\"] · ✓ Retry with storage restored: the warning went · ✓ after a reload and sign-in the next-week day still has the template content and the Blue answer (button \"Change mission role\") [[\"08:00 IN TIME\",\"09:20 RALLY\"]] · ✓ the SOURCE week’s Friday is untouched (wording/lines same) and Ranger’s Insights there is as before ({\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"21h\",\"mins\":1260} → {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"21h\",\"mins\":1260}) []",
+     "verdict": "PASS",
+     "pics": [
+      "o-007-x12-template-saved.png",
+      "o-008-x12-applied-next-week.png",
+      "o-009-x12-answer-failed.png",
+      "o-010-x12-reloaded.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "o-001-x09-insights-final.png",
+    "o-002-x10-on-unresolved.png",
+    "o-003-x10-answered.png",
+    "o-004-x10-off-on-again.png",
+    "o-005-x11-lw-before.png",
+    "o-006-x11-err.png",
+    "o-007-x12-template-saved.png",
+    "o-008-x12-applied-next-week.png",
+    "o-009-x12-answer-failed.png",
+    "o-010-x12-reloaded.png"
+   ]
+  },
+  "x2-q-dk": {
+   "at": "2026-10-05T12:58:26.570Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-03 (board, desk)",
+     "did": "Friday published with a red Rally warning; Rally corrected on the working copy (pending); on the latest-published view answered Red; pending, sign-offs and Insights read before/after",
+     "saw": "✓ Friday published (all four signed): {\"label\":\"Publish day\",\"ver\":\"2026-07-17#0\"} [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ the published day carries a red Rally/brief warning [[\"hard VL: rally 10:00 is later than suggested brief 09:40.\"]] · ✓ a timing correction is pending on the working copy (1 pending) [{\"tag\":\"ORIG\",\"pending\":\"17 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CU] · ✓ the question named the published context: \"Published · Original VL: Blue or Red? Mission or remarks mention DS or RED. Blue\" [Published · Original\nVL: Blue or Red?\n\nMission or remarks mention DS or RED.\n\nBlue\nRed\nLater] · ✓ programme bytes and the book of versions / sign-offs / pending are unchanged by the answer [days same true, book same true] · ✓ the timing correction is STILL pending (count 1 → 1) and the four sign-offs are untouched [{\"before\":{\"tag\":\"ORIG\",\"pending\":\"17 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGN] · ✓ Insights changed at once: the formation’s crew went from a total-only bar to a Blue/Red split [{\"before\":\"Ranger 3\",\"after\":\"Ranger 2 1 3\",\"echoBefore\":\"Echo 4\",\"echoAfter\":\"Echo 3 1 4\"}] · ✓ no amendment was made: one extra command only, a role-answer line [seq 20 → 21; role lines 0 → 1] · ✓ the working copy’s Rally is still 09:30 (not published by the answer) [[\"08:00 IN TIME\",\"09:30 RALLY\"]]",
+     "verdict": "PASS",
+     "pics": [
+      "q-001-x03-before.png",
+      "q-002-x03-after-answer.png"
+     ]
+    },
+    {
+     "id": "X-05 (board, desk)",
+     "did": "published conditional formation; answered Red on the latest-published view with storage refusing; Retry failing twice; then restored + Retry; reload",
+     "saw": "✓ Friday published with four sign-offs [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ answered Red on the published view while storage refuses: the board shows the warning band [question: Published · Original VL: Blue or Red? Mission or remarks men] · ✓ the programme / book are unchanged and one role-history line exists after the answer [role lines 0 → 1] · ✓ Retry while still failing: the warning stays, nothing duplicated (role lines 1, commands 16 → 16) [] · ✓ Retry with storage restored saved: the warning went · ✗ after the successful Retry: programme, book, sign-offs and pending are as before; exactly one role-history line [{\"h0\":{\"tag\":\"ORIG\",\"pending\":\"13 changes\",\"beak\":\"none\",\"alpub\":\"\",\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED O] · ✓ Insights shows the answer before the reload [\"Ranger 2 1 3\"] · ✓ after a reload and sign-in the answer is still there: the button reads \"Change mission role\" (not \"Choose\") [Change mission role] · ✓ Insights after the reload still shows the Red answer [\"Ranger 2 1 3\"] · ✓ exactly one role-history line after the reload [lines 1]",
+     "verdict": "FAIL",
+     "pics": [
+      "q-003-x05-failed.png",
+      "q-004-x05-saved.png",
+      "q-005-x05-reloaded.png"
+     ]
+    },
+    {
+     "id": "X-08 (phone 390x844)",
+     "did": "phone Board on Wednesday → More → Desktop layout; scrolled sideways; More → Insights; scrolled, ✕; More → back to Phone layout",
+     "saw": "✓ Desktop layout on (class schedboard sb-wide), the day is Wednesday (SBDAY 2) and sections are drawn (13) [{\"cls\":\"schedboard sb-wide\",\"day\":2,\"sections\":13}] · ✓ scrolled sideways to the far right by a pan over the top bar ({\"left\":790,\"max\":790}); the same pan over the schedule body moved the board 0px (RECORDED) [More button at x=-180 (screen is 390 wide) with the board at its far right] · ✗ More at the right edge (board panned to 290, More at x=320): its menu stays inside the screen and the Insights item can be pressed in its middle [{\"box\":[320,75,176,124],\"insightsCentreOwn\":false,\"right\":496,\"vw\":390}] · ✓ panned back until the More button is on screen (left 500, More at x=110) [{\"x\":110.265625,\"y\":43,\"width\":30,\"height\":26}] · ✓ Insights opened ABOVE the Board (a press in the middle lands in the window; its cross is the topmost thing there; z 471 vs board 400) [{\"inModal\":true,\"closeOwn\":true,\"z\":\"471\",\"boardZ\":\"400\"}] · ✓ closed: still Wednesday, still the Desktop layout, scroll position kept (500 → 500), sections drawn (13) [{\"day\":2,\"cls\":\"schedboard sb-wide\",\"left\":500,\"sections\":13,\"modal\":false}] · ✓ back to Phone layout (menu said \"📱\nPhone layout\"): the day and its sections are drawn, not blank (13 headings) [{\"cls\":\"schedboard\",\"day\":2,\"sections\":13,\"blank\":false}]",
+     "verdict": "FAIL",
+     "pics": [
+      "q-006-x08-wide-scrolled-far.png",
+      "q-007-x08-more-menu-at-right-edge.png",
+      "q-008-x08-insights-over-board.png",
+      "q-009-x08-after-close.png",
+      "q-010-x08-phone-layout-back.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "q-001-x03-before.png",
+    "q-002-x03-after-answer.png",
+    "q-003-x05-failed.png",
+    "q-004-x05-saved.png",
+    "q-005-x05-reloaded.png",
+    "q-006-x08-wide-scrolled-far.png",
+    "q-007-x08-more-menu-at-right-edge.png",
+    "q-008-x08-insights-over-board.png",
+    "q-009-x08-after-close.png",
+    "q-010-x08-phone-layout-back.png"
+   ]
+  },
+  "x3-r-dk": {
+   "at": "2026-10-05T12:59:02.559Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-11 (desk)",
+     "did": "Saturday six-hour flight published; Sunday wave left without reporting lines; Logic lead 3h→4h and words → RALLY; + In-time / Rally on Sunday; Saturday hours and the Leave War cell read before/after",
+     "saw": "✓ Saturday made (VIPER 10:00–11:00, bane/freak) and published; its reporting line reads [] [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ a second, unissued wave (Sunday COBRA 12:00–13:00) with NO reporting lines [[]] · ✓ Logic: lead 3h → 4h, words \"IN TIME + WX/NOTAMS\" → \"RALLY\" [] · ✓ the Add button on the unissued wave filled the NEW default: [\"08:00H: RALLY\"] [[\"08:00H: RALLY\"]] · ✓ Saturday’s own reporting lines are unchanged ([] → []) [] · ✗ Leave War cell for Ranger/Echo on Saturday 18 Jul — before: {\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Echo\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"}} · after: {\"Ranger\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"},\"Echo\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"}} (issued earned leave must stay frozen) [OIL tracker after: OIL TRACKER one row per person · the oldest credit is used first ✕ SHOW From first entry 📅 RANGE − ＋ ? ⚙ 1 Jan 26 – today ARCHIVE 2026 2027 ] · ✓ Insights Work hours for Ranger: 18h → 18h (RECORDED: Saturday has an entered report line, so the nominal change is expected not to move it) [{\"before\":{\"sorties\":3,\"blue\":null,\"red\":null,\"hours\":\"18h\",\"mins\":1080},\"after\":{\"sorties\":3,\"blue\":null,\"red\":null,\"hours\":\"18h\",\"mins\":1080}}]",
+     "verdict": "FAIL",
+     "pics": [
+      "r-001-x11-lw-before.png",
+      "r-002-x11-lw-after.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "r-001-x11-lw-before.png",
+    "r-002-x11-lw-after.png"
+   ]
+  },
+  "p5a-k-dk": {
+   "at": "2026-10-05T12:59:28.187Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-03 (1440x900)",
+     "did": "ALL AVAIL (chip on Saturday) and Changes (clock) windows opened, each dragged and resized, then storage broken + ordinary edit, Retry, closed and reopened",
+     "saw": "✓ ALL AVAIL chip made through the board (put: allavail) · ✓ both windows open at their default places [{\"a0\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"c0\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656}}] · ✓ ALL AVAIL moved/resized by hand (placed mark on) [{\"a0\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"a1\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628}}] · ✓ Changes moved/resized by hand (placed mark on) [{\"c0\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656},\"c1\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✓ the warning is up · ✓ ALL AVAIL keeps the size/place chosen during the failure [{\"a1\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628},\"a2\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628}}] · ✓ Changes keeps the size/place chosen during the failure [{\"c1\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648},\"c2\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✓ Retry succeeded; both windows unchanged after the warning left [{\"a3\":{\"x\":852,\"y\":174,\"w\":186,\"h\":454,\"placed\":true,\"bottom\":628},\"c3\":{\"x\":684,\"y\":174,\"w\":304,\"h\":474,\"placed\":true,\"bottom\":648}}] · ✓ reopened (closing forgets a placement, by design — view.ts): both windows come back at their default places and FULL default size — not left shortened or displaced by the failed-save band — on screen [{\"a4\":{\"x\":1212,\"y\":96,\"w\":212,\"h\":540,\"placed\":false,\"bottom\":636},\"c4\":{\"x\":1044,\"y\":96,\"w\":380,\"h\":560,\"placed\":false,\"bottom\":656}}]",
+     "verdict": "PASS",
+     "pics": [
+      "k-001-win-both-open.png",
+      "k-002-win-both-placed.png",
+      "k-003-win-during-fail.png",
+      "k-004-win-reopened.png"
+     ]
+    },
+    {
+     "id": "P5-03b (1440x900)",
+     "did": "both windows opened at their default places WHILE the warning is up",
+     "saw": "✓ warning up · ✓ ALL AVAIL opens below the enlarged bar, on screen [{\"x\":1212,\"y\":132,\"w\":212,\"h\":540,\"bottom\":672,\"placed\":false} bar 94] · ✓ Changes opens below the enlarged bar, on screen [{\"x\":1044,\"y\":132,\"w\":380,\"h\":560,\"bottom\":692,\"placed\":false}] · ✓ neither lies over Retry [[1358,63,1420,89]]",
+     "verdict": "PASS",
+     "pics": [
+      "k-005-win-default-during-fail.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "k-001-win-both-open.png",
+    "k-002-win-both-placed.png",
+    "k-003-win-during-fail.png",
+    "k-004-win-reopened.png",
+    "k-005-win-default-during-fail.png"
+   ]
+  },
+  "p5b-s-dk": {
+   "at": "2026-10-05T12:59:44.590Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "P5-06 (390x844)",
+     "did": "warning up; the nine pages visited in turn, the warning’s place read against the bar’s bottom each time; the bar scrolled sideways with a wheel gesture",
+     "saw": "✓ warning up through an ordinary edit · ✓ viewsched: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"viewsched\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"] · ✓ viewsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo absent, arrows absent, crew absent] · ✓ editsched: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"editsched\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"] · ✓ editsched: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ inputs: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"inputs\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"und] · ✓ inputs: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ quals: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"quals\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"undo] · ✓ quals: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ logic: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"logic\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"undo] · ✓ logic: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ leavewar: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"leavewar\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"u] · ✓ leavewar: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ tracker: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"tracker\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"un] · ✓ tracker: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo absent, arrows absent, crew absent] · ✓ help: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"help\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"undo\"] · ✓ help: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo absent, arrows absent, crew absent] · ✓ admin: bar 85px (bottom 85); warning 48→84, follows the bar's bottom [{\"pg\":\"admin\",\"barH\":85,\"barBottom\":85,\"noteTop\":48,\"noteBottom\":84,\"noteLeft\":0,\"noteW\":390,\"noteH\":36,\"retry\":\"own\",\"account\":\"absent\",\"logout\":\"absent\",\"undo] · ✓ admin: Retry, account, Logout, Undo, arrows, CREW are their own targets [retry own, acct absent, logout absent, undo own, arrows absent, crew absent] · ✓ the bar differs in height between pages (so the follow was really exercised) [bar heights seen: 85] · ✓ phone bar scrolled sideways: the warning stays put (left 0, full width) and Retry is its own target [{\"scrollLeft\":0,\"scrollW\":390,\"clientW\":390,\"noteLeft\":0,\"noteW\":390,\"retryOwn\":true}] · ✓ controls on screen after the sideways scroll are their own targets (none covered) [#logout:offscreen-in-scroll #roleBadge:offscreen-in-scroll #undoBtn:absent #burger:own]",
+     "verdict": "PASS",
+     "pics": [
+      "s-001-bar-viewsched-390x844.png",
+      "s-002-bar-quals-390x844.png",
+      "s-003-bar-leavewar-390x844.png",
+      "s-004-bar-help-390x844.png",
+      "s-005-bar-scrolled-390x844.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "s-001-bar-viewsched-390x844.png",
+    "s-002-bar-quals-390x844.png",
+    "s-003-bar-leavewar-390x844.png",
+    "s-004-bar-help-390x844.png",
+    "s-005-bar-scrolled-390x844.png"
+   ]
+  },
+  "x3-t-dk": {
+   "at": "2026-10-05T13:01:19.786Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-10 (desk)",
+     "did": "tracking Off; ACM + cue published; tracking On (no burst; total only); answered Red on the published view (split at once); Off; On again",
+     "saw": "✓ tracking Off: Mission ACM + Remarks \"DS FOR VL\" asked nothing [questions 0] · ✓ Friday published while tracking is Off [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ tracking Off: Insights has no Blue/Red rows (as before) [FLYING LOAD · SORTIES THIS WEEK:38 | WORK HOURS · REPORT TO DEBRIEF, THIS WEEK:56 | NOT ON THE FLYING PROGRAMME · 20 AVAILABLE:0 | CONFLICTS BY TYPE:0 | BY DAY:] · ✓ tracking switched On (true): no question anywhere — week 0, board 0 (offered buttons: 0/0) [] · ✓ Insights: the cue formation’s crew show a total only (Ranger {\"sorties\":3,\"blue\":null,\"red\":null,\"hours\":\"18h\",\"mins\":1080}), no guessed split [{\"ranger\":{\"sorties\":3,\"blue\":null,\"red\":null,\"hours\":\"18h\",\"mins\":1080},\"echo\":{\"sorties\":4,\"blue\":null,\"red\":null,\"hours\":\"25h25\",\"mins\":1525}}] · ✓ switching On rewrote nothing: programme, book and sign-offs identical [] · ✓ answered Red through the latest-published Remarks door (\"Published · Original VL: Blue or Red? Mission or r\"): the split shows at once (Ranger {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"18h\",\"mins\":1080}) [] · ✓ signatures, wording and the amendment count unchanged by the answer (pending 0 → 0; the changes chip \"13 changes\" → \"14 changes\") [{\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"}] · ✓ turned Off: Insights is plain again (true); turned On again: the Red answer is still there (Ranger {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"18h\",\"mins\":1080}) and no question burst [] · ✓ programme and book still identical after Off/On []",
+     "verdict": "PASS",
+     "pics": [
+      "t-001-x10-on-unresolved.png",
+      "t-002-x10-answered.png",
+      "t-003-x10-off-on-again.png"
+     ]
+    },
+    {
+     "id": "X-12 (desk)",
+     "did": "Friday with an answered Red cue, two reporting lines, stores and a note saved as a day template; applied to Monday of next week; Tab through; answer changed to Blue with storage failing; Undo/Redo; Retry; reload; source week checked",
+     "saw": "✓ source Friday built: {\"rmks\":\"DS FOR VL\",\"lines\":[\"08:00 IN TIME\",\"09:20 RALLY\"]} · Ranger on Insights {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"21h\",\"mins\":1260} [] · ✓ next week loaded (20/07/2026) and the template applied to Monday: {\"waves\":1,\"rmks\":\"DS FOR VL\",\"lines\":[\"08:00 IN TIME\",\"09:20 RALLY\"]} [template dt1] · ✓ the copied day carries its OWN answer: focusing its Remarks offers \"Change mission role\" (answered, not \"Choose\") [Change mission role] · ✓ Tab through the copied day (40 presses): no change, no command, no new question [seq 19 → 19] · ✗ Insights for Ranger: copied answer Red null/null → changed to Blue null/null → Undo null/null → Redo null/null (blue/red sorties) [] · ✓ answer changed to Blue with storage failing → the band showed (true); one Undo took back only that answer (template content still there: 2 lines, \"DS FOR VL\"); Redo restored it [role lines 3 → undo 3 → redo 3; button after undo \"Change mission role\"] · ✓ Retry with storage restored: the warning went · ✓ after a reload and sign-in the next-week day still has the template content and the Blue answer (button \"Change mission role\") [[\"08:00 IN TIME\",\"09:20 RALLY\"]] · ✓ the SOURCE week’s Friday is untouched (wording/lines same) and Ranger’s Insights there is as before ({\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"21h\",\"mins\":1260} → {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"21h\",\"mins\":1260}) []",
+     "verdict": "FAIL",
+     "pics": [
+      "t-004-x12-template-saved.png",
+      "t-005-x12-applied-next-week.png",
+      "t-006-x12-answer-failed.png",
+      "t-007-x12-reloaded.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "t-001-x10-on-unresolved.png",
+    "t-002-x10-answered.png",
+    "t-003-x10-off-on-again.png",
+    "t-004-x12-template-saved.png",
+    "t-005-x12-applied-next-week.png",
+    "t-006-x12-answer-failed.png",
+    "t-007-x12-reloaded.png"
+   ]
+  },
+  "find1-u-dk": {
+   "at": "2026-10-05T13:01:36.607Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "F-1 (Tab leaves warnings stale)",
+     "did": "one out-of-order Rally line committed by Tab, by Enter and by clicking away, Board warning list and week day bar read each time",
+     "saw": "✗ Board: Rally 10:00 typed and committed with Tab — the app holds the red warning ([\"VL: rally 10:00 is later than suggested brief 09:40.\"]) — the Board’s warning list reads: \"No conflicts flagged for Friday ✓ No conflicts flagged for this day ✓\" [] · ✓ Board: the same kind of edit committed with Enter (Rally 10:05) — the list reads: \"⚠ 3 issues · 3 warnings · tap to review VL: rally 10:05 is later than suggested brief 09:40. ✕ Ranger — Crew rest breach — Thursday landed 18:10, +2h \" [[\"VL: rally 10:05 is later than suggested brief 09:40.\"]] · ✗ Board: Rally corrected to 09:00 with Tab — the app holds [] — the list reads: \"⚠ 3 issues · 3 warnings · tap to review VL: rally 10:05 is later than suggested brief 09:40. ✕ Ranger — Crew rest breach — Thursday landed 18:10, +2h \" [] · ✓ Week: Rally 10:10 committed with Tab — the app holds [\"VL: rally 10:10 is later than suggested brief 09:40.\"] — Friday’s day bar reads: \"⚠ 2 issues · 2 warning · tap to review ▼\" [] · ✓ Week: Rally 10:20 committed with Enter — Friday’s day bar reads: \"⚠ 3 issues · 3 warning · tap to review ▼\" []",
+     "verdict": "FAIL",
+     "pics": [
+      "u-001-find1-board-after-TAB.png",
+      "u-002-find1-board-after-ENTER.png",
+      "u-003-find1-board-clearing-TAB.png",
+      "u-004-find1-week-after-TAB.png",
+      "u-005-find1-week-after-ENTER.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "u-001-find1-board-after-TAB.png",
+    "u-002-find1-board-after-ENTER.png",
+    "u-003-find1-board-clearing-TAB.png",
+    "u-004-find1-week-after-TAB.png",
+    "u-005-find1-week-after-ENTER.png"
+   ]
+  },
+  "x2-v-dk": {
+   "at": "2026-10-05T13:02:06.977Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-05 (board, desk)",
+     "did": "published conditional formation; answered Red on the latest-published view with storage refusing; Retry failing twice; then restored + Retry; reload",
+     "saw": "✓ Friday published with four sign-offs [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ answered Red on the published view while storage refuses: the board shows the warning band [question: Published · Original VL: Blue or Red? Mission or remarks men] · ✓ the programme / book are unchanged and one role-history line exists after the answer [role lines 0 → 1] · ✓ Retry while still failing: the warning stays, nothing duplicated (role lines 1, commands 16 → 16) [] · ✓ Retry with storage restored saved: the warning went · ✓ after the successful Retry: programme, book and sign-offs as before; the amendment count (N pending) unchanged (0 → 0); exactly one role-history line (the day’s changes chip reads \"13 changes\" → \"14 changes\": the answer’s own history line) [{\"roleLines\":[0,1],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"}] · ✓ Insights shows the answer before the reload [\"Ranger 2 1 3\"] · ✓ after a reload and sign-in the answer is still there: the button reads \"Change mission role\" (not \"Choose\") [Change mission role] · ✓ Insights after the reload still shows the Red answer [\"Ranger 2 1 3\"] · ✓ exactly one role-history line after the reload [lines 1]",
+     "verdict": "PASS",
+     "pics": [
+      "v-001-x05-failed.png",
+      "v-002-x05-saved.png",
+      "v-003-x05-reloaded.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "v-001-x05-failed.png",
+    "v-002-x05-saved.png",
+    "v-003-x05-reloaded.png"
+   ]
+  },
+  "x3-w-dk": {
+   "at": "2026-10-05T13:02:44.178Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-11 (desk)",
+     "did": "Saturday six-hour flight published; Sunday wave left without reporting lines; Logic lead 3h→4h and words → RALLY; + In-time / Rally on Sunday; Saturday hours and the Leave War cell read before/after",
+     "saw": "✓ Saturday made (VIPER 10:00–11:00, bane/freak) and published; its reporting line reads [] [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ a second, unissued wave (Sunday COBRA 12:00–13:00) with NO reporting lines [[]] · ✓ Logic: lead 3h → 4h, words \"IN TIME + WX/NOTAMS\" → \"RALLY\" [] · ✓ the Add button on the unissued wave filled the NEW default: [\"08:00H: RALLY\"] [[\"08:00H: RALLY\"]] · ✓ Saturday’s own reporting lines are unchanged ([] → []) [] · ✗ Leave War cell for Ranger/Echo on Saturday 18 Jul — before: {\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"},\"Echo\":{\"text\":\"HO*\",\"cls\":\"duty weekend act\"}} · after: {\"Ranger\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"},\"Echo\":{\"text\":\"FO*\",\"cls\":\"duty weekend act\"}} (issued earned leave must stay frozen) [OIL tracker after: OIL TRACKER one row per person · the oldest credit is used first ✕ SHOW From first entry 📅 RANGE − ＋ ? ⚙ 1 Jan 26 – today ARCHIVE 2026 2027 ] · ✓ Insights Work hours for Ranger: 18h → 18h (RECORDED: Saturday has an entered report line, so the nominal change is expected not to move it) [{\"before\":{\"sorties\":3,\"blue\":null,\"red\":null,\"hours\":\"18h\",\"mins\":1080},\"after\":{\"sorties\":3,\"blue\":null,\"red\":null,\"hours\":\"18h\",\"mins\":1080}}]",
+     "verdict": "FAIL",
+     "pics": [
+      "w-001-x11-lw-cells-before.png",
+      "w-002-x11-lw-cells-after.png",
+      "w-003-x11-lw-after.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "w-001-x11-lw-cells-before.png",
+    "w-002-x11-lw-cells-after.png",
+    "w-003-x11-lw-after.png"
+   ]
+  },
+  "x3-y-dk": {
+   "at": "2026-10-05T13:03:29.846Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-12 (desk)",
+     "did": "Friday with an answered Red cue, two reporting lines, stores and a note saved as a day template; applied to Monday of next week; Tab through; answer changed to Blue with storage failing; Undo/Redo; Retry; reload; source week checked",
+     "saw": "✓ source Friday built: {\"rmks\":\"DS FOR VL\",\"lines\":[\"08:00 IN TIME\",\"09:20 RALLY\"]} · Ranger on Insights {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"21h\",\"mins\":1260} [] · ✓ next week loaded (20/07/2026) and the template applied to Monday: {\"waves\":1,\"rmks\":\"DS FOR VL\",\"lines\":[\"08:00 IN TIME\",\"09:20 RALLY\"]} [template dt1] · ✓ the copied day carries its OWN answer: focusing its Remarks offers \"Change mission role\" (answered, not \"Choose\") [Change mission role] · ✓ Tab through the copied day (40 presses): no change, no command, no new question [seq 19 → 19] · ✓ the answer’s own commands (RECORDED): changed to Blue → blue [insights.role.set]; Undo → red [undo.restore]; Redo → blue [undo.restore] [] · ✓ answer changed to Blue with storage failing → the band showed (true); one Undo took back only that answer (template content still there: 2 lines, \"DS FOR VL\"); Redo restored it [role lines 3 → undo 3 → redo 3; button after undo \"Change mission role\"] · ✓ Retry with storage restored: the warning went · ✓ after a reload and sign-in the next-week day still has the template content and the Blue answer (button \"Change mission role\") [[\"08:00 IN TIME\",\"09:20 RALLY\"]] · ✓ the SOURCE week’s Friday is untouched (wording/lines same) and Ranger’s Insights there is as before ({\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"21h\",\"mins\":1260} → {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"21h\",\"mins\":1260}) []",
+     "verdict": "PASS",
+     "pics": [
+      "y-001-x12-template-saved.png",
+      "y-002-x12-applied-next-week.png",
+      "y-003-x12-answer-failed.png",
+      "y-004-x12-reloaded.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "y-001-x12-template-saved.png",
+    "y-002-x12-applied-next-week.png",
+    "y-003-x12-answer-failed.png",
+    "y-004-x12-reloaded.png"
+   ]
+  },
+  "x3-z-dk": {
+   "at": "2026-10-05T13:04:07.791Z",
+   "base": "http://localhost:4222",
+   "phone": false,
+   "table": [
+    {
+     "id": "X-10 (desk)",
+     "did": "tracking Off; ACM + cue published; tracking On (no burst; total only); answered Red on the published view (split at once); Off; On again",
+     "saw": "✓ tracking Off: Mission ACM + Remarks \"DS FOR VL\" asked nothing [questions 0] · ✓ Friday published while tracking is Off [{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}] · ✓ tracking Off: Insights has no Blue/Red rows (as before) [FLYING LOAD · SORTIES THIS WEEK:38 | WORK HOURS · REPORT TO DEBRIEF, THIS WEEK:56 | NOT ON THE FLYING PROGRAMME · 20 AVAILABLE:0 | CONFLICTS BY TYPE:0 | BY DAY:] · ✓ tracking switched On (true): no question anywhere — week 0, board 0 (offered buttons: 0/0) [] · ✓ Insights: the cue formation’s crew show a total only (Ranger {\"sorties\":3,\"blue\":null,\"red\":null,\"hours\":\"18h\",\"mins\":1080}), no guessed split [{\"ranger\":{\"sorties\":3,\"blue\":null,\"red\":null,\"hours\":\"18h\",\"mins\":1080},\"echo\":{\"sorties\":4,\"blue\":null,\"red\":null,\"hours\":\"25h25\",\"mins\":1525}}] · ✓ switching On rewrote nothing: programme, book and sign-offs identical [] · ✓ answered Red through the latest-published Remarks door (\"Published · Original VL: Blue or Red? Mission or r\"): the split shows at once (Ranger {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"18h\",\"mins\":1080}) [] · ✓ signatures, wording and the amendment count unchanged by the answer (pending 0 → 0; the changes chip \"13 changes\" → \"14 changes\") [{\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"}] · ✓ turned Off: Insights is plain again (true); turned On again: the Red answer is still there (Ranger {\"sorties\":3,\"blue\":\"2\",\"red\":\"1\",\"hours\":\"18h\",\"mins\":1080}) and no question burst [] · ✓ programme and book still identical after Off/On []",
+     "verdict": "PASS",
+     "pics": [
+      "z-002-x10-on-unresolved.png",
+      "z-004-x10-answered.png",
+      "z-006-x10-off-on-again.png",
+      "z-001-x10-insights-on-unresolved.png",
+      "z-003-x10-insights-answered.png",
+      "z-005-x10-insights-off-on-again.png"
+     ]
+    }
+   ],
+   "errors": [],
+   "pics": [
+    "z-001-x10-insights-on-unresolved.png",
+    "z-002-x10-on-unresolved.png",
+    "z-003-x10-insights-answered.png",
+    "z-004-x10-answered.png",
+    "z-005-x10-insights-off-on-again.png",
+    "z-006-x10-off-on-again.png"
+   ]
+  }
+ }
+}

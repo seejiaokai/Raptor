@@ -1,5 +1,42 @@
 # The file map — where each source file lives and what it does
 
+`[OIL-WORK-START]` (D591, D592, 6 Oct 26): a flying line's OIL counts from its entered In-time / Rally, and a published
+day keeps the OIL it went out with. The fixes are in `src/engine/oil.ts` (`dayOilWork`'s flying branch reads
+`reporting.ts resolveReporting`; `OilRuleVals`, the `rv` every walk can be handed), `src/engine/oilev.ts` (the evidence
+block's `rv`; `oilKeptVals`, `oilAmount`, `oilWorkSpans`, `oilRuleShift`), `src/engine/publish.ts` (`oilRuleDelta` — the
+`oilrv:` pending entry; `orv` on a sign-off's binding and `oilRvBoundOk`), `src/leavewar/sync.ts` (the credit pass reads
+each date's own block), `src/ui/oilmode.ts` (the figures) and `src/ui/pendlist.ts` (`oilRuleWords`); the Logic page's
+words in `src/ui/logic-html.ts`. Pinned by `src/engine/oilworkstart.test.ts` (where the day starts),
+`src/leavewar/oilworkstart-published.test.ts` (a published day, through the real publish path, read at the Leave War's
+own cell and record), `src/ui/oilworkstart.test.tsx` (every count and the To go out list) and `e2e/oilworkstart.spec.ts`.
+**D606 (7 Oct 26):** an SC shift's typed B, its in-time, starts the MAIN's OIL day - `src/engine/reporting.ts scIntime` (the one
+body crew rest and OIL read it with), `src/engine/oil.ts`; pinned by `src/engine/oilscintime.test.ts`.
+`scripts/handpass/ows-host.mjs` is the host's walk (the build before the fix and after it); `scripts/handpass/ows-*.mjs`
+the walkers'. The register: `docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md`; the plan and what its two
+challenges changed: `docs/superpowers/plans/2026-10-06-oil-work-start-plan.md`; the record:
+`docs/handpass/2026-10-06-oil-work-start.md`, pictures under `docs/img/handpass/2026-10-06-oil-work-start/`; the briefs
+and reports: `docs/superpowers/briefs/2026-10-06-oil-work-start-*.md`.
+
+`[BLANK-TIMES-ABSENCE]` (D605, 6 Oct 26) with `[SC-PICKER-INTIME-REST]`: a man away for the whole day is flagged on a
+seat with no times, and the crew list asks about crew rest for an SC MAIN seat. The fixes are in `src/engine/events.ts`
+(`wholeDay`; `buildDay`'s `day.blank` — the men on seats with no hours) and `src/engine/validate.ts` (the three absence
+loops and the time-less rows' own look; `restIfPlaced`'s shift sibling and its exempt-seat guard); the Logic page's row
+is in `src/ui/logic-html.ts`. Pinned by `src/engine/blankabsence.test.ts` (every input type on every kind of seat),
+`src/engine/scpickerrest.test.ts` and, in a real browser through "+ Wave", a seat and the struck name in the crew list,
+by `e2e/blankabsence.spec.ts` (in the `raptor` browser-test project). `scripts/handpass/bta-host.mjs` is the host's
+walk (run on the build before the fix and after it), `bta-host2.mjs` its additions after the code reads, `bta-env.mjs`
+who the walk's man is; `scripts/handpass/bta-{A,B,C,D}-*.mjs` the four walkers'. The record: `docs/handpass/2026-10-06-blank-times-absence.md`,
+pictures under `docs/img/handpass/2026-10-06-blank-times-absence/`; the scenario list, the walk brief and the two code
+reads: `docs/superpowers/briefs/2026-10-06-blank-times-absence-*.md`.
+
+`[REST-BLANK-LINE]` (D602, 6 Oct 26): the crew-rest rule and a line with no times. The fix is in `src/engine/validate.ts`
+(`crewRestDay` — yesterday's end, today's instructed report — and the same-day turn pairing); pinned by
+`src/engine/restblank.test.ts` and, in a real browser through "+ Wave", "+ Line", the time boxes and the crew list, by
+`e2e/restblank.spec.ts` (in the `raptor` browser-test project). `scripts/handpass/rbl-host.mjs` is the host's walk — run on
+the build before the fix and on the build after it; `scripts/handpass/rbl-{A,B,C}-*.mjs` are the three walkers' scripts.
+The record: `docs/handpass/2026-10-06-rest-blank-line.md`, pictures under `docs/img/handpass/2026-10-06-rest-blank-line/`;
+the scenario list, the walk brief and the two code reads: `docs/superpowers/briefs/2026-10-06-rest-blank-line-*.md`.
+
 D558 phone schedule navigation: `src/ui/ScheduleInsightsMenu.tsx` is the local,
 live-context-aware shared ellipsis menu mounted in both Shell week filter strips;
 `src/ui/schedule-insights-menu.test.tsx` pins placement/lifecycle/silent state.
@@ -26,6 +63,13 @@ first publication, AL1, reload/sign-in and member view at desktop, phone and sho
 one** (`raptor-port/CLAUDE.md` §Coding conventions). Moved WHOLE from `HANDOFF.md` §File map on 24 Sep 26
 (D138, D140) — it was two thirds of the handoff every chat read at its start, and a chat needs it only when it
 is looking for a file. Paths in the Tooling table are relative to `raptor-port/`, as they were in `HANDOFF.md`; the rows moved byte for byte and the few that had gone stale were corrected the same day, each marked.
+
+`[SAVE-NOTE-COVERS]` (D586, 5 Oct 26): `scripts/handpass/sn-cover.mjs` forces a failed save in the built app and, on
+every page at five sizes, measures what the "Not saved — Retry" note lies over and presses for real (a PASS means it
+covers nothing; `SN_CSS` / `SN_JS` lay a proposal over the running app); `sn-board.mjs` asks whether the warning can be
+seen on the full-screen board. The record: `docs/handpass/2026-10-05-save-note-controls.md`. The fix: the warning's band is drawn by
+`src/ui/SaveStatus.tsx` (`SaveStatus` in the top bar, `SaveBand` under a full-screen surface's bar), styled in
+`src/ui/scheduler/17-save-status.css`, and pinned by `e2e/save-note.spec.ts` (in the `raptor` browser-test project).
 
 D560-D563 interface readability/scroll batch: `scripts/handpass/interface-readability-scroll.mjs`
 drives the real built Tracker, Logic and every Insights door with private local pictures and native actions.
@@ -68,7 +112,7 @@ in `docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`; old opt
 | `publish.ts` | SCHED, **`resetSched()`** (in-place reset of every day-index-keyed field — the seam `loadWeek` uses so one week's approvals/AL/pending never bleed onto another), sign-offs (SIGN_ROLES), `setDayApproved`, `publishALDay`/`alIssue`/`unpublishAL`, `markEdit`, inert structural-removal/input-action amendment keys, AL colours, per-day version snapshots (`daySnap`/`daySnapOf`/`dayVersions`), `dayCurVer` (the day-head chip). |
 | `restore.ts` | `dayKeys` walker + `restoreDayVersion` — ROLL a day back to a published version (it becomes live at once). |
 | `rules.ts` | VCONF/SHIFT_HARD editing, `ruleParse`/`ruleFmt`, `rulesSave`/`rulesLoad`/`rulesReset`. |
-| `oil.ts` | **Wire 4's engine half** (17 Aug 26; REWRITTEN 28 Aug 26 — the SC shift-window rule `scShiftCredit` is DELETED, do not resurrect it) — ONE uniform rule: `dayOilSpans(day, {expandAll})` pools each person's worked spans (SC MAIN shifts by written times; ordinary flying seats by report→debrief, T-O − `reportLead` to LD + `debrief`; sims amt/oft, duty rows, ground rows and Common Programme by written `str`→`end`; the ALL / ALL AVAIL sentinel on ground/allhands expands via the injected `expandAll`), `envMin` takes their START-TO-FINISH envelope (gaps included, 29 Aug 26 — the one-day cap stays structural), `uniformOil` applies the threshold (< `VCONF.oilFullMin` = 0.5 HO, ≥ = 1 FO), `dayOilCredits` composes them; `inputOilAmt` prices an input's own claim for the ask-flow (all-day = FO, timed by length). Earning NOTHING, deliberately: SC spares, AVALON/BB seats and their `sa` desks, cancelled (`cx`) rows, rows without both written times (no `openEnd`/`simLen` guessing — money may not), `src`-carrying ground rows (input-derived — the ask-flow's, never auto), unknown names. Pure and Leave-War-blind — the non-working-day question and the credit posting live in `src/leavewar/sync.ts`. Rules: `docs/engine-rules.md` §Weekend/PH work earns OIL. |
+| `oil.ts` | **Wire 4's engine half** (17 Aug 26; REWRITTEN 28 Aug 26 — the SC shift-window rule `scShiftCredit` is DELETED, do not resurrect it) — ONE uniform rule: `dayOilSpans(day, {expandAll})` pools each person's worked spans (SC MAIN shifts by written times; ordinary flying seats by report→debrief — the report is the line's earliest applicable entered In-time / Rally (`reporting.ts resolveReporting`), T-O − `reportLead` only where none is entered, to LD + `debrief` (D591, D592; the three Logic values can be handed in as `rv`, the ones a published day kept); sims amt/oft, duty rows, ground rows and Common Programme by written `str`→`end`; the ALL / ALL AVAIL sentinel on ground/allhands expands via the injected `expandAll`), `envMin` takes their START-TO-FINISH envelope (gaps included, 29 Aug 26 — the one-day cap stays structural), `uniformOil` applies the threshold (< `VCONF.oilFullMin` = 0.5 HO, ≥ = 1 FO), `dayOilCredits` composes them; `inputOilAmt` prices an input's own claim for the ask-flow (all-day = FO, timed by length). Earning NOTHING, deliberately: SC spares, AVALON/BB seats and their `sa` desks, cancelled (`cx`) rows, rows without both written times (no `openEnd`/`simLen` guessing — money may not), `src`-carrying ground rows (input-derived — the ask-flow's, never auto), unknown names. Pure and Leave-War-blind — the non-working-day question and the credit posting live in `src/leavewar/sync.ts`. Rules: `docs/engine-rules.md` §Weekend/PH work earns OIL. |
 | `lookahead.ts` | The **configurable default look-ahead** on the Inputs date button (28 Aug 26, owner) — `LOOK_STD = { weeks: 2, toSunday: false }`, mutable `LOOK_CFG`, `lookaheadSave`/`lookaheadLoad`/`lookaheadReset` against its own `lookahead` key, and `lookaheadRange(now)` → `{from,to}`: plain N weeks, or N weeks extended to that week's Sunday. The exact `stores.ts` persisted-config shape (untrusted-blob load with a clamp, save-only-when-diverged, boot load in `initStore`). `LOOK_STD` is deliberately today+14, i.e. the fixed span it replaced, so `InputsPage.tsx:initialRange` opens on the same dates it always did until an admin changes it — the admin edit icon beside the date button is the only writer, gated at the write path and not just the affordance. Pinned in `lookahead.test.ts` (both modes, month/year rollover, the untrusted load) and `inputs.test.tsx`. |
 | `insights.ts` | `computeInsights()` for the Insights modal — sorties, formations, flying load, who is not on the programme, conflicts by type, by day, and (20 Aug 26) **everyone's WORK HOURS for the week**, summed off `validate.ts:workSpan` so the total and the long-work-day note can never mean different things. **Which schedule it counts (D477, D478, 1 Oct 26):** each day's latest published version, the working copy only for a day not yet published — it reads the days, the events and the warnings from `validate.ts issuedWorld()`, never the working globals. |
 | `stores.ts` | The squadron's stores list — mutable `STORE_CFG`, frozen `STORE_STD`, `storeKey`, `addStore`/`delStore`/`renameStore`/`moveStore`, and `storesSave`/`storesLoad`/`storesReset` against its own `stores` key. Persisted state, so it lives here. Nothing in `validate.ts` reads a store. |
@@ -130,6 +174,7 @@ in `docs/handpass/2026-10-04-flight-leading-edge-taper-picture-read.md`; old opt
 | `ChangesWindow.tsx` | **The one changes window** (`[DRAFT-PENDING]`, 28 Sep 26 — D167–D172, D116–D119) — replaces the Edit history modal and the pending pop-up: New to you / All changes / To go out, the week's day picker, Group by Item (first and the default — one group per item, every line item-first, `[CHG-BY-ITEM]`, D345) / Who (person and sitting), every group open until folded, a tap takes the schedule there and the window stays, on a phone "Hide ▾" and the hint "History on: Tap a gold dot on the schedule" and the slim bar "History on · N changes · Show ▴" (`[HIST-PHONE-HIDE]`), "Mark all as seen"; lines with nowhere to go on this page are listed, not buttons. Its lines, groupings and counts are `changesmodel.ts`; opened by `changesopen.ts`; its chrome `floatwin.ts`. |
 | `changesmodel.ts` | The changes window's lines (`linesFor` — words, a move paired into one line, Fable F2), `byWho` (sittings, 30-minute gap), `itemOf` / `entriesOf` / `byItem` / `whoEntry` (Group by Item — a line's item from its row-anchored key and day, never its words; a move under both items; `[CHG-BY-ITEM]`, D340, D345 — it replaced `byWhere`), `dayCounts`/`chgDayCounts` (the day chip, memoised)/`weekNew` (the admin's icon); installs `HOOKS.newToMe` — the OG tag's places (D172, per place, Astra DP-11). |
 | `changesopen.ts` | `openChanges(day, tab)` / `toggleChanges` — the one opener every door calls (a day's chip, the admin's icon, the board's History button); its own module so the doors and the window never import each other. |
+| `dotring.ts` | **The dotted crew-rest ring's thickness on a scaled screen** (`[PUCK-DOT-ZOOM]`, 6 Oct 26): `dotRingWidth(scaling)` — two whole screen pixels where the screen's scaling is not a whole number, nothing on an unscaled / 2x / 3x screen — and `installDotRing()`, called once from `main.tsx`, which keeps `--dot-w` on the page in step with a zoom or a move to another screen. Read by `.puck.boxdot` in `scheduler/04-pucks-sections.css`. Pins: `dotring.test.ts`, `e2e/puck-dot.spec.ts` (in the `raptor` browser-test project; it starts its own browser at each scaling). The measuring script and its sheet maker: `scripts/handpass/zoom-dot.mjs`, `zoom-dot-sheet.mjs`. |
 | `floatwin.ts` | The floating window's chrome, ONE body for both windows (`[DRAFT-PENDING]`, moved whole from `AvailWindow.tsx`) — `useFloatWin` (where it sits, the grip drag, the resize observer, the phone layout) and `frontWin`/`raiseWin` (the one pressed last is in front, 411 over 410 — Astra DP-10). |
 | `pendlist.ts` | **The pending list** (owner, D99 + D100, 25 Sep 26) — "N pending ▾" on a published day's head opens what will go out as its next AL: one body-level popover, one row per `publish.ts dayPendingItems` item (where, before → after, who and when — D104), scrolling when long, closed by an outside tap or Escape; a row with a place to go calls the ONE jump (`interactions.ts jumpToChange`, D107), passed in so this leaf never imports the click router. |
 | `Modals.tsx` | DayPop (read-only day details), Insights, Airspace/traffic popup. (Manage-users moved to `AdminPage.tsx` whole, 23 Aug 26.) |
@@ -349,6 +394,11 @@ seat counts, cancellation/standby rules and work-hour invariance. `docs/handpass
 and focused-check logs; `docs/superpowers/plans/2026-10-03-insights-build-coordination.md` contains Astra's independent
 D532 meaning read and S01–S33 route map. `src/state/mission-role-persist.test.ts` exercises the real Whiteboard/Postman
 save pipeline, retry, crash recovery, slow-save Undo, atomic template rollback and empty/malformed hydration.
+`src/state/mission-role-seedweek.test.ts` (6 Oct 26, the Codex stack check's W8) — an answer on a built-in demo day
+nobody has edited, through the real save and a fresh boot, and across a week switch (its own file: the week stash is
+module state). `src/ui/sheetfocus.ts` (W12) — the hook by which a question sheet takes the keyboard when it opens and
+gives it back when it closes. `scripts/handpass/stk-host-fix.mjs` — the host's real-browser look at that check's fix
+round.
 The FULL evidence sheet qualifies each unit, connected command, mounted event and running-app result separately.
 
 Insights browser regression: `e2e/insights.spec.ts` (registered in the existing Raptor project) drives actual Logic and Board role controls at phone/desktop widths. `docs/handpass/2026-10-03-insights-mission-mix.md` is the FULL evidence sheet, with risk selection, roll-call, failures and owed reads.

@@ -3,6 +3,14 @@
 import { VCONF } from './rules'
 import { hm24, parseHM } from './time'
 
+/* AN SC LINE'S TYPED B IS ITS CREW'S IN-TIME (owner, 24 Aug 26) - the ONE body crew rest (events.ts seatIntime) and
+   OIL (oil.ts, D606) read it with. The bounded evening-before rule, unchanged: only a shift that starts within the
+   nominal lead of midnight rolls a later clock back a day. `lead` is handed in by a reader facing a published day's
+   own kept value (D592 (4)); every other reader leaves it out and gets today's. */
+export function scIntime(br:any,toM:number,lead?:number|null){
+  const t=parseHM(br); if(t==null)return null;
+  return toM-(lead==null?VCONF.reportLead:lead)<0&&t>toM?t-1440:t;
+}
 export function intimeTime(s:any){
   const re=/(?:^|[^A-Za-z0-9])(?:(\d{1,2}):(\d{2})|(\d{3,4}))\s*[HL]?(?![A-Za-z0-9])/gi;
   let m:any;
@@ -23,6 +31,10 @@ export function intimeFold(s:any){
       return lead+String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0')+suf;
     });
 }
+/* W6 (D498, D504; the Codex stack check, 5 Oct 26): the ONE name of the wave's reporting box, wherever it is drawn —
+   the box's button and ✕, the wave header, the changes window, the pending list, the change record, the toasts, Undo.
+   The rename reached four of them and left the old plural name on the other four; ui/intimesadd.test.tsx draws every place. */
+export const REPORTING_LABEL='In-time / Rally';
 type Activity='inTime'|'rally';
 export interface ReportingLine {
   index:number; text:string; clock:number|null; activities:Activity[];
@@ -39,15 +51,20 @@ const immediateWord=bounded('RALLY[ \\t]+AFTER[ \\t]+IN(?:[ \\t-]+TIME|TIME)?');
 export function parseReportingLines(w:any):ReportingLine[]{
   const css=[...new Set<string>((w.formations||[]).map((f:any)=>String(f.cs??'').trim()).filter(Boolean))];
   return (w.intimes||[]).map((value:any,index:number)=>{
-    const text=String(value??''), clock=intimeTime(text), immediate=clock==null&&immediateWord.test(text);
-    const activities:Activity[]=immediate?['rally']:[];
-    if(!immediate){
+    /* W3 (D505): "RALLY AFTER IN TIME" is a RALLY line whether or not a clock is typed with it — with a clock it
+       is that rally's own time, never a second in-time (which, on a formation's line, replaced the wave's in-time). */
+    const text=String(value??''), clock=intimeTime(text), after=immediateWord.test(text), immediate=clock==null&&after;
+    const activities:Activity[]=after?['rally']:[];
+    if(!after){
       if(inWord.test(text))activities.push('inTime');
       if(rallyWord.test(text))activities.push('rally');
       if(clock!=null&&!activities.length)activities.push('inTime'); // legacy unlabelled line
     }
     const targets=css.filter(cs=>bounded(cs.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).test(text));
-    const malformed=clock==null&&/(?:^|[^A-Za-z0-9])(?:\d{1,2}:\d{2}|\d{3,4})\s*[HL]?(?![A-Za-z0-9])/i.test(text);
+    /* W19 (5 Oct 26): a clock ATTEMPTED in a spelling the reader does not take — 8h00, 8.00, 0800IN — gets the same
+       "no recognised clock" line as 25:90; digits that are plainly not a clock (FL240, 2 SHIPS, 2.5 HRS) do not. */
+    const malformed=clock==null&&(/(?:^|[^A-Za-z0-9])(?:\d{1,2}:\d{2}|\d{3,4})\s*[HL]?(?![A-Za-z0-9])/i.test(text)
+      ||/(?:^|[^A-Za-z0-9])(?:\d{1,2}[.hH]\d{2}(?![A-Za-z0-9])|\d{3,4}(?=[A-Za-z])(?![HLhl](?![A-Za-z0-9])))/.test(text));
     return {index,text,clock,activities,targets,immediate,malformed};
   });
 }
@@ -81,11 +98,23 @@ export const stated=(t:number,short=false)=>hm24(t)+(t<0?short?' (prev day)':' (
 export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{
   if(w.standalone)return [];
   const parsed=parseReportingLines(w), issues:ReportingIssue[]=[];
+  /* RF5b (6 Oct 26, Astra's and Sol's second reads): a wave whose last line has been removed keeps its reporting text —
+     and with no formation to speak for it, an unreadable clock there went quiet again. The wave says it itself. */
+  if(!(w.formations||[]).length)parsed.filter(p=>p.malformed).forEach(p=>issues.push({gi,li:0,lines:[p.index],code:'REPORT_UNRESOLVED',blocking:false,
+    msg:`${String(w.label||'Wave')}: reporting line ${p.index+1} has no recognised clock. Check the time.`}));
   (w.formations||[]).forEach((f:any,li:number)=>{
     if(f.cx)return;
-    const to=parseHM(f.to);
-    if(to==null||!Number.isFinite(to))return;
-    const r=resolveReporting(w,f,to,parsed), name=String(f.cs||w.label||'Formation');
+    const to=parseHM(f.to), name=String(f.cs||w.label||'Formation');
+    if(to==null||!Number.isFinite(to)){
+      /* RF5 (6 Oct 26, Astra's and Sol's reads; W19): no take-off yet, so no order to check — but a clock the reader
+         cannot read is told so now, not only once a take-off is typed. Only that: "rally after in-time" with no
+         in-time, and every order check, still wait for the take-off. */
+      parsed.filter(p=>p.malformed&&(!p.targets.length||p.targets.some(t=>t.toLowerCase()===String(f.cs??'').trim().toLowerCase())))
+        .forEach(p=>issues.push({gi,li,lines:[p.index],code:'REPORT_UNRESOLVED',blocking:false,
+          msg:`${name}: reporting line ${p.index+1} has no recognised clock. Check the time.`}));
+      return;
+    }
+    const r=resolveReporting(w,f,to,parsed);
     const stages:{name:string,time:number}[]=[];
     if(r.inTime!=null)stages.push({name:'in-time',time:r.inTime});
     if(r.rally!=null)stages.push({name:'rally',time:r.rally});

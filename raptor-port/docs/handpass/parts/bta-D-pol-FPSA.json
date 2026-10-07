@@ -1,0 +1,60 @@
+{
+ "parts": {
+  "PO-LPSA-dk": {
+   "at": "2026-10-06T09:16:00.175Z",
+   "base": "http://localhost:4241",
+   "phone": false,
+   "table": [
+    {
+     "id": "PO-LPSA.1L",
+     "did": "the leave that was there from the start lifted on the Inputs page (gone)",
+     "saw": "WORKING: [DRAFT · 2 changes · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [Available crew:no-ring]  ||  FACE (View-only Sched): [DRAFT · 2 changes · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [(no puck drawn)] · pending chip \"2 changes\" · day head \"DRAFT\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-dk-LPSA-1L-W.png",
+      "dk-02-dk-LPSA-1L-V.png"
+     ]
+    },
+    {
+     "id": "PO-LPSA.2P",
+     "did": "the day signed (four boxes) and published as Original ({\"pressed\":true,\"label\":\"Publish day\"})",
+     "saw": "WORKING: [ORIG · 7 changes · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [Available crew:no-ring]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [(no puck drawn)]  ||  LOOK (👁 Original): [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [(no puck drawn)] · pending chip \"7 changes\" · day head \"ORIG\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-dk-LPSA-2P-W.png",
+      "dk-04-dk-LPSA-2P-V.png",
+      "dk-05-dk-LPSA-2P-L.png"
+     ]
+    },
+    {
+     "id": "PO-LPSA.3S",
+     "did": "Vandal put on a new blank flying line (\"+ Wave\" → Flying wave, no times; took true)",
+     "saw": "WORKING: [ORIG · 1 pending · Not yet signed · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring]  ||  FACE (View-only Sched): [ORIG · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [(no puck drawn)]  ||  LOOK (👁 Original): [ORIG · 1 pending · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [(no puck drawn)] · pending chip \"1 pending\" · day head \"ORIG\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-dk-LPSA-3S-W.png",
+      "dk-07-dk-LPSA-3S-V.png"
+     ]
+    },
+    {
+     "id": "PO-LPSA.4A",
+     "did": "AL1 step: the day's Publish-AL1 button before signing: {\"label\":\"Publish AL1\",\"disabled\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"}; four boxes signed and pressed → {\"pressed\":true,\"label\":\"Publish AL1\"}; versions offered now [\"Original\",\"AL1\"]",
+     "saw": "WORKING: [AL1 · 14 changes · SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ·|·|·|·] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring; Available crew:no-ring; Available crew:no-ring]  ||  FACE (View-only Sched): [AL1 · SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [flying line:no-ring]  ||  LOOK (👁 Original): [AL1 · SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil · signs ] list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · pucks [(no puck drawn)] · pending chip \"14 changes\" · day head \"AL1\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-dk-LPSA-4A-W.png",
+      "dk-09-dk-LPSA-4A-V.png",
+      "dk-10-dk-LPSA-4A-L.png"
+     ]
+    },
+    {
+     "id": "PO-LPSA.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

@@ -22,11 +22,13 @@ order is in force:
 2. **Answer its eight questions** (§5) against the actual change, and state the TIER out loud:
    NONE / LOOK / WALK / FULL. If you cannot answer a question NO with a reason you could write
    down, the answer is YES.
-3. **Tell him, in one short block, what that tier means you are about to do** — the list of checks,
-   and roughly how long. He reads it; he does not have to choose it. If he wants less, he will say
-   so, and that is his call to make, not yours to assume.
-4. **Then execute it**, in the order §5 gives (roll-call and door check → walk → gates → the model
-   reads → fix → re-walk what the fixes touched → evidence sheet → his look).
+3. **Tell him, in one short block, what that tier means you are about to do** — the list of checks, the
+   SIZE of the walk and why (D607 — step 4), and roughly how long. He reads it; he does not have to choose it.
+   If he wants less, he will say so, and that is his call to make, not yours to assume.
+4. **Then execute it**, in the order §5 gives (roll-call and door check → SIZE THE WALK, `raptor-port/docs/walk-ledger.md`
+   → walk → gates → the model reads → fix → re-walk what the fixes touched → evidence sheet → his look).
+   **Sizing never means no walk, and a test that changes the data directly never stands in for pressing a control
+   on screen** (the order's §7.0 — D607, D608).
 
 ## The three that get skipped under pressure — do not
 
@@ -45,6 +47,8 @@ order is in force:
 MISSING, not whether the code is wrong), **both of them reading the code** only on money, published
 records, permissions or persistence — and **never another static review when what is missing is
 someone running the app.** That last one has a name now: review pile-on.
+**Who they are now (D590, 5 Oct 26):** for work Opus wrote, Astra reviews and Sol 6.1 is the second reader where two are
+required; Fable is on call only (a bug Opus cannot crack, or a big open-ended plan, on his word). What Codex wrote, Opus reads.
 
 ## WHAT IS NOT A FINDING (owner, D56, 23 Sep 26) — read this BEFORE you spend anything
 
@@ -71,6 +75,6 @@ Claudex has no step that runs it. Order of operations: harden the plan with Clau
 **WALK THE APP** → then Claudex's final inspection, given the finished code AND the evidence sheet
 → report. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
 first, passed, and three unwired surfaces went out behind it. On money, published records,
-permissions or persistence, one inspector is not enough — run both providers, independently.
-Claudex's own rules stand: the provider that built never inspects, and its reviewer is never
+permissions or persistence, one inspector is not enough — run two, independently (for work Opus wrote: Astra and Sol 6.1 — D590).
+Claudex's own rules stand: the provider that built never inspects (one exception — D588's ONE Sonnet trial fix, read by Opus), and its reviewer is never
 bypassed. Full detail: §4a of the order.

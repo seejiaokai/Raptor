@@ -1,0 +1,15 @@
+import * as C from './ows-C-lib.mjs'
+const { S, L, W, RC, world, pic, sleep } = C
+const { browser, p, errors } = await world()
+await L.go(p, 'inputs'); await sleep(800)
+console.log('TYPES', JSON.stringify(await p.evaluate(() => [...document.querySelectorAll('#inType option')].map(o => o.value + '|' + o.innerText))))
+console.log('PERSON', await p.locator('#inPerson').count())
+const r = await RC.fileInput(p, { person: 'bane', type: await p.evaluate(() => ([...document.querySelectorAll('#inType option')].find(o => /duty/i.test(o.innerText)) || {}).value), di: 5, allday: false, from: '06:00', to: '06:30', remarks: 'walker C request' })
+console.log('FILED', JSON.stringify(r))
+await pic(p, 'probe14-inputs')
+console.log('INPUTS', JSON.stringify(await p.evaluate(() => window.INPUTS.slice(-2))))
+await S.toWeek(p); await W.showDay(p, 5)
+console.log('DAY5 duty', JSON.stringify(await p.evaluate(() => window.DAYS[5].dutywaves.map(b => b.rows.map(r => r.role + '|' + r.str + '-' + r.end + '|' + r.id + '|' + (r.reqid || r.iid || ''))))))
+await pic(p, 'probe14-week')
+console.log('ERR', JSON.stringify(errors))
+await browser.close()

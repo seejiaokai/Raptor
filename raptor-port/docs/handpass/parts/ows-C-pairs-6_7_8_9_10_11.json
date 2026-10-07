@@ -1,0 +1,79 @@
+{
+ "parts": {
+  "ows-C-pairs-6_7_8_9_10_11-dk": {
+   "at": "2026-10-06T13:58:09.731Z",
+   "base": "http://localhost:4295",
+   "phone": false,
+   "table": [
+    {
+     "id": "PR06.T~>U.UNPUB",
+     "did": "in-time → 08:30  THEN  Unpublish — from an UNPUBLISHED day (fixture IN TIME 10:00, UNPUB)",
+     "saw": "✓ start: unpublished pays nothing [ bal 0 tag DRAFT] · ✓ after T~: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ after U: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ U unavailable on an unpublished day: absence verified, data unchanged [ABSENT: no Unpublish button] · ✓ Undo of U: back to the state after T~ [{\"present\":true,\"title\":\"Undo — an In-time / Rally line\",\"pressed\":true,\"toasts\":[\"Undid: an In-time / Rally line\"]} →  bal 0 tag DRAFT (after T~:  bal 0 tag DR] · ✓ Redo of U: the state after U again [{\"present\":true,\"title\":\"Redo — an In-time / Rally line\",\"pressed\":true,\"toasts\":[\"Redid: an In-time / Rally line\"]} →  bal 0 tag DRAFT (after U:  bal 0 tag DRA] · ✓ after a reload: the same money and tag as before the reload [ bal 0 tag DRAFT chip \"\" (before:  bal 0 tag DRAFT chip \"\")] · ✓ (record) what the day said [1. in-time → 08:30 → line reads [\"IN TIME 08:30\"] ⇒ day DRAFT, chip \"\", sign-offs empty || 2. Unpublish → ABSENT: no Unpublish button ⇒ day DRAFT, chip \"\", sign]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-PR06-2-U-cell.png",
+      "dk-02-PR06-2-U-tracker.png",
+      "dk-03-PR06-2-U-day.png"
+     ]
+    },
+    {
+     "id": "PR07.T~>U.PUB",
+     "did": "in-time → 08:30  THEN  Unpublish — from a PUBLISHED day (fixture IN TIME 10:00, PUB)",
+     "saw": "✓ start: published ORIG pays (a credit is on the war) [HO* bal 0.5 tag ORIG] · ✓ after T~: the ORIGINAL's money holds (cell, worked times, balance) [HO* bal 0.5 ← HO* bal 0.5; row Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 10:00–15:00 0.5 left] · ✓ after U: no automatic credit on the war, balance back [ bal 0 ← HO* bal 0.5; row Ranger IP 0] · ✓ Undo of U: back to the state after T~ [{\"present\":true,\"title\":\"Undo — taking a published day back\",\"pressed\":true,\"toasts\":[\"Undid: taking a published day bac → HO* bal 0.5 tag ORIG (after T~: HO* b] · ✓ Redo of U: the state after U again [{\"present\":true,\"title\":\"Redo — taking a published day back\",\"pressed\":true,\"toasts\":[\"Redid: taking a published day bac →  bal 0 tag DRAFT (after U:  bal 0 tag] · ✓ after a reload: the same money and tag as before the reload [ bal 0 tag DRAFT chip \"\" (before:  bal 0 tag DRAFT chip \"\")] · ✓ (record) what the day said [1. in-time → 08:30 → line reads [\"IN TIME 08:30\"] ⇒ day ORIG, chip \"1 pending\", sign-offs empty, To go out: WAVE 1 · In-time / Rally Saber 6/10 21:51 1 In-time ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-PR07-2-U-cell.png",
+      "dk-05-PR07-2-U-tracker.png",
+      "dk-06-PR07-2-U-day.png"
+     ]
+    },
+    {
+     "id": "PR08.V>Lr.UNPUB",
+     "did": "Load Original onto working copy  THEN  Logic lead 3h→2h30 — from an UNPUBLISHED day (fixture no report, UNPUB)",
+     "saw": "✓ start: unpublished pays nothing [ bal 0 tag DRAFT] · ✓ after V: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ V unavailable with no issued version: absence verified, data unchanged [ABSENT: no such version in the menu: ] · ✓ after Lr: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ Undo of Lr: back to the state after V [{\"present\":true,\"title\":\"Undo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]} →  bal 0 tag DRAFT (after V:  bal 0 tag DRAFT)] · ✓ Redo of Lr: the state after Lr again [{\"present\":true,\"title\":\"Redo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]} →  bal 0 tag DRAFT (after Lr:  bal 0 tag DRAFT)] · ✓ after a reload: the same money and tag as before the reload [ bal 0 tag DRAFT chip \"\" (before:  bal 0 tag DRAFT chip \"\")] · ✓ (record) what the day said [1. Load Original onto working copy → ABSENT: no such version in the menu:  ⇒ day DRAFT, chip \"\", sign-offs empty || 2. Logic lead 3h→2h30 → lead now 2h30 ⇒ day ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-PR08-2-Lr-cell.png",
+      "dk-08-PR08-2-Lr-tracker.png",
+      "dk-09-PR08-2-Lr-day.png"
+     ]
+    },
+    {
+     "id": "PR09.V>Lr.PUB",
+     "did": "Load Original onto working copy  THEN  Logic lead 3h→2h30 — from a PUBLISHED day (fixture no report, PUB)",
+     "saw": "✓ start: published ORIG pays (a credit is on the war) [HO* bal 0.5 tag ORIG] · ✓ after V: the ORIGINAL's money holds (cell, worked times, balance) [HO* bal 0.5 ← HO* bal 0.5; row Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ after Lr: the ORIGINAL's money holds (cell, worked times, balance) [HO* bal 0.5 ← HO* bal 0.5; row Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ Undo of Lr: back to the state after V [{\"present\":true,\"title\":\"Undo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]} → HO* bal 0.5 tag ORIG (after V: HO* bal 0.5 tag ORIG)] · ✓ Redo of Lr: the state after Lr again [{\"present\":true,\"title\":\"Redo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]} → HO* bal 0.5 tag ORIG (after Lr: HO* bal 0.5 tag ORIG)] · ✓ after a reload: the same money and tag as before the reload [HO* bal 0.5 tag ORIG chip \"1 pending\" (before: HO* bal 0.5 tag ORIG chip \"1 pending\")] · ✓ (record) what the day said [1. Load Original onto working copy → looked at \"Original\", Load onto working copy → [\"Load onto working copy\"] ⇒ day ORIG, chip \"\", sign-offs empty || 2. Logic ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-PR09-2-Lr-cell.png",
+      "dk-11-PR09-2-Lr-tracker.png",
+      "dk-12-PR09-2-Lr-day.png",
+      "dk-13-PR09-2-Lr-togoout.png"
+     ]
+    },
+    {
+     "id": "PR10.Lr>V.UNPUB",
+     "did": "Logic lead 3h→2h30  THEN  Load Original onto working copy — from an UNPUBLISHED day (fixture no report, UNPUB)",
+     "saw": "✓ start: unpublished pays nothing [ bal 0 tag DRAFT] · ✓ after Lr: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ after V: no automatic credit on the war, balance back [ bal 0 ←  bal 0; row Ranger IP 0] · ✓ V unavailable with no issued version: absence verified, data unchanged [ABSENT: no such version in the menu: ] · ✓ Undo of V: back to the state after Lr [{\"present\":true,\"title\":\"Undo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]} →  bal 0 tag DRAFT (after Lr:  bal 0 tag DRAFT)] · ✓ Redo of V: the state after V again [{\"present\":true,\"title\":\"Redo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]} →  bal 0 tag DRAFT (after V:  bal 0 tag DRAFT)] · ✓ after a reload: the same money and tag as before the reload [ bal 0 tag DRAFT chip \"\" (before:  bal 0 tag DRAFT chip \"\")] · ✓ (record) what the day said [1. Logic lead 3h→2h30 → lead now 2h30 ⇒ day DRAFT, chip \"\", sign-offs empty || 2. Load Original onto working copy → ABSENT: no such version in the menu:  ⇒ day ]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-PR10-2-V-cell.png",
+      "dk-15-PR10-2-V-tracker.png",
+      "dk-16-PR10-2-V-day.png"
+     ]
+    },
+    {
+     "id": "PR11.Lr>V.PUB",
+     "did": "Logic lead 3h→2h30  THEN  Load Original onto working copy — from a PUBLISHED day (fixture no report, PUB)",
+     "saw": "✓ start: published ORIG pays (a credit is on the war) [HO* bal 0.5 tag ORIG] · ✓ after Lr: the ORIGINAL's money holds (cell, worked times, balance) [HO* bal 0.5 ← HO* bal 0.5; row Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ after V: the ORIGINAL's money holds (cell, worked times, balance) [HO* bal 0.5 ← HO* bal 0.5; row Ranger IP 0.5 + 0.5 +0.5 18 Jul AUTO Weekend/PH FLT · 09:00–15:00 0.5 left] · ✓ Undo of V: back to the state after Lr [{\"present\":true,\"title\":\"Undo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]} → HO* bal 0.5 tag ORIG (after Lr: HO* bal 0.5 tag ORIG)] · ✓ Redo of V: the state after V again [{\"present\":true,\"title\":\"Redo — a rule on the Logic page\",\"pressed\":true,\"toasts\":[]} → HO* bal 0.5 tag ORIG (after V: HO* bal 0.5 tag ORIG)] · ✓ after a reload: the same money and tag as before the reload [HO* bal 0.5 tag ORIG chip \"1 pending\" (before: HO* bal 0.5 tag ORIG chip \"1 pending\")] · ✓ (record) what the day said [1. Logic lead 3h→2h30 → lead now 2h30 ⇒ day ORIG, chip \"1 pending\", sign-offs empty, To go out: OIL on this day · Logic values changed since it was published Lo]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-PR11-2-V-cell.png",
+      "dk-18-PR11-2-V-tracker.png",
+      "dk-19-PR11-2-V-day.png",
+      "dk-20-PR11-2-V-togoout.png"
+     ]
+    }
+   ]
+  }
+ }
+}

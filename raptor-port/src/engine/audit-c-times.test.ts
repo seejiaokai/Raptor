@@ -40,24 +40,28 @@ describe('times out of order', () => {
     expect(hits('LEAVE_FLY', 'split').filter((x: any) => x.di === 1).length).toBeGreaterThan(0)
   })
 
-  it('garbage in a take-off cell: validate survives, and that line is silently unchecked', () => {
+  it('garbage in a take-off cell: validate survives; the line has no hours, so only a WHOLE-DAY absence speaks', () => {
     const f = DAYS[1].waves[0].formations[0]
     f.to = 'garbage'; f.aircraft[0].p = 'split'
     INPUTS.push({ person: 'split', date: 'Jul 14', allday: true, type: 'OL', remarks: '', mod: '' })
     expect(() => validate()).not.toThrow()
-    /* KNOWN HOLE, now pinned: an unparseable T/O makes every window NaN, so a
-       man on all-day leave planted on the line raises NOTHING — the line
-       vanishes from the conflict engine rather than failing closed. */
-    expect(hits('LEAVE_FLY', 'split').filter((x: any) => x.di === 1)).toEqual([])
+    /* THE HOLE THIS PINNED IS CLOSED (owner, D605, 6 Oct 26). An unparseable T/O makes every window NaN, and a man
+       on all-day leave planted on the line raised NOTHING — "the line vanishes from the conflict engine rather than
+       failing closed". A whole-day absence needs no hours to compare with, so he is flagged now; what still cannot
+       be judged — a clash with another event, a part-day absence — stays silent (blankabsence.test.ts). */
+    expect(hits('LEAVE_FLY', 'split').filter((x: any) => x.di === 1).length).toBe(1)
     expect(hits('DOUBLE_BOOK', 'split')).toEqual([])
+    INPUTS.pop()
+    INPUTS.push({ person: 'split', date: 'Jul 14', allday: false, s: 240, e: 720, half: 'am', type: 'OL', remarks: '', mod: '' })
+    expect(hits('LEAVE_FLY', 'split').filter((x: any) => x.di === 1), 'a morning-only leave: nothing to compare').toEqual([])
   })
 
-  it('an EMPTY take-off cell behaves the same way — unchecked, not crashed', () => {
+  it('an EMPTY take-off cell behaves the same way — not crashed, flagged for the whole-day leave (D605)', () => {
     const f = DAYS[1].waves[0].formations[0]
     f.to = ''; f.aircraft[0].p = 'split'
     INPUTS.push({ person: 'split', date: 'Jul 14', allday: true, type: 'OL', remarks: '', mod: '' })
     expect(() => validate()).not.toThrow()
-    expect(hits('LEAVE_FLY', 'split').filter((x: any) => x.di === 1)).toEqual([])
+    expect(hits('LEAVE_FLY', 'split').filter((x: any) => x.di === 1).length).toBe(1)
   })
 
   it('"2400" and "0000" as a duty end both mean midnight, and neither reaches tomorrow', () => {

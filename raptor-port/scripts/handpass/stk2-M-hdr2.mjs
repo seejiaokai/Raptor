@@ -1,0 +1,33 @@
+/* Finding F-A1 — the Edit Schedule wave header keeps the old In-time / Rally clock after the line is edited */
+import * as S from './stk2-M-alib.mjs'
+const { world, L, W, pic, row, savePart, sleep } = S
+const { browser, p, errors } = await world()
+await L.go(p, 'editsched'); await sleep(400)
+await p.locator('#page-editsched [data-wk="20/07/2026"]:visible').click(); await sleep(1000)
+const di = 0
+const w = await S.addFlyingWave(p, di, { cs: 'VIPER', to: '00:30', ld: '01:30', p1: 'stiff' })
+await S.closeBoard(p); await S.toWeek(p); await S.W.showDay(p, di)
+await S.addItBtn(p, di, w.wi)
+const h1 = await S.waveHeader(p, di)
+const el = p.locator(`#eWeek [data-itline="${di}|${w.wi}|0"]:visible`).first()
+await el.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' })); await sleep(150)
+await el.click(); await p.keyboard.press('Control+A'); await p.keyboard.type('22:30H: IN TIME + WX/NOTAMS', { delay: 8 })
+const hBeforeTab = await S.waveHeader(p, di)
+await p.keyboard.press('Tab')
+const hAtOnce = await S.waveHeader(p, di)
+const act = await p.evaluate(() => { const a = document.activeElement; return a ? (a.tagName + ' ' + (a.getAttribute('data-itline') || a.getAttribute('data-txt') || a.getAttribute('data-bfld') || a.id || '')) : null })
+await sleep(120)
+const h120 = await S.waveHeader(p, di)
+await sleep(1100)
+const lines = await S.itPainted(p, di, w.wi), h2 = await S.waveHeader(p, di)
+const hAtOnceFull = hAtOnce
+await p.evaluate(i => { const b = document.querySelector('#eWeek .intimes[data-intimes="0|' + i + '"]'); b.scrollIntoView({ block: 'center', inline: 'center' }) }, w.wi); await sleep(300)
+const pa = await pic(p, 'F-A1-week-header-after-line-edit')
+await S.toBoard(p, di)
+const hb = await p.evaluate(() => [...document.querySelectorAll('#schedBoard .asd')].map(e => e.innerText.replace(/\s+/g, ' ')))
+const pb = await pic(p, 'F-A1-board-header-same-moment')
+console.log(JSON.stringify({ h1, hBeforeTab, hAtOnce, act, h120, lines, h2, hb }))
+row('H-A1', 'new wave Mon 20 Jul 00:30-01:30 (one pilot); week: + In-time / Rally; typed 22:30H over the line; Tab; header read at once, after 120 ms, after 1.2 s; then the Board header', `button filled ${JSON.stringify(await S.intimes(p, di, w.wi))}, header after the press ${JSON.stringify(h1.slice(-1))}; typed (before Tab) header ${JSON.stringify(hBeforeTab.slice(-1))}; AT ONCE after Tab ${JSON.stringify(hAtOnce.slice(-1))} (caret in ${act}); 120 ms ${JSON.stringify(h120.slice(-1))}; 1.2 s ${JSON.stringify(h2.slice(-1))}; board header ${JSON.stringify(hb.slice(-1))}`, /22:30 \(prev day\)/.test((hAtOnce.slice(-1)[0] || '')) && /22:30 \(prev day\)/.test(hb.slice(-1)[0] || '') ? 'PASS' : 'FAIL', [pa, pb])
+console.log(errors)
+savePart('hdr2')
+await browser.close()

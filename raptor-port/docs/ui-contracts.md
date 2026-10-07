@@ -531,6 +531,36 @@ crew, buttons/selects, readonly/disabled/issued/peek/OIL content are not text st
 At either end, focus an eligible ordinary same-day control in that direction,
 otherwise blur; never loop, activate, change day or enter a hidden drawer. Subsequent
 non-text Tab is normal browser navigation. Enter/Escape and D529 remain unchanged.
+**The end of a day with no button below its last box (owner, D597, 6 Oct 26 — narrows D553):** forward Tab from the
+day's last open text box, where that day has no ordinary control after it, KEEPS THE CARET IN THAT BOX — never a blur
+onto nothing, never the next day's first button. Edit Schedule's week and the phone's Scheduler Board (no button follows
+its last box); the desktop board still goes on to the first ✕ of its warning list. Shift+Tab is unchanged. **Built 6 Oct 26**
+(`ui/schedule-tab.ts`): the box is saved by its blur, as on every Tab, and the caret is put back at the end of its text —
+in its twin if the save redrew it. **The day still catches up at that Tab:** it used to take the caret out of text, the
+moment everything held for the caret was redrawn (a line's worked-out area time after a typed take-off), so the route
+carries that redraw through itself — the store's "look again", flushed at once — BEFORE the caret goes back. After was
+not enough: the week writes all but the caret's block, but the board holds its whole day panel for a caret inside it
+(Astra's and Sol's reads, 6 Oct 26, the same finding apart). Pins: `e2e/schedule-tab.spec.ts` "D597 …" (three; the
+phone board's catch-up among them), `ui/schedule-tab.test.tsx` (the week, and Flying dragged to the foot of the day).
+
+**While the caret is in a text box, everything that does not hold it keeps up (the Codex stack check, 6 Oct 26 — W15,
+W16, W12, W11).** "Never repaint under the caret" used to mean nothing was redrawn until the caret left text; on the Tab
+route that is a whole day. Now, after each commit: on the WEEK every changed block of every day is written except the
+one block (a `.dsec` section, the day head, the sign-off strip, the warnings box) that contains the caret
+(`dayswap.ts swapDayAround` — it hands back chunks that still describe what is on screen, so the ordinary paint writes
+the held block when the caret leaves; a change needing the whole day replaced waits whole); on the BOARD every panel
+but the caret's own (`SchedBoard.tsx`). So the day's warning list and count (D509), "N pending", "Not yet signed" and
+the sign-off strip are current while he types on. **Held by design until the caret leaves its section:** the puck rings
+and marks inside that section. Inside the held block the wave header's In-time / Rally clock is corrected in place —
+text nodes only, no new markup (`html.ts refreshWaveReports`; `waveHeadTail` / `waveHeadBoard` are the one body for the
+builder and the refresh). `dayswap.ts holdingPlace` keeps the box he is typing in where it was on screen.
+**A save that opens a window stops the route:** `pops.ts windowOverSchedule()` — true from the moment a gesture asks for
+any window over the schedule — is asked straight after the route's blur, and the route declines while one is up; the
+four question sheets (OIL, upchit, "covers other days", "no medical document") take the keyboard when they open and
+give it back when they close (`sheetfocus.ts`). **Spacing alone is no change** (`engine/slots.ts txtSet` folds the
+stored words too): a box whose stored words hold a doubled space is not written by a click or a Tab through it.
+**After a day's last box with no button below it** the caret stays in that box (D597 — the paragraph above; it ended on
+nothing until 6 Oct 26, the stack check's W14).
 
 `schedule-tab.ts` collects at each gesture, shares ancestor visibility reads within
 that gesture only, then native blur/change saves through existing writers. After
@@ -589,6 +619,13 @@ same functions the builder renders with, so identical text is not a change,
 a real edit still commits, and an emptied cell still stores the blank.
 
 ## In-time lines: added and removed per wave (owner, 21 Aug 26)
+
+**RULED 5 Oct 26 (D593) — NOT YET BUILT.** On the Scheduler Board a wave's In-time / Rally lines are to be draggable into a new
+order, and Auto sort is to put them in order too. The detail (D594, the same day): the board ONLY — Edit Schedule's week gets no
+drag for these lines and shows them in the order the board left them; Auto sort orders them by time, earliest first (a
+previous-evening clock first, a line with no clock last), from the wave's own Auto sort and from Sort all; a new order on a
+published day is a pending change. Until it is built, the lines stay in the order they were added, as this section describes.
+The build: `OUTSTANDING.md` `[INTIME-LINES-DRAG]`.
 
 "Allow me to input lines at the top of each wave where I can reflect the in
 time likewise to be able to edit or delete it." Before this, the in-time
@@ -902,6 +939,15 @@ record of what was there (`was`), then the issued day's copy of the request (`sn
 change-history wording — so it reads "Bane · Meeting: … → deleted" wherever it stood; `drafts.ts`'s load message reads
 the same helper. A request filed after publication and then deleted still reads 0 pending (D174 / D176). Pinned by
 `ui/amendbatch.test.tsx`.
+**A Logic change that would move a published day's OIL is its own line (`[OIL-WORK-START]`, D592 (4), 6 Oct 26).** The
+To go out list reads "OIL on this day · Logic values changed since it was published", and under it one sub-line per
+value that differs ("Logic · Nominal report before T/O  3h → 2h30" — the box's own name on the Logic page, less its
+bracketed note) and one per man whose OIL record would change ("Ranger · OIL as published, under today's values  full day · 07:00–13:15 →
+half day · 07:30–13:15"; "nothing" where he would earn none) — the man's line names what it compares, his PUBLISHED OIL
+against the same day under today's values, because another change waiting beside it (his row switched off, an in-time
+typed) has its own line and the two must not be read as one. It is counted as ONE change on every surface (the week's and the
+board's chip, the ⓘ panel, the Amendments panel), never folded into an edited request's line, and has no place on the
+schedule to go to — its sub-lines are not tappable. Pinned by `ui/oilworkstart.test.tsx`.
 **One request, one row — across WEEKS too (`[REQ-ORPHAN-ROW]` + `[REQ-DOOR-WORDS]` 2, 28 Sep 26).** "One request, one
 row" (D175) was kept inside the loaded week only, so a request accepted onto a day of one week could be accepted again
 onto a day of another, and deleting it left the other week's row behind with nothing to answer to. A row standing on a
@@ -2418,7 +2464,9 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   already on and into next Monday) and crew rest in BOTH directions
   (`restIfPlaced` — the validator's own `crewRestDay` re-run in probe mode on a
   copy of the day with the candidate leg cloned from a sibling leg of the same
-  formation; an empty formation answers null). It sits after every other
+  formation; an empty formation answers null; since 6 Oct 26 an SC MAIN seat is
+  answered too, from a seated MAIN sibling's shift and its typed in-time, and an
+  SC SPARE seat never — `[SC-PICKER-INTIME-REST]`, `engine-rules.md` §Crew rest). It sits after every other
   reason because those are closer facts about the slot itself; warn-not-bar
   like the rest; and the green `paintSelRings`, the palette strike and the drop
   fallback inherit it with no wiring of their own. Three guards from the 5 Sep
@@ -3507,6 +3555,15 @@ Two measured contracts moved with it: `.acrow`'s `min-height` grew to
 and the adapted `wrap` probe are what hold them.
 
 ## Three crew-rest rings, and the day that caused the breach (owner, 6 Aug 26)
+
+**6 Oct 26 ([PUCK-DOT-ZOOM] — his find: "i cant see the red crew rest warning, over the amber line … its when im at
+default zoom", on a screen at Windows' 125%): the DOTTED ring is two screen pixels thick on a screen whose scaling is
+not a whole number** (125%, a browser zoomed to 110% or 80%) — there the browser drew it one screen pixel thick and hard
+against an advisory's amber ring, where it read as that ring's edge. `ui/dotring.ts` works the width out and hands it to
+the stylesheet as `--dot-w`; on an unscaled, 2x or 3x screen (his phone) it hands over nothing and the ring is the
+1.5px it always was. The offset, the colour and the other two rings are untouched. Pins: `ui/dotring.test.ts`,
+`e2e/puck-dot.spec.ts` (each scaling in a browser started at it — Playwright's own picture scaling cannot show the
+fault). Pictures: `docs/img/handpass/2026-10-06-puck-dot/before-after.png`.
 
 **25 Sep 26 (D94): the scheduler BOARD draws all three as the week does** — its flying, duty / sim and programme
 seats read `html.ts puckMarks`, the week's one reading of a puck's severity, printed flag (the trace's CR / 7
@@ -4886,6 +4943,25 @@ role unresolved and the affected person's ordinary total bar intact (D526). Late
 action and Undo step. Apply this to every forward writer; unresolved saved roles are legitimate, no guessed colour,
 answer-before-creation requirement or new publication block. Working wording edits on an issued day still wait for AL;
 role answers alone count at once without changing signs/pending/amendments (D530).
+**The questions and the button are two things (the Codex stack check, 6 Oct 26 — W9; D598):** `mission-role-offer.ts`
+holds every open question — at most ONE PER FORMATION, each drawn under its own formation — and, separately, the one
+temporary Choose / Change button under the Remarks he is in. So with a formation's question open (it stays through
+other edits, D535) every other formation's Remarks still shows its button; a formation whose question is open gets no
+button beside it; and a second formation's question — from a cue typed there, or its button pressed — opens BESIDE the
+first, never in its place (until D598 there was one slot, newest wins). Each ends by its own rules, alone; tracking Off,
+another week, version or sign-in end them all. **After Blue, Red or Later the button is back at once while the caret is
+still in that Remarks box** — "Change mission role" after an answer, "Choose mission role" after Later — so a mis-press is
+corrected from where he stands (`offerForFocus`, `[ROLE-BUTTON-AFTER-ANSWER]`, 6 Oct 26; D527, D529). **A line with no
+callsign is "Line"** in the question, in Undo and in History, never its row code (`[ROLE-BLANK-CALLSIGN]`; D340). **An answer
+can be changed to the other colour, never put back to "not chosen", once the sign-in has ended** — left as built on his word
+(D603, 6 Oct 26); Undo clears it during the same sign-in. **In the changes window an answer is filed under its formation** ("Flying · RU ACM", detail
+"Mission role" — the same item as that line's other changes; its recorded callsign when the line has gone), never
+under a hidden row id (W7, `changesmodel.ts roleItem`). **An answer on a built-in demo day nobody has saved survives a
+reload** because the two built-in weeks carry repeatable row ids (W8, `data-schema.md`). **His answers (6 Oct 26):** a second formation's question never
+removes the first one's — BOTH show, each under its own formation, each ending by its own rules (D598, narrowing
+D523; one gesture that leaves several formations needing answers still asks none — D529; built 6 Oct 26, pins in
+`ui/mission-role-interim-fixes.test.tsx` "D598 …"); and on Edit Schedule's week an open question WAITS on its day — swiping or stepping to
+another day does not end it, while on the Scheduler Board moving to another day still does (D599, narrowing D535; as built).
 Offer Change mission role temporarily while editing relevant Remarks (D527), reusing the formation question and edit
 permission; no permanent line marker. Named red Missions remain automatic, without overrides/questions. Recheck live
 formation identity/context/permission when answering; never apply an old popup's answer to a changed formation.
@@ -4912,6 +4988,9 @@ browser's bars and pushed the Insights window's title bar and ✕ under the addr
 box's text by dragging and letting go outside the window is one click on the surround to the browser, and closed the window
 under him. Every window that closes on a click outside asks ONE helper, `ui/outside.ts` `clickedOutside` (thirteen places —
 `outside.test.tsx` fails if a window keeps its own test); his 4 Sep 26 rule, a click outside closes, is unchanged.
+*Four more since 6 Oct 26 (the Codex stack check, W10):* the OIL question, the upchit confirm, "covers other days" and
+"no medical document" know their surround by a class, not an id, and were left out of the thirteen — they ask the same
+rule through `clickedSurround`, and the guard test refuses a surround test by class too.
 **A Blue/Red answer counts at once (D530):** on a published day too, it needs no amendment and does not touch the day's
 sign-offs — it is a label for the statistics, not part of the programme (as a Logic rule change is not, D482). This replaces
 "working answers on an issued day wait for AL" above and "new answers on issued days still wait for an amendment" below,
@@ -8821,3 +8900,68 @@ including edits and confirmed medical/OIL paths. Remembered filters remain uncha
 filter/mode change, leaving Inputs or session reset releases the temporary reveal. Only a live row
 of the current mode may be pinned. Undo/Redo follows the restored row; addition Undo never resurrects
 a deleted pin. Planning-only Undo/Redo returns to Member Calendar, where notes and pucks live.
+
+## The failed-save warning has a band of its own (owner, 5 Oct 26 — D586, D587; `[SAVE-NOTE-COVERS]`)
+
+**The rule (D587):** when a save has failed, the warning — "⚠ Not saved — keep this page open" and **Retry** — fills a
+line of its own along the BOTTOM OF THE TOP BAR, edge to edge. The top bar is one line (36px, `--save-band`) taller
+while it shows, so the page moves down and **nothing is under the warning, on any page, at any size**. It goes when the
+save lands. The passing "Saving…" note is unchanged: it floats under the bar's right end, takes no press, and never
+moves the bar (`[LW-FIGSEL-FLAKE]`, 28 Sep 26).
+**On a phone, in the Scheduler Board's Desktop layout (6 Oct 26, the Codex stack check — W13):** that layout is 1180px
+wide and pans, so the band is pinned to the SCREEN there (sticky at the board's left edge, one screen wide) — the words
+and Retry together at any pan (`17-save-status.css`; `e2e/save-note.spec.ts` walks three pans). In the same layout the
+board's ⋯ menu hangs from its button's right edge when the left-hung menu would pass the screen's edge (W18,
+`SchedBoard.tsx`, `e2e/geometry.spec.ts`).
+
+- **Why not floating, as it was:** it sat for as long as the save kept failing on whatever each page keeps under the
+  bar's right end — the name search box on both schedule pages (a phone tap on the box pressed Retry), the Tracker's
+  ✓ Save changes (a click on it pressed Retry) and its syllabus edit button, Quals' filter, the Leave War's "+ New".
+- **Where it is drawn** (`ui/SaveStatus.tsx`, styles `ui/scheduler/17-save-status.css`): `SaveStatus` in the top bar;
+  `Shell` puts `.save-failed` on the bar (from `useSaveFailed`) to make the room. The note stays `position:fixed` (the
+  phone bar is a sideways scroll box) and its top is MEASURED — the bar's bottom less the band — when it comes up, on a
+  window resize, and whenever the bar's own height changes (a page change takes the bar from one line to two with no
+  resize; the old note stayed at the old height, on the account button and Logout at 1366 wide).
+- **A full-screen surface that lies over the top bar carries the same warning under its own bar** (`SaveBand`, in the
+  flow): the scheduler board (inside `.sb-top`, last, so `--sb-topH` follows it), the Inputs calendar and the Medical
+  view (between the head and the body), and the Leave War's full-screen OIL tracker — its grid and its settings (under
+  the sheet's head). There the bar's own warning cannot be seen. A window, a sheet or the phone's menu is a short visit
+  and has none — the bar's is there when it closes. **What decides it is the surface, not its component's name:** full
+  screen and worked in (the OIL tracker is a `Sheet`) carries the band.
+- **One warning at a time for a screen reader and the keyboard:** while a `SaveBand` shows, the bar's copy beneath it is
+  `inert` and `aria-hidden` (it keeps its room, so nothing moves when the surface closes). The board passes
+  `active={open}`, because it stays in the page while closed.
+- **When the warning comes or goes, the page is told the way a window resize tells it:** `Shell` fires one `resize`
+  on the window, MARKED `saveBand` — because to some listeners a resize also means "the screen turned": the Tracker
+  shuts its open Tools set on one, and must not when only the warning came or went (it still re-fits its canvas). A
+  listener that only re-measures needs no change; one that CLOSES something on a resize must check the mark. A Quals or Leave War header ALREADY frozen, the Tracker's full-height column, its open menus and Find
+  strip all measured the bar before it changed and re-measure on a resize — without it the frozen header sat 36px off
+  and the Tracker's foot fell 36px below a screen that does not scroll.
+- **What follows the bar already follows this** — it is one line or two by page and width: Quals' and the Leave War's
+  frozen headers (measured live), Logic's pinned search (its own size observer). (A Leave War sheet anchored above a
+  phone keyboard reads the bar only when the visible screen changes — it lies over the shell and keeps its own cap.) **Two things
+  float at a FIXED height above the bar's layer and move down by the band with the page:** the week's two side arrows
+  (`.week-nav`) and Edit Schedule's blue CREW tab (`.ros-rail`) — where the bar is three lines (a phone on its side) the
+  taller bar would otherwise reach them, and the right-hand arrow would lie on Retry. **So does the spot the two movable
+  windows open at** (the changes window and the ALL AVAIL window, 96px down the right edge — they stay open while a
+  person works, and under a two-line bar would open on Retry); they are drawn beside the shell, so `#shell` carries
+  `.save-failed` too. DESKTOP ONLY (621px and wider) — on a phone both are bottom panels and the rule must not reach
+  them — and shorter by the band, so the foot stays on a short screen. ONLY A WINDOW STILL AT ITS DEFAULT SPOT: one a
+  person has moved or resized carries `data-placed` (`ui/floatwin.ts`) and keeps its own box — capped by the stylesheet,
+  its shrunken height would be recorded as the size he chose. Where he puts it is his, over the warning included. **A new thing pinned at a fixed height near
+  the top must do the same**, or be measured from the bar.
+- **The cost, accepted:** the page shifts down one line ONCE, at the moment a save fails, and back when it lands. A
+  failed save stays failed until it lands (`storage/postman.ts`), so this is not a per-change twitch; the top bar's own
+  buttons do not move.
+- **Pins:** `e2e/save-note.spec.ts` — at six sizes (phones 390 and 320, a phone on its side, desktops 1200, 1366×700,
+  1440), on all nine pages, at the top and scrolled: the warning seen whole and nothing a person can press under it;
+  real presses reach the name search box and the Tracker's ✓ Save changes; Retry, pressed for real, saves and the bar
+  returns to its height; the board, the Inputs calendar, the Medical view and the OIL tracker each show it and their
+  Retry works; one warning exposed at a time; a frozen header and the Tracker's column follow the bar when the warning
+  comes and goes, and the Tracker's open Tools set stays open; with the changes window open Retry still takes the press,
+  its foot stays on a 600-tall screen, on a phone it stays a bottom panel, and one he has moved keeps its box. Every
+  press on Retry is proven to try to save ITSELF, apart from the app's automatic retry. `ui/SaveStatus.test.tsx`
+  (the states). The walk's driver: `scripts/handpass/sn-cover.mjs`, `sn-board.mjs`.
+- **Device caveat:** on an iPhone, pulling the page down past its top lets the bar bounce while a fixed note stays —
+  the band may part from the bar for the length of the bounce (the floating note did the same). Not measured on his
+  phone.

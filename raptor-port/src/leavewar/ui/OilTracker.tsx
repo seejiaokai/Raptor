@@ -92,6 +92,7 @@ import {
   updateLedgerEntry,
 } from '../state/store'
 import { hhmm } from '../../engine/time'
+import { SaveBand } from '../../ui/SaveStatus'
 import { CreditForm, DayChip } from './CreditForm'
 import { shortDate, shortSpan } from './dates'
 import { RangePicker, type Range } from './RangePicker'
@@ -334,6 +335,9 @@ export function OilTracker({ person, onClose, onGranted }: {
           <span className="dt">settings · squadron-wide</span>
           <button className="x" data-testid="oil-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
+        {/* a failed save's warning, under this full-screen sheet's own head: the sheet lies over Raptor's top bar, whose
+            own warning cannot be seen from here ([SAVE-NOTE-COVERS], D587 — Astra's read, F1; ui/SaveStatus.tsx) */}
+        <SaveBand />
         <div className="oil-set">
           <div className="bidsheet-row">
             <span className="lab">OIL lasts</span>
@@ -476,7 +480,10 @@ export function OilTracker({ person, onClose, onGranted }: {
                    too, where no hover title shows — that a tap adds one (Fable's final read, F1) */
                 ? <span className="rt muted" data-testid={`oil-noreason-${tid(c.id, c.ledgerId)}`}>{admin ? 'no reason — tap to add one' : 'no reason given'}</span>
                 : '')}
-              {c.hours?.[0] && <span className="oil-hrs"> · {hhmm(c.hours[0][0])}–{hhmm(c.hours[0][1])}</span>}
+              {/* EVERY worked period, as the day's sheet and the day's list print them (BidPicker, DayList) — this printed
+                  only the first, so a full day earned from a morning desk and an afternoon sortie read "06:00–06:30"
+                  (Astra's scenario read of [OIL-WORK-START], F1, 6 Oct 26) */}
+              {c.hours?.[0] && <span className="oil-hrs"> · {c.hours.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}</span>}
             </span>
           </div>
           <div className="l3">
@@ -611,6 +618,9 @@ export function OilTracker({ person, onClose, onGranted }: {
         <span className="dt">{admin ? 'one row per person · the oldest credit is used first' : 'one row per person'}</span>
         <button className="x" data-testid="oil-close" onClick={onClose} aria-label="Close">✕</button>
       </div>
+      {/* a failed save's warning, under this full-screen sheet's own head: the sheet lies over Raptor's top bar, whose
+          own warning cannot be seen from here ([SAVE-NOTE-COVERS], D587 — Astra's read, F1; ui/SaveStatus.tsx) */}
+      <SaveBand />
       <div className="oil-tools">
         <span className="lab">Show</span>
         <button className={`tchip${mode === 'first' ? ' on' : ''}`} data-testid="oil-range-first" onClick={() => { setMode('first'); setPicking(false) }}>

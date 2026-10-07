@@ -2382,3 +2382,363 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** When stating how long a check takes, read the last recorded run (the handoff block or the evidence sheet carries gate times) and quote it; if none exists, say "not measured". Keep the measured gate-set time in the handoff block so the next chat quotes it.
 
 **Principle:** A duration told to a non-technical owner is a claim he plans around; quote the last measurement, and label a guess as a guess.
+
+### Observation 425: A proposed layout can be laid over the running build and measured by the walk's own assertions before any source changes
+
+**Status:** OPEN
+**Date:** 5 Oct 26
+**Session context:** `[SAVE-NOTE-COVERS]` (D586) — the owner asked to see the proposed phone and desktop look before the layout changed.
+**Skill:** New skill candidate: picture-before-build (or a section of the bug-check order §7 / the Impeccable mock step)
+**Type:** open-source
+**Phase/Area:** design proposal, before implementation
+
+**Issue:** The usual picture-before-build is a drawn mock, which proves appearance only. Here the reproduction script was written as assertions of the RIGHT behaviour (no control covered, a real press on Retry works) and took an optional throwaway style sheet and script to inject into the built app. The same run then gave the "before" failures, the proposal's pictures on the real pages, and a pass/fail measurement of the proposal on every page and size — with no source file changed. Two traps met on the way: the app's memory-only mode cannot produce a failed save, so the first run reproduced nothing; and a pixel-grid scan sized for a small note ran past the tool's time limit once the proposal made the note full-width.
+
+**Suggested improvement:** When a visual change must be shown before it is built, write the reproduction as right-behaviour assertions with an injection hook, run it once plain (the defect's evidence) and once with the candidate laid over the app (the proposal's pictures and its measurement). Size any pixel sampling to the element's area, and check that the mode the app is opened in can show the state under test.
+
+**Principle:** A proposal measured on the running product is worth more than a drawing of it; make the defect's reproduction reusable as the proposal's test and as the fix's re-walk.
+
+### Observation 426: Staging a whole directory swept another session's untracked files into a commit and a push
+
+**Status:** OPEN
+**Date:** 5 Oct 26
+**Session context:** `[SAVE-NOTE-COVERS]` (D586) — a records-only commit made while the gates were running.
+**Skill:** session-handoff / finishing-a-development-branch (the commit step of any skill)
+**Type:** open-source
+**Phase/Area:** committing in a checkout shared with other sessions
+
+**Issue:** The checkout held an untracked evidence folder that another session had deliberately left out of the repository (its handoff said so). `git add <parent directory>` staged all 213 files of it (31 MB) with this session's own documents; the commit went out in a push before the stat line was read. It was repaired by redoing that one commit without the folder and replacing it on the session's own branch, but the objects had already left the machine.
+
+**Suggested improvement:** In a checkout that shows untracked paths at the start of a session, stage by named files (or by a path that cannot contain them), never by a shared parent directory; and read `git diff --cached --stat | tail -1` — the file count — before every commit: a records commit that reports hundreds of files is wrong on sight.
+
+**Principle:** Untracked files in a shared checkout belong to whoever left them; stage what you wrote by name, and read the count before the commit rather than after the push.
+
+### Observation 427: Swapping a reviewer's targeted fix for one shared trigger fixed the finding and made two new ones
+
+**Status:** OPEN
+**Date:** 5 Oct 26
+**Session context:** `[SAVE-NOTE-COVERS]` — the independent reviewer's round 1 asked for an observer in each of three pages; the builder instead fired one window `resize` that all three already listened for.
+**Skill:** receiving-code-review
+**Type:** open-source
+**Phase/Area:** acting on review findings
+
+**Issue:** The shared trigger closed the finding with one line and no edits to two vendored modules. Round 2 then found that one unrelated listener of the same signal closed a panel a person was using, and that a companion style cap was being recorded as a user's chosen size. Both were second-order effects of the broader mechanism, visible only by listing every consumer of the signal — which the builder had not done before choosing it. The review cap (two rounds) then left those last fixes without an independent read.
+
+**Suggested improvement:** When replacing a reviewer's specific instruction with a broader mechanism, first list every existing consumer of that mechanism and say for each whether its reaction is wanted here; put that list in the disposition handed back to the reviewer. If the list cannot be made cheaply, take the reviewer's narrower fix.
+
+**Principle:** A shared signal reaches everyone who listens for it; before reusing one as a shortcut, read its whole audience.
+
+### Observation 428: Research for a decision — open the source that cuts AGAINST the leaning before reporting
+
+**Status:** OPEN
+**Date:** 2026-10-05
+**Session context:** The owner asked for online evidence on whether one model can replace a dearer one as reviewer. Numbered on claude/codex-stack-review; codex/inputs-sans-calendar may hold later numbers.
+**Skill:** New skill candidate: decision-research (or a line in the proactive-advisor guidance)
+**Type:** open-source
+**Phase/Area:** Web research feeding a recommendation the agent has already leaned toward
+
+**Issue:** The first research pass opened the sources whose search summaries agreed with the recommendation already given, and reported "the evidence supports it". A search result whose own title signalled the opposite (an independent test where the dearer model was clearly more reliable) was listed but not opened. The owner asked "is it really better?" and the second pass found it; the advice had to be qualified after he had been told it was supported.
+
+**Suggested improvement:** When research feeds a recommendation already made, the pass is not finished until (a) at least one source arguing the other way has been opened and reported, (b) vendor-run numbers are labelled as the vendor's own, and (c) the reply says which claims came from a search summary and not from the page itself.
+
+**Principle:** A search run after a recommendation tends to confirm it. Look for the disconfirming source first, and report it with the same weight.
+
+### Observation 429: A brief's "what the app should now do" paragraph is checked against the FULL rows before it is sent
+
+**Status:** OPEN
+**Date:** 2026-10-05
+**Session context:** Writing the scenario-design brief for the one check of the Codex stack (D589). Numbered on claude/codex-stack-review; codex/inputs-sans-calendar may hold later numbers.
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §4, the scenario brief) — and any brief-writing guidance
+**Type:** internal
+**Phase/Area:** Writing the promise paragraph a reviewer or walker is handed
+
+**Issue:** The host wrote the promise for five pieces from the rulings' short lines and the handoff. One sentence said a weekend's earned leave reads the entered in-time / Rally clock; the ruling's full row (D498) says the earned-leave rule was deliberately not changed. The scenario designer caught it and wrote two scenarios "expected under the brief", flagged as a conflict — so two scenarios had to be downgraded to "recorded, not judged" and the walkers' brief carried the same wrong sentence until corrected in a notes file.
+
+**Suggested improvement:** Before a brief leaves, every sentence of its promise that states a behaviour touching earned leave, the published record, roles or saved data is traced to a ruling's FULL row (grep the row, read it), and the brief cites that row beside the sentence. A promise sentence with no row behind it is marked "the host's reading" so the reviewer treats it as a question, not a requirement.
+
+**Principle:** A brief is the one place a wrong sentence gets multiplied by every reader of it. Summaries are for finding the ruling; the requirement is copied from the ruling itself.
+
+### Observation 430: Before a check is planned around a named reviewer, prove that reviewer answers from this machine
+
+**Status:** OPEN
+**Date:** 2026-10-05
+**Session context:** The same check. A ruling made the same day named a specific model as second reader; the set-up chat and the handoff planned on it. Numbered on claude/codex-stack-review.
+**Skill:** session-handoff; bug-check order §4 (where to spend the reviewers)
+**Type:** internal
+**Phase/Area:** Set-up of a multi-reviewer check; handoff of "who reads what"
+
+**Issue:** The first call to the second reader was refused in two seconds: the command-line tool on this PC did not offer that model to this account (its model list held an older one), although the same model had been used for days from the provider's desktop app. The memory note on how to call the reviewers was also a version behind (it named a model id since replaced). The check had to carry an open question to the owner and an owed read.
+
+**Suggested improvement:** When a ruling or a handoff assigns a job to a named model, the same turn runs a one-word probe of that model through the route the next chat will use, and writes the working command (or "not reachable from here, because …") into the handoff block and the memory note. A per-measurement requirement that needs a quiet machine (an allowance reading before and after one helper) is likewise checked against the plan to fan out, and the order of work written down, before anything is launched.
+
+**Principle:** A plan that names a tool has an untested assumption until the tool has answered once from where the work will run.
+
+### Observation 431: A fanned-out helper's brief says "report once, after stopping everything you started" — and a measurement that needs a quiet machine is planned before the fan-out
+
+**Status:** OPEN
+**Date:** 2026-10-05
+**Session context:** The one check of the Codex stack: nine Sonnet walkers and one Opus walker, a blind two-walker trial with an allowance reading owed before and after each. Numbered on claude/codex-stack-review.
+**Skill:** bug-check order §4 (the fanned-out walk and the walker trial); dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** Briefing parallel helpers; measuring one helper's cost
+
+**Issue:** (1) One walker finished, then re-sent its whole final report five times because a process of its own was still alive; each copy landed in the host's context, already two-thirds full, and it had to be stopped by hand. (2) The owner wanted his allowance read before and after each trial walker; the reading is one whole-account figure in whole percents, so the two walkers had to run one after the other with the host idle — and the host then answered the owner and wrote a handoff inside both windows, so neither reading was clean. (3) Most walkers opened a third or less of the pictures they saved although the brief said every one, and two scenarios with an expected result were marked "recorded" instead of judged.
+
+**Suggested improvement:** In the walk brief: "send your report ONCE, after stopping every script and browser you started"; "a scenario with an EXPECTED line is PASS or FAIL — RECORDED only where the host says so"; and say plainly that the host, not the walker, opens the pictures behind every FAIL and every high-consequence PASS. For a per-helper cost measurement: use the helper's own token count as the measure, and promise an allowance reading only if the host can truly go silent for the whole window — say so to the owner before starting, not after.
+
+**Principle:** A helper's brief must say how the helper ENDS, not only what it does; and a measurement taken on a shared meter is only as clean as the quiet around it.
+
+### Observation 432: A rebuilt build under a walker — one served folder per walk ROUND, never refreshed in place
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Claude's one check of the Codex stack (D589) — the fix rounds, the re-walk, the reads
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §4 "nobody rebuilds the build they are served")
+**Type:** internal
+**Phase/Area:** the re-walk after a fix round
+
+**Issue:** The host froze one folder (dist-fix) for the re-walk and later copied a newer build over it for the next small round — while a walker of the previous round was still walking. The rule was known and was still broken, because "refresh the frozen folder" looked like housekeeping. Nothing the walker walked had changed and it reported no FAIL, but the evidence had to carry a caveat.
+
+**Suggested improvement:** In the order's §4 paragraph, add: each walk round gets its OWN folder and servers named for the app commit (dist-<sha>), created once and never written again; a later round makes a new folder. Check for running walkers (ListAgents) before any copy into a served folder.
+
+**Principle:** A frozen artefact is frozen by never reusing its name; a rule that depends on remembering who is still reading it will be broken under time pressure.
+
+### Observation 433: A fix to a shared writer needs its callers' "did the save work?" checks read in the same change
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** the same check — W11 (spacing alone is no change, in the one text writer) silently broke the Blue/Red answer path, found by an outside reviewer (RF3)
+**Skill:** bug-check order §6 (a fix to one writer of a record gets its own small roll-call)
+**Type:** internal
+**Phase/Area:** fixing — the roll-call of a changed writer's callers
+
+**Issue:** Making the writer return "no change" for a spacing-only difference was right, but one caller treated "stored words still differ from typed words" as a failed save and dropped its work. The roll-call of the writer's callers was not made before the fix; two reviewers and a reader later found the gap and its siblings.
+
+**Suggested improvement:** §6's "fix to one writer" bullet: when a writer's RETURN or no-op condition changes, list every caller that reads the return value or re-compares after the call, and give each a line (unchanged / adjusted) in the commit.
+
+**Principle:** Changing when a function reports "nothing happened" is an interface change; every caller that infers failure from "nothing happened" must be read in the same change.
+
+### Observation 434: A rendering fault is measured at the screen's real scaling, before any fix is designed
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** his find on the stack's preview — the dotted crew-rest ring invisible beside an amber ring "at default zoom" (his screen: Windows at 125%)
+**Skill:** bug-check order §7 (the walk) and the debugging guide (reproduce first)
+**Type:** internal
+**Phase/Area:** reproducing a visual fault
+
+**Issue:** Two fixes were built on theories before the measurement that disproved them. (1) The fault was reproduced with Playwright's `deviceScaleFactor`, which scales the finished picture and leaves the page's own arithmetic at 1 — the browser then rounds a 1.6px line down to 1px, so both the fault and the fix vanish under it. (2) "The ring falls between pixels, snap its offset" was built, unit-tested and only then measured: no difference, the browser already rounds the offset. The real cause (one screen pixel thick, hard against the amber ring) showed only in a browser started with `--force-device-scale-factor`, checked against the desktop app's own pane, which reported his real scaling (1.25) and the real computed widths.
+
+**Suggested improvement:** In the order's walk section, one line for visual faults: "a fault that depends on zoom or display scaling is reproduced in a browser STARTED at that scaling (`--force-device-scale-factor`), never with an emulated picture scale; read the owner's real scaling first (the app's pane reports `devicePixelRatio`); count the pixels before and after — and measure the candidate fix before writing its tests." `scripts/handpass/zoom-dot.mjs` is the worked example.
+
+**Principle:** An emulator that changes the picture but not the arithmetic cannot reproduce an arithmetic fault; build the measuring tool first and let it choose the fix.
+
+### Observation 435: Keeping the caret where a blur used to happen means finding everything that blur used to trigger
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** D597 — Tab from a day's last text box keeps the caret in that box instead of leaving it on nothing
+**Skill:** bug-check order §6 (the roll-call of a changed gesture); feature-impact walk
+**Type:** internal
+**Phase/Area:** building a change that removes an event other code relied on
+
+**Issue:** The old ending (the caret leaving text) was also the moment the page redrew every block it had been holding for the caret. Refocusing the box at once removed that moment, and a line's worked-out area time stayed stale. It was caught only because an existing unit test pinned "settles after the final Tab"; no roll-call line asked "what else listened for the event this change removes?".
+
+**Suggested improvement:** In §6's door check, add a question for a change that removes or shortens an event (a blur, a close, a navigation): "list what else ran on that event — deferred paints, saves, tidy-ups — and give each a line: still runs / now triggered here / no longer needed, because…".
+
+**Principle:** Removing a side effect's trigger is a behaviour change for every listener; list the listeners before removing it.
+
+### Observation 436: A walk script's FAIL is read against what the script actually pressed before it is called the app's
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** the third-round walk of the stack check — one phone step failed three runs in a row
+**Skill:** bug-check order §5 (the re-walk: read every FAIL against the flow)
+**Type:** internal
+**Phase/Area:** judging a walk failure
+
+**Issue:** "A second Tab stays and saves again" failed on the phone only. The script pressed End before typing; on a phone the remark wraps onto two lines, and End stops at the end of the first LINE, so the typed marker landed mid-text and the assertion looked for it at the end. The app was right. Printing what the box actually read, in the step's note, settled it in one run; two selector errors earlier in the same script (a day tab, the phone menu) were the script's too.
+
+**Suggested improvement:** In the walk section: every assertion's note prints the observed value it judged (the text of the box, the focused element), so a FAIL can be read without a rerun; and "a key that moves the caret (End, Home, arrows) means something different once text wraps — use the document-level one (Control+End) in scripts".
+
+**Principle:** A failing step reports what it saw, not only that it failed; the first question about a red walk step is what the script did, not what the app did.
+
+### Observation 437: A reviewer's "skip the record that lacks field X" fix spec loses the cases the rule already handled from the record's OTHER fields
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Fixing a rules-engine fault ([REST-BLANK-LINE]): a flying line with no take-off carried not-a-number times into the crew-rest arithmetic and silenced a breach raised by the man's other line. The finding came from a code reader with a step-by-step fix ("build the list only from legs with a finite take-off").
+**Skill:** receiving-code-review (and the project's bug-check order, raptor-port/docs/bug-check-order.md §4 "What to do with what they hand back")
+**Type:** open-source
+**Phase/Area:** Turning a reviewer's fix instructions into the change
+
+**Issue:** The reviewer's fix was correct for the reported symptom and wrong as a rule: a leg with no take-off could still carry a typed brief time or its wave's report time, and the unfixed code ALREADY raised the warning from the typed brief when that leg was the man's only one. Applying the spec as written would have traded one missing warning for another. It was caught by listing, per derived quantity, which inputs each needs (nominal report needs the take-off; instructed report needs brief OR in-time; yesterday's end needs the landing), and then confirmed independently by the scenario designer, who was asked "what does a naive skip get wrong?" as an explicit item of its brief.
+
+**Suggested improvement:** In receiving-code-review (and bug-check-order §4's disposition list), add a step before implementing a reviewer's fix: "If the fix drops, skips or filters a RECORD because one field is missing, list every quantity the rule derives from that record and what each one needs; write a test for each case that works today from the record's other fields, and watch it stay green." And in the scenario-design brief template, keep the explicit item "the cases a simple skip would get WRONG".
+
+**Principle:** A missing field invalidates the quantities that depend on it, not the record. Filter the unusable VALUES, keep the record — and before changing a rule, pin the cases it gets right by accident, because a fix spec is written from the failing case and never from those.
+
+### Observation 438: An "equal with and without X" test passes on two equally wrong answers — it needs an absolute oracle beside it
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Building a rules-engine change ([BLANK-TIMES-ABSENCE], D605): a whole-day absence must flag a seat with no times exactly as it flags the seat once times are typed. The builder's first roll-call test looped every input type over every kind of seat and asserted "the same codes blank and timed".
+**Skill:** test-driven-development (and the project's bug-check order, raptor-port/docs/bug-check-order.md §8 "Making the checks FIND rather than CONFIRM")
+**Type:** open-source
+**Phase/Area:** Designing the roll-call test of a change that extends an existing rule to a new state
+
+**Issue:** The comparison test was green while one input type (a paperwork record that must never flag) was wrongly flagged on BOTH sides: the old timed path already had the fault, the new path mirrored it, and "same before and after" agreed. The scenario designer (a model that did not build it) asked for the exact expected answer per cell; writing that table turned three tests red at once and exposed an old fault the change would have spread.
+
+**Suggested improvement:** In bug-check-order §8 (and test-driven-development's guidance on parity / equivalence tests): "A test that asserts new == old proves the new path copies the old one, including its faults. Beside every equivalence loop write the absolute table — one expected value per cell, taken from the rulings, not from the code — and assert that the table names every member of the enumerated set, so a new member cannot be skipped."
+
+**Principle:** Equivalence is evidence of consistency, not of correctness. Any test of the form "A behaves like B" needs one test that says what B is supposed to do.
+
+### Observation 439: A handoff's opening line "run git pull" fails in the fresh worktree the same handoff tells him to make
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Starting a new chat from the previous chat's ready-to-paste opening line ("Read HANDOFF.md, run git pull, then build …") in a new worktree on a new branch cut from main.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** The ready-to-paste opening prompt for the next chat
+
+**Issue:** The new worktree's branch has no upstream, so `git pull` answers "There is no tracking information for the current branch" and pulls nothing. The chat has to notice, then `git fetch origin` and compare its HEAD with `origin/main` by hand to know it is level. A chat that did not notice would build on a stale base believing it had pulled.
+
+**Suggested improvement:** In session-handoff's opening-line template: for a NEW job on a worktree from main write "run `git fetch origin` and check this branch is level with `origin/main`" (and say what to do if it is behind: `git merge --ff-only origin/main`); keep "git pull" only for a chat continuing an existing pushed branch.
+
+**Principle:** A handoff instruction is written for the state the next session will actually start in, not the state the writing session is in.
+
+### Observation 440: The read brief offers "you may run one test file" to a reviewer whose sandbox cannot run anything
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** The two final code reads of a FULL bug check ([BLANK-TIMES-ABSENCE]) by the Codex-side reviewers, run with `codex exec -s read-only`. The same happened on the previous check the day before.
+**Skill:** claudex-loop / codex-review (and the project's bug-check order, raptor-port/docs/bug-check-order.md §4 "The brief that turns a reviewer into a finder")
+**Type:** internal
+**Phase/Area:** Writing the final-inspection brief
+
+**Issue:** The brief tells each reader it may run a single test file to settle a doubt. Under the read-only sandbox the test runner cannot create its temporary directory, so zero tests run; both readers spent effort trying, then reported "no tests completed" — and one of their findings (a label fallback folding two warnings into one) was exactly the kind a thirty-second run would have confirmed. The host confirmed it instead, by a red test.
+
+**Suggested improvement:** In the read brief template: either say plainly "you cannot run anything — read the source; name the exact input you would run and the host runs it", or launch the reader with a sandbox that allows writes to a scratch directory only and point the test runner's cache and temp there. And add to the host's steps: "run every 'would run' case the readers name before dispositioning the finding".
+
+**Principle:** Do not offer a reviewer a verification step its environment cannot perform; turn "I could not run it" into a named case the host is obliged to run.
+
+### Observation 441: One plan-challenge round overturned the builder's own reading before the code hardened around it
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** A FULL-tier build touching earned leave, the published record and saved data ([OIL-WORK-START]). The builder wrote a short plan, named its two "builder's readings" out loud in the plan and its brief, and sent it to two reviewers blind to each other while it wrote the first failing tests.
+**Skill:** claudex-loop / codex-review (plan review); the project's bug-check order §4 rank 3
+**Type:** open-source
+**Phase/Area:** Plan review before a high-consequence build
+
+**Issue:** Positive signal. Both reviewers independently rejected the same builder's reading (compare a published record on its amount only), gave the same concrete counter-case (a value that leaves the amount and moves the recorded times), and both found a missing protection the plan had not listed (approvals given before a rule change). The plan had flagged the reading as its own, which is what made it a target rather than an assumption buried in the design. Cost: one round, about 25 minutes of wall-clock that the builder spent writing red tests for the half that did not depend on the answer.
+
+**Suggested improvement:** In the plan-review brief template: a section "The builder's readings — attack them", listing every place the builder interpreted a requirement rather than read it, each with its one-line alternative; and ask each reviewer to rule each one "supported / contradicted / the owner's to decide". Run the round in the background while writing tests for the parts no reading touches.
+
+**Principle:** Name your own interpretations as interpretations and hand them to the reviewer as targets; an interpretation stated as a design fact is reviewed as a fact.
+
+### Observation 442: A repo-wide rename rewrote a reviewer's verbatim report and its brief
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Renaming a new spec file to satisfy a document gate, then replacing the old name everywhere it was mentioned with one scripted find-and-replace across the repo.
+**Skill:** New skill candidate: evidence-preserving edits (or a rule in the project's doc-structure / bug-check guidance)
+**Type:** open-source
+**Phase/Area:** Mechanical edits across a repository that holds review evidence
+
+**Issue:** The replace also touched the reviewer's report (kept verbatim as evidence) and the brief that reviewer had already run against — two files whose value is that they are exactly what was written and read. Caught only because the tool printed every file it changed; both were put back and the rename recorded beside them instead.
+
+**Suggested improvement:** Before any scripted repo-wide replace, list the matches and exclude evidence paths (reviewer reports, briefs after their run, frozen snapshots, archives); where an excluded file now names something that moved, say so in the live document that cites it, not inside the frozen one.
+
+**Principle:** Evidence files are immutable inputs: a mechanical edit excludes them by path, and a later rename is noted beside them, never inside them.
+
+### Observation 443: A shared walk helper read the wrong element because a CSS class had since gained a second use
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Re-using an earlier job's scripted-browser helpers for a new walk. The helper that reports a day's "N pending" chip selects the first element of a class that a later feature also put on a different chip ("N changes"), so on a day with nothing pending it reported "10 changes" as the pending count.
+**Skill:** New skill candidate: scripted hand-pass walks (the project's walk drivers and walker brief)
+**Type:** internal
+**Phase/Area:** Reusing driver helpers across walks; writing the walker brief
+
+**Issue:** The host's own before/after run produced a wrong reading on the unfixed build ("pending: 10 changes"), which would have looked like a real observation in a table. It was noticed because the number was implausible. Four walkers were about to inherit the same helper.
+
+**Suggested improvement:** (1) Fix the selector in the helper the next time the helper file is touched (it was left untouched here because walkers were about to read it). (2) In the walker brief template, a standing section "Known traps in the drivers", fed from the host's own short run before the walkers start. (3) The host's short run goes first precisely to find these.
+
+**Principle:** Run the host's own short walk on shared helpers before fanning out; every helper trap it meets goes into the walkers' brief by name.
+
+### Observation 444: A one-file browser test started during a gate run took the built files from under the gate's server
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** Chasing a browser test that had failed once inside the full gate run, the host ran that one test file in a loop while the same gate run was still going (its browser-test gate had finished; its Tracker smoke was in flight).
+**Skill:** New skill candidate: running the gates on one machine (the project's gate-lock rule and bug-check order)
+**Type:** internal
+**Phase/Area:** The lock rule's exemption for "one test file"
+
+**Issue:** The lock rule says one test file needs no lock, on the reasoning that it is light. But the browser-test runner builds the app before it serves it, so even one file rewrites the built folder — and the Tracker smoke's own server was serving from that folder. The smoke aborted waiting for a sign-in box that was never served, and the gate run reported a failure that was not the app's. It cost a further full gate run and had to be explained in the evidence sheet.
+
+**Suggested improvement:** In the lock rule (shipping guide, "The checks") and the bug-check order: the "one test file needs no lock" exemption applies to UNIT test files only; anything that builds (a browser-test run of any size, a build, a preview) waits for the lock to be free. Optionally make the browser-test config refuse to build while the lock folder exists and is held by another run.
+
+**Principle:** An exemption written for cost ("it is light") does not cover interference ("it rewrites what another run is reading"); name the shared artefact, not the size of the job.
+
+### Observation 445: "Wait until the app holds the value" turned a flaky step into a clear failure, but did not fix it; widening the gap between two actions reproduced it on demand
+
+**Status:** OPEN
+**Date:** 2026-10-06
+**Session context:** A new browser test failed once per two full gate runs at one step (type a setting, press Tab). The first repair followed the standing rule — wait on what the step needs, not on a fixed time — by polling for the value the app should then hold.
+**Skill:** New skill candidate: repairing a browser test that fails only on a busy machine (the project's e2e conventions)
+**Type:** internal
+**Phase/Area:** Diagnosing an intermittent browser-test failure before repairing it
+
+**Issue:** The poll was a correct assertion and the wrong repair: the value never arrived, because the page had redrawn its boxes between the typing and the Tab and the typed text went with the old box. Page-side CPU throttling did not reproduce it (it slows the page, not the gap between the runner's two commands). What reproduced it every time was a deliberate pause inserted between the two actions, plus a marker on the element and a watcher on its parent to show the element had been replaced. Only then was the right repair clear (repeat the gesture until the app holds the value; raise the test's own time budget, measured), and only then could the underlying redraw be filed as its own item with evidence.
+
+**Suggested improvement:** Add to the e2e conventions, beside the "wait on what it needs" rule: (1) an intermittent failure between two consecutive actions is reproduced by putting a pause BETWEEN them — a busy machine widens that gap, page throttling does not; (2) before repairing, show which of the two it is: the app never did it (mark the element, watch for replacement) or the test looked too early; (3) a repair is proven by running it WITH the pause that used to break it; (4) what the trace finds in the app is filed, even when a person could never trigger it.
+
+**Principle:** Reproduce the race before choosing the wait: a test that fails only under load is telling you which gap matters, and the same pause that reproduces it is the proof of the repair.
+
+### Observation 446: A reading written into a fresh ruling contradicted a sentence the app itself prints; it was caught only when that sentence came up for editing
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** The owner ruled in one line that a filled in-time box on a standby shift counts for earned leave. Recording it, the builder added its own readings of the edge cases — among them that a spare crew row, once switched on, takes the in-time too — and filed the ruling with that reading before building.
+**Skill:** New skill candidate: recording an owner ruling with the builder's readings (the project's record-decisions rule)
+**Type:** internal
+**Phase/Area:** Writing the "agent's readings" under a new ruling, before the build
+
+**Issue:** The rulings and the backlog were searched before the row was written, as the rule requires — but not the app's own on-screen rule text or the older settled-decisions section for the SUBJECT (the in-time box on that shift kind). Both already said the box belongs to the main crew only ("a spare reports nowhere, so his box does nothing"), in the owner's own earlier words. The reading was reversed within the hour, before anything was built on it, and both independent readers later judged the reversed reading the better one; but the first version sat in the filed ruling, the rules document and the register for that hour, and each had to be corrected.
+
+**Suggested improvement:** In the record-decisions rule, where it tells the agent to label its own readings: before writing a reading about an edge case, search for the edge case's SUBJECT in (1) the settled-decisions sections of the area files, (2) the app's own rule text (the page that prints every rule), and (3) the rules document — and quote the sentence found beside the reading. A reading with no sentence found says so.
+
+**Principle:** A builder's reading of a new ruling must be checked against what the product already tells its users about the same subject, not only against the ledger of rulings.
+
+### Observation 447: A ready-to-paste opening line that arrives with nothing typed beside it stalls an unattended start
+
+**Status:** OPEN
+**Date:** 7 Oct 26
+**Session context:** A documents-only run started from the previous chat's ready-to-paste opening line, pasted by the owner just before he went to sleep.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** The ready-to-paste opening line (the handoff's last step)
+
+**Issue:** The whole first message was pasted text, with nothing typed by the owner. The app marks pasted text as possibly not written by the user, so the new chat did only read-only checks and asked him to confirm before acting. He was already away; the run stood still until he answered "I'm asleep".
+
+**Suggested improvement:** In the session-handoff skill's opening-line step, tell him in plain words to TYPE a word of his own after pasting ("go", or "I'm away - run it"), and say why; or shape the line so its first words are ones he types. Where the run is meant to be unattended (D596), the handoff should say so in the line he types, not only in the pasted text.
+
+**Principle:** An instruction that will reach the next agent as pasted content needs one typed word from the person beside it; plan handoffs so the authorising word is the user's own keystroke.
+
+### Observation 448: A ruling archived as "spent" still carried one condition in force — found only by the independent reader
+
+**Status:** OPEN
+**Date:** 7 Oct 26
+**Session context:** A documents tidy in which 28 rulings were marked SPENT or REPLACED and archived, each full row opened first by the host.
+**Skill:** session-handoff (its Step for retiring merged work) — and the recording steps at the head of DECISIONS.md
+**Type:** internal
+**Phase/Area:** Marking a ruling SPENT (DECISIONS.md step 2)
+
+**Issue:** The host read each full row and judged it by its heading: "the build this permitted is merged, so the ruling is spent". One row (a build permission) also held a sentence about the future — what is done if a later answer from another party falls short. The heading was spent; that sentence was not, and no live ruling stated it. The second reviewer sampled the same row and passed it; the first caught it.
+
+**Suggested improvement:** In the step that marks a ruling SPENT or REPLACED, add a check done sentence by sentence, not by heading: for every "if", "until", "when", "waits" or "still" in the full row, name the live ruling or document that now carries it, or keep the ruling live with only the used part marked spent. Give the archived list to a reviewer as a matter of course when more than a handful move at once.
+
+**Principle:** A record is spent only when every forward-looking sentence in it is either used up or stated elsewhere; judge by the conditions it contains, not by its title.

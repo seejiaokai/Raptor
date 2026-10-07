@@ -1,0 +1,1066 @@
+{
+ "walker": "E",
+ "build": "http://localhost:4221 (frozen)",
+ "results": [
+  {
+   "id": "P4a-01",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: Tracker-then-Leave-War vs Leave-War-then-Tracker, two fresh sessions, pickers and sheets operated",
+   "saw": "OK Tracker draws the same when visited first or after Leave War [{\"A\":\"#courseSel|Arial|12.5px|400|rgb(241, 244, 247)|rgb(26, 31, 38)|7px|6px 9px|89x30\",\"B\":\"#courseSel|Arial|12.5px|400|rgb(241, 244, 247)|rgb(26, 31, 38)|7px|6px 9px|89x30\"}] | OK Leave War draws the same when visited first or after Tracker [{\"A\":\"#page-leavewar select|\\\"Inter Tight\\\", system-ui, sa|12px|600|rgb(234, 249, 239)|rgba(87, 201, 122, 0.16)|11px|6px 32px 6px 14px|121x30\",\"B\":\"#page-leavewar select|\\\"Inter Tight\\\", system-ui, sa] | OK Tracker unchanged after Leave War was opened in the same session (A) | OK Leave War unchanged after Tracker was opened in the same session (B) | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4a01-desktop-trk-lw-trk-first.png",
+    "002-p4a01-desktop-trk-lw-lw-first.png",
+    "003-p4a01-desktop-trk-lw-lw-settings.png",
+    "004-p4a01-desktop-trk-lw-trk-details.png",
+    "005-p4a01-desktop-trk-lw-trk-filemenu.png",
+    "006-p4a01-desktop-lw-trk-lw-first.png",
+    "007-p4a01-desktop-lw-trk-trk-first.png",
+    "008-p4a01-desktop-lw-trk-lw-settings.png",
+    "009-p4a01-desktop-lw-trk-trk-details.png"
+   ]
+  },
+  {
+   "id": "P4a-01",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: Tracker-then-Leave-War vs Leave-War-then-Tracker, two fresh sessions, pickers and sheets operated",
+   "saw": "OK Tracker draws the same when visited first or after Leave War [{\"A\":\"#courseSel|Arial|12px|400|rgb(241, 244, 247)|rgb(26, 31, 38)|7px|4px 6px|81x26\",\"B\":\"#courseSel|Arial|12px|400|rgb(241, 244, 247)|rgb(26, 31, 38)|7px|4px 6px|81x26\"}] | OK Leave War draws the same when visited first or after Tracker [{\"A\":\"#page-leavewar select|\\\"Inter Tight\\\", system-ui, sa|12px|600|rgb(234, 249, 239)|rgba(87, 201, 122, 0.16)|11px|6px 32px 6px 14px|121x30\",\"B\":\"#page-leavewar select|\\\"Inter Tight\\\", system-ui, sa] | OK Tracker unchanged after Leave War was opened in the same session (A) | OK Leave War unchanged after Tracker was opened in the same session (B) | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4a01-phone-trk-lw-trk-first.png",
+    "002-p4a01-phone-trk-lw-lw-first.png",
+    "003-p4a01-phone-trk-lw-lw-settings.png",
+    "004-p4a01-phone-trk-lw-trk-details.png",
+    "005-p4a01-phone-trk-lw-trk-filemenu.png",
+    "006-p4a01-phone-lw-trk-lw-first.png",
+    "007-p4a01-phone-lw-trk-trk-first.png",
+    "008-p4a01-phone-lw-trk-lw-settings.png",
+    "009-p4a01-phone-lw-trk-trk-details.png"
+   ]
+  },
+  {
+   "id": "P4a-02",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: fresh sign-in card, an unapproved identity, request access, waiting, then the card again after a scheduler visit",
+   "saw": "OK sign-in card is the same size and place with or without a prior scheduler visit [{\"fresh\":[544,374,352,231],\"after\":[544,374,352,231]}] | OK no Sign up button on the card or the request screen | OK request-access screen whole: send button inside the screen, no sideways scroll [{\"box\":[0,0,1440,900],\"sendInView\":true,\"over\":false,\"text\":\"RAPTOR Request access Signed in as ewalk-desktop@example.test You're not on the squadron's list yet. Tell the admins who you are and they'l] | OK Send request lands (a finger reaches it) [true] | OK waiting screen shown after sending, no sideways scroll [{\"text\":\"RAPTOR Your request is with the admins Signed in as ewalk-desktop@example.test You asked for access as EWALK (Personnel). You'll be able to sign in as soon as an admin approves it. Sign out\",] | OK guest entry (where the squadron has enabled it) [no guest door on the card (guest view off by default)] | OK no errors [[]]",
+   "pics": [
+    "011-p4a02-desktop-signin-fresh.png",
+    "012-p4a02-desktop-request-access.png",
+    "013-p4a02-desktop-waiting.png",
+    "014-p4a02-desktop-signin-after-scheduler.png"
+   ]
+  },
+  {
+   "id": "P4a-02",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: fresh sign-in card, an unapproved identity, request access, waiting, then the card again after a scheduler visit",
+   "saw": "OK sign-in card is the same size and place with or without a prior scheduler visit [{\"fresh\":[19,152,352,231],\"after\":[19,152,352,231]}] | OK no Sign up button on the card or the request screen | OK request-access screen whole: send button inside the screen, no sideways scroll [{\"box\":[0,0,390,844],\"sendInView\":true,\"over\":false,\"text\":\"RAPTOR Request access Signed in as ewalk-phone@example.test You're not on the squadron's list yet. Tell the admins who you are and they'll g] | OK Send request lands (a finger reaches it) [true] | OK waiting screen shown after sending, no sideways scroll [{\"text\":\"RAPTOR Your request is with the admins Signed in as ewalk-phone@example.test You asked for access as EWALK (Personnel). You'll be able to sign in as soon as an admin approves it. Sign out\",\"o] | OK guest entry (where the squadron has enabled it) [no guest door on the card (guest view off by default)] | OK no errors [[]]",
+   "pics": [
+    "011-p4a02-phone-signin-fresh.png",
+    "012-p4a02-phone-request-access.png",
+    "013-p4a02-phone-waiting.png",
+    "014-p4a02-phone-signin-after-scheduler.png"
+   ]
+  },
+  {
+   "id": "P4a-03",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: built Saturday - warnings, one hidden, selected puck, published, a pending edit, the issued preview, OIL Earn, the week face",
+   "saw": "OK board: warning list has lines and one is now hidden (lines 3) [{\"nWarn\":3,\"hidden\":1}] | OK board: every visible puck is what a finger lands on (7 pucks measured) [[]] | OK Saturday published through the sign-offs [{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}] | OK an edit after publishing raises a pending count on the day [{\"chip\":\"1 pending\",\"tag\":\"ORIG\"}] | OK issued preview draws (frozen) and its pucks answer a press [{\"havePv\":1,\"frozen\":1,\"n\":9}] | OK OIL Earn mode draws earned bars / items and pucks still answer a press [{\"rings\":{\"bars\":1,\"items\":41},\"n\":9}] | OK week face of the day: pucks answer a press (7 measured) [[]] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4a03-desktop-board-warnings-hidden.png",
+    "002-p4a03-desktop-board-puck-selected.png",
+    "003-p4a03-desktop-board-published.png",
+    "004-p4a03-desktop-board-pending-change.png",
+    "005-p4a03-desktop-board-issued-preview.png",
+    "006-p4a03-desktop-board-oil-earn.png",
+    "007-p4a03-desktop-week-saturday-warnings-open.png"
+   ]
+  },
+  {
+   "id": "P4a-03",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: built Saturday - warnings, one hidden, selected puck, published, a pending edit, the issued preview, OIL Earn, the week face",
+   "saw": "OK board: warning list has lines and one is now hidden (lines 3) [{\"nWarn\":3,\"hidden\":1}] | OK board: every visible puck is what a finger lands on (3 pucks measured) [[]] | OK Saturday published through the sign-offs [{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}] | OK an edit after publishing raises a pending count on the day [{\"chip\":\"1 pending\",\"tag\":\"ORIG\"}] | OK issued preview draws (frozen) and its pucks answer a press [{\"havePv\":1,\"frozen\":1,\"n\":7}] | OK OIL Earn mode draws earned bars / items and pucks still answer a press [{\"rings\":{\"bars\":1,\"items\":41},\"n\":7}] | OK week face of the day: pucks answer a press (7 measured) [[]] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4a03-phone-board-warnings-hidden.png",
+    "002-p4a03-phone-board-puck-selected.png",
+    "003-p4a03-phone-board-published.png",
+    "004-p4a03-phone-board-pending-change.png",
+    "005-p4a03-phone-board-issued-preview.png",
+    "006-p4a03-phone-board-oil-earn.png",
+    "007-p4a03-phone-week-saturday-warnings-open.png"
+   ]
+  },
+  {
+   "id": "P4a-04",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: Inputs (add two incl. one with a document, sort, filter, row editor, calendar sheet), Medical + document, Quals header and edit mode",
+   "saw": "OK Inputs table has rows to scroll (48; 47 before adding two) [{\"rows0\":47,\"rows1\":48}] | OK Inputs: each heading sits over its column (offset <= 3px) [[0,0,0,0,0,0,0]] | OK Inputs: the last row can be scrolled onto the screen [{\"top\":690,\"bottom\":739,\"vh\":900}] | OK Inputs: sorting by the first heading reorders and a person filter + search narrows the list [{\"canSort\":\"headings sort\",\"firstBefore\":\"imuv89i8jgm9pxi\",\"firstAfter\":\"imuv89i8j2zgwnl\",\"vecRows\":2,\"medRows\":2}] | OK Inputs: a row's pencil is what a finger lands on and opens its editor [{\"lands\":true,\"open\":1}] | OK Inputs calendar: a day with an input opens its sheet and closes again [{\"pop\":1}] | OK Medical: the document pill opens a viewer [{\"viewer\":1}] | OK Quals: with the page scrolled, a frozen heading row is on screen and each heading sits over its own column (those in view, up to eight) [{\"scroll\":435,\"names\":[\"CALLSIGN/NAME\",\"INITIALS\",\"FLIGHT\",\"CAT\",\"SANS\",\"SXO\",\"SCHEDULER\",\"SC DAY\"],\"hits\":[\"CALLSIGN/NAME\",\"INITIALS\",\"FLIGHT\",\"CAT\",\"SANS\",\"SXO\",\"SCHEDULER\",\"SC DAY\"]}] | OK Quals: Enable editing is what a finger lands on and toggles the mode [true] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4a04-desktop-inputs-list.png",
+    "002-p4a04-desktop-inputs-last-row.png",
+    "003-p4a04-desktop-inputs-filtered-vector.png",
+    "004-p4a04-desktop-inputs-row-editor.png",
+    "005-p4a04-desktop-inputs-calendar-day-sheet.png",
+    "006-p4a04-desktop-medical.png",
+    "007-p4a04-desktop-medical-document-viewer.png",
+    "008-p4a04-desktop-quals-top.png",
+    "009-p4a04-desktop-quals-scrolled.png",
+    "010-p4a04-desktop-quals-edit-mode.png"
+   ]
+  },
+  {
+   "id": "P4a-04",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: Inputs (add two incl. one with a document, sort, filter, row editor, calendar sheet), Medical + document, Quals header and edit mode",
+   "saw": "OK Inputs table has rows to scroll (48; 47 before adding two) [{\"rows0\":47,\"rows1\":48}] | OK Inputs: each heading sits over its column (offset <= 3px) [[]] | OK Inputs: the last row can be scrolled onto the screen [{\"top\":606,\"bottom\":676,\"vh\":844}] | OK Inputs: sorting by the first heading reorders and a person filter + search narrows the list [{\"canSort\":\"phone shows cards: no sortable headings\",\"firstBefore\":\"imuv89i9djdotih\",\"firstAfter\":\"imuv89i9djdotih\",\"vecRows\":2,\"medRows\":2}] | OK Inputs: a row's pencil is what a finger lands on and opens its editor [{\"lands\":true,\"open\":1}] | OK Inputs calendar: a day with an input opens its sheet and closes again [{\"pop\":1}] | OK Medical: the document pill opens a viewer [{\"viewer\":1}] | OK Quals: with the page scrolled, a frozen heading row is on screen and each heading sits over its own column (those in view, up to eight) [{\"scroll\":631,\"names\":[\"CALLSIGN/NAME\",\"INITIALS\",\"FLIGHT\",\"CAT\",\"SANS\",\"SXO\",\"SCHEDULER\",\"SC DAY\"],\"hits\":[\"CALLSIGN/NAME\",\"INITIALS\",\"FLIGHT\",\"CAT\"]}] | OK Quals: Enable editing is what a finger lands on and toggles the mode [true] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4a04-phone-inputs-list.png",
+    "002-p4a04-phone-inputs-last-row.png",
+    "003-p4a04-phone-inputs-filtered-vector.png",
+    "004-p4a04-phone-inputs-row-editor.png",
+    "005-p4a04-phone-inputs-calendar-day-sheet.png",
+    "006-p4a04-phone-medical.png",
+    "007-p4a04-phone-medical-document-viewer.png",
+    "008-p4a04-phone-quals-top.png",
+    "009-p4a04-phone-quals-scrolled.png",
+    "010-p4a04-phone-quals-edit-mode.png"
+   ]
+  },
+  {
+   "id": "P4a-05",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: Logic search/filters, Help report, Admin users / config / data (cancelled)",
+   "saw": "OK Logic: searching \"report\" narrows the count, every filter answers, clearing restores it [{\"total\":\"75 of 75 rules · 17 fired on this week's schedule\",\"nSearch\":\"12 of 75 rules · 17 fired on this week's schedule\",\"res\":{\"hard\":\"2 of 75 rules · 17 fired on this week's schedule\",\"adv\":\"4 of ] | OK Logic: no sideways scroll [{\"sw\":1440,\"cw\":1440,\"over\":false}] | OK Help: the report goes in and shows in the list [{\"sl\":true,\"listed\":\"INPUTS & CALENDAR\\n5/10 20:47 · Saber\\nE walk: a harmless test note\"}] | OK Admin Users: the find box narrows the roster and a person row opens [{\"people\":1,\"tl\":true}] | OK Admin config: the template buttons are what a finger lands on [true] | OK Admin Data: Clear old clutter, pressed with a date before everything stored, either asks first or says there is nothing to clear (no destructive step) [{\"enabled\":true,\"confirm\":\"no confirmation; the app said: No old clutter in that period\"}] | OK no console / page / 4xx errors in this part [[]]",
+   "pics": [
+    "011-p4a05-desktop-logic-search-report.png",
+    "012-p4a05-desktop-logic-cleared.png",
+    "013-p4a05-desktop-help-filled.png",
+    "014-p4a05-desktop-help-sent.png",
+    "015-p4a05-desktop-admin-users-find.png",
+    "016-p4a05-desktop-admin-user-sheet.png",
+    "017-p4a05-desktop-admin-config.png",
+    "018-p4a05-desktop-admin-data-ready.png",
+    "019-p4a05-desktop-admin-data-confirm.png"
+   ]
+  },
+  {
+   "id": "P4a-05",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: Logic search/filters, Help report, Admin users / config / data (cancelled)",
+   "saw": "OK Logic: searching \"report\" narrows the count, every filter answers, clearing restores it [{\"total\":\"75 of 75 rules · 17 fired on this week's schedule\",\"nSearch\":\"12 of 75 rules · 17 fired on this week's schedule\",\"res\":{\"hard\":\"2 of 75 rules · 17 fired on this week's schedule\",\"adv\":\"4 of ] | OK Logic: no sideways scroll [{\"sw\":390,\"cw\":390,\"over\":false}] | OK Help: the report goes in and shows in the list [{\"sl\":true,\"listed\":\"INPUTS & CALENDAR\\n5/10 20:47 · Saber\\nE walk: a harmless test note\"}] | OK Admin Users: the find box narrows the roster and a person row opens [{\"people\":1,\"tl\":true}] | OK Admin config: the template buttons are what a finger lands on [true] | OK Admin Data: Clear old clutter, pressed with a date before everything stored, either asks first or says there is nothing to clear (no destructive step) [{\"enabled\":true,\"confirm\":\"no confirmation; the app said: No old clutter in that period\"}] | OK no console / page / 4xx errors in this part [[]]",
+   "pics": [
+    "011-p4a05-phone-logic-search-report.png",
+    "012-p4a05-phone-logic-cleared.png",
+    "013-p4a05-phone-help-filled.png",
+    "014-p4a05-phone-help-sent.png",
+    "015-p4a05-phone-admin-users-find.png",
+    "016-p4a05-phone-admin-user-sheet.png",
+    "017-p4a05-phone-admin-config.png",
+    "018-p4a05-phone-admin-data-ready.png",
+    "019-p4a05-phone-admin-data-confirm.png"
+   ]
+  },
+  {
+   "id": "P4a-06",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: plans menu, day / duty / wave template windows, changes window, ALL AVAIL window (moved and resized), week calendar, amendments box - at 1440x900 and 1280x700",
+   "saw": "OK Plans menu: opens with the live copy, the issued version(s) and the added plan, readable at both sizes [{\"planMade\":\"pressed\",\"planItems\":7,\"pm\":{\"closeAtTop\":null,\"doneAtBottom\":null,\"box\":[26,265,340,269],\"text\":309,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":null,\"inView\":true}}] | OK day-template-menu: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":null,\"doneAtBottom\":null,\"box\":[665,101,288,124],\"text\":135,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":null,\"inView\":true},\"short\":{\"closeAtTop\":null,\"doneAtBottom\":null,\"bo] | OK day-templates-window: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":[0,0,1440,900],\"text\":114,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":] | OK changes-window: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"box\":[1044,96,380,560],\"text\":221,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"bo] | OK all-avail-window: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"box\":[1212,96,212,540],\"text\":484,\"scrolls\":true,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"box] | OK ALL AVAIL window moves by its grip and resizes by its corner (desktop) [{\"b0\":{\"x\":1212,\"y\":96,\"width\":212,\"height\":540},\"b1\":{\"x\":1046,\"y\":178,\"width\":212,\"height\":540},\"b2\":{\"x\":1046,\"y\":178,\"width\":186,\"height\":610}}] | OK week-calendar: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"box\":[0,0,1440,900],\"text\":162,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"box\":] | OK Amendments box: shows the day with changes and its Publish AL button, and no \"Discard marks\" [{\"txt\":\"AMENDMENTS 1 day with changes to publish Sat · 1 change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL\"}] | OK duty-templates-window: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":[0,0,1440,900],\"text\":212,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":] | OK Wave templates: the nested \"new wave template\" editor opens whole [{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":[0,0,1440,900],\"text\":423,\"scrolls\":true,\"lastVisible\":true,\"closeLands\":true,\"inView\":true}] | OK wave-templates-window: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":[0,0,1440,900],\"text\":423,\"scrolls\":true,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":false,\"doneAtBottom\":true,\"box\":] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4a06-desktop-plan-menu-before.png",
+    "002-p4a06-desktop-plan-after-add.png",
+    "003-p4a06-desktop-plans-menu-populated.png",
+    "004-p4a06-desktop-day-template-menu-full.png",
+    "005-p4a06-desktop-day-template-menu-short.png",
+    "006-p4a06-desktop-day-templates-window-full.png",
+    "007-p4a06-desktop-day-templates-window-short.png",
+    "008-p4a06-desktop-changes-window-full.png",
+    "009-p4a06-desktop-changes-window-short.png",
+    "010-p4a06-desktop-all-avail-window-full.png",
+    "011-p4a06-desktop-all-avail-window-short.png",
+    "012-p4a06-desktop-all-avail-moved-resized.png",
+    "013-p4a06-desktop-week-calendar-full.png",
+    "014-p4a06-desktop-week-calendar-short.png",
+    "015-p4a06-desktop-amendments-box.png",
+    "016-p4a06-desktop-duty-templates-window-full.png",
+    "017-p4a06-desktop-duty-templates-window-short.png",
+    "018-p4a06-desktop-wave-template-new-editor.png",
+    "019-p4a06-desktop-wave-templates-window-full.png",
+    "020-p4a06-desktop-wave-templates-window-short.png"
+   ]
+  },
+  {
+   "id": "P4a-06",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: plans menu, day / duty / wave template windows, changes window, ALL AVAIL window (moved and resized), week calendar, amendments box - at 390x844 and 844x390",
+   "saw": "OK Plans menu: opens with the live copy, the issued version(s) and the added plan, readable at both sizes [{\"planMade\":\"pressed\",\"planItems\":7,\"pm\":{\"closeAtTop\":null,\"doneAtBottom\":null,\"box\":[24,250,340,269],\"text\":309,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":null,\"inView\":true}}] | OK day-template-menu: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":null,\"doneAtBottom\":null,\"box\":[94,324,288,124],\"text\":135,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":null,\"inView\":true},\"short\":{\"closeAtTop\":null,\"doneAtBottom\":null,\"box] | OK day-templates-window: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":[0,0,390,844],\"text\":114,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":[] | OK changes-window: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"box\":[12,309,366,523],\"text\":271,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"box] | OK all-avail-window: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"box\":[12,309,366,523],\"text\":484,\"scrolls\":true,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"box\"] | OK week-calendar: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"box\":[0,0,390,844],\"text\":162,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":true,\"doneAtBottom\":null,\"box\":[] | OK Amendments box on the phone: not drawn below 821px wide (hidden by its own rule); the day heads carry the pending chip instead [hidden] | OK duty-templates-window: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":[0,0,390,844],\"text\":212,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":[] | OK Wave templates: the nested \"new wave template\" editor opens whole [{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":[0,0,390,844],\"text\":423,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":true,\"inView\":true}] | OK wave-templates-window: opens whole at the normal size and on the short screen (box, body, last row, close all reachable) [{\"full\":{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":[0,0,390,844],\"text\":423,\"scrolls\":false,\"lastVisible\":true,\"closeLands\":true,\"inView\":true},\"short\":{\"closeAtTop\":true,\"doneAtBottom\":true,\"box\":[] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4a06-phone-plan-menu-before.png",
+    "002-p4a06-phone-plan-after-add.png",
+    "003-p4a06-phone-plans-menu-populated.png",
+    "004-p4a06-phone-day-template-menu-full.png",
+    "005-p4a06-phone-day-template-menu-short.png",
+    "006-p4a06-phone-day-templates-window-full.png",
+    "007-p4a06-phone-day-templates-window-short.png",
+    "008-p4a06-phone-changes-window-full.png",
+    "009-p4a06-phone-changes-window-short.png",
+    "010-p4a06-phone-all-avail-window-full.png",
+    "011-p4a06-phone-all-avail-window-short.png",
+    "012-p4a06-phone-week-calendar-full.png",
+    "013-p4a06-phone-week-calendar-short.png",
+    "014-p4a06-phone-duty-templates-window-full.png",
+    "015-p4a06-phone-duty-templates-window-short.png",
+    "016-p4a06-phone-wave-template-new-editor.png",
+    "017-p4a06-phone-wave-templates-window-full.png",
+    "018-p4a06-phone-wave-templates-window-short.png"
+   ]
+  },
+  {
+   "id": "P4b-01",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone 390x844, Saturday built with every section populated: Desktop layout, each section scrolled into view and its first control pressed-tested",
+   "saw": "OK all 10 sections draw at a readable width (>= 300px) with content: 5.notes, 5.prog, 5.waves, 5.duty, 5.sims, 5.ground, 5.inputs, 5.avail, 5.sans, 5.unav [5.notes 816x125; 5.prog 816x242; 5.waves 816x1121; 5.duty 816x765; 5.sims 816x442; 5.ground 816x295; 5.inputs 816x153; 5.avail 816x242; 5.sans 816x88; 5.unav 816x88] | OK in every section the first control in view is what a finger lands on [5.notes:dn:5.0; 5.prog:ap:5.0.prog; 5.waves:SELECT; 5.duty:dl:5.0; 5.sims:sr:5.amt.0.label; 5.ground:gr:5.0.prog; 5.inputs:BUTTON; 5.avail:SPAN; 5.sans:none in view; 5.unav:none in view] | OK every section that holds crew or fields offers one inside the visible left part of the screen (SANS / Unavailable are empty lists today) [{\"noControl\":[],\"emptyLists\":[\"5.sans: ⠿ SANS AVAIL what SANS aircrew are offering — pres\",\"5.unav: ⠿ UNAVAILABLE leave, medical and overseas duty — t\"]}] | OK the Personal Inputs panel opens and shows its row [{\"w\":816,\"h\":153,\"disp\":\"block\",\"vis\":\"visible\",\"text\":\"⠿ PERSONAL INPUTS submitted by aircrew — accept to put it on the programme; times and remarks type in place, clear a time for all day; tap heade] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4b01-phone-wide-5-notes.png",
+    "002-p4b01-phone-wide-5-prog.png",
+    "003-p4b01-phone-wide-5-waves.png",
+    "004-p4b01-phone-wide-5-duty.png",
+    "005-p4b01-phone-wide-5-sims.png",
+    "006-p4b01-phone-wide-5-ground.png",
+    "007-p4b01-phone-wide-5-inputs.png",
+    "008-p4b01-phone-wide-5-avail.png",
+    "009-p4b01-phone-wide-5-sans.png",
+    "010-p4b01-phone-wide-5-unav.png"
+   ]
+  },
+  {
+   "id": "P4b-02",
+   "size": "phone",
+   "verdict": "FAIL",
+   "did": "phone 390x844, Desktop layout: REAL touch swipes (from the schedule body and from the top bar), then taps at the far-right and far-left fields",
+   "saw": "XX a swipe begun on the schedule body pans the Desktop layout sideways [{\"before\":0,\"afterBodySwipe\":14,\"max\":790}] | OK swipes begun on the top bar pan it, each by about 275px, up to the far right (790px) [{\"s1\":299,\"s2\":584,\"s3\":790,\"max\":790}] | OK a far-right field is reachable and a tap there puts the caret in it [{\"right\":{\"key\":\"fr:5.0.0.0\",\"x\":167,\"y\":403.71875,\"left\":121},\"tapR\":\"fr:5.0.0.0\"}] | OK the Done button comes into view when panned right [{\"x\":352,\"inView\":true}] | OK swiping back reaches the left edge and a tap on the far-left callsign puts the caret in it [{\"sBack\":0,\"tapL\":{\"hit\":\"ff:5.0.0.cs\",\"active\":\"ff:5.0.0.cs\"}}] | XX a swipe begun on the day-chip row pans without changing the open day [{\"dayBefore\":5,\"dayAfter\":3,\"scrollLeft\":285}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "011-p4b02-phone-wide-left-edge.png",
+    "012-p4b02-phone-wide-panned-by-top-bar.png",
+    "013-p4b02-phone-wide-far-right-field-tapped.png",
+    "014-p4b02-phone-wide-far-left-callsign-tapped.png",
+    "015-p4b02-phone-wide-after-swipe-on-day-chips.png"
+   ]
+  },
+  {
+   "id": "P4b-03",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone 390x844, Desktop layout: publish Original and AL1, look at each version read-only, then back to the working copy",
+   "saw": "OK Saturday published (Original) and then amended (AL1) with the sign-offs [{\"pub1\":\"ORIG\",\"pub2\":\"AL1\",\"vers\":\"AL1\"}] | OK the plan menu lists the issued versions (Originalread-only — look, don't change | AL1read-only — look, don't change) [[{\"v\":\"2026-07-18#0\",\"t\":\"Originalread-only — look, don't change\"},{\"v\":\"2026-07-18#1\",\"t\":\"AL1read-only — look, don't change\"}]] | OK each issued version draws read-only (frozen, no editable fields) with its schedule and notes [[{\"frozen\":1,\"boardW\":860,\"editable\":0,\"hasViper\":true,\"hasProg\":true,\"hasNotes\":true,\"msn\":\"\",\"warn\":\"← Back to live copy 👁 Viewing the issued Original — read-only. This is what was sent out;\",\"v\":\"] | OK the issued versions show what each went out with: AL1 carries the amended mission ACM, Original does not [[{\"v\":\"2026-07-18#0\",\"missionOfLine1\":\"\"},{\"v\":\"2026-07-18#1\",\"missionOfLine1\":\"ACM\"}]] | OK the board stays its full desktop width in the previews [[860,860]] | OK back on the working copy the board is editable again and no frozen mark remains [{\"frozen\":0,\"editable\":82}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4b03-phone-wide-plan-menu.png",
+    "002-p4b03-phone-wide-preview-2026-07-18#0.png",
+    "003-p4b03-phone-wide-preview-2026-07-18#1.png",
+    "004-p4b03-phone-wide-back-on-working-copy.png"
+   ]
+  },
+  {
+   "id": "P4b-04",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone 390x844 (and 820 / 821): Wednesday, scrolled low, Phone <-> Desktop layout, the 820/821 crossing, Done",
+   "saw": "OK Wednesday stays the open day through Phone -> Desktop -> Phone [{\"a\":{\"wide\":false,\"day\":2,\"sl\":0,\"smax\":0,\"bst\":0,\"rst\":0},\"b\":{\"wide\":true,\"day\":2,\"sl\":0,\"smax\":790,\"bst\":0,\"rst\":0},\"c\":{\"wide\":false,\"day\":2,\"sl\":0,\"smax\":0,\"bst\":0,\"rst\":0}}] | OK the board was really scrolled down by touch before the switch (so the layout change is tried from a lower section) [{\"phoneScrolled\":\"sb-main:1740 window:0\",\"afterDesktop\":\"window:0\",\"backToPhone\":\"window:0\"}] | OK across 820 / 821 / 390 px the board stays on Wednesday and is drawn (no blank, no stuck overlay) [{\"d820\":{\"wide\":true,\"day\":2,\"sl\":360,\"smax\":360,\"bst\":0,\"rst\":0},\"d821\":{\"wide\":true,\"day\":2,\"sl\":168,\"smax\":168,\"bst\":0,\"rst\":0},\"d390\":{\"wide\":true,\"day\":2,\"sl\":168,\"smax\":790,\"bst\":0,\"rst\":0},\"vis] | OK Done, panned into view, is what a finger lands on and returns to the schedule [{\"doneLands\":true,\"after\":{\"page\":\"editsched\",\"board\":false}}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4b04-phone-phone-wed-lower.png",
+    "002-p4b04-phone-wide-wed.png",
+    "003-p4b04-phone-phone-again-wed.png",
+    "004-p4b04-phone-wide-at-820.png",
+    "005-p4b04-phone-at-821.png",
+    "006-p4b04-phone-back-at-390.png",
+    "007-p4b04-phone-wide-done-in-view.png",
+    "008-p4b04-phone-after-done.png"
+   ]
+  },
+  {
+   "id": "P4b-05",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone on a short screen 390x568, Desktop layout: swipe the schedule, swipe the crew list, place a crew puck; CREW drawer on the Phone layout",
+   "saw": "OK swiping the schedule scrolls the schedule only (crew list untouched) [{\"s0\":[0,0],\"s1\":[235,0]}] | OK the crew list has its own scroll range (taller than its box) and scrolls by itself [{\"crewBox\":{\"x\":71,\"y\":264,\"w\":319,\"h\":304,\"sh\":908},\"s2\":[235,0],\"s3\":[235,265]}] | OK swiping the schedule again does not move the crew list [{\"s3\":[235,265],\"s4\":[70,265],\"vis\":{\"left\":-790,\"right\":70}}] | OK placing a crew puck on the Desktop layout reaches the intended seat (5.1.0.1.p) [{\"empty\":\"5.1.0.1.p\",\"placed\":\"dj\",\"landed\":{\"who\":\"dj\",\"slotInLine\":\"5.1.0.1.p\",\"day\":\"dj\"}}] | OK on the Phone layout the CREW tab opens and closes the crew drawer [{\"closedLeft\":391,\"openLeft\":134,\"closedAgainLeft\":391}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "028-p4b05-phone-short-wide-crew-column.png",
+    "029-p4b05-phone-short-wide-crew-scrolled.png",
+    "030-p4b05-phone-short-wide-puck-placed.png",
+    "031-p4b05-phone-short-phone-crew-open.png"
+   ]
+  },
+  {
+   "id": "P4b-06",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone 390x844: after the Desktop layout, admin member-view, a real member, and a guest - nothing editable behind the role change",
+   "saw": "OK admin closes the Desktop layout, switches to the member view: the board is gone and no editable field is on the page [{\"page\":\"viewsched\",\"board\":false,\"editors\":0,\"search\":true}] | OK keyboard Tab x40 never lands inside the closed board, typing changes nothing [{\"focusIn\":[],\"unchanged\":true}] | OK the member view's drawer offers no Edit Schedule door [false] | OK a real member sees no Edit Schedule door and no board [{\"door\":false,\"board\":false}] | OK a guest reads the schedule: no board, no editable field, no Edit Schedule door [{\"page\":\"viewsched\",\"board\":false,\"editors\":0,\"editDoor\":false}] | OK no console / page / 4xx errors (three sessions) [[]]",
+   "pics": [
+    "032-p4b06-phone-member-view-after-admin-wide.png",
+    "033-p4b06-phone-member-view-drawer.png",
+    "034-p4b06-phone-real-member-drawer.png",
+    "035-p4b06-phone-guest-waiting-screen.png",
+    "036-p4b06-phone-guest-schedule.png"
+   ]
+  },
+  {
+   "id": "P4e-01",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: a new chart with two flights, a test, an acad and a sim; Flow, Details and Edit chart layout, zoomed in and out",
+   "saw": "OK the new chart has 5 events placed through the toolbar (5 balls) [{\"nBalls\":5}] | OK in every mode the two flight events carry the wing, the three others keep their plain symbol [{\"Flow\":\"2 wings / 3 plain\",\"Details\":\"2 wings / 3 plain\",\"Edit chart layout\":\"2 wings / 3 plain\",\"Edit chart layout, zoomed in (wheel)\":\"2 wings / 3 plain\",\"Edit chart layout, zoomed out (wheel)\":\"2 ] | OK each flight label sits fully on the wing (no ink off the shape; centre and shoulders inside) in every mode and zoom [{\"Flow\":\"ok font 8.5px\",\"Details\":\"ok font 8.5px\",\"Edit chart layout\":\"ok font 8.5px\",\"Edit chart layout, zoomed in (wheel)\":\"ok font 8.5px\",\"Edit chart layout, zoomed out (wheel)\":\"ok font 8.5px\"}] | OK zooming in the edit mode (wheel) grows the ball and zooming out shrinks it (ball width px at start / in / out) [[75,138,36]] | OK the label text is not a control of its own (pointer events pass through to the ball) [[\"Flow: none\",\"Details: none\",\"Edit chart layout: none\",\"Edit chart layout, zoomed in (wheel): none\",\"Edit chart layout, zoomed out (wheel): none\"]] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e-desktop-newchart-edit-mode.png",
+    "002-p4e-desktop-flow-zoomed.png",
+    "002-p4e-desktop-flow-zoomed.png",
+    "003-p4e-desktop-details.png",
+    "003-p4e-desktop-details.png",
+    "004-p4e-desktop-edit-layout.png",
+    "004-p4e-desktop-edit-layout.png",
+    "005-p4e-desktop-edit-layout-zoomed-in.png",
+    "005-p4e-desktop-edit-layout-zoomed-in.png",
+    "006-p4e-desktop-edit-layout-zoomed-out.png",
+    "006-p4e-desktop-edit-layout-zoomed-out.png",
+    "p4e-desktop-closeup-flight.png",
+    "p4e-desktop-closeup-test.png",
+    "007-p4e-desktop-marked-student-A.png",
+    "007-p4e-desktop-marked-student-A.png",
+    "008-p4e-desktop-marked-student-B.png",
+    "008-p4e-desktop-marked-student-B.png",
+    "009-p4e-desktop-custom-label-saved.png",
+    "009-p4e-desktop-custom-label-saved.png",
+    "010-p4e-desktop-other-account-same-chart.png",
+    "010-p4e-desktop-other-account-same-chart.png",
+    "011-p4e-desktop-after-import.png",
+    "011-p4e-desktop-after-import.png"
+   ]
+  },
+  {
+   "id": "P4e-01",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: a new chart with two flights, a test, an acad and a sim; Flow, Details and Edit chart layout, zoomed in and out",
+   "saw": "OK the new chart has 5 events placed through the toolbar (5 balls) [{\"nBalls\":5}] | OK in every mode the two flight events carry the wing, the three others keep their plain symbol [{\"Flow\":\"2 wings / 3 plain\",\"Details\":\"2 wings / 3 plain\",\"Edit chart layout\":\"2 wings / 3 plain\",\"Edit chart layout, zoomed in (wheel)\":\"2 wings / 3 plain\",\"Edit chart layout, zoomed out (wheel)\":\"2 ] | OK each flight label sits fully on the wing (no ink off the shape; centre and shoulders inside) in every mode and zoom [{\"Flow\":\"ok font 8.5px\",\"Details\":\"ok font 8.5px\",\"Edit chart layout\":\"ok font 8.5px\",\"Edit chart layout, zoomed in (wheel)\":\"ok font 8.5px\",\"Edit chart layout, zoomed out (wheel)\":\"ok font 8.5px\"}] | OK zooming in the edit mode (wheel) grows the ball and zooming out shrinks it (ball width px at start / in / out) [[59,107,28]] | OK the label text is not a control of its own (pointer events pass through to the ball) [[\"Flow: none\",\"Details: none\",\"Edit chart layout: none\",\"Edit chart layout, zoomed in (wheel): none\",\"Edit chart layout, zoomed out (wheel): none\"]] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e-phone-newchart-edit-mode.png",
+    "002-p4e-phone-flow-zoomed.png",
+    "002-p4e-phone-flow-zoomed.png",
+    "003-p4e-phone-details.png",
+    "003-p4e-phone-details.png",
+    "004-p4e-phone-edit-layout.png",
+    "004-p4e-phone-edit-layout.png",
+    "005-p4e-phone-edit-layout-zoomed-in.png",
+    "005-p4e-phone-edit-layout-zoomed-in.png",
+    "006-p4e-phone-edit-layout-zoomed-out.png",
+    "006-p4e-phone-edit-layout-zoomed-out.png",
+    "p4e-phone-closeup-flight.png",
+    "p4e-phone-closeup-test.png",
+    "007-p4e-phone-marked-student-A.png",
+    "007-p4e-phone-marked-student-A.png",
+    "008-p4e-phone-marked-student-B.png",
+    "008-p4e-phone-marked-student-B.png",
+    "009-p4e-phone-custom-label-saved.png",
+    "009-p4e-phone-custom-label-saved.png",
+    "010-p4e-phone-other-account-same-chart.png",
+    "010-p4e-phone-other-account-same-chart.png",
+    "011-p4e-phone-after-import.png",
+    "011-p4e-phone-after-import.png"
+   ]
+  },
+  {
+   "id": "P4e-02",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: marking on the wing-shaped ball: centre, wing, two students, the label press",
+   "saw": "OK the course has two students to mark [[\"EW STUDENT A\",\"EW STUDENT B\"]] | OK a mark is made on the flight for student A (Marginal) [marg] | OK a press on the wing (bottom wedge) lands on that ball, switches to the other student and opens no mark pop-up [{\"hitWing\":\"EW-FLT-1\",\"active1\":\"smuvauudi5gs4g7\",\"wanted\":\"smuvauudi5gs4g7\",\"popAfterWing\":false}] | OK student B is marked DCO on the same flight and student A keeps Marginal (marks stay per student) [{\"A\":\"marg\",\"B\":\"dco\",\"A_again\":\"marg\"}] | OK pressing the label text acts as pressing the ball (opens the mark pop-up), not a separate control [true] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e-desktop-newchart-edit-mode.png",
+    "002-p4e-desktop-flow-zoomed.png",
+    "002-p4e-desktop-flow-zoomed.png",
+    "003-p4e-desktop-details.png",
+    "003-p4e-desktop-details.png",
+    "004-p4e-desktop-edit-layout.png",
+    "004-p4e-desktop-edit-layout.png",
+    "005-p4e-desktop-edit-layout-zoomed-in.png",
+    "005-p4e-desktop-edit-layout-zoomed-in.png",
+    "006-p4e-desktop-edit-layout-zoomed-out.png",
+    "006-p4e-desktop-edit-layout-zoomed-out.png",
+    "p4e-desktop-closeup-flight.png",
+    "p4e-desktop-closeup-test.png",
+    "007-p4e-desktop-marked-student-A.png",
+    "007-p4e-desktop-marked-student-A.png",
+    "008-p4e-desktop-marked-student-B.png",
+    "008-p4e-desktop-marked-student-B.png",
+    "009-p4e-desktop-custom-label-saved.png",
+    "009-p4e-desktop-custom-label-saved.png",
+    "010-p4e-desktop-other-account-same-chart.png",
+    "010-p4e-desktop-other-account-same-chart.png",
+    "011-p4e-desktop-after-import.png",
+    "011-p4e-desktop-after-import.png"
+   ]
+  },
+  {
+   "id": "P4e-02",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: marking on the wing-shaped ball: centre, wing, two students, the label press",
+   "saw": "OK the course has two students to mark [[\"EW STUDENT A\",\"EW STUDENT B\"]] | OK a mark is made on the flight for student A (Marginal) [marg] | OK a press on the wing (bottom wedge) lands on that ball, switches to the other student and opens no mark pop-up [{\"hitWing\":\"EW-FLT-1\",\"active1\":\"smuvax28t099v91\",\"wanted\":\"smuvax28t099v91\",\"popAfterWing\":false}] | OK student B is marked DCO on the same flight and student A keeps Marginal (marks stay per student) [{\"A\":\"marg\",\"B\":\"dco\",\"A_again\":\"marg\"}] | OK pressing the label text acts as pressing the ball (opens the mark pop-up), not a separate control [true] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e-phone-newchart-edit-mode.png",
+    "002-p4e-phone-flow-zoomed.png",
+    "002-p4e-phone-flow-zoomed.png",
+    "003-p4e-phone-details.png",
+    "003-p4e-phone-details.png",
+    "004-p4e-phone-edit-layout.png",
+    "004-p4e-phone-edit-layout.png",
+    "005-p4e-phone-edit-layout-zoomed-in.png",
+    "005-p4e-phone-edit-layout-zoomed-in.png",
+    "006-p4e-phone-edit-layout-zoomed-out.png",
+    "006-p4e-phone-edit-layout-zoomed-out.png",
+    "p4e-phone-closeup-flight.png",
+    "p4e-phone-closeup-test.png",
+    "007-p4e-phone-marked-student-A.png",
+    "007-p4e-phone-marked-student-A.png",
+    "008-p4e-phone-marked-student-B.png",
+    "008-p4e-phone-marked-student-B.png",
+    "009-p4e-phone-custom-label-saved.png",
+    "009-p4e-phone-custom-label-saved.png",
+    "010-p4e-phone-other-account-same-chart.png",
+    "010-p4e-phone-other-account-same-chart.png",
+    "011-p4e-phone-after-import.png",
+    "011-p4e-phone-after-import.png"
+   ]
+  },
+  {
+   "id": "P4e-03",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: custom label + font saved, exported, reload, another account, import of the new backup",
+   "saw": "OK the custom label WNG-7 and font 9 were saved (the chart now carries WNG-7 on a wing) [{\"labels\":\"EW-FLT-2,WNG-7\",\"font\":\"9px\"}] | OK a reload keeps the chart exactly (stored copy equal) and its wings and labels [{\"equal\":true,\"labels\":\"EW-FLT-2,WNG-7\"}] | OK another account (member) opens the same chart with the same wings and labels [{\"labels\":\"EW-FLT-2,WNG-7\"}] | OK importing the backup made from this chart keeps every authored label and the same wing fit as before the export [{\"before\":\"EW-FLT-2:15px-of-ink-off-wing/334, WNG-7:0px-of-ink-off-wing/277\",\"afterReload\":\"EW-FLT-2:15px-of-ink-off-wing/334, WNG-7:0px-of-ink-off-wing/277\",\"afterImport\":\"EW-FLT-2:15px-of-ink-off-wi] | OK the backup itself carries the chart and its label text [{\"bytes\":466334}] | OK after the import the stored chart still equals what was saved (no loss, no change) [{\"same\":true}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e-desktop-newchart-edit-mode.png",
+    "002-p4e-desktop-flow-zoomed.png",
+    "002-p4e-desktop-flow-zoomed.png",
+    "003-p4e-desktop-details.png",
+    "003-p4e-desktop-details.png",
+    "004-p4e-desktop-edit-layout.png",
+    "004-p4e-desktop-edit-layout.png",
+    "005-p4e-desktop-edit-layout-zoomed-in.png",
+    "005-p4e-desktop-edit-layout-zoomed-in.png",
+    "006-p4e-desktop-edit-layout-zoomed-out.png",
+    "006-p4e-desktop-edit-layout-zoomed-out.png",
+    "p4e-desktop-closeup-flight.png",
+    "p4e-desktop-closeup-test.png",
+    "007-p4e-desktop-marked-student-A.png",
+    "007-p4e-desktop-marked-student-A.png",
+    "008-p4e-desktop-marked-student-B.png",
+    "008-p4e-desktop-marked-student-B.png",
+    "009-p4e-desktop-custom-label-saved.png",
+    "009-p4e-desktop-custom-label-saved.png",
+    "010-p4e-desktop-other-account-same-chart.png",
+    "010-p4e-desktop-other-account-same-chart.png",
+    "011-p4e-desktop-after-import.png",
+    "011-p4e-desktop-after-import.png"
+   ]
+  },
+  {
+   "id": "P4e-03",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: custom label + font saved, exported, reload, another account, import of the new backup",
+   "saw": "OK the custom label WNG-7 and font 9 were saved (the chart now carries WNG-7 on a wing) [{\"labels\":\"EW-FLT-2,WNG-7\",\"font\":\"9px\"}] | OK a reload keeps the chart exactly (stored copy equal) and its wings and labels [{\"equal\":true,\"labels\":\"EW-FLT-2,WNG-7\"}] | OK another account (member) opens the same chart with the same wings and labels [{\"labels\":\"EW-FLT-2,WNG-7\"}] | OK importing the backup made from this chart keeps every authored label and the same wing fit as before the export [{\"before\":\"EW-FLT-2:15px-of-ink-off-wing/334, WNG-7:0px-of-ink-off-wing/277\",\"afterReload\":\"EW-FLT-2:15px-of-ink-off-wing/334, WNG-7:0px-of-ink-off-wing/277\",\"afterImport\":\"EW-FLT-2:15px-of-ink-off-wi] | OK the backup itself carries the chart and its label text [{\"bytes\":466454}] | OK after the import the stored chart still equals what was saved (no loss, no change) [{\"same\":true}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e-phone-newchart-edit-mode.png",
+    "002-p4e-phone-flow-zoomed.png",
+    "002-p4e-phone-flow-zoomed.png",
+    "003-p4e-phone-details.png",
+    "003-p4e-phone-details.png",
+    "004-p4e-phone-edit-layout.png",
+    "004-p4e-phone-edit-layout.png",
+    "005-p4e-phone-edit-layout-zoomed-in.png",
+    "005-p4e-phone-edit-layout-zoomed-in.png",
+    "006-p4e-phone-edit-layout-zoomed-out.png",
+    "006-p4e-phone-edit-layout-zoomed-out.png",
+    "p4e-phone-closeup-flight.png",
+    "p4e-phone-closeup-test.png",
+    "007-p4e-phone-marked-student-A.png",
+    "007-p4e-phone-marked-student-A.png",
+    "008-p4e-phone-marked-student-B.png",
+    "008-p4e-phone-marked-student-B.png",
+    "009-p4e-phone-custom-label-saved.png",
+    "009-p4e-phone-custom-label-saved.png",
+    "010-p4e-phone-other-account-same-chart.png",
+    "010-p4e-phone-other-account-same-chart.png",
+    "011-p4e-phone-after-import.png",
+    "011-p4e-phone-after-import.png"
+   ]
+  },
+  {
+   "id": "P4e-04",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: Logic scrolled, searched, filtered, cleared and resized",
+   "saw": "OK after scrolling down, the whole search / filter bar is still on screen, below the top bar [{\"top\":57,\"y\":57,\"h\":45,\"windowY\":1400,\"overflow\":false}] | OK every control on the bar (7) is what a finger lands on while scrolled [0 covered] | OK on a desktop the bar is a single compact band [{\"h\":45}] | OK searching \"report\", each filter, an empty result and clearing all answer and restore the count [{\"count0\":\"75 of 75 rules · 17 fired on this week's schedule\",\"cSearch\":\"12 of 75 rules · 17 fired on this week's schedule\",\"per\":{\"all\":\"12 of 75\",\"hard\":\"2 of 75\",\"adv\":\"4 of 75\",\"note\":\"1 of 75\",\"f] | OK across 320 / 390 / 820 / 821 / 1440 px the bar stays under the top bar and the page does not scroll sideways [320:y49/top49 390:y49/top49 820:y49/top49 821:y149/top149 1440:y57/top57] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e04-desktop-logic-scrolled.png",
+    "002-p4e04-desktop-logic-no-match.png",
+    "003-p4e04-desktop-logic-after-resizes.png"
+   ]
+  },
+  {
+   "id": "P4e-04",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: Logic scrolled, searched, filtered, cleared and resized",
+   "saw": "OK after scrolling down, the whole search / filter bar is still on screen, below the top bar [{\"top\":49,\"y\":49,\"h\":108,\"windowY\":1400,\"overflow\":false}] | OK every control on the bar (7) is what a finger lands on while scrolled [0 covered] | OK on a phone the bar takes at most 115px (two rows) [{\"h\":108}] | OK searching \"report\", each filter, an empty result and clearing all answer and restore the count [{\"count0\":\"75 of 75 rules · 17 fired on this week's schedule\",\"cSearch\":\"12 of 75 rules · 17 fired on this week's schedule\",\"per\":{\"all\":\"12 of 75\",\"hard\":\"2 of 75\",\"adv\":\"4 of 75\",\"note\":\"1 of 75\",\"f] | OK across 320 / 390 / 820 / 821 / 1440 px the bar stays under the top bar and the page does not scroll sideways [320:y49/top49 390:y49/top49 820:y49/top49 821:y149/top149 1440:y57/top57] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e04-phone-logic-scrolled.png",
+    "002-p4e04-phone-logic-no-match.png",
+    "003-p4e04-phone-logic-after-resizes.png"
+   ]
+  },
+  {
+   "id": "P4e-05",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: admin edits a rule, member view, real member, back as admin",
+   "saw": "OK the admin edit took (field shows 1h10 after Tab) [{\"before\":\"1h\",\"afterAdmin\":\"1h10\"}] | OK the admin member view shows Logic read only (no Edit rules button, no fields), still searchable, with the saved 1h10 in the sentence [{\"edit\":false,\"sets\":0,\"value\":\"HOW A DAY IS MEASURED Before any rule can fire, the engine has to decide how much of the day each commitment actually occupies. SETTING A sortie occupies the schedule f] | OK Tab x20 in the member view never reaches an editable rule field [false] | OK switching the admin back from the member view brings the Edit rules button back [{\"backEdit\":1}] | OK a real member (signed in through the card) sees Logic read only, no edit controls, with the saved 1h10 shown [{\"edit\":false,\"sets\":0,\"text\":\"HOW A DAY IS MEASURED Before any rule can fire, the engine has to decide how much of the day each commitment actually occupies. SETTING A sortie occupies the schedule fr] | OK signed back in as admin the saved value is still 1h10 [{\"finalVal\":\"1h10\"}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e05-desktop-logic-admin-edit.png",
+    "002-p4e05-desktop-logic-member-view.png",
+    "003-p4e05-desktop-logic-real-member.png",
+    "004-p4e05-desktop-logic-admin-again.png"
+   ]
+  },
+  {
+   "id": "P4e-05",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: admin edits a rule, member view, real member, back as admin",
+   "saw": "OK the admin edit took (field shows 1h10 after Tab) [{\"before\":\"1h\",\"afterAdmin\":\"1h10\"}] | OK the admin member view shows Logic read only (no Edit rules button, no fields), still searchable, with the saved 1h10 in the sentence [{\"edit\":false,\"sets\":0,\"value\":\"HOW A DAY IS MEASURED Before any rule can fire, the engine has to decide how much of the day each commitment actually occupies. SETTING A sortie occupies the schedule f] | OK Tab x20 in the member view never reaches an editable rule field [false] | OK switching the admin back from the member view brings the Edit rules button back [{\"backEdit\":1}] | OK a real member (signed in through the card) sees Logic read only, no edit controls, with the saved 1h10 shown [{\"edit\":false,\"sets\":0,\"text\":\"HOW A DAY IS MEASURED Before any rule can fire, the engine has to decide how much of the day each commitment actually occupies. SETTING A sortie occupies the schedule fr] | OK signed back in as admin the saved value is still 1h10 [{\"finalVal\":\"1h10\"}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e05-phone-logic-admin-edit.png",
+    "002-p4e05-phone-logic-member-view.png",
+    "003-p4e05-phone-logic-real-member.png",
+    "004-p4e05-phone-logic-admin-again.png"
+   ]
+  },
+  {
+   "id": "P4e-06",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: Insights opened from each door, Show all, scrolled to the bottom, the cross pressed",
+   "saw": "OK View-only Sched (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2073/2073) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2073,\"max\":2073}}] | OK Edit Schedule (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2073/2073) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2073,\"max\":2073}}] | OK Board (direct): after Show all (24 -> 24 rows) and scrolling to the bottom (2073/2073) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":976,\"y\":88,\"right\":1003,\"bottom\":108,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2073,\"max\":2073}}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "008-p4e06-desktop-insights-bottom-View-only-Sched-direct-.png",
+    "009-p4e06-desktop-insights-bottom-Edit-Schedule-direct-.png",
+    "010-p4e06-desktop-insights-bottom-Board-direct-.png"
+   ]
+  },
+  {
+   "id": "P4e-06",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: Insights opened from each door, Show all, scrolled to the bottom, the cross pressed",
+   "saw": "OK View-only Sched ⋯: after Show all (24 -> 24 rows) and scrolling to the bottom (2106/2106) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":346,\"y\":40,\"right\":373,\"bottom\":60,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2106,\"max\":2106}}] | OK Edit Schedule ⋯: after Show all (24 -> 24 rows) and scrolling to the bottom (2106/2106) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":346,\"y\":40,\"right\":373,\"bottom\":60,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2106,\"max\":2106}}] | OK Board ⋯: after Show all (24 -> 24 rows) and scrolling to the bottom (2106/2106) the cross is on screen and what a finger lands on; it closes and the starting surface is back [{\"cross\":{\"own\":true,\"x\":346,\"y\":40,\"right\":373,\"bottom\":60,\"w\":27,\"h\":20},\"closed\":true,\"back\":true,\"sc\":{\"scroll\":2106,\"max\":2106}}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "008-p4e06-phone-insights-bottom-View-only-Sched-.png",
+    "009-p4e06-phone-insights-bottom-Edit-Schedule-.png",
+    "010-p4e06-phone-insights-bottom-Board-.png"
+   ]
+  },
+  {
+   "id": "P4e-07",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: tall (Insights, Duty templates) and short (Day templates) windows at 1440x900, 1280x700",
+   "saw": "OK 1440x900: windows sit inside the screen with their close reachable (the phone-height rules apply to a phone only) [{\"ins\":{\"top\":72,\"bottom\":828,\"h\":756,\"vh\":900,\"gapBelow\":72,\"x\":420,\"w\":600},\"duty\":{\"top\":237,\"bottom\":663,\"h\":427,\"vh\":900,\"gapBelow\":237,\"x\":490,\"w\":460}}] | OK 1280x700: windows sit inside the screen with their close reachable (the phone-height rules apply to a phone only) [{\"ins\":{\"top\":56,\"bottom\":644,\"h\":588,\"vh\":700,\"gapBelow\":56,\"x\":340,\"w\":600},\"duty\":{\"top\":137,\"bottom\":563,\"h\":427,\"vh\":700,\"gapBelow\":137,\"x\":410,\"w\":460}}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "005-p4e07-desktop-1440x900-insights.png",
+    "006-p4e07-desktop-1440x900-duty-templates.png",
+    "007-p4e07-desktop-1440x900-day-templates-short.png",
+    "008-p4e07-desktop-1280x700-insights.png",
+    "009-p4e07-desktop-1280x700-duty-templates.png",
+    "010-p4e07-desktop-1280x700-day-templates-short.png"
+   ]
+  },
+  {
+   "id": "P4e-07",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: tall (Insights, Duty templates) and short (Day templates) windows at 390x844, 390x568, 844x390",
+   "saw": "OK 390x844: the tall Insights window runs up to a thin strip at the top (top 24px of 844px, bottom edge 844) and its cross is reachable [{\"top\":24,\"bottom\":844,\"h\":820,\"vh\":844,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x844: the Duty templates window stays within the screen and its close is reachable (top 417, bottom 844 of 844) [{\"top\":417,\"bottom\":844,\"h\":427,\"vh\":844,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x844: the short Day templates window is only as tall as its content (191px) and sits at the bottom (gap below 0px) [{\"top\":653,\"bottom\":844,\"h\":191,\"vh\":844,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x568: the tall Insights window runs up to a thin strip at the top (top 24px of 568px, bottom edge 568) and its cross is reachable [{\"top\":24,\"bottom\":568,\"h\":544,\"vh\":568,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x568: the Duty templates window stays within the screen and its close is reachable (top 141, bottom 568 of 568) [{\"top\":141,\"bottom\":568,\"h\":427,\"vh\":568,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 390x568: the short Day templates window is only as tall as its content (191px) and sits at the bottom (gap below 0px) [{\"top\":377,\"bottom\":568,\"h\":191,\"vh\":568,\"gapBelow\":0,\"x\":0,\"w\":390}] | OK 844x390: the phone rules apply to widths up to 820px; at this width (a phone on its side) the windows are centred inside the screen with their close reachable [{\"ins\":{\"top\":31,\"bottom\":359,\"h\":328,\"vh\":390,\"gapBelow\":31,\"x\":122,\"w\":600},\"duty\":{\"top\":31,\"bottom\":359,\"h\":328,\"vh\":390,\"gapBelow\":31,\"x\":192,\"w\":460},\"short\":{\"top\":100,\"bottom\":291,\"h\":191,\"vh\"] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "005-p4e07-phone-390x844-insights.png",
+    "006-p4e07-phone-390x844-duty-templates.png",
+    "007-p4e07-phone-390x844-day-templates-short.png",
+    "008-p4e07-phone-390x568-insights.png",
+    "009-p4e07-phone-390x568-duty-templates.png",
+    "010-p4e07-phone-390x568-day-templates-short.png",
+    "011-p4e07-phone-844x390-insights.png",
+    "012-p4e07-phone-844x390-duty-templates.png",
+    "013-p4e07-phone-844x390-day-templates-short.png"
+   ]
+  },
+  {
+   "id": "P4e-08",
+   "size": "desktop",
+   "verdict": "PASS",
+   "did": "desktop: the thirteen surrounds - 12 of 13 behave",
+   "saw": "OK Duty templates (#tplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Wave templates (#waveTplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day templates (#daytplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Week calendar (#weekCal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day details (#dayPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Insights (#insightModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Traffic (#airpop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Sort all (#sortAllPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Cancellation (CX) (#cxPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Saved plans (#draftsModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Input editor (#inpEditPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Document viewer (#docViewPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Drawer (#drawer): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [{\"name\":\"Drawer\",\"id\":\"drawer\",\"status\":\"NOT DRAWN on a desktop (the drawer exists on a phone only)\"}] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e08-desktop-tplModal-open.png",
+    "002-p4e08-desktop-tplModal-after-drag.png",
+    "003-p4e08-desktop-waveTplModal-open.png",
+    "004-p4e08-desktop-waveTplModal-after-drag.png",
+    "005-p4e08-desktop-daytplModal-open.png",
+    "006-p4e08-desktop-daytplModal-after-drag.png",
+    "007-p4e08-desktop-weekCal-open.png",
+    "008-p4e08-desktop-weekCal-after-drag.png",
+    "009-p4e08-desktop-dayPop-open.png",
+    "010-p4e08-desktop-dayPop-after-drag.png",
+    "011-p4e08-desktop-insightModal-open.png",
+    "012-p4e08-desktop-insightModal-after-drag.png",
+    "013-p4e08-desktop-airpop-open.png",
+    "014-p4e08-desktop-airpop-after-drag.png",
+    "015-p4e08-desktop-sortAllPop-open.png",
+    "016-p4e08-desktop-sortAllPop-after-drag.png",
+    "017-p4e08-desktop-cxPop-open.png",
+    "018-p4e08-desktop-cxPop-after-drag.png",
+    "019-p4e08-desktop-draftsModal-open.png",
+    "020-p4e08-desktop-draftsModal-after-drag.png",
+    "021-p4e08-desktop-inpEditPop-open.png",
+    "022-p4e08-desktop-inpEditPop-after-drag.png",
+    "023-p4e08-desktop-docViewPop-open.png",
+    "024-p4e08-desktop-docViewPop-after-drag.png"
+   ]
+  },
+  {
+   "id": "P4e-08",
+   "size": "phone",
+   "verdict": "PASS",
+   "did": "phone: the thirteen surrounds - 13 of 13 behave",
+   "saw": "OK Duty templates (#tplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Wave templates (#waveTplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day templates (#daytplModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Week calendar (#weekCal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Day details (#dayPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Insights (#insightModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Traffic (#airpop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Sort all (#sortAllPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Cancellation (CX) (#cxPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Saved plans (#draftsModal): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Input editor (#inpEditPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Document viewer (#docViewPop): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK Drawer (#drawer): a drag begun inside and let go on the surround leaves it open; a press on the surround closes it [open after drag, closed after surround click] | OK no console / page / 4xx errors [[]]",
+   "pics": [
+    "001-p4e08-phone-tplModal-open.png",
+    "002-p4e08-phone-tplModal-after-drag.png",
+    "003-p4e08-phone-waveTplModal-open.png",
+    "004-p4e08-phone-waveTplModal-after-drag.png",
+    "005-p4e08-phone-daytplModal-open.png",
+    "006-p4e08-phone-daytplModal-after-drag.png",
+    "007-p4e08-phone-weekCal-open.png",
+    "008-p4e08-phone-weekCal-after-drag.png",
+    "009-p4e08-phone-dayPop-open.png",
+    "010-p4e08-phone-dayPop-after-drag.png",
+    "011-p4e08-phone-insightModal-open.png",
+    "012-p4e08-phone-insightModal-after-drag.png",
+    "013-p4e08-phone-airpop-open.png",
+    "014-p4e08-phone-airpop-after-drag.png",
+    "015-p4e08-phone-sortAllPop-open.png",
+    "016-p4e08-phone-sortAllPop-after-drag.png",
+    "017-p4e08-phone-cxPop-open.png",
+    "018-p4e08-phone-cxPop-after-drag.png",
+    "019-p4e08-phone-draftsModal-open.png",
+    "020-p4e08-phone-draftsModal-after-drag.png",
+    "021-p4e08-phone-inpEditPop-open.png",
+    "022-p4e08-phone-inpEditPop-after-drag.png",
+    "023-p4e08-phone-docViewPop-open.png",
+    "024-p4e08-phone-docViewPop-after-drag.png",
+    "025-p4e08-phone-drawer-open.png",
+    "026-p4e08-phone-drawer-after-drag.png"
+   ]
+  }
+ ],
+ "screens": [
+  {
+   "screen": "Sign-in card",
+   "desktop_1440x900": "001-desktop-sign-in-card",
+   "phone_390x844": "001-phone-sign-in-card",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "View-only Sched",
+   "desktop_1440x900": "002-desktop-view-only-sched",
+   "phone_390x844": "001-r2-phone-view-only-sched",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "View-only: Insights window",
+   "desktop_1440x900": "003-desktop-insights",
+   "phone_390x844": "005-phone-insights-from-view-only-more-menu",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "View-only: phone menu with one item (Insights)",
+   "desktop_1440x900": "-",
+   "phone_390x844": "004-phone-view-only-sched-more-menu",
+   "desktop_verdict": "n/a on a desktop (direct Insights button)",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Week calendar",
+   "desktop_1440x900": "004-desktop-week-calendar",
+   "phone_390x844": "003-r2-phone-week-calendar",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Phone drawer (no WEEK section)",
+   "desktop_1440x900": "-",
+   "phone_390x844": "003-phone-phone-drawer",
+   "desktop_verdict": "n/a",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Edit Schedule",
+   "desktop_1440x900": "005-desktop-edit-schedule",
+   "phone_390x844": "007-phone-edit-schedule",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Edit Schedule: phone menu",
+   "desktop_1440x900": "-",
+   "phone_390x844": "009-phone-edit-schedule-more-menu",
+   "desktop_verdict": "n/a",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Amendments box",
+   "desktop_1440x900": "006-desktop-amendments-box; 015-p4a06-desktop-amendments-box (a day to publish)",
+   "phone_390x844": "008-phone-amendments-box (not drawn: a rule hides it under 821px)",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "not drawn on a phone by its own rule; the day heads carry the pending chip"
+  },
+  {
+   "screen": "Saved plans menu (week)",
+   "desktop_1440x900": "007-desktop-saved-plans-menu",
+   "phone_390x844": "010-phone-saved-plans-menu",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Day details window",
+   "desktop_1440x900": "008-desktop-day-details-window",
+   "phone_390x844": "011-phone-day-details-window",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Day template menu",
+   "desktop_1440x900": "009-desktop-day-template-window",
+   "phone_390x844": "012-phone-day-template-window",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Scheduler Board",
+   "desktop_1440x900": "010-desktop-scheduler-board",
+   "phone_390x844": "013-phone-scheduler-board",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole (phone layout)"
+  },
+  {
+   "screen": "Scheduler Board: Desktop layout on the phone",
+   "desktop_1440x900": "-",
+   "phone_390x844": "015-phone-scheduler-board-desktop-layout; panned right 016",
+   "desktop_verdict": "n/a",
+   "phone_verdict": "looks whole; the toolbar and Done sit 790px to the right and are reached by panning (findings F1, F2)"
+  },
+  {
+   "screen": "Board menu (Insights, Sort all, Desktop layout)",
+   "desktop_1440x900": "-",
+   "phone_390x844": "014-phone-scheduler-board-more-menu",
+   "desktop_verdict": "n/a",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Board: Insights",
+   "desktop_1440x900": "011-desktop-scheduler-board-insights",
+   "phone_390x844": "017-phone-scheduler-board-insights-board-more",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole (a passing hint toast lies over the window foot - O4)"
+  },
+  {
+   "screen": "Changes window",
+   "desktop_1440x900": "012-desktop-changes-window",
+   "phone_390x844": "018-phone-changes-window",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Traffic window",
+   "desktop_1440x900": "013-desktop-traffic-window",
+   "phone_390x844": "019-phone-traffic-window",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Board saved plans menu",
+   "desktop_1440x900": "014-desktop-board-saved-plans-menu",
+   "phone_390x844": "020-phone-board-saved-plans-menu",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Board OIL Earn mode (published Saturday)",
+   "desktop_1440x900": "006-p4a03-desktop-board-oil-earn",
+   "phone_390x844": "006-p4a03-phone-board-oil-earn",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Board highlight (CAT chips open)",
+   "desktop_1440x900": "001-desktop-board-highlight",
+   "phone_390x844": "022-phone-board-highlight",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Board: New input sheet",
+   "desktop_1440x900": "001-newinput-desktop-board-new-input-sheet",
+   "phone_390x844": "002-newinput-phone-board-new-input-sheet",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "ALL AVAIL window",
+   "desktop_1440x900": "010-p4a06-desktop-all-avail-window-full",
+   "phone_390x844": "010-p4a06-phone-all-avail-window-full",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole (its list scrolls inside)"
+  },
+  {
+   "screen": "Inputs: list and form",
+   "desktop_1440x900": "017-desktop-inputs-list-and-form",
+   "phone_390x844": "023-phone-inputs-list-and-form",
+   "desktop_verdict": "looks whole; background tone changes about 630px down (O3)",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Inputs: card of an OIL-credited input",
+   "desktop_1440x900": "-",
+   "phone_390x844": "oilchip-phone-torch-row; 002-p4a04-phone-inputs-last-row",
+   "desktop_verdict": "n/a (table row)",
+   "phone_verdict": "BROKEN: the green OIL chip is painted over the date and time of the card (37x12px overlap) - F3"
+  },
+  {
+   "screen": "Inputs: calendar",
+   "desktop_1440x900": "018-desktop-inputs-calendar",
+   "phone_390x844": "024-phone-inputs-calendar",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Inputs: period picker",
+   "desktop_1440x900": "020-desktop-inputs-period-picker",
+   "phone_390x844": "026-phone-inputs-period-picker",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Medical view",
+   "desktop_1440x900": "019-desktop-medical-view",
+   "phone_390x844": "025-phone-medical-view",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole (title and date button sit close)"
+  },
+  {
+   "screen": "Medical: document viewer",
+   "desktop_1440x900": "001-docviewer-desktop-zenith-2-documents",
+   "phone_390x844": "002-docviewer-phone-zenith-2-documents",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Quals",
+   "desktop_1440x900": "021-desktop-quals",
+   "phone_390x844": "004-r2-phone-quals",
+   "desktop_verdict": "the date box beside Enable editing is the browser default grey inset box (O1)",
+   "phone_verdict": "same box, same look (O1)"
+  },
+  {
+   "screen": "Logic",
+   "desktop_1440x900": "022-desktop-logic",
+   "phone_390x844": "005-r2-phone-logic",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Logic scrolled (search bar stays)",
+   "desktop_1440x900": "023-desktop-logic-scrolled",
+   "phone_390x844": "006-r2-phone-logic-scrolled",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Leave War grid",
+   "desktop_1440x900": "024-desktop-leave-war-grid",
+   "phone_390x844": "030-phone-leave-war-grid",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Leave War one-day sheet",
+   "desktop_1440x900": "002-desktop-leave-war-one-day-sheet",
+   "phone_390x844": "007-r2-phone-leave-war-one-day-sheet",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Leave War Settings",
+   "desktop_1440x900": "026-desktop-leave-war-settings",
+   "phone_390x844": "032-phone-leave-war-settings",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Leave War OIL tracker",
+   "desktop_1440x900": "027-desktop-leave-war-oil-tracker",
+   "phone_390x844": "033-phone-leave-war-oil-tracker",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Tracker Flow",
+   "desktop_1440x900": "003-desktop-tracker-flow",
+   "phone_390x844": "008-r2-phone-tracker-flow",
+   "desktop_verdict": "looks whole (opens with the first ball centred, empty band above - O5)",
+   "phone_verdict": "looks whole (labels tiny at 40% zoom)"
+  },
+  {
+   "screen": "Tracker Details",
+   "desktop_1440x900": "029-desktop-tracker-details",
+   "phone_390x844": "035-phone-tracker-details",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Tracker Edit chart layout",
+   "desktop_1440x900": "030-desktop-tracker-edit-chart-layout",
+   "phone_390x844": "036-phone-tracker-edit-chart-layout",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Help",
+   "desktop_1440x900": "031-desktop-help",
+   "phone_390x844": "037-phone-help",
+   "desktop_verdict": "looks whole; background tone changes about 650px down (O3)",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Admin: Users",
+   "desktop_1440x900": "032-desktop-admin-users",
+   "phone_390x844": "038-phone-admin-users",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Admin: Squadron config",
+   "desktop_1440x900": "033-desktop-admin-squadron-config",
+   "phone_390x844": "039-phone-admin-squadron-config",
+   "desktop_verdict": "position numbers of the order lists sit against the names (\"Overall notes1\") (O2)",
+   "phone_verdict": "same (O2)"
+  },
+  {
+   "screen": "Admin: Duty templates window",
+   "desktop_1440x900": "034-desktop-duty-template-window",
+   "phone_390x844": "040-phone-duty-template-window",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Admin: Day templates window",
+   "desktop_1440x900": "035-desktop-day-template-window-admin",
+   "phone_390x844": "041-phone-day-template-window-admin",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Admin: Wave templates window",
+   "desktop_1440x900": "036-desktop-wave-template-window",
+   "phone_390x844": "042-phone-wave-template-window",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Admin: Data",
+   "desktop_1440x900": "037-desktop-admin-data",
+   "phone_390x844": "043-phone-admin-data",
+   "desktop_verdict": "looks whole; background tone change about 780px down (O3)",
+   "phone_verdict": "looks whole"
+  },
+  {
+   "screen": "Request access and waiting screens",
+   "desktop_1440x900": "012/013-p4a02-desktop-*",
+   "phone_390x844": "012/013-p4a02-phone-*",
+   "desktop_verdict": "looks whole",
+   "phone_verdict": "looks whole"
+  }
+ ],
+ "findings": [
+  {
+   "id": "F1",
+   "scenario": "P4b-02",
+   "title": "In the phone Desktop layout a sideways swipe begun on the schedule does not pan it",
+   "steps": "Phone 390x844, Saturday board, More > Desktop layout. Real touch swipe (Chromium touch events) leftwards from x=340 at y=130..800, and from y=500 across the schedule.",
+   "expected": "the board pans sideways to the crew column and the Done button (790px of travel)",
+   "happened": "from the schedule body the board moved 14px of 790 (0 from y=90 down); only swipes begun on the top strip (y about 20-60) pan, 275-299px a time. The inner scroller has overscroll-behaviour contain.",
+   "pics": [
+    "011-p4b02-phone-wide-left-edge",
+    "012-p4b02-phone-wide-panned-by-top-bar"
+   ],
+   "note": "Chromium emulation; an iPhone may behave differently - confirm on the device."
+  },
+  {
+   "id": "F2",
+   "scenario": "P4b-02",
+   "title": "Panning by swiping the day-chip row also changes the open day",
+   "steps": "Same board at the left edge on Saturday, swipe left along the second bar row (the Mon-Sun chips), y=50.",
+   "expected": "pans without changing the day",
+   "happened": "it panned 285px and the board moved from Sat 18 to Thu 16; repeated swipes walked it on (5, 3, 6, 3, 0). Swipes along the title row (y=20) pan and leave the day alone.",
+   "pics": [
+    "015-p4b02-phone-wide-after-swipe-on-day-chips"
+   ]
+  },
+  {
+   "id": "F3",
+   "scenario": "every-screen (phone Inputs)",
+   "title": "Phone Inputs card: the OIL chip is painted over the date and time",
+   "steps": "Phone 390x844, Inputs, All dates; the card of an input credited OIL (Torch, Training, 18 Jul 11:00-12:00).",
+   "expected": "chip and date/time side by side",
+   "happened": "the green OIL chip overlaps the time text by 37x12px and hides part of the date line.",
+   "pics": [
+    "oilchip-phone-torch-row",
+    "002-p4a04-phone-inputs-last-row"
+   ]
+  }
+ ],
+ "observations": [
+  "O1 Quals: the date box beside Enable editing is the browser default (grey inset box) - no style rule exists for #qDate; both sizes.",
+  "O2 Admin > Squadron config: the position numbers of the Section-order and Flying-wave-order lists sit against the names (\"Overall notes1\", \"SC2\") - no rule exists for arrsec-pos; both sizes.",
+  "O3 Short pages (Inputs, Help, Admin Data) change background tone a little below the content.",
+  "O4 Passing toasts (\"Desktop layout - pan sideways...\", \"Saturday published...\") lie over windows and rows for a few seconds on the phone.",
+  "O5 Tracker Flow opens with the first ball centred in the chart area (a wide empty band above); after toggling Details it sits at the top.",
+  "O6 Phone Desktop layout: switching layout returns the board to the top of the day (scroll 1740 > 0); day kept.",
+  "O7 With the chart font raised to 9 an 8-character flight label (EW-FLT-2) leaves 15 of 334 sampled ink pixels off the wing; real ids are shorter.",
+  "O8 844x390 (phone on its side) is wider than 820px: windows are centred with a 31px gap above and below rather than the phone strip/bottom rule."
+ ]
+}

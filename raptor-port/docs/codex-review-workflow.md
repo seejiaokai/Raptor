@@ -1,20 +1,10 @@
-# Temporary Codex roles — D496, 2 Oct 26
+# Codex in this repo — how a review round is run, and Codex's own proportional checks
 
-Until Monday 5 Oct 26 at 19:00 (Asia/Singapore), the owner uses Codex only:
+Codex is the reviewer of what Opus 5.5 writes (D67, D590, D601), and builds only on his word (`AGENTS.md`). The
+arrangement of 2–5 Oct 26 under which Codex planned and built by itself (D496) is over; its text is kept whole in
+`docs/archive/codex-arrangement-2026-10-07.md`.
 
-- Astra (`gpt-6-astra`) plans and coordinates: read the relevant rules and backlog,
-  propose product questions in rounds of at most four with a recommendation each,
-  then write a plan from the owner's answers. It must not invent unanswered requirements.
-- Sol 6.1 (`gpt-6.1-sol`) independently challenges Astra's plan, then builds and fixes.
-- Astra independently designs the build's check scenarios. A separate fresh Astra inspector
-  reads Sol's final code; the planning/coordinating agent may reconcile findings, but never
-  approve its own plan or any code it wrote. Final reads preserve the fresh-session safeguard.
-- Sol runs the applicable bug check in full: the running app and pictures, automated gates,
-  recorded failures and fixes, and the evidence sheet. Passing tests alone is not approval.
-
-The main chat remains on the owner's selected Sol 6.1 model. The host cannot change that
-selection; it calls model-specific subagents and relays questions and findings here. This is
-automatic delegation, not an assertion that the visible conversation changed models.
+## How a review round is run
 
 Use concrete briefs with the baseline, scope, acceptance criteria, relevant rules, and evidence.
 Keep each read's complete findings and dispositions. A finding needs a concrete failure, cause,
@@ -23,21 +13,6 @@ three rounds and final code inspection at two (initial read plus one fresh read 
 reviews retain D70's one round per reviewer; do not apply the broader code-inspection budget to guides. Report
 unresolved findings instead of manufacturing agreement. Later code changes require another read
 of the affected snapshot. Reviewers do not edit the code they are inspecting.
-
-This adapts the installed Claudex loop's bounded review/fix pattern to the owner's explicit
-same-provider request. It does not run the Claudex cross-provider approval runner, invoke Claude,
-or claim Claude/Fable approval. The existing Claude skills and hooks are unchanged.
-
-D496 narrows D494's ban on Codex-side independent reads and the temporary reviewer roles/counts
-under D67, D70, D353 and D492. It does not remove the independence rule: the model that wrote an
-artifact does not approve it. Work already authored by Astra needs a Sol read now; Astra cannot
-certify its own earlier work. Claude reviews all Codex branches and plans after the reset,
-including any working-guide changes, before anything reaches main (D494). No pull request for
-merging, merge or main push is authorized. Each build keeps its own codex/ branch.
-
-The first job remains Discard marks removal; the subsequent batch order remains D495. File this
-temporary arrangement with the Monday handoff. After the reset, return to the original
-cross-provider reviewer arrangement unless the owner gives another ruling.
 
 ## Codex-only proportional checks — D499
 
@@ -63,4 +38,4 @@ No picture-inspection exception is needed: select fewer distinct pictures before
 
 **Support verified 2 Oct 26:** repository Playwright 1.62.1 loads its configuration and discovers 567 browser tests without running them. The installed Chromium launched; page rendering, locator click and visible result passed at desktop and iPhone 13 emulation. This was a two-context runtime readiness check, not an application regression run or physical-iPhone check. No dependencies, browser packages, MCP servers, global settings or Claude configuration were changed. The existing regular suite has no automatic screenshots/traces/video configured; custom walks save proof pictures explicitly. Enable extra failure diagnostics only for a demonstrated need; CI uploads remain the separate unapproved [CI-FAIL-PICTURES] job.
 
-**Independent authorship/read:** Astra drafted this addendum; Sol independently challenged its effect against the existing order. Sol retained required gates, added the explicit scoped-exception boundary and runtime limitations, and did not infer Rally answers or extend D496. The draft and disposition are retained in `docs/superpowers/plans/2026-10-02-codex-check-framework-review.md`. OWED: Claude's working-guide read after Monday's reset before main.
+**Independent authorship/read:** Astra drafted this addendum; Sol independently challenged its effect against the existing order. Sol retained required gates, added the explicit scoped-exception boundary and runtime limitations, and did not infer Rally answers or extend D496. The draft and disposition are retained in `docs/superpowers/plans/2026-10-02-codex-check-framework-review.md`. Claude's working-guide read was done by Opus on 6 Oct 26 — the Codex stack's evidence sheet, `docs/handpass/2026-10-05-codex-stack-check.md` §10.4.

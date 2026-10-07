@@ -4,6 +4,7 @@ import { HOOKS, store } from './hooks'
 import { ridKey, posKey } from './rowids'
 import { CURWEEK } from './waves'
 import { dayIso } from './verid'
+import { REPORTING_LABEL } from './reporting'
 
 /* THE EDIT LOG (owner, 11 Aug 26) — who changed which detail, when, and what
    it was before. The board's History toggle reads it two ways: a bubble on
@@ -401,7 +402,7 @@ export function keyLabel(key: any, days: any[] = DAYS): string {
     /* fr: and st: are per-AIRCRAFT (…li.ai), unlike ff:/ar:/at: above and
        below, which address the formation — so these two carry the jet */
     if (p === 'fr') return `${f().cs || 'Line'} · ${jetOf(f(), a[3])}remarks`
-    if (p === 'it') return `${d.waves[+a[1]].label || 'Wave'} · in-times`
+    if (p === 'it') return `${d.waves[+a[1]].label || 'Wave'} · ${REPORTING_LABEL}`
     if (p === 'st') return `${f().cs || 'Line'} · ${jetOf(f(), a[3])}stores`
     if (p === 'ar') return `${f().cs || 'Line'} · area`
     if (p === 'at') return `${f().cs || 'Line'} · area time`

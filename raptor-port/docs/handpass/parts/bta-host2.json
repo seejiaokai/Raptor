@@ -1,0 +1,123 @@
+{
+ "parts": {
+  "bta-host2-dk": {
+   "at": "2026-10-06T10:21:25.154Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "H6.0",
+     "did": "Vandal: ATT B all Tuesday (asked certificate); \"+ Wave\", seated on its blank line (took true)",
+     "saw": "his warnings: [\"hard/DNIF_FLY: Downchit but planned to fly this line — reason: Grounded\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-h6-0-seated.png"
+     ]
+    },
+    {
+     "id": "H6.1",
+     "did": "ALL AVAIL placed on a Ground Programme row LATER BRIEF 15:00–16:00 (took true); its count chip \"36\" pressed → the window",
+     "saw": "window \"LATER BRIEF Jul 14 · 15:00–16:00\" · 36 men · his row: flag RED · \"C Vandal IP Downchit but planned to fly this line — reason: Grounded\" · flagged rows 2",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-h6-1-window.png"
+     ]
+    },
+    {
+     "id": "H6.2",
+     "did": "his row in the window tapped",
+     "saw": "foot \"Vandal — Downchit but planned to fly this line — reason: Grounded\" · toast \"ALL AVAIL planned\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-h6-2-tapped.png"
+     ]
+    },
+    {
+     "id": "H6.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "H7.0",
+     "did": "Vandal lands 22:30 Monday (seated true); Tuesday SC, shift B \"05:00\" start \"13:00\" end \"19:00\" · rows MAIN:split/taipan MAIN:-/- SPARE:-/- SPARE:-/- — Cobra seated true, Vandal seated true in the first MAIN row",
+     "saw": "his crew-rest warnings: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-h7-0-seated.png"
+     ]
+    },
+    {
+     "id": "H7.1",
+     "did": "his puck dragged from the first MAIN row to the SECOND MAIN row of the same shift and held there",
+     "saw": "bubble: {\"ghost\":true,\"why\":null}",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-h7-1-held.png"
+     ]
+    },
+    {
+     "id": "H7.2",
+     "did": "the same drag, dropped",
+     "saw": "first MAIN front \"\" · second MAIN front \"split\" · the app said nothing · his crew-rest warnings: [\"hard/CREW_REST: Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-h7-2-drop.png",
+      "dk-07-h7-2-after.png"
+     ]
+    },
+    {
+     "id": "H7.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "H8.1",
+     "did": "Vandal: OL all Tuesday, seated on a new blank line (took true); the day's \"i\" pressed on Edit Schedule — the day-details window",
+     "saw": "its count line \"3 WARNING 1 ADVISORY 1 NOTE\" · lines naming him: [\"Warning · On leave + flying Vandal — On leave but planned to fly this line — reason: Abroad\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-h8-1-daydetails.png"
+     ]
+    },
+    {
+     "id": "H8.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "H9.1",
+     "did": "Vandal: LL all Tuesday; two Ground Programme items named \"Sim\" —–— · \"duty\" —–—, no times, he is put on both (took true, true)",
+     "saw": "lines naming him: [\"On leave + flying Vandal — On leave but tasked — Sim — reason: Off\",\"On leave + flying Vandal — On leave but tasked — duty — reason: Off\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-h9-1-list.png",
+      "dk-09-h9-1-puck.png"
+     ]
+    },
+    {
+     "id": "H9.2",
+     "did": "hours typed on both (09:00–10:00, 11:00–12:00)",
+     "saw": "lines naming him: [\"On leave + flying Vandal — On leave but tasked — Sim — reason: Off\",\"On leave + flying Vandal — On leave but tasked — duty — reason: Off\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-h9-2-list.png",
+      "dk-11-h9-2-puck.png"
+     ]
+    },
+    {
+     "id": "H9.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

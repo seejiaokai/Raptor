@@ -1,0 +1,101 @@
+{
+ "parts": {
+  "bta-A-s01-dk": {
+   "at": "2026-10-06T08:44:05.919Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "S01 OL × bbMain (desk)",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; BB wave and a separately templated BB desk added; X put on BB MAIN seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true, toast \"Vandal — OL but on BB SHIFT — overseas — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"OL but on BB SHIFT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches. UNDO (pressed): warnings naming him: none · his pucks [Unavailable row:no-solid] cls  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\". REDO (pressed): warnings naming him: [hard/LEAVE_FLY] \"OL but on BB SHIFT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\". RELOAD: warnings naming him: [hard/LEAVE_FLY] \"OL but on BB SHIFT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\".",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s01-OL-bbMain-desk-list.png",
+      "dk-02-s01-OL-bbMain-desk-puck.png"
+     ]
+    },
+    {
+     "id": "S01 OL × bbSpare (desk)",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; BB wave and a separately templated BB desk added; X put on BB SPARE seat (the same BB wave)",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true, toast \"Vandal — OL but on BB SHIFT — overseas — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"OL but on BB SHIFT — overseas — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s01-OL-bbSpare-desk-list.png",
+      "dk-08-s01-OL-bbSpare-desk-puck.png"
+     ]
+    },
+    {
+     "id": "S01 OL × bbDesk (desk)",
+     "did": "1440×900 desktop: OL filed for X for Tuesday; BB wave and a separately templated BB desk added; X put on a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times)",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP overseas leave (OL) — x-OL\" · tooltip \"Vandal — overseas leave (OL) — x-OL\"; placed true, toast \"Vandal — OL but on duty — overseas — reason: x-OL\". warnings naming him: [hard/LEAVE_FLY] \"OL but on  duty — overseas — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s01-OL-bbDesk-desk-list.png",
+      "dk-11-s01-OL-bbDesk-desk-puck.png"
+     ]
+    },
+    {
+     "id": "S01 ATT B × bbMain (desk)",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; BB wave and a separately templated BB desk added; X put on BB MAIN seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP medically down — no flying, may still work (ATT B) — x-ATT B\" · tooltip \"Vandal — medically down — no flying, may still work (ATT B) — x-ATT B\"; placed true, toast \"Vandal — ATT B but on BB SHIFT — medically down — reason: x-ATT B\". warnings naming him: [hard/DNIF_FLY] \"ATT B but on BB SHIFT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-s01-ATT B-bbMain-desk-list.png",
+      "dk-14-s01-ATT B-bbMain-desk-puck.png"
+     ]
+    },
+    {
+     "id": "S01 ATT B × bbSpare (desk)",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; BB wave and a separately templated BB desk added; X put on BB SPARE seat (the same BB wave)",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP medically down — no flying, may still work (ATT B) — x-ATT B\" · tooltip \"Vandal — medically down — no flying, may still work (ATT B) — x-ATT B\"; placed true, toast \"Vandal — ATT B but on BB SHIFT — medically down — reason: x-ATT B\". warnings naming him: [hard/DNIF_FLY] \"ATT B but on BB SHIFT — medically down — reason: x-ATT B\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → oracle red — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-s01-ATT B-bbSpare-desk-list.png",
+      "dk-17-s01-ATT B-bbSpare-desk-puck.png"
+     ]
+    },
+    {
+     "id": "S01 ATT B × bbDesk (desk)",
+     "did": "1440×900 desktop: ATT B filed for X for Tuesday; BB wave and a separately templated BB desk added; X put on a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times)",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-s01-ATT B-bbDesk-desk-list.png",
+      "dk-20-s01-ATT B-bbDesk-desk-puck.png"
+     ]
+    },
+    {
+     "id": "S01 LL × bbMain (desk)",
+     "did": "1440×900 desktop: LL filed for X for Tuesday; BB wave and a separately templated BB desk added; X put on BB MAIN seat (+ Wave → BB, shift start and end as it comes up)",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP local leave (LL) — x-LL\" · tooltip \"Vandal — local leave (LL) — x-LL\"; placed true, toast \"Vandal — local leave (LL) — x-LL\". warnings naming him: none · his pucks [flying line:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-24-s01-LL-bbMain-desk-list.png",
+      "dk-23-s01-LL-bbMain-desk-puck.png"
+     ]
+    },
+    {
+     "id": "S01 LL × bbSpare (desk)",
+     "did": "1440×900 desktop: LL filed for X for Tuesday; BB wave and a separately templated BB desk added; X put on BB SPARE seat (the same BB wave)",
+     "saw": "crew list before he is placed: struck YES · printed \"Vandal IP local leave (LL) — x-LL\" · tooltip \"Vandal — local leave (LL) — x-LL\"; placed true, toast \"Vandal — local leave (LL) — x-LL\". warnings naming him: none · his pucks [flying line:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-27-s01-LL-bbSpare-desk-list.png",
+      "dk-26-s01-LL-bbSpare-desk-puck.png"
+     ]
+    },
+    {
+     "id": "S01 LL × bbDesk (desk)",
+     "did": "1440×900 desktop: LL filed for X for Tuesday; BB wave and a separately templated BB desk added; X put on a BB desk (+ Block from a template whose \"For wave\" is BB; its one row has no role, no times)",
+     "saw": "crew list before he is placed: struck no · printed \"Vandal IP\" · tooltip \"Vandal\"; placed true, toast \"Vandal planned\". warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → oracle silent — matches.",
+     "verdict": "PASS",
+     "pics": [
+      "dk-30-s01-LL-bbDesk-desk-list.png",
+      "dk-29-s01-LL-bbDesk-desk-puck.png"
+     ]
+    }
+   ]
+  }
+ }
+}

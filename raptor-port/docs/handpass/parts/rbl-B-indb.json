@@ -1,0 +1,65 @@
+{
+ "parts": {
+  "indep-b-dk": {
+   "at": "2026-10-06T00:38:41.023Z",
+   "base": "http://localhost:4175",
+   "phone": false,
+   "table": [
+    {
+     "id": "IND-B0",
+     "did": "Baseline B (took true/true); Monday AND Tuesday published (Original)",
+     "saw": "held: hard/CREW_REST · list bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red] painted [shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"] · Tue tag \"ORIG\" · chip \"12 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·] · Mon tag \"ORIG\" · chip \"11 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-ind-b0-tue-puck.png",
+      "dk-02-ind-b0-tue-list.png",
+      "dk-03-ind-b0-mon-puck.png",
+      "dk-04-ind-b0-mon-list.png",
+      "dk-05-ind-b0-monhead.png"
+     ]
+    },
+    {
+     "id": "IND-B1",
+     "did": "Monday (published, working copy only): ZM take-off 20:00 -> 09:00 and landing 22:30 -> 10:30 (rest would be clear), NOT amended",
+     "saw": "Edit Schedule (working copy): held: none · list bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · Tue pucks [flying line:plain] painted [no-ring] · Mon pucks [flying line:plain] painted [no-ring] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · warning \"(no crew-rest warning)\" · Tue tag \"ORIG\" · chip \"12 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·] · Mon tag \"ORIG\" · chip \"2 pending\" · marker \"Not yet signed\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·] || View-only Sched (issued face): held: none · list bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"Crew rest (<12h) Scribe — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew res\"] · Tue pucks [flying line:ring(hard) chip R red] painted [shadow R] · Mon pucks [flying line:plain chip R dotted] painted [dotted R] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\",\"Breaks Tuesday Scribe — had to leave by 17:00. Crew rest breach — Monday landed 22:30, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-ind-b1-tue-puck.png",
+      "dk-07-ind-b1-tue-list.png",
+      "dk-08-ind-b1-mon-puck.png",
+      "dk-09-ind-b1-mon-list.png",
+      "dk-10-ind-b1-monhead.png",
+      "dk-11-ind-b1-view-tue-puck.png",
+      "dk-12-ind-b1-view-tue-list.png",
+      "dk-13-ind-b1-view-mon-puck.png",
+      "dk-14-ind-b1-view-mon-list.png"
+     ]
+    },
+    {
+     "id": "IND-B2",
+     "did": "Monday's amendment published (sign-offs + Publish AL: {\"pressed\":true,\"label\":\"Publish AL1\"})",
+     "saw": "Edit: held: none · list bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · Tue pucks [flying line:plain] painted [no-ring] · Mon pucks [flying line:plain] painted [no-ring] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"] · Tue tag \"ORIG\" · chip \"12 changes\" · marker \"none\" · signed line \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·] · Mon tag \"AL1\" · chip \"18 changes\" · marker \"none\" · signed line \"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\" · sign-off boxes [· | · | · | ·] || View-only: held: none · list bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · Tue pucks [flying line:plain] painted [no-ring] · Mon pucks [flying line:plain] painted [no-ring] · Mon list trace [\"Breaks Tuesday Outlaw — had to leave by 18:00. Crew rest breach — Monday landed 20:45, +2h debrief assumed → e\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-ind-b2-tue-puck.png",
+      "dk-16-ind-b2-tue-list.png",
+      "dk-17-ind-b2-mon-puck.png",
+      "dk-18-ind-b2-mon-list.png",
+      "dk-19-ind-b2-head.png",
+      "dk-20-ind-b2-view-tue-puck.png",
+      "dk-21-ind-b2-view-tue-list.png",
+      "dk-22-ind-b2-view-mon-puck.png",
+      "dk-23-ind-b2-view-mon-list.png"
+     ]
+    },
+    {
+     "id": "IND-B.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,225 @@
+{
+ "parts": {
+  "bta-host-dk": {
+   "at": "2026-10-06T08:18:42.462Z",
+   "base": "http://localhost:4233",
+   "phone": false,
+   "table": [
+    {
+     "id": "H1.1",
+     "did": "Vandal: local leave (LL) all Tuesday filed on the Inputs page (null); \"+ Wave\" → a flying wave (its line: cs \"\" br \"\" to \"\" ld \"\"); armed 1.2.0.0.p; in the crew list: struck YES · printed \"Vandal IP local leave (LL) — Wedding\" · tooltip \"Vandal — local leave (LL) — Wedding\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; pressed his name → took true, the app said \"Vandal — On leave but planned to fly this line — reason: Wedding\"",
+     "saw": "held: hard/LEAVE_FLY · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly this line — reason: Wedding\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-crewlist-1_2_0_0_p.png",
+      "dk-03-h1-1-blank-list.png",
+      "dk-02-h1-1-blank-puck.png"
+     ]
+    },
+    {
+     "id": "H1.2",
+     "did": "callsign ZL and mission BFM typed on that line, still no times",
+     "saw": "held: hard/LEAVE_FLY · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly ZL BFM — reason: Wedding\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-h1-2-named-list.png",
+      "dk-04-h1-2-named-puck.png"
+     ]
+    },
+    {
+     "id": "H1.3",
+     "did": "take-off 10:00 and landing 11:00 typed",
+     "saw": "held: hard/LEAVE_FLY · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly ZL BFM — reason: Wedding\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-h1-3-timed-list.png",
+      "dk-06-h1-3-timed-puck.png"
+     ]
+    },
+    {
+     "id": "H1.4",
+     "did": "both times cleared again (cs \"ZL\" br \"\" to \"\" ld \"\")",
+     "saw": "held: hard/LEAVE_FLY · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly ZL BFM — reason: Wedding\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-h1-4-cleared-list.png",
+      "dk-08-h1-4-cleared-puck.png"
+     ]
+    },
+    {
+     "id": "H1.5",
+     "did": "a landing 15:00 typed alone, no take-off",
+     "saw": "held: hard/LEAVE_FLY · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly ZL BFM — reason: Wedding\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-h1-5-landing-only-list.png",
+      "dk-10-h1-5-landing-only-puck.png"
+     ]
+    },
+    {
+     "id": "H1.6",
+     "did": "the page reloaded and signed in again",
+     "saw": "held: hard/LEAVE_FLY · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly ZL BFM — reason: Wedding\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-h1-6-reload-list.png",
+      "dk-12-h1-6-reload-puck.png"
+     ]
+    },
+    {
+     "id": "H1.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "H2.1",
+     "did": "Vandal: local leave for Tuesday MORNING only (stored: allday false half \"am\" 0–720); \"+ Wave\", seated on its blank line; armed 1.2.0.0.p; in the crew list: struck YES · printed \"Vandal IP local leave (LL) (AM) — Morning off\" · tooltip \"Vandal — local leave (LL) (AM) — Morning off\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; pressed his name → took true, the app said \"Vandal — local leave (LL) (AM) — Morning off\"",
+     "saw": "held: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · his pucks [flying line:no-solid; Unavailable row:no-solid]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-crewlist-1_2_0_0_p.png",
+      "dk-16-h2-1-am-blank-list.png",
+      "dk-15-h2-1-am-blank-puck.png"
+     ]
+    },
+    {
+     "id": "H2.2",
+     "did": "an afternoon flight typed on it (15:00–16:30)",
+     "saw": "held: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · his pucks [flying line:no-solid; Unavailable row:no-solid]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-h2-2-afternoon-list.png",
+      "dk-17-h2-2-afternoon-puck.png"
+     ]
+    },
+    {
+     "id": "H2.3",
+     "did": "retyped as a morning flight (08:00–09:30)",
+     "saw": "held: hard/LEAVE_FLY · the day's list \"⚠ 7 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly ZA — reason: Morning off\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-20-h2-3-morning-list.png",
+      "dk-19-h2-3-morning-puck.png"
+     ]
+    },
+    {
+     "id": "H2.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "H3.1",
+     "did": "Vandal: ATT C all Tuesday (asked: certificate); \"+ Wave\" → BB (its shift: start \"\" end \"\"); armed 1.2.0.0.p; in the crew list: struck YES · printed \"Vandal IP medically down — cannot report to work (ATT C) — Flu\" · tooltip \"Vandal — medically down — cannot report to work (ATT C) — Flu\" · row \"PILOTS · 28 FREE Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter\"; pressed his name → took true, the app said \"Vandal — ATT C but on BB SHIFT — medically down — reason: Flu\"",
+     "saw": "held: hard/DNIF_FLY · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"Downchit + flying Vandal — ATT C but on BB SHIFT — medically down — reason: Flu\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-crewlist-1_2_0_0_p.png",
+      "dk-23-h3-1-bb-list.png",
+      "dk-22-h3-1-bb-puck.png"
+     ]
+    },
+    {
+     "id": "H3.2",
+     "did": "\"+ Item\" on the Ground Programme (the new row: name \"\" start \"\" end \"\" who \"split\" more []); Vandal put on it (took true, the app said \"Vandal — Downchit but tasked — this row — reason: Flu\")",
+     "saw": "held: hard/DNIF_FLY, hard/DNIF_FLY · the day's list \"⚠ 6 issues · 4 warning · tap to collapse ▲\" [\"Downchit + flying Vandal — ATT C but on BB SHIFT — medically down — reason: Flu\",\"Downchit + flying Vandal — Downchit but tasked — this row — reason: Flu\"] · his pucks [flying line:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-25-h3-2-ground-list.png",
+      "dk-24-h3-2-ground-puck.png"
+     ]
+    },
+    {
+     "id": "H3.3",
+     "did": "the row named RANGE SWEEP, still no times",
+     "saw": "held: hard/DNIF_FLY, hard/DNIF_FLY · the day's list \"⚠ 6 issues · 4 warning · tap to collapse ▲\" [\"Downchit + flying Vandal — ATT C but on BB SHIFT — medically down — reason: Flu\",\"Downchit + flying Vandal — Downchit but tasked — RANGE SWEEP — reason: Flu\"] · his pucks [flying line:SOLID-ring chip C; ground row:SOLID-ring chip C; Unavailable row:SOLID-ring chip C]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-27-h3-3-ground-named-list.png",
+      "dk-26-h3-3-ground-named-puck.png"
+     ]
+    },
+    {
+     "id": "H3.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "H4.0",
+     "did": "Vandal seated on a new line ZP with no times (took true); Tuesday published ({\"s\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"},\"r\":{\"pressed\":true,\"label\":\"Publish day\"}})",
+     "saw": "held: none · the day's list \"⚠ 4 issues · 2 warning · tap to collapse ▲\" [] · his pucks [flying line:no-solid; Available crew:no-solid; Available crew:no-solid] · pending null",
+     "verdict": "PASS",
+     "pics": [
+      "dk-30-h4-0-published-list.png",
+      "dk-29-h4-0-published-puck.png"
+     ]
+    },
+    {
+     "id": "H4.1",
+     "did": "local leave all Tuesday filed for him AFTER publishing (the Inputs page)",
+     "saw": "held: hard/LEAVE_FLY · the day's list \"⚠ 5 issues · 3 warning · tap to collapse ▲\" [\"On leave + flying Vandal — On leave but planned to fly ZP — reason: After publishnew once signed\"] · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] · the day's heading \"Tuesday Jul 14 Templates Live working copy ▾ ORIG Not yet signed 4 X 4 X 1 1 pending i Publish AL1 Unpublish\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-32-h4-1-working-list.png",
+      "dk-31-h4-1-working-puck.png"
+     ]
+    },
+    {
+     "id": "H4.2",
+     "did": "View-only Sched — the published face of Tuesday",
+     "saw": "lines naming him: [] · his pucks' classes [\"puck dim\"] · \"Tuesday Jul 14 ORIG 4 X 4 X 1 Original — as issued Working draft — not issued i\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-33-h4-2-face.png"
+     ]
+    },
+    {
+     "id": "H4.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    },
+    {
+     "id": "H5.1",
+     "did": "Vandal lands 22:30 Monday (seated true). Tuesday \"+ Wave\" → SC, first shift B \"05:00\" start \"13:00\" end \"19:00\" · rows MAIN:taipan/- MAIN:-/- SPARE:-/- SPARE:-/- (Cobra seated true). A SPARE seat armed",
+     "saw": "his name in the crew list: struck no · printed \"Vandal IP\" · tooltip \"Vandal\" · row \"PILOTS · 25 FREE Ace A Anvil IP Blade IP Cinch IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C R Outlaw C Piston\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-34-h5-1-spare-armed.png"
+     ]
+    },
+    {
+     "id": "H5.2",
+     "did": "the other MAIN seat of that shift armed",
+     "saw": "his name in the crew list: struck YES · printed \"Vandal IP crew rest — not clear until 12:30\" · tooltip \"Vandal — crew rest — not clear until 12:30\" · row \"PILOTS · 13 FREE Blade IP Cinch IP Diesel D Gambit C Havoc IP Hunter IP Nomad C Ranger IP Reaper IR Sidewinder IP Torch C Trident IP Warden IP Ace A on VL SAT 1\"",
+     "verdict": "PASS",
+     "pics": [
+      "dk-35-h5-2-main-armed.png"
+     ]
+    },
+    {
+     "id": "H5.3",
+     "did": "his name pressed — placed on that MAIN seat",
+     "saw": "the app said \"Vandal — Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\" · Tuesday's crew-rest warnings naming him: [\"Crew rest breach — Monday landed 22:30, +2h debrief assumed → ended 00:30 → crew rest clear at 12:30, but SC AM starts 05:00 — only 4h30 rest.\"]",
+     "verdict": "PASS",
+     "pics": [
+      "dk-36-h5-3-placed.png"
+     ]
+    },
+    {
+     "id": "H5.err",
+     "did": "browser errors",
+     "saw": "none",
+     "verdict": "PASS",
+     "pics": []
+    }
+   ]
+  }
+ }
+}

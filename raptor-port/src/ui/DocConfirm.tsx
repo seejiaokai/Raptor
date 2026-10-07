@@ -9,7 +9,9 @@
      available yet. The save resumes with the document treated as resolved.
    Mirrors OilConfirm's shape (scrim click + its own Escape = cancel = Upload),
    so the two save-time asks read and behave the same. */
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { clickedSurround } from './outside'
+import { useSheetFocus } from './sheetfocus'
 
 export function DocConfirm({ who, typeLabel, onUpload, onNoDoc }: {
   who: string
@@ -26,10 +28,13 @@ export function DocConfirm({ who, typeLabel, onUpload, onNoDoc }: {
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
   })
+  /* the sheet takes the keyboard when it opens (W12 — ui/sheetfocus.ts) */
+  const boxRef = useRef<HTMLDivElement>(null)
+  useSheetFocus(boxRef)
   return (
     <div className="airpop upconf-pop docconf-pop" data-testid="docconf"
-      onClick={e => { if ((e.target as HTMLElement).classList.contains('docconf-pop')) onUpload() }}>
-      <div className="airpop-box upconf-box">
+      onClick={e => { if (clickedSurround(e, 'docconf-pop')) onUpload() }}>
+      <div className="airpop-box upconf-box" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b>No medical document — {who}, {typeLabel}</b>
           <button className="x" aria-label="Close" onClick={onUpload}>✕</button></div>
         <div className="airpop-body upconf-body">

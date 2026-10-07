@@ -48,6 +48,16 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
+count from its entered in-time / Rally (D591), and a published weekend must keep the earned leave it went out with when a Logic value
+changes (today it moves at once). **BUILT, FULL-checked and MERGED on his "merge live" — live since 7 Oct 26 (PR #484; D591, D592, D606); archived 7 Oct 26.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn); low, older than it, found by its browser test: [LOGIC-REDRAW-DROPS-TYPING] (the Logic page redraws its rules just after it opens, and a value being typed at that instant is dropped); low, words only, from its walks: [OIL-EARN-DAY-SWITCH-WORDS] (OIL Earn's "Nothing today earns" button reads like a status), [SC-B-CHANGE-SAYS-BRIEF] (the changes window calls an SC shift's in-time "brief"). **D606 (7 Oct 26 — an SC shift's typed in-time counts for OIL) was built and checked on the same branch.** **From his D607 (7 Oct 26 — a walk is sized per change by Opus, from a record of past walks), next, with [START-CONTEXT-AUDIT]:** *(both DONE 7 Oct 26 — D607, D608 — and archived:)* [WALK-LEDGER-HISTORY] (compile the past walks into the record and write its figures), [WALK-SIZING-GUIDE] (the checking guide's wording, read by Astra and Sol before he approves it). [INTIME-LINES-DRAG] (D593, his ask of
+5 Oct 26 — drag a wave's In-time / Rally lines into order on the Scheduler Board, Auto sort too; proposed in the same batch). Low, from the same
+check, each with the next change to its page: [INP-OIL-CHIP-PHONE] (the OIL chip over a phone request card's date), [BOARD-TIME-ESCAPE]
+(Escape does not restore a time box on the board — a question for him). [EDIT-SECOND-CLICK] (low — after a
+changed text box on Edit Schedule, the first click into another box lands on the page and a second is needed; the same on the live
+app; with the next change to the schedule's text boxes). **The same check's three parked questions were answered on 6 Oct 26 (D597–D599) and built on the stack branch** — the items
+are in `OUTSTANDING-ARCHIVE.md`; the sheet's §13 has the walk. Low, a question for him: [INSIGHTS-EMPTY-LINE-COUNT] (an uncrewed line counts as a sortie and a formation in Insights). Low, a question for him: [REQ-ROW-OWN-BOXES] (typing in a request's programme row changes the row, not the request). **From the four readers' second pass (6 Oct 26) — older than the stack or low, not fixed in the check:** [REST-BLANK-LINE] (MEDIUM — a man put on a flying line with no take-off loses his crew-rest check; **BUILT and FULL-checked 6 Oct 26 on `claude/rest-blank-line` (D602) — MERGED, live since 6 Oct 26 (PR #482)**; [OIL-WORK-START] (since built and live, 7 Oct 26 — archived) was NOT built with it — his instruction for that chat named the crew-rest fault alone — and stays next, its own job), **found by that check and filed, none of them this fix's doing: [BLANK-TIMES-ABSENCE] (MEDIUM — a man on all-day leave or a downchit seated on a line with no times gets no line in the warning list until a time is typed; answered YES, flag him at once — D605; **BUILT and FULL-checked 6 Oct 26 on `claude/blank-times-absence-picker-2cebae` — MERGED, live since 6 Oct 26 (PR #483)**), [SC-PICKER-INTIME-REST] (low–medium — the crew list does not warn of crew rest before a man is put on an SC seat whose typed in-time is early; from Sol's read of the fix; **BUILT with it, the same branch**), [SC-BLANK-SHIFT-QUAL] (low), [CREW-REST-MARK-COPIES] (low, a question for him), [BLANK-LINE-SANS-WORDS] (low — its absence sentences done with D605), [TAB-LAST-BOX-TEST-GAPS] (low, tests only)**, **found by the D605 check and filed, none of them its doing: [BLANK-STANDBY-STRIKE] (low — the crew list strikes a man on local leave for a standby seat whose shift times are blank), [BLANK-SEAT-ACTIVITY-HINT] (low — the crew list says nothing before a man with a whole-day course is put on a seat with no times; the list flags him after), [SC-SPARE-RING-BORROWS] (low — one man in a MAIN and a SPARE seat of one SC line: the spare puck wears the MAIN's leave ring), [REQ-ROW-SELF-CLASH] (low — times typed on an all-day request's own row flag its own man), [SC-INTIME-REST-WORDS] (low — the crew-rest sentence calls an SC line's in-time its "start"), [UPCHIT-MOVE-NO-REGROW] (low, a question for him — an Upchit moved later does not give back the days it cut), [OFT-ADD-TWICE-SILENT] (low), [LOOK-PENDING-COUNT] (low)**, then [START-CONTEXT-AUDIT] (what a new chat loads at its start, measured and cut to what a job needs, never at the cost of quality — D602; its first step, the tidy-up after the Codex stack went live, is done and archived; **MEASURED and its options written 7 Oct 26; HIS RULING D609 the same day — options 1 to 4 DONE on `claude/docs-tidy-7-oct` (the merged handoff blocks out, 28 spent rulings and 19 finished items to their archives, his memory notes pruned), 5 and 6 after Astra's and Sol's reads, 7 found nothing to do; option 8 NOT done — the scheduler's rulings stay whole (D611); left open in it: the check that stops it growing back, low**; with it [WALK-LEDGER-HISTORY] (DONE 7 Oct 26) and [WALK-SIZING-GUIDE] (DONE 7 Oct 26 — read by Astra and Sol, approved by him, D608, and in the guide)), [R3-OWED-READS] (both reads done 6 Oct 26 with the crew-rest fix's scenario read — it leaves at the next documents-only pass), (the two small Blue/Red fixes that stood here were built in the check's third round, 6 Oct 26, and archived; `[ROLE-NOT-CHOSEN]` was answered "leave it" — D603), [PEND-INTIME-WORDS], [BOARD-INTIME-JUMP], [WINDOWS-KEEP-KEYS]. Low, tests only: [SAVE-NOTE-TEST-GAPS] (two soft spots in the failed-save warning's browser test, from Astra's read of its last round).
+
 **THE DATABASE COMES AT THE END (D473, 1 Oct 26 — replaces D354's "starts now", on the IT side's own advice):** the app's features
 are built first; group A of `[DB-READINESS]` is built and its last phase (7) waits on his look; group B, the lock's screens and
 `[DB-STEP]` wait for the end; the table list is kept up to date as each feature is added, and the table format is written on his
@@ -108,26 +118,27 @@ only), [SETTINGS-LIST-ROWS] (a stage-2 split, only if it bites), [LW-OIL-DATECHI
 before the first real deployment: [SHARED-OPENS-DEMO-WEEK]; a question for him: [LW-LABEL-NO-DOOR]; with group B:
 [ELOG-LINE-AFTER-COMMAND] (low); the Leave War — [LW-FROZEN-BAR-GAP] (after [HUMAN-RETEST]; show him
 first), [LW-SCRUBBER-FLAKY] (test-only),
-[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (medium, next), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
+[PO-RESTORE-POSTING] (low, from its final code read), [LW-OFFER-ONLY-TAKEABLE] (low, with [LW-LOCKMARK]), [LW-HARNESS-VIEWER-PIN] (test-only, low), [CI-FAIL-PICTURES] (his call, low), [STACK-LEFTOVERS] (low — four small loose ends named in the Codex stack's archived items), [WALK-COST] (a proposal, his word starts it — measure where a walker's tokens go on the next fanned-out walk, then a library of ready walk steps), [SANS-CALENDAR-WIP] (**NEXT — called back 7 Oct 26, D614**; it was on hold, his to call back — the SANS availability calendar's new layout, on its own Codex branch; nothing of it is deleted, D610), [LW-DOZE-GUARDS] (low, check first); the shell — [SHELL-SIDEWAYS-BAR] (low, with the next top-bar change), [SAVE-NOTE-COVERS] (BUILT 5 Oct 26 on `codex/save-note-controls` — MERGED with the Codex stack, live since 6 Oct 26, PR #481), [FLOATWIN-TWO-LINE-BAR] (low, with the next change to either movable window), [GUEST-SAVE-WARNING] (low — a check first, with the next change to the guest's pages), [EVIDENCE-RECORD-SIZE] (low, his call — at Claude's review of the Codex branches), [TRK-SAVE-FAIL-SAYS-SAVED] (low, with [DB-READINESS]), [TRK-ASYNC-STALE] (with [DB-READINESS]), [LW-WINDOW-PRUNE-FLAKE-2] (test-only, low); the Tracker — [TRK-REMOUNT-LANDING] (low, with the next Tracker change), [TRK-KEY-NAME-CLIP] (low, with the next Tracker change). The Tracker — [TRK-PINCH-ASK] (his next Tracker session), [TRK-FLEXBAR-INK] (a question for him, on the Tracker-palette
 look card — D157, merged PR #441).
 The amendment area — PR #434, #435, #437 and #438 MERGED (25–26 Sep 26); left (the small-fixes batch, PR #463, merged 29 Sep 26, filed): [PLAN-BANNER-DOOR] (low, filed by that batch's walk), [ROW-NO-TIME-MARK] (low, a future job, D361), [APP-FONTS-NOT-LOADED] (his call — found 29 Sep 26; every measured width rides on it), [GATELOCK-STALE-LIVE] (low, the check lock's stale rule), [DOCSIZE-MERGE-CEILING] (low, a false alarm of the document check on a merge), [PDF-PRINT-TWICE] (low, found by the IT flow guide research — to confirm in real Chrome), [LW-SEL-HALF-LABELS] (low, the drag sheet's half-day labels — D264), [ITFLOW-OIL-RESHOOT] (low, on his word — D403), [TRK-REFUSALS-UNTESTED] (low, test gaps the guide research found). Left from the amendment batch (D91–D111, merged): [AMEND-SMALL-SEEN] (any time). The docs and the checks — [DEPLOY-DOCS] (its operational half), [DOC-POINTERS-CODE] and
-[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (DONE 2 Oct 26; archived), [INSIGHTS-WHICH-COPY] (D477, D478 — MERGED 1 Oct 26, PR #479; archived), [WORKSPAN-NEGATIVE] (**NEXT — the next chat, D483**; the second Sonnet-walker trial rides on its walk), [SONNET-WALKER-TRIAL] (the first walked 1 Oct 26; **ONE MORE, on a build with known defects — D480**, with `[WORKSPAN-NEGATIVE]`'s walk), [INSIGHTS-BOARD-DOOR] (RULED D481 — to build: a picture first; after `[WORKSPAN-NEGATIVE]`), [INSIGHTS-RULE-CHANGE] (ANSWERED D482 — closed; archived) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
+[RULINGS-LF-PIN] (with the next code change), [PEEK-ISSUED] (a question for him, low), [RULING-HOME-HOOK] (low), [GUIDE-MAP-ROWS] (low, a question for him), [DOCS-SIZE-PASS] (DONE 2 Oct 26; archived), [INSIGHTS-WHICH-COPY] (D477, D478 — MERGED 1 Oct 26, PR #479; archived), [WORKSPAN-NEGATIVE] (DONE — live 6 Oct 26 with the Codex stack, archived; as filed: **NEXT — the next chat, D483**; the second Sonnet-walker trial rides on its walk), [SONNET-WALKER-TRIAL] (DONE — both trials ran and were decided under D595, archived; as filed: the first walked 1 Oct 26; **ONE MORE, on a build with known defects — D480**, with `[WORKSPAN-NEGATIVE]`'s walk), [INSIGHTS-BOARD-DOOR] (DONE — built, live 6 Oct 26, archived; as filed: RULED D481 — to build: a picture first; after `[WORKSPAN-NEGATIVE]`), [INSIGHTS-RULE-CHANGE] (ANSWERED D482 — closed; archived) — [DOC-SUBHEADS], [RULING-HOMES-AUDIT]
 and [HANDOFF-SHAPE-GUARD] done on `claude/docs-tidy-subheads-audit-ec8f87` (28 Sep 26; archived),
 Roles — [QUALS-MEMBER-SCOPE] (folded into [ACCOUNTS], D200), and beside it [QUALS-PROTO-TOAST] (low, one line of words).
 The five-flags batch (built on `claude/five-flags-batch-build-ef7d85`, 26 Sep 26; FULL-checked and its PR from `claude/five-flags-batch-continue-2cfa70`, 27 Sep 26 — its five items archived) — his answers D270–D275 BUILT and FULL-checked on that branch, 27 Sep 26 (their three items archived); his look card's four questions answered 27 Sep 26 (D276–D279, nothing to build);
 [ARROW-GUTTER-STRIP] (its strip moot by D275; one small leftover, low); low: [GHOST-FLAG-SHADOW], [LW-SETTINGS-SMALL],
-[ALLAVAIL-OPEN-ROW] (investigate first), [VH-SHEETS-IPHONE] (low — other pop-ups sized by `vh`, his D536 find fixed for the windows), [MODAL-DRAG-CLOSE] (his report — a window closes when text is drag-selected and let go outside it; FIXED on the Insights branch, D538, awaiting the reads).
-Insights — [INSIGHTS-MISSION-MIX] (D512–D532 settled; built on the isolated branch, qualified FULL checks complete,
+[ALLAVAIL-OPEN-ROW] (investigate first), [VH-SHEETS-IPHONE] (low — other pop-ups sized by `vh`, his D536 find fixed for the windows), [MODAL-DRAG-CLOSE] (DONE — live 6 Oct 26, archived; his report — a window closes when text is drag-selected and let go outside it; FIXED on the Insights branch, D538, awaiting the reads).
+Insights — [INSIGHTS-MISSION-MIX] (DONE — live 6 Oct 26 with the Codex stack, archived; what it left open is [STACK-LEFTOVERS]; as filed: D512–D532 settled; built on the isolated branch, qualified FULL checks complete,
 fresh independent Astra R2 PASS; Opus interim code read (D533) found three small findings, fixed by Opus the same day (D534, D535);
 Claude's later read owed before main), with [INSIGHTS-BOARD-DOOR].
 The changes window — [HIST-PER-PAGE] (an idea, filed D349; a mock-up first, after the change-recording re-test). The
 phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Codex build), [PHONE-WIDE-BOARD-BLANK] (medium, from the same walk). The bubble — [BUBBLE-SMALL-SEEN] (low, from the same walk).
 
-**His word, D488; order narrowed by D495 (2 Oct 26):** [DISCARD-MARKS-REMOVE] — BUILT on `codex/discard-marks-remove`; FULL checks and independent Astra inspection passed. Claude's Monday further reads and owner look remain owed before main.
+**His word, D488; order narrowed by D495 (2 Oct 26):** [DISCARD-MARKS-REMOVE] — DONE, live 6 Oct 26, archived; as filed: BUILT on `codex/discard-marks-remove`; FULL checks and independent Astra inspection passed. Claude's Monday further reads and owner look remain owed before main.
 
-**From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION]. **D493 (2 Oct 26):** the tidiness read is answered — three tidy-ups approved, each with its area's batch: [LW-ROWS-SPLIT] (the next Leave War batch), [CSS-SPLIT-BY-SCREEN] (first step of the workflow UI pass), [TRK-FILE-TRANSFER-SPLIT] (the Tracker batch); two not now (in [CODE-TIDY-AUDIT]).
+**From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION]. **D493 (2 Oct 26):** the tidiness read is answered — three tidy-ups approved, each with its area's batch: [LW-ROWS-SPLIT] (the next Leave War batch), [CSS-SPLIT-BY-SCREEN] (DONE — live 6 Oct 26, archived; it was the first step of the workflow UI pass), [TRK-FILE-TRANSFER-SPLIT] (the Tracker batch); two not now (in [CODE-TIDY-AUDIT]).
 
 **Historical build authority — D580, now ON HOLD D585 (5 Oct 26):** [SANS-COMMITMENT-CALENDAR] is authorized to build from delegated recommendations while the owner sleeps; includes Member Inputs calendar and secondary List. Initial D569 scope: monthly SANS demand/shortage calendar, shared day commitments and existing Custom timing form with no Remarks placeholder. Caps/ops new-chat handoff remains cancelled D568; no new chat created. Caps/ops, other Inputs work and Tracker remain outstanding. Earlier builds/every owed read unchanged; agent settles product choices with reasons and pictures before source work; independent review/required checks and Claude before main remain.
+**The feature batches — HIS ORDER, D495 (2 Oct 26); Astra plans/reviews, Sol 6.1 builds in Codex until the reset (D496), Claude reviews after it (D494):** *(7 Oct 26: the first four — Discard marks, the work-hours fix, Insights, the workflow UI pass — are built and live (PR #481) and archived; next in this order is Inputs, where the SANS calendar's new layout is on hold — [SANS-CALENDAR-WIP], D610.)* [DISCARD-MARKS-REMOVE] (the small first job) → [WORKSPAN-NEGATIVE] → Insights ([INSIGHTS-MISSION-MIX], with [INSIGHTS-BOARD-DOOR]) → the workflow UI pass ([CSS-SPLIT-BY-SCREEN] first) → Inputs → the Tracker (with [TRK-FILE-TRANSFER-SPLIT]) → caps and ops limits → one whole-app check — the list: [FEATURE-WISHLIST].
 **Timing follow-up:** [REST-FIRST-CREW-HINT] — existing empty-formation predictive-rest gap, filed with caps and ops limits; committed placement still validates. Current Rally evidence declares this limitation; no owner approval inferred.
 **Availability follow-up:** [SANS-PREVIOUS-REPORT-OFFER] — previous-date offers are not combined with target-date half-days for a previous-evening report; characterized in this round's actual picker/placement, with caps and ops limits. No new availability policy or owner waiver inferred.
 **Workflow UI follow-up:** [PALETTE-WRAPPED-HEADER] — inherited sticky-palette overlap under a wrapped desktop account bar; with the UI pass after [CSS-SPLIT-BY-SCREEN]. Current Rally and baseline reproduce it; not dismissed as a helper-only failure.
@@ -712,17 +723,81 @@ switch it to the section's `.on` / `.doze`. Nothing on screen is known to be wro
 measured it at 149px before and after). At 844×390 the desktop menu wraps into two rows and takes 149 of 390px — the
 biggest single piece of a sideways phone's screen (the Tracker walk's w3 O4, moved here from `[TRK-RETEST-NOTES]` when the
 Tracker's own fold, D373, was built). A shell layout question, and a visual one: a picture first.
+*(5 Oct 26, `[SAVE-NOTE-COVERS]`: while a save has failed the warning's band adds 36px to it — 185 of 390px on a
+sideways phone, until the save lands.)*
 
-### [SAVE-NOTE-COVERS] Raptor's "Not saved — Retry" note floats over the page's own controls (filed 28 Sep 26)
-**Place:** medium — next, on its own small branch (a shell matter; the change-recording chat is changing the top bar —
-tell it first, D302). Found by the Tracker leftovers' walk (walker c, F2; pictures
-`raptor-port/docs/img/handpass/2026-09-28-trk-leftovers/walk/lo-2c-b06-1200.png`, `…-b06-390.png`): when a save fails,
-the note that floats under the top bar's right end (since `[LW-FIGSEL-FLAKE]`, merged 28 Sep 26) lands exactly over the
-Tracker's ✓ Save changes at 1200px — a press on Save's middle hits Retry, a press on the note's words passes through to
-Save beneath — and at 390px its Retry sits on the ✎ Syllabus menu button. It reads amber, not red. **Do:** a
-roll-call of every page's controls under the note's spot (Edit Schedule, the board, the Leave War, the Tracker, Quals,
-Admin) at phone and desktop; give the note a place that covers nothing (or pushes nothing), with a browser test that
-the element at each covered control's centre is still that control.
+### [FLOATWIN-TWO-LINE-BAR] The two movable windows open over the bottom of a two-line top bar (filed 5 Oct 26)
+**Place:** low — with the next change to the changes window or the ALL AVAIL window. Found while building
+`[SAVE-NOTE-COVERS]`: both open at a fixed spot, 96px down the right edge, whatever the top bar's height. Where the bar
+is two lines (Edit Schedule at about 1400px wide and under: 103px) the window's top edge lies over the bar's last 7px,
+on `main` too. With a failed save showing it now opens lower by the warning's band, so it stands where it stood — still
+those 7px over the band's lower edge; Retry's middle stays clear and a real press reaches it (tested). **Do:** measure
+the opening spot from the bar's bottom, as the failed-save warning does (`raptor-port/src/ui/floatwin.ts`,
+`raptor-port/src/ui/SaveStatus.tsx`).
+
+### [GUEST-SAVE-WARNING] Does a guest's own page ever need the failed-save warning? — a check (filed 5 Oct 26)
+**Place:** low — check first, with the next change to the guest's pages. Astra's second read of `[SAVE-NOTE-COVERS]`
+noted that someone signed in without access gets a separate, read-only set of pages (`raptor-port/src/ui/GuestApp.tsx`)
+that has never drawn the save warning, before or after that fix. **To check:** does anything a guest does get saved
+through the app's saver (an access request, for one)? If it does and that save can fail, the guest is told nothing —
+give that page the same warning (`SaveBand`, `raptor-port/src/ui/SaveStatus.tsx`). If nothing of a guest's is saved
+that way, close this with the reason. Not walked; nothing on screen is known to be wrong.
+
+### [WALK-COST] Make a walk cost fewer tokens — measure where a walker's tokens go, then cut the avoidable part (his question, 7 Oct 26; a proposal, not ruled)
+His words: *"how can we make walks less token intensive? Or it's inevitable."* Told to him: not inevitable — a walker's half
+million tokens (`raptor-port/docs/walk-ledger.md` §The figures) go to loading the project, writing and fixing its own
+browser scripts, opening pictures and writing its report; only the looking is the part nothing else replaces; how the cost
+splits has NOT been measured. **Proposed, in order of likely saving:** (1) fewer walkers — already the rule (D607, D608);
+(2) a kept library of ready walk steps per screen (`raptor-port/scripts/handpass/` has the drivers; most walkers still write
+their own scripts and lose runs to script mistakes — the ledger's "not faults" column), so a walker runs and reads rather
+than writes; (3) the script judges pass or fail in words, the walker opens pictures only behind a fail and a high-stakes
+pass (D595's condition, extended from the host to the walker), and looks at one sheet of small pictures instead of each
+full one; (4) a scenario that passed in a walk becomes a browser test, so the gates run it from then on. **First step,
+with the next walk that uses helpers:** record in that walk's ledger row how each walker's tokens split (reading, script
+writing and re-runs, pictures opened, the report) — then build (2) for the screens walked most. **Not ruled — his word
+starts it.** **Place (the agent's line):** the measuring rides with the next fanned-out walk; the library is a small job of
+its own after it (a change to how walks are run — its guide wording read by Astra and Sol, D70).
+
+### [STACK-LEFTOVERS] Small loose ends named in the Codex stack's finished items, kept when those items went to the archive (filed 7 Oct 26)
+Each stood inside an item that is otherwise built, checked and live (PR #481), and none was settled in the stack's check
+(`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md`). All low. (1) **Insights, two edges never tried**
+(`[INSIGHTS-MISSION-MIX]`, the Opus interim read of 3 Oct 26): what a published day's "changes to go out" strip shows after
+"Choose mission role" is pressed with unsaved typing in the Remarks box; and the week's Templates button while a saved
+plan is being looked at. (2) **Insights, one tidy-up** (D489's note): the change history and Undo each work out the wording
+for a Blue/Red answer by themselves — one shared helper would stop them drifting; with `[CODE-TIDY-AUDIT]`. (3) **Three
+checks of the older "adapted audit" script failed the same way before and after the Insights build** (an AL mark that
+moves, an issued key rewritten, where an input's Undo lands) — written down then as limits of the script, not faults; look
+again when that script is next run. (4) **Discard marks — not ruled, his to raise:** a button that puts a published day
+back to its last published version (`[DISCARD-MARKS-REMOVE]`, D488). The second cheaper-model trial — one small fix built
+by a Sonnet helper — lives in `[OG-TAG-OVER-COUNT]`. **Place (the agent's line):** (1) with the next change to Insights'
+role question; (2) and (3) with their own jobs; (4) only if he raises it.
+
+### [SANS-CALENDAR-WIP] The new layout for the SANS availability calendar, worked on with Codex, is in progress and on hold — nothing of it is deleted (owner, D610, 7 Oct 26)
+**CALLED BACK 7 Oct 26 (D614): the NEXT job is the Inputs calendar and the SANS availability calendar.** Start from
+`codex/inputs-sans-calendar`'s own `HANDOFF.md` block (read it with `git show origin/codex/inputs-sans-calendar:HANDOFF.md`).
+That branch is 124 commits behind the live version: bring it level FIRST — it meets `main` in the rulings files (use
+`backlog-archive.mjs --rulings --merge`), `AGENTS.md`, `HANDOFF.md`, `OUTSTANDING.md`, `raptor-port/docs/ui-contracts.md`,
+`raptor-port/playwright.config.ts` and `raptor-port/src/ui/InputsCal.tsx` (the failed-save band, D587). **Opus 5.5 builds it, in Claude Code (D615, 7 Oct 26)** — it reads
+what Codex built first; Astra and Sol 6.1 review what Opus adds. Nothing of it is deleted (D610). Size the walk first (D607, D608).
+His words: *"That's still work in progress and I may call it back to work on it anytime. So don't delete"*. The work is on
+the branch `codex/inputs-sans-calendar` (on his PC and on GitHub; checked 7 Oct 26) — its own handoff block, its rulings
+D567–D585 and its records are on that branch, not on `main`; Codex recorded his hold there (D585) and D589 kept it outside
+the Codex stack. **Until he calls it back: no chat reviews, rebuilds, merges or tidies it, and no tidy-up deletes its branch,
+its records, its pictures, its backlog items or its rulings.** When he calls it back: read that branch's `HANDOFF.md` block
+first; its ruling numbers D567–D585 are reserved. In D495's order it is the batch "how inputs show on the calendar"
+(`[FEATURE-WISHLIST]`). **Place:** his to call.
+
+### [EVIDENCE-RECORD-SIZE] The Codex branches carry very large machine-written record files (filed 5 Oct 26)
+**Place:** low — his call, put to him at Claude's review of the Codex branches, before any of them reaches `main`. He
+asked on 5 Oct 26 why the branch showed about 680,000 added lines. About 585,000 are records of checks, not the app:
+two measurement files of about 122,000 lines each and two of about 33,000 under
+`raptor-port/docs/handpass/css-split/`, a 29,000-line test log under `raptor-port/docs/handpass/insights-mission-mix/`,
+and the evidence archives beside them. They do not run in the app or slow it; they make the repository heavier to
+fetch and to search. *(6 Oct 26: the crew-rest fix's walk added about 150 MB of pictures — four walkers' and the host's, 1,298 —
+under `raptor-port/docs/img/handpass/2026-10-06-rest-blank-line/`, kept whole as the Codex stack check's 224 MB were; the same
+question covers them.)* **The question for him:** keep them whole, or keep each check's evidence sheet and pictures and
+move the raw measurement files and logs out of the repository (their fingerprints stay in the sheets). Nothing is
+deleted without his word.
 
 ### [TRK-SAVE-FAIL-SAYS-SAVED] Inside Raptor the Tracker says "saved" when the save failed (filed 28 Sep 26)
 **Place:** low — with `[DB-READINESS]` (honest refusals and saves in small pieces are that batch's job). Found by the
@@ -1466,43 +1541,6 @@ loaded and what viewers still see; the second "N things to know ▾" opening the
 history. **Place:** low — his call; its own small job (WALK tier: a message on a shared surface), never inside another change.
 Carried here from the merged `claude/db-readiness-table-shaping-4094f6` handoff block when it was removed (1 Oct 26).
 
-### [SONNET-WALKER-TRIAL] One Sonnet 5.5 walker beside the Opus ones on the next walk, and the comparison reported to him (D476, 1 Oct 26)
-**His ruling (D476 — "Trial"):** to save tokens (the three walkers of the `[WARN-HIDE-KEPT]` FULL check cost about 1.9
-million), try Sonnet 5.5 as a walker — once, beside the Opus ones, not instead of them. Full row:
-`.claude/decisions-full/how-we-work.md` D476; the method: `raptor-port/docs/bug-check-order.md` §4.
-**To do, on the next WALK- or FULL-tier check (whichever job it is):** (1) fan the walk out as usual (D16, Opus); (2) spawn ONE
-extra walker with `model: "sonnet"`, handed the SAME brief, scenario share and frozen build as one of the Opus walkers,
-on its own port and its own picture folder; (3) reproduce every finding of both; (4) report to him, in plain words, a
-small table: what each found, what each missed that the other found, false alarms, pictures opened or not, tokens
-each cost; (5) record his answer as a new ruling — it decides whether walkers, documents-only chores and gate runs
-move to Sonnet 5.5. Until then nothing else goes to a cheaper model.
-**Place:** with the next walk — it adds one walker to that walk and nothing else; no build of its own.
-**WALKED 1 Oct 26, on `[INSIGHTS-WHICH-COPY]`'s walk** (steps 1–4 done): the two walkers gave the same verdict on all 19
-scenarios; no false alarm from either; the Opus walker alone met one older defect off the list; the Sonnet walker skipped
-one part (Print / CSV) and owned up to one weak check; about 613,000 tokens against about 620,000. The table: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md`
-§11. **Caveat told to him:** the build had no defect in it, so the trial does not show whether Sonnet catches what Opus
-catches. **HIS ANSWER — D480 (1 Oct 26): "One more trial".** A second trial on the NEXT walk, on a build with known defects: walk the
-build as it stood BEFORE its fix, neither walker told what is wrong, and report what each CAUGHT (`raptor-port/docs/bug-check-order.md`
-§4). **Its place:** `[WORKSPAN-NEGATIVE]`'s walk (the next chat, D483) — freeze the build before the fix for the two trial
-walkers. Then his answer to the second report is a new ruling. Until then nothing else goes to a cheaper model.
-
-### [MODAL-DRAG-CLOSE] A pop-up window closes when text is selected by dragging and the finger or mouse is let go outside it — found 3 Oct 26; FIXED the same day on the Insights branch (D538), awaiting the reads and main
-**FIXED 3 Oct 26 (his "Fix it", D538):** one helper, `src/ui/outside.ts` `clickedOutside` — a window closes on its surround only
-when the press began on the surround; all thirteen windows that close that way use it; `outside.test.tsx` was red first and scans
-that none keeps its own test; re-tried in the running app. Fable and Astra read it after the reset. What follows is the find.
-**His report (3 Oct 26, the Duty templates window, "desktop mode"):** *"it seems like this page closes itself when I tried to type in
-a new row role. Something along that line. Seems like a bug."* **Reproduced on a desktop, on the Insights build and on the build
-before it:** press inside a box in the window, drag to select its text, let go on the dark surround — the window closes. The press
-started inside and the release landed outside, so the browser reports ONE click on the surround, which is the window's "tap
-outside to close" test (`src/ui/DutyTplModal.tsx:74` — `e.target.id === 'tplModal'`; the same test on at least six other
-windows: Insights, day templates, plans, manage waves, and the rest of `ui/*Modal*.tsx`). Typing, Enter, a suggestion and Tab did
-not close it, at desktop or phone size; a real iPhone keyboard was not available to try. **To build:** close on the surround only
-when the press BEGAN on the surround too (remember the pointer-down target; one shared helper for every window, with a test that
-drags from a box to the surround on each). His standing rule "a click-open popup closes on a click outside it" (4 Sep 26) stays —
-a drag that started inside is not a click outside. **Not fixed here:** no ruling asked for it (D534 and D536 name their fixes).
-**Place:** small, with the workflow UI pass (D495) — or at once on his word. Evidence and probe:
-`raptor-port/docs/handpass/2026-10-03-insights-mission-mix-opus-interim.md` §His second report.
-
 ### [VH-SHEETS-IPHONE] Other pop-ups sized by the screen height without the browser's bars — found 3 Oct 26, not changed
 His find on the Insights preview (D536): on his iPhone the Insights window's title bar and ✕ sat under the address bar, because
 a phone pop-up window's limit was written in `vh` — the screen WITHOUT the browser's bars. Fixed for every `.modal` window
@@ -1529,119 +1567,6 @@ and leave that popup unchanged. This does not clear other panels or unspecified
 keyboard/browser-bar states; no app repair is filed for that recovered behaviour.
 **D548:** leave these popup behaviours unchanged in this repair; only the phone
 Board's blank Desktop layout is selected. The original observations are retained.
-
-### [INSIGHTS-BOARD-DOOR] The Scheduler Board gets a way to open Insights — BUILT on the Insights branch, awaiting reads/main
-Built with `[INSIGHTS-MISSION-MIX]` after D532 picture agreement: desktop beside the bell; phone in More only.
-Actual callback and phone/desktop hit tests passed; the phone cascade overlap was found in pictures and repaired.
-Fresh independent Astra final R2 PASS on freeze5 after both repairs; original phone-toolbar geometry also passes.
-FULL evidence: `raptor-port/docs/handpass/2026-10-03-insights-mission-mix.md`. Claude's later read remains owed before main.
-Original discovery and recipe below are historical, preserved for review.
-Found by Astra's scenario design for `[INSIGHTS-WHICH-COPY]` and recorded by both walkers at both widths: while the
-Scheduler Board is up, its own bar carries no Insights button (Calendar, Highlight, Templates, Sort all, Undo, Redo, History,
-Sync, the bell, ✓ Done — D349's approved bar) and the shell's button and the phone's ☰ are covered by the board. It has
-always been so; not a defect of that build. A window opened on Edit Schedule before the board stays on top of it.
-**The question for him:** should the board gain a way in? On a phone its bar is ONE row and full (a control added there
-displaces one — `.claude/rules/decisions/scheduler.md` §Week navigation), so the phone's place would be the ⋯ menu.
-Evidence: `raptor-port/docs/handpass/2026-10-01-insights-which-copy-check.md` §5.2 finding 1.
-**HIS ANSWER — D481 (1 Oct 26):** *"Yes, give me an insights button but where can we put the button? Is it too full for the
-phone too?"* **Proposed to him, his to confirm on a picture:** desktop — a button "Insights" in the board's bar beside the
-bell; phone — the bar is one row and full, so inside its ⋯ menu beside "Sort all" and "Desktop layout". **To build:** the
-door in `ui/SchedBoard.tsx`'s bar and its ⋯ menu (`setInsights`), the window already stacks above the board; a browser test
-that the window is topmost at its centre over the board at both widths. **Place:** its own small job (WALK tier), a picture
-first; after `[WORKSPAN-NEGATIVE]`. Full row: `.claude/decisions-full/scheduler.md` D481.
-
-### [INSIGHTS-MISSION-MIX] Split each person's weekly sortie bar into blue and red (D512, 3 Oct 26)
-**BUILT on `codex/insights-mission-mix`, not merged; qualified FULL checks complete, fresh independent Astra R2 PASS, Claude's later read owed:** "Red", "DS" and "Red Air" missions count red automatically (D518).
-The revised plan is implemented: guarded context annotations, separate issued/working answers, immediate published
-Insights, actor/history/Undo, silent templates/unchanged tabbing, default-Off Logic control and twelve/Show all.
-Evidence and all33 qualified real-route results: `raptor-port/docs/handpass/2026-10-03-insights-mission-mix.md`.
-Three adapted audit assertions also fail identically on the unchanged planning snapshot (AL-mark relocation/issued
-key rewrite and Input Undo table landing); recorded limitations, no unrelated feature repair or false clean gate.
-Fresh Astra R1 found the dirty-text/Choose ordering defect, now repaired with twelve failing-first connected editor
-tests; repaired freeze4 functional walk and locked freeze5 affected walk passed, exact-freeze5 full unit7642/0,
-affected Raptor browser197/0 and perf4/0. Fresh NEW Astra second inspection PASS, zero new concrete defects,804 hashes
-matched. Full report: `raptor-port/docs/handpass/2026-10-03-insights-mission-mix-review-r2.md`; physical iPhone unverified.
-Nonblocking D489 maintenance note: history and
-Undo descriptions separately parse role-command human metadata; a shared description helper may prevent future drift.
-No extraction or later CSS-split work is required for this acceptance or started in this batch.
-**Opus 5.5 interim code read (D533) DONE 3 Oct 26 — REVISE (small), three findings to fix on the build branch before Claude's
-review after the reset; none changes what is saved, signed or counted:** **F1** (regression, confirmed in the running app) — on
-the Board's view of the latest published version, tracking On, a cue formation's Remarks box loses its "Changed at AL…" mark
-(`src/ui/board.ts:298` drops `alAttr` with the read-only door's attributes); **F2** (plan departure, confirmed) — an open
-Blue/Red question disappears after any other edit on the same day (`mission-roles.ts:96`, the day-revision test); **F3**
-(wording, confirmed) — the History line for a role copied by a day template prints the row's internal code instead of the
-formation (`changelines.ts:449–453`). Two low edges left unverified. A code read with three targeted runs only: the 33
-scenarios, the phone-and-desktop walk and the gates were NOT run and stay owed. Report, repro scripts, two pictures:
-`raptor-port/docs/handpass/2026-10-03-insights-mission-mix-opus-interim.md`, `raptor-port/docs/img/insights-opus-interim/`.
-**F1–F3 FIXED the same day by Opus (D534), F2 as he ruled it (D535 — the open question stays through an unrelated edit):** each
-with a failing-first test (`src/ui/mission-role-interim-fixes.test.tsx`), re-walked on the rebuilt app at desktop and phone
-size, one full gate run green (unit 7,646/0, browser 520 passed/49 skipped, original 728/0, Tracker 445/0). Opus wrote them,
-so Fable and Astra read them in the review after the reset; nothing here is owed to Codex now. Two low edges stay unverified
-(a published day's "changes to go out" strip after a dirty-text Choose; the weekly editor's Templates button while a saved
-plan is being looked at) — for that review to try.
-**His find on the preview, fixed the same day (D536):** on his iPhone the Insights window's title bar and ✕ sat under the
-address bar; the pop-up windows' height limit now follows the visible screen. Only his phone can prove it — his look. The
-same sizing elsewhere is filed as `[VH-SHEETS-IPHONE]`.
-**D532 — final look approved 3 Oct 26 ("ok approved"):** complete 18-picture phone/desktop/short gallery accepted,
-including Choose/Change, Working/Published context labels, latest-published read-only Remarks and both Board entry places.
-Implementation now authorized in the isolated new build chat under the unchanged revised plan. FULL checks, all33,
-fresh Astra inspection and Claude's later code/scenario read before main remain required; no merge/main push/PR.
-Other missions remain blue unless DS/RED in Remarks or a non-exact Mission name cues a Blue/Red role question; its answer covers
-the whole formation (D517). No extra red indicator appears on schedule lines (D519).
-D520 approves the after-edit question below formation AREA, Remarks visible, temporary space removed after either answer.
-D521 adds a squadron-wide blue/red tracking on/off setting on Logic; D522 starts Off at first setup. D523 keeps ordinary
-total bars for people with unanswered roles until those roles are chosen, without guessing or a burst of questions.
-D524 approves the shown Logic switch look/label. D525 remembers until Mission/relevant support wording changes; D526
-saves Remarks even unanswered, total bars until roles chosen; D527 offers a temporary correction action while editing
-relevant Remarks. The complete chart/Board/incomplete-bar look and missing-role access pictures remain to confirm; no build here.
-D528 early Opus5.5 plan review is complete; this narrowly superseded the wait-until-reset instruction, not the later
-code review or main/merge limits.
-One person who flies both has both coloured segments in their existing total bar. His supplied phone picture names the
-target: Flying load · sorties this week. Continue this batch now while Claude's further review waits; no live merge.
-**D513:** initial twelve flying people, with Show all. **D514:** DS for another formation is our red air, but DS wording
-may describe external support for us instead. D518 uses those words as a cue to ask, never to infer the role.
-D515: settle the firm plan and pictures in this chat, then build in a new chat. He asks to see a minimal Blue/Red choice
-before deciding and is concerned about disrupting scheduling; D518 subsequently chooses only a conditional question.
-D516 excludes SC/AVALON/BB
-standby duties from flying load and includes SC main in work hours.
-Preserve latest-issued-day counting (D478), cancellation/standalone exclusions, stable person identity and work hours.
-Design/picture: `raptor-port/docs/superpowers/specs/2026-10-03-insights-mission-mix.md`; NEW authored revision and independent
-read: `raptor-port/docs/superpowers/plans/2026-10-03-insights-mission-mix-build-plan-revised.md` / `2026-10-03-insights-revised-plan-review.md`.
-Frozen original plan/reads remain unchanged. **Place:** Insights, item 3 of
-`[FEATURE-WISHLIST]`, with `[INSIGHTS-BOARD-DOOR]`; product questions only after checking existing rulings. Claude's further
-independent read after the reset remains owed before main.
-**Opus 5.5 early plan review (D528) DONE 3 Oct 26 — REVISE, not PASS:** five blocking findings, eight improvements, three
-owner choices, in `raptor-port/docs/superpowers/plans/2026-10-03-insights-opus-plan-review.md`. B1–B4 and I1–I8 reconciled in
-the NEW Astra plan; B5's original fix withdrawn under D530/§7. Sol's independent final read is PASS for that technical
-plan, not owner look/code approval. Astra's D529–D531 short/full meaning read is PASS. Complete responses/dispositions
-are in the NEW revised-plan review record. Final picture look includes proposed latest-published read-only Remarks
-access with Published/Working context text; original chart/Board/Logic placement remains. Code/scenario read still owed.
-**His answers, "1-3 as recommended" (3 Oct 26) — they change the plan:** D529 the question is asked automatically only straight
-after the scheduler's own edit (Remarks or Mission) leaves a formation needing an answer, otherwise a temporary "Choose mission
-role" button while its Remarks box is edited — never on passing through; D530 a Blue/Red answer counts at once, published days
-included, with no amendment and no effect on sign-offs (wording changes still wait) — it replaces "answers on an issued day wait
-for the amendment" above and in D478/D523/D526; D531 a Mission box containing DS or RED that is not exactly DS / RED / RED AIR
-asks, never guesses. The frozen plan predates all three and stays unchanged. NEW revision and independent read are done;
-his complete final picture agreement is now D532. New build chat created isolated `codex/insights-mission-mix` from refreshed
-planning baseline `5f9bf978`. At design approval source was untouched; implementation and checks now use that isolated branch.
-All 18 final phone/desktop/short-phone design pictures inspected; independent
-Astra design read PASS after corrections. Gallery `raptor-port/docs/img/insights-final-look/index.html`; complete evidence
-and responses `raptor-port/docs/superpowers/plans/2026-10-03-insights-final-look.md`. D532 recorded before source work; D533 next.
-
-### [DISCARD-MARKS-REMOVE] Remove the "Discard marks" button from the Amendments box (D488, 2 Oct 26)
-**3 Oct review follow-up completed:** only the unused import and six historical-script retirement heads from Claude's small check, on this same branch. Original bodies/history preserved; no new behaviour. All five gates plus rulecheck/docsize PASS; fresh independent Astra delta inspection PASS, recorded in the existing branch-local evidence sheet. The separate Rally fixes are pushed on `codex/rally-workspan`; this branch contains no Rally changes. Monday's owed reads and owner look remain.
-**BUILT 2 Oct 26, not merged:** `codex/discard-marks-remove`; Sol 6.1 built, fresh Astra final inspection PASS, FULL gates/runtime passed (one already-filed browser retry disclosed). Evidence and complete inspection response are on that branch in `raptor-port/docs/handpass/2026-10-02-discard-marks-remove.md` and `…-review.md`. Claude's further code/scenario/working-guide reads after Monday 5 Oct 26, 19:00, and owner look remain owed before main. The phone item is archived as moot. The original build recipe below is retained for review.
-His ruling: remove it. It clears only the change marks of days not yet published (the edits stay), a first publish clears them
-anyway, and its name misleads. **To build:** take the button out of the Amendments box (`ui/ALPanel.tsx`), with its command, its
-count and its "Draft marks cleared (N)" history line (`state/sched-commit.ts commitDiscardPending`, `engine/publish.ts
-discardPending` / `discardableCount`) — check first that nothing else calls them; the tests that pin it change with it (five test
-files name it), and the old walk scripts under `scripts/handpass/` that press it are history, left alone. Rewrite the sentence in
-`raptor-port/docs/engine-rules.md` marked D488; check `ui-contracts.md`, `feature-impact.md` and the IT flow guide for the button
-(D201; the guide is re-shot only on his word, D403). Roll-call: the Amendments box on a desktop, the phone (the box is hidden
-there), a week with only draft days, a week with a published day carrying pending changes, the change history. LOOK / WALK tier
-by the order's questions — it removes a door and a command that writes the saved marks, so answer them honestly at build time.
-`[PHONE-DISCARD-MARKS]` is archived with it. **Not ruled, his to raise:** a button that puts a published day back to its last
-published version. **Original place — D488:** after the reset (D484), batched with other small Edit Schedule fixes (D485). **Narrowed by D494/D495:** the small first Codex job, now built; review/merge still pending as above.
 
 ### [FEATURE-WISHLIST] Features he means to add — his list, not yet ruled or designed (2 Oct 26)
 His words, 2 Oct 26, asking where new features fit in the order of work: *"1. Format of how the inputs are displayed to calendar
@@ -1798,63 +1723,6 @@ lines) for a new `MatrixRows.tsx`; the grid file keeps its state, geometry, sele
 New file → `docs/file-map.md` in the same change. Tier by the order's questions at build time (Astra says FULL: permissions
 and the OIL display are drawn there). **Place — D493, D485: with the next Leave War feature batch, never alone.**
 
-### [CSS-SPLIT-BY-SCREEN] The scheduler's stylesheet split by screen — APPROVED D493 (2 Oct 26), the first step of the workflow UI pass
-From Astra's tidiness read (its §2 — read it before building). `src/ui/scheduler.css` (about 6,700 lines) becomes an ordered
-list of per-screen parts, every rule body moved unchanged and the overall order kept. Before any rule moves: a test that
-every part loads once and in order, and a recorded measurement of the key computed styles, admin and member, at phone, laptop
-and desktop widths — compared again after. No selector clean-up in the same change; no button changes size (D487). New files
-→ `docs/file-map.md`; `docs/performance.md` Part 1's checklist applies. **Place — D493: the first step of the workflow UI
-pass (`[FEATURE-WISHLIST]` item 5), before that pass moves anything.** **D539 (3 Oct 26):** Codex builds it its normal way (Astra
-plans, Sol builds, Astra reads); Opus does not plan it; an interim Opus read of the finished split, if it is done before the reset
-and allowance remains. Its new branch is cut from `codex/insights-mission-mix` with the two other built branches merged in first
-(`HANDOFF.md`). After the split, every screen is walked at phone and desktop size, not only the measured ones.
-**D540–D541 (3 Oct 26):** owner explicitly requires that integrated base before any rule moves, keeps the three earlier builds
-separate for Claude's review, and requires no visible change plus opening every phone/desktop screen picture. Next batch branch:
-`codex/workflow-ui`; scope: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md`. D546 defers D542/D543; D544 keyboard work remains. Actual UI design still waits.
-**Built/checks, 3 Oct 26:** split22 contiguous runs from the combined base, original bytes and all4 emitted CSS assets exactly equal;
-full unit7727,reference728,browser527+49existing skips,Tracker445,all6adapted/perf4/rulecheck/docsize PASS. Every main screen at
-phone/desktop walked; all187before+136after original PNGs opened, actual-member/laptop/breakpoint/short-height matrix also checked.
-Known `[PHONE-WIDE-BOARD-BLANK]` remains unchanged and is not a wide-body usability PASS. Fresh independent Astra R1 PASS for the bound mechanical split;
-evidence: `raptor-port/docs/handpass/2026-10-03-css-split.md`. Claude's full read after Monday19:00 still owed before main;
-item stays here until the required reads and owner's live word. Continue from D544–D546 and the filed UI faults;
-usability versus file splitting explained, first two priorities deferred. No further UI design or source change inferred.
-
-### [SCHEDULE-TAB-ROW-FLOW] Tab follows the chosen B flight sequence through the open schedule text boxes — D545/D554, 4 Oct 26
-His report/request: while the scheduler types, Tab currently does not go to the next open text box on the right.
-At the rightmost open text box, Tab should go to the leftmost open text box in the next row.
-**Built/checked and fresh independent R2 PASS, D556, 4 Oct:** owner accepts the complete numbered week/Board pictures, "Ok looks good u can build". Agreed B route implemented on codex/workflow-ui; fresh Astra R1 found week exit stale paint and two proof gaps, now fixed/checked. FULL unit7765/current affected browser168 and21-step corrected frozen app walk PASS with explicit device/role limits. Fresh separate Astra R2 PASS for exact freeze18; branch-only preview shipping, no main/merging PR. Claude Monday read, owner preview/device look and authorized live word remain, so item stays open. Evidence: `raptor-port/docs/handpass/2026-10-04-schedule-tab.md`, immutable full R1/R2 reports and original/correction portable archives/indexes beside it. **Place:** workflow UI pass, after the completed stylesheet split; D544/D546 (first two earlier priorities deferred).
-Forward Tab between open text boxes is settled. **D550–D553, 4 Oct, "all four recommended":** both Edit Schedule week and Board; only boxes already available for typing (empty ones included), no closed-editor/section/popup opening; reverse Shift+Tab; last box exits to the next ordinary control without loop/day change. D554 settles the flight sequence after the annotated actual-layout comparison: B on week and Board, even where phone text wraps. D555 accepts open headings/notes and displayed section continuation after the retained recommendation, including symmetric ordinary-control reverse exit. Owner also authorizes using Impeccable to help think through this task, not a broader redesign or skill update.
-Keep Enter commits/Escape restores; unchanged Remarks traversal never asks the mission-role question (D529).
-Scope/home: `raptor-port/docs/superpowers/specs/2026-10-03-workflow-ui-scope.md` (D545); picture before any visual change.
-Concrete route: `raptor-port/docs/superpowers/specs/2026-10-04-schedule-tab-route.md` — D554 chooses B after the comparison: Callsign → Mission → Brief → Take-off → Landing → Remarks/stores; Shift+Tab reverses B. D545/D552's literal spatial reading narrowed. D555 includes open headings/notes through the displayed section order. Product scope complete: Astra implementation/scenario plan, Sol independent challenge then build and FULL checks, fresh Astra code read. No broader redesign or code approval inferred.
-Numbered design pictures requested/shown and accepted D556, 4 Oct: `raptor-port/docs/superpowers/specs/2026-10-04-tab-flow-pictures/{week,board}-flow.png`, representative row/formation in every affected section, repeats explicitly labelled; phone flying variants and full live-field capture manifest retained. Plan: `raptor-port/docs/superpowers/plans/2026-10-04-schedule-tab-build-plan.md`; independent challenge/dispositions beside it. Design-picture evidence remains distinct from subsequent frozen working-Tab app proof; no main/merging PR authority.
-
-### [SCHEDULE-INSIGHTS-MENU] Phone schedule Insights moves into ellipsis menus — accepted D558, 4 Oct26
-Owner's four photos: Photo1 existing Board menu is the reference; add ellipsis → Insights
-in the circled Edit Schedule (Photo2) and View-only Sched (Photo3) toolbar spaces;
-remove WEEK/Pick a date/Week insights from the drawer (Photo4). **Place:** workflow
-UI pass, after the built D556 Tab route, before the later Inputs batch. New direction
-filed D557 for design/picture look, accepted D558 "Looks good" after the corrected picture. Existing calendar
-already opens the date picker. Recommend phone-only new menus with Insights alone,
-preserving desktop direct entry and Board's existing menu. Other tabs lose the
-drawer shortcuts and use the schedule page; no extra replacement inferred.
-Design/home: `raptor-port/docs/superpowers/specs/2026-10-04-schedule-insights-menu.md`.
-Selected navigation illustration `phone-proposal-v2.png` and4 originals/prompts
-retained privately in the task's local visualizations folder, excluded from the
-public branch after automatic approval review rejected that image upload;
-privacy disposition beside spec. Synthetic unrelated schedule drift
-excluded. Independent Astra D557 meaning/target-picture read matches; Astra plan
-and Sol technical challenge PASS; D558 authorizes this phone-only/Insights-only build.
-Current Insights calculations/versions/roles unchanged. Sol built the shared phone
-menus/drawer removal: WALK12orders/15opened pictures/0errors on frozen853files,
-19served assets; unit7779, browser553+49existing skips, reference728, Tracker445,
-adapted6/perf4/rule/docs PASS; three intentional wire breaks RED then restored14PASS.
-Evidence: `raptor-port/docs/handpass/2026-10-04-schedule-insights-menu.md`.
-Fresh separate Astra final R1 PASS, complete immutable report beside evidence;
-Owner preview look accepted D559,4Oct, Ready https://raptor-irwn04ala-kai-e2f5.vercel.app;
-further interface requests continue in a new chat, details not yet specified.
-Monday Claude plan/code/scenarios/full app walk remains before authorized live merge.
-
 ### [INSIGHTS-CLOSE-STAYS-VISIBLE] Keep the Insights close cross at the top while scrolling — D562, 4 Oct 26
 Owner's two private phone photos show the Week insights title/cross at the top initially, then out of view after
 scrolling. He asks for the existing cross to remain at the top. **Status:** built on codex/workflow-ui under D563 after numbered pictures/independent plan challenge; all normal gates and fresh independent Astra R1PASS, owner look and Claude reads pending.
@@ -1902,52 +1770,297 @@ catch-all "core context" — stop and report, do not force it. First the boundar
 import, compare every record and id; cancel; a conflicting syllabus; no partial write on a refusal). FULL tier — saved data.
 **Place — D493, D485: with the Tracker batch (`[FEATURE-WISHLIST]` item 4).**
 
-### [RALLY-REVIEW-FIXES] The fixes from Claude's small check of the two Codex builds (3 Oct 26; D508, D509)
-**Current round:** independent Astra plan and Sol challenge:
-`raptor-port/docs/superpowers/plans/2026-10-03-rally-review-fixes-plan.md`.
-Rally A–F/D2 built and checked on `codex/rally-workspan`: failing tests first,
-FULL gates and running-app pictures; initial Astra header/downstream findings repaired,
-fresh independent inspection2 PASS. Exact frozen proof, limits and owed reads:
-`raptor-port/docs/handpass/2026-10-02-rally-workspan.md` (3 Oct snapshot2).
-The two Discard leftovers follow on their separate branch; no new product ruling,
-Insights work or live merge implied. Claude's Monday full check remains owed.
-Claude's small check (Opus planned, Sonnet read, the host confirmed — an early signal, not a bug check) found on
-`codex/rally-workspan`: a fresh demo week could not be published Mon–Thu (the new order check blocks on the suggested
-brief); the "+ In-time / Rally" button mints a flagged line; a previous-day time prints with no day; the typed-remarks
-list never gained Rally. **His answers, 3 Oct 26:** no timing problem blocks publishing — a red warning only, the blank
-brief checked as the suggested brief and named so (D509, narrowing D502); the demo week's in-times corrected (3 hours before take-off, D510); the button fills in a time and words both set in Logic (D510, D511); the button
-and the previous-day wording as sketched to him. On `codex/discard-marks-remove`: one unused import and six old walk
-scripts that still look for the removed button. The finds and the exact fixes:
-`raptor-port/docs/superpowers/briefs/2026-10-03-codex-review-fixes.md`. **Place:** NOW, by Codex (D496), before Insights —
-nothing is built on top of the Rally build until these are in. **Still owed after the reset, before any "merge live":**
-Claude's full check of both builds — the walk, the blind walker trial (D480), the second reads, the working-guide reads.
+### [OIL-ZERO-SPAN-SORTIE] A take-off-equals-landing line whose report is also its take-off, with the debrief setting at zero, earns nothing — and the day's advisory still says it "earns from the report and debrief" (found 6 Oct 26, the plan challenge of `[OIL-WORK-START]` — Astra's finding 4; LOW)
+A flying line typed with the SAME take-off and landing earns from the report before it and the debrief after it (D49). Where
+there is neither — the Logic page's "Flight debrief after land" set to zero AND the line's entered in-time equal to its
+take-off (or, as before this build, both the debrief and "Nominal report before T/O" set to zero) — the line measures nothing
+and its crew earn nothing: correct by the standing rule that OIL comes only from written times (D31), and pinned as built in
+`raptor-port/src/engine/oilworkstart.test.ts`. What is wrong is the WORDS: the day's "Flight times — the same" advisory still
+tells the scheduler the line "still earns from the report and debrief", and the day's "no usable times" list does not name it.
+Reached only with a debrief of zero, which no squadron sets. **To build:** word the advisory from what the line actually
+measures, and name the line in the "no usable times" list when it measures nothing. **Tier:** WALK (the warning list).
+**Place (the agent's line):** low — with the next change to the OIL warnings.
 
-### [WORKSPAN-NEGATIVE] A line timed earlier than its wave's in-time gives a negative work-hours figure (found 1 Oct 26)
-**Current build status,2 Oct26:** implemented with [RALLY-TIME] on `codex/rally-workspan`; FULL automated gates and scoped running-app/performance evidence complete; fresh Astra round2 inspection PASS, both first-read findings repaired and two inherited follow-ups explicitly filed/nonblocking under D490. Evidence: `raptor-port/docs/handpass/2026-10-02-rally-workspan.md`. Not live, not merged; OWED Claude's read after the reset before main. The original fault and planning history below are retained.
-Found by the Opus walker of `[INSIGHTS-WHICH-COPY]`, off its list; reproduced by the host. Nothing published; on Monday's
-board, Go 2's RU line moved from T/O 19:20 / LD 20:45 to 10:00 / 11:25 while its wave's in-time line still reads 1920H:
-Insights shows "Wisp -2h-30" with a full-width bar and "Outlaw 10 min", and Monday's issues list says nothing about either.
-The cause: `engine/validate.ts workSpan` takes the wave's in-time as the report time even when it is LATER than the
-landing, so the day's end falls before its start. Older than that build (the function is untouched; the same on `main`);
-it would happen again to new data, so it is real. It is the one measure the long-work-day warning shares, so the fix is a
-warning-rule change (FULL tier) — decide there what a report later than the take-off means (ignore the in-time for that
-line? flag it?). Pictures: `raptor-port/docs/img/handpass/2026-10-01-insights/host/`. **D494/D495 make this the next Codex job, with related approved Rally changes; D496 supplies Astra planning/review and Sol building. D502/D503/D505–D507 settle feedback, reporting day and selection. Preserve current no-report step fallback; no remaining fallback/advisory question blocks this build.** **Place — D483 (1 Oct 26, "U can fix the older
-fault in the next chat"): NEXT, in the next chat, on its own branch, with a FULL check (it changes the measure the
-long-work-day warning shares). The second Sonnet-walker trial (D480) rides on its walk — freeze the build BEFORE the fix for
-the two trial walkers. The second Sonnet trial itself still waits for Claude's first walk after Monday's reset (AGENTS); do not invoke Claude in the meantime.**
+### [LOGIC-REDRAW-DROPS-TYPING] The Logic page redraws its rules about half a second after it opens — a value being typed into a box at that instant is dropped (found 6 Oct 26 by `[OIL-WORK-START]`'s browser test; OLD, not that job's doing; LOW)
+**Seen:** the browser test of `[OIL-WORK-START]` failed once in two full runs on the busy PC at one step — Logic opened with
+"Edit rules" already on, "Nominal report before T/O" typed, Tab — and the box read the OLD value afterwards, the setting
+unchanged. Traced with a watcher on the page's body: shortly after the page opens (about half a second on a free machine) the
+list of rules is replaced by the same markup — new boxes, nothing visibly different — and whatever sits half-typed in a box
+goes with the old box. With a pause put between the typing and the Tab it happens every time; in a second trace the box lost
+its place about two seconds after "Edit rules" was pressed and the value was SAVED without a Tab. **Not traced:** what asks
+for that redraw (a late re-check of the week after the page change is the likely cause — the page redraws whenever the app's
+state moves, and its body is rebuilt as one piece), and whether anything can set it off LATER, while a person is typing —
+that is the question that decides whether this matters outside a test. A person's hands cannot reach the half-second after
+opening. **Why it may matter later:** once the app is in the database, other people's changes arrive by themselves every 30
+seconds (D356); if such an arrival redraws this page, a value being typed is dropped with no message. **To do:** (1) find
+what asks for the redraw; (2) either stop the page redrawing when nothing in it changed, or keep a box that is being typed in
+out of the redraw, as the schedule's text boxes are; (3) a test that types, lets the app's state move, and finds the typing
+still there. The browser test now types again until the app holds the value (`raptor-port/e2e/oilworkstart.spec.ts`,
+`logicLead`) — take that retry out when this is fixed. **Tier:** WALK (the Logic page, a typed value, both sizes).
+**Place (the agent's line):** low — with the next change to the Logic page, and before the database step for the reason above.
 
-### [RALLY-TIME] Approved reporting changes with negative-hours fix (D497–D507, 2 Oct 26)
-**Effective publication rule,3 Oct26 (D509):** supersedes the historical D502
-block described below. Wrong timing remains a red working/issued warning and
-never refuses first publication, AL or correcting reissue. D510 corrects the18
-demo clocks and uses the nominal lead for the add button; D511 gives its words
-an adjacent Logic text setting in the existing rules record. Exact review fixes
-and this round's evidence are under [RALLY-REVIEW-FIXES]; prior history is retained.
-**Current build status,2 Oct26:** D503–D507 supersede the historical pending choices below; owner-approved in-place In-time/Rally implementation is pushed on `codex/rally-workspan` with [WORKSPAN-NEGATIVE]. FULL gate results and Astra round1 repairs are in `raptor-port/docs/handpass/2026-10-02-rally-workspan.md`; final scoped app walk/performance complete; fresh Astra round2 inspection PASS. Owner requested Claude review handoff; owner look and OWED Claude read precede any live merge. No new product question blocks this batch.
-Planning only. Three squadron patterns: rally only, in-time with rally immediately after/no second clock, and separate in-time/rally. Required direction where present: in-time -> rally -> brief -> take-off -> landing. Rally supplies report start when in-time is absent. Preserve notes, e.g. WX/NOTAMs and Rally (Reaper + Saber), in a neat UI. Design home: `raptor-port/docs/superpowers/specs/2026-10-02-rally-time-design.md`.
-D500 confirms existing formation recognition and free-text input must be preserved; formation-specific lines retain current wave-wide fallback precedence pending a separate decision. D498 proposes keeping the existing box as In-time / Rally, using the earliest applicable reporting instruction; an earlier qualifying event starts only that person's day sooner. Impact map, mock-up checks and independent Astra response are linked in the design home. Keep existing saved text and separate OIL reporting meaning; dual-stage precedence, clocks in remarks and missing/equal-stage definitions remain pending; D501–D502 settle one operative clock and editing feedback/publication enforcement. D501 approves one operative clock per line with activity wording/remarks and retained free text. D502 approves explaining the incorrect pair during draft editing, draft editing/saving allowed and publication blocked until corrected. D503 settles reporting day: a reporting clock later than applicable take-off means the immediately preceding day, at most one day back; omit the routine interpretation line and Change day controls. This expands the existing bounded heuristic and needs a real build. D504 approves the actual-app in-place label/layout and formation-only or unnamed whole-wave scope; no individual-person targeting or personal-name parser. D505 resolves formation override separately by activity; D506 chooses earliest resolved duplicates in applicable scope; D507 allows rally equal brief without a new gap. Existing omitted-stage/brief/standalone checks remain. Recognition is formation-token matching, not general interpretation of prose. Ask at most four product questions per round, recommendations each.
-Existing-behaviour audit after owner challenge: `raptor-port/docs/superpowers/plans/2026-10-02-in-time-behaviour-audit.md` — consumer meanings, current stage/remarks/midnight limits, existing B guard, focused tests and targeted actual-editor evidence; no app change or design approval.
-**Place:** build with [WORKSPAN-NEGATIVE], next under D495; final answers are approved, independent plan challenge precedes implementation, FULL check sized by timing/publication consequences. Existing [WORKSPAN-NEGATIVE] fallback/advisory questions are superseded as questions by this broader discussion, not treated as answered.
+### [OIL-EARN-DAY-SWITCH-WORDS] OIL Earn's "Nothing today earns" button reads like a status — two walkers took it for one (found 6–7 Oct 26, the walks of `[OIL-WORK-START]`; OLD; LOW, words)
+On the Scheduler Board in OIL Earn mode the bar carries a button labelled "Nothing today earns". It is a SWITCH — pressed, it
+makes nothing on that day earn — and its label does not change with the day's state (only its tooltip does). With a man on the
+day plainly earning (his puck reads FO), the bar still says "Nothing today earns" beside it. Two walkers, on separate walks and
+without seeing each other's work, each reported it as the app contradicting itself (the first walk's W8; the D606 walk's E03 —
+picture `raptor-port/docs/img/handpass/2026-10-06-oil-work-start/E/dk-08-E03-oilearn-board.png`). **To build:** word the button
+as the action it is, and say the day's state apart from it — a product wording choice, so a picture and his word first.
+**Tier:** WALK (a control's label on the board, both sizes). **Place (the agent's line):** low — with the next change to OIL Earn.
+
+### [SC-B-CHANGE-SAYS-BRIEF] The changes window calls an SC shift's in-time "brief" (found 7 Oct 26, the D606 walk — E02, E06, E15; OLD; LOW, words)
+On an SC line the B box is the crew's in-time, not a brief (owner, 24 Aug 26), and since D606 (7 Oct 26) it moves OIL. A B typed
+or changed on a published day is listed under "To go out" as "SC · brief  06:00" (and "06:00 → 08:00") — the box's general name.
+**To build:** on an SC line, name the change "in-time" in the changes window, the pending list and the edit history; every other
+line keeps "brief". **Tier:** WALK (the changes window's words, a published day, both sizes). **Place (the agent's line):** low —
+with the next change to the changes window's wording, or with `[OIL-EARN-DAY-SWITCH-WORDS]`.
+
+### [UNPUB-WARN-AL-RESTORES] The Unpublish warning assumes the day's OIL disappears — when withdrawing an AMENDMENT puts the earlier version's OIL back (found 6 Oct 26, the scenario read of `[OIL-WORK-START]` — Astra's F2; OLD, the same on the live app; LOW-MEDIUM)
+Unpublish on a published weekend warns when taking the day's OIL away would leave a man who has already spent it below
+zero (`leavewar/sync.ts oilCreditBidAgainst`, asked by the Unpublish button — `ui/interactions.ts`). It works that out by
+rebuilding his OIL with the day's credit LEFT OUT. That is right for withdrawing an ORIGINAL (the day becomes a draft and
+earns nothing). It is wrong for withdrawing an AMENDMENT: the version before it becomes the published one again
+(`engine/publish.ts unpublishDay`) and ITS OIL pays — so withdrawing a half-day amendment that restores a full-day
+original RAISES his balance, and the warning still says the withdrawal would strand his leave. It errs toward warning,
+never toward silence. **Seen on screen (the walk of `[OIL-WORK-START]`, walker C, S02):** the first tap said "Heads up —
+Saturday's OIL credits are bid against on the Leave War. Unpublishing withdraws them until you republish"; the second,
+"AL1 withdrawn … its OIL credits leave the Leave War until it is published again" — while the Original's full day came
+back and his balance went from 0 to 0.5. Both sentences are wrong for an amendment. Astra's steps: find the version that survives the withdrawal; work out its OIL records from its own
+kept evidence and values; rebuild the man's OIL with THAT in place of today's; warn only if the real result goes below
+zero; and word the warning and the done-message for "back to a draft" and "back to the earlier version" apart. Checks: an
+ORIGINAL withdrawn; an AL withdrawn to a higher, a lower and an equal credit; a credit that never landed.
+**Tier:** FULL (OIL, the published record). **Place (the agent's line):** low-medium — with the next change to Unpublish or
+to the OIL tracker.
+
+### [INTIME-LINES-DRAG] Drag a wave's In-time / Rally lines into order on the Scheduler Board; Auto sort orders them too (D593, 5 Oct 26)
+**His ruling (D593):** *"I also want the option to be able to [drag] and rearrange in Time/rally. In the schedule board. And the auto sort
+button also helps in rearranging."* Full row: `.claude/decisions-full/scheduler.md` D593.
+**Today:** a line is added by "+ In-time / Rally", typed in, and removed with its ✕; the lines stay in the order they were added. Their
+order changes nothing the app works out — the earliest applicable clock is used whatever the order (D506).
+**Answered — nothing is left to ask before building (D594, 5 Oct 26):** the board ONLY — no drag for these lines on Edit Schedule's week,
+which shows them in the order the board left them; Auto sort's order is by time, earliest first, a previous-evening clock first, a line
+with no clock last, from the wave's own Auto sort and from Sort all; a new order on a published day reads as a pending change. The
+six-dot grip is the app's own (the agent's call).
+**Tier (the agent's reading):** WALK at least — a new gesture on a shared drawer; FULL if the reorder is recorded on a published day.
+**Place (the agent's proposal, his to set):** one batch with `[OIL-WORK-START]` — both are about the In-time / Rally lines — on its own
+branch after the Codex stack goes live, with one check for the two (D485).
+
+### [INP-OIL-CHIP-PHONE] On a phone the green OIL chip is painted over a request card's date and time (found 5 Oct 26, the Codex stack check)
+Inputs page at phone width (390): the card of a request that carries an OIL answer (walked: Torch, Training, 18 Jul 11:00–12:00) draws its
+green "OIL" chip over the date and time — about 37 × 12 px of overlap. Walker E's picture:
+`raptor-port/docs/img/handpass/2026-10-05-codex-stack/E/oilchip-phone-torch-row.png`. Older than the Codex stack: nothing in the stack
+touched the Inputs page or its stylesheet part. **Place (the agent's line):** low — with the next change to the Inputs page; a browser
+test that the chip and the date do not overlap at 390 and 320.
+
+### [BOARD-TIME-ESCAPE] On the Scheduler Board, Escape in a TIME box does not put the old time back (found 5 Oct 26, the Codex stack check)
+The board's take-off, landing, Brief and duty-start boxes keep what was typed after Escape, the caret stays in the box, and leaving the
+box then saves it; the week's time boxes and the board's text boxes restore the saved value. The same on `main` (`de470db5`) and on the
+stack — the host ran walker D's probe (`raptor-port/scripts/handpass/stk-D-1b.mjs`) on both builds, box for box. D544 kept "the existing
+Enter and Escape meanings", so the Tab route did not change it. Not ruled. **Place (the agent's line):** low — a question for him with
+the next change to the board's boxes: should Escape restore there as it does on the week?
+
+### [REQ-ROW-OWN-BOXES] Typing in the programme row of an accepted request changes the row, not the request (both walks of the Codex stack check, 5–6 Oct 26 — a question for him)
+A timed request (walked: Training, Sat 18 Jul, 11:00–12:00) accepted onto the Ground / Common Programme: typing a new start, end or
+remark in the PROGRAMME ROW's own boxes changes that row (10:15–11:45, the new words) while the request — its line under Personal
+Inputs, the Inputs page — keeps 11:00–12:00 and its own remark, also after a reload; typing in the request's own boxes changes the
+request and the row follows. On the week and on the board, by click and by Tab alike. Older than the Codex stack: nothing in it touched
+that code (the row's boxes are the scheduler's own layer over the request — `raptor-port/src/engine/overlay.ts`, unchanged against
+`main`); Astra's scenario P4c-03 assumed the row IS the request. Walkers D and P, `raptor-port/docs/handpass/parts/stk-D.md`,
+`stk2-P.md`. Not ruled. **Place (the agent's line):** low — ask him: should the row's times be the request's (one record), or may the
+scheduler re-time the row on the programme and leave the member's request as filed (as now)? With the next change to requests on the
+programme.
+
+### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
+**DONE 7 Oct 26 under his ruling, on `claude/docs-tidy-7-oct` — options 1 to 6 (what each did and saved: the foot of the
+spec named below); 7 found nothing to do; the document check is green. STILL OPEN, why this item stays: step (4)'s check
+that stops it growing back is not built (a merged handoff block failing the check after one handoff; a ruling whose
+permission names a merged branch listed as "spent?"; a marker for `AGENTS.md`) — low, with the next change to the
+document check; and options 9 and 10, his own settings.** **HIS RULING (D609, 7 Oct 26): options 1 to 4 now, then 5 to 7 with Astra and Sol reading; one branch, the document
+check green, then a pull request for his "merge live". Option 8 — NOT done: the scheduler's rulings stay in one file (D611, the same day).** As it stood
+before: steps (1) and (2) done 7 Oct 26 on `claude/docs-tidy-7-oct`, nothing trimmed, no guide changed. The measurement and thirteen options, each with what it saves and risks:
+`raptor-port/docs/superpowers/specs/2026-10-07-start-context-audit.md`. In short: about 97 thousand tokens before the
+first message (68 thousand of it the app's own tools), about 189 thousand once a scheduler build has opened its first
+files; the largest avoidable piece is 18 thousand of merged blocks in the handoff. The text below is the item as filed.
+His words: *"why I am at 30% context the moment I start a new chat? Is it required? Is there a way we can optimise how the repo is
+structured so that we only read what's required? Or summarise it. Or u suggest. A lot of tokens are wasted if we carry on like this.
+But we should not cut down at the expense of losing the quality of work."* The rulings were slimmed once (one line each — D390,
+28 Sep 26) and the guide after them (D391); since then about two hundred rulings were added, most to the list every chat loads and
+to the scheduler's. **The job, in order:** (1) MEASURE — every piece loaded before a chat's first message (the unscoped rule files,
+the general rulings, the memory index, the tool and skill lists) and on opening its first file (the project guide, an area's
+rulings), each with its size, and what a typical job actually used of it; (2) OPTIONS for him, each with what it saves and what it
+risks — among those to weigh: the general rulings split so that only the rules of conduct load every time and the dated one-off
+ones (a build's permissions, an order of work already done) load by search; spent permissions retired (D136 already allows it);
+the scheduler's rulings split by screen; the handoff's merged blocks removed; rule files that repeat each other merged; (3) his
+ruling; (4) the change, read by Astra and Sol before he approves it (D70), with the document check extended so it cannot grow back
+unseen. **The test of every option (D602): never at the cost of the quality of the work** — D68 (correctness beats context
+economy), D136 (no live ruling leaves the list a chat reads), D138 (a summary never changes the meaning), D141 (no size targets).
+**Place (D602):** after the crew-rest fix (`[REST-BLANK-LINE]`), in a fresh chat on its own branch — documents only.
+**A measurement to start step (1) from (the `[OIL-WORK-START]` chat, 6 Oct 26, read off the app's own context meter before any
+work was done):** that chat had used about a fifth of its room — roughly 197 thousand tokens — after its opening instruction
+(read the handoff, check the branch): about 97 thousand in messages (the handoff, the rule files, the project guide and the area
+rulings its first reads pulled in), about 38 thousand in the tool list, about 29 thousand in the memory files, about 17 thousand
+in the connected services' tool descriptions. The handoff alone is some 29 thousand, most of it the seven blocks of branches
+that merged with PR #481 (`[STACK-MERGED-TIDY]`).
+
+### [SC-BLANK-SHIFT-QUAL] An SC line whose shift times were cleared prints "(NaN:NaN–NaN:NaN)" in its currency warning, and asks for NIGHT currency (found 6 Oct 26, the crew-rest fix's check — OLD; low)
+Tuesday "+ Wave" → SC; clear the first shift's start and end boxes; put a man who holds SC DAY currency only in its first MAIN
+seat: the list says "SC currency — wrong shift — SC NIGHT currency needed for SC AM (NaN:NaN–NaN:NaN) — Scribe is not current"
+(walkers A and C, and the host's unit run; picture `…/2026-10-06-rest-blank-line/C/dk-01-h03-plain-list.png`). With no shift
+times there is no day or night to tell (`validate.ts`, the SC currency check). Clearing an SC shift's times is a rare act — the
+wave is minted with them. **Fix:** with no usable shift window, say nothing about day or night currency (or say the shift has
+no times) — never print a clock that is not there; a red test first. **Place:** low — with the next change to the SC rules, or
+with `[BLANK-TIMES-ABSENCE]` (the same family: a rule reading times that are not there).
+
+### [CREW-REST-MARK-COPIES] The dotted "breaks tomorrow" ring and the dashed late-show ring are drawn on the cockpit and row pucks only — the same man's other pucks show a solid red ring; and an open day list paints over both (found 6 Oct 26, the crew-rest fix's check — OLD; low; a question for him)
+Seen by all three walkers, none of it this fix's doing (nothing that draws a puck was touched). (1) On the day that CAUSES a
+breach (Monday, when Tuesday's rest is broken) the man's cockpit puck and ground-row puck wear the dotted red ring — but his
+SANS card, his Unavailable row and his Personal Inputs row wear a SOLID red ring with the R chip, which reads as a breach ON
+Monday; the crew list's copy shows neither. (2) A sanctioned late show (the dashed ring) is dashed on the cockpit and the row
+and SOLID on the SANS card, the Unavailable and Personal Inputs rows and the crew list (walker C, S01 — pictures
+`…/2026-10-06-rest-blank-line/C/dk-06…26-s01-*.png`; the builders pass no dash or trace to those copies: `ui/html.ts`,
+`ui/board-html.ts`, `ui/palette-html.ts` — Astra's roll-call). (3) While a day's issue list is OPEN, every puck it names is lit
+with a solid ring, which covers the dotted and the dashed ring until the list is shut (walkers A, B and C). **The question for
+him:** should every copy of a man's puck wear the same crew-rest ring as his seat does, and should an open list leave the
+dotted and dashed rings readable? **Place:** low — with the next change to how pucks are drawn (D94 put all three rings on the
+board; these copies were not in its roll-call).
+
+### [BLANK-LINE-SANS-WORDS] On a line with no times a SANS man's offer is still worded as a clash, and a line with no callsign leaves holes in sentences (found 6 Oct 26, the crew-rest fix's check — OLD; low)
+(1) A SANS man offering Fly 14:00–16:00, seated on a blank line: the list says "… planned for   — available 14:00–16:00 only"
+although there is no time yet to compare with his offer; the crew list does not strike him (it has no window to test) — the two
+disagree (walker C, S28c). (2) A line with no callsign or mission prints its blank name into sentences: "cannot fly FCP ( )",
+"OCU in   with no IP", "planned for   —". **Place:** low — with `[BLANK-TIMES-ABSENCE]` (what each rule says when a seat has no
+times) or the next change to those sentences; "this line" where the name is blank.
+**Part done 6 Oct 26 with D605 (`claude/blank-times-absence-picker-2cebae`):** the three ABSENCE sentences ("On leave but
+planned to fly …", "… but tasked — …", "… clashes with …") say "this line" / "this row" where the seat has no name, with
+times and without. Still open: (1) the SANS offer worded as a clash on a line with no times, and the blank name in every
+OTHER sentence ("cannot fly FCP ( )", "OCU in   with no IP", the clash and brief sentences).
+
+### [TAB-LAST-BOX-TEST-GAPS] The Tab that keeps the caret in a day's last box (D597): what its test does not cover (Astra's owed read, 6 Oct 26 — no defect found; low, tests only)
+From `[R3-OWED-READS]` (1): the fix in `raptor-port/src/ui/schedule-tab.ts` is sound for the redraw it was written for. Not
+covered by `schedule-tab.test.tsx`: the reverse change (the day's LAST warning going away at that Tab, not only its first
+appearing); the caret seen in a real browser after the day is replaced (the short phone board, a window open over it); the
+fallback when the exact box no longer exists; a day replaced during the box's own blur (the earlier same-scope check exits
+first — a coverage boundary, not a shown failure). The read: `raptor-port/docs/superpowers/briefs/2026-10-06-rest-blank-line-scenarios-astra.md` §5(a).
+**Place:** low — with the next change to the Tab route.
+
+### [BLANK-STANDBY-STRIKE] On a standby seat whose shift times are blank, the crew list strikes a man on LOCAL leave — whom the rule lets stand it (found 6 Oct 26, the D605 build — OLD; low)
+"+ Wave" → BB (it comes up with no shift times), or an SC wave with its first shift's start and end cleared; a man on
+local leave (LL) all day; arm a BB seat, or the SC SPARE seat: his name is struck "local leave (LL)". Type the shift's
+times and the strike goes; seat him either way and the day's list says nothing — a local leave may stand a standby place
+(owner, 10–11 Aug 26; D605 keeps each kind's exemptions). **Cause:** the crew list tells a standby place by its HOURS —
+`raptor-port/src/engine/avail.ts` `slotRules` sets `avJet` only beside a start time, and `slotBar`'s `spareLike` reads
+`r.sc`, the shift's day / night kind, which is null without times — so a blank standby seat is judged like an ordinary
+one ("unknown fails closed", pinned in `slotrules.test.ts` with exactly this case). Stricter than the rule, never looser:
+no man the list flags is offered clean (pinned in `blankabsence.test.ts`, which names this gap). **Fix:** set the standby
+flags whatever the hours (`avJet` for any AVALON / BB line; `spareLike` on `scSpare` alone), keep failing closed for a
+type that DOES bar the seat, and change the `slotrules.test.ts` pin to an overseas leave; a red test first. **Place:**
+low — with the next change to the crew list.
+
+### [BLANK-SEAT-ACTIVITY-HINT] Before a man with a whole-day course or meeting is put on a seat with no times, the crew list says nothing — the list flags him the moment he is seated (Astra's code read of D605, F2, 6 Oct 26 — a gap the build left on purpose; low)
+A whole-day Training for a man; "+ Line" (no times); arm its seat: his name is offered with no reason. Place him: "Training
+clashes with this line" (the drop's toast says it at once). With hours on the seat the crew list does advise first
+("already on Training") — its soft check for a personal commitment needs the seat's hours
+(`raptor-port/src/engine/avail.ts` `slotBar`, the "IS HE ALREADY BUSY AT THIS HOUR" block, guarded on `slotStart`). For a
+LEAVE, a downchit or an overseas duty there is no such gap: the crew list strikes those on a seat with no hours. D605 was
+built with the crew list unchanged (its full row, reading (7)); pinned as it stands in `blankabsence.test.ts`. **Fix:** in
+that block, a whole-day personal commitment advises against a seat with no hours too ("already on Training", never a
+strike); a red test first. **Place:** low — with `[BLANK-STANDBY-STRIKE]`, the next change to the crew list.
+
+### [SC-SPARE-RING-BORROWS] One man in a MAIN and a SPARE seat of ONE SC line: his SPARE puck wears the MAIN seat's leave ring (Astra's scenario read of D605, F3, 6 Oct 26 — OLD; low)
+An SC line, the same man in a MAIN seat and a SPARE seat of the same shift, a local leave all day: the MAIN seat is
+flagged ("On leave but tasked — SC AM"), rightly; the SPARE seat's puck wears the red ring and C too, though local leave
+may stand a spare. Reproduced by the host through the rule and the week's own drawer, with the shift's times blank and
+typed (typed, the pair is red anyway — "standing SC SPARE and also on SC AM MAIN"). **Cause:** the exempt seat's puck
+rings for any warning anchored anywhere in its formation (`raptor-port/src/ui/html.ts` `exemptLineOwn` — the key-prefix
+match), and a MAIN seat's absence warning is anchored on the MAIN seat of that formation. It needs one man in two seats
+of one shift — already a planning error. **Fix (Astra's steps):** for an SC SPARE's absence ring accept the
+formation-level spare warning and not a MAIN seat's key that merely shares the prefix; keep the currency and two-places
+matching; pin week and Board, blank and timed, with an overseas leave and ATT C as positive controls. **Place:** low —
+with `[CREW-REST-MARK-COPIES]` (the next change to how pucks are drawn).
+
+### [REQ-ROW-SELF-CLASH] Times typed on the row of an ALL-DAY request put on the Ground Programme flag the request's own man against it (found 6 Oct 26, the D605 build — OLD; low)
+File an all-day Training for a man; put it on the Ground Programme (its row has no times, by design); type 09:00–10:00
+in that row's own boxes: the list says "Training but tasked — TRAINING" for him — his request against its own row. Run
+by the host through the rule on the unchanged timed path; the same on the live app. An all-day request keeps its own
+voice beside its row (`raptor-port/src/engine/inputs.ts` `inputFlags` — a time-less row cannot carry a clash), and the
+timed absence loop does not know the row IS that request. D605's new look does know (`events.ts` — `src` against the
+input's id) and stays silent while the row has no times. Kin of `[REQ-ROW-OWN-BOXES]` (typing in a request's row changes
+the row, not the request — a question for him). **Fix:** the timed loop skips an input against the ground row whose
+`src` is that input; a red test first. **Place:** low — with `[REQ-ROW-OWN-BOXES]`.
+
+### [SC-INTIME-REST-WORDS] The crew-rest sentence calls an SC line's typed in-time its "start" (seen 6 Oct 26, the D605 walk — OLD; low)
+An SC shift 13:00–19:00 with B (its in-time) 05:00, a man clear at 12:30 placed on a MAIN seat: "… crew rest clear at
+12:30, but SC AM starts 05:00 — only 4h30 rest." The shift starts 13:00; 05:00 is its in-time. The arithmetic is right
+(the in-time is the report); the word is not. `raptor-port/src/engine/validate.ts`, the crew-rest sentence's shift
+branch. **Fix:** "… but SC AM's in-time is 05:00 …" when the report is the typed B and "starts" only when it is the
+shift's start; the crew list's line is unaffected. **Place:** low — with `[OIL-WORK-START]` or the next change to the
+crew-rest sentences.
+
+### [UPCHIT-MOVE-NO-REGROW] An Upchit moved to a LATER date does not give back the medical days it cut (walker B, the D605 walk, 6 Oct 26 — OLD; low; a question for him)
+A downchit (ATT C) Monday to Friday; an Upchit effective Wednesday — the downchit is cut to end Tuesday, as it should
+be. Then the Upchit's date is changed to Thursday in the Inputs page's row editor: the downchit still ends Tuesday (the
+editor's sheet says "no current entry needs shortening"), so Wednesday reads fit although the man was cleared only from
+Thursday. Seen by walker B (S26; `raptor-port/docs/handpass/parts/bta-B.md`), NOT reproduced by the host; the Upchit's
+write path only ever shortens. **The question for him:** when an Upchit is moved later, should the downchit it cut grow
+back to the day before the new date — or is the Upchit deleted and filed again? **Place:** low — with the next change
+to the Medical view.
+
+### [OFT-ADD-TWICE-SILENT] The second press of an OFT row's "+" for a man already on that row is refused with no message (walker A, the D605 walk, 6 Oct 26 — OLD; low)
+"One man, once per row" (D271) refuses the second place and says why — on a duty row, a ground row, a Common Programme
+row and from an OFT row's front seat to its rear. Pressing the OFT row's "+" twice with the same man armed: the row is
+unchanged, rightly, and nothing is said. Seen by walker A (S24; `raptor-port/docs/handpass/parts/bta-A.md`), not
+reproduced by the host. **Fix:** that door shows the same sentence the others do; a browser test first. **Place:** low —
+with the next change to the sim rows.
+
+### [LOOK-PENDING-COUNT] The 👁 look at the Original shows "1 pending" in its head while the working copy shows "2 pending" (walker D, the D605 walk, 6 Oct 26 — OLD; low)
+A published Tuesday; a man seated on a new line and a leave filed for him afterwards: the working copy's head reads
+"2 pending" ("Vandal · LL filed", "WAVE 3 added"), and the 👁 look at the Original, opened at the same moment, reads
+"1 pending". Seen by walker D in two of its orders (pictures
+`raptor-port/docs/img/handpass/2026-10-06-blank-times-absence/D/dk-04-dk-obs-2-after-leave-W.png`, `dk-06-…-L.png`),
+not reproduced or explained by the host; nothing about a warning. **To do:** find which count the look's head prints and
+whether a pending chip belongs on a look at an issued version at all. **Place:** low — with the next change to the
+changes window or the version look.
+
+### [PEND-INTIME-WORDS] "To go out" words an edited reporting line as "2 In-time / Rally lines → 2 In-time / Rally lines" (reader AB's second pass, 6 Oct 26 — OLD)
+A line's clock changed on a published day, with the number of lines unchanged: the pending list shows the same words before and
+after (the changes window's "All changes" shows the real text). The same on `main` ("2 in-times → 2 in-times"). Fix: word the lines
+that differ — `…/stack-read2-AB.md` F3. **Place:** low — with the next change to the changes window.
+
+### [BOARD-INTIME-JUMP] On the Scheduler Board a reporting-line change in the changes window is not a button (reader AB's second pass, 6 Oct 26 — OLD)
+The board draws the In-time / Rally block with its address, but the list of "details the board does not draw" still names it
+(`raptor-port/src/ui/histbubble.ts`), so its line cannot be tapped to go there. `…/stack-read2-AB.md` F4. **Place:** low.
+
+### [WINDOWS-KEEP-KEYS] Only the six question sheets keep the keyboard; the larger windows let Tab walk into the page behind (reader D2's second pass, 6 Oct 26 — OLD)
+The request's edit window, Insights, the document viewer and the template windows take no focus and hold none: Tab goes on into the
+schedule behind them (the Tab route stands down; a box there still saves on leaving). The same on `main`. The six sheets fixed in the
+check use `raptor-port/src/ui/sheetfocus.ts`; the same hook fits these. Also from that pass, low: after the OIL question is answered
+the caret is on nothing (his place in a Tab run is lost); the red explanation refresh (AB-F2) has no test of its own; with several
+unnamed lines an unreadable clock is explained once per line under the box. **Place:** low — with the next change to those windows.
+
+### [SAVE-NOTE-TEST-GAPS] Two soft spots in the failed-save warning's browser test (Astra's read of the last round, 6 Oct 26 — tests only, the app is right)
+Astra read commit `bcc69fc8` (the last round of `[SAVE-NOTE-COVERS]`, never independently read before): the three repairs are sound
+in the app. Two weaknesses in `raptor-port/e2e/save-note.spec.ts`, neither a fault a person can meet: (1) the proof that a press on
+Retry itself tried to save reads the write counter one task later (`setTimeout(…, 0)`), so an automatic retry falling due at that very
+moment could pass for the press — sample it in the same click, after the button's own handler, and repeat the disabled-handler check
+with a retry due at the click; (2) "a window he has moved keeps its place and size" is pinned for a MOVED changes window only — add
+a resized one, an operated ALL AVAIL window and the preview-bar combinations. The report:
+`raptor-port/docs/superpowers/briefs/2026-10-06-owed-small-reads-astra.md` Part 3. **Place (the agent's line):** low — with the next
+change to the failed-save warning or its test.
+
+### [INSIGHTS-EMPTY-LINE-COUNT] A flying line with nobody on it counts as a sortie and a formation in Insights (the Codex stack check's W17, 5 Oct 26 — a question for him)
+"+ Line" on a flying wave, no crew: Insights' SORTIES tile goes up by one and FORMATIONS by one; the per-person bars are right. The
+same on `main` (`de470db5`) — `raptor-port/src/engine/insights.ts` counts every line and jet that is not cancelled, crewed or not, as
+the day's own "4 X 4 X 0" count does (`waves.ts dayCount`, the precedent its comment names). Not ruled. **Place (the agent's line):**
+low — ask him whether an uncrewed line is a planned sortie (as now) or should wait for its crew; with the next change to Insights.
+
+### [EDIT-SECOND-CLICK] After a changed text box on Edit Schedule, the first click into another box does not take the caret (found 5 Oct 26, the Codex stack check)
+On Edit Schedule's week: type a new value in a text box (a take-off, a mission), then click ONCE into another text box. The day
+redraws as the first box is left, the box that was clicked is replaced, and the caret is nowhere (the page itself has the focus); a
+second click takes it. With an UNCHANGED first box one click is enough. The same on `main` (`de470db5`) and on the stack — measured
+on both builds with real clicks: `raptor-port/scripts/handpass/stk-host-click-cmp.mjs`; walker K met it in L-10 and L-12
+(`raptor-port/docs/handpass/parts/stk-K.md`). Nothing is saved wrongly; it costs him a click each time, and the Tab route (D544) is the
+way round it. Not ruled; no fix proposed in the stack check. **Place (the agent's line, not his ruling):** low — with the next change
+to the schedule's text boxes; if fixed, restore the caret to the box at the click's position after the redraw.
 
 ### [PALETTE-WRAPPED-HEADER] Wrapped desktop account bar covers the sticky palette's first option (found 2 Oct 26)
 At1280×560 with RANGER · ADMIN and a two-row104px top bar, ALL AVAIL's center at y64 is behind the account badge after the page scrolls. Current actual reporting-warning jump reaches it before any target scroll; frozen9cc baseline lacks that new warning door, but native page scroll plus target scroll reaches the identical covered rectangle with the same badge/flight/reporting strings. Both served bundles are verified; no force click or data injection. Initial empty-week geometry did not reproduce the covered state and is retained, not offered as clearance. Required1440×480 and six named-person picker phone/short routes pass, without excusing the1280 defect.
@@ -2005,7 +2118,8 @@ a question for him first.
 Walker A's O3 (pictures `…/2026-10-01-dbr-phase7/a/R4b-*.png`, `R4-1.png`): on the member's View-only Sched, the dotted "OG" tag on
 a changed seat overlaps the count chip's top edge; the number stays legible close up, crowded at normal size. The admin's view
 is clean. Cosmetic, older than phase 7 (D172's tag, D37's chip). **Place:** low — with the next change to the tag or the chip;
-measure both at phone width.
+measure both at phone width. **It is also Trial 2 of D588 (not started):** ONE Sonnet 5.5 helper builds this fix to a precise spec; Opus reads
+its diff and tests, decides what that model takes, and tells him what it decided and why (D595).
 
 ### [MEMBER-EDITPAGE-CHECK] A member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons — a check (walk note, 1 Oct 26)
 Walker A's O5 (picture `…/2026-10-01-dbr-phase7/a/R4-4.png`). No control leads a member to Edit Schedule; reached through the

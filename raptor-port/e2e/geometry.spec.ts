@@ -45,6 +45,44 @@ test('phone Desktop layout keeps every schedule section usable below sign-off', 
   await expect(page.locator('#sbBoard .sb-nrow').first()).toBeVisible()
 })
 
+/* W18 (the Codex stack check, 5 Oct 26): in that layout the board pans, and with the ⋯ button near the right edge of
+   the screen its menu opened past the edge — "Insights", Sort all and the layout switch cut off. The menu opens on
+   whichever side keeps it whole on screen, at every pan that leaves the button itself on screen. */
+test('phone Desktop layout: the board’s ⋯ menu opens whole on screen wherever the board is panned', async ({ page }) => {
+  await page.setViewportSize(PHONE)
+  await login(page)
+  await page.locator('#burger').click()
+  await page.locator('#drawerNav [data-page="editsched"]').click()
+  await page.locator('#eWeek [data-sbday="0"]:visible').click()
+  await page.locator('#sbBoard .sb-sec').first().waitFor({ state: 'attached' })
+  await page.locator('#sbMore').click()
+  await page.locator('#sbMoreWide').click()
+  await expect(page.locator('#schedBoard')).toHaveClass(/sb-wide/)
+  const home = await page.locator('#sbMore').evaluate(b => { const board = document.querySelector('#schedBoard')!; return board.scrollLeft + b.getBoundingClientRect().left })
+  /* the button at the left of the screen, in the middle, and hard against the right edge */
+  let checked = 0
+  for (const left of [8, 180, PHONE.width - 34]) {
+    const want = Math.max(0, Math.round(home - left))
+    await page.locator('#schedBoard').evaluate((b, x) => { b.scrollLeft = x }, want)
+    const btn = await page.locator('#sbMore').boundingBox()
+    if (!btn || btn.x < 0 || btn.x + btn.width > PHONE.width) continue
+    await page.locator('#sbMore').click()
+    const menu = await page.evaluate(() => {
+      const m = document.querySelector('#sbMoreMenu')!.getBoundingClientRect()
+      const items = [...document.querySelectorAll('#sbMoreMenu .sb-moreitem')].map(i => { const r = i.getBoundingClientRect(); const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return r.left >= 0 && r.right <= innerWidth && (hit === i || i.contains(hit)) })
+      return { left: Math.round(m.left), right: Math.round(m.right), items }
+    })
+    expect(menu.left, `button at ${Math.round(btn.x)}px: the menu's left edge`).toBeGreaterThanOrEqual(0)
+    expect(menu.right, `button at ${Math.round(btn.x)}px: the menu's right edge`).toBeLessThanOrEqual(PHONE.width)
+    expect(menu.items.length, 'Insights and the layout switch at least').toBeGreaterThanOrEqual(2)
+    expect(menu.items.every(Boolean), `button at ${Math.round(btn.x)}px: every item whole and tappable`).toBe(true)
+    await page.keyboard.press('Escape')
+    await expect(page.locator('#sbMoreMenu')).toHaveCount(0)
+    checked++
+  }
+  expect(checked, 'at least the left and the right-edge positions were reachable').toBeGreaterThanOrEqual(2)
+})
+
 /* every free-text cell on the dense surfaces: these must WRAP (grow taller),
    never widen their column or spill over the neighbour */
 const FREETEXT = '.ah-row>.nm, .pl-row>.nm, .pl-row .rmk, .ah-note, .rmkcell, .ppl .itxt, .areacell'
@@ -1791,8 +1829,12 @@ test('the burger drawer at 390px scrolls only itself — the page behind it hold
      is now shorter than a 780px screen, so it no longer scrolled there and the first check
      below lost its premise. The rule is unchanged — a drawer taller than the screen scrolls
      itself and the page behind holds still — so the screen is made shorter than the
-     drawer, and the premise is asserted before the wheel. */
-  await page.setViewportSize({ width: 390, height: 460 })
+     drawer, and the premise is asserted before the wheel.
+     RE-MEASURED AGAIN 6 Oct 26 (the Codex stack's merge, PR #481): the drawer lost its Week section too (D558), and at
+     460px it is 525px tall on the owner's PC — 65 over — and less than the 40 the premise asks on GitHub's Linux
+     machine, where the same letters set a little smaller: red there, green here. 360px leaves it 165 over on the PC.
+     The scrim's presses move up with the shorter screen. Nothing about the rule or its assertions changes. */
+  await page.setViewportSize({ width: 390, height: 360 })
   await login(page); await go(page, 'viewsched')
   await page.evaluate(() => window.scrollTo(0, 300))
   await page.waitForTimeout(100)
@@ -1811,12 +1853,12 @@ test('the burger drawer at 390px scrolls only itself — the page behind it hold
   expect(panelScrolled, 'the panel itself scrolled').toBeGreaterThan(0)
   expect(await page.evaluate(() => window.scrollY), 'the page did not').toBe(y0)
   // wheel over the scrim (the dimmed area right of the panel)
-  await page.mouse.move(box.x + box.width + 20, 400)
+  await page.mouse.move(box.x + box.width + 20, 200)
   await page.mouse.wheel(0, 800); await page.mouse.wheel(0, -800)
   await page.waitForTimeout(150)
   expect(await page.evaluate(() => window.scrollY)).toBe(y0)
   // close by the scrim; the lock lifts and the page is where it was
-  await page.mouse.click(box.x + box.width + 20, 400)
+  await page.mouse.click(box.x + box.width + 20, 200)
   await expect(page.locator('#drawer')).not.toHaveClass(/open/)
   expect(await page.evaluate(() => document.body.classList.contains('dw-lock'))).toBe(false)
   expect(await page.evaluate(() => window.scrollY)).toBe(y0)

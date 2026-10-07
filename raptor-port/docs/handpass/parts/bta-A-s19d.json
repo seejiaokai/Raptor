@@ -1,0 +1,281 @@
+{
+ "parts": {
+  "bta-A-s19-dk": {
+   "at": "2026-10-06T08:47:52.679Z",
+   "base": "http://localhost:4231",
+   "phone": false,
+   "table": [
+    {
+     "id": "S19 OL all day (the whole day) × duty row: blank",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new duty row, X put on it (true); blank [seat now: role \"\" start \"\" end \"\" who \"split\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-01-s19_OL_duty_blank-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × duty row: end 12:00 typed alone (no start)",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new duty row, X put on it (true); end 12:00 typed alone (no start) [seat now: role \"\" start \"\" end \"12:00\" who \"split\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-02-s19_OL_duty_end_12_00_ty-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × duty row: that end cleared again",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new duty row, X put on it (true); that end cleared again [seat now: role \"\" start \"\" end \"\" who \"split\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-03-s19_OL_duty_that_end_cle-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × duty row: start 08:00 typed alone (inside the morning)",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new duty row, X put on it (true); start 08:00 typed alone (inside the morning) [seat now: role \"\" start \"08:00\" end \"\" who \"split\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-04-s19_OL_duty_start_08_00_-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × duty row: start 15:00 instead (afternoon, after the morning leave)",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new duty row, X put on it (true); start 15:00 instead (afternoon, after the morning leave) [seat now: role \"\" start \"15:00\" end \"\" who \"split\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-05-s19_OL_duty_start_15_00_-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × sim (OFT) row: blank",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new sim (OFT) row, X put on it (true); blank [seat now: label \"\" start \"\" end \"\" p \"split\" w \"\" who \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-06-s19_OL_sim_blank-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × sim (OFT) row: end 12:00 typed alone (no start)",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new sim (OFT) row, X put on it (true); end 12:00 typed alone (no start) [seat now: label \"\" start \"\" end \"12:00\" p \"split\" w \"\" who \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-07-s19_OL_sim_end_12_00_ty-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × sim (OFT) row: that end cleared again",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new sim (OFT) row, X put on it (true); that end cleared again [seat now: label \"\" start \"\" end \"\" p \"split\" w \"\" who \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-08-s19_OL_sim_that_end_cle-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × sim (OFT) row: start 08:00 typed alone (inside the morning)",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new sim (OFT) row, X put on it (true); start 08:00 typed alone (inside the morning) [seat now: label \"\" start \"08:00\" end \"\" p \"split\" w \"\" who \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-09-s19_OL_sim_start_08_00_-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × sim (OFT) row: start 15:00 instead (afternoon, after the morning leave)",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new sim (OFT) row, X put on it (true); start 15:00 instead (afternoon, after the morning leave) [seat now: label \"\" start \"15:00\" end \"\" p \"split\" w \"\" who \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-OL\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-10-s19_OL_sim_start_15_00_-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × flying line: blank",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new flying line, X put on it (true); blank [seat now: cs \"\" take-off \"\" landing \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly this line — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-11-s19_OL_fly_blank-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × flying line: landing 11:00 typed alone (no take-off)",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new flying line, X put on it (true); landing 11:00 typed alone (no take-off) [seat now: cs \"\" take-off \"\" landing \"11:00\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly this line — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-12-s19_OL_fly_landing_11_0-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × flying line: that end cleared again",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new flying line, X put on it (true); that end cleared again [seat now: cs \"\" take-off \"\" landing \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly this line — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-13-s19_OL_fly_that_end_cle-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × flying line: take-off 08:00 typed alone (inside the morning)",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new flying line, X put on it (true); take-off 08:00 typed alone (inside the morning) [seat now: cs \"\" take-off \"08:00\" landing \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly this line — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-14-s19_OL_fly_take_off_08_-list.png"
+     ]
+    },
+    {
+     "id": "S19 OL all day (the whole day) × flying line: take-off 15:00 instead (afternoon, after the morning leave)",
+     "did": "1440×900 desktop: OL all day (the whole day) filed (stored Duty allday true half \"\" undefined–undefined); a new flying line, X put on it (true); take-off 15:00 instead (afternoon, after the morning leave) [seat now: cs \"\" take-off \"15:00\" landing \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly this line — reason: x-OL\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected flagged",
+     "verdict": "PASS",
+     "pics": [
+      "dk-15-s19_OL_fly_take_off_15_-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × duty row: blank",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new duty row, X put on it (true); blank [seat now: role \"\" start \"\" end \"\" who \"split\"]",
+     "saw": "warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-16-s19_LL_duty_blank-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × duty row: end 12:00 typed alone (no start)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new duty row, X put on it (true); end 12:00 typed alone (no start) [seat now: role \"\" start \"\" end \"12:00\" who \"split\"]",
+     "saw": "warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-17-s19_LL_duty_end_12_00_ty-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × duty row: that end cleared again",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new duty row, X put on it (true); that end cleared again [seat now: role \"\" start \"\" end \"\" who \"split\"]",
+     "saw": "warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-18-s19_LL_duty_that_end_cle-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × duty row: start 08:00 typed alone (inside the morning)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new duty row, X put on it (true); start 08:00 typed alone (inside the morning) [seat now: role \"\" start \"08:00\" end \"\" who \"split\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-LL-AM\" · his pucks [duty:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected (observation only)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-19-s19_LL_duty_start_08_00_-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × duty row: start 15:00 instead (afternoon, after the morning leave)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new duty row, X put on it (true); start 15:00 instead (afternoon, after the morning leave) [seat now: role \"\" start \"15:00\" end \"\" who \"split\"]",
+     "saw": "warnings naming him: none · his pucks [duty:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected (observation only)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-20-s19_LL_duty_start_15_00_-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × sim (OFT) row: blank",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new sim (OFT) row, X put on it (true); blank [seat now: label \"\" start \"\" end \"\" p \"split\" w \"\" who \"\"]",
+     "saw": "warnings naming him: none · his pucks [sim:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-21-s19_LL_sim_blank-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × sim (OFT) row: end 12:00 typed alone (no start)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new sim (OFT) row, X put on it (true); end 12:00 typed alone (no start) [seat now: label \"\" start \"\" end \"12:00\" p \"split\" w \"\" who \"\"]",
+     "saw": "warnings naming him: none · his pucks [sim:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-22-s19_LL_sim_end_12_00_ty-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × sim (OFT) row: that end cleared again",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new sim (OFT) row, X put on it (true); that end cleared again [seat now: label \"\" start \"\" end \"\" p \"split\" w \"\" who \"\"]",
+     "saw": "warnings naming him: none · his pucks [sim:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-23-s19_LL_sim_that_end_cle-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × sim (OFT) row: start 08:00 typed alone (inside the morning)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new sim (OFT) row, X put on it (true); start 08:00 typed alone (inside the morning) [seat now: label \"\" start \"08:00\" end \"\" p \"split\" w \"\" who \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but tasked — this row — reason: x-LL-AM\" · his pucks [sim:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 5 issues · 3 warning · tap to collapse ▲\" → expected (observation only)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-24-s19_LL_sim_start_08_00_-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × sim (OFT) row: start 15:00 instead (afternoon, after the morning leave)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new sim (OFT) row, X put on it (true); start 15:00 instead (afternoon, after the morning leave) [seat now: label \"\" start \"15:00\" end \"\" p \"split\" w \"\" who \"\"]",
+     "saw": "warnings naming him: none · his pucks [sim:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected (observation only)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-25-s19_LL_sim_start_15_00_-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × flying line: blank",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new flying line, X put on it (true); blank [seat now: cs \"\" take-off \"\" landing \"\"]",
+     "saw": "warnings naming him: none · his pucks [flying line:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-26-s19_LL_fly_blank-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × flying line: landing 11:00 typed alone (no take-off)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new flying line, X put on it (true); landing 11:00 typed alone (no take-off) [seat now: cs \"\" take-off \"\" landing \"11:00\"]",
+     "saw": "warnings naming him: none absence-type (other: DEBRIEF) · his pucks [flying line:SOLID-ring chip D; Unavailable row:SOLID-ring chip D] cls warn ; warn · day's bar \"⚠ 5 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "FAIL",
+     "pics": [
+      "dk-27-s19_LL_fly_landing_11_0-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × flying line: that end cleared again",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new flying line, X put on it (true); that end cleared again [seat now: cs \"\" take-off \"\" landing \"\"]",
+     "saw": "warnings naming him: none · his pucks [flying line:no-solid; Unavailable row:no-solid] cls  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected silent (a part-day absence against a seat with no start)",
+     "verdict": "PASS",
+     "pics": [
+      "dk-28-s19_LL_fly_that_end_cle-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × flying line: take-off 08:00 typed alone (inside the morning)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new flying line, X put on it (true); take-off 08:00 typed alone (inside the morning) [seat now: cs \"\" take-off \"08:00\" landing \"\"]",
+     "saw": "warnings naming him: [hard/LEAVE_FLY] \"On leave but planned to fly this line — reason: x-LL-AM\" · his pucks [flying line:SOLID-ring chip C; Unavailable row:SOLID-ring chip C] cls warn.hard.boxred ; warn.hard.boxred · day's bar \"⚠ 7 issues · 3 warning · tap to collapse ▲\" → expected (observation only)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-29-s19_LL_fly_take_off_08_-list.png"
+     ]
+    },
+    {
+     "id": "S19 LL morning only (AM) × flying line: take-off 15:00 instead (afternoon, after the morning leave)",
+     "did": "1440×900 desktop: LL morning only (AM) filed (stored Duty allday true half \"\" undefined–undefined); a new flying line, X put on it (true); take-off 15:00 instead (afternoon, after the morning leave) [seat now: cs \"\" take-off \"15:00\" landing \"\"]",
+     "saw": "warnings naming him: none · his pucks [flying line:no-solid; Available crew:no-solid; Unavailable row:no-solid] cls  ;  ;  · day's bar \"⚠ 4 issues · 2 warning · tap to collapse ▲\" → expected (observation only)",
+     "verdict": "RECORDED",
+     "pics": [
+      "dk-30-s19_LL_fly_take_off_15_-list.png"
+     ]
+    }
+   ]
+  }
+ }
+}
