@@ -1632,6 +1632,7 @@ heading sets every such day from a date onward, and the required pilots and WSOs
 run "from this day on"); PH and Off days in the Holidays list, No Leave on the Leave War's Event row — drawn in the fourth mock-ups.
 **The Leave War's Event sheet stays as built (D634, 7 Oct 26):** colours, tags, "Edit types", a day or a range — nothing of it is
 redrawn or removed in this job.
+**The settings icon is a gear, never like the day-flying sun (D635, 7 Oct 26).**
 **In this job's bug check (D624, 7 Oct 26):** each approved mock-up is set beside a picture of the built screen at the same size, in
 the evidence sheet.
 **HIS DIRECTION, 7 Oct 26 (D617–D621) — the design changes; mock-ups first, nothing built before he picks:** each SANS date

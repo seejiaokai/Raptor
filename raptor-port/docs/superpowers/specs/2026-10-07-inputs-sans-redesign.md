@@ -154,6 +154,9 @@ columns"; and "where should off and no leave be set?"** The shape drawn in the f
 Off day grey, No Leave orange, SC red), the Tag row, "Edit types", "This day" or "A range" — already sets No Leave, an Off
 day or a public holiday on a day or a range, and is NOT changed in this job. **For every mock-up from here: a surface the
 app already has is shown as a real picture from the app; a drawing is only for what is new or changed, and says so.**
+**D635 — the settings icon is a gear.** The mock-ups drew it as a circle with rays; he read it as a sun, which on these
+calendars means day flying. The build uses the app's own cog, and its check looks at the gear beside a day-flying sun at
+phone size.
 **The rule of thumb told to him:** what every calendar shows is set in Days; what only the Leave War uses stays on the
 Leave War. **Readings to confirm:** the one stepping button on a phone; the weekday heading for repeating days; "from this
 day on" for the required figures; a public holiday or an Off day shows its tag in place of the select button.
