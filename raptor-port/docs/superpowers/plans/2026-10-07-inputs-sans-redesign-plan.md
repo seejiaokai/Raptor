@@ -187,7 +187,11 @@ the letter (`who`, `bal`, the two placeholders, one cell per DRAWN day).
 - **Available = two count rows with fixed ids**, `availp` and `availw`: `{ kind: 'people', filter: { seats:
   ['pilot'] } }` / `['wso']`, thresholds 0 (their red comes from Required, never from a threshold). They are seeded;
   **where a stored set has none, the built-in definition is used** (an older store, or after "Reset counters"). They
-  are drawn here, not in the Manning block (`CountRows` skips the two ids). Their name and who they count are changed
+  are drawn here, not in the Manning block (`CountRows` skips the two ids). *(Built as, step 1: the two are NOT written
+  into the seeded list — the built-in definition serves until an admin changes one, and only then is the row stored;
+  the same answer for every reader, with nothing added to a store that never touched them. They are kept out of the
+  Manning block at its source, `manningRowIds`, and out of the day's verdict in `evaluateDay`; and they sit BESIDE the
+  sixty-counter limit, so a full list can never crowd them out — `engine/availrows.ts`.)* Their name and who they count are changed
   with the form the war already has (D640); `deleteManningRule` refuses the two ids with a sentence ("The SANS calendar
   reads this row — rename it or change who it counts"); `saveManningRule` refuses a "teams" count for them, and
   both it and `setManningThreshold` hold their thresholds at 0. **The counter form gets a mode for the two ids:** no

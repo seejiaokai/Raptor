@@ -21,6 +21,7 @@ import {
   CAT_LADDER,
   MAX_TEAM_SLOTS,
   MAX_MANNING_RULES,
+  isAvailId,
   ruleHave,
   type CrewFilter,
   type ManningRule,
@@ -245,7 +246,7 @@ export function CounterForm({ ruleId, onClose }: {
   // The list is full: a NEW counter would be refused by the store (the most a
   // reload keeps — MAX_MANNING_RULES). Said here, with the way out, rather than
   // an Add button that does nothing ([STORE-READER-SWEEP], phase 7).
-  const full = !existing && rules.length >= MAX_MANNING_RULES
+  const full = !existing && rules.filter(r => !isAvailId(r.id)).length >= MAX_MANNING_RULES
 
   const save = () => {
     if (!valid || full) return

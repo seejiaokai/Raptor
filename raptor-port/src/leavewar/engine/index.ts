@@ -1,6 +1,7 @@
 // The barrel. UI and tests import from `../engine`, so a new engine module
 // wants a line here.
 export * from './availability'
+export * from './availrows'
 export * from './bids'
 export * from './charge'
 export * from './codes'

@@ -128,6 +128,12 @@ import {
   type Threshold,
   type Stage,
   type States,
+  AVAIL_P,
+  AVAIL_W,
+  AVAIL_DELETE_MSG,
+  isAvailId,
+  availRuleOf,
+  cleanAvailRule,
 } from '../engine'
 import { mergeWar, absencesAt, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
@@ -586,15 +592,28 @@ function readManningRule(x: unknown): ManningRule | null {
 }
 
 function readManningRules(x: unknown): ManningRule[] | null {
-  if (!Array.isArray(x) || x.length > MAX_MANNING_RULES) return null
+  /* the two Available rows (engine/availrows.ts) sit in this list once an admin has changed them, BESIDE the squadron's
+     own counters and never counted against their limit — so the list may be two longer than the limit, and it is the
+     ordinary counters that are counted below */
+  if (!Array.isArray(x) || x.length > MAX_MANNING_RULES + 2) return null
   const out: ManningRule[] = []
   const seen = new Set<string>()
+  let dropped = 0
   for (const r of x) {
-    const rule = readManningRule(r)
+    let rule = readManningRule(r)
     if (!rule || seen.has(rule.id)) continue
+    if (isAvailId(rule.id)) {
+      /* a stored Available row that is not a people count is left out — the built-in one serves — and one that is
+         carries no amber or red, whatever was stored */
+      rule = cleanAvailRule(rule)
+      if (!rule) { dropped++; continue }
+    }
     out.push(rule)
     seen.add(rule.id)
   }
+  if (out.filter(r => !isAvailId(r.id)).length > MAX_MANNING_RULES) return null
+  /* a list whose only loss was a bad Available row is still the squadron's list (an empty one included) */
+  if (dropped && out.length + dropped === x.length) return out
   // A stored EMPTY list is a decision — the admin deleted every counter, and
   // a reload must not resurrect the seed. A non-empty list where every entry
   // was dropped is corruption, and falls back to the seed like any other
@@ -3858,7 +3877,16 @@ export function toggleFigure(id: string): boolean {
 /** The rule ids the manning block can draw, in their natural order — `'sets'`
  *  when a set rule exists, then each default rule's id. */
 export function manningRowIds(): string[] {
-  return state.requirements.default.rules.map(r => r.id)
+  /* never the two Available rows: they are drawn with the Required rows under the Event rows, not in this block
+     (engine/availrows.ts) — so they are in no order, no hidden list and no Rearrange */
+  return state.requirements.default.rules.filter(r => !isAvailId(r.id)).map(r => r.id)
+}
+
+/** THE TWO AVAILABLE ROWS as they stand — the squadron's own where it has changed one, else the built-in (an older
+ *  store, a damaged row, or after "Reset counters"). What the war's rows and the calendars both count by. */
+export function availRules(): { p: ManningRule; w: ManningRule } {
+  const rules = state.requirements.default.rules
+  return { p: availRuleOf(rules, AVAIL_P), w: availRuleOf(rules, AVAIL_W) }
 }
 
 /** The manning rows in DISPLAY order: the admin's hand-order first (unknown ids
@@ -3942,6 +3970,8 @@ export function resetManning(): void {
 export function setManningThreshold(id: string, amber: number, red: number): boolean {
   if (state.role !== 'admin') return false
   if (!Number.isFinite(amber) || amber < 0 || !Number.isFinite(red) || red < 0) return false
+  /* the two Available rows carry no amber or red of their own — their red comes from the Required row above them */
+  if (isAvailId(id)) return false
   const rules = state.requirements.default.rules
   if (!rules.some(r => r.id === id)) return false
   const next = rules.map(r => (r.id === id ? { ...r, threshold: { amber, red } } : r))
@@ -3969,19 +3999,33 @@ export function resetManningThreshold(id: string): void {
  */
 export function saveManningRule(rule: ManningRule): boolean {
   if (state.role !== 'admin') return false
-  const clean = readManningRule(rule)
+  let clean = readManningRule(rule)
   if (!clean) return false
+  /* one of the two Available rows (engine/availrows.ts — D640): renamed and re-defined like any counter, but it stays a
+     count of PEOPLE (a "teams" count is refused) and its amber and red are held at 0 */
+  if (isAvailId(clean.id)) {
+    clean = cleanAvailRule(clean)
+    if (!clean) return false
+  }
   const rules = state.requirements.default.rules
   /* a NEW counter past the limit the reload keeps is refused — a longer list would read back as damage and be replaced
      by the built-in set (readManningRules); reworking one already in the list is always allowed
-     ([STORE-READER-SWEEP], [DB-READINESS] phase 7) */
-  if (!rules.some(r => r.id === clean.id) && rules.length >= MAX_MANNING_RULES) return false
-  const next = rules.some(r => r.id === clean.id)
-    ? rules.map(r => (r.id === clean.id ? clean : r))
-    : [...rules, clean]
+     ([STORE-READER-SWEEP], [DB-READINESS] phase 7). The two Available rows are beside that limit, not inside it: the
+     reader allows for them, so the squadron's sixty counters can never crowd them out. */
+  if (!isAvailId(clean.id) && !rules.some(r => r.id === clean!.id) && rules.filter(r => !isAvailId(r.id)).length >= MAX_MANNING_RULES) return false
+  const saved = clean
+  const next = rules.some(r => r.id === saved.id)
+    ? rules.map(r => (r.id === saved.id ? saved : r))
+    : [...rules, saved]
   state = withCurrent({ ...state, requirements: { ...state.requirements, default: { rules: next } } })
   persistNotify()
   return true
+}
+
+/** Why a counter cannot be deleted, as a sentence for the sheet — null when it can. The two Available rows cannot: the
+ *  SANS calendar reads them (engine/availrows.ts); "Reset counters" is the way back to the built-in ones. */
+export function manningDeleteProblem(id: string): string | null {
+  return isAvailId(id) ? AVAIL_DELETE_MSG : null
 }
 
 /** Delete one counter outright (owner, 19 Aug 26 — "these counters can also
@@ -3990,6 +4034,7 @@ export function saveManningRule(rule: ManningRule): boolean {
  *  the whole truth), and `resetManningRules` is the road back. ADMIN-gated. */
 export function deleteManningRule(id: string): boolean {
   if (state.role !== 'admin') return false
+  if (manningDeleteProblem(id)) return false
   const rules = state.requirements.default.rules
   if (!rules.some(r => r.id === id)) return false
   state = withCurrent({

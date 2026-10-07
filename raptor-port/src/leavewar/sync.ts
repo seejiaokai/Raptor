@@ -17,6 +17,7 @@
 // The derived passes are reconciliation, not queues: compute the desired state,
 // diff, write only the difference; a SYNCING flag guards re-entrancy.
 
+import { useSyncExternalStore } from 'react'
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, withRemarksTail, remarksTailWord, inputCoversDate, nowStamp } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
@@ -57,14 +58,24 @@ import {
   overlaps,
   newRecId,
   outcomeOf,
+  holidayAt,
+  availHave,
+  classifyEvent,
+  defKey,
+  isWeekend,
   type PostOutcome,
   type Contrib,
   type RequestRec,
   type RequestState,
   type WarRec,
+  type Period,
+  type DayInfo,
+  type EventBand,
+  type EventKind,
 } from './engine'
 import {
   absencesChanged,
+  availRules,
   getVersion,
   setRefusalHook,
   clearRaptorCell,
@@ -103,7 +114,8 @@ import { schedStore, schedApplyEnd, resyncSchedBaseline } from '../state/sched-c
 import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate } from '../state/inputgate-hook'
-import { absencesAt, setAbsenceRows } from './state/merge'
+import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
+import { validIso, type DayFacts } from '../state/flyplan-model'
 import { MAX_CARRIED_REMARK } from './engine/warrecs'
 import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
@@ -2065,3 +2077,170 @@ function oilDaySig(): string {
   return DAYS.map((_: any, di: number) => `${HOOKS.oilEarningDay(di) ? 1 : 0}:${HOOKS.oilNoPeriod(di) || ''}`).join('|')
 }
 let lastOilDaySig: string | null = null
+
+/* =====================================================================
+   WHAT THE CALENDARS READ FROM THE WAR — a rider on this seam (the build plan
+   docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.1; owner D617, D627, D631, D637, D640)
+   ---------------------------------------------------------------------
+   Two stores hold the facts of one day. Its flying class and its required pilots and WSOs are the scheduler's settings
+   rows (state/flyplan.ts) — they outlive any one leave period. Whether it is a public holiday or an Off day, and who
+   is available per seat, are the WAR's: its day events and bands, its roster, its bids and the absences it derives.
+   The ONE resolver that joins them is state/flyplan-model.ts planFor; no screen joins them itself. This block is the
+   war's half, read-only for the calendars:
+
+     dayFacts(iso)      a date's holiday (with its name) and who is available per seat, from the period HOLDING the date
+     holidaysIn(year)   the year's public holidays and Off days as one list — the war's own records, seen as a list
+     useWarFacts()      the signal: a number that moves when anything those two read has moved
+
+   WHY A SIGNAL OF ITS OWN (both readers of the plan, finding 1): the war's store repaints its own screens, and the one
+   thing it tells the scheduler's side is the narrow OIL signal (the lw lane above fires a Raptor notify only when an
+   OIL answer changed) — kept narrow on purpose, so the board is not repainted by leave bids. A holiday added in Days,
+   a count row re-defined or a bid decided would otherwise leave a calendar showing yesterday's answer. The version
+   below is PULLED, not pushed: each read compares what the reads depend on — the roster, the count rows, the event
+   types and every period as merged with its absences — by identity, so it costs a handful of comparisons, cannot miss
+   a writer (an Undo and a Redo replace the same objects), and stands still for a look (the day in view, the viewer,
+   the role). */
+export interface WarDayFacts extends DayFacts {
+  /** the holiday's or Off day's name as typed ("PH", "National Day"); '' where the day is neither */
+  name: string
+  /** a Saturday or a Sunday */
+  weekend: boolean
+}
+/** one line of the Holidays list: a public holiday or an Off day, over one date or a run of dates */
+export interface HolidayLine {
+  id: string
+  /** the leave period that holds it */
+  warId: string
+  from: string
+  to: string
+  kind: 'ph' | 'off'
+  name: string
+  /** where the record is: a day's own Event line (one day, or the same word repeated over a run), a merged band, or
+   *  the seeded holiday flag with no event on it */
+  src: 'day' | 'band' | 'flag'
+  /** its Event row; null for a flag */
+  line: number | null
+}
+
+let WF_VER = 0
+let WF_SIG: readonly unknown[] = []
+const FACTS = new Map<string, WarDayFacts>()
+export function warFactsVersion(): number {
+  const s = getState()
+  const sig: unknown[] = [s.people, s.requirements, s.eventDefs, ...s.wars]
+  if (sig.length !== WF_SIG.length || sig.some((x, i) => x !== WF_SIG[i])) {
+    WF_SIG = sig
+    WF_VER += 1
+    FACTS.clear()
+  }
+  return WF_VER
+}
+/** told once per change that matters — never for a look */
+export function subscribeWarFacts(fn: () => void): () => void {
+  let seen = warFactsVersion()
+  return lwSubscribe(() => {
+    const v = warFactsVersion()
+    if (v !== seen) { seen = v; fn() }
+  })
+}
+/** for a component: re-renders it when the war's answers may have moved; the number is fit to key a memo on */
+export function useWarFacts(): number {
+  return useSyncExternalStore(lwSubscribe, warFactsVersion, warFactsVersion)
+}
+
+const holidayKind = (k: EventKind | null): 'ph' | 'off' | null => (k === 'off' ? 'ph' : k === 'free' ? 'off' : null)
+/* a period's days run from its first date without a gap, so a date's day is found by counting — with a plain search
+   behind it should a stored period ever not be */
+function dayIn(period: Period, iso: string): DayInfo | undefined {
+  const i = Math.round((Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10)) -
+    Date.UTC(+period.start.slice(0, 4), +period.start.slice(5, 7) - 1, +period.start.slice(8, 10))) / 86400000)
+  const d = period.days[i]
+  return d && d.date === iso ? d : period.days.find(x => x.date === iso)
+}
+function readDayFacts(iso: string): WarDayFacts {
+  if (!validIso(iso)) return { covered: false, kind: null, name: '', weekend: false, availP: null, availW: null }
+  const weekend = isWeekend(iso)
+  const st = getState()
+  /* the period HOLDING the date — never the one on screen: the calendars show any month */
+  const war = warHolding(st.wars, iso) as MergedWar | undefined
+  /* no period covers it: there was nowhere to file a holiday, and nobody's leave is known — so who is available is
+     UNKNOWN, never zero and never everyone (the need then shows "–") */
+  if (!war) return { covered: false, kind: null, name: '', weekend, availP: null, availW: null }
+  const day = dayIn(war.period, iso)
+  const h = day ? holidayAt(st.eventDefs, day, war.period.bands) : null
+  const rows = availRules()
+  return {
+    covered: true,
+    kind: h ? holidayKind(h.kind) : null,
+    name: h ? h.name : '',
+    weekend,
+    /* the same sum the war's own Available cells draw (engine/availrows.ts availHave) — a SANS man never counted */
+    availP: availHave(rows.p, st.people, war.grid, war.states, iso, war.views),
+    availW: availHave(rows.w, st.people, war.grid, war.states, iso, war.views),
+  }
+}
+export function dayFacts(iso: string): WarDayFacts {
+  warFactsVersion()                       // drops every kept answer when anything they were read from has moved
+  const hit = FACTS.get(iso)
+  if (hit) return hit
+  const out = Object.freeze(readDayFacts(iso))
+  if (FACTS.size >= 4096) FACTS.clear()   // a few years of dates; clearing is only a miss
+  FACTS.set(iso, out)
+  return out
+}
+
+/** THE YEAR'S PUBLIC HOLIDAYS AND OFF DAYS, in date order — every period that reaches into the year, not only the one
+ *  on screen. A line is the record as the war holds it: a merged band; a day's own Event line, with the same word
+ *  repeated over neighbouring days read as ONE run (the Event sheet's "repeat" writes it that way); or the seeded
+ *  holiday flag where no event names the day. A line that starts or ends outside the year is shown whole. */
+export function holidaysIn(year: number | string): HolidayLine[] {
+  const y = String(year).trim()
+  if (!/^\d{4}$/.test(y)) return []
+  const lo = `${y}-01-01`, hi = `${y}-12-31`
+  const st = getState()
+  const out: HolidayLine[] = []
+  const kinds = new Map<string, EventKind | null>()
+  const kindOf = (text: string, own: EventKind | null | undefined): 'ph' | 'off' | null => {
+    if (own) return holidayKind(own)
+    if (!kinds.has(text)) kinds.set(text, classifyEvent(st.eventDefs, text))
+    return holidayKind(kinds.get(text)!)
+  }
+  for (const war of st.wars) {
+    const p = war.period
+    if (p.end < lo || p.start > hi) continue
+    const mine: HolidayLine[] = []
+    const add = (src: HolidayLine['src'], line: number | null, from: string, to: string, kind: 'ph' | 'off', name: string): HolidayLine => {
+      const h: HolidayLine = { id: `${p.id}|${src}|${line ?? 'f'}|${from}`, warId: p.id, from, to, kind, name, src, line }
+      mine.push(h)
+      return h
+    }
+    const phBands: EventBand[] = []
+    for (const b of p.bands) {
+      const k = kindOf(b.text, b.kind)
+      if (!k) continue
+      if (k === 'ph') phBands.push(b)
+      add('band', b.line, b.from, b.to, k, b.text)
+    }
+    const open = new Map<number, HolidayLine>()      // per Event row, the run still growing
+    let flag: HolidayLine | null = null
+    for (const d of p.days) {
+      let named = false
+      for (let i = 0; i < d.events.length; i++) {
+        const t = d.events[i]
+        const k = t ? kindOf(t, d.eventKinds?.[i]) : null
+        if (!k) { open.delete(i); continue }
+        if (k === 'ph') named = true
+        const run = open.get(i)
+        if (run && run.kind === k && defKey(run.name) === defKey(t!) && addDays(run.to, 1) === d.date) run.to = d.date
+        else open.set(i, add('day', i, d.date, d.date, k, t!))
+      }
+      for (const i of [...open.keys()]) if (i >= d.events.length) open.delete(i)
+      if (d.ph && !named && !phBands.some(b => b.from <= d.date && d.date <= b.to)) {
+        if (flag && addDays(flag.to, 1) === d.date) flag.to = d.date
+        else flag = add('flag', null, d.date, d.date, 'ph', 'PH')
+      } else flag = null
+    }
+    for (const h of mine) if (h.to >= lo && h.from <= hi) out.push(h)
+  }
+  return out.sort((a, b) => (a.from < b.from ? -1 : a.from > b.from ? 1 : (a.line ?? -1) - (b.line ?? -1)))
+}

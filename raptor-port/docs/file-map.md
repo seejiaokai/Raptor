@@ -447,6 +447,14 @@ commands (`setFlyDays` - one date or a picked block, one Undo step; `setFlyRule`
 one step, Undo / Redo and its words, a reload, and the earlier build's leftover rows. Its guards: `people-settings-commit.ts`
 (row kinds, the `flynames` key, the write hook, the loader), `perms.ts` `COMMAND_OPS`; Undo's words `undo/describe.ts describeFly`,
 its landing `undo-wire.ts`.
+`src/leavewar/engine/availrows.ts` - the two Available rows the SANS calendar reads (`availp`, `availw` - D640): their
+built-in definitions, the check that keeps a stored one a people count with no amber or red, and `availHave`, the ONE sum
+that never counts a SANS man (D626); the store's side is `state/store.ts` `availRules`, `manningDeleteProblem` and the
+guards in `saveManningRule`, `setManningThreshold`, `deleteManningRule`, `readManningRules` (the two are beside the
+sixty-counter limit, never inside it), and `engine/evaluate.ts` passes them over (they judge no day). `engine/eventdefs.ts
+holidayAt` - the holiday on a day with its name. `src/leavewar/sync.ts` (its last block) - what the calendars read from the
+war: `dayFacts(iso)`, `holidaysIn(year)` and the signal `useWarFacts()` / `warFactsVersion()` / `subscribeWarFacts()`;
+`src/leavewar/dayfacts.test.ts` pins all of it.
 D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
 through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
 thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.

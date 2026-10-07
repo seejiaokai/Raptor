@@ -323,3 +323,15 @@ the war still stores only through `state/storage.ts`. `rawPersist` writes nothin
 not saved. **No Edit person (D460, D461):** the war keeps no seat, band or SXO of its own — `setPerson`,
 `PersonSheet.tsx` and `personEdits` are gone; the projection's are the man's (Quals is the one place they change).
 Detail: `raptor-port/docs/data-schema.md` §World 2.
+
+**THE CALENDARS READ THE WAR THROUGH `sync.ts` — a rider on that seam, not a fifth (the Inputs / SANS redesign, 7 Oct 26;
+D617, D627, D640; the plan `raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.1).** Two stores
+hold the facts of one day: its flying class and required pilots and WSOs are the scheduler's settings rows
+(`state/flyplan.ts` — they outlive any one period); whether it is a public holiday or an Off day, and who is available
+per seat, are the war's. `sync.ts` hands the war's half over, read only: `dayFacts(iso)` (from the period HOLDING the
+date, never the one on screen), `holidaysIn(year)`, and the signal `useWarFacts()` — a version that moves when anything
+those read has moved (a day's events, a band, the event types, a period, the count rows, the roster, a bid, an absence,
+an Undo of any) and stands still for a look. It is NOT the OIL-only Raptor notify, which stays as narrow as it is. The
+ONE place the two halves are joined is `state/flyplan-model.ts planFor`; a screen that joins them itself is a defect.
+Who is available is the two Available rows (`engine/availrows.ts`, ids `availp` / `availw`): ordinary count rows an admin
+renames and re-defines, summed by ONE function that never counts a SANS man, never drawn or judged with the Manning rows.

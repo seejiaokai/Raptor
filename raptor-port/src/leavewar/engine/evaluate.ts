@@ -9,6 +9,7 @@ import { countsFor, ruleHave, type DayCounts, type Grid } from './availability'
 import type { States } from './bids'
 import type { Person } from './people'
 import { requirementFor, type Requirements } from './requirements'
+import { isAvailId } from './availrows'
 
 export type Verdict = 'ok' | 'amber' | 'red'
 
@@ -53,6 +54,9 @@ export function evaluateDay(
   const results: RuleResult[] = []
 
   for (const rule of req.rules) {
+    // The two Available rows are not Manning rows: they are drawn with the Required rows and judge no day
+    // (availrows.ts) — a squadron that re-defined one keeps it in this list, so it is passed over here.
+    if (isAvailId(rule.id)) continue
     // Each rule computes its own number from its definition (availability.ts:
     // ruleHave) — the old fixed-kind lookup went when rules became data.
     const have = ruleHave(rule.count, people, grid, states, date, views)

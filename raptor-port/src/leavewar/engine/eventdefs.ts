@@ -105,6 +105,35 @@ export function columnKindFor(defs: EventDef[], day: DayInfo, bands: EventBand[]
   return sawFree ? 'free' : sawNolv ? 'nolv' : null
 }
 
+/** THE HOLIDAY ON A DAY, WITH ITS NAME — what the calendars and the Holidays list show of it (the build plan
+ *  docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.1, §3.4; owner D627, D631). A public holiday
+ *  (`off`) or a management Off day (`free`); null for anything else — No Leave and a working event are not holidays.
+ *
+ *  It reads the KIND exactly as `columnKindFor` does — each event's own tag first, else its word's type in the
+ *  library; a public holiday wins over an Off day — so the tag on a calendar date can never disagree with the column's
+ *  colour on the Leave War. The name is the text of the first event of the winning kind, the day's own lines before
+ *  any band. A day carrying only the seeded holiday flag (`ph`, no event) is a public holiday named "PH" — the same
+ *  day `isNonWorkingDay` already counts as one. `line` and `band` say where the record is, for the list's writers. */
+export interface HolidayAt { kind: 'off' | 'free'; name: string; line: number | null; band: EventBand | null }
+export function holidayAt(defs: readonly EventDef[], day: DayInfo, bands: readonly EventBand[]): HolidayAt | null {
+  let free: HolidayAt | null = null
+  for (let i = 0; i < day.events.length; i++) {
+    const t = day.events[i]
+    if (!t) continue
+    const k = day.eventKinds?.[i] ?? classifyEvent(defs as EventDef[], t)
+    if (k === 'off') return { kind: 'off', name: t, line: i, band: null }
+    if (k === 'free' && !free) free = { kind: 'free', name: t, line: i, band: null }
+  }
+  for (const b of bands) {
+    if (b.from > day.date || day.date > b.to) continue
+    const k = b.kind ?? classifyEvent(defs as EventDef[], b.text)
+    if (k === 'off') return { kind: 'off', name: b.text, line: b.line, band: b }
+    if (k === 'free' && !free) free = { kind: 'free', name: b.text, line: b.line, band: b }
+  }
+  if (day.ph) return { kind: 'off', name: 'PH', line: null, band: null }
+  return free
+}
+
 /**
  * Whether Leave War calls this date NON-WORKING: a weekend, or a public
  * holiday. A holiday is whatever the war holding the date says — its `ph`
