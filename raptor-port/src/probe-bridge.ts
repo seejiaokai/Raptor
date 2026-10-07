@@ -41,9 +41,9 @@ import { roleOf } from './state/perms'
 import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
-import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState } from './leavewar/state/store'
+import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent } from './leavewar/state/store'
 import { pinViewer } from './leavewar/sync'
-import { setFlyDays, setFlyRun } from './state/flyplan'
+import { setFlyDays, setFlyRun, setFlyRule } from './state/flyplan'
 
 /* the hosts the bridge is installed on ([ACCOUNTS], 26 Sep 26): this PC only — the
    e2e suite, the probes, the Tracker smoke and the hand-pass drivers all serve the
@@ -142,6 +142,7 @@ export function installProbeBridge() {
      will (the Inputs / SANS redesign, plan §3.3); each is the real command, refused for a member like any other. */
   w.setFlyDays = setFlyDays
   w.setFlyRun = setFlyRun
+  w.setFlyRule = setFlyRule            // "every <weekday> from a date on" — what Days' month draws with no dot
   /* [GLOBAL-UNDO] the RAPTOR effective role — what deriveActor()/mayReverse read to
      gate a global undo. The e2e sets its LOGIN actor to admin this way (the reliable
      path: no mid-test re-login — the grid is already up). GATED TO LOCALHOST (dev +
@@ -183,6 +184,8 @@ export function installProbeBridge() {
     w.INPUTS = INPUTS
     w.lwSetCell = (p: string, d: string, code: string) => lwSetCell(p, d, code)
     w.lwSetPostOut = (p: string, from: string | null) => lwSetPostOut(p, from)
+    /* a word on a day's Event line of the war on screen ("PH", "Off day") — what the calendars and Days show as a tag */
+    w.lwSetDayEvent = (d: string, line: number, text: string) => lwSetDayEvent(d, line, text)
     /* a Leave War counter, saved through the SAME writer the "+ Counter" form uses — as an admin, the role the test had
        put back after. The app starts with NO counters (D669, 8 Oct 26); a browser test that is about counters makes
        the ones it needs with this (e2e/app.ts elevenCounters), rather than standing on a hidden default. */

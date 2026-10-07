@@ -36,6 +36,7 @@ import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
+import { setDaysWin } from '../ui/pops'
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
@@ -2285,6 +2286,16 @@ export function usePlanVersion(): number {
 export function availRowNames(): { p: string; w: string } {
   const r = availRules()
   return { p: r.p.label, w: r.w.label }
+}
+
+/** THE WAR'S DOOR TO DAYS (the plan §3.3 — the "Days…" line in the war's ⚙ Settings). Days is the scheduler's window
+ *  (ui/DaysWindow.tsx, admins only — the window itself is the gate); the war asks for it HERE, on the month of the date
+ *  given, and tells the scheduler's screens so it draws at once. Only the open-flag is reached (ui/pops.ts, plain state
+ *  with no screen behind it) — the war imports no scheduler screen. */
+export function openDays(iso: string): void {
+  if (!validIso(iso)) return
+  setDaysWin(iso)
+  raptorNotify()
 }
 
 export function flyAnswer(iso: string): DayAnswer {

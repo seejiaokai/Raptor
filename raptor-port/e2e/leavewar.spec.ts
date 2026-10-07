@@ -3410,6 +3410,113 @@ test('a Required figure is typed straight into its cell: one box on a desktop, t
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
 })
 
+// DAYS, FROM THE WAR'S ⚙ (plan §3.3 "Days…", §3.4 the Month; D633, D638, D641, D664). jsdom proves the presses and what
+// is saved (src/ui/dayswindow.test.tsx, src/leavewar/ui/daysline.test.tsx); what only a real browser can say: the window
+// is on the screen and does not run off it; a desktop date's three buttons fit side by side inside their date and a
+// phone date's ONE button is big enough for a thumb; on a phone the window starts under the app's top bar (Undo stays
+// in reach) and runs to the foot of the screen; the Leave War's own Required row — the page BEHIND the window — changes
+// at the press, with the window still up; and on a desktop the grid behind still takes a click.
+test('Days opens from the Leave War’s settings: the month sets a date’s class, and the grid behind it follows at once', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  const tid = (id: string) => page.locator(`[data-testid="${id}"]`)
+  const rect = (l: Locator) => l.evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom } })
+  const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
+  const vp = page.viewportSize()!
+  const WED = '2026-01-07'
+
+  await press(tid('settings-open'))
+  await expect(tid('settings-days')).toBeVisible()
+  await press(tid('settings-days'))
+  /* the sheet is gone, the window is up — on the month the grid is showing */
+  await expect(tid('settings-sheet')).toHaveCount(0)
+  const win = tid('win-days')
+  await expect(win).toBeVisible()
+  await expect(tid('days-month')).toHaveText('January 2026')
+  await expect(win).toHaveAttribute('aria-modal', 'false')
+
+  /* on the screen, whole */
+  const w = await rect(win)
+  expect(w.x).toBeGreaterThanOrEqual(-0.5); expect(w.r).toBeLessThanOrEqual(vp.width + 0.5)
+  expect(w.y).toBeGreaterThanOrEqual(-0.5); expect(w.b).toBeLessThanOrEqual(vp.height + 0.5)
+  /* seven equal columns, none squeezed out */
+  const cols = await Promise.all(['05', '06', '07', '08', '09', '10', '11'].map(d => rect(tid(`days-cell-2026-01-${d}`))))
+  for (const c of cols) expect(Math.abs(c.w - cols[0].w), 'the seven dates of a week are not one width').toBeLessThan(1.5)
+  expect(cols[6].r, 'Sunday runs out of the window').toBeLessThanOrEqual(w.r + 0.5)
+  for (let i = 1; i < 7; i++) expect(cols[i].x, 'two dates overlap').toBeGreaterThanOrEqual(cols[i - 1].r - 0.5)
+
+  if (isPhone()) {
+    /* under the app's top bar — Undo is in reach — and down to the foot of the screen (D664) */
+    const bar = await rect(page.locator('.topbar.has-undo'))
+    expect(w.y, 'the window covers the top bar').toBeGreaterThanOrEqual(bar.b - 0.5)
+    expect(vp.height - w.b, 'the window stops short of the foot of the screen').toBeLessThanOrEqual(12)
+    await expect(page.locator('#undoBtn')).toBeVisible()
+    /* ONE button on a date, big enough for a thumb, inside its date */
+    await expect(tid(`days-d-${WED}`)).toHaveCount(0)
+    const b = await rect(tid(`days-step-${WED}`)), c = await rect(tid(`days-cell-${WED}`))
+    expect(b.h).toBeGreaterThanOrEqual(36); expect(b.w).toBeGreaterThanOrEqual(36)
+    expect(b.x).toBeGreaterThanOrEqual(c.x - 0.5); expect(b.r).toBeLessThanOrEqual(c.r + 0.5); expect(b.b).toBeLessThanOrEqual(c.b + 0.5)
+    /* the whole month is in sight with no scrolling inside the window (January 2026 is five weeks) */
+    expect((await rect(tid('days-cell-2026-01-31'))).b, 'the last week is under the fold').toBeLessThanOrEqual(w.b + 0.5)
+    /* day → night → no fly */
+    await expect(tid(`days-step-${WED}`)).toHaveAttribute('data-cls', 'day')
+    await tid(`days-step-${WED}`).tap()
+    await expect(tid(`days-step-${WED}`)).toHaveAttribute('data-cls', 'night')
+    await tid(`days-step-${WED}`).tap()
+    await expect(tid(`days-step-${WED}`)).toHaveAttribute('data-cls', 'nf')
+    await expect(tid(`days-step-${WED}`)).toHaveText('NF')
+  } else {
+    /* three buttons side by side inside their date, none clipped, the chosen one lit */
+    await expect(tid(`days-step-${WED}`)).toHaveCount(0)
+    const c = await rect(tid(`days-cell-${WED}`))
+    const ks = await Promise.all(['d', 'n', 'nf'].map(k => rect(tid(`days-${k}-${WED}`))))
+    expect(ks[0].x).toBeGreaterThanOrEqual(c.x - 0.5); expect(ks[2].r).toBeLessThanOrEqual(c.r + 0.5)
+    for (const k of ks) { expect(k.w).toBeGreaterThanOrEqual(24); expect(k.h).toBeGreaterThanOrEqual(24); expect(Math.abs(k.y - ks[0].y)).toBeLessThan(1) }
+    expect(ks[1].x).toBeGreaterThanOrEqual(ks[0].r); expect(ks[2].x).toBeGreaterThanOrEqual(ks[1].r)
+    await expect(tid(`days-d-${WED}`)).toHaveAttribute('aria-pressed', 'true')
+    /* a weekend date starts with none lit */
+    for (const k of ['d', 'n', 'nf']) await expect(tid(`days-${k}-2026-01-10`)).toHaveAttribute('aria-pressed', 'false')
+    await tid(`days-nf-${WED}`).click()
+    await expect(tid(`days-nf-${WED}`)).toHaveAttribute('aria-pressed', 'true')
+    await expect(tid(`days-d-${WED}`)).toHaveAttribute('aria-pressed', 'false')
+  }
+  /* set for the date itself: the dot */
+  await expect(tid(`days-dot-${WED}`)).toBeVisible()
+  /* THE PAGE BEHIND FOLLOWED, with the window still up: the war's own Required rows read NF on that day */
+  await expect(win).toBeVisible()
+  await expect(tid(`req-p-${WED}`)).toHaveText('NF')
+  await expect(tid(`req-w-${WED}`)).toHaveText('NF')
+
+  if (!isPhone()) {
+    /* and it still takes a click: a month button of the grid, with the window up (D641) */
+    await tid('month-FEB').click()
+    await expect(tid('month-FEB')).toHaveAttribute('aria-current', 'true')
+    await expect(win).toBeVisible()
+    await expect(tid('days-month')).toHaveText('January 2026')
+  }
+
+  /* ONE Undo step, from the app's own top bar, with the window up */
+  await press(page.locator('#undoBtn'))
+  if (isPhone()) await expect(tid(`days-step-${WED}`)).toHaveAttribute('data-cls', 'night')
+  else await expect(tid(`days-d-${WED}`)).toHaveAttribute('aria-pressed', 'true')
+  await expect(tid(`req-p-${WED}`)).not.toHaveText('NF')
+
+  /* ‹ › do not move under the finger as the month's name changes length */
+  const nextAt = await rect(tid('days-next'))
+  await press(tid('days-next'))
+  await expect(tid('days-month')).toHaveText('February 2026')
+  await press(tid('days-next')); await press(tid('days-next')); await press(tid('days-next'))
+  await expect(tid('days-month')).toHaveText('May 2026')
+  const nextNow = await rect(tid('days-next'))
+  expect(Math.abs(nextNow.x - nextAt.x) + Math.abs(nextNow.y - nextAt.y), '› moved under the finger').toBeLessThan(1)
+
+  /* ✕ closes it, and the line opens it again (that a member has no Days is pinned in src/ui/dayswindow.test.tsx) */
+  await press(tid('win-days-x'))
+  await expect(win).toHaveCount(0)
+  await press(tid('settings-open')); await press(tid('settings-days'))
+  await expect(win).toBeVisible()
+})
+
 // PICKING SEVERAL REQUIRED CELLS, AND THE PANEL THAT DOES NOT BLOCK THE GRID (plan §3.3 "Picking several"; D636, D637,
 // D641, D642). jsdom proves the rule and what is saved (reqpanel.test.tsx, selectreq.test.ts, nonmodal.test.tsx). A
 // real browser has to say the rest: that a REAL drag over the two rows arms and picks — a mouse on a desktop, a held

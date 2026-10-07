@@ -526,6 +526,17 @@ a movable window that does NOT block the page - a bar it is dragged by, a close 
 shell over `ui/floatwin.ts useFloatWin` (the one body of placement rules), never a second one. (Named FloatWindow, not
 FloatWin: on Windows `FloatWin.tsx` and `floatwin.ts` are one name to the bundler.) Styles
 `ui/scheduler/22-float-windows.css`; tests `ui/floatwindow.test.tsx`. Nothing is built on it yet - Days is next.
+`src/ui/DaysWindow.tsx` - DAYS, THE MONTH (plan §3.4; D631, D633, D638, D642): the admin's window that says what kind of
+day each date is, on the windows shell (`FloatWin id="days"`), mounted once in `ui/App.tsx`, opened by `ui/pops.ts
+DAYSWIN` (the date whose month it opens on) - from the Leave War's settings through `leavewar/sync.ts openDays`. A date
+shows the war's tag (PH, OFF) or its class control: three buttons D / N / NF above 820px wide, ONE stepping button
+(sun, moon, NF, a dash) at or under it; each press one `setFlyDays` command, one Undo step; a dot where the class is set
+for the date itself. It joins nothing - a month's answers are `sync.ts flyMonth`. Styles `ui/scheduler/23-days.css`
+(prefixed class names - the sheet is global and the week owns `.day`); the sun and moon are `ui/icons.tsx`. Tests
+`ui/dayswindow.test.tsx`, `leavewar/ui/daysline.test.tsx`; pictures `scripts/handpass/days-look.mjs`. Not here yet:
+"Every <weekday>" and the Holidays list.
+`scripts/handpass/days-look.mjs` - pictures of Days in the RUNNING build, phone and desktop (the line in the war's
+settings, the month as the fourth mock-ups draw it, the dot, the window dragged aside); a look, not a gate.
 `scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a
 cell being typed, "From <date> on", a picked block with its panel, the people's-days panel): the builder's look, and the built side of D624's mock-up-beside-built evidence. Not
 a gate. It reads a preview on port 4180 (`LOOK_URL`), never 4173 - the browser tests reuse a server left there.

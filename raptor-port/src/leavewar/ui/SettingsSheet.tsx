@@ -54,6 +54,7 @@ import './bidpicker.css'
 export function SettingsSheet({
   onClose,
   onAddCounter,
+  onDays,
   onGroupDragStart,
   onPriorityDragStart,
   draggingId,
@@ -63,6 +64,8 @@ export function SettingsSheet({
   onClose: () => void
   /** Open the counter builder (Matrix owns the form + its `counterEdit` state). */
   onAddCounter: () => void
+  /** Open Days — the admin's window that says what kind of day each date is (Matrix closes this sheet first). */
+  onDays: () => void
   /** Drag in the groups list (display order — the same write as the grid's heading
    *  grip) and in the who-wins (priority) list — both wired by Matrix to the one
    *  drag machine. */
@@ -153,6 +156,24 @@ export function SettingsSheet({
         <span className="who">SETTINGS</span>
         <span className="dt">counters, rows &amp; groups</span>
         <button className="x" data-testid="settings-close" onClick={onClose} aria-label="Close">✕</button>
+      </div>
+
+      {/* ---- Days (the Inputs / SANS calendar job, plan §3.3; the fourth mock-ups' "the way in") — the same line the
+          two calendars' settings carry. It opens the scheduler's Days window, where each date is set day flying, night
+          flying or no fly: what the Required rows at the foot of the Manning block show as "NF", and count as 0. The
+          sheet closes first — Days is a window that leaves the grid working behind it (D641), and this sheet would
+          cover it. */}
+      <div className="gs-sec">Days</div>
+      <div className="set-tray">
+        <div className="set-ctrls">
+          <button
+            className="rtbtn"
+            data-testid="settings-days"
+            title="Open Days — set each date day flying, night flying or no fly"
+            onClick={onDays}
+          >Days…</button>
+        </div>
+        <div className="set-hint" data-testid="settings-days-hint">Day flying, night flying or no fly, for each date.</div>
       </div>
 
       {/* ---- counters & rows ------------------------------------------------- */}

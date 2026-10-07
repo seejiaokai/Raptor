@@ -1,0 +1,73 @@
+/* ============================================================================================================
+   DAYS — THE MONTH (ui/DaysWindow.tsx — the Inputs / SANS calendar job, plan §3.4; owner D633, D638: the class is
+   chosen right on the date — three buttons on a desktop date, ONE stepping button on a phone date). A window on the
+   windows shell (22-float-windows.css), sized here for a seven-column month.
+   Colours: day flying is the app's accent, night flying a violet, no fly a plain grey — the three of the approved
+   mock-up; a public holiday is the green the Leave War draws it in and an Off day grey (D627).
+   ============================================================================================================ */
+.floatwin.dayswin{width:min(880px,calc(100vw - 32px))}
+.dayswin .days-head{display:flex;align-items:center;gap:6px}
+.dayswin .days-head .abtn{min-width:40px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+.dayswin .days-head [data-testid="days-prev"],.dayswin .days-head [data-testid="days-next"]{font-size:20px;line-height:1;padding:4px 10px}
+/* a fixed room for the month's name, so › does not move under a finger as the names change length (the standing rule:
+   a control tapped repeatedly stays where it is) */
+.dayswin .days-month{flex:0 0 150px;text-align:center;font-size:15px;font-weight:800;color:var(--ink);letter-spacing:.02em;white-space:nowrap}
+.dayswin .days-hint{margin:8px 0 8px;font-size:12px;color:var(--ink-3)}
+.dayswin .days-err{margin:0 0 8px;font-size:12px;font-weight:700;color:#FF7A84}
+.days-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1px solid var(--edge);border-radius:10px;overflow:hidden;background:var(--edge);gap:1px}
+.days-wd{background:var(--panel-2);padding:6px 4px;text-align:center;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.days-wd.is-we{color:var(--ink-3)}
+.days-blank,.days-fill{background:var(--panel)}
+.days-cell{background:var(--panel);min-height:74px;padding:7px 8px 9px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.days-cell.is-ph{background:#12301F}
+.days-cell.is-off{background:#1C2128}
+.days-top{display:flex;align-items:center;gap:6px;min-height:20px}
+.days-num{font-size:13px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;min-width:20px;height:20px;line-height:20px}
+.days-cell.is-we .days-num{color:var(--ink-3)}
+.days-cell.is-today .days-num{border-radius:50%;background:var(--accent);color:var(--accent-ink);text-align:center}
+.days-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:0 0 auto}
+.days-tag{align-self:flex-start;font-size:10px;font-weight:800;letter-spacing:.05em;padding:2px 6px;border-radius:4px}
+.days-tag.t-ph{background:#1F6B3F;color:#C9F5D8}
+.days-tag.t-off{background:#3A424D;color:#DCE2E8}
+/* ---- a desktop date: D / N / NF, the chosen one lit ---- */
+.days-keys{display:flex;gap:4px}
+.days-key{flex:1 1 0;min-width:0;height:28px;padding:0;border-radius:7px;border:1px solid var(--edge-2);background:var(--bg);color:var(--ink-2);
+  font-size:11px;font-weight:800;letter-spacing:.02em;cursor:pointer}
+.days-key:hover{border-color:var(--ink-3);color:var(--ink)}
+.days-key:focus-visible,.days-step:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.days-key.c-day.lit{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.days-key.c-night.lit{background:#A79BFF;border-color:#A79BFF;color:#17123A}
+.days-key.c-nf.lit{background:#C5CDD6;border-color:#C5CDD6;color:#14181D}
+/* ---- a phone date: ONE button that steps day → night → no fly (→ not set, on a weekend) ---- */
+.days-step{width:100%;height:40px;padding:0;border-radius:9px;border:1px solid var(--edge-2);background:var(--bg);color:var(--ink);
+  display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;cursor:pointer}
+.days-step .fly-ico{width:18px;height:18px}
+.days-step.c-day{color:#F2C14E}
+.days-step.c-night{background:#2A2A55;border-color:#8F86F0;color:#C9C4FF}
+.days-step.c-nf{border-color:#DCE2E8;border-width:1.5px;color:#fff}
+.days-step.c-none{border-style:dashed;color:var(--ink-3)}
+.days-grid.narrow .days-cell{min-height:0;padding:5px 4px 6px;gap:4px}
+.days-grid.narrow .days-num{font-size:12px}
+.days-grid.narrow .days-tag{font-size:9.5px;padding:2px 5px}
+/* A PHONE: the month takes the screen down to its foot — never a short box scrolled inside the page (D664); the
+   window's own body scrolls as one. It starts UNDER the app's top bar (48px tall on a phone), so Undo and Redo stay in
+   reach: every press here is one Undo step, and a mis-tap on a stepping button is taken back there. The bar still drags
+   the window down to see the page behind. */
+@media (max-width:620px){
+  .floatwin.dayswin{left:6px;right:6px;top:54px;bottom:6px;max-width:calc(100vw - 12px);max-height:none;width:auto}
+  .dayswin .win-body{padding:8px 6px 10px}
+  .dayswin .days-head .abtn{min-width:44px;min-height:44px}
+  .dayswin .days-month{flex:1 1 auto}
+  .days-wd{padding:6px 0;font-size:10px;letter-spacing:.04em}
+  /* THE MONTH FITS THE HEIGHT THE PHONE GIVES (D653's rule for a phone month — "never built for one screen"): its weeks
+     share the room left under the heading, each date's button growing with them — never under 36px, where a six-week
+     month on a short phone scrolls instead, and never over 60px on a tall one. */
+  .dayswin .win-body{display:flex;flex-direction:column}
+  /* 1 0: it grows to the foot but never shrinks under its dates (its clipped corners would hide the last week) */
+  .dayswin .days-grid{flex:1 0 auto;grid-template-rows:auto;grid-auto-rows:minmax(min-content,1fr)}
+  .dayswin .days-hint{margin:6px 0}
+  .days-grid.narrow .days-cell{padding:3px 4px 5px;gap:2px}
+  .days-grid.narrow .days-top{min-height:18px}
+  .days-grid.narrow .days-num{height:18px;line-height:18px}
+  .days-step{flex:1 1 auto;height:auto;min-height:36px;max-height:60px}
+}

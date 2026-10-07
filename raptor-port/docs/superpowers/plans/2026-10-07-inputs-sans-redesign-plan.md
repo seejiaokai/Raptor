@@ -360,6 +360,33 @@ the gear of either calendar or from the Leave War's ⚙; admin only. Two parts s
   and opens the war's own "+ New" period sheet with the gap's dates filled in; the holiday being added is kept and
   saved once that period exists.
 
+**AS BUILT (8 Oct 26, the overnight run — step 3, second piece: DAYS' MONTH, and the "Days…" line in the Leave War's ⚙,
+which closes step 2).** `src/ui/DaysWindow.tsx` on the windows shell (`FloatWin id="days"`), mounted once in
+`ui/App.tsx`, opened by `ui/pops.ts DAYSWIN` — the date whose MONTH it opens on (null = closed; in `POPS_RESET`, NOT in
+`windowOverSchedule`: it does not block the page). The war's door is `leavewar/sync.ts openDays(iso)` (the war imports no
+scheduler screen — only the open-flag), called by the "Days…" line at the head of `SettingsSheet`, on the month the
+grid's month strip has lit. What a day is comes from `sync.ts flyMonth` — the one resolver; the window joins nothing
+itself and repaints on the scheduler's signal and on `useWarFacts()`. Each press is `setFlyDays([{ iso, cls }])`.
+Styles `ui/scheduler/23-days.css`; the sun and the moon are `ui/icons.tsx SunIcon` / `MoonIcon`. Tests
+`ui/dayswindow.test.tsx` (18) and `leavewar/ui/daysline.test.tsx` (4), red first; **twenty rules broken one at a time,
+every one caught**; one browser test at phone and desktop size (`e2e/leavewar.spec.ts` "Days opens from the Leave War's
+settings…"); looked at beside the fourth mock-ups (`scripts/handpass/days-look.mjs`).
+**Choices the builder made:** (1) ONE stepping button up to 820px wide (the app's phone width), three buttons above it —
+seven dates across a narrower window leave no room for three; (2) on a phone the window starts UNDER the app's top bar
+and runs to the foot of the screen (D664) — the bar stays in sight because every press is an Undo step and Undo lives
+there; the month's weeks share the height the phone gives (a date's button between 36px and 60px), so a six-week month
+fits a short phone without scrolling; (3) pressing the lit button on a weekday does nothing and writes nothing; on a
+Saturday or Sunday it goes back to "no flying set"; (4) the dot is drawn exactly where the class is stored for the date
+itself (`clsFrom === 'date'`) — so a date stepped back to what its weekday gives loses it; (5) asked for again while up
+(the war's ⚙ on another month) it goes to that month; (6) a member who has it asked for draws nothing AND the ask is
+dropped, so an admin back from the member view (D292) does not find it up again; (7) the class names are prefixed
+(`is-`, `c-`, `t-`, `lit`) — the scheduler's sheet is global and its week owns `.day` (a date button classed `day` grew
+as tall as a day card; seen in the first look); (8) the line in the war's ⚙ reads "Days…" with "Day flying, night flying
+or no fly, for each date." under it — it will also name the holidays once that list is built.
+**NOT BUILT YET in step 3:** a weekday's heading opening "Every <weekday>" (the headings are plain words until then),
+and the Holidays list (no tabs until then) — `setFlyRule` / `removeFlyRule` and `holidayAdd` / `holidayChange` /
+`holidayRemove` are built and tested (steps 1 and 2); only their screens are missing.
+
 ### 3.5 The SANS calendar
 
 - **The date cell** (the second mock-ups' drawing, in the first set's colours — D626, D630): the day number with a sun
@@ -459,7 +486,8 @@ is kept per window for the life of the page, not stored — as the changes windo
 older windows use (410, and 411 in front), so a question that must be answered still sits over its window. Tests:
 `ui/floatwindow.test.tsx` (11, red first). **NOT BUILT YET in step 3:** Days (Month, "Every <weekday>", Holidays) on
 this shell, and the "Days…" line in the Leave War's ⚙ — until Days uses it the shell cannot be seen in the running app,
-so it has had no browser test and no look yet.
+so it has had no browser test and no look yet. *(Since the next piece, below §3.4: Days' Month is on the shell and the
+line is in the war's ⚙ — the shell has now been driven and looked at in a real browser, at both sizes.)*
 
 ### 3.8 Who placed it, and when — D629
 
@@ -1237,6 +1265,14 @@ eye was, in the dashed grey every Delete wears; the counter's own window still h
 **And the Available rows:** an admin renames one, or changes who it counts, by tapping the row's own name; the window
 that opens offers only what applies to these two rows — no amber or red, no "Sets / teams", no Delete, and no "SANS"
 choice (a SANS person is never counted there) — and says so in one line.
+
+**And Days' month (step 3, 8 Oct 26):** it is a WINDOW he can move, as the plan has it — the fourth mock-ups drew a page
+with a back arrow; the grid, or a calendar, keeps working behind it. On a phone it sits under the app's top bar and runs
+to the foot of the screen, so Undo stays in reach. One stepping button on each date up to tablet width, three buttons
+(D, N, NF) on anything wider. Pressing the lit button on a weekday does nothing; on a Saturday or Sunday it goes back
+to "no flying set". A small dot marks a date he set himself, apart from what its weekday gives; it goes when the date is
+stepped back. From the Leave War it opens on the month the grid is showing. Until "Every <weekday>" and the Holidays
+list are built, the weekday headings are plain words and the line in the war's settings names only day, night and no fly.
 
 ## 9. For the challenger
 

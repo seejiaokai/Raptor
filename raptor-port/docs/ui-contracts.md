@@ -6476,10 +6476,45 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   A member's name is plain text. The Required rows' names open nothing (D668). The store's own refusals — delete, a
   teams count, thresholds held at 0 — are `dayfacts.test.ts`. Gate: `e2e/leavewar.spec.ts` "an Available row's name
   opens the counter form for it…" (phone and desktop). Pins: `ui/availform.test.tsx`.
-- **Not built yet (the last piece of step 2):** the "Days…" line in ⚙ Settings — it waits for Days itself (step 3).
+- **The "Days…" line in ⚙ Settings (the last piece of step 2 — built 8 Oct 26 with Days' month).** At the head of the
+  sheet: a "Days…" button with "Day flying, night flying or no fly, for each date." under it. It closes the sheet and
+  opens Days on the month the grid's month strip has lit (`sync.ts openDays` — the war imports no scheduler screen).
+  Pins: `ui/daysline.test.tsx`.
 - Gates: `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning block keep every day column in line, and paint
   what they mean" and "in the Manning block the four rows cover no month button, and the open-bidding outline stays
   round the dates" (phone and desktop). Pins: `ui/flyrows.test.tsx`.
+
+## Days — the month (owner, D631, D633, D638, D641, D642, D664; built 8 Oct 26)
+
+The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shell (`ui/FloatWindow.tsx`).
+
+- **A window, admins only, that does not block the page (D641).** Opened by `ui/pops.ts DAYSWIN` — the date whose month
+  to open on; closed by its ✕ or Escape. It can be dragged by its bar and the page behind still takes clicks. A member
+  who has it asked for sees nothing, and the ask is dropped. It closes with the session (`POPS_RESET`) and is NOT one of
+  the windows the schedule's Tab route stops for (`windowOverSchedule`).
+- **The month.** Seven columns, Monday first; ‹ › step a month and Today comes back; the month's name has a fixed room
+  (150px on a desktop, the leftover width on a phone), so › does not move under a finger as names change length. The
+  blanks before the 1st and after the last date are drawn as empty places.
+- **A date** shows its number — dimmed on a Saturday or Sunday, in the accent disc on today — and EITHER the tag the
+  Leave War gives it (PH on a green wash, OFF on grey; no class control under a holiday) OR its class control.
+  - *Wider than 820px:* three buttons, D / N / NF, side by side inside the date, the chosen one lit (day the accent,
+    night violet, no fly grey; `aria-pressed`). A Saturday and a Sunday start with none lit (D642). Pressing the lit one
+    does nothing on a weekday and goes back to "no flying set" on a weekend.
+  - *820px and under:* ONE button that steps day → night → no fly (→ no flying set, on a weekend): a sun, a moon, "NF",
+    a dash in a dashed outline (D577 — the sun is day flying, so the app's gear is never drawn like one, D635). Its
+    label says what it is and what a tap gives.
+  - Each press is one command and one Undo step; a press that changes nothing writes nothing. A refusal shows as one red
+    line above the month and the date keeps what it had.
+  - **The dot:** a small accent dot beside the number where the class is stored for the date itself; a date that
+    follows its weekday's rule, or the default, has none.
+- **On a phone (620px and under)** the window starts under the app's top bar (Undo and Redo stay in reach) and runs to
+  the foot of the screen (D664); the weeks share the height that is left, each date's button between 36px and 60px, so a
+  six-week month fits a short phone and never sits as a short box.
+- **Class names are prefixed** (`is-we`, `is-ph`, `is-off`, `is-today`, `c-day`, `c-night`, `c-nf`, `c-none`, `lit`,
+  `t-ph`, `t-off`): the scheduler's stylesheet is one global sheet and the week owns `.day`.
+- **Not built yet:** a weekday's heading opening "Every <weekday>" (plain words until then) and the Holidays list.
+- Gates: `e2e/leavewar.spec.ts` "Days opens from the Leave War's settings: the month sets a date's class, and the grid
+  behind it follows at once" (phone and desktop). Pins: `ui/dayswindow.test.tsx`.
 
 ## The event sheet on a phone keyboard (owner, 31 Aug 26)
 

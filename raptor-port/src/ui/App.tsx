@@ -19,6 +19,7 @@ import { DayTplModal } from './DayTplModal'
 import { DraftsModal } from './DraftsModal'
 import { SecDefaultSnackbar } from './SecDefaultSnackbar'
 import { AvailWindow } from './AvailWindow'
+import { DaysWindow } from './DaysWindow'
 import { installMissionRoleOffers, reconcileMissionRoleOffer } from './mission-role-offer'
 
 export function App() {
@@ -50,5 +51,5 @@ export function App() {
   const who = roleOf()
   if (who === 'pending' || who === 'off') return <AccessScreen />
   if (who === 'guest') return <GuestApp />
-  return <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><InputEditor /><MedMoveConfirm /><DocViewer /><DutyTplModal /><WaveTplModal /><DayTplModal /><DraftsModal /><SecDefaultSnackbar /><AvailWindow /><ChangesWindow /></>
+  return <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><InputEditor /><MedMoveConfirm /><DocViewer /><DutyTplModal /><WaveTplModal /><DayTplModal /><DraftsModal /><SecDefaultSnackbar /><AvailWindow /><ChangesWindow /><DaysWindow /></>
 }

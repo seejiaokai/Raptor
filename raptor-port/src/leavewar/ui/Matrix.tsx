@@ -82,7 +82,7 @@ import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
-import { leaveInputAt, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
+import { leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
 import type { Views } from '../engine/dayview'
@@ -4647,6 +4647,13 @@ export function Matrix() {
           // settings sheet so the two do not stack (both `.bidsheet`, same z-index,
           // so an open settings row would sit over the builder and eat its taps).
           onAddCounter={() => { setSettings(false); setCounterEdit(null) }}
+          // Days… opens the scheduler's Days window on the month the grid is showing (the month strip's lit one),
+          // through the war's one seam (sync.ts openDays); the sheet closes so it does not cover the window
+          onDays={() => {
+            setSettings(false)
+            const shown = months.find(m => m.label === inViewRef.current) || months[0]
+            openDays(shown ? shown.first : period.start)
+          }}
           onGroupDragStart={(e, id) => startRowDrag(e, id, GROUP_DRAG)}
           onPriorityDragStart={(e, id) => startRowDrag(e, id, GROUP_PRIO_DRAG)}
           draggingId={draggingId}

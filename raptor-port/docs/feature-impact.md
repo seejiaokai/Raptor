@@ -1276,6 +1276,18 @@ the resolver (`isFlyingDay` → `sync.ts flyAnswer`); a second idea of a flying 
 shows as NF; (2) the box is laid over its cell by measurement — a change to the rows' geometry (a new row above them, a
 zoom step, the frozen columns) is checked in the browser gate, never in jsdom; (3) on a touch screen NO input may be
 focused — a new control in the pad or the strip that is an `<input>` brings the phone's keyboard and iOS's zoom back.
+**Days — a date's class set on the month (8 Oct 26 — plan §3.4; D631, D633, D638, D642).** The admin's Days window
+(`ui/DaysWindow.tsx`, on the windows shell — it does not block the page) sets a date day flying, night flying or no fly:
+one command of the flying plan, a settings row, the one Undo. What it reaches, at the press and with the window still
+up: the Leave War's Required rows (a no-fly day reads "NF" and counts 0) and the working under an Available cell — and,
+once steps 4 and 5 are built, the SANS calendar's "still needed" and the two calendars' tags. It is opened from the
+war's ⚙ ("Days…", through `leavewar/sync.ts openDays`); the two calendars' gears get the same line in their steps.
+**Four drift seams:** (1) Days draws a month from `sync.ts flyMonth` and writes with `setFlyDays` — a class worked out
+in the window itself would be a second answer for a day; (2) the window is drawn by the scheduler's shell but asked for
+by the war — a role change must reach it through the scheduler's own signal (every production path does: the sign-in,
+the member-view switch); (3) its class names share ONE global stylesheet with the week — an unprefixed `day`, `off` or
+`today` picks up the week's rules; (4) it is NOT in `pops.ts windowOverSchedule`: a window that leaves the page working
+must never be listed there, or the schedule's Tab route would stop for it.
 **Several picked at once, and the two panels that do not block the grid (8 Oct 26 — plan §3.3; D636, D637, D641, D642).**
 A drag over the Required rows is the grid's own gesture (`ui/select.ts`, a third kind) and opens the Required panel;
 Apply is ONE command of the flying plan, as a typed cell is. `Sheet` has a non-blocking form (`modal={false}`) used by

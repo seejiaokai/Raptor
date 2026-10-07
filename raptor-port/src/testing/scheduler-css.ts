@@ -9,7 +9,7 @@ export const SCHEDULER_PARTS = [
   '08-windows-tools.css', '09-week-responsive.css', '10-board-history.css', '11-drag.css',
   '12-schedule-editing.css', '13-board-rows-responsive.css', '14-input-editors.css',
   '15-admin-help.css', '16-medical.css', '17-save-status.css', '18-oil-board.css',
-  '19-availability.css', '20-changes-quals.css', '21-insights.css', '22-float-windows.css',
+  '19-availability.css', '20-changes-quals.css', '21-insights.css', '22-float-windows.css', '23-days.css',
 ] as const
 
 export function schedulerParts(entry: string): string[] {

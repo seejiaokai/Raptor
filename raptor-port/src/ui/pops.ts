@@ -119,6 +119,12 @@ export type { AvailWin, AvailBox } from '../state/view'
    VIEW_RESET under 'session', so resetSession (the ONE session-change path) closes
    them all with no import from state into ui. pops.test.ts fails when an `export let`
    here has no entry (Fable R2-8). */
+/* DAYS (the Inputs / SANS calendar job, plan §3.4; owner D631, D638) — the admin's window that says what kind of day each
+   date is. Closed = null; open = the date whose MONTH it opens on (the filter-is-the-open-state idiom of DAYTPLEDIT
+   above), so the Leave War's settings can open it on the month the war is showing. It is one of the windows that do NOT
+   block the page (D641, ui/FloatWindow.tsx), so it is deliberately NOT in windowOverSchedule below. */
+export let DAYSWIN: string | null = null
+export function setDaysWin(iso: string | null) { DAYSWIN = iso }
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },
@@ -134,6 +140,7 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DOCVIEW', reset: () => setDocView(null) },
   { name: 'DRAWER', reset: () => setDrawer(false) },
   { name: 'WEEKCAL', reset: () => setWeekCal(false) },
+  { name: 'DAYSWIN', reset: () => setDaysWin(null) },
 ]
 export function resetPopsForSession(): void { for (const p of POPS_RESET) p.reset() }
 /* IS A WINDOW OVER THE SCHEDULE UP — OR ASKED FOR AND ABOUT TO BE DRAWN? (W12, the Codex stack check, 5 Oct 26.) The
