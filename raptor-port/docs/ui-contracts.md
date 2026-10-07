@@ -6327,10 +6327,11 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   the hand-drawn picture are gated** — nothing lies over a month button (Figures panel open or shut), and the green
   open-bidding outline starts at the dates, under the month buttons, crossing none of the four rows:
   `e2e/leavewar.spec.ts` "in the Manning block the four rows cover no month button…", phone and desktop.
-- **The block's own starting rows — D666 (8 Oct 26), RULED, NOT BUILT (`OUTSTANDING.md` `[LW-DEMO-COUNTERS-TRIM]`):** the
-  Manning block is to start with five count rows — IP, IWSO, SXO, SC D, SC N — above these four; Crew sets, IP + IWSO,
-  OPSP, OPSW, FL P and WM P leave the starting set (and so what "Reset counters" puts back). Until it is built the
-  block still starts with all eleven.
+- **The block's own rows — D669 (8 Oct 26), RULED, NOT BUILT (`OUTSTANDING.md` `[LW-DEMO-COUNTERS-TRIM]`):** the Manning
+  block is to come with NO count rows of its own — a squadron makes the ones it wants — so these four are all it shows
+  until a counter is made; and in Rearrange a count row's eye (hide) becomes a cross that deletes it (the Archive bar
+  goes with the eye). It replaced the same evening's first answer, D666 (five rows to start). Until it is built the block
+  still starts with eleven, each with an eye.
 - **The row contract, to the letter:** each of the four carries `who`, `bal`, the two placeholders and ONE cell per drawn
   day — `req-p-<iso>`, `req-w-<iso>`, `avail-p-<iso>`, `avail-w-<iso>` (never an `event-`, `cell-` or `count-` prefix:
   the drag code hit-tests those). **A row added to the EVENTS block needs an empty box in the Figures drawer**
@@ -6342,8 +6343,10 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   onward". **An Available cell** shows the war's own count for the seat (never a SANS man), red where it is UNDER its
   Required; a tap opens the working — required, available, SANS committed to fly, still needed — a small read-only menu
   for everyone (a press outside, Escape, a scroll or a second tap closes it).
-- **Names:** Required P / W from the plan's `flynames`, Available P / W from the two count rows; while a name is still
-  the one it started with, a phone (≤430px) shows its short form (Req P, Req W, Avail P, Avail W).
+- **Names:** Available P / W are the two count rows' own names — his to change (D640). **Required P / W are FIXED — D668
+  (8 Oct 26: "1 as recommended")**: no control renames them, and the saved name step 1 made room for (`flynames`, its
+  command and permission) is to be taken out with the rest of step 2. While a name is still the one it started with, a
+  phone (≤430px) shows its short form (Req P, Req W, Avail P, Avail W).
 - **Repaint:** the component subscribes itself to the scheduler's signal and to `useWarFacts()`; Matrix and its memo
   firewall are untouched. Each drawn month's cells are memoised on a signature of what they SHOW, built from the
   resolver's answers — so a run or a weekday rule that began before the month still repaints it. After a change is

@@ -255,9 +255,10 @@ something is still needed after the SANS committed to fly; that number is the wo
 88px above the roster. **NOT BUILT YET, in this order:** typing one cell (the floating input; the number pad on a touch
 screen); the third hit kind in `select.ts` and the Required panel with `Sheet`'s `modal={false}`; `SelectSheet` on that
 form (D642); the counter form's mode for the two ids and the store's three refusals for them; the Required rows' names
-being CHANGED on screen (`saveFlyNames` exists; no control calls it yet — no mock-up draws where it is typed, and
-the name itself was the builder's addition (D640's reading 2), so the builder places it: an admin's tap on the row's
-name, as a count row's name opens its sheet — told to him, §8); and the "Days…" line, which waits for Days itself (step 3) — a line that
+NOT being changed on screen at all — **D668 (8 Oct 26): the Required rows keep their names; the builder's addition
+(D640's reading 2) is withdrawn.** So no rename control is built, and `flynames` — the settings key, `settings.flynames`,
+`saveFlyNames`, its permission row and its Undo words, all built in step 1 — is taken out again with the rest of step 2
+(the "Names" bullet above and §3.2's `settings.flynames` are read with this); and the "Days…" line, which waits for Days itself (step 3) — a line that
 opened nothing would be a control that does not work.
 
 ### 3.4 Days — Month and Holidays
