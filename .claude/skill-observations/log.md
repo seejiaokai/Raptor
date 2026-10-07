@@ -2863,3 +2863,19 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the red step, when a test will look a record up by a key the system may group or merge (dates, ranges, names), check the seed for a neighbour of the same kind first, or pick a date well clear of seeded ones — and when the grouping IS the behaviour, pin it with its own named test rather than meeting it by accident.
 
 **Principle:** A fixture is part of the test's input. Where the system merges adjacent records, a fixture chosen next to seeded data tests the merge, not the thing the test is named for.
+
+
+### Observation 457: A fixture reset from a snapshot taken before start-up can make a later save look like it changed other records
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Building "who placed an input" at every door (the Inputs / SANS calendar job, step 1); a screen test of a member's save.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Writing the failing test — the fixture's reset between cases
+
+**Issue:** One case failed in its own setup: a member's save reported success and filed nothing. The test file took its copy of the list at import time, before the store had given each record its id, and put that copy back before every case. The next save gave those records fresh ids, so the ownership check saw a member changing other people's records and rolled the whole save back. Cases run as an admin never showed it. It took five runs to find because the screen said "added" — which also uncovered a real fault: the save's success message does not wait for the outer command's result.
+
+**Suggested improvement:** In the red step, take a reset snapshot only AFTER the system under test has finished starting up (ids minted, defaults filled), and when a case fails in its setup under one role but not another, suspect a check that reads what the command really changed before suspecting the feature. Also: when a "success" message appears and the data is not there, treat the mismatch itself as a finding and file it.
+
+**Principle:** A fixture restored between cases must be a state the system could have produced itself. A copy taken before start-up is not one, and the system's own integrity checks will treat the difference as somebody's change.
