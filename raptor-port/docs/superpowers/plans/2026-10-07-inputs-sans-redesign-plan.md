@@ -714,8 +714,10 @@ nowhere else. Every reader named above is left as it is, and no door, hook or re
   (D364's look) with two live controls: "Take me out", and his own OIL answer ("Change…"). Anyone else sees it read
   only: "Only its people, Saber — who filed it — or an admin can change this."
 - **Everywhere else it is one input per man, as if each had filed his own — unchanged, and tested as unchanged:** the
-  board's and the week's Personal Inputs, Unavailable and Ground Programme rows (a group of six is six rows — a
-  ripple he is told, §8); the warnings; the Leave War's cells; the bell; the late mark; a published day's pending
+  board's and the week's Personal Inputs, Unavailable and Ground Programme rows (a group of six is six rows —
+  **until `[GROUP-INPUT-ONE-ROW]` is built: he has ruled that the schedule shows a group input as ONE row holding
+  everyone, D661, 7 Oct 26; its rules are not yet asked and its place — in this job or straight after — is with him,
+  §8**); the warnings; the Leave War's cells; the bell; the late mark; a published day's pending
   count (each man's row is its own pending change); the change history and the changes window (one line per man —
   told to him, §8); print and export.
 
@@ -922,8 +924,11 @@ never files SANS availability for another man, and an admin may file it for seve
 crew (D659).
 
 **With him now (7 Oct 26, evening) — two of the group input's defaults he questioned, a mock-up of each put to him:**
-1. *On the schedule, is a group input one row for each man (as built today for any input) or ONE row holding all its
-   men?* Until he answers: one row per man.
+1. *On the schedule, one row for each man or ONE row holding all its men?* **Answered: one row holding everyone
+   (D661, "1. b").** What is with him now is WHEN: inside this job, or as its own job straight after
+   (`OUTSTANDING.md` `[GROUP-INPUT-ONE-ROW]` — the agent's recommendation, since it reaches into how a published day
+   counts changes). Its own rules are put to him with pictures before it is planned. Until it is built: one row per
+   man.
 2. *In the changes window, is a group filing one line per man or ONE item?* Recommended: one item, its men listed
    under it — the window already groups by item (D340, D345). Until he answers: one line per man.
 
@@ -938,8 +943,8 @@ filters; the "Select dates" button goes; there is no one-day sheet — "Day sett
 dragging window on the Inputs page only; each press of a day button is its own Undo step; an Available row can be
 renamed and re-defined but not deleted.
 
-**The group input's readings (§3.13), to tell him the same way:** on the schedule a group input shows as one row for
-each man, as if each had filed his own — one shared line is the Inputs page's; the changes window lists a group filing
+**The group input's readings (§3.13), to tell him the same way:** (on the schedule he has since ruled ONE row
+holding everyone — D661; it was "one row for each man"); the changes window lists a group filing
 one line per man; whoever files for other people answers the OIL question for all of them at the save (his ruling, D660 — it was
 "each man is asked by his own bell"), and each man can still change his own answer afterwards; a member with the
 switch on picks ONE other man from the same A-to-Z list an admin has, for the kinds he may file for others; whoever

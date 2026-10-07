@@ -48,6 +48,8 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**With the Inputs / SANS calendar job or straight after it (his to say — put to him 7 Oct 26):** [GROUP-INPUT-ONE-ROW] — on the schedule a group input is ONE row holding everyone (D661); not built, and its rules are not yet asked.
+
 **A test to steady, with the Tracker batch (found 7 Oct 26):** [TRK-DLG-FOCUS-UNSTEADY] — one Tracker unit test about the keyboard inside a question box failed once in a full run and passes alone.
 
 **After the Inputs / SANS calendar job (its place is his to set):** [LW-WINDOWS-NONBLOCKING] — the Leave War's other windows still block the grid behind them and close on a click outside; D641 and D642 changed that for the calendar job's windows and for one war panel only. Its own job, its own check.
@@ -1615,6 +1617,10 @@ need the owner. See [CAPS-OPS-LIMITS]; it does not accept the latest UI preview,
 waive owed reads or authorize a live merge.
 
 **Current direction — D585, 5 Oct 26:** Inputs/SANS calendar is on hold; preserve the completed preview and context. No more design/build/Claude vetting until owner resumes. Other outstanding tasks may be discussed; no new batch starts automatically. Existing D495 later order remains Tracker progress graph → caps/ops limits → whole-app check, with database connection at the end; this pause does not approve another build.
+
+### [GROUP-INPUT-ONE-ROW] On the schedule a group input is ONE row holding everyone (D661 — 7 Oct 26)
+
+**Ruled, not built.** He chose picture B of the mock-ups (https://claude.ai/artifact/RU8YNk1gDXj8sddcWvA76b, drawn by `shoot10.cjs` on his PC): a meeting filed for four men shows on the Ground Programme as one row with four pucks, not four rows. **Today** every landed input is its own row with one man (`raptor-port/src/state/holderbase.ts`, `engine/overlay.ts viewOfWeek`), and the group input of the calendar job is kept as one record per man (the build plan `raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.13) — so until this is built the schedule shows one row per man. **Its place is with him:** inside the calendar job, or as its own job straight after (the agent's recommendation — it reaches into how a published day counts changes waiting to go out: D109, D113, D114, D178). **Before it is planned, put to him with pictures (rounds of at most four):** a scheduler takes ONE man off the shared row, or cancels or re-times it for one man — does he leave the group, or does the whole input change; on a published day is a change to the row one change waiting or one per man; a man on leave that day — is his puck on the row flagged or left off; does the row show on Personal Inputs, on the Ground Programme, or wherever its men's rows would each have landed. **Then:** a plan read by Astra and Sol 6.1 (published records), built tests first, its own bug check or the calendar job's if it rides with it (D485).
 
 ### [TRK-DLG-FOCUS-UNSTEADY] A Tracker unit test of the question box's keyboard fails now and then in a full run (found 7 Oct 26)
 
