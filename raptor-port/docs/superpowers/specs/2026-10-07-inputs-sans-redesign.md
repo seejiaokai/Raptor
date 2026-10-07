@@ -149,6 +149,11 @@ columns"; and "where should off and no leave be set?"** The shape drawn in the f
 - **On the Leave War's columns:** Required P and Required W rows; a typed figure offers "this day", "this week" or "from
   this day on", so the usual number is typed once. The Event row stays the place for No Leave (only leave bidding uses it),
   and still shows — and can still take — a public holiday or an Off day (the same record as the list).
+**D634 — the Leave War's Event sheet stays as built.** The fourth set drew a simplified Event sheet (plain chips, no
+"Edit types") without opening the real one; he caught it. The real sheet — a typed event, the coloured type chips (PH green,
+Off day grey, No Leave orange, SC red), the Tag row, "Edit types", "This day" or "A range" — already sets No Leave, an Off
+day or a public holiday on a day or a range, and is NOT changed in this job. **For every mock-up from here: a surface the
+app already has is shown as a real picture from the app; a drawing is only for what is new or changed, and says so.**
 **The rule of thumb told to him:** what every calendar shows is set in Days; what only the Leave War uses stays on the
 Leave War. **Readings to confirm:** the one stepping button on a phone; the weekday heading for repeating days; "from this
 day on" for the required figures; a public holiday or an Off day shows its tag in place of the select button.

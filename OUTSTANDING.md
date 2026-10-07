@@ -1630,6 +1630,8 @@ kept as the quick door. **D632:** a denser desktop Inputs month, drawn for him t
 **No normal-week view (D633, 7 Oct 26):** the month carries a select button on every day (Day / Night / No fly), the weekday's
 heading sets every such day from a date onward, and the required pilots and WSOs are set on the Leave War's columns (a figure can
 run "from this day on"); PH and Off days in the Holidays list, No Leave on the Leave War's Event row — drawn in the fourth mock-ups.
+**The Leave War's Event sheet stays as built (D634, 7 Oct 26):** colours, tags, "Edit types", a day or a range — nothing of it is
+redrawn or removed in this job.
 **In this job's bug check (D624, 7 Oct 26):** each approved mock-up is set beside a picture of the built screen at the same size, in
 the evidence sheet.
 **HIS DIRECTION, 7 Oct 26 (D617–D621) — the design changes; mock-ups first, nothing built before he picks:** each SANS date
