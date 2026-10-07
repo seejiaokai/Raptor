@@ -265,7 +265,12 @@ INSIDE the frame; the purple edge an `::after` 4 wide at `right: 0`, top and bot
 uses exactly those styles, scaled as one piece. **Its size (D650):** drawn large at first, he asked for it smaller and in proportion — the callsign at about the size of the
 row's own letters, the puck never the biggest thing on the row; checked on his iPhone in the job's check.
 
-**Asked, not yet ruled - the phone Inputs month, more compact, and filling the screen.** He asked how the month looks more compact, then
+**TAKEN (D653): on a phone the Inputs month fills the screen's height with thin bars, and fits any phone's height.** Shown the
+three drawings below he took the third and added that phones differ in height. The week rows share the height left under the top
+rows; the bars a day follow from it; a row never goes below room for three bars (then the month scrolls); it re-fits when the height
+changes. The top row of buttons keeps its normal size unless he says to slim it (put to him).
+
+**What was asked, and the drawings - the phone Inputs month, more compact, and filling the screen.** He asked how the month looks more compact, then
 proposed slimming the tools row (month, Today, Calendar / List, filter) and stretching the month to the foot of a phone screen. Drawn
 three ways at 390 by 844: as drawn, 3 inputs a day (98-point week rows); stretched to the foot with a 32-point tools row, 4 a day
 (130-point rows); stretched with thin bars (12 points, words about 9), 6 a day. Where the room comes from: the stretch gives one

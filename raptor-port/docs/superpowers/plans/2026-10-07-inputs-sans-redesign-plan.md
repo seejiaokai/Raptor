@@ -287,7 +287,11 @@ the gear of either calendar or from the Leave War's ⚙; admin only. Two parts s
   and its add-form offers none (D620); filters stay with the Inputs tab, folded on a phone.
 - **Bars** (D626): an input is one bar across the days it covers, cut at a week's end and carried on; lanes assigned
   per week by a pure function (`layoutBars(week, entries, maxLanes)`); a desktop shows seven lanes before "+N more"
-  (D632, D639), a phone three; a bar carries the callsign and the type's short word. The planning layer's day titles
+  (D632, D639); a bar carries the callsign and the type's short word. **On a phone the month fills the screen's height
+  and its bars are thin (D653):** the week rows share the height left under the top rows — measured from the visible
+  viewport, re-measured when it changes (the browser's bars, a turn of the phone), never a number fixed for one screen —
+  and the lanes a day are what fits (`layoutBars` takes the lane count; about six on a tall phone). A row never drops
+  below room for three bars and the "+N more" line: on a short screen or in a six-week month the month scrolls instead. The planning layer's day titles
   and pucks stay above the bars as they are. **Drag-to-move is re-made for bars, not inherited:** today's handler takes the starting date from the chip's enclosing day cell
   (`caldrag.ts:242-244`) and a spanning bar has none. The handler resolves the date UNDER THE POINTER at the press —
   on a bar's first week or on a continuation — and at the drop, both from the day grid's geometry; the move is by that
@@ -552,6 +556,9 @@ A fair size for this: six to eight working sessions before the check, the check 
   period is made, then the kept holiday saves.
 - **The opened day's list:** forty commitments on one day — every one reachable by scrolling, no "+ more"; the working and
   "+ Commitment" still on screen at the list's foot; the OFT-or-AMT-only group; on a phone, pulled up and back down.
+- **The phone month at any height (browser, D653):** at 390 by 568, by 700 and by 844, in a five-week and a six-week month —
+  the month reaches the foot of the screen where the floor allows, never overflows sideways, shows the lanes the height
+  allows and no fewer than three, and re-fits after the viewport's height changes without the top of the month moving.
 - **Screens** (unit): the four rows' cells for each kind of day, for an admin and a member; the typed cell's keys; the
   pick's rectangle and its skipped days; the stepping button's cycle on a weekday and on a weekend; the bars' lanes
   (a span over a week's end, more inputs than lanes, a one-day input); a window that stays open on an outside click,
