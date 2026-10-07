@@ -316,6 +316,16 @@ filedFor()` and the write path's backstop in `inputedit.tsx:804` (his rule of 22
 picked, filed as one step; "for now" means the members' half can be switched back to admins only. **Put to him:** which kinds a
 member may file for others; who may change or delete an input filed for another man; the picker's look; SANS commitments.
 
+**His answers (D655):** a member files for others only DUTIES AND COMMITMENTS (the app's type group of that name) — never leave,
+never medical; a group filing is ONE SHARED INPUT — one entry on the month, one line in the List, edited as one thing; the man
+himself, the filer and an admin may change or delete it. **Kept as one record per man tied together by a group id** (the agent's
+call, told to him): every reader of an input — the schedule's warnings, the Leave War, OIL, the late mark — reads one man's record
+and stays untouched. Inside a group a man may take himself out and answers his own OIL question; the filer and an admin change the
+whole. An admin may file a group for any kind but medical. **With him:** the picker, drawn both ways into the real "+ Input"
+window (`shoot8.cjs`): the app's own pucks in their groups with an "all" per group — CAT and SANS at a glance — or plain
+callsign buttons in A-to-Z order. **NOT yet in the plan: it changes who may file for whom, so it is written as an add-on and
+read by both readers before it is built.**
+
 ## In the bug check: mock-up beside build — D624
 
 For every mock-up he approves, the check's evidence sheet carries a PAIR: the approved mock-up, and a picture of the built
