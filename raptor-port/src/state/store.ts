@@ -14,6 +14,7 @@
    --------------------------------------------------------------------------- */
 import { HOOKS } from '../engine/hooks'
 import { inputGate } from './inputgate-hook'
+import { groupSnapshot, groupsTouched, groupBreach } from './inputgroup'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
@@ -175,7 +176,20 @@ function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
      before, enforce after, inside this same command */
   const gate = inputGate()
   const gateSnap = gate ? gate.snapshot() : null
-  try { fn(); if (gate) gate.apply(gateSnap) }
+  /* ONE MAN ONCE AN ENTRY, ONE FILER A GROUP — held HERE, at the write, beside the absence rules (the group input:
+     owner D654, D655; the build plan §3.13 "Records", Astra's finding G5). A group is one record per man tied by a
+     group id, and what the Inputs page shows as one shared input is worked out on read (state/inputgroup.ts). Two
+     doors that each look innocent — a man's record changed alone, the same man added to the entry again, his first
+     record changed back — would leave two inputs for one man where the screen shows one. So for every group this
+     write touched, no two live records may name the same man with the same shared fields, and every record carries
+     the group's one filer; a write that would break either is refused whole, with its sentence. The same check sits
+     in the Undo / Redo restore (state/sched-commit.ts). */
+  const grpSnap = groupSnapshot(INPUTS)
+  try {
+    fn(); if (gate) gate.apply(gateSnap)
+    const breach = groupBreach(INPUTS, groupsTouched(grpSnap, INPUTS))
+    if (breach) { HOOKS.toast(breach, 'warn'); throw new CmdRefused(breach) }
+  }
   catch (e) { if (snap) { histRestore(snap); view.armDrop() } HOOKS.histPush = push; HOOKS.renderInputs(); HOOKS.reflow(); throw e }
   finally { if (suppressHist) HOOKS.histPush = push }
   if (snap && protectedTouched(JSON.parse(snap), prot)) {

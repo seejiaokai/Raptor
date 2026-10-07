@@ -34,6 +34,8 @@ import { writeInputsBatch, notify, protectedDates, inputProtected } from '../sta
 import { oilAskPlan } from '../leavewar/sync'
 import { leaveKey } from '../leavewar/absences'
 import { voidedOil } from '../engine/oil'
+import { newId } from '../engine/newid'
+import { CmdRefused } from '../command'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
@@ -1392,6 +1394,142 @@ function dropInputRow(r: any) {
      request "taken off" whose own row stands again (a plan switched in — [REQ-ORPHAN-ROW] 3) needs nothing of its own
      either: rule 1 takes that row too. */
   const ix = INPUTS.indexOf(r); if (ix >= 0) INPUTS.splice(ix, 1)
+}
+
+/* ---- ONE SAVE FOR A WHOLE GROUP (owner D654, D655, D658, D660 — 7 Oct 26; the build plan
+   docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.13, "The writer") ---------------------------------
+   His ruling is "one shared group input, shown and edited as one thing". It is KEPT as one record per man tied by a
+   group id (state/inputgroup.ts — every reader of an input reads one man's record and stays as it is), so "one thing"
+   is made here, at the save: ONE command files, changes or trims every record of the entry alike.
+
+   `entry` — the records the editor was opened on (state/inputgroup.ts entriesOf), or null for a new filing.
+   `draft` — the editor's own draft; its `person` is not read. `people` — who the entry should now hold.
+   `oilDec` — the filer's answer to the OIL question, asked ONCE for the entry (D660: "that person filing should answer
+   for all" — the days and the hours are the same for every man, so the amounts are): it is written onto every record
+   this save files or changes; with nothing else changed, onto every record of the entry (the filer revising it for all).
+
+   IT RUNS THE PER-RECORD BODIES A SINGLE INPUT ALREADY USES — commitNewInput for each man added, commitInputEdit for
+   each record kept WHOSE SHARED FIELDS ACTUALLY CHANGE, dropInputRow for each man taken off — inside one outer batch,
+   so every per-record rule (the remark's date token, the voiding of an OIL answer the hours no longer price, the late
+   date `mod`, who placed and changed it, the absence rules at the door) runs for each man exactly as for a single
+   input, and the whole is ONE Undo step.
+
+   A CHANGE TO THE PEOPLE ALONE TOUCHES NOBODY ELSE (both plan readers' finding G6): commitInputEdit stamps the late
+   date on every save, whatever changed — so a record kept with its shared fields as they were is NOT passed through
+   it. Adding or taking off a man after the cut-off leaves the others' late date and stamps alone; only the man added
+   can be late.
+
+   ALL OR NOTHING. Every refusal a single input can meet is asked for EVERY man before anything is written, and the
+   sentence names the man where it is his alone; a refusal that only shows inside the batch (the absence rules — no
+   leave over leave, none over a medical; the check on what a member's command changed) throws and rolls the whole
+   command back. A half-filed group cannot exist. Leave over recorded work is NOT a refusal (his ruling of 20 Sep 26):
+   it is filed and flagged, for a group as for one man, in ONE note naming every man it applies to.
+
+   WHO THE ENTRY'S FILER IS (`grpBy`, finding G4). A group made from nothing: whoever files it. A single input made a
+   group by a MEMBER: that member. By an ADMIN: the single input's own filer (`by`) where it has one — an admin's hand
+   never takes an entry from the member who filed it — else that admin. Every man added later takes the entry's
+   filer and his own true `by`. An entry of one man is an ordinary input: one person filed alone gets no group at all.
+
+   Returns true when it is saved (or there was nothing to save); false, having said why, when it is not. */
+export function commitGroup(entry: { rows: any[] } | null, draft: any, people: any[], oilDec?: Record<string, number>): boolean {
+  if (!draft) return false
+  const say = HOOKS.toast
+  const cs = (p: any) => (PEOPLE[p] ? PEOPLE[p].cs : String(p ?? ''))
+  const want: string[] = []
+  for (const p of people || []) { const id = p == null ? '' : String(p); if (id && !want.includes(id)) want.push(id) }
+  const rows: any[] = entry ? (entry.rows || []).filter((r: any) => INPUTS.indexOf(r) >= 0) : []
+  if (entry && !rows.length) { say('That input is no longer there — nothing was saved', 'warn'); return false }
+  if (!want.length) { say('Pick at least one person', 'warn'); return false }
+  const scheduler = canEditSched(), mine = me()
+  if (!scheduler && mine == null) { say('Sign in with your own account to file an input', 'warn'); return false }
+  const kept = rows.filter(r => want.includes(String(r.person)))
+  const gone = rows.filter(r => !want.includes(String(r.person)))
+  const have = new Set(rows.map(r => String(r.person)))
+  const added = want.filter(p => !have.has(p))
+
+  /* WHO MAY — asked before anything else, of the one module (state/perms.ts) */
+  const many = kept.length + added.length > 1
+  if (many && scheduler && needsDoc(draft.type)) {
+    say(`${isUpchit(draft.type) ? 'An upchit' : 'A medical entry'} is filed for one person at a time — each needs its own document`, 'warn'); return false
+  }
+  for (const p of added) if (!mayFileInputFor(p, draft.type)) { say(fileForOtherRefusal(draft.type), 'warn'); return false }
+
+  /* EVERY REFUSAL A SINGLE INPUT CAN MEET, FOR EVERY MAN, BEFORE ANYTHING IS WRITTEN. Asked quietly, then said once:
+     as it is where every man meets the same one (a missing time), with his callsign where it is one man's alone */
+  const norm = new Map<string, NonNullable<ReturnType<typeof normalizeInputDraft>>>()
+  const refused: Array<[string, string]> = []
+  for (const p of want) {
+    const r = kept.find(x => String(x.person) === p) || null
+    let why = ''
+    HOOKS.toast = (m: any) => { if (!why) why = String(m) }
+    let n: ReturnType<typeof normalizeInputDraft>
+    try { n = normalizeInputDraft({ ...draft, person: p }, r) } finally { HOOKS.toast = say }
+    if (!n) refused.push([p, why || 'This input could not be saved'])
+    else norm.set(p, n)
+  }
+  if (refused.length) {
+    const same = refused.length === want.length && refused.every(x => x[1] === refused[0][1])
+    say(same ? refused[0][1] : `${cs(refused[0][0])} — ${refused[0][1]}`, 'warn')
+    return false
+  }
+  const first = norm.get(want[0])!
+  if (protectedInput(...rows, normDest(first, draft.yr))) return false
+
+  /* which of the records kept actually change: only those are saved (G6) */
+  const sansKey = (x: any) => Object.keys(sansFlags(x)).sort().join(',')
+  const changes = (r: any): boolean => {
+    const n = norm.get(String(r.person))!
+    return r.type !== draft.type || !!r.allday !== !!draft.allday || r.s !== n.s || r.e !== n.e
+      || r.date !== n.date || (r.endDate || '') !== (n.endDate || '') || (r.half || '') !== (n.half || '')
+      || String(r.remarks || '') !== String(draft.remarks || '').trim()
+      || (isSansAvail(draft.type) && sansKey(r.sans) !== sansKey(draft.sans))
+  }
+  const changed = kept.filter(changes)
+  const whole = `Only ${cs(rows.find(r => r.grpBy)?.grpBy ?? rows.find(r => r.by)?.by ?? '') || 'whoever filed it'} — who filed it — or an admin can change this for everyone`
+  for (const r of changed) if (!mayEditInput(r)) { say(whole, 'warn'); return false }
+  for (const r of gone) if (!mayDeleteInput(r)) { say(whole, 'warn'); return false }
+
+  const regroup = many && kept.some(r => !r.grp)
+  const oilOnly = !!oilDec && !added.length && !gone.length && !changed.length
+  if (oilOnly) for (const r of kept) if (!mayEditInput(r)) { say(whole, 'warn'); return false }
+  if (!added.length && !gone.length && !changed.length && !regroup && !oilOnly) return true
+
+  /* THE ONE COMMAND. What the doors and the absence rules say inside it is gathered, and said once afterwards. */
+  const heard: string[] = []
+  HOOKS.toast = (m: any) => { for (const part of String(m).split(' · ')) if (part && !heard.includes(part)) heard.push(part) }
+  let ok = false
+  try {
+    ok = writeInputsBatch(() => {
+      const stop = (): never => { throw new CmdRefused(heard[heard.length - 1] || 'refused') }
+      let grp: any = rows.find(r => r.grp)?.grp, grpBy: any = rows.find(r => r.grpBy)?.grpBy
+      if (!grp && many) {
+        grp = newId('g')
+        grpBy = !scheduler ? mine : (rows[0] && rows[0].by != null ? rows[0].by : mine)
+      }
+      for (const r of gone) dropInputRow(r)
+      for (const r of kept) {
+        if (grp && !r.grp) { r.grp = grp; r.grpBy = grpBy }
+        if (changed.includes(r)) {
+          if (!commitInputEdit(r, { ...draft, person: r.person, docIds: rowDocIds(r) })) stop()
+          if (oilDec) r.oil = { ...oilDec }
+        } else if (oilOnly) { r.oil = { ...oilDec }; stampChanged(r) }
+      }
+      for (const p of added) {
+        let row: any = null
+        if (!commitNewInput({ ...draft, person: p }, false, undefined, undefined, x => { row = x }) || !row) stop()
+        if (grp) { row.grp = grp; row.grpBy = grpBy }
+        if (oilDec) row.oil = { ...oilDec }
+      }
+    })
+  } finally { HOOKS.toast = say }
+  if (!ok) {
+    const why = heard[0]
+    say(why ? `${why} — nothing was saved${want.length > 1 ? ' for anyone: take that person off the list, or change it' : ''}` : 'Not saved — that change is not yours to make', 'warn')
+    return false
+  }
+  /* what went through and wants telling — leave over recorded work, a bid replaced — as ONE note */
+  if (heard.length) say(heard.join(' · '), 'warn')
+  return true
 }
 
 /* ---- CLEAR OLD DATA / CLEAR EDIT HISTORY (owner, 25 Aug 26 — "an option on

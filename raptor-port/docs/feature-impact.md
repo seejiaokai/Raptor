@@ -1245,3 +1245,16 @@ leaves a record nobody is named on, and, once an input can be filed for a group 
 by design: where a request is FILED (on the programme, under Unavailable, taken off — `acc`), which is the
 scheduler's decision about the request and already a line in the change history; and Undo / Redo, which put the four
 back as recorded. `mod` — the date the late rule reads — is not touched by any of this.
+**An input filed for a group (D654, D655, D658, D660, 7 Oct 26 — the redesign's plan §3.13).** One record per man, tied
+by `grp`, with the entry's filer in `grpBy`; "one shared input" is made in two kinds of place only — the WRITER
+(`ui/inputedit.tsx commitGroup`, one command for the whole entry) and the Inputs page's own lists, which read ENTRIES
+(`state/inputgroup.ts entriesOf`). Every other reader reads one man's record, unchanged: the warnings, the board's and
+the week's rows, the Leave War, OIL and the bell, the late mark, the change history, print and export. **Four drift
+seams:** (1) a list that draws inputs and does not call `entriesOf` shows a group as separate lines — the job's
+roll-call names every list; (2) the commit gate (`state/perms.ts inputBreach`) is the line that holds who may change
+another man's input — a screen only mirrors it, and a NEW input door asks `mayFileInputFor` / `mayEditInput` /
+`mayDeleteInput`, which take the record; (3) the filer's right rests on `by`, so a door that makes an input without
+`stampPlaced` leaves one its filer cannot change; (4) a field added to the Input record is either SHARED (add it to
+`SHARED_FIELDS`, or two records that differ in it still read as one entry) or the man's own. One man once an entry
+and one filer a group are held at the write (`state/store.ts runInputWrite`) and in the Undo / Redo restore
+(`state/sched-commit.ts`), never tidied on screen.

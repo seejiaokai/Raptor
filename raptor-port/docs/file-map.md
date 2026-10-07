@@ -495,7 +495,13 @@ ask the OIL question reaches it through `state/inputgate-hook.ts oilPlanOf` (the
 timeline.ts mayReverse` asks the filer's rule of a step's recorded images (the hook `filerMay`), and `verifiedReplay`
 vouches, record by record, for the restore it is applying - the only case the gate passes its forgery tests over
 (`state/undo-wire.ts` installs both). Pinned by `src/state/perms.test.ts` (the questions, §11) and, through the real
-doors and the one Undo, `src/leavewar/groupinput.test.ts`.
+doors and the one Undo, `src/leavewar/groupinput.test.ts`. THE WRITER is `ui/inputedit.tsx commitGroup(entry, draft,
+people, oilDec?)`: one outer batch around `commitNewInput` (each man added), `commitInputEdit` (each record kept whose
+shared fields change - never one left as it was) and `dropInputRow` (each man taken off); every refusal asked for
+every man first, what the doors say inside gathered and said once; the filer's OIL answer written on every record
+it files or changes (D660). `fileForOtherRefusal` is the one sentence for a kind a member may not file for another
+man. The check at the write sits in `state/store.ts runInputWrite` and in `state/sched-commit.ts`' restore. Pinned by
+`src/leavewar/groupwrite.test.ts` (the writer, the door's check, §3.8's rows 10 to 12, the late date, OIL).
 D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
 through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
 thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.

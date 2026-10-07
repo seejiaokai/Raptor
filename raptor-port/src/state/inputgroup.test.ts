@@ -56,6 +56,13 @@ describe('entriesOf — one entry for the records of a group that still say the 
     const a = rec('stiff', G), b = rec('bane', { ...G, oil: { '2026-02-14': 1 }, acc: 'u', hand: 2, leftAt: { x: 1 }, mod: '2026-02-01', lw: 'w1', by: 'bane', at: 5, modBy: 'bane', modAt: 9, ord: 7 })
     expect(entriesOf([a, b], nameOf), 'his own answers, filing, stamps and place').toHaveLength(1)
   })
+  it('a SANS availability\'s ticks are shared: the same boxes read the same, a different set is a different entry', () => {
+    const a = rec('stiff', { ...G, type: 'SANS Availability', sans: { f: true, o: true } })
+    const b = rec('bane', { ...G, type: 'SANS Availability', sans: { o: true, f: true, a: false } })
+    const c = rec('rocky', { ...G, type: 'SANS Availability', sans: { f: true } })
+    expect(sharedKey(a)).toBe(sharedKey(b))
+    expect(entriesOf([a, b, c], nameOf).map(people)).toEqual([['bane', 'stiff'], ['rocky']])
+  })
   it('a blank end date, half or remark reads the same as none', () => {
     const a = rec('stiff', G), b = rec('bane', { ...G, endDate: undefined, half: '', remarks: 'brief' })
     expect(sharedKey(a)).toBe(sharedKey(b))
