@@ -162,6 +162,16 @@ walk and to his own look; it replaces neither. For this job; whether later jobs 
 
 ## Where the mock-ups are
 
+**The fourth set (7 Oct 26, the last of the day) is at the head of the same private page**, the earlier three folded
+beneath. Six pictures: the way in (the settings gear, then "Days" — the same line in the SANS calendar's, the Inputs
+calendar's and the Leave War's settings; admins only); the Month on a phone (one stepping button on each date) and on a
+desktop (D / N / NF on each date, the year's Holidays list beside it); the sheet a weekday's heading opens ("Every
+Thursday": day, night or no fly; from a date; until — no end, or a date); the Leave War's Required cell ("this day",
+"this week", "from this day on"); and the Leave War's Event row (PH, Off day, No Leave, SC; a run of dates). Its source
+is `…/scratchpad/mock/mock4.html` with `mock4-extra.js`, on his PC only. **He also asked "how did u get into this
+setting page" and "how do u set recurring NF days" — both are answered by pictures in this set.**
+
+
 **The third set (7 Oct 26, later that afternoon) is at the head of the same private page**, the second and the first folded
 beneath. Six pictures: "Days" on a phone — the Normal week (weekday rows, Thursday set to no fly with its numbers locked
 at 0, "applies from Mon 2 Nov 2026"), the Holidays list for the year (date, name, PH or OFF; past ones dimmed), the sheet
