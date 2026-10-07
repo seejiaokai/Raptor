@@ -3837,3 +3837,27 @@ the outer save's answer (`ok && done`), says the refusal in a sentence, keeps it
 drives a refused save through each door.
 
 
+
+*Moved here 2026-10-08 by backlog-archive.mjs ([LW-DEMO-COUNTERS-TRIM]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-DEMO-COUNTERS-TRIM] The Leave War's Manning block comes with no count rows of its own, and a row's eye becomes a delete cross (D669 — 8 Oct 26)
+
+**Ruled, not built.** Owner, 8 Oct 26: first *"In the demo data remove crew sets, IP+IWSO, OPSP, OPSW, FL P, WM P"* (D666, five rows to start — REPLACED the same
+evening), then, asked what "the demo data" meant: *"should there be a default counter? I think there shouldn't be and the user can create what they want.
+Instead of hide (eye) we should replace it with a delete cross."* (D669). **So:** the starting set of count rows is EMPTY (`raptor-port/src/leavewar/engine/seed.ts`,
+the list `seedRequirements` builds — all eleven go: `sets`, `ip`, `iwso`, `instr`, `opsp`, `opsw`, `flp`, `wmp`, `sxo`, `scd`, `scn`), and in Rearrange a count
+row's eye is replaced by a cross that deletes it (`ui/CountRows.tsx`; `state/store.ts deleteManningRule`). **D669's seven readings are in its full row and are
+told to him — build to them, and where one proves wrong in the code, say so in the closing report rather than quietly choosing another:** no default for the
+demo squadron either; the Archive bar and "bring back" go with the eye; the cross asks nothing if Undo brings the counter back (CHECK that it does); "Reset
+counters" leaves ⚙ Settings; "under-manned" judges only counters that exist; the two Available rows carry no cross and no grip; nothing stored is converted (D56).
+**Weigh before building — this is wider than it looks:** the eleven seeded rows are what MANY tests stand on (every count-row, verdict and "under-manned" test,
+the Manning sheet and counter-form tests, `e2e/leavewar.spec.ts` — `grep -rlE "count-(sets|ip|iwso|instr|opsp|opsw|flp|wmp|sxo|scd|scn)\b" raptor-port/src raptor-port/e2e`).
+The clean way is the one the app's own rule implies: the APP starts empty, and a test that needs counters MAKES them (one shared test helper that builds the old
+eleven through the real "+ Counter" writer) — never a hidden default kept alive for the tests. SC D / SC N lean on the SC slots (`SC_SLOTS`, `SC_TEAM` in the
+seed): they become counters a squadron can make like any other, so check the counter form can express them, and if it cannot, PARK that for him rather than
+dropping the ability. Stale after the build and corrected in the same change (D201): the Manning sections of `docs/ui-contracts.md`, `docs/data-schema.md`
+(the seeded `manningdefs`, `manninghidden`), the Leave War's "Settled before this list" lines on the Archive and "Reset counters"
+(`.claude/rules/decisions/leave-war.md` — amended in brackets, never reworded), `docs/leavewar/known-gaps.md`. **Place:** in the overnight run of 8 Oct 26, AFTER
+the typing and the picking of step 2 (those are drawn and approved; this has readings he has not yet seen) and before the counter form's mode for the Available
+rows, which touches the same form. Tier: FULL in the job's one check (it changes what judges a day).
+

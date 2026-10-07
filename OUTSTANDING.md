@@ -50,8 +50,6 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Straight after the Inputs / SANS calendar job, as its own job (D662, 7 Oct 26 — ahead of the Tracker batch unless he says otherwise):** [GROUP-INPUT-ONE-ROW] — on the schedule a group input is ONE row holding everyone (D661); not built, and its rules are not yet asked.
 
-**On the Inputs / SANS calendar branch, in the overnight run of 8 Oct 26 (D669 — he is looking at it on the preview):** [LW-DEMO-COUNTERS-TRIM] — the Leave War's Manning block comes with NO count rows of its own (a squadron makes what it wants), and a row's eye in Rearrange becomes a delete cross. Ruled, not built; wider than it looks — many tests stand on the seeded rows.
-
 **A test to steady, with the Tracker batch (found 7 Oct 26):** [TRK-DLG-FOCUS-UNSTEADY] — one Tracker unit test about the keyboard inside a question box failed once in a full run and passes alone.
 
 **After the Inputs / SANS calendar job (its place is his to set):** [LW-WINDOWS-NONBLOCKING] — the Leave War's other windows still block the grid behind them and close on a click outside; D641 and D642 changed that for the calendar job's windows and for one war panel only. Its own job, its own check.
@@ -1623,27 +1621,6 @@ waive owed reads or authorize a live merge.
 ### [GROUP-INPUT-ONE-ROW] On the schedule a group input is ONE row holding everyone (D661 — 7 Oct 26)
 
 **Ruled, not built.** He chose picture B of the mock-ups (https://claude.ai/artifact/RU8YNk1gDXj8sddcWvA76b, drawn by `shoot10.cjs` on his PC): a meeting filed for four men shows on the Ground Programme as one row with four pucks, not four rows. **Today** every landed input is its own row with one man (`raptor-port/src/state/holderbase.ts`, `engine/overlay.ts viewOfWeek`), and the group input of the calendar job is kept as one record per man (the build plan `raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.13) — so until this is built the schedule shows one row per man. **Its place — his ruling, D662 (7 Oct 26): its own job, straight after the calendar job, not inside it** (it reaches into how a published day counts changes waiting to go out: D109, D113, D114, D178). **Before it is planned, put to him with pictures (rounds of at most four):** a scheduler takes ONE man off the shared row, or cancels or re-times it for one man — does he leave the group, or does the whole input change; on a published day is a change to the row one change waiting or one per man; a man on leave that day — is his puck on the row flagged or left off; does the row show on Personal Inputs, on the Ground Programme, or wherever its men's rows would each have landed. **Then:** a plan read by Astra and Sol 6.1 (published records), built tests first, its own bug check or the calendar job's if it rides with it (D485).
-
-### [LW-DEMO-COUNTERS-TRIM] The Leave War's Manning block comes with no count rows of its own, and a row's eye becomes a delete cross (D669 — 8 Oct 26)
-
-**Ruled, not built.** Owner, 8 Oct 26: first *"In the demo data remove crew sets, IP+IWSO, OPSP, OPSW, FL P, WM P"* (D666, five rows to start — REPLACED the same
-evening), then, asked what "the demo data" meant: *"should there be a default counter? I think there shouldn't be and the user can create what they want.
-Instead of hide (eye) we should replace it with a delete cross."* (D669). **So:** the starting set of count rows is EMPTY (`raptor-port/src/leavewar/engine/seed.ts`,
-the list `seedRequirements` builds — all eleven go: `sets`, `ip`, `iwso`, `instr`, `opsp`, `opsw`, `flp`, `wmp`, `sxo`, `scd`, `scn`), and in Rearrange a count
-row's eye is replaced by a cross that deletes it (`ui/CountRows.tsx`; `state/store.ts deleteManningRule`). **D669's seven readings are in its full row and are
-told to him — build to them, and where one proves wrong in the code, say so in the closing report rather than quietly choosing another:** no default for the
-demo squadron either; the Archive bar and "bring back" go with the eye; the cross asks nothing if Undo brings the counter back (CHECK that it does); "Reset
-counters" leaves ⚙ Settings; "under-manned" judges only counters that exist; the two Available rows carry no cross and no grip; nothing stored is converted (D56).
-**Weigh before building — this is wider than it looks:** the eleven seeded rows are what MANY tests stand on (every count-row, verdict and "under-manned" test,
-the Manning sheet and counter-form tests, `e2e/leavewar.spec.ts` — `grep -rlE "count-(sets|ip|iwso|instr|opsp|opsw|flp|wmp|sxo|scd|scn)\b" raptor-port/src raptor-port/e2e`).
-The clean way is the one the app's own rule implies: the APP starts empty, and a test that needs counters MAKES them (one shared test helper that builds the old
-eleven through the real "+ Counter" writer) — never a hidden default kept alive for the tests. SC D / SC N lean on the SC slots (`SC_SLOTS`, `SC_TEAM` in the
-seed): they become counters a squadron can make like any other, so check the counter form can express them, and if it cannot, PARK that for him rather than
-dropping the ability. Stale after the build and corrected in the same change (D201): the Manning sections of `docs/ui-contracts.md`, `docs/data-schema.md`
-(the seeded `manningdefs`, `manninghidden`), the Leave War's "Settled before this list" lines on the Archive and "Reset counters"
-(`.claude/rules/decisions/leave-war.md` — amended in brackets, never reworded), `docs/leavewar/known-gaps.md`. **Place:** in the overnight run of 8 Oct 26, AFTER
-the typing and the picking of step 2 (those are drawn and approved; this has readings he has not yet seen) and before the counter form's mode for the Available
-rows, which touches the same form. Tier: FULL in the job's one check (it changes what judges a day).
 
 ### [TRK-DLG-FOCUS-UNSTEADY] A Tracker unit test of the question box's keyboard fails now and then in a full run (found 7 Oct 26)
 
