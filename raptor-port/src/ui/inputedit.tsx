@@ -1203,12 +1203,15 @@ export function commitEditMedChoices(r: any, draft: any, ask: { clashes: any[]; 
 export const NOT_SAVED = 'Not saved — that change was refused, and nothing was kept'
 export function saveBatchX(fn: () => boolean | void): { ok: boolean; refused: boolean } {
   const say = HOOKS.toast
-  let spoke = false, inner: boolean | void = undefined, done = false
-  HOOKS.toast = (...a: any[]) => { spoke = true; return (say as any)(...a) }
-  try { done = writeInputsBatch(() => { inner = fn() }) } finally { HOOKS.toast = say }
-  const refused = inner !== false && !done
-  if (refused && !spoke) say(NOT_SAVED, 'warn')
-  return { ok: inner !== false && done, refused }
+  /* held in an object: the door's answer is set inside the save's own callback */
+  const got: { inner: boolean | void; spoke: boolean } = { inner: undefined, spoke: false }
+  let done = false
+  HOOKS.toast = (...a: any[]) => { got.spoke = true; return (say as any)(...a) }
+  try { done = writeInputsBatch(() => { got.inner = fn() }) } finally { HOOKS.toast = say }
+  const content = got.inner !== false
+  const refused = content && !done
+  if (refused && !got.spoke) say(NOT_SAVED, 'warn')
+  return { ok: content && done, refused }
 }
 export const saveBatch = (fn: () => boolean | void): boolean => saveBatchX(fn).ok
 

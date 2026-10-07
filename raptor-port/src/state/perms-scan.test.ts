@@ -57,7 +57,7 @@ describe('D200 (3): authority is decided in ONE place (state/perms.ts)', () => {
       if (ALLOW[rel] || ALLOW_TREE.some(t => rel.startsWith(t))) continue
       for (const h of scan(readFileSync(f, 'utf8'))) bad.push(`${rel}:${h}`)
     }
-    expect(bad, 'ask state/perms.ts instead (isAdmin, me, isMe, mayEditInputOf …)').toEqual([])
+    expect(bad, 'ask state/perms.ts instead (isAdmin, me, isMe, mayEditInput …)').toEqual([])
   })
   it('the scan catches the forms it claims to (fixtures)', () => {
     expect(scan("if (SESSION.role !== 'admin') return")).toHaveLength(2)
