@@ -230,6 +230,11 @@ the buttons are ready-made events the squadron set up, not "types". Redrawn the 
 every helper sentence is gone — a read-out of a few words stays under the lit preset for the one fact that changes a decision
 (whether work on the day earns OIL); the short form's box is labelled "On grid"; under "Other…" the question is just "Kind".
 D643's two questions stay open.
+**Asked next, not yet ruled: should each PRESET carry a short form too** ("NO L" for No Leave, "OFF" for Off day)? Proposed: yes -
+set once in "Edit presets", so pressing a preset fills "On grid" by itself. Measured in the running app on a phone (7 Oct 26): "No
+Leave" widens its day from about 20 to 33 px and "Off day" to 29 px, and both make the Event row two lines tall; "OFF", "NL" and "PH"
+keep the day at 20 px on one line; "NO L" keeps the width but its space wraps it onto two lines. So: up to three letters, no space -
+PH, OFF, NL, SC as the starting set.
 
 **The sixth set (7 Oct 26, night) is at the head of the private page** - the Event sheet, D643: the real sheet as built, with
 "National Day" typed, and the real grid stretched by that name, beside the proposed sheet (one Type row, the picked type lit, an
