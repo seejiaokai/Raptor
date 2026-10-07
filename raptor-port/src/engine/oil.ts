@@ -1,4 +1,5 @@
 import { VCONF } from './rules'
+import { oilAsks } from './inputs'
 import { parseHM } from './time'
 import { isStandalone, saExemptKind } from './waves'
 import { PEOPLE, realP, whoId, isSpecial } from './people'
@@ -103,6 +104,23 @@ export function inputOilAmt(allday:any,s:any,e:any){
   let en=e; if(en<s)en+=1440;
   const d=en-s;
   return d<=0?null:(d>=VCONF.oilFullMin?1:0.5);
+}
+/* THE ANSWERS A CHANGE LEAVES STANDING — the voiding rule as ONE function (the Inputs / SANS redesign, plan §3.13).
+   The rule is the owner's of 28 Aug 26 and lived inline in the editor's save: the answers belong to the commitment as
+   it was acknowledged, so retyped out of the kinds that ask, or handed to ANOTHER man, they are all void; a POSITIVE
+   answer the new hours no longer price is dropped (the day reads unanswered again); a no (0) stays — hours cannot
+   change a no; a change of dates alone keeps them (an answer for a day no longer covered is inert to the credit
+   pass). Two callers, one answer: the save itself (ui/inputedit.tsx commitInputEdit) and the check on what a member's
+   command really changed (state/perms.ts) — a filer may answer for another man (D660), and what he did not answer
+   must be exactly what this leaves. `before` is the record as it stood (its person, its answers); `after` as it now
+   stands (its person, type and hours). A fresh object, or undefined when none stand. */
+export function voidedOil(before:any,after:any):Record<string,number>|undefined{
+  const was=before&&before.oil;
+  if(!was||!after)return undefined;
+  if(!oilAsks(after.type)||after.person!==before.person)return undefined;
+  const now=inputOilAmt(after.allday,after.s,after.e), out:Record<string,number>={};
+  for(const k of Object.keys(was)){ if(was[k]>0&&was[k]!==now)continue; out[k]=was[k]; }
+  return Object.keys(out).length?out:undefined;
 }
 
 /* WHAT KIND of work a span was — the word the OIL tracker shows as the

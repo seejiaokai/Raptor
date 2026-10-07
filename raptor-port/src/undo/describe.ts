@@ -361,6 +361,11 @@ export function describeEntry(entry: UndoEntry): string {
   if (entry.type === 'people.edit') return peopleLabel(entry) || genericLabel(entry)
   if (entry.type.startsWith('settings.')) {
     const k = entry.type.slice('settings.'.length)
+    /* the members' switch says which way it went (the plan §3.13): stored only when OFF, so no record = on */
+    if (k === 'memberfile') {
+      const ch = entry.forward.find(c => c.collection === 'settings' && c.id === 'memberfile')
+      return `members filing for other people — ${ch && ch.op !== 'delete' && ch.after === false ? 'off' : 'on'}`
+    }
     return SETTING_PHRASE[k] || 'a settings change'
   }
   return genericLabel(entry)

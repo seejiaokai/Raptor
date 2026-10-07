@@ -33,7 +33,7 @@ import { writeInputsBatch, notify, protectedDates, inputProtected } from '../sta
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { oilAskPlan } from '../leavewar/sync'
 import { leaveKey } from '../leavewar/absences'
-import { inputOilAmt } from '../engine/oil'
+import { voidedOil } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
@@ -1052,7 +1052,11 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        for a day the row no longer covers is inert to the credit pass, which
        re-checks coverage live. reassignInput and the calendar drag both land
        here, so they inherit the person rule. */
-    if (r.oil && (!oilAsks(r.type) || r.person !== wasPerson)) delete r.oil
+    /* …and the per-day rule further down (a positive answer the new hours no longer price). ONE function says all of
+       it — engine/oil.ts voidedOil — shared with the check on what a member's command really changed (state/perms.ts,
+       the plan §3.13): what a save did not answer afresh must be exactly what this leaves. */
+    const keptOil = voidedOil({ person: wasPerson, oil: r.oil }, r)
+    if (keptOil) r.oil = keptOil; else delete r.oil
     /* ...and the SCHEDULER's own override on this request dies with the
        assignment too (Codex scenario 7, 22 Sep 26). Voiding the member's
        answers above was only half of it: a refusal the scheduler made about the
@@ -1079,13 +1083,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        the bell lights and the owner re-confirms; an explicit 0 (a decline)
        stays — hours cannot change a No. Gate saves are unaffected: they
        write their fresh decisions after this commit, in the same batch. */
-    if (r.oil) {
-      const now = inputOilAmt(r.allday, r.s, r.e)
-      for (const k of Object.keys(r.oil)) {
-        if (r.oil[k] > 0 && r.oil[k] !== now) delete r.oil[k]
-      }
-      if (!Object.keys(r.oil).length) delete r.oil
-    }
+    /* (applied above, with the retype / hand-over rule: voidedOil) */
     /* A DORMANT record whose TYPE changes COUNTS AGAIN (26 Aug 26 bug pass).
        Dormancy marks "the scheduler removed THIS commitment"; retype it and it
        is a different commitment, so it fails CLOSED — it flags — rather than

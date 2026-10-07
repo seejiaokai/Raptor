@@ -478,6 +478,14 @@ and `sliceInput` - every cut or move of a leave, the medical's cut of one in `in
 `state/person-delete.ts` (a posting's trim). `src/leavewar/whoplaced.test.ts` is §3.8's table, one case a row, with
 Undo / Redo of each; `src/ui/whoplaced.test.tsx` the doors that are screens' own. `state/changelines.ts` gained the
 line for a change to a SANS availability's F / O / A ticks.
+An input filed for a group (D654, D655, D658, D660; the plan §3.13) - its no-screen half: `src/state/inputgroup.ts` -
+what an ENTRY is (`entriesOf`: the records sharing a group id `grp` AND the same shared fields, worked out on read, its
+people A to Z) and the one check held at the write (`groupSnapshot` / `groupsTouched` / `groupBreach`: one man once an
+entry, one filer a group); pinned by `src/state/inputgroup.test.ts`. `src/state/memberfile.ts` - the one writer of the
+members' switch (`setMembersFile`, the admin command `settings.memberfile`; the setting `memberfile`, absent = on), read
+by `state/perms.ts membersFileOn`; pinned by `src/state/memberfile.test.ts`. `src/engine/oil.ts voidedOil` - the rule
+for which OIL answers a change leaves standing, one function shared by the editor's save and the permission check;
+pinned by `src/engine/voidedoil.test.ts`.
 D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
 through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
 thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.

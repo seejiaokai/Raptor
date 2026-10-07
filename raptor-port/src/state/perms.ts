@@ -25,6 +25,7 @@
    parity harness — never a user: every question below answers it the way the gate it
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
+import { store } from '../engine/hooks'
 import type { Actor, CommitEnvelope } from '../command/types'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
@@ -199,6 +200,11 @@ export function viewerId(): string | null { return SESSION ? (me() ?? '') : (ME 
 export const mayFileInputFor = (pid: any): boolean => may(T.input, 'C', pid, true)
 export const mayEditInputOf = (pid: any): boolean => may(T.input, 'U', pid, true)
 export const mayDeleteInputOf = (pid: any): boolean => may(T.input, 'D', pid, true)
+/* THE MEMBERS' SWITCH (owner D654 — "allow both admin and members (for now)"; D655, reading 6: "one switch puts it back
+   to admins only"). One squadron setting, `memberfile`: absent = ON, `false` = OFF — anything else stored reads as ON.
+   Written only by its admin command (`settings.memberfile`, state/memberfile.ts). Read live, never cached: a rollback
+   or an Undo of the switch is in force at the very next question. */
+export const membersFileOn = (): boolean => store.get('memberfile', null) !== false
 /* a medical input's type, remarks and documents (D211; a guest too, D213 — he has no door to a document) */
 export function mayReadMedicalOf(_pid?: any): boolean {
   const who = roleOf()
@@ -254,7 +260,7 @@ const op = (table: string, act: Act, own: OwnRule = 'never', more?: [string, Act
   (more ? { table, act, own, more } : { table, act, own })
 
 const SETTINGS_KEYS_ALL = ['rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
-  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'guestview', 'insights', 'sanscalendar', 'flynames'] as const
+  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'guestview', 'insights', 'sanscalendar', 'flynames', 'memberfile'] as const
 
 export const COMMAND_OPS: Record<string, CommandOp> = {
   'sans.day.set': op(T.setting, 'U'),

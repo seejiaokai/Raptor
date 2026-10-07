@@ -71,6 +71,10 @@ export const SETTINGS_KEYS = [
      or it would be written raw, outside permission and Undo (the hook below writes an unlisted key straight through).
      Written ONLY by state/flyplan.ts, through `settings.flynames`. */
   'flynames',
+  /* the members' switch — "members may file duties and commitments for other people" (D654, D655; the plan §3.13).
+     A boolean, absent = ON. Listed HERE for the same reason as `flynames`. Written ONLY by state/memberfile.ts,
+     through `settings.memberfile`; read by state/perms.ts membersFileOn. */
+  'memberfile',
 ] as const
 /* THE SETTINGS RECORDS KEPT ONE ROW PER THING ([DB-READINESS] group A, phase 4 — plan §2.5's matrix, §2.9: the command
    layer's records follow the storage grain). Each row is its own record, `settings/<prefix><id>`, found by its prefix:
@@ -333,6 +337,7 @@ export function registerPeopleSettingsCommandLayer(): void {
     if (k.startsWith('missionrole:')) throw new Error('Mission-role rows require the typed annotation command')
     if (!isCommitting() && (k.startsWith('sansday:') || k === 'sanscalendar')) throw new Error('SANS calendar settings require the typed settings command')
     if (!isCommitting() && (k === 'flynames' || FLY_ROW_PREFIXES.some(p => k.startsWith(p)))) throw new Error('The flying plan is written only by its typed commands')
+    if (!isCommitting() && k === 'memberfile') throw new Error('The switch for members filing for other people is written only by its typed command')
     if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(k, v); return }
     commitSettings(settingsType(k), () => raw(k, v))
   })

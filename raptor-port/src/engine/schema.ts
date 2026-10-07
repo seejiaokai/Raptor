@@ -230,6 +230,14 @@ export type Input = {
   /** When it was last changed, ms; equal to `at` on a record nobody has changed. Beside `mod`, never instead of it:
    *  `mod` is the DATE the late rule reads and is written exactly as before — screen (state/inputstamp.ts). */
   modAt?: number
+  /** A GROUP id — the same on every record of one input filed for several people; absent on an ordinary input. The
+   *  group is kept as one record per man (every reader reads one man's), and an "entry" is worked out on read: the
+   *  records sharing a `grp` AND the same shared fields (state/inputgroup.ts entriesOf; owner D654, D655). */
+  grp?: string
+  /** The ENTRY'S FILER (a PEOPLE id) — the same on every record of the group, never changed once set; what lets the
+   *  member who filed a shared input change the whole of it, whoever later added a man (state/perms.ts). `by` stays
+   *  the truth of who placed THIS man's record. Always with `grp`, never alone. */
+  grpBy?: string
 }
 
 /* ---------------------------------------------------------------------------
