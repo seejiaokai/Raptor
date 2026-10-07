@@ -2772,3 +2772,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the handoff block's standing facts, state the repo's current visibility whenever it is not the default. In the ruling-recording steps, add one check before writing a quote: does it carry a third party's names or figures? If so, paraphrase and give a made-up example (the decision, not the transcript), and say where the real example lives.
 
 **Principle:** A verbatim quote is a data import. Before it is committed, ask who else's facts are inside it and who can read the place it is going.
+
+### Observation 451: A mock-up of a change to an existing screen is cheapest and most truthful when the new parts are drawn INTO the running app
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Drawing a newly ruled interaction (figures typed into new rows of an existing grid) for the owner, after an earlier mock-up of the same screen had been redrawn from memory and misrepresented what the app already had.
+**Skill:** New skill candidate: mock-ups on the real screen
+**Type:** open-source
+**Phase/Area:** Producing pictures of a proposed change to a built screen, before any build
+
+**Issue:** The earlier sets were stand-alone drawings; one of them simplified a real sheet and the owner read it as a proposal to remove features. This time the running build was opened in a scripted browser, the new rows were cloned from a real neighbouring row and injected into the live page, and the panel reused the app's own panel classes — so every pixel not marked as new was the real app, at phone and desktop size. Three things had to be learned on the way: (1) do a REAL interaction first (a real drag) to capture the selection look and the panel the app opens, and reuse those classes rather than restyling; (2) an overlay positioned from measured row tops went out of line once rows were injected — fold it with its own control rather than patching its geometry; (3) scroll the page so the changed region is clear of whatever docks at the bottom, and crop a close-up for a reader on a phone.
+
+**Suggested improvement:** A short guide (or a section of the design skill used here): for a change to an EXISTING surface — run the build; capture the real surface at each size; do the nearest real interaction and record its look and markup; inject only the new parts, cloned from real neighbours, marked as new; state in the caption what is drawn in; keep the injection script beside the pictures so the set can be re-shot after the design changes. Stand-alone drawings stay for surfaces that do not exist yet.
+
+**Principle:** When the thing being proposed is a change to something that exists, draw the change, not the thing: let the real artefact supply everything that is not in question, so the reviewer's attention — and trust — lands only on what is new.

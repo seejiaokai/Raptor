@@ -1643,7 +1643,7 @@ a public holiday and an Off day each have two doors onto one record and No Leave
 behind each calendar's own gear, the Logic page lists both, a cut-off is the end of its day, and the desktop Inputs month is compact
 with no switch (D639); the two Available rows are ordinary Leave War count rows an admin can rename and re-define — leaving out OCU,
 say — and the SANS calendar uses whatever they count (D640). **Every pop-up window drawn for this job drags, and the page behind it still works — a click outside does not close it (D641).** **Still with him:** whether weekends start with no flying set, and whether
-a no-fly day still shows and takes OFT and AMT commitments. **Next:** the build plan, read by Astra and Sol 6.1 before any build (D590).
+a no-fly day still shows and takes OFT and AMT commitments. **The build plan (7 Oct 26, nothing built):** `raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` — with Astra and Sol 6.1 for one round of challenge each, blind (D590; the brief: `raptor-port/docs/superpowers/briefs/2026-10-07-inputs-sans-redesign-plan-challenge-brief.md`); its section 8 holds what is still with him. No build before both have read it.
 **In this job's bug check (D624, 7 Oct 26):** each approved mock-up is set beside a picture of the built screen at the same size, in
 the evidence sheet.
 **HIS DIRECTION, 7 Oct 26 (D617–D621) — the design changes; mock-ups first, nothing built before he picks:** each SANS date
