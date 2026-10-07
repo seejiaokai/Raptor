@@ -323,7 +323,9 @@ call, told to him): every reader of an input — the schedule's warnings, the Le
 and stays untouched. Inside a group a man may take himself out and answers his own OIL question; the filer and an admin change the
 whole. An admin may file a group for any kind but medical. **With him:** the picker, drawn both ways into the real "+ Input"
 window (`shoot8.cjs`): the app's own pucks in their groups with an "all" per group — CAT and SANS at a glance — or plain
-callsign buttons in A-to-Z order. **NOT yet in the plan: it changes who may file for whom, so it is written as an add-on and
+callsign buttons in A-to-Z order. **THE PICKER IS SETTLED (D656) — a hybrid:** by default ONE person from an A-to-Z list, as today; a switch, "Several people", shows
+the schedule's own pucks in three groups — Pilots, WSOs and SANS (his next words: "sans as another category"), each A to Z — compact, four across on a phone, picked ones lit, an "all" for each of the
+two. Drawn into the real window (`shoot9.cjs`). **NOT yet in the plan: it changes who may file for whom, so it is written as an add-on and
 read by both readers before it is built.**
 
 ## In the bug check: mock-up beside build — D624
