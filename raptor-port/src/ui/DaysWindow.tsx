@@ -20,8 +20,10 @@
    repaints on the scheduler's signal (a plan row moved) and on the war's (`useWarFacts` — a holiday declared, a period
    added).
 
-   NOT HERE YET (the plan's next pieces): a weekday's heading opening "Every <weekday>", and the year's Holidays list —
-   so the headings are plain words and there are no tabs. */
+   A WEEKDAY'S HEADING opens "Every <weekday>" (ui/EveryWeekday.tsx — D631, D638): a second window, beside this one,
+   that sets every such day from a date onward. It lives and dies with Days: closing Days closes it.
+
+   NOT HERE YET (the plan's next piece): the year's Holidays list — so there are no tabs. */
 import { useEffect, useState } from 'react'
 /* CLASS NAMES here are prefixed (`is-`, `c-`, `t-`, `lit`): the scheduler's stylesheet is one global sheet, and its
    week already owns `.day` — a date button classed `day` grew as tall as a day card (seen in the first look). */
@@ -34,22 +36,12 @@ import { isAdmin } from '../state/perms'
 import { setFlyDays, type FlySave } from '../state/flyplan'
 import { monthDates, nextCls, weekdayOf, type DayAnswer, type FlyCls } from '../state/flyplan-model'
 import { flyMonth, useWarFacts } from '../leavewar/sync'
+import { EveryWeekday } from './EveryWeekday'
+import { MONTHS, SAY, WD, WD_LONG, firstWeekdayFrom, isoToday, sayDate } from './daysfmt'
 
-const WD = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-/* the words a class is said in — to a screen reader, and in the phone button's "tap for …" */
-const SAY: Record<FlyCls, string> = { day: 'day flying', night: 'night flying', nf: 'no fly', none: 'no flying set' }
 const KEYS: Array<{ k: 'd' | 'n' | 'nf'; cls: FlyCls; text: string }> = [
   { k: 'd', cls: 'day', text: 'D' }, { k: 'n', cls: 'night', text: 'N' }, { k: 'nf', cls: 'nf', text: 'NF' },
 ]
-
-/** today's own date, local time — the viewer's day, as the Inputs calendar's Today has it */
-const isoToday = (): string => {
-  const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-/** "Mon 2 Nov" */
-const sayDate = (iso: string): string => `${WD[weekdayOf(iso)]} ${+iso.slice(8, 10)} ${MONTHS[+iso.slice(5, 7) - 1].slice(0, 3)}`
 
 /* ONE BUTTON OR THREE is asked of the browser, as the windows' own phone layout is (floatwin.ts) — at the app's phone
    width (820px), not the windows' (620px): seven dates across a window narrower than that leave no room for three
@@ -94,6 +86,8 @@ function DaysBody({ at }: { at: string }) {
   const narrow = useNarrow()
   const [ym, setYm] = useState(() => ({ y: +at.slice(0, 4), m: +at.slice(5, 7) }))
   const [err, setErr] = useState('')
+  /* which weekday's "Every …" window is up (0 = Monday), if any */
+  const [every, setEvery] = useState<number | null>(null)
   const dates = monthDates(ym.y, ym.m)
   const answers = flyMonth(ym.y, ym.m)
   const today = isoToday()
@@ -114,7 +108,13 @@ function DaysBody({ at }: { at: string }) {
     else if (a.weekend) set(a.iso, 'none')
   }
 
+  /* WHERE "EVERY <WEEKDAY>" STARTS: the first such day on screen that is not in the past — on the month today is in,
+     the next such day (today counts); on a later month, its first such day; never a day gone by (the plan: "the next
+     such day by default"; the fourth mock-up: November on screen, "Thu 5 Nov"). */
+  const everyFrom = (wd: number) => firstWeekdayFrom(wd, dates[0] > today ? dates[0] : today)
+
   return (
+    <>
     <FloatWin id="days" title="Days" sub="admins only" testid="win-days" className="dayswin" onClose={close}>
       <div className="days-head">
         <button type="button" className="abtn" data-testid="days-prev" aria-label="Previous month" onClick={() => step(-1)}>&#8249;</button>
@@ -123,11 +123,24 @@ function DaysBody({ at }: { at: string }) {
         <button type="button" className="abtn" data-testid="days-today" onClick={() => setYm({ y: +today.slice(0, 4), m: +today.slice(5, 7) })}>Today</button>
       </div>
       <p className="days-hint">
-        {narrow ? 'Tap a date’s button to step: day, night, no fly.' : 'Click D, N or NF on a date. A day is day flying unless you choose otherwise.'}
+        {narrow
+          ? 'Tap a date’s button to step: day, night, no fly. Tap a weekday’s heading for every such day.'
+          : 'Click D, N or NF on a date. Click a weekday’s heading to set every such day from a date onward.'}
       </p>
       {err && <p className="days-err" data-testid="days-err" role="alert">{err}</p>}
       <div className={'days-grid' + (narrow ? ' narrow' : '')} data-testid="days-grid">
-        {WD.map((w, i) => <div key={w} className={'days-wd' + (i >= 5 ? ' is-we' : '')}>{w}</div>)}
+        {WD.map((w, i) => (
+          <button
+            key={w}
+            type="button"
+            className={'days-wd' + (i >= 5 ? ' is-we' : '') + (every === i ? ' lit' : '')}
+            data-testid={`days-wd-${i}`}
+            aria-label={`Every ${WD_LONG[i]}…`}
+            aria-haspopup="dialog"
+            aria-expanded={every === i}
+            onClick={() => setEvery(i)}
+          >{w}<span className="days-wd-v" aria-hidden="true">&#9662;</span></button>
+        ))}
         {Array.from({ length: weekdayOf(dates[0]) }, (_, i) => <div key={'b' + i} className="days-blank" aria-hidden="true" />)}
         {dates.map(iso => {
           const a = answers[iso]
@@ -178,5 +191,8 @@ function DaysBody({ at }: { at: string }) {
         {Array.from({ length: (7 - ((weekdayOf(dates[0]) + dates.length) % 7)) % 7 }, (_, i) => <div key={'f' + i} className="days-fill" aria-hidden="true" />)}
       </div>
     </FloatWin>
+    {/* keyed by the weekday, so another heading starts a fresh form */}
+    {every !== null && <EveryWeekday key={every} wd={every} from={everyFrom(every)} onClose={() => setEvery(null)} />}
+    </>
   )
 }

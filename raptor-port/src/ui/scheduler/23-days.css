@@ -15,8 +15,15 @@
 .dayswin .days-hint{margin:8px 0 8px;font-size:12px;color:var(--ink-3)}
 .dayswin .days-err{margin:0 0 8px;font-size:12px;font-weight:700;color:#FF7A84}
 .days-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1px solid var(--edge);border-radius:10px;overflow:hidden;background:var(--edge);gap:1px}
-.days-wd{background:var(--panel-2);padding:6px 4px;text-align:center;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+/* a weekday's heading is a BUTTON: it opens "Every <weekday>" (D638) — a small arrow says so, and the one whose window is
+   up is lit */
+.days-wd{background:var(--panel-2);padding:6px 4px;text-align:center;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);
+  border:0;border-radius:0;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;min-height:30px}
+.days-wd:hover{color:var(--ink);background:var(--raised)}
+.days-wd:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .days-wd.is-we{color:var(--ink-3)}
+.days-wd.lit{color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.days-wd-v{font-size:8px;opacity:.7}
 .days-blank,.days-fill{background:var(--panel)}
 .days-cell{background:var(--panel);min-height:74px;padding:7px 8px 9px;display:flex;flex-direction:column;gap:7px;min-width:0}
 .days-cell.is-ph{background:#12301F}
@@ -49,6 +56,39 @@
 .days-grid.narrow .days-cell{min-height:0;padding:5px 4px 6px;gap:4px}
 .days-grid.narrow .days-num{font-size:12px}
 .days-grid.narrow .days-tag{font-size:9.5px;padding:2px 5px}
+/* ---- "EVERY <WEEKDAY>" (ui/EveryWeekday.tsx): the class, the start, until — and the rules already made, beneath ---- */
+/* it opens at the LEFT of the screen, Days at the right — on a desktop the form does not cover the month it is about
+   (he can drag either; a phone keeps the shell's bottom panel) */
+.floatwin.everywin{width:min(380px,calc(100vw - 32px))}
+@media (min-width:621px){.floatwin.everywin:not([data-placed]){right:auto;left:16px}}
+.everywin .every-lab{display:block;margin:12px 0 6px;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.everywin .every-lab:first-child{margin-top:2px}
+.every-seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;border:1px solid var(--edge);border-radius:11px;background:var(--bg)}
+.every-seg.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.every-opt{min-height:40px;padding:0 6px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--ink-2);
+  font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.every-opt .fly-ico{width:16px;height:16px;flex:0 0 auto}
+.every-opt.c-day .fly-ico{color:#F2C14E}
+.every-opt.c-night .fly-ico{color:#A79BFF}
+.every-opt:hover{color:var(--ink)}
+.every-opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.every-opt.lit{background:var(--panel-2);border-color:var(--accent);color:var(--accent)}
+.every-opt.c-nf.lit{border-color:#DCE2E8;color:#fff}
+.every-opt.c-night.lit{border-color:#8F86F0;color:#C9C4FF}
+/* 16px: an iPhone zooms the page when a box with smaller text takes the keyboard */
+.every-date{display:block;width:100%;box-sizing:border-box;min-height:42px;margin-top:0;padding:8px 10px;border-radius:10px;border:1px solid var(--edge-2);
+  background:var(--bg);color:var(--ink);font-family:inherit;font-size:16px;font-weight:700;color-scheme:dark}
+.every-seg.two + .every-date{margin-top:6px}
+.every-date:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.every-says{margin:12px 0 0;padding:9px 11px;border:1px solid rgba(59,198,232,.35);border-radius:10px;background:rgba(59,198,232,.07);font-size:12.5px;line-height:1.4;color:var(--ink)}
+.every-err{margin:8px 0 0;font-size:12.5px;font-weight:700;color:#FF7A84}
+.every-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.every-acts .abtn{min-height:44px;font-size:13px}
+.every-list{margin-top:14px;border-top:1px solid var(--edge);padding-top:2px}
+.every-rule{display:flex;align-items:center;gap:8px;padding:6px 0}
+.every-rule + .every-rule{border-top:1px solid var(--edge)}
+.every-rule-txt{flex:1;min-width:0;font-size:12.5px;color:var(--ink)}
+.every-rule .abtn{flex:0 0 auto;min-height:36px}
 /* A PHONE: the month takes the screen down to its foot — never a short box scrolled inside the page (D664); the
    window's own body scrolls as one. It starts UNDER the app's top bar (48px tall on a phone), so Undo and Redo stay in
    reach: every press here is one Undo step, and a mis-tap on a stepping button is taken back there. The bar still drags
@@ -58,7 +98,7 @@
   .dayswin .win-body{padding:8px 6px 10px}
   .dayswin .days-head .abtn{min-width:44px;min-height:44px}
   .dayswin .days-month{flex:1 1 auto}
-  .days-wd{padding:6px 0;font-size:10px;letter-spacing:.04em}
+  .days-wd{padding:6px 0;font-size:10px;letter-spacing:.04em;min-height:38px;gap:3px}
   /* THE MONTH FITS THE HEIGHT THE PHONE GIVES (D653's rule for a phone month — "never built for one screen"): its weeks
      share the room left under the heading, each date's button growing with them — never under 36px, where a six-week
      month on a short phone scrolls instead, and never over 60px on a tall one. */
@@ -70,4 +110,7 @@
   .days-grid.narrow .days-top{min-height:18px}
   .days-grid.narrow .days-num{height:18px;line-height:18px}
   .days-step{flex:1 1 auto;height:auto;min-height:36px;max-height:60px}
+  /* "Every <weekday>" is the shell's bottom panel, but may grow up to the app's top bar: with "A date" picked its Save
+     would otherwise sit under the fold of a short phone */
+  .floatwin.everywin{max-height:calc(100vh - 66px);max-height:calc(100dvh - 66px)}
 }

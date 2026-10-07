@@ -90,7 +90,7 @@ describe('the window', () => {
   })
   it('draws the month Monday first: seven headings, every date of the month once, blanks before the 1st', () => {
     render(<DaysWindow />); open()
-    expect([...t('days-grid').querySelectorAll('.days-wd')].map(n => n.textContent)).toEqual(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
+    expect([...t('days-grid').querySelectorAll('.days-wd')].map(n => n.childNodes[0].textContent)).toEqual(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
     const cells = [...t('days-grid').querySelectorAll('[data-iso]')].map(n => n.getAttribute('data-iso'))
     expect(cells.length).toBe(30); expect(cells[0]).toBe('2026-11-01'); expect(cells[29]).toBe('2026-11-30')
     /* 1 Nov 2026 is a Sunday: six blanks lead the first week */

@@ -6512,9 +6512,31 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   six-week month fits a short phone and never sits as a short box.
 - **Class names are prefixed** (`is-we`, `is-ph`, `is-off`, `is-today`, `c-day`, `c-night`, `c-nf`, `c-none`, `lit`,
   `t-ph`, `t-off`): the scheduler's stylesheet is one global sheet and the week owns `.day`.
-- **Not built yet:** a weekday's heading opening "Every <weekday>" (plain words until then) and the Holidays list.
+- **A weekday's heading is a button** (a small arrow beside the name; 38px tall on a phone): it opens "Every
+  <weekday>" and is lit while that window is up.
+- **"Every <weekday>" (`ui/EveryWeekday.tsx` — D631, D638).** A second window on the shell, drawn by Days: closing Days
+  closes it; another heading starts a fresh form. On a desktop it opens at the left of the screen (Days is at the
+  right), so it does not cover the month; on a phone it is the bottom panel and may grow up to the app's top bar.
+  - *Flying:* Day (a sun) / Night (a moon) / "NF · no fly" — one lit. It starts on no fly for Monday to Friday and on day
+    flying for Saturday and Sunday. "No flying set" is not offered: a rule that says nothing is removed instead.
+  - *From:* a date box, starting on the first such day on screen that is not in the past.
+  - *Until:* "No end" / "A date"; "A date" adds a second date box.
+  - *One sentence* says what will be saved — "Every Thursday from Thu 5 Nov 2026 onward is a no-fly day, until you
+    change it here. A single Thursday can still be set by itself." / "… from Sat 7 Nov 2026 to Sat 26 Dec 2026 is a
+    day-flying day. …".
+  - *Cancel / Save.* Save is one command and one Undo step and closes the window. Refused, each with its own line and
+    nothing written: no start ("Choose the date it starts."), "A date" with no date ("Choose the date it ends, or pick
+    No end."), an end before the start ("It cannot end before it starts."), a save the store refuses. Any change to the
+    form takes the line down.
+  - *Beneath, "Already set for <weekday>s":* each rule of that weekday in date order — "No fly · from Thu 5 Nov 2026 ·
+    no end" — with Remove (one command, one Undo step, no question; the window stays). Nothing is listed when there
+    is none. Saving for the same weekday and the same start replaces that rule.
+  - A date the rule covers shows its class on the month with NO dot; a single such day set against it wears the dot.
+  - The date boxes carry 16px text (an iPhone zooms the page under that).
+- **Not built yet:** the Holidays list.
 - Gates: `e2e/leavewar.spec.ts` "Days opens from the Leave War's settings: the month sets a date's class, and the grid
-  behind it follows at once" (phone and desktop). Pins: `ui/dayswindow.test.tsx`.
+  behind it follows at once" and "a weekday's heading on Days sets every such day from a date onward, and the war's
+  rows follow" (phone and desktop). Pins: `ui/dayswindow.test.tsx`, `ui/everyweekday.test.tsx`.
 
 ## The event sheet on a phone keyboard (owner, 31 Aug 26)
 

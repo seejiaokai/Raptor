@@ -534,9 +534,16 @@ shows the war's tag (PH, OFF) or its class control: three buttons D / N / NF abo
 for the date itself. It joins nothing - a month's answers are `sync.ts flyMonth`. Styles `ui/scheduler/23-days.css`
 (prefixed class names - the sheet is global and the week owns `.day`); the sun and moon are `ui/icons.tsx`. Tests
 `ui/dayswindow.test.tsx`, `leavewar/ui/daysline.test.tsx`; pictures `scripts/handpass/days-look.mjs`. Not here yet:
-"Every <weekday>" and the Holidays list.
+the Holidays list.
+`src/ui/EveryWeekday.tsx` - "EVERY <WEEKDAY>" (plan §3.4; D631, D638): the window a weekday's heading opens on Days'
+month - the class (day, night, no fly), From, Until (no end, or a date), a sentence saying what will be saved, and the
+rules already made for that weekday beneath, each with Remove. A second window on the shell, drawn by Days. Save is
+`setFlyRule`, Remove `removeFlyRule` - one command, one Undo step each. Tests `ui/everyweekday.test.tsx`.
+`src/ui/daysfmt.ts` - the words and small date sums those two windows share (weekday and month names, how a class and a
+date are said, today's date, the first such weekday on or after a date). Pure.
 `scripts/handpass/days-look.mjs` - pictures of Days in the RUNNING build, phone and desktop (the line in the war's
-settings, the month as the fourth mock-ups draw it, the dot, the window dragged aside); a look, not a gate.
+settings, the month as the fourth mock-ups draw it, the dot, "Every Thursday" and "Every Saturday" ending on a date, the
+window dragged aside); a look, not a gate.
 `scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a
 cell being typed, "From <date> on", a picked block with its panel, the people's-days panel): the builder's look, and the built side of D624's mock-up-beside-built evidence. Not
 a gate. It reads a preview on port 4180 (`LOOK_URL`), never 4173 - the browser tests reuse a server left there.

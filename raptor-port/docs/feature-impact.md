@@ -1287,7 +1287,10 @@ in the window itself would be a second answer for a day; (2) the window is drawn
 by the war — a role change must reach it through the scheduler's own signal (every production path does: the sign-in,
 the member-view switch); (3) its class names share ONE global stylesheet with the week — an unprefixed `day`, `off` or
 `today` picks up the week's rules; (4) it is NOT in `pops.ts windowOverSchedule`: a window that leaves the page working
-must never be listed there, or the schedule's Tab route would stop for it.
+must never be listed there, or the schedule's Tab route would stop for it. **And "Every <weekday>"**
+(`ui/EveryWeekday.tsx`): one rule moves EVERY such day at once — on Days' month, down the war's Required rows, and on
+the two calendars when they are built — and a rule made months ago still moves a month drawn today, which is why a drawn
+month is painted from the month's ANSWERS, never from "a row dated inside it changed" (the plan §3.3 "Repaint").
 **Several picked at once, and the two panels that do not block the grid (8 Oct 26 — plan §3.3; D636, D637, D641, D642).**
 A drag over the Required rows is the grid's own gesture (`ui/select.ts`, a third kind) and opens the Required panel;
 Apply is ONE command of the flying plan, as a typed cell is. `Sheet` has a non-blocking form (`modal={false}`) used by

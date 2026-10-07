@@ -69,6 +69,19 @@ const SHOTS = {
     if (size === 'phone') { await tid(page, 'days-step-2026-11-12').tap(); await tid(page, 'days-step-2026-11-07').tap() }
     else { await tid(page, 'days-d-2026-11-12').click(); await tid(page, 'days-d-2026-11-07').click() }
   },
+  /* "Every Thursday": a weekday's heading — the rule already made is listed beneath */
+  async every(page, size) {
+    await toDays(page, size)
+    await press(size, tid(page, 'days-wd-3'))
+    await tid(page, 'win-every').waitFor()
+  },
+  /* the same for a Saturday, ending on a date */
+  async everydate(page, size) {
+    await toDays(page, size)
+    await press(size, tid(page, 'days-wd-5'))
+    await press(size, tid(page, 'every-until-date'))
+    await tid(page, 'every-until').fill('2026-12-26')
+  },
   /* the window dragged aside on a desktop, the grid behind it still worked: a Required figure typed with Days up */
   async behind(page, size) {
     await toDays(page, size)

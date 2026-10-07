@@ -383,9 +383,33 @@ dropped, so an admin back from the member view (D292) does not find it up again;
 (`is-`, `c-`, `t-`, `lit`) — the scheduler's sheet is global and its week owns `.day` (a date button classed `day` grew
 as tall as a day card; seen in the first look); (8) the line in the war's ⚙ reads "Days…" with "Day flying, night flying
 or no fly, for each date." under it — it will also name the holidays once that list is built.
-**NOT BUILT YET in step 3:** a weekday's heading opening "Every <weekday>" (the headings are plain words until then),
-and the Holidays list (no tabs until then) — `setFlyRule` / `removeFlyRule` and `holidayAdd` / `holidayChange` /
-`holidayRemove` are built and tested (steps 1 and 2); only their screens are missing.
+*(When this note was written the headings were plain words; "Every <weekday>" is the next note.)*
+
+**AS BUILT (8 Oct 26, the overnight run — step 3, third piece: "EVERY <WEEKDAY>").** `src/ui/EveryWeekday.tsx`, a second
+window on the shell (`FloatWin id="everywd"`), drawn by Days (`DaysBody` holds which weekday's is up; closing Days
+closes it; another heading starts a fresh form, keyed by the weekday). Each weekday heading of the month is now a button
+(`days-wd-0` … `-6`, `aria-expanded`, a small arrow). The form: Flying — Day / Night / "NF · no fly"; From — a date
+box; Until — "No end" / "A date" (a second date box); one sentence saying what will be saved; Cancel / Save; and beneath,
+"Already set for <weekday>s" — each rule in full with Remove. Save is `setFlyRule` (one command), Remove
+`removeFlyRule` (one). The shared words and date sums are `ui/daysfmt.ts`. Tests `ui/everyweekday.test.tsx` (20), red
+first; **twenty rules broken one at a time: seventeen caught at once; two showed a line the code did not need (a second
+sort of rules the plan already keeps sorted, a second repaint signal under Days' own — both taken out); one showed a
+test too weak (another heading must start a FRESH form — strengthened, then caught)**; one browser test at phone and
+desktop size (`e2e/leavewar.spec.ts` "a weekday's heading on Days sets every such day…").
+**Choices the builder made:** (1) the form starts on NO FLY for Monday to Friday and on DAY FLYING for Saturday and
+Sunday — the choice that would change something (a weekday is day flying already; a weekend has no flying set);
+(2) From starts on the first such day ON SCREEN that is not in the past: on the month today is in, the next such day
+(today counts); on a later month, its first such day; on a month gone by, the next such day from today — the plan's "the
+next such day" and the mock-up's "Thu 5 Nov" with November on screen are both this; he may still type an earlier date;
+(3) a rule is never "no flying set" from this form — he removes the rule instead; (4) "A date" with no date is NOT
+saved as "no end": it says "Choose the date it ends, or pick No end."; an end before the start says "It cannot end
+before it starts."; any change to the form takes the last complaint down; (5) on a desktop the form opens at the LEFT of
+the screen and Days at the right, so it does not cover the month it is about; on a phone it is the shell's bottom panel,
+allowed to grow up to the app's top bar so Save stays on the screen when "A date" adds a box; (6) the date boxes are the
+browser's own (as Admin's and the input editor's are), 16px so an iPhone does not zoom the page; the sentence under them
+says the date in words; (7) Remove asks nothing — one Undo brings the rule back, as the delete cross of D669 does.
+**NOT BUILT YET in step 3:** the Holidays list (no tabs until then) — `holidayAdd` / `holidayChange` / `holidayRemove`
+are built and tested (step 1); only their screen is missing.
 
 ### 3.5 The SANS calendar
 
@@ -1271,8 +1295,12 @@ with a back arrow; the grid, or a calendar, keeps working behind it. On a phone 
 to the foot of the screen, so Undo stays in reach. One stepping button on each date up to tablet width, three buttons
 (D, N, NF) on anything wider. Pressing the lit button on a weekday does nothing; on a Saturday or Sunday it goes back
 to "no flying set". A small dot marks a date he set himself, apart from what its weekday gives; it goes when the date is
-stepped back. From the Leave War it opens on the month the grid is showing. Until "Every <weekday>" and the Holidays
-list are built, the weekday headings are plain words and the line in the war's settings names only day, night and no fly.
+stepped back. From the Leave War it opens on the month the grid is showing. Until the Holidays list is built, the line
+in the war's settings names only day, night and no fly.
+**And "Every <weekday>" (step 3, 8 Oct 26):** it starts on no fly for a weekday and on day flying for a Saturday or
+Sunday; From starts on the first such day on screen that is not in the past, and he may type another; "A date" with no
+date is refused with a sentence, never saved as "no end"; Remove asks nothing (Undo brings it back); on a desktop the
+form opens at the left with Days at the right; the date boxes are the browser's own, with the date said in words beneath.
 
 ## 9. For the challenger
 

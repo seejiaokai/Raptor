@@ -3517,6 +3517,112 @@ test('Days opens from the Leave War’s settings: the month sets a date’s clas
   await expect(win).toBeVisible()
 })
 
+// "EVERY <WEEKDAY>" (plan §3.4; D631, D638, D641). jsdom proves the form and what is saved
+// (src/ui/everyweekday.test.tsx); a real browser says where the second window lands: on a desktop beside Days, not over
+// the month it is about; on a phone the bottom panel, with Save on the screen even when "A date" adds a box; the
+// heading it came from big enough for a thumb; and that a saved rule reaches the month AND the war's rows behind both
+// windows — a whole weekday at once — and comes back out with Remove.
+test('a weekday’s heading on Days sets every such day from a date onward, and the war’s rows follow', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  const tid = (id: string) => page.locator(`[data-testid="${id}"]`)
+  const rect = (l: Locator) => l.evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom } })
+  const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
+  const vp = page.viewportSize()!
+  /* January 2026 is on screen: four of its Thursdays (the 1st is left alone — a seeded holiday may sit on it) */
+  const THU = ['2026-01-08', '2026-01-15', '2026-01-22', '2026-01-29']
+
+  await press(tid('settings-open')); await press(tid('settings-days'))
+  await expect(tid('win-days')).toBeVisible()
+  const head = tid('days-wd-3')
+  if (isPhone()) expect((await rect(head)).h, 'the heading is too short for a thumb').toBeGreaterThanOrEqual(36)
+  await press(head)
+  const win = tid('win-every')
+  await expect(win).toBeVisible()
+  await expect(win).toHaveAttribute('aria-label', 'Every Thursday')
+  await expect(head).toHaveAttribute('aria-expanded', 'true')
+  await expect(tid('win-days')).toBeVisible()
+
+  /* on the screen, whole; every control inside it */
+  const w = await rect(win), d = await rect(tid('win-days'))
+  expect(w.x).toBeGreaterThanOrEqual(-0.5); expect(w.r).toBeLessThanOrEqual(vp.width + 0.5)
+  expect(w.y).toBeGreaterThanOrEqual(-0.5); expect(w.b).toBeLessThanOrEqual(vp.height + 0.5)
+  if (!isPhone()) {
+    /* beside Days, not over the month */
+    expect(w.r, 'the form covers the month it is about').toBeLessThanOrEqual(d.x + 0.5)
+  } else {
+    /* the bottom panel, clear of the app's top bar */
+    expect(w.y).toBeGreaterThanOrEqual((await rect(page.locator('.topbar.has-undo'))).b - 0.5)
+  }
+  for (const id of ['every-cls-day', 'every-cls-night', 'every-cls-nf', 'every-until-none', 'every-until-date', 'every-cancel', 'every-save']) {
+    const b = await rect(tid(id))
+    expect(b.h, `${id} is too short`).toBeGreaterThanOrEqual(isPhone() ? 40 : 36)
+    expect(b.x, `${id} runs out of the window`).toBeGreaterThanOrEqual(w.x); expect(b.r, `${id} runs out of the window`).toBeLessThanOrEqual(w.r + 0.5)
+  }
+  /* a date box never makes an iPhone zoom the page: its text is 16px */
+  expect(await tid('every-from').evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(16)
+
+  /* what it starts with: no fly, no end — and never a day gone by (the clock here is the PC's, so only the weekday
+     and "not in the past" are held) */
+  await expect(tid('every-cls-nf')).toHaveAttribute('aria-pressed', 'true')
+  await expect(tid('every-until-none')).toHaveAttribute('aria-pressed', 'true')
+  const from0 = await tid('every-from').inputValue()
+  expect(new Date(from0 + 'T00:00:00Z').getUTCDay(), 'the start is not a Thursday').toBe(4)
+  expect(from0 >= await page.evaluate(() => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}` })).toBe(true)
+
+  /* "A date" adds a box — and Save is still on the screen, inside the window */
+  await press(tid('every-until-date'))
+  await expect(tid('every-until')).toBeVisible()
+  const w2 = await rect(win), sv = await rect(tid('every-save'))
+  expect(w2.b).toBeLessThanOrEqual(vp.height + 0.5)
+  expect(sv.b, 'Save is under the fold').toBeLessThanOrEqual(Math.min(w2.b, vp.height) + 0.5)
+  /* nothing chosen: it is not saved, and it says why */
+  await press(tid('every-save'))
+  await expect(tid('every-err')).toHaveText('Choose the date it ends, or pick No end.')
+  await press(tid('every-until-none'))
+  await expect(tid('every-until')).toHaveCount(0)
+  await expect(tid('every-err')).toHaveCount(0)
+
+  /* from Thu 15 Jan 2026 on, no end */
+  await tid('every-from').fill('2026-01-15')
+  await expect(tid('every-says')).toHaveText('Every Thursday from Thu 15 Jan 2026 onward is a no-fly day, until you change it here. A single Thursday can still be set by itself.')
+  await press(tid('every-save'))
+  await expect(win).toHaveCount(0)
+  await expect(tid('win-days')).toBeVisible()
+  /* the month: every Thursday from the 15th — not the 8th — with no dot */
+  const lit = (iso: string, on: boolean) => isPhone()
+    ? expect(tid(`days-step-${iso}`)).toHaveAttribute('data-cls', on ? 'nf' : 'day')
+    : expect(tid(`days-nf-${iso}`)).toHaveAttribute('aria-pressed', on ? 'true' : 'false')
+  await lit(THU[0], false)
+  for (const iso of THU.slice(1)) { await lit(iso, true); await expect(tid(`days-dot-${iso}`)).toHaveCount(0) }
+  /* THE PAGE BEHIND: the war's Required rows read NF down the Thursdays */
+  await expect(tid(`req-p-${THU[0]}`)).not.toHaveText('NF')
+  for (const iso of THU.slice(1)) await expect(tid(`req-p-${iso}`)).toHaveText('NF')
+  await expect(tid('req-p-2026-01-16')).not.toHaveText('NF')
+
+  /* a single Thursday set by itself, against the rule: it wears the dot, and the war's row follows */
+  if (isPhone()) await tid(`days-step-${THU[2]}`).tap()                 // no fly → day
+  else await tid(`days-d-${THU[2]}`).click()
+  await expect(tid(`days-dot-${THU[2]}`)).toBeVisible()
+  await expect(tid(`req-p-${THU[2]}`)).not.toHaveText('NF')
+
+  /* the heading again: the rule is listed beneath, and Remove takes it away */
+  await press(head)
+  await expect(tid('every-list')).toContainText('No fly · from Thu 15 Jan 2026 · no end')
+  const rm = tid('every-list').locator('button')
+  expect((await rect(rm)).h).toBeGreaterThanOrEqual(36)
+  await press(rm)
+  await expect(tid('every-list')).toHaveCount(0)
+  await expect(win).toBeVisible()
+  await lit(THU[1], false)
+  await expect(tid(`req-p-${THU[1]}`)).not.toHaveText('NF')
+  /* Undo, from the app's top bar with both windows up, brings the rule back */
+  if (isPhone()) { await press(tid('every-cancel')); await expect(win).toHaveCount(0) }
+  await press(page.locator('#undoBtn'))
+  await lit(THU[1], true)
+  await expect(tid(`req-p-${THU[1]}`)).toHaveText('NF')
+})
+
 // PICKING SEVERAL REQUIRED CELLS, AND THE PANEL THAT DOES NOT BLOCK THE GRID (plan §3.3 "Picking several"; D636, D637,
 // D641, D642). jsdom proves the rule and what is saved (reqpanel.test.tsx, selectreq.test.ts, nonmodal.test.tsx). A
 // real browser has to say the rest: that a REAL drag over the two rows arms and picks — a mouse on a desktop, a held
