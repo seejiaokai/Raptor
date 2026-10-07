@@ -1,5 +1,8 @@
 # Inputs and SANS calendars — owner context for Claude
 
+*(7 Oct 26: THE HOLD HAS ENDED — he called the work back (D614); Opus 5.5 reads this build and carries it on (D615),
+on the branch `claude/inputs-sans-calendar`, where the live version has been brought in.)*
+
 **ON HOLD — D585, 5 Oct 2026.** The owner has paused this task, including Claude
 vetting. Keep this context and the existing preview for a later resume; do not
 start the review or further calendar changes from the older prompt alone. The

@@ -2742,3 +2742,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the step that marks a ruling SPENT or REPLACED, add a check done sentence by sentence, not by heading: for every "if", "until", "when", "waits" or "still" in the full row, name the live ruling or document that now carries it, or keep the ruling live with only the used part marked spent. Give the archived list to a reviewer as a matter of course when more than a handful move at once.
 
 **Principle:** A record is spent only when every forward-looking sentence in it is either used up or stated elsewhere; judge by the conditions it contains, not by its title.
+
+### Observation 449: A ruling recorded on main leaves stale text on an unmerged branch — the handoff should list those leftovers for the chat that merges
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Bringing main into a held feature branch (the Inputs / SANS calendar) after the owner called the work back.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** What the handoff tells the next chat when the next job lives on a branch main has not got
+
+**Issue:** The ruling that called the held work back was recorded on main, in a documents-only chat. The documents that still said "on hold" (the spec, the review note, the branch's backlog item, the branch's own ruling for the hold) existed only on the unmerged branch, so that chat could not fix them in the same change. Its handoff listed the FILES where the branch meets main (the merge conflicts) but not the stale statements the new ruling left behind on the branch. The merging chat found them only by reading the branch's records.
+
+**Suggested improvement:** In the session-handoff skill's block for a job that resumes an unmerged branch: beside "where the branch meets main", add a line "what the new rulings leave stale ON that branch" — found by searching the branch (`git grep <subject> origin/<branch>`) for the subject of every ruling recorded since the branch forked — so the merging chat fixes them in its first change.
+
+**Principle:** A rule that says "fix what a superseded ruling leaves behind, in the same change" cannot reach text that lives on another branch; the handoff is the only carrier, so it must name the leftovers, not just the conflicts.

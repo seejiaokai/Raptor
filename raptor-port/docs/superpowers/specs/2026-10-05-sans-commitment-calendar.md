@@ -2,6 +2,9 @@
 
 ## On hold — D585, 5 Oct 2026
 
+*(7 Oct 26: THE HOLD HAS ENDED — he called the work back (D614) and Opus 5.5, in Claude Code, builds from here
+(D615), on the branch `claude/inputs-sans-calendar`. The text below is the record of the hold as Codex wrote it.)*
+
 The owner has put this Inputs/SANS task on hold. Stop further design, build and
 Claude vetting until he resumes it. Preserve the built branch preview, original
 references, settled decisions, delegated choices, evidence and owed reviews.
