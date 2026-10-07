@@ -609,6 +609,9 @@ they sit; if you find another, it is stale — fix it, don't obey it.
   `Sheet` does this via scrim+Escape; a smaller inline popup adds a capturing
   document `pointerdown` listener, treating a press on the popup or its toggle as
   "inside" (worked example: the ⚙ colour palette, `SettingsSheet.tsx`).
+  **Set aside for one family of windows, 7 Oct 26 (D641):** the titled pop-up windows of the Inputs calendar, the SANS calendar
+  and the Leave War's required rows can be dragged, the page behind them stays clickable and editable, and a click outside does
+  NOT close them — their ✕, Escape or their finishing button does. A small menu, picker or palette still closes on a click outside.
 
 ### A control tapped repeatedly must not move
 

@@ -1634,7 +1634,16 @@ run "from this day on"); PH and Off days in the Holidays list, No Leave on the L
 redrawn or removed in this job.
 **The settings icon is a gear, never like the day-flying sun (D635, 7 Oct 26).**
 **The required figures are typed straight into the Leave War's cells, several picked by a drag and given one number (D636, 7 Oct 26)** —
-not yet drawn; drawn next on a real picture of the Leave War's rows.
+drawn on real pictures of the Leave War in the fifth mock-ups (7 Oct 26).
+**His answers on the fifth set, 7 Oct 26 (D637–D640) — the design is settled but for two small readings:** the typed rows are Required P
+and Required W, the four rows (those two, Available P, Available W) sit under the Leave War's Event rows, a figure can run "from a
+date on" skipping weekends, public holidays, Off days and no-fly days, and there is no "SANS needed" row (D637); a phone date carries
+one stepping button and a desktop date three, three choices are enough (no "day and night"), a weekday's heading sets repeating days,
+a public holiday and an Off day each have two doors onto one record and No Leave is on the Leave War only (D638); the late cut-off is
+behind each calendar's own gear, the Logic page lists both, a cut-off is the end of its day, and the desktop Inputs month is compact
+with no switch (D639); the two Available rows are ordinary Leave War count rows an admin can rename and re-define — leaving out OCU,
+say — and the SANS calendar uses whatever they count (D640). **Every pop-up window drawn for this job drags, and the page behind it still works — a click outside does not close it (D641).** **Still with him:** whether weekends start with no flying set, and whether
+a no-fly day still shows and takes OFT and AMT commitments. **Next:** the build plan, read by Astra and Sol 6.1 before any build (D590).
 **In this job's bug check (D624, 7 Oct 26):** each approved mock-up is set beside a picture of the built screen at the same size, in
 the evidence sheet.
 **HIS DIRECTION, 7 Oct 26 (D617–D621) — the design changes; mock-ups first, nothing built before he picks:** each SANS date

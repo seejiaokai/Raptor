@@ -168,6 +168,60 @@ Required rows since Available is worked out by the app — to confirm.
 Leave War. **Readings to confirm:** the one stepping button on a phone; the weekday heading for repeating days; "from this
 day on" for the required figures; a public holiday or an Off day shows its tag in place of the select button.
 
+## His answers on the fifth set — D637 to D640 (7 Oct 26, evening)
+
+D636 was drawn on REAL pictures of the Leave War (the running build, phone and desktop), only the four new rows drawn in. He
+answered every open point but two. **Where an earlier section of this note says "to confirm", "to pick" or "his open question"
+on one of these points, this section is the later word.**
+
+**The required figures on the Leave War (D637).** Four rows directly under the Event rows, in this order: Required P, Required W
+(typed), Available P, Available W (worked out). "P avail and W avail" in his D636 words meant the two Required rows. A cell is
+typed in place: click, type, Enter to the next day, Tab to the other seat, Esc to leave it; on a phone a tap brings the number pad
+and a slim line above it names the row and the day. Several cells are picked with the drag the grid already has for a block of
+people's days (a mouse drag on a desktop — with Shift, without it or after a pause; hold, then drag, on a phone) and take one
+number from the small panel the grid already uses; dragging across both rows gives pilots and WSOs the same number (D622). The
+panel offers "These days" or "From <date> on": **a running figure holds until a different figure is typed on a later day, and
+skips weekends, public holidays, Off days and no-fly days.** A figure typed on a weekend, a public holiday or an Off day itself
+holds for that one day; a no-fly day always reads NF. The day a running figure starts wears a small corner mark. An Available
+figure under its Required turns red, and a tap shows the working (required, available, SANS committed to fly, still needed).
+**No "SANS needed" row.**
+
+**The Available rows are ordinary count rows (D640).** He asked whether the row the SANS calendar reads could leave out OCU and be
+renamed in free text, "if it's not too much work". It is little: the war's count rows already take a free name and a choice of who
+they count (seat, CAT with "everyone except" — OCU is one of the CATs — and quals; `src/leavewar/ui/CounterForm.tsx`,
+`src/leavewar/engine/requirements.ts`). So Available P and Available W are two such rows, ready-made, and "available" in D617's
+sum is whatever each counts. The Required rows take a free-text name too. For the plan: what the SANS calendar shows if a linked
+row is archived or deleted, and that a linked row stays a plain head-count.
+
+**The Days month (D638).** A phone date carries ONE button that steps day → night → no fly; a desktop date carries three (D, N,
+NF). **Three choices are enough: a day has exactly one class, and there is no "day and night"** (this replaces the two switches
+drawn for D627). A weekday's heading sets every such day from a date onward, with no end. **A public holiday and an Off day each
+have two doors onto ONE record — the Leave War's Event row (its sheet unchanged, D634) and the Holidays list; No Leave is on the
+Leave War only.** A public holiday or an Off day shows its tag in place of the day button and takes no flying and no required
+figure.
+
+**The late cut-off and the Inputs month (D639).** The late cut-off is set behind each calendar's own settings gear — the SANS
+calendar and the Inputs calendar each have their own — and the Logic page lists both and opens the same setting. A cut-off is the
+END of its day. The Inputs cut-off starts at today's figure (`VCONF.inputLead`, 14 days before the input's week's Monday). The
+desktop Inputs month is compact, with no roomy / compact switch.
+
+**Every pop-up window drags, and the page behind still works (D641).** Said while these answers were being recorded. Every
+window drawn in this job's mock-ups — the panel for picked cells, the settings window, "Every Thursday", adding a holiday, a day
+opened on a calendar, an input or a commitment being filed — can be dragged by its top bar, on a desktop and on a phone, and the
+page behind it stays clickable and editable: no dark veil, and a click outside acts on the page and does NOT close the window
+(its ✕, Escape, or its finishing button close it). This sets aside, for these windows only, the 4 Sep 26 rule that a pop-up
+closes on a click outside; a small menu or picker still closes that way. The Leave War's existing windows are not rebuilt (D634).
+
+**Still with him (explained, not yet answered):** whether Saturday and Sunday start with no flying set (blank: no sun, no moon, no
+"NF", a dash for the required figure) rather than as no-fly days; and whether a no-fly day still shows, and takes, OFT and AMT
+commitments.
+
+**The fifth set** is at the head of the private page (https://claude.ai/artifact/U3WNp6VARTdVeDP5cUoQvD), the fourth folded
+beneath it: eight pictures — the four rows at rest, typing one cell, a picked block with its panel, "From 12 Jan on" and the
+grid afterwards, on a desktop; the rows at rest, typing with the number pad, and a picked block that skips a no-fly day, on a
+phone. They are the running build with the rows drawn into the live page by `shoot5.cjs` (on his PC, beside the earlier sets'
+sources); the figures are the demo squadron's, so these pictures may go into the repo with the plan.
+
 ## In the bug check: mock-up beside build — D624
 
 For every mock-up he approves, the check's evidence sheet carries a PAIR: the approved mock-up, and a picture of the built
