@@ -118,6 +118,20 @@ walk and to his own look; it replaces neither. For this job; whether later jobs 
 
 ## Where the mock-ups are
 
+**The second set (7 Oct 26, afternoon) is at the head of the same private page**, the first folded at its foot. Twelve
+pictures: the SANS month drawn two ways for colour (A — the whole day deep-tinted, the still-needed pair on a solid bright
+patch with dark figures; B — only the pair coloured, the day left dark), with PH green, an Off day grey and NF tagged; one
+person highlighted; a day opened ("Available", who placed each commitment and when, an admin's "Day settings" button);
+"How this works" stating the cut-off from the setting with a worked date; the settings sheet (three colours; the late
+cut-off as days or as a weekday of a week before); THE DAY'S SHEET on the Leave War (kind of day; flying — day, night, no
+fly; required pilots and WSOs, same-for-both ticked; apply to a day, a week or picked days) and the same sheet with no fly
+chosen (required locked at 0); the Leave War's rows (an Event row, Required P, Required W, Available turning red where
+short, a tap showing the working — no "SANS needed" row, no sun or moon); the Inputs month as bars with the same day
+kinds; a day's inputs with who placed each; the desktop SANS calendar. Its source is `…/scratchpad/mock/mock2.html`
+beside the first set's, on his PC only.
+
+*The first set:*
+
 Shown to him on 7 Oct 26 as a private page of pictures (his preference: sharp, tap to zoom):
 https://claude.ai/artifact/U3WNp6VARTdVeDP5cUoQvD — sixteen pictures: two drawings of the date cell (as his reference;
 lined-up columns), the highlight, an opened day with its working, the three-colour settings, the instructions fold, the
