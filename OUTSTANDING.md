@@ -1627,6 +1627,9 @@ with him, drawn in the second mock-ups (D630 settled the colour): where the cut-
 **The baseline is set once, not day by day (D631, 7 Oct 26):** a day is day flying unless night is selected; no-fly days can repeat
 from a date onward; the year's holidays in one list; drawn as ONE home, "Days" (normal week, holidays, month), the one-day sheet
 kept as the quick door. **D632:** a denser desktop Inputs month, drawn for him to pick.
+**No normal-week view (D633, 7 Oct 26):** the month carries a select button on every day (Day / Night / No fly), the weekday's
+heading sets every such day from a date onward, and the required pilots and WSOs are set on the Leave War's columns (a figure can
+run "from this day on"); PH and Off days in the Holidays list, No Leave on the Leave War's Event row — drawn in the fourth mock-ups.
 **In this job's bug check (D624, 7 Oct 26):** each approved mock-up is set beside a picture of the built screen at the same size, in
 the evidence sheet.
 **HIS DIRECTION, 7 Oct 26 (D617–D621) — the design changes; mock-ups first, nothing built before he picks:** each SANS date

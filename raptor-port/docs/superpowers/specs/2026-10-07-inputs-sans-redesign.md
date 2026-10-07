@@ -136,6 +136,23 @@ one day's figure from the Leave War — 3 either way.
 **D632 — the desktop Inputs month, denser:** smaller text and shorter bars where there is room, so more inputs show before
 "+N more". Drawn compact with no roomy / compact switch (the agent's pick). Not chosen yet.
 
+## No normal-week view: a select button on every day — D633 (7 Oct 26, afternoon)
+
+Shown the third set, he asked for the month to work like his reference's day-classification page — **each date carries its
+own select button, Day / Night / No fly — "then we don't need a week view"; "the P and W required is set on the leave war
+columns"; and "where should off and no leave be set?"** The shape drawn in the fourth mock-ups:
+- **Days ▸ Month:** the class is chosen on the date itself. On a desktop, three buttons side by side on each date (D, N,
+  NF), as his reference. On a phone seven dates across leave no room for three (his reference shows four across and scrolls
+  sideways), so each date carries ONE button that steps Day → Night → No fly at a tap. **The weekday's heading sets every
+  such day from a date onward, with no end** — how "Thursdays no fly from 5 Nov" is done now there is no normal week.
+- **Days ▸ Holidays:** the year's list, as drawn for D631 — public holidays and Off days.
+- **On the Leave War's columns:** Required P and Required W rows; a typed figure offers "this day", "this week" or "from
+  this day on", so the usual number is typed once. The Event row stays the place for No Leave (only leave bidding uses it),
+  and still shows — and can still take — a public holiday or an Off day (the same record as the list).
+**The rule of thumb told to him:** what every calendar shows is set in Days; what only the Leave War uses stays on the
+Leave War. **Readings to confirm:** the one stepping button on a phone; the weekday heading for repeating days; "from this
+day on" for the required figures; a public holiday or an Off day shows its tag in place of the select button.
+
 ## In the bug check: mock-up beside build — D624
 
 For every mock-up he approves, the check's evidence sheet carries a PAIR: the approved mock-up, and a picture of the built
