@@ -564,9 +564,9 @@ nowhere else. Every reader named above is left as it is, and no door, hook or re
 **Who may do what — the rule, in the one module (`state/perms.ts`), and its mirror (§11).**
 - **Which kinds a member may file for others:** `memberFilesForOthers(type)` = the type is in the dropdown's "Duty &
   other commitments" group (`engine/inputs.ts typeGroup(t) === 'other'` — his D655, reading 5) and is NOT SANS
-  Availability. That last exclusion is the narrower of two readings and is WITH HIM (§8): the dropdown puts SANS
-  Availability under that heading, while D620 files it on the SANS calendar, where a SANS member files his own. Until
-  he answers, a member may not. Leave, the medical types and the upchit are never a member's to file for another man.
+  Availability — **his ruling, D658 (7 Oct 26): a member never files SANS availability for another man; a SANS member
+  files his own only; an admin may file it for one SANS man or for several.** It holds with the setting on or off.
+  Leave, the medical types and the upchit are never a member's to file for another man.
 - **The switch** ("for now" — D654, D655 reading 6): a setting `memberfile` (a boolean; absent = ON), written by its
   own admin command `settings.memberfile` — the key joins `SETTINGS_KEYS` (`people-settings-commit.ts:62`), the
   permission inventory `SETTINGS_KEYS_ALL` (`perms.ts:256`) and the guarded keys, as §3.2 does for `flynames` (an
@@ -607,12 +607,14 @@ nowhere else. Every reader named above is left as it is, and no door, hook or re
      another man: the switch is on; `person` is the same before and after (he never moves a record to another man —
      that stays a scheduler's); he is its `by` or its `grpBy` (read from the before-image on a change or a delete, the
      after-image on a create); and the type on both sides passes `memberFilesForOthers`.
-  3. **Another man's OIL answers are his own.** Under (b), the answers after the change are EXACTLY what the app's
-     existing rule leaves of the answers before it — nothing when the kind no longer asks, a positive answer dropped
-     where the new hours no longer price it, a "No" kept, everything else untouched. That rule becomes ONE function
-     (`engine/oil.ts voidedOil(before, after)`), called by `commitInputEdit` where it is written out today (`:1038-
-     1078`) and by this test, so the two cannot drift. Removing an answer with the commitment unchanged, adding one,
-     or changing one is refused.
+  3. **Another man's OIL answers — the filer writes them, and only a well-formed answer (his ruling D660, 7 Oct 26,
+     which reverses the plan as both readers read it: "that person filing should answer for all").** Under (b) the
+     filer may set, change and clear the answers on a record he may change, as an admin may today. What the gate
+     still holds: an answer is for a day the record covers that asks the question (`oilAskPlan`), and its value is 0
+     or exactly what the record's hours price (`inputOilAmt`) — so a filer can claim OIL for a man or decline it, and
+     can never write an amount the hours do not give. The voiding rule (a positive answer the new hours no longer
+     price is dropped) still becomes ONE function, `engine/oil.ts voidedOil(before, after)`, shared with
+     `commitInputEdit` (`:1038-1078`).
   Anything else is "another person's input", refused and rolled back as today.
 - **Undo and Redo — both of their checks change, and only for a true replay.** Today the timeline lets a member
   reverse a step only when every record in it is his own person's (`undo/timeline.ts mayReverse`, `:458`), so a filer
@@ -628,7 +630,7 @@ nowhere else. Every reader named above is left as it is, and no door, hook or re
 - **`docs/data-model.md` §11, the `Input` row, in the same change (D200):** the letters stand (`C R U D` **own**; `R`);
   the own-row note gains: "or — while the squadron's members-file-for-others setting is on — a Duty & other
   commitments input (not SANS Availability) that I FILED for him (`filedBy` = my person; D654, D655): I may create,
-  change and delete it; never move it to another person; never answer his OIL question". For IT: the row's owner stays
+  change and delete it, and answer its OIL question for him (D660); never move it to another person". For IT: the row's owner stays
   the man; the filer's right is a server check on `filedBy`, the setting and the type, not a second owner.
 - **What the man himself may do inside a shared input** (D655, reading 2): take himself out (delete his own record)
   and answer his own OIL question. The screens offer him exactly those two. His record is still his own row, so a
@@ -653,11 +655,16 @@ nowhere else. Every reader named above is left as it is, and no door, hook or re
   whole command back (`CmdRefused`, as the locked-week backstop does); a half-filed group cannot exist. **Leave over
   recorded work is NOT a refusal** (his ruling of 20 Sep 26, `leavewar/inputgate.ts:177`): it is filed and flagged,
   for a group as for one man, and the one note names every man it applies to.
-- **The OIL question stays each man's own** (D655, reading 3). On a group save the sheet is put only to the saver about
-  HIS OWN record, when he is one of the people; nobody answers for anyone else. Every other man's weekend or holiday
-  day is left unanswered, which the app already knows how to say: his bell (`oilPendingFor`), and the "not answered
-  yet" mark on the row (`oilUnansweredDay`) for the scheduler. A change of hours by the filer voids each man's priced
-  answer by today's rule, and each is asked again the same way.
+- **Whoever files for other people answers the OIL question for ALL of them, once, at the save — D660** (7 Oct 26;
+  it reverses D655's reading 3, and so what §3.13 said when both readers read it). The sheet the editor already
+  shows before a save that lands on a weekend or a holiday (`oilGate`) is shown ONCE for the entry — the days and the
+  hours are the same for every man, so the amounts are — and its answer is written onto every man's record inside
+  the one command. Nobody is left unanswered for his bell to ask. Afterwards each man may change HIS OWN answer (the
+  "Change…" on any input of his — unchanged), the filer may change it for all from the entry's editor, and an admin
+  as today; the scheduler's own refusal on the day still wins. When the filer changes the hours so an answer no
+  longer fits, today's rule voids it on every record and the sheet comes back to the FILER, for all; a man added
+  later is answered for by whoever adds him, at that save. The amount is still worked out from the hours — this is
+  who claims the OIL, never how much.
 - **A single input can become a group, and back.** In the Inputs page's editor the filer, the man or an admin may turn
   "Several people" on for an existing input and add people (each addition is a filing for that man — asked of
   `mayFileInputFor`); the record gets a `grp` then. An entry left with one man reads and edits as an ordinary input.
@@ -672,8 +679,9 @@ nowhere else. Every reader named above is left as it is, and no door, hook or re
   own size, drawn compact — four across on a phone; picked ones lit, the rest dimmed; "All" on Pilots and on WSOs
   (a second press clears that group); a line counts them ("4 picked"). Each puck is a button (`aria-pressed`), reached
   and toggled by the keyboard. The people offered are those today's list offers (`rosterOptions()` — no archived man,
-  no placeholder puck). **Three headings, as he ruled (D656).** Ground crew, where the roster holds any, stay in the
-  one-person list, where they are today; whether "Several people" gets a fourth heading for them is his to say (§8).
+  no placeholder puck). **A fourth heading, "Personnel", for ground crew — his ruling, D659 (7 Oct 26) — drawn only
+  where the roster holds ground crew,** A to Z, with an "All" as Pilots and WSOs have; a squadron with none sees the
+  three headings he named (D656).
 - Switching back to one person keeps the first one picked (D656, reading 4) — for a member too.
 - **Where the switch shows:** for an admin, on every kind but the medical ones and the upchit (D655, reading 4); for
   a member, only while the setting is on and the picked kind is one he may file for others. **Nothing is ever
@@ -682,8 +690,8 @@ nowhere else. Every reader named above is left as it is, and no door, hook or re
   person at a time" / "You can file leave only for yourself"), and Save is refused with that sentence until he
   corrects it — one press offers the correction ("File it for me only" / "Keep Wisp only").
 - **The SANS calendar's "+ Commitment":** an admin gets the same switch there, showing the SANS people only (a SANS
-  availability is refused for anyone else — `sansRefusal`); a SANS member files his own, as today. Whether a member
-  may file another SANS man's availability is his to say (§8) — until he does, he may not.
+  availability is refused for anyone else — `sansRefusal`); a SANS member files his own, as today, and never another
+  man's (D658).
 - **Not here:** the "+ Add" dialogs of the board and the week (unchanged — outside this job's mock-ups, §3.7).
 - The hand-made call: `commitNewInput` no longer re-points a member's draft at himself in silence — a member's draft
   for another man is asked of `mayFileInputFor`, and refused with the sentence above.
@@ -724,8 +732,8 @@ untouched.
   Meeting for another man — allowed; a leave, each medical type, an upchit, SANS Availability — refused; with the
   setting off — refused, and his earlier filing is no longer his to change; `by` forged as another man — refused; he
   changes and deletes what he filed — allowed; a record he did not file — refused; retyping what he filed to a leave —
-  refused; moving it to another man — refused; writing an OIL answer onto another man's record — refused, while an
-  answer voided by a change of hours passes; the filer's Undo and Redo of a filing and of an edit; another member's
+  refused; moving it to another man — refused; the filer's OIL answer for another man — allowed (D660), an answer
+  for a day the record does not cover or of an amount its hours do not price — refused; the filer's Undo and Redo of a filing and of an edit; another member's
   Undo of it — refused; a guest, a pending person, an account switched off — nothing; the admin's member view judged
   as a member; a record with no `by` — the man and an admin only. §11's row read against the module (`perms.test.ts`),
   and `permsparity` extended to `settings.memberfile`.
@@ -734,14 +742,16 @@ untouched.
   `grp` never joins.
 - **The writer:** six people filed in one command — six records, one `grp`, one Undo step, Redo; one man's refusal
   names him and writes nothing; an admin's group leave where one man already has leave — refused whole; a man added,
-  a man taken off, the hours changed — one command each, and all three in one Save; each man's priced OIL answer
-  voided and his bell lit; the saver asked only about his own record; a single input turned into a group and back;
+  a man taken off, the hours changed — one command each, and all three in one Save; a weekend duty filed for six —
+  the sheet shown ONCE, its answer on all six records, no bell lit for any of them (D660); the hours changed — every
+  priced answer voided and the sheet back to the filer for all; one man then changing his own answer, the others'
+  untouched; a man added later answered for at that save; a single input turned into a group and back;
   §3.8's stamps on each record at each of those doors.
 - **Unchanged readers:** a group of six on a published day — six pending changes, the sign-offs fall once; six rows on
   the board and the week; the Leave War's cells for an admin's group leave; the late mark per man; the change history
   one line per man.
 - **Screens:** the picker — the default list, the switch, three groups A to Z, a SANS man under SANS only, ground crew
-  under Personnel, "All" and its second press, back to one person, the fold-back on a change of kind with its
+  under Personnel and no such heading on a roster without any (D659), "All" and its second press, back to one person, the fold-back on a change of kind with its
   sentence, a member with the setting off; the month's one bar and its drag by the filer, by an admin, by a man in it
   and by a stranger; an opened day's one line and both Delete questions; the List's one line; the editor for the
   filer, a man in it ("Take me out", his OIL), a stranger; the editor behind a window with the people list changed
@@ -751,9 +761,9 @@ untouched.
 
 - **Added after the readers (each through the REAL command route, not the rule called by hand):** `by` forged on his
   OWN record — created as another man's filing, and changed on an edit — with the setting on and off; a split piece
-  keeping its original's `by` under a member's own command; another man's "No" and "Yes" removed with the commitment
-  unchanged — refused, and the whole group rolled back with it; the hours changed so an answer is truly voided —
-  passes, and equals `voidedOil`; the filer's Undo and Redo of a filing, of a deletion of an answered record, and of
+  keeping its original's `by` under a member's own command; another man's answer written by the filer for a day the record does not cover, or of an amount its hours do not
+  price — refused, and the whole group rolled back with it (D660 lets him answer, not invent); the hours changed so
+  an answer is truly voided — it equals `voidedOil`; the filer's Undo and Redo of a filing, of a deletion of an answered record, and of
   a change of hours that had voided another man's answer (the answer back); the same with the setting turned off and
   on again between; another member's Undo of it; a hand-made command naming itself `undo.restore` with images that are
   not the recorded ones — refused; an admin adds a man to a member's entry, then that member changes and deletes the
@@ -774,8 +784,10 @@ and the writer with step 1 (no screen); the picker and the three lists with step
 The commit gate is the line that must hold; the screens only mirror it. (2) The filer's right rests on `by`, a field
 this same job adds (§3.8) — a door that fails to stamp it leaves a group nobody but an admin can change as a whole.
 (3) "One thing" is made on read: a list that draws inputs and does not call `entriesOf` shows a group as separate
-lines — the roll-call (§6) names every list. (4) Undo is the one place a member's command must re-make another man's
-answers: the verified-replay test is the whole of that door, and a looser one is a forgery route.
+lines — the roll-call (§6) names every list. (4) Undo is the one place a member's command must re-make a record another man placed: the verified-replay test is
+the whole of that door, and a looser one is a forgery route. (5) **D660 came after both reads** — it replaces the
+finding they agreed on most (G1) with a wider right for the filer over OIL, the one thing here that is owed to a man.
+It is not sent back for a third plan round (the cap); the two readers of the CODE are told to read it first.
 
 ## 4. The order of the build
 
@@ -901,12 +913,19 @@ its other windows left for `[LW-WINDOWS-NONBLOCKING]`.
 row, an optional Name, "On grid", the Kind row only under "Other…" — the grid shows short forms, and every preset
 carries its own (PH, OFF, NL, SC). It is IN this job: §3.12, which goes to both readers as an add-on before it is built.
 
-**With him now — two choices on the group input (§3.13), neither holding the build before step 5:**
-1. *May a member file SANS availability for another SANS man?* Recommended: no — an offer to fly is the man's own
-   word; an admin may file it for several SANS people at once (D655, reading 4). Until he answers: no.
-2. *Does "Several people" get a fourth heading, "Personnel", for ground crew?* He ruled three — Pilots, WSOs, SANS
-   (D656). Recommended: yes, shown only where the roster holds ground crew, so a briefing for everyone is one filing.
-   Until he answers: three headings; ground crew are picked one at a time from the list.
+**Ruled 7 Oct 26, evening, on the readings he was told:** whoever files an input for other people answers the OIL
+question for all of them at the save (D660) — it was "each man by his own bell".
+
+**Answered 7 Oct 26, evening ("1 as recommended 2 yes") — the two choices on the group input (§3.13):** a member
+never files SANS availability for another man, and an admin may file it for several SANS people at once (D658); the
+"Several people" picker gets a fourth heading, "Personnel", for ground crew, shown only where the roster holds ground
+crew (D659).
+
+**With him now (7 Oct 26, evening) — two of the group input's defaults he questioned, a mock-up of each put to him:**
+1. *On the schedule, is a group input one row for each man (as built today for any input) or ONE row holding all its
+   men?* Until he answers: one row per man.
+2. *In the changes window, is a group filing one line per man or ONE item?* Recommended: one item, its men listed
+   under it — the window already groups by item (D340, D345). Until he answers: one line per man.
 
 **The builder's readings, to tell him plainly (each a default he can change):** a phone types the figure on the app's
 own number pad, not the phone's keyboard; a one-day figure does not end a running figure — the run carries on the next
@@ -921,7 +940,8 @@ renamed and re-defined but not deleted.
 
 **The group input's readings (§3.13), to tell him the same way:** on the schedule a group input shows as one row for
 each man, as if each had filed his own — one shared line is the Inputs page's; the changes window lists a group filing
-one line per man; nobody answers another man's OIL question — each man is asked by his own bell; a member with the
+one line per man; whoever files for other people answers the OIL question for all of them at the save (his ruling, D660 — it was
+"each man is asked by his own bell"), and each man can still change his own answer afterwards; a member with the
 switch on picks ONE other man from the same A-to-Z list an admin has, for the kinds he may file for others; whoever
 makes an input a group is its filer, and an admin adding a man to it does not take it from him; with the members'
 switch turned off, a member can no longer change what he had filed for others
@@ -1005,7 +1025,7 @@ distinct; each checked against the code first; all taken.
 
 | # | Found by | The gap | What §3.13 now says |
 |---|---|---|---|
-| G1 | Astra 1, Sol 2 | The filer could erase another man's OIL answer with the commitment unchanged: "no new answer" let any removal through | his answers afterwards must be exactly what the app's own voiding rule leaves — one function, shared with the save that does the voiding |
+| G1 | Astra 1, Sol 2 | The filer could erase another man's OIL answer with the commitment unchanged: "no new answer" let any removal through | *first:* his answers must be exactly what the app's own voiding rule leaves. **Overtaken the same evening by his ruling D660** — the filer answers for all, so he may write them; what the gate keeps is that an answer is for a day the record covers and of the amount its hours price. Not read by either reader in this form |
 | G2 | Astra 2, Sol 1 | A member could forge who placed his OWN input — and so hand another man a right over it; the checks on `by` sat only in the filed-for-others branch | test 1 of the gate, on every record, the setting on or off; the one exception a piece cut from a record in the same command |
 | G3 | Astra 3, Sol 3 | The filer's Undo would fail twice: the timeline lets a member reverse only his own person's records, and the restore must put back another man's answers, which the new rule calls forgery | `mayReverse` asks the filer rule of the recorded images; the gate passes over tests 1 and 3 only for a replay the timeline verifies image for image |
 | G4 | Astra 4, Sol 4 | An admin adding a man gave that record a different filer, and the member who filed the entry could no longer change the whole of it | `grpBy`, the entry's filer, on every record and never changed; who it is when a single input becomes a group; `by` stays each record's truth |
@@ -1013,7 +1033,7 @@ distinct; each checked against the code first; all taken.
 | G6 | Astra 6, Sol 6 | Adding or removing a man re-saved everyone kept, stamping today's date on each — all marked LATE | only records whose shared fields change are saved |
 | G7 | Astra 7, Sol 5 | Group leave refused for recorded work, which his ruling of 20 Sep 26 files and flags | removed from the refusals; one note names the men |
 | G8 | Astra 8 | Back to one person put a member on himself though he had picked another man first | the first picked is kept, for a member too; nothing is ever substituted — Save is refused with the sentence until he corrects it |
-| G9 | Astra 9, Sol's closing note | Two defaults stated as settled were changes to what he ruled or was told: no group SANS availability at all; a fourth heading against his three | an admin's group SANS availability restored (D655, reading 4); three headings; the two open points put to him (§8) |
+| G9 | Astra 9, Sol's closing note | Two defaults stated as settled were changes to what he ruled or was told: no group SANS availability at all; a fourth heading against his three | an admin's group SANS availability restored (D655, reading 4); the two open points put to him and answered the same evening — D658, D659 (§8) |
 
 **Astra's D138 read of D646–D657: PASS.** **One round each, as planned** — the changes are the readers' own fixes
 written in and are not sent back; the readers of the code get §3.13 with this table.
