@@ -306,6 +306,16 @@ grid afterwards, on a desktop; the rows at rest, typing with the number pad, and
 phone. They are the running build with the rows drawn into the live page by `shoot5.cjs` (on his PC, beside the earlier sets'
 sources); the figures are the demo squadron's, so these pictures may go into the repo with the plan.
 
+## An input filed for a group — D654 (7 Oct 26, night; his answers below when given)
+
+He showed another squadron's commitment form, its callsigns a wall of buttons, and asked that an input here can be filed for
+SEVERAL people at once, by an admin and, for now, by a member; today's person list takes one. (That picture is another unit's,
+with real callsigns: not in the repo.) **What the app has today:** a member files for himself only — `InputsPage.tsx:390
+filedFor()` and the write path's backstop in `inputedit.tsx:804` (his rule of 22 Aug 26), `state/perms.ts mayEditInputOf`
+("member own, admin any"), `docs/data-model.md` §11. So the members' half changes a permission. **Readings:** one input per person
+picked, filed as one step; "for now" means the members' half can be switched back to admins only. **Put to him:** which kinds a
+member may file for others; who may change or delete an input filed for another man; the picker's look; SANS commitments.
+
 ## In the bug check: mock-up beside build — D624
 
 For every mock-up he approves, the check's evidence sheet carries a PAIR: the approved mock-up, and a picture of the built
