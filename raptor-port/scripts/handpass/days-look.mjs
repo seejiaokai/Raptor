@@ -107,6 +107,26 @@ const SHOTS = {
     await SHOTS.holidays(page, size)
     await press(size, tid(page, 'hol-next'))
   },
+  /* a year covered only in part (a January-to-March period): the notice names the dates left out */
+  async holpart(page, size) {
+    await page.evaluate(() => window.lwCreateWar('Q1 31', '2031-01-01', '2031-03-31'))
+    await SHOTS.holidays(page, size)
+    for (let i = 0; i < 5; i++) await press(size, tid(page, 'hol-next'))
+  },
+  /* a holiday on a date nothing covers: refused, kept, and the way out offered */
+  async holwait(page, size) {
+    await SHOTS.holpart(page, size)
+    await press(size, tid(page, 'hol-add'))
+    await tid(page, 'hol-name').fill('National Day')
+    await tid(page, 'hol-from').fill('2031-08-09')
+    await press(size, tid(page, 'hol-save'))
+  },
+  /* … and the Leave War's own New-period sheet it opens, over the window that asked */
+  async holwaitsheet(page, size) {
+    await SHOTS.holwait(page, size)
+    await press(size, tid(page, 'hol-wait-period'))
+    await tid(page, 'war-sheet').waitFor()
+  },
   /* the window dragged aside on a desktop, the grid behind it still worked: a Required figure typed with Days up */
   async behind(page, size) {
     await toDays(page, size)

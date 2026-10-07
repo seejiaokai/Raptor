@@ -325,6 +325,7 @@ export function Sheet({
   narrow,
   full,
   modal = true,
+  raised = false,
   children,
 }: {
   testid: string
@@ -347,6 +348,11 @@ export function Sheet({
    *  (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`). This sets aside, for those two, the 4 Sep 26 rule that a click
    *  outside closes a pop-up (the later instruction wins — `docs/guide-full.md` carries the exception). */
   modal?: boolean
+  /** Drawn ABOVE the scheduler's movable windows (Days, "Every <weekday>", the holiday form — layers 410 / 411), for
+   *  the one sheet that is asked for FROM such a window: the New-period sheet the Holidays list opens for dates no
+   *  leave period covers (ui/warask.ts). A sheet is a question to be answered; under the window that asked for it, it
+   *  could not be seen — on a phone Days fills the screen. Every other sheet keeps its own layer. */
+  raised?: boolean
   children: ReactNode
 }) {
   // A drag that scrolled the grid ends in a trailing click on the scrim
@@ -434,8 +440,8 @@ export function Sheet({
           falls through to the grid and its click here never fires there. */}
       {/* NO scrim for a non-blocking window: with nothing mounted, useGridPan arms neither the mouse's interceptor
           nor the touch screen's tap shield (both hang off the scrim's own node), so every press reaches the grid. */}
-      {modal && <div ref={scrimRef} className="sheetscrim" data-testid="sheet-scrim" aria-hidden="true" onClick={onScrimClick} />}
-      <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}${modal ? '' : ' nonmodal'}`} data-testid={testid} role="dialog" aria-label={label}>
+      {modal && <div ref={scrimRef} className={`sheetscrim${raised ? ' raised' : ''}`} data-testid="sheet-scrim" aria-hidden="true" onClick={onScrimClick} />}
+      <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}${modal ? '' : ' nonmodal'}${raised ? ' raised' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
         {children}
       </div>
     </>

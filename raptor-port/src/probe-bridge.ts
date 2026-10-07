@@ -41,7 +41,7 @@ import { roleOf } from './state/perms'
 import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
-import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent } from './leavewar/state/store'
+import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent, createWar as lwCreateWar } from './leavewar/state/store'
 import { pinViewer } from './leavewar/sync'
 import { setFlyDays, setFlyRun, setFlyRule } from './state/flyplan'
 
@@ -186,6 +186,8 @@ export function installProbeBridge() {
     w.lwSetPostOut = (p: string, from: string | null) => lwSetPostOut(p, from)
     /* a word on a day's Event line of the war on screen ("PH", "Off day") — what the calendars and Days show as a tag */
     w.lwSetDayEvent = (d: string, line: number, text: string) => lwSetDayEvent(d, line, text)
+    /* a leave period, as the war's own "+ New" sheet makes one — a test of a year covered only in part starts from it */
+    w.lwCreateWar = (name: string, start: string, end: string) => lwCreateWar(name, start, end)
     /* a Leave War counter, saved through the SAME writer the "+ Counter" form uses — as an admin, the role the test had
        put back after. The app starts with NO counters (D669, 8 Oct 26); a browser test that is about counters makes
        the ones it needs with this (e2e/app.ts elevenCounters), rather than standing on a hidden default. */

@@ -19,11 +19,17 @@
    A DATE NO LEAVE PERIOD COVERS has nowhere to be written (a holiday lives in the period HOLDING its date). The list
    says so before he tries: where no period reaches the year at all, D19's line and its way out — "No leave period
    covers 2027 yet. Create it" (`createOilPeriodFor`, a whole year, in draft); where the year is covered in part, the
-   dates left out are named. */
-import { useState } from 'react'
+   dates left out are named, each run with a button that asks the Leave War for its OWN New-period sheet on those dates
+   (`sync.ts openNewPeriod` — nothing about making a period is rebuilt here).
+
+   AND A HOLIDAY REFUSED FOR THAT REASON WAITS. The form keeps what he typed, offers the same way out, and saves the
+   holiday BY ITSELF the moment a leave period covers its first day — however that period came to be (the plan §3.4:
+   "the holiday being added is kept and saved once that period exists"). An edit, Cancel or ✕ ends the wait: what is
+   saved is only ever what the form held when he pressed Save. */
+import { useEffect, useState } from 'react'
 import { FloatWin } from './FloatWindow'
 import {
-  createOilPeriodFor, holidayAdd, holidayChange, holidayRemove, holidayWord, holidaysIn, uncoveredIn,
+  createOilPeriodFor, holidayAdd, holidayChange, holidayRemove, holidayWord, holidaysIn, openNewPeriod, uncoveredIn,
   MAX_HOLIDAY_NAME, type HolidayDraft, type HolidayLine, type HolidayResult,
 } from '../leavewar/sync'
 import { addDays, validIso, weekdayOf } from '../state/flyplan-model'
@@ -41,7 +47,16 @@ const when = (from: string, to: string): string => {
 /** "1 Apr" */
 const dayMon = (iso: string): string => `${+iso.slice(8, 10)} ${MONTHS[+iso.slice(5, 7) - 1].slice(0, 3)}`
 /** a run of dates no period covers, as the notice says it: "1 Apr – 31 Dec", or "5 Apr" for one day */
-const gapSaid = (g: { from: string; to: string }): string => (g.to > g.from ? `${dayMon(g.from)} – ${dayMon(g.to)}` : dayMon(g.from))
+type Gap = { from: string; to: string }
+const gapSaid = (g: Gap): string => (g.to > g.from ? `${dayMon(g.from)} – ${dayMon(g.to)}` : dayMon(g.from))
+/** one run that is the whole year: no period reaches it at all */
+const wholeYear = (g: Gap): boolean => g.from === `${g.from.slice(0, 4)}-01-01` && g.to === `${g.from.slice(0, 4)}-12-31`
+/** the run of uncovered dates a date sits in, or null where a leave period holds it */
+const gapOf = (iso: string): Gap | null => (validIso(iso) ? uncoveredIn(iso.slice(0, 4)).find(g => g.from <= iso && iso <= g.to) ?? null : null)
+/** why the year could not be created, in a sentence */
+const createWhy = (made: string, year: string | number): string => (made === 'created' ? '' : made === 'overlap'
+  ? `A leave period already covers part of ${year} — open the Leave War and extend it instead.`
+  : `The ${year} leave period could not be created.`)
 
 export function HolidaysPanel({ year, setYear, onOpen }: {
   year: number
@@ -53,14 +68,8 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
   const lines = holidaysIn(year)
   const gaps = uncoveredIn(year)
   const today = isoToday()
-  /* one run that is the whole year: no period reaches it at all */
-  const none = gaps.length === 1 && gaps[0].from === `${year}-01-01` && gaps[0].to === `${year}-12-31`
-  const createYear = () => {
-    const made = createOilPeriodFor(String(year))
-    setWhy(made === 'created' ? '' : made === 'overlap'
-      ? `A leave period already covers part of ${year} — open the Leave War and extend it instead.`
-      : `The ${year} leave period could not be created.`)
-  }
+  const none = gaps.length === 1 && wholeYear(gaps[0])
+  const createYear = () => setWhy(createWhy(createOilPeriodFor(String(year)), year))
   const step = (by: number) => { setWhy(''); setYear(year + by) }
 
   return (
@@ -79,6 +88,12 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
             ? `No leave period covers ${year} yet.`
             : `No leave period covers ${gaps.map(gapSaid).join(' or ')} ${year} yet.`}</span>
           {none && <button type="button" className="abtn" data-testid="hol-create-year" onClick={createYear}>Create it</button>}
+          {/* covered in part: the Leave War's own New-period sheet, on each run left out */}
+          {!none && gaps.map(g => (
+            <button key={g.from} type="button" className="abtn" data-testid={`hol-new-period-${g.from}`} onClick={() => openNewPeriod(g.from, g.to)}>
+              Add a period for {gapSaid(g)}…
+            </button>
+          ))}
           {why && <span className="hol-why" data-testid="hol-why" role="alert">{why}</span>}
         </div>
       )}
@@ -126,8 +141,11 @@ export function HolidayForm({ line, year, onClose }: {
   const [to, setTo] = useState(line ? line.to : first)
   const [err, setErr] = useState('')
   const [saved, setSaved] = useState('')
-  /* any edit takes the last complaint — and the last "Saved" note — down: they were about what the form held then */
-  const edit = () => { setErr(''); setSaved('') }
+  /* refused because no leave period covers its first day: it is kept, and saved by itself once one does */
+  const [waiting, setWaiting] = useState(false)
+  /* any edit takes the last complaint — and the last "Saved" note — down: they were about what the form held then. And
+     it ends a wait: what is saved by itself is only ever what the form held when he pressed Save */
+  const edit = () => { setErr(''); setSaved(''); setWaiting(false) }
   /* the last day follows the first while the two are one day, and never falls before it */
   const pickFrom = (v: string) => {
     edit()
@@ -144,11 +162,16 @@ export function HolidayForm({ line, year, onClose }: {
     if (line ? shortTouched : short.trim() !== '') d.short = short
     return d
   }
-  const refused = (r: HolidayResult): boolean => { if (r.ok) return false; setErr(r.message); return true }
+  const refused = (r: HolidayResult): boolean => {
+    if (r.ok) return false
+    setErr(r.message); setWaiting(r.reason === 'noperiod')
+    return true
+  }
   const save = (more: boolean) => {
     const d = draft()
-    if (typeof d === 'string') { setSaved(''); setErr(d); return }
+    if (typeof d === 'string') { setSaved(''); setWaiting(false); setErr(d); return }
     if (refused(line ? holidayChange(line, d) : holidayAdd(d))) { setSaved(''); return }
+    setWaiting(false)
     if (!more) { onClose(); return }
     /* "Save and add another": the kind stays, the day after is ready, the name and its short form are cleared */
     const next = addDays(d.to, 1)
@@ -156,6 +179,21 @@ export function HolidayForm({ line, year, onClose }: {
     setName(''); setShort(''); setShortTouched(false); setFrom(next); setTo(next)
   }
   const remove = () => { if (line && !refused(holidayRemove(line))) onClose() }
+
+  /* THE WAIT. While it waits, the run of uncovered dates its first day sits in is read at every paint (Days repaints on
+     the war's signal); the moment there is none — a period now holds that day — the same Save is pressed for him.
+     Refused again for another reason (the period ends before its last day), it says so and stops waiting. */
+  const gap = waiting ? gapOf(from) : null
+  const coveredNow = waiting && validIso(from) && !gap
+  useEffect(() => {
+    if (coveredNow) save(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fires on the moment of cover; `save` is this paint's own
+  }, [coveredNow])
+  const createYear = () => {
+    const y = from.slice(0, 4)
+    const why = createWhy(createOilPeriodFor(y), y)
+    if (why) { setWaiting(false); setErr(why) }
+  }
 
   return (
     <FloatWin id="holiday" title={line ? 'Change a holiday' : 'Add a holiday'} testid="win-holiday" className="everywin holwin" onClose={onClose}>
@@ -201,6 +239,14 @@ export function HolidayForm({ line, year, onClose }: {
 
       {saved && <p className="hol-saved" data-testid="hol-saved" role="status">{saved}</p>}
       {err && <p className="every-err" data-testid="hol-err" role="alert">{err}</p>}
+      {waiting && gap && (
+        <div className="hol-wait">
+          <p className="hol-waiting" data-testid="hol-waiting" role="status">It is kept here, and saved by itself as soon as a leave period covers it.</p>
+          {wholeYear(gap)
+            ? <button type="button" className="abtn" data-testid="hol-wait-create" onClick={createYear}>Create the {gap.from.slice(0, 4)} leave period</button>
+            : <button type="button" className="abtn" data-testid="hol-wait-period" onClick={() => openNewPeriod(gap.from, gap.to)}>Add a leave period for {gapSaid(gap)}…</button>}
+        </div>
+      )}
       <div className={'every-acts' + (line ? '' : ' three')}>
         <button type="button" className="abtn" data-testid="hol-cancel" onClick={onClose}>Cancel</button>
         {!line && <button type="button" className="abtn" data-testid="hol-save-more" onClick={() => save(true)}>Save and add another</button>}

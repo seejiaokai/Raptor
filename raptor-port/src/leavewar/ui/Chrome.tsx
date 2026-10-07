@@ -20,6 +20,7 @@ import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { shortDate, shortSpan } from './dates'
 import { WarSheet } from './WarSheet'
+import { clearNewWarAsk, peekNewWarAsk, subscribeNewWarAsk, type WarAsk } from './warask'
 import { useVersion } from './useStore'
 import './chrome.css'
 
@@ -45,6 +46,20 @@ export function Topbar() {
   useVersion()
   const { period, wars, role, people, viewer } = getState()
   const [making, setMaking] = useState(false)
+  /* THE SHEET ASKED FOR FROM DAYS (ui/warask.ts): the Holidays list cannot write a holiday on dates no leave period
+     holds, and asks for THIS sheet — the one "+ New" opens — with those dates picked. The ask is taken once: an admin
+     gets the sheet, raised above the window that asked; anyone else has no such sheet, and the ask is dropped rather
+     than left to spring up at the next admin. */
+  const ask = useSyncExternalStore(subscribeNewWarAsk, peekNewWarAsk, peekNewWarAsk)
+  const [asked, setAsked] = useState<WarAsk | null>(null)
+  useEffect(() => {
+    if (!ask) return
+    if (role === 'admin') { setAsked(ask); setMaking(true) }
+    clearNewWarAsk()
+  }, [ask, role])
+  /* however the sheet closes — Create, its ✕, Escape, a press outside — the asked dates go with it, so the next
+     "+ New" opens as it always has: no dates picked, at its own layer */
+  const closeSheet = () => { setMaking(false); setAsked(null) }
   // WHOSE view this is (owner, 28 Aug 26 — "make it obvious that im viewing as
   // for example RANGER"). The whole grid — the lit row, the counter column, the
   // figure sheets — answers for the viewing person (Raptor's "View as",
@@ -121,7 +136,7 @@ export function Topbar() {
         and render clipped at the top of the page instead of at the bottom of
         the viewport. jsdom computes no layout, so every unit test passed
         while it was broken; the browser gate is what caught it. */}
-    {making && <WarSheet onClose={() => setMaking(false)} />}
+    {making && <WarSheet key={asked ? `${asked.from}|${asked.to}` : 'new'} initial={asked} raised={!!asked} onClose={closeSheet} />}
     </>
   )
 }

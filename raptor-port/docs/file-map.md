@@ -542,6 +542,12 @@ notice for dates no leave period covers with "Create it" where none reaches the 
 the shell (kind, name, "On grid", first and last day; Save, "Save and add another", Delete on a line being changed).
 It writes the war's own record with `holidayAdd` / `holidayChange` / `holidayRemove`. Tests `ui/holidayspanel.test.tsx`;
 the two readers it added to the seam (`uncoveredIn`, `holidayWord`) are pinned by it and `leavewar/uncovered.test.ts`.
+A holiday refused because no leave period covers its date WAITS in the form and is saved by itself once one does.
+`src/leavewar/ui/warask.ts` - ONE waiting ask, "open the war's New-period sheet on these dates" (plan §3.4): set by
+`sync.ts openNewPeriod` (from the Holidays list in Days), taken once by the war's top row (`ui/Chrome.tsx Topbar`), which
+opens its own `WarSheet` with the dates picked and RAISED above the scheduler's windows (`Sheet`'s `raised`; the layer
+rule is inside `bidpicker.css`'s wrapper, beside `.bidsheet`). Module state, never the war's store. Tests
+`leavewar/ui/warask.test.tsx`.
 `src/ui/EveryWeekday.tsx` - "EVERY <WEEKDAY>" (plan §3.4; D631, D638): the window a weekday's heading opens on Days'
 month - the class (day, night, no fly), From, Until (no end, or a date), a sentence saying what will be saved, and the
 rules already made for that weekday beneath, each with Remove. A second window on the shell, drawn by Days. Save is

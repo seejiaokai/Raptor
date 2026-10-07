@@ -6546,7 +6546,8 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
   - *Dates no leave period covers* (a holiday is kept in the period holding its date): an amber notice above the list.
     No period reaches the year — "No leave period covers 2031 yet." and a "Create it" button, which makes the whole
     year, in draft, and leaves him in Days. Covered in part — the dates left out are named ("… covers 1 Apr – 31 Dec
-    2031 yet."; two holes joined by "or") and no year button is offered.
+    2031 yet."; two holes joined by "or"), no year button is offered, and each run has its own: "Add a period for 1 Apr
+    – 31 Dec…", which opens the Leave War's own New-period sheet with those dates picked.
 - **The holiday form (`HolidayForm` — D641, D652).** A window on the shell, at the left on a desktop, the bottom panel
   on a phone. "Add a holiday": Kind — Public holiday (lit) / Off day; Name (40 letters at most; empty, the box shows
   the word it will be saved under) with "On grid" beside it (its short form — capitals as typed, three at most); First
@@ -6561,13 +6562,22 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
     first; a short form that is not one; a date no leave period covers; every Event row used on those dates; a holiday
     taken away on the Leave War meanwhile. Any edit takes the line down.
   - Every box carries 16px text.
-- **Not built yet:** for a year covered in part, opening the Leave War's new-period sheet on the dates left out and
-  saving the waiting holiday once that period exists (the next piece).
+- **A holiday on a date no leave period covers WAITS.** Refused for that reason (and only that one), the form keeps
+  what he typed and shows, under the red line, an amber box: "It is kept here, and saved by itself as soon as a leave
+  period covers it." with ONE button for that date — "Create the 2031 leave period" where no period reaches the year,
+  else "Add a leave period for 1 Apr – 31 Dec…" (the run its first day sits in). The moment any period holds its first
+  day the holiday is saved and the form closes. If that period ends before its last day, the store's sentence shows
+  and nothing is saved. An edit, Cancel or ✕ ends the wait.
+- **The Leave War's New-period sheet, asked for from Days** (`leavewar/ui/warask.ts`, `sync.ts openNewPeriod`): the
+  Leave War comes to the front and its own sheet opens with the dates picked — the calendar on that month, the span in
+  words, a name still to type — DRAWN OVER Days and the form (layers 480 / 481 against the windows' 410 / 411), whole on
+  the screen. Closed without creating, the next "+ New" opens as it always has. A member gets no sheet.
 - Gates: `e2e/leavewar.spec.ts` "Days opens from the Leave War's settings: the month sets a date's class, and the grid
   behind it follows at once", "a weekday's heading on Days sets every such day from a date onward, and the war's rows
   follow" and "the Holidays list in Days adds, changes and deletes a public holiday — the same record as the Leave
-  War's Event row" (phone and desktop; the last also at 1536px across). Pins: `ui/dayswindow.test.tsx`,
-  `ui/everyweekday.test.tsx`, `ui/holidayspanel.test.tsx`.
+  War's Event row" (phone and desktop; the last also at 1536px across) and "a holiday on dates no leave period covers
+  waits: the Leave War's New-period sheet opens over Days, and the holiday saves itself once the period exists". Pins:
+  `ui/dayswindow.test.tsx`, `ui/everyweekday.test.tsx`, `ui/holidayspanel.test.tsx`, `leavewar/ui/warask.test.tsx`.
 
 ## The event sheet on a phone keyboard (owner, 31 Aug 26)
 

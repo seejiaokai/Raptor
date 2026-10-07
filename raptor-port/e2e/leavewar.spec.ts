@@ -3758,6 +3758,82 @@ test('the Holidays list in Days adds, changes and deletes a public holiday — t
   }
 })
 
+// A HOLIDAY ON DATES NO LEAVE PERIOD COVERS (plan §3.4). jsdom proves the wait and the save that follows
+// (src/ui/holidayspanel.test.tsx, src/leavewar/ui/warask.test.tsx). What ONLY a browser can say is the layer: the
+// war's New-period sheet is asked for from a window that sits far above every Leave War sheet (410 against 80) and, on
+// a phone, fills the screen — so the sheet must be drawn OVER Days, or it opens unseen. (It did, in the first look: the
+// rule that raises it had been written outside the stylesheet's wrapper and lost to the rule it meant to beat.)
+test('a holiday on dates no leave period covers waits: the Leave War’s New-period sheet opens over Days, and the holiday saves itself once the period exists', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  const tid = (id: string) => page.locator(`[data-testid="${id}"]`)
+  const rect = (l: Locator) => l.evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom } })
+  const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
+  const vp = page.viewportSize()!
+  /* a year covered only in part: January to March 2031 */
+  expect(await page.evaluate(() => (window as any).lwCreateWar('Q1 31', '2031-01-01', '2031-03-31'))).toBe('created')
+
+  await press(tid('settings-open')); await press(tid('settings-days'))
+  await press(tid('days-tab-holidays'))
+  for (let i = 0; i < 8 && (await tid('hol-year').textContent()) !== '2031'; i++) await press(tid('hol-next'))
+  await expect(tid('hol-year')).toHaveText('2031')
+  /* the list says which dates are left out, and offers the way to cover them */
+  await expect(tid('hol-nocover')).toContainText('No leave period covers 1 Apr – 31 Dec 2031 yet.')
+  await expect(tid('hol-create-year')).toHaveCount(0)
+  const gapBtn = tid('hol-new-period-2031-04-01')
+  await expect(gapBtn).toHaveText('Add a period for 1 Apr – 31 Dec…')
+  const w = await rect(tid('win-days')), g = await rect(gapBtn)
+  expect(g.h).toBeGreaterThanOrEqual(36); expect(g.x).toBeGreaterThanOrEqual(w.x); expect(g.r).toBeLessThanOrEqual(w.r + 0.5)
+
+  /* a holiday in August: refused, KEPT, and the same way out offered in the form */
+  await press(tid('hol-add'))
+  await tid('hol-name').fill('National Day')
+  await tid('hol-from').fill('2031-08-09')
+  await press(tid('hol-save'))
+  await expect(tid('hol-err')).toHaveText('No leave period covers 9 Aug 31 yet.')
+  await expect(tid('hol-waiting')).toBeVisible()
+  const wait = tid('hol-wait-period')
+  await expect(wait).toHaveText('Add a leave period for 1 Apr – 31 Dec…')
+  const f = await rect(tid('win-holiday')), wb = await rect(wait), sv = await rect(tid('hol-save'))
+  expect(f.b).toBeLessThanOrEqual(vp.height + 0.5)
+  expect(wb.h).toBeGreaterThanOrEqual(isPhone() ? 40 : 36)
+  expect(wb.r).toBeLessThanOrEqual(f.r + 0.5); expect(sv.b, 'Save is under the fold').toBeLessThanOrEqual(Math.min(f.b, vp.height) + 0.5)
+
+  /* THE WAR'S OWN SHEET, OVER DAYS AND THE FORM — whole on the screen, its dates picked */
+  await press(wait)
+  const sheet = tid('war-sheet')
+  await expect(sheet).toBeVisible()
+  const sh = await rect(sheet)
+  expect(sh.x).toBeGreaterThanOrEqual(-0.5); expect(sh.r).toBeLessThanOrEqual(vp.width + 0.5)
+  expect(sh.y).toBeGreaterThanOrEqual(-0.5); expect(sh.b).toBeLessThanOrEqual(vp.height + 0.5)
+  /* nothing of Days or the form is drawn over any corner or the middle of it */
+  for (const [fx, fy] of [[0.5, 0.08], [0.06, 0.06], [0.94, 0.06], [0.5, 0.5], [0.06, 0.94], [0.94, 0.94]]) {
+    const inSheet = await page.evaluate(([x, y]) => !!document.elementFromPoint(x, y)?.closest('[data-testid="war-sheet"]'), [sh.x + sh.w * fx, sh.y + sh.h * fy])
+    expect(inSheet, `the sheet is covered at ${fx},${fy}`).toBe(true)
+  }
+  await expect(tid('war-month')).toHaveText(/April 2031/i)
+  await expect(tid('war-selection')).toContainText('1 Apr 31')
+  await expect(tid('war-selection')).toContainText('31 Dec 31')
+  await expect(tid('war-create')).toBeDisabled()
+  /* behind it the form still holds the holiday */
+  await expect(tid('hol-name')).toHaveValue('National Day')
+
+  /* a name, Create — and the holiday saves ITSELF: the form goes, the list has it, the notice is gone */
+  await tid('war-name').fill('Rest of 31')
+  await press(tid('war-create'))
+  await expect(sheet).toHaveCount(0)
+  await expect(tid('win-holiday')).toHaveCount(0)
+  await expect(page.locator('.hol-line[data-from="2031-08-09"]')).toContainText('National Day')
+  await expect(page.locator('.hol-line[data-from="2031-08-09"]')).toContainText('Sat 9 Aug')
+  await expect(tid('hol-nocover')).toHaveCount(0)
+  /* the Leave War went to the period just made, as its sheet always does */
+  await expect(page.locator('[data-testid="war-picker"] option:checked')).toHaveText('Rest of 31')
+  /* and the month wears the tag */
+  await press(tid('days-tab-month'))
+  for (let i = 0; i < 80 && (await tid('days-month').textContent()) !== 'August 2031'; i++) await press(tid('days-next'))
+  await expect(tid('days-tag-2031-08-09')).toHaveText('PH')
+})
+
 // PICKING SEVERAL REQUIRED CELLS, AND THE PANEL THAT DOES NOT BLOCK THE GRID (plan §3.3 "Picking several"; D636, D637,
 // D641, D642). jsdom proves the rule and what is saved (reqpanel.test.tsx, selectreq.test.ts, nonmodal.test.tsx). A
 // real browser has to say the rest: that a REAL drag over the two rows arms and picks — a mouse on a desktop, a held

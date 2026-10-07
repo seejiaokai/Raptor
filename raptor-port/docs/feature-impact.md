@@ -1297,7 +1297,13 @@ on the two calendars, stops a running Required figure on that day, and on a day 
 mark as a holiday declared on the war does. **Two drift seams:** (1) the list keeps NOTHING — a second copy of the
 year's holidays anywhere (a settings key, a cache in the window) would be a third door with its own record; (2) the
 form sends "On grid" only when he touched the box — sending what the box merely SHOWS would freeze a short form made
-from the name in as the holiday's own, and a rename would keep printing the old one.
+from the name in as the holiday's own, and a rename would keep printing the old one. **And the ask for the war's
+New-period sheet** (`leavewar/ui/warask.ts`): the one place a scheduler-side window makes a Leave War sheet open. **Two
+drift seams:** (3) LAYERS — a Leave War sheet opened from a scheduler window must be `raised`, or it opens under the
+window that asked (410 against 80), unseen on a phone; and the raising rule must stay inside the war stylesheet's
+`#page-leavewar` wrapper or it silently loses; (4) the holiday that waits is saved by "a period now holds its first
+day", read at each paint — it must stay keyed on the DATE, never on "the year is covered" or "the sheet closed", or a
+period made for other dates would save or strand it.
 **Several picked at once, and the two panels that do not block the grid (8 Oct 26 — plan §3.3; D636, D637, D641, D642).**
 A drag over the Required rows is the grid's own gesture (`ui/select.ts`, a third kind) and opens the Required panel;
 Apply is ONE command of the flying plan, as a typed cell is. `Sheet` has a non-blocking form (`modal={false}`) used by

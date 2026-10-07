@@ -111,7 +111,8 @@ import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
 import { suspendForPosting, enableAfterPosting, lastAdminIfGone, accountOfPid, suspendForArchive, enableForRestore } from '../state/accounts'
-import { markBack, clearBack } from '../state/view'
+import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
+import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from '../state/sched-commit'
@@ -2320,6 +2321,18 @@ export function availRowNames(): { p: string; w: string } {
 export function openDays(iso: string): void {
   if (!validIso(iso)) return
   setDaysWin(iso)
+  raptorNotify()
+}
+
+/** THE WAR'S NEW-PERIOD SHEET, ASKED FOR FROM DAYS, on a run of dates no leave period covers (the plan §3.4). The
+ *  Holidays list cannot write a holiday there, and nothing about making a period is rebuilt in the scheduler's
+ *  window: the ask is left for the war's own top row (ui/warask.ts, ui/Chrome.tsx), the Leave War is brought to the
+ *  front — the sheet is the war's, drawn on its page — and the scheduler's screens are told. The sheet still checks
+ *  everything itself (a name, an admin, no overlap): the ask grants nothing. */
+export function openNewPeriod(from: string, to: string): void {
+  if (!validIso(from) || !validIso(to) || to < from) return
+  askNewWar({ from, to })
+  if (CURPAGE !== 'leavewar') setPage('leavewar')
   raptorNotify()
 }
 

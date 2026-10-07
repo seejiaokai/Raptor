@@ -444,7 +444,45 @@ and a save on one of them is refused in the form with the store's sentence. **NO
 section has it — opening the war's own "+ New" period sheet with the gap's dates filled in, and keeping the holiday
 being added to save it by itself once that period exists — the next piece.**
 (10) The line in the war's ⚙ now reads "Day flying, night flying or no fly for each date, and the year's holidays."
-**STEP 3 IS BUILT but for (9)'s second half.** After it, the plan's order: step 4, the SANS calendar (§3.5).
+*((9)'s second half is the next note.)*
+
+**AS BUILT (8 Oct 26, the overnight run — step 3, fifth and last piece: A HOLIDAY ON DATES NO LEAVE PERIOD COVERS).**
+The plan above: "the line says which dates are not covered and opens the war's own '+ New' period sheet with the gap's
+dates filled in; the holiday being added is kept and saved once that period exists."
+- **The ask.** `leavewar/ui/warask.ts` holds ONE waiting ask (`{ from, to }`) — module state with its own listeners,
+  never the war's store (an ask is not a fact about the war: not saved, not undone, and it must not repaint the grid).
+  `sync.ts openNewPeriod(from, to)` records it, brings the Leave War to the front (`state/view.ts setPage`) and tells the
+  scheduler's screens. The war's top row (`ui/Chrome.tsx Topbar`) takes it once: an admin gets the war's OWN
+  `WarSheet`, with the dates picked (`initial`) and `raised`; anyone else has no such sheet and the ask is dropped.
+  The sheet still checks everything itself — the ask grants nothing.
+- **Raised.** `Sheet` has a `raised` form (scrim 480, sheet 481). The scheduler's movable windows sit at 410 / 411 and
+  every Leave War sheet at 79 / 80; on a phone Days fills the screen — at its own layer the sheet opened unseen.
+  **The rule lives INSIDE `bidpicker.css`'s `#page-leavewar` wrapper, beside `.bidsheet`:** appended after the
+  wrapper's close it lost to the id-scoped `.bidsheet` rule and did nothing (every unit test passed; the first look on
+  a phone showed it — the browser test now measures that nothing is drawn over the sheet).
+- **The list** (`HolidaysPanel`): a year covered in part has a button for each run left out — "Add a period for 1 Apr –
+  31 Dec…".
+- **The form** (`HolidayForm`): a save refused BECAUSE no period covers its first day (the store's `noperiod`) WAITS —
+  "It is kept here, and saved by itself as soon as a leave period covers it." — with the way out for that date: "Create
+  the 2031 leave period" where no period reaches the year, else "Add a leave period for 1 Apr – 31 Dec…". While it
+  waits, the run of uncovered dates its first day sits in is read at every paint; the moment there is none, the same
+  Save runs. So ANY period that comes to hold the day does it — the sheet it opened, "+ New" on the Leave War, "Create
+  it" in the list. Refused again for another reason (the new period ends before its last day) it says so and stops
+  waiting; an edit, Cancel or ✕ ends the wait; a refusal for any other reason never starts one. A line being CHANGED
+  onto such a date waits the same way and is moved, not copied.
+Tests `leavewar/ui/warask.test.tsx` (8) and nine more in `ui/holidayspanel.test.tsx` (now 42), red first; **twenty-four
+rules broken one at a time: twenty-one caught at once; one showed a guard the code did not need (the asked dates were
+cleared both at "+ New" and when the sheet closes — the first taken out); two showed a missing test (closed without
+creating, the next "+ New" opens with no dates; a refusal for another reason on such a date does not wait) — added,
+then caught. And the layer rule, which only a browser can judge: set back to 80 on purpose, the browser test failed at
+both sizes.** One browser test at phone and desktop size (`e2e/leavewar.spec.ts` "a holiday on dates no leave period
+covers waits…").
+**Choices the builder made:** (1) the sheet is the war's own, unchanged but for the dates picked — he still names the
+period, and it still lands in draft and takes him to it; (2) the holiday is saved the moment a period holds its FIRST
+day; if that period ends before its last day the store's own sentence shows ("… run past 31 Aug …") and nothing is
+saved in part; (3) the wait lives in the form — closing the form gives it up; nothing waits unseen; (4) no name is
+suggested for the new period.
+**STEP 3 IS BUILT.** Next in the plan's order: step 4, the SANS calendar (§3.5).
 
 ### 3.5 The SANS calendar
 
@@ -1339,7 +1377,9 @@ form opens at the left with Days at the right; the date boxes are the browser's 
 (his PC is; a 1440px laptop and a phone get two tabs) — so a form never opens over the month; a new holiday starts
 today; an empty name is saved as the kind's usual word, shown in the box; "On grid" is sent only if he touches it;
 Delete asks nothing (Undo brings it back); a year no leave period reaches offers "Create it" and keeps him in Days; a
-year covered in part names the dates left out.
+year covered in part names the dates left out, each with a button that opens the Leave War's own new-period sheet on
+them; a holiday refused because nothing covers its date is KEPT in its form and saved by itself as soon as a period
+holds its first day — closing the form gives that up.
 
 ## 9. For the challenger
 

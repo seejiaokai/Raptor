@@ -45,6 +45,15 @@
   touch-action: pan-y;
 }
 
+/* A SHEET RAISED ABOVE THE SCHEDULER'S MOVABLE WINDOWS (Sheet.tsx `raised` — the New-period sheet the Holidays list in
+   Days asks for, ui/warask.ts). Those windows sit at 410 / 411 (ui/scheduler/22-float-windows.css) and on a phone Days
+   fills the screen, so at this sheet's own layer (79 / 80) it would open unseen behind the window that asked for it.
+   480 / 481: above the windows and the scheduler's own modal (470) — it is the question now being asked.
+   (Kept HERE, inside the file's #page-leavewar wrapper: written after the wrapper's close it loses to the id-scoped
+   `.bidsheet` rule below and the sheet stays at 80 — seen in the first look, on a phone, where Days hid it whole.) */
+.sheetscrim.raised { z-index: 480; }
+.bidsheet.raised { z-index: 481; }
+
 .bidsheet {
   position: fixed;
   z-index: 80;

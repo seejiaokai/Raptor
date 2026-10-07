@@ -138,6 +138,10 @@
 .holwin .every-date[type="text"]{font-weight:700}
 .holwin .every-date::placeholder{color:var(--ink-3);font-weight:600}
 .hol-saved{margin:10px 0 0;font-size:12.5px;font-weight:700;color:#7FDCA0}
+/* a holiday that waits for a leave period: what is kept, and the way to make the period */
+.hol-wait{margin:8px 0 0;padding:9px 11px;border:1px solid rgba(229,168,59,.45);border-radius:10px;background:rgba(229,168,59,.08)}
+.hol-waiting{margin:0 0 8px;font-size:12.5px;line-height:1.4;color:var(--ink)}
+.hol-wait .abtn{width:100%;min-height:40px}
 .every-acts.three{grid-template-columns:auto 1fr auto}
 .every-acts.three .abtn{padding-left:14px;padding-right:14px}
 .hol-del{margin-top:12px;padding-top:10px;border-top:1px solid var(--edge)}

@@ -21,6 +21,8 @@ import { createWar, getState, holidayAdd, holidayRemove, initStore as lwInitStor
 import { memoryBackend } from '../leavewar/state/storage'
 import { holidaysIn, wireLeaveWarSync, type HolidayLine } from '../leavewar/sync'
 import { setDaysWin } from './pops'
+import { CURPAGE, setPage } from '../state/view'
+import { clearNewWarAsk, peekNewWarAsk } from '../leavewar/ui/warask'
 import { _resetFloatWins } from './FloatWindow'
 import { DaysWindow } from './DaysWindow'
 
@@ -44,6 +46,7 @@ beforeEach(() => {
   HOOKS.toast = () => {}
   setRole('admin')
   asWide(1600)
+  clearNewWarAsk(); setPage('viewsched')
 })
 afterEach(() => {
   cleanup(); _resetFloatWins(); setDaysWin(null); setSession(null); storeBackend.impl = null; _resetTimeline()
@@ -164,6 +167,108 @@ describe('a year no leave period covers', () => {
     createWar('Mid', `${FREE}-04-01`, `${FREE}-09-30`)
     open(`${FREE}-03-01`)
     expect(t('hol-nocover').textContent).toContain(`No leave period covers 1 Jan – 31 Mar or 1 Oct – 31 Dec ${FREE} yet.`)
+  })
+  it('in part: each run left out has a button that asks the Leave War for its own New-period sheet on those dates', () => {
+    createWar('Mid', `${FREE}-04-01`, `${FREE}-09-30`)
+    open(`${FREE}-03-01`)
+    expect(t(`hol-new-period-${FREE}-01-01`).textContent).toBe('Add a period for 1 Jan – 31 Mar…')
+    expect(t(`hol-new-period-${FREE}-10-01`).textContent).toBe('Add a period for 1 Oct – 31 Dec…')
+    fireEvent.click(t(`hol-new-period-${FREE}-10-01`))
+    expect(peekNewWarAsk()).toEqual({ from: `${FREE}-10-01`, to: `${FREE}-12-31` })
+    /* the sheet is the war's, on its page — he is taken there; Days stays up */
+    expect(CURPAGE).toBe('leavewar'); expect(t('win-days')).toBeTruthy()
+  })
+})
+
+describe('a holiday on a date no leave period covers WAITS — and is saved by itself once one does', () => {
+  const fill = (iso: string) => { add(); type('hol-name', 'National Day'); type('hol-from', iso) }
+  it('no period reaches the year: the form says it is kept and offers to create the year; created, the holiday is saved and the form closes', () => {
+    open(`${FREE}-03-01`); fill(`${FREE}-08-09`)
+    fireEvent.click(t('hol-save'))
+    expect(t('hol-err').textContent).toBe(`No leave period covers 9 Aug ${String(FREE).slice(2)} yet.`)
+    expect(t('hol-waiting').textContent).toBe('It is kept here, and saved by itself as soon as a leave period covers it.')
+    expect(t('hol-wait-create').textContent).toBe(`Create the ${FREE} leave period`)
+    expect(q('hol-wait-period')).toBeNull()
+    fireEvent.click(t('hol-wait-create'))
+    expect(getState().wars.some(w => w.period.start === `${FREE}-01-01` && w.period.end === `${FREE}-12-31`)).toBe(true)
+    expect(line(FREE, `${FREE}-08-09`)).toMatchObject({ kind: 'ph', name: 'National Day' })
+    expect(q('win-holiday')).toBeNull()
+    expect(shown()).toContainEqual(['Sat 9 Aug', 'National Day', 'PH'])
+  })
+  it('covered in part: it offers the Leave War’s New-period sheet on the run that holds the date; once that period exists the holiday is saved', () => {
+    createWar('Q1', `${FREE}-01-01`, `${FREE}-03-31`)
+    open(`${FREE}-03-01`); fill(`${FREE}-08-09`)
+    fireEvent.click(t('hol-save'))
+    expect(t('hol-waiting')).toBeTruthy(); expect(q('hol-wait-create')).toBeNull()
+    expect(t('hol-wait-period').textContent).toBe('Add a leave period for 1 Apr – 31 Dec…')
+    fireEvent.click(t('hol-wait-period'))
+    expect(peekNewWarAsk()).toEqual({ from: `${FREE}-04-01`, to: `${FREE}-12-31` })
+    expect(CURPAGE).toBe('leavewar')
+    /* the form is still there, holding it, while he makes the period on the Leave War */
+    expect(val('hol-name')).toBe('National Day'); expect(lines(FREE).length).toBe(0)
+    act(() => { createWar('Rest', `${FREE}-04-01`, `${FREE}-12-31`) })
+    expect(line(FREE, `${FREE}-08-09`)).toMatchObject({ kind: 'ph', name: 'National Day' })
+    expect(q('win-holiday')).toBeNull()
+  })
+  it('a period made any other way does it too — the "+ New" on the Leave War, a shorter one that still holds the date', () => {
+    open(`${FREE}-03-01`); fill(`${FREE}-08-09`)
+    fireEvent.click(t('hol-save'))
+    act(() => { createWar('Aug only', `${FREE}-08-01`, `${FREE}-08-31`) })
+    expect(lines(FREE).map(h => h.from)).toEqual([`${FREE}-08-09`])
+  })
+  it('a period that does NOT hold the date changes nothing: it still waits', () => {
+    open(`${FREE}-03-01`); fill(`${FREE}-08-09`)
+    fireEvent.click(t('hol-save'))
+    act(() => { createWar('Q1', `${FREE}-01-01`, `${FREE}-03-31`) })
+    expect(lines(FREE).length).toBe(0); expect(t('hol-waiting')).toBeTruthy()
+    /* and the year is covered in part now, so the way out it offers has changed with it */
+    expect(q('hol-wait-create')).toBeNull(); expect(t('hol-wait-period').textContent).toBe('Add a leave period for 1 Apr – 31 Dec…')
+  })
+  it('an edit after the refusal ends the wait: he changed it, so he saves it himself', () => {
+    open(`${FREE}-03-01`); fill(`${FREE}-08-09`)
+    fireEvent.click(t('hol-save'))
+    type('hol-name', 'National Day (obs)')
+    expect(q('hol-waiting')).toBeNull(); expect(q('hol-wait-create')).toBeNull()
+    act(() => { createWar(String(FREE), `${FREE}-01-01`, `${FREE}-12-31`) })
+    expect(lines(FREE).length).toBe(0); expect(t('win-holiday')).toBeTruthy()
+    fireEvent.click(t('hol-save'))
+    expect(line(FREE, `${FREE}-08-09`).name).toBe('National Day (obs)')
+  })
+  it('the new period holds its first day but not its last: it is not saved in part — the form says why and stops waiting', () => {
+    open(`${FREE}-03-01`); add()
+    type('hol-name', 'Stand-down'); type('hol-from', `${FREE}-08-30`); type('hol-to', `${FREE}-09-02`)
+    fireEvent.click(t('hol-save'))
+    expect(t('hol-waiting')).toBeTruthy()
+    act(() => { createWar('Aug only', `${FREE}-08-01`, `${FREE}-08-31`) })
+    expect(lines(FREE).length).toBe(0)
+    expect(t('hol-err').textContent).toMatch(/run past 31 Aug/)
+    expect(q('hol-waiting')).toBeNull(); expect(t('win-holiday')).toBeTruthy()
+  })
+  it('refused for ANOTHER reason on such a date — a short form that is not one — it does not wait: he has something to put right first', () => {
+    open(`${FREE}-03-01`); fill(`${FREE}-08-09`)
+    type('hol-short', 'a b')
+    fireEvent.click(t('hol-save'))
+    expect(t('hol-err').textContent).toBe('The short form is one to three letters or digits, with no space.')
+    expect(q('hol-waiting')).toBeNull(); expect(q('hol-wait-create')).toBeNull()
+    act(() => { createWar(String(FREE), `${FREE}-01-01`, `${FREE}-12-31`) })
+    expect(lines(FREE).length).toBe(0)
+  })
+  it('Cancel gives the wait up: a period made afterwards saves nothing', () => {
+    open(`${FREE}-03-01`); fill(`${FREE}-08-09`)
+    fireEvent.click(t('hol-save')); fireEvent.click(t('hol-cancel'))
+    act(() => { createWar(String(FREE), `${FREE}-01-01`, `${FREE}-12-31`) })
+    expect(lines(FREE).length).toBe(0)
+  })
+  it('a line being CHANGED onto such a date waits the same way, and is moved — not copied — once the period exists', () => {
+    holidayAdd({ kind: 'ph', name: 'National Day', from: '2026-08-10', to: '2026-08-10' })
+    open(); fireEvent.click(t('hol-list').querySelector('.hol-line[data-from="2026-08-10"]')!)
+    type('hol-from', `${FREE}-08-09`)
+    fireEvent.click(t('hol-save'))
+    expect(t('hol-waiting')).toBeTruthy()
+    expect(lines(2026).some(h => h.from === '2026-08-10')).toBe(true)
+    act(() => { createWar(String(FREE), `${FREE}-01-01`, `${FREE}-12-31`) })
+    expect(lines(FREE).map(h => h.name)).toEqual(['National Day'])
+    expect(lines(2026).some(h => h.from === '2026-08-10')).toBe(false)
   })
 })
 
