@@ -328,6 +328,8 @@ the schedule's own pucks in three groups — Pilots, WSOs and SANS (his next wor
 two. Drawn into the real window (`shoot9.cjs`). **NOT yet in the plan: it changes who may file for whom, so it is written as an add-on and
 read by both readers before it is built.**
 
+**ACCEPTED (D657, 7 Oct 26, night): "Ok all looks good. We can start building in the next chat."** The approved mock-ups are those at the head of the private page that night, each with its "Since drawn" line - the set D624 puts beside the built screens.
+
 ## In the bug check: mock-up beside build — D624
 
 For every mock-up he approves, the check's evidence sheet carries a PAIR: the approved mock-up, and a picture of the built
