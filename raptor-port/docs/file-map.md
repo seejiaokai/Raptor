@@ -440,6 +440,7 @@ D581/D582 header/counts addendum: docs/superpowers/plans/2026-10-05-inputs-sans-
 `docs/handpass/2026-10-05-inputs-sans-claude-handoff.md`: D583/D584 owner-intent-first Claude handoff, original reference map, settled answers versus agent recommendations, finished desktop/mobile views and verification/review limits. Invites fresh critique; no assumed design approval or main authority.
 D580 independent Sol plan/picture challenge: `docs/superpowers/plans/2026-10-05-inputs-sans-plan-challenge.md`; corrected plan PASS, source/review authority qualified.
 
+The Inputs / SANS redesign (D617-D657; the plan `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md`), step 1: `src/state/flyplan-model.ts` - the flying plan's records (a day, a weekday rule, a running figure) and the ONE resolver `planFor` every surface calls for a day's class, required pilots and WSOs, how many more are needed and its colour; pure, ISO dates through UTC. Its tests are one body, `src/state/flyplan-model.suite.ts`, run by `flyplan-model.test.ts` and again under the Leave War suite's hostile time zone by `src/leavewar/flyplan-model-tz.test.ts`.
 D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
 through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
 thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.
