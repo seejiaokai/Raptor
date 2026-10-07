@@ -78,8 +78,10 @@ are drawn side by side; Codex's built layout is one of them.
 
 ## His picks from the first mock-ups, and his new points — D626 to D629 (7 Oct 26, afternoon)
 
-**Picked (D626):** the date cell with lined-up columns, pilots left and WSOs right — but its words must stand out on the
-yellow, amber and red days (the first drawing's tinted cells washed the grey figures out); three tabs across the top
+**Picked (D626):** the date cell with lined-up columns, pilots left and WSOs right — **in the first set's own colours (D630:
+shown deeper tints and a solid bright patch for the still-needed pair, he found them too much contrast and asked for the
+initial colours back — a soft wash over the day, the pair in that colour, the figures in the app's soft grey; if the
+words trouble him again on the real build, offer the grey figures one shade lighter, never the bright patch)**; three tabs across the top
 (Inputs, SANS, Medical), less tall; inputs as bars, as Google Calendar does; in the opened day the row reads "Available"
 with no bracket. "The rest not mentioned seems ok": the Highlight ring with underlined letters and no F / O / A chooser,
 the opened day's working, the three colours from a settings icon (pilots and WSOs needed added together, from 1 / 3 / 5),
@@ -119,8 +121,8 @@ walk and to his own look; it replaces neither. For this job; whether later jobs 
 ## Where the mock-ups are
 
 **The second set (7 Oct 26, afternoon) is at the head of the same private page**, the first folded at its foot. Twelve
-pictures: the SANS month drawn two ways for colour (A — the whole day deep-tinted, the still-needed pair on a solid bright
-patch with dark figures; B — only the pair coloured, the day left dark), with PH green, an Off day grey and NF tagged; one
+pictures at first, eleven since D630: the SANS month in the first set's colours (the deep-tint and pair-only drawings were
+withdrawn the same afternoon), with PH green, an Off day grey and NF tagged; one
 person highlighted; a day opened ("Available", who placed each commitment and when, an admin's "Day settings" button);
 "How this works" stating the cut-off from the setting with a worked date; the settings sheet (three colours; the late
 cut-off as days or as a weekday of a week before); THE DAY'S SHEET on the Leave War (kind of day; flying — day, night, no

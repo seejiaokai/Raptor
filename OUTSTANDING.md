@@ -1619,11 +1619,11 @@ Opus's own read of what Codex built (D615 — its finds fixed, each with a test 
 he has NOT accepted (D583, D584); his answers to the open product points; the walk of the running app, sized first (D607, D608);
 Astra's and Sol 6.1's reads of what Opus adds. The current state and the next step: that branch's block under `## Now` in
 `HANDOFF.md`. Everything below is Codex's record of 5 Oct 26, unchanged.
-**His picks and new points, 7 Oct 26 afternoon (D626–D629):** lined-up columns with the words made to stand out on coloured days, three
-slimmer tabs, bars, the rest as drawn (D626); a day is day flying, night flying or no fly — NF needs nobody and shows "NF" — and
+**His picks and new points, 7 Oct 26 afternoon (D626–D629):** lined-up columns in the first set's own colours (D630 — the
+deeper tints tried in the second set were too much contrast), three slimmer tabs, bars, the rest as drawn (D626); a day is day flying, night flying or no fly — NF needs nobody and shows "NF" — and
 PH and Off days show on both calendars from the Leave War's own record (D627); the late cut-off as days or as a weekday of a
 week before, stated in "How this works" (D628); who placed an entry and when, in small print (D629). Three questions are back
-with him, drawn in the second mock-ups: where the cut-off is set, one door or three, a SANS-needed row on the Leave War.
+with him, drawn in the second mock-ups (D630 settled the colour): where the cut-off is set, one door or three, a SANS-needed row on the Leave War.
 **In this job's bug check (D624, 7 Oct 26):** each approved mock-up is set beside a picture of the built screen at the same size, in
 the evidence sheet.
 **HIS DIRECTION, 7 Oct 26 (D617–D621) — the design changes; mock-ups first, nothing built before he picks:** each SANS date
