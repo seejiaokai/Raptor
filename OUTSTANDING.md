@@ -48,6 +48,8 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**After the Inputs / SANS calendar job (its place is his to set):** [LW-WINDOWS-NONBLOCKING] — the Leave War's other windows still block the grid behind them and close on a click outside; D641 and D642 changed that for the calendar job's windows and for one war panel only. Its own job, its own check.
+
 **From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
 count from its entered in-time / Rally (D591), and a published weekend must keep the earned leave it went out with when a Logic value
 changes (today it moves at once). **BUILT, FULL-checked and MERGED on his "merge live" — live since 7 Oct 26 (PR #484; D591, D592, D606); archived 7 Oct 26.** Low, beside it: [OIL-ZERO-SPAN-SORTIE] (words only); low-medium, older than it: [UNPUB-WARN-AL-RESTORES] (the Unpublish warning over-warns when an amendment is withdrawn); low, older than it, found by its browser test: [LOGIC-REDRAW-DROPS-TYPING] (the Logic page redraws its rules just after it opens, and a value being typed at that instant is dropped); low, words only, from its walks: [OIL-EARN-DAY-SWITCH-WORDS] (OIL Earn's "Nothing today earns" button reads like a status), [SC-B-CHANGE-SAYS-BRIEF] (the changes window calls an SC shift's in-time "brief"). **D606 (7 Oct 26 — an SC shift's typed in-time counts for OIL) was built and checked on the same branch.** **From his D607 (7 Oct 26 — a walk is sized per change by Opus, from a record of past walks), next, with [START-CONTEXT-AUDIT]:** *(both DONE 7 Oct 26 — D607, D608 — and archived:)* [WALK-LEDGER-HISTORY] (compile the past walks into the record and write its figures), [WALK-SIZING-GUIDE] (the checking guide's wording, read by Astra and Sol before he approves it). [INTIME-LINES-DRAG] (D593, his ask of
@@ -1612,6 +1614,15 @@ waive owed reads or authorize a live merge.
 
 **Current direction — D585, 5 Oct 26:** Inputs/SANS calendar is on hold; preserve the completed preview and context. No more design/build/Claude vetting until owner resumes. Other outstanding tasks may be discussed; no new batch starts automatically. Existing D495 later order remains Tracker progress graph → caps/ops limits → whole-app check, with database connection at the end; this pause does not approve another build.
 
+### [LW-WINDOWS-NONBLOCKING] The Leave War's other windows: stay up, and let the grid behind them work (D641, D642 — 7 Oct 26)
+Every Leave War window blocks the grid behind it and closes on a click outside (`src/leavewar/ui/Sheet.tsx`). D641 asked that the
+windows of the Inputs / SANS calendar job drag and leave the page behind usable, and D642 brought ONE existing war window into line
+inside that job — the panel for a picked block of people's days (`SelectSheet.tsx`). The rest keep today's behaviour: the one-day
+sheet, the day's list, the Event sheet, the counter form, ⚙ Settings, the Manning explainer, the OIL tracker, Remarks, the war sheet.
+**To do, as its own job with its own check (bids and OIL are behind these windows):** decide with him which of them should stay
+up, then give each the non-blocking form built for the calendar job; an outside press that today cancels a move (D262) is a ruling
+to re-read first. Not started. Depends on `[SANS-COMMITMENT-CALENDAR]` shipping the non-blocking form.
+
 ### [SANS-COMMITMENT-CALENDAR] Inputs and SANS calendars — CALLED BACK 7 Oct 26 (D614), Opus 5.5 builds from here (D615); was ON HOLD D585; built preview/evidence preserved (5 Oct 26)
 **7 Oct 26 — where it stands now (the job's own chat, `claude/inputs-sans-calendar`):** the live version is brought into the
 calendar work on that branch (the failed-save band, D587, sits under the calendar's bar). **Owed before any "merge live":**
@@ -1642,8 +1653,9 @@ one stepping button and a desktop date three, three choices are enough (no "day 
 a public holiday and an Off day each have two doors onto one record and No Leave is on the Leave War only (D638); the late cut-off is
 behind each calendar's own gear, the Logic page lists both, a cut-off is the end of its day, and the desktop Inputs month is compact
 with no switch (D639); the two Available rows are ordinary Leave War count rows an admin can rename and re-define — leaving out OCU,
-say — and the SANS calendar uses whatever they count (D640). **Every pop-up window drawn for this job drags, and the page behind it still works — a click outside does not close it (D641).** **Still with him:** whether weekends start with no flying set, and whether
-a no-fly day still shows and takes OFT and AMT commitments. **The build plan (7 Oct 26, nothing built):** `raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` — with Astra and Sol 6.1 for one round of challenge each, blind (D590; the brief: `raptor-port/docs/superpowers/briefs/2026-10-07-inputs-sans-redesign-plan-challenge-brief.md`); its section 8 holds what is still with him. No build before both have read it.
+say — and the SANS calendar uses whatever they count (D640). **Every pop-up window drawn for this job drags, and the page behind it still works — a click outside does not close it (D641).** **Weekends start with no flying set; a no-fly day still shows and takes OFT and AMT; the war's panel for picked people's days is
+brought into line with D641 in this job (D642). The Event sheet is to be made plainer and a long event name shows as a short form that
+opens at a click — a mock-up first (D643).** **The build plan (7 Oct 26, nothing built):** `raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` — with Astra and Sol 6.1 for one round of challenge each, blind (D590; the brief: `raptor-port/docs/superpowers/briefs/2026-10-07-inputs-sans-redesign-plan-challenge-brief.md`); its section 8 holds what is still with him. No build before both have read it.
 **In this job's bug check (D624, 7 Oct 26):** each approved mock-up is set beside a picture of the built screen at the same size, in
 the evidence sheet.
 **HIS DIRECTION, 7 Oct 26 (D617–D621) — the design changes; mock-ups first, nothing built before he picks:** each SANS date

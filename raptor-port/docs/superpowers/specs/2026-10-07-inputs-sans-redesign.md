@@ -212,9 +212,17 @@ page behind it stays clickable and editable: no dark veil, and a click outside a
 (its ✕, Escape, or its finishing button close it). This sets aside, for these windows only, the 4 Sep 26 rule that a pop-up
 closes on a click outside; a small menu or picker still closes that way. The Leave War's existing windows are not rebuilt (D634).
 
-**Still with him (explained, not yet answered):** whether Saturday and Sunday start with no flying set (blank: no sun, no moon, no
-"NF", a dash for the required figure) rather than as no-fly days; and whether a no-fly day still shows, and takes, OFT and AMT
-commitments.
+**The last two readings, and the Leave War's windows (D642).** Saturday and Sunday start with NO flying set — blank: no sun, no
+moon, no "NF", a dash for the required figure. A no-fly day still shows, and takes, OFT and AMT commitments; only its flying
+figure reads 0. And the Leave War's panel for a picked block of people's days is brought into line with D641 in this job — it
+stays up and the grid behind it works — because the new Required panel on the same grid behaves that way; the war's other
+windows keep today's behaviour and are filed as `[LW-WINDOWS-NONBLOCKING]`.
+
+**The Event sheet made plainer, and short forms on the grid (D643).** Shown the real Event sheet on his phone he asked which
+button to press: it carries two rows of near-identical chips — a ready-made event to insert, and a "Tag" that classes whatever
+was typed — with nothing saying which does what. He also asked that a long name such as "National Day" show on the grid as a
+short form ("ND") that opens to the full name and its kind at a click. This is the tidy D634 left for him to ask for: a
+mock-up first, on a real picture; the colours and "Edit types" are kept; nothing goes without his pick.
 
 **The fifth set** is at the head of the private page (https://claude.ai/artifact/U3WNp6VARTdVeDP5cUoQvD), the fourth folded
 beneath it: eight pictures — the four rows at rest, typing one cell, a picked block with its panel, "From 12 Jan on" and the
