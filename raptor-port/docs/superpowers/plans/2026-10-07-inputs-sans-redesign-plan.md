@@ -233,6 +233,23 @@ the letter (`who`, `bal`, the two placeholders, one cell per DRAWN day).
   (`[LW-WINDOWS-NONBLOCKING]`).
 - **⚙ Settings** gains one line, "Days…", which closes the sheet and opens Days (§3.4). Nothing else in it changes.
 
+**AS BUILT (8 Oct 26 — step 2, fourth piece: the rows READ ONLY).** `leavewar/ui/FlyRows.tsx`, mounted through a
+`children` slot of `EventRows` so it sits in that block. Built: the four rows and their cells, the corner mark, the red
+Available, the working box (a small menu, portalled out of the table — not a `Sheet`), the names with their phone short
+forms, the repaint (its own two subscriptions — `sync.ts usePlanVersion` is new; each drawn month memoised on a
+signature of what its cells show). **A thing the plan did not name, found by the browser gate:** the Figures drawer
+keeps a copy of every row of the grid and needed an empty box beside each of the four (`FLY_ROW_KEYS` →
+`Matrix.tsx drawerRows`), or every roster row in the drawer sat four rows too high. **Choices the builder made:** an
+Available cell is red where the count is under the Required figure ITSELF (the design note's words) — not where
+something is still needed after the SANS committed to fly; that number is the working's last line. The rows add about
+88px above the roster. **NOT BUILT YET, in this order:** typing one cell (the floating input; the number pad on a touch
+screen); the third hit kind in `select.ts` and the Required panel with `Sheet`'s `modal={false}`; `SelectSheet` on that
+form (D642); the counter form's mode for the two ids and the store's three refusals for them; the Required rows' names
+being CHANGED on screen (`saveFlyNames` exists; no control calls it yet — no mock-up draws where it is typed, and
+the name itself was the builder's addition (D640's reading 2), so the builder places it: an admin's tap on the row's
+name, as a count row's name opens its sheet — told to him, §8); and the "Days…" line, which waits for Days itself (step 3) — a line that
+opened nothing would be a control that does not work.
+
 ### 3.4 Days — Month and Holidays
 
 One window (`src/ui/DaysWindow.tsx`), mounted once in the shell like the input editor, opened by `pops.ts` state from
@@ -524,6 +541,32 @@ the range sheet with no box; a landing in either move mode opening neither a box
 
 **Its place in the order (§4):** with step 2, the Leave War — before the Holidays list (step 3) and the calendars
 (steps 4 and 5) read the name and short form.
+
+**AS BUILT (8 Oct 26 — step 2, pieces one to three; all of this section).** `engine/eventshort.ts` (`normShort`,
+`derivedShort`), `engine/eventdefs.ts shortOf`, the record fields through every writer, `state/store.ts saveEvent` /
+`deleteEvent` (the sheet's Save and Delete, each ONE command — `lw.event.save` / `lw.event.remove`), `ui/EventRows.tsx`,
+the tap box (`Matrix.tsx evPeek`), `ui/EventSheet.tsx`. **Where the build chose, beyond the text above:**
+- **What a save stores.** A preset picked with no name of its own saves the preset's NAME, no tag and no short form —
+  the event follows its preset, exactly as a typed "PH" always has (so changing a preset's short form in "Edit presets"
+  changes every such event on the grid). A name of its own under a preset saves the preset's kind as the event's own
+  tag. A short form is saved on the event only where he typed in "On grid". An event opened and saved untouched keeps
+  whatever it had.
+- **A name typed with nothing picked is "Other…", a note** — so the old way of working (tap a cell, type, Save) still
+  works unchanged. A fresh sheet with nothing picked and nothing typed refuses the save ("Pick a preset, or type a name").
+- **"Other…" pressed on a preset's name carries that preset's kind into the Kind row, lit** — that is how a "PH" is
+  given another kind; choosing "Note" there hands it back to its preset. The refusal the text above asks for ("Note"
+  with a preset's name) therefore cannot be reached from the screen; it is kept at the save all the same.
+- **The lit preset follows the Name both ways:** a name that comes to match a preset lights it, and typing on past it
+  lets go again ("Ph" on the way to "Phase 2" is not left a public holiday).
+- **A holiday changed from the Holidays list with no short form named keeps the one it had while its name stands**
+  (`holidayChange`); under a new name it goes.
+- **`buildDays` needed no change** (it makes empty days; nothing of an event passes through it) — `readWar` did.
+- **The Name still takes the keyboard on a fresh one-day tap** (the 31 Aug 26 rule, left as it is): on a phone the
+  presets sit above the keyboard and a tap on one puts the keyboard away. To show him.
+- **"Edit presets"' own view is headed "Presets"** and its add box reads "New preset…"; the refusal sentences from the
+  engine still say "event type" — left, to be reworded with the Holidays form (step 3) if he wants one word throughout.
+- **Derivation, in detail:** a mark between two words parts them ("Stand-down" → SD), an apostrophe does not ("New
+  Year's Day" → NYD), an accented letter reads as its plain one.
 
 ### 3.13 An input filed for a group — D654, D655, D656 (added 7 Oct 26, night, after both reads of the plan and of §3.12)
 
@@ -1056,6 +1099,17 @@ answer moves; when whoever filed it changes only the OIL answer, it changes for 
 refused for one person names him and says nothing was saved for anyone; with the members' switch off, a member's
 Undo of something he filed for others is refused in words, and is his again when the switch is back on; a save that
 is refused now says "Not saved" and keeps its window open with what was typed (it could say "Input added" and close).
+
+**Added while building step 2 (8 Oct 26) — the Event sheet and the four rows, to tell him the same way:** a preset
+picked with no name of its own keeps following that preset (change PH's short form in "Edit presets" and every plain PH
+day changes with it), while a name or a short form he typed stays as typed; typing a name without picking anything
+still saves a plain note, as before; "Note" can never be given to a name that is one of the presets — pick "Other…" on
+such a name and its own kind is lit, his to change; a short form is made from a name's initials, a hyphen parting two
+words and an apostrophe not; the sheet still opens with the keyboard up on a phone when he taps one empty day (to look
+at); on the four rows an Available figure goes red when it is under the Required figure itself — the SANS committed to
+fly show in the working a tap opens, not in the colour; the four rows push the roster down by four lines; the Required
+rows' own names will be changed by an admin's tap on the row's name, as a count row's name opens its sheet (not built
+yet — no drawing shows the control, and the name was the builder's own addition).
 
 ## 9. For the challenger
 

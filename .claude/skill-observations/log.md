@@ -2928,3 +2928,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** Before any scripted edit, and again before any commit, compare the diff stat with the size of the intended change; treat a stat far larger than the change as a line-ending rewrite and restore the endings before committing. State the trap by its mechanism (any tool that re-writes the file in text mode) rather than by the tool that first hit it.
 
 **Principle:** A warning written about one tool does not protect against the same mechanism in another; record traps by mechanism, and make the diff's size a standing pre-commit check.
+
+### Observation 461: A green browser run proved nothing because the test server was serving an older build
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Step 2 of the Inputs / SANS redesign; four new rows added to a grid, then the browser suite run to check them
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** Evidence that a check ran against the code it is claimed for
+
+**Issue:** A local preview server started earlier for a visual look was still running when the browser suite was launched. The suite's config reuses a server already on its port and so skipped its own build: every test passed against a build that did not contain the new rows. The false pass was caught only because a brand-new test for the rows could not find them. The project's own gate notes already described the trap; they were not read before the run. The honest re-run found fourteen failures, one of them a real defect (a side panel that mirrors the grid's rows had no counterpart for the new ones).
+
+**Suggested improvement:** Add to the skill's checklist: before citing a browser or end-to-end result, confirm the run exercised the current code — either the run's own log shows the build step, or a test that can only pass on the new code is among those that passed. Treat "reused existing server" as unverified until shown otherwise. And: read the project's known-traps note for a gate before the first run of that gate in a session, not after a surprise.
+
+**Principle:** A passing check is evidence only for the artefact it actually ran against; establish which artefact that was before quoting the result.
