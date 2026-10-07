@@ -248,6 +248,12 @@ glance; the Highlight list shows the same. The grouping by WSOs and pilots stays
 The admin's button there is "Days" (it was drawn as "Day settings"): it opens Days on that month — the required numbers are
 typed on the Leave War, not there. Redrawn the same night, with D646's shorter fold.
 
+**The opened day lists everyone and scrolls (D648).** The drawing ended "+ 4 more pilots · 2 more offer OFT or AMT only" — the
+drawing running out of room, not a design. Everyone who has committed is listed and the list scrolls; no "+ more". The window
+does not open full screen (D641 keeps the calendar behind it usable): on a phone it opens about two-thirds high and is pulled up
+by its top bar to nearly the full screen, and back; the working and "+ Commitment" stay pinned while the names scroll; those who
+offered only OFT or AMT have a group of their own at the foot. The Inputs calendar's opened day scrolls the same way.
+
 **TAKEN — "Yes to all" (D645).** The Event sheet is built as redrawn: a Presets row with the picked one lit, an optional Name, "On
 grid" for the short form, the Kind row only under "Other…"; the grid shows the short form and a tap opens the full name and kind;
 every preset carries its own short form — PH, OFF, NL, SC to start, each his to change in "Edit presets". A short form is up to

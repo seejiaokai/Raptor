@@ -267,6 +267,11 @@ the gear of either calendar or from the Leave War's ⚙; admin only. Two parts s
   small shared builder used here and in the Highlight list — then his letters, his hours (D572) and who placed it and
   when (§3.8); "+ Commitment" (a SANS member his own, an admin anyone's — the existing rules); for an admin, a button
   "Days", which opens Days on that month. A man with no CAT on the roster shows his puck alone.
+  **Everyone is listed and the list scrolls (D648) — never a "+ more" line:** three groups, WSOs to fly, pilots to fly,
+  and "OFT or AMT only". The working and "+ Commitment" are pinned at the window's top and the groups scroll under
+  them. On a phone the window opens about two-thirds high and its top bar drags it up to nearly the full screen and
+  back down (the `FloatWin` shell's drag, §3.7, with two rest heights on a phone); it is never opened full screen, so
+  the calendar behind it stays in reach (D641). The Inputs calendar's opened day lists and scrolls the same way.
 - **The gear** (the app's own cog — D635): Days · Day colours (three numbers) · Late cut-off (§3.9). Admin only;
   everyone sees one line saying what the colours mean.
 - **"How this works"** — a fold at the top: five short lines (D646; the text is in the design note). The cut-off line states
@@ -542,6 +547,8 @@ A fair size for this: six to eight working sessions before the check, the check 
 - **The Required rows renamed:** by an admin; a member and a raw write refused; a reload; Undo and Redo.
 - **A partly covered year:** a period for January to March, a holiday added in August — no year button; the gap's
   period is made, then the kept holiday saves.
+- **The opened day's list:** forty commitments on one day — every one reachable by scrolling, no "+ more"; the working and
+  "+ Commitment" still on screen at the list's foot; the OFT-or-AMT-only group; on a phone, pulled up and back down.
 - **Screens** (unit): the four rows' cells for each kind of day, for an admin and a member; the typed cell's keys; the
   pick's rectangle and its skipped days; the stepping button's cycle on a weekday and on a weekend; the bars' lanes
   (a span over a week's end, more inputs than lanes, a one-day input); a window that stays open on an outside click,
