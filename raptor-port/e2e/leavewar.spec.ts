@@ -3280,6 +3280,117 @@ test('the four rows at the foot of the Manning block keep every day column in li
   await expect(page.locator('[data-testid="avail-w-2026-01-06"]')).toBeVisible()
 })
 
+// TYPING ONE REQUIRED FIGURE (plan §3.3 "Typing one cell"; D636 — "no sheet to open"). jsdom proves the keys and what
+// is saved (src/leavewar/ui/flytype.test.tsx); what only a real browser can say is WHERE things land: the one box
+// exactly over its cell, the strip under the four rows and on the screen, no day column moved by any of it — and on a
+// phone that NO input takes the focus (so the phone's keyboard never comes up and the page never zooms), with the
+// app's own pad docked at the foot of the screen, clear of the cell being typed, every key big enough for a thumb.
+test('a Required figure is typed straight into its cell: one box on a desktop, the app’s own number pad on a phone', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  const cell = (r: string, d: string) => page.locator(`[data-testid="${r}-${d}"]`)
+  const rect = (l: Locator) => l.evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom } })
+  const days = ['2026-01-07', '2026-01-08', '2026-01-09']
+  const widths = () => Promise.all(days.map(async d => (await rect(page.locator(`[data-testid="head-${d}"]`))).w))
+  const before = await widths()
+  const over = async (boxSel: string, r: string, d: string) => {
+    const b = await rect(page.locator(boxSel)), c = await rect(cell(r, d))
+    for (const k of ['x', 'y', 'w', 'h'] as const) expect(Math.abs(b[k] - c[k]), `the box is off its cell (${k})`).toBeLessThan(1)
+  }
+  const vp = page.viewportSize()!
+
+  if (isPhone()) {
+    await cell('req-p', '2026-01-08').tap()
+    const pad = page.locator('[data-testid="fly-pad"]')
+    await expect(pad).toBeVisible()
+    /* no input anywhere near it: the phone's keyboard is never called up, and the page is not zoomed */
+    await expect(page.locator('[data-testid="fly-edit-input"]')).toHaveCount(0)
+    expect(await page.evaluate(() => document.activeElement?.tagName)).not.toBe('INPUT')
+    expect(await page.evaluate(() => window.visualViewport?.scale ?? 1)).toBe(1)
+    await over('[data-testid="fly-edit-touch"]', 'req-p', '2026-01-08')
+    /* the pad: docked at the foot, as wide as the screen, clear of the cell it types into */
+    const p = await rect(pad), c = await rect(cell('req-p', '2026-01-08'))
+    expect(Math.abs(p.b - vp.height)).toBeLessThan(1.5)
+    expect(p.x).toBeGreaterThanOrEqual(-0.5); expect(p.r).toBeLessThanOrEqual(vp.width + 0.5)
+    expect(c.b, 'the cell being typed is under the pad').toBeLessThanOrEqual(p.y)
+    /* and ALL FOUR rows are above it: a Required figure is typed against the Available one two rows down */
+    expect((await rect(page.locator('[data-testid="fly-row-avail-w"]'))).b, 'the Available rows are under the pad').toBeLessThanOrEqual(p.y)
+    await expect(page.locator('[data-testid="fly-edit-strip"]')).toContainText('Req P')
+    await expect(page.locator('[data-testid="fly-edit-strip"]')).toContainText('Thu 8 Jan')
+    for (const k of ['1', '5', '9', '0', 'back', 'prev', 'next', 'done']) {
+      const kb = await rect(page.locator(`[data-testid="fly-pad-${k}"]`))
+      expect(kb.h, `key ${k} is too short for a thumb`).toBeGreaterThanOrEqual(44)
+      expect(kb.w, `key ${k} is too narrow for a thumb`).toBeGreaterThanOrEqual(44)
+      expect(kb.r, `key ${k} runs off the screen`).toBeLessThanOrEqual(vp.width + 0.5)
+    }
+    await page.locator('[data-testid="fly-pad-1"]').tap()
+    await page.locator('[data-testid="fly-pad-8"]').tap()
+    await expect(page.locator('[data-testid="fly-edit-touch"]')).toHaveText('18')
+    /* › saves and steps to the next flying day, the box following its cell */
+    await page.locator('[data-testid="fly-pad-next"]').tap()
+    await expect(cell('req-p', '2026-01-08')).toHaveText('18')
+    await expect(page.locator('[data-testid="fly-edit-strip"]')).toContainText('Fri 9 Jan')
+    await over('[data-testid="fly-edit-touch"]', 'req-p', '2026-01-09')
+    await page.locator('[data-testid="fly-pad-1"]').tap()
+    await page.locator('[data-testid="fly-pad-6"]').tap()
+    await page.locator('[data-testid="fly-pad-done"]').tap()
+    await expect(pad).toHaveCount(0)
+    await expect(cell('req-p', '2026-01-09')).toHaveText('16')
+    /* a tap on a roster cell behind the pad still works while it is up: the page is not blocked */
+    await cell('req-w', '2026-01-08').tap()
+    await expect(pad).toBeVisible()
+    await page.locator('[data-testid="event-0-2026-01-07"]').tap()
+    await expect(pad).toHaveCount(0)
+    await expect(page.locator('[data-testid="event-sheet"]')).toBeVisible()
+  } else {
+    await cell('req-p', '2026-01-08').click()
+    const input = page.locator('[data-testid="fly-edit-input"]')
+    await expect(input).toBeFocused()
+    await over('[data-testid="fly-edit-input"]', 'req-p', '2026-01-08')
+    /* the strip: under the four rows (never over the figures he types against), wholly on the screen */
+    const s = await rect(page.locator('[data-testid="fly-edit-strip"]')), foot = await rect(page.locator('[data-testid="fly-row-avail-w"]'))
+    expect(s.y).toBeGreaterThanOrEqual(foot.b - 0.5)
+    expect(s.x).toBeGreaterThanOrEqual(0); expect(s.r).toBeLessThanOrEqual(vp.width + 0.5)
+    await expect(page.locator('[data-testid="fly-edit-strip"]')).toContainText('Required P')
+    /* and off the month buttons in the row below (D665: nothing covers them) — each still answers at its own middle */
+    expect(await page.evaluate(() => [...document.querySelectorAll('[data-testid="month-strip"] button')]
+      .filter(b => { const r = b.getBoundingClientRect(); const at = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !(at && (at === b || b.contains(at))) })
+      .map(b => b.textContent))).toEqual([])
+    await page.keyboard.type('18')
+    await page.keyboard.press('Enter')
+    await expect(cell('req-p', '2026-01-08')).toHaveText('18')
+    await expect(page.locator('[data-testid="fly-edit-strip"]')).toContainText('Fri 9 Jan')
+    await expect(input).toBeFocused()
+    await over('[data-testid="fly-edit-input"]', 'req-p', '2026-01-09')
+    await page.keyboard.press('Tab')
+    await expect(page.locator('[data-testid="fly-edit-strip"]')).toContainText('Required W')
+    await expect(input).toBeFocused()
+    await over('[data-testid="fly-edit-input"]', 'req-w', '2026-01-09')
+    /* "From 9 Jan on" by a click on the strip: the typing is not taken away, and the run shows from that day */
+    await page.locator('[data-testid="fly-edit-run"]').click()
+    await expect(input).toBeFocused()
+    await page.keyboard.type('14')
+    await page.keyboard.press('Enter')
+    await expect(cell('req-w', '2026-01-09')).toHaveText('14')
+    await expect(cell('req-w', '2026-01-09')).toHaveClass(/runstart/)
+    await expect(cell('req-w', '2026-01-13')).toHaveText('14')
+    await page.keyboard.type('99')
+    await page.keyboard.press('Escape')
+    await expect(input).toHaveCount(0)
+    await expect(cell('req-w', '2026-01-12')).toHaveText('14')
+    /* the box followed its cell when the grid scrolled sideways under it */
+    await cell('req-p', '2026-01-08').click()
+    await page.locator('.mx-wrap').evaluate(el => { el.scrollLeft += 60 })
+    await page.waitForTimeout(120)
+    await over('[data-testid="fly-edit-input"]', 'req-p', '2026-01-08')
+    await page.keyboard.press('Escape')
+  }
+  /* nothing of it moved a day column, and the page gained no sideways scroll */
+  const after = await widths()
+  for (let i = 0; i < days.length; i++) expect(Math.abs(after[i]! - before[i]!), `${days[i]} changed width`).toBeLessThan(0.75)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
+})
+
 // WHERE THEY SIT, AND THE TWO THINGS HE CIRCLED (D665, 8 Oct 26). Shown the rows drawn BY HAND into the Manning block
 // he chose that placement and marked two faults on the pictures: on the desktop a patch "blocking the months" (the
 // Figures panel, left where it had been measured, lying over the month buttons), and on the phone "the green outer

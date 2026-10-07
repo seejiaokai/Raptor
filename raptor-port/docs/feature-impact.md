@@ -1266,3 +1266,13 @@ that was refused. Such a door saves through `ui/inputedit.tsx saveBatch` (or rea
 answer, as `commitGroup` and the List's Add form do), and — because a refused command puts the list back as new
 objects — finds any record it still holds again by its id. `ui/savesaysok.test.tsx` drives each door refused; add a
 new door's case there.
+**The Leave War's Required figures, typed in place (8 Oct 26 — the redesign's plan §3.3; D636, D637).** An admin's click
+on a Required cell opens ONE box over it (`leavewar/ui/FlyEdit.tsx`); a save is one typed command of the flying plan
+(`state/flyplan.ts`, reached only through `leavewar/sync.ts`) — a settings row, the scheduler's own change signal, the
+one Undo. What it reaches: the four rows themselves (`FlyRows` hears the plan's signal), the working a tap on an
+Available cell opens, and — once steps 3 to 5 are built — Days, the SANS calendar's "still needed" and the Inputs
+calendar's NF tag, all through the ONE resolver. **Three drift seams:** (1) "the next flying day" Enter walks to asks
+the resolver (`isFlyingDay` → `sync.ts flyAnswer`); a second idea of a flying day here would step onto a day the row
+shows as NF; (2) the box is laid over its cell by measurement — a change to the rows' geometry (a new row above them, a
+zoom step, the frozen columns) is checked in the browser gate, never in jsdom; (3) on a touch screen NO input may be
+focused — a new control in the pad or the strip that is an `<input>` brings the phone's keyboard and iOS's zoom back.

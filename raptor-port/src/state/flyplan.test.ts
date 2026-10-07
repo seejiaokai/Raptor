@@ -184,6 +184,28 @@ describe('Undo, Redo, and the words they say', () => {
     expect(globalUndo().ok).toBe(true); expect(req('2026-01-20')).toEqual({ p: null, w: null })
     expect(globalRedo().ok).toBe(true); expect(req('2026-01-20')).toEqual({ p: 18, w: 16 })
   })
+  /* typed "From <date> on" over a cell that already held a figure typed for that date (the plan §3.3, step 2): the
+     date's own figure would hide the run on the very day it starts, so the same command takes it away */
+  it('a running figure typed over a date\'s own figure: the date\'s figure goes in the SAME command, one Undo step', () => {
+    setFlyDays([{ iso: MON, p: 16, w: 14, cls: 'night' }])
+    const n = commandStream().length
+    expect(setFlyRun(MON, { p: 18 }, { clearDay: true }).ok).toBe(true)
+    expect(commandStream().length).toBe(n + 1)
+    expect(commandStream().at(-1)!.type).toBe('fly.run.set')
+    expect(store.get('flyday:' + MON, null)).toEqual({ cls: 'night', w: 14 })   // the other seat's figure and the class stay
+    expect(req(MON)).toEqual({ p: 18, w: 14 }); expect(req('2026-01-13')).toEqual({ p: 18, w: null })
+    expect(undoState().undoLabel).toContain('a required figure running from 12 Jan')
+    expect(globalUndo().ok).toBe(true)
+    expect(req(MON)).toEqual({ p: 16, w: 14 }); expect(getFlyPlan().runs[MON]).toBeUndefined()
+    expect(globalRedo().ok).toBe(true); expect(req(MON)).toEqual({ p: 18, w: 14 })
+  })
+  it('without that option the date\'s own figure is left, as before; a seat the run ENDS for keeps its typed figure too', () => {
+    setFlyDays([{ iso: MON, p: 16, w: 14 }])
+    expect(setFlyRun(MON, { p: 18 }).ok).toBe(true)
+    expect(req(MON)).toEqual({ p: 16, w: 14 })
+    expect(setFlyRun(MON, { p: null, w: 9 }, { clearDay: true }).ok).toBe(true)
+    expect(store.get('flyday:' + MON, null)).toEqual({ p: 16 })
+  })
   it('the three colours and the rows\' names', () => {
     expect(getTones()).toEqual({ yellowFrom: 1, amberFrom: 3, redFrom: 5 })
     expect(saveTones({ yellowFrom: 2, amberFrom: 4, redFrom: 6 }).ok).toBe(true)

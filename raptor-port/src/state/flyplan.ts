@@ -142,12 +142,26 @@ export function removeFlyRule(id: string): FlySave {
 /* ---- a figure that RUNS from a date ---------------------------------------------------------------------------------
    Per seat: a number runs from that date; null ENDS the run for that seat there; a seat not named is left as the row
    has it. dropFlyRun takes a seat's word out of the row again (the earlier run then carries on), and the row goes when
-   neither seat is spoken for. */
-export function setFlyRun(iso: string, patch: FlyRun): FlySave {
+   neither seat is spoken for.
+
+   `clearDay` — what the Leave War's "From <date> on" asks for (the plan §3.3): a figure typed for the date ITSELF wins
+   over a run on that date, so a run typed over such a cell would not show on the very day it starts. With the option,
+   the date's own figure for each seat the run now SETS is taken away in the same command — one Undo step; a seat the
+   run ends (null) and the date's class are left as they are. */
+export function setFlyRun(iso: string, patch: FlyRun, opts?: { clearDay?: boolean }): FlySave {
   if (!validIso(iso)) return no('Choose a valid calendar date.')
   if (!validFlyRun(patch)) return no('A required figure is a whole number of zero or more.')
-  const row: FlyRun = { ...(getFlyPlan().runs[iso] || {}), ...patch }
-  return save('fly.run.set', { from: iso }, [['flyrun:' + iso, row]])
+  const plan = getFlyPlan()
+  const row: FlyRun = { ...(plan.runs[iso] || {}), ...patch }
+  const writes: Array<[string, unknown]> = [['flyrun:' + iso, row]]
+  const day = plan.days[iso]
+  if (opts && opts.clearDay && day) {
+    const next: FlyDay = { ...day }
+    for (const s of ['p', 'w'] as const) if (typeof patch[s] === 'number') delete next[s]
+    const trimmed = trimDay(iso, next, plan)
+    if (JSON.stringify(trimmed) !== JSON.stringify(day)) writes.push(['flyday:' + iso, trimmed])
+  }
+  return save('fly.run.set', { from: iso }, writes)
 }
 export function dropFlyRun(iso: string, seats: Array<'p' | 'w'>): FlySave {
   const cur = getFlyPlan().runs[iso]

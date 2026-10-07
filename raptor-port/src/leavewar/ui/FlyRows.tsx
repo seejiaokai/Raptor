@@ -8,8 +8,9 @@
 // judged by them (they are not Manning RULES: no amber, no red of their own, nothing towards "under-manned").
 //
 // The SANS calendar's "still needed" is the required figure, less those the Leave War shows available, less the SANS
-// committed to fly (D617) — and this is where the first two are SEEN and (for an admin, in the next piece) typed: the
-// day's required pilots and WSOs, straight above the count of who the war has for each seat.
+// committed to fly (D617) — and this is where the first two are SEEN and, for an admin, TYPED (FlyEdit.tsx — a click
+// on a Required cell puts the one box over it): the day's required pilots and WSOs, straight above the count of who
+// the war has for each seat.
 //
 //   · A REQUIRED cell shows the one resolver's figure for the day (sync.ts flyMonth → state/flyplan-model.ts planFor):
 //     the number, "NF" on a no-fly day, or a dash where no figure applies. The day a RUNNING figure starts wears a
@@ -39,6 +40,7 @@ import {
 } from '../sync'
 import { dayLabel } from './dates'
 import { popAt } from './popat'
+import { FlyEditor, type FlyEditAt, type ReqRow } from './FlyEdit'
 
 type Seat = 'p' | 'w'
 type RowId = 'req-p' | 'req-w' | 'avail-p' | 'avail-w'
@@ -101,7 +103,7 @@ const FlyCells = memo(function FlyCells({ row, cells, onTap }: {
           className={`fr ${avail ? 'avail tap' : 'req'}${c.cls}`}
           data-testid={`${row}-${c.iso}`}
           title={c.title}
-          onClick={avail ? e => onTap(row, c.iso, e.currentTarget) : undefined}
+          onClick={avail || c.cls.includes(' editable') ? e => onTap(row, c.iso, e.currentTarget) : undefined}
         >
           {c.text}
         </td>
@@ -155,7 +157,35 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
   /* THE WORKING — the box a tap on an Available cell opens. Screen-fixed and portalled out of the table (a box cannot
      live inside a <tr>), a small menu like the event box: a press outside, Escape, a scroll or a resize closes it. */
   const [work, setWork] = useState<{ row: RowId; iso: string; tid: string; x: number; y: number } | null>(null)
+  /* THE ONE BOX — an admin's click on a Required cell types its figure in place (FlyEdit.tsx). At most one at a time;
+     which form it takes — an input, or the app's own number pad — follows the POINTER that made the click, kept from
+     the press before it (a click itself does not say). With no press seen (a keyboard, a test) the screen's own kind
+     decides. */
+  const [edit, setEdit] = useState<FlyEditAt | null>(null)
+  const lastPtr = useRef('')
+  const adminRef = useRef(admin)
+  adminRef.current = admin
+  useEffect(() => {
+    if (!admin) { setEdit(null); return }
+    const onDown = (e: PointerEvent) => { lastPtr.current = e.pointerType || 'mouse' }
+    document.addEventListener('pointerdown', onDown, true)
+    return () => document.removeEventListener('pointerdown', onDown, true)
+  }, [admin])
+  const dates = useMemo(() => days.map(d => d.date), [days])
+  const same = (a: FlyEditAt | null, b: FlyEditAt) => !!a && a.row === b.row && a.iso === b.iso
+  const moveEdit = useRef((from: FlyEditAt, row: ReqRow, iso: string) => setEdit(cur => (same(cur, from) ? { row, iso, touch: from.touch } : cur)))
+  const closeEdit = useRef((from: FlyEditAt) => setEdit(cur => (same(cur, from) ? null : cur)))
+
   const tapRef = useRef((row: RowId, iso: string, el: HTMLElement) => {
+    if (row === 'req-p' || row === 'req-w') {
+      /* a no-fly day needs nobody: its cell is not typed (its title says where the day is changed) */
+      if (!adminRef.current || flyAnswer(iso).reqFrom[row === 'req-p' ? 'p' : 'w'] === 'nf') return
+      const touch = lastPtr.current
+        ? lastPtr.current !== 'mouse'
+        : typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
+      setEdit({ row, iso, touch })
+      return
+    }
     const tid = el.getAttribute('data-testid') ?? ''
     setWork(cur => (cur && cur.tid === tid ? null : { row, iso, tid, ...popAt(el.getBoundingClientRect(), 220, 132) }))
   })
@@ -218,6 +248,10 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
         </tr>
       ))}
       {work && createPortal(<Working row={work.row} iso={work.iso} x={work.x} y={work.y} />, document.getElementById('page-leavewar') ?? document.body)}
+      {edit && createPortal(
+        <FlyEditor key={`${edit.row}-${edit.iso}`} at={edit} dates={dates} onMove={moveEdit.current} onClose={closeEdit.current} />,
+        document.getElementById('page-leavewar') ?? document.body,
+      )}
     </>
   )
 })

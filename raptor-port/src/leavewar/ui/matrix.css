@@ -1501,6 +1501,172 @@
 }
 .flywork-ln.need.short b { color: #FF7A84; }
 
+/* TYPING ONE REQUIRED FIGURE (FlyEdit.tsx; plan §3.3 "Typing one cell"; D636) — the ONE box an admin's click lays over
+   a Required cell, as drawn in the fifth mock-ups: the cell's own figure, bright, inside an accent outline. Screen-
+   fixed and portalled out of the table like the working above (a box cannot live in a <tr>, and laid out inside the
+   grid it would widen the day's column for the whole year). On a desktop it is an input; on a touch screen a plain
+   element fed by the number pad below — NEVER an input there: one this small makes iOS zoom the page on focus.
+   Above the frozen date header (55) and the working (61), under the sheets (79/80). */
+.mx .counts td.fr.req.editable { cursor: cell; }
+.flyedit {
+  position: fixed;
+  z-index: 62;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  background: #0A0E13;
+  border: 2px solid var(--accent);
+  border-radius: 2px;
+  outline: none;
+  caret-color: var(--accent);
+}
+.flyedit.touch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* the pad's own caret: there is no input to draw one */
+.flyedit.touch::after {
+  content: '';
+  width: 1px;
+  height: 58%;
+  margin-left: 1px;
+  background: var(--accent);
+  animation: flyedit-caret 1s steps(1) infinite;
+}
+/* @keyframes flyedit-caret is at the FILE'S TOP LEVEL, past the closing brace at the foot (as lwx-follow is) */
+@media (prefers-reduced-motion: reduce) { .flyedit.touch::after { animation: none; } }
+
+/* THE STRIP — names the row and the day, carries "This day | From <date> on", and (on a desktop) the three keys. It
+   sits just under the four rows, never over them: he is reading the figures he types against. */
+.flyedit-strip.desk {
+  position: fixed;
+  z-index: 62;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 12px);
+  box-sizing: border-box;
+  padding: 6px 10px;
+  background: var(--panel, #12161b);
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .5);
+  font-size: 12px;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.flyedit-strip b { color: var(--accent); font-weight: 800; letter-spacing: .02em; }
+.flyedit-day, .flypad-day { color: var(--ink); font-weight: 700; }
+.flyedit-mode { display: inline-flex; gap: 4px; }
+.flyedit-mode button {
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 9px;
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  cursor: pointer;
+}
+.flyedit-mode button.on {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.flyedit-mode button:disabled { opacity: .4; cursor: default; }
+.flyedit-keys { color: var(--ink-3); }
+.flyedit-keys i { font-style: normal; margin: 0 2px; }
+.flyedit-keys kbd {
+  font: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  color: var(--ink);
+  background: #0A0E13;
+  border: 1px solid var(--edge);
+  border-radius: 5px;
+}
+.flyedit-err { color: #FF7A84; font-weight: 700; white-space: normal; }
+
+/* THE APP'S OWN NUMBER PAD (a touch screen) — docked to the foot of the screen, the strip above its keys, as drawn
+   ("REQ P  Thu 8 Jan  ‹ ›  Done"). The page behind stays live: a tap on another Required cell moves the pad there.
+   Every key is at least 44px tall. */
+.flypad {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 72;
+  max-width: 520px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0 0 env(safe-area-inset-bottom, 0);
+  background: #23272E;
+  border-top: 1px solid var(--edge);
+  box-shadow: 0 -10px 28px rgba(0, 0, 0, .45);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.flypad-hd {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 6px;
+  padding: 8px 10px;
+  background: #171B21;
+  font-size: 14px;
+}
+.flypad-nav { display: inline-flex; gap: 6px; }
+.flypad-nav button {
+  font: inherit;
+  font-size: 18px;
+  font-weight: 800;
+  min-width: 44px;
+  height: 44px;
+  color: var(--ink);
+  background: #0A0E13;
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+}
+.flypad-nav button.done {
+  font-size: 15px;
+  padding: 0 14px;
+  color: #06222B;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.flypad-apply { grid-column: 1 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.flypad-apply .flyedit-mode button { font-size: 13px; padding: 7px 12px; min-height: 36px; }
+.flypad-keys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 8px;
+}
+.flypad-keys button {
+  font: inherit;
+  font-size: 22px;
+  font-weight: 700;
+  height: 46px;
+  color: #fff;
+  background: #555B66;
+  border: 0;
+  border-radius: 7px;
+}
+.flypad-keys button:active { background: #6B7280; }
+.flypad-keys button.back { background: transparent; font-size: 22px; }
+
 /* The input fills its cell and paints nothing of its own — a box around every
    day of a year would be 730 boxes, and the cell it sits in is already a box.
    It comes forward on focus, which is the one moment it needs an edge. */
@@ -2713,6 +2879,11 @@
 /* TOP LEVEL too, same reason — the entry slide the two docked panels share
    (`.mv-banner, .balbar` above): a short rise so a panel that appeared under
    the reader's hand is seen to arrive rather than simply being there. */
+/* the number pad's caret (FlyEdit.tsx) */
+@keyframes flyedit-caret {
+  50% { opacity: 0; }
+}
+
 @keyframes lw-dockin {
   from { transform: translateY(12px); opacity: 0; }
   to { transform: none; opacity: 1; }

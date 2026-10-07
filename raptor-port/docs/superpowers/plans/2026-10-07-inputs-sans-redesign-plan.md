@@ -261,6 +261,22 @@ NOT being changed on screen at all — **D668 (8 Oct 26): the Required rows keep
 (the "Names" bullet above and §3.2's `settings.flynames` are read with this); and the "Days…" line, which waits for Days itself (step 3) — a line that
 opened nothing would be a control that does not work.
 
+**AS BUILT (8 Oct 26, the overnight run — step 2, fifth piece: TYPING ONE CELL).** `leavewar/ui/FlyEdit.tsx`, opened by
+`FlyRows` (one at a time; remounted per cell). The box is screen-fixed and portalled out of the table; it follows its
+cell on a scroll and on every paint. **Choices the builder made, each told to him (§8):** (1) "the next flying day" is a
+day or night flying day on no holiday or Off day — so Enter passes over weekends as well as no-fly days; (2) a press
+outside SAVES (the plan named only Esc and Enter); (3) nothing changed, nothing written — the rule that stops a walk
+along the row turning every running figure into a typed one; (4) "From <date> on" for ONE cell writes `fly.run.set` for
+that seat with the date's own figure cleared in the same command (`setFlyRun(iso, patch, { clearDay: true })` — a new
+option of the step-1 command, one Undo step), an empty box with it picked takes that date's run away for the seat
+(`dropFlyRun`), and the choice is disabled where a run never shows; (5) the touch form is chosen by the pointer of the
+press, not by the screen's width; (6) the desktop strip also carries the three keys, as the fifth mock-up drew them,
+and sits to the right of the month buttons (D665's "nothing covers the month buttons" — the browser gate checks it);
+(7) Tab and Shift+Tab both go to the other seat (there are two). **Found by the browser gate, jsdom green:** on a phone
+the pad takes half the screen and the cell, "centred", sat 6px under it — the page now scrolls by the exact distance,
+and by enough to show all four rows. **NOT BUILT YET:** the third hit kind and the Required panel; `SelectSheet`
+non-modal; the counter form's mode and the three refusals; `flynames` out; the "Days…" line.
+
 ### 3.4 Days — Month and Holidays
 
 One window (`src/ui/DaysWindow.tsx`), mounted once in the shell like the input editor, opened by `pops.ts` state from
@@ -1121,6 +1137,15 @@ at); on the four rows an Available figure goes red when it is under the Required
 fly show in the working a tap opens, not in the colour; the four rows push the roster down by four lines; the Required
 rows' own names will be changed by an admin's tap on the row's name, as a count row's name opens its sheet (not built
 yet — no drawing shows the control, and the name was the builder's own addition).
+
+**Added in the overnight run of 8 Oct 26 — typing one Required figure, to tell him the same way:** Enter (and the pad's
+‹ ›) stop only on FLYING days — a weekend, a holiday, an Off day and a no-fly day are passed over, and typed by pressing
+their own cell; a press anywhere else SAVES what was typed (as the app's text boxes do) — only Esc throws it away; Enter
+on a cell he did not change writes nothing; "From <date> on" goes back to "This day" at every cell, is not offered on a
+weekend, a holiday or an Off day, and takes away the figure typed for that date itself so the run shows on the day it
+starts; the strip on a desktop sits under the four rows, to the right of the month buttons; with the number pad up the
+page moves so all four rows show above it; a figure is at most three digits; at the end of the months that are drawn,
+Enter saves and closes (on a phone that is a few months ahead of where he is looking).
 
 ## 9. For the challenger
 

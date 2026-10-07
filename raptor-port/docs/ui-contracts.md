@@ -6354,9 +6354,35 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
 - **They make the Manning block four rows taller, so the roster starts that much lower** (about 88px on a desktop) while
   the block is open. The browser tests that drag along the first roster rows scroll by exactly that first
   (`e2e/leavewar.spec.ts pastFlyRows`).
-- **Not built yet (the next pieces of step 2):** typing a cell (a floating input on a desktop, the app's own number pad
-  on a touch screen), picking several with a drag and the Required panel, the counter form's mode for the two
-  Available rows, the "Days…" line in ⚙ Settings.
+- **Typing one Required figure (admin) — built 8 Oct 26, overnight; `leavewar/ui/FlyEdit.tsx` (D636: "no sheet to
+  open").** A click on a Required cell lays ONE box over it — screen-fixed and portalled out of the table, never an
+  input per cell (730 inputs a year; and a box laid out INSIDE the grid would widen its day column). It opens holding
+  the figure the cell shows, selected.
+  - **Desktop:** Enter saves and goes to the next FLYING day (a weekend, a holiday, an Off day and a no-fly day are
+    passed over — he clicks one of those to type it); Tab saves and goes to the other seat on the same day; Shift with
+    either goes back; Esc leaves the cell as it was; an empty box and Enter clears the date's typed figure; a press
+    anywhere else saves and closes. At the end of what is drawn, Enter saves and closes.
+  - **Touch — the app's own number pad, NEVER an input:** an 11px input in a grid cell makes iOS zoom the page on
+    focus, and a bar above the phone's own keyboard is unreliable. The box over the cell is a plain element showing
+    what the pad typed; the pad (`.flypad`) is docked at the foot — row and day, ‹ › (previous / next flying day), Done,
+    then the keys. The first key replaces the figure that was there. The page behind stays live: a tap on another
+    Required cell saves and moves the pad there. With the pad up the page scrolls ALL FOUR rows above it (a Required
+    figure is typed against the Available one two rows down). Which form a press gets follows the POINTER that made it
+    (`FlyRows` keeps the last press's kind): a touch-screen laptop gets the pad for a finger, the input for its mouse.
+  - **The strip** names the row and the day and carries "This day | From <date> on". "From … on" writes a RUNNING figure
+    from that date and takes the date's own typed figure away in the same command (one Undo step — else the run would
+    not show on the day it starts). The choice returns to "This day" at every cell, and is not offered on a weekend, a
+    holiday or an Off day (a run never shows there). On a desktop it sits UNDER the four rows and to the RIGHT of the
+    month buttons — never over the figures he reads against, never over a month button (D665).
+  - **Nothing changed, nothing written:** Enter over a cell he did not touch only moves — were it to save, every running
+    figure he walked over would become a figure typed for its date and stop following its run.
+  - A no-fly cell opens nothing (its title says where the day is changed); a member's click opens nothing; a save the
+    app refuses says why in the strip and keeps the box with what was typed; a figure changed under the open box (an
+    Undo) shows in it while nothing has been typed. Three digits at most, digits only.
+  - Gates: `e2e/leavewar.spec.ts` "a Required figure is typed straight into its cell: one box on a desktop, the app's
+    own number pad on a phone". Pins: `ui/flytype.test.tsx`.
+- **Not built yet (the next pieces of step 2):** picking several with a drag and the Required panel, the counter
+  form's mode for the two Available rows, the "Days…" line in ⚙ Settings.
 - Gates: `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning block keep every day column in line, and paint
   what they mean" and "in the Manning block the four rows cover no month button, and the open-bidding outline stays
   round the dates" (phone and desktop). Pins: `ui/flyrows.test.tsx`.
