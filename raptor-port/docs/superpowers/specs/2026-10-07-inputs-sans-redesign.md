@@ -253,7 +253,9 @@ he asked for the puck the schedule uses, chip attached, all one size. Read from 
 `<span class="puck sm"><span class="nm">…</span><span class="role q-…">IP</span></span>` — every puck 74 by 15 px, radius 3, the
 callsign on the seat's colour (pilot rgb 110 106 46, WSO rgb 31 110 82), the chip joined at the right in the CAT's colour:
 instructor (IP, IW, IR) purple rgb 159 74 223, A red, B amber, C cyan, D blue, OCU violet. The build calls that one builder.
-**Its size (D650):** drawn large at first, he asked for it smaller and in proportion — the callsign at about the size of the
+**The SANS purple edge (D651):** the schedule's builder gives a SANS man's puck a bright purple line down its right edge
+(`puck()` adds the class `san`; `04-pucks-sections.css:9-13`). Every puck on the SANS day is a SANS man's, so every one wears it — the
+drawing left it out and he caught it; the build gets it from the one builder. **Its size (D650):** drawn large at first, he asked for it smaller and in proportion — the callsign at about the size of the
 row's own letters, the puck never the biggest thing on the row; checked on his iPhone in the job's check.
 
 **Asked, not yet ruled - the phone Inputs month, more compact, and filling the screen.** He asked how the month looks more compact, then

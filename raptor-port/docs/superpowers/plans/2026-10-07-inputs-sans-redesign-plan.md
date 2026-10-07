@@ -265,7 +265,8 @@ the gear of either calendar or from the Leave War's ⚙; admin only. Two parts s
   commitments, grouped WSOs and pilots, **each person drawn as the schedule's own puck (D647, D649)** — `ui/html.ts
   puck()` itself, never a look-alike: the callsign on his seat's colour, his CAT chip joined to its end in the
   schedule's CAT colours, every puck the one fixed size, **in proportion with the row's own letters (D650 — not
-  scaled up; its size is a look-card item on his iPhone)** — here and in the Highlight list; then his letters, his hours (D572) and who placed it and
+  scaled up; its size is a look-card item on his iPhone)**, **wearing the SANS purple edge on its right as on the
+  schedule (D651 — it comes from the builder; a test asserts the class is there)** — here and in the Highlight list; then his letters, his hours (D572) and who placed it and
   when (§3.8); "+ Commitment" (a SANS member his own, an admin anyone's — the existing rules); for an admin, a button
   "Days", which opens Days on that month. A man with no CAT on the roster shows his puck alone.
   **Everyone is listed and the list scrolls (D648) — never a "+ more" line:** three groups, WSOs to fly, pilots to fly,
