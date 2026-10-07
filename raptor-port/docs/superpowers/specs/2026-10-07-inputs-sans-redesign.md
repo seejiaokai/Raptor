@@ -325,8 +325,7 @@ whole. An admin may file a group for any kind but medical. **With him:** the pic
 window (`shoot8.cjs`): the app's own pucks in their groups with an "all" per group — CAT and SANS at a glance — or plain
 callsign buttons in A-to-Z order. **THE PICKER IS SETTLED (D656) — a hybrid:** by default ONE person from an A-to-Z list, as today; a switch, "Several people", shows
 the schedule's own pucks in three groups — Pilots, WSOs and SANS (his next words: "sans as another category"), each A to Z — compact, four across on a phone, picked ones lit, an "all" for each of the
-two. Drawn into the real window (`shoot9.cjs`). **NOT yet in the plan: it changes who may file for whom, so it is written as an add-on and
-read by both readers before it is built.**
+two. Drawn into the real window (`shoot9.cjs`). **IN THE PLAN since 7 Oct 26, evening - its section 3.13 - and read by Astra and Sol 6.1, each alone: both CHANGES REQUIRED, nine distinct findings, all written in (the plan's section 10, third table). Two points are with him (the plan's section 8): whether a member may file SANS availability for another SANS man (until he answers: no; an admin may file it for several), and whether "Several people" gets a fourth heading for ground crew (until he answers: his three headings).**
 
 **ACCEPTED (D657, 7 Oct 26, night): "Ok all looks good. We can start building in the next chat."** The approved mock-ups are those at the head of the private page that night, each with its "Since drawn" line - the set D624 puts beside the built screens.
 
