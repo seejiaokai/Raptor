@@ -48,6 +48,8 @@ said as such, never dressed up as his. One line per item, in plain words; the de
 list (13–23 Sep 26), its finished entries and the "In plain terms" block are in `OUTSTANDING-ARCHIVE.md`, moved
 whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaining).
 
+**A test to steady, with the Tracker batch (found 7 Oct 26):** [TRK-DLG-FOCUS-UNSTEADY] — one Tracker unit test about the keyboard inside a question box failed once in a full run and passes alone.
+
 **After the Inputs / SANS calendar job (its place is his to set):** [LW-WINDOWS-NONBLOCKING] — the Leave War's other windows still block the grid behind them and close on a click outside; D641 and D642 changed that for the calendar job's windows and for one war panel only. Its own job, its own check.
 
 **From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
@@ -1613,6 +1615,10 @@ need the owner. See [CAPS-OPS-LIMITS]; it does not accept the latest UI preview,
 waive owed reads or authorize a live merge.
 
 **Current direction — D585, 5 Oct 26:** Inputs/SANS calendar is on hold; preserve the completed preview and context. No more design/build/Claude vetting until owner resumes. Other outstanding tasks may be discussed; no new batch starts automatically. Existing D495 later order remains Tracker progress graph → caps/ops limits → whole-app check, with database connection at the end; this pause does not approve another build.
+
+### [TRK-DLG-FOCUS-UNSTEADY] A Tracker unit test of the question box's keyboard fails now and then in a full run (found 7 Oct 26)
+
+**Found, not fixed** — by the Inputs / SANS calendar chat (`claude/inputs-sans-calendar`), which touched nothing of the Tracker. In a full unit run under the PC lock (7 Oct 26, 506 files, 8,186 tests) ONE test failed: `raptor-port/src/tracker/leftovers.test.tsx`, "[TRK-DLG-LEFTOVERS] B1 — while a question is up, the rest of the Tracker page is inert, and Tab / Shift+Tab stay inside the box" — its last check, "Shift+Tab from the first goes to the last", found the focus still on the text box. Run alone straight afterwards it passed three times out of three (53 of 53), and the full run of that morning passed it. So it depends on timing or on what ran before it in the same worker, not on the app's rule. **To do, with the next Tracker batch (D490):** read how the test moves focus (a key event sent before the box has taken focus is the likely cause), make it wait on what it needs rather than on timing (D87's rule for browser tests, applied here), and run the file fifty times in a loaded run to prove it. Until then: a red full run whose only failure is this test is re-run once for that file, and said so in the report.
 
 ### [LW-WINDOWS-NONBLOCKING] The Leave War's other windows: stay up, and let the grid behind them work (D641, D642 — 7 Oct 26)
 Every Leave War window blocks the grid behind it and closes on a click outside (`src/leavewar/ui/Sheet.tsx`). D641 asked that the

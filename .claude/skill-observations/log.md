@@ -2817,3 +2817,34 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the mock-up guide: when a mock-up contains a component the product already draws, do not style it — measure it. Read the live element's computed styles (including pseudo-elements and overflow) and its markup from the running build, paste them as the mock's rule, scale with one factor, and put a close-up of the real one beside the mock's before showing anyone. Budget: one measuring pass before the first drawing, not after the third correction.
 
 **Principle:** A copy made by eye converges on the original one correction at a time, each paid for by the reviewer. A copy made by measurement starts where that process ends.
+
+### Observation 454: A plan's "builder's reading" that departs from his words is a question, not a reading
+
+**Status:** OPEN
+**Date:** 7 Oct 26
+**Session context:** Writing a late feature (an input filed for several people) into an already-reviewed build plan, then two independent readers.
+**Skill:** writing-plans (and the project's record-decisions rule)
+**Type:** open-source
+**Phase/Area:** Writing the section a ruling implies — the list of "readings to tell him"
+
+**Issue:** The section listed two defaults as readings he would simply be told: one narrowed a reading he had already been told and that sat in the ruling's full row; the other added a fourth group where he had named three. Both readers flagged them as changes to recorded scope. A third default (a recorded-work refusal) had been copied from an architecture paragraph that a later ruling had reversed; the code already obeyed the later ruling.
+
+**Suggested improvement:** In the planning guide's step that lists the builder's readings: before a default goes in that list, hold it against the ruling's own words AND every reading recorded in its full row. If it narrows, widens or contradicts either, it is not a reading — it goes in the questions put to him, with a recommended answer and a stated "until he answers" default that follows his words. And a rule quoted from a prose summary is checked against the code or the newest ruling before the plan leans on it.
+
+**Principle:** A reading fills a gap the owner left; it never moves a line he drew. The test is mechanical: can the default be reached from his words without deleting any of them?
+
+### Observation 455: A new module wired into a shared registry is tested from the registry's other entry points, not only its own file
+
+**Status:** OPEN
+**Date:** 7 Oct 26
+**Session context:** Adding a settings-backed module whose row kinds and command types join a shared settings store's lists.
+**Skill:** test-driven-development (and verification-before-completion)
+**Type:** open-source
+**Phase/Area:** Going green — which tests to run after wiring
+
+**Issue:** The new module's own test file passed, 19 of 19. Six other suites then failed to load at all: the shared store built a list at import time from a constant exported by the new module, and from those suites' import order the new module had not finished loading (a circular import). The new file's own test imported in the one order that worked.
+
+**Suggested improvement:** In the "green" step: when the change adds an import to a module many suites load (a registry, a store, a permissions table), run at least the suites that reach that module from a different entry before calling it green; and keep anything a shared module needs at import time in a leaf module with no imports of its own.
+
+**Principle:** A file's own test proves the file under one import order. A registry is loaded from many; its wiring is proved only from more than one of them.
+
