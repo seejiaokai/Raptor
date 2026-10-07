@@ -298,6 +298,23 @@ half-way down) — it now scrolls the page until the rows sit above it; and a pr
 panel is the panel's own, so a new drag has to start on a part of the grid the panel is not covering (he can drag the
 panel aside — D641). **NOT BUILT YET:** the counter form's mode and the three refusals; `flynames` out; the "Days…" line.
 
+**AS BUILT (8 Oct 26, the overnight run — NO COUNTERS TO START WITH, AND THE EYE IS A DELETE CROSS: D669,
+`[LW-DEMO-COUNTERS-TRIM]`; not a piece of this plan as written — ruled while step 2 was being built).**
+`engine/seed.ts seedRequirements` is empty; `CountRows` draws its block for the four rows alone, lost the eye, the
+Archive bar and its `hidden` prop, and carries the cross (`deleteManningRule`); `resetManningRules`,
+`resetManningThreshold`, `toggleManningRow` and the read of `manningthresh` are gone from the store, "Reset counters"
+from ⚙ Settings, the default note and "Reset to default" from a counter's sheet. D669's seven readings all held; Undo
+does bring a deleted counter back, so the cross asks nothing. **The tests:** the eleven old counters are test data now
+(`leavewar/testing/eleven.ts`), made through `saveManningRule` by a test that is about counters (`testkit.ts` /
+`e2e/app.ts elevenCounters`) — 77 unit tests in 17 files and 13 browser tests were re-pointed that way, each named in
+the commit message; the tests of the eye, the Archive, Reset counters and the default threshold were replaced by the
+cross's or removed with what they tested. **Three kinds of test that would have gone on passing while checking
+nothing were found by reading, not by a red run, and fixed:** a `for` loop over the built-in rules that generated
+eleven tests (it generated none), "every row still appears after a reorder" (two empty lists are equal), and "deleting
+every counter survives a reload" (nothing to delete) — each now asserts the list is eleven long first. **Found by the
+browser gate:** the cross, at the eye's size, was 11px wide on a phone — widened to 26px; and a browser test's
+counters have to be saved under an ADMIN sign-in (the command layer asks the signed-in role, not only the war's).
+
 ### 3.4 Days — Month and Holidays
 
 One window (`src/ui/DaysWindow.tsx`), mounted once in the shell like the input editor, opened by `pops.ts` state from
@@ -1176,6 +1193,11 @@ there is nothing to take away; picking a new block while the panel is up keeps t
 closes the panel for that cell's own window, while the month buttons and the toolbar leave it up; the panel moves the
 page so the four rows show above it; the people's-days panel now behaves the same way (D642) — and because it sits at
 the foot of the screen, a new drag has to start on a part of the grid it is not covering, or he drags it aside first.
+**And D669 as built (its seven readings are in its own row; these four are the build's additions):** a counter's own
+"Default: amber … · red …" line and "Reset to default" on its window are gone too, for the same reason "Reset counters"
+is; an Available row he has changed is put back by Undo or by changing it again; the delete cross is wider than the
+eye was, in the dashed grey every Delete wears; the counter's own window still has "Delete counter", which still asks
+"Really delete?" — so there are two ways to delete, one that asks and one that does not (say if he wants them alike).
 
 ## 9. For the challenger
 

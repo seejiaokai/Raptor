@@ -16,6 +16,7 @@ import { setSession } from '../../state/auth'
 import { saveFlyNames, setFlyDays, setFlyRun } from '../../state/flyplan'
 import { getState, initStore as lwInitStore, setCell, setPeople, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { elevenCounters } from '../testkit'
 import { projectPeople } from '../state/raptorRoster'
 import { dayFacts, flyAnswer } from '../sync'
 import { Matrix } from './Matrix'
@@ -28,6 +29,7 @@ beforeEach(() => {
   raptorInitStore()
   setSession({ user: 'admin-test', role: 'admin' })
   lwInitStore(memoryBackend())
+  elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
   setRole('admin')
   setPeople(projectPeople())
 })

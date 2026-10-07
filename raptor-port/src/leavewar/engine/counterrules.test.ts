@@ -9,7 +9,8 @@ import { countsFor, effectiveCat, matchesFilter, ruleHave, type Grid } from './a
 import type { States } from './bids'
 import type { Person } from './people'
 import type { RuleCount } from './requirements'
-import { seedPeople, seedRequirements, seedSources } from './seed'
+import { seedPeople, seedSources } from './seed'
+import { ELEVEN_COUNTERS } from '../testing/eleven'
 
 /* A credit the SCHEDULE earned — the only kind that stands a man down from
    flying and puts him on the duty line (owner, 20 Sep 26). A hand-typed FO/HO
@@ -188,6 +189,9 @@ describe('custom counter shapes', () => {
   })
 })
 
+// (The eleven rules below were the app's built-in counters until D669, 8 Oct 26; the app now starts with none and
+// they live on as test data — testing/eleven.ts. This pin is about the rule MATHS, which is unchanged: a rule a
+// squadron makes with "+ Counter" is evaluated by exactly this code.)
 // THE MIGRATION PIN. Every seeded rule, evaluated as data, must read exactly
 // what the old hard-coded kind read — across the whole seeded demo war, every
 // date, leave, halves, duty and posting-out windows included. `countsFor`
@@ -199,7 +203,7 @@ describe('the seeded rules read what the hard-coded kinds read', () => {
   const grid = war.grid as Grid
   const states = war.states as States
   const views = war.views
-  const rules = seedRequirements().default.rules
+  const rules = ELEVEN_COUNTERS
   const dates: string[] = war.period.days.map(d => d.date)
 
   const OLD: Record<string, (c: ReturnType<typeof countsFor>) => number> = {
@@ -217,10 +221,11 @@ describe('the seeded rules read what the hard-coded kinds read', () => {
   }
 
   it('covers every seeded rule', () => {
+    expect(rules.length).toBe(11)                                     // never an empty loop below
     expect(rules.map(r => r.id).sort()).toEqual(Object.keys(OLD).sort())
   })
 
-  for (const rule of seedRequirements().default.rules) {
+  for (const rule of ELEVEN_COUNTERS) {
     it(`${rule.id} agrees on every day of the seeded war`, () => {
       for (const date of dates) {
         const counts = countsFor(people, grid, states, date, views)

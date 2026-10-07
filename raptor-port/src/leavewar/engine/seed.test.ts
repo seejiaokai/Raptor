@@ -6,6 +6,7 @@ import { balanceOf, COUNTERS } from './counters'
 import { overlapping } from './wars'
 import { SEED_ABSENCES, seedLedger, seedOpenings, seedPeople, seedPeriod, seedRecs, seedRequirements, seedSources, seedWars } from './seed'
 import { parseCell } from './codes'
+import { ELEVEN_COUNTERS } from '../testing/eleven'
 
 describe('seed', () => {
   it('has a roster with all four categories represented', () => {
@@ -46,9 +47,13 @@ describe('seed', () => {
     expect(period.days.some(d => d.blocked)).toBe(true)
   })
 
-  it('evaluates every seeded day without throwing', () => {
+  it('comes with NO counters (owner, D669, 8 Oct 26): a squadron makes the ones it wants', () => {
+    expect(seedRequirements()).toEqual({ default: { rules: [] }, overrides: {} })
+  })
+
+  it('evaluates every seeded day without throwing — against the eleven counters the app used to start with', () => {
     const people = seedPeople()
-    const reqs = seedRequirements()
+    const reqs = { default: { rules: JSON.parse(JSON.stringify(ELEVEN_COUNTERS)) }, overrides: {} }
     const src = seedSources()[0]!
     for (const day of seedPeriod().days) {
       expect(['ok', 'amber', 'red']).toContain(evaluateDay(people, src.grid, src.states, reqs, day.date, src.views).verdict)

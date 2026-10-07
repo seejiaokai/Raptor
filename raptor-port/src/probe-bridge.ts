@@ -36,11 +36,11 @@ import { commandStream } from './command'
 import { resyncSchedBaseline, schedBaselineClean } from './state/sched-commit'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
-import { setLgEdit, setEffectiveRole, setMe } from './state/auth'
+import { setLgEdit, setEffectiveRole, setMe, SESSION } from './state/auth'
 import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
-import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut } from './leavewar/state/store'
+import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState } from './leavewar/state/store'
 import { pinViewer } from './leavewar/sync'
 import { setFlyDays, setFlyRun } from './state/flyplan'
 
@@ -182,6 +182,19 @@ export function installProbeBridge() {
     w.INPUTS = INPUTS
     w.lwSetCell = (p: string, d: string, code: string) => lwSetCell(p, d, code)
     w.lwSetPostOut = (p: string, from: string | null) => lwSetPostOut(p, from)
+    /* a Leave War counter, saved through the SAME writer the "+ Counter" form uses — as an admin, the role the test had
+       put back after. The app starts with NO counters (D669, 8 Oct 26); a browser test that is about counters makes
+       the ones it needs with this (e2e/app.ts elevenCounters), rather than standing on a hidden default. */
+    w.lwSaveManningRule = (rule: any) => {
+      /* BOTH roles, as signing in as an admin would set them: the war's own, and the signed-in one the command layer
+         asks (a war told "admin" under a member's sign-in has its write refused and rolled back — [ACCOUNTS]) */
+      const lwWas = lwGetState().role
+      const wasRole = SESSION && SESSION.role
+      if (wasRole && wasRole !== 'admin') setEffectiveRole('admin')
+      if (lwWas !== 'admin') lwSetRole('admin')
+      try { return lwSaveManningRule(rule) && lwGetState().requirements.default.rules.some(r => r.id === rule.id) }
+      finally { if (lwWas !== 'admin') lwSetRole(lwWas); if (wasRole && wasRole !== 'admin') setEffectiveRole(wasRole) }
+    }
   }
   /* the board — loaded lazily to keep module order simple */
   /* the id-getter every probe leans on, and the wider engine surface */

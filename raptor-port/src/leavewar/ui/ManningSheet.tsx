@@ -13,8 +13,8 @@
 // WHO and the shape are edited, or the counter deleted.
 
 import { useEffect, useState } from 'react'
-import { describeRule, seedRequirements, type Threshold } from '../engine'
-import { getState, resetManningThreshold, setManningThreshold } from '../state/store'
+import { describeRule, type Threshold } from '../engine'
+import { getState, setManningThreshold } from '../state/store'
 import { Sheet } from './Sheet'
 import { useVersion } from './useStore'
 import './bidpicker.css'
@@ -50,14 +50,11 @@ export function ManningSheet({ ruleId, onClose, onEdit }: {
   const desc = rule ? rule.desc ?? describeRule(rule, qualLabel) : ''
   const threshold: Threshold | null = rule?.threshold ?? null
 
-  // The built-in numbers, for the "Default" note and to know whether Reset
-  // has anything to do. Read off a fresh seed so a customised store cannot
-  // shadow them; a counter the admin built has no seed twin and no Reset.
-  const seedT = seedRequirements().default.rules.find(r => r.id === ruleId)?.threshold ?? null
-  const customised = !!threshold && !!seedT && (threshold.amber !== seedT.amber || threshold.red !== seedT.red)
+  // (A "Default: amber … · red …" note and a "Reset to default" button stood here for the built-in rows until D669,
+  // 8 Oct 26. Every counter is the squadron's own now: it has no built-in twin, and its own numbers are its default.)
 
   // Draft fields, re-synced whenever the stored numbers move (a save from
-  // this sheet, a Reset, or another admin elsewhere) — never mid-keystroke.
+  // this sheet, an Undo, or another admin elsewhere) — never mid-keystroke.
   const [amber, setAmber] = useState(threshold ? String(threshold.amber) : '')
   const [red, setRed] = useState(threshold ? String(threshold.red) : '')
   useEffect(() => {
@@ -87,9 +84,6 @@ export function ManningSheet({ ruleId, onClose, onEdit }: {
       {threshold && (
         <div className="mwhen" data-testid="manning-when">
           {whenColours(threshold)}
-          {seedT && customised && (
-            <span className="mdefault"> Default: amber {show(seedT.amber)} · red {show(seedT.red)}.</span>
-          )}
         </div>
       )}
 
@@ -135,15 +129,6 @@ export function ManningSheet({ ruleId, onClose, onEdit }: {
             >
               Save
             </button>
-            {customised && (
-              <button
-                className="creset"
-                data-testid="thresh-reset"
-                onClick={() => resetManningThreshold(ruleId)}
-              >
-                Reset to default
-              </button>
-            )}
             {/* The road to the counter itself — who it counts, its name, its
                 shape, or deleting it outright (owner, 19 Aug 26). */}
             <button

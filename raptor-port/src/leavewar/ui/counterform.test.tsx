@@ -9,11 +9,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getState, initStore, setRole, saveManningRule, deleteManningRule } from '../state/store'
 import { MAX_MANNING_RULES } from '../engine'
 import { memoryBackend } from '../state/storage'
+import { elevenCounters } from '../testkit'
 import { CounterForm } from './CounterForm'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
 })
 
 describe('building a new counter', () => {
@@ -162,33 +164,9 @@ describe('the ways in', () => {
   })
 })
 
-describe('Reset counters', () => {
-  it('arms first, then puts the built-in set back — customs discarded', () => {
-    setRole('admin')
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
-    // Break the world first: delete a built-in, add a custom.
-    fireEvent.click(screen.getByTestId('manning-info-wmp'))
-    fireEvent.click(screen.getByTestId('counter-edit-open'))
-    const del = screen.getByTestId('cform-delete')
-    fireEvent.click(del)
-    fireEvent.click(del)
-    fireEvent.click(screen.getByTestId('counter-add'))   // closes ⚙ and opens the builder
-    fireEvent.change(screen.getByTestId('cform-name'), { target: { value: 'TEMP' } })
-    fireEvent.click(screen.getByTestId('cform-save'))
-
-    // Reset counters lives in ⚙ Settings — re-open it (the builder closed it).
-    fireEvent.click(screen.getByTestId('settings-open'))
-    const reset = screen.getByTestId('counter-reset-all')
-    fireEvent.click(reset)
-    expect(reset.textContent).toBe('Really reset?')
-    expect(getState().requirements.default.rules.some(r => r.id === 'wmp')).toBe(false)
-    fireEvent.click(reset)
-    const ids = getState().requirements.default.rules.map(r => r.id)
-    expect(ids).toContain('wmp')
-    expect(ids).not.toContain('temp')
-  })
-})
+/* ("Reset counters" was tested here — arm, then the built-in set back — until D669, 8 Oct 26: the Manning block comes
+   with no count rows of its own, so there is nothing to put back and the button left ⚙ Settings. That it is gone, and
+   that a deleted counter comes back with Undo instead: nocounters.test.tsx.) */
 
 // [STORE-READER-SWEEP] ([DB-READINESS] group A, phase 7): the store keeps at most MAX_MANNING_RULES counters — the
 // most its reader accepts back — and the form says so, with the way out, instead of an Add button that does nothing.

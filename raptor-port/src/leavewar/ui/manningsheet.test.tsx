@@ -7,12 +7,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { DayVerdict, RuleResult } from '../engine'
 import { getState, initStore, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { elevenCounters } from '../testkit'
 import { CountRows } from './CountRows'
 import { ManningSheet } from './ManningSheet'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
   initStore(memoryBackend())
+  elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
 })
 
 const zeroCounts = { byCategory: { IP: 0, OPSP: 0, IWSO: 0, OPSW: 0 }, sxo: 0, sets: 0, duty: 0, flp: 0, wmp: 0, scd: 0, scn: 0 }
@@ -25,7 +27,7 @@ describe('the count row names open the explainer', () => {
   it('every row name is a button that reports its rule id', () => {
     const onInfo = vi.fn()
     const verdicts = { d1: day('d1', [rule('sets', 'Crew sets'), rule('scd', 'SC D')]) }
-    render(<table><CountRows verdicts={verdicts} dates={['d1']} order={[]} hidden={[]}
+    render(<table><CountRows verdicts={verdicts} dates={['d1']} order={[]}
       arranging={false} admin={false} onInfo={onInfo} /></table>)
     fireEvent.click(screen.getByTestId('manning-info-sets'))
     expect(onInfo).toHaveBeenCalledWith('sets')
@@ -71,10 +73,9 @@ describe('the explainer sheet', () => {
     fireEvent.click(screen.getByTestId('thresh-save'))
     expect(getState().requirements.default.rules.find(r => r.id === 'sets')!.threshold).toEqual({ amber: 6, red: 5 })
     expect(screen.getByTestId('manning-when').textContent).toContain('drops below 6')
-    // The default is named once the row is customised, and Reset restores it.
-    expect(screen.getByTestId('manning-when').textContent).toContain('Default: amber 5')
-    fireEvent.click(screen.getByTestId('thresh-reset'))
-    expect(getState().requirements.default.rules.find(r => r.id === 'sets')!.threshold).toEqual({ amber: 5, red: 4.5 })
+    // No "Default: amber … · red …" note and no "Reset to default" — they belonged to the built-in rows, and since
+    // D669 (8 Oct 26) every counter is the squadron's own: its own numbers are its default.
+    expect(screen.getByTestId('manning-when').textContent).not.toContain('Default')
     expect(screen.queryByTestId('thresh-reset')).toBeNull()
   })
 

@@ -76,6 +76,18 @@ const SHOTS = {
     await drag(page, size, cell(page, 'req-p', '2026-01-09'), cell(page, 'req-p', '2026-01-12'))
     await page.locator('[data-testid="req-panel"]').waitFor()
   },
+  /* D669: `rest` above IS the app as it opens — no counters, the four rows alone. This one has a squadron's own
+     counters made (three, through the "+ Counter" writer) and Rearrange on: the grip, and the delete cross where the
+     eye was */
+  async cross(page, size) {
+    await page.evaluate(() => {
+      const mk = (id, label, filter, threshold) => window.lwSaveManningRule({ id, label, count: { kind: 'people', filter }, threshold })
+      mk('pilots', 'PILOTS', { seats: ['pilot'] }, { amber: 26, red: 20 })
+      mk('wsos', 'WSOS', { seats: ['wso'] }, { amber: 16, red: 12 })
+      mk('sxo', 'SXO', { quals: ['sxo'] }, { amber: 1, red: 1 })
+    })
+    await press(page, size, page.locator('[data-testid="roster-arrange"]'))
+  },
   /* the people's-days panel, up with no veil over the grid */
   async people(page, size) {
     /* the row brought to the upper half first: the panel is docked at the foot, and a press ON it is the panel's own */

@@ -178,13 +178,11 @@ interface State {
    *  also be deleted"): `requirements.default.rules` is the squadron's own
    *  set, persisted WHOLE under `manningdefs` and edited through
    *  `saveManningRule` / `deleteManningRule` / the threshold setters, all
-   *  ADMIN-gated. The old numbers-only overlay (`manningthresh`) is still
-   *  READ at boot so a squadron's tuned amber/red lines survive the upgrade,
-   *  but never written again. This deliberately departs from the
+   *  ADMIN-gated. It starts EMPTY — a squadron makes the counters it wants
+   *  (owner, D669, 8 Oct 26). This deliberately departs from the
    *  stores-list rule about code-owned definitions: the owner asked for the
    *  definitions themselves, and forward-compat lives in `readManningRules`
-   *  dropping any stored rule a later build cannot understand (the seed
-   *  fills the gap). */
+   *  dropping any stored rule a later build cannot understand. */
   requirements: Requirements
   /** The qualification chips the counter form offers — Raptor's live Quals
    *  catalogue, installed by the projection (`setQualCatalog`) exactly like
@@ -498,44 +496,17 @@ function readFigureOrder(x: unknown): string[] | null {
 /** A stored id list (the roster order), same shape as the figure order. */
 const readIdList = readFigureOrder
 
-/** The stored amber/red overlay of the PRE-definitions build, read at boot
- *  only so an upgraded browser keeps its tuned lines (they migrate into the
- *  rules themselves and persist under `manningdefs` from then on). One bad
- *  entry is dropped rather than rejecting the whole blob (the label-map
- *  rule); an id no rule carries any more is harmless — `requirementsWith`
- *  only reads ids the seed still has. */
-function readThreshMap(x: unknown): Record<string, Threshold> | null {
-  if (!isPlainObject(x)) return null
-  const out: Record<string, Threshold> = {}
-  for (const [id, t] of Object.entries(x)) {
-    if (!isPlainObject(t)) continue
-    const { amber, red } = t as { amber?: unknown; red?: unknown }
-    if (typeof amber !== 'number' || !Number.isFinite(amber) || amber < 0) continue
-    if (typeof red !== 'number' || !Number.isFinite(red) || red < 0) continue
-    out[id] = { amber, red }
-  }
-  return out
-}
-
-/** The seeded requirements with a legacy amber/red overlay laid on top — the
- *  migration path for a browser that customised its lines before the rules
- *  became data. The old overlay knew `sets` as its own key; it is an ordinary
- *  rule now, so the same map read covers it. */
-function requirementsWith(overlay: Record<string, Threshold>): Requirements {
-  const req = seedRequirements()
-  req.default.rules = req.default.rules.map(r =>
-    overlay[r.id] ? { ...r, threshold: { ...overlay[r.id] } } : r,
-  )
-  return req
-}
+/* (The amber / red OVERLAY of the pre-definitions build — `manningthresh`, read at boot until 8 Oct 26 so a browser
+   from before 19 Aug 26 kept its tuned lines over the built-in rows — is no longer read: there are no built-in rows
+   for it to lie over (D669). A store that holds only that record starts with no counters, as every store does.) */
 
 // ---- The stored manning rules (owner, 19 Aug 26) ---------------------------
 //
 // Read with the label-map tolerance: one rule a later build cannot understand
 // is dropped, the rest survive. A stored empty LIST is honoured (the admin
 // deleted every counter — a decision, not damage); a non-empty list where
-// nothing survived is corruption and falls back to the seed rather than to a
-// blank manning block.
+// nothing survived is corruption and reads as no saved list at all — which,
+// since D669, is a block with no counters (it was the built-in set).
 
 const isShortString = (x: unknown): x is string => typeof x === 'string' && x.length > 0 && x.length <= 80
 
@@ -628,10 +599,9 @@ function readManningRules(x: unknown): ManningRule[] | null {
   if (out.filter(r => !isAvailId(r.id)).length > MAX_MANNING_RULES) return null
   /* a list whose only loss was a bad Available row is still the squadron's list (an empty one included) */
   if (dropped && out.length + dropped === x.length) return out
-  // A stored EMPTY list is a decision — the admin deleted every counter, and
-  // a reload must not resurrect the seed. A non-empty list where every entry
-  // was dropped is corruption, and falls back to the seed like any other
-  // unreadable blob.
+  // A stored EMPTY list is a decision — the admin deleted every counter. A
+  // non-empty list where every entry was dropped is corruption, and reads as
+  // no saved list, like any other unreadable blob.
   return out.length || x.length === 0 ? out : null
 }
 
@@ -1087,12 +1057,11 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
   const groupPriority = readStored('grouppriority', readIdList) ?? []
   const groupPriorityCustom = readStored('grouppriocustom', x => (typeof x === 'boolean' ? x : null)) ?? false
   const groupColors = readStored('groupcolors', readColorMap) ?? {}
-  // The squadron's own rule set, or — for a browser from before rules were
-  // data — the seed with its old numbers-only overlay migrated in.
+  // The squadron's own rule set — or none: the Manning block comes with no count rows of its own (D669).
   const storedRules = readStored('manningdefs', readManningRules)
   const requirements: Requirements = storedRules
     ? { default: { rules: storedRules }, overrides: {} }
-    : requirementsWith(readStored('manningthresh', readThreshMap) ?? {})
+    : seedRequirements()
   const eventRows = readStored('eventrows', x =>
     typeof x === 'number' && Number.isInteger(x) && x >= DEFAULT_EVENT_ROWS && x <= MAX_EVENT_ROWS ? x : null,
   ) ?? DEFAULT_EVENT_ROWS
@@ -4104,8 +4073,8 @@ export function manningRowIds(): string[] {
   return state.requirements.default.rules.filter(r => !isAvailId(r.id)).map(r => r.id)
 }
 
-/** THE TWO AVAILABLE ROWS as they stand — the squadron's own where it has changed one, else the built-in (an older
- *  store, a damaged row, or after "Reset counters"). What the war's rows and the calendars both count by. */
+/** THE TWO AVAILABLE ROWS as they stand — the squadron's own where it has changed one, else the built-in (a store
+ *  that never touched them, or a damaged row). What the war's rows and the calendars both count by. */
 export function availRules(): { p: ManningRule; w: ManningRule } {
   const rules = state.requirements.default.rules
   return { p: availRuleOf(rules, AVAIL_P), w: availRuleOf(rules, AVAIL_W) }
@@ -4164,14 +4133,10 @@ export function moveManningRowTo(id: string, beforeId: string | null): void {
   persistNotify()
 }
 
-/** Hide or show one manning row. ADMIN-gated. */
-export function toggleManningRow(id: string): void {
-  if (state.role !== 'admin') return
-  const hidden = new Set(state.manningHidden)
-  hidden.has(id) ? hidden.delete(id) : hidden.add(id)
-  state = withCurrent({ ...state, manningHidden: [...hidden] })
-  persistNotify()
-}
+/* (The eye that hid a manning row — `toggleManningRow` — is GONE with the Archive it fed: owner, D669, 8 Oct 26,
+   "instead of hide (eye) we should replace it with a delete cross". Nothing can be hidden now. `manningHidden` is still
+   read and saved so a store written before that day loads as it was — nothing stored is converted (D56) — but no
+   screen consults it: a row an older store had hidden is simply drawn.) */
 
 /** Put every manning row back — natural order, nothing hidden. ADMIN-gated. */
 export function resetManning(): void {
@@ -4202,15 +4167,8 @@ export function setManningThreshold(id: string, amber: number, red: number): boo
   return true
 }
 
-/** Put one row's amber/red lines back to the built-in default — only a row
- *  the seed still knows has one; a counter the admin built is its own
- *  default. ADMIN-gated. */
-export function resetManningThreshold(id: string): void {
-  if (state.role !== 'admin') return
-  const seedT = seedRequirements().default.rules.find(r => r.id === id)?.threshold
-  if (!seedT) return
-  setManningThreshold(id, seedT.amber, seedT.red)
-}
+/* (`resetManningThreshold` — a row's amber / red back to its built-in default — is gone with the built-in rows
+   themselves: D669, 8 Oct 26. Every counter is the squadron's own now, and its own numbers are its default.) */
 
 /**
  * Create or rework one counter (owner, 19 Aug 26). The rule is pushed through
@@ -4233,7 +4191,8 @@ export function saveManningRule(rule: ManningRule): boolean {
   /* a NEW counter past the limit the reload keeps is refused — a longer list would read back as damage and be replaced
      by the built-in set (readManningRules); reworking one already in the list is always allowed
      ([STORE-READER-SWEEP], [DB-READINESS] phase 7). The two Available rows are beside that limit, not inside it: the
-     reader allows for them, so the squadron's sixty counters can never crowd them out. */
+     reader allows for them, so the squadron's sixty counters can never crowd them out. (A longer list "read back as
+     damage" is a list not read at all — no counters; it was the built-in set until D669.) */
   if (!isAvailId(clean.id) && !rules.some(r => r.id === clean!.id) && rules.filter(r => !isAvailId(r.id)).length >= MAX_MANNING_RULES) return false
   const saved = clean
   const next = rules.some(r => r.id === saved.id)
@@ -4245,15 +4204,16 @@ export function saveManningRule(rule: ManningRule): boolean {
 }
 
 /** Why a counter cannot be deleted, as a sentence for the sheet — null when it can. The two Available rows cannot: the
- *  SANS calendar reads them (engine/availrows.ts); "Reset counters" is the way back to the built-in ones. */
+ *  SANS calendar reads them (engine/availrows.ts). */
 export function manningDeleteProblem(id: string): string | null {
   return isAvailId(id) ? AVAIL_DELETE_MSG : null
 }
 
 /** Delete one counter outright (owner, 19 Aug 26 — "these counters can also
  *  be deleted"). Its order and hidden entries go with it, so nothing keeps a
- *  dead id alive; a SEEDED id deleted here stays deleted (the stored list is
- *  the whole truth), and `resetManningRules` is the road back. ADMIN-gated. */
+ *  dead id alive; the stored list is the whole truth, so it stays deleted over
+ *  a reload. The road back is the app's Undo — which is why the cross in
+ *  Rearrange (ui/CountRows.tsx — D669) asks nothing first. ADMIN-gated. */
 export function deleteManningRule(id: string): boolean {
   if (state.role !== 'admin') return false
   if (manningDeleteProblem(id)) return false
@@ -4269,15 +4229,9 @@ export function deleteManningRule(id: string): boolean {
   return true
 }
 
-/** Put the BUILT-IN counter set back — the recovery path when a seeded row
- *  was deleted or reworked beyond recognition. Counters the admin created
- *  are discarded with everything else, which is what "reset" says; the
- *  toolbar arms the button so one stray tap cannot do it. ADMIN-gated. */
-export function resetManningRules(): void {
-  if (state.role !== 'admin') return
-  state = withCurrent({ ...state, requirements: seedRequirements(), manningOrder: [], manningHidden: [] })
-  persistNotify()
-}
+/* (`resetManningRules` — "Reset counters", the built-in set put back — is gone: the Manning block comes with no
+   count rows of its own (owner, D669, 8 Oct 26), so there is nothing to go back to. A counter deleted by mistake
+   comes back with the app's Undo.) */
 
 /** Install Raptor's live qualification catalogue for the counter form's
  *  chips — the projection's rider, change-guarded by the caller like the

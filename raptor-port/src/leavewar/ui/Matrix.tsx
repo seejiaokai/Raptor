@@ -51,7 +51,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { awardsOnDay, balanceAfterFill, clearRecordById, figureCtxOf, oilOnDay, recordsAt, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveManningRowTo, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
+import { awardsOnDay, balanceAfterFill, clearRecordById, figureCtxOf, oilOnDay, recordsAt, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveManningRowTo, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -710,7 +710,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
+  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -878,10 +878,8 @@ export function Matrix() {
   // turns the drag handles on, so an admin reading the grid does not nudge a
   // row by accident. Started from the ⠿ in the grid corner (owner, 3 Sep 26).
   const [arranging, setArranging] = useState(false)
-  // "Reset counters" arms rather than firing (it discards custom counters);
-  // disarmed whenever the Settings sheet closes so it never sits armed unseen.
-  const [armCounterReset, setArmCounterReset] = useState(false)
-  useEffect(() => { if (!settings) setArmCounterReset(false) }, [settings])
+  // ("Reset counters" and its armed question lived here until D669, 8 Oct 26: with no built-in counters there is
+  // nothing to go back to. A counter deleted by mistake comes back with Undo.)
   // Pointer-based drag (owner, 18 Aug 26 — the roster rearranges on a phone
   // too, where HTML5 drag-and-drop does nothing). `dragId`/`dragOverRef` are
   // refs because they change many times a second during a drag and must not
@@ -1812,10 +1810,13 @@ export function Matrix() {
   // rest, where the anchor correction absorbs the difference.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const widthGen = useMemo(() => ({}), [version, visWindow, folded, countsOpen, arranging])
-  // The CURRENT token lives in a ref, because one input never reaches a render:
-  // the manning Archive is CountRows' own state (a tap there must not re-render
-  // this grid), so it replaces the token directly (`onArchiveChange`). A render
-  // only overwrites the ref when its own inputs moved, never with a stale memo.
+  // The CURRENT token lives in a ref, because some inputs never reach a render:
+  // the four Required / Available rows repaint themselves (FlyRows hears its own
+  // two stores — a figure there can widen a day column), and until D669 the
+  // manning Archive was CountRows' own state. Each replaces the token directly
+  // (`onArchiveChange` — the name is the Archive's, kept; CountRows calls it now
+  // when a count row goes in or out). A render only overwrites the ref when its
+  // own inputs moved, never with a stale memo.
   const widthGenRef = useRef<object>(widthGen)
   const widthGenSeenRef = useRef(widthGen)
   if (widthGenSeenRef.current !== widthGen) { widthGenSeenRef.current = widthGen; widthGenRef.current = widthGen }
@@ -3827,14 +3828,13 @@ export function Matrix() {
                 paints a thead at the TOP of the table wherever it sits in
                 the DOM, which would undo this whole arrangement. */}
             {/* Collapsed away on the view toggle, but always shown while an
-                admin is Rearranging — that is where the per-row reorder / hide
+                admin is Rearranging — that is where the per-row reorder / delete
                 controls live, and hiding the block would hide them too. */}
             {(countsOpen || (arranging && role === 'admin')) && (
               <CountRows
                 verdicts={verdicts}
                 dates={drawnDates}
                 order={orderedManningIds()}
-                hidden={manningHidden}
                 arranging={arranging}
                 admin={role === 'admin'}
                 onInfo={setManningInfo}
@@ -3846,7 +3846,7 @@ export function Matrix() {
                 padR={padR}
                 phL={phL}
                 phR={phR}
-                onArchiveChange={onArchiveChange}
+                onRowsChange={onArchiveChange}
               >
                 {/* THE FOUR ROWS AT THE FOOT OF THE MANNING BLOCK — Required P and W, Available P and W (the Inputs /
                     SANS redesign, plan §3.3; owner D665, 8 Oct 26: "I'm going with B"). They subscribe THEMSELVES to
@@ -4645,13 +4645,6 @@ export function Matrix() {
           // settings sheet so the two do not stack (both `.bidsheet`, same z-index,
           // so an open settings row would sit over the builder and eat its taps).
           onAddCounter={() => { setSettings(false); setCounterEdit(null) }}
-          armCounterReset={armCounterReset}
-          onResetCounters={() => {
-            if (!armCounterReset) { setArmCounterReset(true); return }
-            setArmCounterReset(false)
-            resetManningRules()
-          }}
-          disarmCounterReset={() => setArmCounterReset(false)}
           onGroupDragStart={(e, id) => startRowDrag(e, id, GROUP_DRAG)}
           onPriorityDragStart={(e, id) => startRowDrag(e, id, GROUP_PRIO_DRAG)}
           draggingId={draggingId}

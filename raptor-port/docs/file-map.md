@@ -505,6 +505,16 @@ figure starts and which typed figures go with it) - `FlyRows` lights the same an
 no outside close, no Tab trap); `ui/SelectSheet.tsx` uses it since D642. Tests: `ui/selectreq.test.ts`, `ui/reqpanel.test.tsx`,
 `ui/nonmodal.test.tsx`; the browser gates "several Required cells are picked with a drag…" and "the people's-days panel
 stays up with no veil…".
+`src/leavewar/testing/eleven.ts` - THE ELEVEN COUNTERS THE APP USED TO START WITH, as TEST DATA ONLY (D669, 8 Oct 26: the
+Manning block comes with no count rows of its own). Pure data, word for word what `engine/seed.ts` held; nothing in the
+app imports it. A test that is about counters MAKES them through the real "+ Counter" writer: `src/leavewar/testkit.ts
+elevenCounters()` (unit suites) and `e2e/app.ts elevenCounters()` (browser tests, through `probe-bridge.ts
+lwSaveManningRule` - this PC only). `src/leavewar/ui/nocounters.test.tsx` - D669's seven readings, each pinned (the
+empty start, the delete cross and Undo, no Archive, no Reset counters, under-manned by counters that exist, the
+Available rows untouched, nothing stored converted; and that the counter form can express each of the old eleven).
+`src/leavewar/ui/rowswire.test.tsx` (was `archivewire.test.tsx`) - Matrix hands `CountRows` the re-measure it calls when
+a count row goes in or out. `ui/CountRows.tsx` lost the eye, the Archive bar and its `hidden` prop; it draws its block
+for the rows handed to it even with no counter.
 `scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a
 cell being typed, "From <date> on", a picked block with its panel, the people's-days panel): the builder's look, and the built side of D624's mock-up-beside-built evidence. Not
 a gate. It reads a preview on port 4180 (`LOOK_URL`), never 4173 - the browser tests reuse a server left there.

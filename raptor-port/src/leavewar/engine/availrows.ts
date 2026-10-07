@@ -7,7 +7,8 @@
 // They are ORDINARY COUNT ROWS (D640): an admin renames them in free text and changes who they count — leaving out OCU,
 // say — with the form every counter already has, and the SANS calendar uses whatever they then count. So they live in
 // the squadron's own rule list under two FIXED ids once changed, and until then the built-in definition below serves —
-// which is also what an older store, a damaged row or "Reset counters" falls back to. Four things set them apart:
+// which is also what an older store or a damaged row falls back to ("Reset counters" did too, until it went with the
+// built-in counters — D669, 8 Oct 26). Four things set them apart:
 //   - A SANS MAN IS NEVER COUNTED, whatever the row's filter says (D626): he offers his availability on the SANS
 //     calendar, and counting him here would count him twice — once as available, once as committed to fly.
 //     `availHave` is the ONE sum, read by the war's rows and by the calendars alike, so the two never disagree.

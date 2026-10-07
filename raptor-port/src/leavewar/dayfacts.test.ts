@@ -19,11 +19,11 @@ import {
 } from './engine'
 import {
   addEventBand, availRules, createWar, deleteManningRule, focusDay, getState, initStore, manningDeleteProblem,
-  manningRowIds, orderedManningIds, resetManningRules, saveManningRule, selectWar, setCell, setDayEvent, setDayEventRange,
+  manningRowIds, orderedManningIds, saveManningRule, selectWar, setCell, setDayEvent, setDayEventRange,
   setManningThreshold, setPeople, setRole, setViewer, updateEventType,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { fileAbsence } from './testkit'
+import { elevenCounters, fileAbsence } from './testkit'
 import { dayFacts, holidaysIn, subscribeWarFacts, warFactsVersion } from './sync'
 
 beforeEach(() => {
@@ -214,6 +214,7 @@ describe('the two Available rows are ordinary count rows (D640)', () => {
   })
 
   it('delete is refused, with the reason', () => {
+    elevenCounters()   // an ordinary counter to set beside them — the app starts with none (D669)
     saveManningRule(noOcu)
     expect(manningDeleteProblem(AVAIL_P)).toBe(AVAIL_DELETE_MSG)
     expect(manningDeleteProblem(AVAIL_W)).toBe(AVAIL_DELETE_MSG)
@@ -224,11 +225,8 @@ describe('the two Available rows are ordinary count rows (D640)', () => {
     expect(deleteManningRule('ip')).toBe(true)
   })
 
-  it('"Reset counters" puts the built-in ones back', () => {
-    saveManningRule(noOcu)
-    resetManningRules()
-    expect(availRules().p).toEqual(builtinAvailRule(AVAIL_P))
-  })
+  /* ("Reset counters" put the built-in Available rows back too, and was tested here until D669, 8 Oct 26 — the button
+     left with the built-in counters. An Available row he has changed goes back by Undo, or by changing it again.) */
 
   it('a re-defined row survives a reload', () => {
     const backend = memoryBackend()
@@ -244,6 +242,7 @@ describe('the two Available rows are ordinary count rows (D640)', () => {
     const backend = memoryBackend()
     initStore(backend)
     setRole('admin')
+    elevenCounters()   // the squadron's own counters, which the damage must leave alone — the app starts with none (D669)
     saveManningRule(noOcu)
     /* damage the stored set by hand: a team count and a threshold under the linked id */
     const key = backend.keys().find(k => k.endsWith('manningdefs'))!

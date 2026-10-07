@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test'
+import { ELEVEN_COUNTERS } from '../src/leavewar/testing/eleven'
 
 /* RETIRED by D509/D510, 3 Oct26. No active consumer; retained as adaptation history.
    Only legacy publication/geometry fixtures: establish valid reporting BEFORE
@@ -302,4 +303,19 @@ export async function openTracker(page: Page, who: 'a' | 'user' = 'a') {
   await go(page, 'tracker')
   await page.waitForSelector('#flowSvg .ball', { timeout: 20000 })
   await page.waitForTimeout(300)
+}
+
+/* THE ELEVEN COUNTERS THE LEAVE WAR USED TO START WITH (D669, 8 Oct 26 — the Manning block now comes with NO count
+   rows of its own; a squadron makes what it wants). The app these tests open starts empty, exactly as it ships. A test
+   that is ABOUT counters — a row's figure and colour, "under-manned", the Manning sheet, dragging rows in Rearrange —
+   calls this first: the eleven are made in the running app through the same writer the "+ Counter" form saves with
+   (`saveManningRule`, reached through the probe bridge on this PC only), as an admin, and the role the test had is put
+   back. The definitions are `src/leavewar/testing/eleven.ts` — pure data, read here in Node and handed to the page. */
+export async function elevenCounters(page: Page) {
+  const refused = await page.evaluate(rules => {
+    const w = window as any
+    return rules.filter((r: unknown) => !w.lwSaveManningRule(r)).map((r: any) => r.id)
+  }, JSON.parse(JSON.stringify(ELEVEN_COUNTERS)))
+  if (refused.length) throw new Error(`elevenCounters: refused ${refused.join(', ')}`)
+  await page.waitForSelector('[data-testid="count-scn"]')
 }

@@ -6339,18 +6339,43 @@ its day from about 20 px to 33 px and made the Event row two lines tall.
 The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
 
 - **Where they sit — D665 (8 Oct 26: "I'm going with B").** The LAST rows of the Manning block (`tbody.counts`), under
-  the squadron's own counts and above the Archive bar — through a `children` slot of `CountRows`. His first answer was
+  the squadron's own counts *(and, until the Archive went with D669, above its bar)* — through a `children` slot of `CountRows`. His first answer was
   "Under the event rows" (D637) and they were built there for a few hours; shown both placements on the running build
   he chose this one. So: they fold away with the Manning button; in Rearrange they carry no grip and no eye (the SANS
   calendar reads them — never dragged elsewhere, never hidden); no day is judged by them. **The two faults he circled on
   the hand-drawn picture are gated** — nothing lies over a month button (Figures panel open or shut), and the green
   open-bidding outline starts at the dates, under the month buttons, crossing none of the four rows:
   `e2e/leavewar.spec.ts` "in the Manning block the four rows cover no month button…", phone and desktop.
-- **The block's own rows — D669 (8 Oct 26), RULED, NOT BUILT (`OUTSTANDING.md` `[LW-DEMO-COUNTERS-TRIM]`):** the Manning
-  block is to come with NO count rows of its own — a squadron makes the ones it wants — so these four are all it shows
-  until a counter is made; and in Rearrange a count row's eye (hide) becomes a cross that deletes it (the Archive bar
-  goes with the eye). It replaced the same evening's first answer, D666 (five rows to start). Until it is built the block
-  still starts with eleven, each with an eye.
+- **The block's own rows — D669 (8 Oct 26: "should there be a default counter? I think there shouldn't be and the user
+  can create what they want. Instead of hide (eye) we should replace it with a delete cross"), BUILT the same night.**
+  The Manning block comes with NO count rows of its own (`engine/seed.ts seedRequirements` is empty, for the demo
+  squadron too) — a squadron makes the ones it wants with ⚙ → "+ Counter" — so these four are ALL it shows until a
+  counter is made, and `CountRows` draws its `tbody` for them even with no count row. It replaced the same evening's
+  first answer, D666 (five rows to start). What follows from it, each told to him:
+  - **In Rearrange a count row's eye is a DELETE CROSS** (`manning-delete-<id>`, in the balance box where the eye
+    sat; 26×16px, the dashed grey edge every Leave War "Delete" wears — D332). It deletes the counter outright and
+    ASKS NOTHING, because the app's Undo brings it back whole — what it counts, its amber and red, its place (the
+    war's command stream carries the counters; `ui/nocounters.test.tsx`, and in a real browser `e2e/leavewar.spec.ts`
+    "the open-bidding outline moves with the rows when a counter is deleted in Rearrange"). A member, and an admin
+    outside Rearrange, see no cross. The four rows carry no cross and no grip.
+  - **Nothing can be hidden, so the ARCHIVE bar and "bring back" are gone**, with the eye's writer
+    (`toggleManningRow`). `manninghidden` is still read and saved, so a store written before loads as it was, but no
+    screen consults it: a row an older store had hidden is simply drawn (nothing stored is converted — D56).
+  - **"↺ Reset counters" left ⚙ Settings** (`resetManningRules`): there is no built-in set to put back. So did a
+    counter's own "Default: amber … · red …" note and "Reset to default" on its sheet (`resetManningThreshold`) —
+    every counter is the squadron's own, and its own numbers are its default. And the pre-definitions amber / red
+    overlay (`manningthresh`) is no longer read at boot: it lay over built-in rows.
+  - **A day is "under-manned" only by a counter that exists.** With none, no day is, and the tally reads "0 days".
+  - **A count row going in or out re-measures the grid** (`CountRows` `onRowsChange` → Matrix's `onArchiveChange`,
+    the Archive's old signal): the rows stand above the dates, and the outline, the Figures drawer and the frozen
+    header are placed off rows below them.
+  - **The eleven the app used to start with** — Crew sets, IP, IWSO, IP + IWSO, OPSP, OPSW, FL P, WM P, SXO, SC D,
+    SC N — are kept word for word in `src/leavewar/testing/eleven.ts`, for the TESTS only: a test that is about
+    counters makes them through the real "+ Counter" writer (`testkit.ts elevenCounters()`; `e2e/app.ts
+    elevenCounters()`), never a hidden default. The counter form can express every one of them, the SC team rows
+    included (a team of slots, each a seat and a qualification) — pinned in `ui/nocounters.test.tsx`.
+  - Gate: `e2e/leavewar.spec.ts` "with no counters the Manning block is the four rows alone, and the grid still reads
+    top to bottom" (phone and desktop). Pins: `ui/nocounters.test.tsx`, `ui/counts.test.tsx`, `ui/rowswire.test.tsx`.
 - **The row contract, to the letter:** each of the four carries `who`, `bal`, the two placeholders and ONE cell per drawn
   day — `req-p-<iso>`, `req-w-<iso>`, `avail-p-<iso>`, `avail-w-<iso>` (never an `event-`, `cell-` or `count-` prefix:
   the drag code hit-tests those). **A row added to the EVENTS block needs an empty box in the Figures drawer**
@@ -6369,7 +6394,7 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
 - **Repaint:** the component subscribes itself to the scheduler's signal and to `useWarFacts()`; Matrix and its memo
   firewall are untouched. Each drawn month's cells are memoised on a signature of what they SHOW, built from the
   resolver's answers — so a run or a weekday rule that began before the month still repaints it. After a change is
-  drawn it asks the grid for the Archive rows' re-measure (a figure can widen a day column).
+  drawn it asks the grid for the re-measure the Archive's rows used to ask for (a figure can widen a day column).
 - **They make the Manning block four rows taller, so the roster starts that much lower** (about 88px on a desktop) while
   the block is open. The browser tests that drag along the first roster rows scroll by exactly that first
   (`e2e/leavewar.spec.ts pastFlyRows`).
@@ -6849,8 +6874,8 @@ appears, the phone's word is hidden).
 
 **His ask came 24 Sep 26 (D160, "9 yes"): a RESET ORDER line in ⚙ Settings** — its own small "Roster order" tray
 between the counters and the groups, admin-only like the whole sheet (`roster-reset-order`). It **asks once**
-("Really reset?", the Reset counters idiom; closing the sheet takes the question back, and arming either reset
-takes the other's question back — one "Really reset?" at a time) and is **greyed, with a line
+("Really reset?"; closing the sheet takes the question back *— until 8 Oct 26 "Reset counters" stood beside it with
+the same question, and arming either took the other's back; Reset counters is gone, D669, so this is the only one*) and is **greyed, with a line
 saying so, while the roster already follows the default** (`roster-order-hint`) — judged by the roster AS DRAWN
 (`rosterFollowsDefault`), so a man dragged away and back reads as the default, never a press that moves nothing; a hand-arranged roster's line says
 what the default is (each group as listed, pilots above WSOs, then CAT and callsign) and that Undo brings the
@@ -6923,6 +6948,11 @@ buttons, one line, inside the viewport, none cut, row under 52px — both
 projects).
 
 ### In Rearrange: the wider name column, the manning-row grip, the Archive bar
+
+*(8 Oct 26 — D669: the EYE on a manning row is now a DELETE CROSS, and the ARCHIVE bar is gone with it. What holds
+now is in §The four rows at the foot of the Manning block, "The block's own rows". The two paragraphs below on the eye
+and the Archive bar are kept as the record of what was built on 5 Sep 26; read "the eye" as "the cross" for where the
+control sits — alone, centred, in the balance box — and the Archive paragraph as history.)*
 
 **In Rearrange the frozen name column widens by the grip, so callsigns keep
 their at-rest width (owner, 6 Sep 26 — "the CS/name will not be causing the
@@ -7133,8 +7163,8 @@ history; THIS block is the recipe to copy. Six pieces, in order:
    because a freshly created scroll-driven animation is not applied on its
    creation frame; `lwx-follow` states its `from`, so the hold never blends
    into it. **It RE-MEASURES whenever a column can have widened under it** —
-   any store change, the row window, folds, the manning rows, the Archive
-   (`widthGen`; value-checked, so free when nothing moved). Pinned by "the
+   any store change, the row window, folds, the manning rows, a figure typed in the four Required / Available rows
+   (and, until D669, the Archive) (`widthGen`; value-checked, so free when nothing moved). Pinned by "the
    frozen bar is in step with the grid the moment it appears" and "a column
    that widens while the dates are frozen re-measures the frozen bar". Still
    open: it arrives one frame after the real header leaves (`[LW-FROZEN-BAR-GAP]`).

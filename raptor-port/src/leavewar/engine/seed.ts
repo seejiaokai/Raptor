@@ -115,63 +115,18 @@ export function seedPeriod(): Period {
   }
 }
 
-// One team of SC cover, spelt out for the tap-a-row sheet. The wording is the
-// owner's own combination (19 Aug 26): "2 pilot SC day qualified and 2 WSO sc
-// day qualified. And a SXO. And any crew, not including ground crew."
-const SC_TEAM = (kind: string) =>
-  `One team is 2 SC ${kind} qualified pilots + 2 SC ${kind} qualified WSOs + 1 SXO + 1 more crew (pilot or WSO, any CAT) — six different people, ground crew never counted. The day's number is how many complete teams can still be manned; someone standing SC duty still counts, they are at work.`
-
-// The instructor rungs of the CAT ladder, and the flight-lead rungs (CAT B
-// and above, instructors included — the owner's FL P rule). The seeded rules
-// name CATs rather than the old band flag because that is the vocabulary the
-// counter form edits; `effectiveCat` folds a band-only seed person onto the
-// same rungs, so the two readings agree on every roster.
-const INSTR_CATS = ['FI', 'IR', 'IP', 'IW']
-const LEAD_CATS = ['FI', 'IR', 'IP', 'A', 'B']
-
-// The SC cover recipe as team slots (owner, 19 Aug 26): presence counts —
-// someone standing SC duty is at work, not a gap — and the day's number is
-// complete teams.
-const SC_SLOTS = (qual: string) => [
-  { count: 2, filter: { seats: ['pilot' as const], quals: [qual] } },
-  { count: 2, filter: { seats: ['wso' as const], quals: [qual] } },
-  { count: 1, filter: { quals: ['sxo'] } },
-  { count: 1, filter: {} },
-]
-
+// THE MANNING BLOCK COMES WITH NO COUNT ROWS OF ITS OWN (owner, D669, 8 Oct 26 — "should there be a default counter?
+// I think there shouldn't be and the user can create what they want"). A squadron makes the counters it wants with
+// "+ Counter" (ui/CounterForm.tsx → state/store.ts saveManningRule); until it does, the block shows only the four
+// Required / Available rows (ui/FlyRows.tsx — the two Available rows are built in, engine/availrows.ts, and are not
+// rules of this list).
+//   This list held eleven until then — Crew sets, IP, IWSO, IP + IWSO, OPSP, OPSW, FL P, WM P, SXO, SC D, SC N. They
+// are kept, word for word, in `leavewar/testing/eleven.ts` for the tests that are about counters, which MAKE them
+// through the real writer; nothing in the app reads that file. No day is judged by a counter that does not exist:
+// with none, no day is "under-manned".
+//   Nothing stored is converted (D56): a squadron that had saved its counters keeps them exactly as saved.
 export function seedRequirements(): Requirements {
-  return {
-    default: {
-      rules: [
-        // Crew sets lead the list, where the standalone set rule used to sit
-        // before rules became data. A set is the two-slot team: whichever
-        // seat runs out first caps it, which is exactly what the team maths
-        // computes for two slots.
-        { id: 'sets', label: 'Crew sets', count: { kind: 'team', slots: [{ count: 1, filter: { seats: ['pilot'] } }, { count: 1, filter: { seats: ['wso'] } }] }, threshold: { amber: 5, red: 4.5 }, desc: 'One set is one pilot plus one WSO — a jet you can crew. The day\'s number is whichever seat runs out first.' },
-        { id: 'ip', label: 'IP', count: { kind: 'people', filter: { seats: ['pilot'], cats: INSTR_CATS } }, threshold: { amber: 3, red: 2 }, desc: 'Instructor pilots available.' },
-        { id: 'iwso', label: 'IWSO', count: { kind: 'people', filter: { seats: ['wso'], cats: INSTR_CATS } }, threshold: { amber: 3, red: 2 }, desc: 'Instructor WSOs available.' },
-        { id: 'instr', label: 'IP + IWSO', count: { kind: 'people', filter: { cats: INSTR_CATS } }, threshold: { amber: 5, red: 4 }, desc: 'Instructor pilots and instructor WSOs together.' },
-        { id: 'opsp', label: 'OPSP', count: { kind: 'people', filter: { seats: ['pilot'], notCats: INSTR_CATS } }, threshold: { amber: 4, red: 3 }, desc: 'Ops pilots (CAT A–D, OCU included) available.' },
-        { id: 'opsw', label: 'OPSW', count: { kind: 'people', filter: { seats: ['wso'], notCats: INSTR_CATS } }, threshold: { amber: 4, red: 3 }, desc: 'Ops WSOs (CAT A–D, OCU included) available.' },
-        // FL P / WM P split the pilots by CAT (owner, 18 Aug 26). Seeded at
-        // amber 0 / red 0, which never fires (a count is never below zero) —
-        // the row shows the head count without judging a day. Since 19 Aug 26
-        // the floors are the squadron's to set: tap the row, edit the numbers.
-        // WM P is "pilots EXCEPT the lead CATs" rather than a list of junior
-        // rungs, so the two rows still partition every pilot — one with no
-        // CAT at all lands on the wingman side, the junior default.
-        { id: 'flp', label: 'FL P', count: { kind: 'people', filter: { seats: ['pilot'], cats: LEAD_CATS } }, threshold: { amber: 0, red: 0 }, desc: 'Flight-lead pilots — CAT B and above, instructors included.' },
-        { id: 'wmp', label: 'WM P', count: { kind: 'people', filter: { seats: ['pilot'], notCats: LEAD_CATS } }, threshold: { amber: 0, red: 0 }, desc: 'Wingman pilots — CAT C and below.' },
-        { id: 'sxo', label: 'SXO', count: { kind: 'people', filter: { quals: ['sxo'] } }, threshold: { amber: 1, red: 1 }, desc: 'SXO-qualified crew available, counted on top of their own category.' },
-        // The SC cover rows (owner, 19 Aug 26): below one complete team the
-        // day is RED — amber equal to red means there is no amber band, the
-        // same idiom as the SXO row. Both editable from the row's sheet.
-        { id: 'scd', label: 'SC D', count: { kind: 'team', slots: SC_SLOTS('scDay'), presence: true }, threshold: { amber: 1, red: 1 }, desc: SC_TEAM('Day') },
-        { id: 'scn', label: 'SC N', count: { kind: 'team', slots: SC_SLOTS('scNight'), presence: true }, threshold: { amber: 1, red: 1 }, desc: `${SC_TEAM('Night')} SC Night is the AVALON cover.` },
-      ],
-    },
-    overrides: {},
-  }
+  return { default: { rules: [] }, overrides: {} }
 }
 
 // THE SEED'S LEAVE ([ARCH-STACK] step 4). A war stores only its own records

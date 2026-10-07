@@ -2943,3 +2943,33 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** Add to the skill's checklist: before citing a browser or end-to-end result, confirm the run exercised the current code — either the run's own log shows the build step, or a test that can only pass on the new code is among those that passed. Treat "reused existing server" as unverified until shown otherwise. And: read the project's known-traps note for a gate before the first run of that gate in a session, not after a surprise.
 
 **Principle:** A passing check is evidence only for the artefact it actually ran against; establish which artefact that was before quoting the result.
+
+### Observation 462: Emptying a default data set leaves tests that pass while checking nothing
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Unattended overnight run on the Inputs / SANS redesign; the Leave War's built-in count rows were removed by ruling, and 77 tests failed and were re-pointed
+**Skill:** test-driven-development (and verification-before-completion)
+**Type:** open-source
+**Phase/Area:** Changing or removing seed / default data that many tests stand on
+
+**Issue:** After a built-in list of eleven items was emptied, the red run named 77 failing tests — and three more went on passing with nothing left to check: a loop that GENERATED one test per built-in item (it generated none, so the file simply had fewer tests), an equality between two lists that were now both empty, and a "delete every item, reload, expect none" test with nothing to delete. None appeared in the failure list. They were found only by searching the tests for every read of the emptied list and reading each one.
+
+**Suggested improvement:** When a change empties or shrinks data that tests iterate over, treat the failing list as incomplete. Search for every test that loops over, maps, or compares that data, and give each a guard that fails on an empty input (assert the expected length first). Compare the test COUNT before and after as well as pass / fail: a drop with no deleted test is a generated test that vanished.
+
+**Principle:** A test that iterates over data proves nothing when the data is empty; removing data turns such tests green-and-vacuous, and only reading (or a count of tests run) reveals them.
+
+### Observation 463: A background run that edits source files must own the tree until it ends
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Same run; a script broke one rule at a time in a source file, ran the tests, and restored it, in the background, to prove the tests catch each rule
+**Skill:** New skill candidate: mutation-proof-of-tests (or a section of test-driven-development)
+**Type:** open-source
+**Phase/Area:** Proving tests after they were written green; working alongside a background job
+
+**Issue:** Tests written before the code went green on first run, so the usual "seen to fail" evidence was missing; a small script that replaces one line, runs the affected test file, reports CAUGHT or MISSED and restores the line gave that evidence cheaply (26 rules across three pieces, all caught). The cost was that the job temporarily rewrites source files for many minutes: any edit, build or browser test started meanwhile would read a broken tree, and the job's own restore could overwrite an edit. The work was arranged so only documents and new test files were touched while it ran, and the commit waited for it.
+
+**Suggested improvement:** Describe the pattern: write the mutations as data (test files, source file, name, old text, new text), assert each anchor matches exactly once, restore in a finally block, flush output per mutation, and run it in the background ONLY while doing work that cannot touch or read the mutated tree (records, new files). Never commit, build, or run a browser test until it reports done and the tree is confirmed restored.
+
+**Principle:** Evidence that a test can fail is as cheap as one scripted line change per rule; a job that edits the tree to get it must be treated as holding a lock on that tree.

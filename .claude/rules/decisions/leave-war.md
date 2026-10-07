@@ -105,7 +105,7 @@ decision + a pointer. Owner + date establish authority; keep them.
   the same steps and the same phone-opens-at-0.8 default (`OilTracker.tsx`).
   Don't put the zoom back on the strip, let the strip wrap, or let it scale
   with the grid. ⚙ opens `SettingsSheet`
-  (CONFIG: + Counter, +/− Event row, Show SANS, Reset counters + the roster GROUPS
+  (CONFIG: + Counter, +/− Event row, Show SANS, Reset counters *[gone 8 Oct 26 — D669: the Manning block comes with no count rows of its own, so there is nothing to reset to; a row's eye in Rearrange is a delete cross and the Archive bar went with it]* + the roster GROUPS
   editor folded in; old `⚙ Groups` button + `GroupSheet.tsx` deleted). REARRANGING
   is STILL hands-on-grid (person rows AND category headings drag), and the top
   row's ⇅ toggle is the ONE way in and out (owner, 6 Sep 26 — "delete this whole
