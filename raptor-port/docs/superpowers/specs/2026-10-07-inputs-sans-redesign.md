@@ -76,6 +76,39 @@ are drawn side by side; Codex's built layout is one of them.
 - **An Instructions fold at the top** — his reference's four lines, refined to what applies here.
 - **The keyboard** — Escape, Delete, the arrow keys.
 
+## His picks from the first mock-ups, and his new points — D626 to D629 (7 Oct 26, afternoon)
+
+**Picked (D626):** the date cell with lined-up columns, pilots left and WSOs right — but its words must stand out on the
+yellow, amber and red days (the first drawing's tinted cells washed the grey figures out); three tabs across the top
+(Inputs, SANS, Medical), less tall; inputs as bars, as Google Calendar does; in the opened day the row reads "Available"
+with no bracket. "The rest not mentioned seems ok": the Highlight ring with underlined letters and no F / O / A chooser,
+the opened day's working, the three colours from a settings icon (pilots and WSOs needed added together, from 1 / 3 / 5),
+"available" never counting a SANS man, no list for the SANS calendar, hold-and-drag (mouse drag on a desktop) to pick
+several days, the List for Inputs behind one small switch, the keyboard set. NOT taken: the title-as-a-menu and
+bottom-bar layouts, the date cell written with slashes.
+
+**The day's class, holidays and Off days in step (D627):** a day is day flying, night flying or NO FLY (NF). An NF day needs
+nobody to fly — its counters read 0 and it shows "NF" — in step with the Leave War. Public holidays (green, as on the
+Leave War) and Off days show on the SANS and the Inputs calendars too. Day or night shows on the SANS calendar ONLY.
+*What the app has (checked 7 Oct 26):* the Leave War's Event rows already hold the record — a word typed on a day, classed
+by `src/leavewar/engine/eventdefs.ts`: "PH" (kind `off`: the column light green, work earns OIL), "Off day" (kind `free`:
+light grey, earns nothing), "No Leave" (orange), "SC" (a working commitment). The two calendars READ that record; NF and
+the day / night class are new. Codex's per-day "flying period" on the SANS day panel moves to wherever the day is set.
+
+**The late cut-off (D628):** settable as a number of days OR as a weekday of a number of weeks before (the Wednesday two
+weeks prior); the "How this works" text states the cut-off as set, with a worked date. *Today:* one figure on the Logic
+page (`VCONF.inputLead`, 14 days before the input's week's Monday), for every input; downchits and upchits are never late.
+
+**Who placed it, and when (D629):** a small line on every input and every SANS commitment — who filed it, the day and
+the time; where an entry is listed or opened, never on the month's cells.
+
+**Three questions he put back, each drawn with the agent's pick in the second mock-ups:** (a) where the late cut-off is
+set — pick: each calendar's settings icon holds its own, the Logic page lists both and opens the same setting; (b) one
+door or three for the admin's per-day settings — pick: ONE, the day's own sheet on the Leave War (kind of day, flying,
+required pilots and WSOs), with a button into it from the SANS calendar's opened day; the two squadron-wide settings
+(colours, cut-off) sit behind the calendar's settings icon; (c) "do we need a SANS needed row on the Leave War?" — pick:
+no; the Available figure turns red when it is under Required, and the SANS calendar carries what is still needed.
+
 ## In the bug check: mock-up beside build — D624
 
 For every mock-up he approves, the check's evidence sheet carries a PAIR: the approved mock-up, and a picture of the built
