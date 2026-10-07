@@ -389,12 +389,21 @@ describe('the Inputs page (tfin)', () => {
     await act(async () => { ok = commitInputEdit(r, d) })
     expect(ok, 'the re-person is refused').toBe(false)
     expect(r.person, 'and nothing moved').toBe(was)
-    /* commitNewInput pins a hand-made draft onto the viewer */
+    /* commitNewInput ASKS about a hand-made draft for another man — changed 8 Oct 26 with the group input (owner D654,
+       D655; the build plan §3.13). Until then it pinned the draft onto the signed-in member in silence, and this test
+       pinned that. A leave for another man is refused and nothing is filed, for either of them; a draft naming nobody
+       is still his own. */
+    const n = INPUTS.length
     await act(async () => {
       ok = commitNewInput({ person: was, type: 'LL', start: '2026-07-14', allday: true, remarks: '' })
     })
+    expect(ok, 'a leave for another man is refused').toBe(false)
+    expect(INPUTS.length, 'and nothing was filed for the member instead').toBe(n)
+    await act(async () => {
+      ok = commitNewInput({ person: '', type: 'LL', start: '2026-07-14', allday: true, remarks: '' })
+    })
     expect(ok).toBe(true)
-    expect(INPUTS[0].person, 'the add landed on the view-as person, not the claimed one').toBe(ME)
+    expect(INPUTS[0].person, 'a draft naming nobody is his own').toBe(ME)
     await act(async () => { removeInput(INPUTS[0]) })
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })

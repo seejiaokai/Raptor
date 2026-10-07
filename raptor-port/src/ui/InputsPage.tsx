@@ -15,7 +15,7 @@ import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { LOOK_CFG, LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, setLookahead } from '../engine/lookahead'
 import { canEditSched } from '../state/auth'
-import { me, isMe, isAdmin } from '../state/perms'
+import { me, isAdmin, mayEditInput } from '../state/perms'
 import { writeInputsBatch, notify, inputProtected } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal, revealInput } from '../state/view'
 import { inputsInMode } from './sans-calendar-model'
@@ -1107,8 +1107,11 @@ export function InputsPage() {
                         member (owner, 27 Aug 26): a scheduler works every row,
                         a member only their own — someone else's row is view
                         only (the document clip above stays, so they can still
-                        read the paperwork). The write path repeats this gate. */}
-                    {(canEditSched() || isMe(r.person)) && <>
+                        read the paperwork). The write path repeats this gate.
+                        Since the group input (D655): also a duty or commitment
+                        he FILED for another man — the one rule, perms.ts
+                        mayEditInput, which takes the record. */}
+                    {mayEditInput(r) && <>
                       {/* revise a recorded OIL answer in place (owner, 29 Aug
                           26) — shown exactly where a decision exists to
                           change (oilAnswered), same right as editing the row */}

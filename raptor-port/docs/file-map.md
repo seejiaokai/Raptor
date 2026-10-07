@@ -485,7 +485,17 @@ entry, one filer a group); pinned by `src/state/inputgroup.test.ts`. `src/state/
 members' switch (`setMembersFile`, the admin command `settings.memberfile`; the setting `memberfile`, absent = on), read
 by `state/perms.ts membersFileOn`; pinned by `src/state/memberfile.test.ts`. `src/engine/oil.ts voidedOil` - the rule
 for which OIL answers a change leaves standing, one function shared by the editor's save and the permission check;
-pinned by `src/engine/voidedoil.test.ts`.
+pinned by `src/engine/voidedoil.test.ts`. WHO MAY DO WHAT is all in `src/state/perms.ts`: `memberFilesForOthers` (which
+kinds), `mayFileInputFor(pid, type)`, `mayFileGroup(type)`, `mayEditInput(row)` / `mayDeleteInput(row)` (they take the
+RECORD; the old three that took a person are gone, and the editor, the List's row buttons and the calendar's drag ask
+these), `filedForOther` (the one test of "he filed it for another man"), and the commit gate's three tests on what a
+member's command changed (`inputBreach`: whose record; who placed it never forged; another man's OIL answers only as
+the days and hours give) - mirrored by `docs/data-model.md` §11's `Input` row through `INPUT_FILER_NOTE`. Which days
+ask the OIL question reaches it through `state/inputgate-hook.ts oilPlanOf` (the Leave War installs it). Undo: `src/undo/
+timeline.ts mayReverse` asks the filer's rule of a step's recorded images (the hook `filerMay`), and `verifiedReplay`
+vouches, record by record, for the restore it is applying - the only case the gate passes its forgery tests over
+(`state/undo-wire.ts` installs both). Pinned by `src/state/perms.test.ts` (the questions, §11) and, through the real
+doors and the one Undo, `src/leavewar/groupinput.test.ts`.
 D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
 through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
 thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.

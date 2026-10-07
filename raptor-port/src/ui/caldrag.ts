@@ -25,7 +25,7 @@ import { movePlanPuck, PLANPUCKS } from '../state/plan'
 import { writeInputs, notify } from '../state/store'
 import { setMedMove } from './pops'
 import { canEditSched } from '../state/auth'
-import { isMe } from '../state/perms'
+import { mayEditInput } from '../state/perms'
 import { INPUTS } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { landOn, liftOn, markLand } from './lift'
@@ -86,8 +86,10 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
 
   /* Page-rights parity with every other write on the Inputs page: a member
      may move their OWN input (the same reach they already have to edit its
-     times), a scheduler may move anyone's. */
-  if (!canEditSched() && !isMe(r.person)) {
+     times), a scheduler may move anyone's — and, since the group input (D655),
+     a member a duty or commitment he FILED for another man: the one rule,
+     perms.ts mayEditInput, which takes the record. */
+  if (!mayEditInput(r)) {
     HOOKS.toast("Only a scheduler can move someone else's input", 'warn')
     return false
   }
@@ -257,7 +259,7 @@ export function initCalDrag(root: HTMLElement, opts: {
        makes (commitChipMove: a scheduler moves anyone's, a member his own; a planning section is a scheduler's), asked
        at the press, so the gesture is never offered. A tap still opens it. */
     const row = entry.kind === 'input' ? INPUTS.find((x: any) => x.iid === entry.iid) : null
-    const fixed = !canEditSched() && (entry.kind === 'puck' || (!!row && !isMe(row.person)))
+    const fixed = entry.kind === 'puck' ? !canEditSched() : (!!row && !mayEditInput(row))
     st = {
       entry, pointerId: e.pointerId, mouse: e.pointerType === 'mouse',
       x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, timer: 0, fixed,

@@ -4,15 +4,20 @@
 
    "One place in the app answers 'may this person do this?', mirroring that table, with a
    test that fails when they disagree" — owner, D200, 26 Sep 26. This is that test. Register line AC14. */
-import { describe, it, expect, beforeAll } from 'vitest'
+import { describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   PERMS, T, MEDICAL_DETAIL, COMMAND_OPS, allows, cmdAuthorize, type Act, type Cell, type Role,
+  memberFilesForOthers, mayFileInputFor, mayFileGroup, mayEditInput, mayDeleteInput, filedForOther, INPUT_FILER_NOTE,
 } from './perms'
 import { registeredTypes } from '../command'
 import type { Actor } from '../command/types'
-import { initStore } from './store'
+import { initStore, resetSession, notify, switchRoleView } from './store'
+import { signIn, sessionFor } from './accounts'
+import { setMembersFile } from './memberfile'
+import { storeBackend } from '../engine/hooks'
+import { INPUT_TYPES, isLeave, needsDoc, isSansAvail, typeGroup } from '../engine/inputs'
 import { lwHistInit } from '../leavewar/state/store'
 
 const ROOT = join(__dirname, '..', '..')
@@ -112,6 +117,154 @@ describe('allows — the one rule under every question', () => {
   it('an own-row letter never matches a missing identity', () => {
     expect(allows('member', T.person, 'U', 'bane', null)).toBe(false)
     expect(allows('member', T.person, 'U', '', '')).toBe(false)
+  })
+})
+
+/* ---- AN INPUT FILED FOR ANOTHER MAN (owner D654, D655, D658, D660 — 7 Oct 26; the build plan
+   docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.13) ----
+   A second kind of "mine" on the one table every member writes: a Duty & other commitments input (never SANS
+   Availability) that he FILED for another man, while the squadron's switch is on. The questions take the RECORD now —
+   the answer depends on who filed it and its kind. These are the questions the screens ask; what a member's command
+   really changed is held by the commit gate, through the real route: leavewar/groupinput.test.ts. */
+describe('D654 / D655: the input questions take the record — the man, whoever filed it, an admin', () => {
+  const mem: Record<string, string> = {}
+  const as = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); notify() }
+  const rec = (person: string, o: Record<string, any> = {}) => ({ iid: 'ix', person, type: 'Meeting', date: 'Feb 10', yr: 2026, allday: false, s: 540, e: 600, remarks: '', ...o })
+  beforeEach(() => {
+    Object.keys(mem).forEach(k => delete mem[k])
+    storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v }, keys: () => Object.keys(mem) }
+    initStore(); resetSession(null)
+  })
+  afterEach(() => { resetSession(null); storeBackend.impl = null })
+  const off = () => { as('ad', 'a'); expect(setMembersFile(false).ok).toBe(true) }
+
+  it('which kinds a member may file for others: Duty & other commitments, never SANS Availability (D655, D658)', () => {
+    for (const t of INPUT_TYPES) {
+      const want = !isLeave(t) && !needsDoc(t) && !isSansAvail(t)
+      expect(memberFilesForOthers(t), t).toBe(want)
+      expect(want, `${t} is under the Duty & other commitments heading`).toBe(typeGroup(t) === 'other' && !isSansAvail(t))
+    }
+    for (const t of ['Meeting', 'Duty', 'Training', 'Appointment', 'Other']) expect(memberFilesForOthers(t), t).toBe(true)
+    for (const t of ['LL', 'OL', 'ATT C', 'ATT B', 'OML', 'HL', 'Upchit', 'SANS Availability']) expect(memberFilesForOthers(t), t).toBe(false)
+    expect(memberFilesForOthers('no such kind'), 'a kind the app does not know').toBe(false)
+    expect(memberFilesForOthers(''), 'no kind').toBe(false)
+  })
+  it('SANS Availability stays out with the switch on or off (D658)', () => {
+    expect(memberFilesForOthers('SANS Availability')).toBe(false)
+    off()
+    expect(memberFilesForOthers('SANS Availability')).toBe(false)
+    expect(memberFilesForOthers('Meeting'), 'the kind test is not the switch').toBe(true)
+  })
+
+  it('mayFileInputFor: an admin anyone, any kind; a member himself any kind, another man only a duty or commitment', () => {
+    as('ad', 'a')
+    for (const t of ['Meeting', 'LL', 'ATT C', 'Upchit', 'SANS Availability']) expect(mayFileInputFor('rocky', t), `admin ${t}`).toBe(true)
+    as('us', 'us')
+    for (const t of ['Meeting', 'LL', 'ATT C', 'Upchit', 'SANS Availability']) expect(mayFileInputFor('bane', t), `own ${t}`).toBe(true)
+    expect(mayFileInputFor('rocky', 'Meeting')).toBe(true)
+    for (const t of ['LL', 'OL', 'ATT C', 'OML', 'Upchit', 'SANS Availability', 'no such kind']) expect(mayFileInputFor('rocky', t), `other ${t}`).toBe(false)
+    expect(mayFileInputFor('rocky', undefined), 'a kind not named is never filed for another man').toBe(false)
+    expect(mayFileInputFor(null, 'Meeting'), 'nobody').toBe(false)
+  })
+  it('mayFileInputFor: with the switch off a member files for himself only', () => {
+    off()
+    as('us', 'us')
+    expect(mayFileInputFor('rocky', 'Meeting')).toBe(false)
+    expect(mayFileInputFor('bane', 'Meeting')).toBe(true)
+    as('ad', 'a')
+    expect(mayFileInputFor('rocky', 'Meeting'), 'an admin is not switched').toBe(true)
+  })
+  it('mayFileGroup: an admin any kind but the medical ones and the upchit (D655 reading 4); a member a duty or commitment while the switch is on', () => {
+    as('ad', 'a')
+    for (const t of ['Meeting', 'LL', 'OL', 'SANS Availability']) expect(mayFileGroup(t), `admin ${t}`).toBe(true)
+    for (const t of ['ATT C', 'ATT B', 'OML', 'HL', 'Upchit']) expect(mayFileGroup(t), `admin ${t}`).toBe(false)
+    as('us', 'us')
+    expect(mayFileGroup('Meeting')).toBe(true)
+    for (const t of ['LL', 'ATT C', 'Upchit', 'SANS Availability']) expect(mayFileGroup(t), `member ${t}`).toBe(false)
+    off()
+    as('us', 'us')
+    expect(mayFileGroup('Meeting')).toBe(false)
+  })
+
+  it('mayEditInput / mayDeleteInput: the man in full; the filer of a duty or commitment; an admin; nobody else', () => {
+    as('us', 'us')
+    for (const q of [mayEditInput, mayDeleteInput]) {
+      expect(q(rec('bane', { type: 'LL', by: 'stiff' })), 'his own, whoever filed it, any kind').toBe(true)
+      expect(q(rec('rocky', { by: 'bane' })), 'he filed it').toBe(true)
+      expect(q(rec('rocky', { by: 'stiff', grp: 'g1', grpBy: 'bane' })), 'he filed the entry another man was added to').toBe(true)
+      expect(q(rec('rocky', { by: 'stiff' })), 'filed by someone else').toBe(false)
+      expect(q(rec('rocky', { by: 'casper', grp: 'g1', grpBy: 'casper' })), 'another member\'s entry').toBe(false)
+      expect(q(rec('rocky')), 'no filer recorded: the man and an admin only (D56)').toBe(false)
+      expect(q(rec('rocky', { type: 'LL', by: 'bane' })), 'a leave is never his, whatever the record says').toBe(false)
+      expect(q(rec('rocky', { type: 'SANS Availability', by: 'bane' })), 'nor a SANS availability').toBe(false)
+      expect(q(null), 'no record').toBe(false)
+    }
+    as('ad', 'a')
+    for (const q of [mayEditInput, mayDeleteInput]) for (const r of [rec('rocky'), rec('rocky', { type: 'LL', by: 'bane' })]) expect(q(r)).toBe(true)
+  })
+  it('with the switch off his filing is no longer his to change — the man and an admin still can', () => {
+    off()
+    as('us', 'us')
+    expect(mayEditInput(rec('rocky', { by: 'bane' }))).toBe(false)
+    expect(mayDeleteInput(rec('rocky', { by: 'stiff', grp: 'g1', grpBy: 'bane' }))).toBe(false)
+    expect(mayEditInput(rec('bane', { by: 'stiff' })), 'his own is untouched by the switch').toBe(true)
+    as('hex')
+    expect(mayEditInput(rec('rocky', { by: 'bane' })), 'the man').toBe(true)
+    as('ad', 'a')
+    expect(mayEditInput(rec('rocky', { by: 'bane' })), 'an admin').toBe(true)
+  })
+  it('the admin\'s member view is judged as a member', () => {
+    as('ad', 'a')
+    const others = rec('rocky', { by: 'bane' })
+    expect(mayEditInput(others)).toBe(true)
+    switchRoleView()
+    expect(mayEditInput(others), 'Saber, as a member, did not file it').toBe(false)
+    expect(mayEditInput(rec('rocky', { by: 'stiff' })), 'what he filed for another man is his as a filer').toBe(true)
+    expect(mayFileInputFor('rocky', 'LL')).toBe(false)
+    switchRoleView()
+    expect(mayFileInputFor('rocky', 'LL')).toBe(true)
+  })
+  it('a guest, a pending person and an account switched off: nothing', () => {
+    for (const s of [{ user: 'principal:g', role: 'guest', pid: null, name: 'g' }, { user: 'principal:p', role: 'pending', pid: null, name: 'p' }, { user: 'principal:o', role: 'off', pid: null, name: 'o' }]) {
+      resetSession(s as any)
+      expect(mayFileInputFor('rocky', 'Meeting'), s.role).toBe(false)
+      expect(mayFileGroup('Meeting'), s.role).toBe(false)
+      expect(mayEditInput(rec('rocky', { by: 'bane' })), s.role).toBe(false)
+      expect(mayDeleteInput(rec('rocky', { by: 'bane' })), s.role).toBe(false)
+    }
+  })
+  it('with nobody signed in (the headless engine) every question answers as before: yes', () => {
+    resetSession(null)
+    expect(mayFileInputFor('rocky', 'LL')).toBe(true)
+    expect(mayEditInput(rec('rocky'))).toBe(true)
+    expect(mayDeleteInput(rec('rocky'))).toBe(true)
+  })
+  it('filedForOther — the one test of "he filed it for another man", on a record before and after', () => {
+    const a = rec('rocky', { by: 'bane' })
+    expect(filedForOther('bane', a, { ...a, e: 700 }), 'a change').toBe(true)
+    expect(filedForOther('bane', null, a), 'a filing').toBe(true)
+    expect(filedForOther('bane', a, null), 'a deletion').toBe(true)
+    expect(filedForOther('bane', a, { ...a, person: 'casper' }), 'never moved to another man').toBe(false)
+    expect(filedForOther('bane', a, { ...a, type: 'LL' }), 'never retyped to a leave').toBe(false)
+    expect(filedForOther('bane', { ...a, type: 'LL' }, a), 'nor from one').toBe(false)
+    expect(filedForOther('bane', { ...a, by: 'stiff' }, { ...a, by: 'bane' }), 'read from the record as it WAS on a change').toBe(false)
+    expect(filedForOther('bane', null, { ...a, by: 'stiff', grp: 'g1', grpBy: 'bane' }), 'the entry\'s filer').toBe(true)
+    expect(filedForOther('casper', a, { ...a, e: 700 }), 'someone else').toBe(false)
+    expect(filedForOther('bane', null, null), 'nothing').toBe(false)
+    off()
+    expect(filedForOther('bane', a, { ...a, e: 700 }), 'the switch off').toBe(false)
+  })
+  it('§11\'s Input row says the same: the letters stand, and its own-row note carries the filer\'s clause word for word (D200)', () => {
+    const md = read('docs/data-model.md')
+    const row = md.split('\n').find(l => l.startsWith('| `Input` |'))
+    expect(row, '§11 Input row').toBeTruthy()
+    expect(row!).toContain(INPUT_FILER_NOTE)
+    for (const d of ['D654', 'D655', 'D658', 'D660']) expect(INPUT_FILER_NOTE, d).toContain(d)
+    expect(sortCell(PERMS[T.input].member)).toEqual({ all: ['R'], own: ['C', 'D', 'R', 'U'] })
+  })
+  it('the switch\'s command is the admin\'s, like every setting', () => {
+    expect(cmdAuthorize('settings.memberfile', actor('admin', 'stiff'))).toBe(true)
+    expect(cmdAuthorize('settings.memberfile', actor('member', 'bane'))).toBe(false)
   })
 })
 

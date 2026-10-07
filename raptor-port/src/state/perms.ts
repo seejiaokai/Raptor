@@ -7,7 +7,7 @@
    Four parts, all here:
    1. PERMS — docs/data-model.md §11 as data. perms.test.ts reads §11 from disk and
       fails when a row, a letter, a column or a named gap differs. Edit the two TOGETHER.
-   2. The named questions every gate asks (isAdmin, me, mayEditSched, mayEditInputOf …),
+   2. The named questions every gate asks (isAdmin, me, mayEditSched, mayEditInput …),
       one-line wrappers over `allows`. A gate that reads SESSION.role, LOGINROLE or
       compares a person with ME directly is a finding — perms-scan.test.ts fails on it.
    3. COMMAND_OPS + cmdAuthorize — the command gate. Every registered command type maps
@@ -26,7 +26,10 @@
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store } from '../engine/hooks'
-import type { Actor, CommitEnvelope } from '../command/types'
+import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc } from '../engine/inputs'
+import { voidedOil } from '../engine/oil'
+import { oilPlanOf } from './inputgate-hook'
+import type { Actor, Change, CommitEnvelope } from '../command/types'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -195,11 +198,66 @@ export const mayEditSched = (): boolean => !!SESSION && may(T.sched, 'U', null, 
    [ACCOUNTS] (nothing is drawn before sign-in; the headless tests keep their scope). */
 export function viewerId(): string | null { return SESSION ? (me() ?? '') : (ME == null ? null : String(ME)) }
 
-/* personal inputs (the member-own rule, 27 Aug 26). No session → true: "a sessionless
-   test/boot context is not a member and is not gated" (the gates these replace). */
-export const mayFileInputFor = (pid: any): boolean => may(T.input, 'C', pid, true)
-export const mayEditInputOf = (pid: any): boolean => may(T.input, 'U', pid, true)
-export const mayDeleteInputOf = (pid: any): boolean => may(T.input, 'D', pid, true)
+/* PERSONAL INPUTS. The member-own rule (27 Aug 26) — and, since the group input (owner D654, D655, D658, D660 —
+   7 Oct 26; the build plan docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.13), a SECOND kind of
+   "mine" for a member: a Duty & other commitments input he FILED for another man, while the members' switch is on.
+   The questions take the RECORD now, since the answer depends on who filed it and its kind. They are what the doors
+   and the screens ask; what a member's command really changed is held by ownershipViolation below, which asks the
+   same rule of every changed record. No session → true: "a sessionless test/boot context is not a member and is not
+   gated" (the gates these replace).
+
+   WHICH KINDS A MEMBER MAY FILE FOR OTHERS: the type dropdown's "Duty & other commitments" group (his D655, reading 5
+   — engine/inputs.ts typeGroup 'other'), and NOT SANS Availability (his D658: a SANS member files his own only; an
+   admin files it for one SANS man or several) — with the switch on or off. Never a leave, a medical or an upchit. A
+   kind the app does not know is not a duty: typeGroup answers 'other' for it, so the known-kind test comes first. */
+export const memberFilesForOthers = (type: any): boolean => !!inpMeta(type) && typeGroup(type) === 'other' && !isSansAvail(type)
+/* is he the record's filer — who placed THIS man's record (`by`), or who filed the entry it belongs to (`grpBy`)?
+   A record with neither (filed before 7 Oct 26) has no filer: the man and an admin only (D56). */
+const filerOf = (pid: string, row: any): boolean =>
+  !!row && ((row.by != null && String(row.by) === pid) || (row.grpBy != null && String(row.grpBy) === pid))
+/* THE ONE TEST OF "HE FILED IT FOR ANOTHER MAN", on a record as it was (`before`) and as it is (`after`) — a filing
+   has no before, a deletion no after. The switch is on; the record stays the same man's (he never moves it to another
+   person — that stays a scheduler's); he is its filer, read from the record as it WAS on a change or a delete, as it
+   IS on a filing; and its kind on both sides is one he may file for others. The commit gate asks it of what a command
+   changed; Undo asks it of a step's recorded images, under the switch and the kinds as they stand NOW. */
+export function filedForOther(pid: string, before: any, after: any): boolean {
+  if (!before && !after) return false
+  if (!pid || !membersFileOn()) return false
+  if (before && after && String(before.person) !== String(after.person)) return false
+  if (!filerOf(String(pid), before || after)) return false
+  return (!before || memberFilesForOthers(before.type)) && (!after || memberFilesForOthers(after.type))
+}
+/* may he file an input of this kind for this man? An admin: anyone, any kind. A member: himself, any kind, as
+   always; another man only while the switch is on and the kind is one he may file for others. */
+export function mayFileInputFor(pid: any, type?: any): boolean {
+  const who = roleOf()
+  if (who === null) return true
+  if (allows(who, T.input, 'C', pid, identityOf(who))) return true        // an admin; a member for himself
+  if (who !== 'member' || pid == null || pid === '' || me() == null) return false
+  return membersFileOn() && memberFilesForOthers(type)
+}
+/* may he file ONE input of this kind for SEVERAL people? An admin: any kind but the medical ones and the upchit —
+   each man's needs his own document (D655, reading 4). A member: a kind he may file for others, while the switch is on. */
+export function mayFileGroup(type: any): boolean {
+  const who = roleOf()
+  if (who === null) return true
+  if (who === 'admin') return !needsDoc(type)
+  return who === 'member' && me() != null && membersFileOn() && memberFilesForOthers(type)
+}
+function mayChangeInput(row: any, act: Act): boolean {
+  const who = roleOf()
+  if (who === null) return true
+  if (!row) return false
+  if (allows(who, T.input, act, row.person, identityOf(who))) return true  // an admin; the man himself, in full
+  const pid = who === 'member' ? me() : null
+  return pid != null && filedForOther(pid, row, row)
+}
+/* may he change / delete this input? An admin; the man; its filer, for a kind he may file for others, switch on. */
+export const mayEditInput = (row: any): boolean => mayChangeInput(row, 'U')
+export const mayDeleteInput = (row: any): boolean => mayChangeInput(row, 'D')
+/* §11's own-row note for `Input`, word for word — perms.test.ts fails when docs/data-model.md says anything else
+   (D200: "the server's rules at the database step are a translation of an agreed list") */
+export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED for him (`filedBy` or `groupFiledBy` = my person; D654, D655, D658): I may create, change and delete it, and answer its OIL question for him (D660); never move it to another person'
 /* THE MEMBERS' SWITCH (owner D654 — "allow both admin and members (for now)"; D655, reading 6: "one switch puts it back
    to admins only"). One squadron setting, `memberfile`: absent = ON, `false` = OFF — anything else stored reads as ON.
    Written only by its admin command (`settings.memberfile`, state/memberfile.ts). Read live, never cached: a rollback
@@ -246,7 +304,7 @@ export const mayAwardOil = (): boolean => may(T.award, 'C', null, false)
    letter outright; 'required' — the command must name its owner (meta.owner /
    meta.owners) and the actor must be him (the Quals write names its row); 'optional' — an
    owner named must be him, none named leaves it to the writer's own check (the Leave War's
-   canEditRow, the input writers' mayEditInputOf). THE INPUT COMMANDS NAME NO OWNER (Fable's
+   canEditRow, the input writers' mayEditInput). THE INPUT COMMANDS NAME NO OWNER (Fable's
    code read, 26 Sep 26): what holds a member to his own inputs is the ownership invariant
    below, which reads the people on every input the command actually changed — stronger than
    an owner a caller claims (pinned through the real input route: accounts.test.ts AC7) */
@@ -415,8 +473,10 @@ function opAllows(who: Role, table: string, act: Act, own: OwnRule, actor: Actor
    reads what it DID — so a member's write can never touch another person's record,
    whatever door reached it and whatever owner a caller claimed (Astra R3-1/2/3, Fable
    R2-5). An admin and the system actor are not limited here. For a member:
-   - `inputs`   every changed input is his (its person before AND after); the input
-                order record rides along;
+   - `inputs`   every changed input is his (its person before AND after) — or one he FILED for another man, a
+                duty or commitment, while the members' switch is on; who placed a record is never forged; another
+                man's OIL answers only as the record's days and hours give (inputBreach below — the three tests);
+                the input order record rides along;
    - `people`   only his own row (D149);
    - `lw.cell`  only his own war row (id `war:person:date`); `lw.current` (which war is
                 shown) is his own view; every other war record — the war itself, the
@@ -439,9 +499,92 @@ const personOfInput = (v: any): string | null => (v && v.person != null ? String
    him (Fable's and Astra's code reads, 26 Sep 26 — the second, write-path guard the UI gates stand in front of; §11 —
    members read the schedule only). A refusal rolls the schedule back to its last committed state. */
 const SCHEDULE_RECORDS = new Set(['days', 'sched.book', 'sched.mutes', 'sched.week', 'sched.issuance', 'sched.retraction', 'weekstash'])
+/* ---- WHAT A MEMBER'S COMMAND MAY DO TO AN INPUT (the group input — the plan §3.13, "The commit gate") ----------------
+   THREE tests, each on every input the command changed:
+
+   2. WHOSE RECORD (asked first — it decides which of the others apply). EITHER his own — its person before and after
+      is him, as always — OR one he FILED for another man (filedForOther above: the switch on, the same man before and
+      after, he its filer, a kind he may file for others on both sides). Anything else is another person's input.
+   1. WHO PLACED IT IS NEVER FORGED — on his OWN records too, with the switch on or off (both plan readers' finding
+      G2: without it a member could name another man as the filer of his own input, and so hand him a right over it).
+      A record he CREATES names him as its filer; on his own record the name may be absent (a record with no filer
+      gives nobody a right), for another man it may not (who filed an input for a man is shown to him — D629). The one
+      exception is a PIECE the app cuts from a record of the same man that the same command changed or deleted (a
+      split, a trim, a leave cut by sick leave): it carries that record's filer, moment and group. A record he CHANGES
+      keeps who placed it and when, its group and its group's filer — except that a record with no group may take one,
+      with HIM as its filer, when he makes it a group. A new group names him its filer; a man added to an entry that
+      was there before the command takes that entry's filer.
+   3. ANOTHER MAN'S OIL ANSWERS — the filer writes them (his D660: "that person filing should answer for all"), and
+      only a well-formed answer: an answer he did not write is exactly what the app's own voiding rule leaves standing
+      (engine/oil.ts voidedOil); one he writes is for a day the record covers that asks the question, and is 0 or
+      exactly what the record's hours price — he can claim OIL for a man or decline it, never invent an amount. Which
+      days ask is the Leave War's to say (inputgate-hook.ts oilPlanOf); with no war wired nothing asks, so nothing new
+      can be written.
+
+   UNDO AND REDO. The restore must put back what was there — a record someone else placed, another man's answer the
+   step had voided — which tests 1 and 3 would call forgery. They are passed over ONLY for a record the timeline
+   verifies as a replay: the envelope is its own restore of a step this same person made, and the record is, image
+   for image, what that step recorded (undo/timeline.ts verifiedReplay, installed by state/undo-wire.ts). Test 2 still
+   applies to it. A command that merely calls itself `undo.restore` gains nothing: it is judged as any other. */
+type ReplayCheck = (env: CommitEnvelope) => ((c: Change) => boolean) | null
+let REPLAY: ReplayCheck | null = null
+export function setInputReplayCheck(fn: ReplayCheck | null): void { REPLAY = fn }
+
+const same = (a: any, b: any): boolean => (a ?? null) === (b ?? null)
+const filed = (x: any, y: any): boolean => same(x.by, y.by) && same(x.at, y.at) && same(x.grp, y.grp) && same(x.grpBy, y.grpBy)
+const isInputChange = (c: Change): boolean => c.collection === 'inputs' && c.id !== INPUT_ORDER
+function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: boolean): string | null {
+  const b: any = c.before ?? null, f: any = c.op === 'delete' ? null : (c.after ?? null)
+  const own = (b == null || personOfInput(b) === pid) && (f == null || personOfInput(f) === pid)
+  if (!own && !filedForOther(pid, b, f)) return `another person's input`
+  if (replayed || !f) return null
+  if (!b) {
+    /* a piece the app cut from a record of the same man this command changed or deleted */
+    const piece = env.changes.some(o => o !== c && isInputChange(o) && o.before != null
+      && personOfInput(o.before) === personOfInput(f) && filed(o.before, f))
+    if (!piece) {
+      if (own ? (f.by != null && String(f.by) !== pid) : String(f.by ?? '') !== pid) return `an input placed in another person's name`
+      const g = f.grp ?? null, gb = f.grpBy ?? null
+      if ((g == null) !== (gb == null)) return `a shared input without its filer`
+      if (g != null && String(gb) !== pid && !groupStood(env, g, gb)) return `a shared input filed in another person's name`
+    }
+  } else {
+    if (!same(b.by, f.by) || !same(b.at, f.at)) return `who placed an input`
+    if (!same(b.grp, f.grp) || !same(b.grpBy, f.grpBy)) {
+      const made = b.grp == null && b.grpBy == null && f.grp != null && f.grp !== '' && String(f.grpBy ?? '') === pid
+      if (!made) return `who filed a shared input`
+    }
+  }
+  if (own) return null
+  const oil = f.oil
+  if (oil == null) return null
+  if (typeof oil !== 'object' || Array.isArray(oil)) return `an OIL answer for another person`
+  const kept: Record<string, number> = (b ? voidedOil(b, f) : undefined) || {}
+  let plan: Map<string, number> | null = null
+  for (const k of Object.keys(oil)) {
+    if (k in kept && kept[k] === oil[k]) continue
+    if (!plan) plan = new Map(oilPlanOf(f).map(p => [p.iso, p.amt] as [string, number]))
+    const amt = plan.get(k)
+    if (amt == null || (oil[k] !== 0 && oil[k] !== amt)) return `an OIL answer the input's days and hours do not give`
+  }
+  return null
+}
+/* did this group stand, with this filer, BEFORE the command — a record of it the command did not create? */
+function groupStood(env: CommitEnvelope, grp: any, grpBy: any): boolean {
+  const made = new Set<string>()
+  for (const o of env.changes) {
+    if (!isInputChange(o)) continue
+    if (o.before == null) { made.add(o.id); continue }
+    const was: any = o.before
+    if (same(was.grp, grp) && same(was.grpBy, grpBy)) return true
+  }
+  return (INPUTS as any[]).some(r => r && r.iid && !made.has(String(r.iid)) && same(r.grp, grp) && same(r.grpBy, grpBy))
+}
+
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system' || a.role === 'admin') return null
+  let replayed: ((c: Change) => boolean) | null | undefined
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (a.role !== 'member') {
@@ -455,8 +598,9 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
     switch (c.collection) {
       case 'inputs': {
         if (c.id === INPUT_ORDER) break
-        const b = personOfInput(c.before), f = personOfInput(c.after)
-        if ((b != null && b !== pid) || (f != null && f !== pid)) return `another person's input (${where})`
+        if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+        const bad = inputBreach(env, c, pid, !!replayed && replayed(c))
+        if (bad) return `${bad} (${where})`
         break
       }
       case 'people': if (c.id !== pid) return `another person's row (${where})`; break

@@ -20,6 +20,7 @@ import {
   onCommit, commandStream, revisionOf, definePermission, anyone, deriveActor,
 } from '../command'
 import { commitAs, CmdRefused } from '../command/commit'
+import { deepEqual } from '../command/util'
 import type {
   Actor, Change, CommitEnvelope, EnlistableStore, Module, RecordEntry, Scope,
 } from '../command'
@@ -80,6 +81,11 @@ export interface UndoHooks {
      person goes by on screen (his callsign), or null — through a hook so the timeline stays free of the roster
      (the change-recording plan B6.3). */
   nameOf?(actor: Actor): string | null
+  /* THE FILER'S RULE, asked of a step's recorded images (the group input, plan §3.13): may this person reverse a
+     change to an input that is ANOTHER man's — one he filed for him, a kind he may file for others, the members'
+     switch on now? `before` / `after` are the record as the step found and left it (null: created / deleted). Through
+     a hook so the timeline stays free of the permission module's roster and settings; none installed = never. */
+  filerMay?(cur: Actor, before: unknown, after: unknown): boolean
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -446,6 +452,10 @@ function reverseRefusal(entry: UndoEntry, dir: 'undo' | 'redo'): string {
   const cur = currentActor()
   if (entry.actor.role === 'admin' && cur.role !== 'admin' && cur.personId != null && entry.actor.personId === cur.personId)
     return `Switch back to the admin view to ${dir} that.`
+  /* his own step, holding an input he filed for another man, and the filer's rule says no: the members' switch has
+     been turned off since (the plan §3.13) — he is told that, not that the change was someone else's */
+  if (cur.role !== 'admin' && isOwn(entry, cur) && othersInputs(entry, cur).length)
+    return `You can’t ${dir} that while filing for other people is switched off — the person it was filed for, or an admin, can change it.`
   return dir === 'undo' ? 'You can’t undo that — it was someone else’s change.' : 'You can’t redo that — it was someone else’s change.'
 }
 /* D148 (24 Sep 26) — "Undo reverses only your OWN changes": the same PERSON, whatever the role he made it in. Chosen on
@@ -455,15 +465,55 @@ function reverseRefusal(entry: UndoEntry, dir: 'undo' | 'redo'): string {
 function isOwn(entry: UndoEntry, cur: Actor): boolean {
   return (entry.actor.personId ?? null) === (cur.personId ?? null)
 }
+/* AN INPUT HE FILED FOR ANOTHER MAN (the group input — owner D654, D655; the build plan §3.13, both readers' finding
+   G3). A member's step may hold records whose person is not him: a Meeting he filed for another man, an entry he
+   filed for six. "Every record his own person's" would stop him undoing his own filing — so for each input in the
+   step that is another man's, the question the commit gate asks of a forward command is asked of the step's RECORDED
+   images (hooks.filerMay — state/perms.ts filedForOther: he its filer, the same man before and after, a kind he may
+   file for others), under the members' switch and the kinds as they stand NOW. Switched off, his Undo of a filing made
+   while it was on is refused — and is his again when it is turned back on. The same-person rule, the roles, the
+   revision checks and every barrier stay as they are (D148). */
+const inputOf = (x: unknown): any => (x && typeof x === 'object' ? x : null)
+function othersInputs(entry: UndoEntry, cur: Actor): Change[] {
+  const his = (x: any) => x == null || x.person == null || String(x.person) === cur.personId
+  return entry.forward.filter(ch => ch.collection === 'inputs' && ch.id !== '__order'
+    && !(his(inputOf(ch.before)) && his(ch.op === 'delete' ? null : inputOf(ch.after))))
+}
 export function mayReverse(entry: UndoEntry, cur: Actor): boolean {
   /* an admin may reverse only his own (D148 — the change-recording plan B6.1: "admin may reverse anything" is gone) */
   if (cur.role === 'admin') return isOwn(entry, cur)
-  return (
-    entry.actor.role !== 'admin' &&
-    cur.personId != null &&
-    entry.actor.personId === cur.personId &&
-    entry.owners.every(o => o.person == null || o.person === cur.personId)
-  )
+  if (!(entry.actor.role !== 'admin' && cur.personId != null && entry.actor.personId === cur.personId)) return false
+  if (!entry.owners.every(o => o.person == null || o.person === cur.personId || o.key.startsWith('inputs/'))) return false
+  return othersInputs(entry, cur).every(ch =>
+    !!hooks.filerMay && hooks.filerMay(cur, inputOf(ch.before), ch.op === 'delete' ? null : inputOf(ch.after)))
+}
+
+/* ---- a restore the commit gate may trust (the plan §3.13, "Undo and Redo") --
+   Undo and Redo must put back what was there — a record another man placed, an OIL answer the step had voided — which
+   the gate's own tests on a member's command would call forgery (state/perms.ts inputBreach, tests 1 and 3). The gate
+   passes them over ONLY for a record this function vouches for: the envelope is the restore THIS module is applying
+   right now (`origin: 'restore'`, caused by the step), the step was made by the same person, and the record is, image
+   for image, what the step recorded — its before-image on an Undo, its after-image on a Redo. A command that merely
+   calls itself `undo.restore` is not being applied here, so it gains nothing. */
+let APPLYING: { entry: UndoEntry; changes: Change[] } | null = null
+const landed = (x: unknown): unknown => {
+  const o: any = inputOf(x)
+  if (!o || o.acc !== 'g') return x
+  const c = { ...o }; delete c.acc; return c      // the landing mark is re-derived by a restore, never trusted from the image
+}
+export function verifiedReplay(env: { origin: string; type: string; causedBy?: number; actor: Actor }): ((c: Change) => boolean) | null {
+  const a = APPLYING
+  if (!a || env.origin !== 'restore' || env.type !== 'undo.restore' || env.causedBy !== a.entry.seq) return null
+  if ((a.entry.actor.personId ?? null) !== (env.actor.personId ?? null)) return null
+  /* a closure may write one record twice (never coalesced): what it is left as is the LAST image */
+  const want = new Map<string, Change>()
+  for (const ch of a.changes) if (ch.collection === 'inputs') want.set(ch.id, ch)
+  return (c: Change): boolean => {
+    const w = c.collection === 'inputs' ? want.get(c.id) : undefined
+    if (!w) return false
+    if (w.op === 'delete') return c.op === 'delete'
+    return c.op === 'put' && deepEqual(landed(w.after), landed(c.after))
+  }
 }
 
 /* ---- the publication barrier (§6.3) -------------------------------------- */
@@ -639,7 +689,17 @@ function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo')
   }
   const cur = currentActor()
   const pulledBack = pulledBackDays(entry)   // read BEFORE the apply, from the timeline as it stands
-  const r = commitAs(
+  /* this restore, named for the commit gate's question (verifiedReplay) — for exactly as long as it is being applied */
+  APPLYING = { entry, changes }
+  let r: ReturnType<typeof commitAs>
+  try { r = restoreCommit(entry, changes, dir, byStore, expectedRevs, cur, pulledBack) } finally { APPLYING = null }
+  /* a DELIBERATE refusal raised inside (CmdRefused — a restore rule's second check, B5 §11.3) keeps its own sentence */
+  if ((r as any).ok === false) return { ok: false, reason: (r as any).reason === 'refused' && (r as any).message ? `REFUSE: ${(r as any).message}` : ((r as any).message || 'conflict') }
+  return { ok: true, seq: (r as any).seq }
+}
+function restoreCommit(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo', byStore: Map<EnlistableStore, RecordEntry[]>,
+  expectedRevs: Record<string, number>, cur: Actor, pulledBack: Array<{ weekId: string; di: number }>): ReturnType<typeof commitAs> {
+  return commitAs(
     {
       type: 'undo.restore',
       scope: entry.scope,
@@ -666,9 +726,6 @@ function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo')
     },
     { actor: cur, origin: 'restore', causedBy: entry.seq },
   )
-  /* a DELIBERATE refusal raised inside (CmdRefused — a restore rule's second check, B5 §11.3) keeps its own sentence */
-  if ((r as any).ok === false) return { ok: false, reason: (r as any).reason === 'refused' && (r as any).message ? `REFUSE: ${(r as any).message}` : ((r as any).message || 'conflict') }
-  return { ok: true, seq: (r as any).seq }
 }
 
 /* ---- snap-to-context (§8.1) ---------------------------------------------- */

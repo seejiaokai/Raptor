@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -38,7 +38,7 @@ import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
-import { me, mayEditInputOf, mayDeleteInputOf } from '../state/perms'
+import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers } from '../state/perms'
 import { INPEDIT, setInpEdit, OILASK, setOilAsk, setMedMove } from './pops'
 import { CURPAGE, revealInput } from '../state/view'
 import { useVersion } from './useStore'
@@ -805,6 +805,15 @@ export const medSegmentsProtected = (base: any, segs: any[], keepTail?: any, ent
   segs.some(g => inputProtected({ ...base, date: ordLabel(g.startOrd, base.yr), endDate: ordLabel(g.endOrd, base.yr) }) ||
     medPlanProtected(newMedTrimPlan(base.person, base.type, g.startOrd, g.endOrd, except, keepTail, entryEnd)))
 
+/* WHY A MEMBER MAY NOT FILE THIS KIND FOR ANOTHER MAN, in a sentence — one wording for the new-input door, the edit door
+   and (with the Inputs calendar) the people picker's own line. The members' switch being off is said as that; else the
+   kind is named: a member files for others only duties and commitments (D655), never SANS availability (D658). */
+export function fileForOtherRefusal(type: any): string {
+  if (!membersFileOn() && memberFilesForOthers(type)) return 'Filing for other people is switched off — you can file this only for yourself'
+  const what = isLeave(type) ? 'leave' : isUpchit(type) ? 'an upchit' : isDownchit(type) ? 'a medical entry' : isSansAvail(type) ? 'SANS availability' : 'this'
+  return `You can file ${what} only for yourself`
+}
+
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any, onAdded?: (row:any)=>void): boolean {
   if (!draft) return false
   /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only
@@ -819,7 +828,14 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
        without access (a guest) is nobody's person and files nothing */
     const mine = me()
     if (mine == null) { HOOKS.toast('Sign in with your own account to file an input', 'warn'); return false }
-    draft = { ...draft, person: mine }
+    /* A MEMBER'S DRAFT FOR ANOTHER MAN IS ASKED, NEVER RE-POINTED AT HIMSELF IN SILENCE (the group input — owner D654,
+       D655, D658; the build plan §3.13). Until 7 Oct 26 this line wrote his own name over whatever the draft said:
+       right while a member could file for nobody else, and now the quiet substitution of one man for another that the
+       picker's rule forbids ("nothing is ever substituted for what he picked"). A draft naming nobody is still his
+       own; one naming another man is filed for that man where the one rule allows it (perms.ts mayFileInputFor — a
+       duty or a commitment, the members' switch on) and refused with the sentence where it does not. */
+    if (draft.person == null || draft.person === '') draft = { ...draft, person: mine }
+    else if (!mayFileInputFor(draft.person, draft.type)) { HOOKS.toast(fileForOtherRefusal(draft.type), 'warn'); return false }
   }
   const n = normalizeInputDraft(draft, null)
   if (!n) return false
@@ -923,7 +939,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      relink) stay person-scoped to the row's own person, so a member's cascade
      is their own row and still passes; a sessionless test/boot context is not
      a member and is not gated. */
-  if (!mayEditInputOf(r.person)) {   // [ACCOUNTS]: the one rule, perms.ts (member own, admin any, no one else)
+  if (!mayEditInput(r)) {   // [ACCOUNTS]: the one rule, perms.ts (the man, whoever filed it for him, an admin — no one else)
     HOOKS.toast('You can only edit your own inputs', 'warn')
     return false
   }
@@ -936,6 +952,13 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      untouched person sails through). */
   if (!canEditSched() && draft.person !== r.person) {
     HOOKS.toast('Only a scheduler can move an input to another person', 'warn')
+    return false
+  }
+  /* …and what a member FILED for another man stays a kind he may file for him (the group input, plan §3.13): retyping
+     his Meeting for Hex into Hex's leave is refused here with its sentence — the commit gate would roll it back with
+     none. His own input retypes as freely as ever (mayFileInputFor: himself, any kind). */
+  if (!canEditSched() && !isMe(draft.person) && !mayFileInputFor(draft.person, draft.type)) {
+    HOOKS.toast(fileForOtherRefusal(draft.type), 'warn')
     return false
   }
   const n = normalizeInputDraft(draft, r)
@@ -1337,7 +1360,7 @@ export function removeInput(r: any) {
      (and the render gate): any signed-in session that cannot edit the
      schedule — not the role literal 'member', which no account carries and
      which left this gate inert in production. */
-  if (!mayDeleteInputOf(r.person)) {   // [ACCOUNTS]: the one rule, perms.ts
+  if (!mayDeleteInput(r)) {   // [ACCOUNTS]: the one rule, perms.ts
     HOOKS.toast('You can only delete your own inputs', 'warn')
     return false
   }
@@ -1718,9 +1741,9 @@ export function InputEditor() {
   const who = r && PEOPLE[r.person] ? PEOPLE[r.person].cs : (r ? String(r.person) : '')
   /* READ ONLY for an input its reader may not change (the absence-record re-test, W1-F3, 26 Sep 26): a member reaching
      another man's input — the calendar's chip, the day popover's row — was shown Delete and Save, each refused only
-     when pressed. The write path's own rule (perms.ts mayEditInputOf), asked before the form is drawn: he may still
+     when pressed. The write path's own rule (perms.ts mayEditInput), asked before the form is drawn: he may still
      READ it (D211 — type, remarks, documents), with nothing offered that he cannot use. */
-  const readOnly = !isNew && !!r && !mayEditInputOf(r.person)
+  const readOnly = !isNew && !!r && !mayEditInput(r)
   /* a NEW row's dates live on the DRAFT (the range picker moves them); an
      edit's stay on the row, whose dates this dialog never changes */
   const when = !r ? '' : (isNew && draft && draft.start)

@@ -114,7 +114,7 @@ import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-s
 import { schedStore, schedApplyEnd, resyncSchedBaseline } from '../state/sched-commit'
 import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
-import { setPublishGate } from '../state/inputgate-hook'
+import { setPublishGate, setOilPlan } from '../state/inputgate-hook'
 import { stampPlaced, stampChanged } from '../state/inputstamp'
 import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
 import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer } from '../state/flyplan-model'
@@ -229,6 +229,8 @@ export function installAbsenceDoor(): void {
   setRefusalHook(() => { refreshAbsences(true) })
   installInputGate()
   setPublishGate(publishFlagsBids)
+  /* which days of an input ask the OIL question, for the check on a filer's answers (state/perms.ts - D660) */
+  setOilPlan(oilAskPlan)
   /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
      this before it speaks, and only Leave War can answer for a public holiday
      (the engine covers Saturday and Sunday from the day's own name). One
