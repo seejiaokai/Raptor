@@ -1450,12 +1450,12 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
     expect(getState().eventDefs.some(d => d.name === 'Standby')).toBe(true)
   })
 
-  it('boots with the four seeded event types', () => {
+  it('boots with the four seeded event types, each with the short form the grid prints (D645)', () => {
     expect(getState().eventDefs).toEqual([
-      { name: 'PH', kind: 'off' },
-      { name: 'Off day', kind: 'free' },
-      { name: 'No Leave', kind: 'nolv' },
-      { name: 'SC', kind: 'work' },
+      { name: 'PH', kind: 'off', short: 'PH' },
+      { name: 'Off day', kind: 'free', short: 'OFF' },
+      { name: 'No Leave', kind: 'nolv', short: 'NL' },
+      { name: 'SC', kind: 'work', short: 'SC' },
     ])
   })
 

@@ -10,7 +10,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
   initStore, getState, setRole, setViewer, setCell, setBidStates, setDayAward, grantTo, advanceStage,
-  setBidWindow, setBalance, setPostOut, holidayAdd, holidayChange, holidayRemove,
+  setBidWindow, setBalance, setPostOut, holidayAdd, holidayChange, holidayRemove, saveEvent, deleteEvent, setDayEvent,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { allows, T, type Act, type Role } from '../state/perms'
@@ -45,6 +45,11 @@ const CASES: { what: string; table: string; letter: Act; owner: string | null; r
   { what: 'a holiday added from the Holidays list', table: T.war, letter: 'U', owner: null, run: () => holidayAdd({ kind: 'ph', name: '', from: '2026-05-01', to: '2026-05-01' }).ok },
   { what: 'a holiday changed from the Holidays list', table: T.war, letter: 'U', owner: null, run: () => holidayChange(XMAS, { kind: 'ph', name: 'Christmas Day', from: '2026-12-25', to: '2026-12-25' }).ok },
   { what: 'a holiday removed from the Holidays list', table: T.war, letter: 'U', owner: null, run: () => holidayRemove(XMAS).ok },
+  /* the Event sheet's Save and Delete, each one command (plan §3.12) — the leave period's own record too */
+  { what: 'an event saved from the Event sheet', table: T.war, letter: 'U', owner: null, run: () => saveEvent({ line: 0, date: '2026-05-12', scope: 'day', text: 'National Day', kind: 'off', short: 'NAT' }).ok },
+  { what: 'an event deleted from the Event sheet', table: T.war, letter: 'U', owner: null, run: () => {
+      const was = getState().role; setRole('admin'); setDayEvent('2026-05-13', 0, 'Visit'); setRole(was)
+      return deleteEvent(0, '2026-05-13') } },
 ]
 
 describe('D200 (3): the Leave War\'s writers agree with the permissions matrix (§11)', () => {

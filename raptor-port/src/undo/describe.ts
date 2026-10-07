@@ -197,9 +197,20 @@ function holidayLabel(entry: UndoEntry): string {
   if (entry.type === 'lw.holiday.change') return `a change to the ${off ? 'Off day' : 'public holiday'}${on}`
   return `${off ? 'an Off day' : 'a public holiday'}${on}`
 }
+/* THE EVENT SHEET'S STEPS (the plan §3.12) — from the note the command left (leavewar/state/store.ts saveEvent /
+   deleteEvent): the event's name and its dates. `the event “National Day” on 12–14 May`. */
+function eventLabel(entry: UndoEntry): string {
+  let d: any = null
+  try { d = JSON.parse(entry.detail || 'null') } catch { /* no note */ }
+  const dated = d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.from)) && /^\d{4}-\d{2}-\d{2}$/.test(String(d.to))
+  const on = dated ? ` on ${flySpan([String(d.from), String(d.to)])}` : ''
+  const name = d && typeof d.text === 'string' && d.text.trim() ? `the event “${d.text.trim()}”` : 'an event'
+  return `${entry.type === 'lw.event.remove' ? 'removing ' : ''}${name}${on}`
+}
 function lwLabel(entry: UndoEntry): string {
   if (entry.type === 'lw.stage') return stageLabel(entry) || 'a stage change on the Leave War'
   if (entry.type.startsWith('lw.holiday.')) return holidayLabel(entry)
+  if (entry.type.startsWith('lw.event.')) return eventLabel(entry)
   if (TYPE_PHRASE[entry.type]) return TYPE_PHRASE[entry.type]
   const colls = new Set(entry.forward.map(c => c.collection))
   const cell = lwCellLabel(entry)

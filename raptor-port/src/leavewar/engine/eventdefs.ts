@@ -33,6 +33,8 @@
 import type { DayInfo } from './period'
 import type { EventBand } from './period'
 import { isWeekend } from './period'
+import { derivedShort, normShort, SHORT_RULE } from './eventshort'
+export { derivedShort, normShort, SHORT_RULE } from './eventshort'
 
 export type EventKind = 'off' | 'free' | 'nolv' | 'work'
 
@@ -41,6 +43,10 @@ export interface EventDef {
    *  (see `defKey`), so `ph`, `PH` and ` PH ` are one type. */
   name: string
   kind: EventKind
+  /** What the grid prints for an event of this name — one to three letters or digits (engine/eventshort.ts; owner
+   *  D645: every preset carries its own). Absent on a library stored before short forms, and on a preset whose box was
+   *  left empty: its events then print the form derived from the name (`shortOf`). */
+  short?: string
 }
 
 export const EVENT_KINDS: readonly EventKind[] = ['off', 'free', 'nolv', 'work']
@@ -52,10 +58,10 @@ export const MAX_EVENTDEFS = 40, MAX_DEFNAME = 24
    working commitment. A squadron edits this list; these are only the
    starting point. */
 export const EVENTDEF_STD: readonly EventDef[] = Object.freeze([
-  { name: 'PH', kind: 'off' },
-  { name: 'Off day', kind: 'free' },
-  { name: 'No Leave', kind: 'nolv' },
-  { name: 'SC', kind: 'work' },
+  { name: 'PH', kind: 'off', short: 'PH' },
+  { name: 'Off day', kind: 'free', short: 'OFF' },
+  { name: 'No Leave', kind: 'nolv', short: 'NL' },
+  { name: 'SC', kind: 'work', short: 'SC' },
 ] as EventDef[])
 
 export function seedEventDefs(): EventDef[] {
@@ -76,6 +82,21 @@ export function classifyEvent(defs: EventDef[], text: string): EventKind | null 
   if (!k) return null
   const hit = defs.find(d => defKey(d.name) === k)
   return hit ? hit.kind : null
+}
+
+/** WHAT THE GRID PRINTS for an event (the build plan §3.12) — the one answer every screen asks: the event's OWN short
+ *  form; else the short form of the preset whose NAME matches its text (the same fold `classifyEvent` matches a kind
+ *  on); else one derived from the text. A short form that breaks the rule is passed over, never shown. So an event
+ *  saved before short forms existed prints short at once, with nothing converted (D56) — "No Leave" typed last month
+ *  prints NL. An OLD event whose name holds no letter or digit prints a dot (a new one cannot be saved without a short
+ *  form typed — the Event sheet asks). '' for no event. */
+export function shortOf(defs: readonly EventDef[], text: string, short?: string | null): string {
+  const k = defKey(text ?? '')
+  if (!k) return ''
+  const own = normShort(short)
+  if (own) return own
+  const preset = defs.find(d => defKey(d.name) === k)
+  return (preset && normShort(preset.short)) || derivedShort(text) || '•'
 }
 
 /** The colour a whole day COLUMN takes, from every event on it — both event
@@ -114,23 +135,27 @@ export function columnKindFor(defs: EventDef[], day: DayInfo, bands: EventBand[]
  *  colour on the Leave War. The name is the text of the first event of the winning kind, the day's own lines before
  *  any band. A day carrying only the seeded holiday flag (`ph`, no event) is a public holiday named "PH" — the same
  *  day `isNonWorkingDay` already counts as one. `line` and `band` say where the record is, for the list's writers. */
-export interface HolidayAt { kind: 'off' | 'free'; name: string; line: number | null; band: EventBand | null }
+export interface HolidayAt {
+  kind: 'off' | 'free'; name: string; line: number | null; band: EventBand | null
+  /** the event's OWN short form, null where it has none — a reader asks `shortOf(defs, name, short)` for what prints */
+  short: string | null
+}
 export function holidayAt(defs: readonly EventDef[], day: DayInfo, bands: readonly EventBand[]): HolidayAt | null {
   let free: HolidayAt | null = null
   for (let i = 0; i < day.events.length; i++) {
     const t = day.events[i]
     if (!t) continue
     const k = day.eventKinds?.[i] ?? classifyEvent(defs as EventDef[], t)
-    if (k === 'off') return { kind: 'off', name: t, line: i, band: null }
-    if (k === 'free' && !free) free = { kind: 'free', name: t, line: i, band: null }
+    if (k === 'off') return { kind: 'off', name: t, line: i, band: null, short: normShort(day.eventShorts?.[i]) }
+    if (k === 'free' && !free) free = { kind: 'free', name: t, line: i, band: null, short: normShort(day.eventShorts?.[i]) }
   }
   for (const b of bands) {
     if (b.from > day.date || day.date > b.to) continue
     const k = b.kind ?? classifyEvent(defs as EventDef[], b.text)
-    if (k === 'off') return { kind: 'off', name: b.text, line: b.line, band: b }
-    if (k === 'free' && !free) free = { kind: 'free', name: b.text, line: b.line, band: b }
+    if (k === 'off') return { kind: 'off', name: b.text, line: b.line, band: b, short: normShort(b.short) }
+    if (k === 'free' && !free) free = { kind: 'free', name: b.text, line: b.line, band: b, short: normShort(b.short) }
   }
-  if (day.ph) return { kind: 'off', name: 'PH', line: null, band: null }
+  if (day.ph) return { kind: 'off', name: 'PH', line: null, band: null, short: null }
   return free
 }
 
@@ -168,7 +193,7 @@ export function readEventDefs(x: unknown): EventDef[] | null {
   for (const row of x) {
     if (out.length >= MAX_EVENTDEFS) break
     if (!row || typeof row !== 'object') continue
-    const { name, kind } = row as Record<string, unknown>
+    const { name, kind, short } = row as Record<string, unknown>
     if (typeof name !== 'string' || typeof kind !== 'string') continue
     if (!EVENT_KINDS.includes(kind as EventKind)) continue
     const clean = name.trim()
@@ -176,7 +201,9 @@ export function readEventDefs(x: unknown): EventDef[] | null {
     const key = defKey(clean)
     if (seen.has(key)) continue
     seen.add(key)
-    out.push({ name: clean, kind: kind as EventKind })
+    /* its short form through the one rule: a bad one is dropped and the preset kept — its events print the derived form */
+    const sh = normShort(short)
+    out.push({ name: clean, kind: kind as EventKind, ...(sh ? { short: sh } : {}) })
   }
   return out
 }
@@ -185,20 +212,24 @@ export function readEventDefs(x: unknown): EventDef[] | null {
    error sentence for the sheet to show — none mutates in place, so the store
    can treat the result as it treats any other derived state. */
 
-export function addEventDef(defs: EventDef[], name: string, kind: EventKind): EventDef[] | string {
+export function addEventDef(defs: EventDef[], name: string, kind: EventKind, short?: string): EventDef[] | string {
   const clean = name.trim()
   if (!clean) return 'An event type needs a name'
   if (clean.length > MAX_DEFNAME) return `An event type name is at most ${MAX_DEFNAME} characters`
   if (defs.length >= MAX_EVENTDEFS) return `The list holds at most ${MAX_EVENTDEFS} event types`
   const key = defKey(clean)
   if (defs.some(d => defKey(d.name) === key)) return `${clean} is already an event type`
-  return [...defs, { name: clean, kind }]
+  /* an empty box is "none typed" — its events print the form derived from the name; anything else must be a short form */
+  const typed = short !== undefined && short.trim() !== ''
+  const sh = typed ? normShort(short) : null
+  if (typed && !sh) return SHORT_RULE
+  return [...defs, { name: clean, kind, ...(sh ? { short: sh } : {}) }]
 }
 
 export function updateEventDef(
   defs: EventDef[],
   index: number,
-  patch: { name?: string; kind?: EventKind },
+  patch: { name?: string; kind?: EventKind; short?: string },
 ): EventDef[] | string {
   if (index < 0 || index >= defs.length) return 'That event type is gone'
   const cur = defs[index]!
@@ -208,7 +239,14 @@ export function updateEventDef(
   if (name.length > MAX_DEFNAME) return `An event type name is at most ${MAX_DEFNAME} characters`
   const key = defKey(name)
   if (defs.some((d, i) => i !== index && defKey(d.name) === key)) return `${name} is already an event type`
-  return defs.map((d, i) => (i === index ? { name, kind } : d))
+  /* AN EDIT KEEPS WHAT IT DID NOT NAME (the plan §3.12, both readers' finding D): this rebuilt `{ name, kind }`, and a
+     rename would have erased the preset's short form. Named and empty = cleared; named and not a short form = refused. */
+  let short = normShort(cur.short)
+  if (patch.short !== undefined) {
+    short = patch.short.trim() === '' ? null : normShort(patch.short)
+    if (patch.short.trim() !== '' && !short) return SHORT_RULE
+  }
+  return defs.map((d, i) => (i === index ? { name, kind, ...(short ? { short } : {}) } : d))
 }
 
 export function removeEventDef(defs: EventDef[], index: number): EventDef[] {

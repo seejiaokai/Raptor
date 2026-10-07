@@ -378,6 +378,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   /* the Holidays list's three writers (leavewar/state/store.ts holidayAdd / holidayChange / holidayRemove — the Inputs /
      SANS redesign, plan §3.4): a public holiday or an Off day is the leave period's own record, an admin's to change */
   'lw.holiday.add': op(T.war, 'U'), 'lw.holiday.change': op(T.war, 'U'), 'lw.holiday.remove': op(T.war, 'U'),
+  /* the Event sheet's Save and Delete, each one command (leavewar/state/store.ts saveEvent / deleteEvent — plan §3.12):
+     a day's event is the leave period's own record too, an admin's to change */
+  'lw.event.save': op(T.war, 'U'), 'lw.event.remove': op(T.war, 'U'),
   /* [OIL-AWARD-IS-A-GRANT] (Astra's round-2 read, R2-01): an OIL award is written under ITS row of the table, a ledger
      entry (another pool's credit, a correction) under the ledger's, and a clear that takes an award beside a bid names
      both — a member's clear takes no award and runs as `lw.edit` */

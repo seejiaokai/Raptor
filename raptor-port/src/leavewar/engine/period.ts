@@ -10,6 +10,7 @@ export type Stage = 'draft' | 'open' | 'closed' | 'published'
 // Type-only — eventdefs.ts imports DayInfo from here the same way; both
 // directions are erased at compile so there is no runtime cycle.
 import type { EventKind } from './eventdefs'
+import { normShort } from './eventshort'
 
 /**
  * A MERGED event — one label shown as a single cell across a range of days, on
@@ -36,6 +37,9 @@ export interface EventBand {
    *  `null`/absent means untagged — the word still classifies through the
    *  library if it matches a type there (instance wins over library). */
   kind?: EventKind | null
+  /** THIS band's own short form — what the grid prints where the bar is too narrow for its text (engine/eventshort.ts;
+   *  the build plan §3.12). Absent = none of its own: `shortOf` then answers from the preset or the text. */
+  short?: string | null
 }
 
 export interface DayInfo {
@@ -51,6 +55,11 @@ export interface DayInfo {
    *  absent, as on every older war) means untagged, and the word still
    *  classifies through the library. Read via `dayEventKind`. */
   eventKinds?: (EventKind | null)[]
+  /** Per-slot SHORT FORMS for `events`, same index — what the grid prints for each (engine/eventshort.ts; the build
+   *  plan §3.12). Sparse and optional exactly as `eventKinds` is: absent on every day that never had one typed, and a
+   *  missing entry means "none of its own" — `shortOf` then answers from the preset or the text. Read via
+   *  `dayEventShort`. Text, kind and short form are written TOGETHER (`writeDayEvent`). */
+  eventShorts?: (string | null)[]
   /** Leave is discouraged. Bids are still accepted — warn, never block. */
   blocked: boolean
   blockedReason: string
@@ -118,6 +127,13 @@ export function dayEvent(day: DayInfo, line: number): string {
  *  library type; callers fold the two (`instance ?? classifyEvent`). */
 export function dayEventKind(day: DayInfo, line: number): EventKind | null {
   return day.eventKinds?.[line] ?? null
+}
+
+/** One day's own SHORT FORM on an event row, `null` past the end, where none was typed, or where the stored value
+ *  breaks the rule (a hand-edited store) — the bounds-checked read, as `dayEventKind` is for the tag. `null` does not
+ *  mean "prints nothing": callers ask `shortOf`, which falls back to the preset and then the text. */
+export function dayEventShort(day: DayInfo, line: number): string | null {
+  return normShort(day.eventShorts?.[line])
 }
 
 // CACHED (3 Sep 26). The grid calls `addDays` / `weekday` for every one of
@@ -279,9 +295,20 @@ function writeEventLine(events: string[], line: number, text: string): string[] 
  *  write sets both: an edit that drops the tag must clear the stored one, or
  *  yesterday's tag would silently colour today's different word.
  *  (Moved here from state/store.ts, 7 Oct 26 — the store's writers and engine/holidays.ts share it.) */
-export function writeDayEvent(d: DayInfo, line: number, text: string, kind: EventKind | null): DayInfo {
+export function writeDayEvent(d: DayInfo, line: number, text: string, kind: EventKind | null, short: string | null = null): DayInfo {
   const kinds = [...(d.eventKinds ?? [])]
   while (kinds.length <= line) kinds.push(null)
   kinds[line] = text ? kind : null // a cleared event keeps no tag behind
-  return { ...d, events: writeEventLine(d.events, line, text), eventKinds: kinds }
+  const out: DayInfo = { ...d, events: writeEventLine(d.events, line, text), eventKinds: kinds }
+  /* THE SHORT FORM RIDES THE SAME WRITE (the build plan §3.12 — text, kind and short form travel together): every
+     write sets it, so a write that names none clears the one that was there, exactly as the tag is. A day that never
+     had one keeps no list at all — it is stored exactly as before. */
+  const sh = text ? normShort(short) : null
+  if (sh || d.eventShorts) {
+    const shorts = [...(d.eventShorts ?? [])]
+    while (shorts.length <= line) shorts.push(null)
+    shorts[line] = sh
+    out.eventShorts = shorts
+  }
+  return out
 }

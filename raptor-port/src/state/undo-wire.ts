@@ -87,7 +87,7 @@ function schedDayOf(entry: UndoEntry): number | null {
    the date is the LAST segment — a warId may itself contain ':'). */
 function lwDateOf(entry: UndoEntry): string | null {
   /* a holiday added, changed or removed from the Holidays list: its first day, from the command's own note */
-  if (typeof entry.type === 'string' && entry.type.startsWith('lw.holiday.')) {
+  if (typeof entry.type === 'string' && (entry.type.startsWith('lw.holiday.') || entry.type.startsWith('lw.event.'))) {
     try { const d = JSON.parse(entry.detail || 'null'); if (d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.from))) return String(d.from) } catch { /* no note */ }
   }
   for (const ch of entry.forward) {

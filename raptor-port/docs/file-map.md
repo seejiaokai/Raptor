@@ -459,6 +459,13 @@ SANS people committed to F, O and A on a date, per seat, each once a day, never 
 roster marks SANS (`sansfly.test.ts`); it replaces `ui/sans-calendar-model.ts activityPeopleOn` when the SANS calendar is
 re-made (step 4). The same block of `sync.ts` re-exports the plan's readers and writers for the war's rows and holds the
 ONE join, `flyAnswer(iso)` / `flyMonth(y, m)` (`src/leavewar/flyanswer.test.ts`).
+`src/leavewar/engine/eventshort.ts` - an event's SHORT FORM, what a day cell prints for it (the Inputs / SANS redesign,
+plan §3.12; D643–D645): `normShort`, the ONE rule (capitals first, then one to three of A–Z and 0–9) every write and
+every read goes through, `SHORT_RULE` its refusal, and `derivedShort` (initials of the words, else the first three). The
+one answer to "what does the grid print" is `engine/eventdefs.ts shortOf` — the event's own, else its preset's, else
+derived. Text, kind and short form are written together by `engine/period.ts writeDayEvent` and by every store writer;
+the Event sheet's Save and Delete are each ONE command, `state/store.ts saveEvent` / `deleteEvent` (`lw.event.save` /
+`lw.event.remove`). Tests: `engine/eventshort.test.ts`, `eventshort-store.test.ts`.
 `src/leavewar/engine/holidays.ts` - the pure half of the Holidays list's three writers: the first free Event row across
 a range, a holiday written as a tagged day event or a merged band, and the record a list line stands for taken away only
 while it is still what the line said. The store's half is `state/store.ts` `holidayAdd` / `holidayChange` /

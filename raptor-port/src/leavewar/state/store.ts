@@ -68,6 +68,12 @@ import {
   drawnFrom,
   localToday,
   bandOverlaps,
+  bandAt,
+  defKey,
+  dayEventShort,
+  normShort,
+  shortOf,
+  SHORT_RULE,
   warHolding,
   STAGE_ORDER,
   pickDefaultPeriodId,
@@ -743,7 +749,7 @@ function readWar(x: unknown): LeaveWar | null {
   const readDays: DayInfo[] = []
   for (const d of days) {
     if (!isPlainObject(d)) return null
-    const { date, events, eventKinds, blocked, blockedReason, ph } = d
+    const { date, events, eventKinds, eventShorts, blocked, blockedReason, ph } = d
     if (typeof date !== 'string') return null
     // At LEAST two event lines (the historic default), and any number beyond
     // that (an admin can add rows since 18 Aug 26). Every entry a string.
@@ -758,7 +764,16 @@ function readWar(x: unknown): LeaveWar | null {
     const readKinds: (EventKind | null)[] = Array.isArray(eventKinds)
       ? eventKinds.map(k => (typeof k === 'string' && EVENT_KINDS.includes(k as EventKind) ? (k as EventKind) : null))
       : []
-    readDays.push({ date, events: [...events], eventKinds: readKinds, blocked, blockedReason, ph })
+    /* THE SHORT FORMS ARE NAMED HERE OR THEY VANISH ON A RELOAD (the build plan §3.12): this rebuilds a day from the
+       fields it names and drops the rest. Read as leniently as the tags — absent on every day stored before short
+       forms, and an entry that breaks the rule reads as none (engine/eventshort.ts), never failing the day. A day
+       with none keeps no list, so it is stored exactly as it was. */
+    const readShorts: (string | null)[] = Array.isArray(eventShorts) ? eventShorts.map(s => normShort(s)) : []
+    readDays.push({
+      date, events: [...events], eventKinds: readKinds,
+      ...(readShorts.some(Boolean) ? { eventShorts: readShorts } : {}),
+      blocked, blockedReason, ph,
+    })
   }
 
   // Bands are READ LENIENTLY, like the window above: a war stored before
@@ -773,7 +788,7 @@ function readWar(x: unknown): LeaveWar | null {
     if (!Array.isArray(bands)) return null
     for (const b of bands) {
       if (!isPlainObject(b)) return null
-      const { line, from: bf, to: bt, text, kind } = b
+      const { line, from: bf, to: bt, text, kind, short } = b
       // Any row an admin can have (variable event rows, 18 Aug 26) — the old
       // `0 | 1` check silently dropped a band on an added row at reload.
       if (typeof line !== 'number' || !Number.isInteger(line) || line < 0 || line >= MAX_EVENT_ROWS) continue
@@ -783,7 +798,9 @@ function readWar(x: unknown): LeaveWar | null {
       // The band's instance tag, read as leniently as the days' (null when
       // absent or unrecognised).
       const bk = typeof kind === 'string' && EVENT_KINDS.includes(kind as EventKind) ? (kind as EventKind) : null
-      readBands.push({ line, from: bf, to: bt, text, kind: bk })
+      /* its short form, named here for the same reason as a day's above — through the one rule */
+      const bs = normShort(short)
+      readBands.push({ line, from: bf, to: bt, text, kind: bk, ...(bs ? { short: bs } : {}) })
     }
   }
 
@@ -1471,8 +1488,9 @@ function lwRegisterCommands(): void {
      the award's, the ledger's) rather than the bid's */
   for (const t of ['lw.award', 'lw.ledger', 'lw.clear']) cmdDefinePermission(t, cmdAnyone)
   /* the Holidays list's three writers (holidayAdd / holidayChange / holidayRemove below): their own types so Undo can
-     say "a public holiday on 9 Aug"; admin only, by perms.ts COMMAND_OPS and by the writers themselves */
-  for (const t of ['lw.holiday.add', 'lw.holiday.change', 'lw.holiday.remove']) cmdDefinePermission(t, cmdAnyone)
+     say "a public holiday on 9 Aug"; admin only, by perms.ts COMMAND_OPS and by the writers themselves — and the
+     Event sheet's Save and Delete (saveEvent / deleteEvent), for the same two reasons */
+  for (const t of ['lw.holiday.add', 'lw.holiday.change', 'lw.holiday.remove', 'lw.event.save', 'lw.event.remove']) cmdDefinePermission(t, cmdAnyone)
   for (const c of LW_COLLS) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
   /* [DB-READINESS] group A, phase 3 — THE WAR'S ROWS, WRITTEN FROM THE COMMAND STREAM (state/rows.ts): every command's
      changes to the war, mapped to the rows they land in and written through the war's own door at phase 9 — inside the
@@ -3269,17 +3287,25 @@ export function clearBidWindow(): BidWindowResult {
  * Days are stored in full rather than rebuilt from the period's range
  * precisely so these survive a reload; see `readWar`.
  */
-export function setDayEvent(date: string, line: number, text: string, kind: EventKind | null = null): boolean {
+export function setDayEvent(date: string, line: number, text: string, kind: EventKind | null = null, short: string | null = null): boolean {
   if (state.role !== 'admin') return false
   if (!state.period.days.some(d => d.date === date)) return false
+  if (badShort(short)) return false
   updateCurrent(w => ({
     ...w,
     period: {
       ...w.period,
-      days: w.period.days.map(d => (d.date === date ? writeDayEvent(d, line, text, kind) : d)),
+      days: w.period.days.map(d => (d.date === date ? writeDayEvent(d, line, text, kind, short) : d)),
     },
   }))
   return true
+}
+
+/* A SHORT FORM THAT BREAKS THE RULE IS REFUSED AT THE WRITE (the build plan §3.12; engine/eventshort.ts) — by every
+   writer below that makes or re-makes an event. None typed (null, or an empty box) is not a breach: the event then
+   prints its preset's short form, or one derived from its name. */
+function badShort(short: string | null | undefined): boolean {
+  return typeof short === 'string' && short.trim() !== '' && !normShort(short)
 }
 
 /* (`writeEventLine` and `writeDayEvent` — the one place a day's events are mutated — moved whole to engine/period.ts on
@@ -3295,9 +3321,10 @@ export function setDayEvent(date: string, line: number, text: string, kind: Even
  * beneath it is suppressed anyway — so the repeat writes only the free days.
  * A backwards range is a no-op.
  */
-export function setDayEventRange(from: string, to: string, line: number, text: string, kind: EventKind | null = null): boolean {
+export function setDayEventRange(from: string, to: string, line: number, text: string, kind: EventKind | null = null, short: string | null = null): boolean {
   if (state.role !== 'admin') return false
   if (to < from) return false
+  if (badShort(short)) return false
   updateCurrent(w => ({
     ...w,
     period: {
@@ -3305,7 +3332,7 @@ export function setDayEventRange(from: string, to: string, line: number, text: s
       days: w.period.days.map(d => {
         if (d.date < from || d.date > to) return d
         if (bandCoversDate(w.period.bands, line, d.date)) return d
-        return writeDayEvent(d, line, text, kind)
+        return writeDayEvent(d, line, text, kind, short)
       }),
     },
   }))
@@ -3313,7 +3340,7 @@ export function setDayEventRange(from: string, to: string, line: number, text: s
 }
 
 /** Why a merged band was refused. */
-export type EventBandResult = 'set' | 'overlap' | 'backwards' | 'outside' | 'forbidden'
+export type EventBandResult = 'set' | 'overlap' | 'backwards' | 'outside' | 'forbidden' | 'badshort'
 
 /**
  * Add a MERGED event label spanning a range on one event line.
@@ -3324,8 +3351,10 @@ export type EventBandResult = 'set' | 'overlap' | 'backwards' | 'outside' | 'for
  * line is cleared, so a merged label never hides stray words a later delete
  * would resurrect.
  */
-export function addEventBand(line: number, from: string, to: string, text: string, kind: EventKind | null = null): EventBandResult {
+export function addEventBand(line: number, from: string, to: string, text: string, kind: EventKind | null = null, short: string | null = null): EventBandResult {
   if (state.role !== 'admin') return 'forbidden'
+  if (badShort(short)) return 'badshort'
+  const sh = normShort(short)
   if (to < from) return 'backwards'
   if (from < state.period.start || to > state.period.end) return 'outside'
   if (bandOverlaps(state.period.bands, line, from, to)) return 'overlap'
@@ -3333,12 +3362,115 @@ export function addEventBand(line: number, from: string, to: string, text: strin
     ...w,
     period: {
       ...w.period,
-      bands: [...w.period.bands, { line, from, to, text, kind }],
+      /* a band with no short form of its own is stored exactly as it always was */
+      bands: [...w.period.bands, { line, from, to, text, kind, ...(sh ? { short: sh } : {}) }],
       days: w.period.days.map(d =>
         d.date < from || d.date > to || !d.events[line] ? d : writeDayEvent(d, line, '', null)),
     },
   }))
   return 'set'
+}
+
+/* =====================================================================
+   THE EVENT SHEET'S SAVE AND DELETE — each ONE command (the build plan
+   docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.12; owner D643–D645)
+   ---------------------------------------------------------------------
+   The sheet used to save in pieces: take the old band away, write the new event, and put the old band back if the
+   new one was refused — two or three Undo steps, and a band re-made from its text and kind alone. Now:
+   - the whole save is CHECKED before anything is taken away, so a refused replacement leaves the event it would have
+     replaced exactly as it was — text, kind and short form;
+   - it is ONE command, so ONE Undo step, whose words say what was saved (undo/describe.ts);
+   - text, kind and short form are written together, through the one rule for a short form.
+   "No tag" is not "no kind": `kind: null` is saved as it is, and a word that matches a preset still takes that
+   preset's kind by its name (engine/eventdefs.ts classifyEvent) — an untagged "PH" is a public holiday, as it always
+   was. The plain writers above stay for the other callers and the tests. Admin only, as every write to a period is. */
+export interface EventSave {
+  line: number
+  /** the cell the sheet was opened on — the band covering it (if any) is the one being replaced */
+  date: string
+  /** this day; a range with the word in each day; a range as one merged bar */
+  scope: 'day' | 'repeat' | 'merge'
+  from?: string
+  to?: string
+  text: string
+  kind: EventKind | null
+  /** what the grid prints; '' or absent = none of its own */
+  short?: string | null
+}
+export type EventSaveFail = 'forbidden' | 'short' | 'noshort' | 'label' | 'dates' | 'backwards' | 'outside' | 'overlap'
+export type EventSaveResult = { ok: true } | { ok: false; reason: EventSaveFail; message: string }
+
+export function saveEvent(e: EventSave): EventSaveResult {
+  const fail = (reason: EventSaveFail, message: string): EventSaveResult => ({ ok: false, reason, message })
+  if (state.role !== 'admin') return fail('forbidden', 'Only an admin can edit events.')
+  if (!e || typeof e !== 'object' || !Number.isInteger(e.line) || e.line < 0 || e.line >= state.eventRows)
+    return fail('dates', 'That Event row is no longer there.')
+  const p = state.period
+  const line = e.line
+  const text = typeof e.text === 'string' ? e.text.trim() : ''
+  if (badShort(e.short)) return fail('short', SHORT_RULE)
+  const short = normShort(e.short)
+  const from = e.scope === 'day' ? e.date : e.from, to = e.scope === 'day' ? e.date : e.to
+  if (!from || !to) return fail('dates', 'Pick the dates first.')
+  if (to < from) return fail('backwards', 'The end date is before the start date.')
+  if (from < p.start || to > p.end) return fail('outside', 'Those dates leave this leave war.')
+  /* the event already on the cell — the band covering it, or the day's own word */
+  const old = bandAt(p.bands, line, e.date)
+  const oldText = old ? old.text : (p.days.find(d => d.date === e.date)?.events[line] ?? '')
+  /* A NEW name with no letter or digit in it has nothing the grid could print: one must be typed. An OLD event of
+     such a name is left alone — saved again unchanged it keeps its name and kind, and prints a dot. */
+  if (text && !short && text !== oldText && shortOf(state.eventDefs, text, null) === '•')
+    return fail('noshort', 'Type what the grid should print for this event — its name has no letter or digit.')
+  if (e.scope === 'merge') {
+    if (!text) return fail('label', 'A merged event needs a name.')
+    /* against every OTHER band on the line: the one being replaced does not clash with itself */
+    if (bandOverlaps(p.bands.filter(b => b !== old), line, from, to)) return fail('overlap', 'Those dates already carry a merged event on this line.')
+  }
+  const kind = EVENT_KINDS.includes(e.kind as EventKind) ? e.kind : null
+  /* the note Undo's words are made from (undo/describe.ts eventLabel) and its landing reads (state/undo-wire.ts) */
+  const note = JSON.stringify({ text: text || oldText, from, to })
+  gesture(text ? 'lw.event.save' : 'lw.event.remove', () => updateCurrent(w => {
+    const bands = old ? w.period.bands.filter(b => b !== old) : w.period.bands
+    if (e.scope === 'merge') {
+      return {
+        ...w,
+        period: {
+          ...w.period,
+          bands: [...bands, { line, from, to, text, kind, ...(short ? { short } : {}) }],
+          /* the single words under the new bar go, as addEventBand clears them — their short forms with them */
+          days: w.period.days.map(d => (d.date < from || d.date > to || !d.events[line] ? d : writeDayEvent(d, line, '', null))),
+        },
+      }
+    }
+    return {
+      ...w,
+      period: {
+        ...w.period,
+        bands,
+        days: w.period.days.map(d => {
+          if (d.date < from || d.date > to) return d
+          /* a repeat writes only the free days: a day under another band keeps the band */
+          if (e.scope === 'repeat' && bandCoversDate(bands, line, d.date)) return d
+          return writeDayEvent(d, line, text, kind, short)
+        }),
+      },
+    }
+  }), { note })
+  return { ok: true }
+}
+
+/** Take away the event on a cell — the merged band covering it, or the day's own word — text, kind and short form
+ *  together. ONE command, one Undo step. False where there is nothing there, or for anyone but an admin. */
+export function deleteEvent(line: number, date: string): boolean {
+  if (state.role !== 'admin') return false
+  const band = bandAt(state.period.bands, line, date)
+  const text = band ? band.text : (state.period.days.find(d => d.date === date)?.events[line] ?? '')
+  if (!text) return false
+  const note = JSON.stringify(band ? { text, from: band.from, to: band.to } : { text, from: date, to: date })
+  gesture('lw.event.remove', () => updateCurrent(w => (band
+    ? { ...w, period: { ...w.period, bands: w.period.bands.filter(b => b !== band) } }
+    : { ...w, period: { ...w.period, days: w.period.days.map(d => (d.date === date ? writeDayEvent(d, line, '', null) : d)) } })), { note })
+  return true
 }
 
 /** Remove the merged band on `line` that covers `date`. Admin-only. A no-op
@@ -3393,14 +3525,28 @@ function holidayPlan(h: HolidayDraft, replacing: HolidayRef | null): HolidayResu
   /* no name typed: the squadron's own word for the kind (its first event type of that kind), else the standard one */
   const kind = h.kind === 'ph' ? 'off' : 'free'
   const name = typed || state.eventDefs.find(d => d.kind === kind)?.name || (h.kind === 'ph' ? 'PH' : 'Off day')
-  const draft: HolidayDraft = { kind: h.kind, name, from: h.from, to: h.to }
+  /* its short form ("On grid" — the plan §3.12, D652): one typed must be a short form; none typed stores none */
+  if (badShort(h.short)) return holFail('bad', SHORT_RULE)
+  let short = normShort(h.short)
 
   let source: LeaveWar | undefined, cleared: Period | null = null
   if (replacing) {
     source = state.wars.find(w => w.period.id === replacing.warId)
     cleared = source ? withoutHoliday(source.period, replacing) : null
     if (!source || !cleared) return holFail('gone', 'That holiday is no longer there — it was changed on the Leave War.')
+    /* A CHANGE THAT NAMES NO SHORT FORM KEEPS THE ONE THE HOLIDAY HAD — while its name stands. Under a new name the
+       old one would mis-name it, so it goes and the new name's own prints. */
+    if (h.short === undefined && defKey(name) === defKey(replacing.name)) {
+      const line = replacing.line
+      const own = replacing.src === 'band'
+        ? source.period.bands.find(b => b.line === line && b.from === replacing.from && b.to === replacing.to)?.short
+        : replacing.src === 'day' && line != null
+          ? dayEventShort(source.period.days.find(d => d.date === replacing.from) ?? { date: '', events: [], blocked: false, blockedReason: '', ph: false }, line)
+          : null
+      short = normShort(own)
+    }
   }
+  const draft: HolidayDraft = { kind: h.kind, name, from: h.from, to: h.to, ...(short ? { short } : {}) }
   const target = warHolding(state.wars, draft.from)
   if (!target) return holFail('noperiod', `No leave period covers ${holDate(draft.from)} yet.`)
   if (draft.to > target.period.end) return holFail('crosses', `Those dates run past ${holDate(target.period.end)}, the end of the leave period "${target.period.name}" — add each part to its own period.`)
@@ -3484,7 +3630,9 @@ export function moveEvent(line: number, from: string, to: string, dayDelta: numb
       ...w,
       period: {
         ...w.period,
-        bands: [...w.period.bands.filter(b => b !== band), { line, from: nFrom, to: nTo, text: band.text, kind: band.kind ?? null }],
+        /* text, kind AND short form travel (the build plan §3.12, finding C): the band was re-made from its dates,
+           text and kind, and a short form typed for it would have been dropped by the move */
+        bands: [...w.period.bands.filter(b => b !== band), { line, from: nFrom, to: nTo, text: band.text, kind: band.kind ?? null, ...(normShort(band.short) ? { short: normShort(band.short)! } : {}) }],
         // clear any stray per-day text under the new span, the same rule addEventBand applies
         days: w.period.days.map(d => (d.date >= nFrom && d.date <= nTo && d.events[line]) ? writeDayEvent(d, line, '', null) : d),
       },
@@ -3494,13 +3642,14 @@ export function moveEvent(line: number, from: string, to: string, dayDelta: numb
     const text = src?.events[line]
     if (!text) return { reason: 'nothing' }
     const kind = (src?.eventKinds?.[line] ?? null) as EventKind | null
+    const short = src ? dayEventShort(src, line) : null                  // …and its short form goes with it
     updateCurrent(w => ({
       ...w,
       period: {
         ...w.period,
         days: w.period.days.map(d => {
           if (d.date === from) return writeDayEvent(d, line, '', null)   // clear the source
-          if (d.date === nFrom) return writeDayEvent(d, line, text, kind) // land the target
+          if (d.date === nFrom) return writeDayEvent(d, line, text, kind, short) // land the target
           return d
         }),
       },
@@ -3580,12 +3729,12 @@ function commitEventDefs(result: EventDef[] | string): string | null {
   return null
 }
 
-export function addEventType(name: string, kind: EventKind): string | null {
+export function addEventType(name: string, kind: EventKind, short?: string): string | null {
   if (state.role !== 'admin') return 'Only an admin can edit event types'
-  return commitEventDefs(addEventDef(state.eventDefs, name, kind))
+  return commitEventDefs(addEventDef(state.eventDefs, name, kind, short))
 }
 
-export function updateEventType(index: number, patch: { name?: string; kind?: EventKind }): string | null {
+export function updateEventType(index: number, patch: { name?: string; kind?: EventKind; short?: string }): string | null {
   if (state.role !== 'admin') return 'Only an admin can edit event types'
   return commitEventDefs(updateEventDef(state.eventDefs, index, patch))
 }

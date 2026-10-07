@@ -17,11 +17,16 @@
 // otherwise the removed holiday would come straight back in the list as a bare "PH".
 
 import { defKey, type EventKind } from './eventdefs'
+import { normShort } from './eventshort'
 import { writeDayEvent, type Period } from './period'
 
 export type HolidayKind = 'ph' | 'off'
 /** what the list's form holds: the kind, a name (empty = the kind's usual word), the first and last day */
-export interface HolidayDraft { kind: HolidayKind; name: string; from: string; to: string }
+export interface HolidayDraft {
+  kind: HolidayKind; name: string; from: string; to: string
+  /** what the calendars and the grid print for it ("On grid" — the build plan §3.12, D652); absent = none of its own */
+  short?: string
+}
 /** the record a list line stands for, as it was read (sync.ts holidaysIn) */
 export interface HolidayRef {
   warId: string
@@ -33,6 +38,9 @@ export interface HolidayRef {
   to: string
   kind: HolidayKind
   name: string
+  /** what it prints — its own short form, else its preset's, else one derived from its name (eventdefs.ts shortOf);
+   *  filled by the reader (sync.ts holidaysIn), never matched on by the writers */
+  short?: string
 }
 export const MAX_HOLIDAY_NAME = 40
 export const holidayEventKind = (k: HolidayKind): EventKind => (k === 'ph' ? 'off' : 'free')
@@ -57,8 +65,10 @@ export function freeEventLine(p: Period, rows: number, from: string, to: string)
 /** the period with the holiday written on `line` — which the caller found free across the range */
 export function withHoliday(p: Period, line: number, h: HolidayDraft): Period {
   const kind = holidayEventKind(h.kind)
-  if (h.from === h.to) return { ...p, days: p.days.map(d => (d.date === h.from ? writeDayEvent(d, line, h.name, kind) : d)) }
-  return { ...p, bands: [...p.bands, { line, from: h.from, to: h.to, text: h.name, kind }] }
+  /* text, kind and short form are written together (the build plan §3.12) */
+  const short = normShort(h.short)
+  if (h.from === h.to) return { ...p, days: p.days.map(d => (d.date === h.from ? writeDayEvent(d, line, h.name, kind, short) : d)) }
+  return { ...p, bands: [...p.bands, { line, from: h.from, to: h.to, text: h.name, kind, ...(short ? { short } : {}) }] }
 }
 
 /** the period with that record taken away — null where it is no longer what the line said */

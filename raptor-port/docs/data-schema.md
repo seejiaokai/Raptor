@@ -542,7 +542,9 @@ postOuts: { personId: Person }   // (personEdits went with the war's Edit person
 | `OilLedger` (derived) | `credits: OilCredit[], debits: OilDebit[], balance, earned, awarded, corrections, taken, expired, overdrawn, first` — `earned` the automatic credits, `awarded` every award, `corrections` the negative entries (D400) |
 | `OilCredit` | `id, date, amount, reason, source: 'opening' \| 'auto' \| 'grant', approvedBy?, givenBy?, enteredBy?, enteredAt?, expires, used: [{date, amount}], left, expired, ledgerId?` — `grant` is an award (a ledger entry) |
 | `OilDebit` | `id, date, amount, reason, source: 'taken' \| 'correction' \| 'opening', from: [{creditId, amount}], unbacked, ledgerId?` |
-| `EventDef` | `{ name, kind: 'off' \| 'free' \| 'nolv' \| 'work' }` |
+| `EventDef` | `{ name, kind: 'off' \| 'free' \| 'nolv' \| 'work', short? }` — a preset; `short` is what the grid prints for an event of that name (one to three letters or digits, `engine/eventshort.ts normShort`; the four seeded ones carry PH, OFF, NL, SC — D645). Absent on a library stored before short forms: its events print one derived from the name |
+| `DayInfo` | `{ date, events: string[], eventKinds?: (kind \| null)[], eventShorts?: (string \| null)[], blocked, blockedReason, ph }` — a day's Event lines: each line's text, its own kind tag and its own short form, same index, written TOGETHER (`engine/period.ts writeDayEvent`; the build plan §3.12). `eventShorts` is absent on a day that never had one typed |
+| `EventBand` | `{ line, from, to, text, kind?, short? }` — a merged event over a run of dates on one Event line; `short` as on a day, absent where none was typed |
 | `Requirements` | `{ default: { rules: ManningRule[] }, overrides: { key: Requirement } }` |
 | `QualDef` | `{ k, label }` |
 

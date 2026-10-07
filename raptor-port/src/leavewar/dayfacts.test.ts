@@ -97,7 +97,7 @@ describe('a day’s holiday, as the calendars read it', () => {
   })
 
   it('a date no leave period covers says so: no holiday, and nobody counted', () => {
-    expect(dayFacts('2028-03-01')).toEqual({ covered: false, kind: null, name: '', weekend: false, availP: null, availW: null })
+    expect(dayFacts('2028-03-01')).toEqual({ covered: false, kind: null, name: '', short: '', weekend: false, availP: null, availW: null })
   })
 
   it('…and the same for a date BETWEEN two periods', () => {

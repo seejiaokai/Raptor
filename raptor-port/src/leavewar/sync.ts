@@ -62,6 +62,8 @@ import {
   availHave,
   classifyEvent,
   defKey,
+  shortOf,
+  normShort,
   isWeekend,
   type PostOutcome,
   type Contrib,
@@ -2116,6 +2118,9 @@ let lastOilDaySig: string | null = null
 export interface WarDayFacts extends DayFacts {
   /** the holiday's or Off day's name as typed ("PH", "National Day"); '' where the day is neither */
   name: string
+  /** what a calendar's date tag prints for it, in the kind's colour — "PH", "OFF", "ND" (the build plan §3.12, D652:
+   *  the same answer the Leave War's Event row prints, eventdefs.ts shortOf); '' where the day is neither */
+  short: string
   /** a Saturday or a Sunday */
   weekend: boolean
 }
@@ -2162,14 +2167,14 @@ function dayIn(period: Period, iso: string): DayInfo | undefined {
   return d && d.date === iso ? d : period.days.find(x => x.date === iso)
 }
 function readDayFacts(iso: string): WarDayFacts {
-  if (!validIso(iso)) return { covered: false, kind: null, name: '', weekend: false, availP: null, availW: null }
+  if (!validIso(iso)) return { covered: false, kind: null, name: '', short: '', weekend: false, availP: null, availW: null }
   const weekend = isWeekend(iso)
   const st = getState()
   /* the period HOLDING the date — never the one on screen: the calendars show any month */
   const war = warHolding(st.wars, iso) as MergedWar | undefined
   /* no period covers it: there was nowhere to file a holiday, and nobody's leave is known — so who is available is
      UNKNOWN, never zero and never everyone (the need then shows "–") */
-  if (!war) return { covered: false, kind: null, name: '', weekend, availP: null, availW: null }
+  if (!war) return { covered: false, kind: null, name: '', short: '', weekend, availP: null, availW: null }
   const day = dayIn(war.period, iso)
   const h = day ? holidayAt(st.eventDefs, day, war.period.bands) : null
   const rows = availRules()
@@ -2177,6 +2182,7 @@ function readDayFacts(iso: string): WarDayFacts {
     covered: true,
     kind: h ? holidayKind(h.kind) : null,
     name: h ? h.name : '',
+    short: h ? shortOf(st.eventDefs, h.name, h.short) : '',
     weekend,
     /* the same sum the war's own Available cells draw (engine/availrows.ts availHave) — a SANS man never counted */
     availP: availHave(rows.p, st.people, war.grid, war.states, iso, war.views),
@@ -2213,8 +2219,9 @@ export function holidaysIn(year: number | string): HolidayLine[] {
     const p = war.period
     if (p.end < lo || p.start > hi) continue
     const mine: HolidayLine[] = []
-    const add = (src: HolidayLine['src'], line: number | null, from: string, to: string, kind: 'ph' | 'off', name: string): HolidayLine => {
-      const h: HolidayLine = { id: `${p.id}|${src}|${line ?? 'f'}|${from}`, warId: p.id, from, to, kind, name, src, line }
+    const add = (src: HolidayLine['src'], line: number | null, from: string, to: string, kind: 'ph' | 'off', name: string, own?: unknown): HolidayLine => {
+      /* `short` = what it prints, the same answer as the calendars' tag and the Leave War's Event row (D652) */
+      const h: HolidayLine = { id: `${p.id}|${src}|${line ?? 'f'}|${from}`, warId: p.id, from, to, kind, name, src, line, short: shortOf(st.eventDefs, name, normShort(own)) }
       mine.push(h)
       return h
     }
@@ -2223,7 +2230,7 @@ export function holidaysIn(year: number | string): HolidayLine[] {
       const k = kindOf(b.text, b.kind)
       if (!k) continue
       if (k === 'ph') phBands.push(b)
-      add('band', b.line, b.from, b.to, k, b.text)
+      add('band', b.line, b.from, b.to, k, b.text, b.short)
     }
     const open = new Map<number, HolidayLine>()      // per Event row, the run still growing
     let flag: HolidayLine | null = null
@@ -2236,7 +2243,7 @@ export function holidaysIn(year: number | string): HolidayLine[] {
         if (k === 'ph') named = true
         const run = open.get(i)
         if (run && run.kind === k && defKey(run.name) === defKey(t!) && addDays(run.to, 1) === d.date) run.to = d.date
-        else open.set(i, add('day', i, d.date, d.date, k, t!))
+        else open.set(i, add('day', i, d.date, d.date, k, t!, d.eventShorts?.[i]))
       }
       for (const i of [...open.keys()]) if (i >= d.events.length) open.delete(i)
       if (d.ph && !named && !phBands.some(b => b.from <= d.date && d.date <= b.to)) {

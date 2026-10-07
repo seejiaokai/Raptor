@@ -713,8 +713,8 @@ Owner: **Leave War**. One leave period — a "war".
 | `startDate`, `endDate` | date | yes | |
 | `stage` | choice `draft\|open\|closed\|published` | yes | |
 | `bidFrom`, `bidTo` | date | no | the bidding window |
-| `days` | JSON | yes | `DayInfo[]` — the calendar's own annotations |
-| `bands` | JSON | yes | `EventBand[]` |
+| `days` | JSON | yes | `DayInfo[]` — the calendar's own annotations; each Event line holds its text, its own kind and its own short form (`events`, `eventKinds`, `eventShorts` — what the grid prints, one to three letters or digits; added 8 Oct 26, the Inputs / SANS redesign §3.12) |
+| `bands` | JSON | yes | `EventBand[]` — each with its text, its kind and its own short form (`short`, added 8 Oct 26) |
 | `sortIndex` | decimal | yes | its place among the wars — the order they were created, which the period picker lists them by (`ord`, `[DB-READINESS]` group A, phase 3; added 30 Sep 26) |
 
 Relationships: 1–n `LeaveBid`.
