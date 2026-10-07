@@ -157,6 +157,13 @@ app already has is shown as a real picture from the app; a drawing is only for w
 **D635 — the settings icon is a gear.** The mock-ups drew it as a circle with rays; he read it as a sun, which on these
 calendars means day flying. The build uses the app's own cog, and its check looks at the gear beside a day-flying sun at
 phone size.
+**D636 — the required figures are typed in the cells.** Shown the "Required to fly" sheet he asked for less: type the
+number straight into the Required P / Required W cell; pick several cells and give them one number — Shift and drag on a
+desktop, a long press and drag on a phone, and the long press and drag working on a desktop too. NOT YET DRAWN. To settle
+in the plan and draw on a REAL picture of the Leave War's rows (D634): the gesture the grid already uses to pick a block of
+people's days (reuse it, do not invent a second one); how a figure runs on "from here on" (a drag cannot reach for good —
+recommended as an option on the bar that appears for the picked cells); and his "P avail and W avail", read as the
+Required rows since Available is worked out by the app — to confirm.
 **The rule of thumb told to him:** what every calendar shows is set in Days; what only the Leave War uses stays on the
 Leave War. **Readings to confirm:** the one stepping button on a phone; the weekday heading for repeating days; "from this
 day on" for the required figures; a public holiday or an Off day shows its tag in place of the select button.
