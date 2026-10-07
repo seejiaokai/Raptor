@@ -76,6 +76,13 @@ are drawn side by side; Codex's built layout is one of them.
 - **An Instructions fold at the top** — his reference's four lines, refined to what applies here.
 - **The keyboard** — Escape, Delete, the arrow keys.
 
+## In the bug check: mock-up beside build — D624
+
+For every mock-up he approves, the check's evidence sheet carries a PAIR: the approved mock-up, and a picture of the built
+screen at the same width (phone and desktop where both were drawn), with the same made-up data where the app can show it.
+A difference seen in a pair is a walk finding — fixed, or put to him as a change to the approved design. It adds to the
+walk and to his own look; it replaces neither. For this job; whether later jobs get the same is put to him afterwards.
+
 ## Where the mock-ups are
 
 Shown to him on 7 Oct 26 as a private page of pictures (his preference: sharp, tap to zoom):
