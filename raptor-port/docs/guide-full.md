@@ -612,6 +612,8 @@ they sit; if you find another, it is stale — fix it, don't obey it.
   **Set aside for one family of windows, 7 Oct 26 (D641):** the titled pop-up windows of the Inputs calendar, the SANS calendar
   and the Leave War's required rows can be dragged, the page behind them stays clickable and editable, and a click outside does
   NOT close them — their ✕, Escape or their finishing button does. A small menu, picker or palette still closes on a click outside.
+  **And one existing Leave War window with them (D642):** the panel for a picked block of people's days. Built 8 Oct 26 as
+  `leavewar/ui/Sheet.tsx`'s `modal={false}` form; the war's other windows still close on a click outside (`[LW-WINDOWS-NONBLOCKING]`).
 
 ### A control tapped repeatedly must not move
 

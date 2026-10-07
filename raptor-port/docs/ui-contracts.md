@@ -5883,6 +5883,11 @@ Press-and-drag across day-cells to select a rectangle — one row or many
 people's rows — then act on the whole block at once. It is built AROUND the
 BidPicker's look and vocabulary, not instead of it.
 
+*(8 Oct 26: the same gesture has a THIRD kind — a drag that starts on a Required cell picks the two Required rows ×
+days and opens the Required panel: §The four rows at the foot of the Manning block, "Picking several". And the sheet
+this section's drag opens no longer blocks the grid — D642: §The page stays fully usable behind an open sheet, its
+first bullet.)*
+
 - **A member's reach is their OWN row; an admin's is every row** (owner,
   27 Aug 26 — "if I am viewing as a member and I view as ranger on the leave
   war, I shouldn't be able to input on other people's row except mine"). The
@@ -6154,6 +6159,20 @@ Every Leave War decision opens in a `Sheet` over a full-page `.sheetscrim`
 (`ui/Sheet.tsx`). Over two owner asks (28 Aug 26) the sheet went from a modal
 that froze everything behind it to a panel you can read the grid around:
 
+- **TWO WINDOWS DO NOT BLOCK THE GRID AT ALL (owner, D641, D642 — 7 Oct 26; built 8 Oct 26).** `Sheet` has a
+  `modal={false}` form: NO scrim is mounted (so neither the mouse's interceptor nor the touch screen's tap shield
+  below is armed — both hang off the scrim's own node), a press outside does not close it, and Tab is not held in it;
+  Escape, its ✕ and its finishing button close it, and its title strip still drags it. It is used by the Required
+  panel (`ReqPanel.tsx`) and by the panel for a picked block of people's days (`SelectSheet.tsx` — D642). For both, a
+  plain click on a CELL of the grid behind (`cell-`, `event-`, `req-`, `avail-`) opens that cell's own thing and
+  closes the panel — one hook, `ui/gridclick.ts`, on the document's BUBBLE phase, so the click a finished drag leaves
+  behind (swallowed at capture by `select.ts`) never closes the panel that drag just opened or re-aimed. A press on
+  the month buttons, a heading or the toolbar leaves it up. A NEW drag while the people's-days panel is up replaces
+  what it acts on, and `Matrix` keys the sheet by its selection so it starts afresh (an armed Delete, a below-zero
+  ask, never carry over to another block). Move is unchanged — it closes the sheet and hands the block to the grid's
+  move mode, where an empty tap outside still cancels the MOVE (D262). **Every OTHER Leave War window keeps the
+  blocking form described below** (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`); `ui/nonmodal.test.tsx` pins both
+  forms, and `e2e/leavewar.spec.ts` "the people's-days panel stays up with no veil…" the real drag behind an open panel.
 - **ESCAPE CLOSES IT** (bug sweep, 28 Aug 26). Not one Leave War sheet answered
   Escape — its ✕ and a scrim tap were the only ways out — while the input editor
   peels its layers on Escape and the Medical as-of picker closes on it, so the
@@ -6381,8 +6400,41 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
     Undo) shows in it while nothing has been typed. Three digits at most, digits only.
   - Gates: `e2e/leavewar.spec.ts` "a Required figure is typed straight into its cell: one box on a desktop, the app's
     own number pad on a phone". Pins: `ui/flytype.test.tsx`.
-- **Not built yet (the next pieces of step 2):** picking several with a drag and the Required panel, the counter
-  form's mode for the two Available rows, the "Days…" line in ⚙ Settings.
+- **Picking several, and the Required panel (admin) — built 8 Oct 26, overnight (D636, D637, D622).**
+  - **The pick** is the grid's own drag, a THIRD kind in `ui/select.ts` (`parseReqCell`, `reqRange`, hit kind `req`):
+    a drag that STARTS on a Required cell picks a rectangle over the two Required rows × days. The event rows'
+    one-line rule is not reused — both seats in one pick is the point (D622). Arming is every kind's: 4px for a mouse
+    (so Shift-drag and press-pause-drag both pick — D636), a 180ms hold for a finger; a quick flick is still the
+    grid's scroll. A pointer that strays off the two rows keeps the rows it had and takes that column's DATE. A press
+    that never arms is the plain click that opens the typing box. A roster drag that crosses the rows stays a roster
+    drag. `Matrix` hands the pick to `FlyRows` through a ref (`FlyPickApi`) — a pick never re-renders the grid.
+  - **The panel** (`ui/ReqPanel.tsx`, drawn as the fifth mock-ups): the number, "These days | From <date> on", Apply,
+    Clear. On a phone (≤430px) the head and the hint say it shorter — "Req P and W", "5 – 9 Jan · 4 days", "one
+    number for all 8" — so nothing wraps. Its number box is 22px (an input under 16px makes iOS zoom the page).
+    Opening it scrolls the page so the four rows sit ABOVE its top edge — docked at the foot of a phone, it opened
+    straight over the block just picked (found by the browser gate).
+  - **Which picked cells take the number** is ONE pure rule, `ui/reqpick.ts planPick`, read from the one resolver's
+    answer for each day — and the cells `FlyRows` keeps LIT while the panel is up (`.pick`) are that same answer, so
+    what is lit is what Apply writes. **"These days"** writes the dates themselves (`fly.day.set`, ONE command): a
+    no-fly day is always left out and said so; a weekend not set to fly, a public holiday or an Off day is FILLED
+    where the pick holds only such days, and LEFT OUT where it mixes them with ordinary days — the panel says "2
+    weekend or holiday days left out" with one press, Include, to take them in. **"From <date> on"** is a RUNNING
+    figure (`fly.run.set`, ONE command): it starts on the first flying weekday of the pick (its button says that
+    date), and the figures typed for the picked flying weekdays go with it in the same command (`setFlyRun`'s `clear`)
+    — he picked those cells and said "18 from here on". Weekends, holidays, Off days and no-fly days are the
+    resolver's to skip, and a figure typed on one of them is left alone. **Clear** takes the typed figures off the
+    days it is acting on, or — with "From … on" picked — the run that starts on that date for the picked seats; it is
+    offered only where there is something to take away. Apply waits for a number; Enter is Apply.
+  - **It does not block the page (D641)** — `Sheet`'s `modal={false}`: no veil, a press outside does not close it,
+    Tab is not held in it. A NEW drag over the rows is followed by the same panel (the number typed stays); a drag
+    over people's days closes it for that panel, and the other way round — the two are never up together; a plain
+    click on a cell of the grid opens that cell's own thing and closes it (`ui/gridclick.ts`); ✕, Escape and Apply
+    close it. Folding the Manning block away takes it with the rows.
+  - Gates: `e2e/leavewar.spec.ts` "several Required cells are picked with a drag and given one number, and the panel
+    leaves the grid behind it working" (a real mouse drag; a held finger through CDP on the phone). Pins:
+    `ui/selectreq.test.ts`, `ui/reqpanel.test.tsx`, `ui/nonmodal.test.tsx`.
+- **Not built yet (the next pieces of step 2):** the counter form's mode for the two Available rows, the "Days…" line
+  in ⚙ Settings.
 - Gates: `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning block keep every day column in line, and paint
   what they mean" and "in the Manning block the four rows cover no month button, and the open-bidding outline stays
   round the dates" (phone and desktop). Pins: `ui/flyrows.test.tsx`.

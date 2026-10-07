@@ -71,13 +71,17 @@ function bringIntoView(cell: HTMLElement, padTop: number | null) {
     if (r.left < frozen) wrap.scrollLeft -= frozen - r.left + r.width
     else if (r.right > w.right) wrap.scrollLeft += r.right - w.right + r.width
   }
-  /* up and down: clear of the pad's top edge (or the screen's foot), and of the app's bar at the head. By the exact
-     distance — "centre it" is not enough on a phone, where the pad takes half the screen (found by the browser gate:
-     the centred cell sat 6px under the pad). */
-  const floor = (padTop ?? window.innerHeight) - 14
-  /* with the pad up, bring ALL FOUR rows above it where the screen allows: he types a Required figure against the
-     Available one two rows below it */
-  const foot = padTop === null ? r.bottom : Math.max(r.bottom, footOfRows() ?? r.bottom)
+  liftAbove(cell, padTop)
+}
+/** UP AND DOWN: scroll the page so `cell` sits clear of whatever is docked at the foot of the screen — the number
+ *  pad's top edge, the Required panel's (`floorTop`), or the screen's own foot (null) — and clear of the app's bar at
+ *  the head. By the exact distance: "centre it" is not enough on a phone, where the pad takes half the screen (found
+ *  by the browser gate: the centred cell sat 6px under the pad). With something docked, ALL FOUR rows are brought
+ *  above it where the screen allows: a Required figure is read against the Available one two rows below it. */
+export function liftAbove(cell: HTMLElement, floorTop: number | null): void {
+  const r = cell.getBoundingClientRect()
+  const floor = (floorTop ?? window.innerHeight) - 14
+  const foot = floorTop === null ? r.bottom : Math.max(r.bottom, footOfRows() ?? r.bottom)
   const dy = foot > floor ? Math.min(foot - floor, r.top - 64) : r.top < 64 ? r.top - 64 : 0
   if (dy) scrollerOf(cell).scrollBy(0, dy)
 }

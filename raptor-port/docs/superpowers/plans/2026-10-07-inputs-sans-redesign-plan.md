@@ -277,6 +277,27 @@ the pad takes half the screen and the cell, "centred", sat 6px under it — the 
 and by enough to show all four rows. **NOT BUILT YET:** the third hit kind and the Required panel; `SelectSheet`
 non-modal; the counter form's mode and the three refusals; `flynames` out; the "Days…" line.
 
+**AS BUILT (8 Oct 26, the overnight run — step 2, sixth piece: PICKING SEVERAL, THE REQUIRED PANEL, AND `SelectSheet`
+NON-MODAL).** The third hit kind in `ui/select.ts` (`parseReqCell`, `reqRange`; `SelectCtx.reqEnabled` / `onReqSelect`);
+`ui/ReqPanel.tsx` on `Sheet`'s new `modal={false}`; `ui/reqpick.ts planPick` (the one rule for which picked days take
+the number — the panel writes from it and `FlyRows` lights from it); `ui/gridclick.ts` (a plain click on a cell closes
+a non-blocking panel); `SelectSheet` on the same form, keyed by its selection in `Matrix`. The pick is handed from
+`Matrix` to `FlyRows` by a ref, so it never re-renders the grid. **Choices the builder made, each told to him (§8):**
+(1) "From <date> on" starts on the first FLYING WEEKDAY of the pick — the label says that date — and takes the figures
+typed for the picked flying weekdays away in the same command (`setFlyRun`'s new `clear` option); the plan said only
+"a running figure"; (2) a Saturday or Sunday he has SET to fly counts as an ordinary day for "These days" (and is
+still skipped by a run, as the resolver has it); (3) the cells that stay lit are the ones that will take the number —
+a no-fly day and a left-out weekend are dark; (4) Include is a toggle ("Leave out" puts them back); (5) Clear acts on
+the days the panel is acting on, or on the run that starts there, and is greyed where there is nothing to take away;
+(6) a new pick while the panel is up keeps the number typed and resets Include; (7) the panel closes on Apply and on
+Clear; (8) a plain click that closes a panel is a click on a CELL (roster, event, Required, Available) — the month
+buttons, headings and the toolbar leave it up; (9) on a phone the head and the hint are worded shorter; (10) folding
+the Manning block away closes the Required panel with its rows. **Found by the browser gate, jsdom green:** on a phone
+the panel, docked at the foot, opened OVER the block just picked (the squadron's own counters push the four rows past
+half-way down) — it now scrolls the page until the rows sit above it; and a press that lands on the open people's-days
+panel is the panel's own, so a new drag has to start on a part of the grid the panel is not covering (he can drag the
+panel aside — D641). **NOT BUILT YET:** the counter form's mode and the three refusals; `flynames` out; the "Days…" line.
+
 ### 3.4 Days — Month and Holidays
 
 One window (`src/ui/DaysWindow.tsx`), mounted once in the shell like the input editor, opened by `pops.ts` state from
@@ -1146,6 +1167,15 @@ weekend, a holiday or an Off day, and takes away the figure typed for that date 
 starts; the strip on a desktop sits under the four rows, to the right of the month buttons; with the number pad up the
 page moves so all four rows show above it; a figure is at most three digits; at the end of the months that are drawn,
 Enter saves and closes (on a phone that is a few months ahead of where he is looking).
+**And picking several:** "From <date> on" starts on the first flying weekday he picked (its button says which), and the
+figures already typed on the picked flying days are replaced by the running one in the same step; a Saturday or Sunday
+he has set to fly is treated as an ordinary day by "These days"; only the cells that will take the number stay lit — a
+no-fly day and a left-out weekend go dark; Include can be pressed again to leave them out; Clear takes the typed
+figures off the picked days (or, with "From … on" chosen, the running figure that starts there) and is greyed where
+there is nothing to take away; picking a new block while the panel is up keeps the number he typed; a click on a cell
+closes the panel for that cell's own window, while the month buttons and the toolbar leave it up; the panel moves the
+page so the four rows show above it; the people's-days panel now behaves the same way (D642) — and because it sits at
+the foot of the screen, a new drag has to start on a part of the grid it is not covering, or he drags it aside first.
 
 ## 9. For the challenger
 

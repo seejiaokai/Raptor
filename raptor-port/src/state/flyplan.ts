@@ -147,19 +147,23 @@ export function removeFlyRule(id: string): FlySave {
    `clearDay` — what the Leave War's "From <date> on" asks for (the plan §3.3): a figure typed for the date ITSELF wins
    over a run on that date, so a run typed over such a cell would not show on the very day it starts. With the option,
    the date's own figure for each seat the run now SETS is taken away in the same command — one Undo step; a seat the
-   run ends (null) and the date's class are left as they are. */
-export function setFlyRun(iso: string, patch: FlyRun, opts?: { clearDay?: boolean }): FlySave {
+   run ends (null) and the date's class are left as they are. `clear` names MORE dates to treat the same way: the
+   Required panel's picked block (he picked those cells and said "18 from here on" — a figure left typed on one of
+   them would hide the run there). */
+export function setFlyRun(iso: string, patch: FlyRun, opts?: { clearDay?: boolean; clear?: readonly string[] }): FlySave {
   if (!validIso(iso)) return no('Choose a valid calendar date.')
   if (!validFlyRun(patch)) return no('A required figure is a whole number of zero or more.')
   const plan = getFlyPlan()
   const row: FlyRun = { ...(plan.runs[iso] || {}), ...patch }
   const writes: Array<[string, unknown]> = [['flyrun:' + iso, row]]
-  const day = plan.days[iso]
-  if (opts && opts.clearDay && day) {
+  const clear = new Set<string>([...(opts && opts.clearDay ? [iso] : []), ...((opts && opts.clear) || [])])
+  for (const d of clear) {
+    const day = plan.days[d]
+    if (!validIso(d) || !day) continue
     const next: FlyDay = { ...day }
     for (const s of ['p', 'w'] as const) if (typeof patch[s] === 'number') delete next[s]
-    const trimmed = trimDay(iso, next, plan)
-    if (JSON.stringify(trimmed) !== JSON.stringify(day)) writes.push(['flyday:' + iso, trimmed])
+    const trimmed = trimDay(d, next, plan)
+    if (JSON.stringify(trimmed) !== JSON.stringify(day)) writes.push(['flyday:' + d, trimmed])
   }
   return save('fly.run.set', { from: iso }, writes)
 }

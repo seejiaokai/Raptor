@@ -206,6 +206,18 @@ describe('Undo, Redo, and the words they say', () => {
     expect(setFlyRun(MON, { p: null, w: 9 }, { clearDay: true }).ok).toBe(true)
     expect(store.get('flyday:' + MON, null)).toEqual({ p: 16 })
   })
+  it('a running figure over a picked block: the figures typed on the NAMED dates go with it — one command, one Undo step', () => {
+    setFlyDays([{ iso: MON, p: 16 }, { iso: '2026-01-14', p: 9, w: 9 }, { iso: '2026-01-17', p: 3 }])
+    const n = commandStream().length
+    expect(setFlyRun(MON, { p: 18, w: 18 }, { clear: [MON, '2026-01-13', '2026-01-14'] }).ok).toBe(true)
+    expect(commandStream().length).toBe(n + 1)
+    expect(commandStream().at(-1)!.changes.filter(c => c.collection === 'settings').map(c => c.id).sort())
+      .toEqual(['flyday:' + MON, 'flyday:2026-01-14', 'flyrun:' + MON])
+    expect(req('2026-01-14')).toEqual({ p: 18, w: 18 })
+    expect(store.get('flyday:2026-01-17', null)).toEqual({ p: 3 })            // a date not named is left
+    expect(globalUndo().ok).toBe(true)
+    expect(req('2026-01-14')).toEqual({ p: 9, w: 9 }); expect(req(MON)).toEqual({ p: 16, w: null })
+  })
   it('the three colours and the rows\' names', () => {
     expect(getTones()).toEqual({ yellowFrom: 1, amberFrom: 3, redFrom: 5 })
     expect(saveTones({ yellowFrom: 2, amberFrom: 4, redFrom: 6 }).ok).toBe(true)

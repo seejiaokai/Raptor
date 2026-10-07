@@ -324,6 +324,7 @@ export function Sheet({
   onClose,
   narrow,
   full,
+  modal = true,
   children,
 }: {
   testid: string
@@ -338,6 +339,14 @@ export function Sheet({
    *  itself — its content owns a 2-D scroller (frozen columns, sticky
    *  header) — and it is not movable, there being nowhere to move it to. */
   full?: boolean
+  /** `false` = a window that does NOT block the page (owner, D641, D642 — 7 Oct 26: "should be able to drag around
+   *  and the background still works (clickable editable) when this window is up"). No scrim is drawn, so nothing
+   *  stands between a press and the grid; a press outside does not close it; Tab is not held inside it. It closes by
+   *  its own ✕, by Escape, or by the button that finishes it. Used by the Required panel and by the panel for a
+   *  picked block of people's days (`SelectSheet`); every other Leave War window keeps the blocking form
+   *  (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`). This sets aside, for those two, the 4 Sep 26 rule that a click
+   *  outside closes a pop-up (the later instruction wins — `docs/guide-full.md` carries the exception). */
+  modal?: boolean
   children: ReactNode
 }) {
   // A drag that scrolled the grid ends in a trailing click on the scrim
@@ -395,6 +404,7 @@ export function Sheet({
      no longer on screen. Tab and Shift+Tab now go round inside the topmost sheet, and focus left behind it is brought
      in. Same guards as the Escape above: only the topmost sheet, only while the Leave War is the page showing. */
   useEffect(() => {
+    if (!modal) return          // a window that does not block the page does not hold the keyboard either (D641)
     const trap = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return
       const pg = document.getElementById('page-leavewar')
@@ -414,7 +424,7 @@ export function Sheet({
     }
     document.addEventListener('keydown', trap, true)
     return () => document.removeEventListener('keydown', trap, true)
-  }, [panelRef])
+  }, [panelRef, modal])
   return (
     <>
       {/* Not a button and not focusable: it carries nothing a screen reader
@@ -422,8 +432,10 @@ export function Sheet({
           pointer convenience on top of that, never the only way out. On a
           touch screen useGridPan turns its pointer-events OFF, so a finger
           falls through to the grid and its click here never fires there. */}
-      <div ref={scrimRef} className="sheetscrim" data-testid="sheet-scrim" aria-hidden="true" onClick={onScrimClick} />
-      <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
+      {/* NO scrim for a non-blocking window: with nothing mounted, useGridPan arms neither the mouse's interceptor
+          nor the touch screen's tap shield (both hang off the scrim's own node), so every press reaches the grid. */}
+      {modal && <div ref={scrimRef} className="sheetscrim" data-testid="sheet-scrim" aria-hidden="true" onClick={onScrimClick} />}
+      <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}${modal ? '' : ' nonmodal'}`} data-testid={testid} role="dialog" aria-label={label}>
         {children}
       </div>
     </>

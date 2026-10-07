@@ -1276,3 +1276,13 @@ the resolver (`isFlyingDay` → `sync.ts flyAnswer`); a second idea of a flying 
 shows as NF; (2) the box is laid over its cell by measurement — a change to the rows' geometry (a new row above them, a
 zoom step, the frozen columns) is checked in the browser gate, never in jsdom; (3) on a touch screen NO input may be
 focused — a new control in the pad or the strip that is an `<input>` brings the phone's keyboard and iOS's zoom back.
+**Several picked at once, and the two panels that do not block the grid (8 Oct 26 — plan §3.3; D636, D637, D641, D642).**
+A drag over the Required rows is the grid's own gesture (`ui/select.ts`, a third kind) and opens the Required panel;
+Apply is ONE command of the flying plan, as a typed cell is. `Sheet` has a non-blocking form (`modal={false}`) used by
+that panel and by the people's-days panel. **Four drift seams:** (1) what is LIT and what Apply WRITES are one function
+(`ui/reqpick.ts planPick`) — a second rule in the panel or in `FlyRows` would light cells that are not written; (2) a new
+kind of cell on the grid whose click opens something must be named in `ui/gridclick.ts`, or a non-blocking panel stays
+up over the thing it opened; (3) the grid's drag is now live BEHIND an open panel — anything that used to rely on a
+sheet's veil to keep the gesture off (a new non-blocking window, a mode that must not be interrupted) has to say so in
+`SelectCtx.enabled` / `reqEnabled`; (4) a new id prefix on a day cell must not start with `req-` unless it is a Required
+cell — the gesture hit-tests that prefix as it does `cell-` and `event-`.

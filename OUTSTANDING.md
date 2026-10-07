@@ -1657,6 +1657,10 @@ sheet, the day's list, the Event sheet, the counter form, ⚙ Settings, the Mann
 **To do, as its own job with its own check (bids and OIL are behind these windows):** decide with him which of them should stay
 up, then give each the non-blocking form built for the calendar job; an outside press that today cancels a move (D262) is a ruling
 to re-read first. Not started. Depends on `[SANS-COMMITMENT-CALENDAR]` shipping the non-blocking form.
+**8 Oct 26 — the form is BUILT on `claude/inputs-sans-calendar` (not merged):** `Sheet`'s `modal={false}` (no veil, no close on a
+press outside, no Tab trap) and `ui/gridclick.ts` (a plain click on a cell closes the panel for that cell's own sheet); the
+people's-days panel uses both (`raptor-port/docs/ui-contracts.md` §The page stays fully usable behind an open sheet). What this
+item still needs is his choice of which other windows stay up, and their own check.
 
 ### [SANS-COMMITMENT-CALENDAR] Inputs and SANS calendars — CALLED BACK 7 Oct 26 (D614), Opus 5.5 builds from here (D615); was ON HOLD D585; built preview/evidence preserved (5 Oct 26)
 **7 Oct 26 — where it stands now (the job's own chat, `claude/inputs-sans-calendar`):** the live version is brought into the

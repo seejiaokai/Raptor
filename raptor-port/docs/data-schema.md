@@ -828,7 +828,8 @@ date or a picked block). `settings/flyrule:<id>` = `{id, wd, cls, from, until?}`
 date onward, with or without a last day (`fly.rule.set`, `fly.rule.remove`). `settings/flyrun:<YYYY-MM-DD>` = `{p?, w?}`
 — a required figure RUNNING from that date, per seat; `null` ends the run for that seat (`fly.run.set` — which, typed as
 "From <date> on" on the Leave War, also takes that date's own `p` / `w` out of its `flyday:` row in the same command, so
-the run shows on the day it starts: one command, two rows, one Undo step). Whole numbers of
+the run shows on the day it starts: one command, two rows, one Undo step; applied to a PICKED BLOCK it does the same for
+every picked flying weekday — one command, the run's row and each of those `flyday:` rows). Whole numbers of
 zero or more; a row that fails the check is read as nothing. `settings/flynames` = `{p?, w?}` — the Required rows' names
 where they differ from the defaults (`settings.flynames`). From the same change `settings/sanscalendar` is read by the
 flying plan as THREE figures, `{yellowFrom, amberFrom, redFrom}`, whole numbers, `1 <= yellow < amber < red`, defaults

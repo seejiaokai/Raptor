@@ -61,7 +61,7 @@ import { CountRows } from './CountRows'
 import { CounterForm } from './CounterForm'
 import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
-import { FlyRows } from './FlyRows'
+import { FlyRows, type FlyPickApi } from './FlyRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
@@ -1121,6 +1121,10 @@ export function Matrix() {
   // Assigned just before the return, where rosterSequence and the mode flags
   // are in scope.
   const selCtxRef = useRef<SelectCtx | null>(null)
+  /* The Required rows own their picked block and its panel (FlyRows.tsx) — a pick there must not re-render this
+     grid. This ref is the hand-over: the drag below calls `pick`, and a pick of anything else calls `close`, so the
+     two non-blocking panels (D641, D642) are never up together. */
+  const flyPickRef = useRef<FlyPickApi | null>(null)
   useEffect(() => {
     const w = wrapRef.current
     if (!w) return
@@ -1131,6 +1135,8 @@ export function Matrix() {
       onSelect: s => selCtxRef.current?.onSelect(s),
       eventsEnabled: () => selCtxRef.current?.eventsEnabled?.() ?? false,
       onEventSelect: s => selCtxRef.current?.onEventSelect?.(s),
+      reqEnabled: () => selCtxRef.current?.reqEnabled?.() ?? false,
+      onReqSelect: s => selCtxRef.current?.onReqSelect?.(s),
       leftEdge: () => selCtxRef.current?.leftEdge?.() ?? w.getBoundingClientRect().left,
     })
   }, [])
@@ -3643,12 +3649,16 @@ export function Matrix() {
       .filter(id => canEditRow(role, viewer, id)),
     dates: () => drawnDates,
     enabled: () => !arranging && !moveSel && !eventMoveSel && (role === 'admin' || period.stage === 'open'),
-    onSelect: s => setSel(s),
+    onSelect: s => { flyPickRef.current?.close(); setSel(s) },
     // Events are the admin's (the store refuses a member write anyway); a drag
     // along one event line opens the event sheet pre-set to that date span
     // (owner, 27 Aug 26). from === to (a one-cell drag) opens on the single day.
     eventsEnabled: () => role === 'admin' && !arranging && !moveSel && !eventMoveSel,
-    onEventSelect: s => setEventEdit({ line: s.line, date: s.from, to: s.from === s.to ? undefined : s.to }),
+    onEventSelect: s => { flyPickRef.current?.close(); setSel(null); setEventEdit({ line: s.line, date: s.from, to: s.from === s.to ? undefined : s.to }) },
+    // The Required rows are the admin's to type (the scheduler's command gate refuses a member anyway); a drag over
+    // them opens the Required panel for the picked block (owner, D636, D637), and closes the people's-days panel.
+    reqEnabled: () => role === 'admin' && !arranging && !moveSel && !eventMoveSel,
+    onReqSelect: s => { setSel(null); flyPickRef.current?.pick(s) },
     // The days begin past the frozen block — the name/counter pair, or the
     // drawer while it is open (frozenWidth is already drawer-aware).
     //   No wrap means nothing to measure, and `0` would be a LIE the band could
@@ -3844,7 +3854,7 @@ export function Matrix() {
                     column asks for the same re-measure the Archive rows do — which also re-places the Figures drawer
                     and the open-bidding outline, both measured off the dates BELOW this block (the two things he
                     circled on the hand-drawn picture: the gate e2e/leavewar.spec.ts checks both in a real browser). */}
-                <FlyRows days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR} onWiden={onArchiveChange} />
+                <FlyRows days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR} onWiden={onArchiveChange} pickApi={flyPickRef} />
               </CountRows>
             )}
             {/* The month strip, now a row of the grid so it sits between the
@@ -4369,6 +4379,9 @@ export function Matrix() {
           `open`; a drag never sets `open`. */}
       {sel && (
         <SelectSheet
+          /* a NEW drag while the panel is up replaces what it acts on (D642) — and starts it afresh: a Delete armed
+             for the old block, or a below-zero ask, must not carry over to the new one */
+          key={`${sel.from}|${sel.to}|${sel.people.join(',')}`}
           sel={sel}
           people={csOf}
           /* the ask before a fill takes anyone below zero (D418) */

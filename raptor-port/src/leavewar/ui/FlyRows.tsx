@@ -31,7 +31,7 @@
 // `req-p-<iso>` / `req-w-<iso>` / `avail-p-<iso>` / `avail-w-<iso>` — never an `event-`, `cell-` or `count-` prefix:
 // the grid's drag code hit-tests those.
 
-import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefCallback } from 'react'
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type RefCallback } from 'react'
 import { createPortal } from 'react-dom'
 import type { DayInfo } from '../engine'
 import {
@@ -41,6 +41,14 @@ import {
 import { dayLabel } from './dates'
 import { popAt } from './popat'
 import { FlyEditor, type FlyEditAt, type ReqRow } from './FlyEdit'
+import { ReqPanel } from './ReqPanel'
+import { planPick } from './reqpick'
+import type { ReqSelection } from './select'
+
+/** What the grid's drag hands over, and how the grid tells these rows to let go: a drag over the Required rows calls
+ *  `pick`; a pick of anything ELSE on the grid (people's days, an event line) calls `close`. A ref, not state in
+ *  Matrix — a pick must not re-render the ~25,000-node grid. */
+export interface FlyPickApi { pick: (sel: ReqSelection) => void; close: () => void }
 
 type Seat = 'p' | 'w'
 type RowId = 'req-p' | 'req-w' | 'avail-p' | 'avail-w'
@@ -112,7 +120,7 @@ const FlyCells = memo(function FlyCells({ row, cells, onTap }: {
   )
 }, (a, b) => a.sig === b.sig && a.row === b.row && a.onTap === b.onTap)
 
-export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR, onWiden }: {
+export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR, onWiden, pickApi }: {
   /** the DRAWN days — a window of the war (Matrix's column window), whole months at a time */
   days: DayInfo[]
   admin: boolean
@@ -124,6 +132,8 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
   /** Called after a change to what the rows show has been drawn: a figure can widen a day column, and the grid's
    *  measured geometry (the frozen header, the month strip, the placeholders) must follow — as the Archive rows ask. */
   onWiden?: () => void
+  /** where the grid's drag hands a pick over the Required rows (Matrix wires it into `select.ts`) */
+  pickApi?: MutableRefObject<FlyPickApi | null>
 }) {
   /* the two signals: the scheduler's (the plan's rows, the SANS commitments, the Required rows' names) and the war's
      (who is available, a holiday, the Available rows' own names) */
@@ -176,6 +186,22 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
   const moveEdit = useRef((from: FlyEditAt, row: ReqRow, iso: string) => setEdit(cur => (same(cur, from) ? { row, iso, touch: from.touch } : cur)))
   const closeEdit = useRef((from: FlyEditAt) => setEdit(cur => (same(cur, from) ? null : cur)))
 
+  /* A PICKED BLOCK and its panel (ReqPanel.tsx; plan §3.3 "Picking several"). The cells that will take the number
+     stay lit while the panel is up — through React, as a class in what each cell SHOWS, because the gesture wipes its
+     own paint on release. `include` lives here for the same reason: it changes which cells are lit. A new pick while
+     the panel is up replaces the block and the same panel follows it. */
+  const [pick, setPick] = useState<{ sel: ReqSelection; include: boolean } | null>(null)
+  useEffect(() => {
+    if (!pickApi) return
+    pickApi.current = admin
+      ? { pick: sel => { setEdit(null); setPick({ sel, include: false }) }, close: () => setPick(null) }
+      : { pick: () => {}, close: () => {} }
+    if (!admin) setPick(null)
+    return () => { pickApi.current = null }
+  }, [pickApi, admin])
+  const closePick = useRef(() => setPick(null))
+  const setInclude = useRef((v: boolean) => setPick(cur => (cur ? { ...cur, include: v } : cur)))
+
   const tapRef = useRef((row: RowId, iso: string, el: HTMLElement) => {
     if (row === 'req-p' || row === 'req-w') {
       /* a no-fly day needs nobody: its cell is not typed (its title says where the day is changed) */
@@ -217,9 +243,16 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
     }
   }, [work])
 
+  /* the cells of a picked block that will take the number — `reqpick.ts`, the same answer Apply writes from */
+  const lit = new Set<string>()
+  if (pick) for (const iso of planPick(pick.sel.dates, flyAnswer, pick.include).take) for (const r of pick.sel.rows) lit.add(`req-${r}-${iso}`)
+
   /* per row, per month: the cells and their signature */
   const model = ROWS.map(row => months.map(m => {
-    const cells = m.dates.map(iso => cellOf(row, iso, m.answers[iso] ?? flyAnswer(iso), admin))
+    const cells = m.dates.map(iso => {
+      const c = cellOf(row, iso, m.answers[iso] ?? flyAnswer(iso), admin)
+      return lit.has(`${row.id}-${iso}`) ? { ...c, cls: c.cls + ' pick' } : c
+    })
     return { key: m.key, cells, sig: cells.map(c => `${c.iso}${c.text}${c.cls}${c.title ?? ''}`).join('|') }
   }))
 
@@ -250,6 +283,10 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
       {work && createPortal(<Working row={work.row} iso={work.iso} x={work.x} y={work.y} />, document.getElementById('page-leavewar') ?? document.body)}
       {edit && createPortal(
         <FlyEditor key={`${edit.row}-${edit.iso}`} at={edit} dates={dates} onMove={moveEdit.current} onClose={closeEdit.current} />,
+        document.getElementById('page-leavewar') ?? document.body,
+      )}
+      {pick && createPortal(
+        <ReqPanel pick={pick.sel} include={pick.include} onInclude={setInclude.current} onClose={closePick.current} />,
         document.getElementById('page-leavewar') ?? document.body,
       )}
     </>

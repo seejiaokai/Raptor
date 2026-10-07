@@ -60,6 +60,50 @@ const SHOTS = {
     await SHOTS.type(page, size)
     await press(page, size, page.locator('[data-testid="fly-edit-run"]'))
   },
+  /* a picked block and its panel — Mon 5 to Fri 9 on a phone (a no-fly day in the middle), Mon 12 to Fri 16 on a desktop */
+  async pick(page, size) {
+    if (size === 'phone') await drag(page, size, cell(page, 'req-p', '2026-01-05'), cell(page, 'req-w', '2026-01-09'))
+    else await drag(page, size, cell(page, 'req-p', '2026-01-12'), cell(page, 'req-w', '2026-01-16'))
+    await page.locator('[data-testid="req-panel"]').waitFor()
+    await page.locator('[data-testid="req-panel-num"]').fill('18')
+  },
+  async pickrun(page, size) {
+    await SHOTS.pick(page, size)
+    await press(page, size, page.locator('[data-testid="req-panel-run"]'))
+  },
+  /* a block that mixes a weekend with ordinary days: left out, with Include */
+  async pickweekend(page, size) {
+    await drag(page, size, cell(page, 'req-p', '2026-01-09'), cell(page, 'req-p', '2026-01-12'))
+    await page.locator('[data-testid="req-panel"]').waitFor()
+  },
+  /* the people's-days panel, up with no veil over the grid */
+  async people(page, size) {
+    /* the row brought to the upper half first: the panel is docked at the foot, and a press ON it is the panel's own */
+    await page.evaluate(() => window.scrollBy(0, document.querySelector('[data-testid="cell-slipway-2026-01-06"]').getBoundingClientRect().top - 300))
+    await page.waitForTimeout(200)
+    await drag(page, size, cell(page, 'cell-slipway', '2026-01-06'), cell(page, 'cell-slipway', '2026-01-08'))
+    await page.locator('[data-testid="select-sheet"]').waitFor()
+  },
+}
+
+/* a real drag: a mouse past the 4px slop on a desktop; a held finger (180ms) through CDP on a phone */
+async function drag(page, size, from, to) {
+  const mid = async l => { const b = await l.boundingBox(); return { x: b.x + b.width / 2, y: b.y + b.height / 2 } }
+  const a = await mid(from), b = await mid(to)
+  if (size === 'phone') {
+    const cdp = await page.context().newCDPSession(page)
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [a] })
+    await page.waitForTimeout(260)
+    for (let i = 1; i <= 6; i++) {
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: a.x + ((b.x - a.x) * i) / 6, y: a.y + ((b.y - a.y) * i) / 6 }] })
+      await page.waitForTimeout(20)
+    }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    await cdp.detach()
+  } else {
+    await page.mouse.move(a.x, a.y); await page.mouse.down()
+    await page.mouse.move(a.x + 8, a.y); await page.mouse.move(b.x, b.y, { steps: 6 }); await page.mouse.up()
+  }
 }
 
 const browser = await chromium.launch(launchOptions)

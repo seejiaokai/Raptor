@@ -1248,3 +1248,83 @@
   padding-bottom: 2px;
 }
 
+/* THE REQUIRED PANEL (ReqPanel.tsx; the Inputs / SANS redesign, plan §3.3 "Picking several"; owner D636, D637) — drawn
+   as the fifth mock-ups show it: a large number box, "one number for the 10 picked cells" beside it, the two "Apply
+   to" chips, and Apply at the right. It is one of the two NON-BLOCKING windows (D641 — `.bidsheet.nonmodal`, no veil
+   behind it), so it wears a slightly brighter edge than a blocking sheet: nothing else says "this one floats". */
+.bidsheet.nonmodal {
+  border-color: var(--edge-2, var(--edge));
+}
+
+/* 22px, never under 16: an input smaller than that makes iOS zoom the page when it takes the focus */
+.bidsheet .reqnum {
+  width: 76px;
+  box-sizing: border-box;
+  padding: 7px 8px;
+  text-align: center;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  background: #0A0E13;
+  border: 2px solid var(--accent);
+  border-radius: 9px;
+  outline: none;
+  caret-color: var(--accent);
+}
+
+.bidsheet .reqp-num .note {
+  margin-left: 8px;
+  /* beside the box, never wrapped under it: a note's own 220px basis would push it to the next line on a phone */
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Clear and Apply, pushed to the row's right edge; on a phone the row wraps and they take the next line's end */
+.bidsheet .reqp-do {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bidsheet .reqapply {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 9px 20px;
+  min-height: 40px;
+  color: #06222B;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.bidsheet .reqapply:disabled,
+.bidsheet .tchip.clear:disabled {
+  opacity: .4;
+  cursor: default;
+}
+
+/* "Include" / "Leave out" — a word in the sentence that is also the press */
+.bidsheet .reqp-inc {
+  margin-left: 8px;
+  padding: 3px 9px;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid rgba(59, 198, 232, .55);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+@media (max-width: 430px) {
+  .bidsheet .reqapply { min-height: 44px; }
+  .bidsheet .reqp-apply .pchip,
+  .bidsheet .reqp-do .tchip { min-height: 40px; }
+  .bidsheet .reqp-inc { padding: 8px 12px; }
+}

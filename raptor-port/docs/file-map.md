@@ -479,8 +479,8 @@ starts) and Available P and W (the war's own count, red where it is under its Re
 working - required, available, SANS committed to fly, still needed). Rows of the grid's own table, mounted through a
 `children` slot of `CountRows`, last in `tbody.counts`; it subscribes ITSELF to the plan's signal (`sync.ts usePlanVersion`) and the war's (`useWarFacts`),
 and memoises each drawn month on what it shows. An admin's click on a Required cell opens the ONE typing box (`FlyEdit.tsx`, below) - `FlyRows` holds
-at most one, and keeps the kind of pointer that made the press; picking several and the Required panel are the next
-pieces. Tests: `ui/flyrows.test.tsx`; the browser gates `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning
+at most one, and keeps the kind of pointer that made the press; it also holds the PICKED BLOCK and its panel
+(`ReqPanel.tsx`, below), lighting the cells that will take the number. Tests: `ui/flyrows.test.tsx`; the browser gates `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning
 block…" and "in the Manning block the four rows cover no month button…" (the two faults he circled, D665).
 `src/probe-bridge.ts` carries `setFlyDays` / `setFlyRun` for that gate (this PC only).
 `src/leavewar/ui/FlyEdit.tsx` - TYPING ONE REQUIRED FIGURE straight into its cell (plan §3.3 "Typing one cell"; D636, D637):
@@ -493,8 +493,20 @@ written. `isFlyingDay` / `stepFlyingDay` are the walk along the row. Styles: `.f
 Tests: `ui/flytype.test.tsx`; the browser gate `e2e/leavewar.spec.ts` "a Required figure is typed straight into its
 cell…" (the box exactly over its cell, the strip off the month buttons, no input focused on a phone, all four rows above
 the pad, every key 44px or more).
+`src/leavewar/ui/ReqPanel.tsx` - THE REQUIRED PANEL (plan §3.3 "Picking several"; D636, D637, D622): one number for a
+picked block of Required cells - the number, "These days | From <date> on", Apply, Clear; `Sheet`'s `modal={false}`
+form (D641 - no veil, the grid behind works); a phone's shorter wording; it lifts the four rows clear of itself when it
+opens. `src/leavewar/ui/reqpick.ts` - `planPick`, the ONE pure rule for which picked days take the number (a no-fly day
+never; weekend / holiday / Off days filled when picked alone, left out of a mixed pick until Include; where a running
+figure starts and which typed figures go with it) - `FlyRows` lights the same answer (`.pick`). `src/leavewar/ui/gridclick.ts`
+- `useCloseOnCellClick`: a plain click on a cell of the grid closes a non-blocking panel (the Required panel and
+`SelectSheet`). The pick itself is `ui/select.ts`' THIRD kind (`parseReqCell`, `reqRange`, `ReqSelection`; `SelectCtx.reqEnabled`
+/ `onReqSelect`), handed from `Matrix` to `FlyRows` by a ref (`FlyPickApi`). `ui/Sheet.tsx` gained `modal` (false = no scrim,
+no outside close, no Tab trap); `ui/SelectSheet.tsx` uses it since D642. Tests: `ui/selectreq.test.ts`, `ui/reqpanel.test.tsx`,
+`ui/nonmodal.test.tsx`; the browser gates "several Required cells are picked with a drag…" and "the people's-days panel
+stays up with no veil…".
 `scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a
-cell being typed, "From <date> on"): the builder's look, and the built side of D624's mock-up-beside-built evidence. Not
+cell being typed, "From <date> on", a picked block with its panel, the people's-days panel): the builder's look, and the built side of D624's mock-up-beside-built evidence. Not
 a gate. It reads a preview on port 4180 (`LOOK_URL`), never 4173 - the browser tests reuse a server left there.
 `src/leavewar/engine/holidays.ts` - the pure half of the Holidays list's three writers: the first free Event row across
 a range, a holiday written as a tagged day event or a merged band, and the record a list line stands for taken away only

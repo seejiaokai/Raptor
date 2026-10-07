@@ -3391,6 +3391,134 @@ test('a Required figure is typed straight into its cell: one box on a desktop, t
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
 })
 
+// PICKING SEVERAL REQUIRED CELLS, AND THE PANEL THAT DOES NOT BLOCK THE GRID (plan §3.3 "Picking several"; D636, D637,
+// D641, D642). jsdom proves the rule and what is saved (reqpanel.test.tsx, selectreq.test.ts, nonmodal.test.tsx). A
+// real browser has to say the rest: that a REAL drag over the two rows arms and picks — a mouse on a desktop, a held
+// finger on a phone (the CDP touch path: Playwright's touchscreen taps but cannot drag) — without scrolling the grid
+// or opening the typing box on the drag's own trailing click; that the panel sits wholly on the screen with nothing
+// drawn over the page; that the page behind it really takes a press while it is up; and that its number box is big
+// enough not to make a phone zoom the page.
+test('several Required cells are picked with a drag and given one number, and the panel leaves the grid behind it working', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  await page.evaluate(() => { (window as any).setFlyDays([{ iso: '2026-01-07', cls: 'nf' }]) })
+  const cell = (r: string, d: string) => page.locator(`[data-testid="${r}-${d}"]`)
+  await expect(cell('req-p', '2026-01-07')).toHaveText('NF')
+  const mid = async (l: Locator) => { const b = (await l.boundingBox())!; return { x: b.x + b.width / 2, y: b.y + b.height / 2 } }
+  const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
+  const pickBlock = async (r0: string, d0: string, r1: string, d1: string) => {
+    const a = await mid(cell(r0, d0)), b = await mid(cell(r1, d1))
+    if (isPhone()) {
+      const cdp = await page.context().newCDPSession(page)
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [a] })
+      await page.waitForTimeout(260)                             // past HOLD (180ms) → armed
+      for (let i = 1; i <= 6; i++) {
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: a.x + ((b.x - a.x) * i) / 6, y: a.y + ((b.y - a.y) * i) / 6 }] })
+        await page.waitForTimeout(20)
+      }
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+      await cdp.detach()
+    } else {
+      await page.mouse.move(a.x, a.y)
+      await page.mouse.down()
+      await page.mouse.move(a.x + 8, a.y)                        // arm past the 4px slop
+      await page.mouse.move(b.x, b.y, { steps: 6 })
+      await page.mouse.up()
+    }
+  }
+  const scrollBefore = await page.locator('.mx-wrap').evaluate(el => el.scrollLeft)
+  await pickBlock('req-p', '2026-01-05', 'req-w', '2026-01-09')
+  const panel = page.locator('[data-testid="req-panel"]')
+  await expect(panel).toBeVisible()
+  /* the drag picked, it did not scroll the grid; and its own trailing click opened no typing box */
+  expect(await page.locator('.mx-wrap').evaluate(el => el.scrollLeft)).toBe(scrollBefore)
+  await expect(page.locator('[data-testid="fly-edit-input"], [data-testid="fly-pad"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="req-panel-title"]')).toHaveText(isPhone() ? 'Req P and W' : 'Required P and W')
+  /* lit: the four flying days × two seats — never the no-fly pair in the middle */
+  await expect(page.locator('#page-leavewar td.fr.req.pick')).toHaveCount(8)
+  await expect(cell('req-w', '2026-01-07')).not.toHaveClass(/pick/)
+  await expect(page.locator('[data-testid="req-panel-nf"]')).toHaveText('Wed 7 Jan is a no-fly day — it is left alone.')
+  await expect(page.locator('[data-testid="req-panel-count"]')).toHaveText(isPhone() ? 'one number for all 8' : 'one number for the 8 picked cells')
+  /* the head is ONE line on a phone too: the shorter wording is there so nothing wraps */
+  expect((await page.locator('[data-testid="req-panel"] .bidsheet-hd').boundingBox())!.height).toBeLessThan(48)
+  /* wholly on the screen, clear of the cells it acts on, and nothing drawn over the page */
+  const vp = page.viewportSize()!
+  const pb = (await panel.boundingBox())!
+  expect(pb.x).toBeGreaterThanOrEqual(-0.5); expect(pb.x + pb.width).toBeLessThanOrEqual(vp.width + 0.5)
+  expect(pb.y).toBeGreaterThanOrEqual(0); expect(pb.y + pb.height).toBeLessThanOrEqual(vp.height + 0.5)
+  const last = (await cell('req-w', '2026-01-09').boundingBox())!
+  expect(pb.y, 'the panel lies over the cells it acts on').toBeGreaterThanOrEqual(last.y + last.height)
+  await expect(page.locator('[data-testid="sheet-scrim"]')).toHaveCount(0)
+  /* a phone must not zoom the page when the number box takes the focus: 16px or more */
+  expect(parseFloat(await page.locator('[data-testid="req-panel-num"]').evaluate(el => getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(16)
+  /* THE PAGE BEHIND STILL WORKS: a month button jumps the grid, and the panel is still there */
+  await press(page.locator('[data-testid="month-strip"] button').nth(1))
+  await expect.poll(() => page.locator('.mx-wrap').evaluate(el => el.scrollLeft)).toBeGreaterThan(scrollBefore + 100)
+  await expect(panel).toBeVisible()
+  await press(page.locator('[data-testid="month-strip"] button').nth(0))
+  await expect.poll(() => page.locator('.mx-wrap').evaluate(el => el.scrollLeft)).toBeLessThan(scrollBefore + 100)
+  /* one number, Apply: every lit cell takes it, the no-fly day keeps NF, the panel goes */
+  await page.locator('[data-testid="req-panel-num"]').fill('18')
+  await press(page.locator('[data-testid="req-panel-apply"]'))
+  await expect(panel).toHaveCount(0)
+  for (const d of ['2026-01-05', '2026-01-06', '2026-01-08', '2026-01-09']) for (const r of ['req-p', 'req-w']) await expect(cell(r, d)).toHaveText('18')
+  await expect(cell('req-p', '2026-01-07')).toHaveText('NF')
+  await expect(page.locator('#page-leavewar td.fr.req.pick')).toHaveCount(0)
+
+  /* "From <date> on", one row: a run from the first picked flying day, shown at once with its corner mark */
+  await pickBlock('req-w', '2026-01-12', 'req-w', '2026-01-13')
+  await expect(page.locator('[data-testid="req-panel-title"]')).toHaveText(isPhone() ? 'Req W' : 'Required W')
+  await press(page.locator('[data-testid="req-panel-run"]'))
+  await page.locator('[data-testid="req-panel-num"]').fill('14')
+  await expect(page.locator('[data-testid="req-panel-runnote"]')).toContainText('14 on every flying day from Mon 12 Jan')
+  await press(page.locator('[data-testid="req-panel-apply"]'))
+  await expect(cell('req-w', '2026-01-12')).toHaveClass(/runstart/)
+  await expect(cell('req-w', '2026-01-16')).toHaveText('14')
+  await expect(cell('req-p', '2026-01-12')).toHaveText('–')
+
+  /* a plain click on a cell while the panel is up: that cell's own thing opens, and the panel closes */
+  await pickBlock('req-p', '2026-01-12', 'req-p', '2026-01-13')
+  await expect(panel).toBeVisible()
+  await press(cell('avail-p', '2026-01-14'))
+  await expect(page.locator('[data-testid="fly-working"]')).toBeVisible()
+  await expect(panel).toHaveCount(0)
+})
+
+// THE PANEL FOR A PICKED BLOCK OF PEOPLE'S DAYS NO LONGER BLOCKS THE GRID (D642). Desktop: the mouse drag is what
+// Playwright drives; the finger's own path through this sheet is the walk's.
+test('the people’s-days panel stays up with no veil: a new drag replaces what it acts on, a plain click opens that cell’s own sheet', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await dragSelectStable(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  const sheet = page.locator('[data-testid="select-sheet"]')
+  await expect(page.locator('[data-testid="sheet-scrim"]')).toHaveCount(0)
+  const first = await page.locator('[data-testid="sel-span"]').innerText()
+  /* a press on the page's own controls behind it works, and it stays */
+  await page.locator('[data-testid="month-strip"] button').nth(0).click()
+  await expect(sheet).toBeVisible()
+  /* a new drag, straight onto the grid behind the open panel. (The panel is docked at the foot of the screen, and a
+     press that lands ON it is the panel's own — so the row is brought to the upper half first, as he would scroll.) */
+  const upperHalf = (id: string) => page.evaluate(tid => {
+    window.scrollBy(0, document.querySelector(`[data-testid="${tid}"]`)!.getBoundingClientRect().top - 300)
+  }, id)
+  await upperHalf('cell-slipway-2026-01-13')
+  await dragSelect(page, 'cell-slipway-2026-01-13', 'cell-slipway-2026-01-15')
+  await expect(sheet).toHaveCount(1)
+  await expect(page.locator('[data-testid="sel-span"]')).not.toHaveText(first)
+  await expect(page.locator('[data-testid="sel-span"]')).toContainText('3 days')
+  /* it still does its job from there */
+  await page.locator('[data-testid="sel-LL"]').click()
+  await expect(sheet).toHaveCount(0)
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-14"]')).toContainText('LL')
+  /* and a plain click on a cell closes it for that cell's own sheet */
+  await upperHalf('cell-slipway-2026-01-20')
+  await dragSelectStable(page, 'cell-slipway-2026-01-20', 'cell-slipway-2026-01-21')
+  await page.locator('[data-testid="cell-slipway-2026-01-23"]').click()
+  await expect(sheet).toHaveCount(0)
+  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
+  await expect(page.locator('[data-testid="sheet-scrim"]')).toHaveCount(1)     // the one-day sheet still blocks
+})
+
 // WHERE THEY SIT, AND THE TWO THINGS HE CIRCLED (D665, 8 Oct 26). Shown the rows drawn BY HAND into the Manning block
 // he chose that placement and marked two faults on the pictures: on the desktop a patch "blocking the months" (the
 // Figures panel, left where it had been measured, lying over the month buttons), and on the phone "the green outer
