@@ -35,6 +35,14 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
      it grades no flying — it marks the input, and nothing else, and
      downchits are exempt from it entirely (engine/inputs.ts). */
   inputLead:14,     // member input deadline, days before the week's Monday
+  /* THE LATE CUT-OFF HAS TWO SHAPES, AND EACH CALENDAR ITS OWN (owner D628, D639, 7 Oct 26 — "the late cut-off can be
+     set either as a number of days or as a weekday of a number of weeks before, for example the Wednesday two weeks
+     prior"; the SANS calendar and the Inputs calendar each have their own). Mode 0 = a number of days before the
+     week's Monday (inputLead / sansLead) — the rule as it always was; mode 1 = a weekday (Monday = 0) of a number of
+     weeks before: the week's Monday - weeks x 7 + weekday. The Inputs set starts on mode 0, so nothing about it moves;
+     the SANS set starts as the Wednesday two weeks before, his own example. Read by engine/inputs.ts dueOfWeekISO. */
+  inputCutMode:0, inputCutWd:2, inputCutWeeks:2,
+  sansLead:14, sansCutMode:1, sansCutWd:2, sansCutWeeks:2,
   scDayFrom:7*60,   // an SC shift wholly inside this window is a DAY shift
   scDayTo:19*60,
   /* PROMOTED FROM A HARD-CODED LITERAL (owner, 21 Aug 26 — "I don't wanna
@@ -117,13 +125,25 @@ export const RULE_SPEC:any={
   oilFullMin:{t:'Full-day OIL threshold (worked mins)',u:'min',lo:60, hi:720},
   maxRun:    {t:'Max days worked in a row',  u:'days',lo:1,  hi:14},
   inputLead: {t:'Member input deadline before the week',u:'days',lo:0,hi:60},
+  inputCutMode: {t:'Inputs late cut-off is set as',u:'cutmode',lo:0,hi:1},
+  inputCutWd:   {t:'Inputs late cut-off weekday',u:'wd',lo:0,hi:6},
+  inputCutWeeks:{t:'Inputs late cut-off weeks before',u:'weeks',lo:1,hi:8},
+  sansLead:     {t:'SANS availability deadline before the week',u:'days',lo:0,hi:60},
+  sansCutMode:  {t:'SANS late cut-off is set as',u:'cutmode',lo:0,hi:1},
+  sansCutWd:    {t:'SANS late cut-off weekday',u:'wd',lo:0,hi:6},
+  sansCutWeeks: {t:'SANS late cut-off weeks before',u:'weeks',lo:1,hi:8},
   minTurn:   {t:'Minimum turn (unused)',     u:'min', lo:0,  hi:480},
   dur:       {t:'Default sortie length (unused)',u:'min',lo:0,hi:480},
 };
 export const KIND_LABEL:any={fly:'a flight',sim:'a sim',duty:'a duty post',shift:'another shift',
   ground:'a ground event',prog:'a programme item'};
 /* a setting reads as a clock time or as a duration */
+export const WD_NAMES=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 export const ruleFmt=(k:any,v:any)=>{const u=RULE_SPEC[k]&&RULE_SPEC[k].u;
+  /* the late cut-off's three (D628): a weekday by its name, a number of weeks, and which of the two shapes */
+  if(u==='wd')return WD_NAMES[v]||String(v);
+  if(u==='weeks')return `${v} week${v===1?'':'s'}`;
+  if(u==='cutmode')return v===1?'a weekday':'a number of days';
   return u==='text'?v:u==='time'?hhmm(v):u==='days'?`${v} day${v===1?'':'s'}`:lgT(v);};
 export const ruleParse=(k:any,txt:any)=>{
   if(RULE_SPEC[k]&&RULE_SPEC[k].kind==='text')return typeof txt==='string'?txt.replace(/[\r\n]+/g,' ').trim().slice(0,RULE_SPEC[k].maxlen)||RULE_STD.v[k]:null;
@@ -133,8 +153,9 @@ export const ruleParse=(k:any,txt:any)=>{
      tolerance in detecting data that are similar, like 0900 vs 0900H").
      The suffix is stripped, not parsed: H and L both mean local here. */
   if(RULE_SPEC[k]&&RULE_SPEC[k].u==='time'){const m=parseHM(s.replace(/\s*[HL]$/i,'')); return m==null?null:m;}
-  /* a day count is a plain number — "6", "6 days" — never minutes */
-  if(RULE_SPEC[k]&&RULE_SPEC[k].u==='days'){const m=s.match(/^(\d+)/); return m?+m[1]:null;}
+  /* a day count is a plain number — "6", "6 days" — never minutes; so are a weekday (0 = Monday), a number of weeks
+     and the cut-off's shape */
+  if(RULE_SPEC[k]&&(RULE_SPEC[k].u==='days'||RULE_SPEC[k].u==='wd'||RULE_SPEC[k].u==='weeks'||RULE_SPEC[k].u==='cutmode')){const m=s.match(/^(\d+)/); return m?+m[1]:null;}
   /* "12h", "2h20", "90", "90 min" all mean the same thing */
   const hm=s.match(/^(\d+)\s*h\s*(\d{1,2})?$/i);
   if(hm)return +hm[1]*60+(+(hm[2]||0));

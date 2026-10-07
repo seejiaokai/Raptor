@@ -466,6 +466,9 @@ while it is still what the line said. The store's half is `state/store.ts` `holi
 `undo/describe.ts holidayLabel`, its landing `undo-wire.ts lwDateOf`), written to the period HOLDING the date;
 `sync.ts` hands them on to the calendars. `engine/period.ts` now holds `writeDayEvent` (moved whole from the store).
 `src/leavewar/holidays.test.ts` pins them; `permsparity.test.ts` holds them to the permissions list.
+The two late cut-offs (D628, D639): `engine/rules.ts` holds their eight values and ranges; `engine/inputs.ts` `cutSetOf`
+(which set judges an input), `cutBackDays` inside `dueOfWeekISO`, and `cutRuleText` (the rule in words, one source);
+`ui/logic-html.ts` states both on the Logic page; `engine/latecut.test.ts` pins them - `lateinput.test.ts` is untouched.
 D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
 through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
 thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.

@@ -1920,6 +1920,30 @@ shrek, yeti), and exempt-though-latest-of-all (the two downchits). Before
 that they all sat inside their own week, which marked every input and made
 the mark useless.
 
+### The cut-off has two shapes, and each calendar its own (owner D628, D639, 7 Oct 26)
+
+*"The late cut-off can be set either as a number of days or as a weekday of a number of weeks before (for example the
+Wednesday two weeks prior)"* (D628); the SANS calendar and the Inputs calendar each have their own (D639).
+
+- **Two sets of the same four values** (`engine/rules.ts`, each with its `RULE_SPEC` range): the Inputs calendar's
+  `inputLead`, `inputCutMode`, `inputCutWd`, `inputCutWeeks`, and the SANS calendar's `sansLead`, `sansCutMode`,
+  `sansCutWd`, `sansCutWeeks`. **A SANS availability input is judged by the SANS set, every other input by the Inputs
+  set** (`engine/inputs.ts cutSetOf`); the two never borrow from each other.
+- **Mode 0 — a number of days before the week's Monday** (`…Lead`, 0–60): everything above this heading, unchanged.
+  **Mode 1 — a weekday of a number of weeks before:** the week's Monday − weeks × 7 + weekday (Monday = 0; weeks 1–8).
+  The Wednesday two weeks before the week of Mon 13 Jul is Wed 1 Jul.
+- **The standards.** The Inputs calendar stays on mode 0 at 14 days — nothing about it moved, and every assertion
+  written before this (`lateinput.test.ts`) passes untouched. **The SANS calendar starts as the Wednesday two weeks
+  before** — his own example; before this a SANS availability input was judged by the Inputs calendar's 14 days.
+- **A cut-off is the end of its day** (D639): the deadline day itself is on time, the day after is late — in both modes.
+- **A value in the wrong shape never breaks the rule** (`cutBackDays`): a mode that is not exactly 1 reads as days; a
+  weekday is held to Monday–Sunday and the weeks to 1–8, so a deadline can never land inside the week it is for.
+  `rulesLoad` already ignores a stored value outside its range.
+- **The rule in words has ONE source**, `engine/inputs.ts cutRuleText(set)` — "14 days before the week starts", "the
+  Wednesday two weeks before" — read by the Logic page's two rows and by each calendar's "How this works" (D628: the
+  text changes when the setting changes; D646: the rule only — the date an entry missed is said by its `LATE` tag,
+  `lateNote`). Downchits and upchits stay exempt. Pins: `engine/latecut.test.ts`.
+
 ## Weekend/PH work earns OIL (`engine/oil.ts`, owner 16–17 Aug 26, REWRITTEN 28 Aug 26 — Leave War sync wire 4)
 
 **BUILT 6 Oct 26 — `[OIL-WORK-START]` (owner, D591, D592, 5 Oct 26).** A flying line's OIL is worked out from its actual

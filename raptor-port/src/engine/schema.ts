@@ -716,6 +716,7 @@ export type RetractionRow = { at: string; by: string | null; restoreSeq?: number
 export const VCONF_KEYS = [
   'briefLead', 'dur', 'step', 'dekit', 'minTurn', 'tightTurn', 'crewRest', 'debrief', 'reportLead', 'reportText',
   'longDay', 'epBrief', 'simDebrief', 'amtDebrief', 'openEnd', 'maxRun', 'inputLead',
+  'inputCutMode', 'inputCutWd', 'inputCutWeeks', 'sansLead', 'sansCutMode', 'sansCutWd', 'sansCutWeeks',
   'scDayFrom', 'scDayTo', 'simLen', 'oilFullMin',
 ] as const
 export type VConfKey = (typeof VCONF_KEYS)[number]
