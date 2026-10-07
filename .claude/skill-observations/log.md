@@ -2848,3 +2848,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 
 **Principle:** A file's own test proves the file under one import order. A registry is loaded from many; its wiring is proved only from more than one of them.
 
+
+### Observation 456: A test that matches a record by date can be silently defeated by the seed data beside it
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Building the Holidays list's writers (the Inputs / SANS calendar job, step 1); tests written first.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Writing the failing test — choosing fixture dates
+
+**Issue:** Four change tests failed with "no longer there" although the code was right. They added a holiday on a date next to a seeded holiday of the same name, and the list under test (correctly) reads two same-named neighbours as ONE run — so the lookup by the new date found nothing. The failure message pointed at the writer, not at the fixture.
+
+**Suggested improvement:** In the red step, when a test will look a record up by a key the system may group or merge (dates, ranges, names), check the seed for a neighbour of the same kind first, or pick a date well clear of seeded ones — and when the grouping IS the behaviour, pin it with its own named test rather than meeting it by accident.
+
+**Principle:** A fixture is part of the test's input. Where the system merges adjacent records, a fixture chosen next to seeded data tests the merge, not the thing the test is named for.
