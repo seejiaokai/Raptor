@@ -36,7 +36,8 @@ import { commandStream } from './command'
 import { resyncSchedBaseline, schedBaselineClean } from './state/sched-commit'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
-import { setLgEdit, setEffectiveRole, setMe, SESSION } from './state/auth'
+import { setLgEdit, setEffectiveRole, setMe } from './state/auth'
+import { roleOf } from './state/perms'
 import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
@@ -189,7 +190,7 @@ export function installProbeBridge() {
       /* BOTH roles, as signing in as an admin would set them: the war's own, and the signed-in one the command layer
          asks (a war told "admin" under a member's sign-in has its write refused and rolled back — [ACCOUNTS]) */
       const lwWas = lwGetState().role
-      const wasRole = SESSION && SESSION.role
+      const wasRole = roleOf()   // asked of state/perms.ts, the one place that reads a session's role (D200)
       if (wasRole && wasRole !== 'admin') setEffectiveRole('admin')
       if (lwWas !== 'admin') lwSetRole('admin')
       try { return lwSaveManningRule(rule) && lwGetState().requirements.default.rules.some(r => r.id === rule.id) }
