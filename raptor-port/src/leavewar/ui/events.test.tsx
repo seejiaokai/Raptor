@@ -183,7 +183,9 @@ describe('a blocked run prints its reason on the first event line', () => {
     render(<Matrix />)
     // the run now stops before the typed day and restarts after it
     expect(screen.getByTestId('event-blocked-2026-03-09').getAttribute('colspan')).toBe('2')
-    expect(screen.getByTestId('event-0-2026-03-11').textContent).toBe('Det brief')
+    /* the grid prints the event's short form now; its full name is the cell's title and the tap box (plan §3.12) */
+    expect(screen.getByTestId('event-0-2026-03-11').textContent).toBe('DB')
+    expect(screen.getByTestId('event-0-2026-03-11').getAttribute('title')).toBe('Det brief')
     expect(screen.getByTestId('event-blocked-2026-03-12').getAttribute('colspan')).toBe('3')
   })
 

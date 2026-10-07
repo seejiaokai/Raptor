@@ -9,9 +9,17 @@ beforeEach(() => {
   setRole('admin')
 })
 
+/* A tap on a FILLED event cell opens the small box first, and its Edit opens the sheet; an EMPTY cell opens the sheet
+   at once (the Inputs / SANS redesign, plan §3.12 — the grid prints short forms, the full name is in the box). */
+const tapEvent = (tid: string) => {
+  fireEvent.click(screen.getByTestId(tid))
+  const edit = screen.queryByTestId('event-peek-edit')
+  if (edit) fireEvent.click(edit)
+}
+
 const openEvent = (line: 0 | 1, date: string) => {
   render(<Matrix />)
-  fireEvent.click(screen.getByTestId(`event-${line}-${date}`))
+  tapEvent(`event-${line}-${date}`)
   return screen.getByTestId('event-sheet')
 }
 
@@ -47,11 +55,11 @@ describe('moving an event', () => {
   it('the Move… button moves the event onto the day tapped', () => {
     render(<Matrix />)
     // place a single-day event on line 0 at 05 Jan
-    fireEvent.click(screen.getByTestId('event-0-2026-01-05'))
+    tapEvent('event-0-2026-01-05')
     fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'MOVEME' } })
     fireEvent.click(screen.getByTestId('event-apply'))
     // reopen it — now the Move… button is offered
-    fireEvent.click(screen.getByTestId('event-0-2026-01-05'))
+    tapEvent('event-0-2026-01-05')
     expect(screen.getByTestId('event-move')).toBeTruthy()
     fireEvent.click(screen.getByTestId('event-move'))
     // the sheet closed and the move banner is up
@@ -132,7 +140,7 @@ describe('a range', () => {
     expect(getState().period.bands).toHaveLength(1)
 
     // reopening on a covered day loads the band's label
-    fireEvent.click(screen.getByTestId('event-band-0-2026-01-05'))
+    tapEvent('event-band-0-2026-01-05')
     expect((screen.getByTestId('event-text') as HTMLInputElement).value).toBe('Exercise')
     fireEvent.click(screen.getByTestId('event-delete'))
     expect(getState().period.bands).toHaveLength(0)
@@ -166,7 +174,7 @@ describe('tagging a word', () => {
     expect(day.eventKinds?.[0]).toBe('nolv')
 
     // reopen on the SAME rendered grid (a second render would duplicate it)
-    fireEvent.click(screen.getByTestId('event-0-2026-01-05'))
+    tapEvent('event-0-2026-01-05')
     expect(screen.getByTestId('event-tag-current').textContent).toBe('No leave')
   })
 

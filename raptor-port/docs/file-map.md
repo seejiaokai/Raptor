@@ -466,6 +466,10 @@ one answer to "what does the grid print" is `engine/eventdefs.ts shortOf` — th
 derived. Text, kind and short form are written together by `engine/period.ts writeDayEvent` and by every store writer;
 the Event sheet's Save and Delete are each ONE command, `state/store.ts saveEvent` / `deleteEvent` (`lw.event.save` /
 `lw.event.remove`). Tests: `engine/eventshort.test.ts`, `eventshort-store.test.ts`.
+**On the grid:** `ui/EventRows.tsx` prints the short form in a day cell (its width from that - never more than three
+characters) and a band's full text only where the bar is wide enough; a tap on a FILLED cell opens the small box
+(`Matrix.tsx` `evPeek`, `.evpeek` in `matrix.css`) with the full name, the kind in its colour and the date - for
+everyone, an admin's carrying Edit; an empty cell still opens the sheet at once for an admin. `ui/eventshort.test.tsx`.
 `src/leavewar/engine/holidays.ts` - the pure half of the Holidays list's three writers: the first free Event row across
 a range, a holiday written as a tagged day event or a merged band, and the record a list line stands for taken away only
 while it is still what the line said. The store's half is `state/store.ts` `holidayAdd` / `holidayChange` /

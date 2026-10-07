@@ -51,6 +51,15 @@ export interface EventDef {
 
 export const EVENT_KINDS: readonly EventKind[] = ['off', 'free', 'nolv', 'work']
 
+/** A kind in WORDS, where a screen names it in full — the box a tap on an event opens, the Event sheet's Kind row and
+ *  its read-out (the Inputs / SANS redesign, plan §3.12). One list, so the two never word a kind two ways. */
+export const EVENT_KIND_WORDS: Readonly<Record<EventKind, string>> = Object.freeze({
+  off: 'Public holiday',
+  free: 'Off day',
+  nolv: 'No leave',
+  work: 'Working event',
+})
+
 export const MAX_EVENTDEFS = 40, MAX_DEFNAME = 24
 
 /* The four seeded types, in the order the sheet lists them: the public

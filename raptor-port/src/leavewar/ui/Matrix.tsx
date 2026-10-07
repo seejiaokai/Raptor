@@ -1,5 +1,5 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback, type TouchEvent } from 'react'
-import { shortDate } from './dates'
+import { dayLabel, shortDate, shortSpan } from './dates'
 import {
   addDays,
   balanceOf,
@@ -67,7 +67,7 @@ import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import { touchesAM, touchesPM, winsOf, type DayView } from '../engine/dayview'
 import type { Portion, PostOutcome } from '../engine'
-import { outcomeOf } from '../engine'
+import { outcomeOf, bandAt, classifyEvent, dayEvent, dayEventKind, EVENT_KIND_WORDS } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import type { RecordSpans } from '../state/merge'
 import { creditGiver, type CreditRec } from '../engine/warrecs'
@@ -857,6 +857,12 @@ export function Matrix() {
   // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
   // then opens pre-set to that range; a single click leaves it undefined.
   const [eventEdit, setEventEdit] = useState<{ line: number; date: string; to?: string } | null>(null)
+  /* THE BOX A TAP ON A FILLED EVENT CELL OPENS (the Inputs / SANS redesign, plan §3.12; owner D643, D644): the grid
+     prints an event's short form, and this is where its full name, its kind and its dates are read — by everyone; an
+     admin's carries "Edit". A small menu, not a window (D641's reading 2): screen-fixed like the quals popover, closed
+     by a press outside it, Escape, a scroll or a resize. `tid` is the cell it hangs from, so a second tap on that cell
+     closes it rather than closing and re-opening it. */
+  const [evPeek, setEvPeek] = useState<{ line: number; date: string; tid: string; x: number; y: number } | null>(null)
   // Which manning count row's explainer is open (owner, 19 Aug 26 — a tap on
   // the row's name says what it counts and where its colours turn on).
   const [manningInfo, setManningInfo] = useState<string | null>(null)
@@ -1140,7 +1146,7 @@ export function Matrix() {
      its controls still wrote to the day it was opened on — in the war no longer on screen. The Sheet now holds the
      keyboard too, so the switch cannot be reached from inside one; this is the second guard, for any other road to a
      switch (an undo that snaps the war, a reload of the picker). */
-  useEffect(() => { setOpen(null); setPlaceAt(null); setEventEdit(null) }, [period.id])   // the event sheet too (Fable F4)
+  useEffect(() => { setOpen(null); setPlaceAt(null); setEventEdit(null); setEvPeek(null) }, [period.id])   // the event sheet too (Fable F4)
   // MOVE MODE is wired further down, after the `phone` breakpoint state it
   // reads to choose commit-on-click (desktop) vs preview-then-Confirm (phone).
   // The frozen-column overlay's own anchors (see the .mxband block below and
@@ -1917,6 +1923,39 @@ export function Matrix() {
       >{catText(p) || 'GND'}</span>
     )
   }
+  /* THE EVENT BOX'S OWN WAYS TO CLOSE — the quals popover's, below, for the same reasons: it is anchored in screen
+     coordinates, so a scroll or a resize strands it; a pointer-down anywhere but the box and the cell it hangs from
+     dismisses it, by a listener and never a scrim, so the next tap and the next drag reach the grid untouched. */
+  useEffect(() => {
+    if (!evPeek) return
+    const close = () => setEvPeek(null)
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as HTMLElement | null
+      if (!t || t.closest('.evpeek')) return
+      if (t.closest(`[data-testid="${evPeek.tid}"]`)) return   // its own cell: the click that follows toggles it
+      setEvPeek(null)
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      const pg = document.getElementById('page-leavewar')
+      if (pg && !pg.classList.contains('on')) return
+      e.stopPropagation()
+      setEvPeek(null)
+    }
+    window.addEventListener('scroll', close, true)
+    window.addEventListener('resize', close)
+    document.addEventListener('pointerdown', onDown, true)
+    window.addEventListener('keydown', onKey, true)
+    return () => {
+      window.removeEventListener('scroll', close, true)
+      window.removeEventListener('resize', close)
+      document.removeEventListener('pointerdown', onDown, true)
+      window.removeEventListener('keydown', onKey, true)
+    }
+  }, [evPeek])
+  /* …and it never outlives what it was opened for: a sheet opening over the grid, either move mode starting. */
+  useEffect(() => { if (eventEdit || moveSel || eventMoveSel) setEvPeek(null) }, [eventEdit, moveSel, eventMoveSel])
+
   /* While the popover is up: it is anchored in screen coordinates, so any scroll
      or resize leaves it stranded — close it. And a pointer-down anywhere that is
      not a chip or the popover itself dismisses it (the phone's tap-away, and the
@@ -3851,6 +3890,13 @@ export function Matrix() {
                  its sheet, whose Move started a SECOND move — and one click then moved both. While any move is on, the
                  event rows open nothing. */
               onEdit={(line, date) => { if (moveSel || eventMoveSel) return; setEventEdit({ line, date }) }}
+              /* a FILLED cell: the small box, for everyone — and nothing while a move is on (a landing opens neither a
+                 box nor a sheet). 240 is `.evpeek`'s own width; a second tap on the same cell closes it. */
+              onPeek={(line, date, el) => {
+                if (moveSel || eventMoveSel) return
+                const tid = el.getAttribute('data-testid') ?? ''
+                setEvPeek(cur => (cur && cur.tid === tid ? null : { line, date, tid, ...popAt(el.getBoundingClientRect(), 240, 104) }))
+              }}
               padL={padL}
               padR={padR}
               phL={phL}
@@ -4491,6 +4537,34 @@ export function Matrix() {
                 </div>
               )
               : <div className="qualpop-none">No qualifications recorded</div>}
+          </div>
+        )
+      })()}
+      {/* The event box (plan §3.12): the full name the grid's short form stands for, its kind in its colour, its date
+          or — for a merged band — its dates. Read from the store on every paint, so it can never show an event that
+          has since been changed, and it goes when its event does. */}
+      {evPeek && (() => {
+        const band = bandAt(period.bands, evPeek.line, evPeek.date)
+        const day = period.days.find(d => d.date === evPeek.date)
+        const text = band ? band.text : day ? dayEvent(day, evPeek.line) : ''
+        if (!text) return null
+        const kind = (band ? band.kind : day ? dayEventKind(day, evPeek.line) : null) ?? classifyEvent(eventDefs, text)
+        return (
+          <div className="evpeek" role="dialog" aria-label={text} data-testid="event-peek" style={{ left: evPeek.x, top: evPeek.y }}>
+            <div className="evpeek-name">{text}</div>
+            <div className="evpeek-meta">
+              {kind && <span className={`evpeek-kind ${kind}`} data-testid="event-peek-kind">{EVENT_KIND_WORDS[kind]}</span>}
+              <span className="evpeek-when">{band ? shortSpan(band.from, band.to) : `${dayLabel(evPeek.date)} ${evPeek.date.slice(2, 4)}`}</span>
+            </div>
+            {role === 'admin' && (
+              <button
+                className="evpeek-edit"
+                data-testid="event-peek-edit"
+                onClick={() => { const { line, date } = evPeek; setEvPeek(null); setEventEdit({ line, date }) }}
+              >
+                Edit
+              </button>
+            )}
           </div>
         )
       })()}
