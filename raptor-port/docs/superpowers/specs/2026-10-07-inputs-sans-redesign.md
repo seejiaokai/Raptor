@@ -230,6 +230,18 @@ the buttons are ready-made events the squadron set up, not "types". Redrawn the 
 every helper sentence is gone — a read-out of a few words stays under the lit preset for the one fact that changes a decision
 (whether work on the day earns OIL); the short form's box is labelled "On grid"; under "Other…" the question is just "Kind".
 D643's two questions stay open.
+**"How this works", shorter (D646).** Shown the fold as drawn he found it wordy, and the worked example and "Later than that is
+marked LATE" unneeded. The fold is five short lines; the cut-off line states the rule as set (from the setting — D628) and keeps
+"before the week" so the count has a start; a LATE tag on an entry, pressed, says the cut-off it missed. The SANS calendar's:
+
+    1. Tap a day to see who has committed, and to add or change yours.
+    2. The coloured pair is how many more are needed to fly: pilots, then WSOs.
+    3. F fly · O OFT · A AMT: the SANS who have committed.
+    4. NF is a no-fly day. Green is a public holiday. Grey is an Off day.
+    5. One commitment a day each. Commit by the end of the Wednesday two weeks before the week.
+
+The Inputs calendar's fold is cut the same way.
+
 **TAKEN — "Yes to all" (D645).** The Event sheet is built as redrawn: a Presets row with the picked one lit, an optional Name, "On
 grid" for the short form, the Kind row only under "Other…"; the grid shows the short form and a tap opens the full name and kind;
 every preset carries its own short form — PH, OFF, NL, SC to start, each his to change in "Edit presets". A short form is up to

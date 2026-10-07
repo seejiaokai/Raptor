@@ -266,7 +266,9 @@ the gear of either calendar or from the Leave War's ⚙; admin only. Two parts s
   member his own, an admin anyone's — the existing rules); for an admin, "Day settings", which opens Days on that month.
 - **The gear** (the app's own cog — D635): Days · Day colours (three numbers) · Late cut-off (§3.9). Admin only;
   everyone sees one line saying what the colours mean.
-- **"How this works"** — a fold at the top: four to six lines, the cut-off line written from the setting with a worked date.
+- **"How this works"** — a fold at the top: five short lines (D646; the text is in the design note). The cut-off line states
+  the rule as set, from the setting — no worked example and no "later is marked LATE". A LATE tag on an entry, pressed,
+  says the cut-off it missed ("after the cut-off, Wed 7 Oct").
 
 ### 3.6 The Inputs calendar
 
@@ -352,7 +354,7 @@ opening and back to the opener on closing); a click brings a window to the front
   stays on time (late is strictly after — "the end of its day"); downchits and upchits stay exempt.
 - Each calendar's gear opens its cut-off window, which edits its own set through the commit the Logic page already
   uses. **The Logic page lists both rows, and each row's button opens that SAME window** (D639: one setting, two ways
-  in) — the four values are not typed on the Logic page itself. "How this works" and the late tag's note are written from the set in force.
+  in) — the four values are not typed on the Logic page itself. "How this works" states the rule from the set in force (D646: no worked date there); the late tag's note carries the date.
 
 ### 3.10 What goes, and what stays, of Codex's build
 
