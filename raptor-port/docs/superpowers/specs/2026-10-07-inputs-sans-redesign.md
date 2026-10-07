@@ -270,6 +270,13 @@ three drawings below he took the third and added that phones differ in height. T
 rows; the bars a day follow from it; a row never goes below room for three bars (then the month scrolls); it re-fits when the height
 changes. The top row of buttons keeps its normal size unless he says to slim it (put to him).
 
+**HIS LATER WORD (D664, 7 Oct 26, night): on a phone the calendar is never a short box scrolled inside the page — it
+takes the phone's full screen.** Sent with a picture of today's SANS calendar on his iPhone: the month sat in a short
+box that scrolled by itself, with empty screen under it. *"I don't want the area of the calendar to be so short that I
+have to vertically scroll a small box section to see the calendar. It should be a full screen of the phone."* It holds
+for the SANS calendar, the Inputs calendar and the Days month alike. Where "(then the month scrolls)" is said above, it
+is the WHOLE PAGE that scrolls, never a box inside it: the month has no height limit and no scroll of its own on a phone.
+
 **What was asked, and the drawings - the phone Inputs month, more compact, and filling the screen.** He asked how the month looks more compact, then
 proposed slimming the tools row (month, Today, Calendar / List, filter) and stretching the month to the foot of a phone screen. Drawn
 three ways at 390 by 844: as drawn, 3 inputs a day (98-point week rows); stretched to the foot with a 32-point tools row, 4 a day

@@ -264,6 +264,11 @@ the gear of either calendar or from the Leave War's ⚙; admin only. Two parts s
   or a moon, or the tag NF / PH / OFF; the still-needed pair, pilots left and WSOs right, in the day's colour over a
   soft wash; F, O and A each as a pair of the SANS committed, in the soft grey. A date with no requirement, or outside
   every leave period, shows "–" and no colour. A no-fly day reads 0 / 0 and "NF".
+- **On a phone the SANS month takes the full screen (D664, 7 Oct 26 — his ruling on today's build, where the month sat
+  in a short box that scrolled inside the page):** the week rows share the height from under the top rows to the foot
+  of the screen, measured and re-measured as the Inputs month's is (§3.6, D653); the month has no height limit and no
+  scroll of its own; where a six-week month or a short screen cannot hold the cell's lines at a readable size the
+  whole page scrolls as one. The Days month (§3.4) follows the same rule.
 - **Highlight** — a picker of the SANS people ("No highlight" first); a cyan ring on each of his days, his letters
   underlined; session-only view state, in `VIEW_RESET`. **The SANS tab has no filters** (the Highlight does that job,
   and the counts ignore filters by ruling — D581).
@@ -297,7 +302,10 @@ the gear of either calendar or from the Leave War's ⚙; admin only. Two parts s
   and its bars are thin (D653):** the week rows share the height left under the top rows — measured from the visible
   viewport, re-measured when it changes (the browser's bars, a turn of the phone), never a number fixed for one screen —
   and the lanes a day are what fits (`layoutBars` takes the lane count; about six on a tall phone). A row never drops
-  below room for three bars and the "+N more" line: on a short screen or in a six-week month the month scrolls instead. The planning layer's day titles
+  below room for three bars and the "+N more" line: on a short screen or in a six-week month the WHOLE PAGE scrolls
+  instead — **never a box inside the page (his ruling D664, 7 Oct 26: "I don't want the area of the calendar to be so
+  short that I have to vertically scroll a small box section … It should be a full screen of the phone")**: the month
+  carries no height limit and no scroll of its own on a phone, on either calendar. The planning layer's day titles
   and pucks stay above the bars as they are. **Drag-to-move is re-made for bars, not inherited:** today's handler takes the starting date from the chip's enclosing day cell
   (`caldrag.ts:242-244`) and a spanning bar has none. The handler resolves the date UNDER THE POINTER at the press —
   on a bar's first week or on a continuation — and at the drop, both from the day grid's geometry; the move is by that
@@ -865,6 +873,10 @@ A fair size for this: six to eight working sessions before the check, the check 
   period is made, then the kept holiday saves.
 - **The opened day's list:** forty commitments on one day — every one reachable by scrolling, no "+ more"; the working and
   "+ Commitment" still on screen at the list's foot; the OFT-or-AMT-only group; on a phone, pulled up and back down.
+- **The phone month is never a box scrolled inside the page (browser, D664):** on the SANS calendar and on the Inputs
+  calendar, at 390 by 568, by 700 and by 844, in a five-week and a six-week month — the month's own box has no vertical
+  scroll (its scroll height equals its height), its foot reaches the foot of the screen where the rows' floor allows,
+  and where it does not the page itself is what scrolls.
 - **The phone month at any height (browser, D653):** at 390 by 568, by 700 and by 844, in a five-week and a six-week month —
   the month reaches the foot of the screen where the floor allows, never overflows sideways, shows the lanes the height
   allows and no fewer than three, and re-fits after the viewport's height changes without the top of the month moving.
@@ -959,6 +971,12 @@ added with no name takes the squadron's usual word for its kind ("PH", "Off day"
 came with removes it for good; a holiday changed on the Leave War since the list was drawn is refused as "no longer
 there" rather than guessed at; a man who is no longer SANS is not counted among the SANS committed to fly (the Leave
 War's Available rows count him instead — never both).
+
+**His ruling while step 1 was being built (D664, 7 Oct 26, night) — the phone calendar takes the full screen:** sent
+with a picture of today's SANS calendar on his iPhone, the month in a short box that scrolled inside the page. It is in
+§3.5, §3.6 and §5. The readings told to him: it holds for both calendars and for the Days month; where a month cannot
+fit at a readable size the whole page scrolls, never a box inside it (this narrows D653's "the month scrolls instead");
+what he saw is today's build, replaced at steps 4 and 5 — nothing is patched before then.
 
 **The group input's readings (§3.13), to tell him the same way:** (on the schedule he has since ruled ONE row
 holding everyone — D661; it was "one row for each man"); (the changes window he has since ruled shows a group filing as ONE item — D663; it was
