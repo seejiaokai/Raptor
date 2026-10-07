@@ -150,16 +150,23 @@ describe('a range', () => {
 describe('tagging a word', () => {
   /* Per-event tags (owner, 18 Aug 26 — "I don't want u to save it as a
      type"): tapping a tag colours THIS event and never mints the word into
-     the library; the library changes only inside Edit types. */
+     the library; the library changes only inside Edit types.
+
+     RE-POINTED 8 Oct 26 (the Inputs / SANS redesign, plan §3.12; D643–D645): the sheet's "Tag" row and its
+     "untagged" read-out are gone. What is chosen now shows as a LIT button — the preset a known word is, or, under
+     "Other…", the kind in the Kind row ("Note" = no tag). Each test below presses the control that now does the job
+     its old one did; the full behaviour of the redrawn sheet is ui/eventsheet-presets.test.tsx. */
+  const lit = (tid: string) => screen.getByTestId(tid).getAttribute('aria-pressed') === 'true'
   it('shows the tag of a known word, and tags a new one WITHOUT saving a type', () => {
     openEvent(0, '2026-01-05')
     fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'PH' } })
-    expect(screen.getByTestId('event-tag-current').textContent).toBe('PH')
+    expect(lit('event-quick-0')).toBe(true)                       // a known word IS its preset
+    expect(screen.getByTestId('event-readout').textContent).toContain('Public holiday')
 
     fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Standby' } })
-    expect(screen.getByTestId('event-tag-current').textContent).toBe('untagged')
+    expect(lit('event-tag-note')).toBe(true)                      // was: "untagged"
     fireEvent.click(screen.getByTestId('event-tag-work'))
-    expect(screen.getByTestId('event-tag-current').textContent).toBe('Work')
+    expect(lit('event-tag-work')).toBe(true)
     // the library is untouched — the tag belongs to the event alone
     expect(getState().eventDefs.some(d => d.name === 'Standby')).toBe(false)
   })
@@ -175,7 +182,7 @@ describe('tagging a word', () => {
 
     // reopen on the SAME rendered grid (a second render would duplicate it)
     tapEvent('event-0-2026-01-05')
-    expect(screen.getByTestId('event-tag-current').textContent).toBe('No leave')
+    expect(lit('event-tag-nolv')).toBe(true)
   })
 
   it('tapping the chosen tag again clears it back to untagged', () => {
@@ -183,7 +190,8 @@ describe('tagging a word', () => {
     fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Standby' } })
     fireEvent.click(screen.getByTestId('event-tag-work'))
     fireEvent.click(screen.getByTestId('event-tag-work'))
-    expect(screen.getByTestId('event-tag-current').textContent).toBe('untagged')
+    expect(lit('event-tag-note')).toBe(true)
+    expect(lit('event-tag-work')).toBe(false)
   })
 
   it('a merged band carries its tag too', () => {
@@ -198,10 +206,15 @@ describe('tagging a word', () => {
     expect(getState().eventDefs.some(d => d.name === 'Det block')).toBe(false)
   })
 
-  it('fills the field from a quick-pick chip', () => {
+  /* was "fills the field from a quick-pick chip": a preset no longer types its word into the Name (the Name is
+     optional under a preset) — it is LIT, fills "On grid", and Save writes its own name on the day */
+  it('a preset chip is picked with one tap, and saves its own name', () => {
     openEvent(0, '2026-01-05')
     fireEvent.click(screen.getByTestId('event-quick-0')) // PH
-    expect((screen.getByTestId('event-text') as HTMLInputElement).value).toBe('PH')
+    expect(lit('event-quick-0')).toBe(true)
+    expect((screen.getByTestId('event-short') as HTMLInputElement).value).toBe('PH')
+    fireEvent.click(screen.getByTestId('event-apply'))
+    expect(dayEvents('2026-01-05')[0]).toBe('PH')
   })
 })
 

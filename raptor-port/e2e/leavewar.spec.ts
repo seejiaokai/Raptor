@@ -3113,51 +3113,70 @@ test('the callsign, its CAT chip and a personnel label all fit the phone column'
   expect(clipped).toEqual([])
 })
 
-// The owner's rule for the event lines: "If the text needs more space, that
-// day will widen to accommodate the info until a certain point then it will
-// wrap text and grow vertically on that grid only." Three behaviours, none of
-// which jsdom can see — it computes no layout at all.
-test('an event widens its day, then wraps and grows only its own rows', async ({ page }) => {
+// The owner's rule for the event lines was (10 Aug 26): "If the text needs more space, that day will widen to
+// accommodate the info until a certain point then it will wrap text and grow vertically on that grid only."
+//
+// REPLACED 8 Oct 26 (the Inputs / SANS redesign, plan §3.12; owner D643, D644, D645). Measured on a phone, "No Leave"
+// took its day from about 20 px to 33 px and "Off day" to 29 px, each making the Event row two lines tall. The grid now
+// prints an event's SHORT FORM — one to three letters or digits — so NO event widens its day and the Event row stays
+// one line tall; the full name is one tap away, in a small box. The test this replaces ("an event widens its day, then
+// wraps and grows only its own rows") pinned the old rule; none of what follows is visible to jsdom, which computes no
+// layout. Runs at phone and desktop size (the two Leave War projects).
+test('no event widens its day: the grid prints a short form, the Event row stays one line tall, and a tap opens the full name', async ({ page }) => {
   await lwRole(page, 'admin')
 
   const col = (d: string) => page.locator(`[data-testid="head-${d}"]`).boundingBox()
   const personRow = () => page.locator('[data-testid="row-slipway"]').boundingBox()
   const eventRow = () => page.locator('[data-testid="event-row-0"]').boundingBox()
+  const cell = (d: string) => page.locator(`[data-testid="event-0-${d}"]`)
 
-  // 2026-01-07 is a clean, empty column (splice's medical markers sit on
-  // 01-05/01-06, and a wide code there would inflate the baseline this test
-  // measures against). No event band or PH covers it in the seed.
-  const narrow = (await col('2026-01-07'))!
+  /* four neighbouring days with nothing on their Event line, and the names that used to widen a day */
+  const days: [string, string, string][] = [
+    ['2026-01-13', 'National Day', 'ND'],
+    ['2026-01-14', 'No Leave', 'NL'],
+    ['2026-01-15', 'Off day', 'OFF'],
+    ['2026-01-16', 'Range closure 0900-1400, live firing on the eastern ranges, all crews briefed', 'RC0'],
+  ]
+  for (const [d] of days) await expect(cell(d)).toHaveText('＋')
+  const before = await Promise.all(days.map(([d]) => col(d)))
   const rowBefore = (await personRow())!
   const eventBefore = (await eventRow())!
 
-  // Editing moved into the Event sheet (owner, Aug 26 — "click on the event
-  // and an edit button is at the top"), so a value is set by tapping the cell,
-  // typing, and saving rather than into an inline textarea.
-  const setEvent = async (date: string, text: string) => {
-    await page.locator(`[data-testid="event-0-${date}"]`).click()
+  for (const [d, text] of days) {
+    await cell(d).click()                                   // an EMPTY cell opens the sheet at once
     await page.locator('[data-testid="event-text"]').fill(text)
     await page.locator('[data-testid="event-apply"]').click()
-    await page.waitForTimeout(150)
+    await expect(page.locator('[data-testid="event-sheet"]')).toHaveCount(0)
   }
 
-  // 1. A SHORT event widens the column.
-  await setEvent('2026-01-07', 'CO visit')
-  const widened = (await col('2026-01-07'))!
-  expect(widened.width).toBeGreaterThan(narrow.width)
+  /* 1. each cell prints its short form… */
+  for (const [d, , short] of days) await expect(cell(d)).toHaveText(short)
+  /* 2. …no day is wider than it was… */
+  const after = await Promise.all(days.map(([d]) => col(d)))
+  for (let i = 0; i < days.length; i++) expect(Math.abs(after[i]!.width - before[i]!.width), `${days[i]![1]} widened its day`).toBeLessThan(0.75)
+  /* 3. …the Event row is as tall as it was (one line), and so is every person's row. */
+  expect(Math.abs((await eventRow())!.height - eventBefore.height)).toBeLessThan(0.75)
+  expect(Math.abs((await personRow())!.height - rowBefore.height)).toBeLessThan(0.75)
 
-  // 2. A LONG one stops widening at the ceiling and wraps instead.
-  await setEvent('2026-01-07', 'Range closure 0900-1400, live firing on the eastern ranges, all crews briefed')
-  const capped = (await col('2026-01-07'))!
-  expect(capped.width).toBeLessThanOrEqual(140)
-  const eventAfter = (await eventRow())!
-  expect(eventAfter.height).toBeGreaterThan(eventBefore.height)
-
-  // 3. ...and ONLY the event rows grew. Every person's row keeps its height,
-  // which is what "on that grid only" has to mean if a year is to stay
-  // readable with an event on it.
-  const rowAfter = (await personRow())!
-  expect(Math.abs(rowAfter.height - rowBefore.height)).toBeLessThan(2)
+  /* 4. A tap on a FILLED cell opens the small box — the full name, its kind — wholly on the screen; Escape closes it,
+        and the next tap reaches the grid. */
+  await cell('2026-01-14').click()
+  const box = page.locator('[data-testid="event-peek"]')
+  await expect(box).toBeVisible()
+  await expect(box).toContainText('No Leave')
+  await expect(page.locator('[data-testid="event-peek-kind"]')).toHaveText('No leave')
+  const bb = (await box.boundingBox())!
+  const vp = page.viewportSize()!
+  expect(bb.x).toBeGreaterThanOrEqual(0)
+  expect(bb.x + bb.width).toBeLessThanOrEqual(vp.width + 0.5)
+  await page.keyboard.press('Escape')
+  await expect(box).toHaveCount(0)
+  await cell('2026-01-13').click()
+  await expect(box).toContainText('National Day')
+  /* Edit opens the sheet on that event, with nothing changed by the opening */
+  await page.locator('[data-testid="event-peek-edit"]').click()
+  await expect(page.locator('[data-testid="event-text"]')).toHaveValue('National Day')
+  await expect(page.locator('[data-testid="event-short"]')).toHaveValue('ND')
 })
 
 test('a member reads the events and cannot type into them', async ({ page }) => {
@@ -4093,6 +4112,7 @@ test('tagging a typed event colours the day without minting a type', async ({ pa
   expect(bg).toContain('242') // the orange channel of the nolv tint
   // and the library holds only the four standard types
   await page.locator('[data-testid="event-1-2026-01-21"]').click()
+  await page.locator('[data-testid="event-peek-edit"]').click()   // a FILLED cell opens the small box first (plan §3.12)
   await page.locator('[data-testid="event-edit-types"]').click()
   await expect(page.locator('.evtype:not(.evtype-add)')).toHaveCount(4)
 })

@@ -6276,6 +6276,45 @@ because headless Chromium flings nothing from synthetic touches; "the scrim
 follows a scroll the grid makes on its own, and shares its range" on both
 widths).
 
+## The Event rows print a short form; the Event sheet is Presets, Name, On grid (owner, D643–D645, 8 Oct 26)
+
+The Inputs / SANS redesign, plan §3.12 (`docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md`). It REPLACES the
+10 Aug 26 rule for the Event rows ("the day widens to fit the text, then wraps"): measured on a phone, "No Leave" took
+its day from about 20 px to 33 px and made the Event row two lines tall.
+
+- **An event is three things:** its full name (`events[line]` / a band's `text`), its kind (its own tag, else its word's
+  preset — "no tag" is NOT "no kind": an untagged "PH" is a public holiday by its name), and a SHORT FORM of one to three
+  letters or digits. ONE rule for a short form, `engine/eventshort.ts normShort` (capitals first, then the count); ONE
+  answer to "what does the grid print", `engine/eventdefs.ts shortOf` — the event's own, else its preset's, else one
+  derived from its name (initials of the words, else the first three), else a dot. An event saved before this prints
+  short at once; nothing stored is converted.
+- **A day cell prints the short form** and takes its `min-width` from it — never more than three characters, so no event
+  widens its day and the Event row stays one line tall. **A merged band** prints its full text where the bar is wide
+  enough (about three characters a day spanned), else its short form. The full name is the cell's `title` and
+  `aria-label`. Gate: `e2e/leavewar.spec.ts` "no event widens its day…", phone and desktop.
+- **A tap on a FILLED cell opens a small box** (`Matrix.tsx evPeek`, `.evpeek`) — the name, a square of the kind's
+  colour with the kind and the date (a band: its dates) — for EVERYONE; an admin's carries **Edit**, which opens the
+  sheet. An EMPTY cell opens the sheet at once for an admin; a drag along the line still opens it for the span. The box
+  is a small menu, not a window: a press outside, Escape, a scroll, a resize or a second tap on its cell closes it; it
+  goes with its event, when a sheet opens, and when either move mode starts.
+- **The sheet's first view:** a **Presets** row (the squadron's ready-made events in their colours, the picked one LIT)
+  ending in **Other…**; under it a read-out of a few words ("Public holiday · work on it earns OIL"); **Name**, optional
+  under a preset, beside **On grid** — the short form, suggested from the preset or the name and his to type over (once
+  typed it is no longer re-suggested); a **Kind** row — Public holiday, Off day, No leave, Work, Note — only under
+  "Other…". This day / A range, the merge choice, the calendar, Save, Move and Delete are as they were. The header's
+  button reads **Edit presets**; its view gives each preset a short-form box.
+- **Opening an event never changes it.** A preset is lit only when its NAME matches the text AND its kind is the event's
+  real kind; anything else — a name of its own, a "PH" someone tagged Off day, an event whose preset was since renamed,
+  re-kinded or deleted — opens on "Other…" with its real kind lit. A Save with nothing changed writes the same text, tag
+  and short form back. A name that matches a preset IS that preset: as it is typed the sheet lights it and leaves
+  "Other…", and "Note" is never paired with a preset's name.
+- **What a save stores:** under a preset with no name of its own — the preset's name, no tag and no short form, so the
+  event follows its preset (as a typed "PH" always did); with a name of its own — the preset's kind as the event's own
+  tag; a short form only where he typed one. **Save and Delete are each ONE command** (`state/store.ts saveEvent` /
+  `deleteEvent`): checked whole before the band it replaces is taken away, one Undo step, words that say what was saved.
+- Pins: `engine/eventshort.test.ts`, `eventshort-store.test.ts`, `ui/eventshort.test.tsx`,
+  `ui/eventsheet-presets.test.tsx`.
+
 ## The event sheet on a phone keyboard (owner, 31 Aug 26)
 
 The event sheet autofocused its name field, so a phone raised the on-screen

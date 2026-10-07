@@ -470,6 +470,9 @@ the Event sheet's Save and Delete are each ONE command, `state/store.ts saveEven
 characters) and a band's full text only where the bar is wide enough; a tap on a FILLED cell opens the small box
 (`Matrix.tsx` `evPeek`, `.evpeek` in `matrix.css`) with the full name, the kind in its colour and the date - for
 everyone, an admin's carrying Edit; an empty cell still opens the sheet at once for an admin. `ui/eventshort.test.tsx`.
+**The sheet:** `ui/EventSheet.tsx`, redrawn - a Presets row with the picked one lit and "Other…", an optional Name beside
+"On grid", a Kind row only under "Other…", "Edit presets" with a short-form box on each row; opening an event never
+changes it (`ui/eventsheet-presets.test.tsx`). The contract: `docs/ui-contracts.md` "The Event rows print a short form".
 `src/leavewar/engine/holidays.ts` - the pure half of the Holidays list's three writers: the first free Event row across
 a range, a holiday written as a tagged day event or a merged band, and the record a list line stands for taken away only
 while it is still what the line said. The store's half is `state/store.ts` `holidayAdd` / `holidayChange` /

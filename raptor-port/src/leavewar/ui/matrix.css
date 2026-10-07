@@ -1301,6 +1301,12 @@
    widen to accommodate the info until a certain point then it will wrap text
    and grow vertically on that grid only."
 
+   REPLACED FOR A DAY'S OWN CELL, 8 Oct 26 (D643–D645; the Inputs / SANS
+   redesign, plan §3.12): a day cell prints the event's SHORT FORM — one to
+   three characters, on one line (`.ev.has:not(.band)` below) — so no event
+   widens its day. What follows still shapes a merged band and the
+   blocked-reason bar, which span several days and keep their full text.
+
    That is three behaviours in one sentence, and CSS gives them in one place.
    `.mx` is `white-space: nowrap` throughout, so a day column already widens
    to fit whatever is in it — the missing half is the CEILING. `max-width`
