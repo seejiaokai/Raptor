@@ -938,7 +938,10 @@ export function InputsPage() {
           )}
         </div>
         <button className="abtn" id="inExport" hidden={INPVIEW!=='table'} onClick={() => {
-          exportCSV('142-inputs.csv', inputRows(rows))
+          /* EVERY input, each one's whole span (AB10) — never only the rows the list is filtered to. The calendar
+             build had narrowed it to the filtered rows, so a member (whose list opens on himself) exported his own
+             inputs only, and a search that matched nothing wrote an empty file (Opus's own read, step 0, 7 Oct 26) */
+          exportCSV('142-inputs.csv', inputRows(INPUTS))
           /* a phone browser often shows nothing at all when a download lands —
              no bar, no tray notification the user is looking at — so the tap
              otherwise reads as dead (owner audit) */

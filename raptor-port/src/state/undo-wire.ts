@@ -155,7 +155,10 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
       const fallback=(dir==='undo'?changes[0]?.after:changes[0]?.before) as any
       if(row||fallback) then=()=>{
         clearInpReveal();setInpMode(isSansAvail((row??fallback).type)?'sans':'member')
-        if(row&&change)requestInpReveal({...row,iid:change.id})
+        /* only when the undo LANDED on Inputs (snapView has changed page by now): an input undone from Edit Schedule
+           stays there, and a reveal left waiting would open that day by itself at the next visit to Inputs, however
+           much later (Opus's own read of the build, step 0, 7 Oct 26) */
+        if(row&&change&&CURPAGE==='inputs')requestInpReveal({...row,iid:change.id})
       }
     }
   } else if (m === 'people') {

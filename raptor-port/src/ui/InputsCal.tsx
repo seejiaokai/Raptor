@@ -23,7 +23,7 @@ import { hhmm } from '../engine/time'
 import { puck } from './html'
 import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from '../state/plan'
 import { notify, writeInputs } from '../state/store'
-import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL } from '../state/view'
+import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips'
 import { canEditSched } from '../state/auth'
 import { me, isAdmin } from '../state/perms'
@@ -167,16 +167,26 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
   const [mouseRange,setMouseRange] = useState<{start:string,end:string}|null>(null)
   const [savedId,setSavedId]=useState<string|null>(null)
   const reveal=INPREVEAL
+  const shown=useRef<typeof INPREVEAL>(null)
   useLayoutEffect(()=>{
     const saved=reveal&&INPUTS.find((r:any)=>r.iid===reveal.iid&&inputsInMode([r],mode).length)
     if(!saved||!reveal||(mode&&reveal.mode!==mode)){setSavedId(null);return}
-    setSavedId(saved.iid);setPopIso(reveal.iso)
+    setSavedId(saved.iid);setPopIso(reveal.iso);shown.current=reveal
     setCalMonth({y:+reveal.iso.slice(0,4),m:+reveal.iso.slice(5,7)})
   },[reveal,mode])
+  /* THE REVEAL IS SPENT ONCE ITS DAY HAS BEEN SHOWN AND LEFT (Opus's own read of the build, step 0, 7 Oct 26). It is
+     view state that outlives this component — so the List can pin the same row — and nothing took it back when the
+     day was closed: List and back to Calendar (or Medical and back) mounted a new calendar, which opened the saved
+     day again and pulled the month back to it. Closing the day, opening another, or leaving the calendar spends it.
+     Guarded by identity, so a NEWER reveal set while this calendar unmounts (a save that switches mode) is kept. */
+  const spendReveal=()=>{ if(shown.current&&INPREVEAL===shown.current)clearInpReveal(); shown.current=null }
+  /* every press that opens or closes a day goes through here — the one place the reveal is spent */
+  const showDay=(iso:string|null)=>{ if(shown.current&&iso!==shown.current.iso)spendReveal(); setPopIso(iso) }
+  useEffect(()=>()=>spendReveal(),[])
   const cancelSelection=()=>{setSelectDates(false);setSelected(null);setMouseRange(null)}
   const pickDate=(iso:string)=>{
     if(selectDates){setSelected(prev=>!prev||prev.end?{start:iso,end:''}:{start:prev.start,end:iso});return}
-    setPopIso(iso);setPopPuckEdit(null)
+    showDay(iso);setPopPuckEdit(null)
   }
   const [popPuckEdit, setPopPuckEdit] = useState<string | null>(null)
   const [rmkDraft, setRmkDraft] = useState('')
@@ -281,7 +291,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
       /* the picker sits ABOVE the popover, so it eats Escape first — the same
          one-layer-at-a-time ladder the popover follows below the modal */
       if (pickFor != null) { setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp(''); return }
-      if (popIso) { setPopIso(null); setPopPuckEdit(null); return }
+      if (popIso) { showDay(null); setPopPuckEdit(null); return }
       if(selectDates){cancelSelection();return}
       onClose()
     }
@@ -306,7 +316,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
     setInpEdit({ _new: true, _calendar:true, _ctx: mode==='sans'?'s':'', person: who, type: t, date: fmt(iso), endDate:end&&end!==iso?fmt(end):undefined, allday: defaultAllday(t), s: 360, e: 1080, ...(mode==='sans'?{sans:{f:true}}:{}) })
     notify()
   }
-  const closePop = () => { setPopIso(null); setPopPuckEdit(null) }
+  const closePop = () => { showDay(null); setPopPuckEdit(null) }
 
   /* Wire caldrag's chip machine, and this calendar's OWN empty-cell gesture,
      onto the grid — both as plain native listeners on the same element, so
@@ -325,7 +335,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
         const r = INPUTS.find((x: any) => x.iid === entry.iid)
         if (r) { setInpEdit(r); notify() } // object resolve — never index; the modal opens above this overlay
       } else {
-        setPopIso(entry.fromIso)
+        showDay(entry.fromIso)
         /* a NOTE opens already in its own edit box; a PUCKS row has no text
            to edit, so its tap just opens the day (its people are edited
            through the row's own picker/✕ controls there). */
@@ -989,7 +999,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
         <span className="ic-mon">{MON[cur.m - 1]} {cur.y}</span>
         <button type="button" className="abtn" id="icNext" aria-label="Next month" onClick={() => step(1)}>›</button>
         <button type="button" className="abtn" id="icToday" onClick={goToday}>Today</button>
-        {mode&&<button type="button" className="abtn" id="icSelectDates" aria-pressed={selectDates} disabled={!canOffer} onClick={()=>{setPopIso(null);setSelected(null);setSelectDates(!selectDates)}}>{selectDates?'Cancel selection':'Select dates'}</button>}
+        {mode&&<button type="button" className="abtn" id="icSelectDates" aria-pressed={selectDates} disabled={!canOffer} onClick={()=>{showDay(null);setSelected(null);setSelectDates(!selectDates)}}>{selectDates?'Cancel selection':'Select dates'}</button>}
         {mode==='sans'&&<SansColourControls/>}
         {active && <span className="ic-filterpill">filtered: {pillParts.join(' · ')}</span>}
         <button type="button" className="abtn" id="icClose" aria-label="Back to list"
@@ -1084,7 +1094,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
                 </div>
               )}
               {extra > 0 && <button type="button" className="ic-more" data-icmore={iso}
-                onClick={() => { setPopIso(iso); setPopPuckEdit(null) }}>+{extra} more</button>}
+                onClick={() => { showDay(iso); setPopPuckEdit(null) }}>+{extra} more</button>}
               </>}
             </div>
           )

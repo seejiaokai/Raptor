@@ -1870,7 +1870,11 @@ export function InputEditor() {
           </div>}
           <div className="inped-hint">{isNew
             ? r._calendar
-              ? 'Choose the dates and your available hours. Save adds one input covering the whole date range.'
+              /* "your available hours" is the SANS calendar's wording — on the Inputs calendar the same window files
+                 a meeting or a leave (Opus's own read of the build, step 0, 7 Oct 26) */
+              ? isSansAvail(draft.type)
+                ? 'Choose the dates and your available hours. Save adds one input covering the whole date range.'
+                : 'Choose the dates and the hours. Save adds one input covering the whole date range.'
               : ctx === 'up'
               ? 'Pick the day he is fit for full duty and attach the upchit document — the medical entry ends the day before, and a summary asks before anything is changed.'
               : ctx === 'u'

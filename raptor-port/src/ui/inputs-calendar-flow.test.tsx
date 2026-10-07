@@ -210,3 +210,44 @@ it('withdrawing admin controls discards the colour draft and removes its Escape 
   expect(host.querySelector('#inpCal')).toBeNull()
   expect(getSansCutoffs()).toEqual({amberFrom:1,redFrom:3})
 })
+
+/* STEP 0 — OPUS'S OWN READ OF THE BUILD (D615, 7 Oct 26). Three finds, each red before its fix. */
+it('a saved input opens its day ONCE: closing the day, then List and back to Calendar, does not open it again or move the month',async()=>{
+  const row=await newOffer('Personal','Step 0 reveal once')
+  expect(host.querySelector(`[data-popiid="${row.iid}"]`)).toBeTruthy()
+  await act(async()=>{(host.querySelector('.ic-popwrap') as HTMLElement).dispatchEvent(new MouseEvent('pointerdown',{bubbles:true}))})
+  expect(host.querySelector('.ic-popwrap')).toBeNull()
+  await click('#icNext')
+  expect(host.querySelector('.ic-mon')?.textContent).toContain('Nov')
+  await click('#inListBtn');await click('#inCalBtn')
+  expect(host.querySelector('.ic-popwrap'),'the day must stay closed').toBeNull()
+  expect(host.querySelector('.ic-mon')?.textContent).toContain('Nov')
+})
+it('the same for the SANS day closed by its own button',async()=>{
+  await click('#inSansMode')
+  const row=await newOffer('SANS Availability','Step 0 reveal once, SANS')
+  expect(host.querySelector(`[data-popiid="${row.iid}"]`)).toBeTruthy()
+  await click('#icPopClose');await click('#icNext')
+  await click('#inMedBtn');await act(async()=>{setInpView('cal');notify()})
+  expect(host.querySelector('#sansDayPop')).toBeNull()
+  expect(host.querySelector('.ic-mon')?.textContent).toContain('Nov')
+})
+it('the new-input hint speaks of "available hours" on the SANS calendar only',async()=>{
+  await openDate();await click('#icPopAdd')
+  const hint=()=>host.querySelector('.inped-hint')?.textContent||''
+  expect(hint()).not.toMatch(/available hours/i)
+  expect(hint()).toMatch(/one input covering the whole date range/i)
+  await act(async()=>{setInpEdit(null);notify()})
+  await click('#inSansMode');await openDate();await click('#icPopAdd')
+  expect(hint()).toMatch(/available hours/i)
+})
+it('Export writes every input, whatever the list is filtered to (as before the calendar was built)',async()=>{
+  const blobs:Blob[]=[]
+  const orig=(URL as any).createObjectURL
+  ;(URL as any).createObjectURL=(b:Blob)=>{blobs.push(b);return 'blob:x'}
+  try{
+    await click('#inListBtn');await value('#inFSearch','NOBODY_HAS_THIS_REMARK');await click('#inExport')
+  } finally{(URL as any).createObjectURL=orig}
+  const text=await new Promise<string>(res=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result));fr.readAsText(blobs[0])})
+  expect(text.split('\r\n').length-1).toBe(INPUTS.length)
+})

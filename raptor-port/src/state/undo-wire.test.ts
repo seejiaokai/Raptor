@@ -80,6 +80,18 @@ describe('installGlobalUndo() wires the live cutover', () => {
     expect(globalUndo().ok).toBe(true);expect(globalRedo().ok).toBe(true)
     expect(view.INPREVEAL).toEqual({iid:'reveal-wire-upchit',iso:'2026-07-22',mode:'member'})
   })
+  it('an input undone while staying on Edit Schedule leaves no reveal waiting for the next visit to Inputs (step 0, 7 Oct 26)',()=>{
+    view.setPage('inputs');view.clearInpReveal()
+    writeInputs(()=>INPUTS.unshift({iid:'reveal-wire-stay',person:'vinci',type:'Personal',date:'Jul 15',yr:2026,allday:true} as any))
+    const row=INPUTS.find(r=>r.iid==='reveal-wire-stay')!
+    writeInputs(()=>{row.remarks='changed'})
+    view.setPage('editsched');view.clearInpReveal()
+    expect(globalUndo().ok).toBe(true)
+    expect(view.CURPAGE).toBe('editsched')
+    expect(view.INPREVEAL).toBeNull()
+    expect(globalRedo().ok).toBe(true)
+    expect(view.INPREVEAL).toBeNull()
+  })
   it('planning Undo and Redo leave SANS for the Member calendar where the note lives',()=>{
     const entry={scope:{module:'inputs'},forward:[{collection:'plan',id:'2026-07-22',before:null,after:{rmk:'Planning note'}}]} as any
     view.setPage('inputs');view.setInpMode('sans');view.setInpView('table')
