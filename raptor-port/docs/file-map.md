@@ -520,6 +520,12 @@ for the rows handed to it even with no counter.
 `FlyRows` (`onEditAvail` -> Matrix's `counterEdit`): a people count only, no amber / red, no Delete, no SANS chip, a
 sample summed by `availHave`, one line saying SANS people are never counted. `ui/availform.test.tsx`; the browser gate
 "an Available row's name opens the counter form for it…".
+`src/ui/FloatWindow.tsx` - THE WINDOWS SHELL of the Inputs / SANS calendar job (plan §3.7; D641), exporting `FloatWin`:
+a movable window that does NOT block the page - a bar it is dragged by, a close button, `role="dialog"` with
+`aria-modal="false"`, no veil, no close on a press outside, no Tab trap, focus in and back, Escape for the front one. A
+shell over `ui/floatwin.ts useFloatWin` (the one body of placement rules), never a second one. (Named FloatWindow, not
+FloatWin: on Windows `FloatWin.tsx` and `floatwin.ts` are one name to the bundler.) Styles
+`ui/scheduler/22-float-windows.css`; tests `ui/floatwindow.test.tsx`. Nothing is built on it yet - Days is next.
 `scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a
 cell being typed, "From <date> on", a picked block with its panel, the people's-days panel): the builder's look, and the built side of D624's mock-up-beside-built evidence. Not
 a gate. It reads a preview on port 4180 (`LOOK_URL`), never 4173 - the browser tests reuse a server left there.

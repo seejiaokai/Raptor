@@ -1,0 +1,33 @@
+/* ============================================================================================================
+   THE WINDOWS SHELL (ui/FloatWindow.tsx — the Inputs / SANS calendar job, plan §3.7; owner D641, 7 Oct 26: every pop-up
+   window of the job "should be able to drag around and the background still works"). The chrome of the two older
+   movable windows (.availwin, .chgwin — the same bar, grip, title and ✕), for windows that size themselves to what
+   they hold. NO veil is drawn behind one: a veil says "this is blocked", and the page behind is not.
+   Layers: 410, and 411 for the one pressed last — the same two bounded layers the older windows keep, under the
+   input calendar (420), the bubble (430), a drawer (440) and a modal (470), so a question that must be answered
+   still sits over its window.
+   ============================================================================================================ */
+.floatwin{position:fixed;z-index:410;right:16px;top:96px;width:min(440px,calc(100vw - 32px));
+  max-width:calc(100vw - 32px);max-height:calc(100vh - 120px);max-height:calc(100dvh - 120px);
+  background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;
+  box-shadow:0 18px 44px rgba(0,0,0,.62);display:flex;flex-direction:column;overflow:hidden;outline:none}
+.floatwin.front{z-index:411}
+.floatwin:focus-visible{border-color:var(--accent)}
+.floatwin .win-bar{display:flex;align-items:center;gap:7px;padding:8px;cursor:grab;flex:0 0 auto;
+  background:var(--panel-2);border-bottom:1px solid var(--edge);touch-action:none;user-select:none;-webkit-user-select:none}
+.floatwin .win-bar:active{cursor:grabbing}
+.floatwin .win-grip{color:var(--ink-3);font-size:16px;line-height:1;flex:0 0 auto}
+.floatwin .win-ttl{flex:1;min-width:0;font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.floatwin .win-ttl small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-3)}
+.floatwin .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);border-radius:5px;width:28px;height:28px;
+  flex:0 0 auto;font-size:12px;line-height:1;cursor:pointer}
+.floatwin .win-x:hover{border-color:#F0555F;color:var(--ink)}
+.floatwin .win-body{flex:1;min-height:0;overflow:auto;padding:10px 12px 12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+/* A PHONE: the window starts at the bottom of the screen (D641, reading 3) — the stylesheet's panel, as the two older
+   windows have it; its bar drags it up and down (floatwin.ts keeps only its top), and the page above it still takes
+   taps. The ✕ is a full 44px there. */
+@media (max-width:620px){
+  .floatwin{left:12px;right:12px;width:auto;top:auto;bottom:12px;max-width:calc(100vw - 24px);max-height:72vh;max-height:72dvh}
+  .floatwin .win-x{width:44px;height:44px;font-size:14px}
+  .floatwin .win-bar{padding:6px 6px 6px 10px}
+}

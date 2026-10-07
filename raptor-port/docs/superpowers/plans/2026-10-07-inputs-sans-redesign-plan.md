@@ -445,6 +445,22 @@ opening and back to the opener on closing); a click brings a window to the front
   blocking question (an upchit, OIL or clash confirm). A record replaced by an Undo is treated the same way. One editor at a time: opening another input while
   one holds unsaved changes asks, in that window, before replacing it.
 
+**AS BUILT (8 Oct 26, the overnight run — step 3, first piece: THE SHELL ALONE; nothing is built on it yet).**
+`src/ui/FloatWindow.tsx` (exporting `FloatWin`) — NOT `FloatWin.tsx` as written above: the app already has
+`src/ui/floatwin.ts`, and on Windows the two names are one file to the bundler (`./FloatWin` resolved to the helper and
+every test failed on an undefined component). It is a SHELL over that helper, `useFloatWin` — the app's one body for
+where a movable window sits, its drag, its clamp, its phone layout (≤620px) and which window is in front — adding the
+bar, the ✕, `role="dialog"` / `aria-modal="false"`, focus in and back, Escape, and no veil. Styles:
+`ui/scheduler/22-float-windows.css` (registered in `scheduler.css` and `testing/scheduler-css.ts`). **Choices the
+builder made:** (1) Escape closes the FRONT window when the keyboard is in a window or nowhere — typed in a box on the
+page behind it is that box's own, and the window stays; (2) only the PLACE he dragged a window to is kept, never its
+size — these windows fit what they hold (the helper's fixed size is handed back after every placement); (3) his place
+is kept per window for the life of the page, not stored — as the changes window's is; (4) the layers are the two the
+older windows use (410, and 411 in front), so a question that must be answered still sits over its window. Tests:
+`ui/floatwindow.test.tsx` (11, red first). **NOT BUILT YET in step 3:** Days (Month, "Every <weekday>", Holidays) on
+this shell, and the "Days…" line in the Leave War's ⚙ — until Days uses it the shell cannot be seen in the running app,
+so it has had no browser test and no look yet.
+
 ### 3.8 Who placed it, and when — D629
 
 - The Input record gains `by` (the signed-in person's id when it was filed), `at` (that moment, ms), `modBy` and
