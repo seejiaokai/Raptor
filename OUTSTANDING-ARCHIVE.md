@@ -3794,3 +3794,22 @@ moved to `raptor-port/docs/archive/handoff-merged-blocks-2026-10-07.md`, (3) the
 reads (`raptor-port/docs/superpowers/specs/2026-10-07-expired-guide-text.md`), (4) the six markers answered — the
 document check is green.**
 
+
+*Moved here 2026-10-07 by backlog-archive.mjs ([PRIVATE-BRANCH-NEVER-PUSH]). Forward facts: `raptor-port/docs/superpowers/specs/2026-10-04-schedule-insights-menu/privacy-disposition.md`.*
+
+### [PRIVATE-BRANCH-NEVER-PUSH] A branch on his PC holds his four phone photos — it must never be pushed (filed 7 Oct 26)
+**DONE 7 Oct 26 — DELETED on his word (D613, "Delete the photos branch").** The branch is gone from his PC; it was never
+on GitHub. The record: the privacy note named below. The text below is the item as filed.
+`codex/private-insights-menu-materials` exists ONLY on his PC (checked 7 Oct 26: not on GitHub). Its one commit beyond
+the shared history (9fcdc555) carries four screenshots from his iPhone of the app's preview (the demo week; the board's ⋯ menu, the phone menu with
+"Pick a date…" and "Week insights" ringed in red — what he wanted moved) and the two mock-up pictures made from them,
+for `[SCHEDULE-INSIGHTS-MENU]` (D557, D558 — built, live since 6 Oct 26 with PR #481, so the branch has no further use); publishing them was refused on 4 Oct 26 because the photos may show sensitive
+information, and the repo is public for the present (D106). **Never push this branch, never `git push --all` or
+`--mirror` from this PC, never merge it into a branch that is pushed.** The record: `raptor-port/docs/superpowers/specs/2026-10-04-schedule-insights-menu/privacy-disposition.md`.
+Until 7 Oct 26 this caution stood only in the merged `codex/workflow-ui` block of `HANDOFF.md` — found when that block's
+removal was prepared (`[START-CONTEXT-AUDIT]`, option 1). **His call (low):** keep the branch as it is, or have it
+deleted from the PC once he no longer wants the photos kept in git (a deletion — only on his word). **Place (the
+agent's line):** ask him with the start-of-chat options. **7 Oct 26: he said "Delete the photo branch", and a minute later
+"So don't delete*" — a correction of his sentence about the SANS calendar work (D610), most likely not of this. The
+deletion is HELD until he says which; the branch is untouched.**
+
