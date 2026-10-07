@@ -206,7 +206,16 @@ for (const [label, viewport, touch] of SIZES) {
       await page.locator('#sbDone').click()   // ✓ Done, the board's one way out (D349)
       await go(page, 'inputs')
       await failSaves(page)
-      for (const [btn, root] of [['#inCalBtn', '#inpCal'], ['#inMedBtn', '#medView']] as const) {
+      /* THE INPUTS CALENDAR IS PART OF THE PAGE NOW (the calendar-first Inputs, D574/D580 — joined with D587 on
+         7 Oct 26): it no longer lies over the top bar, so it carries NO band of its own — the bar's warning is the one
+         a person sees and a reader hears, whole and over nothing, with the calendar open. */
+      await page.locator('#inCalBtn').click()
+      await page.waitForSelector('#inpCal')
+      await expect.poll(async () => (await look(page, BAR)).seen, { message: 'the Inputs calendar open: the bar’s warning is on screen, whole and on top' }).toBe(true)
+      expect((await look(page, BAR)).covers, 'the Inputs calendar open: what the bar’s warning lies over').toEqual([])
+      await expect(page.locator('#inpCal .saveband')).toHaveCount(0)
+      expect(await page.locator(BAR).evaluate(n => [n.getAttribute('aria-hidden'), (n as HTMLElement).inert]), 'the bar’s copy with the calendar open').toEqual([null, false])
+      for (const [btn, root] of [['#inMedBtn', '#medView']] as const) {
         await page.locator(btn).click()
         await page.waitForSelector(root)
         await expect.poll(async () => (await look(page, root + ' .saveband')).seen, { message: `${root} shows the warning, whole and on top` }).toBe(true)
@@ -218,8 +227,6 @@ for (const [label, viewport, touch] of SIZES) {
         if (root === '#medView') { await retrySaves(page, root + ' .saveband', touch); await expect(page.locator('.saveband')).toHaveCount(0) }
         await page.locator(root + ' .ic-head button[aria-label="Back to list"], ' + root + ' .ic-head button:has-text("✕")').first().click()
         await expect(page.locator(root)).toHaveCount(0)
-        /* closed with the save still failed (the Inputs calendar): the bar's own warning is the one again */
-        if (root === '#inpCal') expect(await page.locator(BAR).evaluate(n => [n.getAttribute('aria-hidden'), (n as HTMLElement).inert]), 'the bar’s copy once the calendar is closed').toEqual([null, false])
       }
     })
 

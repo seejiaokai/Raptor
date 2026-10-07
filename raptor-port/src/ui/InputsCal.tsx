@@ -995,9 +995,12 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose, mode, emb
         <button type="button" className="abtn" id="icClose" aria-label="Back to list"
           title="Back to list" onClick={onClose}>{embedded?'List':'✕'}</button>
       </div>
-      {/* a failed save's warning, under this full-screen surface's own bar — it lies over the top bar, whose own
-          warning cannot be seen from here ([SAVE-NOTE-COVERS], D587; ui/SaveStatus.tsx) */}
-      <SaveBand />
+      {/* a failed save's warning, under this surface's own bar — ONLY when the calendar is the full-screen overlay
+          that lies over the top bar, whose own warning cannot be seen from there ([SAVE-NOTE-COVERS], D587;
+          ui/SaveStatus.tsx). Embedded in the Inputs page (the calendar-first Inputs, D574/D580) the top bar stays
+          in view and carries the warning itself: a band here would hide the bar's copy and leave an empty line in
+          the bar (found when the two works were joined, 7 Oct 26 — e2e/save-note.spec.ts). */}
+      {!embedded && <SaveBand />}
       {mode==='sans'&&<div className="sans-legend"><span>F Fly · O OFT · A AMT</span><span>F: available / required</span><span className="amber">Amber: {getSansCutoffs().amberFrom}+ more needed</span><span className="red">Red: {getSansCutoffs().redFrom}+ more needed</span><span><FlyingIcons period="day"/> day flying <FlyingIcons period="night"/> night flying</span></div>}
       {selectDates&&<div className="ic-range-bar" role="status"><span>{selected?`${fmtDay(selected.start)}${selected.end?' → '+fmtDay(selected.end):' — choose the last day'}`:'Choose the first and last day. Month arrows work here too.'}</span><button className="abtn primary" type="button" id="icRangeAdd" disabled={!selected?.end} onClick={()=>{if(selected?.end){openAdd(selected.start,selected.end);cancelSelection()}}}>+ {mode==='sans'?'Commitment':'Input'}</button><button className="abtn" type="button" onClick={cancelSelection}>Cancel</button></div>}
       <div className="ic-dow">{DOW.map(d => <span key={d}>{d}</span>)}</div>

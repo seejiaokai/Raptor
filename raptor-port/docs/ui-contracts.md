@@ -8925,7 +8925,11 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
 - **A full-screen surface that lies over the top bar carries the same warning under its own bar** (`SaveBand`, in the
   flow): the scheduler board (inside `.sb-top`, last, so `--sb-topH` follows it), the Inputs calendar and the Medical
   view (between the head and the body), and the Leave War's full-screen OIL tracker — its grid and its settings (under
-  the sheet's head). There the bar's own warning cannot be seen. A window, a sheet or the phone's menu is a short visit
+  the sheet's head). There the bar's own warning cannot be seen. **Since the calendar-first Inputs (D574/D580 — joined
+  with this rule on 7 Oct 26) the Inputs calendar is PART OF THE INPUTS PAGE, not a surface over the top bar: there it
+  carries NO band, and the bar's own warning is the one seen** (`InputsCal.tsx`: the band only when not `embedded`; a
+  band in the embedded calendar hid the bar's copy and left an empty line in the bar — `e2e/save-note.spec.ts` pins
+  both). The Medical view is still full screen and keeps its band. A window, a sheet or the phone's menu is a short visit
   and has none — the bar's is there when it closes. **What decides it is the surface, not its component's name:** full
   screen and worked in (the OIL tracker is a `Sheet`) carries the band.
 - **One warning at a time for a screen reader and the keyboard:** while a `SaveBand` shows, the bar's copy beneath it is
