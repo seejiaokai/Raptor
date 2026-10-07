@@ -375,6 +375,80 @@ War's `manningdefs` may now hold `availp` / `availw`; no new Leave War key. For 
 per-date records and want tables of their own (`FlyingDay`, `FlyingRule`, `RequiredRun`), not Setting rows — said
 there. No reset-version bump: every addition is optional, and the `sansday:` shape never left this branch.
 
+### 3.12 The Event sheet, presets and short names — D643, D644, D645 (added 7 Oct 26, after the challenge)
+
+He took it — "yes to all" — after both readers had finished; **this section goes to both of them as an add-on, one
+round each, before it is built** (it adds saved fields to the war's records). The pictures: the sixth mock-ups.
+
+**What the app does today** (`leavewar/ui/EventSheet.tsx`, `ui/EventRows.tsx`, `engine/eventdefs.ts`): the sheet shows a
+free-text box, a row of the saved words (`evquick` — a press fills the box and clears the tag), a "Tag" row of the four
+kinds, "This day / A range", Save. An event is its text plus an optional kind tag on the day (`DayInfo.events[line]`,
+`eventKinds[line]`) or on a band (`EventBand.text`, `kind`); a word with no tag takes its kind from the library by
+match (`classifyEvent`). The grid prints the whole text and sets the cell's `min-width` to its length in characters
+(`EventRows.tsx:141`). Measured on a phone in the running build: "No Leave" takes its day from about 20 px to 33 px and
+"Off day" to 29 px, each making the Event row two lines tall; "PH", "OFF" and "NL" stay at 20 px on one line; "NO L"
+keeps 20 px but wraps to two lines.
+
+**Records.**
+- A preset gains a short form: `EventDef { name, kind, short? }` (`eventdefs`, one settings key as today). The seeded
+  four start as PH → `PH`, Off day → `OFF`, No Leave → `NL`, SC → `SC`. A stored library with no `short` reads as it
+  stands; its presets take the derived short form below until one is typed.
+- An event gains a short form of its own: `DayInfo.eventShorts?: (string | null)[]` beside `events` and `eventKinds`,
+  and `EventBand.short?`. **Both must be named in `readWar` (`store.ts:719-734` rebuilds a day from named fields and
+  drops the rest) and in `buildDays` (`period.ts:261`), or they vanish on a reload.**
+- **A short form is 1 to 3 characters, no space, stored upper-case.** Refused at the write with a sentence; a longer
+  or spaced value in storage is ignored at the read (the derived form shows).
+- **The one function that answers "what does the grid print":** `shortOf(defs, text, short)` = the event's own
+  `short`; else the short of the preset whose NAME matches the text (the same fold `classifyEvent` uses); else derived
+  from the text — the text itself where it is 3 characters or fewer with no space, otherwise the initials of its words
+  (up to three: "National Day" → `ND`), otherwise its first three letters ("Exercise" → `EXE`). So an event saved
+  before this change shows short at once, with nothing converted (D56) — "No Leave" typed last month prints `NL`.
+
+**The sheet's first view** (admin only, as today; `Sheet.tsx` unchanged for it — the Event sheet is one of the war's
+other windows, `[LW-WINDOWS-NONBLOCKING]`):
+- **Presets** — the library's chips in their colours, then "Other…". The picked one is lit. Picking a preset sets the
+  kind and "On grid" from it; where Name is empty the event's text is the preset's own name. Under the row, one short
+  read-out for the lit kind: "Public holiday · work on it earns OIL" / "Off day · no OIL" / "No leave · heads-up only"
+  / "Working event".
+- **Name** (optional) and **On grid.** A typed name becomes the event's text and suggests its own short form; the kind
+  stays the picked preset's, saved as the event's own tag (today's `kind` argument) so the name need not match a
+  library word. "On grid" can be typed over; once typed it is no longer re-suggested.
+- **"Other…"** shows the **Kind** row — Public holiday, Off day, No leave, Work, Note (none) — and needs a name.
+- This day / A range, the merge choice, the calendar, Save, Move and Delete: unchanged.
+- **Opening an event that exists:** the preset lit is the one whose name matches the text; else the first preset of
+  the event's kind; else "Other…" with its kind (or Note) lit.
+- The title bar's button reads **"Edit presets"**; its view gains a short-form box on each row and on the add row.
+  Its type list, reset and Done are unchanged. The words "Tag" and "untagged" go from the first view.
+
+**The grid.** A day cell prints `shortOf(…)` and sets its `min-width` from that — never more than three characters, so
+no event widens a day. A merged band prints its full text where the bar is wide enough (about three characters a day
+spanned), else its short form. **A tap on a filled cell** opens a small box under it — the full name, the kind with
+its colour, the date or the band's dates — for everyone; an admin's box carries "Edit", which opens the sheet. An
+EMPTY cell opens the sheet at once for an admin, as today; a drag along the line still opens the sheet for the span.
+The box is a small menu, not a window: it closes on a press outside, on Escape and on a scroll (D641's reading 2).
+
+**Everywhere else a holiday is named.** `dayFacts` returns the name and the short form; the calendars' date tag is the
+short form in the kind's colour (so "PH", "OFF" or "ND" — the earlier drawings' fixed "PH" / "OFF" tags are this
+rule's commonest case); an opened day and the Holidays list show the full name and the kind; the Holidays list's add
+form has Name and "On grid", suggested the same way.
+
+**Unchanged, and tested as unchanged:** which days are non-working and which earn OIL (`isNonWorkingDay`,
+`columnKindFor` read the KIND, never the text or the short form); the column's colour; an existing event's text.
+
+**Tests (red first):** `shortOf` — its own, a preset's, each derivation, a legacy event; the write's refusals (four
+characters, a space, empty), a member; a reload keeps an event's and a band's short form (the `readWar` and
+`buildDays` naming); a preset's short form through "Edit presets" — changed, reset, a stored library without one;
+picking a preset fills kind and "On grid"; a typed name keeps the preset's kind and earns OIL exactly as "PH" does;
+"Other…" needs a name; reopening lights the right preset; the grid's day columns equal in width with "National Day",
+"No Leave" and "Off day" saved, and the Event row one line tall (the browser geometry gate, phone and desktop); the
+tap box for a member and for an admin, Edit, an empty cell; a band wide and narrow; Undo and Redo of each save, with
+words that say what was saved; the calendars' tag and the Holidays list reading the same name and short form. The
+existing tests that press `event-quick-*`, `event-tag-*` and `event-edit-types` are re-pointed at the control that now
+does that job — none removed without its control.
+
+**Its place in the order (§4):** with step 2, the Leave War — before the Holidays list (step 3) and the calendars
+(steps 4 and 5) read the name and short form.
+
 ## 4. The order of the build
 
 Each step is tests-first (§5), ends green on its own files, and — from step 2 — ends with a push and a preview link for
@@ -478,24 +552,22 @@ A fair size for this: six to eight working sessions before the check, the check 
 7. **Holidays written to a war that is not on screen**, and at any stage of that war.
 8. **The size.** Many surfaces on one branch for many sessions; `main` is merged in at every step.
 
-## 8. With him — what he has answered, what is with him now, and the readings he will be told
+## 8. With him — what he has answered, and the readings he will be told
 
 **Answered 7 Oct 26 (D642):** Saturday and Sunday start with no flying set; a no-fly day still shows, and takes, OFT
 and AMT commitments; the war's panel for a picked block of people's days is brought into line with D641 in this job,
 its other windows left for `[LW-WINDOWS-NONBLOCKING]`.
 
-**With him now (D643) — drawn in the sixth mock-ups, NOT in this plan's build until he picks:** the Leave War's Event
-sheet made plainer (one Type row, the picked type lit with a line saying what it does; an optional Name and a Short
-form; the Tag row only under "Other…"), and a long event name shown on the grid as its short form, a tap opening the
-full name and kind. Checked in the running app: "National Day" today widens its day's column to more than twice its
-neighbours' and wraps to two lines. If he takes it, it adds: a short form per event on the war's day and band records
-(two more named fields in `readWar` and `buildDays`, or they vanish on a reload); the sheet's first view; the small
-name box and the admin's extra tap; the short form on both calendars' date tags and the full name in the Holidays
-list and an opened day — and it goes to both readers as an addendum before it is built (permissions and saved data).
+**Answered 7 Oct 26 (D643, D644, D645 — "yes to all"):** the Leave War's Event sheet is built as redrawn — a Presets
+row, an optional Name, "On grid", the Kind row only under "Other…" — the grid shows short forms, and every preset
+carries its own (PH, OFF, NL, SC). It is IN this job: §3.12, which goes to both readers as an add-on before it is built.
+
+**Nothing is with him now.**
 
 **The builder's readings, to tell him plainly (each a default he can change):** a phone types the figure on the app's
 own number pad, not the phone's keyboard; a one-day figure does not end a running figure — the run carries on the next
-day; a pick that mixes ordinary days with weekend or holiday days leaves those out unless he presses Include; a half-day absence rounds the need up; a public holiday or an Off day that is flown anyway can take a typed
+day; a pick that mixes ordinary days with weekend or holiday days leaves those out unless he presses Include; a short
+form is at most three letters with no space, and an event saved before this job shows its short form at once; a half-day absence rounds the need up; a public holiday or an Off day that is flown anyway can take a typed
 required figure, but shows no sun or moon; a weekend set to fly still takes no running figure — it is typed; the
 year's holidays need that year's leave period, and the list offers to create it; a date outside every leave period
 shows a dash on the SANS calendar; the SANS cut-off starts as the Wednesday two weeks before; the SANS tab has no
