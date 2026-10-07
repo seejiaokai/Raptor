@@ -129,7 +129,7 @@ The day's sheet on the Leave War, and "Day settings" on the SANS calendar's open
 **Readings to confirm:** a public holiday or an Off day takes no flying and no requirement from the normal week (this
 changes D627's reading 5); Saturday and Sunday start with no flying set. Nothing changes what earns OIL.
 **The step counts shown to him** (taps, the agent's own count from the drawings, not measured on a build): the year's
-holidays — about 44 on the Leave War day by day, about 33 in the list, and checkable at one look; Thursdays no fly for good
+ten public holidays — about 40 on the Leave War day by day, across twelve months, about 30 in the list on one screen, and checkable at one look; Thursdays no fly for good
 — not possible day by day (52 days a year), 5 in the normal week; a three-day night period — 9 day by day, 4 in the month;
 one day's figure from the Leave War — 3 either way.
 
@@ -144,6 +144,16 @@ A difference seen in a pair is a walk finding — fixed, or put to him as a chan
 walk and to his own look; it replaces neither. For this job; whether later jobs get the same is put to him afterwards.
 
 ## Where the mock-ups are
+
+**The third set (7 Oct 26, later that afternoon) is at the head of the same private page**, the second and the first folded
+beneath. Six pictures: "Days" on a phone — the Normal week (weekday rows, Thursday set to no fly with its numbers locked
+at 0, "applies from Mon 2 Nov 2026"), the Holidays list for the year (date, name, PH or OFF; past ones dimmed), the sheet
+that adds one (kind, name, from and to, "Save and add another"), and the Month (November: Thursdays NF from the normal
+week, a public holiday green, one day marked as changed, three days picked with a bar to set night flying and "Apply to 3
+days", "Back to normal week"); "Days" on a desktop with the three parts side by side; and the denser desktop Inputs month
+with a pointer showing who placed a bar. The page also carries two step-count tables (the admin's set-up jobs, and
+everyday use). Its source is `…/scratchpad/mock/mock3.html` with `mock3-extra.js`, on his PC only.
+
 
 **The second set (7 Oct 26, afternoon) is at the head of the same private page**, the first folded at its foot. Twelve
 pictures at first, eleven since D630: the SANS month in the first set's colours (the deep-tint and pair-only drawings were
