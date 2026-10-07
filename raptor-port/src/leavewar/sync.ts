@@ -115,7 +115,8 @@ import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate } from '../state/inputgate-hook'
 import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
-import { validIso, type DayFacts } from '../state/flyplan-model'
+import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer } from '../state/flyplan-model'
+import { getFlyPlan, getTones, sansFly } from '../state/flyplan'
 import { MAX_CARRIED_REMARK } from './engine/warrecs'
 import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
@@ -2243,4 +2244,32 @@ export function holidaysIn(year: number | string): HolidayLine[] {
     for (const h of mine) if (h.to >= lo && h.from <= hi) out.push(h)
   }
   return out.sort((a, b) => (a.from < b.from ? -1 : a.from > b.from ? 1 : (a.line ?? -1) - (b.line ?? -1)))
+}
+
+/* =====================================================================
+   THE WAR READS THE FLYING PLAN — the second rider on this seam (the plan §3.1 point 2)
+   ---------------------------------------------------------------------
+   The war's Required rows show the scheduler's own records — a day's class, its required pilots and WSOs, a figure
+   that runs from a date — and write them through the scheduler's typed commands. They reach them HERE and nowhere
+   else, so the boundary between the two apps stays the one file it has always been. The plan's rows repaint on the
+   scheduler's own change signal (state/store useVersion), the war's on `useWarFacts()` above.
+
+   AND THE ONE JOIN. `flyAnswer` hands the three halves of a day — the plan, the war's facts, the SANS committed to
+   fly — to the ONE resolver (state/flyplan-model.ts planFor). Every screen that shows a day's class, its required
+   figures or how many more are needed asks here: the war's rows, the SANS calendar, the Inputs calendar's tags, Days.
+   A screen that puts the halves together itself is a defect (the plan's risk 1) — two screens would then be free to
+   show two answers for one day. */
+export {
+  getFlyPlan, getTones, getFlyNames, sansFly, sansCommittedOn, setFlyDays, setFlyRun, dropFlyRun, saveFlyNames, FLY_NAME_DEFAULTS,
+  type FlyDayPatch, type FlySave, type SansCommitted, type SeatIds,
+} from '../state/flyplan'
+export type { DayAnswer, FlyCls, Tone } from '../state/flyplan-model'
+
+export function flyAnswer(iso: string): DayAnswer {
+  return planFor(iso, getFlyPlan(), dayFacts(iso), sansFly(iso), getTones())
+}
+/** a month of answers (1-based month) — what a drawn month is painted from, and what its repaint is keyed on: a figure
+ *  or a weekday rule that began months earlier moves these, so a memo built from them cannot miss it */
+export function flyMonth(y: number, m: number): Record<string, DayAnswer> {
+  return monthAnswers(y, m, getFlyPlan(), dayFacts, iso => sansFly(iso), getTones())
 }

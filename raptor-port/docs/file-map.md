@@ -454,7 +454,11 @@ guards in `saveManningRule`, `setManningThreshold`, `deleteManningRule`, `readMa
 sixty-counter limit, never inside it), and `engine/evaluate.ts` passes them over (they judge no day). `engine/eventdefs.ts
 holidayAt` - the holiday on a day with its name. `src/leavewar/sync.ts` (its last block) - what the calendars read from the
 war: `dayFacts(iso)`, `holidaysIn(year)` and the signal `useWarFacts()` / `warFactsVersion()` / `subscribeWarFacts()`;
-`src/leavewar/dayfacts.test.ts` pins all of it.
+`src/leavewar/dayfacts.test.ts` pins all of it. `src/state/flyplan.ts` also holds `sansCommittedOn` / `sansFly` - the
+SANS people committed to F, O and A on a date, per seat, each once a day, never a man since archived and only a man the
+roster marks SANS (`sansfly.test.ts`); it replaces `ui/sans-calendar-model.ts activityPeopleOn` when the SANS calendar is
+re-made (step 4). The same block of `sync.ts` re-exports the plan's readers and writers for the war's rows and holds the
+ONE join, `flyAnswer(iso)` / `flyMonth(y, m)` (`src/leavewar/flyanswer.test.ts`).
 D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
 through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
 thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.

@@ -335,3 +335,8 @@ an Undo of any) and stands still for a look. It is NOT the OIL-only Raptor notif
 ONE place the two halves are joined is `state/flyplan-model.ts planFor`; a screen that joins them itself is a defect.
 Who is available is the two Available rows (`engine/availrows.ts`, ids `availp` / `availw`): ordinary count rows an admin
 renames and re-defines, summed by ONE function that never counts a SANS man, never drawn or judged with the Manning rows.
+**And the war reads the flying plan through the same file — the second rider:** its Required rows reach the scheduler's
+records and typed commands only through the re-export at the foot of `sync.ts`, and every screen that shows a day's
+class, required figures or how many more are needed asks `sync.ts flyAnswer(iso)` / `flyMonth(y, m)` — the plan, the
+war's facts and the SANS committed to fly (`state/flyplan.ts sansFly`: only a SANS man, never one archived) handed to the
+ONE resolver.

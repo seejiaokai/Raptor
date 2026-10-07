@@ -19,12 +19,14 @@
    two-figure `sanscalendar`); nothing here reads those, and a two-figure colour record reads here as the defaults. That
    module and its rows go when the SANS calendar is re-made on the resolver (the plan §3.10). */
 import { store, HOOKS } from '../engine/hooks'
+import { INPUTS, isSansAvail, inputCoversDate } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
 import { newId } from '../engine/newid'
 import { cmdDeferEffect, type CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
 import {
   validIso, validFlyDay, validFlyRule, validFlyRun, validTones, trimDay, DEFAULT_TONES,
-  type FlyPlan, type FlyDay, type FlyRule, type FlyRun, type FlyCls, type Tones,
+  type FlyPlan, type FlyDay, type FlyRule, type FlyRun, type FlyCls, type Tones, type SeatCount,
 } from './flyplan-model'
 
 export const FLY_NAME_DEFAULTS: Readonly<{ p: string; w: string }> = Object.freeze({ p: 'Required P', w: 'Required W' })
@@ -169,4 +171,46 @@ export function saveFlyNames(n: { p: string; w: string }): FlySave {
   if (p && p !== FLY_NAME_DEFAULTS.p) row.p = p
   if (w && w !== FLY_NAME_DEFAULTS.w) row.w = w
   return save('settings.flynames', null, [['flynames', Object.keys(row).length ? row : null]])
+}
+
+/* ---- the SANS committed, per seat ------------------------------------------------------------------------------------
+   still needed = required - those the Leave War shows available - THE SANS COMMITTED TO FLY (D617). This is that third
+   figure, and beside it who offered OFT and AMT, which the SANS calendar shows and never subtracts (D570).
+
+   WHO COUNTS: a man the roster marks SANS, on it today (not archived, not deleted), in a flying seat, with a SANS
+   availability input covering the date. Each man ONCE a day, however many inputs he filed and however short the
+   commitment (D572). No filter of any screen changes it (D581) - it takes none.
+   - ONLY a SANS man: the Leave War's Available rows count everyone EXCEPT the SANS (leavewar/engine/availrows.ts), so
+     the two are the two halves of one roster - a man who has since stopped being SANS is in the war's count, and
+     counting him here as well would count him twice.
+   - NOT a man since archived: the count this replaces (ui/sans-calendar-model.ts activityPeopleOn) went by the input
+     alone and still counted him.
+   The lists are person ids in the order their inputs were filed; the opened day draws their pucks from them. */
+export interface SeatIds { p: string[]; w: string[] }
+export interface SansCommitted { f: SeatIds; o: SeatIds; a: SeatIds }
+const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+export function sansCommittedOn(iso: string, rows: readonly any[] = INPUTS, people: Record<string, any> = PEOPLE): SansCommitted {
+  const out: SansCommitted = { f: { p: [], w: [] }, o: { p: [], w: [] }, a: { p: [], w: [] } }
+  if (!validIso(iso)) return out
+  /* the date as an input's own label, WITH its year - so it is read the same whatever week is loaded */
+  const label = `${MONTH_LABELS[+iso.slice(5, 7) - 1]} ${+iso.slice(8, 10)} ${+iso.slice(0, 4)}`
+  const seen = { f: new Set<string>(), o: new Set<string>(), a: new Set<string>() }
+  for (const r of rows) {
+    if (!r || !r.person || !r.sans || !isSansAvail(r.type) || !inputCoversDate(r, label)) continue
+    const id = String(r.person), p = people[id]
+    if (!p || !p.san || p.archived || p.deleted || p.special || p.pers) continue
+    const seat = p.seat === 'FCP' ? 'p' : p.seat === 'RCP' ? 'w' : null
+    if (!seat) continue
+    for (const act of ['f', 'o', 'a'] as const) {
+      if (!r.sans[act] || seen[act].has(id)) continue
+      seen[act].add(id)
+      out[act][seat].push(id)
+    }
+  }
+  return out
+}
+/** how many SANS pilots and WSOs have committed to fly on a date - what the resolver subtracts */
+export function sansFly(iso: string, rows?: readonly any[], people?: Record<string, any>): SeatCount {
+  const f = sansCommittedOn(iso, rows, people).f
+  return { p: f.p.length, w: f.w.length }
 }
