@@ -258,7 +258,11 @@ Leave War's Event sheet, so it takes the same short form by the same rule; the f
 
 **The SANS purple edge (D651):** the schedule's builder gives a SANS man's puck a bright purple line down its right edge
 (`puck()` adds the class `san`; `04-pucks-sections.css:9-13`). Every puck on the SANS day is a SANS man's, so every one wears it — the
-drawing left it out and he caught it; the build gets it from the one builder. **Its size (D650):** drawn large at first, he asked for it smaller and in proportion — the callsign at about the size of the
+drawing left it out and he caught it; the build gets it from the one builder. **Corrected again the same night:** the redraw put the purple edge outside the puck with a wide glow; he called it ugly and pointed at
+the original. Measured from the running build (`.puck.sm.san`): a flex box 74 by 15, a 1-point transparent border with the seat colour
+showing through it, `overflow: hidden`, radius 3; the name `flex: 1` with 4 points each side; the chip at least 15 wide and 13 tall,
+INSIDE the frame; the purple edge an `::after` 4 wide at `right: 0`, top and bottom −1, its glow clipped by the puck. The drawing now
+uses exactly those styles, scaled as one piece. **Its size (D650):** drawn large at first, he asked for it smaller and in proportion — the callsign at about the size of the
 row's own letters, the puck never the biggest thing on the row; checked on his iPhone in the job's check.
 
 **Asked, not yet ruled - the phone Inputs month, more compact, and filling the screen.** He asked how the month looks more compact, then

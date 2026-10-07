@@ -2802,3 +2802,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the mock-up guide: any sentence of the form "this works like the existing X" is a behaviour claim — before it is written, exercise X for the behaviour named (close it, press outside it, drag it, use the page behind it) or read its code; list what was exercised beside the picture. Where the proposal and the existing behaviour differ, say so on the drawing itself.
 
 **Principle:** Reusing how something looks proves nothing about what it does. A comparison to an existing behaviour is a factual claim and needs its own check, separate from the picture.
+
+### Observation 453: An existing component drawn "to look like" the real one took four corrections; copying its measured styles took one
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Showing an existing component (a small labelled chip the product draws everywhere) inside a mock-up of a new panel.
+**Skill:** New skill candidate: mock-ups on the real screen (see observations 451, 452)
+**Type:** open-source
+**Phase/Area:** Reusing an existing component inside a stand-alone mock-up
+
+**Issue:** The component was first drawn from memory of another screen (wrong shape, wrong colours), then from its markup and colours read in the app (right colours, wrong size), then with its special marker added by eye (the marker outside the box with a glow the real one clips). The owner corrected each in turn and finally sent a close-up of the real thing. Only then were the element's computed styles — box, border, overflow, each child, the pseudo-element — read from the running app and reproduced verbatim, scaled as one piece; that version matched at once.
+
+**Suggested improvement:** In the mock-up guide: when a mock-up contains a component the product already draws, do not style it — measure it. Read the live element's computed styles (including pseudo-elements and overflow) and its markup from the running build, paste them as the mock's rule, scale with one factor, and put a close-up of the real one beside the mock's before showing anyone. Budget: one measuring pass before the first drawing, not after the third correction.
+
+**Principle:** A copy made by eye converges on the original one correction at a time, each paid for by the reviewer. A copy made by measurement starts where that process ends.
