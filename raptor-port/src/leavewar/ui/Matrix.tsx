@@ -61,6 +61,7 @@ import { CountRows } from './CountRows'
 import { CounterForm } from './CounterForm'
 import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
+import { FlyRows, FLY_ROW_KEYS } from './FlyRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
@@ -3505,6 +3506,10 @@ export function Matrix() {
   // reason the band does: one order, so the two cannot fall out of step.
   const drawerRows = (): DrawerRow[] => [
     ...Array.from({ length: eventRows }, (_, line) => ({ kind: 'blank' as const, key: `event-row-${line}` })),
+    /* …and the four rows under them (FlyRows.tsx — Required P and W, Available P and W): rows of the grid's own table,
+       so the drawer must stand an empty box beside each or every roster row in it sits four rows too high (found by
+       the browser gate, 8 Oct 26 — jsdom lays nothing out). Keyed to each row's own testid, as the rest are. */
+    ...FLY_ROW_KEYS.map(key => ({ kind: 'blank' as const, key })),
     ...rosterSequence().map((item): DrawerRow =>
       item.kind === 'group' ? { kind: 'group', key: `group-${item.g}`, folded: folded.has(item.g) }
         : item.kind === 'catsub' ? { kind: 'catsub', key: `subcat-${item.g}-${item.cat}` }
@@ -3901,7 +3906,12 @@ export function Matrix() {
               padR={padR}
               phL={phL}
               phR={phR}
-            />
+            >
+              {/* The four rows under the Event rows — Required P and W, Available P and W (the Inputs / SANS redesign,
+                  plan §3.3). They subscribe THEMSELVES to the plan's and the war's signals, so nothing here repaints
+                  for them; a figure that widens a day column asks for the same re-measure the Archive rows do. */}
+              <FlyRows days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR} onWiden={onArchiveChange} />
+            </EventRows>
             <tbody className="mxbody" ref={rosterBodyRef}>
               {(() => {
                 // The roster in DISPLAY order (owner, 18 Aug 26): the admin's

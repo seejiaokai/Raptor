@@ -473,6 +473,15 @@ everyone, an admin's carrying Edit; an empty cell still opens the sheet at once 
 **The sheet:** `ui/EventSheet.tsx`, redrawn - a Presets row with the picked one lit and "Other…", an optional Name beside
 "On grid", a Kind row only under "Other…", "Edit presets" with a short-form box on each row; opening an event never
 changes it (`ui/eventsheet-presets.test.tsx`). The contract: `docs/ui-contracts.md` "The Event rows print a short form".
+`src/leavewar/ui/FlyRows.tsx` - THE FOUR ROWS UNDER THE EVENT ROWS (the Inputs / SANS redesign, plan §3.3; D617, D637,
+D640): Required P and W (the one resolver's figure, "NF" on a no-fly day, a dash; a corner mark where a running figure
+starts) and Available P and W (the war's own count, red where it is under its Required; a tap opens the read-only
+working - required, available, SANS committed to fly, still needed). Rows of the grid's own table, mounted inside
+`EventRows`' block; it subscribes ITSELF to the plan's signal (`sync.ts usePlanVersion`) and the war's (`useWarFacts`),
+and memoises each drawn month on what it shows. `FLY_ROW_KEYS` are the rows the Figures drawer must stand an empty box
+beside (`Matrix.tsx drawerRows`). READ ONLY so far - typing a cell, picking several and the Required panel are the next
+pieces. Tests: `ui/flyrows.test.tsx`; the browser gate `e2e/leavewar.spec.ts` "the four rows under the Event rows…".
+`src/probe-bridge.ts` carries `setFlyDays` / `setFlyRun` for that gate (this PC only).
 `src/leavewar/engine/holidays.ts` - the pure half of the Holidays list's three writers: the first free Event row across
 a range, a holiday written as a tagged day event or a merged band, and the record a list line stands for taken away only
 while it is still what the line said. The store's half is `state/store.ts` `holidayAdd` / `holidayChange` /

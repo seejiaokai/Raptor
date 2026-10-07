@@ -892,7 +892,24 @@ test('an admin moves a bid to another date, and it lands pending there', async (
 // release. An un-dragged click still opens the single-cell sheet (every other
 // test above proves that path unbroken).
 
+/* THE FOUR ROWS UNDER THE EVENT ROWS (the Inputs / SANS redesign, plan §3.3; 8 Oct 26) stand between the dates and the
+   roster, so every roster row sits their height further down the page than when the drag tests below were written —
+   and on the 900px-high desktop the first rows they drag along then start below the fold, where a mouse hits nothing.
+   Where the start cell's middle is off the screen, the page is scrolled by EXACTLY the four rows' height first: the
+   row is back where each test measured it (the bottom edge-band geometry of the 2 Sep 26 flake included), and nothing
+   else about the gesture changes. */
+async function pastFlyRows(page: Page, cellId: string) {
+  const c = (await page.locator(`[data-testid="${cellId}"]`).boundingBox())!
+  if (c.y + c.height / 2 < page.viewportSize()!.height) return
+  await page.evaluate(() => {
+    const h = [...document.querySelectorAll('[data-testid^="fly-row-"]')].reduce((n, r) => n + r.getBoundingClientRect().height, 0)
+    window.scrollBy(0, Math.round(h))
+  })
+  await page.waitForTimeout(120)
+}
+
 async function dragSelect(page: Page, fromId: string, toId: string) {
+  await pastFlyRows(page, fromId)
   const a = (await page.locator(`[data-testid="${fromId}"]`).boundingBox())!
   const b = (await page.locator(`[data-testid="${toId}"]`).boundingBox())!
   await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2)
@@ -924,6 +941,10 @@ const desktopOnly = () => test.skip(test.info().project.name !== 'lw-desktop', '
 test('drag-selecting a row fills the leave across the whole span', async ({ page }) => {
   desktopOnly()
   await lwView(page, 'slipway')   // a member bids on his OWN row ([ACCOUNTS] — the one-person-writes-his-own check)
+  /* the row is brought back to where this test measured it (pastFlyRows — the four rows under the Event rows pushed
+     it below the fold), so "the page stays put" is now "the page is where the drag STARTED", not "at the very top" */
+  await pastFlyRows(page, 'cell-slipway-2026-01-06')
+  const startY = await page.evaluate(() => window.scrollY)
   await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
   // On this viewport slipway's row sits inside the drag's bottom edge band, and
@@ -931,7 +952,7 @@ test('drag-selecting a row fills the leave across the whole span', async ({ page
   // rows slid up under the still cursor and, when a heading was what ended up
   // under the release point, the last day was dropped (the 2 Sep 26 flake). A
   // band the press started in must be left before it scrolls: the page stays put.
-  expect(await page.evaluate(() => window.scrollY)).toBe(0)
+  expect(await page.evaluate(() => window.scrollY)).toBe(startY)
   await page.locator('[data-testid="sel-LL"]').click()
   for (const d of ['2026-01-06', '2026-01-07', '2026-01-08'])
     await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toBeVisible()
@@ -2101,6 +2122,10 @@ test('the band lets a press through to the drawer once the grid has scrolled', a
   await page.evaluate(() => { (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft = 300 })
   await settleGrid(page)
   const [p1] = await threeInARow(page)
+  /* the first roster row sits four rows further down the page since the Required / Available rows went in under the
+     Event rows (plan §3.3) — below this phone's fold, where a point hit-tests nothing. Bring it on screen first. */
+  await drawerBox(page, 'lve', p1!).evaluate(el => el.scrollIntoView({ block: 'center' }))
+  await settleGrid(page)
   const b = (await drawerBox(page, 'lve', p1!).boundingBox())!
   const under = await page.evaluate(
     ([x, y]) => document.elementFromPoint(x!, y!)?.closest('.mxdrawer td.figbox')?.getAttribute('data-person') ?? null,
@@ -3179,6 +3204,80 @@ test('no event widens its day: the grid prints a short form, the Event row stays
   await expect(page.locator('[data-testid="event-short"]')).toHaveValue('ND')
 })
 
+// THE FOUR ROWS UNDER THE EVENT ROWS — Required P and W, Available P and W (the Inputs / SANS redesign, plan §3.3;
+// D617, D637, D640). They are rows of the grid's own table, so the gate here is the one every row of it meets: each
+// day's cell sits exactly under its date and over the roster's cell for that day, at phone and desktop size; a figure
+// in them moves no column and adds no sideways scroll to the page; and what they show is what a browser PAINTS — the
+// Required figure in the accent, an Available under its Required in red. None of it is visible to jsdom.
+test('the four rows under the Event rows keep every day column in line, and paint what they mean', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  const rows = ['req-p', 'req-w', 'avail-p', 'avail-w']
+  for (const r of rows) await expect(page.locator(`[data-testid="fly-row-${r}"]`)).toBeVisible()
+  const box = (sel: string) => page.locator(sel).evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, w: b.width, h: b.height } })
+  const days = ['2026-01-05', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-09']
+  const widthsBefore = await Promise.all(days.map(d => box(`[data-testid="head-${d}"]`)))
+  const rosterBefore = (await page.locator('[data-testid="row-slipway"]').boundingBox())!
+
+  /* a running figure from the Tuesday, a no-fly Thursday, and a Friday needing more pilots than the squadron has */
+  const availFri = await page.locator('[data-testid="avail-p-2026-01-09"]').innerText()
+  await page.evaluate(n => {
+    const w = window as any
+    w.setFlyRun('2026-01-06', { p: 16, w: 16 })
+    w.setFlyDays([{ iso: '2026-01-08', cls: 'nf' }, { iso: '2026-01-09', p: n }])
+  }, Math.ceil(Number(availFri)) + 4)
+  await expect(page.locator('[data-testid="req-p-2026-01-06"]')).toHaveText('16')
+  await expect(page.locator('[data-testid="req-p-2026-01-05"]')).toHaveText('–')
+  await expect(page.locator('[data-testid="req-w-2026-01-08"]')).toHaveText('NF')
+
+  /* 1. every cell of the four rows sits under its date, and is as wide as it */
+  for (const d of days) {
+    const head = await box(`[data-testid="head-${d}"]`)
+    for (const r of rows) {
+      const c = await box(`[data-testid="${r}-${d}"]`)
+      expect(Math.abs(c.x - head.x), `${r} ${d} is off its date`).toBeLessThan(0.75)
+      expect(Math.abs(c.w - head.w), `${r} ${d} is not its date's width`).toBeLessThan(0.75)
+    }
+    const roster = await box(`[data-testid="cell-slipway-${d}"]`)
+    expect(Math.abs(roster.x - head.x)).toBeLessThan(0.75)
+  }
+  /* 2. the figures moved no column, each row is one line tall, and the roster's rows kept their height */
+  const widthsAfter = await Promise.all(days.map(d => box(`[data-testid="head-${d}"]`)))
+  for (let i = 0; i < days.length; i++) expect(Math.abs(widthsAfter[i]!.w - widthsBefore[i]!.w), `${days[i]} changed width`).toBeLessThan(0.75)
+  const eventH = (await page.locator('[data-testid="event-row-1"]').boundingBox())!.height
+  for (const r of rows) expect((await page.locator(`[data-testid="fly-row-${r}"]`).boundingBox())!.height).toBeLessThanOrEqual(eventH + 6)
+  expect(Math.abs((await page.locator('[data-testid="row-slipway"]').boundingBox())!.height - rosterBefore.height)).toBeLessThan(0.75)
+  /* 3. no sideways scroll of the PAGE */
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
+
+  /* 4. painted: a Required figure in the accent (blue leads), an Available under its Required in red (red leads) */
+  const rgb = (s: string) => s.match(/[\d.]+/g)!.map(Number)
+  const [rr, rg, rb] = rgb(await page.locator('[data-testid="req-p-2026-01-06"]').evaluate(el => getComputedStyle(el).color))
+  expect(rb).toBeGreaterThan(rr)
+  await expect(page.locator('[data-testid="avail-p-2026-01-09"]')).toHaveClass(/under/)
+  const [ur, ug, ub] = rgb(await page.locator('[data-testid="avail-p-2026-01-09"]').evaluate(el => getComputedStyle(el).color))
+  expect(ur).toBeGreaterThan(ug)
+  expect(ur).toBeGreaterThan(ub)
+  await expect(page.locator('[data-testid="avail-p-2026-01-06"]')).not.toHaveClass(/under/)
+
+  /* 5. a tap on an Available cell opens the working, wholly on the screen; Escape closes it */
+  await page.locator('[data-testid="avail-p-2026-01-09"]').click()
+  const work = page.locator('[data-testid="fly-working"]')
+  await expect(work).toBeVisible()
+  await expect(page.locator('[data-testid="fly-working-need"]')).toHaveText(/Still needed\s*4/)
+  const wb = (await work.boundingBox())!
+  const vp = page.viewportSize()!
+  expect(wb.x).toBeGreaterThanOrEqual(0)
+  expect(wb.x + wb.width).toBeLessThanOrEqual(vp.width + 0.5)
+  await page.keyboard.press('Escape')
+  await expect(work).toHaveCount(0)
+
+  /* 6. a member sees the same rows and figures */
+  await lwRole(page, 'member')
+  await expect(page.locator('[data-testid="req-p-2026-01-06"]')).toHaveText('16')
+  await expect(page.locator('[data-testid="avail-w-2026-01-06"]')).toBeVisible()
+})
+
 test('a member reads the events and cannot type into them', async ({ page }) => {
   await expect(page.locator('[data-testid="event-0-2026-01-01"]')).toHaveText('PH')
   await expect(page.locator('[data-testid="event-in-0-2026-01-01"]')).toHaveCount(0)
@@ -3676,6 +3775,13 @@ test('a picked-up row wears one frame the width of the visible grid, and the row
      frame would stand, and the drop would land nowhere (measured 6 Sep 26). The
      four rows between the two stay in view, so the grip is still reachable. */
   await page.locator(`[data-testid="row-${dst}"]`).scrollIntoViewIfNeeded()
+  /* …and not on the screen's very bottom edge: with the four rows under the Event rows (plan §3.3) the sixth row is
+     only JUST brought into view on the 900px desktop, and a drop four pixels above the edge lands in the drag's own
+     auto-scroll band (measured 8 Oct 26: the row did not move). Where it sits in the bottom 48px, centre it. */
+  await page.locator(`[data-testid="row-${dst}"]`).evaluate(el => {
+    if (el.getBoundingClientRect().bottom > window.innerHeight - 48) el.scrollIntoView({ block: 'center' })
+  })
+  await page.waitForTimeout(120)
   const h = (await page.locator(`[data-testid="drag-${src}"]`).boundingBox())!
   const tgt = (await page.locator(`[data-testid="row-${dst}"]`).boundingBox())!
   const phone = page.viewportSize()!.width < 700

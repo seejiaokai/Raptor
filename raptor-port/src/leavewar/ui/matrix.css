@@ -1407,6 +1407,100 @@
   background: var(--panel);
 }
 
+/* THE FOUR ROWS UNDER THE EVENT ROWS (FlyRows.tsx; the Inputs / SANS redesign, plan §3.3) — Required P and W,
+   Available P and W. Drawn as he approved them (the fifth mock-ups): each name behind a small cyan dot; a Required
+   figure in the accent, a dash and "NF" quiet; an Available figure in the count rows' own white, red where it is under
+   its Required. Figures are centred and never wrap — a number is one line. */
+.mx .events tr.flyrow .who::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: middle;
+}
+.mx .events tr.flyrow .who {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* a phone shows the short form of a name that is still the one it started with (Req P, Avail W) */
+.mx .events tr.flyrow .frl-short { display: none; }
+@media (max-width: 430px) {
+  .mx .events tr.flyrow .frl-long { display: none; }
+  .mx .events tr.flyrow .frl-short { display: inline; }
+}
+.mx .events td.fr {
+  text-align: center;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  padding: 3px 2px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.mx .events td.fr.req { color: var(--accent); position: relative; }
+.mx .events td.fr.none,
+.mx .events td.fr.nf {
+  color: var(--ink-3);
+  font-weight: 600;
+}
+.mx .events td.fr.nf { font-size: 9.5px; letter-spacing: .04em; }
+/* the day a running figure starts: a small corner mark */
+.mx .events td.fr.runstart::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-style: solid;
+  border-width: 6px 6px 0 0;
+  border-color: var(--accent) transparent transparent transparent;
+}
+.mx .events td.fr.avail.tap { cursor: pointer; }
+.mx .events td.fr.avail.under { color: #FF7A84; }
+/* the first of the four sits a hair apart from the Event rows above, the last from the roster below */
+.mx .events tr.flyrow:first-of-type td { border-top-color: var(--edge-2); }
+
+/* THE WORKING — the box a tap on an Available cell opens: required, available, SANS committed to fly, still needed.
+   Screen-fixed (FlyRows portals it out of the table) and 220px wide, as popAt is told. Read only. */
+.flywork {
+  position: fixed;
+  z-index: 61;
+  width: 220px;
+  box-sizing: border-box;
+  padding: 10px 12px 11px;
+  background: var(--panel, #12161b);
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .5);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.flywork-hd {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.flywork-hd span { font-weight: 600; color: var(--ink-3); margin-left: 4px; }
+.flywork-ln {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 0;
+}
+.flywork-ln b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.flywork-ln.need {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--edge);
+  font-weight: 700;
+}
+.flywork-ln.need.short b { color: #FF7A84; }
+
 /* The input fills its cell and paints nothing of its own — a box around every
    day of a year would be 730 boxes, and the cell it sits in is already a box.
    It comes forward on focus, which is the one moment it needs an edge. */

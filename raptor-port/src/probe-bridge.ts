@@ -42,6 +42,7 @@ import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
 import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut } from './leavewar/state/store'
 import { pinViewer } from './leavewar/sync'
+import { setFlyDays, setFlyRun } from './state/flyplan'
 
 /* the hosts the bridge is installed on ([ACCOUNTS], 26 Sep 26): this PC only — the
    e2e suite, the probes, the Tracker smoke and the hand-pass drivers all serve the
@@ -135,6 +136,11 @@ export function installProbeBridge() {
      needs mid-test member↔admin switches that no click path reaches since
      the standalone app's on-screen toggle was removed at the merge. */
   w.lwSetRole = (r: 'admin' | 'member') => lwSetRole(r)
+  /* the flying plan's two typed writers (state/flyplan.ts) — a day's required pilots and WSOs, and a figure that runs
+     from a date on. The browser tests of the Leave War's Required rows plant a figure with these, as an admin's typing
+     will (the Inputs / SANS redesign, plan §3.3); each is the real command, refused for a member like any other. */
+  w.setFlyDays = setFlyDays
+  w.setFlyRun = setFlyRun
   /* [GLOBAL-UNDO] the RAPTOR effective role — what deriveActor()/mayReverse read to
      gate a global undo. The e2e sets its LOGIN actor to admin this way (the reliable
      path: no mid-test re-login — the grid is already up). GATED TO LOCALHOST (dev +

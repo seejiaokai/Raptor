@@ -6315,6 +6315,34 @@ its day from about 20 px to 33 px and made the Event row two lines tall.
 - Pins: `engine/eventshort.test.ts`, `eventshort-store.test.ts`, `ui/eventshort.test.tsx`,
   `ui/eventsheet-presets.test.tsx`.
 
+## The four rows under the Event rows — Required P / W, Available P / W (owner, D617, D637, D640; built 8 Oct 26)
+
+The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`, mounted in the Event rows' own block, after them.
+
+- **The row contract, to the letter:** each of the four carries `who`, `bal`, the two placeholders and ONE cell per drawn
+  day — `req-p-<iso>`, `req-w-<iso>`, `avail-p-<iso>`, `avail-w-<iso>` (never an `event-`, `cell-` or `count-` prefix:
+  the drag code hit-tests those). **The Figures drawer stands an empty box beside each** (`FLY_ROW_KEYS` →
+  `Matrix.tsx drawerRows`) — a row added to the grid's table without one puts every roster row in the drawer that many
+  rows too high (found by the browser gate; jsdom lays nothing out).
+- **A Required cell** shows the ONE resolver's figure (`sync.ts flyMonth`): the number in the accent, "NF" on a no-fly
+  day, a dash where no figure applies; the day a running figure starts wears a corner mark, its title "16 from Tue 6 Jan
+  onward". **An Available cell** shows the war's own count for the seat (never a SANS man), red where it is UNDER its
+  Required; a tap opens the working — required, available, SANS committed to fly, still needed — a small read-only menu
+  for everyone (a press outside, Escape, a scroll or a second tap closes it).
+- **Names:** Required P / W from the plan's `flynames`, Available P / W from the two count rows; while a name is still
+  the one it started with, a phone (≤430px) shows its short form (Req P, Req W, Avail P, Avail W).
+- **Repaint:** the component subscribes itself to the scheduler's signal and to `useWarFacts()`; Matrix and its memo
+  firewall are untouched. Each drawn month's cells are memoised on a signature of what they SHOW, built from the
+  resolver's answers — so a run or a weekday rule that began before the month still repaints it. After a change is
+  drawn it asks the grid for the Archive rows' re-measure (a figure can widen a day column).
+- **They push the roster down by their own height** (about 88px on a desktop). The browser tests that drag along the
+  first roster rows scroll by exactly that first (`e2e/leavewar.spec.ts pastFlyRows`).
+- **Not built yet (the next pieces of step 2):** typing a cell (a floating input on a desktop, the app's own number pad
+  on a touch screen), picking several with a drag and the Required panel, the counter form's mode for the two
+  Available rows, the "Days…" line in ⚙ Settings.
+- Gate: `e2e/leavewar.spec.ts` "the four rows under the Event rows keep every day column in line, and paint what they
+  mean" (phone and desktop). Pins: `ui/flyrows.test.tsx`.
+
 ## The event sheet on a phone keyboard (owner, 31 Aug 26)
 
 The event sheet autofocused its name field, so a phone raised the on-screen

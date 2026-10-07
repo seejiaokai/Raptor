@@ -35,7 +35,7 @@ import { oilEarnedWork, oilAmount, oilWorkSpans as workSpans, type OilEvidence }
 import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
-import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
+import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
@@ -2274,6 +2274,18 @@ export {
   type FlyDayPatch, type FlySave, type SansCommitted, type SeatIds,
 } from '../state/flyplan'
 export type { DayAnswer, FlyCls, Tone } from '../state/flyplan-model'
+
+/** THE PLAN'S OWN CHANGE SIGNAL, for a component of the war (the plan §3.3 "Repaint"): the scheduler's version, which
+ *  moves when a plan row, a SANS commitment or the Required rows' names move. The war's rows hear the scheduler HERE,
+ *  as they reach its records here — beside `useWarFacts()` for the war's own half. */
+export function usePlanVersion(): number {
+  return useSyncExternalStore(raptorSubscribe, raptorVersion, raptorVersion)
+}
+/** the two Available rows' names as they stand (an admin renames them with the counter form — D640) */
+export function availRowNames(): { p: string; w: string } {
+  const r = availRules()
+  return { p: r.p.label, w: r.w.label }
+}
 
 export function flyAnswer(iso: string): DayAnswer {
   return planFor(iso, getFlyPlan(), dayFacts(iso), sansFly(iso), getTones())

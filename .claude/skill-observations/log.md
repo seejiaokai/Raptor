@@ -2913,3 +2913,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** Add to the red step: where a meaningful red run is impossible before the code exists, prove the bite afterwards - a small script that applies ONE named one-line mutation (switch a rule off), runs the test file, prints which cases failed, and restores the file in a finally block. One mutation per rule; each must fail the cases named for that rule and no others it should not. Keep the script and its list of mutations with the session, and name the mutations in the commit message. Write such a script as a file, never inline in the shell (quoting and escapes break it).
 
 **Principle:** "Seen to fail first" is about evidence that the test can fail for the reason it claims. If the order of work removed that evidence, a targeted mutation puts it back - one rule at a time, cheaply, with the source restored by construction.
+
+### Observation 460: An in-place stream edit under Git Bash silently converts a CRLF file to LF
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Building step 2 of the Inputs / SANS redesign (the Leave War's Event sheet); one-line fix to a 4,700-line store file kept with Windows line endings
+**Skill:** New skill candidate: safe-file-edits-on-windows (or a line in session-handoff's "traps met")
+**Type:** open-source
+**Phase/Area:** Editing source files by script on Windows
+
+**Issue:** A single `sed -i` substitution on a file stored with CRLF line endings rewrote every line ending to LF. The tests still passed and the typecheck was clean; the only signal was the commit's diff stat (about 9,600 changed lines for a 180-line change). The handoff had warned that an exact-text edit by script must keep that file's line endings, but the warning named Python scripts, not sed, so it did not fire.
+
+**Suggested improvement:** Before any scripted edit, and again before any commit, compare the diff stat with the size of the intended change; treat a stat far larger than the change as a line-ending rewrite and restore the endings before committing. State the trap by its mechanism (any tool that re-writes the file in text mode) rather than by the tool that first hit it.
+
+**Principle:** A warning written about one tool does not protect against the same mechanism in another; record traps by mechanism, and make the diff's size a standing pre-commit check.
