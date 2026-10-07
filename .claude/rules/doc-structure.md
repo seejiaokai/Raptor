@@ -72,7 +72,9 @@ on his "merge live"; he sometimes runs two worktrees in parallel and merges both
   the question in the app's own words, a recommended answer, and exactly which finding or step waits on it (in a bug
   check: "Questions waiting for him", at the head of the evidence sheet's look-card section) — only that piece is left
   undone, and everything else carries on. One notification at the end or when truly blocked; nothing merges, nothing
-  touches `main`. (That it holds for every unattended run, not only that night's, is the agent's reading of his words.)
+  touches `main`. **And a full chat does not stop it (D667, 8 Oct 26 — "since I can't be there to help u hand off maybe u
+  can self compact and continue working"):** with nobody there to start a fresh chat, the agent keeps `HANDOFF.md` and the
+  backlog true at every commit, lets the chat compact, and carries on. (That it holds for every unattended run, not only that night's, is the agent's reading of his words.)
 - **Parallel chats** each touch only their own `## Now` block, their own backlog items and their own D-number range;
   the later merge brings `main` in first (D78).
 - **The Claudex loop** (Opus 5.5 builds; Astra reviews, Sol 6.1 second where two readers are required, Fable on call only — D67, D590): plans and review logs are tier-3 docs (the

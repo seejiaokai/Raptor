@@ -39,19 +39,40 @@ const cell = (row: 'req-p' | 'req-w' | 'avail-p' | 'avail-w', iso: string) => sc
 const txt = (row: Parameters<typeof cell>[0], iso: string) => cell(row, iso).textContent
 const show = (n: number | null) => (n == null ? '–' : String(Math.round(n * 10) / 10))
 
-describe('where they sit', () => {
-  it('four rows, in the Event rows’ own block, straight after them, each with a cell for every drawn day', () => {
+describe('where they sit (D665, 8 Oct 26 — at the foot of the Manning block, not under the Event rows)', () => {
+  const ROWS = ['fly-row-req-p', 'fly-row-req-w', 'fly-row-avail-p', 'fly-row-avail-w']
+  it('the four are the LAST rows of the Manning block, under the squadron’s own counts, each with a cell for every drawn day', () => {
+    render(<Matrix />)
+    const block = screen.getByTestId('fly-row-req-p').parentElement!
+    expect(block.tagName).toBe('TBODY')
+    expect(block.className).toBe('counts')
+    const ids = [...block.querySelectorAll(':scope > tr')].map(tr => tr.getAttribute('data-testid') ?? '')
+    expect(ids.slice(-4)).toEqual(ROWS)
+    expect(ids.length).toBeGreaterThan(4)
+    expect(ids.slice(0, -4).every(id => id.startsWith('count-'))).toBe(true)
+    const cells = (tid: string) => screen.getByTestId(tid).children.length
+    for (const id of ROWS) expect(cells(id)).toBe(cells(ids[0]!))
+  })
+  it('the Event rows’ block holds the Event rows and nothing else', () => {
     render(<Matrix />)
     const block = screen.getByTestId('event-row-0').parentElement!
-    const ids = [...block.querySelectorAll('tr')].map(tr => tr.getAttribute('data-testid'))
-    expect(ids).toEqual(['event-row-0', 'event-row-1', 'fly-row-req-p', 'fly-row-req-w', 'fly-row-avail-p', 'fly-row-avail-w'])
-    const cells = (tid: string) => screen.getByTestId(tid).children.length
-    for (const id of ids.slice(2)) expect(cells(id!)).toBe(cells('event-row-1'))
+    expect([...block.querySelectorAll('tr')].map(tr => tr.getAttribute('data-testid'))).toEqual(['event-row-0', 'event-row-1'])
   })
-  it('names its rows for the Figures drawer, which stands an empty box beside each (or the roster in it sits four rows high)', () => {
+  it('they fold away with the Manning button, as the other counts do, and come back with it', () => {
     render(<Matrix />)
-    expect(FLY_ROW_KEYS).toEqual(['fly-row-req-p', 'fly-row-req-w', 'fly-row-avail-p', 'fly-row-avail-w'])
-    for (const k of FLY_ROW_KEYS) expect(screen.getByTestId(k)).toBeTruthy()
+    fireEvent.click(screen.getByTestId('counts-toggle'))
+    expect(screen.queryByTestId('fly-row-req-p')).toBeNull()
+    expect(screen.queryByTestId('count-sets')).toBeNull()
+    fireEvent.click(screen.getByTestId('counts-toggle'))
+    expect(screen.getByTestId('fly-row-avail-w')).toBeTruthy()
+  })
+  it('in Rearrange they stay put: no grip to drag one by, no eye to hide one with — and the Archive opens BELOW them', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('roster-arrange'))
+    for (const id of ROWS) expect(screen.getByTestId(id).querySelector('button, [data-testid^="manning-drag-"], [data-testid^="manning-hide-"]')).toBeNull()
+  })
+  it('the Figures drawer needs no box for them: it starts at the dates, below the Manning block', () => {
+    expect(FLY_ROW_KEYS).toEqual(ROWS)
   })
   it('never wears a prefix the grid’s drag code hit-tests', () => {
     render(<Matrix />)

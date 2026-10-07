@@ -4098,7 +4098,8 @@ export function toggleFigure(id: string): boolean {
 /** The rule ids the manning block can draw, in their natural order — `'sets'`
  *  when a set rule exists, then each default rule's id. */
 export function manningRowIds(): string[] {
-  /* never the two Available rows: they are drawn with the Required rows under the Event rows, not in this block
+  /* never the two Available rows: they are drawn with the Required rows by ui/FlyRows.tsx — at the foot of this block
+     since D665 — not as rows of this list
      (engine/availrows.ts) — so they are in no order, no hidden list and no Rearrange */
   return state.requirements.default.rules.filter(r => !isAvailId(r.id)).map(r => r.id)
 }

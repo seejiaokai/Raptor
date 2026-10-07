@@ -258,7 +258,10 @@ describe('the manning rows can be reordered and hidden (admin)', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('roster-arrange'))            // enter Rearrange
     const toolCount = () => ({
-      rows: document.querySelectorAll('tbody.counts tr').length,
+      /* the squadron's OWN count rows. The four Required / Available rows at the foot of the block (FlyRows.tsx — D665,
+         8 Oct 26) are not among them: the SANS calendar reads those, so they carry no grip and no eye by design
+         (pinned in flyrows.test.tsx). */
+      rows: document.querySelectorAll('tbody.counts tr:not(.flyrow)').length,
       grips: document.querySelectorAll('[data-testid^="manning-drag-"]').length,
       eyes: document.querySelectorAll('[data-testid^="manning-hide-"]').length,
     })

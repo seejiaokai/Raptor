@@ -43,11 +43,7 @@ export function EventRows({
   padR,
   phL,
   phR,
-  children,
 }: {
-  /** Rows drawn in this same block, straight after the Event rows — the four Required / Available rows
-   *  (FlyRows.tsx; the Inputs / SANS redesign, plan §3.3). They follow the same row contract. */
-  children?: ReactNode
   days: DayInfo[]
   bands: EventBand[]
   defs: EventDef[]
@@ -179,7 +175,6 @@ export function EventRows({
           </tr>
         )
       })}
-      {children}
     </tbody>
   )
 }

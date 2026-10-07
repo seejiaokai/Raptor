@@ -1407,11 +1407,11 @@
   background: var(--panel);
 }
 
-/* THE FOUR ROWS UNDER THE EVENT ROWS (FlyRows.tsx; the Inputs / SANS redesign, plan §3.3) — Required P and W,
-   Available P and W. Drawn as he approved them (the fifth mock-ups): each name behind a small cyan dot; a Required
+/* THE FOUR ROWS AT THE FOOT OF THE MANNING BLOCK (FlyRows.tsx; the Inputs / SANS redesign, plan §3.3; D665 — first
+   under the Event rows) — Required P and W, Available P and W. Drawn as he approved them (the fifth mock-ups): each name behind a small cyan dot; a Required
    figure in the accent, a dash and "NF" quiet; an Available figure in the count rows' own white, red where it is under
    its Required. Figures are centred and never wrap — a number is one line. */
-.mx .events tr.flyrow .who::before {
+.mx .counts tr.flyrow .who::before {
   content: '';
   display: inline-block;
   width: 5px;
@@ -1421,18 +1421,18 @@
   background: var(--accent);
   vertical-align: middle;
 }
-.mx .events tr.flyrow .who {
+.mx .counts tr.flyrow .who {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 /* a phone shows the short form of a name that is still the one it started with (Req P, Avail W) */
-.mx .events tr.flyrow .frl-short { display: none; }
+.mx .counts tr.flyrow .frl-short { display: none; }
 @media (max-width: 430px) {
-  .mx .events tr.flyrow .frl-long { display: none; }
-  .mx .events tr.flyrow .frl-short { display: inline; }
+  .mx .counts tr.flyrow .frl-long { display: none; }
+  .mx .counts tr.flyrow .frl-short { display: inline; }
 }
-.mx .events td.fr {
+.mx .counts td.fr {
   text-align: center;
   white-space: nowrap;
   font-size: 12px;
@@ -1442,15 +1442,15 @@
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
-.mx .events td.fr.req { color: var(--accent); position: relative; }
-.mx .events td.fr.none,
-.mx .events td.fr.nf {
+.mx .counts td.fr.req { color: var(--accent); position: relative; }
+.mx .counts td.fr.none,
+.mx .counts td.fr.nf {
   color: var(--ink-3);
   font-weight: 600;
 }
-.mx .events td.fr.nf { font-size: 9.5px; letter-spacing: .04em; }
+.mx .counts td.fr.nf { font-size: 9.5px; letter-spacing: .04em; }
 /* the day a running figure starts: a small corner mark */
-.mx .events td.fr.runstart::after {
+.mx .counts td.fr.runstart::after {
   content: '';
   position: absolute;
   top: 0;
@@ -1459,10 +1459,10 @@
   border-width: 6px 6px 0 0;
   border-color: var(--accent) transparent transparent transparent;
 }
-.mx .events td.fr.avail.tap { cursor: pointer; }
-.mx .events td.fr.avail.under { color: #FF7A84; }
-/* the first of the four sits a hair apart from the Event rows above, the last from the roster below */
-.mx .events tr.flyrow:first-of-type td { border-top-color: var(--edge-2); }
+.mx .counts td.fr.avail.tap { cursor: pointer; }
+.mx .counts td.fr.avail.under { color: #FF7A84; }
+/* the first of the four sits a hair apart from the squadron's own counts above it */
+.mx .counts tr.flyrow:first-of-type td { border-top-color: var(--edge-2); }
 
 /* THE WORKING — the box a tap on an Available cell opens: required, available, SANS committed to fly, still needed.
    Screen-fixed (FlyRows portals it out of the table) and 220px wide, as popAt is told. Read only. */

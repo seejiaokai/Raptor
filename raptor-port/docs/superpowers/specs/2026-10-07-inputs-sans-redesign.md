@@ -174,6 +174,14 @@ D636 was drawn on REAL pictures of the Leave War (the running build, phone and d
 answered every open point but two. **Where an earlier section of this note says "to confirm", "to pick" or "his open question"
 on one of these points, this section is the later word.**
 
+**Where the four rows sit — CHANGED 8 Oct 26 (D665).** They were built under the Event rows, as he had answered (D637).
+Shown the built rows and, beside them, the same four drawn into the Manning block, he chose the Manning block: "I'm going
+with B" — the last rows of it, under the squadron's own counts, folding away with the Manning button. He circled two
+faults on the hand-drawn pictures (a patch lying over the month buttons; the green open-bidding outline cutting through
+the rows): both came from moving the rows by hand in the page, and the built version is checked in a real browser for
+both. Read "directly under the Event rows" in the paragraph below, and in every drawing of the fifth set, as "at the
+foot of the Manning block".
+
 **The required figures on the Leave War (D637).** Four rows directly under the Event rows, in this order: Required P, Required W
 (typed), Available P, Available W (worked out). "P avail and W avail" in his D636 words meant the two Required rows. A cell is
 typed in place: click, type, Enter to the next day, Tab to the other seat, Esc to leave it; on a phone a tap brings the number pad

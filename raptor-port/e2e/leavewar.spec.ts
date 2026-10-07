@@ -892,8 +892,9 @@ test('an admin moves a bid to another date, and it lands pending there', async (
 // release. An un-dragged click still opens the single-cell sheet (every other
 // test above proves that path unbroken).
 
-/* THE FOUR ROWS UNDER THE EVENT ROWS (the Inputs / SANS redesign, plan §3.3; 8 Oct 26) stand between the dates and the
-   roster, so every roster row sits their height further down the page than when the drag tests below were written —
+/* THE FOUR REQUIRED / AVAILABLE ROWS (the Inputs / SANS redesign, plan §3.3; 8 Oct 26 — at the foot of the Manning
+   block since D665) stand above the roster, so every roster row sits their height further down the page than when the
+   drag tests below were written —
    and on the 900px-high desktop the first rows they drag along then start below the fold, where a mouse hits nothing.
    Where the start cell's middle is off the screen, the page is scrolled by EXACTLY the four rows' height first: the
    row is back where each test measured it (the bottom edge-band geometry of the 2 Sep 26 flake included), and nothing
@@ -941,7 +942,7 @@ const desktopOnly = () => test.skip(test.info().project.name !== 'lw-desktop', '
 test('drag-selecting a row fills the leave across the whole span', async ({ page }) => {
   desktopOnly()
   await lwView(page, 'slipway')   // a member bids on his OWN row ([ACCOUNTS] — the one-person-writes-his-own check)
-  /* the row is brought back to where this test measured it (pastFlyRows — the four rows under the Event rows pushed
+  /* the row is brought back to where this test measured it (pastFlyRows — the four Required / Available rows pushed
      it below the fold), so "the page stays put" is now "the page is where the drag STARTED", not "at the very top" */
   await pastFlyRows(page, 'cell-slipway-2026-01-06')
   const startY = await page.evaluate(() => window.scrollY)
@@ -3204,12 +3205,13 @@ test('no event widens its day: the grid prints a short form, the Event row stays
   await expect(page.locator('[data-testid="event-short"]')).toHaveValue('ND')
 })
 
-// THE FOUR ROWS UNDER THE EVENT ROWS — Required P and W, Available P and W (the Inputs / SANS redesign, plan §3.3;
-// D617, D637, D640). They are rows of the grid's own table, so the gate here is the one every row of it meets: each
+// THE FOUR ROWS AT THE FOOT OF THE MANNING BLOCK — Required P and W, Available P and W (the Inputs / SANS redesign,
+// plan §3.3; D617, D637, D640 — and D665, 8 Oct 26: his "I'm going with B", in the Manning block and not under the
+// Event rows). They are rows of the grid's own table, so the gate here is the one every row of it meets: each
 // day's cell sits exactly under its date and over the roster's cell for that day, at phone and desktop size; a figure
 // in them moves no column and adds no sideways scroll to the page; and what they show is what a browser PAINTS — the
 // Required figure in the accent, an Available under its Required in red. None of it is visible to jsdom.
-test('the four rows under the Event rows keep every day column in line, and paint what they mean', async ({ page }) => {
+test('the four rows at the foot of the Manning block keep every day column in line, and paint what they mean', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
   const rows = ['req-p', 'req-w', 'avail-p', 'avail-w']
@@ -3276,6 +3278,63 @@ test('the four rows under the Event rows keep every day column in line, and pain
   await lwRole(page, 'member')
   await expect(page.locator('[data-testid="req-p-2026-01-06"]')).toHaveText('16')
   await expect(page.locator('[data-testid="avail-w-2026-01-06"]')).toBeVisible()
+})
+
+// WHERE THEY SIT, AND THE TWO THINGS HE CIRCLED (D665, 8 Oct 26). Shown the rows drawn BY HAND into the Manning block
+// he chose that placement and marked two faults on the pictures: on the desktop a patch "blocking the months" (the
+// Figures panel, left where it had been measured, lying over the month buttons), and on the phone "the green outer
+// box is incorrect" (the open-bidding outline cutting through the Available rows instead of sitting round the
+// dates). Both were the hand drawing's — nothing re-measured after the rows were moved in the page — but neither is
+// taken on trust: this is the built grid, in a real browser, at phone and desktop size, Figures panel open and shut.
+test('in the Manning block the four rows cover no month button, and the open-bidding outline stays round the dates', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  await page.evaluate(() => { (window as any).setFlyRun('2026-01-02', { p: 16, w: 16 }) })
+  await expect(page.locator('[data-testid="req-p-2026-01-02"]')).toHaveText('16')
+  const rect = (sel: string) => page.locator(sel).first().evaluate(el => { const b = el.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right } })
+
+  /* the order down the page: the squadron's counts, the four rows, the month buttons, the dates */
+  const lastCount = await rect('[data-testid="count-scn"]')
+  const first = await rect('[data-testid="fly-row-req-p"]'), last = await rect('[data-testid="fly-row-avail-w"]')
+  const strip = await rect('[data-testid="month-strip"]')
+  const head = await rect('[data-testid="head-2026-01-02"]')
+  expect(first.top).toBeGreaterThanOrEqual(lastCount.bottom - 1)
+  expect(strip.top).toBeGreaterThanOrEqual(last.bottom - 1)
+  expect(head.top).toBeGreaterThanOrEqual(strip.bottom - 1)
+
+  /* (the check below must not pass for want of anything to check: the strip really holds the year's twelve buttons) */
+  expect(await page.locator('[data-testid="month-strip"] button').count()).toBeGreaterThanOrEqual(12)
+  const check = async (state: string) => {
+    /* 1. EVERY month button answers a press at its own middle — nothing lies over the months */
+    const covered = await page.evaluate(() => [...document.querySelectorAll('[data-testid="month-strip"] button')]
+      .filter(b => { const r = b.getBoundingClientRect(); if (r.right <= 0 || r.left >= innerWidth || !r.width) return false
+        const at = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !(at && (at === b || b.contains(at))) })
+      .map(b => b.getAttribute('data-testid')))
+    expect(covered, `${state}: something covers these month buttons`).toEqual([])
+    /* 2. the Figures panel, when open, starts at or below the month buttons — never over them or the four rows */
+    const drawer = page.locator('[data-testid="figdrawer"]')
+    if (await drawer.count() && await drawer.isVisible()) {
+      const d = await rect('[data-testid="figdrawer"]'), s = await rect('[data-testid="month-strip"]')
+      expect(d.top, `${state}: the Figures panel reaches above the month buttons`).toBeGreaterThanOrEqual(s.bottom - 1.5)
+    }
+    /* 3. the green open-bidding outline starts under the month buttons, at the dates — it crosses none of the four rows */
+    const box = await rect('#page-leavewar .lw-bidbox'), s = await rect('[data-testid="month-strip"]'), l = await rect('[data-testid="fly-row-avail-w"]')
+    expect(box.top, `${state}: the bidding outline starts above the month buttons`).toBeGreaterThanOrEqual(s.top - 1.5)
+    expect(box.top, `${state}: the bidding outline cuts through the four rows`).toBeGreaterThanOrEqual(l.bottom - 1.5)
+  }
+  await check('as it opens')
+  /* the Figures panel the other way round from how this size opens (shut on a phone, open on a desktop) */
+  await figBar(page).click()
+  await settleGrid(page)
+  await check('with the Figures panel switched')
+  /* and after the block is folded away and brought back: the rows return to the same place, the outline with them */
+  await figBar(page).click()
+  await page.locator('[data-testid="counts-toggle"]').click()
+  await expect(page.locator('[data-testid="fly-row-req-p"]')).toHaveCount(0)
+  await page.locator('[data-testid="counts-toggle"]').click()
+  await expect(page.locator('[data-testid="fly-row-req-p"]')).toBeVisible()
+  await settleGrid(page)
+  await check('after Manning is folded and opened again')
 })
 
 test('a member reads the events and cannot type into them', async ({ page }) => {
@@ -3775,7 +3834,7 @@ test('a picked-up row wears one frame the width of the visible grid, and the row
      frame would stand, and the drop would land nowhere (measured 6 Sep 26). The
      four rows between the two stay in view, so the grip is still reachable. */
   await page.locator(`[data-testid="row-${dst}"]`).scrollIntoViewIfNeeded()
-  /* …and not on the screen's very bottom edge: with the four rows under the Event rows (plan §3.3) the sixth row is
+  /* …and not on the screen's very bottom edge: with the four Required / Available rows above the roster (plan §3.3) the sixth row is
      only JUST brought into view on the 900px desktop, and a drop four pixels above the edge lands in the drag's own
      auto-scroll band (measured 8 Oct 26: the row did not move). Where it sits in the bottom 48px, centre it. */
   await page.locator(`[data-testid="row-${dst}"]`).evaluate(el => {

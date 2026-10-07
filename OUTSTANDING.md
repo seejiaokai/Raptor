@@ -50,6 +50,8 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **Straight after the Inputs / SANS calendar job, as its own job (D662, 7 Oct 26 — ahead of the Tracker batch unless he says otherwise):** [GROUP-INPUT-ONE-ROW] — on the schedule a group input is ONE row holding everyone (D661); not built, and its rules are not yet asked.
 
+**First, on the Inputs / SANS calendar branch (D666, 8 Oct 26 — his order: he is looking at it on the preview):** [LW-DEMO-COUNTERS-TRIM] — the Leave War's Manning block starts with five count rows (IP, IWSO, SXO, SC D, SC N); Crew sets, IP + IWSO, OPSP, OPSW, FL P and WM P leave the starting set. Ruled, not built.
+
 **A test to steady, with the Tracker batch (found 7 Oct 26):** [TRK-DLG-FOCUS-UNSTEADY] — one Tracker unit test about the keyboard inside a question box failed once in a full run and passes alone.
 
 **After the Inputs / SANS calendar job (its place is his to set):** [LW-WINDOWS-NONBLOCKING] — the Leave War's other windows still block the grid behind them and close on a click outside; D641 and D642 changed that for the calendar job's windows and for one war panel only. Its own job, its own check.
@@ -1621,6 +1623,19 @@ waive owed reads or authorize a live merge.
 ### [GROUP-INPUT-ONE-ROW] On the schedule a group input is ONE row holding everyone (D661 — 7 Oct 26)
 
 **Ruled, not built.** He chose picture B of the mock-ups (https://claude.ai/artifact/RU8YNk1gDXj8sddcWvA76b, drawn by `shoot10.cjs` on his PC): a meeting filed for four men shows on the Ground Programme as one row with four pucks, not four rows. **Today** every landed input is its own row with one man (`raptor-port/src/state/holderbase.ts`, `engine/overlay.ts viewOfWeek`), and the group input of the calendar job is kept as one record per man (the build plan `raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.13) — so until this is built the schedule shows one row per man. **Its place — his ruling, D662 (7 Oct 26): its own job, straight after the calendar job, not inside it** (it reaches into how a published day counts changes waiting to go out: D109, D113, D114, D178). **Before it is planned, put to him with pictures (rounds of at most four):** a scheduler takes ONE man off the shared row, or cancels or re-times it for one man — does he leave the group, or does the whole input change; on a published day is a change to the row one change waiting or one per man; a man on leave that day — is his puck on the row flagged or left off; does the row show on Personal Inputs, on the Ground Programme, or wherever its men's rows would each have landed. **Then:** a plan read by Astra and Sol 6.1 (published records), built tests first, its own bug check or the calendar job's if it rides with it (D485).
+
+### [LW-DEMO-COUNTERS-TRIM] The Leave War's Manning block starts with five count rows, not eleven (D666 — 8 Oct 26)
+
+**Ruled, not built.** Owner, 8 Oct 26, with a picture of the block on the preview: *"In the demo data remove crew sets, IP+IWSO, OPSP, OPSW, FL P, WM P."* The
+starting set of count rows (`raptor-port/src/leavewar/engine/seed.ts`, the list `seedRequirements` builds — ids `sets`, `instr`, `opsp`, `opsw`, `flp`, `wmp`
+go; `ip`, `iwso`, `sxo`, `scd`, `scn` stay) is also what "Reset counters" puts back (`state/store.ts resetManningRules`). **What moves with it — weigh before
+building (the readings are in D666's full row, told to him 8 Oct 26):** a day reads "under-manned" by the rows that are there, so fewer days will; about ten unit
+test files name one of the six (`grep -rlE "count-(sets|instr|opsp|opsw|flp|wmp)\b|'(sets|instr|opsp|opsw|flp|wmp)'" raptor-port/src --include=*.test.*`) and
+`raptor-port/e2e/leavewar.spec.ts` uses `count-sets` as "the first count row" and `count-wmp` — each is re-pointed at a row that stays, or builds the row it
+needs itself, none removed without its reason; the demo seed's saved order, hidden list and thresholds (`manningorder`, `manninghidden`) must not name a row
+that is gone; `docs/data-schema.md` and the Manning sections of `docs/ui-contracts.md` name the eleven. Nothing stored is converted (D56). **Place:** the next
+chat's FIRST job on `claude/inputs-sans-calendar`, before the rest of step 2 — he is looking at the block on the preview now. Tier: WALK (a seed and a verdict
+change; no saved-data shape changes).
 
 ### [TRK-DLG-FOCUS-UNSTEADY] A Tracker unit test of the question box's keyboard fails now and then in a full run (found 7 Oct 26)
 

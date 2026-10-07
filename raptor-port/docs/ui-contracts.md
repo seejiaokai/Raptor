@@ -6315,15 +6315,28 @@ its day from about 20 px to 33 px and made the Event row two lines tall.
 - Pins: `engine/eventshort.test.ts`, `eventshort-store.test.ts`, `ui/eventshort.test.tsx`,
   `ui/eventsheet-presets.test.tsx`.
 
-## The four rows under the Event rows — Required P / W, Available P / W (owner, D617, D637, D640; built 8 Oct 26)
+## The four rows at the foot of the Manning block — Required P / W, Available P / W (owner, D617, D637, D640, D665; built 8 Oct 26)
 
-The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`, mounted in the Event rows' own block, after them.
+The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
 
+- **Where they sit — D665 (8 Oct 26: "I'm going with B").** The LAST rows of the Manning block (`tbody.counts`), under
+  the squadron's own counts and above the Archive bar — through a `children` slot of `CountRows`. His first answer was
+  "Under the event rows" (D637) and they were built there for a few hours; shown both placements on the running build
+  he chose this one. So: they fold away with the Manning button; in Rearrange they carry no grip and no eye (the SANS
+  calendar reads them — never dragged elsewhere, never hidden); no day is judged by them. **The two faults he circled on
+  the hand-drawn picture are gated** — nothing lies over a month button (Figures panel open or shut), and the green
+  open-bidding outline starts at the dates, under the month buttons, crossing none of the four rows:
+  `e2e/leavewar.spec.ts` "in the Manning block the four rows cover no month button…", phone and desktop.
+- **The block's own starting rows — D666 (8 Oct 26), RULED, NOT BUILT (`OUTSTANDING.md` `[LW-DEMO-COUNTERS-TRIM]`):** the
+  Manning block is to start with five count rows — IP, IWSO, SXO, SC D, SC N — above these four; Crew sets, IP + IWSO,
+  OPSP, OPSW, FL P and WM P leave the starting set (and so what "Reset counters" puts back). Until it is built the
+  block still starts with all eleven.
 - **The row contract, to the letter:** each of the four carries `who`, `bal`, the two placeholders and ONE cell per drawn
   day — `req-p-<iso>`, `req-w-<iso>`, `avail-p-<iso>`, `avail-w-<iso>` (never an `event-`, `cell-` or `count-` prefix:
-  the drag code hit-tests those). **The Figures drawer stands an empty box beside each** (`FLY_ROW_KEYS` →
-  `Matrix.tsx drawerRows`) — a row added to the grid's table without one puts every roster row in the drawer that many
-  rows too high (found by the browser gate; jsdom lays nothing out).
+  the drag code hit-tests those). **A row added to the EVENTS block needs an empty box in the Figures drawer**
+  (`Matrix.tsx drawerRows`), or every roster row in the drawer sits that many rows too high — found by the browser gate
+  while these four sat there (jsdom lays nothing out); in the Manning block, above where the drawer starts, they need none
+  (`ui/figdrawer.test.tsx` states the rule whole).
 - **A Required cell** shows the ONE resolver's figure (`sync.ts flyMonth`): the number in the accent, "NF" on a no-fly
   day, a dash where no figure applies; the day a running figure starts wears a corner mark, its title "16 from Tue 6 Jan
   onward". **An Available cell** shows the war's own count for the seat (never a SANS man), red where it is UNDER its
@@ -6335,13 +6348,15 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`, mounted in th
   firewall are untouched. Each drawn month's cells are memoised on a signature of what they SHOW, built from the
   resolver's answers — so a run or a weekday rule that began before the month still repaints it. After a change is
   drawn it asks the grid for the Archive rows' re-measure (a figure can widen a day column).
-- **They push the roster down by their own height** (about 88px on a desktop). The browser tests that drag along the
-  first roster rows scroll by exactly that first (`e2e/leavewar.spec.ts pastFlyRows`).
+- **They make the Manning block four rows taller, so the roster starts that much lower** (about 88px on a desktop) while
+  the block is open. The browser tests that drag along the first roster rows scroll by exactly that first
+  (`e2e/leavewar.spec.ts pastFlyRows`).
 - **Not built yet (the next pieces of step 2):** typing a cell (a floating input on a desktop, the app's own number pad
   on a touch screen), picking several with a drag and the Required panel, the counter form's mode for the two
   Available rows, the "Days…" line in ⚙ Settings.
-- Gate: `e2e/leavewar.spec.ts` "the four rows under the Event rows keep every day column in line, and paint what they
-  mean" (phone and desktop). Pins: `ui/flyrows.test.tsx`.
+- Gates: `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning block keep every day column in line, and paint
+  what they mean" and "in the Manning block the four rows cover no month button, and the open-bidding outline stays
+  round the dates" (phone and desktop). Pins: `ui/flyrows.test.tsx`.
 
 ## The event sheet on a phone keyboard (owner, 31 Aug 26)
 

@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import type { PointerEvent as ReactPointerEvent, RefCallback } from 'react'
+import type { PointerEvent as ReactPointerEvent, ReactNode, RefCallback } from 'react'
 import type { DayVerdict } from '../engine'
 import { toggleManningRow } from '../state/store'
 
@@ -23,7 +23,12 @@ export function CountRows({
   phL,
   phR,
   onArchiveChange,
+  children,
 }: {
+  /** Rows drawn at the FOOT of the block's own counts, above the Archive bar — the four Required / Available rows
+   *  (FlyRows.tsx; owner D665, 8 Oct 26: "I'm going with B" — in the Manning block, not under the Event rows). They
+   *  follow the same row contract, fold away with the block, and are never dragged or hidden here. */
+  children?: ReactNode
   verdicts: Record<string, DayVerdict>
   dates: string[]
   /** The manning rows' display order (store's `orderedManningIds`). */
@@ -232,6 +237,7 @@ export function CountRows({
   return (
     <tbody className="counts">
       {live.map(id => rowFor(id, false))}
+      {children}
       {/* THE ARCHIVE BAR — one merged bar with no day grid (owner, 5 Sep 26).
           The category-heading technique (Matrix `tr.grp`): a sticky td over the
           two frozen columns carries the label and stays pinned as the year

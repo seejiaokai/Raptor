@@ -1,5 +1,11 @@
-// THE FOUR ROWS UNDER THE EVENT ROWS — Required P, Required W, Available P, Available W (the Inputs / SANS redesign,
-// plan docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.3; owner D617, D626, D637, D640).
+// THE FOUR ROWS AT THE FOOT OF THE MANNING BLOCK — Required P, Required W, Available P, Available W (the Inputs / SANS
+// redesign, plan docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.3; owner D617, D626, D637, D640).
+//
+// WHERE THEY SIT — D665 (8 Oct 26). His first answer was "Under the event rows" (D637), and they were built there;
+// shown both placements side by side on the running build he chose the Manning block: the last rows of it, under the
+// squadron's own counts and above the Archive bar. So they fold away with the Manning button, and in Rearrange they
+// carry no grip and no eye — the SANS calendar reads them, so they are never dragged elsewhere or hidden. No day is
+// judged by them (they are not Manning RULES: no amber, no red of their own, nothing towards "under-manned").
 //
 // The SANS calendar's "still needed" is the required figure, less those the Leave War shows available, less the SANS
 // committed to fly (D617) — and this is where the first two are SEEN and (for an admin, in the next piece) typed: the
@@ -20,7 +26,7 @@
 // months earlier moves those answers, so a month cannot miss a change dated outside it (both readers' finding 2).
 //
 // THE ROW CONTRACT, to the letter (performance.md §E — the owner's iPhone is the gate): every row carries `who`, `bal`,
-// the two placeholders and ONE cell per drawn day, exactly as the Event rows above it do. The cells are
+// the two placeholders and ONE cell per drawn day, exactly as the count rows above them do. The cells are
 // `req-p-<iso>` / `req-w-<iso>` / `avail-p-<iso>` / `avail-w-<iso>` — never an `event-`, `cell-` or `count-` prefix:
 // the grid's drag code hit-tests those.
 
@@ -42,7 +48,7 @@ const ROWS: readonly { id: RowId; seat: Seat; kind: 'req' | 'avail' }[] = [
   { id: 'avail-p', seat: 'p', kind: 'avail' },
   { id: 'avail-w', seat: 'w', kind: 'avail' },
 ]
-/** each row's own testid, top to bottom — what the Figures drawer keys its matching empty boxes to (Matrix drawerRows) */
+/** each row's own testid, top to bottom */
 export const FLY_ROW_KEYS: readonly string[] = ROWS.map(r => `fly-row-${r.id}`)
 /* a phone's short form of each row's name — shown only while the name is still the one it started with */
 const AVAIL_DEFAULTS = { p: 'Available P', w: 'Available W' }

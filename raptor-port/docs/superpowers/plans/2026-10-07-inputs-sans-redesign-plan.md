@@ -27,7 +27,8 @@ rulings, full rows: `grep -h '^| D6[1-4][0-9] |' .claude/decisions-full/schedule
   a weekday's heading sets every such day from a date onward, no end) and **Holidays** (the year's list of public
   holidays and Off days) (D631, D633, D638). A public holiday and an Off day each have two doors onto ONE record — the
   Leave War's Event row, whose sheet is NOT changed (D634), and the Holidays list; No Leave is on the Leave War only.
-- **On the Leave War**, four rows directly under the Event rows: Required P and Required W, typed straight into their
+- **On the Leave War**, four rows at the foot of the Manning block (D665, 8 Oct 26 — first "directly under the Event
+  rows", D637): Required P and Required W, typed straight into their
   cells; Available P and Available W, worked out (D633, D636, D637). Several cells are picked by a drag and given one
   number. A figure can run "from a date on", skipping weekends, public holidays, Off days and no-fly days. No "SANS
   needed" row. The two Available rows are ordinary count rows an admin can rename and re-define — leaving out OCU, say
@@ -176,6 +177,14 @@ required figure → the Leave War, on that date; a class or a rule → the page 
 
 ### 3.3 The Leave War — four rows under the Event rows
 
+**CHANGED 8 Oct 26 BY D665 — the rows sit at the FOOT OF THE MANNING BLOCK, not under the Event rows** (shown both
+placements on the running build: "I'm going with B"). This section's heading is kept so pointers to it still land; read
+"mounted in `tbody.events` after `EventRows`" below as "mounted last in `tbody.counts`, through a `children` slot of
+`CountRows`, above the Archive bar". What follows from the new place: they fold away with the Manning button; they carry
+no grip and no eye in Rearrange; the Figures drawer needs no box for them; and the two faults he circled on the
+hand-drawn picture — a patch over the month buttons, the open-bidding outline cutting through the rows — are gated in a
+real browser. Everything else in this section stands.
+
 A new component `leavewar/ui/FlyRows.tsx`, mounted in `tbody.events` after `EventRows`, following the row contract to
 the letter (`who`, `bal`, the two placeholders, one cell per DRAWN day).
 
@@ -233,8 +242,9 @@ the letter (`who`, `bal`, the two placeholders, one cell per DRAWN day).
   (`[LW-WINDOWS-NONBLOCKING]`).
 - **⚙ Settings** gains one line, "Days…", which closes the sheet and opens Days (§3.4). Nothing else in it changes.
 
-**AS BUILT (8 Oct 26 — step 2, fourth piece: the rows READ ONLY).** `leavewar/ui/FlyRows.tsx`, mounted through a
-`children` slot of `EventRows` so it sits in that block. Built: the four rows and their cells, the corner mark, the red
+**AS BUILT (8 Oct 26 — step 2, fourth piece: the rows READ ONLY; MOVED the same day by D665).** `leavewar/ui/FlyRows.tsx`,
+first mounted through a `children` slot of `EventRows`, now through one of `CountRows` — the last rows of the Manning
+block. (The drawer's four boxes named below went with the move: the block is above where the drawer starts.) Built: the four rows and their cells, the corner mark, the red
 Available, the working box (a small menu, portalled out of the table — not a `Sheet`), the names with their phone short
 forms, the repaint (its own two subscriptions — `sync.ts usePlanVersion` is new; each drawn month memoised on a
 signature of what its cells show). **A thing the plan did not name, found by the browser gate:** the Figures drawer

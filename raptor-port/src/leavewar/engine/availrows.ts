@@ -14,7 +14,8 @@
 //   - They count PEOPLE, never teams: the need is a head count per seat.
 //   - They carry no amber or red of their own (their red comes from the Required row above them, never a threshold).
 //   - They cannot be deleted — the SANS calendar reads them.
-// They are drawn with the Required rows under the Event rows, never in the Manning block, and no day is judged by them.
+// They are drawn with the Required rows at the FOOT of the Manning block (D665, 8 Oct 26 — first under the Event rows),
+// by ui/FlyRows.tsx and never by the block's own row list (`manningRowIds` leaves them out); no day is judged by them.
 
 import { ruleHave, type Grid } from './availability'
 import type { States } from './bids'

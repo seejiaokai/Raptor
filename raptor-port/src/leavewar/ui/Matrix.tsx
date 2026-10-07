@@ -61,7 +61,7 @@ import { CountRows } from './CountRows'
 import { CounterForm } from './CounterForm'
 import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
-import { FlyRows, FLY_ROW_KEYS } from './FlyRows'
+import { FlyRows } from './FlyRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
@@ -3506,10 +3506,9 @@ export function Matrix() {
   // reason the band does: one order, so the two cannot fall out of step.
   const drawerRows = (): DrawerRow[] => [
     ...Array.from({ length: eventRows }, (_, line) => ({ kind: 'blank' as const, key: `event-row-${line}` })),
-    /* …and the four rows under them (FlyRows.tsx — Required P and W, Available P and W): rows of the grid's own table,
-       so the drawer must stand an empty box beside each or every roster row in it sits four rows too high (found by
-       the browser gate, 8 Oct 26 — jsdom lays nothing out). Keyed to each row's own testid, as the rest are. */
-    ...FLY_ROW_KEYS.map(key => ({ kind: 'blank' as const, key })),
+    /* (The four Required / Available rows — FlyRows.tsx — are NOT here: they sit at the foot of the Manning block
+       (D665), above where the drawer starts. While they sat in the Events block, for a few hours on 8 Oct 26, each
+       needed a box here or every roster row in the drawer stood four rows too high — a row added to that block does.) */
     ...rosterSequence().map((item): DrawerRow =>
       item.kind === 'group' ? { kind: 'group', key: `group-${item.g}`, folded: folded.has(item.g) }
         : item.kind === 'catsub' ? { kind: 'catsub', key: `subcat-${item.g}-${item.cat}` }
@@ -3838,7 +3837,15 @@ export function Matrix() {
                 phL={phL}
                 phR={phR}
                 onArchiveChange={onArchiveChange}
-              />
+              >
+                {/* THE FOUR ROWS AT THE FOOT OF THE MANNING BLOCK — Required P and W, Available P and W (the Inputs /
+                    SANS redesign, plan §3.3; owner D665, 8 Oct 26: "I'm going with B"). They subscribe THEMSELVES to
+                    the plan's and the war's signals, so nothing here repaints for them; a figure that widens a day
+                    column asks for the same re-measure the Archive rows do — which also re-places the Figures drawer
+                    and the open-bidding outline, both measured off the dates BELOW this block (the two things he
+                    circled on the hand-drawn picture: the gate e2e/leavewar.spec.ts checks both in a real browser). */}
+                <FlyRows days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR} onWiden={onArchiveChange} />
+              </CountRows>
             )}
             {/* The month strip, now a row of the grid so it sits between the
                 counts and the header (owner's arrows). The buttons live in a
@@ -3906,12 +3913,7 @@ export function Matrix() {
               padR={padR}
               phL={phL}
               phR={phR}
-            >
-              {/* The four rows under the Event rows — Required P and W, Available P and W (the Inputs / SANS redesign,
-                  plan §3.3). They subscribe THEMSELVES to the plan's and the war's signals, so nothing here repaints
-                  for them; a figure that widens a day column asks for the same re-measure the Archive rows do. */}
-              <FlyRows days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR} onWiden={onArchiveChange} />
-            </EventRows>
+            />
             <tbody className="mxbody" ref={rosterBodyRef}>
               {(() => {
                 // The roster in DISPLAY order (owner, 18 Aug 26): the admin's
