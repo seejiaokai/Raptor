@@ -2879,3 +2879,37 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the red step, take a reset snapshot only AFTER the system under test has finished starting up (ids minted, defaults filled), and when a case fails in its setup under one role but not another, suspect a check that reads what the command really changed before suspecting the feature. Also: when a "success" message appears and the data is not there, treat the mismatch itself as a finding and file it.
 
 **Principle:** A fixture restored between cases must be a state the system could have produced itself. A copy taken before start-up is not one, and the system's own integrity checks will treat the difference as somebody's change.
+
+
+## 2026-10-08
+
+### Observation 458: A refused command hands back NEW objects - a test (or a screen) holding a record across the refusal is looking at a ghost
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** Building the group input's permission rule (the Inputs / SANS calendar job, step 1 piece (f)); tests of "this change is refused and nothing is altered", and then a fix for a save that said OK when refused.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** Writing the failing test - asserting a refusal
+
+**Issue:** Each refused command rolls the store back by restoring a snapshot, which replaces every record object. Tests written as "get record r; try a forbidden change to r; try another forbidden change to r" changed a detached object on the second try: the command saw no change, answered "ok", and the assertion "refused" would have failed for a reason that had nothing to do with the rule - or, written the other way round, passed without testing anything. The same thing was then found in the product: an editor window holding the record across a refused save was holding a ghost, and its next Save said "no longer there".
+
+**Suggested improvement:** In the red step for any "refused, nothing changed" case: hold the record's ID, never the object, and find it again inside each attempt (a one-line helper, e.g. chg(id, fn)). When reviewing such a test, ask of every attempt after the first refusal whether the thing it mutates is still the thing in the store. In product code, any surface that survives a refusal must re-find its record by id.
+
+**Principle:** After a rollback, object identity is gone and only ids survive. A reference kept across a refusal makes both tests and screens act on something that no longer exists - a vacuous pass in a test, a false "gone" on screen.
+
+
+### Observation 459: When the red step was not watched, break each rule in turn to prove the tests bite
+
+**Status:** OPEN
+**Date:** 2026-10-08
+**Session context:** The same build: tests for a permission rule were written first, but first RUN only after the code existed (the tests imported names that did not exist yet, so the first run could only fail to compile - a red that proves nothing).
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** RED verification - when the test cannot fail meaningfully before the code exists
+
+**Issue:** A test file that imports not-yet-written functions fails at import, for every case alike. That is not "seen to fail for the right reason". Running the finished tests green then proves only that they pass.
+
+**Suggested improvement:** Add to the red step: where a meaningful red run is impossible before the code exists, prove the bite afterwards - a small script that applies ONE named one-line mutation (switch a rule off), runs the test file, prints which cases failed, and restores the file in a finally block. One mutation per rule; each must fail the cases named for that rule and no others it should not. Keep the script and its list of mutations with the session, and name the mutations in the commit message. Write such a script as a file, never inline in the shell (quoting and escapes break it).
+
+**Principle:** "Seen to fail first" is about evidence that the test can fail for the reason it claims. If the order of work removed that evidence, a targeted mutation puts it back - one rule at a time, cheaply, with the source restored by construction.

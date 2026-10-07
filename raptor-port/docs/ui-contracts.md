@@ -7198,7 +7198,7 @@ and is in `docs/engine-rules.md` §Auth / roles. Pinned in
 **Another man's input opens READ ONLY, and looks it (W1-F3, 26 Sep 26; the look `[ABSENCE-SMALL-SEEN]` 4, 28 Sep 26).**
 From the calendar's chip or the day popover a member opening someone else's input gets the edit window with its body
 `inert`, no Delete and no Save, and "Only Tally or an admin can change this." at the foot (`ui/inputedit.tsx`,
-`perms.ts mayEditInputOf`). Its locked fields used to be drawn exactly as live ones — the dropdown box and arrow, the
+`perms.ts mayEditInput` - it takes the record since 8 Oct 26). Its locked fields used to be drawn exactly as live ones — the dropdown box and arrow, the
 remarks box, a text cursor, the OIL "Change…" button. Keyed on that same `inert` (`scheduler.css`, `.inped-body[inert]`),
 a locked field now reads as its VALUE — no box, no arrow, the plain cursor, the quieter ink — and a tick box or a button
 is dimmed rather than removed, so the record still shows what was chosen. His own input keeps its live boxes. Before and

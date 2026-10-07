@@ -144,7 +144,6 @@ phone — [PHONE-DISCARD-MARKS] (MOOT under D488; archived 2 Oct 26 with the Cod
 **From the article he sent — his word, D486 (2 Oct 26):** [CODE-TIDY-AUDIT] (Astra's read can run before the reset, D484; the report to him; before [DB-STEP]) and [SKILL-FUSION] (after the reset, a fresh chat on its own branch; three proposals in it wait on his yes or no). **D491 (3 Oct 26):** Astra's tidiness read and its draft of [WORD-LIST] run BEFORE the reset; three pieces of `mattpocock/skills` ride with [SKILL-FUSION]. **D493 (2 Oct 26):** the tidiness read is answered — three tidy-ups approved, each with its area's batch: [LW-ROWS-SPLIT] (the next Leave War batch), [CSS-SPLIT-BY-SCREEN] (DONE — live 6 Oct 26, archived; it was the first step of the workflow UI pass), [TRK-FILE-TRANSFER-SPLIT] (the Tracker batch); two not now (in [CODE-TIDY-AUDIT]).
 
 **IN HAND (7 Oct 26): the Inputs calendar and the SANS availability calendar — called back (D614), Opus 5.5 builds from here (D615), on `claude/inputs-sans-calendar`; where it stands: [SANS-COMMITMENT-CALENDAR] and that branch's block in `HANDOFF.md`.** **Historical build authority — D580, put ON HOLD by D585 (5 Oct 26), the hold ended by D614:** [SANS-COMMITMENT-CALENDAR] is authorized to build from delegated recommendations while the owner sleeps; includes Member Inputs calendar and secondary List. Initial D569 scope: monthly SANS demand/shortage calendar, shared day commitments and existing Custom timing form with no Remarks placeholder. Caps/ops new-chat handoff remains cancelled D568; no new chat created. Caps/ops, other Inputs work and Tracker remain outstanding. Earlier builds/every owed read unchanged; agent settles product choices with reasons and pictures before source work; independent review/required checks and Claude before main remain.
-**Found while building it (7 Oct 26, night) — fixed with the group input's writer, step 1 piece (f), where the refusals it hides become reachable:** [INPUT-SAVE-SAYS-OK-WHEN-REFUSED] — an input's Save can say "Input added" / "Input updated" and close its window although the whole save was refused and nothing was kept.
 **The feature batches — HIS ORDER, D495 (2 Oct 26); Astra plans/reviews, Sol 6.1 builds in Codex until the reset (D496), Claude reviews after it (D494):** *(7 Oct 26: the first four — Discard marks, the work-hours fix, Insights, the workflow UI pass — are built and live (PR #481) and archived; next in this order is Inputs: the Inputs calendar and the SANS availability calendar, called back on 7 Oct 26 and in hand (D614, D615) — [SANS-CALENDAR-WIP], [SANS-COMMITMENT-CALENDAR].)* [DISCARD-MARKS-REMOVE] (the small first job) → [WORKSPAN-NEGATIVE] → Insights ([INSIGHTS-MISSION-MIX], with [INSIGHTS-BOARD-DOOR]) → the workflow UI pass ([CSS-SPLIT-BY-SCREEN] first) → Inputs → the Tracker (with [TRK-FILE-TRANSFER-SPLIT]) → caps and ops limits → one whole-app check — the list: [FEATURE-WISHLIST].
 **Timing follow-up:** [REST-FIRST-CREW-HINT] — existing empty-formation predictive-rest gap, filed with caps and ops limits; committed placement still validates. Current Rally evidence declares this limitation; no owner approval inferred.
 **Availability follow-up:** [SANS-PREVIOUS-REPORT-OFFER] — previous-date offers are not combined with target-date half-days for a previous-evening report; characterized in this round's actual picker/placement, with caps and ops limits. No new availability policy or owner waiver inferred.
@@ -1618,27 +1617,6 @@ need the owner. See [CAPS-OPS-LIMITS]; it does not accept the latest UI preview,
 waive owed reads or authorize a live merge.
 
 **Current direction — D585, 5 Oct 26:** Inputs/SANS calendar is on hold; preserve the completed preview and context. No more design/build/Claude vetting until owner resumes. Other outstanding tasks may be discussed; no new batch starts automatically. Existing D495 later order remains Tracker progress graph → caps/ops limits → whole-app check, with database connection at the end; this pause does not approve another build.
-
-### [INPUT-SAVE-SAYS-OK-WHEN-REFUSED] An input's Save says "added" / "updated" although the save was refused (found 7 Oct 26, not fixed)
-**What it is.** Several of the input doors wrap one or more per-record saves in ONE outer save (so the whole is one
-Undo step) and then report success from the INNER save's answer alone, never the outer one's. The inner save answers
-"yes" before the outer command has been checked (the check on what a member's command really changed, the locked-week
-backstop). If the outer command is then refused, everything is rolled back — and the screen still says "Input added" /
-"Input updated" / "OIL decision updated" / "Input deleted", and the editor's window closes. Nothing is kept; nothing
-says so.
-**Where:** `raptor-port/src/ui/inputedit.tsx` — the editor's `doSave` (new and change) and `doMedSave`,
-`commitEditMedChoices`, `commitEditUpchit`, `removeInput`; `raptor-port/src/ui/InputsPage.tsx` — the List's edit with
-an OIL answer (`saveEdit`'s sheet) and `reviseOil`. Each calls `writeInputsBatch(…)` and drops what it returns.
-**How it was seen.** A test of a member's save whose command the ownership check refused (the test's own fault — see
-the trap in `HANDOFF.md`): the toast read "Input added", the list held nothing new.
-**Why it is filed and not fixed now.** No real gesture reaches it today: every refusal the outer command can make is
-also asked for at the door before the save. The group input (the plan
-`raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.13) adds refusals that ARE reachable
-— a forged filer, the members' switch turned off under an open window, the one-man-once check — and its own rule is
-"his Save is refused with the sentence, the window stays". So it is fixed with that writer, piece (f): each door keeps
-the outer save's answer (`ok && done`), says the refusal in a sentence, keeps its window open; a test that fails first
-drives a refused save through each door.
-
 
 ### [GROUP-INPUT-ONE-ROW] On the schedule a group input is ONE row holding everyone (D661 — 7 Oct 26)
 

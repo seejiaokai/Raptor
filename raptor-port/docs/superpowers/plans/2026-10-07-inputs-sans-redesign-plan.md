@@ -823,6 +823,45 @@ the whole of that door, and a looser one is a forgery route. (5) **D660 came aft
 finding they agreed on most (G1) with a wider right for the filer over OIL, the one thing here that is owed to a man.
 It is not sent back for a third plan round (the cap); the two readers of the CODE are told to read it first.
 
+**AS BUILT (8 Oct 26 — step 1, piece (f): the no-screen half, in four commits).** The record fields and the entry
+function (`src/state/inputgroup.ts`), the setting and its command (`src/state/memberfile.ts`), the one voiding rule
+(`engine/oil.ts voidedOil`), the rule and the commit gate's three tests (`src/state/perms.ts`), Undo's two checks
+(`undo/timeline.ts mayReverse`, `verifiedReplay`), the check at the write (`state/store.ts runInputWrite`,
+`state/sched-commit.ts`), the writer (`ui/inputedit.tsx commitGroup`), §3.8's rows 10 to 12, and the filed fault
+`[INPUT-SAVE-SAYS-OK-WHEN-REFUSED]` (`saveBatch`). Tests: `state/inputgroup.test.ts`, `state/memberfile.test.ts`,
+`engine/voidedoil.test.ts`, `state/perms.test.ts`, `leavewar/groupinput.test.ts`, `leavewar/groupwrite.test.ts`,
+`ui/savesaysok.test.tsx` — each new rule also broken in turn to prove its test fails. **Decided by the builder where
+this section was silent, or stricter than its own reason — for the readers of the code:**
+1. *Test 1, on a record a member creates for HIMSELF:* the filer's name may be absent (a record with no filer gives
+   nobody a right, and every hand-made fixture in the suite writes one); it may never name anyone else. For ANOTHER
+   man the name is required — or a member could file for him and hide that he had (D629).
+2. *The group's filer on a record a member creates* (the section named it only for a change): himself, or the filer
+   of a group that stood before the command; and `grp` / `grpBy` always together.
+3. *Test 3:* an answer the member did not write must be exactly what `voidedOil` leaves — so an answer for a day the
+   input no longer covers still rides a change of date, as the save itself keeps it; a NEW or changed answer must be
+   for a day that asks, of 0 or the amount the hours price. Which days ask reaches the gate through a hook the Leave
+   War installs (`inputgate-hook.ts oilPlanOf`); with none wired, no new answer may be written for another man.
+4. *The replay* is vouched for record by record, and only for the restore the timeline is applying at that moment
+   (a module marker set around its own commit) — not by the envelope's fields alone.
+5. *The shared fields* gained `sans` (the Fly / OFT / AMT ticks): an admin's group SANS availability (G9) came after
+   the list was written, and its ticks are what the one line says.
+6. *A kind the app does not know* is not one a member may file for others (`typeGroup` answers "other" for it).
+7. *The writer and the OIL answer:* written on every record the save files or changes; with nothing else changed, on
+   every record of the entry (the filer revising it for all — an OIL answer alone, the late date untouched). A man
+   added later is answered for by whoever adds him and nobody else's answer moves. One person filed alone gets no
+   group. A name given twice is one man.
+8. *Refusal words:* a group save refused inside the command says the first reason it heard and "nothing was saved for
+   anyone"; a refusal that is one man's alone is prefixed with his callsign; the filer's Undo with the switch off says
+   so ("…while filing for other people is switched off — the person it was filed for, or an admin, can change it").
+9. *The screens that mirror the rule are re-pointed now* (they ask the record): the editor's read-only form, the
+   List's row buttons, the calendar's drag. Nothing a member can press files for another man until the picker (step 5).
+10. *Two existing tests* pinned "a member's draft for another man is re-pointed at himself" and are changed, each
+    with its note (`leavewar/scenarios-rules.test.ts`, `ui/inputs.test.tsx`).
+**Left for step 5, with their screens:** the picker, the month's one bar, the opened day's one line, the List's one
+line and the entry's editor ("Take me out"; the OIL sheet shown once — the writer already takes its one answer), the
+gear's switch and the Logic page's row, the changes window's one item (D663), and the demo seed's one group input
+(with its stamps — §3.8).
+
 ## 4. The order of the build
 
 Each step is tests-first (§5), ends green on its own files, and — from step 2 — ends with a push and a preview link for
@@ -1008,6 +1047,15 @@ switch turned off, a member can no longer change what he had filed for others
 (the man and an admin still can) and nothing already filed is removed; a man in a shared input can take himself out
 and answer his own OIL question, nothing more; an admin's group leave is refused whole if one of the men already has
 leave or a medical on those days — and filed for all, flagged, where one is recorded as working.
+
+**Added while building step 1, piece (f) (8 Oct 26) — the group input's no-screen half, to tell him the same way:**
+the kinds a member may file for another person are everything under the "Duty & other commitments" heading except
+SANS availability — which takes in Overseas Duty and Personal (his D655 named the heading; say if either should be
+out); a person added to a shared input later has the OIL question answered by whoever adds him, and nobody else's
+answer moves; when whoever filed it changes only the OIL answer, it changes for everyone in it; a shared input
+refused for one person names him and says nothing was saved for anyone; with the members' switch off, a member's
+Undo of something he filed for others is refused in words, and is his again when the switch is back on; a save that
+is refused now says "Not saved" and keeps its window open with what was typed (it could say "Input added" and close).
 
 ## 9. For the challenger
 

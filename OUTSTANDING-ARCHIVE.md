@@ -3813,3 +3813,27 @@ agent's line):** ask him with the start-of-chat options. **7 Oct 26: he said "De
 "So don't delete*" — a correction of his sentence about the SANS calendar work (D610), most likely not of this. The
 deletion is HELD until he says which; the branch is untouched.**
 
+
+*Moved here 2026-10-08 by backlog-archive.mjs ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED]). Forward facts: `raptor-port/docs/feature-impact.md`, `raptor-port/docs/file-map.md`.*
+
+### [INPUT-SAVE-SAYS-OK-WHEN-REFUSED] An input's Save says "added" / "updated" although the save was refused (found 7 Oct 26, not fixed)
+**What it is.** Several of the input doors wrap one or more per-record saves in ONE outer save (so the whole is one
+Undo step) and then report success from the INNER save's answer alone, never the outer one's. The inner save answers
+"yes" before the outer command has been checked (the check on what a member's command really changed, the locked-week
+backstop). If the outer command is then refused, everything is rolled back — and the screen still says "Input added" /
+"Input updated" / "OIL decision updated" / "Input deleted", and the editor's window closes. Nothing is kept; nothing
+says so.
+**Where:** `raptor-port/src/ui/inputedit.tsx` — the editor's `doSave` (new and change) and `doMedSave`,
+`commitEditMedChoices`, `commitEditUpchit`, `removeInput`; `raptor-port/src/ui/InputsPage.tsx` — the List's edit with
+an OIL answer (`saveEdit`'s sheet) and `reviseOil`. Each calls `writeInputsBatch(…)` and drops what it returns.
+**How it was seen.** A test of a member's save whose command the ownership check refused (the test's own fault — see
+the trap in `HANDOFF.md`): the toast read "Input added", the list held nothing new.
+**Why it is filed and not fixed now.** No real gesture reaches it today: every refusal the outer command can make is
+also asked for at the door before the save. The group input (the plan
+`raptor-port/docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.13) adds refusals that ARE reachable
+— a forged filer, the members' switch turned off under an open window, the one-man-once check — and its own rule is
+"his Save is refused with the sentence, the window stays". So it is fixed with that writer, piece (f): each door keeps
+the outer save's answer (`ok && done`), says the refusal in a sentence, keeps its window open; a test that fails first
+drives a refused save through each door.
+
+
