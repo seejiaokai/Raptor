@@ -2787,3 +2787,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** A short guide (or a section of the design skill used here): for a change to an EXISTING surface — run the build; capture the real surface at each size; do the nearest real interaction and record its look and markup; inject only the new parts, cloned from real neighbours, marked as new; state in the caption what is drawn in; keep the injection script beside the pictures so the set can be re-shot after the design changes. Stand-alone drawings stay for surfaces that do not exist yet.
 
 **Principle:** When the thing being proposed is a change to something that exists, draw the change, not the thing: let the real artefact supply everything that is not in question, so the reviewer's attention — and trust — lands only on what is new.
+
+### Observation 452: A screenshot shows how an existing surface LOOKS, not how it BEHAVES — a behaviour claim made to the owner from a picture was wrong
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Drawing a new panel onto an existing grid by reusing the look of the panel the grid already opens, then telling the owner the new one would behave "like the one the grid already has".
+**Skill:** New skill candidate: mock-ups on the real screen (see observation 451)
+**Type:** open-source
+**Phase/Area:** Captions and claims that go with a mock-up of a change to a built screen
+
+**Issue:** The existing panel had been exercised once, for its look. From that one picture the agent told the owner it already dragged and that the new panel would match it. A read of the code, done later for the plan, showed the existing panel blocks the page behind it and closes on an outside press — the opposite of what the owner had just ruled for the new one. The claim had to be corrected to him, and it turned into a scope question that could have been put with the drawing.
+
+**Suggested improvement:** In the mock-up guide: any sentence of the form "this works like the existing X" is a behaviour claim — before it is written, exercise X for the behaviour named (close it, press outside it, drag it, use the page behind it) or read its code; list what was exercised beside the picture. Where the proposal and the existing behaviour differ, say so on the drawing itself.
+
+**Principle:** Reusing how something looks proves nothing about what it does. A comparison to an existing behaviour is a factual claim and needs its own check, separate from the picture.

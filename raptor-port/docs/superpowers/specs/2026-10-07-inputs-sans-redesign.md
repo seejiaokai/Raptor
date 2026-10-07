@@ -224,7 +224,13 @@ was typed — with nothing saying which does what. He also asked that a long nam
 short form ("ND") that opens to the full name and its kind at a click. This is the tidy D634 left for him to ask for: a
 mock-up first, on a real picture; the colours and "Edit types" are kept; nothing goes without his pick.
 
-**The fifth set** is at the head of the private page (https://claude.ai/artifact/U3WNp6VARTdVeDP5cUoQvD), the fourth folded
+**The sixth set (7 Oct 26, night) is at the head of the private page** - the Event sheet, D643: the real sheet as built, with
+"National Day" typed, and the real grid stretched by that name, beside the proposed sheet (one Type row, the picked type lit, an
+optional Name and Short form; "Other..." opening the kind question) and the grid showing "ND" with the small box a tap opens. Drawn
+into the running build by `shoot6.cjs`. Two questions with him: the sheet as drawn; short names on the grid. **The build plan:**
+`../plans/2026-10-07-inputs-sans-redesign-plan.md` (read by Astra and Sol 6.1; D643 is not in its build until he picks).
+
+**The fifth set** follows it on the page (https://claude.ai/artifact/U3WNp6VARTdVeDP5cUoQvD), the fourth folded
 beneath it: eight pictures — the four rows at rest, typing one cell, a picked block with its panel, "From 12 Jan on" and the
 grid afterwards, on a desktop; the rows at rest, typing with the number pad, and a picked block that skips a no-fly day, on a
 phone. They are the running build with the rows drawn into the live page by `shoot5.cjs` (on his PC, beside the earlier sets'

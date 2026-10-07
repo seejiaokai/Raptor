@@ -1,7 +1,8 @@
 # The Inputs calendar and the SANS availability calendar — the build plan (D617–D641) — 7 Oct 26
 
 Written by the builder (Opus 5.5) before any app code changes, for one round of challenge by Astra and by Sol 6.1,
-each blind to the other (D353, D590). **Nothing in it is built.** The job: `OUTSTANDING.md` `[SANS-COMMITMENT-CALENDAR]`,
+each blind to the other (D353, D590). **Nothing in it is built.** *Both have read it (7 Oct 26): §10 says what each found
+and what changed; the sections below are the plan as it now stands.* The job: `OUTSTANDING.md` `[SANS-COMMITMENT-CALENDAR]`,
 on the branch `claude/inputs-sans-calendar` (Codex's build of 5 Oct 26 with `main` merged in). The design he approved,
 picture by picture, and every answer he gave: `../specs/2026-10-07-inputs-sans-redesign.md` — read it first. The
 rulings, full rows: `grep -h '^| D6[1-4][0-9] |' .claude/decisions-full/scheduler.md` (D617–D641; D623–D625 are in
@@ -119,6 +120,11 @@ stores already share (`docs/undo-contract.md`); no new store pattern is added.
 **The cost: two new reads across the boundary, both in `leavewar/sync.ts`, the file that already is the seam.**
 1. **The calendars read the war:** `dayFacts(iso)` → `{ covered, kind: 'ph'|'off'|null, name, weekend, availP, availW }`,
    and for the Holidays list `holidaysIn(year)`; plus the three writes of that list (§3.4). Read-only for the calendars.
+   **And they must HEAR the war change:** `sync.ts` exposes one small signal, `useWarFacts()` — a version that moves
+   whenever anything `dayFacts` or `holidaysIn` reads has moved (a day's events, a band, a seeded `ph`, the event
+   types, a period made or re-dated, the count rows' definitions, the roster and its postings, a bid filed, decided or
+   moved, an Undo or Redo of any of them). Both calendars, Days, an opened day and the working box subscribe to it.
+   It is NOT the OIL-only `raptorNotify` — that stays as narrow as it is, so the board is not repainted by leave bids.
 2. **The war reads the flying plan:** its new rows import the plan's getters from `state/flyplan.ts` through one
    re-export in `sync.ts`, and repaint on the scheduler's own change signal.
 Both are named in `.claude/rules/decisions/leave-war.md` §Architecture in the change that builds them, as riders on
@@ -159,7 +165,9 @@ tone    = need(p) + need(w):  >= red → red; >= amber → amber; >= yellow → 
 
 **Commands** (admin only — `op(T.setting,'U')`, each added to `COMMAND_OPS` and the write-hook's guarded prefixes, in
 step with `docs/data-model.md` §11 — D200): `fly.day.set` (one or MANY dates in one command — a picked block is one
-Undo step), `fly.rule.set`, `fly.rule.remove`, `fly.run.set`, and `settings.sanscalendar` (kept). `sans.day.set` and
+Undo step), `fly.rule.set`, `fly.rule.remove`, `fly.run.set`, `settings.sanscalendar` (kept) and `settings.flynames` (the
+Required rows' names — `flynames` joins `SETTINGS_KEYS`, the permission inventory and the guarded keys; an unlisted key
+would be written raw, outside permission and Undo: `people-settings-commit.ts:322`). `sans.day.set` and
 the `sansday:` rows go. Undo wording (`undo/describe.ts`): "the required pilots and WSOs for 12–16 Jan", "day or night
 flying on Thu 15 Jan", "Thursdays as no-fly days from 5 Nov", "a required figure running from 12 Jan". Landing: a
 required figure → the Leave War, on that date; a class or a rule → the page he is on if it shows it, else the SANS month.
@@ -179,7 +187,10 @@ the letter (`who`, `bal`, the two placeholders, one cell per DRAWN day).
   **where a stored set has none, the built-in definition is used** (an older store, or after "Reset counters"). They
   are drawn here, not in the Manning block (`CountRows` skips the two ids). Their name and who they count are changed
   with the form the war already has (D640); `deleteManningRule` refuses the two ids with a sentence ("The SANS calendar
-  reads this row — rename it or change who it counts"); `saveManningRule` refuses a "teams" count for them.
+  reads this row — rename it or change who it counts"); `saveManningRule` refuses a "teams" count for them, and
+  both it and `setManningThreshold` hold their thresholds at 0. **The counter form gets a mode for the two ids:** no
+  amber / red boxes; its live preview is summed the same SANS-less way (today's preview sums everyone —
+  `CounterForm.tsx:243`); and one line says "SANS people are never counted here".
   **Whatever the filter, a SANS man is left out** (D626): the two rows are summed over `people` without `p.san`, on the
   grid and in `dayFacts` alike — one function, so the two never disagree.
 - **Names.** The Required rows take a free-text name (a new settings key `flynames` = `{ p, w }`); while a name is
@@ -196,11 +207,24 @@ the letter (`who`, `bal`, the two placeholders, one cell per DRAWN day).
   D622). Arming is unchanged for every kind (4 px for a mouse — so Shift-drag and press-pause-drag both pick; a 180 ms
   hold for a finger). On release the Required panel opens — `Sheet.tsx` gains a `modal={false}` form (no scrim, no
   outside-click close, no focus trap) used by this panel only: the number box, "These days | From <date> on", Apply,
-  Clear. Days that take no figure (a no-fly day, a weekend, a holiday, an Off day) are left out and the panel says how many.
+  Clear. **Which picked cells take the number is worked out at Apply, and differs by choice:** "From <date> on" is a
+  running figure — it skips weekends, public holidays, Off days and no-fly days by the resolver, always. "These days"
+  writes the picked dates themselves: a no-fly day is always left out; weekend, holiday and Off-day cells CAN take a
+  typed figure (D637) — where the pick is only such days they are filled, and where it mixes them with ordinary days
+  they are left out and the panel says so with one press to take them in ("2 weekend days left out — Include").
   Apply is ONE `fly.day.set` / `fly.run.set` command.
 - **Repaint.** `FlyRows` subscribes itself to the scheduler's change signal and to the war's; `Matrix` and the memo
-  firewall are not touched. Its cells are memoised per drawn month on a signature of the plan rows in range and the
-  two availability rows. A figure that widens a day column asks the grid to re-measure, as the Archive rows do.
+  firewall are not touched. Its cells are memoised per drawn month on a signature of EVERYTHING the resolver read for that
+  month — not only the rows dated inside it: for each seat the run in force on the month's first day and every run
+  starting within it; every weekday rule overlapping it; its date rows; its days' kinds and coverage; the two
+  availability rows; the SANS commitments to fly. (Built as: the resolver returns its answers for the month, and the
+  signature is those answers — an inherited change then moves it by construction.) A figure that widens a day column asks the grid to re-measure, as the Archive rows do.
+- **The panel for a picked block of people's days comes into line (D642):** `SelectSheet` uses the same non-modal
+  form — no scrim, no close on a click outside, the grid behind usable. While it is up, a new drag on the grid
+  replaces what it is acting on (the panel follows the new pick); a plain click on a cell opens that cell's own sheet
+  and closes the panel; its ✕ and Escape close it. Move mode is unchanged (an empty tap outside still cancels a MOVE —
+  D262 — because that is the move, not the panel). The war's other windows keep today's behaviour
+  (`[LW-WINDOWS-NONBLOCKING]`).
 - **⚙ Settings** gains one line, "Days…", which closes the sheet and opens Days (§3.4). Nothing else in it changes.
 
 ### 3.4 Days — Month and Holidays
@@ -221,8 +245,12 @@ the gear of either calendar or from the Leave War's ⚙; admin only. Two parts s
   `holidayChange`, `holidayRemove` write to the war HOLDING each date (a new `updateWarById`), on the first Event
   line free across the range, as a tagged day event or a band — one named command each (`lw.holiday.add` …, admin, in
   `COMMAND_OPS` and `lwRegisterCommands`), so Undo reads "a public holiday on 9 Aug", not "the war's dates or name".
-  A range that crosses two periods is refused with a sentence; **a date no leave period covers** gets D19's line and
-  its button — "No leave period covers 2027 yet — Create it" (`createOilPeriodFor`).
+  A range that crosses two periods is refused with a sentence. **A date no leave period covers:** where the WHOLE
+  year has none, D19's line and its button — "No leave period covers 2027 yet — Create it" (`createOilPeriodFor`, which
+  makes January to December and is refused if any part of the year is already held). Where the year is PARTLY covered
+  (a January–March period, a holiday in August), no year button is offered: the line says which dates are not covered
+  and opens the war's own "+ New" period sheet with the gap's dates filled in; the holiday being added is kept and
+  saved once that period exists.
 
 ### 3.5 The SANS calendar
 
@@ -248,7 +276,12 @@ the gear of either calendar or from the Leave War's ⚙; admin only. Two parts s
 - **Bars** (D626): an input is one bar across the days it covers, cut at a week's end and carried on; lanes assigned
   per week by a pure function (`layoutBars(week, entries, maxLanes)`); a desktop shows seven lanes before "+N more"
   (D632, D639), a phone three; a bar carries the callsign and the type's short word. The planning layer's day titles
-  and pucks stay above the bars as they are. A bar keeps the chip's hooks (`data-iid`) so today's drag-to-move still works.
+  and pucks stay above the bars as they are. **Drag-to-move is re-made for bars, not inherited:** today's handler takes the starting date from the chip's enclosing day cell
+  (`caldrag.ts:242-244`) and a spanning bar has none. The handler resolves the date UNDER THE POINTER at the press —
+  on a bar's first week or on a continuation — and at the drop, both from the day grid's geometry; the move is by that
+  difference (a Monday-to-Friday input grabbed on its Wednesday and dropped on a Friday moves two days), the length
+  kept; the landing flash finds the moved bar, not a chip in a cell. Permissions, the medical questions and the
+  swallowed release-click stay as they are.
 - **PH, Off and NF** show as on the SANS calendar — tint and tag, from `dayFacts` and the resolver; no sun or moon (D627).
 - **Several days:** a mouse drag on a desktop; hold, then drag, on a phone (a quick slide still turns the month); the
   "Select dates" button goes. Release opens "+ Input" for the range, as today.
@@ -272,18 +305,35 @@ opening and back to the opener on closing); a click brings a window to the front
   click outside); **the editor opened from the board or the week** (unchanged — outside this job's mock-ups); **the
   Leave War's existing windows** (not rebuilt — D634; see §8, question 3).
 - **When the thing a window shows is changed from the page behind it:** the window re-reads on every change. A record
-  that has gone closes its window with a line saying so. An editor holding unsaved changes whose record was changed
-  behind it shows "Changed while this window was open — Reload | Keep my changes"; Save then goes through the existing
-  commit, with every existing check re-run against the live record. One editor at a time: opening another input while
+  that has gone closes its window with a line saying so. **An editor never saves a field its user did not change.** It keeps the record as it was when the window opened (by
+  `iid`, with the command layer's revision). When the record changes behind it: fields the user has not touched take
+  the live values silently; a field changed BOTH ways is listed — "Changed while this window was open: end date —
+  theirs 14 Jan, yours 12 Jan" — with a choice per field. Save writes only the user's own changes over the live
+  record, through the existing commit with every existing check re-run; the revision is checked again after any
+  blocking question (an upchit, OIL or clash confirm). A record replaced by an Undo is treated the same way. One editor at a time: opening another input while
   one holds unsaved changes asks, in that window, before replacing it.
 
 ### 3.8 Who placed it, and when — D629
 
 - The Input record gains `by` (the signed-in person's id when it was filed), `at` (that moment, ms), `modBy` and
-  `modAt` (the last change). `mod` stays as it is — the late rule reads it. Written at every door that makes or changes
-  an input: the editor, the List's inline edit, a leave approved on the Leave War (the approver), a medical segment
-  minted from a clash (it inherits its parent's), an upchit trim.
-- Shown in small print in an opened day, in the List, and at the foot of the editor: "Placed by Saber · 7 Oct 26,
+  `modAt` (the last change). `mod` stays as it is — the late rule reads it. **Every door that makes or changes an input, by name** (the test in §5 is this table, one case a row):
+
+  | The door | `by` / `at` | `modBy` / `modAt` |
+  |---|---|---|
+  | The editor — new (`inputedit.tsx commitNewInput`) | the filer, now | the same |
+  | The List's Add form (`InputsPage.tsx rowBody`, `:459` — its own maker, not the editor's) | the filer, now | the same |
+  | The editor — a change (`commitInputEdit`); the List's inline edit | kept | who, now |
+  | An OIL answer alone (`InputsPage.tsx:662, :692`; the editor's OIL sheet) | kept | who, now |
+  | A leave approved or extended on the Leave War (the absence door, `sync.ts`) | the approver, now | the same |
+  | A leave moved on the war (`doorMoveApproved`, `sync.ts:542`) | kept — it is the same leave | who moved it, now |
+  | A leave cut — part un-approved, removed, or cut by sick leave (`cutDates`, `sync.ts:434`) | each piece keeps the original's | who, now |
+  | A medical entry split or trimmed (a clash, an upchit; `mintMedSegments`, `applyMedPlan`) | each piece keeps the original's | who, now |
+  | A posting that trims a man's inputs | kept | who, now |
+  | Undo / Redo of any of these | restored as recorded | restored as recorded — never stamped as a new change |
+
+  `mod` is written exactly as today at every one of them, so mode 0 of the late rule cannot move.
+- Shown in small print in an opened day, in the List, at the foot of the editor, **on a Medical card and in the
+  document viewer for the input whose document is showing** (D629: wherever an entry is listed or opened): "Placed by Saber · 7 Oct 26,
   14:32 · changed by Ranger · 8 Oct 26, 09:10"; "Placed by Saber for Wisp" where the filer is not the subject. A
   desktop bar's tooltip carries it (D632). Never on the month's cells. A record with no `by` shows no line (D56); the
   demo seed is rewritten to carry them.
@@ -300,8 +350,9 @@ opening and back to the opener on closing); a click brings a window to the front
 - `engine/inputs.ts`: `dueOfWeekISO(weekStart, set)` — mode 1 is that week's Monday − weeks × 7 + weekday; `isLateInput`
   judges a SANS availability input by the SANS set and every other input by the Inputs set; the deadline day itself
   stays on time (late is strictly after — "the end of its day"); downchits and upchits stay exempt.
-- Each calendar's gear edits its own set through the commit the Logic page already uses; the Logic page lists both
-  rows. "How this works" and the late tag's note are written from the set in force.
+- Each calendar's gear opens its cut-off window, which edits its own set through the commit the Logic page already
+  uses. **The Logic page lists both rows, and each row's button opens that SAME window** (D639: one setting, two ways
+  in) — the four values are not typed on the Logic page itself. "How this works" and the late tag's note are written from the set in force.
 
 ### 3.10 What goes, and what stays, of Codex's build
 
@@ -366,8 +417,23 @@ A fair size for this: six to eight working sessions before the check, the check 
 - **The late rule** (`engine/lateinput.test.ts`, the robustness doctrine's five families): mode 0 unchanged, every
   existing assertion untouched; mode 1 across a month and a year boundary; the deadline day on time, the day after
   late; a SANS input judged by the SANS set and a leave by the Inputs set; exempt types; an unreadable date never accused.
-- **Who and when:** each door writes the four fields; an edit moves only `modBy` / `modAt`; a record without them
-  draws no line; the F / O / A change writes its history line.
+- **Who and when:** §3.8's table, one case a row — and Undo / Redo of each restoring the recorded stamps; a record
+  without them draws no line; the F / O / A change writes its history line; a Medical card and the document viewer
+  show the stamp of the input on screen, changing with it as an episode's documents are paged.
+- **Hearing the war** (mounted, no reload, no navigation, a week other than the calendar's month loaded): add a
+  holiday with "Save and add another" on a date with no OIL question — the calendar under the window re-tags the
+  day; change an Available row's filter — the SANS date's need moves; a bid decided — the same; Undo each.
+- **A change before the drawn month:** with March drawn, change and then undo a run that starts in January, and a
+  weekday rule that starts in February — March's Required cells and the SANS dates move both times.
+- **The editor behind a window:** change the remarks in the window, change the end date from the List behind it, Save —
+  the end date stays as the List set it; the same field changed both ways asks; a blocking confirm in between; the
+  record replaced by Undo; the order of the Undo steps afterwards.
+- **A bar moved:** grabbed on its middle day and on its continuation in the next week, by mouse and by touch; dropped
+  back where it was (no change, no Undo step); its length kept; a member refused on another man's bar.
+- **"These days" against "From here on"** on the same picked block holding a weekend, a holiday and a no-fly day.
+- **The Required rows renamed:** by an admin; a member and a raw write refused; a reload; Undo and Redo.
+- **A partly covered year:** a period for January to March, a holiday added in August — no year button; the gap's
+  period is made, then the kept holiday saves.
 - **Screens** (unit): the four rows' cells for each kind of day, for an admin and a member; the typed cell's keys; the
   pick's rectangle and its skipped days; the stepping button's cycle on a weekday and on a weekend; the bars' lanes
   (a span over a week's end, more inputs than lanes, a one-day input); a window that stays open on an outside click,
@@ -383,7 +449,9 @@ A fair size for this: six to eight working sessions before the check, the check 
   class and tag — the SANS month, the Inputs month, Days, the war's Required cells; a holiday — those, plus the war's
   Event rows and column tint, the OIL earning day, the schedule's "no period" warning; the required figure and the need
   — the war's rows and working box, the SANS date and opened day; who-and-when — the opened day on both calendars, the
-  List, the editor, the bar's tooltip, and (must not) the month cells, the board, the week, exports; the late tag — the
+  List, the editor, the bar's tooltip, a Medical card, the document viewer, and (must not) the month cells, the board,
+  the week, exports; a count of who is available — the war's Available cells, the working box, the SANS date and opened
+  day, AND the counter form's live preview; the late tag — the
   board, the week, the List, both opened days; an input as a bar — and the Medical view, the board's unavailable rows,
   the Leave War's cells, which must be unchanged.
 - **The walk is sized first** (`docs/walk-ledger.md`): types B, C, D, G and H at the least; walked by Sonnet 5.5
@@ -410,22 +478,24 @@ A fair size for this: six to eight working sessions before the check, the check 
 7. **Holidays written to a war that is not on screen**, and at any stage of that war.
 8. **The size.** Many surfaces on one branch for many sessions; `main` is merged in at every step.
 
-## 8. With him — two answers still owed, one new question, and the readings he will be told
+## 8. With him — what he has answered, what is with him now, and the readings he will be told
 
-**Answers owed (explained to him on 7 Oct; the plan builds the recommended one unless he says otherwise):**
-1. Saturday and Sunday start with no flying set (blank), rather than as no-fly days. *Recommended: yes.*
-2. A no-fly day still shows, and takes, OFT and AMT commitments. *Recommended: yes.*
+**Answered 7 Oct 26 (D642):** Saturday and Sunday start with no flying set; a no-fly day still shows, and takes, OFT
+and AMT commitments; the war's panel for a picked block of people's days is brought into line with D641 in this job,
+its other windows left for `[LW-WINDOWS-NONBLOCKING]`.
 
-**New, from reading the code:**
-3. **The Leave War's existing windows.** Today every one of them blocks the grid behind it and closes on a click
-   outside. The new Required panel will not (D641). On one grid, two panels would then behave differently.
-   *Recommended:* in this job, bring the panel for a picked block of people's days into line too (same grid, same
-   drag), leave the war's other windows as they are, and file those as their own job with their own check. The other
-   choices: leave every existing window as it is for now; or change them all here.
+**With him now (D643) — drawn in the sixth mock-ups, NOT in this plan's build until he picks:** the Leave War's Event
+sheet made plainer (one Type row, the picked type lit with a line saying what it does; an optional Name and a Short
+form; the Tag row only under "Other…"), and a long event name shown on the grid as its short form, a tap opening the
+full name and kind. Checked in the running app: "National Day" today widens its day's column to more than twice its
+neighbours' and wraps to two lines. If he takes it, it adds: a short form per event on the war's day and band records
+(two more named fields in `readWar` and `buildDays`, or they vanish on a reload); the sheet's first view; the small
+name box and the admin's extra tap; the short form on both calendars' date tags and the full name in the Holidays
+list and an opened day — and it goes to both readers as an addendum before it is built (permissions and saved data).
 
 **The builder's readings, to tell him plainly (each a default he can change):** a phone types the figure on the app's
 own number pad, not the phone's keyboard; a one-day figure does not end a running figure — the run carries on the next
-day; a half-day absence rounds the need up; a public holiday or an Off day that is flown anyway can take a typed
+day; a pick that mixes ordinary days with weekend or holiday days leaves those out unless he presses Include; a half-day absence rounds the need up; a public holiday or an Off day that is flown anyway can take a typed
 required figure, but shows no sun or moon; a weekend set to fly still takes no running figure — it is typed; the
 year's holidays need that year's leave period, and the list offers to create it; a date outside every leave period
 shows a dash on the SANS calendar; the SANS cut-off starts as the Wednesday two weeks before; the SANS tab has no
@@ -452,3 +522,33 @@ Read the design note and the full rows first. Then, in this order of worth:
 **Not a finding:** taste; a claim with no concrete failure, cause and exact fix (D489); a problem that lives only in
 data already stored (D56 — the `sansday:` rows never left this branch); anything §8 already puts to him, unless the
 recommended answer is wrong — then say why.
+
+## 10. After the challenge (7 Oct 26) — what changed, and why
+
+Both read it alone; both said CHANGES REQUIRED, and both called §3.1's bet sound. Their reports, unchanged:
+`../briefs/2026-10-07-inputs-sans-redesign-plan-challenge-astra.md` and `…-sol.md`. Each claim was checked against the
+code before it was taken. All sixteen findings were taken — none refused; five were the same point from both.
+
+| # | Found by | The gap | What the plan now says |
+|---|---|---|---|
+| 1 | Astra 3, Sol 3 | The calendars would not hear a Leave War change that is not about OIL: a holiday added in Days, a count row re-defined | §3.1 — `useWarFacts()`, a signal of its own; §5 "Hearing the war" |
+| 2 | Astra 4, Sol 2 | A month's cached cells keyed only on rows dated inside it: a run or rule that starts earlier could change and the month not repaint | §3.3 — the signature is what the resolver answered for the month; §5 |
+| 3 | Astra 1, Sol 4 | Keeping `data-iid` does not keep drag-to-move: the handler takes its start date from the chip's day cell, and a bar has none | §3.6 — the date under the pointer, press and drop; §5 "A bar moved" |
+| 4 | Astra 5, Sol 6 | Doors that make or change an input and were not named: the List's Add form, OIL-only answers, a leave moved or cut on the war, splits and trims; Undo stamping a new time | §3.8 — the table, door by door; §5 |
+| 5 | Astra 2, Sol 7 | `flynames` had no command: an unlisted settings key is written raw, outside permission and Undo | §3.2 — `settings.flynames`; §5 |
+| 6 | Sol 1 | "Keep my changes" would write the whole old draft back over fields changed behind the window | §3.7 — only the user's own changes are saved; both-ways fields are asked |
+| 7 | Sol 5 | "These days" skipped weekend, holiday and Off-day cells, though D637 lets a figure typed on such a day hold | §3.3 — worked out at Apply, by choice; a mixed pick leaves them out with one press to include (the builder's reading, told to him — §8) |
+| 8 | Astra 6 | The counter form's preview counts SANS people and offers thresholds for the two linked rows | §3.3 — a form mode for the two ids; §6's roll-call |
+| 9 | Astra 7 | "Create the year" fails when the year is partly covered | §3.4 — a whole-year button only for a year with no period; else the gap's period, the holiday kept |
+| 10 | Astra 8 | Who-and-when missing from the Medical cards and the document viewer | §3.8, §5, §6 |
+| 11 | Sol 8 | The Logic page listed both cut-offs but did not open the setting (D639: "opens the same setting") | §3.9 |
+
+**Astra's D138 read: PASS** — the short lines D585, D569, D571, D576, D577, D579, D580, D581 and D617–D641 against
+their full rows; none changes the meaning. (D642 and D643 were recorded after that read: owed with the first code read.)
+
+**What neither could check, said by both:** how it runs — geometry, the grid's cost, the gestures on a real iPhone, the
+pictures. Sol also said its read of the longest files was not whole. Both are what the walk and his look are for (§6).
+
+**One round each, as planned (the cap on plan reviews stands).** The changes above are the readers' own fixes written
+in; they are not sent back for a second read. The readers of the CODE get this section with the code.
+
