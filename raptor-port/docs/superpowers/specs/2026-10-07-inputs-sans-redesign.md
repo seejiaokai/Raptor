@@ -242,10 +242,16 @@ marked LATE" unneeded. The fold is five short lines; the cut-off line states the
 
 The Inputs calendar's fold is cut the same way.
 
+**The puck with the CAT on the SANS day (D647).** In a day opened on the SANS calendar each committed person is drawn as his puck —
+the callsign in his seat's colour — with his CAT chip, as the Leave War draws a man, so an instructor is told from the rest at a
+glance; the Highlight list shows the same. The grouping by WSOs and pilots stays; the Inputs calendar's opened day is not changed.
+The admin's button there is "Days" (it was drawn as "Day settings"): it opens Days on that month — the required numbers are
+typed on the Leave War, not there. Redrawn the same night, with D646's shorter fold.
+
 **TAKEN — "Yes to all" (D645).** The Event sheet is built as redrawn: a Presets row with the picked one lit, an optional Name, "On
 grid" for the short form, the Kind row only under "Other…"; the grid shows the short form and a tap opens the full name and kind;
 every preset carries its own short form — PH, OFF, NL, SC to start, each his to change in "Edit presets". A short form is up to
-three letters with no space. The build: the plan's §3.12. What he asked just before, and the measurements, follow.
+three letters or digits with no space (digits are the agent's reading, told to him — both readers asked for letters only). The build: the plan's §3.12. What he asked just before, and the measurements, follow.
 
 **Asked, and now ruled by D645: should each PRESET carry a short form too** ("NO L" for No Leave, "OFF" for Off day)? Proposed: yes -
 set once in "Edit presets", so pressing a preset fills "On grid" by itself. Measured in the running app on a phone (7 Oct 26): "No

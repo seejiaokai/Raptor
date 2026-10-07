@@ -262,8 +262,11 @@ the gear of either calendar or from the Leave War's ⚙; admin only. Two parts s
   underlined; session-only view state, in `VIEW_RESET`. **The SANS tab has no filters** (the Highlight does that job,
   and the counts ignore filters by ruling — D581).
 - **A day opened:** the working (required, available, SANS committed to fly, still needed — both seats); the
-  commitments, each with its letters, its hours (D572) and who placed it and when (§3.8); "+ Commitment" (a SANS
-  member his own, an admin anyone's — the existing rules); for an admin, "Day settings", which opens Days on that month.
+  commitments, grouped WSOs and pilots, **each person drawn as his puck with his CAT chip (D647)** — the scheduler's own
+  `puck()` markup for the callsign in his seat's colour, and the CAT from the roster in the Leave War's CAT colours, one
+  small shared builder used here and in the Highlight list — then his letters, his hours (D572) and who placed it and
+  when (§3.8); "+ Commitment" (a SANS member his own, an admin anyone's — the existing rules); for an admin, a button
+  "Days", which opens Days on that month. A man with no CAT on the roster shows his puck alone.
 - **The gear** (the app's own cog — D635): Days · Day colours (three numbers) · Late cut-off (§3.9). Admin only;
   everyone sees one line saying what the colours mean.
 - **"How this works"** — a fold at the top: five short lines (D646; the text is in the design note). The cut-off line states
@@ -379,8 +382,9 @@ there. No reset-version bump: every addition is optional, and the `sansday:` sha
 
 ### 3.12 The Event sheet, presets and short names — D643, D644, D645 (added 7 Oct 26, after the challenge)
 
-He took it — "yes to all" — after both readers had finished; **this section goes to both of them as an add-on, one
-round each, before it is built** (it adds saved fields to the war's records). The pictures: the sixth mock-ups.
+He took it — "yes to all" — after both readers had finished the plan. **Both then read this section alone, one round
+each (7 Oct 26): both CHANGES REQUIRED, five distinct findings, all taken and written in below — §10's second table.**
+The pictures: the sixth mock-ups.
 
 **What the app does today** (`leavewar/ui/EventSheet.tsx`, `ui/EventRows.tsx`, `engine/eventdefs.ts`): the sheet shows a
 free-text box, a row of the saved words (`evquick` — a press fills the box and clears the tag), a "Tag" row of the four
@@ -396,14 +400,25 @@ keeps 20 px but wraps to two lines.
   four start as PH → `PH`, Off day → `OFF`, No Leave → `NL`, SC → `SC`. A stored library with no `short` reads as it
   stands; its presets take the derived short form below until one is typed.
 - An event gains a short form of its own: `DayInfo.eventShorts?: (string | null)[]` beside `events` and `eventKinds`,
-  and `EventBand.short?`. **Both must be named in `readWar` (`store.ts:719-734` rebuilds a day from named fields and
+  and `EventBand.short?`. **Text, kind and short form travel together through EVERY writer that makes or re-makes an
+  event** — each is extended, none left as it is: `setDayEvent`, `setDayEventRange`, `addEventBand`, `removeEventBand`,
+  both paths of `moveEvent` (a band is re-made from its dates, text and kind today; a day's move copies text and kind),
+  the band put back when a replacement is refused (`EventSheet.tsx apply`), a delete or a covering band (the short
+  form goes with the text), and the Holidays list's three writers. A replacement is validated BEFORE the band it
+  replaces is removed, and is one Undo step. **A preset's edit keeps what the edit did not name:** `updateEventDef`
+  rebuilds `{ name, kind }` today and would drop `short` on a rename. **Both must be named in `readWar` (`store.ts:719-734` rebuilds a day from named fields and
   drops the rest) and in `buildDays` (`period.ts:261`), or they vanish on a reload.**
-- **A short form is 1 to 3 characters, no space, stored upper-case.** Refused at the write with a sentence; a longer
-  or spaced value in storage is ignored at the read (the derived form shows).
+- **A short form is one to three letters or digits — A to Z, 0 to 9 — after it is put in capitals; no space, no
+  other mark.** ONE function, `normShort`, does the capitals and the test, and every write and every read goes through
+  it — an event's, a band's, a preset's and a derived one alike (capitals FIRST, then the length: a letter that grows
+  when capitalised cannot slip past). Refused at the write with a sentence; a stored value that fails is ignored at
+  the read (the derived form shows).
 - **The one function that answers "what does the grid print":** `shortOf(defs, text, short)` = the event's own
   `short`; else the short of the preset whose NAME matches the text (the same fold `classifyEvent` uses); else derived
-  from the text — the text itself where it is 3 characters or fewer with no space, otherwise the initials of its words
-  (up to three: "National Day" → `ND`), otherwise its first three letters ("Exercise" → `EXE`). So an event saved
+  from the text — taking only its letters and digits: the initials of its words where it has two or more (up to
+  three: "National Day" → `ND`, "A B" → `AB`), else its first three ("Exercise" → `EXE`, "PH" → `PH`). A NEW event
+  whose name yields nothing (punctuation only) must have "On grid" typed before it saves; an OLD one prints `•`, its
+  name and kind untouched. So an event saved
   before this change shows short at once, with nothing converted (D56) — "No Leave" typed last month prints `NL`.
 
 **The sheet's first view** (admin only, as today; `Sheet.tsx` unchanged for it — the Event sheet is one of the war's
@@ -415,10 +430,18 @@ other windows, `[LW-WINDOWS-NONBLOCKING]`):
 - **Name** (optional) and **On grid.** A typed name becomes the event's text and suggests its own short form; the kind
   stays the picked preset's, saved as the event's own tag (today's `kind` argument) so the name need not match a
   library word. "On grid" can be typed over; once typed it is no longer re-suggested.
-- **"Other…"** shows the **Kind** row — Public holiday, Off day, No leave, Work, Note (none) — and needs a name.
+- **"Other…"** shows the **Kind** row — Public holiday, Off day, No leave, Work, Note — and needs a name. **"Note"
+  is "no tag", and no tag does NOT mean no kind:** today an untagged word takes its kind from the library by its name
+  (`classifyEvent`, `columnKindFor`), and that stays. So a name that matches a preset IS that preset — as it is typed
+  the sheet lights that preset and leaves "Other…"; "Note" can be saved only for a name that matches none, and a save
+  that would pair "Note" with a preset's name is refused with a sentence, the sheet left open.
 - This day / A range, the merge choice, the calendar, Save, Move and Delete: unchanged.
-- **Opening an event that exists:** the preset lit is the one whose name matches the text; else the first preset of
-  the event's kind; else "Other…" with its kind (or Note) lit.
+- **Opening an event that exists never changes it.** The sheet loads its saved text, tag and short form as they are —
+  it does not run the preset-picking action — and a Save with nothing changed writes the same three back. **A preset
+  is lit only when its NAME matches the text AND its kind is the event's effective kind** (its own tag, else the
+  library's match). Anything else — a name that matches no preset, a "PH" someone tagged Off day, an event whose
+  preset was since renamed, re-kinded or deleted — opens on "Other…" with its real kind lit, so the read-out under
+  the row can never state a kind the event does not have.
 - The title bar's button reads **"Edit presets"**; its view gains a short-form box on each row and on the add row.
   Its type list, reset and Done are unchanged. The words "Tag" and "untagged" go from the first view.
 
@@ -446,7 +469,16 @@ picking a preset fills kind and "On grid"; a typed name keeps the preset's kind 
 tap box for a member and for an admin, Edit, an empty cell; a band wide and narrow; Undo and Redo of each save, with
 words that say what was saved; the calendars' tag and the Holidays list reading the same name and short form. The
 existing tests that press `event-quick-*`, `event-tag-*` and `event-edit-types` are re-pointed at the control that now
-does that job — none removed without its control.
+does that job — none removed without its control. **Added after the readers:** `normShort` — "A B", "1/2", punctuation
+only, lower case, a capital that grows; a deliberately non-derived short form ("NAT" for National Day) carried through
+a move of a day and of a band, a repeated range, a band replaced, a replacement refused and restored, then Undo, Redo
+and a reload, on an added Event row too; a preset's short form kept through a name-only and a kind-only edit, a
+neighbour's delete and "Reset to standard"; reopening — a "PH" tagged Off day, two presets of one kind, a preset
+renamed, re-kinded and deleted since, a day and a band — and a no-change Save leaving all three values as they were;
+"Note" with a preset's name refused, and that day still charging leave and earning OIL as a public holiday; a typed
+"On grid" kept when the Name is then changed, and after a visit to "Edit presets"; the tap box closed by a press
+outside, by Escape and by a scroll, the next tap and the next drag reaching the grid; a drag along the line opening
+the range sheet with no box; a landing in either move mode opening neither a box nor a sheet.
 
 **Its place in the order (§4):** with step 2, the Leave War — before the Holidays list (step 3) and the calendars
 (steps 4 and 5) read the name and short form.
@@ -625,4 +657,23 @@ pictures. Sol also said its read of the longest files was not whole. Both are wh
 
 **One round each, as planned (the cap on plan reviews stands).** The changes above are the readers' own fixes written
 in; they are not sent back for a second read. The readers of the CODE get this section with the code.
+
+### The add-on, §3.12 (the Event sheet, presets and short names) — read the same night
+
+Both read it alone; both CHANGES REQUIRED; both called the split of full name, short form and kind sound. Reports:
+`../briefs/2026-10-07-inputs-sans-redesign-plan-addon-astra.md` and `…-sol.md`. Ten findings, five distinct, all taken.
+
+| # | Found by | The gap | What §3.12 now says |
+|---|---|---|---|
+| A | Astra 1, Sol 2 | Reopening lit a preset by its name alone: a "PH" tagged Off day would show as a public holiday that earns OIL, and a Save could make it one | a preset is lit only on name AND kind; else "Other…" with the real kind; opening changes nothing |
+| B | Astra 2, Sol 1 | "Note (none)" is not none: an untagged "PH" is classed a public holiday by its name today | "Note" only for a name that matches no preset; a matching name lights its preset; the old fallback kept and tested |
+| C | Astra 3, Sol 3 | A move, a range, a replaced or restored band would drop a chosen short form | text, kind and short form travel together through every writer, each named |
+| D | Astra 4, Sol 3 | Renaming a preset would erase its short form | a preset's edit keeps what it did not name |
+| E | Astra 5, Sol 4 | "Characters" let "1/2" or "!!!" through; a capital that grows could pass the length test | one `normShort`: capitals first, then one to three of A–Z and 0–9; a fallback for a name with none |
+| — | Sol 5, Astra's closing note | Promises with no test: a typed short form surviving a change of name; the box's three ways to close; drag against tap; the move modes | the test list, "Added after the readers" |
+
+**The one place the plan departs from a reader's exact fix:** E. Both asked for letters only, citing his "up to three
+letters". The plan allows digits too ("EX2" for a second exercise is the obvious thing to want) — the builder's
+reading, told to him. **Astra's D138 read of D642–D645: PASS.** D646 and D647 were recorded after it: owed with the
+first code read.
 
