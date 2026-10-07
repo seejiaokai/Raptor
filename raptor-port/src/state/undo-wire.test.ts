@@ -92,6 +92,18 @@ describe('installGlobalUndo() wires the live cutover', () => {
     expect(globalRedo().ok).toBe(true)
     expect(view.INPREVEAL).toBeNull()
   })
+  it('a flying-plan step lands where it shows: a required figure on the Leave War; a day class stays on a page that shows it, else the SANS month (plan 3.2)',()=>{
+    const fig={type:'fly.day.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyday:2026-10-09',before:null,after:{p:5}}]} as any
+    view.setPage('editsched');_snapView(fig,'undo');expect(view.CURPAGE).toBe('leavewar')
+    const run={type:'fly.run.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyrun:2026-10-12',before:null,after:{p:18}}]} as any
+    view.setPage('inputs');_snapView(run,'redo');expect(view.CURPAGE).toBe('leavewar')
+    const cls={type:'fly.day.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyday:2026-11-05',before:null,after:{cls:'nf'}}]} as any
+    view.setPage('leavewar');_snapView(cls,'undo');expect(view.CURPAGE).toBe('leavewar')
+    view.setPage('editsched');view.setInpMode('member');view.setInpView('table');_snapView(cls,'redo')
+    expect(view.CURPAGE).toBe('inputs');expect(view.INPMODE).toBe('sans');expect(view.INPVIEW).toBe('cal');expect(view.CALMONTH).toEqual({y:2026,m:11})
+    const rule={type:'fly.rule.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyrule:r1',before:null,after:{id:'r1',wd:3,cls:'nf',from:'2027-02-04'}}]} as any
+    view.setPage('quals');_snapView(rule,'undo');expect(view.CURPAGE).toBe('inputs');expect(view.CALMONTH).toEqual({y:2027,m:2})
+  })
   it('planning Undo and Redo leave SANS for the Member calendar where the note lives',()=>{
     const entry={scope:{module:'inputs'},forward:[{collection:'plan',id:'2026-07-22',before:null,after:{rmk:'Planning note'}}]} as any
     view.setPage('inputs');view.setInpMode('sans');view.setInpView('table')

@@ -94,6 +94,7 @@ const SETTING_PHRASE: Record<string, string> = {
   cxreasons: 'the cancel reasons',
   guestview: 'the guest switch',
   sanscalendar: 'the SANS calendar shortage colours',
+  flynames: 'the names of the Required rows',
 }
 
 /* a safe generic label from the entry's module, used when the type is unknown. */
@@ -273,7 +274,45 @@ function inputsCount(entry: UndoEntry): number {
   return entry.forward.filter((c: Change) => c.collection === 'inputs' && c.id !== '__order').length
 }
 
+/* THE FLYING PLAN'S STEPS, in his words (the Inputs / SANS redesign, plan §3.2). Dates are read off the rows' own ids
+   and worked out through UTC, so the words are the same in every time zone. */
+const FLY_WD = ['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays', 'Sundays']
+const FLY_DAY = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const FLY_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const FLY_AS: Record<string, string> = { nf: 'no-fly days', night: 'night flying', day: 'day flying', none: 'days with no flying set' }
+const flyDM = (iso: string) => `${+iso.slice(8, 10)} ${FLY_MON[+iso.slice(5, 7) - 1]}`
+const flyWDM = (iso: string) => `${FLY_DAY[new Date(iso + 'T12:00:00Z').getUTCDay()]} ${flyDM(iso)}`
+/* "12 Jan", "12–16 Jan", "30 Jan – 3 Feb" */
+function flySpan(isos: string[]): string {
+  const a = isos[0], b = isos[isos.length - 1]
+  if (a === b) return flyDM(a)
+  return a.slice(0, 7) === b.slice(0, 7) ? `${+a.slice(8, 10)}–${flyDM(b)}` : `${flyDM(a)} – ${flyDM(b)}`
+}
+function describeFly(entry: UndoEntry): string | null {
+  const rows = (entry.forward || []).filter(c => c.collection === 'settings')
+  if (entry.type === 'fly.day.set') {
+    const days = rows.filter(c => c.id.startsWith('flyday:'))
+    const isos = days.map(c => c.id.slice(7)).sort()
+    if (!isos.length) return 'a day of the flying plan'
+    const fig = (v: any, s: string) => (v && v[s] != null ? v[s] : null)
+    const figures = days.some(c => fig(c.before, 'p') !== fig(c.after, 'p') || fig(c.before, 'w') !== fig(c.after, 'w'))
+    return figures ? `the required pilots and WSOs for ${flySpan(isos)}`
+      : `day or night flying on ${isos.length === 1 ? flyWDM(isos[0]) : flySpan(isos)}`
+  }
+  if (entry.type === 'fly.rule.set' || entry.type === 'fly.rule.remove') {
+    const c = rows.find(x => x.id.startsWith('flyrule:'))
+    const r: any = c && (c.after || c.before)
+    return r && FLY_WD[r.wd] ? `${FLY_WD[r.wd]} as ${FLY_AS[r.cls] || 'set'} from ${flyDM(String(r.from))}` : 'a repeating day of the flying plan'
+  }
+  if (entry.type === 'fly.run.set') {
+    const c = rows.find(x => x.id.startsWith('flyrun:'))
+    return c ? `a required figure running from ${flyDM(c.id.slice(7))}` : 'a running required figure'
+  }
+  return null
+}
+
 export function describeEntry(entry: UndoEntry): string {
+  if (typeof entry.type === 'string' && entry.type.startsWith('fly.')) { const s = describeFly(entry); if (s) return s }
   if (entry.type === 'sans.day.set') {
     const id = entry.forward?.find(c => c.collection === 'settings' && c.id.startsWith('sansday:'))?.id
     const iso = id?.slice('sansday:'.length)

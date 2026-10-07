@@ -133,6 +133,15 @@ function inputDayOf(entry: UndoEntry): number | null {
   }
   return null
 }
+/* the date a flying-plan step is about: its first day row, the start of its run, or the start of its rule */
+function flyDateOf(entry: UndoEntry): string | null {
+  const ids = entry.forward.filter(c => c.collection === 'settings').map(c => c.id)
+  const day = ids.filter(k => k.startsWith('flyday:') || k.startsWith('flyrun:')).map(k => k.slice(7)).sort()[0]
+  if (day) return day
+  const rule: any = entry.forward.find(c => c.collection === 'settings' && c.id.startsWith('flyrule:'))
+  const r = rule && (rule.after || rule.before)
+  return r && typeof r.from === 'string' ? r.from : null
+}
 function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
   const fwd = entry.forward, m = entry.scope.module
   const also: string[] = []
@@ -179,6 +188,21 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
         if(key){const iso=key.slice(8);setCalMonth({y:+iso.slice(0,4),m:+iso.slice(5,7)})}
       }
     }
+    /* THE FLYING PLAN (state/flyplan.ts; the plan §3.2): a required figure is typed on the Leave War, so its Undo
+       lands there, on its date (snapView reads the date off the row — flyDateOf); a day's class or a weekday's rule
+       shows on the Leave War and on both calendars, so it stays where he is if that page shows it, else the SANS month */
+    else if (ids.some(k => k.startsWith('flyday:') || k.startsWith('flyrun:') || k.startsWith('flyrule:') || k === 'flynames')) {
+      const rows = fwd.filter(c => c.collection === 'settings')
+      const fig = (v: any, s: string) => (v && v[s] != null ? v[s] : null)
+      const figures = ids.includes('flynames') || ids.some(k => k.startsWith('flyrun:')) ||
+        rows.some(c => c.id.startsWith('flyday:') && (fig(c.before, 'p') !== fig(c.after, 'p') || fig(c.before, 'w') !== fig(c.after, 'w')))
+      if (figures) primary = 'leavewar'
+      else {
+        primary = 'inputs'; also.push('leavewar')
+        const iso = flyDateOf(entry)
+        then = () => { if (CURPAGE !== 'inputs') return; clearInpReveal(); setInpView('cal'); setInpMode('sans'); if (iso) setCalMonth({ y: +iso.slice(0, 4), m: +iso.slice(5, 7) }) }
+      }
+    }
     else if (ids.some(k => k === 'dutytpl' || k === 'wavetpl' || k === 'wavehide' || k === 'daytpl' || k === 'secdefault' || k === 'wavedefault')) primary = 'admin'
   }
   if (m === 'inputs') {
@@ -195,7 +219,7 @@ function snapView(entry: UndoEntry, dir: 'undo' | 'redo'): void {
   if (land && land.primary && CURPAGE !== land.primary && !land.also.includes(CURPAGE)) setPage(land.primary)
   if (land && land.then) land.then()
   if (land && land.primary === 'leavewar') {
-    const date = lwDateOf(entry)
+    const date = lwDateOf(entry) ?? flyDateOf(entry)
     if (date) focusDay(date)
     return
   }

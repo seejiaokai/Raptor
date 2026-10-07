@@ -34,6 +34,11 @@ export type Tone = 'none' | 'yellow' | 'amber' | 'red'
 type Seat = 'p' | 'w'
 type PerSeat<T> = { p: T; w: T }
 
+/* the row kinds and the command types — HERE, in the module with no imports, because the settings store's own list of
+   row kinds is built from them as it loads, and state/flyplan.ts (which imports that store) may not have run yet */
+export const FLY_ROW_PREFIXES = ['flyday:', 'flyrule:', 'flyrun:'] as const
+export const FLY_TYPES = ['fly.day.set', 'fly.rule.set', 'fly.rule.remove', 'fly.run.set'] as const
+
 export const EMPTY_PLAN: FlyPlan = Object.freeze({ days: Object.freeze({}), rules: Object.freeze([]) as any, runs: Object.freeze({}) }) as FlyPlan
 export const DEFAULT_TONES: Readonly<Tones> = Object.freeze({ yellowFrom: 1, amberFrom: 3, redFrom: 5 })
 const CLASSES: readonly string[] = ['day', 'night', 'nf', 'none']

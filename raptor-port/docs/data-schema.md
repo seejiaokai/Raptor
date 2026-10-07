@@ -813,6 +813,20 @@ BI) needs to query inside a week.
 
 ## SANS calendar planning settings — 5 Oct26, D580
 
+**The flying plan (the Inputs / SANS redesign, 7 Oct 26 — D617–D642; `src/state/flyplan.ts`, records and resolver
+`src/state/flyplan-model.ts`).** Three kinds of settings row, each its own stored record, written only by its typed admin
+command and refused as a raw write: `settings/flyday:<YYYY-MM-DD>` = `{cls?, p?, w?}` — what is set for ONE date: its
+flying class (`day`, `night`, `nf` no fly, `none` not set), required pilots, required WSOs; any subset; the class stored
+only where it differs from what the date would inherit; the row removed when empty (`fly.day.set`, one command for one
+date or a picked block). `settings/flyrule:<id>` = `{id, wd, cls, from, until?}` — every weekday `wd` (0 = Monday) from a
+date onward, with or without a last day (`fly.rule.set`, `fly.rule.remove`). `settings/flyrun:<YYYY-MM-DD>` = `{p?, w?}`
+— a required figure RUNNING from that date, per seat; `null` ends the run for that seat (`fly.run.set`). Whole numbers of
+zero or more; a row that fails the check is read as nothing. `settings/flynames` = `{p?, w?}` — the Required rows' names
+where they differ from the defaults (`settings.flynames`). From the same change `settings/sanscalendar` is read by the
+flying plan as THREE figures, `{yellowFrom, amberFrom, redFrom}`, whole numbers, `1 <= yellow < amber < red`, defaults
+1 / 3 / 5 — the two-figure record and the `sansday:` rows described next belong to the earlier calendar build, are read
+only by `src/state/sans-calendar.ts`, and go when the SANS calendar is re-made on the resolver (the build plan §3.10).
+
 `settings/sanscalendar` holds `{amberFrom,redFrom}`: safe whole numbers, `1 <= amberFrom < redFrom`.
 Absent/malformed reads shipped defaults1/3. `settings/sansday:<YYYY-MM-DD>` holds
 `{required:number|null,flying:'unset'|'day'|'night'|'both'}`. Required is a safe integer >=0;

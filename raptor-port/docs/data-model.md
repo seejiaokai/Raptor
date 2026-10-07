@@ -823,6 +823,14 @@ export and Undo carry the same typed value and restore missing text to default.
 Relationships: none.
 From today: the `raptor:settings/*` keys and the ~20 `raptor:leavewar/*`
 preference keys.
+**The flying plan (7 Oct 26, D617–D642 — `docs/data-schema.md` has the stored shapes).** Kept today as rows of this
+Setting table (`flyday:<ISO>`, `flyrule:<id>`, `flyrun:<ISO>`, and the keys `flynames`, `sanscalendar`), all written by
+admin commands under this table's permissions (§11: `Setting` — Admin C R U D, Member R). **For the IT side: the three
+row kinds are per-date records and want tables of their own, not Setting rows** — `FlyingDay` (`date` PK, `flyingClass`,
+`requiredPilots`, `requiredWsos`), `FlyingRule` (`id`, `weekday`, `flyingClass`, `fromDate`, `untilDate`), `RequiredRun`
+(`fromDate` PK, `pilots`, `wsos` — each nullable, null meaning the run ends there) — organisation-owned, admin-written,
+read by every member.
+
 SANS calendar D580 uses this existing Setting table: one global `sanscalendar`
 row and one `sansday:<ISO>` row per authored date. Validated shapes/defaults
 live in `data-schema.md` §SANS calendar planning settings. Typed admin writes

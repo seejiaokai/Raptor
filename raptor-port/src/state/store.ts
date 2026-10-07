@@ -18,6 +18,7 @@ import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
+import { flyplanLoad } from './flyplan'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
 import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId } from '../engine/inputs'
@@ -821,6 +822,7 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
   resyncPeopleBaseline()
   rulesLoad()
   insightsLoad()
+  flyplanLoad()      // the flying plan is re-read from the rows this store holds (state/flyplan.ts)
   storesLoad()
   lookaheadLoad()
   cxReasonsLoad()

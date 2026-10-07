@@ -254,10 +254,14 @@ const op = (table: string, act: Act, own: OwnRule = 'never', more?: [string, Act
   (more ? { table, act, own, more } : { table, act, own })
 
 const SETTINGS_KEYS_ALL = ['rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
-  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'guestview', 'insights', 'sanscalendar'] as const
+  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'guestview', 'insights', 'sanscalendar', 'flynames'] as const
 
 export const COMMAND_OPS: Record<string, CommandOp> = {
   'sans.day.set': op(T.setting, 'U'),
+  /* the flying plan (state/flyplan.ts — the Inputs / SANS redesign, plan §3.2): a day's class and required figures,
+     a weekday's rule, a running figure — the admin's, like every setting */
+  'fly.day.set': op(T.setting, 'U'), 'fly.rule.set': op(T.setting, 'U'), 'fly.rule.remove': op(T.setting, 'U'),
+  'fly.run.set': op(T.setting, 'U'),
   'insights.role.set': op(T.missionrole, 'U'),
   'insights.role.copy': op(T.missionrole, 'C'),
   /* the scheduler — its writes are the scheduler's (admin); a joined child command is
