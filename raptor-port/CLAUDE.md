@@ -1,7 +1,5 @@
 # RAPTOR — 142 Flying Programme (React app)
 
-**D496 temporary Codex model mapping (2 Oct 26):** until Monday 5 Oct 26, 19:00, Astra plans/coordinates, Sol 6.1 challenges plans and builds/fixes, and a fresh Astra inspector reads Sol code. This narrows the model/count mapping below only; Claude's further read remains owed before main. Exact roles: `docs/codex-review-workflow.md`.
-
 A flying-schedule planner for a fighter squadron: a week of flying waves,
 duty crews, sims, ground events and personal inputs, with a validation
 engine that flags crew-rest breaches, double bookings, missing briefs and
@@ -31,7 +29,7 @@ that needs his choice undone, park the choice in the run's one list, carry on wi
 
 **STANDING ORDER — weigh the whole ecosystem** (owner, 28 Aug 26): on every feature change, before building and before done, reason how it lands across the app (`docs/feature-impact.md`); tell him the ripples, risks and assumptions, ask where a question is genuinely his — the technical how stays yours; in doubt, a one-line heads-up with your call · full text: docs/guide-full.md §Weigh the whole ecosystem
 
-**STANDING ORDER — sweep the rules, then hand-test against them** (owner, 20 Sep 26; now inside the bug-check order): on every build, find EVERY ruling that applies, list them for him, hand-test the running build against each, pass or fail, and flag at once a new ruling that contradicts or narrows an existing one — name both, say which is newer · full text: docs/guide-full.md §Sweep the rules, then hand-test against them
+**STANDING ORDER — sweep the rules, then hand-test against them** (owner, 20 Sep 26; now inside the bug-check order): on every build, find EVERY ruling that applies, list them for him, check the running build against each (§7.0), pass or fail, and flag at once a new ruling that contradicts or narrows an existing one — name both, say which is newer · full text: docs/guide-full.md §Sweep the rules, then hand-test against them
 
 **THE BUG-CHECK STANDING ORDER IS `docs/bug-check-order.md`** (21 Sep 26): read it before any bug check and follow its tier rule. A code review plus green tests is NOT a bug check — it needs a ROLL-CALL, a WALK of the running app and an evidence sheet with pictures; without the report's `Walk:` line nothing is ready for "merge live" · full text: docs/guide-full.md §The bug-check standing order
 
