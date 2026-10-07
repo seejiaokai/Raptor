@@ -2757,3 +2757,18 @@ restore — repeatable, all-or-nothing, and safe for files whose bytes (line end
 **Suggested improvement:** In the session-handoff skill's block for a job that resumes an unmerged branch: beside "where the branch meets main", add a line "what the new rulings leave stale ON that branch" — found by searching the branch (`git grep <subject> origin/<branch>`) for the subject of every ruling recorded since the branch forked — so the merging chat fixes them in its first change.
 
 **Principle:** A rule that says "fix what a superseded ruling leaves behind, in the same change" cannot reach text that lives on another branch; the handoff is the only carrier, so it must name the leftovers, not just the conflicts.
+
+### Observation 450: Quoting the owner verbatim can carry someone else's real data into a public repo — check visibility before the record is written
+
+**Status:** OPEN
+**Date:** 2026-10-07
+**Session context:** Recording the owner's design direction, which he explained with a worked example read off another unit's live tool.
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** Recording a ruling in the owner's words (the rulings files, design notes, the handoff block)
+
+**Issue:** The rule "record his words" was followed literally: the full row quoted his worked example, whose figures were another unit's real daily numbers. The repository was public at that moment (a temporary state nobody had restated in the handoff). It was caught only because the repo's visibility was checked for an unrelated reason, after the commit and before the push; the two unpushed commits had to be folded and rewritten.
+
+**Suggested improvement:** In the handoff block's standing facts, state the repo's current visibility whenever it is not the default. In the ruling-recording steps, add one check before writing a quote: does it carry a third party's names or figures? If so, paraphrase and give a made-up example (the decision, not the transcript), and say where the real example lives.
+
+**Principle:** A verbatim quote is a data import. Before it is committed, ask who else's facts are inside it and who can read the place it is going.
