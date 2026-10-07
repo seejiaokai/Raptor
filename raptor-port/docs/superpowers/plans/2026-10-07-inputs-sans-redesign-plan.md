@@ -408,8 +408,43 @@ the screen and Days at the right, so it does not cover the month it is about; on
 allowed to grow up to the app's top bar so Save stays on the screen when "A date" adds a box; (6) the date boxes are the
 browser's own (as Admin's and the input editor's are), 16px so an iPhone does not zoom the page; the sentence under them
 says the date in words; (7) Remove asks nothing — one Undo brings the rule back, as the delete cross of D669 does.
-**NOT BUILT YET in step 3:** the Holidays list (no tabs until then) — `holidayAdd` / `holidayChange` / `holidayRemove`
-are built and tested (step 1); only their screen is missing.
+*(When this note was written the Holidays list was not built; it is the next note.)*
+
+**AS BUILT (8 Oct 26, the overnight run — step 3, fourth piece: THE HOLIDAYS LIST — Days now has its two parts).**
+`src/ui/HolidaysPanel.tsx`: `HolidaysPanel` (the list, drawn by Days) and `HolidayForm` (a window on the shell,
+`FloatWin id="holiday"`). The list is `sync.ts holidaysIn(year)` — a year with ‹ ›, one button-line per public holiday
+or Off day (its date or run, its name, a PH or OFF tag; over already = dimmed), "+ Add". The form: Kind (Public holiday /
+Off day), Name with "On grid" beside it (D652), First day / Last day, Cancel / "Save and add another" / Save — or, on a
+line opened to change it, Cancel / Save and "Delete this public holiday". It writes with `holidayAdd` / `holidayChange`
+/ `holidayRemove` — one named command and one Undo step each; every refusal of theirs is said in the form with what he
+typed left as it was. Two new readers on the seam: `sync.ts uncoveredIn(year)` (the runs of dates no period covers) and
+`holidayWord(kind)` (the word a holiday with no name is saved under — shown in the empty name box). **Days' two parts:**
+side by side where the screen is 1510px or wider (the window is then 1094px), two tabs — Month | Holidays — under that;
+ONE side window at a time (the holiday form takes the place of "Every <weekday>" and the other way round).
+Tests `ui/holidayspanel.test.tsx` (32) and `leavewar/uncovered.test.ts` (7), red first; **thirty-six rules broken one at
+a time: thirty-five caught at once; one showed a missing test (a holiday with no short form of its own, renamed with "On
+grid" left alone, must print the NEW name's — added, then caught)**; one browser test at phone and desktop size, the
+desktop also at 1536px across for the side-by-side layout (`e2e/leavewar.spec.ts` "the Holidays list in Days adds,
+changes and deletes a public holiday — the same record as the Leave War's Event row").
+**Choices the builder made:** (1) SIDE BY SIDE ONLY FROM 1510px. The plan says "side by side on a desktop, two tabs on
+a phone". As a window, the two parts need 1094px and a form window beside them 380px more; under 1510px a form would
+open over the month it is about. So a 1440px laptop gets the tabs and the 880px window, and his own PC (1536 across at
+125%) gets the two parts with a form clear of them. (2) A new one starts TODAY on this year's list and on 1 January of
+any other year's; the last day follows the first while they are one day and never falls before it. (3) An empty Name
+box shows the word it will be saved under (the squadron's first event type of that kind — "PH", "Off day"). (4) "On
+grid" on a line being changed shows what it PRINTS now; it is sent only if he touches it — so a short form made from
+the name is never frozen in as the holiday's own, and one he empties is given up. (5) "Save and add another" keeps the
+kind, moves to the day after, clears the name and says "Saved: <name>, <dates>." until the next edit. (6) Delete asks
+nothing — one Undo brings it back (as Remove in "Every <weekday>" and the delete cross of D669). (7) A run inside one
+month names the month once ("Mon 28 – Wed 30 Dec"); across two it names both. (8) WHERE NO PERIOD REACHES THE YEAR:
+"No leave period covers 2031 yet." and "Create it" — the whole year, in draft, and he STAYS in Days (the schedule's own
+"create it" — D19 — takes him to the Leave War to set the bidding window; here he is in the middle of adding holidays).
+(9) WHERE THE YEAR IS COVERED IN PART the dates left out are named ("No leave period covers 1 Apr – 31 Dec 2031 yet.")
+and a save on one of them is refused in the form with the store's sentence. **NOT BUILT: the rest of that case as this
+section has it — opening the war's own "+ New" period sheet with the gap's dates filled in, and keeping the holiday
+being added to save it by itself once that period exists — the next piece.**
+(10) The line in the war's ⚙ now reads "Day flying, night flying or no fly for each date, and the year's holidays."
+**STEP 3 IS BUILT but for (9)'s second half.** After it, the plan's order: step 4, the SANS calendar (§3.5).
 
 ### 3.5 The SANS calendar
 
@@ -1295,12 +1330,16 @@ with a back arrow; the grid, or a calendar, keeps working behind it. On a phone 
 to the foot of the screen, so Undo stays in reach. One stepping button on each date up to tablet width, three buttons
 (D, N, NF) on anything wider. Pressing the lit button on a weekday does nothing; on a Saturday or Sunday it goes back
 to "no flying set". A small dot marks a date he set himself, apart from what its weekday gives; it goes when the date is
-stepped back. From the Leave War it opens on the month the grid is showing. Until the Holidays list is built, the line
-in the war's settings names only day, night and no fly.
+stepped back. From the Leave War it opens on the month the grid is showing.
 **And "Every <weekday>" (step 3, 8 Oct 26):** it starts on no fly for a weekday and on day flying for a Saturday or
 Sunday; From starts on the first such day on screen that is not in the past, and he may type another; "A date" with no
 date is refused with a sentence, never saved as "no end"; Remove asks nothing (Undo brings it back); on a desktop the
 form opens at the left with Days at the right; the date boxes are the browser's own, with the date said in words beneath.
+**And the Holidays list (step 3, 8 Oct 26):** the month and the list sit side by side only on a screen 1510px or wider
+(his PC is; a 1440px laptop and a phone get two tabs) — so a form never opens over the month; a new holiday starts
+today; an empty name is saved as the kind's usual word, shown in the box; "On grid" is sent only if he touches it;
+Delete asks nothing (Undo brings it back); a year no leave period reaches offers "Create it" and keeps him in Days; a
+year covered in part names the dates left out.
 
 ## 9. For the challenger
 

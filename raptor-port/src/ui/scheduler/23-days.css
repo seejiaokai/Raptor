@@ -89,6 +89,59 @@
 .every-rule + .every-rule{border-top:1px solid var(--edge)}
 .every-rule-txt{flex:1;min-width:0;font-size:12.5px;color:var(--ink)}
 .every-rule .abtn{flex:0 0 auto;min-height:36px}
+/* ---- THE TWO PARTS: the month and the year's holidays — side by side from 1510px (`.two`), two tabs under it. 1094px:
+   a form window (380px, at the left of the screen) then clears it on every screen that gets the two parts ---- */
+.floatwin.dayswin.two{width:min(1094px,calc(100vw - 32px))}
+.dayswin .days-parts{display:flex;gap:14px;align-items:flex-start;min-height:0}
+.dayswin .days-part{flex:1 1 0;min-width:0}
+.dayswin.two .hol{flex:0 0 300px;min-width:0}
+.dayswin:not(.two) .hol{flex:1 1 0;min-width:0}
+.days-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin-bottom:10px;border:1px solid var(--edge);border-radius:11px;background:var(--bg)}
+.days-tab{min-height:38px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--ink-2);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.days-tab:hover{color:var(--ink)}
+.days-tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.days-tab.lit{background:var(--panel-2);border-color:var(--accent);color:var(--accent)}
+/* ---- THE HOLIDAYS LIST (ui/HolidaysPanel.tsx): a year, its lines, "+ Add" ---- */
+.hol-head{display:flex;align-items:center;gap:6px}
+.hol-head .abtn{min-width:40px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+.hol-head [data-testid="hol-prev"],.hol-head [data-testid="hol-next"]{font-size:20px;line-height:1;padding:4px 10px}
+.hol-ttl{flex:1 1 auto;min-width:0;font-size:15px;font-weight:800;color:var(--ink)}
+/* a year is always four figures wide, so its › stays where it is */
+.hol-year{flex:0 0 46px;text-align:center;font-size:14px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.hol-nocover{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 8px;padding:9px 11px;border:1px solid rgba(229,168,59,.45);border-radius:10px;
+  background:rgba(229,168,59,.08);font-size:12.5px;line-height:1.4;color:var(--ink)}
+.hol-nocover > span:first-child{flex:1 1 180px}
+.hol-nocover .abtn{min-height:36px}
+.hol-why{flex-basis:100%;font-weight:700;color:#FF7A84}
+.hol-empty{margin:4px 0 0;padding:14px 4px;font-size:12.5px;color:var(--ink-3)}
+.hol-list{border:1px solid var(--edge);border-radius:10px;overflow:hidden}
+.hol-line{display:flex;align-items:center;gap:10px;width:100%;min-height:42px;padding:6px 11px;border:0;border-radius:0;background:var(--panel);color:var(--ink);
+  font-family:inherit;font-size:12.5px;text-align:left;cursor:pointer}
+.hol-line + .hol-line{border-top:1px solid var(--edge)}
+.hol-line:hover{background:var(--panel-2)}
+.hol-line:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.hol-when{flex:0 0 42%;min-width:0;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.hol-name{flex:1 1 0;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hol-tag{flex:0 0 auto;font-size:10px;font-weight:800;letter-spacing:.05em;padding:2px 6px;border-radius:4px}
+.hol-tag.t-ph{background:#1F6B3F;color:#C9F5D8}
+.hol-tag.t-off{background:#3A424D;color:#DCE2E8}
+/* over already: dimmed, still his to open */
+.hol-line.is-past .hol-when,.hol-line.is-past .hol-name{color:var(--ink-3)}
+.hol-line.is-past .hol-name{font-weight:600}
+.hol-line.is-past .hol-tag{opacity:.55}
+/* ---- THE HOLIDAY FORM (a window; it shares "Every <weekday>"'s look and place — .everywin) ---- */
+.holwin .hol-row{display:flex;gap:8px;align-items:flex-end}
+.holwin .hol-f{display:block;min-width:0}
+.holwin .hol-f.grow{flex:1 1 0}
+.holwin .hol-f.short{flex:0 0 86px}
+.holwin .hol-f .every-lab{margin-top:12px}
+.holwin .every-date[type="text"]{font-weight:700}
+.holwin .every-date::placeholder{color:var(--ink-3);font-weight:600}
+.hol-saved{margin:10px 0 0;font-size:12.5px;font-weight:700;color:#7FDCA0}
+.every-acts.three{grid-template-columns:auto 1fr auto}
+.every-acts.three .abtn{padding-left:14px;padding-right:14px}
+.hol-del{margin-top:12px;padding-top:10px;border-top:1px solid var(--edge)}
+.hol-del .abtn{width:100%;min-height:40px}
 /* A PHONE: the month takes the screen down to its foot — never a short box scrolled inside the page (D664); the
    window's own body scrolls as one. It starts UNDER the app's top bar (48px tall on a phone), so Undo and Redo stay in
    reach: every press here is one Undo step, and a mis-tap on a stepping button is taken back there. The bar still drags

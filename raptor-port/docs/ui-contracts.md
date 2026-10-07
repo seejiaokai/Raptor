@@ -6477,7 +6477,7 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   teams count, thresholds held at 0 — are `dayfacts.test.ts`. Gate: `e2e/leavewar.spec.ts` "an Available row's name
   opens the counter form for it…" (phone and desktop). Pins: `ui/availform.test.tsx`.
 - **The "Days…" line in ⚙ Settings (the last piece of step 2 — built 8 Oct 26 with Days' month).** At the head of the
-  sheet: a "Days…" button with "Day flying, night flying or no fly, for each date." under it. It closes the sheet and
+  sheet: a "Days…" button with "Day flying, night flying or no fly for each date, and the year's holidays." under it. It closes the sheet and
   opens Days on the month the grid's month strip has lit (`sync.ts openDays` — the war imports no scheduler screen).
   Pins: `ui/daysline.test.tsx`.
 - Gates: `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning block keep every day column in line, and paint
@@ -6533,10 +6533,41 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
     is none. Saving for the same weekday and the same start replaces that rule.
   - A date the rule covers shows its class on the month with NO dot; a single such day set against it wears the dot.
   - The date boxes carry 16px text (an iPhone zooms the page under that).
-- **Not built yet:** the Holidays list.
+- **Two parts — the Month and the Holidays.** 1510px across or wider: side by side in one window 1094px wide (the list
+  300px), no tabs. Under that: two tabs at the head of the window, "Month" (first) and "Holidays", the window 880px. The
+  threshold is where a 380px form window still opens clear of the two parts.
+- **ONE side window at a time:** the holiday form takes the place of "Every <weekday>", and the other way round.
+- **The Holidays list (`ui/HolidaysPanel.tsx` — D631, D638).** The war's own record seen as a list; it keeps nothing.
+  - *Head:* "Holidays", ‹ year › (the year a fixed width, so › stays put), "+ Add". It opens on the year of the month
+    Days opened on and then moves by its own arrows.
+  - *A line* is a button: its date ("Mon 9 Nov") or run ("Mon 28 – Wed 30 Dec"; across two months, both named), its
+    name, a PH (green) or OFF (grey) tag. In date order. One already over is dimmed; today's is not. At least 40px tall.
+  - *None:* "No public holidays or Off days in 2031."
+  - *Dates no leave period covers* (a holiday is kept in the period holding its date): an amber notice above the list.
+    No period reaches the year — "No leave period covers 2031 yet." and a "Create it" button, which makes the whole
+    year, in draft, and leaves him in Days. Covered in part — the dates left out are named ("… covers 1 Apr – 31 Dec
+    2031 yet."; two holes joined by "or") and no year button is offered.
+- **The holiday form (`HolidayForm` — D641, D652).** A window on the shell, at the left on a desktop, the bottom panel
+  on a phone. "Add a holiday": Kind — Public holiday (lit) / Off day; Name (40 letters at most; empty, the box shows
+  the word it will be saved under) with "On grid" beside it (its short form — capitals as typed, three at most); First
+  day and Last day (a new one starts today on this year's list, on 1 January of another year's; the last day follows
+  the first while they are one day and never falls before it); Cancel / "Save and add another" / Save. "Change a
+  holiday" (a line opened): the same, filled in — "On grid" showing what it prints now and sent only if touched —
+  with Cancel / Save and, beneath, "Delete this public holiday" (no question; Undo brings it back).
+  - Save, a change and Delete are one command and one Undo step each, and reach the Leave War's Event row at once.
+  - "Save and add another" stays open: the kind kept, the day after ready, the name cleared, "Saved: <name>, <dates>."
+    shown until the next edit.
+  - Refused in the form, each with its sentence and what he typed left as it was: no first day; a last day before the
+    first; a short form that is not one; a date no leave period covers; every Event row used on those dates; a holiday
+    taken away on the Leave War meanwhile. Any edit takes the line down.
+  - Every box carries 16px text.
+- **Not built yet:** for a year covered in part, opening the Leave War's new-period sheet on the dates left out and
+  saving the waiting holiday once that period exists (the next piece).
 - Gates: `e2e/leavewar.spec.ts` "Days opens from the Leave War's settings: the month sets a date's class, and the grid
-  behind it follows at once" and "a weekday's heading on Days sets every such day from a date onward, and the war's
-  rows follow" (phone and desktop). Pins: `ui/dayswindow.test.tsx`, `ui/everyweekday.test.tsx`.
+  behind it follows at once", "a weekday's heading on Days sets every such day from a date onward, and the war's rows
+  follow" and "the Holidays list in Days adds, changes and deletes a public holiday — the same record as the Leave
+  War's Event row" (phone and desktop; the last also at 1536px across). Pins: `ui/dayswindow.test.tsx`,
+  `ui/everyweekday.test.tsx`, `ui/holidayspanel.test.tsx`.
 
 ## The event sheet on a phone keyboard (owner, 31 Aug 26)
 

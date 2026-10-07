@@ -533,8 +533,15 @@ shows the war's tag (PH, OFF) or its class control: three buttons D / N / NF abo
 (sun, moon, NF, a dash) at or under it; each press one `setFlyDays` command, one Undo step; a dot where the class is set
 for the date itself. It joins nothing - a month's answers are `sync.ts flyMonth`. Styles `ui/scheduler/23-days.css`
 (prefixed class names - the sheet is global and the week owns `.day`); the sun and moon are `ui/icons.tsx`. Tests
-`ui/dayswindow.test.tsx`, `leavewar/ui/daysline.test.tsx`; pictures `scripts/handpass/days-look.mjs`. Not here yet:
-the Holidays list.
+`ui/dayswindow.test.tsx`, `leavewar/ui/daysline.test.tsx`; pictures `scripts/handpass/days-look.mjs`. Its two parts -
+the month and the year's Holidays - sit side by side from 1510px across and are two tabs under that; one side window
+("Every <weekday>" or the holiday form) is up at a time.
+`src/ui/HolidaysPanel.tsx` - THE YEAR'S HOLIDAYS in Days (plan §3.4, §3.12; D631, D638, D652): `HolidaysPanel`, the list
+(`leavewar/sync.ts holidaysIn` - a year, one line per public holiday or Off day, the past ones dimmed, "+ Add", and the
+notice for dates no leave period covers with "Create it" where none reaches the year), and `HolidayForm`, a window on
+the shell (kind, name, "On grid", first and last day; Save, "Save and add another", Delete on a line being changed).
+It writes the war's own record with `holidayAdd` / `holidayChange` / `holidayRemove`. Tests `ui/holidayspanel.test.tsx`;
+the two readers it added to the seam (`uncoveredIn`, `holidayWord`) are pinned by it and `leavewar/uncovered.test.ts`.
 `src/ui/EveryWeekday.tsx` - "EVERY <WEEKDAY>" (plan §3.4; D631, D638): the window a weekday's heading opens on Days'
 month - the class (day, night, no fly), From, Until (no end, or a date), a sentence saying what will be saved, and the
 rules already made for that weekday beneath, each with Remove. A second window on the shell, drawn by Days. Save is
@@ -543,7 +550,8 @@ rules already made for that weekday beneath, each with Remove. A second window o
 date are said, today's date, the first such weekday on or after a date). Pure.
 `scripts/handpass/days-look.mjs` - pictures of Days in the RUNNING build, phone and desktop (the line in the war's
 settings, the month as the fourth mock-ups draw it, the dot, "Every Thursday" and "Every Saturday" ending on a date, the
-window dragged aside); a look, not a gate.
+Holidays list, its form adding and changing, the window dragged aside) - at a phone, a 1440px laptop and 1536px across;
+a look, not a gate.
 `scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a
 cell being typed, "From <date> on", a picked block with its panel, the people's-days panel): the builder's look, and the built side of D624's mock-up-beside-built evidence. Not
 a gate. It reads a preview on port 4180 (`LOOK_URL`), never 4173 - the browser tests reuse a server left there.

@@ -23,7 +23,11 @@
    A WEEKDAY'S HEADING opens "Every <weekday>" (ui/EveryWeekday.tsx — D631, D638): a second window, beside this one,
    that sets every such day from a date onward. It lives and dies with Days: closing Days closes it.
 
-   NOT HERE YET (the plan's next piece): the year's Holidays list — so there are no tabs. */
+   TWO PARTS — the Month and the year's Holidays (ui/HolidaysPanel.tsx — D631, D638): side by side on a screen wide
+   enough for both AND for a form window beside them (1510px and over), two tabs under that (the plan §3.4: "two parts
+   side by side on a desktop, two tabs on a phone"). The holiday form is a second window too, and ONE side window is up at a time: opening the holiday
+   form takes the place of "Every <weekday>", and the other way round — two forms stacked in one corner would hide
+   each other. */
 import { useEffect, useState } from 'react'
 /* CLASS NAMES here are prefixed (`is-`, `c-`, `t-`, `lit`): the scheduler's stylesheet is one global sheet, and its
    week already owns `.day` — a date button classed `day` grew as tall as a day card (seen in the first look). */
@@ -36,7 +40,9 @@ import { isAdmin } from '../state/perms'
 import { setFlyDays, type FlySave } from '../state/flyplan'
 import { monthDates, nextCls, weekdayOf, type DayAnswer, type FlyCls } from '../state/flyplan-model'
 import { flyMonth, useWarFacts } from '../leavewar/sync'
+import { type HolidayLine } from '../leavewar/sync'
 import { EveryWeekday } from './EveryWeekday'
+import { HolidayForm, HolidaysPanel } from './HolidaysPanel'
 import { MONTHS, SAY, WD, WD_LONG, firstWeekdayFrom, isoToday, sayDate } from './daysfmt'
 
 const KEYS: Array<{ k: 'd' | 'n' | 'nf'; cls: FlyCls; text: string }> = [
@@ -45,21 +51,27 @@ const KEYS: Array<{ k: 'd' | 'n' | 'nf'; cls: FlyCls; text: string }> = [
 
 /* ONE BUTTON OR THREE is asked of the browser, as the windows' own phone layout is (floatwin.ts) — at the app's phone
    width (820px), not the windows' (620px): seven dates across a window narrower than that leave no room for three
-   buttons on each (D638). */
+   buttons on each (D638). TABS OR SIDE BY SIDE likewise: the two parts beside each other make a window 1094px wide, and
+   a form window ("Every <weekday>", the holiday form — 380px, at the left of the screen) must not open over the month
+   it is about — under 1510px there is no room for both, so the parts become tabs and the window stays 880px. */
 const NARROW = '(max-width:820px)'
-function useNarrow(): boolean {
-  const read = () => typeof window !== 'undefined' && !!window.matchMedia && !!window.matchMedia(NARROW).matches
-  const [narrow, setNarrow] = useState(read)
+const TABBED = '(max-width:1509px)'
+function useMedia(query: string): boolean {
+  const read = () => typeof window !== 'undefined' && !!window.matchMedia && !!window.matchMedia(query).matches
+  const [hit, setHit] = useState(read)
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return
-    const mq = window.matchMedia(NARROW)
-    const on = () => setNarrow(!!mq.matches)
+    const mq = window.matchMedia(query)
+    const on = () => setHit(!!mq.matches)
     on()
     if (mq.addEventListener) mq.addEventListener('change', on); else if (mq.addListener) mq.addListener(on)
     return () => { if (mq.removeEventListener) mq.removeEventListener('change', on); else if (mq.removeListener) mq.removeListener(on) }
-  }, [])
-  return narrow
+  }, [query])
+  return hit
 }
+/* the ONE side window that is up, if any: a weekday's "Every …" (0 = Monday), or the holiday form (a line to change,
+   null to add; `n` counts the opens, so each "+ Add" is a fresh form) */
+type Side = { k: 'every'; wd: number } | { k: 'hol'; line: HolidayLine | null; n: number } | null
 
 /** the phone button's face: the sun, the moon, NF, or a dash for "no flying set" (D577 — sun is day, moon is night) */
 function Face({ cls }: { cls: FlyCls }) {
@@ -83,11 +95,15 @@ export function DaysWindow() {
 function DaysBody({ at }: { at: string }) {
   useVersion()
   useWarFacts()
-  const narrow = useNarrow()
+  const narrow = useMedia(NARROW)
+  const tabbed = useMedia(TABBED)
   const [ym, setYm] = useState(() => ({ y: +at.slice(0, 4), m: +at.slice(5, 7) }))
   const [err, setErr] = useState('')
-  /* which weekday's "Every …" window is up (0 = Monday), if any */
-  const [every, setEvery] = useState<number | null>(null)
+  const [tab, setTab] = useState<'month' | 'holidays'>('month')
+  /* the Holidays list's own year — it starts on the year Days opened on, then moves by its own ‹ › */
+  const [holYear, setHolYear] = useState(() => +at.slice(0, 4))
+  const [side, setSide] = useState<Side>(null)
+  const every = side && side.k === 'every' ? side.wd : null
   const dates = monthDates(ym.y, ym.m)
   const answers = flyMonth(ym.y, ym.m)
   const today = isoToday()
@@ -115,7 +131,18 @@ function DaysBody({ at }: { at: string }) {
 
   return (
     <>
-    <FloatWin id="days" title="Days" sub="admins only" testid="win-days" className="dayswin" onClose={close}>
+    <FloatWin id="days" title="Days" sub="admins only" testid="win-days" className={'dayswin' + (tabbed ? '' : ' two')} onClose={close}>
+      {tabbed && (
+        <div className="days-tabs" role="tablist" aria-label="Days" data-testid="days-tabs">
+          {(['month', 'holidays'] as const).map(k => (
+            <button key={k} type="button" role="tab" className={'days-tab' + (tab === k ? ' lit' : '')} data-testid={`days-tab-${k}`}
+              aria-selected={tab === k} onClick={() => setTab(k)}>{k === 'month' ? 'Month' : 'Holidays'}</button>
+          ))}
+        </div>
+      )}
+      <div className="days-parts">
+      {(!tabbed || tab === 'month') && (
+      <div className="days-part" data-testid="days-part-month">
       <div className="days-head">
         <button type="button" className="abtn" data-testid="days-prev" aria-label="Previous month" onClick={() => step(-1)}>&#8249;</button>
         <span className="days-month" data-testid="days-month" aria-live="polite">{MONTHS[ym.m - 1]} {ym.y}</span>
@@ -138,7 +165,7 @@ function DaysBody({ at }: { at: string }) {
             aria-label={`Every ${WD_LONG[i]}…`}
             aria-haspopup="dialog"
             aria-expanded={every === i}
-            onClick={() => setEvery(i)}
+            onClick={() => setSide({ k: 'every', wd: i })}
           >{w}<span className="days-wd-v" aria-hidden="true">&#9662;</span></button>
         ))}
         {Array.from({ length: weekdayOf(dates[0]) }, (_, i) => <div key={'b' + i} className="days-blank" aria-hidden="true" />)}
@@ -190,9 +217,16 @@ function DaysBody({ at }: { at: string }) {
         {/* the last week's empty places, so the month's foot is drawn like its head */}
         {Array.from({ length: (7 - ((weekdayOf(dates[0]) + dates.length) % 7)) % 7 }, (_, i) => <div key={'f' + i} className="days-fill" aria-hidden="true" />)}
       </div>
+      </div>
+      )}
+      {(!tabbed || tab === 'holidays') && (
+        <HolidaysPanel year={holYear} setYear={setHolYear} onOpen={line => setSide(s => ({ k: 'hol', line, n: (s && s.k === 'hol' ? s.n : 0) + 1 }))} />
+      )}
+      </div>
     </FloatWin>
     {/* keyed by the weekday, so another heading starts a fresh form */}
-    {every !== null && <EveryWeekday key={every} wd={every} from={everyFrom(every)} onClose={() => setEvery(null)} />}
+    {every !== null && <EveryWeekday key={every} wd={every} from={everyFrom(every)} onClose={() => setSide(null)} />}
+    {side && side.k === 'hol' && <HolidayForm key={side.n} line={side.line} year={holYear} onClose={() => setSide(null)} />}
     </>
   )
 }

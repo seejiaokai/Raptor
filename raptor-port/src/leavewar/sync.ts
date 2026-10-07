@@ -2257,6 +2257,31 @@ export function holidaysIn(year: number | string): HolidayLine[] {
   return out.sort((a, b) => (a.from < b.from ? -1 : a.from > b.from ? 1 : (a.line ?? -1) - (b.line ?? -1)))
 }
 
+/** THE DATES OF A YEAR NO LEAVE PERIOD COVERS, as runs in date order — [] when the year is held whole. A holiday is the
+ *  war's own record, kept in the period HOLDING its date, so a date outside every period has nowhere to be written: the
+ *  Holidays list says which dates those are BEFORE a save is refused (the plan §3.4; D19 — "indicate that the leave war
+ *  period doesn't exist, create it"). One run that is the whole year = no period reaches the year at all. */
+export function uncoveredIn(year: number | string): Array<{ from: string; to: string }> {
+  const y = String(year).trim()
+  if (!/^\d{4}$/.test(y)) return []
+  const lo = `${y}-01-01`, hi = `${y}-12-31`
+  const held = getState().wars.map(w => w.period).filter(p => p.end >= lo && p.start <= hi).sort((a, b) => (a.start < b.start ? -1 : 1))
+  const out: Array<{ from: string; to: string }> = []
+  let at = lo                                  // the first date not yet known to be covered
+  for (const p of held) {
+    if (p.start > at) out.push({ from: at, to: addDays(p.start, -1) })
+    if (p.end >= at) at = addDays(p.end, 1)
+  }
+  if (at <= hi) out.push({ from: at, to: hi })
+  return out
+}
+/** the word a holiday with no name of its own is saved under — the squadron's first event type of that kind, else the
+ *  standard one (the same answer as state/store.ts holidayPlan; the list's form shows it in its empty name box) */
+export function holidayWord(kind: 'ph' | 'off'): string {
+  const k = kind === 'ph' ? 'off' : 'free'
+  return getState().eventDefs.find(d => d.kind === k)?.name || (kind === 'ph' ? 'PH' : 'Off day')
+}
+
 /* =====================================================================
    THE WAR READS THE FLYING PLAN — the second rider on this seam (the plan §3.1 point 2)
    ---------------------------------------------------------------------

@@ -19,7 +19,9 @@ mkdirSync(OUT, { recursive: true })
 const want = name => !ONLY.length || ONLY.some(o => name.includes(o))
 
 const SIZES = {
+  /* 1440: a laptop — the two parts are tabs. wide: his PC at 125% (1536 across) — the two parts side by side */
   desk: { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 },
+  wide: { viewport: { width: 1536, height: 864 }, deviceScaleFactor: 1 },
   phone: { ...devices['iPhone 13'] },
 }
 const tid = (page, id) => page.locator(`[data-testid="${id}"]`)
@@ -81,6 +83,29 @@ const SHOTS = {
     await press(size, tid(page, 'days-wd-5'))
     await press(size, tid(page, 'every-until-date'))
     await tid(page, 'every-until').fill('2026-12-26')
+  },
+  /* the year's Holidays: the list (beside the month on a wide screen, its own tab under that) */
+  async holidays(page, size) {
+    await toDays(page, size)
+    if (await tid(page, 'days-tabs').count()) await press(size, tid(page, 'days-tab-holidays'))
+  },
+  /* "+ Add": the holiday form, filled in */
+  async holadd(page, size) {
+    await SHOTS.holidays(page, size)
+    await press(size, tid(page, 'hol-add'))
+    await tid(page, 'hol-name').fill('Deepavali eve')
+    await tid(page, 'hol-short').fill('DE')
+    await tid(page, 'hol-from').fill('2026-11-06')
+  },
+  /* a line opened to change or delete */
+  async holchange(page, size) {
+    await SHOTS.holidays(page, size)
+    await press(size, page.locator('.hol-line[data-from="2026-11-09"]'))
+  },
+  /* a year no leave period covers */
+  async holnone(page, size) {
+    await SHOTS.holidays(page, size)
+    await press(size, tid(page, 'hol-next'))
   },
   /* the window dragged aside on a desktop, the grid behind it still worked: a Required figure typed with Days up */
   async behind(page, size) {

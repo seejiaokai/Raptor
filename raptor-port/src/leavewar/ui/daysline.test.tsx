@@ -23,7 +23,7 @@ describe('⚙ Settings → Days…', () => {
     fireEvent.click(screen.getByTestId('settings-open'))
     const line = screen.getByTestId('settings-days')
     expect(line.textContent).toBe('Days…')
-    expect(screen.getByTestId('settings-days-hint').textContent).toBe('Day flying, night flying or no fly, for each date.')
+    expect(screen.getByTestId('settings-days-hint').textContent).toBe('Day flying, night flying or no fly for each date, and the year’s holidays.')
     const sheet = screen.getByTestId('settings-sheet')
     const order = [...sheet.querySelectorAll('[data-testid]')].map(n => n.getAttribute('data-testid'))
     expect(order.indexOf('settings-days')).toBeLessThan(order.indexOf('counter-add'))

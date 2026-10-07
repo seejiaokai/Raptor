@@ -1291,6 +1291,13 @@ must never be listed there, or the schedule's Tab route would stop for it. **And
 (`ui/EveryWeekday.tsx`): one rule moves EVERY such day at once — on Days' month, down the war's Required rows, and on
 the two calendars when they are built — and a rule made months ago still moves a month drawn today, which is why a drawn
 month is painted from the month's ANSWERS, never from "a row dated inside it changed" (the plan §3.3 "Repaint").
+**And the Holidays list** (`ui/HolidaysPanel.tsx` — D638, "two doors, one record"): a holiday saved there IS the Leave
+War's Event-row record — it appears on the war's grid, tags the date on Days' month (taking its class control away) and
+on the two calendars, stops a running Required figure on that day, and on a day already published raises the pending
+mark as a holiday declared on the war does. **Two drift seams:** (1) the list keeps NOTHING — a second copy of the
+year's holidays anywhere (a settings key, a cache in the window) would be a third door with its own record; (2) the
+form sends "On grid" only when he touched the box — sending what the box merely SHOWS would freeze a short form made
+from the name in as the holiday's own, and a rename would keep printing the old one.
 **Several picked at once, and the two panels that do not block the grid (8 Oct 26 — plan §3.3; D636, D637, D641, D642).**
 A drag over the Required rows is the grid's own gesture (`ui/select.ts`, a third kind) and opens the Required panel;
 Apply is ONE command of the flying plan, as a typed cell is. `Sheet` has a non-blocking form (`modal={false}`) used by

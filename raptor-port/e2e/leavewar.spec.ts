@@ -3623,6 +3623,141 @@ test('a weekday’s heading on Days sets every such day from a date onward, and 
   await expect(tid(`req-p-${THU[1]}`)).toHaveText('NF')
 })
 
+// THE YEAR'S HOLIDAYS, IN DAYS (plan §3.4, §3.12; D631, D638, D641, D652). jsdom proves the list, the form and what is
+// saved (src/ui/holidayspanel.test.tsx). A real browser says: the two parts are tabs on a phone and on a 1440px laptop,
+// and side by side where there is room for them AND a form beside them; the form is on the screen whole, with Save in
+// sight; and — the point of "two doors, one record" — a holiday saved in the list is on the Leave War's own Event row
+// behind the window at once, and gone from it at Delete.
+test('the Holidays list in Days adds, changes and deletes a public holiday — the same record as the Leave War’s Event row', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  const tid = (id: string) => page.locator(`[data-testid="${id}"]`)
+  const rect = (l: Locator) => l.evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom } })
+  const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
+  const vp = page.viewportSize()!
+  const lineOf = (from: string) => page.locator(`.hol-line[data-from="${from}"]`)
+  const DAY = '2026-01-14', NEXT = '2026-01-15'
+
+  await press(tid('settings-open')); await press(tid('settings-days'))
+  await expect(tid('win-days')).toBeVisible()
+  /* a phone and a 1440px laptop: two tabs, the Month first */
+  await expect(tid('days-tabs')).toBeVisible()
+  await expect(tid('days-part-month')).toBeVisible()
+  await expect(tid('days-part-holidays')).toHaveCount(0)
+  await press(tid('days-tab-holidays'))
+  await expect(tid('days-part-holidays')).toBeVisible()
+  await expect(tid('days-part-month')).toHaveCount(0)
+  await expect(tid('hol-year')).toHaveText('2026')
+  /* the list: in date order, every line whole inside the window and tall enough to tap */
+  const w = await rect(tid('win-days'))
+  const froms = await page.locator('.hol-line').evaluateAll(els => els.map(e => e.getAttribute('data-from')!))
+  expect(froms.length).toBeGreaterThan(0)
+  expect(froms).toEqual([...froms].sort())
+  for (const f of froms) {
+    const r = await rect(lineOf(f))
+    expect(r.h).toBeGreaterThanOrEqual(40)
+    expect(r.x).toBeGreaterThanOrEqual(w.x); expect(r.r).toBeLessThanOrEqual(w.r + 0.5)
+  }
+  expect(froms).not.toContain(DAY)
+
+  /* "+ Add": a window, whole on the screen, its Save in sight; no box makes an iPhone zoom */
+  await press(tid('hol-add'))
+  const form = tid('win-holiday')
+  await expect(form).toBeVisible()
+  await expect(form).toHaveAttribute('aria-label', 'Add a holiday')
+  const f = await rect(form)
+  expect(f.x).toBeGreaterThanOrEqual(-0.5); expect(f.r).toBeLessThanOrEqual(vp.width + 0.5)
+  expect(f.y).toBeGreaterThanOrEqual(-0.5); expect(f.b).toBeLessThanOrEqual(vp.height + 0.5)
+  if (!isPhone()) expect(f.r, 'the form covers Days').toBeLessThanOrEqual(w.x + 0.5)
+  for (const id of ['hol-kind-ph', 'hol-kind-off', 'hol-name', 'hol-short', 'hol-from', 'hol-to', 'hol-cancel', 'hol-save-more', 'hol-save']) {
+    const b = await rect(tid(id))
+    expect(b.h, `${id} is too short`).toBeGreaterThanOrEqual(isPhone() ? 40 : 36)
+    expect(b.x, `${id} runs out of the form`).toBeGreaterThanOrEqual(f.x); expect(b.r, `${id} runs out of the form`).toBeLessThanOrEqual(f.r + 0.5)
+    expect(b.b, `${id} is under the fold`).toBeLessThanOrEqual(Math.min(f.b, vp.height) + 0.5)
+  }
+  for (const id of ['hol-name', 'hol-short', 'hol-from', 'hol-to'])
+    expect(await tid(id).evaluate(el => parseFloat(getComputedStyle(el).fontSize)), `${id} would zoom an iPhone`).toBeGreaterThanOrEqual(16)
+
+  await tid('hol-name').fill('Deepavali')
+  await tid('hol-short').fill('dv')
+  await expect(tid('hol-short')).toHaveValue('DV')
+  await tid('hol-from').fill(DAY)
+  await expect(tid('hol-to')).toHaveValue(DAY)
+  await press(tid('hol-save'))
+  await expect(form).toHaveCount(0)
+  /* the list has it … */
+  await expect(lineOf(DAY)).toContainText('Wed 14 Jan')
+  await expect(lineOf(DAY)).toContainText('Deepavali')
+  await expect(lineOf(DAY).locator('.hol-tag')).toHaveText('PH')
+  /* … and so does THE OTHER DOOR, behind the window: the Leave War's Event row prints its short form */
+  await expect(tid(`event-0-${DAY}`)).toHaveText('DV')
+  /* and the month: a tag, no class control */
+  await press(tid('days-tab-month'))
+  await expect(tid(`days-tag-${DAY}`)).toHaveText('PH')
+  await expect(tid(isPhone() ? `days-step-${DAY}` : `days-d-${DAY}`)).toHaveCount(0)
+  await press(tid('days-tab-holidays'))
+
+  /* the line opens to change it: one more day */
+  await press(lineOf(DAY))
+  await expect(form).toHaveAttribute('aria-label', 'Change a holiday')
+  await expect(tid('hol-name')).toHaveValue('Deepavali')
+  await expect(tid('hol-short')).toHaveValue('DV')
+  await expect(tid('hol-save-more')).toHaveCount(0)
+  const del = await rect(tid('hol-delete')), f2 = await rect(form)
+  expect(del.b, 'Delete is under the fold').toBeLessThanOrEqual(Math.min(f2.b, vp.height) + 0.5)
+  await tid('hol-to').fill(NEXT)
+  await press(tid('hol-save'))
+  await expect(form).toHaveCount(0)
+  await expect(lineOf(DAY)).toContainText('Wed 14 – Thu 15 Jan')
+  await expect(page.locator('.hol-line', { hasText: 'Deepavali' })).toHaveCount(1)
+  await expect(tid(`event-band-0-${DAY}`)).toContainText('DV')
+
+  /* Delete: gone from the list and from the Event row; the app's Undo brings it back to both */
+  await press(lineOf(DAY))
+  await press(tid('hol-delete'))
+  await expect(form).toHaveCount(0)
+  await expect(lineOf(DAY)).toHaveCount(0)
+  await expect(tid(`event-band-0-${DAY}`)).toHaveCount(0)
+  await press(page.locator('#undoBtn'))
+  await expect(lineOf(DAY)).toContainText('Wed 14 – Thu 15 Jan')
+  await expect(tid(`event-band-0-${DAY}`)).toContainText('DV')
+
+  /* A YEAR NO LEAVE PERIOD COVERS: it says so, and "Create it" makes the year */
+  for (let i = 0; i < 6 && !(await tid('hol-nocover').count()); i++) await press(tid('hol-next'))
+  const year = await tid('hol-year').textContent()
+  await expect(tid('hol-nocover')).toContainText(`No leave period covers ${year} yet.`)
+  const nextAt = await rect(tid('hol-next'))
+  await press(tid('hol-create-year'))
+  await expect(tid('hol-nocover')).toHaveCount(0)
+  await expect(tid('hol-empty')).toHaveText(`No public holidays or Off days in ${year}.`)
+  await expect(page.locator('[data-testid="war-picker"] option', { hasText: year! })).toHaveCount(1)
+  /* › did not move under the finger when the notice went */
+  const nextNow = await rect(tid('hol-next'))
+  expect(Math.abs(nextNow.x - nextAt.x) + Math.abs(nextNow.y - nextAt.y), '› moved under the finger').toBeLessThan(1)
+
+  if (!isPhone()) {
+    /* WHERE THERE IS ROOM (his PC: 1536 across): the two parts side by side, and a form beside them — none over another */
+    await page.setViewportSize({ width: 1536, height: 864 })
+    await expect(tid('days-tabs')).toHaveCount(0)
+    await expect(tid('days-part-month')).toBeVisible(); await expect(tid('days-part-holidays')).toBeVisible()
+    const m = await rect(tid('days-part-month')), h = await rect(tid('days-part-holidays')), d = await rect(tid('win-days'))
+    expect(h.x, 'the list is not beside the month').toBeGreaterThanOrEqual(m.r)
+    expect(Math.abs(h.y - m.y)).toBeLessThan(2)
+    expect(d.x).toBeGreaterThanOrEqual(0); expect(h.r).toBeLessThanOrEqual(d.r + 0.5); expect(d.r).toBeLessThanOrEqual(1536.5)
+    /* the month still has room for three buttons on a date */
+    await press(tid('days-today'))
+    const any = page.locator('.days-key').first()
+    expect((await rect(any)).w).toBeGreaterThanOrEqual(24)
+    await press(tid('hol-add'))
+    await expect(form).toBeVisible()
+    expect((await rect(form)).r, 'the form covers Days').toBeLessThanOrEqual((await rect(tid('win-days'))).x + 0.5)
+    await press(tid('days-wd-3'))
+    await expect(form).toHaveCount(0)
+    await expect(tid('win-every')).toBeVisible()
+    expect((await rect(tid('win-every'))).r, '"Every Thursday" covers Days').toBeLessThanOrEqual((await rect(tid('win-days'))).x + 0.5)
+  }
+})
+
 // PICKING SEVERAL REQUIRED CELLS, AND THE PANEL THAT DOES NOT BLOCK THE GRID (plan §3.3 "Picking several"; D636, D637,
 // D641, D642). jsdom proves the rule and what is saved (reqpanel.test.tsx, selectreq.test.ts, nonmodal.test.tsx). A
 // real browser has to say the rest: that a REAL drag over the two rows arms and picks — a mouse on a desktop, a held
