@@ -1606,6 +1606,14 @@ Opus's own read of what Codex built (D615 — its finds fixed, each with a test 
 he has NOT accepted (D583, D584); his answers to the open product points; the walk of the running app, sized first (D607, D608);
 Astra's and Sol 6.1's reads of what Opus adds. The current state and the next step: that branch's block under `## Now` in
 `HANDOFF.md`. Everything below is Codex's record of 5 Oct 26, unchanged.
+**HIS DIRECTION, 7 Oct 26 (D617–D621) — the design changes; mock-ups first, nothing built before he picks:** each SANS date
+shows pilots / WSOs — still needed to fly, and SANS committed to F, O and A; still needed comes from the Leave War's pax
+required, less those available, less the SANS committed to fly (D617 — the pax required figure is NEW on the Leave War, kept as
+two figures, pilots and WSOs: D622); three
+colours, yellow / amber / red, set from a settings icon (D618); a Highlight picker rings one SANS person's days in cyan (D619);
+the layout — Medical, the SANS calendar and the Inputs calendar from one place, Inputs keeps its List, SANS availability
+leaves the List for the SANS calendar (D620); ideas to draw — Google-style bars, drag a range, an Instructions fold, the
+keyboard (D621). The design note: `raptor-port/docs/superpowers/specs/2026-10-07-inputs-sans-redesign.md`.
 **D585:** owner puts this task on hold before choosing other outstanding work.
 Pause further design, building and Claude vetting until explicit resume. Keep
 the existing branch/Ready preview, settled requirements, recommendations and
