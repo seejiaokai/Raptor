@@ -718,8 +718,13 @@ nowhere else. Every reader named above is left as it is, and no door, hook or re
   **until `[GROUP-INPUT-ONE-ROW]` is built: he has ruled that the schedule shows a group input as ONE row holding
   everyone, D661, 7 Oct 26; its rules are not yet asked and its place — in this job or straight after — is with him,
   §8**); the warnings; the Leave War's cells; the bell; the late mark; a published day's pending
-  count (each man's row is its own pending change); the change history and the changes window (one line per man —
-  told to him, §8); print and export.
+  count (each man's row is its own pending change); the change history (one line per man — each keeps whose it is); print and export.
+- **The changes window shows a group filing as ONE item — his ruling, D663 (7 Oct 26).** The history still writes a
+  line for each man (`state/changelines.ts inputLines` — "To go out" finds a line by its man); each line carries its
+  record's `grp`, and the window's "Group by: Item" keys a grouped record by its entry, so four men filed together
+  are one item, "Input · Meeting · 4 people", the names listed under it. A later change to one man alone is its own
+  line under the item, naming him. "Group by: Who" is unchanged; it holds on every tab (New to you, All changes, To go
+  out); the day's COUNT of changes is unchanged — four men are four changes; a tap on the item goes to the input.
 
 **Who placed it (§3.8) — its doors, added to that table:** a group filed — each record `by` / `at` the filer, now; a
 man added to an entry later — his record `by` / `at` whoever added him, now; the entry changed — each record's
@@ -751,7 +756,9 @@ untouched.
   §3.8's stamps on each record at each of those doors.
 - **Unchanged readers:** a group of six on a published day — six pending changes, the sign-offs fall once; six rows on
   the board and the week; the Leave War's cells for an admin's group leave; the late mark per man; the change history
-  one line per man.
+  one line per man — and the changes window drawing those lines as ONE item with its people listed (D663): four men
+  filed together; then one man's hours changed alone — his own line under the item; "Group by: Who"; the To go out
+  tab on a published day; the day's count still four; a tap going to the input.
 - **Screens:** the picker — the default list, the switch, three groups A to Z, a SANS man under SANS only, ground crew
   under Personnel and no such heading on a roster without any (D659), "All" and its second press, back to one person, the fold-back on a change of kind with its
   sentence, a member with the setting off; the month's one bar and its drag by the filer, by an admin, by a man in it
@@ -923,14 +930,13 @@ never files SANS availability for another man, and an admin may file it for seve
 "Several people" picker gets a fourth heading, "Personnel", for ground crew, shown only where the roster holds ground
 crew (D659).
 
-**With him now (7 Oct 26, evening) — two of the group input's defaults he questioned, a mock-up of each put to him:**
-1. *On the schedule, one row for each man or ONE row holding all its men?* **Answered: one row holding everyone
-   (D661, "1. b").** What is with him now is WHEN: inside this job, or as its own job straight after
-   (`OUTSTANDING.md` `[GROUP-INPUT-ONE-ROW]` — the agent's recommendation, since it reaches into how a published day
-   counts changes). Its own rules are put to him with pictures before it is planned. Until it is built: one row per
-   man.
-2. *In the changes window, is a group filing one line per man or ONE item?* Recommended: one item, its men listed
-   under it — the window already groups by item (D340, D345). Until he answers: one line per man.
+**Answered 7 Oct 26, evening, on the mock-ups of two defaults he questioned:** on the schedule a group input is ONE
+row holding everyone (D661), built as its own job straight after this one, not inside it (D662 —
+`OUTSTANDING.md` `[GROUP-INPUT-ONE-ROW]`; its rules are put to him with pictures when that job is planned; until it is
+built, one row per man); in the changes window a group filing is ONE item with its people listed, built in this job
+(D663 — §3.13).
+
+**Nothing is with him now.**
 
 **The builder's readings, to tell him plainly (each a default he can change):** a phone types the figure on the app's
 own number pad, not the phone's keyboard; a one-day figure does not end a running figure — the run carries on the next
@@ -944,8 +950,8 @@ dragging window on the Inputs page only; each press of a day button is its own U
 renamed and re-defined but not deleted.
 
 **The group input's readings (§3.13), to tell him the same way:** (on the schedule he has since ruled ONE row
-holding everyone — D661; it was "one row for each man"); the changes window lists a group filing
-one line per man; whoever files for other people answers the OIL question for all of them at the save (his ruling, D660 — it was
+holding everyone — D661; it was "one row for each man"); (the changes window he has since ruled shows a group filing as ONE item — D663; it was
+"one line per man"); whoever files for other people answers the OIL question for all of them at the save (his ruling, D660 — it was
 "each man is asked by his own bell"), and each man can still change his own answer afterwards; a member with the
 switch on picks ONE other man from the same A-to-Z list an admin has, for the kinds he may file for others; whoever
 makes an input a group is its filer, and an admin adding a man to it does not take it from him; with the members'
