@@ -1258,3 +1258,11 @@ another man's input — a screen only mirrors it, and a NEW input door asks `may
 `SHARED_FIELDS`, or two records that differ in it still read as one entry) or the man's own. One man once an entry
 and one filer a group are held at the write (`state/store.ts runInputWrite`) and in the Undo / Redo restore
 (`state/sched-commit.ts`), never tidied on screen.
+**A save wrapped in a save (8 Oct 26 — `[INPUT-SAVE-SAYS-OK-WHEN-REFUSED]`).** A save raised inside a running save
+joins it and answers "yes" at once; only the OUTER command is checked (what a member's command really changed, the
+locked week, one man once an entry), and a refusal rolls back the lot. **The drift seam:** a door that wraps
+per-record input saves in an outer `writeInputsBatch` and reports the inner answer says "Input added" for a save
+that was refused. Such a door saves through `ui/inputedit.tsx saveBatch` (or reads the outer `writeInputsBatch`'s own
+answer, as `commitGroup` and the List's Add form do), and — because a refused command puts the list back as new
+objects — finds any record it still holds again by its id. `ui/savesaysok.test.tsx` drives each door refused; add a
+new door's case there.

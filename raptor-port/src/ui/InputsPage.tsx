@@ -29,7 +29,7 @@ import { InputsCal } from './InputsCal'
    the dialog the week and the board open — see ui/inputedit.tsx */
 import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
-  draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
+  draftOf, commitInputEdit, removeInput, saveBatch, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
   medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered, oilUnansweredDay, docGate,
   rosterOptions as people, archivedOptions, inputTone, medPlanProtected, medSegmentsProtected,
@@ -637,7 +637,12 @@ export function InputsPage() {
        refusals run first; each Save is one undo step. */
     const after = (ok: boolean) => {
       if (ok) { revealInput(editRow);setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
-      else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
+      else if (INPUTS.indexOf(editRow) < 0) {
+        /* a REFUSED save puts the list back as new objects ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED]): the row being edited is
+           found again by its id and stays in edit, with what was typed; one that is truly gone closes the edit */
+        const live = INPUTS.find((x: any) => x.iid === editRow.iid)
+        if (live) setEditRow(live); else { setEditRow(null); setDraft(null) }
+      }
     }
     const ask = medAskFor(editRow, draft)
     if (ask === 'refused') return
@@ -660,9 +665,8 @@ export function InputsPage() {
       setOilConf({
         ...g,
         commit: (dec: Record<string, number>) => {
-          let ok = false
-          writeInputsBatch(() => { ok = commitInputEdit(editRow, draft); if (ok) editRow.oil = dec })
-          after(ok)
+          /* the OUTER save's answer, never the inner one's (inputedit.tsx saveBatch) */
+          after(saveBatch(() => { const ok = commitInputEdit(editRow, draft); if (ok) editRow.oil = dec; return ok }))
         },
       })
       return
@@ -693,8 +697,7 @@ export function InputsPage() {
       commit: (dec: Record<string, number>) => {
         /* an answer alone is a change to the record: who gave it, and when (D629). `mod` — the date the late rule
            reads — is NOT moved by it, as before */
-        writeInputsBatch(() => { r.oil = dec; stampChanged(r) })
-        HOOKS.toast('OIL decision updated', 'ok')
+        if (saveBatch(() => { r.oil = dec; stampChanged(r) })) HOOKS.toast('OIL decision updated', 'ok')
       },
     })
   }

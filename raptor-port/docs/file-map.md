@@ -502,6 +502,13 @@ every man first, what the doors say inside gathered and said once; the filer's O
 it files or changes (D660). `fileForOtherRefusal` is the one sentence for a kind a member may not file for another
 man. The check at the write sits in `state/store.ts runInputWrite` and in `state/sched-commit.ts`' restore. Pinned by
 `src/leavewar/groupwrite.test.ts` (the writer, the door's check, §3.8's rows 10 to 12, the late date, OIL).
+A SAVE THAT WAS REFUSED NEVER SAYS IT WAS SAVED: `ui/inputedit.tsx saveBatch` / `saveBatchX` - the one way a door wraps
+per-record saves in an outer save; it answers with the OUTER command's result (a save raised inside a running save
+joins it and answers yes before the whole is checked), says `NOT_SAVED` where the refusal had no words of its own,
+and tells a refusal from an inner "no". Used by the editor's Save (new, change, the medical clash sheet) and
+Delete, `commitEditMedChoices`, `commitEditUpchit`, `removeInput`, and the List's edit with an OIL answer and its OIL
+chip (`ui/InputsPage.tsx`). The editor's `stay` and the List's `after` find the record again by its id after a
+refusal (the list comes back as new objects) and keep what was typed. Pinned by `src/ui/savesaysok.test.tsx`.
 D580 calendar modules: `src/state/sans-calendar.ts` owns validated per-day/global planning settings
 through the existing settings command/persistence/Undo seam; `sans-calendar.test.ts` covers
 thresholds, dates, roles, naked-write refusal, rollback, real Undo/Redo and storage refusal.

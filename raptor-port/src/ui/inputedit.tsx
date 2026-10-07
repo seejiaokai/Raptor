@@ -1181,25 +1181,47 @@ export function commitEditMedChoices(r: any, draft: any, ask: { clashes: any[]; 
     end: g0.endOrd > g0.startOrd ? ordISO(g0.endOrd) : '',
     remarks: withRemarksTail(draft.remarks, ordISO(g0.startOrd), ordISO(g0.endOrd), 'till'),
   }
-  let ok = false
-  writeInputsBatch(() => {
-    ok = commitInputEdit(r, d2, keepTail, ask.b)
+  return saveBatch(() => {
+    const ok = commitInputEdit(r, d2, keepTail, ask.b)
     if (ok) mintMedSegments(r, segs.slice(1), keepTail, ask.b)
+    return ok
   })
-  return ok
 }
+
+/* ---- THE OUTER SAVE'S ANSWER IS THE ANSWER ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED], found 7 Oct 26, fixed 8 Oct 26 with the
+   group input — the build plan §3.13) --------------------------------------------------------------------------------
+   Several doors wrap one or more per-record saves in ONE outer save, so the whole is one Undo step. A save raised
+   inside a running save JOINS it and answers "yes" at once — before the outer command has been checked (the check on
+   what a member's command really changed, the locked-week backstop, one man once an entry). Each door then reported
+   the INNER answer: an outer command that was refused, and rolled back whole, still said "Input added" and closed its
+   window. So every such door saves through here.
+
+   `fn` is the door's own body; returning false means an inner save already refused and said why. The answer is
+   `ok` — saved — and `refused`: the inner saves were content and the OUTER command said no. A refusal that said
+   nothing of its own (the commit gate has no voice) is said here, so no Save is ever silent. A refused command puts
+   the list back as NEW objects: a door that holds a record across the save finds it again by its id. */
+export const NOT_SAVED = 'Not saved — that change was refused, and nothing was kept'
+export function saveBatchX(fn: () => boolean | void): { ok: boolean; refused: boolean } {
+  const say = HOOKS.toast
+  let spoke = false, inner: boolean | void = undefined, done = false
+  HOOKS.toast = (...a: any[]) => { spoke = true; return (say as any)(...a) }
+  try { done = writeInputsBatch(() => { inner = fn() }) } finally { HOOKS.toast = say }
+  const refused = inner !== false && !done
+  if (refused && !spoke) say(NOT_SAVED, 'warn')
+  return { ok: inner !== false && done, refused }
+}
+export const saveBatch = (fn: () => boolean | void): boolean => saveBatchX(fn).ok
 
 /** The upchit sheet's Save for an EDIT: the edit and the ticked leftover removals as ONE undo step (the nested batch
  *  is safe — the inner writeInputsBatch's push is a no-op under the outer). */
 export function commitEditUpchit(r: any, draft: any, removals: any[]): boolean {
   if (medPlanProtected(removals.map((row: any) => ({ row })))) { medicalLocked(); return false }
-  let ok = false
-  writeInputsBatch(() => {
-    ok = commitInputEdit(r, draft)
+  return saveBatch(() => {
+    const ok = commitInputEdit(r, draft)
     if (ok && removals.length)
       applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
+    return ok
   })
-  return ok
 }
 
 /* ---- CHANGING THE PUCK (owner, 14 Aug 26 — "allow Unavailable to be
@@ -1373,8 +1395,8 @@ export function removeInput(r: any) {
      one (accepted into that day's ground programme), else null — an input
      that was never accepted has no day to pin the removal to. */
   /* its history line is the change history's one writer's (state/changelines.ts — Astra DP-03, 28 Sep 26) */
-  writeInputsBatch(() => { dropInputRow(r) })
-  return true
+  /* the save's own answer, never a bare "yes": a delete the commit gate refused is not a delete (saveBatch) */
+  return saveBatch(() => { dropInputRow(r) })
 }
 
 /* THE one per-row removal body — removeInput above (one row, its own batch)
@@ -1725,12 +1747,15 @@ export function InputEditor() {
   /* the medical-document ask (owner, [SYNC-INTEG]) — {who, typeLabel}; null = no sheet */
   const [docConf, setDocConf] = useState<any>(null)
   const box = useRef<HTMLDivElement>(null)
+  const keepDraft = useRef(false)
   /* re-seed whenever a different row is opened, never on a repaint — a
      re-seed mid-edit would throw away what has been typed. The bell's
      hand-off (pops.OILASK) is consumed HERE: opened on the flagged row, the
      OIL sheet comes straight up over the dialog so the tap lands on the
      question itself — one-shot, cleared as it is read. */
   useLayoutEffect(() => {
+    /* the same record, found again after a refused save (stay, below): what he typed is kept */
+    if (keepDraft.current) { keepDraft.current = false; return }
     setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
     if (r && !r._new && OILASK && r.iid === OILASK) {
       setOilAsk(null)
@@ -1756,21 +1781,32 @@ export function InputEditor() {
   }, [open, upConf, medConf, oilConf, docConf])
 
   const close = () => { setInpEdit(null); notify() }
+  /* A REFUSED SAVE KEEPS THE WINDOW, ON THE RECORD, WITH WHAT HE TYPED ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED]; the plan
+     §3.13: "his Save is refused with the sentence, the window stays"). A refused command puts the list back as new
+     objects, so the record this window holds is no longer the one in the list: find it again by its id and hold
+     that — WITHOUT re-seeding the draft, which the effect above would do for any newly opened row. A new input's
+     seed is in no list and simply stays; a record that is truly gone closes the window, as it always did. */
+  const stay = () => {
+    if (!r || r._new) return
+    const live = INPUTS.find((x: any) => x.iid === r.iid)
+    if (!live) { close(); return }
+    if (live !== r) { keepDraft.current = true; setInpEdit(live); notify() }
+  }
   /* a refusal KEEPS the dialog open, so nothing typed is lost — bar the one
      refusal there is no way back from: the row went (an undo under the modal),
      and there is nothing left to hold the typing for */
   const doSave = (removals: any[], oilDec?: Record<string, number>) => {
     if (medPlanProtected(removals.map(row => ({ row })))) return medicalLocked()
     if (isNew) {
-      let ok = false
       let savedRow:any=null
-      writeInputsBatch(() => {
-        ok = commitNewInput(draft, ctx === 'g', undefined, undefined, row=>{savedRow=row})
+      const ok = saveBatch(() => {
+        const ok = commitNewInput(draft, ctx === 'g', undefined, undefined, row=>{savedRow=row})
         /* the OIL answers land on the just-unshifted row, inside the same
            batch, so the add and its acknowledgment are ONE undo step */
         if (ok && oilDec) savedRow.oil = oilDec
         if (ok && removals.length)
           applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
+        return ok
       })
       if (ok) {
         if(r._calendar||CURPAGE==='inputs')revealInput(savedRow)
@@ -1778,14 +1814,15 @@ export function InputEditor() {
       }
       return
     }
-    let ok = false
-    writeInputsBatch(() => {
-      ok = commitInputEdit(r, draft)
+    const s = saveBatchX(() => {
+      const ok = commitInputEdit(r, draft)
       if (ok && oilDec) r.oil = oilDec
       if (ok && removals.length)
         applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
+      return ok
     })
-    if (ok) { if(CURPAGE==='inputs')revealInput(r);HOOKS.toast('Input updated', 'ok'); close() }
+    if (s.ok) { if(CURPAGE==='inputs')revealInput(r);HOOKS.toast('Input updated', 'ok'); close() }
+    else if (s.refused) stay()
     else if (INPUTS.indexOf(r) < 0) close()
   }
   /* the clash sheet's Save — resolve the choices into kept segments, file
@@ -1801,18 +1838,19 @@ export function InputEditor() {
       end: g0.endOrd > g0.startOrd ? ordISO(g0.endOrd) : '',
       remarks: withRemarksTail(draft.remarks, ordISO(g0.startOrd), ordISO(g0.endOrd), 'till'),
     }
-    let ok = false
     let savedRow:any=isNew?null:r
-    writeInputsBatch(() => {
-      ok = isNew ? commitNewInput(d2, ctx === 'g', keepTail, medConf.b, row=>{savedRow=row}) : commitInputEdit(r, d2, keepTail, medConf.b)
+    const s = saveBatchX(() => {
+      const ok = isNew ? commitNewInput(d2, ctx === 'g', keepTail, medConf.b, row=>{savedRow=row}) : commitInputEdit(r, d2, keepTail, medConf.b)
       /* the commit's own trim only cuts rows the first segment overlaps —
          all of them chosen losers, since kept rows sit outside every
          segment; the later segments land as sibling rows, each trimmed the
          same way. keepTail carries the filer's per-leftover Remove/Keep so a
          tail is minted only where kept (owner, 28 Aug 26) */
       if (ok) mintMedSegments(savedRow, segs.slice(1), keepTail, medConf.b)
+      return ok
     })
-    if (ok) { if(r._calendar||CURPAGE==='inputs')revealInput(savedRow);HOOKS.toast(isNew ? 'Input added' : 'Input updated', 'ok'); close() }
+    if (s.ok) { if(r._calendar||CURPAGE==='inputs')revealInput(savedRow);HOOKS.toast(isNew ? 'Input added' : 'Input updated', 'ok'); close() }
+    else if (s.refused) stay()
     else if (!isNew && INPUTS.indexOf(r) < 0) close()
   }
   /* `skipDoc` is reserved for the DocConfirm "No document" resume (owner,
@@ -1874,7 +1912,7 @@ export function InputEditor() {
     if (g.kind === 'ask') { setOilConf(g); return }
     doSave([])
   }
-  const del = () => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } }
+  const del = () => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay() }
 
   const who = r && PEOPLE[r.person] ? PEOPLE[r.person].cs : (r ? String(r.person) : '')
   /* READ ONLY for an input its reader may not change (the absence-record re-test, W1-F3, 26 Sep 26): a member reaching
