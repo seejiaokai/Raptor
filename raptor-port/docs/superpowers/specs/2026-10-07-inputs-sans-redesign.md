@@ -111,6 +111,31 @@ required pilots and WSOs), with a button into it from the SANS calendar's opened
 (colours, cut-off) sit behind the calendar's settings icon; (c) "do we need a SANS needed row on the Leave War?" — pick:
 no; the Available figure turns red when it is under Required, and the SANS calendar carries what is still needed.
 
+## The baseline is set once, not day by day — D631, D632 (7 Oct 26, afternoon)
+
+He found the one-day sheet on the Leave War too tiring as the way to set a year ("Don't u think so?" — yes). **D631:** a day
+is day flying by default unless night is selected; no-fly days can repeat (every Thursday from a date onward, no end); the
+year's public holidays are seen and set in ONE list; one door, or a few for convenience, chosen by counting the admin's
+steps. **The shape drawn in the third mock-ups — ONE home, "Days", three parts by how often each is used:**
+- **Normal week** (rarely): for each weekday — day, night or no fly, and the required pilots and WSOs — with the date it
+  applies from. "Thursdays no fly from 5 Nov onward" is one change here. The required numbers live here too (the agent's
+  addition), so a figure is not typed on every day.
+- **Holidays** (once a year): a list for the year — public holidays and Off days, each a name and a date or a run of
+  dates. It is the same record the Leave War's Event row holds today (`eventdefs.ts`: PH, Off day), seen as a list.
+- **Month** (when something is planned): pick several days at once, then give them a class or a requirement — a
+  night-flying period, a week at a different number, a one-off no-fly day. A day that differs from the normal week is
+  marked, and can be put back.
+The day's sheet on the Leave War, and "Day settings" on the SANS calendar's opened day, stay as the QUICK door for one day.
+**Readings to confirm:** a public holiday or an Off day takes no flying and no requirement from the normal week (this
+changes D627's reading 5); Saturday and Sunday start with no flying set. Nothing changes what earns OIL.
+**The step counts shown to him** (taps, the agent's own count from the drawings, not measured on a build): the year's
+holidays — about 44 on the Leave War day by day, about 33 in the list, and checkable at one look; Thursdays no fly for good
+— not possible day by day (52 days a year), 5 in the normal week; a three-day night period — 9 day by day, 4 in the month;
+one day's figure from the Leave War — 3 either way.
+
+**D632 — the desktop Inputs month, denser:** smaller text and shorter bars where there is room, so more inputs show before
+"+N more". Drawn compact with no roomy / compact switch (the agent's pick). Not chosen yet.
+
 ## In the bug check: mock-up beside build — D624
 
 For every mock-up he approves, the check's evidence sheet carries a PAIR: the approved mock-up, and a picture of the built

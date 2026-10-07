@@ -1624,6 +1624,9 @@ deeper tints tried in the second set were too much contrast), three slimmer tabs
 PH and Off days show on both calendars from the Leave War's own record (D627); the late cut-off as days or as a weekday of a
 week before, stated in "How this works" (D628); who placed an entry and when, in small print (D629). Three questions are back
 with him, drawn in the second mock-ups (D630 settled the colour): where the cut-off is set, one door or three, a SANS-needed row on the Leave War.
+**The baseline is set once, not day by day (D631, 7 Oct 26):** a day is day flying unless night is selected; no-fly days can repeat
+from a date onward; the year's holidays in one list; drawn as ONE home, "Days" (normal week, holidays, month), the one-day sheet
+kept as the quick door. **D632:** a denser desktop Inputs month, drawn for him to pick.
 **In this job's bug check (D624, 7 Oct 26):** each approved mock-up is set beside a picture of the built screen at the same size, in
 the evidence sheet.
 **HIS DIRECTION, 7 Oct 26 (D617–D621) — the design changes; mock-ups first, nothing built before he picks:** each SANS date
