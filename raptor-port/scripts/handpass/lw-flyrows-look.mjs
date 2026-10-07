@@ -88,6 +88,14 @@ const SHOTS = {
     })
     await press(page, size, page.locator('[data-testid="roster-arrange"]'))
   },
+  /* an Available row's name opens the counter form in its own mode (D640): the name and who it counts — no amber or
+     red, no "Sets / teams", no Delete */
+  async availform(page, size) {
+    await press(page, size, page.locator('[data-testid="fly-name-avail-p"]'))
+    await page.locator('[data-testid="counter-form"]').waitFor()
+    await press(page, size, page.locator('[data-testid="cf-catmode"]'))
+    await press(page, size, page.locator('[data-testid="cf-cat-OCU"]'))
+  },
   /* the people's-days panel, up with no veil over the grid */
   async people(page, size) {
     /* the row brought to the upper half first: the panel is docked at the foot, and a press ON it is the panel's own */

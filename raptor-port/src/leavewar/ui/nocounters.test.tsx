@@ -126,7 +126,8 @@ describe('in Rearrange a count row carries a delete cross where the eye was (rea
   })
   it('the four Required / Available rows carry no cross and no grip (reading 6)', () => {
     arrange()
-    for (const id of FLY) expect(screen.getByTestId(id).querySelector('button, [data-testid^="manning-"]')).toBeNull()
+    /* (the one button an Available row holds is its own NAME, the way to its form — D640) */
+    for (const id of FLY) expect(screen.getByTestId(id).querySelector('.drag, button:not(.flyname), [data-testid^="manning-"]')).toBeNull()
   })
   it('outside Rearrange, and for a member, there is no cross', () => {
     render(<Matrix />)

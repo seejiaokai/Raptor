@@ -515,6 +515,10 @@ Available rows untouched, nothing stored converted; and that the counter form ca
 `src/leavewar/ui/rowswire.test.tsx` (was `archivewire.test.tsx`) - Matrix hands `CountRows` the re-measure it calls when
 a count row goes in or out. `ui/CountRows.tsx` lost the eye, the Archive bar and its `hidden` prop; it draws its block
 for the rows handed to it even with no counter.
+`ui/CounterForm.tsx` has a MODE for the two Available rows (D640; plan §3.3) - reached by a tap on the row's name in
+`FlyRows` (`onEditAvail` -> Matrix's `counterEdit`): a people count only, no amber / red, no Delete, no SANS chip, a
+sample summed by `availHave`, one line saying SANS people are never counted. `ui/availform.test.tsx`; the browser gate
+"an Available row's name opens the counter form for it…".
 `scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a
 cell being typed, "From <date> on", a picked block with its panel, the people's-days panel): the builder's look, and the built side of D624's mock-up-beside-built evidence. Not
 a gate. It reads a preview on port 4180 (`LOOK_URL`), never 4173 - the browser tests reuse a server left there.

@@ -68,10 +68,17 @@ describe('where they sit (D665, 8 Oct 26 — at the foot of the Manning block, n
     fireEvent.click(screen.getByTestId('counts-toggle'))
     expect(screen.getByTestId('fly-row-avail-w')).toBeTruthy()
   })
-  it('in Rearrange they stay put: no grip to drag one by, no eye to hide one with — and the Archive opens BELOW them', () => {
+  /* (it read "no eye to hide one with — and the Archive opens BELOW them" until D669: the eye is a delete cross now and
+     the Archive is gone. The one button a row of the four may hold is an Available row's own NAME, the way to its
+     form — D640, availform.test.tsx.) */
+  it('in Rearrange they stay put: no grip to drag one by, no cross to delete one with', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('roster-arrange'))
-    for (const id of ROWS) expect(screen.getByTestId(id).querySelector('button, [data-testid^="manning-drag-"], [data-testid^="manning-hide-"]')).toBeNull()
+    expect(document.querySelectorAll('[data-testid^="manning-delete-"]').length).toBeGreaterThan(0)   // the squadron's own rows have them
+    for (const id of ROWS) {
+      expect(screen.getByTestId(id).querySelector('.drag, [data-testid^="manning-"]')).toBeNull()
+      expect([...screen.getByTestId(id).querySelectorAll('button')].every(b => b.classList.contains('flyname'))).toBe(true)
+    }
   })
   it('the Figures drawer needs no box for them: it starts at the dates, below the Manning block', () => {
     expect(FLY_ROW_KEYS).toEqual(ROWS)

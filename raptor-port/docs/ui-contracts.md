@@ -6458,8 +6458,23 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   - Gates: `e2e/leavewar.spec.ts` "several Required cells are picked with a drag and given one number, and the panel
     leaves the grid behind it working" (a real mouse drag; a held finger through CDP on the phone). Pins:
     `ui/selectreq.test.ts`, `ui/reqpanel.test.tsx`, `ui/nonmodal.test.tsx`.
-- **Not built yet (the next pieces of step 2):** the counter form's mode for the two Available rows, the "Days…" line
-  in ⚙ Settings.
+- **Renaming an Available row and changing who it counts (admin) — built 8 Oct 26, overnight (D640).** For an admin
+  the row's NAME is a button (`fly-name-avail-p` / `-w`, the dotted underline a count row's name wears — "this opens
+  something"); a tap opens the counter form the war already has (`CounterForm.tsx`, Matrix's `counterEdit` = `availp` /
+  `availw`) in a MODE for these two rows, which shows what holds for them and nothing the store would refuse:
+  the name and who it counts (crew, CAT with "is not", qualifications held or lacked) — and NO "Sets / teams" choice
+  (they count people), NO amber / red boxes (their red comes from the Required row above), NO Delete (the SANS
+  calendar reads them), and no "SANS" qualification chip (a SANS man is never counted here, so it could decide
+  nothing). One line says so: "SANS people are never counted here. The SANS calendar reads this row, so it cannot be
+  deleted." Its live sample ("On this war's first day that counts N") is summed the row's OWN way
+  (`engine/availrows.ts availHave` — never a SANS man), so the form cannot promise a number the grid does not show.
+  The row is read with `availRuleOf` (the squadron's own where its list holds one, else the built-in) — it is not IN
+  the list until first changed, so a search of the list would open an empty "New counter". A NEW counter can never
+  take one of the two ids (`mintId` holds them as taken — a counter named "availp" was otherwise saved over the row).
+  A member's name is plain text. The Required rows' names open nothing (D668). The store's own refusals — delete, a
+  teams count, thresholds held at 0 — are `dayfacts.test.ts`. Gate: `e2e/leavewar.spec.ts` "an Available row's name
+  opens the counter form for it…" (phone and desktop). Pins: `ui/availform.test.tsx`.
+- **Not built yet (the last piece of step 2):** the "Days…" line in ⚙ Settings — it waits for Days itself (step 3).
 - Gates: `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning block keep every day column in line, and paint
   what they mean" and "in the Manning block the four rows cover no month button, and the open-bidding outline stays
   round the dates" (phone and desktop). Pins: `ui/flyrows.test.tsx`.

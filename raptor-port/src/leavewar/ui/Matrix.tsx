@@ -871,6 +871,8 @@ export function Matrix() {
   // NEW counter, an id editing that one. Reached from + Counter in the
   // Rearrange tools and from the explainer sheet's Edit counter… button.
   const [counterEdit, setCounterEdit] = useState<string | null | false>(false)
+  /* the two Available rows' names open this same form (FlyRows.tsx — D640); stable, so the rows' memo holds */
+  const editAvail = useCallback((id: 'availp' | 'availw') => setCounterEdit(id), [])
   // The ⚙ SETTINGS sheet (owner, 3 Sep 26) — all admin config (counters, event
   // rows, Show SANS, the roster groups), opened from the top-row ⚙.
   const [settings, setSettings] = useState(false)
@@ -3854,7 +3856,7 @@ export function Matrix() {
                     column asks for the same re-measure the Archive rows do — which also re-places the Figures drawer
                     and the open-bidding outline, both measured off the dates BELOW this block (the two things he
                     circled on the hand-drawn picture: the gate e2e/leavewar.spec.ts checks both in a real browser). */}
-                <FlyRows days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR} onWiden={onArchiveChange} pickApi={flyPickRef} />
+                <FlyRows days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR} onWiden={onArchiveChange} pickApi={flyPickRef} onEditAvail={editAvail} />
               </CountRows>
             )}
             {/* The month strip, now a row of the grid so it sits between the

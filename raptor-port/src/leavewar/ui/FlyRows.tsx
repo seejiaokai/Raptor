@@ -19,6 +19,9 @@
 //     is under its Required. A tap opens the WORKING — required, available, SANS committed to fly, still needed —
 //     read only, for everyone.
 //   · A member sees all four rows, read only.
+//   · THE NAMES. Required P and Required W are FIXED (D668). Available P and Available W are the squadron's to rename
+//     and re-define (D640): for an admin the name is a button that opens the counter form for that row, as a count
+//     row's name opens its sheet (Matrix owns the form — `onEditAvail`).
 //
 // TWO STORES, HEARD HERE. The figures are the scheduler's records and the counts are the war's, so this component
 // subscribes ITSELF to both signals (`usePlanVersion`, `useWarFacts`) — Matrix and its memo firewall are not touched,
@@ -120,7 +123,7 @@ const FlyCells = memo(function FlyCells({ row, cells, onTap }: {
   )
 }, (a, b) => a.sig === b.sig && a.row === b.row && a.onTap === b.onTap)
 
-export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR, onWiden, pickApi }: {
+export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR, onWiden, pickApi, onEditAvail }: {
   /** the DRAWN days — a window of the war (Matrix's column window), whole months at a time */
   days: DayInfo[]
   admin: boolean
@@ -134,6 +137,8 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
   onWiden?: () => void
   /** where the grid's drag hands a pick over the Required rows (Matrix wires it into `select.ts`) */
   pickApi?: MutableRefObject<FlyPickApi | null>
+  /** open the counter form for one of the two Available rows (`availp` / `availw`) — an admin's tap on its name */
+  onEditAvail?: (ruleId: 'availp' | 'availw') => void
 }) {
   /* the two signals: the scheduler's (the plan's rows, the SANS commitments, the Required rows' names) and the war's
      (who is available, a holiday, the Available rows' own names) */
@@ -270,9 +275,20 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
       {ROWS.map((row, ri) => (
         <tr key={row.id} className={`flyrow ${row.kind}`} data-testid={`fly-row-${row.id}`}>
           <td className="who" title={names[row.id].name}>
-            {names[row.id].std
-              ? <><span className="frl-long">{names[row.id].name}</span><span className="frl-short">{SHORT[row.id]}</span></>
-              : names[row.id].name}
+            {(() => {
+              const text = names[row.id].std
+                ? <><span className="frl-long">{names[row.id].name}</span><span className="frl-short">{SHORT[row.id]}</span></>
+                : names[row.id].name
+              /* an Available row's name is the way to its form, for an admin (D640); a Required row's never is (D668) */
+              if (row.kind !== 'avail' || !admin || !onEditAvail) return text
+              return (
+                <button
+                  type="button" className="flyname" data-testid={`fly-name-${row.id}`}
+                  title={`Rename ${names[row.id].name}, or change who it counts`}
+                  onClick={() => onEditAvail(row.id === 'avail-p' ? 'availp' : 'availw')}
+                >{text}</button>
+              )
+            })()}
           </td>
           <td className="bal" />
           {padL && <td className="lwph lwph-l" ref={phL} />}

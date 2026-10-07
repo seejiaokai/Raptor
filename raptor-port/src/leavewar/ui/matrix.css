@@ -1354,6 +1354,21 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* An Available row's name is a button for an admin — the way to its form (D640) — wearing the dotted underline a count
+   row's name wears for the same reason: "this opens something". Inline, so it stays on the dot's line. */
+.mx .counts tr.flyrow .who .flyname {
+  display: inline;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  text-decoration: underline dotted rgba(159, 176, 195, .55);
+  text-underline-offset: 3px;
+}
 /* a phone shows the short form of a name that is still the one it started with (Req P, Avail W) */
 .mx .counts tr.flyrow .frl-short { display: none; }
 @media (max-width: 430px) {

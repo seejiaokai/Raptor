@@ -3503,6 +3503,50 @@ test('several Required cells are picked with a drag and given one number, and th
   await expect(panel).toHaveCount(0)
 })
 
+// AN AVAILABLE ROW'S NAME IS THE WAY TO ITS FORM (D640 — "can [this row] be customised like for e.g not including ocu?
+// And rename it with free text"). jsdom proves what the form offers and saves (availform.test.tsx); the browser says
+// the name button sits on its row without making it taller or clipping in the frozen column, that the form opens
+// wholly on the screen at phone size, and that the renamed row and its new figure are what the grid then draws.
+test('an Available row’s name opens the counter form for it — renamed and told to leave out OCU, the row follows', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
+  const name = page.locator('[data-testid="fly-name-avail-p"]')
+  await expect(name).toBeVisible()
+  /* the long name on a desktop, the short one on a phone — one of the two is drawn, never both */
+  await expect(name.locator('.frl-long')).toHaveText('Available P')
+  await expect(name.locator('.frl-short')).toHaveText('Avail P')
+  await expect(name.locator(isPhone() ? '.frl-short' : '.frl-long')).toBeVisible()
+  await expect(name.locator(isPhone() ? '.frl-long' : '.frl-short')).toBeHidden()
+  /* the button changed nothing about the row: as tall as the Required row beside it, nothing cut off in the name column */
+  const h = async (id: string) => (await page.locator(`[data-testid="${id}"]`).boundingBox())!.height
+  expect(Math.abs(await h('fly-row-avail-p') - await h('fly-row-req-p'))).toBeLessThan(0.75)
+  expect(await page.evaluate(() => [...document.querySelectorAll('.mx tbody.counts tr.flyrow .who')]
+    .map(el => el as HTMLElement).filter(el => el.scrollWidth > el.clientWidth + 1).map(el => el.textContent))).toEqual([])
+  const before = Number(await page.locator('[data-testid="avail-p-2026-01-06"]').innerText())
+
+  await press(name)
+  const sheet = page.locator('[data-testid="counter-form"]')
+  await expect(sheet).toBeVisible()
+  const box = (await sheet.boundingBox())!, vp = page.viewportSize()!
+  expect(box.y).toBeGreaterThanOrEqual(0); expect(box.y + box.height).toBeLessThanOrEqual(vp.height + 1)
+  expect(box.x).toBeGreaterThanOrEqual(0); expect(box.x + box.width).toBeLessThanOrEqual(vp.width + 1)
+  await expect(page.locator('[data-testid="cform-name"]')).toHaveValue('Available P')
+  await expect(page.locator('[data-testid="cform-avail-note"]')).toBeVisible()
+  await expect(page.locator('[data-testid="cform-amber"], [data-testid="cform-red"], [data-testid="cform-mode-team"], [data-testid="cform-delete"]')).toHaveCount(0)
+  await page.locator('[data-testid="cform-name"]').fill('AV P')
+  await press(page.locator('[data-testid="cf-catmode"]'))
+  await press(page.locator('[data-testid="cf-cat-OCU"]'))
+  await press(page.locator('[data-testid="cform-save"]'))
+  await expect(sheet).toHaveCount(0)
+  await expect(name).toHaveText('AV P')                             // a name of his own shows as typed, at every width
+  await expect.poll(async () => Number(await page.locator('[data-testid="avail-p-2026-01-06"]').innerText())).toBeLessThan(before)
+  /* a member reads the new name and figure, with nothing to press */
+  await lwRole(page, 'member')
+  await expect(page.locator('[data-testid="fly-name-avail-p"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="fly-row-avail-p"] .who')).toHaveText('AV P')
+})
+
 // THE PANEL FOR A PICKED BLOCK OF PEOPLE'S DAYS NO LONGER BLOCKS THE GRID (D642). Desktop: the mouse drag is what
 // Playwright drives; the finger's own path through this sheet is the walk's.
 test('the people’s-days panel stays up with no veil: a new drag replaces what it acts on, a plain click opens that cell’s own sheet', async ({ page }) => {

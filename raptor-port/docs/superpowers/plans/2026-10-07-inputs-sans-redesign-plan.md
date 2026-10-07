@@ -315,6 +315,18 @@ every counter survives a reload" (nothing to delete) — each now asserts the li
 browser gate:** the cross, at the eye's size, was 11px wide on a phone — widened to 26px; and a browser test's
 counters have to be saved under an ADMIN sign-in (the command layer asks the signed-in role, not only the war's).
 
+**AS BUILT (8 Oct 26, the overnight run — step 2, seventh piece: THE COUNTER FORM'S MODE FOR THE TWO AVAILABLE ROWS).**
+The store's three refusals were built in step 1 (delete, a teams count, thresholds held at 0 — `dayfacts.test.ts`);
+this piece is the screen. `CounterForm.tsx`: for `availp` / `availw` no "Sets / teams" choice, no amber / red boxes, no
+Delete, the sample summed by `availHave`, and the line "SANS people are never counted here. The SANS calendar reads
+this row, so it cannot be deleted." **Choices the builder made, each told to him (§8):** (1) the way in is a tap on the
+row's own NAME, for an admin — the plan named the form but not the door; (2) the "SANS" qualification chip is not
+offered for these two rows; (3) the form's button reads "Save", not "Save counter". **Two faults the tests found before
+any screen was driven:** opened for a row not yet in the stored list the form came up as an empty "New counter" (the
+row is now read as the rows read it, `availRuleOf`); and a NEW counter named "availp" took the row's id and was saved
+over it (`mintId` now holds both ids as taken). **NOT BUILT YET in step 2:** `flynames` out (D668 — next); the "Days…"
+line, which waits for Days (step 3).
+
 ### 3.4 Days — Month and Holidays
 
 One window (`src/ui/DaysWindow.tsx`), mounted once in the shell like the input editor, opened by `pops.ts` state from
@@ -1198,6 +1210,9 @@ the foot of the screen, a new drag has to start on a part of the grid it is not 
 is; an Available row he has changed is put back by Undo or by changing it again; the delete cross is wider than the
 eye was, in the dashed grey every Delete wears; the counter's own window still has "Delete counter", which still asks
 "Really delete?" — so there are two ways to delete, one that asks and one that does not (say if he wants them alike).
+**And the Available rows:** an admin renames one, or changes who it counts, by tapping the row's own name; the window
+that opens offers only what applies to these two rows — no amber or red, no "Sets / teams", no Delete, and no "SANS"
+choice (a SANS person is never counted there) — and says so in one line.
 
 ## 9. For the challenger
 
