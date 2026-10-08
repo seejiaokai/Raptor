@@ -168,6 +168,15 @@ body.in-cal{padding-bottom:0}
 .inputsday .sd-top{flex:0 0 auto;padding:8px 12px 10px;border-bottom:1px solid var(--edge);display:flex;flex-direction:column;gap:8px}
 .inputsday .sd-top .sd-acts{margin-top:0}
 .inputsday .sd-list{flex:1 1 auto;min-height:0;overflow:auto;padding:6px 12px 12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+/* A SHORT SCREEN - a phone on its side. The pinned top (the working and "+ Commitment"; the day's title and "+ Input") is
+   by itself as tall as the window there, so the list under it was left a sliver and an opened day showed NONE of its
+   entries (the calendar job's bug check, 8 Oct 26 - walker D, seen by the host at 844 x 390 on both calendars). Under
+   480px of height nothing is pinned: the window's body is ONE scroll - the top first, the entries after it. */
+@media (max-height:480px){
+  .floatwin.inputsday .win-body{display:block;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+  .inputsday .sd-list{overflow:visible}
+}
+
 .inputsday .ic-title-edit{width:100%;box-sizing:border-box;min-height:36px;padding:6px 10px;background:var(--bg);border:1px solid var(--edge);border-radius:8px;
   color:var(--ink);font:inherit;font-size:14px;font-weight:700}
 .inputsday .ic-title-edit:focus{outline:none;border-color:var(--accent)}

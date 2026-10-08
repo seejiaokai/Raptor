@@ -2329,6 +2329,10 @@ export function InputEditor() {
               : ctx === 'g'
                 ? `Added on ${when}, straight onto the Ground Programme. For a multi-day span, use the Inputs page.`
                 : `Added on ${when}. For a multi-day span, use the Inputs page.`
+            /* a SANS commitment is on no list of the Inputs tab (D620), so "the Inputs page" is no place to change its
+               dates — and this editor changes none: it is deleted and added again (the calendar job's bug check, 8 Oct 26) */
+            : isSansAvail(draft.type)
+              ? 'To change its dates, delete it and add it again on the SANS calendar.'
             : canEditSched()
               ? 'The dates are changed on the Inputs page.'
               : 'The person and the dates are changed on the Inputs page.'}</div>

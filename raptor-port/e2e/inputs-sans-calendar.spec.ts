@@ -453,3 +453,38 @@ for (const size of [{ name: 'a desktop', width: 1280, height: 720 }, { name: 'a 
     await expect.poll(async () => (await where()).onScreen, { message: 'the page did not bring the input on screen, clear of the top bar', timeout: 8000 }).toBe(true)
   })
 }
+
+/* THE CALENDAR JOB'S BUG CHECK (8 Oct 26 - walker D, seen by the host: scripts/handpass/cal-host-side.mjs). On a phone
+   turned on its side the opened day's pinned top filled the window and the list under it had no room: none of the
+   day's entries could be seen. Under 480px of height the window's body is one scroll. */
+for (const [name, tab, label, prev, next, y, m, day, win, rows] of [
+  ['SANS', '#inSansMode', '[data-testid="sc-month"]', '[data-testid="sc-prev"]', '[data-testid="sc-next"]', 2026, 10, '[data-testid="sc-day-2026-10-07"]', 'win-sansday', '[data-testid^="sd-row-"]'],
+  ['Inputs', '#inMemberMode', '#inpCal .ic-mon', '#icPrev', '#icNext', 2026, 7, '#inpCal [data-icday="2026-07-14"]', 'win-inputsday', '[data-testid^="idy-row-"]'],
+] as const) {
+  test(`a phone on its side: a day opened on the ${name} calendar lets every entry be reached`, async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ baseURL, viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true })
+    const page: Page = await context.newPage()
+    await login(page); await go(page, 'inputs')
+    await page.locator(tab).tap()
+    /* the demo's own busy day: Wed 7 Oct 26 on SANS, Tue 14 Jul 26 on Inputs */
+    for (let i = 0; i < 36; i++) {
+      const [mm, yy] = (await page.locator(label).innerText()).trim().toLowerCase().split(/\s+/)
+      const d = y * 12 + (m - 1) - (+yy * 12 + ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].indexOf(mm.slice(0, 3)))
+      if (!d) break
+      await page.locator(d > 0 ? next : prev).tap()
+    }
+    await page.locator(day).scrollIntoViewIfNeeded()
+    await page.locator(day).tap({ position: { x: 8, y: 8 } })
+    const w = page.locator(`[data-testid="${win}"]`)
+    await expect(w).toBeVisible()
+    expect(await w.locator(rows).count(), 'the demo day has entries').toBeGreaterThan(1)
+    const last = w.locator(rows).last()
+    await last.scrollIntoViewIfNeeded()
+    const box = (await last.boundingBox())!
+    expect(box.y, 'the last entry is on the screen').toBeGreaterThanOrEqual(0)
+    expect(box.y + box.height).toBeLessThanOrEqual(390 + 1)
+    const hit = await last.evaluate((el, b) => { const h = document.elementFromPoint(b.x + b.width / 2, b.y + Math.min(b.height / 2, 12)); return !!h && (h === el || el.contains(h)) }, box)
+    expect(hit, 'and a finger lands on it - nothing lies over it').toBe(true)
+    await context.close()
+  })
+}

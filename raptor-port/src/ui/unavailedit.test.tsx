@@ -13,6 +13,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch } from '../state/store'
 import { INPUTS, inpId, inputCoversDate } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
 import { isSpecial } from '../engine/people'
 import { SCHED, dayFilingFingerprint } from '../engine/publish'
 import { acceptInput, unacceptInput, acceptedDay } from '../engine/slots'
@@ -102,6 +103,20 @@ describe('the dialog — a Person field, admin only', () => {
   it('the footer hint no longer claims the person is Inputs-page-only', async () => {
     await act(async () => { setInpEdit(divot()); notify() })
     expect($('.inped-hint').textContent).toBe('The dates are changed on the Inputs page.')
+  })
+
+  /* THE CALENDAR JOB'S BUG CHECK, 8 Oct 26 (walker D, seen by the host): a SANS commitment's editor ended "The dates are
+     changed on the Inputs page" - but SANS availability is on NO list of the Inputs tab since D620, so that sentence
+     sent him to a place that does not hold it. Its dates are changed by deleting it and adding it again. */
+  it('a SANS commitment is not sent to the Inputs page for its dates: it says how they ARE changed', async () => {
+    const san = Object.keys(PEOPLE).find(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted)!
+    expect(san).toBeTruthy()
+    INPUTS.push({ iid: 'sans-hint', person: san, type: 'SANS Availability', date: 'Jul 15', yr: 2026, allday: true, sans: { f: true }, remarks: '', mod: '2026-06-01' } as any)
+    await act(async () => { setInpEdit(INPUTS.find((r: any) => r.iid === 'sans-hint')); notify() })
+    expect($('.inped-hint').textContent).toBe('To change its dates, delete it and add it again on the SANS calendar.')
+    expect($('.inped-hint').textContent).not.toMatch(/Inputs page/)
+    await act(async () => { setInpEdit(null); notify() })
+    INPUTS.splice(INPUTS.findIndex((r: any) => r.iid === 'sans-hint'), 1)
   })
 
   it('a member never sees it, even with the dialog forced open on their own row (defence in depth — no button reaches them today)', async () => {

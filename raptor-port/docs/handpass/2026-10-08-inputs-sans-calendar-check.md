@@ -229,3 +229,28 @@ counted one row of the Inputs List for every RECORD (44) where the List draws on
 meeting is one row: 41), and added in a List on the SANS tab, which has none. Both follow from his rulings (D654, D620);
 the host confirmed every single-person input has its row and the shared one has one, then re-pointed the two checks:
 55 of 55.
+
+**From D624's pairs and the walkers (fix round 2) — each seen by the host before it was changed:**
+
+| # | The fault, as a person meets it | Found by | Seen (the host) | Disposition |
+|---|---|---|---|---|
+| W6 | In the Holidays form "On grid" stays empty while a name is typed; his ruling D652 (reading 1) has it fill itself from the name, as the Event sheet's box does | D624's pair for "Adding one" (the helper's comparison) | `ui/holidayspanel.test.tsx` "On grid fills itself…" red on the build as walked (the box read '' where "ND" was due) | FIXED, two tests red first; two older tests that expected an empty box re-pointed |
+| W7 | In the changes window a filing for several people is one heading over a LINE FOR EACH MAN; D663 says "not a line for each man" and the approved picture shows one line with the names under it | D624's pair for the changes window | the pair itself, opened by the host (`side/36`): "Ace · Meeting added…", "Drifter · Meeting added…", "Ranger · Meeting added…" under one heading | FIXED, four tests red first (`ui/changesmodel.test.ts`); re-walked by the host in the running build: one line, "Ace · Anvil · Saber" under it (`host-rewalk/w7-changes-window.png`) |
+| W8 | A SANS commitment's editor ends "The dates are changed on the Inputs page" — but SANS availability is on no list of the Inputs tab (D620) | walker D (H-06) | the sentence in the editor's code, shown for every existing record | FIXED, a test red first (`ui/unavailedit.test.tsx`): "To change its dates, delete it and add it again on the SANS calendar." |
+| W9 | On a phone turned on its side (844 × 390) a day opened on either calendar shows none of its entries: the pinned top fills the 270px window and the list under it is a sliver | walker D (P4-02) | `scripts/handpass/cal-host-side.mjs` on the build as walked: 4 entries on the Inputs day, 0 in view | FIXED in the stylesheet (under 480px of height the window is one scroll); two real-browser tests added (`e2e/inputs-sans-calendar.spec.ts`); the host's script passes on the rebuilt copy for the Inputs day |
+
+**Re-walk of round 1 by the host, on the rebuilt copy (`scripts/handpass/cal-host-leads.mjs`, pictures `host-rewalk/`):** the
+"Calendar" month, the Inputs month, the SANS month and the Leave War's row all read "ND"; Escape closes the settings
+window and the editor keeps "host: unsaved remark"; one more person picked and another bar pressed — the question
+shows and the five stay picked; the changes window shows one line and the names. **4 of 4.**
+
+## 6. The walk — eight Sonnet 5.5 walkers on a frozen copy of the build (`dist-wh`, the code of `9b5d085b`)
+
+Each walker's own table, with the controls used and the figures read: `docs/handpass/parts/cal-<L>.md`; its pictures:
+`docs/img/handpass/2026-10-08-inputs-sans-calendar-check/<L>/`. A walker's FAIL is in §5 only once the host has seen it.
+
+| Walker | Share | PASS | FAIL | PARTIAL | What the host made of each FAIL |
+|---|---|---|---|---|---|
+| B | the Leave War (P2-01..12, H-04) | 12 | 1 | 0 | **P2-04** — a typed "-5" saves 5, "2.5" saves 25, "1234" saves 123: AS BUILT, not a fault — the box takes digits only, three at most (`ui-contracts.md`), so what is saved is what the box SHOWS before Enter; the scenario expected a refusal. Told to him on the look card. **Two more it reported, FILED (`[CAL-CHECK-SEEN]`):** on a phone the first tap after a finger-drag of a counter in Rearrange is ignored (the second works); on a phone on its side the number pad covers the Required cell being typed |
+| D | the SANS calendar (P4-01..12, H-06, H-08) | 11 | 2 | 1 | **P4-02** → W9. **P4-01, one clause** — a man posted out or archived stops counting on his commitments BEFORE that date too: AS TOLD (step 4's reading: "a commitment of a man … archived is listed under Not counted with the reason"); it changes only days already past by the time he is archived. On the look card. **H-06** → W8 |
+| E | the Inputs calendar (P5-01..12, H-05, H-09, H-10) | 8 | 4 | 3 | **P5-01** and its false "people added / taken off" message → W4, W5 (found by the host first). **P5-06** (Escape during a bar's drag leaves the picked-up copy on screen) and **P5-11** (Undo turns the month back to July though the input's August days were in view; the List's row does not flash) → see below. **H-09's reload line** — the host's own scenario was wrong: a reload asks for the sign-in and opens on View-only Sched, as the app always has |

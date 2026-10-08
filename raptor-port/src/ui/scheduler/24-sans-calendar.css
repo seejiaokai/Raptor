@@ -15,6 +15,15 @@
 .floatwin.sansday .win-body{padding:0;overflow:hidden;display:flex;flex-direction:column}
 .sansday .sd-top{flex:0 0 auto;padding:8px 12px 10px;border-bottom:1px solid var(--edge)}
 .sansday .sd-list{flex:1 1 auto;min-height:0;overflow:auto;padding:6px 12px 12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+/* A SHORT SCREEN - a phone on its side. The pinned top (the working and "+ Commitment"; the day's title and "+ Input") is
+   by itself as tall as the window there, so the list under it was left a sliver and an opened day showed NONE of its
+   entries (the calendar job's bug check, 8 Oct 26 - walker D, seen by the host at 844 x 390 on both calendars). Under
+   480px of height nothing is pinned: the window's body is ONE scroll - the top first, the entries after it. */
+@media (max-height:480px){
+  .floatwin.sansday .win-body{display:block;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+  .sansday .sd-list{overflow:visible}
+}
+
 .sd-work{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .sd-work th,.sd-work td{padding:6px 0;border-bottom:1px solid var(--edge);font-size:13px;line-height:1.3}
 .sd-work thead th{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);text-align:right;width:62px;padding-top:2px}
