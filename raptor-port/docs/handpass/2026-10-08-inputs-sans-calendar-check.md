@@ -823,3 +823,6 @@ List; the SANS head at two heights; D693's two; D697's three; the fold's), and t
 **Seen and told to him:** the tabs' FRAME is still 44 — the row under it is now 8 shorter than that frame, as tall as
 the lit tab inside it; the month gains those 8. **Not checked here:** how the smaller buttons feel under his thumb —
 only his iPhone says; one line of the stylesheet gives them back their height if he prefers it.
+
+**The gates after §21 and §22 (9 Oct 26, `50adbfdc`, the whole set under the PC lock, nothing else running): WHOLLY GREEN — unit 9371 / 9371 (564 files) · build clean · tfin 728 / 0 · e2e 719 passed, 0 failed, 56 skipped · smoke 445 / 0 · rulecheck OK · docsize OK.** The run before it, on `e269bd92` (§19 and §20’s code): wholly green too — unit 9369 / 9369 · tfin 728 / 0 · e2e 715 / 0, 56 skipped · smoke 445 / 0.
+`Walk:` §21 and §22 — SHORT, the host’s own; the real-browser tests named in each, kept as gates; pictures `docs/img/handpass/2026-10-09-cal-strip/` and `2026-10-09-cal-rows/`, opened. His look on his iPhone is the last check of both.

@@ -712,6 +712,9 @@ shared input's dates changed in its window - sixteen steps through the app's own
 as the member, a phone upright, short and on its side); a PASS is the right behaviour, so it is its own re-walk.
 `scripts/handpass/cal-host-day-look.mjs` - a LOOK, not a gate (D683, 9 Oct 26): the day opened on the Inputs calendar,
 pictured and measured on a phone (admin, member, short, on its side) and a desktop - tall as it opens, its two buttons in the bar.
+`scripts/handpass/mk-day-compact.mjs` - the MOCK-UP MAKER for `[CAL-DAY-LINES-COMPACT]` (D696, D699, 9 Oct 26): the opened day with nine
+inputs as it is today, and re-arranged two ways - "Placed by" beside a short remark, and that with shorter small print; its
+pictures and page: `docs/mock/img/day-inputs-compact/`, `docs/mock/day-inputs-compact.html`. A drawing; nothing built.
 `scripts/handpass/cal-rows-measure.mjs` - a LOOK, not a gate (D698, 9 Oct 26): the row of three tabs and the row of buttons
 under it, measured and pictured on the Inputs calendar, its List, the SANS calendar and the Medical tab.
 `scripts/handpass/cal-strip-measure.mjs` - a LOOK, not a gate (D697, 9 Oct 26): the line under the tools ("How this works"
