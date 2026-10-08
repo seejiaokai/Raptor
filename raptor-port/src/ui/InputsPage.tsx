@@ -31,7 +31,7 @@ import { SansCal } from './SansCal'
    the dialog the week and the board open — see ui/inputedit.tsx */
 import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
-  draftOf, commitInputEdit, removeInput, saveBatch, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
+  draftOf, commitInputEdit, commitGroup, removeInput, saveBatch, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
   medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered, oilUnansweredDay, docGate,
   rosterOptions as people, archivedOptions, inputTone, medPlanProtected, medSegmentsProtected,
@@ -42,6 +42,7 @@ import { docFields, docHas, rowDocIds } from '../state/docs'
 import { stampPlaced, stampChanged } from '../state/inputstamp'
 import { placedLine, placedLineOf } from './placedline'
 import { entriesOf } from '../state/inputgroup'
+import { PeoplePick, pickProblem } from './PeoplePick'
 import { useVersion } from './useStore'
 import { exportCSV, inputRows } from './export'
 import { RangeCal } from './RangeCal'
@@ -423,12 +424,23 @@ export function InputsPage() {
      control left to move it) would silently lag it. The calendar's add
      already worked exactly this way (InputsCal.tsx openAdd seeds ME and the
      dialog hides Person for a member); this is the page catching up. */
-  const filedFor = (): string => canEditSched() ? person : (me() ?? '')
+  /* SINCE THE GROUP INPUT (owner D654–D656; the plan §3.13): the form's Person field is the people picker. A member may
+     now pick another man for a duty or a commitment (`memberPick` — his own choice, made on this form; until he makes
+     one it is still whoever he is signed in as, read live), and "Several people" files ONE shared input (`team`). */
+  const [memberPick, setMemberPick] = useState<string | null>(null)
+  const [several, setSeveral] = useState(false)
+  const [team, setTeam] = useState<string[]>([])
+  const filedFor = (): string => canEditSched() ? person : (memberPick ?? me() ?? '')
+  const picked = (): string[] => several && team.length ? team : [filedFor()]
   const add = (skipDoc = false) => {
     /* the calendar asks for a pick and the readout says so — accepting the
        click anyway and quietly dating it Monday was a trap */
     if (!start) return HOOKS.toast('Pick a start date on the calendar first', 'warn')
     const date = fmt(start), endDate = end && fmt(end) !== date ? fmt(end) : undefined
+    /* nothing is substituted for the people he picked: where he may not file this kind for them, the add is refused in
+       the picker's own sentence (ui/PeoplePick.tsx) */
+    const pb = pickProblem(picked(), several, type)
+    if (pb) return HOOKS.toast(pb.why, 'warn')
     /* READ-ONLY QUARANTINE preflight (P2-QREV-01/04): refuse an add onto a
        protected week BEFORE any branch, confirm sheet, or write — so a rejection
        never leaves partial state (a Leave War withdrawal, a finishAdd flash on an
@@ -483,6 +495,27 @@ export function InputsPage() {
        row type — see commitInputEdit for the reasoning. Only equal times are
        refused, being a zero-length absence. */
     if (!allday && (e as number) === (s as number)) return HOOKS.toast('Give the input a start and end that are not the same time', 'warn')
+    /* FOR SEVERAL PEOPLE: one shared input, one command (ui/inputedit.tsx commitGroup) — every refusal asked for every
+       man before anything is written; the OIL question asked ONCE, its answer every man's (D660) */
+    if (several && team.length > 1) {
+      const d = draftOf({ person: team[0], type, date, endDate, allday, s, e, yr: baseYear(), remarks, ...(!allday && half ? { half } : {}) })
+      const go = (dec?: Record<string, number>) => {
+        const had = new Set(INPUTS.map((x: any) => x.iid))
+        if (!commitGroup(null, d, team, dec)) return
+        const row = INPUTS.find((x: any) => !had.has(x.iid))
+        HOOKS.toast(`Input added for ${team.length} people`, 'ok')
+        if (row) {
+          revealInput(row)
+          setFlash(f => [row, ...f])
+          timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
+        }
+        setRemarks(withTill('', start, end))
+      }
+      const g = oilGate(d, null)
+      if (g.kind === 'refused') return
+      if (g.kind === 'ask') { setOilConf({ ...g, who: `${PEOPLE[team[0]] ? PEOPLE[team[0]].cs : team[0]} +${team.length - 1}`, commit: go }); return }
+      return go()
+    }
     /* writeInputsBatch, not writeInputs: the medical trims below run engine
        helpers (Leave-War retraction) that push history of their own, and the
        add plus its trims must land as ONE undo step. Wrapped in a closure
@@ -900,13 +933,14 @@ export function InputsPage() {
               would only pretend to be a control (the SANS fixed-type
               precedent, inputedit.tsx) — and it follows the topbar's View-as
               live, which is exactly what add() then commits (filedFor). */}
-          <div className="ifield"><label>Person</label>
-            {canEditSched()
-              ? <select id="inPerson" aria-label="Person" value={person} onChange={e => setPerson(e.target.value)}>
-                {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
-                <ArchivedGroup />
-              </select>
-              : <div className="inper-fixed" id="inPersonFixed" aria-label="Person">{(() => { const m = me(); return m && PEOPLE[m] ? PEOPLE[m].cs : String(m ?? '') })()}</div>}</div>
+          {/* SINCE THE GROUP INPUT (D656): the same field, drawn by the people picker — the scheduler's list as it was
+              (with its posted-out group), a member's list where he may file this kind for another man and his callsign
+              where he may not, and "Several people" for one shared input. */}
+          <PeoplePick form people={picked()} several={several} type={type} more={canEditSched() ? <ArchivedGroup /> : undefined}
+            onChange={(p, s2) => {
+              setSeveral(s2); setTeam(s2 ? p : [])
+              if (p.length && !s2) { if (canEditSched()) setPerson(p[0]); else setMemberPick(p[0]) }
+            }} />
           <div className="ifield cal"><label>Dates</label>
             <RangeCal idPrefix="in" start={start} end={end}
               onPick={(s2, e2) => { setStart(s2); setEnd(e2); setRemarks(r => withTill(r, s2, e2)) }} />

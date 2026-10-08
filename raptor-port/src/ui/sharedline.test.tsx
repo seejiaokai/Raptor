@@ -198,3 +198,61 @@ describe('the List: a shared input is one line', () => {
     expect(tid('win-inputedit')).toBeNull()
   })
 })
+
+/* THE LIST'S OWN ADD FORM carries the same picker (the plan §3.13: the picker is "used by the editor … and by the
+   List's Add form; both save through commitGroup"). Its one-person list is the form's own, as it was. */
+describe('the List’s Add form files for several people too', () => {
+  const listUp = async () => act(async () => { setInpView('table'); notify() })
+  const choose = async (sel: string, v: string) => {
+    const el = $(sel) as HTMLSelectElement
+    expect(el, sel).toBeTruthy()
+    await act(async () => { el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })) })
+  }
+  const form = () => $('.ingrid [data-testid="pp"]') as HTMLElement
+  const pickDate = async () => { await click($('#inCal [data-cal]')); await click($('#inCal [data-cal]')) }
+  it('an admin: the form’s Person list as it was, with "Several people" beside it — three picked, one Add, one shared input', async () => {
+    await listUp()
+    expect($('#inPerson'), 'the form’s own list').toBeTruthy()
+    await choose('#inType', 'Meeting')
+    const sw = form().querySelector('[data-testid="pp-several"]')
+    await click(sw)
+    const [b, c] = others()
+    await click(form().querySelector(`[data-pp="${b}"]`)); await click(form().querySelector(`[data-pp="${c}"]`))
+    await pickDate()
+    const before = INPUTS.length
+    await click($('#inAdd'))
+    const made = INPUTS.slice().filter((r: any) => r.grp && !String(r.grp).startsWith('gL')) as any[]
+    expect(INPUTS.length).toBe(before + 3)
+    expect(new Set(made.map(r => r.grp)).size).toBe(1)
+    expect(made.map(r => String(r.person)).sort()).toEqual([admin, b, c].sort())
+    expect(made.every(r => String(r.grpBy) === admin && r.type === 'Meeting')).toBe(true)
+    expect(said.join(' | ')).toContain('Input added for 3 people')
+    await act(async () => { undo(); notify() })
+    expect(INPUTS.length, 'one Undo').toBe(before)
+  })
+  it('a member: on a duty or commitment he may pick another man; on leave his own callsign, and no switch', async () => {
+    await as('member')
+    await listUp()
+    await choose('#inType', 'Meeting')
+    expect($('#inPerson'), 'a list, starting on himself').toBeTruthy()
+    expect(($('#inPerson') as HTMLSelectElement).value).toBe(member)
+    expect(document.querySelector('.ingrid [data-testid="pp-several"]')).toBeTruthy()
+    await choose('#inType', 'LL')
+    expect($('#inPerson')).toBeNull()
+    expect($('#inPersonFixed')!.textContent).toBe(cs(member))
+    expect(document.querySelector('.ingrid [data-testid="pp-several"]')).toBeNull()
+  })
+  it('a member picks two, then turns it into leave: Add is refused with the sentence and files nothing', async () => {
+    await as('member')
+    await listUp()
+    await choose('#inType', 'Meeting')
+    await click(form().querySelector('[data-testid="pp-several"]'))
+    await click(document.querySelector(`.ingrid [data-pp="${others()[0]}"]`))
+    await choose('#inType', 'LL')
+    await pickDate()
+    const before = INPUTS.length
+    await click($('#inAdd'))
+    expect(said.join(' | ')).toContain('You can file leave only for yourself')
+    expect(INPUTS.length).toBe(before)
+  })
+})

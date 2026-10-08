@@ -16,6 +16,7 @@
 
    The picker holds no state and writes nothing: its owner keeps `people` (in the order picked — the first is the one
    kept on the way back to one person, D656 reading 4) and `several`, and saves through ui/inputedit.tsx commitGroup. */
+import type { ReactNode } from 'react'
 import { PEOPLE } from '../engine/people'
 import { isUpchit, needsDoc } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
@@ -56,7 +57,7 @@ export function pickProblem(people: readonly string[], several: boolean, type: a
   return null
 }
 
-export function PeoplePick({ people, several, type, sansOnly, lockOne, onChange }: {
+export function PeoplePick({ people, several, type, sansOnly, lockOne, form, more, onChange }: {
   people: string[]
   several: boolean
   type: any
@@ -64,6 +65,10 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, onChange 
   sansOnly?: boolean
   /** an input already filed, read by a member: its one person is a value — moving it to another man is a scheduler's */
   lockOne?: boolean
+  /** the List's own Add form: its field markup and its own ids (`inPerson` / `inPersonFixed`), as they always were */
+  form?: boolean
+  /** more choices for the one-person list — the form's "Posted out / archived" group */
+  more?: ReactNode
   onChange: (people: string[], several: boolean) => void
 }) {
   const roster = pickRoster(sansOnly)
@@ -79,17 +84,19 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, onChange 
   }
   const groups = GROUPS.map(g => ({ ...g, ids: roster.filter(id => g.has(PEOPLE[id])) })).filter(g => g.ids.length)
   return (
-    <div className="inped-f pp" data-testid="pp">
-      <span className="inped-k">{several ? 'People' : 'Person'}</span>
+    <div className={(form ? 'ifield' : 'inped-f') + ' pp'} data-testid="pp">
+      {form ? <label>{several ? 'People' : 'Person'}</label> : <span className="inped-k">{several ? 'People' : 'Person'}</span>}
       <div className="pp-body">
         <div className="pp-top">
           {!several && (others
-            ? <select id="inpEditPerson" aria-label="Person" value={first ?? ''} onChange={e => onChange([e.target.value], false)}>
+            ? <select id={form ? 'inPerson' : 'inpEditPerson'} aria-label="Person" value={first ?? ''} onChange={e => onChange([e.target.value], false)}>
               {/* a man no longer on the list (archived since) still reads as himself, never as the first name on it */}
-              {first != null && !roster.includes(first) && <option value={first}>{cs(first)}</option>}
+              {!more && first != null && !roster.includes(first) && <option value={first}>{cs(first)}</option>}
               {roster.map(id => <option key={id} value={id}>{cs(id)}</option>)}
+              {more}
             </select>
-            : <span className="inped-v" id="inpEditPersonFixed">{cs(first)}</span>)}
+            : form ? <div className="inper-fixed" id="inPersonFixed" aria-label="Person">{cs(first)}</div>
+              : <span className="inped-v" id="inpEditPersonFixed">{cs(first)}</span>)}
           {several && <span className="pp-count" data-testid="pp-count" aria-live="polite">{people.length} picked</span>}
           {showSwitch && (
             <button type="button" className={'pp-sw' + (several ? ' on' : '')} role="switch" aria-checked={several} data-testid="pp-several"

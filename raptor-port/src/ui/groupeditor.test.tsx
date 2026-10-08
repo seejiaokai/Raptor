@@ -33,7 +33,8 @@ const said: string[] = []
 const realToast = HOOKS.toast
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement | null
 const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]
-const tid = (id: string) => $(`[data-testid="${id}"]`)
+/* the List's own Add form carries a people picker too (hidden under the calendar): the window's own is asked for first */
+const tid = (id: string) => $(`#inpEditPop [data-testid="${id}"]`) || $(`[data-testid="${id}"]`)
 const win = () => tid('win-inputedit')
 const cs = (id: any) => PEOPLE[id].cs as string
 const crew = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special && !PEOPLE[id].san && !PEOPLE[id].pers)
@@ -53,8 +54,8 @@ const choose = async (sel: string, v: string) => {
   expect(el, sel).toBeTruthy()
   await act(async () => { el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })) })
 }
-const puckBtn = (id: string) => $(`[data-pp="${id}"]`)
-const lit = () => $$('[data-pp][aria-pressed="true"]').map(b => b.getAttribute('data-pp')!)
+const puckBtn = (id: string) => $(`#inpEditPop [data-pp="${id}"]`)
+const lit = () => $$('#inpEditPop [data-pp][aria-pressed="true"]').map(b => b.getAttribute('data-pp')!)
 let n = 0
 /* a shared input as it is kept: one record per man, tied by a group id — put in through the app's own door */
 const shared = async (people: string[], over: any = {}) => {
@@ -298,6 +299,38 @@ describe('outside the Inputs page nothing changes', () => {
     await openOn(r)
     expect(win()).toBeNull()
     expect($('#inpEditPerson')).toBeTruthy()
-    expect(tid('pp-several')).toBeNull()
+    expect($('#inpEditPop [data-testid="pp-several"]')).toBeNull()
+  })
+})
+
+/* THE SANS CALENDAR'S "+ COMMITMENT" (owner D658: "a member never files SANS availability for another man — a SANS
+   member files his own only; an admin may file it for one SANS man or for several at once"). The same window, the same
+   picker — showing the SANS people only. */
+describe('the SANS calendar’s "+ Commitment" for several (D658)', () => {
+  const sansPeople = () => Object.keys(PEOPLE).filter(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
+  const openSans = async (person: string) => act(async () => {
+    setInpEdit({ _new: true, _calendar: true, _ctx: 's', person, type: 'SANS Availability', date: 'Oct 14', allday: true, s: 360, e: 1080, sans: { f: true } }); notify()
+  })
+  it('an admin: the pucks are the SANS people and nobody else; two picked, one Add — one commitment for both', async () => {
+    const [x, y] = sansPeople()
+    expect(y, 'the demo roster holds two SANS people').toBeTruthy()
+    await act(async () => { setInpMode('sans'); notify() })
+    await openSans(x)
+    await click(tid('pp-several'))
+    expect($$('#inpEditPop [data-pp]').map(b => b.getAttribute('data-pp')!).sort()).toEqual(sansPeople().sort())
+    await click(puckBtn(y))
+    await click($('#inpEditSave'))
+    const made = INPUTS.filter((r: any) => r.type === 'SANS Availability' && r.date === 'Oct 14' && r.grp) as any[]
+    expect(made.map(r => String(r.person)).sort()).toEqual([x, y].sort())
+    expect(new Set(made.map(r => r.grp)).size).toBe(1)
+    expect(made.every(r => r.sans && r.sans.f), 'the ticks are every man’s alike').toBe(true)
+  })
+  it('a SANS member files his own only: his callsign, no list, no switch', async () => {
+    const x = sansPeople()[0]
+    await act(async () => { setSession({ user: x, role: 'main' }); setMe(x); setInpMode('sans'); notify() })
+    await openSans(x)
+    expect($('#inpEditPerson')).toBeNull()
+    expect($('#inpEditPersonFixed')!.textContent).toBe(cs(x))
+    expect($('#inpEditPop [data-testid="pp-several"]')).toBeNull()
   })
 })
