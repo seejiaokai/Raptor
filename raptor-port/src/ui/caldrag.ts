@@ -22,7 +22,7 @@
    --------------------------------------------------------------------------- */
 import { draftOf, commitInputEdit, commitGroup, fmtDay, askOilIfPending, medAskFor } from './inputedit'
 import { entryRowsOf } from '../state/inputgroup'
-import { movePlanPuck, PLANPUCKS } from '../state/plan'
+import { movePlanPuck } from '../state/plan'
 import { writeInputs, notify } from '../state/store'
 import { setMedMove } from './pops'
 import { canEditSched } from '../state/auth'
@@ -73,13 +73,12 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
   if (entry.kind === 'puck') {
     /* movePlanPuck carries its own canEditSched() gate; asking again here
        would just be a second copy of the same check that could one day
-       disagree with the first. Read what it decided instead. The caption
-       names the section's KIND (22 Aug 26) — a pucks row dragged to another
-       day is not a "note", and this toast is the move's one visible word. */
-    const kind = PLANPUCKS.find((p: any) => p.id === entry.pid)?.kind === 'pucks' ? 'Pucks row' : 'Note'
+       disagree with the first. Read what it decided instead. There is ONE
+       kind of section since D684 (9 Oct 26) — a note, with words, people or
+       both — so the toast, the move's one visible word, says "Note". */
     let did = false
     writeInputs(() => { did = movePlanPuck(entry.pid, toIso) })
-    if (did) HOOKS.toast(`${kind} moved`, 'ok')
+    if (did) HOOKS.toast('Note moved', 'ok')
     else if (!canEditSched()) HOOKS.toast('Only a scheduler can move planning sections', 'warn')
     return did
   }

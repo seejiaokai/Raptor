@@ -12,7 +12,7 @@ import { beforeAll, beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { initStore, setSession, undo, writeInputs, histInit } from '../state/store'
 import { setMe } from '../state/auth'
 import { INPUTS, inpId, mintInpIds } from '../engine/inputs'
-import { PLANPUCKS, addPlanPuck, addPuckRow, togglePuckPerson } from '../state/plan'
+import { PLANPUCKS, addPlanPuck } from '../state/plan'
 import { HOOKS } from '../engine/hooks'
 import { commitChipMove, initCalDrag } from './caldrag'
 import { markLand, pendingLand } from './lift'
@@ -87,16 +87,16 @@ describe('commitChipMove — puck moves', () => {
     expect(PLANPUCKS.find(p => p.id === pid)?.date).toBe('2026-07-10')
   })
 
-  it('a pucks-row section moves the same way and says what it is', () => {
-    writeInputs(() => { addPuckRow('2026-07-10') })
-    const sec = PLANPUCKS.find((p: any) => p.kind === 'pucks')!
-    writeInputs(() => { togglePuckPerson(sec.id, 'bane') })
+  /* one kind of section since D684 (9 Oct 26): a note of people and no words is a note, and says so */
+  it('a note of people and no words moves the same way, its people with it', () => {
+    writeInputs(() => { addPlanPuck('2026-07-10', '', ['bane']) })
+    const sec = PLANPUCKS.find((p: any) => p.date === '2026-07-10' && !p.text)!
 
     const ok = commitChipMove({ kind: 'puck', pid: sec.id }, '2026-07-10', '2026-07-12')
     expect(ok).toBe(true)
     expect(sec.date).toBe('2026-07-12')
     expect(sec.ids, 'its people ride the move').toEqual(['bane'])
-    expect(said_()).toContain('Pucks row moved')
+    expect(said_()).toContain('Note moved')
   })
 
   it('a non-scheduler is refused with the planning-section toast, and nothing moves', () => {

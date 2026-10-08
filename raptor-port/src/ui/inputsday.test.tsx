@@ -21,6 +21,7 @@ import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { storeBackend } from '../engine/hooks'
 import { setFlyDays } from '../state/flyplan'
+import { PLANPUCKS, addPlanPuck } from '../state/plan'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './FloatWindow'
@@ -246,22 +247,23 @@ describe('the day as he asked for it on his phone (D683)', () => {
     await open('2026-10-07')
     expect(win()!.className).not.toContain('is-tall')
   })
-  it('"+ Note" and "+ Pucks" are in the window’s top bar, after the date — and no longer in the list under "+ Input"', async () => {
+  it('"+ Note" is in the window’s top bar, after the date — and "+ Pucks" is gone: a note carries its own (D684)', async () => {
     await open('2026-10-07')
     const bar = win()!.querySelector('.win-bar')!
     expect(bar.querySelector('#icAddPuck'), '+ Note in the bar').toBeTruthy()
-    expect(bar.querySelector('#icAddPucks'), '+ Pucks in the bar').toBeTruthy()
+    expect($('#icAddPucks'), 'no separate "+ Pucks" anywhere').toBeNull()
     const order = Array.from(bar.children).map(c => c.className.split(' ')[0])
     expect(order.indexOf('win-tools'), 'after the date, before the cross').toBeGreaterThan(order.indexOf('win-ttl'))
     expect(order.indexOf('win-tools')).toBeLessThan(order.indexOf('win-x'))
-    expect(win()!.querySelector('.win-body #icAddPuck, .win-body #icAddPucks')).toBeNull()
+    expect(win()!.querySelector('.win-body #icAddPuck')).toBeNull()
   })
-  it('they still do what they did: "+ Note" opens the note box, "+ Pucks" the people to pick', async () => {
+  it('"+ Note" opens the note box, and the "+ people" beside it the people to pick', async () => {
     await open('2026-10-07')
     await click($('#icAddPuck'))
     expect($('.ic-poppuck-edit'), 'the note box').toBeTruthy()
-    await click($('#icAddPucks'))
+    await click($('#icNewNotePpl'))
     expect($('.ic-pick'), 'the people to pick').toBeTruthy()
+    expect($('.ic-poppuck-edit'), 'the note box is still there under the picker').toBeTruthy()
   })
   it('a press on one of them is not a press on the bar: on a phone the window keeps its height', async () => {
     asPhone(true)
@@ -274,6 +276,119 @@ describe('the day as he asked for it on his phone (D683)', () => {
     await act(async () => { setSession({ user: 'us', role: 'main' }); notify() })
     await open('2026-10-07')
     expect(win()!.querySelector('.win-tools')).toBeNull()
-    expect($('#icAddPuck')).toBeNull(); expect($('#icAddPucks')).toBeNull()
+    expect($('#icAddPuck')).toBeNull(); expect($('#icNewNotePpl')).toBeNull()
+  })
+})
+
+/* A NOTE CARRIES ITS OWN PUCKS (owner D684, 9 Oct 26 — "For the +note, perhaps just have a function to add pucks on the
+   text written, instead of a +pucks button"; D688 compact; D689 a person taken off as before; D692 drawing A; D695 a
+   note may hold people and no words). The saved record's rules are state/plan.test.ts; here, what the window does. */
+describe('a note carries its own pucks (D684, D695)', () => {
+  const D = '2026-10-07'
+  const notes = () => PLANPUCKS.filter((p: any) => p.date === D)
+  const type = async (el: Element | null, v: string) => { expect(el, 'a box to type in').toBeTruthy(); await act(async () => { const i = el as HTMLInputElement; Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(i, v); i.dispatchEvent(new Event('input', { bubbles: true })) }) }
+  const blur = async (el: Element | null) => act(async () => { (el as HTMLElement).dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
+  const pickFirst = async (n: number) => { const ps = $$('.ic-pickp:not(.already)').slice(0, n); for (const b of ps) await click(b); await click($('#icPickOk')); return ps.map(b => b.getAttribute('data-pickp')!) }
+  /* cleared straight from the store, whoever the test left signed in (a member's delete is refused, rightly) */
+  afterEach(async () => { await act(async () => { for (let i = PLANPUCKS.length - 1; i >= 0; i--) if (PLANPUCKS[i].date === D) PLANPUCKS.splice(i, 1); notify() }) })
+
+  it('a note with words has a small "+" among its buttons: it opens the people to pick, and they land on THAT note, four across, the dashed "+" the last of them', async () => {
+    await act(async () => { addPlanPuck(D, 'Brief the new guys, 0800'); notify() })
+    await open(D)
+    const id = notes()[0].id, box = () => tid('idy-note-' + id)!
+    expect(box().querySelector('.ic-poppuck-txt')!.textContent).toBe('Brief the new guys, 0800')
+    expect(box().querySelector('.ic-secpk-grid'), 'no people, no row of people').toBeNull()
+    await click(box().querySelector('[data-pkadd]'))
+    expect($('.ic-pick')).toBeTruthy()
+    const picked = await pickFirst(2)
+    expect(notes().length, 'no second note').toBe(1)
+    expect(notes()[0].ids).toEqual(picked)
+    expect(box().className).toContain('has-ppl')
+    const cells = Array.from(box().querySelector('.ic-secpk-grid')!.children)
+    expect(cells.length, 'two pucks and the "+"').toBe(3)
+    expect(cells[2].matches('button.ic-pkadd'), 'the "+" is the last of them').toBe(true)
+    expect(box().querySelectorAll('[data-pkadd]').length, 'one "+" — the small one among the buttons has gone').toBe(1)
+    /* its "+" again: the men already on it are ticked and locked, and one more is added to the same note */
+    await click(cells[2])
+    expect($$('.ic-pickp.already').length).toBe(2)
+    await pickFirst(1)
+    expect(notes()[0].ids.length).toBe(3); expect(notes().length).toBe(1)
+  })
+  it('a note of people and no words draws no line of words: its people, the "+", then the pencil and the cross — and the pencil adds words later', async () => {
+    const [a, b] = crew()
+    await act(async () => { addPlanPuck(D, '', [a, b]); notify() })
+    await open(D)
+    const id = notes()[0].id, box = () => tid('idy-note-' + id)!
+    expect(box().className).toContain('no-words')
+    expect(box().querySelector('.ic-poppuck-txt')).toBeNull()
+    expect(Array.from(box().children).map(c => c.tagName === 'BUTTON' ? 'button' : c.className.split(' ')[0]), 'the people first, the two buttons after').toEqual(['ic-secpucks', 'button', 'button'])
+    await click(box().querySelector('[data-ppedit]'))
+    const edit = box().querySelector('.ic-poppuck-edit')
+    expect(edit, 'a box for its words').toBeTruthy()
+    expect(box().querySelector('.ic-secpk-grid'), 'its people stay in sight while the words are typed').toBeTruthy()
+    await type(edit, 'Range party'); await blur(edit)
+    expect(notes()[0].text).toBe('Range party'); expect(notes()[0].ids).toEqual([a, b])
+    expect(box().className).not.toContain('no-words')
+  })
+  it('a new note written and given people in one go is ONE note, words and people together', async () => {
+    await open(D)
+    await click($('#icAddPuck'))
+    await type($('.ic-newnote .ic-poppuck-edit'), 'Duty swap list')
+    await click($('#icNewNotePpl'))
+    expect(notes().length, 'nothing is made while the picker is up').toBe(0)
+    const picked = await pickFirst(2)
+    expect(notes().length).toBe(1)
+    expect(notes()[0].text).toBe('Duty swap list'); expect(notes()[0].ids).toEqual(picked)
+    expect($('.ic-newnote'), 'the new-note box has closed').toBeNull()
+  })
+  it('the picker closed with nobody ticked leaves the words as a note; with no words either, nothing', async () => {
+    await open(D)
+    await click($('#icAddPuck')); await click($('#icNewNotePpl'))
+    expect(($('#icPickOk') as HTMLButtonElement).disabled, 'OK waits for someone to be ticked').toBe(true)
+    await click($('#icPickCancel'))
+    expect($('.ic-pick')).toBeNull(); expect($('.ic-newnote'), 'the new-note box has closed with it').toBeNull()
+    expect(notes().length, 'no words, no people: no note').toBe(0)
+    await click($('#icAddPuck'))
+    await type($('.ic-newnote .ic-poppuck-edit'), 'Just words')
+    await click($('#icNewNotePpl'))
+    await click($('#icPickCancel'))
+    expect(notes().map((p: any) => [p.text, (p.ids || []).length])).toEqual([['Just words', 0]])
+  })
+  it('emptying the words of a note that has people keeps the note; emptying one that has none changes nothing', async () => {
+    const [a] = crew()
+    await act(async () => { addPlanPuck(D, 'plain'); addPlanPuck(D, 'with a man', [a]); notify() })
+    await open(D)
+    const withMan = notes().find((p: any) => p.text === 'with a man')!, plain = notes().find((p: any) => p.text === 'plain')!
+    for (const p of [withMan, plain]) {
+      await click(tid('idy-note-' + p.id)!.querySelector('[data-ppedit]'))
+      const edit = tid('idy-note-' + p.id)!.querySelector('.ic-poppuck-edit')
+      await type(edit, '   '); await blur(edit)
+    }
+    expect(withMan.text, 'the words went; the man stays').toBe(''); expect(withMan.ids).toEqual([a])
+    expect(plain.text, 'a note of words alone is not emptied — the cross deletes it').toBe('plain')
+  })
+  it('the cross deletes the whole note, its people with it', async () => {
+    const [a, b] = crew()
+    await act(async () => { addPlanPuck(D, 'with two', [a, b]); notify() })
+    await open(D)
+    await click(tid('idy-note-' + notes()[0].id)!.querySelector('[data-ppdel]'))
+    expect(notes().length).toBe(0)
+  })
+  it('a member reads a note’s words and its people, and has none of its buttons', async () => {
+    const [a, b] = crew()
+    await act(async () => { addPlanPuck(D, 'for all to read', [a, b]); notify() })
+    await act(async () => { setSession({ user: 'us', role: 'main' }); notify() })
+    await open(D)
+    const box = tid('idy-note-' + notes()[0].id)!
+    expect(box.querySelector('.ic-poppuck-txt')!.textContent).toBe('for all to read')
+    expect(box.querySelectorAll('.ic-secpk .puck').length).toBe(2)
+    expect(box.querySelector('button'), 'no "+", no pencil, no cross').toBeNull()
+  })
+  it('the month’s cell shows a note’s words and its people', async () => {
+    const [a, b] = crew()
+    await act(async () => { addPlanPuck(D, 'on the month', [a, b]); notify() })
+    const head = $(`[data-ichead="${D}"]`)!
+    expect(head.querySelector('.ic-chip.plan')!.textContent).toBe('on the month')
+    expect(Array.from(head.querySelectorAll('.ic-pks .ic-pk')).map(x => x.textContent)).toEqual([cs(a), cs(b)])
   })
 })

@@ -29,12 +29,14 @@ import { newId } from '../engine/newid'
 
 /* one SECTION dropped on a day, addressed by its own id rather than its
    position, the same reason inpId exists (engine/inputs.ts): an array a
-   caller can unshift into must never be addressed by index. Two kinds since
-   22 Aug 26 (owner's popover redesign): a NOTE (`kind` absent or 'note' —
-   free text, the original planning-note shape, so every pre-existing entry
-   reads as one unchanged) and a PUCKS row (`kind:'pucks'`, `ids` a list of
-   person ids — "add pucks into it"). The name PLANPUCKS predates the split
-   and is kept: history.ts and the tests hold this binding. */
+   caller can unshift into must never be addressed by index. ONE kind since
+   D684 (9 Oct 26 — "a function to add pucks on the text written, instead of a
+   +pucks button"): a NOTE — `text` its words, `ids` its people (PEOPLE ids,
+   '' a gap), either or both, never neither. From 22 Aug 26 until then there
+   were two (a note, and a PUCKS row `kind:'pucks'`): a record saved as one
+   still loads — it is a note with people and no words — and no reader asks
+   a section its `kind` any more. The name PLANPUCKS predates all of it and is
+   kept: history.ts and the tests hold this binding. */
 export const PLANPUCKS: any[] = []
 /* ISO date ('yyyy-mm-dd') -> the day's free-text TITLE (owner, 22 Aug 26 —
    typed beside the date in the day popover, shown as the cell's own heading
@@ -68,28 +70,37 @@ export function setDayRemark(iso: string, text: string) {
   return true
 }
 
-/* drop a new puck on a day. Refuses empty text outright — an empty puck says
-   nothing and would only sit there as a blank box on the day; unshifts, in
-   the LATE-arriving-first-in-the-list convention the rest of the app uses
-   (engine/inputs.ts's own add()). */
-export function addPlanPuck(iso: string, text: string) {
+/* THE PEOPLE A SECTION CARRIES — read the same way by every door: its `ids`, whatever `kind` it was saved with. Since
+   D684 (9 Oct 26) there is ONE kind of section, a note with words, people, or both; a record saved as the old pucks
+   row (`kind:'pucks'`, his asks of 22–24 Aug 26) is a note with people and no words, and loads as one (D56). */
+const idsOf = (p: any): string[] => Array.isArray(p.ids) ? p.ids : (p.ids = [])
+const hasPeople = (p: any) => Array.isArray(p.ids) && p.ids.some(Boolean)
+const hasWords = (p: any) => !!String(p.text == null ? '' : p.text).trim()
+
+/* drop a new NOTE on a day — its words, its people, or both (owner D684: "a function to add pucks on the text
+   written"; D695: a note may hold people and no words). One with NEITHER is refused: it says nothing and would only
+   sit there as a blank box. The people may come as the picker's batch — deduped, since its category buttons can pick
+   a man twice. Unshifts, in the LATE-arriving-first-in-the-list convention the rest of the app uses (engine/inputs.ts's
+   own add()). */
+export function addPlanPuck(iso: string, text: string, ids?: string[]) {
   if (!canEditSched()) return false
   const t = String(text == null ? '' : text).trim()
-  if (!t) return false
-  PLANPUCKS.unshift({ id: nextPuckId(), date: iso, text: t })
+  const who = [...new Set((ids || []).filter(Boolean))]
+  if (!t && !who.length) return false
+  PLANPUCKS.unshift({ id: nextPuckId(), date: iso, text: t, ...(who.length ? { ids: who } : {}) })
   return true
 }
 
-/* rewrite a puck's text in place. Emptying it out is refused here — delete
-   is removePlanPuck's job, a distinct verb with a distinct undo step, not a
-   side door this one falls into. */
+/* rewrite a note's words in place. Emptying them out is refused where the note has no people — delete is
+   removePlanPuck's job, a distinct verb with a distinct undo step, not a side door this one falls into. A note WITH
+   people may lose its words and stay, as its people alone (D695 — "the pencil adds words later"). */
 export function editPlanPuck(id: string, text: string) {
   if (!canEditSched()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)
   if (!p) return false
   const t = String(text == null ? '' : text).trim()
-  if (!t) return false
-  if (p.text === t) return false
+  if (!t && !hasPeople(p)) return false
+  if (String(p.text == null ? '' : p.text) === t) return false
   p.text = t
   return true
 }
@@ -112,76 +123,53 @@ export function removePlanPuck(id: string) {
   return true
 }
 
-/* ---- the pucks-row section (owner, 22 Aug 26 — "+pucks button to enable me
-   to add pucks into it … using the full width") ----------------------------- */
+/* ---- a note's people (owner D684, 9 Oct 26; the pucks row of 22–24 Aug 26 before it) ---------------------------- */
 
-/* an EMPTY pucks row is legal on creation — unlike a note, its content is
-   added by picking people one at a time, so refusing empty would refuse the
-   only way to start one. Appends (not unshifts): the owner arranges section
-   order by hand, and a new section belongs at the end of what is already
-   arranged, not on top of it. */
-export function addPuckRow(iso: string, ids?: string[]) {
-  if (!canEditSched()) return false
-  /* an initial roster may come from the multi-select picker (owner, 23 Aug 26
-     — "select a few pucks at 1 go … then press ok"): dedupe it, since the
-     picker's category buttons can select the same person twice. Absent ids
-     keep the empty-row-on-creation behaviour the + Pucks button always had. */
-  const seed = ids ? [...new Set(ids)] : []
-  PLANPUCKS.push({ id: nextPuckId(), date: iso, kind: 'pucks', ids: seed })
-  return true
-}
-
-/* add SEVERAL people to an existing pucks row in one write (the picker's OK) —
-   only those not already on the row, so re-adding is a no-op rather than a
-   duplicate. Returns whether anything landed. */
+/* add SEVERAL people to a note in one write (the picker's OK) — only those not already on it, so re-adding is a
+   no-op rather than a duplicate. Returns whether anything landed. */
 export function addPuckPeople(id: string, personIds: string[]) {
   if (!canEditSched()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)
-  if (!p || p.kind !== 'pucks') return false
-  const ids: string[] = p.ids || (p.ids = [])
+  if (!p) return false
+  const ids = idsOf(p)
   let added = false
   for (const pid of personIds) if (pid && !ids.includes(pid)) { ids.push(pid); added = true }
   return added
 }
 
-/* add/remove one person on a pucks row — one verb, because the UI is one
-   control (pick a name to add it, drag it off / right-click to drop it) and
-   two mutators would be two write paths for one gesture. Refuses a note
-   section: `ids` on a note would be silent garbage nothing renders.
-   REMOVAL LEAVES A GAP, not a splice (owner, 24 Aug 26 — "when I remove the
-   added pucks the rest of the pucks that was in place will not move …
-   the space that was empty will remain empty"): the slot is blanked to ''
-   so every surviving puck keeps its grid position, and only TRAILING blanks
-   are trimmed so the row never carries dead cells past its last puck. A blank
-   is skipped by every reader (`ids.filter(Boolean)`) and never reaches the
-   engine. CORRECTED 17 Sep 26: the old "never persisted (this state is
-   session-only)" is wrong — the planning layer IS persisted, as the plan/all
-   record. A trailing blank is trimmed before it can be stored; an interior blank
-   does persist, and must, or surviving pucks would shift position on reload. Adds still append. */
+/* add/remove one person on a note — one verb, because the UI is one control (pick a name to add it, drag it off /
+   right-click to drop it) and two mutators would be two write paths for one gesture.
+   REMOVAL LEAVES A GAP, not a splice (owner, 24 Aug 26 — "when I remove the added pucks the rest of the pucks that
+   was in place will not move … the space that was empty will remain empty"): the slot is blanked to '' so every
+   surviving puck keeps its grid position, and only TRAILING blanks are trimmed so the note never carries dead cells
+   past its last puck. A blank is skipped by every reader (`ids.filter(Boolean)`) and never reaches the engine. The
+   planning layer IS persisted (corrected 17 Sep 26): a trailing blank is trimmed before it can be stored; an interior
+   blank does persist, and must, or surviving pucks would shift position on reload. Adds still append.
+   THE LAST MAN OFF A NOTE WITH NO WORDS TAKES THE NOTE WITH HIM (D695's reading: a note with neither words nor people
+   is not kept) — the old pucks row stayed as an empty band for the scheduler to delete; there is nothing to keep. */
 export function togglePuckPerson(id: string, personId: string) {
   if (!canEditSched()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)
-  if (!p || p.kind !== 'pucks' || !personId) return false
-  const ids: string[] = p.ids || (p.ids = [])
+  if (!p || !personId) return false
+  const ids = idsOf(p)
   const ix = ids.indexOf(personId)
   if (ix >= 0) {
     ids[ix] = ''
     while (ids.length && !ids[ids.length - 1]) ids.pop()
+    if (!ids.length && !hasWords(p)) PLANPUCKS.splice(PLANPUCKS.indexOf(p), 1)
   } else ids.push(personId)
   return true
 }
 
-/* SWAP two slots of a pucks row (owner, 24 Aug 26 — "shift the pucks around …
-   when I move pucks over each other it will swap the crew"). Dragging a puck
-   onto another exchanges the two; dropping it onto an empty slot moves it there
-   (the blank rides back to the vacated slot). Trailing blanks are trimmed after,
-   exactly as a removal does, so moving the last puck earlier doesn't leave a
-   dangling empty cell — internal gaps still hold their place. */
+/* SWAP two slots of a note's people (owner, 24 Aug 26 — "shift the pucks around … when I move pucks over each other
+   it will swap the crew"). Dragging a puck onto another exchanges the two; dropping it onto an empty slot moves it
+   there (the blank rides back to the vacated slot). Trailing blanks are trimmed after, exactly as a removal does, so
+   moving the last puck earlier doesn't leave a dangling empty cell — internal gaps still hold their place. */
 export function movePuckPerson(id: string, from: number, to: number) {
   if (!canEditSched()) return false
   const p = PLANPUCKS.find((x: any) => x.id === id)
-  if (!p || p.kind !== 'pucks') return false
-  const ids: string[] = p.ids || (p.ids = [])
+  if (!p) return false
+  const ids = idsOf(p)
   if (from === to || from < 0 || to < 0 || from >= ids.length || to >= ids.length) return false
   const t = ids[from]; ids[from] = ids[to]; ids[to] = t
   while (ids.length && !ids[ids.length - 1]) ids.pop()

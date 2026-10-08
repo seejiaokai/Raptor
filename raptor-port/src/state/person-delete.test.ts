@@ -20,7 +20,7 @@ import { wirePersist } from './persist'
 import { schedWrite, SCHED_TYPES } from './sched-commit'
 import { HOOKS } from '../engine/hooks'
 import { accountsLoad, accountByName, signIn, sessionFor, ACCOUNTS_LIST } from './accounts'
-import { PLANPUCKS, addPuckRow } from './plan'
+import { PLANPUCKS, addPlanPuck } from './plan'
 import { newPersonProblem } from './roster-add'
 import { deletePerson, deleteCutoff, personKeysOnDay, effectiveToday, deletedRestoreProblem } from './person-delete'
 import { loadVersionToWorkingCopy, ROWSLEFT, rowsLeftSaid } from '../engine/drafts'
@@ -140,12 +140,21 @@ describe('PO6 — days he flew keep his puck; every day from the cutoff loses hi
     expect(PLANPUCKS.find(e => e.id === 'pp1').ids).toEqual(['bane', '', 'pike'])
     expect(PLANPUCKS.find(e => e.id === 'pp0').ids).toEqual([HIM])
   })
-  it('…a pucks row made on the calendar itself (its own door) loses him from a day to come', () => {
-    expect(writeInputs(() => { addPuckRow('2026-07-18', ['bane', HIM]) })).toBe(true)
-    const row = PLANPUCKS.find((e: any) => e.date === '2026-07-18' && e.kind === 'pucks')
+  /* a NOTE carries its own people since D684 (9 Oct 26) — whatever it was saved as, a deleted man leaves it */
+  it('…a note with people made on the calendar itself (its own door) loses him from a day to come', () => {
+    expect(writeInputs(() => { addPlanPuck('2026-07-18', 'a note with people', ['bane', HIM]) })).toBe(true)
+    const row = PLANPUCKS.find((e: any) => e.date === '2026-07-18')
     expect(row.ids).toEqual(['bane', HIM])
+    expect(row.kind, 'no kind is written any more').toBeUndefined()
     expect(deletePerson(HIM)).toBe(null)
     expect(PLANPUCKS.find((e: any) => e.id === row.id).ids).toEqual(['bane'])
+  })
+  it('…and a note that held only him, and no words, is not kept empty', () => {
+    expect(writeInputs(() => { addPlanPuck('2026-07-18', '', [HIM]); addPlanPuck('2026-07-19', 'words stay', [HIM]) })).toBe(true)
+    expect(deletePerson(HIM)).toBe(null)
+    expect(PLANPUCKS.some((e: any) => e.date === '2026-07-18'), 'a note with neither words nor people is not kept').toBe(false)
+    const kept = PLANPUCKS.find((e: any) => e.date === '2026-07-19')
+    expect(kept.text).toBe('words stay'); expect(kept.ids).toEqual([])
   })
 })
 

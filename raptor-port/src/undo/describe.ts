@@ -348,13 +348,13 @@ export function describeEntry(entry: UndoEntry): string {
   if (entry.type === 'sched.text') return textLabel(entry.detail) || TYPE_PHRASE['sched.text']
   /* a warning hidden, or flagged again — which of the two, from the command's own detail ([WARN-HIDE-KEPT], D469) */
   if (entry.type === 'sched.warnMute') { const h = parseHideDetail(entry.detail); return h && !h.hidden ? 'flagging a warning again' : TYPE_PHRASE['sched.warnMute'] }
-  /* the Inputs calendar's own records — a day title (`plan/dm:<iso>`), a note or pucks row (`plan/pp:<id>`), one record
+  /* the Inputs calendar's own records — a day title (`plan/dm:<iso>`), a note — its words, its people (`plan/pp:<id>`; D684) — one record
      each since [DB-READINESS] group A, phase 2 — saved through the Inputs page's door: with no input row, the change is
      on the calendar (the walk, R2: a day title read "a personal input") */
   const plans = entry.forward.filter((c: Change) => c.collection === 'plan')
   if (plans.length && inputsCount(entry) === 0) {
     const dm = plans.some(c => c.id.startsWith('dm:')), pp = plans.some(c => c.id.startsWith('pp:'))
-    return dm && !pp ? 'a day title on the calendar' : pp && !dm ? 'pucks on the calendar' : 'a change to the calendar'
+    return dm && !pp ? 'a day title on the calendar' : pp && !dm ? 'a note on the calendar' : 'a change to the calendar'
   }
   /* one input filed through the Inputs page's batch door is one input (walker A2-F2) */
   if (entry.type === 'inputs.batch') { const n = inputsCount(entry); return n === 1 ? 'a personal input' : n > 1 ? `${n} inputs` : TYPE_PHRASE['inputs.batch'] }

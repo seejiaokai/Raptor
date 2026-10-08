@@ -30,13 +30,13 @@
    THE FIRST CALENDAR WAS A LAYER OVER THE WHOLE SCREEN (22 Aug 26); since the calendar-first Inputs (D574 / D580) it
    has only ever been part of the Inputs page. Its overlay half went with this re-make — the page's scroll lock, its
    own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { INPUTS, inputCoversDate, inpLabel, defaultAllday, isSansAvail, sansLetters } from '../engine/inputs'
 import { dayFacts, flyAnswer, flyMonth, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { puck } from './html'
-import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckRow, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from '../state/plan'
+import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from '../state/plan'
 import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips'
@@ -330,10 +330,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
       return
     }
     showDay(entry.fromIso)
-    /* a NOTE opens already in its own edit box; a PUCKS row has no text to edit, so its tap just opens the day (its
-       people are edited through the row's own picker there) */
+    /* a note with WORDS opens already in its own edit box; one that holds people and no words has none to edit, so
+       its tap just opens the day (its people are changed on the note there) */
     const sec = PLANPUCKS.find((p: any) => p.id === entry.pid)
-    if (sec && sec.kind === 'pucks') { setPopPuckEdit(null) }
+    if (sec && !String(sec.text || '').trim()) { setPopPuckEdit(null) }
     else { setPopPuckEdit(entry.pid); setPuckDraft(sec?.text || '') }
   }
   const live = useRef({ tapEntry, pickDate, openAdd, step: (_n: number) => {} })
@@ -718,8 +718,6 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
         tools={sched ? <>
           <button type="button" className="abtn sm" id="icAddPuck"
             onClick={() => { setPopPuckEdit(''); setPuckDraft('') }}>+ Note</button>
-          <button type="button" className="abtn sm" id="icAddPucks"
-            onClick={() => { setPickFor(''); setPickIso(iso); setPickSel(new Set()) }}>+ Pucks</button>
         </> : null}>
         {/* PINNED: the day's title and "+ Input" stay while the list scrolls under them */}
         <div className="sd-top">
@@ -740,18 +738,32 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
           </div>
         </div>
         <div className="sd-list" data-testid="idy-list">
-            {/* THE SECTIONS (owner, 22 Aug 26): each section is a full-width block — a note is free text, a pucks row is
-                people — and an admin drags the ⠿ handle to rearrange them. Members read them, nothing more. Their two
-                small buttons, + Note and + Pucks, are in the window's bar beside the date since D683 (above). */}
+            {/* THE NOTES (owner D684, 9 Oct 26 — "For the +note, perhaps just have a function to add pucks on the text
+                written, instead of a +pucks button"; D688 "more compact"; D692 drawing A; D694; D695). ONE kind of
+                section: a note holds words, people, or both. Its words are one slim line with a small pencil and
+                cross; its people stand four across straight under them, the schedule's own pucks, a dashed "+" the
+                last of them; a note of people and no words has no line of words at all — the people, the "+", then
+                the pencil (which adds words) and the cross. An admin drags the ⠿ handle to rearrange notes; members
+                read them, nothing more. A person is taken off as before (D689): his puck dragged off the note, or
+                onto another to swap; a right-click removes too. "+ Note" is in the window's bar (D683). */}
             {entries.pucks.length > 0 && (
               <div className="ic-secs">
                 {entries.pucks.map((p: any) => {
-                  /* an EMPTY pucks row is a scheduler's work-in-progress; a
-                     member would see only a bare band with nothing in it and
-                     nothing to do — skip it for them (review fix, 22 Aug 26) */
-                  if (!sched && p.kind === 'pucks' && !(p.ids || []).some(Boolean)) return null
+                  const ids: string[] = Array.isArray(p.ids) ? p.ids : []
+                  const ppl = ids.some(Boolean), words = String(p.text || '').trim()
+                  /* a note with neither is not kept (state/plan.ts) — one saved empty before D684 draws nothing */
+                  if (!words && !ppl) return null
+                  const editing = sched && popPuckEdit === p.id
                   const dragCls = secDrag === p.id ? ' dragging'
                     : secDrag && secOver && secOver.id === p.id ? (secOver.after ? ' dragover after' : ' dragover') : ''
+                  const pick = () => { setPickFor(p.id); setPickIso(iso); setPickSel(new Set()) }
+                  const tools = sched && <>
+                    {!ppl && <button type="button" data-pkadd={p.id} className="ic-note-ppl" aria-label="Add people to this note" title="Add people" onClick={pick}>+</button>}
+                    <button type="button" data-ppedit={p.id} aria-label={words ? 'Edit note' : 'Add words to this note'} title={words ? 'Edit' : 'Add words'}
+                      onClick={() => { setPopPuckEdit(p.id); setPuckDraft(words) }}>✏</button>
+                    <button type="button" data-ppdel={p.id} aria-label="Delete note" title="Delete this note"
+                      onClick={() => writeInputs(() => removePlanPuck(p.id))}>✕</button>
+                  </>
                   return (
                     <div key={p.id} className={'ic-sec' + dragCls} data-sec={p.id}>
                       {sched && (
@@ -759,85 +771,72 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                           style={{ touchAction: 'none' }}
                           onPointerDown={e => startSecDrag(e, p.id)}>⠿</span>
                       )}
-                      {p.kind === 'pucks' ? (
-                        /* a full-width row of the app's own canonical pucks;
-                           the picker adds one per pick, its ✕ drops one, and
-                           the trailing ✕ deletes the whole row (always drawn
-                           for a scheduler — review fix, 22 Aug 26: it used to
-                           appear only once the row was emptied, which made a
-                           filled row look undeletable). Clicks STOP here: the
-                           injected puck() markup matches the document-level
-                           routeClick's `.puck[data-person]` branch, which
-                           would silently toggle the schedule pages' selection
-                           from inside this overlay. */
-                        <div className="ic-secpucks" data-secpucks={p.id} onClick={e => e.stopPropagation()}>
-                          {/* the pucks sit in a fixed 3-column grid (owner, 24 Aug
-                              26 — "3 pucks per row"). A removed puck BLANKS its slot
-                              rather than closing the gap (togglePuckPerson), so an
-                              empty cell holds the position and the survivors never
-                              shift; only trailing blanks are trimmed. data-pkidx is
-                              the slot's index, read by startPkDrag to swap one puck
-                              onto another (or onto an empty slot). */}
-                          <div className="ic-secpk-grid">
-                            {(p.ids || []).map((id: string, i: number) => !id ? (
-                              <span key={'g' + i} className="ic-secpk ic-secpk-gap" data-pkidx={i} aria-hidden="true" />
-                            ) : (
-                              /* a seated puck carries NO ✕ (owner, 24 Aug 26): drag
-                                 it onto another puck to SWAP, onto an empty slot to
-                                 MOVE, or off the row to REMOVE; a right-click also
-                                 removes (desktop). touchAction:none so the drag
-                                 doesn't scroll the sheet under the finger. */
-                              <span key={id} className="ic-secpk" data-pkidx={i} style={sched ? { touchAction: 'none' } : undefined}
-                                onPointerDown={sched ? (e => startPkDrag(e, p.id, id, i)) : undefined}
-                                onContextMenu={sched ? (e => { e.preventDefault(); writeInputs(() => togglePuckPerson(p.id, id)) }) : undefined}
-                                title={sched ? `${PEOPLE[id] ? PEOPLE[id].cs : id} — drag to swap, off the row to remove` : (PEOPLE[id] ? PEOPLE[id].cs : id)}>
-                                <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
-                              </span>
-                            ))}
+                      {/* `data-secpucks` is the whole note: a puck let go anywhere on it is a swap or a cancel, and only
+                          one let go OUTSIDE it is taken off (startPkDrag) */}
+                      <div className={'ic-poppuck ic-note' + (ppl ? ' has-ppl' : '') + (!words && !editing ? ' no-words' : '')} data-secpucks={p.id} data-testid={'idy-note-' + p.id}>
+                        {editing ? (
+                          <input className="ic-poppuck-edit" autoFocus value={puckDraft}
+                            aria-label="Edit planning note" onChange={e => setPuckDraft(e.target.value)}
+                            onBlur={() => {
+                              /* emptied, a note WITH people loses its words and stays (D695); one without is left as it was */
+                              const t = puckDraft.trim()
+                              if (t !== words && (t || ppl)) writeInputs(() => editPlanPuck(p.id, t))
+                              setPopPuckEdit(null)
+                            }}
+                            onKeyDown={blurOnEnter} />
+                        ) : words ? <span className="ic-poppuck-txt">{words}</span> : null}
+                        {(words || editing) && tools}
+                        {ppl && (
+                          /* the app's own canonical pucks. Clicks STOP here: the injected puck() markup matches the
+                             document-level routeClick's `.puck[data-person]` branch, which would silently toggle the
+                             schedule pages' selection from inside this window. A removed puck BLANKS its slot rather
+                             than closing the gap (togglePuckPerson), so an empty cell holds the position and the
+                             survivors never shift; data-pkidx is the slot's index, read by startPkDrag. */
+                          <div className="ic-secpucks" onClick={e => e.stopPropagation()}>
+                            <div className="ic-secpk-grid">
+                              {ids.map((id: string, i: number) => !id ? (
+                                <span key={'g' + i} className="ic-secpk ic-secpk-gap" data-pkidx={i} aria-hidden="true" />
+                              ) : (
+                                /* a seated puck carries NO ✕ (owner, 24 Aug 26): drag it onto another puck to SWAP, onto
+                                   an empty slot to MOVE, or off the note to REMOVE; a right-click also removes (desktop).
+                                   touchAction:none so the drag doesn't scroll the window under the finger. */
+                                <span key={id} className="ic-secpk" data-pkidx={i} style={sched ? { touchAction: 'none' } : undefined}
+                                  onPointerDown={sched ? (e => startPkDrag(e, p.id, id, i)) : undefined}
+                                  onContextMenu={sched ? (e => { e.preventDefault(); writeInputs(() => togglePuckPerson(p.id, id)) }) : undefined}
+                                  title={sched ? `${PEOPLE[id] ? PEOPLE[id].cs : id} — drag to swap, off the note to remove` : (PEOPLE[id] ? PEOPLE[id].cs : id)}>
+                                  <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
+                                </span>
+                              ))}
+                              {sched && <button type="button" className="ic-pkadd" data-pkadd={p.id} aria-label="Add people to this note" title="Add people" onClick={pick}>+</button>}
+                            </div>
                           </div>
-                          {sched && (
-                            <button type="button" className="ic-pkadd" data-pkadd={p.id}
-                              onClick={() => { setPickFor(p.id); setPickIso(iso); setPickSel(new Set()) }}>+ add</button>
-                          )}
-                          {sched && <button type="button" data-ppdel={p.id}
-                            className="ic-pkdel ic-rowdel" aria-label="Delete pucks row" title="Delete this pucks row"
-                            onClick={() => writeInputs(() => removePlanPuck(p.id))}>✕</button>}
-                        </div>
-                      ) : sched && popPuckEdit === p.id ? (
-                        <input className="ic-poppuck-edit" autoFocus value={puckDraft}
-                          aria-label="Edit planning note" onChange={e => setPuckDraft(e.target.value)}
-                          onBlur={() => {
-                            const t = puckDraft.trim()
-                            if (t && t !== p.text) writeInputs(() => editPlanPuck(p.id, t))
-                            setPopPuckEdit(null)
-                          }}
-                          onKeyDown={blurOnEnter} />
-                      ) : (
-                        <div className="ic-poppuck">
-                          <span className="ic-poppuck-txt">{p.text}</span>
-                          {sched && <>
-                            <button type="button" data-ppedit={p.id} aria-label="Edit note"
-                              onClick={() => { setPopPuckEdit(p.id); setPuckDraft(p.text) }}>✏</button>
-                            <button type="button" data-ppdel={p.id} aria-label="Delete note"
-                              onClick={() => writeInputs(() => removePlanPuck(p.id))}>✕</button>
-                          </>}
-                        </div>
-                      )}
+                        )}
+                        {!words && !editing && tools}
+                      </div>
                     </div>
                   )
                 })}
               </div>
             )}
+            {/* A NEW NOTE: its words, and "+ people" beside the box — so a note of people and no words can be made
+                (D695). The box keeps its words while the picker is up; the picker's OK makes the note, words and
+                people together, in one step. */}
             {sched && popPuckEdit === '' && (
-              <input className="ic-poppuck-edit" autoFocus value={puckDraft} aria-label="New planning note"
-                placeholder="e.g. brief the new guy"
-                onChange={e => setPuckDraft(e.target.value)}
-                onBlur={() => {
-                  const t = puckDraft.trim()
-                  if (t) writeInputs(() => addPlanPuck(iso, t))
-                  setPopPuckEdit(null); setPuckDraft('')
-                }}
-                onKeyDown={blurOnEnter} />
+              <div className="ic-newnote">
+                <input className="ic-poppuck-edit" autoFocus value={puckDraft} aria-label="New planning note"
+                  placeholder="e.g. brief the new guy"
+                  onChange={e => setPuckDraft(e.target.value)}
+                  onBlur={() => {
+                    if (pickFor === '') return                          // the picker is up for THIS note: it finishes it
+                    const t = puckDraft.trim()
+                    if (t) writeInputs(() => addPlanPuck(iso, t))
+                    setPopPuckEdit(null); setPuckDraft('')
+                  }}
+                  onKeyDown={blurOnEnter} />
+                <button type="button" className="ic-pkadd ic-newnote-ppl" id="icNewNotePpl" aria-label="Add people to this note"
+                  onPointerDown={e => e.preventDefault()}
+                  onClick={() => { setPickFor(''); setPickIso(iso); setPickSel(new Set()) }}>+ people</button>
+              </div>
             )}
 
             {/* THE INPUTS — everyone listed, the list scrolls, never "+ more" (D648). One line each: who, the kind and
@@ -920,8 +919,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
 
   /* THE MULTI-SELECT PUCK PICKER (owner, 23 Aug 26 — "a placeholder view to
      select a few pucks at 1 go by clicking a few then press ok"). Opens from
-     + Pucks (pickFor='' → a NEW row is made on OK) or a row's + add (pickFor is
-     that row's id → the ticks are added to it). The category buttons LIGHT UP
+     a note's "+" (pickFor is that note's id → the ticks are added to it) or the "+ people" of a note being written
+     (pickFor='' → the note is made on OK, its words and its people together — D684, D695). The category buttons LIGHT UP
      everyone in a category at once (personMatchesCat, the same predicate the
      highlight chips use), toggling the whole group. People already on the
      target row are shown ticked-and-locked so a re-pick can't double them. */
@@ -939,14 +938,20 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
        as the schedule pages' highlight (matchesHiSet, state/view.ts), so the
        picker and the strip can't disagree. */
     const matchesHi = (id: string) => matchesHiSet(PEOPLE[id], pickHi)
-    const close = () => { setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp('') }
+    const shut = () => { setPickFor(null); setPickSel(new Set()); setPickHi(new Set()); setPickGrp('') }
+    /* the note being written is finished by the picker, whichever way it closes: with the people ticked, or — with
+       none — as the words alone, exactly as leaving its box would have made it; no words and no people, no note */
+    const finishNew = (ids: string[]) => {
+      const t = puckDraft.trim()
+      if (t || ids.length) writeInputs(() => addPlanPuck(pickIso, t, ids))
+      setPopPuckEdit(null); setPuckDraft('')
+    }
+    const close = () => { if (pickFor === '') finishNew([]); shut() }
     const confirm = () => {
       const ids = [...pickSel]
-      if (ids.length) {
-        if (pickFor === '') writeInputs(() => addPuckRow(pickIso, ids))
-        else writeInputs(() => addPuckPeople(pickFor!, ids))
-      }
-      close()
+      if (pickFor === '') finishNew(ids)
+      else if (ids.length) writeInputs(() => addPuckPeople(pickFor!, ids))
+      shut()
     }
     /* the roster is grouped by seat, the way the aircrew palette lays its crew
        out (owner, 24 Aug 26 — "arrange them just like how the placeholders
@@ -1108,20 +1113,27 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                         {tag && <span className={'ib-tag k-' + tag.kind} data-testid={'ib-tag-' + iso}>{tag.text}</span>}
                       </div>
                       {rmk && <div className="ic-rmk" title={rmk}>{rmk}</div>}
-                      {pucks.map((p: any) => p.kind === 'pucks' ? (
-                        /* a pucks section as a row of TINY person chips, styled like the app's standard puck (owner,
-                           23 Aug 26): the CATEGORY a colour line on the right, a SANS person a purple line on the left */
-                        <div key={'p' + p.id} className="ic-pks" data-pid={p.id} data-icdrag>
-                          {(p.ids || []).filter(Boolean).map((id: string) => {
-                            const per = PEOPLE[id]
-                            const cat = per && QCOLOR[per.q]
-                            return <span key={id} className={'ic-pk' + (per && per.san ? ' sans' : '')}
-                              style={cat ? ({ ['--pk-cat']: cat } as React.CSSProperties) : undefined}>{per ? per.cs : id}</span>
-                          })}
-                        </div>
-                      ) : (
-                        <div key={'p' + p.id} className="ic-chip plan" data-pid={p.id} data-icdrag>{p.text}</div>
-                      ))}
+                      {/* a note: its words as a chip, and its people as a row of TINY person chips, styled like the app's
+                          standard puck (owner, 23 Aug 26): the CATEGORY a colour line on the right, a SANS person a
+                          purple line on the left. One note may draw both (D684); either is the note, and drags it. */}
+                      {pucks.map((p: any) => {
+                        const who = (Array.isArray(p.ids) ? p.ids : []).filter(Boolean), words = String(p.text || '').trim()
+                        return (
+                          <Fragment key={'p' + p.id}>
+                            {words && <div className="ic-chip plan" data-pid={p.id} data-icdrag>{words}</div>}
+                            {who.length > 0 && (
+                              <div className="ic-pks" data-pid={p.id} data-icdrag>
+                                {who.map((id: string) => {
+                                  const per = PEOPLE[id]
+                                  const cat = per && QCOLOR[per.q]
+                                  return <span key={id} className={'ic-pk' + (per && per.san ? ' sans' : '')}
+                                    style={cat ? ({ ['--pk-cat']: cat } as React.CSSProperties) : undefined}>{per ? per.cs : id}</span>
+                                })}
+                              </div>
+                            )}
+                          </Fragment>
+                        )
+                      })}
                     </div>
                   )
                 })}

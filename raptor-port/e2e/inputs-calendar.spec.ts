@@ -431,13 +431,15 @@ test('on a phone the opened day is a panel on the foot of the screen: it opens T
     await expect(win, 'it opens tall (D683)').toHaveClass(/is-tall/)
     const first = (await win.boundingBox())!
     expect(first.y).toBeLessThanOrEqual(12); expect(first.height).toBeGreaterThan(844 * 0.9); expect(first.y + first.height).toBeLessThanOrEqual(844)
-    /* the two buttons in the bar, after the date and before the cross — each a finger's size, none over another */
+    /* "+ Note" in the bar, after the date and before the cross — a finger's size, over nothing ("+ Pucks" stood beside
+       it until D684, 9 Oct 26: a note carries its own pucks now) */
+    await expect(page.locator('#icAddPucks')).toHaveCount(0)
     const bar = await page.evaluate(() => {
       const r = (s: string) => document.querySelector(s)!.getBoundingClientRect()
-      const t = r('[data-testid="win-inputsday"] .win-ttl'), n = r('#icAddPuck'), k = r('#icAddPucks'), x = r('[data-testid="win-inputsday-x"]'), b = r('[data-testid="win-inputsday"] .win-bar')
-      return { order: t.right <= n.left + 1 && n.right <= k.left + 1 && k.right <= x.left + 1, inBar: n.top >= b.top && n.bottom <= b.bottom && k.top >= b.top && k.bottom <= b.bottom, h: Math.min(n.height, k.height), w: Math.min(n.width, k.width), title: t.width }
+      const t = r('[data-testid="win-inputsday"] .win-ttl'), n = r('#icAddPuck'), x = r('[data-testid="win-inputsday-x"]'), b = r('[data-testid="win-inputsday"] .win-bar')
+      return { order: t.right <= n.left + 1 && n.right <= x.left + 1, inBar: n.top >= b.top && n.bottom <= b.bottom, h: n.height, w: n.width, title: t.width }
     })
-    expect(bar.order, 'the date, + Note, + Pucks, the cross — in that order, none over another').toBe(true)
+    expect(bar.order, 'the date, + Note, the cross — in that order, none over another').toBe(true)
     expect(bar.inBar).toBe(true); expect(bar.h).toBeGreaterThanOrEqual(36); expect(bar.w).toBeGreaterThanOrEqual(44)
     expect(bar.title, 'the date is still read whole').toBeGreaterThan(80)
     /* a tap on one of them is the button's, not the bar's: the note box opens and the window keeps its height */
@@ -1055,6 +1057,54 @@ test('a phone: in an opened day a short remark shares its line with who placed i
     expect(Math.abs(c.placed!.right - c.inner), 'and with no remark it is at the right end too').toBeLessThanOrEqual(1.5)
     expect(c.h).toBeLessThanOrEqual(56)
     expect(await page.evaluate(() => document.documentElement.scrollWidth), 'nothing runs off sideways').toBeLessThanOrEqual(390)
+  } finally { await context.close() }
+})
+
+/* A NOTE CARRIES ITS OWN PUCKS (owner D684, D688, D689, D692, D694, D695 — 9 Oct 26; the design of record
+   `docs/mock/note-with-pucks.html`). What only a real browser can say: where its pucks stand (four across, the fourth
+   as far from the right border as the first from the left — D694), how tall it is on a small phone (D688, D692), a
+   real finger dragging a man off it (D689), and that what was made is there after a reload. The record's rules are
+   state/plan.test.ts; the window's, ui/inputsday.test.tsx; the whole walk, scripts/handpass/note-pucks-walk.mjs. */
+test('a phone: a note is written, given five people from its own "+", stands four across with even room, loses a man to a finger’s drag, and is still there after a reload (D684–D695)', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL, 667)
+  try {
+    await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
+    const win = page.locator('[data-testid="win-inputsday"]'); await expect(win).toBeVisible()
+    await page.locator('#icAddPuck').tap()
+    await page.locator('.ic-newnote .ic-poppuck-edit').fill('Brief the new guys, 0800')
+    await page.locator('.ic-newnote .ic-poppuck-edit').press('Enter')
+    const note = win.locator('.ic-note'); await expect(note).toHaveCount(1)
+    await expect(note.locator('.ic-poppuck-txt')).toHaveText('Brief the new guys, 0800')
+    expect((await note.boundingBox())!.height, 'a note of words alone is one slim line').toBeLessThanOrEqual(36)
+    /* its own "+" — the picker — five people — OK: they land on THIS note */
+    await note.locator('[data-pkadd]').tap(); await expect(page.locator('.ic-pick')).toBeVisible()
+    for (const i of [3, 9, 14, 20, 26]) await page.locator('.ic-pick .ic-pickp').nth(i).tap()
+    await page.locator('#icPickOk').tap()
+    await expect(win.locator('.ic-note')).toHaveCount(1)
+    await expect(note.locator('.ic-secpk:not(.ic-secpk-gap) .puck')).toHaveCount(5)
+    const g = await note.evaluate(box => {
+      const b = box.getBoundingClientRect(), pk = [...box.querySelectorAll('.ic-secpk:not(.ic-secpk-gap) .puck')].map(p => p.getBoundingClientRect())
+      const row1 = pk.filter(p => Math.abs(p.top - pk[0].top) < 3), add = box.querySelector('.ic-secpk-grid .ic-pkadd')!
+      return { h: b.height, across: row1.length, left: pk[0].left - b.left, right: b.right - row1[row1.length - 1].right, addLast: add === add.parentElement!.lastElementChild, wide: document.documentElement.scrollWidth }
+    })
+    expect(g.across, 'four across').toBe(4)
+    expect(g.addLast, 'the dashed "+" is the last of them').toBe(true)
+    expect(Math.abs(g.left - g.right), `even room: ${g.left} left of the first puck, ${g.right} right of the fourth (D694)`).toBeLessThanOrEqual(1.5)
+    expect(g.h, 'compact: the drawing he chose is 77 tall (D692)').toBeLessThanOrEqual(82)
+    expect(g.wide, 'nothing runs off sideways').toBeLessThanOrEqual(390)
+    /* a real finger drags the second man off the note: he is taken off, his place held (D689; his 24 Aug rule) */
+    const from = (await note.locator('.ic-secpk[data-pkidx="1"]').boundingBox())!, w = (await win.boundingBox())!
+    const cdp = await context.newCDPSession(page), touch = (type: string, x?: number, y?: number) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: x == null ? [] : [{ x, y: y!, id: 1 }] } as any)
+    const fx = from.x + from.width / 2, fy = from.y + from.height / 2, ty = Math.min(w.y + w.height - 30, fy + 220)
+    await touch('touchStart', fx, fy); for (let i = 1; i <= 8; i++) await touch('touchMove', fx, fy + (ty - fy) * i / 8); await touch('touchEnd')
+    await expect(note.locator('.ic-secpk:not(.ic-secpk-gap) .puck')).toHaveCount(4)
+    await expect(note.locator('.ic-secpk-gap[data-pkidx="1"]'), 'his place is held').toHaveCount(1)
+    /* saved: after a reload the note, its words and its four people are there */
+    await page.waitForTimeout(600); await page.reload(); await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+    await expect(page.locator('[data-ichead="2026-10-14"] .ic-chip.plan')).toHaveText('Brief the new guys, 0800')
+    await expect(page.locator('[data-ichead="2026-10-14"] .ic-pks .ic-pk'), 'the month’s cell shows its people').toHaveCount(4)
+    await page.locator('#inpCal [data-icday="2026-10-14"]').tap({ position: { x: 10, y: 10 } })
+    await expect(page.locator('[data-testid="win-inputsday"] .ic-note .ic-secpk:not(.ic-secpk-gap) .puck')).toHaveCount(4)
   } finally { await context.close() }
 })
 

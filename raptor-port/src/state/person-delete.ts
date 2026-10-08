@@ -236,12 +236,16 @@ export function applyDelete(id: string, cutoff: string): void {
   /* 3b. every saved week — NOT rewritten since phase 6 (d): each reads without him from his cutoff when its days come
      into memory (engine/overlay.ts). */
   /* 3c. the planning calendar's pucks — a gap, never a splice (the surviving pucks keep their places) */
-  for (const e of PLANPUCKS) {
+  for (const e of [...PLANPUCKS]) {
     /* the row's day is its `date` (state/plan.ts) — this read `iso`, a field no calendar row carries, so a delete never took
        him off one ([DB-READINESS] group A, phase 2: found moving the calendar to one row each) */
-    if (!e || e.kind !== 'pucks' || !Array.isArray(e.ids) || String(e.date || '') < cutoff) continue
+    /* a NOTE's people too, whatever `kind` it was saved with (D684: one kind of section since 9 Oct 26) */
+    if (!e || !Array.isArray(e.ids) || String(e.date || '') < cutoff) continue
     const ix = e.ids.indexOf(id)
-    if (ix >= 0) { e.ids[ix] = ''; trimTail(e.ids) }
+    if (ix < 0) continue
+    e.ids[ix] = ''; trimTail(e.ids)
+    /* a note left with neither words nor people is not kept (D695's reading; state/plan.ts togglePuckPerson) */
+    if (!e.ids.length && !String(e.text == null ? '' : e.text).trim()) PLANPUCKS.splice(PLANPUCKS.indexOf(e), 1)
   }
   validate()
 }
@@ -277,7 +281,7 @@ export function deletedRestoreProblem(changes: any[]): string | null {
       }
       else if (ch.collection === 'inputs') { const a = v && v.person === id ? dateOrd(v.date, v.yr) : null; hit = a != null && a >= isoOrd(cut) }
       /* one calendar row per record since phase 2 (`plan/pp:<id>`); its day is its `date` */
-      else if (ch.collection === 'plan') hit = !!v && v.kind === 'pucks' && String(v.date || '') >= cut && Array.isArray(v.ids) && v.ids.includes(id)
+      else if (ch.collection === 'plan') hit = !!v && String(v.date || '') >= cut && Array.isArray(v.ids) && v.ids.includes(id)
       /* B4 of the change-recording re-test (28 Sep 26): once the one Undo takes roster and settings steps, HIS OWN RECORD
          put back un-deleted, or an accounts list that still holds his account, would bring him back whole (D287 — a
          delete is final; a man the war does not hold leaves no posting record to keep the step dead — Fable's red team 10) */
