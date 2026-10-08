@@ -51,7 +51,7 @@ import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem } from './inputscal-model'
 import { placedLineOf } from './placedline'
-import { cutSentence, dayWord, hoursOf, lateWord } from './sanscal-model'
+import { cutParts, dayWord, hoursOf, lateWord } from './sanscal-model'
 import { FloatWin } from './FloatWindow'
 import { WD } from './daysfmt'
 import { landOn, markLand, paintLand } from './lift'
@@ -1054,7 +1054,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
             <li>A bar runs across the days an input covers: <b>red</b> is an absence, <b>amber</b> a duty or another commitment.</li>
             <li>To file for <b>several days</b>, drag across them — on a phone, hold first, then drag.</li>
             <li><b>NF</b> is a no-fly day. Green is a public holiday. Grey is an Off day.</li>
-            <li><span data-testid="ib-how-cut">{cutSentence('inputs', 'File')}</span></li>
+            {/* the cut-off itself in bold (D691) - the same bold the lines above give "bar" and "several days" */}
+            <li><span data-testid="ib-how-cut">{(p => <>{p.before}<b>{p.cut}</b>{p.after}</>)(cutParts('inputs', 'File'))}</span></li>
           </ol>
         )}
         {under}

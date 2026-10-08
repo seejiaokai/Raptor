@@ -9449,6 +9449,10 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 - **The keyboard** (D621): the month is one tab stop; arrows move the date and turn the month at its ends; Shift +
   arrows stretch a run; Enter opens the day or files for the run; Escape on a date closes the open day, then lets the
   run go, and never leaves the calendar; Delete on a line of the opened day asks first.
+- **"How this works": the late cut-off itself is in BOLD (owner D691, 9 Oct 26 — from his iPhone).** The fifth line of the fold
+  on BOTH calendars prints the cut-off as it is set (D628, D646) with its own words in `<b>` — "the end of the Wednesday
+  two weeks before", "at least 14 days before" — the bold the fold's other lines use. `ui/sanscal-model.ts cutParts` cuts
+  the sentence in three; `cutSentence` is those three joined, so what is read and what is marked cannot drift.
 - **The Calendar | List switch keeps its place (owner D687, 9 Oct 26 — from his iPhone; his standing rule of 2 Sep 26).**
   It is drawn straight after the three tabs on BOTH views (`ui/InputsPage.tsx views` — its own piece; on the Calendar
   it is handed to `ui/InputsCal.tsx` as `lead`, before the month's arrows): on a desktop after the tabs on the one

@@ -316,9 +316,15 @@ describe('"How this works" and the legend (D646, D628)', () => {
     await press($('[data-testid="ib-how"]')!)
     const line = () => $('[data-testid="ib-how-cut"]')!.textContent
     expect(line()).toBe('File at least 14 days before the week starts.')
+    /* THE CUT-OFF ITSELF IS IN BOLD (owner D691, 9 Oct 26 - from his iPhone: "For point 5 u should bold the late input date
+       which is in this case Wednesday two weeks etc") - whatever the setting says, and no other word of the line */
+    const bold = () => [...document.querySelectorAll('[data-testid="ib-how-cut"] b')].map(b => b.textContent)
+    expect(bold()).toEqual(['at least 14 days before'])
     await act(async () => { saveCut('inputs', { mode: 1, lead: 14, wd: 2, weeks: 2 }) })
     expect(line()).toBe(cutSentence('inputs', 'File'))
     expect(line()).toMatch(/Wednesday/)
+    expect(line()).toBe('File by the end of the Wednesday two weeks before the week.')
+    expect(bold()).toEqual(['the end of the Wednesday two weeks before'])
     expect($('[data-testid="ib-how-list"]')!.textContent).not.toMatch(/LATE|\d{1,2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/)
     await act(async () => { saveCut('inputs', { mode: 0, lead: 14, wd: 2, weeks: 2 }) })
   })

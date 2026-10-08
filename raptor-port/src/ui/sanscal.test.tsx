@@ -425,12 +425,17 @@ describe('How this works', () => {
     const last = () => t('sc-how-cut').textContent
     act(() => { saveCut('sans', { mode: 1, wd: 4, weeks: 1, lead: 14 }) })
     expect(last()).toBe('Commit by the end of the Friday of the week before.')
+    /* the cut-off itself is in bold, whatever the setting says (D691) */
+    const bold = () => [...t('sc-how-cut').querySelectorAll('b')].map(b => b.textContent)
+    expect(bold()).toEqual(['the end of the Friday of the week before'])
     act(() => { saveCut('sans', { mode: 0, lead: 10, wd: 0, weeks: 1 }) })
     expect(last()).toBe('Commit at least 10 days before the week starts.')
+    expect(bold()).toEqual(['at least 10 days before'])
     act(() => { saveCut('sans', { mode: 0, lead: 1, wd: 0, weeks: 1 }) })
     expect(last()).toBe('Commit at least 1 day before the week starts.')
     act(() => { saveCut('sans', { mode: 0, lead: 0, wd: 0, weeks: 1 }) })
     expect(last()).toBe('Commit by the end of the Monday the week starts.')
+    expect(bold()).toEqual(['the end of the Monday the week starts'])
     expect(t('sc-how-list').textContent).not.toMatch(/LATE|For the week of/)
   })
 })

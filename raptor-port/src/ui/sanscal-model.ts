@@ -72,10 +72,18 @@ export function sansRoster(people: Record<string, any> = PEOPLE): string[] {
  *  only makes the sentence. A number of days reads "at least N days before": the last day on time is the Monday less
  *  N, so N days or more before the week is exactly it. */
 export function cutSentence(set: 'sans' | 'inputs' = 'sans', verb = 'Commit'): string {
+  const p = cutParts(set, verb)
+  return p.before + p.cut + p.after
+}
+/** The same sentence in three pieces, so the fold can print THE CUT-OFF ITSELF IN BOLD (owner D691, 9 Oct 26 - "bold the
+ *  late input date which is in this case Wednesday two weeks etc"): `cut` is the one thing a man must remember - "the
+ *  end of the Wednesday two weeks before", "at least 3 days before" - and changes with the setting, as the sentence
+ *  does (D628). One body, so the sentence a screen reads and the words it marks cannot drift apart. */
+export function cutParts(set: 'sans' | 'inputs' = 'sans', verb = 'Commit'): { before: string; cut: string; after: string } {
   const c = getCut(set)
-  if (c.mode === 1) return `${verb} by the end of ${cutRuleText(set)}${c.weeks > 1 ? ' the week' : ''}.`
-  if (c.lead > 0) return `${verb} at least ${c.lead} day${c.lead === 1 ? '' : 's'} before the week starts.`
-  return `${verb} by the end of ${cutRuleText(set)}.`
+  if (c.mode === 1) return { before: `${verb} by `, cut: `the end of ${cutRuleText(set)}`, after: `${c.weeks > 1 ? ' the week' : ''}.` }
+  if (c.lead > 0) return { before: `${verb} `, cut: `at least ${c.lead} day${c.lead === 1 ? '' : 's'} before`, after: ' the week starts.' }
+  return { before: `${verb} by `, cut: `the end of ${cutRuleText(set)}`, after: '.' }
 }
 
 /** a commitment's hours, as the opened day prints them (D572: "show their available hours") */

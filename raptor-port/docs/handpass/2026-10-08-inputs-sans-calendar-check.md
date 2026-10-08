@@ -740,3 +740,15 @@ the report that asked him to try each on his iPhone. Taken as his look at those 
 many words that the page behind a window no longer scrolls on his iPhone (D686), so that line stays on the look card
 until he says it. The note that carries its own pucks (D684) was drawn for him the same hour —
 `docs/mock/note-with-pucks.html`; its three questions wait for his answers.
+
+## 19. His look, fifth — the cut-off in bold in "How this works" (D691)
+
+His words, with a picture of the fold open on the Inputs calendar: "For point 5 u should bold the late input date which
+is in this case Wednesday two weeks etc". **Built on both calendars:** the fifth line’s cut-off, as it is set, is in
+the fold’s own bold. **Tier: LOOK** — words drawn in two places by two components, each changed and each with its
+test; nothing that files, saves or counts, no control, no layout (the eight questions: all NO but 4, and the two
+places are named and both seen). **Seen in the built bundle on a phone, both calendars:** Inputs, as set there —
+"File **at least 14 days before** the week starts."; SANS — "Commit by **the end of the Wednesday two weeks before**
+the week." (weight 700; the picture of the SANS fold opened by the host and sent to him). **Tests, red first:** the
+two that already held the sentence (`ui/inputsmonth.test.tsx`, `ui/sanscal.test.tsx`) now also hold which words are
+bold, in every shape the setting takes.

@@ -45,7 +45,7 @@ import { maySansAdd, openSansAdd } from './sansadd'
 import { PEOPLE } from '../engine/people'
 import { puck } from './html'
 import { HlIcon } from './icons'
-import { cutSentence, dayWord, sansCell, sansMine, sansRoster, type SansCell } from './sanscal-model'
+import { cutParts, dayWord, sansCell, sansMine, sansRoster, type SansCell } from './sanscal-model'
 import { useMedia } from './usemedia'
 import { useVersion } from './useStore'
 
@@ -281,7 +281,7 @@ export function SansCal() {
             <li>The coloured pair is how many more are needed to fly: <b>pilots, then WSOs</b>.</li>
             <li><b>F</b> fly · <b>O</b> OFT · <b>A</b> AMT: the SANS who have committed.</li>
             <li><b>NF</b> is a no-fly day. Green is a public holiday. Grey is an Off day.</li>
-            <li>One commitment a day each. <span data-testid="sc-how-cut">{cutSentence('sans')}</span></li>
+            <li>One commitment a day each. <span data-testid="sc-how-cut">{(p => <>{p.before}<b>{p.cut}</b>{p.after}</>)(cutParts('sans'))}</span></li>
           </ol>
         )}
       </div>
