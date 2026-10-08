@@ -104,6 +104,25 @@ describe('installGlobalUndo() wires the live cutover', () => {
     const rule={type:'fly.rule.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyrule:r1',before:null,after:{id:'r1',wd:3,cls:'nf',from:'2027-02-04'}}]} as any
     view.setPage('quals');_snapView(rule,'undo');expect(view.CURPAGE).toBe('inputs');expect(view.CALMONTH).toEqual({y:2027,m:2})
   })
+  /* BOTH READERS of the calendar job's bug check (8 Oct 26 - Astra R4, Sol S4). D672: Undo and Redo leave the screen where
+     it is when what they change is already in view. A day's class shows on BOTH calendars, yet the landing always
+     switched the Inputs page to the SANS tab - and, for a weekday's rule, to the month the rule STARTS in. */
+  it('a day class or a weekday rule changed while the Inputs calendar already shows it: the tab and the month stay (D672)',()=>{
+    const cls={type:'fly.day.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyday:2026-11-05',before:null,after:{cls:'nf'}}]} as any
+    view.setPage('inputs');view.setInpMode('member');view.setInpView('cal');view.setCalMonth({y:2026,m:11})
+    _snapView(cls,'undo')
+    expect(view.CURPAGE).toBe('inputs');expect(view.INPMODE,'the Inputs tab he was on').toBe('member');expect(view.CALMONTH).toEqual({y:2026,m:11})
+    /* on the Inputs calendar, another month: the month turns to the date, the tab is kept */
+    view.setCalMonth({y:2026,m:7});_snapView(cls,'redo')
+    expect(view.INPMODE).toBe('member');expect(view.CALMONTH).toEqual({y:2026,m:11})
+    /* a rule that began in February, March on screen - its Thursdays are in view: nothing moves */
+    const rule={type:'fly.rule.set',scope:{module:'settings'},forward:[{collection:'settings',id:'flyrule:r1',before:null,after:{id:'r1',wd:3,cls:'nf',from:'2027-02-04'}}]} as any
+    view.setCalMonth({y:2027,m:3});_snapView(rule,'undo')
+    expect(view.INPMODE).toBe('member');expect(view.CALMONTH).toEqual({y:2027,m:3})
+    /* the List, not a calendar: he is taken to the SANS month, as before */
+    view.setInpView('table');_snapView(cls,'undo')
+    expect(view.INPVIEW).toBe('cal');expect(view.INPMODE).toBe('sans');expect(view.CALMONTH).toEqual({y:2026,m:11})
+  })
   it('planning Undo and Redo leave SANS for the Member calendar where the note lives',()=>{
     const entry={scope:{module:'inputs'},forward:[{collection:'plan',id:'2026-07-22',before:null,after:{rmk:'Planning note'}}]} as any
     view.setPage('inputs');view.setInpMode('sans');view.setInpView('table')

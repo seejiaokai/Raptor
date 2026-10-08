@@ -32,7 +32,7 @@ import { weekOf, dayKeyOf } from '../undo/derive'
 import { schedStore, schedPostRestore } from './sched-commit'
 import { weekstashStore, loadWeek } from './store'
 import { HIST } from './history'
-import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView, setInpMode, setCalMonth, clearInpReveal, requestInpReveal } from './view'
+import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal } from './view'
 import { canEditSched } from './auth'
 import { bringDayIntoView } from '../ui/highlights'
 import { boardTab } from '../ui/board'
@@ -212,7 +212,19 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
       else {
         primary = 'inputs'; also.push('leavewar')
         const iso = flyDateOf(entry)
-        then = () => { if (CURPAGE !== 'inputs') return; clearInpReveal(); setInpView('cal'); setInpMode('sans'); if (iso) setCalMonth({ y: +iso.slice(0, 4), m: +iso.slice(5, 7) }) }
+        /* IN VIEW ALREADY, NOTHING MOVES (D672; both readers of the calendar job's bug check, 8 Oct 26). A day's class
+           shows on BOTH calendars, so a calendar of the Inputs page that is up keeps its TAB; its month turns only when
+           the date is not on it - and a weekday's rule is on every month from the one it starts in. It used to switch
+           to the SANS tab and the rule's first month whatever was on screen. Read HERE, before the page is changed. */
+        const onCal = CURPAGE === 'inputs' && INPVIEW === 'cal'
+        const want = iso ? +iso.slice(0, 4) * 12 + +iso.slice(5, 7) : 0, at = CALMONTH ? CALMONTH.y * 12 + CALMONTH.m : 0
+        const shown = onCal && !!want && (ids.some(k => k.startsWith('flyrule:')) ? at >= want : at === want)
+        then = () => {
+          if (CURPAGE !== 'inputs' || shown) return
+          clearInpReveal()
+          if (!onCal) { setInpView('cal'); setInpMode('sans') }
+          if (iso) setCalMonth({ y: +iso.slice(0, 4), m: +iso.slice(5, 7) })
+        }
       }
     }
     else if (ids.some(k => k === 'dutytpl' || k === 'wavetpl' || k === 'wavehide' || k === 'daytpl' || k === 'secdefault' || k === 'wavedefault')) primary = 'admin'
