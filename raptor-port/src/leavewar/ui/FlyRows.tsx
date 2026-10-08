@@ -7,6 +7,14 @@
 // carry no grip and no eye — the SANS calendar reads them, so they are never dragged elsewhere or hidden. No day is
 // judged by them (they are not Manning RULES: no amber, no red of their own, nothing towards "under-manned").
 //
+// AND A COUNTER MAY STAND AMONG THEM — D674 (8 Oct 26: "Can rearrange allow newly created counter rows be allowed to
+// moved to anywhere in between the fixed blue dot rows? Even to below the 4 as well."). The four are no longer always
+// the block's last rows: CountRows hands the squadron's counter rows over in five RUNS (`runs` — above Required P,
+// under each of the four) and this component draws each run in its place. The four keep their own order and still
+// carry no grip and no cross; while an admin rearranges, each is a place to DROP a counter (`data-mrow` = its token,
+// engine/fixedrows.ts — what the grid's one row drag hit-tests) and wears the landing bar when a counter is held over
+// it. Nothing that READS the four cares where they sit: the calendars find the Available rows by their rule ids.
+//
 // The SANS calendar's "still needed" is the required figure, less those the Leave War shows available, less the SANS
 // committed to fly (D617) — and this is where the first two are SEEN and, for an admin, TYPED (FlyEdit.tsx — a click
 // on a Required cell puts the one box over it): the day's required pilots and WSOs, straight above the count of who
@@ -34,9 +42,9 @@
 // `req-p-<iso>` / `req-w-<iso>` / `avail-p-<iso>` / `avail-w-<iso>` — never an `event-`, `cell-` or `count-` prefix:
 // the grid's drag code hit-tests those.
 
-import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type RefCallback } from 'react'
+import { Fragment, memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type ReactNode, type RefCallback } from 'react'
 import { createPortal } from 'react-dom'
-import type { DayInfo } from '../engine'
+import { FIXED_ROWS, type DayInfo } from '../engine'
 import {
   availRowNames, dayFacts, flyAnswer, flyMonth, sansFly, usePlanVersion, useWarFacts,
   type DayAnswer,
@@ -123,7 +131,16 @@ const FlyCells = memo(function FlyCells({ row, cells, onTap }: {
   )
 }, (a, b) => a.sig === b.sig && a.row === b.row && a.onTap === b.onTap)
 
-export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR, onWiden, pickApi, onEditAvail }: {
+export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR, onWiden, pickApi, onEditAvail, runs, arranging, dragOver, dragAfter }: {
+  /** The squadron's counter rows, in five runs: `runs[0]` is drawn above Required P and `runs[k]` just under the k-th
+   *  of the four (D674). Absent = the four alone. They are new elements at every paint of the grid, so this component
+   *  re-renders with it — which is why `model` below is memoised: a re-render then costs four rows of memoised cells. */
+  runs?: ReactNode[][]
+  /** an admin is rearranging: each of the four is a place to drop a counter (never a row to pick up) */
+  arranging?: boolean
+  /** the row a dragged counter is held over — a fixed row's token when it is one of these — and which half of it */
+  dragOver?: string | null
+  dragAfter?: boolean
   /** the DRAWN days — a window of the war (Matrix's column window), whole months at a time */
   days: DayInfo[]
   admin: boolean
@@ -249,18 +266,20 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
     }
   }, [work])
 
-  /* the cells of a picked block that will take the number — `reqpick.ts`, the same answer Apply writes from */
-  const lit = new Set<string>()
-  if (pick) for (const iso of planPick(pick.sel.dates, flyAnswer, pick.include).take) for (const r of pick.sel.rows) lit.add(`req-${r}-${iso}`)
-
-  /* per row, per month: the cells and their signature */
-  const model = ROWS.map(row => months.map(m => {
-    const cells = m.dates.map(iso => {
-      const c = cellOf(row, iso, m.answers[iso] ?? flyAnswer(iso), admin)
-      return lit.has(`${row.id}-${iso}`) ? { ...c, cls: c.cls + ' pick' } : c
-    })
-    return { key: m.key, cells, sig: cells.map(c => `${c.iso}${c.text}${c.cls}${c.title ?? ''}`).join('|') }
-  }))
+  /* per row, per month: the cells and their signature. Worked out once per change to what they can show — `months`
+     is new whenever either store's signal moves — never once per paint of the grid (see `runs`). */
+  const model = useMemo(() => {
+    /* the cells of a picked block that will take the number — `reqpick.ts`, the same answer Apply writes from */
+    const lit = new Set<string>()
+    if (pick) for (const iso of planPick(pick.sel.dates, flyAnswer, pick.include).take) for (const r of pick.sel.rows) lit.add(`req-${r}-${iso}`)
+    return ROWS.map(row => months.map(m => {
+      const cells = m.dates.map(iso => {
+        const c = cellOf(row, iso, m.answers[iso] ?? flyAnswer(iso), admin)
+        return lit.has(`${row.id}-${iso}`) ? { ...c, cls: c.cls + ' pick' } : c
+      })
+      return { key: m.key, cells, sig: cells.map(c => `${c.iso}${c.text}${c.cls}${c.title ?? ''}`).join('|') }
+    }))
+  }, [months, admin, pick])
 
   /* a figure can widen a day column: tell the grid once what is drawn has changed (never on the first paint — the
      grid measures itself then) */
@@ -273,8 +292,14 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
 
   return (
     <>
-      {ROWS.map((row, ri) => (
-        <tr key={row.id} className={`flyrow ${row.kind}`} data-testid={`fly-row-${row.id}`}>
+      {ROWS.map((row, ri) => {
+        /* this row's place in the block's order (D674) — what a dragged counter is dropped before or after */
+        const token = FIXED_ROWS[ri]!
+        const over = arranging && dragOver === token ? (dragAfter ? ' dragover after' : ' dragover') : ''
+        return (
+        <Fragment key={row.id}>
+        {runs?.[ri]}
+        <tr className={`flyrow ${row.kind}${over}`} data-testid={`fly-row-${row.id}`} data-mrow={arranging ? token : undefined}>
           <td className="who" title={names[row.id].name}>
             {(() => {
               const text = names[row.id].std
@@ -296,7 +321,10 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
           {model[ri]!.map(m => <FlyCells key={m.key} row={row.id} sig={m.sig} cells={m.cells} onTap={tapRef.current} />)}
           {padR && <td className="lwph lwph-r" ref={phR} />}
         </tr>
-      ))}
+        </Fragment>
+        )
+      })}
+      {runs?.[ROWS.length]}
       {work && createPortal(<Working row={work.row} iso={work.iso} x={work.x} y={work.y} />, document.getElementById('page-leavewar') ?? document.body)}
       {edit && createPortal(
         <FlyEditor key={`${edit.row}-${edit.iso}`} at={edit} dates={dates} onMove={moveEdit.current} onClose={closeEdit.current} />,

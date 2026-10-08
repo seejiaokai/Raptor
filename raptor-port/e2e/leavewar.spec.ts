@@ -4169,6 +4169,143 @@ test('in the Manning block the four rows cover no month button, and the open-bid
   await check('after Manning is folded and opened again')
 })
 
+// A COUNTER ROW AMONG THE FOUR FIXED ROWS (owner, D674, 8 Oct 26 — with a phone picture of Rearrange, one counter lit
+// above the four blue-dot rows: "Can rearrange allow newly created counter rows be allowed to moved to anywhere in
+// between the fixed blue dot rows? Even to below the 4 as well. When I try to drag and drop them"). The gesture
+// itself, in a real browser: a mouse on a desktop, a REAL finger on a phone (through CDP — Playwright's touchscreen
+// taps but cannot drag). And what D665's two circled faults taught, asked again with a counter between and below the
+// four: every row of the block still stands in line under the dates, nothing covers a month button, and the green
+// open-bidding outline still starts at the dates. Then that the order is the squadron's: Undo takes the last drop
+// back, and a reload — signed in as a member — shows the same order.
+test('a counter row is dragged between the fixed rows and below all four, and the grid stays whole', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  /* three counters of the squadron's own, made through the real "+ Counter" writer (the app starts with none — D669) */
+  const refused = await page.evaluate(() => [['ca', 'CA', 'pilot'], ['cb', 'CB', 'wso'], ['cc', 'CC', 'pilot']]
+    .filter(([id, label, seat]) => !(window as any).lwSaveManningRule({ id, label, count: { kind: 'people', filter: { seats: [seat] } }, threshold: { amber: 0, red: 0 } })).length)
+  expect(refused).toBe(0)
+  await page.waitForSelector('[data-testid="count-cc"]')
+  const FLY = ['fly-row-req-p', 'fly-row-req-w', 'fly-row-avail-p', 'fly-row-avail-w']
+  const order = () => page.$$eval('.mx tbody.counts > tr', els => els.map(e => e.getAttribute('data-testid')))
+  expect(await order()).toEqual(['count-ca', 'count-cb', 'count-cc', ...FLY])
+
+  const toggle = page.locator('[data-testid="roster-arrange"]')
+  await toggle.click()
+  await settleGrid(page)
+  /* in Rearrange the four carry no grip and no cross — a counter does */
+  await expect(page.locator('.mx tbody.counts tr.flyrow .drag, .mx tbody.counts tr.flyrow .mrow-btn')).toHaveCount(0)
+  await expect(page.locator('.mx tbody.counts .drag')).toHaveCount(3)
+
+  const phone = page.viewportSize()!.width < 700
+  const cdp = phone ? await page.context().newCDPSession(page) : null
+  /** pick a counter up by its grip and hold it over the upper or lower half of another row's name */
+  const hold = async (id: string, onto: string, half: 'upper' | 'lower') => {
+    const g = (await page.locator(`[data-testid="manning-drag-${id}"]`).boundingBox())!
+    const t = (await page.locator(`[data-testid="${onto}"] td.who`).boundingBox())!
+    const a = { x: g.x + g.width / 2, y: g.y + g.height / 2 }
+    const b = { x: t.x + Math.min(t.width / 2, 30), y: half === 'upper' ? t.y + 3 : t.y + t.height - 3 }
+    if (cdp) {
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [a] })
+      for (let i = 1; i <= 6; i++) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: a.x + ((b.x - a.x) * i) / 6, y: a.y + ((b.y - a.y) * i) / 6 }] })
+    } else {
+      await page.mouse.move(a.x, a.y)
+      await page.mouse.down()
+      await page.mouse.move(a.x, a.y + 4, { steps: 2 })
+      await page.mouse.move(b.x, b.y, { steps: 6 })
+    }
+  }
+  const release = async () => {
+    if (cdp) await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    else await page.mouse.up()
+  }
+  /** the landing bar PAINTED on a row's day cell (a class switched on is not a bar drawn — the cells paint their own) */
+  const bar = (row: string) => page.locator(`[data-testid="${row}"] td.fr`).first().evaluate(el => getComputedStyle(el).boxShadow)
+
+  /* 1. BETWEEN Required P and Required W: dropped on the upper half of Required W */
+  await hold('ca', 'fly-row-req-w', 'upper')
+  await expect(page.locator('[data-testid="fly-row-req-w"]')).toHaveClass(/\bdragover\b/)
+  expect(await bar('fly-row-req-w'), 'the landing bar is drawn along Required W').toMatch(/inset/)
+  expect(await bar('fly-row-req-p'), 'and on no other fixed row').not.toMatch(/inset/)
+  await release()
+  await expect.poll(order).toEqual(['count-cb', 'count-cc', 'fly-row-req-p', 'count-ca', 'fly-row-req-w', 'fly-row-avail-p', 'fly-row-avail-w'])
+
+  /* 2. BELOW all four: dropped on the lower half of Available W, the last row */
+  await hold('cb', 'fly-row-avail-w', 'lower')
+  await expect(page.locator('[data-testid="fly-row-avail-w"]')).toHaveClass(/\bdragover\b.*\bafter\b/)
+  expect(await bar('fly-row-avail-w'), 'the landing bar is drawn under Available W').toMatch(/inset/)
+  await release()
+  const moved = ['count-cc', 'fly-row-req-p', 'count-ca', 'fly-row-req-w', 'fly-row-avail-p', 'fly-row-avail-w', 'count-cb']
+  await expect.poll(order).toEqual(moved)
+  /* the four still carry nothing to grab or delete; the two counters among and under them still do */
+  await expect(page.locator('.mx tbody.counts tr.flyrow .drag, .mx tbody.counts tr.flyrow .mrow-btn')).toHaveCount(0)
+  await expect(page.locator('[data-testid="manning-drag-ca"]')).toBeVisible()
+  await expect(page.locator('[data-testid="manning-delete-cb"]')).toBeVisible()
+
+  /* THE GRID STAYS WHOLE, in Rearrange and out of it */
+  const whole = async (state: string) => {
+    await settleGrid(page)
+    const g = await page.evaluate(() => {
+      const r = (el: Element) => { const b = el.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, width: b.width } }
+      const rows = [...document.querySelectorAll('.mx tbody.counts > tr')].map(tr => {
+        const cell = tr.querySelector('[data-testid$="-2026-01-06"]')
+        return { id: tr.getAttribute('data-testid'), ...r(tr), cell: cell ? r(cell) : null }
+      })
+      const covered = [...document.querySelectorAll('[data-testid="month-strip"] button')]
+        .filter(b => { const q = b.getBoundingClientRect(); if (q.right <= 0 || q.left >= innerWidth || !q.width) return false
+          const at = document.elementFromPoint(q.left + q.width / 2, q.top + q.height / 2); return !(at && (at === b || b.contains(at))) })
+        .map(b => b.getAttribute('data-testid'))
+      const box = document.querySelector('#page-leavewar .lw-bidbox')
+      return { rows, covered, head: r(document.querySelector('[data-testid="head-2026-01-06"]')!), strip: r(document.querySelector('[data-testid="month-strip"]')!), box: box ? r(box) : null }
+    })
+    expect(g.rows.map(x => x.id), state).toEqual(moved)
+    for (let i = 0; i < g.rows.length; i++) {
+      const row = g.rows[i]!
+      /* each row directly under the one before it — no gap, no overlap */
+      if (i) expect(Math.abs(row.top - g.rows[i - 1]!.bottom), `${state}: ${row.id} does not sit directly under ${g.rows[i - 1]!.id}`).toBeLessThan(1.5)
+      /* and its 6 Jan cell stands exactly in the 6 Jan column, whichever kind of row it is */
+      expect(row.cell, `${state}: ${row.id} has no cell for 6 Jan`).not.toBeNull()
+      expect(Math.abs(row.cell!.left - g.head.left), `${state}: ${row.id} is out of line with the dates`).toBeLessThan(1)
+      expect(Math.abs(row.cell!.width - g.head.width), `${state}: ${row.id}'s day is not as wide as the date above it`).toBeLessThan(1)
+    }
+    const last = g.rows[g.rows.length - 1]!
+    expect(g.strip.top, `${state}: the month buttons are not under the block's last row`).toBeGreaterThanOrEqual(last.bottom - 1)
+    expect(g.head.top, `${state}: the dates are not under the month buttons`).toBeGreaterThanOrEqual(g.strip.bottom - 1)
+    expect(g.covered, `${state}: something covers these month buttons`).toEqual([])
+    expect(g.box, `${state}: the open-bidding outline is drawn`).not.toBeNull()
+    expect(g.box!.top, `${state}: the bidding outline starts above the month buttons`).toBeGreaterThanOrEqual(g.strip.top - 1.5)
+    expect(g.box!.top, `${state}: the bidding outline cuts through the block's rows`).toBeGreaterThanOrEqual(last.bottom - 1.5)
+  }
+  await whole('in Rearrange')
+  await toggle.click()
+  await expect(page.locator('.mx tbody.counts [data-mrow]')).toHaveCount(0)      // out of Rearrange nothing is a place to drop
+  await whole('out of Rearrange')
+
+  /* THE TYPING STRIP sits under the BLOCK, beside the month buttons — never over the counter that now stands under the
+     four (a desktop; a phone docks its number pad at the foot of the screen instead) */
+  if (!phone) {
+    await page.locator('[data-testid="req-p-2026-01-08"]').click()
+    await expect(page.locator('[data-testid="fly-edit-input"]')).toBeFocused()
+    const strip = (await page.locator('[data-testid="fly-edit-strip"]').boundingBox())!
+    const under = (await page.locator('[data-testid="count-cb"]').boundingBox())!
+    expect(strip.y, 'the strip lies over the counter under the four rows').toBeGreaterThanOrEqual(under.y + under.height - 0.5)
+    await page.keyboard.press('Escape')
+    await expect(page.locator('[data-testid="fly-edit-input"]')).toHaveCount(0)
+  }
+
+  /* UNDO takes the last drop back — the counter returns from under the four to where it stood */
+  await page.locator('#undoBtn').click()
+  await expect.poll(order).toEqual(['count-cb', 'count-cc', 'fly-row-req-p', 'count-ca', 'fly-row-req-w', 'fly-row-avail-p', 'fly-row-avail-w'])
+  await page.locator('#redoBtn').click()
+  await expect.poll(order).toEqual(moved)
+
+  /* SAVED, and the same for everyone: after a reload a member sees the counters where the admin left them */
+  await page.reload()
+  await openLeaveWar(page)
+  await putDrawerAway(page)
+  expect(await order()).toEqual(moved)
+  await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
+})
+
 test('a member reads the events and cannot type into them', async ({ page }) => {
   await expect(page.locator('[data-testid="event-0-2026-01-01"]')).toHaveText('PH')
   await expect(page.locator('[data-testid="event-in-0-2026-01-01"]')).toHaveCount(0)

@@ -3861,3 +3861,44 @@ dropping the ability. Stale after the build and corrected in the same change (D2
 the typing and the picking of step 2 (those are drawn and approved; this has readings he has not yet seen) and before the counter form's mode for the Available
 rows, which touches the same form. Tier: FULL in the job's one check (it changes what judges a day).
 
+
+*Moved here 2026-10-08 by backlog-archive.mjs ([LW-COUNTERS-AMONG-FIXED]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/data-schema.md`, `raptor-port/docs/file-map.md`, `.claude/decisions-full/leave-war.md`.*
+
+### [LW-COUNTERS-AMONG-FIXED] Rearrange: a counter row can go between, and below, the four fixed rows (D674 — 8 Oct 26) — OPEN, not started
+
+**His words, with a phone picture of Rearrange (one counter, SC D, above the four blue-dot rows):** *"Can rearrange allow
+newly created counter rows be allowed to moved to anywhere in between the fixed blue dot rows? Even to below the 4 as
+well. When I try to drag and drop them"* — the ruling is D674 (`.claude/rules/decisions/leave-war.md`; its four readings
+are in its full row). It narrows D665 (the four rows "at the foot of the Manning block").
+
+**Where it stands:** NOT BUILT. Today the Manning block draws the squadron's counters (in their saved order,
+`manningRowIds`) and THEN the four rows (`leavewar/ui/CountRows.tsx` with `FlyRows` as its children); the drag machine
+accepts a drop only among the counters. **What the build has to settle (the builder's, to explain — none is his):** how
+the four rows' places are saved within the one order (four fixed ids in the same list is the obvious shape — a list a
+store written before it has without them must still read as "counters, then the four"); the drop lines between two fixed
+rows and under the last; that the four keep their own order, carry no grip and no cross (D640, D669 reading 6), and are
+still never hidden or judged; that the SANS calendar and Days read the four by id, wherever they sit; that the frozen
+header mirror, the figures drawer's rows and the open-bidding outline stay in step when a counter sits among or under
+them (the two faults he circled on 8 Oct were exactly this kind). It changes what is SAVED (the rows' order), so its tier
+is FULL by the checking order's question 3 — it rides the calendar job's one full check (D485). Tests first; a browser
+test at phone and desktop size that DRAGS a counter between two fixed rows and below the fourth.
+
+**Read first:** `raptor-port/docs/ui-contracts.md` "The four rows at the foot of the Manning block" and "Leave War
+Rearrange + the counter picker"; D640, D665, D669 in full.
+
+**DONE — BUILT 8 Oct 26, tests first (the chat after the one that filed it; the heading above is as it was filed).** How each thing above was settled: the four
+rows' places are four TOKENS in the same saved list (`@req-p`, `@req-w`, `@avail-p`, `@avail-w` — a letter no counter's
+id can hold), read by ONE pure rule, `raptor-port/src/leavewar/engine/fixedrows.ts blockOrder`; a list without them
+reads "its counters, then the four", and that is also what is still SAVED while no counter stands among or below them
+(`orderToSave`); a counter made since appears just above Required P. The drag is the one row drag: in Rearrange each of
+the four carries the same hit-test attribute a counter does, so it is a place to drop and shows the landing bar; none
+has a grip, and the store refuses to move one. `CountRows` hands its rows to `FlyRows` in five runs. Found by the
+browser test and fixed: the desktop typing strip for a Required figure lay over a counter placed under the four — it
+sits under the whole block now. The contract: `raptor-port/docs/ui-contracts.md` "A counter may stand among the four";
+what is stored: `raptor-port/docs/data-schema.md` (`manningorder`); the files: `raptor-port/docs/file-map.md`; what the
+build added, to tell him: D674's full row. **Checked:** its own tests red first (16 + 22 + 16, and one more in
+`ui/counts.test.tsx`); 25 rules broken one at a time; the browser test at phone and desktop size (a mouse; a real
+finger); looked at in the running build (`raptor-port/scripts/handpass/lw-counters-among-look.mjs`); the whole gate
+set. **OWED, with the calendar job's ONE full check (D485):** the roll-call row for the Manning block, the walk, and
+Astra's and Sol 6.1's reads — it changed what is saved (the checking order's question 3).
+

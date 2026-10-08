@@ -448,6 +448,14 @@ commands (`setFlyDays` - one date or a picked block, one Undo step; `setFlyRule`
 one step, Undo / Redo and its words, a reload, and the earlier build's leftover rows. Its guards: `people-settings-commit.ts`
 (row kinds, the write hook, the loader), `perms.ts` `COMMAND_OPS`; Undo's words `undo/describe.ts describeFly`,
 its landing `undo-wire.ts`.
+`src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
+or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
+their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and
+what is saved (`orderToSave`). Pure; the store's side is `state/store.ts` `manningBlockOrder`, `orderedManningIds`,
+`moveManningRowTo`. Tests: `engine/fixedrows.test.ts`, `leavewar/countersamong.test.ts` (the move, who may make it, saving,
+Undo, and that nothing which reads the four cares where they sit), `ui/countersamong.test.tsx` (the block drawn in the one
+order; each of the four a place to drop in Rearrange, with the landing bar; the drag as far as jsdom carries it). A look at
+the running build: `scripts/handpass/lw-counters-among-look.mjs`.
 `src/leavewar/engine/availrows.ts` - the two Available rows the SANS calendar reads (`availp`, `availw` - D640): their
 built-in definitions, the check that keeps a stored one a people count with no amber or red, and `availHave`, the ONE sum
 that never counts a SANS man (D626); the store's side is `state/store.ts` `availRules`, `manningDeleteProblem` and the
@@ -477,8 +485,10 @@ changes it (`ui/eventsheet-presets.test.tsx`). The contract: `docs/ui-contracts.
 `src/leavewar/ui/FlyRows.tsx` - THE FOUR ROWS AT THE FOOT OF THE MANNING BLOCK (the Inputs / SANS redesign, plan §3.3;
 D617, D637, D640; D665 - his "I'm going with B", first built under the Event rows): Required P and W (the one resolver's figure, "NF" on a no-fly day, a dash; a corner mark where a running figure
 starts) and Available P and W (the war's own count, red where it is under its Required; a tap opens the read-only
-working - required, available, SANS committed to fly, still needed). Rows of the grid's own table, mounted through a
-`children` slot of `CountRows`, last in `tbody.counts`; it subscribes ITSELF to the plan's signal (`sync.ts usePlanVersion`) and the war's (`useWarFacts`),
+working - required, available, SANS committed to fly, still needed). Rows of the grid's own table, drawn through the
+`fixed` render prop of `CountRows` (until D674 a `children` slot, last in `tbody.counts`): it is handed the counters' rows in
+five runs and draws each above, between or below its four, and in Rearrange each of the four is a place to drop a counter;
+it subscribes ITSELF to the plan's signal (`sync.ts usePlanVersion`) and the war's (`useWarFacts`),
 and memoises each drawn month on what it shows. An admin's click on a Required cell opens the ONE typing box (`FlyEdit.tsx`, below) - `FlyRows` holds
 at most one, and keeps the kind of pointer that made the press; it also holds the PICKED BLOCK and its panel
 (`ReqPanel.tsx`, below), lighting the cells that will take the number. Tests: `ui/flyrows.test.tsx`; the browser gates `e2e/leavewar.spec.ts` "the four rows at the foot of the Manning
@@ -564,6 +574,11 @@ date are said, today's date, the first such weekday on or after a date). Pure.
 settings, the month as the fourth mock-ups draw it, the dot, "Every Thursday" and "Every Saturday" ending on a date, the
 Holidays list, its form adding and changing, the window dragged aside) - at a phone, a 1440px laptop and 1536px across;
 a look, not a gate.
+`scripts/handpass/breaks.mjs` - the strictness proof's runner (8 Oct 26): breaks ONE rule at a time from a list, runs the
+tests named for it, puts the line back, and says which breaks no test caught. Its lists are `scripts/handpass/breaks/` -
+`2026-10-08-morning-rulings.json` (D670-D673, D675: fifteen) and `2026-10-08-counters-among.json` (D674: twenty-five).
+`scripts/handpass/lw-counters-among-look.mjs` - pictures of the Manning block with counters dragged among and below the
+four fixed rows (D674), phone and desktop, by the real drag.
 `scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a
 cell being typed, "From <date> on", a picked block with its panel, the people's-days panel): the builder's look, and the built side of D624's mock-up-beside-built evidence. Not
 a gate. It reads a preview on port 4180 (`LOOK_URL`), never 4173 - the browser tests reuse a server left there.

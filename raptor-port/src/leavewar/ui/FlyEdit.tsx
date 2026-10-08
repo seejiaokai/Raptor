@@ -86,6 +86,9 @@ export function liftAbove(cell: HTMLElement, floorTop: number | null): void {
   if (dy) scrollerOf(cell).scrollBy(0, dy)
 }
 const footOfRows = () => document.querySelector<HTMLElement>('[data-testid="fly-row-avail-w"]')?.getBoundingClientRect().bottom ?? null
+/* the foot of the whole BLOCK the four rows stand in — its last row, which since D674 (8 Oct 26) may be a counter the
+   admin has put under Available W */
+const footOfBlock = () => document.querySelector<HTMLElement>('[data-testid="fly-row-avail-w"]')?.parentElement?.lastElementChild?.getBoundingClientRect().bottom ?? null
 /* what scrolls the grid up and down: the nearest ancestor that scrolls on that axis, else the page itself */
 function scrollerOf(el: HTMLElement): { scrollBy: (x: number, y: number) => void } {
   for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
@@ -128,7 +131,7 @@ export function FlyEditor({ at, dates, onMove, onClose }: {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- the plan's version is the only thing that can move it
   }, [planV])
 
-  /* ---- where the box and the strip sit: over the cell; under the four rows ---- */
+  /* ---- where the box and the strip sit: over the cell; under the block the four rows stand in ---- */
   const place = () => {
     const cell = cellOf(at), box = boxRef.current
     if (!cell || !box) return
@@ -139,8 +142,10 @@ export function FlyEditor({ at, dates, onMove, onClose }: {
     if (strip && !at.touch) {
       /* UNDER the four rows — never over the figures he types against — and to the RIGHT of the month buttons, which
          sit in the row just below: a strip lying over them would hide the very buttons D665 was ruled to keep clear
-         (where the window is too narrow for both, the strip keeps on the screen and the months lose) */
-      const foot = footOfRows() ?? r.bottom
+         (where the window is too narrow for both, the strip keeps on the screen and the months lose). Under the whole
+         BLOCK, that is: a counter may stand below the four since D674, and the strip must not lie over its figures
+         either (found by the browser gate — the strip sat on the row a counter had just been dropped into). */
+      const foot = footOfBlock() ?? r.bottom
       const months = [...document.querySelectorAll<HTMLElement>('[data-testid="month-strip"] button')].pop()?.getBoundingClientRect().right ?? 0
       const w = strip.offsetWidth || 420
       strip.style.left = `${Math.max(6, Math.min(Math.max(r.left - 40, months + 8), window.innerWidth - w - 6))}px`

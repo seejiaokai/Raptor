@@ -51,7 +51,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { awardsOnDay, balanceAfterFill, clearRecordById, figureCtxOf, oilOnDay, recordsAt, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveManningRowTo, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
+import { awardsOnDay, balanceAfterFill, clearRecordById, figureCtxOf, oilOnDay, recordsAt, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveManningRowTo, moveEvent, moveEventProblem, moveRosterRow, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -3847,7 +3847,7 @@ export function Matrix() {
               <CountRows
                 verdicts={verdicts}
                 dates={drawnDates}
-                order={orderedManningIds()}
+                order={manningBlockOrder()}
                 arranging={arranging}
                 admin={role === 'admin'}
                 onInfo={setManningInfo}
@@ -3860,15 +3860,24 @@ export function Matrix() {
                 phL={phL}
                 phR={phR}
                 onRowsChange={onArchiveChange}
-              >
-                {/* THE FOUR ROWS AT THE FOOT OF THE MANNING BLOCK — Required P and W, Available P and W (the Inputs /
-                    SANS redesign, plan §3.3; owner D665, 8 Oct 26: "I'm going with B"). They subscribe THEMSELVES to
-                    the plan's and the war's signals, so nothing here repaints for them; a figure that widens a day
-                    column asks for the same re-measure the Archive rows do — which also re-places the Figures drawer
-                    and the open-bidding outline, both measured off the dates BELOW this block (the two things he
-                    circled on the hand-drawn picture: the gate e2e/leavewar.spec.ts checks both in a real browser). */}
-                <FlyRows days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR} onWiden={onArchiveChange} pickApi={flyPickRef} onEditAvail={editAvail} />
-              </CountRows>
+                /* THE FOUR FIXED ROWS OF THE MANNING BLOCK — Required P and W, Available P and W (the Inputs / SANS
+                   redesign, plan §3.3; owner D665, 8 Oct 26: "I'm going with B"). They subscribe THEMSELVES to the
+                   plan's and the war's signals; a figure that widens a day column asks for the same re-measure the
+                   Archive rows did — which also re-places the Figures drawer and the open-bidding outline, both
+                   measured off the dates BELOW this block (the two things he circled on the hand-drawn picture: the
+                   gate e2e/leavewar.spec.ts checks both in a real browser).
+                     AND THE COUNTERS STAND AMONG THEM WHERE THE ADMIN PUTS THEM (D674, 8 Oct 26): CountRows hands its
+                   rows over in runs and FlyRows draws each run above, between or below its four. In Rearrange each of
+                   the four is a place to drop (the same `data-mrow` the counters carry, so MANNING_DRAG hit-tests
+                   them with no second machine) and shows the landing bar from the drag state below. */
+                fixed={runs => (
+                  <FlyRows
+                    days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR}
+                    onWiden={onArchiveChange} pickApi={flyPickRef} onEditAvail={editAvail}
+                    runs={runs} arranging={arranging && role === 'admin'} dragOver={draggingId ? dragOver : null} dragAfter={dragAfter}
+                  />
+                )}
+              />
             )}
             {/* The month strip, now a row of the grid so it sits between the
                 counts and the header (owner's arrows). The buttons live in a

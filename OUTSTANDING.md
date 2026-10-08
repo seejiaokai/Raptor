@@ -52,8 +52,6 @@ whole on 24 Sep 26. **Re-order this list whenever an item changes** (§Maintaini
 
 **A test to steady, with the Tracker batch (found 7 Oct 26):** [TRK-DLG-FOCUS-UNSTEADY] — one Tracker unit test about the keyboard inside a question box failed once in a full run and passes alone.
 
-**The next chat's FIRST job, before step 4 of the calendar job (his ask of 8 Oct 26, D674):** [LW-COUNTERS-AMONG-FIXED] — in the Leave War's Rearrange, let a counter row be dropped between, and below, the four fixed Required / Available rows.
-
 **After the Inputs / SANS calendar job (its place is his to set):** [LW-WINDOWS-NONBLOCKING] — the Leave War's other windows still block the grid behind them and close on a click outside; D641 and D642 changed that for the calendar job's windows and for one war panel only. Its own job, its own check.
 
 **From Claude's check of the Codex stack (5 Oct 26) — its place is his to set:** [OIL-WORK-START] — a flying line's earned leave is to
@@ -1627,28 +1625,6 @@ waive owed reads or authorize a live merge.
 ### [TRK-DLG-FOCUS-UNSTEADY] A Tracker unit test of the question box's keyboard fails now and then in a full run (found 7 Oct 26)
 
 **Found, not fixed** — by the Inputs / SANS calendar chat (`claude/inputs-sans-calendar`), which touched nothing of the Tracker. In a full unit run under the PC lock (7 Oct 26, 506 files, 8,186 tests) ONE test failed: `raptor-port/src/tracker/leftovers.test.tsx`, "[TRK-DLG-LEFTOVERS] B1 — while a question is up, the rest of the Tracker page is inert, and Tab / Shift+Tab stay inside the box" — its last check, "Shift+Tab from the first goes to the last", found the focus still on the text box. Run alone straight afterwards it passed three times out of three (53 of 53), and the full run of that morning passed it. So it depends on timing or on what ran before it in the same worker, not on the app's rule. **To do, with the next Tracker batch (D490):** read how the test moves focus (a key event sent before the box has taken focus is the likely cause), make it wait on what it needs rather than on timing (D87's rule for browser tests, applied here), and run the file fifty times in a loaded run to prove it. Until then: a red full run whose only failure is this test is re-run once for that file, and said so in the report.
-
-### [LW-COUNTERS-AMONG-FIXED] Rearrange: a counter row can go between, and below, the four fixed rows (D674 — 8 Oct 26) — OPEN, not started
-
-**His words, with a phone picture of Rearrange (one counter, SC D, above the four blue-dot rows):** *"Can rearrange allow
-newly created counter rows be allowed to moved to anywhere in between the fixed blue dot rows? Even to below the 4 as
-well. When I try to drag and drop them"* — the ruling is D674 (`.claude/rules/decisions/leave-war.md`; its four readings
-are in its full row). It narrows D665 (the four rows "at the foot of the Manning block").
-
-**Where it stands:** NOT BUILT. Today the Manning block draws the squadron's counters (in their saved order,
-`manningRowIds`) and THEN the four rows (`leavewar/ui/CountRows.tsx` with `FlyRows` as its children); the drag machine
-accepts a drop only among the counters. **What the build has to settle (the builder's, to explain — none is his):** how
-the four rows' places are saved within the one order (four fixed ids in the same list is the obvious shape — a list a
-store written before it has without them must still read as "counters, then the four"); the drop lines between two fixed
-rows and under the last; that the four keep their own order, carry no grip and no cross (D640, D669 reading 6), and are
-still never hidden or judged; that the SANS calendar and Days read the four by id, wherever they sit; that the frozen
-header mirror, the figures drawer's rows and the open-bidding outline stay in step when a counter sits among or under
-them (the two faults he circled on 8 Oct were exactly this kind). It changes what is SAVED (the rows' order), so its tier
-is FULL by the checking order's question 3 — it rides the calendar job's one full check (D485). Tests first; a browser
-test at phone and desktop size that DRAGS a counter between two fixed rows and below the fourth.
-
-**Read first:** `raptor-port/docs/ui-contracts.md` "The four rows at the foot of the Manning block" and "Leave War
-Rearrange + the counter picker"; D640, D665, D669 in full.
 
 ### [LW-WINDOWS-NONBLOCKING] The Leave War's other windows: stay up, and let the grid behind them work (D641, D642 — 7 Oct 26)
 Every Leave War window blocks the grid behind it and closes on a click outside (`src/leavewar/ui/Sheet.tsx`). D641 asked that the

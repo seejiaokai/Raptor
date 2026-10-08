@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactNode, RefCallback } from 'react'
-import type { DayVerdict } from '../engine'
+import { FIXED_ROWS, isFixedRow, type DayVerdict } from '../engine'
 import { deleteManningRule } from '../state/store'
 
 /** Rounds for display only — 4.5 stays 4.5, 4 does not become "4.0". */
@@ -22,16 +22,20 @@ export function CountRows({
   phL,
   phR,
   onRowsChange,
-  children,
+  fixed,
 }: {
-  /** Rows drawn at the FOOT of the block's own counts — the four Required / Available rows (FlyRows.tsx; owner D665,
-   *  8 Oct 26: "I'm going with B" — in the Manning block, not under the Event rows). They follow the same row
-   *  contract, fold away with the block, and are never dragged or deleted here. Since D669 they are ALL the block
-   *  shows until a squadron makes a counter — so the block is drawn for them even when it has no count row at all. */
-  children?: ReactNode
+  /** THE FOUR FIXED ROWS — Required P and W, Available P and W (FlyRows.tsx; owner D665, 8 Oct 26: "I'm going with B" —
+   *  in the Manning block, not under the Event rows) — drawn by the caller AMONG this block's own rows. It is handed
+   *  the counters' rows in five runs — those above Required P, those between each pair of the four, those below
+   *  Available W — and returns the block's rows whole (owner, D674, 8 Oct 26: a counter "moved to anywhere in between
+   *  the fixed blue dot rows … even to below the 4 as well"). The four follow the same row contract, fold away with
+   *  the block, and are never dragged or deleted here. Since D669 they are ALL the block shows until a squadron makes
+   *  a counter — so the block is drawn for them even when it has no count row at all. */
+  fixed?: (runs: ReactNode[][]) => ReactNode
   verdicts: Record<string, DayVerdict>
   dates: string[]
-  /** The manning rows' display order (store's `orderedManningIds`) — the squadron's own counters. */
+  /** The block's rows in the order they are drawn (store's `manningBlockOrder`): the squadron's own counters and the
+   *  four fixed rows' tokens (engine/fixedrows.ts). A list that names no fixed row draws its counters above them. */
   order: string[]
   /** Rearrange mode is on (the roster/manning edit toggle). */
   arranging: boolean
@@ -79,11 +83,16 @@ export function CountRows({
   }
 
   // Display order = the admin's order first (only ids that actually have a row
-  // today), then any row a per-day override introduced that the default order
-  // never named, appended so it is never dropped.
-  const ids = order.filter(id => label.has(id))
-  const seen = new Set(ids)
-  for (const id of label.keys()) if (!seen.has(id)) ids.push(id)
+  // today — and the four fixed rows' tokens, which mark where those stand), then
+  // any row a per-day override introduced that the default order never named,
+  // so it is never dropped: at the foot of the counters above the four, where a
+  // counter the order does not name has always appeared.
+  const seq = order.filter(id => isFixedRow(id) || label.has(id))
+  const seen = new Set(seq)
+  const extra = [...label.keys()].filter(id => !seen.has(id))
+  if (extra.length) { const at = seq.findIndex(isFixedRow); seq.splice(at < 0 ? seq.length : at, 0, ...extra) }
+  /* the counters drawn, top to bottom */
+  const ids = seq.filter(id => !isFixedRow(id))
   /* THERE IS NO HIDING A ROW ANY MORE (owner, D669, 8 Oct 26 — "instead of hide (eye) we should replace it with a
      delete cross"). The eye archived a counter out of view and the ARCHIVE bar at the foot of the block (5 Sep 26)
      brought it back; both are gone. A row a store written before that day had hidden is simply drawn — nothing
@@ -99,8 +108,8 @@ export function CountRows({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ids.length])
 
-  /* nothing to draw at all: no counter, and no rows handed in to stand at the foot */
-  if (ids.length === 0 && !children) return null
+  /* nothing to draw at all: no counter, and nobody drawing the four fixed rows */
+  if (ids.length === 0 && !fixed) return null
 
   // One lookup map per date, built once, so each cell is a ruleId lookup
   // rather than a per-cell `find` over that date's results array.
@@ -200,10 +209,16 @@ export function CountRows({
         )
   }
 
-  return (
-    <tbody className="counts">
-      {ids.map(id => rowFor(id))}
-      {children}
-    </tbody>
-  )
+  if (!fixed) return <tbody className="counts">{ids.map(id => rowFor(id))}</tbody>
+
+  /* THE COUNTERS IN FIVE RUNS, split where the four fixed rows stand (D674): run 0 above Required P, run k just under
+     the k-th fixed row, run 4 below Available W. The four keep their own order (the store's order guarantees it), so a
+     token only ever moves the cut downward. */
+  const runs: ReactNode[][] = [[], ...FIXED_ROWS.map(() => [] as ReactNode[])]
+  let k = 0
+  for (const id of seq) {
+    if (isFixedRow(id)) k = FIXED_ROWS.indexOf(id) + 1
+    else runs[k]!.push(rowFor(id))
+  }
+  return <tbody className="counts">{fixed(runs)}</tbody>
 }

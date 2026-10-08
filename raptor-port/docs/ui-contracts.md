@@ -6336,11 +6336,42 @@ its day from about 20 px to 33 px and made the Event row two lines tall.
 
 ## The four rows at the foot of the Manning block — Required P / W, Available P / W (owner, D617, D637, D640, D665; built 8 Oct 26)
 
-**NOT BUILT YET — D674 (8 Oct 26): "Can rearrange allow newly created counter rows be allowed to moved to anywhere in
-between the fixed blue dot rows? Even to below the 4 as well."** In Rearrange a counter row will be droppable above the
-four rows, between any two of them, or below all four; the four keep their own order and still carry no grip and no
-cross. It narrows D665's "the LAST rows of the Manning block" below. The build is `OUTSTANDING.md`
-`[LW-COUNTERS-AMONG-FIXED]`; until it lands, everything under this heading is as built.
+**A COUNTER MAY STAND AMONG THE FOUR — D674 (8 Oct 26: "Can rearrange allow newly created counter rows be allowed to
+moved to anywhere in between the fixed blue dot rows? Even to below the 4 as well."), BUILT the same day
+(`[LW-COUNTERS-AMONG-FIXED]`, archived).** It narrows D665's "the LAST rows of the Manning block" below: in Rearrange a
+counter row is dropped above the four, between any two of them, or below all four.
+- **One order for the whole block** — `state/store.ts manningBlockOrder()`: the squadron's counters and the four fixed
+  rows, each fixed row as a TOKEN (`engine/fixedrows.ts FIXED_ROWS`: `@req-p`, `@req-w`, `@avail-p`, `@avail-w` — "@"
+  is a letter no counter's id can hold, and a token is NOT the Available rows' rule id, which the calendars keep
+  finding them by). What a saved list means is ONE pure rule, `blockOrder`: the four keep THEIR OWN order whatever the
+  list says (only counters move — reading 1); a list that names none of them — every order saved before D674 — reads
+  as "its counters, then the four" (reading 4; nothing stored is converted, D56); a counter made since the order was
+  saved appears just above Required P, where a new counter has always appeared; an id that is no counter any more is
+  dropped. `orderedManningIds()` is that order with the four left out.
+- **What is saved** (`manningorder`, the list a counter's place was always kept in): the order WITHOUT the four while
+  they stand at the foot (`orderToSave`) — so a squadron that never puts a counter among them saves exactly what it
+  always saved — and the whole order, tokens and all, once a counter sits among or below them. Undo takes a move back
+  and a reload keeps it, as a counter's place always did (reading 3).
+- **The drag is the one row drag** (`Matrix.tsx startRowDrag`, `MANNING_DRAG`): while an admin rearranges, each of the
+  four carries `data-mrow` = its token, so it is hit-tested as a place to DROP — its upper half "before it", its lower
+  half "before the row that follows", the lower half of the block's last row "the end" — and wears the same landing
+  bar (`tr.dragover` / `.after`) from the drag state Matrix hands `FlyRows`. The four carry no grip and no cross, so
+  none can be picked up; the store refuses to move one besides (`moveManningRowTo`).
+- **Who draws what:** `CountRows` cuts the counters into five RUNS where the tokens stand (above Required P; under each
+  of the four) and hands them to its `fixed` render prop; `FlyRows` draws each run in its place between its own four
+  rows. A row the order does not name (a per-day override's) goes in the first run. `FlyRows` therefore re-renders
+  with the grid, and its cells' model is memoised on what they can show (`months`, `admin`, the pick).
+- **Nothing that READS the four cares where they sit:** the SANS calendar, the Calendar window and the working box
+  find the Available rows by rule id and the Required figures by date; no day is judged by a fixed row; the Required
+  pick's drag keeps the row it was last over when it crosses a counter between the two Required rows.
+- **The typing strip sits under the BLOCK** (`FlyEdit.tsx footOfBlock`), not under Available W: with a counter below
+  the four it lay over that counter's figures (found by the browser gate). On a phone the pad still brings the FOUR
+  rows above itself (`footOfRows`).
+- Gate: `e2e/leavewar.spec.ts` "a counter row is dragged between the fixed rows and below all four, and the grid stays
+  whole" — a mouse on a desktop, a real finger through CDP on a phone; the landing bar read as PAINTED; every row
+  under the one before it with its 6 Jan cell in the 6 Jan column; no month button covered; the open-bidding outline
+  at the dates; Undo / Redo; a reload as a member. Pins: `engine/fixedrows.test.ts`, `countersamong.test.ts`,
+  `ui/countersamong.test.tsx`, `ui/counts.test.tsx`. A look: `scripts/handpass/lw-counters-among-look.mjs`.
 
 The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
 

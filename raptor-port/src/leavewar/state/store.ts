@@ -148,6 +148,9 @@ import {
   isAvailId,
   availRuleOf,
   cleanAvailRule,
+  blockOrder,
+  isFixedRow,
+  orderToSave,
 } from '../engine'
 import { mergeWar, absencesAt, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
@@ -4085,33 +4088,36 @@ export function availRules(): { p: ManningRule; w: ManningRule } {
   return { p: availRuleOf(rules, AVAIL_P), w: availRuleOf(rules, AVAIL_W) }
 }
 
-/** The manning rows in DISPLAY order: the admin's hand-order first (unknown ids
- *  dropped), then any not named appended in natural order — the `orderedPeople`
- *  rule, so a rule added to the default after an order was saved still appears
- *  rather than vanishing. Hidden rows are still IN this list; hiding is applied
- *  at render, so Rearrange mode can show and un-hide them. */
-export function orderedManningIds(): string[] {
-  const all = manningRowIds()
-  if (!state.manningOrder.length) return all
-  const known = new Set(all)
-  const seen = new Set<string>()
-  const out: string[] = []
-  for (const id of state.manningOrder) if (known.has(id) && !seen.has(id)) { out.push(id); seen.add(id) }
-  for (const id of all) if (!seen.has(id)) out.push(id)
-  return out
+/** THE MANNING BLOCK'S ROWS IN THE ORDER THEY ARE DRAWN — the squadron's counters AND the four fixed rows (Required P
+ *  and W, Available P and W), each fixed row as its token (engine/fixedrows.ts). Owner, D674, 8 Oct 26: a counter may
+ *  stand above the four, between any two of them, or below all four; the four keep their own order. A saved order
+ *  that names none of the four — every one saved before D674 — reads as its counters, then the four; a counter made
+ *  since the order was saved appears just above Required P. What the block draws and what the drag moves within. */
+export function manningBlockOrder(): string[] {
+  return blockOrder(state.manningOrder, manningRowIds())
 }
 
-/** Move one manning row up (`-1`) or down (`+1`). Clamped at the ends; returns
- *  whether it moved so a control can disable at the boundary. ADMIN-gated. */
+/** The squadron's COUNTERS in display order — the block's order with the four fixed rows left out: the admin's
+ *  hand-order first (unknown ids dropped), then any not named, so a rule added to the default after an order was
+ *  saved still appears rather than vanishing (the `orderedPeople` rule). */
+export function orderedManningIds(): string[] {
+  return manningBlockOrder().filter(id => !isFixedRow(id))
+}
+
+/** Move one manning row up (`-1`) or down (`+1`) among the COUNTERS: it changes places with the counter before or
+ *  after it, whatever fixed rows stand between the two (D674 — a fixed row itself never moves). Clamped at the ends;
+ *  returns whether it moved so a control can disable at the boundary. ADMIN-gated. No screen calls it. */
 export function moveManningRow(id: string, dir: -1 | 1): boolean {
   if (state.role !== 'admin') return false
-  const ids = orderedManningIds()
+  const order = manningBlockOrder()
+  const ids = order.filter(x => !isFixedRow(x))
   const i = ids.indexOf(id)
   if (i < 0) return false
   const j = i + dir
   if (j < 0 || j >= ids.length) return false
-  ;[ids[i], ids[j]] = [ids[j], ids[i]]
-  state = withCurrent({ ...state, manningOrder: ids })
+  const a = order.indexOf(ids[i]!), b = order.indexOf(ids[j]!)
+  ;[order[a], order[b]] = [order[b]!, order[a]!]
+  state = withCurrent({ ...state, manningOrder: orderToSave(order) })
   persistNotify()
   return true
 }
@@ -4121,20 +4127,25 @@ export function moveManningRow(id: string, dir: -1 | 1): boolean {
  * drag-and-drop reorder (owner, 28 Aug 26, replacing the ▲▼ arrows with the
  * same drag the roster rows already use). Same shape as `moveRosterRow`:
  * materialise the current display order, splice `id` out, reinsert before the
- * target, write the whole order. ADMIN-gated. */
+ * target, write the whole order. ADMIN-gated.
+ *   SINCE D674 (8 Oct 26) THE ORDER IT MOVES WITHIN IS THE WHOLE BLOCK'S — the counters and the four fixed rows — so
+ * `beforeId` may be a fixed row's token (the counter lands just above that row) and "the end" is below all four. A
+ * fixed row is never the row that moves. What is saved is the order with the four left out while they stand at the
+ * foot (`orderToSave`): a squadron that never puts a counter among them saves what it always saved. */
 export function moveManningRowTo(id: string, beforeId: string | null): void {
   if (state.role !== 'admin') return
   // "before itself" is where it already is — and the splice removes `id` first,
   // so without this guard indexOf would miss and the row would jump to the end
   // (the same trap moveRosterRow guards).
   if (beforeId === id) return
-  const ids = orderedManningIds()
+  if (isFixedRow(id)) return
+  const ids = manningBlockOrder()
   const from = ids.indexOf(id)
   if (from < 0) return
   ids.splice(from, 1)
   const at = beforeId ? ids.indexOf(beforeId) : ids.length
   ids.splice(at < 0 ? ids.length : at, 0, id)
-  state = withCurrent({ ...state, manningOrder: ids })
+  state = withCurrent({ ...state, manningOrder: orderToSave(ids) })
   persistNotify()
 }
 

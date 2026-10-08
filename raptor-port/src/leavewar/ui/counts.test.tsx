@@ -253,15 +253,32 @@ describe('the manning rows can be reordered and deleted (admin)', () => {
 })
 
 // THE BLOCK IS DRAWN FOR THE ROWS AT ITS FOOT EVEN WITH NO COUNTER (D669): the Manning block comes with no count rows
-// of its own, and the four Required / Available rows (handed in as children by Matrix) are then all it shows.
+// of its own, and the four Required / Available rows (drawn by Matrix through `fixed` — re-pointed 8 Oct 26 from the
+// `children` they were handed in as until D674) are then all it shows.
 describe('a block with no count row', () => {
   it('still draws the rows handed to it', () => {
-    render(<table><CountRows verdicts={{}} dates={['d1']} order={[]} arranging={false} admin={false} onInfo={() => {}}>
-      <tr data-testid="foot-row"><td>x</td></tr>
-    </CountRows></table>)
+    render(<table><CountRows verdicts={{}} dates={['d1']} order={[]} arranging={false} admin={false} onInfo={() => {}}
+      fixed={() => <tr data-testid="foot-row"><td>x</td></tr>} /></table>)
     const block = screen.getByTestId('foot-row').parentElement!
     expect(block.tagName).toBe('TBODY'); expect(block.className).toBe('counts')
     expect(block.children.length).toBe(1)
+  })
+  // D674: the counters are handed to whoever draws the four fixed rows in FIVE runs, cut where the order's tokens stand
+  it('hands its counters over in five runs, cut where the four fixed rows stand in the order', () => {
+    const seen: string[][] = []
+    const verdicts = { d1: day('d1', [rule('sets', 'Crew sets', 5), rule('ip', 'IP', 3), rule('sxo', 'SXO', 1)]) }
+    const ui = (order: string[]) => (
+      <table><CountRows verdicts={verdicts} dates={['d1']} order={order} arranging={false} admin={false} onInfo={() => {}}
+        fixed={runs => { seen.push(runs.map(r => String(r.length))); return <>{runs.flat()}</> }} /></table>)
+    const { rerender } = render(ui(['sets', '@req-p', 'ip', '@req-w', '@avail-p', '@avail-w', 'sxo']))
+    expect(seen.at(-1)).toEqual(['1', '1', '0', '0', '1'])
+    /* an order that names no fixed row (saved before D674): every counter above the four */
+    rerender(ui(['sxo', 'sets', 'ip']))
+    expect(seen.at(-1)).toEqual(['3', '0', '0', '0', '0'])
+    expect([...document.querySelectorAll('tbody.counts > tr')].map(tr => tr.getAttribute('data-testid'))).toEqual(['count-sxo', 'count-sets', 'count-ip'])
+    /* a row the order does not name (a per-day override's, a counter made since) goes at the foot of the counters ABOVE the four */
+    rerender(ui(['sets', '@req-p', '@req-w', '@avail-p', '@avail-w', 'sxo']))
+    expect(seen.at(-1)).toEqual(['2', '0', '0', '0', '1'])
   })
   it('and draws nothing at all when nothing is handed to it', () => {
     const { container } = render(<table><CountRows verdicts={{}} dates={['d1']} order={[]} arranging={false} admin={false} onInfo={() => {}} /></table>)

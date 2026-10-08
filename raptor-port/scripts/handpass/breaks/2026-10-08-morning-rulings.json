@@ -1,0 +1,152 @@
+[
+ {
+  "n": 1,
+  "name": "Undo must ask softly",
+  "file": "src/state/undo-wire.ts",
+  "find": "focusDay(date, { ifHidden: true })",
+  "put": "focusDay(date)",
+  "tests": [
+   "src/leavewar/undoland.test.ts"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "a plain ask must not be soft",
+  "file": "src/leavewar/state/store.ts",
+  "find": "focusSoft: !!(opts && opts.ifHidden) }",
+  "put": "focusSoft: true }",
+  "tests": [
+   "src/leavewar/undoland.test.ts"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "a switched period must not be soft",
+  "file": "src/leavewar/state/store.ts",
+  "find": "focusSoft: false,                 // a period switched to",
+  "put": "focusSoft: state.focusSoft,                 // a period switched to",
+  "tests": [
+   "src/leavewar/undoland.test.ts"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "a column half under the names is not in view",
+  "file": "src/leavewar/ui/inview.ts",
+  "find": "col.left >= wrap.left + frozen - SLACK",
+  "put": "col.right >= wrap.left + frozen - SLACK",
+  "tests": [
+   "src/leavewar/ui/inview.test.ts"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "a column cut off at the right is not in view",
+  "file": "src/leavewar/ui/inview.ts",
+  "find": "col.right <= wrap.right + SLACK",
+  "put": "col.left <= wrap.right + SLACK",
+  "tests": [
+   "src/leavewar/ui/inview.test.ts"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "a column on a hidden page is not in view",
+  "file": "src/leavewar/ui/inview.ts",
+  "find": "if (!((col.width ?? col.right - col.left) > 0)) return false",
+  "put": "",
+  "tests": [
+   "src/leavewar/ui/inview.test.ts"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "a row under the top bar is not on screen",
+  "file": "src/ui/onscreen.ts",
+  "find": "box.top >= top - SLACK",
+  "put": "box.bottom >= top - SLACK",
+  "tests": [
+   "src/ui/onscreen.test.ts"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "a row cut off at the foot is not on screen",
+  "file": "src/ui/onscreen.ts",
+  "find": "box.bottom <= bottom + SLACK",
+  "put": "box.top <= bottom + SLACK",
+  "tests": [
+   "src/ui/onscreen.test.ts"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "the window's title says Calendar",
+  "file": "src/ui/DaysWindow.tsx",
+  "find": "<FloatWin id=\"days\" title=\"Calendar\"",
+  "put": "<FloatWin id=\"days\" title=\"Days\"",
+  "tests": [
+   "src/ui/dayswindow.test.tsx"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "its settings button says Calendar…",
+  "file": "src/leavewar/ui/SettingsSheet.tsx",
+  "find": ">Calendar…</button>",
+  "put": ">Days…</button>",
+  "tests": [
+   "src/leavewar/ui/daysline.test.tsx"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "a new holiday opens with nothing picked",
+  "file": "src/ui/HolidaysPanel.tsx",
+  "find": "const first: Range | null = line ? { from: line.from, to: line.to } : null",
+  "put": "const first: Range | null = line ? { from: line.from, to: line.to } : { from: today, to: today }",
+  "tests": [
+   "src/ui/holidayspanel.test.tsx"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "nothing picked is not saved",
+  "file": "src/ui/HolidaysPanel.tsx",
+  "find": "if (!range) return 'Pick its day — or its first and last day — on the calendar.'\n    const d: HolidayDraft = { kind, name, from: range.from, to: range.to }",
+  "put": "const rg = range ?? { from: anchor, to: anchor }\n    const d: HolidayDraft = { kind, name, from: rg.from, to: rg.to }",
+  "tests": [
+   "src/ui/holidayspanel.test.tsx"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "Save and add another clears the pick",
+  "file": "src/ui/HolidaysPanel.tsx",
+  "find": "setShortTouched(false); setRange(null); setAnchor(next)",
+  "put": "setShortTouched(false); setAnchor(next)",
+  "tests": [
+   "src/ui/holidayspanel.test.tsx"
+  ]
+ },
+ {
+  "n": 14,
+  "name": "Save and add another moves the calendar",
+  "file": "src/ui/HolidaysPanel.tsx",
+  "find": "setRange(null); setAnchor(next); setCalKey(k => k + 1)",
+  "put": "setRange(null)",
+  "tests": [
+   "src/ui/holidayspanel.test.tsx"
+  ]
+ },
+ {
+  "n": 15,
+  "name": "(extra) the settings heading says Calendar",
+  "file": "src/leavewar/ui/SettingsSheet.tsx",
+  "find": "<div className=\"gs-sec\">Calendar</div>",
+  "put": "<div className=\"gs-sec\">Days</div>",
+  "tests": [
+   "src/leavewar/ui/daysline.test.tsx"
+  ]
+ }
+]
