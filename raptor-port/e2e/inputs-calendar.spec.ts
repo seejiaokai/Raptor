@@ -753,3 +753,63 @@ test('one holiday, one word: "ND" for a National Day on the "Calendar" month, th
   }
   await expect(page.locator('[data-testid="sc-tag-2026-08-05"]'), 'the SANS month').toHaveText('ND')
 })
+
+/* THE DATES OF A SAVED SHARED INPUT ARE CHANGED IN ITS WINDOW (owner D681, 9 Oct 26 — `[CAL-SHARED-DATES]`). What only a
+   real browser can say: that the calendar is THERE in the window a bar opens, that a real press on two of its days and
+   on Save moves the ONE bar to those days for every man, that one press of Undo puts it back — and, on a phone, that
+   the calendar fits the window's width and Save can still be reached under it. The rules are `ui/groupeditor.test.tsx`. */
+const sharedMeeting = (p: Page, from: string) => file(p, [0, 1, 2].map(who => ({ who, type: 'Meeting', from, timed: [600, 660] as [number, number],
+  more: { grp: 'e2e-g681', grpBy: 'stiff', by: 'stiff', at: '2026-09-01T08:00:00.000Z', remarks: 'range brief' } })))
+const sharedBar = (p: Page) => p.locator('.ib-bar[data-iid]').filter({ hasText: /\+2 · Meeting/ })
+test('a saved shared input: its window carries the calendar; two presses and Save move the ONE bar for every man; one Undo puts it back (D681)', async ({ page }) => {
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  const ids = await sharedMeeting(page, 'Oct 13')
+  await expect(sharedBar(page)).toHaveCount(1)
+  await sharedBar(page).click()
+  await expect(edWin(page)).toBeVisible()
+  const cal = page.locator('#inpEditPop #inpEdCal')
+  await expect(cal, 'the calendar a new input has').toBeVisible()
+  await expect(cal.locator('[data-cal="2026-10-13"]')).toHaveClass(/\bs\b/)
+  await cal.locator('[data-cal="2026-10-20"]').click()
+  await cal.locator('[data-cal="2026-10-22"]').click()
+  await expect(page.locator('#inpEditPop .rc-read')).toContainText('20')
+  await expect(page.locator('#inpEditPop .rc-read')).toContainText('22')
+  await page.locator('#inpEditSave').click()
+  await expect(edWin(page)).toBeHidden()
+  for (const iid of ids) await expect.poll(() => recDates(page, iid)).toEqual(['Oct 20', 'Oct 22'])
+  await expect(sharedBar(page), 'still ONE bar').toHaveCount(1)
+  const bar = (await sharedBar(page).boundingBox())!, a = (await cell(page, '2026-10-20').boundingBox())!, b = (await cell(page, '2026-10-22').boundingBox())!
+  expect(bar.x, 'the bar starts on the 20th').toBeGreaterThanOrEqual(a.x - 2)
+  expect(bar.x + bar.width, 'and ends on the 22nd').toBeLessThanOrEqual(b.x + b.width + 2)
+  expect(bar.x + bar.width, 'reaching into the 22nd').toBeGreaterThan(b.x + 4)
+  await page.click('#undoBtn')
+  for (const iid of ids) await expect.poll(() => recDates(page, iid), 'ONE Undo, every man').toEqual(['Oct 13', ''])
+})
+test('a phone: the shared input’s calendar fits the window, a finger picks its days, and Save is reached under it (D681)', async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL)
+  try {
+    const ids = await sharedMeeting(page, 'Oct 13')
+    await sharedBar(page).tap()
+    await expect(edWin(page)).toBeVisible()
+    const cal = page.locator('#inpEditPop #inpEdCal')
+    await cal.scrollIntoViewIfNeeded()
+    const c = (await cal.boundingBox())!
+    expect(c.x, 'nothing runs off the left').toBeGreaterThanOrEqual(0)
+    expect(c.x + c.width, 'or the right').toBeLessThanOrEqual(390)
+    /* the calendar is the one "+ Input" already carries in this window, at its size (D487: no button is resized without
+       his word — its days are 20px tall on a phone, said on the look card); what is checked is that a finger lands on
+       the day it aimed at */
+    await cal.locator('[data-cal="2026-10-20"]').tap()
+    await expect(cal.locator('[data-cal="2026-10-20"]')).toHaveClass(/\bs\b/)
+    await cal.locator('[data-cal="2026-10-21"]').tap()
+    await expect(cal.locator('[data-cal="2026-10-21"]')).toHaveClass(/\be\b/)
+    await expect(page.locator('#inpEditPop .rc-read')).toContainText('21')
+    const save = page.locator('#inpEditSave')
+    await save.scrollIntoViewIfNeeded()
+    const s = (await save.boundingBox())!
+    expect(s.y + s.height, 'Save is on the screen').toBeLessThanOrEqual(844)
+    expect(await page.evaluate(() => { const e = document.getElementById('inpEditSave')!, r = e.getBoundingClientRect(); const h = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!h && (h === e || e.contains(h)) }), 'and nothing lies over it').toBe(true)
+    await save.tap()
+    for (const iid of ids) await expect.poll(() => recDates(page, iid)).toEqual(['Oct 20', 'Oct 21'])
+  } finally { await context.close() }
+})

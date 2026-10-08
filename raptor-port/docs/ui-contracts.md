@@ -9504,9 +9504,21 @@ without it shows a group as separate lines.
   Delete asks "Delete this input for all N people?" (`inped-delall`; `removeEntry` — one command). A man added or taken
   off on the page behind the window is followed in it and said once; if the very record the window was opened on goes
   while the entry lives on, the window holds the rest.
-- **Its DATES (D681, 9 Oct 26 — ruled, being built as `[CAL-SHARED-DATES]`; this line is rewritten when it lands).** A
-  saved shared input's dates are changed in its own window, by whoever may change the input (its filer, an admin), for
-  everyone in it in ONE command; until it lands the only ways are the bar's drag (its length kept) or delete and file again.
+- **Its DATES are changed in its window (owner D681, 9 Oct 26; built the same day — `ui/inputedit.tsx datesHere`).** On
+  the Inputs page, the window of a SAVED entry of more than one man carries the two-tap calendar a new input has
+  (`#inpEditPop #inpEdCal`, `ui/RangeCal.tsx`) — for a reader who may change it for everyone (its filer, an admin:
+  the window is not read only), never for a man in it who did not file it, never for anyone else, never in the
+  board's or the week's dialog (there a moved span would take the row off the day it was opened from), and not for
+  an ordinary one-man input, which keeps its row in the List and its bar. **A saved input's dates are a finished
+  range, so the first tap is always the NEW START and the next the new end** (a one-day input is handed to the
+  calendar as a range of one day until that first tap — `midPick`); one tap and Save is a one-day input. The title
+  keeps the saved dates; the line under the calendar (`.rc-read`) says what Save will write. Save is the entry's
+  ONE command (`commitGroup`, one Undo): the OIL question is asked of every man kept where the new days need it
+  (D660, D682), a refusal for one man refuses it for everyone in words that name him, and the remark's "till" word
+  follows the new last day in the save (`commitInputEdit`) — the picker itself never rewrites the remark, or the
+  window would read it as his own change. Dates moved behind the open window (a bar dragged) are followed in it.
+  A bar's drag still moves the input as it is, its length kept. Tests: `ui/groupeditor.test.tsx` ("the dates of a
+  saved shared input…"), `e2e/inputs-calendar.spec.ts` (two, D681); the walk `scripts/handpass/cal-host-dates.mjs`.
 - **The month:** one bar, "Drifter +3 · Meeting". A drag moves every record in one command for whoever may change all of
   it; for a man in it who did not file it, and for anyone else, the bar does not lift (`caldrag.ts`).
 - **A day opened:** one line — "Drifter +3", the kind, the hours, the remark, its people as pucks (`idy-people`), "Placed by

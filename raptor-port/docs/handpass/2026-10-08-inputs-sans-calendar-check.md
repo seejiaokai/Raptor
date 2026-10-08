@@ -411,3 +411,100 @@ calls the calculation and proves the arithmetic; the route on screen was walked 
 3. Pick several days on the Inputs month: the new-input window opens at once (the drawing kept the days picked with a bar to confirm).
 4. The people picker on your phone: the pucks are spaced for a finger, so SANS is below the first screen. Tighter, as drawn?
 5. On your iPhone: type a Required figure on the number pad; hold and drag a bar; pull a day's window up by its bar.
+
+## 12. The door built after the check — a saved shared input’s dates (D681, 9 Oct 26; `[CAL-SHARED-DATES]`)
+
+His word ("2 agree"): built before "merge live". It rides this job’s one check (D485) as its last piece, with its own
+tier, roll-call, sizing, walk, gates and reads.
+
+**What was built.** In the window a shared input opens in on the Inputs page, the two-tap calendar a new input already
+has — for a reader who may change the input for everyone (its filer, an admin). The first tap is the new start, the
+next the new end; one tap and Save is a one-day input. Save is the entry’s one command, which already took its dates
+from the window: only the control was missing. The words under the form now speak of this door. Nothing is stored
+that was not stored before; no rule of who may was changed.
+
+**The eight questions.** 1 OIL — YES (new dates that reach a weekend or a holiday bring the OIL question). 2 the
+published record — YES (new dates on a published day are a change waiting to go out). 3 saved data — NO: no field,
+no reader of older data. 4 a shared drawer — YES (the one editor, opened from five places). 5 a new control — YES.
+6 a new surface — NO. 7 roles — YES, by the rule that an unprovable NO is a YES: the control must follow who may
+change the input. 8 the warning list — NO. **Tier: FULL.**
+
+**The rulings swept, each checked in the running build or by the test named:** D681 (D1–D8, M2, P); D655 — its
+filer and an admin change it, a man in it does not (M1, M2; `groupeditor.test.tsx`); D660 and D682 — the OIL question
+asked once, of whoever changes the dates, its answer on every record (D9); D658 — a SANS commitment an admin filed
+for several (D11); D641 — the page behind the window works (D8); D663, D109, D178 — one change waiting on a published
+day, by the same command the bar’s drag uses (not walked again: below); D629 — "placed by" untouched, "changed" stamped
+(`commitInputEdit`, unchanged); D672 — Undo leaves the month where it is (D4); D487 — no button resized (the
+calendar’s days are the size they are on "+ Input").
+
+### The roll-call — every place the app opens an input, and whether the dates door is there
+
+| # | Where a saved shared input is opened | The calendar | Usable by | What else is on those pixels | Seen |
+|---|---|---|---|---|---|
+| R1 | Inputs month — its one bar | HAS IT | filer, admin | the window grows by the calendar; its body scrolls; Save stays the last row | D1, D5–D9, P |
+| R2 | Inputs month — the opened day’s one line | HAS IT | filer, admin | the editor opens in FRONT of the day’s window | D2 |
+| R3 | Inputs List — the shared row’s one button | HAS IT | filer, admin | the List’s own Add form (its own calendar, other ids) is behind the window | D3 |
+| R4 | SANS month — the opened day’s line of a commitment filed for several | HAS IT | admin (D658: a member never files SANS for another) | the SANS day’s window behind | D11 |
+| R5 | any of R1–R4, read by a man IN it who did not file it | MUST NOT, because the dates are everyone’s (D655) — he keeps "Take me out" and his own OIL answer | — | — | M1 |
+| R6 | any of R1–R4, read by anyone else | MUST NOT (read only) — and the words that sent him "to the Inputs page" are gone | — | — | `groupeditor.test.tsx` "a man in it … and anyone else" |
+| R7 | Edit Schedule’s board and week — the dialog on ONE man’s record | MUST NOT, because a moved span would take the row off the day it was opened from (the dialog’s standing rule); its words still say where the dates are changed | — | — | `groupeditor.test.tsx` "the board’s dialog on a record of a shared input" (a render of the same component; not driven in the built app — said plainly) |
+| R8 | the bell’s OIL question, which opens the editor on the flagged record | as R1 or R5, by who reads it | — | the OIL sheet is over the form until answered | not walked: the same component and the same test of who may (`readOnly`) |
+| R9 | an ordinary one-man input, in the same window | MUST NOT in this change (D681 reading 7): it keeps its row in the List and its bar | — | — | `groupeditor.test.tsx` "an ordinary one-man input keeps its window as it was" |
+| R10 | a medical entry | never shared (`inputgroup.ts`), so never R1–R4 | — | — | W15’s test |
+| R11 | the Leave War’s remark sheet; the changes window; View-only Sched | NOT APPLICABLE — none of them opens the editor | — | — | — |
+
+**The door check — the new control in both orders:** people then dates (D5); dates then people (D6); dates half
+picked, then another input asked for (D7 — it asks first); dates changed BEHIND the window while it is open (D8 —
+the window follows); dates then Save into a question (D9 — OIL); dates then Save into a refusal (D10 — the window
+stays, nothing written for anyone); Undo after (D4).
+
+### The sizing (D607)
+
+1. **The type of change:** C (a new control on a surface that exists), touching H (it must follow who may) — NOT G:
+   the command it saves through is unchanged and was walked in this check (the editor’s save, the bar’s drag).
+2. **What only a walk could find:** the calendar missing on one of the four doors or present where it must not be; the
+   window too tall for a short or sideways phone, Save pushed out of reach; a finger’s tap landing on the wrong day; the
+   OIL sheet or the refusal drawn under the window; the window not following a drag made behind it. The tests cover who
+   may, the one command, one Undo, and the OIL answer on every record.
+3. **What the ledger says:** walks of a new control on an existing window (type C) found layout and layering faults,
+   seldom a rule; this check’s own eight-walker pass found its faults on windows over other things and on short
+   screens — so those are driven here.
+4. **The walk chosen:** the HOST, no helpers — 16 steps in one script, the app’s own controls throughout: eleven on a
+   desktop as the admin, two as the member Ranger, and the same flow on a phone upright (390 × 844), short (390 × 568)
+   and on its side (844 × 390). **Left to a test, each named:** who may per role beyond the two faces driven
+   (`groupeditor.test.tsx` — through the window’s own controls in a rendered page); the board’s dialog (R7 — the same
+   file; a render, not the built app). **Not walked again and carried by no new test:** a published day reading "1
+   pending" after the dates move onto it — the write is the SAME command the bar’s drag runs (`commitGroup`), which
+   walkers G and H drove onto published days in this check (§6); the route on screen differs only in the control.
+5. **The row** is added to `docs/walk-ledger.md`.
+
+### The walk — `scripts/handpass/cal-host-dates.mjs`, the built bundle, 9 Oct 26; pictures `host-dates/` (23)
+
+| Step | What was pressed | Result |
+|---|---|---|
+| D1 | the bar of a meeting filed for three | the window, the calendar in it, the saved day lit |
+| D2 | the opened day’s line | the same window and calendar |
+| D3 | the List’s one row; a tap on the 27th, a tap on the 28th; Save | the line under the calendar read "Oct 27 → Oct 28"; all three records on those days; ONE bar |
+| D4 | Undo, once | every man back on the 20th |
+| D5 | a fourth man added, THEN new days | four records, one input, the new days |
+| D6 | one tap on a new day, THEN a man taken off | a one-day input; three records on it, his gone |
+| D7 | a new start picked, then a press on another input’s bar | it ASKS before showing the other; Cancel leaves the input as it was |
+| D8 | the window open; the bar behind it dragged two days on; a remark typed; Save | the calendar in the window moved to the new day by itself; saved on the dragged day with the remark |
+| D9 | a duty for two on a Friday stretched onto the Saturday; Save | the OIL question ONCE, over the window; nothing written before the answer; Yes on both records |
+| D10 | leave for two stretched over one man’s other leave; Save | refused for everyone, in words naming him ("Sidewinder already has LL on 8 Oct … nothing was saved for anyone"); the window stays |
+| D11 | the SANS month: a commitment for two SANS people, from its day | the calendar in the window; both men on the new days; no "delete it and add it again" |
+| M1 | Ranger opens the demo’s meeting for four, which he did not file | no calendar; "Take me out" offered; nothing sends him elsewhere for the dates |
+| M2 | Ranger files a meeting for himself and Saber, reopens it, picks new days | the calendar is there for him; both records on the new days |
+| P × 3 | a phone upright, short and on its side: tap the bar, tap two days, reach Save, tap it | the window whole on the screen; the calendar inside its width; Save reached with nothing over it; saved |
+
+**16 of 16.** On the first run D10 read FAIL: the script looked for the message in the wrong element — the picture
+showed the right words on screen; the script was corrected and the whole walk run again (the host’s error, not the app’s).
+**The pictures were opened by the host:** D3 (the List behind, the window, the two days lit), D9 (the OIL sheet over the
+window), D10 (the refusal), D11 (the SANS window), M1, and the phone upright, short and on its side.
+
+**Seen, and told to him rather than changed:** on a phone the calendar’s days are about 20 points tall — the size they
+already are on "+ Input", and no button is resized without his word (D487). A finger landed on the right day in every
+run; it goes on the look card.
+
+**Break tests:** a refusal for one man (D10); a half-finished pick abandoned (D7); the record moved behind the open
+window (D8); the three small screens (P).

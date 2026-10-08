@@ -707,6 +707,9 @@ real controls (the "Calendar" month's holiday tag; Escape with a window in front
 picked people alone as unsaved work): 0 of 3 right before the fixes; a PASS is the right behaviour, so it is its own re-walk.
 `scripts/handpass/cal-host-short.mjs`, `cal-host-side.mjs` - the same check, the host's own: each settings window's Save
 reached on phones 844, 664 and 568 tall; a day opened on either calendar on a phone on its side (844 x 390).
+`scripts/handpass/cal-host-dates.mjs` - the host's walk of the door built after that check (D681, 9 Oct 26): a saved
+shared input's dates changed in its window - sixteen steps through the app's own controls (a desktop as the admin and
+as the member, a phone upright, short and on its side); a PASS is the right behaviour, so it is its own re-walk.
 `scripts/handpass/cal-A-*.mjs` ... `cal-H-*.mjs` - the EIGHT WALKERS' own scripts of that check (8 Oct 26), one letter a
 walker: A one day's facts, B the Leave War, C the windows and "Calendar", D the SANS calendar, E the Inputs calendar,
 F one input for several people and the late rule, G and H the crossings. Records of what was driven, not gates; each

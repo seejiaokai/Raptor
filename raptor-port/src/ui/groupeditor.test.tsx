@@ -387,6 +387,112 @@ describe('the entry changed behind its window', () => {
   })
 })
 
+/* THE DATES OF A SAVED SHARED INPUT (owner D681, 9 Oct 26 — "2 agree"; found by Astra's read of the calendar job's bug
+   check, R3: `[CAL-SHARED-DATES]`). "A group filing is one shared input, shown and edited as one thing" (D655) — and its
+   dates are part of it, but no door changed them: the List's row opens this window (no edit in place on a shared row),
+   the window drew its date picker for a NEW input only, and a bar's drag keeps the length. The window now carries the
+   same two-tap picker for a saved shared input its reader may change for everyone, and the save is the entry's ONE
+   command — the write path (`commitGroup`) always took the dates from the draft; only the control was missing. */
+describe('the dates of a saved shared input are changed in its window (D681)', () => {
+  const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-cal="${iso}"]`)
+  it('the picker stands in the window, on the saved day; a tap for the start and a tap for the end stretch it for everyone — one Undo', async () => {
+    const g = await shared(others().slice(0, 3))
+    await openOn(g.rows[1])
+    expect($('#inpEditPop #inpEdCal'), 'the two-tap calendar a new input has').toBeTruthy()
+    expect(day('2026-10-13')!.className).toContain(' s')
+    await click(day('2026-10-13')); await click(day('2026-10-15'))
+    expect($('#inpEditPop .rc-read')!.textContent, 'the line under the calendar says what Save will write').toMatch(/13.*15/)
+    await click($('#inpEditSave'))
+    expect(win(), 'saved: the window has closed').toBeNull()
+    expect(of(g.grp).map(r => [r.date, r.endDate])).toEqual([['Oct 13', 'Oct 15'], ['Oct 13', 'Oct 15'], ['Oct 13', 'Oct 15']])
+    expect(new Set(of(g.grp).map(r => r.grp)).size, 'still one shared input').toBe(1)
+    await act(async () => { undo(); notify() })
+    expect(of(g.grp).map(r => [r.date, r.endDate || '']), 'ONE step puts every man back').toEqual([['Oct 13', ''], ['Oct 13', ''], ['Oct 13', '']])
+  })
+  it('moved whole to other days: a tap for the new start, a tap for the new end', async () => {
+    const g = await shared(others().slice(0, 2), { endDate: 'Oct 14' })
+    await openOn(g.rows[0])
+    await click(day('2026-10-20')); await click(day('2026-10-21'))
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => [r.date, r.endDate])).toEqual([['Oct 20', 'Oct 21'], ['Oct 20', 'Oct 21']])
+  })
+  it('a one-day input moved to another day: ONE tap is the new start, and Save keeps it one day', async () => {
+    const g = await shared(others().slice(0, 2))
+    await openOn(g.rows[0])
+    await click(day('2026-10-20'))
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => [r.date, r.endDate || ''])).toEqual([['Oct 20', ''], ['Oct 20', '']])
+  })
+  it('a member who filed it changes its dates too (D655: whoever filed it)', async () => {
+    const [a] = others()
+    const g = await shared([member, a], { grpBy: member, by: member })
+    await as('member')
+    await openOn(g.rows[0])
+    expect($('#inpEditPop #inpEdCal')).toBeTruthy()
+    await click(day('2026-10-13')); await click(day('2026-10-14'))
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => r.endDate)).toEqual(['Oct 14', 'Oct 14'])
+  })
+  it('a man in it who did not file it, and anyone else: no picker — the dates are not theirs to change', async () => {
+    const [a, b] = others()
+    const g = await shared([a, member, b])
+    const h = await shared([a, b])
+    await as('member')
+    await openOn(g.rows[0])
+    expect($('#inpEditPop #inpEdCal'), 'a man in it').toBeNull()
+    expect(win()!.textContent, 'and nothing sends him elsewhere for the dates').not.toMatch(/dates are changed/i)
+    await act(async () => { setInpEdit(null); notify() })
+    await openOn(h.rows[0])
+    expect($('#inpEditPop #inpEdCal'), 'anyone else').toBeNull()
+    expect(win()!.textContent, 'and nothing sends him elsewhere for the dates').not.toMatch(/dates are changed/i)
+  })
+  it('new dates that reach a Saturday: the OIL question is asked ONCE, and its answer is on every man’s record (D660, D682)', async () => {
+    const [a, b] = others()
+    const g = await shared([a, b], { type: 'Duty', date: 'Oct 16', allday: true, s: 0, e: 1439 })
+    await openOn(g.rows[0])
+    await click(day('2026-10-16')); await click(day('2026-10-17'))
+    await click($('#inpEditSave'))
+    expect($$('[data-testid="oilconf"]'), 'asked once').toHaveLength(1)
+    expect(of(g.grp).every(r => !r.endDate), 'nothing is written before the answer').toBe(true)
+    await click(tid('oil-yes')); await click(tid('oilconf-save'))
+    expect(of(g.grp).map(r => [r.date, r.endDate])).toEqual([['Oct 16', 'Oct 17'], ['Oct 16', 'Oct 17']])
+    for (const r of of(g.grp)) expect(r.oil, cs(r.person)).toEqual({ '2026-10-17': 1 })
+  })
+  it('the words under the form speak of THIS door — never "changed on the Inputs page", never "delete it and add it again"', async () => {
+    const g = await shared(others().slice(0, 2))
+    await openOn(g.rows[0])
+    const hint = $('#inpEditPop .inped-hint')!.textContent || ''
+    expect(hint).not.toMatch(/Inputs page|delete it/i)
+    expect(hint).toMatch(/for everyone/i)
+  })
+  it('the dates changed on the page behind the open window are followed, and a Save of the remarks keeps them', async () => {
+    const [a, b] = others()
+    const g = await shared([a, b])
+    await openOn(g.rows[0])
+    await type('#inpEditRmk', 'mine')
+    await act(async () => { commitGroup({ rows: of(g.grp) }, { ...draftOf(live(g.rows[0].iid)), start: '2026-10-22', end: '' }, [a, b]); notify() })
+    expect(day('2026-10-22') ? day('2026-10-22')!.className : $('#inpEditPop .rc-read')!.textContent, 'theirs, silently').toMatch(/ s|22 Oct|Oct 22/)
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => [r.date, r.remarks])).toEqual([['Oct 22', 'mine'], ['Oct 22', 'mine']])
+  })
+  it('an ordinary one-man input keeps its window as it was: no picker there', async () => {
+    const r = await single()
+    await openOn(r)
+    expect($('#inpEditPop #inpEdCal')).toBeNull()
+  })
+  it('a shared SANS commitment an admin filed for two: the picker is there, and the new dates are both men’s', async () => {
+    const sans = Object.keys(PEOPLE).filter(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
+    const g = await shared(sans.slice(0, 2), { type: 'SANS Availability', date: 'Oct 14', allday: true, s: 0, e: 1439, sans: { f: true }, remarks: '' })
+    await act(async () => { setInpMode('sans'); notify() })
+    await openOn(g.rows[0])
+    expect($('#inpEditPop #inpEdCal')).toBeTruthy()
+    expect($('#inpEditPop .inped-hint')!.textContent).not.toMatch(/delete it and add it again/i)
+    await click(day('2026-10-14')); await click(day('2026-10-15'))
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => [r.date, r.endDate])).toEqual([['Oct 14', 'Oct 15'], ['Oct 14', 'Oct 15']])
+  })
+})
+
 describe('outside the Inputs page nothing changes', () => {
   it('the board’s dialog keeps its one Person list — no "Several people"', async () => {
     const r = await single()
@@ -395,6 +501,16 @@ describe('outside the Inputs page nothing changes', () => {
     expect(win()).toBeNull()
     expect($('#inpEditPerson')).toBeTruthy()
     expect($('#inpEditPop [data-testid="pp-several"]')).toBeNull()
+  })
+  /* D681's calendar is the Inputs page's window only: the board's dialog holds ONE man's record on ONE day, and a
+     moved span would take the row off the day it was opened from (the dialog's own standing rule) */
+  it('the board’s dialog on a record of a shared input: no date calendar — the dates are changed on the Inputs page', async () => {
+    const g = await shared(others().slice(0, 3))
+    await act(async () => { setPage('editsched'); notify() })
+    await openOn(g.rows[0])
+    expect(win()).toBeNull()
+    expect($('#inpEditPop #inpEdCal')).toBeNull()
+    expect($('#inpEditPop .inped-hint')!.textContent).toMatch(/dates are changed on the Inputs page/i)
   })
 })
 

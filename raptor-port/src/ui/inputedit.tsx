@@ -1834,6 +1834,9 @@ export function InputEditor() {
   const entryIds = useRef<string[]>([])
   const [delAll, setDelAll] = useState(false)
   const [takeOut, setTakeOut] = useState(false)
+  /* a saved shared input's dates, being re-picked in the window (D681): true between the tap for the new start and the
+     tap for the new end — see `datesHere`, below */
+  const [midPick, setMidPick] = useState(false)
   const rows: any[] = r && !isNew ? entryRowsOf(INPUTS, r).filter((x: any) => INPUTS.indexOf(x) >= 0) : []
   const picker = win && ctx !== 'up'
   const grouped = picker && (ppl.length > 1 || rows.length > 1)
@@ -1866,7 +1869,7 @@ export function InputEditor() {
     const rs = r && !r._new ? entryRowsOf(INPUTS, r) : []
     const p0 = rs.length ? rs.map((x: any) => String(x.person)) : r ? [String(r.person ?? '')] : []
     setPpl(p0); setSeveral(rs.length > 1); basePpl.current = p0; entryIds.current = rs.map((x: any) => x.iid)
-    setDelAll(false); setTakeOut(false)
+    setDelAll(false); setTakeOut(false); setMidPick(false)
     if (r && !r._new && OILASK && r.iid === OILASK) {
       setOilAsk(null)
       const g = oilGate(draftOf(r), r)
@@ -2180,8 +2183,21 @@ export function InputEditor() {
     setTakeOut(false)
     if (mine && removeInput(mine)) { HOOKS.toast('You are out of this input', 'ok'); close() } else stay()
   }
+  /* THE DATES OF A SAVED SHARED INPUT ARE CHANGED HERE (owner D681, 9 Oct 26 — `[CAL-SHARED-DATES]`, found by Astra's
+     read of the calendar job's bug check). "One shared input, shown and edited as one thing" (D655) — and no door
+     changed its dates: the List's shared row opens this window (it has no edit in place: that would act on the first
+     man's record alone), the window drew its date picker for a NEW input only, and a bar's drag keeps the length. So
+     the window carries the same two-tap calendar for a saved entry of more than one man — on the Inputs page, and only
+     for a reader who may change it for EVERYONE (`readOnly` is the write path's own rule): a man in it who did not file
+     it keeps his two things and no more. Nothing new is written: the entry's ONE command (`commitGroup`) always took
+     the dates from the draft, asks the OIL question of every man kept (D660, D682) and follows the remark's "till"
+     word (`commitInputEdit`) — only the control was missing. An ordinary one-man input keeps the doors it has (its row
+     in the List, its bar), and the board's and the week's dialogs are as they were: there a moved span would take the
+     row off the day it was opened from. */
+  const datesHere = win && !isNew && rows.length > 1 && !readOnly && ctx !== 'up'
   /* a NEW row's dates live on the DRAFT (the range picker moves them); an
-     edit's stay on the row, whose dates this dialog never changes */
+     edit's stay on the row — and so does the TITLE's date, which says what is saved, while the line under the picker
+     says what a Save would write */
   const when = !r ? '' : (isNew && draft && draft.start)
     ? fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')
     /* the stored month-first labels said day-first, as the rest of the Inputs page speaks ([LW-ISO-DATES], 28 Sep 26 —
@@ -2264,11 +2280,20 @@ export function InputEditor() {
             <input type="date" id="inpEditUpDate" aria-label="Upchit date" value={draft.start}
               onChange={e => setDraft({ ...draft, start: e.target.value, end: '' })} />
           </label>}
-          {(ctx === 'u' || (isNew && r._calendar)) && <div className="inped-f">
+          {/* ...and a SAVED shared input's (D681 — `datesHere`, above). A saved input's dates are a finished range, so
+              the first tap is always the NEW START and the next the new end — "a tap for the start, a tap for the end";
+              a one-day input is handed to the calendar as a range of one day until that first tap, or its first tap
+              would stretch it instead (`midPick`). Its remark is not rewritten here: the save follows the "till" word
+              itself, and a remark the picker had touched would read as his own change to the window. */}
+          {(ctx === 'u' || (isNew && r._calendar) || datesHere) && <div className="inped-f">
             <span className="inped-k">Dates</span>
             <div className="inped-dates">
-              <RangeCal idPrefix="inpEd" start={draft.start} end={draft.end}
-                onPick={(s2, e2) => setDraft({ ...draft, start: s2, end: e2, remarks: withRemarksTail(draft.remarks, s2, e2, 'till') })} />
+              <RangeCal key={datesHere ? 'saved-' + r.iid : 'new'} idPrefix="inpEd" start={draft.start}
+                end={datesHere && !midPick ? (draft.end || draft.start) : draft.end}
+                onPick={(s2, e2) => {
+                  if (datesHere) { setMidPick(!e2); setDraft({ ...draft, start: s2, end: e2 }); return }
+                  setDraft({ ...draft, start: s2, end: e2, remarks: withRemarksTail(draft.remarks, s2, e2, 'till') })
+                }} />
               <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
             </div>
           </div>}
@@ -2337,7 +2362,9 @@ export function InputEditor() {
           {/* who placed this input and when, and its last change — the editor's small print (owner D629; the one line
               is ui/placedline.ts). Not on a new input, which nobody has placed yet. */}
           {!isNew && r && (rows.length > 1 ? placedLineOf(rows) : placedLine(r)) && <div className="inped-placed" data-testid="inped-placed">{rows.length > 1 ? placedLineOf(rows) : placedLine(r)}</div>}
-          <div className="inped-hint">{isNew
+          {/* a shared input its reader may NOT change for everyone says nothing here about dates: the line beside the
+              buttons already says who can change it, and "changed on the Inputs page" sent him to the page he is on */}
+          {!(win && !isNew && rows.length > 1 && readOnly) && <div className="inped-hint">{isNew
             ? r._calendar
               /* "your available hours" is the SANS calendar's wording — on the Inputs calendar the same window files
                  a meeting or a leave (Opus's own read of the build, step 0, 7 Oct 26) */
@@ -2353,11 +2380,13 @@ export function InputEditor() {
                 : `Added on ${when}. For a multi-day span, use the Inputs page.`
             /* a SANS commitment is on no list of the Inputs tab (D620), so "the Inputs page" is no place to change its
                dates — and this editor changes none: it is deleted and added again (the calendar job's bug check, 8 Oct 26) */
+            : datesHere
+              ? 'To change its dates for everyone in it, tap the new start on the calendar above, then the new end. The line under the calendar shows what Save will write.'
             : isSansAvail(draft.type)
               ? 'To change its dates, delete it and add it again on the SANS calendar.'
             : canEditSched()
               ? 'The dates are changed on the Inputs page.'
-              : 'The person and the dates are changed on the Inputs page.'}</div>
+              : 'The person and the dates are changed on the Inputs page.'}</div>}
         </div>}
         {/* HIS OWN TWO THINGS in a shared input he did not file — outside the read-only form, so they are live */}
         {mineRow && draft && (
