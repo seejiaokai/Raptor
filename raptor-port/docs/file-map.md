@@ -584,6 +584,15 @@ entry missed, D646). Pure; it works nothing out about the day. `sanscal-model.te
 from the record's `by` / `at` / `modBy` / `modAt`; no line for a record that never recorded it. Drawn so far on the SANS
 calendar's opened day; the Inputs calendar's opened day, the List, the editor, a Medical card and the document viewer
 take the same line with step 5.
+`src/ui/SansDay.tsx` - A DAY OPENED ON THE SANS CALENDAR (D617, D626, D647-D651, D629, D646, D675): a window on the shell
+(`win-sansday`) - the working for both seats (required, available, SANS committed to fly, still needed: the resolver's
+own answer), "+ Commitment", an admin's "Calendar…" (opens Days on that month), then everyone who committed, each as
+the schedule's own puck (`ui/html.ts puck()`, the SANS edge from the builder) with his letters, hours, the LATE tag
+that says the cut-off it missed, and who placed it. The working and the buttons are pinned; the list scrolls.
+`sansday.test.tsx`. `src/ui/sansadd.ts` - "+ Commitment": the one way the SANS calendar starts a new SANS availability
+(`openSansAdd(from, until?)`, `maySansAdd`), for the day's button and the month's gestures alike; on a no-fly day
+nothing is ticked (D642). `src/ui/scheduler/24-sans-calendar.css` - the SANS calendar's styles and its three colours
+(D630). The windows shell gained `rests` (two rest heights on a phone - D648): `FloatWindow.tsx`, `22-float-windows.css`.
 `scripts/handpass/days-look.mjs` - pictures of Days in the RUNNING build, phone and desktop (the line in the war's
 settings, the month as the fourth mock-ups draw it, the dot, "Every Thursday" and "Every Saturday" ending on a date, the
 Holidays list, its form adding and changing, the window dragged aside) - at a phone, a 1440px laptop and 1536px across;

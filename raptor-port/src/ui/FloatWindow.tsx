@@ -26,9 +26,17 @@
    calendar, the input editor on the Inputs page. What it does NOT: a question that must be answered before going on
    (those stay blocking), a small menu or picker (they still close on a click outside), and the Leave War's own
    windows — the war's non-blocking form is its `Sheet`'s `modal={false}` (leavewar/ui/Sheet.tsx), a different chassis
-   with the same manners. Its look: ui/scheduler/22-float-windows.css. */
-import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
-import { frontWin, raiseWin, useFloatWin, type FloatBox } from './floatwin'
+   with the same manners. Its look: ui/scheduler/22-float-windows.css.
+
+   TWO REST HEIGHTS ON A PHONE (`rests` — the plan §3.5; owner D648, 7 Oct 26: a day opened on a calendar "does not open
+   full screen, but on a phone it can be pulled up by its top bar to nearly the full screen and back down"). A window
+   that asks for it is a panel standing on the foot of the screen: it opens at the lower height, its bar pulls it up to
+   nearly the whole screen and back, and it rests at one of the two — never in between, where a list would be cut at an
+   odd line. A tap on the bar goes to the other height (a drag is not the only way to say "more"). It opens at the lower
+   height EVERY time: the calendar behind it is what he came from (D641), and a window that remembered being tall would
+   open over all of it. On a desktop `rests` changes nothing — the bar moves the window, as every window's does. */
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { frontWin, phoneLayout, raiseWin, useFloatWin, type FloatBox } from './floatwin'
 import { useVersion } from './useStore'
 import { notify } from '../state/store'
 
@@ -38,7 +46,10 @@ const BOXES = new Map<string, FloatBox | null>()
 /** test-only: forget every window's place and which was in front */
 export function _resetFloatWins(): void { BOXES.clear(); raiseWin('') }
 
-export function FloatWin({ id, title, sub, onClose, testid, className, children }: {
+/* how far the bar must be dragged for the panel to go to its other height — less is a wobble, and it stays put */
+const PULL = 40
+
+export function FloatWin({ id, title, sub, onClose, testid, className, rests, children }: {
   /** which window this is — its remembered place and its turn in front are kept by it; one window per id at a time */
   id: string
   title: string
@@ -49,6 +60,8 @@ export function FloatWin({ id, title, sub, onClose, testid, className, children 
   testid?: string
   /** a size or a look of the caller's own, beside `floatwin` */
   className?: string
+  /** on a phone: a panel with two rest heights, pulled up and down by its bar (see the head of this file) */
+  rests?: boolean
   children: ReactNode
 }) {
   useVersion()                                         // which window is in front is said through the app's own signal
@@ -66,6 +79,42 @@ export function FloatWin({ id, title, sub, onClose, testid, className, children 
     const n = el.current
     if (n) { n.style.width = ''; n.style.height = '' }
   })
+
+  /* THE PHONE PANEL'S TWO HEIGHTS. While a finger holds the bar the panel's top follows it, written straight onto the
+     element (no re-render per frame, as a window's drag is); let go, the inline styles are taken away and the
+     stylesheet's two heights decide — `is-tall` or not. */
+  const sheet = !!rests && phoneLayout()
+  const [tall, setTall] = useState(false)
+  const pull = useRef<{ y0: number; top0: number; top: number; moved: boolean } | null>(null)
+  const sheetDown = (e: React.PointerEvent) => {
+    const n = el.current
+    if (!n || (e.target as HTMLElement).closest('.win-x')) return
+    const top = n.getBoundingClientRect().top
+    pull.current = { y0: e.clientY, top0: top, top, moved: false }
+    try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId) } catch { /* jsdom */ }
+    e.preventDefault()
+  }
+  const sheetMove = (e: React.PointerEvent) => {
+    const d = pull.current, n = el.current
+    if (!d || !n) return
+    if (Math.abs(e.clientY - d.y0) > 3) d.moved = true
+    if (!d.moved) return
+    /* never above the screen's top, never so low that the bar itself leaves the screen */
+    d.top = Math.min(Math.max(8, d.top0 + e.clientY - d.y0), Math.max(8, window.innerHeight - 120))
+    n.style.top = d.top + 'px'; n.style.height = 'auto'; n.style.maxHeight = 'none'
+  }
+  const sheetUp = () => {
+    const d = pull.current, n = el.current
+    pull.current = null
+    if (!d) return
+    if (n) { n.style.top = ''; n.style.height = ''; n.style.maxHeight = '' }
+    if (!d.moved) setTall(t => !t)
+    else if (d.top0 - d.top > PULL) setTall(true)
+    else if (d.top - d.top0 > PULL) setTall(false)
+  }
+  const bar = sheet
+    ? { onPointerDown: sheetDown, onPointerMove: sheetMove, onPointerUp: sheetUp, onPointerCancel: sheetUp }
+    : { onPointerDown: onBarDown, onPointerMove: onBarMove, onPointerUp: onBarUp, onPointerCancel: onBarUp }
 
   /* OPENED LAST, IN FRONT — and the keyboard goes into it; closed, the keyboard goes back to what opened it */
   const closeRef = useRef(onClose)
@@ -100,7 +149,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, children 
 
   return (
     <div
-      className={'floatwin' + (className ? ' ' + className : '') + (frontWin() === id ? ' front' : '')}
+      className={'floatwin' + (className ? ' ' + className : '') + (rests ? ' rests' : '') + (sheet && tall ? ' is-tall' : '') + (frontWin() === id ? ' front' : '')}
       ref={el}
       role="dialog"
       aria-modal="false"
@@ -109,7 +158,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, children 
       data-testid={testid}
       onPointerDownCapture={() => { if (raiseWin(id)) notify() }}
     >
-      <div className="win-bar" onPointerDown={onBarDown} onPointerMove={onBarMove} onPointerUp={onBarUp} onPointerCancel={onBarUp}>
+      <div className="win-bar" {...bar}>
         {/* the app's own six-dot grip, "drag me" (D40) */}
         <span className="win-grip" aria-hidden="true">&#10303;</span>
         <span className="win-ttl">{title}{sub ? <small>{sub}</small> : null}</span>

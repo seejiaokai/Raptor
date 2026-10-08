@@ -30,4 +30,9 @@
   .floatwin{left:12px;right:12px;width:auto;top:auto;bottom:12px;max-width:calc(100vw - 24px);max-height:72vh;max-height:72dvh}
   .floatwin .win-x{width:44px;height:44px;font-size:14px}
   .floatwin .win-bar{padding:6px 6px 6px 10px}
+  /* TWO REST HEIGHTS (FloatWindow.tsx `rests`; owner D648): a panel standing on the foot of the screen — about
+     two-thirds high as it opens, so the calendar behind it stays in reach (D641), and pulled up by its bar to nearly
+     the whole screen. While a finger holds the bar the element's own top is written inline and wins over both. */
+  .floatwin.rests{height:66vh;height:66dvh;max-height:none}
+  .floatwin.rests.is-tall{top:8px;height:auto}
 }
