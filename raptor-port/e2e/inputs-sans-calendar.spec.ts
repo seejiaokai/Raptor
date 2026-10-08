@@ -18,7 +18,8 @@ async function month(p:Page,y:number,m:number){
   const label=sans?tid(p,'sc-month'):p.locator('.ic-mon'), prev=sans?tid(p,'sc-prev'):p.locator('#icPrev'), next=sans?tid(p,'sc-next'):p.locator('#icNext')
   for(let i=0;i<240;i++){
     const [name,year]=(await label.innerText()).trim().toLowerCase().split(/\s+/)
-    const d=y*12+(m-1)-(+year*12+MONTHS.indexOf(name))
+    /* a phone prints the month's first three letters */
+    const d=y*12+(m-1)-(+year*12+MONTHS.findIndex(x=>x.startsWith(name)))
     if(!d)return
     await (d>0?next:prev).click()
   }
@@ -112,6 +113,57 @@ test('on a desktop the opened day sits beside the month and covers no date; drag
   await expect.poll(width).toBe(full)
 })
 
+test('the gear: three colours and the late cut-off are saved from its window, reach the month, and survive a reload; Undo takes each back',async({page})=>{
+  await sans(page)
+  await page.evaluate(d=>(window as any).setFlyDays([{iso:d,p:60,w:60}]),DATE)
+  const need=await answer(page);const total=need.p+need.w
+  await expect(cell(page)).toHaveClass(/\bt-red\b/)
+  /* the gear is the app's own cog — never the sun, which on this calendar means day flying (D635) */
+  await expect(tid(page,'sc-gear')).toHaveText('⚙');await expect(tid(page,'sc-gear').locator('svg')).toHaveCount(0)
+  await tid(page,'sc-gear').click();await expect(tid(page,'win-sansset')).toBeVisible()
+  /* a window, not a wall (D641): dragged aside by its bar, and the month behind it still answers a press */
+  const bar=(await tid(page,'win-sansset').locator('.win-bar').boundingBox())!
+  await page.mouse.move(bar.x+90,bar.y+12);await page.mouse.down();await page.mouse.move(bar.x-200,bar.y+140,{steps:6});await page.mouse.up()
+  const moved=(await tid(page,'win-sansset').boundingBox())!
+  expect(Math.abs(moved.x-(bar.x-290))).toBeLessThanOrEqual(3)
+  await cell(page,'2026-10-02').click();await expect(tid(page,'win-sansday')).toBeVisible();await expect(tid(page,'win-sansset')).toBeVisible()
+  await tid(page,'win-sansday-x').click()
+  /* red only from more than the day needs: the day falls to amber */
+  await tid(page,'sset-yellow').fill('1');await tid(page,'sset-amber').fill('2');await tid(page,'sset-red').fill(String(total+1))
+  await tid(page,'sset-mode-days').click();await tid(page,'sset-lead').fill('10')
+  await expect(tid(page,'sset-example')).toContainText('commitments are due by the end of')
+  await tid(page,'sset-save').click();await expect(tid(page,'win-sansset')).toHaveCount(0)
+  await expect(cell(page)).toHaveClass(/\bt-amber\b/)
+  await expect(tid(page,'sc-legend')).toContainText(`${total+1}+`)
+  expect(await page.evaluate(()=>[(window as any).VCONF.sansCutMode,(window as any).VCONF.sansLead])).toEqual([0,10])
+  await page.reload();await login(page);await go(page,'inputs');await page.click('#inSansMode');await month(page,2026,10)
+  await expect(cell(page)).toHaveClass(/\bt-amber\b/)
+  expect(await page.evaluate(()=>[(window as any).VCONF.sansCutMode,(window as any).VCONF.sansLead])).toEqual([0,10])
+  await tid(page,'sc-gear').click();await expect(tid(page,'sset-lead')).toHaveValue('10');await expect(tid(page,'sset-red')).toHaveValue(String(total+1))
+  /* a draft is not a save: typed, then ✕ */
+  await tid(page,'sset-red').fill('99');await tid(page,'win-sansset-x').click()
+  await expect(tid(page,'sc-legend')).toContainText(`${total+1}+`)
+})
+
+test('Highlight rings one man’s days in a real browser, and changes no figure',async({page})=>{
+  await sans(page)
+  const who=await page.evaluate(d=>{const w=window as any,P=w.PEOPLE;const id=Object.keys(P).find(k=>P[k].san&&!P[k].archived&&!P[k].deleted&&!P[k].special&&!P[k].pers&&P[k].seat==='RCP')!
+    w.fileInput({person:id,type:'SANS Availability',date:'Oct 13',endDate:'Oct 14',yr:2026,allday:true,sans:{f:true,a:true}});return {id,cs:P[id].cs}},DATE)
+  await expect(tid(page,'sc-f-'+DATE)).toHaveText('F01')
+  const before=await tid(page,'sc-grid').innerText()
+  await tid(page,'sc-hl').click();await tid(page,'sc-hl-'+who.id).click()
+  await expect(tid(page,'sc-hl')).toHaveText(who.cs)
+  for(const d of [DATE,'2026-10-14'])await expect(cell(page,d)).toHaveClass(/is-hi/)
+  await expect(cell(page,'2026-10-15')).not.toHaveClass(/is-hi/)
+  await expect(tid(page,'sc-f-'+DATE)).toHaveClass(/is-mine/);await expect(tid(page,'sc-o-'+DATE)).not.toHaveClass(/is-mine/)
+  /* the ring is drawn inside the date: it moves no neighbour, and the figures are as they were */
+  expect(await tid(page,'sc-grid').innerText()).toBe(before)
+  const ring=await cell(page).evaluate(e=>getComputedStyle(e).boxShadow)
+  expect(ring).toContain('inset')
+  await tid(page,'sc-hl').click();await tid(page,'sc-hl-none').click()
+  await expect(cell(page)).not.toHaveClass(/is-hi/)
+})
+
 test('a member sees the SANS calendar and a day’s working, with no admin control',async({page})=>{
   await sans(page,'user')
   await expect(tid(page,'sc-legend')).toBeVisible()
@@ -201,7 +253,7 @@ test('a finger held on a date, then dragged, picks the run — the page standing
     await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]})
     await expect(page.locator('#inpEditPop .rc-read')).toHaveText('Oct 20 → Oct 22')
     expect(await page.evaluate(()=>scrollY),'the page scrolled under the finger').toBe(y0)
-    await expect(tid(page,'sc-month')).toHaveText('October 2026')        // and the month was not turned
+    await expect(tid(page,'sc-month')).toHaveText('Oct 2026')            // and the month was not turned
     await page.locator('#inpEditClose').tap();await expect(page.locator('#inpEditPop')).toBeHidden()
     /* held and let go without moving: that one day — and the next deliberate tap in the form still lands */
     await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{...a,id:1}]})
@@ -223,7 +275,7 @@ test('a quick slide of a finger turns the month and picks nothing',async({browse
     await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{...a,id:1}]})
     for(const dx of [20,60,110,150])await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:a.x-dx,y:a.y,id:1}]})
     await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await cdp.detach()
-    await expect(tid(page,'sc-month')).toHaveText('November 2026')
+    await expect(tid(page,'sc-month')).toHaveText('Nov 2026')
     expect(await editorOpen(page)).toBe(false);await expect(tid(page,'win-sansday')).toHaveCount(0)
   }finally{await context.close()}
 })
@@ -270,10 +322,26 @@ for(const height of [844,568])test(`phone ${height}: the month’s controls are 
   await page.setViewportSize({width:390,height});await sans(page)
   const label=await tid(page,'sc-month').evaluate(e=>({width:e.clientWidth,textWidth:e.scrollWidth}))
   expect(label.width).toBeGreaterThanOrEqual(label.textWidth)
-  for(const id of ['sc-prev','sc-next','sc-today']){
+  for(const id of ['sc-prev','sc-next','sc-today','sc-hl','sc-gear']){
     const r=(await tid(page,id).boundingBox())!
     expect(r.height,id+' phone target').toBeGreaterThanOrEqual(44)
   }
+  /* the head is ONE line: the arrows, the name, Today, Highlight and the gear share a top, and none runs off the screen */
+  const head=await page.evaluate(()=>['sc-prev','sc-month','sc-next','sc-today','sc-hl','sc-gear'].map(id=>{const r=document.querySelector(`[data-testid="${id}"]`)!.getBoundingClientRect();return {mid:Math.round(r.top+r.height/2),right:r.right,left:r.left}}))
+  expect(Math.max(...head.map(h=>h.mid))-Math.min(...head.map(h=>h.mid)),'the head wrapped onto a second line').toBeLessThanOrEqual(2)
+  expect(Math.max(...head.map(h=>h.right))).toBeLessThanOrEqual(390);expect(Math.min(...head.map(h=>h.left))).toBeGreaterThanOrEqual(0)
+  /* the Highlight list opens on the screen, whole */
+  await tid(page,'sc-hl').click()
+  const menu=(await tid(page,'sc-hl-menu').boundingBox())!
+  expect(menu.x).toBeGreaterThanOrEqual(0);expect(menu.x+menu.width).toBeLessThanOrEqual(390)
+  await page.keyboard.press('Escape');await expect(tid(page,'sc-hl-menu')).toHaveCount(0)
+  /* with the longest callsign picked the head is still one line, and it is the BUTTON that shortens, never the month */
+  const longest=await page.evaluate(()=>{const P=(window as any).PEOPLE;return Object.keys(P).filter(k=>P[k].san&&!P[k].archived&&!P[k].deleted&&!P[k].special&&!P[k].pers).sort((a,b)=>P[b].cs.length-P[a].cs.length)[0]})
+  await page.evaluate(id=>{(window as any).PEOPLE[id].cs='Wwwwwwwwwwwwww'},longest)
+  await tid(page,'sc-hl').click();await tid(page,'sc-hl-'+longest).click()
+  const picked=await page.evaluate(()=>['sc-prev','sc-month','sc-next','sc-today','sc-hl','sc-gear'].map(id=>{const e=document.querySelector(`[data-testid="${id}"]`) as HTMLElement,r=e.getBoundingClientRect();return {mid:Math.round(r.top+r.height/2),right:r.right,cut:id==='sc-month'&&e.scrollWidth>e.clientWidth}}))
+  expect(Math.max(...picked.map(h=>h.mid))-Math.min(...picked.map(h=>h.mid)),'a long callsign wrapped the head').toBeLessThanOrEqual(2)
+  expect(Math.max(...picked.map(h=>h.right))).toBeLessThanOrEqual(390);expect(picked.some(h=>h.cut),'the month’s name was cut').toBe(false)
   for(const id of ['#inMemberMode','#inSansMode','#inMedBtn']){
     const r=(await page.locator(id).boundingBox())!
     expect(r.height,id+' phone target').toBeGreaterThanOrEqual(44)

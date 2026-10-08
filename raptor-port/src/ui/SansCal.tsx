@@ -34,6 +34,8 @@ import { addDays } from '../state/flyplan-model'
 import { notify } from '../state/store'
 import { CALMONTH, INPREVEAL, SANSHL, clearInpReveal, setCalMonth, setSansHl } from '../state/view'
 import { dayFacts, flyMonth, useWarFacts } from '../leavewar/sync'
+import { isAdmin } from '../state/perms'
+import { setSansSet } from './pops'
 import { initCalPick } from './calpick'
 import { MONTHS, WD, isoToday } from './daysfmt'
 import { MoonIcon, SunIcon } from './icons'
@@ -44,6 +46,7 @@ import { PEOPLE } from '../engine/people'
 import { puck } from './html'
 import { HlIcon } from './icons'
 import { dayWord, sansCell, sansMine, sansRoster, type SansCell } from './sanscal-model'
+import { useMedia } from './usemedia'
 import { useVersion } from './useStore'
 
 /** "1–2", "3–4", "5+" — the three colours' ranges, from the figures as set */
@@ -107,6 +110,10 @@ export function SansCal() {
   useWarFacts()
   const gridRef = useRef<HTMLDivElement>(null)
   const topRef = useRef<HTMLDivElement>(null)
+  /* ON A PHONE THE MONTH'S NAME IS ITS FIRST THREE LETTERS — "OCT 2026", as the approved month is drawn — so the two
+     arrows, Today, Highlight and the gear hold ONE line across 390px (found on the first look: with the name in full
+     the last two dropped to a line of their own) */
+  const narrow = useMedia('(max-width:820px)')
   const now = new Date()
   const cur = CALMONTH || { y: now.getFullYear(), m: now.getMonth() + 1 }
   const today = isoToday()
@@ -241,11 +248,17 @@ export function SansCal() {
       <div className="sc-top" ref={topRef}>
         <div className="sc-head">
           <button type="button" className="abtn sc-nav" data-testid="sc-prev" aria-label="Previous month" onClick={() => step(-1)}>&#8249;</button>
-          <span className="sc-month" data-testid="sc-month" aria-live="polite">{MONTHS[cur.m - 1]} {cur.y}</span>
+          <span className="sc-month" data-testid="sc-month" aria-live="polite" aria-label={`${MONTHS[cur.m - 1]} ${cur.y}`}>{narrow ? MONTHS[cur.m - 1].slice(0, 3) : MONTHS[cur.m - 1]} {cur.y}</span>
           <button type="button" className="abtn sc-nav" data-testid="sc-next" aria-label="Next month" onClick={() => step(1)}>&#8250;</button>
           <button type="button" className="abtn" data-testid="sc-today" onClick={goToday}>Today</button>
           <span className="sc-spring" />
           <Highlight people={roster} hi={hi} />
+          {/* THE GEAR (D618, D635): the app's own cog — the Leave War's settings button — never a drawing with rays, which
+              on this calendar would read as the day-flying sun beside it. Admins only; everyone has the line below. */}
+          {isAdmin() && (
+            <button type="button" className="abtn sc-gear" data-testid="sc-gear" title="SANS calendar settings — day colours, the late cut-off, the Calendar"
+              aria-label="SANS calendar settings" onClick={() => { setSansSet(true); notify() }}>&#9881;</button>
+          )}
         </div>
         <div className="sc-sub">
           <span className="sc-legend" data-testid="sc-legend">

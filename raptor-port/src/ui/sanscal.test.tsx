@@ -23,7 +23,7 @@ import { CALMONTH, INPREVEAL, SANSHL, requestInpReveal, resetViewState, setCalMo
 import { initStore as lwInitStore, setRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { flyAnswer, holidayAdd } from '../leavewar/sync'
-import { INPEDIT, setDaysWin, setInpEdit } from './pops'
+import { INPEDIT, SANSSET, setDaysWin, setInpEdit, setSansSet } from './pops'
 import { _resetFloatWins } from './FloatWindow'
 import { SansCal } from './SansCal'
 
@@ -48,7 +48,7 @@ beforeEach(() => {
   ;(document as any).elementFromPoint = undefined
 })
 afterEach(() => {
-  cleanup(); _resetFloatWins(); setDaysWin(null); setInpEdit(null); setSession(null); setMe(DEFAULT_ME); clearInpReveal(); setCalMonth(null)
+  cleanup(); _resetFloatWins(); setDaysWin(null); setSansSet(false); setInpEdit(null); setSession(null); setMe(DEFAULT_ME); clearInpReveal(); setCalMonth(null)
   INPUTS.splice(0, INPUTS.length, ...kept); storeBackend.impl = null
 })
 
@@ -150,6 +150,23 @@ describe('the line that says what the colours mean', () => {
     setSession({ user: 'us', role: 'member' }); setMe(member)
     show()
     expect(t('sc-legend').textContent).toBe('Pilots · WSOs still needed:23–78+')
+  })
+})
+
+describe('the gear (D618, D635)', () => {
+  it('an admin has it, and it asks for the settings window; it is the app’s own cog, not a drawing', () => {
+    show()
+    expect(t('sc-gear').getAttribute('aria-label')).toBe('SANS calendar settings')
+    expect(t('sc-gear').textContent).toBe('⚙')                      // the glyph the Leave War's settings button carries
+    expect(t('sc-gear').querySelector('svg')).toBeNull()
+    expect(SANSSET).toBe(false)
+    fireEvent.click(t('sc-gear'))
+    expect(SANSSET).toBe(true)
+  })
+  it('a member has no gear — only the line saying what the colours mean', () => {
+    setSession({ user: 'us', role: 'member' }); setMe(member)
+    show()
+    expect(q('sc-gear')).toBeNull(); expect(t('sc-legend')).toBeTruthy()
   })
 })
 

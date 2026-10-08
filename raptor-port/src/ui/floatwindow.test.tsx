@@ -150,6 +150,17 @@ describe('dragging', () => {
     /* only the PLACE is kept: the size is handed back to the stylesheet, so the window fits whatever it now holds */
     expect(win().style.width).toBe(''); expect(win().style.height).toBe('')
   })
+  it('dragged low, it is capped at the room under it — its foot, and whatever button stands there, stays on the screen', () => {
+    layOut()
+    Object.defineProperty(window, 'innerHeight', { value: 700, configurable: true })
+    render(<Page />); open()
+    const bar = win().querySelector('.win-bar') as HTMLElement
+    fireEvent.pointerDown(bar, { clientX: 100, clientY: 100, pointerId: 1 })
+    fireEvent.pointerMove(bar, { clientX: 100, clientY: 500, pointerId: 1 })
+    fireEvent.pointerUp(bar, { clientX: 100, clientY: 500, pointerId: 1 })
+    expect(win().style.top).toBe('400px')
+    expect(win().style.maxHeight).toBe('292px')                        // 700 - 400 - 8
+  })
   it('a press on the ✕ never starts a drag', () => {
     render(<Page />); open()
     fireEvent.pointerDown(screen.getByTestId('win-days-x'), { clientX: 100, clientY: 100, pointerId: 1 })

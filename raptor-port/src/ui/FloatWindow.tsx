@@ -65,19 +65,28 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ch
   children: ReactNode
 }) {
   useVersion()                                         // which window is in front is said through the app's own signal
+  /* a place just chosen re-draws THIS window once (never the page): its height is then fitted to the room under it */
+  const [, placed] = useState(0)
   const { el, onBarDown, onBarMove, onBarUp } = useFloatWin({
     open: true,
     getBox: () => BOXES.get(id) ?? null,
-    setBox: b => { BOXES.set(id, b) },
+    setBox: b => { BOXES.set(id, b); placed(n => n + 1) },
     deps: [id],
   })
   /* THE SIZE IS THE CONTENT'S. The shared body writes back the width and height a window had when it was dragged — right
      for the two list windows he resizes by hand, wrong here: Days is a month on one tab and a list on the other. So
      after every placement the size is handed back to the stylesheet; the place he chose stays. (Declared after the
      hook, so it runs after the hook's own placement.) */
+  /* AND WHERE HE PUT IT, IT STILL ENDS ON THE SCREEN. A window dragged low kept its full height and ran off the foot of
+     the screen — its Save with it (found by the settings window's browser test, 8 Oct 26: dragged 140px down, the
+     button could not be pressed). A placed window is capped at the room under its top; its body scrolls. Only on a
+     desktop — a phone's panel is the stylesheet's. */
   useLayoutEffect(() => {
     const n = el.current
-    if (n) { n.style.width = ''; n.style.height = '' }
+    if (!n) return
+    n.style.width = ''; n.style.height = ''
+    const b = BOXES.get(id)
+    if (b && !b.phone && !phoneLayout()) n.style.maxHeight = Math.max(160, window.innerHeight - n.getBoundingClientRect().top - 8) + 'px'
   })
 
   /* THE PHONE PANEL'S TWO HEIGHTS. While a finger holds the bar the panel's top follows it, written straight onto the

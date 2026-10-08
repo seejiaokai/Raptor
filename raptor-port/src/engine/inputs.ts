@@ -766,13 +766,19 @@ export function cutSetOf(inp:any){return inp&&isSansAvail(inp.type)?'sans':'inpu
    weeks x 7 less the weekday (Monday = 0), each held to a real value however it was stored: at least one week back, so
    a cut-off can never land inside the week it is for. Anything that is not exactly mode 1 is the day count, as the
    rule always was. */
+/* THE SUM ITSELF, for any four values — exported so a calendar's settings window can show a worked date for a rule
+   NOT YET SAVED by the same arithmetic the mark will judge by (state/cutoff.ts cutExample; 8 Oct 26 — the body is the
+   one cutBackDays always had, moved out unchanged) */
+export function cutBackOf(mode:any,lead:any,wd:any,weeks:any){
+  if(mode===1){
+    const wk=Math.min(8,Math.max(1,Math.floor(+weeks)||1)), d=Math.min(6,Math.max(0,Math.floor(+wd)||0));
+    return wk*7-d;
+  }
+  return Math.max(0,+lead||0);
+}
 function cutBackDays(set:any){
   const k=CUT_KEYS[set==='sans'?'sans':'inputs'];
-  if(VCONF[k[1]]===1){
-    const wk=Math.min(8,Math.max(1,Math.floor(+VCONF[k[3]])||1)), wd=Math.min(6,Math.max(0,Math.floor(+VCONF[k[2]])||0));
-    return wk*7-wd;
-  }
-  return Math.max(0,+VCONF[k[0]]||0);
+  return cutBackOf(VCONF[k[1]],VCONF[k[0]],VCONF[k[2]],VCONF[k[3]]);
 }
 /* the rule in words, as each calendar's "How this works" states it — from the set in force, so it changes when the
    setting does (D628, D646: the rule only; the date an entry missed is said by its LATE tag) */

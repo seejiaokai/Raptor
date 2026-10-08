@@ -183,7 +183,17 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
   } else if (m === 'settings') {
     const ids = fwd.filter(c => c.collection === 'settings').map(c => c.id)
     if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || k === 'guestview')) { primary = 'admin'; then = () => requestAdminUsers(false) }
-    else if (ids.includes('rules') || ids.includes('insights')) primary = 'logic'
+    else if (ids.includes('rules') || ids.includes('insights')) {
+      primary = 'logic'
+      /* A LATE CUT-OFF IS SET BEHIND A CALENDAR'S OWN GEAR TOO (D639 — one setting, two ways in), so the Inputs page
+         shows it as the Logic page does: an Undo of a cut-off pressed there leaves him there (D672), and from
+         anywhere else it lands on Logic, as every rule's does. */
+      const row = fwd.find(c => c.collection === 'settings' && c.id === 'rules')
+      const vals = (x: any) => (x && x.v) || {}
+      const a = vals(row && row.before), b = vals(row && row.after)
+      const moved = [...new Set([...Object.keys(a), ...Object.keys(b)])].filter(k => a[k] !== b[k])
+      if (row && moved.length && moved.every(k => /^(input|sans)(Lead|CutMode|CutWd|CutWeeks)$/.test(k))) also.push('inputs')
+    }
     else if (ids.includes('qualcols')) primary = 'quals'
     else if (ids.includes('lookahead')) primary = 'inputs'
     else if(ids.includes('sanscalendar')||ids.some(k=>k.startsWith('sansday:'))){

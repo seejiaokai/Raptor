@@ -602,6 +602,17 @@ from the visible screen, never a limit - D664). It hears both stores. `sanscal.t
 finger slid sideways (the month turns), a mouse drag or a finger held then dragged (a run of days - D621, D626); it
 swallows the click that follows a release, which lands on whatever has just opened under the pointer. The Inputs month
 takes it with step 5. `calpick.test.ts`.
+Highlight (D619) is in `SansCal.tsx` (its picker) with `state/view.ts SANSHL` and `sanscal-model.ts sansMine` / `sansRoster`.
+`src/ui/SansSettings.tsx` - THE SANS CALENDAR'S SETTINGS, the window behind its gear (`win-sansset`; D618, D628, D635,
+D639, D675): the door to Days ("Calendar…"), the three day colours, the SANS late cut-off as days or as a weekday of a
+number of weeks before, with a worked date. Admins only; nothing saved until Save; mounted once in `App.tsx`, opened by
+`ui/pops.ts SANSSET` (so the Logic page's row can open the same window - step 5). `sanssettings.test.tsx`.
+`src/state/cutoff.ts` - the door a calendar's settings write a late cut-off through (`getCut`, `cutProblem`,
+`cutExample`, `saveCut`): the engine's own ranges, only what changed, saved by the commit the Logic page uses - one Undo
+step; `engine/inputs.ts cutBackOf` is the sum both share. An Undo of a cut-off pressed on the Inputs page stays there
+(`state/undo-wire.ts`). `src/ui/usemedia.ts` - `useMedia(query)`, for the few places where what is WRITTEN changes with
+the room (the SANS month's name is three letters on a phone). The windows shell now caps a window he has placed at the
+room under it, so its foot stays on the screen (`FloatWindow.tsx`).
 The first calendar's SANS half left `InputsCal.tsx` with it (its cell, day panel, colour dropdown and legend); `mode` there
 is now `'member'` or absent. `e2e/inputs-sans-calendar.spec.ts` was re-pointed whole at the new screen (a real mouse drag,
 a real finger through CDP, the two press-through faults the first look found, D664 at three phone heights in a five-week
