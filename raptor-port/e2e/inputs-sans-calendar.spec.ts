@@ -330,6 +330,13 @@ for(const height of [844,568])test(`phone ${height}: the month’s controls are 
   const head=await page.evaluate(()=>['sc-prev','sc-month','sc-next','sc-today','sc-hl','sc-gear'].map(id=>{const r=document.querySelector(`[data-testid="${id}"]`)!.getBoundingClientRect();return {mid:Math.round(r.top+r.height/2),right:r.right,left:r.left}}))
   expect(Math.max(...head.map(h=>h.mid))-Math.min(...head.map(h=>h.mid)),'the head wrapped onto a second line').toBeLessThanOrEqual(2)
   expect(Math.max(...head.map(h=>h.right))).toBeLessThanOrEqual(390);expect(Math.min(...head.map(h=>h.left))).toBeGreaterThanOrEqual(0)
+  /* and "Highlight" reads whole, in every month of a year (the months' names differ in width) */
+  for(let i=0;i<12;i++){
+    const cut=await page.evaluate(()=>{const t=document.querySelector('[data-testid="sc-hl"] .sc-hl-t') as HTMLElement,m=document.querySelector('[data-testid="sc-month"]') as HTMLElement;return {word:t.scrollWidth>t.clientWidth,month:m.scrollWidth>m.clientWidth,name:m.textContent}})
+    expect(cut.word,'"Highlight" is cut in '+cut.name).toBe(false);expect(cut.month,'the month is cut: '+cut.name).toBe(false)
+    await tid(page,'sc-next').click()
+  }
+  await month(page,2026,10)
   /* the Highlight list opens on the screen, whole */
   await tid(page,'sc-hl').click()
   const menu=(await tid(page,'sc-hl-menu').boundingBox())!

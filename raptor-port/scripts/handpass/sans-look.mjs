@@ -74,7 +74,7 @@ async function open(browser, size, who = 'ad') {
   await tid(page, 'sanscal').waitFor()
   /* to October 2026 */
   const MON = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
-  const at = async () => { const [m, y] = (await tid(page, 'sc-month').textContent()).trim().toLowerCase().split(/\s+/); return +y * 12 + MON.indexOf(m) }
+  const at = async () => { const [m, y] = (await tid(page, 'sc-month').textContent()).trim().toLowerCase().split(/\s+/); return +y * 12 + MON.findIndex(x => x.startsWith(m)) }   // a phone prints three letters
   let d = 2026 * 12 + 9 - await at()
   for (; d > 0; d--) await press(size, tid(page, 'sc-next'))
   for (; d < 0; d++) await press(size, tid(page, 'sc-prev'))

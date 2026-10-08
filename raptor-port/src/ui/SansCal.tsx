@@ -252,7 +252,7 @@ export function SansCal() {
           <button type="button" className="abtn sc-nav" data-testid="sc-prev" aria-label="Previous month" onClick={() => step(-1)}>&#8249;</button>
           <span className="sc-month" data-testid="sc-month" aria-live="polite" aria-label={`${MONTHS[cur.m - 1]} ${cur.y}`}>{narrow ? MONTHS[cur.m - 1].slice(0, 3) : MONTHS[cur.m - 1]} {cur.y}</span>
           <button type="button" className="abtn sc-nav" data-testid="sc-next" aria-label="Next month" onClick={() => step(1)}>&#8250;</button>
-          <button type="button" className="abtn" data-testid="sc-today" onClick={goToday}>Today</button>
+          <button type="button" className="abtn sc-today" data-testid="sc-today" onClick={goToday}>Today</button>
           <span className="sc-spring" />
           <Highlight people={roster} hi={hi} />
           {/* THE GEAR (D618, D635): the app's own cog — the Leave War's settings button — never a drawing with rays, which
