@@ -153,6 +153,20 @@
 @media (max-width:820px){
   .sc-hl-item{min-height:44px}
 }
+/* ---- "HOW THIS WORKS" (D646): a fold at the head of the month — a quiet line until asked for, five short lines when
+   open. Its arrow is DRAWN (two borders), not a letter: a glyph from a fall-back font carries its own height. ---- */
+.sanscal .sc-how{display:inline-flex;align-items:center;gap:8px;min-height:28px;padding:2px 6px 2px 2px;border:0;background:none;color:var(--ink-2);
+  font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;border-radius:6px}
+.sanscal .sc-how:hover{color:var(--ink)}
+.sanscal .sc-how:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.sc-how-v{width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);margin:0 2px 0 3px;transition:transform .12s}
+.sc-how[aria-expanded="true"] .sc-how-v{transform:rotate(45deg);margin-bottom:3px}
+.sc-how-list{margin:0 0 8px;padding:10px 14px 10px 32px;border:1px solid var(--edge);border-radius:10px;background:var(--panel);
+  font-size:13px;line-height:1.5;color:var(--ink-2)}
+.sc-how-list li{margin:2px 0}
+.sc-how-list b{color:var(--ink);font-weight:700}
+@media (prefers-reduced-motion:reduce){.sc-how-v{transition:none}}
+@media (max-width:820px){.sanscal .sc-how{min-height:44px}}
 /* ---- THE GEAR AND ITS WINDOW (ui/SansSettings.tsx — D618, D635, D639). The gear is the app's own cog, the glyph the
    Leave War's settings button carries; its box is fixed so the glyph's own font cannot change the row's height. ---- */
 .sanscal .sc-gear{width:40px;min-width:40px;padding:0;font-size:17px;line-height:1}

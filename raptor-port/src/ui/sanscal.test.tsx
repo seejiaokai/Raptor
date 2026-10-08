@@ -19,6 +19,8 @@ import { PEOPLE } from '../engine/people'
 import { initStore as raptorInitStore, notify } from '../state/store'
 import { DEFAULT_ME, setMe, setSession } from '../state/auth'
 import { saveTones, setFlyDays, setFlyRun } from '../state/flyplan'
+import { saveCut } from '../state/cutoff'
+import { rulesResetMem } from '../engine/rules'
 import { CALMONTH, INPREVEAL, SANSHL, requestInpReveal, resetViewState, setCalMonth, setSansHl, clearInpReveal } from '../state/view'
 import { initStore as lwInitStore, setRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
@@ -44,12 +46,13 @@ beforeEach(() => {
   sansW = Object.keys(PEOPLE).filter(id => live(id) && PEOPLE[id].san && PEOPLE[id].seat === 'RCP')
   member = Object.keys(PEOPLE).find(id => live(id) && !PEOPLE[id].san && PEOPLE[id].seat === 'FCP')!
   kept = INPUTS.splice(0, INPUTS.length)
+  rulesResetMem()
   setCalMonth({ y: 2026, m: 10 }); clearInpReveal(); setSansHl(null)
   ;(document as any).elementFromPoint = undefined
 })
 afterEach(() => {
   cleanup(); _resetFloatWins(); setDaysWin(null); setSansSet(false); setInpEdit(null); setSession(null); setMe(DEFAULT_ME); clearInpReveal(); setCalMonth(null)
-  INPUTS.splice(0, INPUTS.length, ...kept); storeBackend.impl = null
+  INPUTS.splice(0, INPUTS.length, ...kept); rulesResetMem(); storeBackend.impl = null
 })
 
 let n = 0
@@ -368,5 +371,43 @@ describe('Highlight', () => {
     try {
       expect(t('sc-hl').textContent).toBe('Highlight'); expect(document.querySelector('.is-hi')).toBeNull()
     } finally { PEOPLE[sansP[0]].san = true }
+  })
+})
+
+
+/* "HOW THIS WORKS" (owner D646, 7 Oct 26: "Abit wordy … seems like that isn't needed right" — five short lines; the
+   cut-off line "only states the rule as it is set", with no worked date and no "later is marked LATE"; D628: it
+   "always states the cut-off as it is set — it changes when the setting changes"). */
+describe('How this works', () => {
+  it('is folded away until asked for, and opens to five short lines — for a member as for an admin', () => {
+    setSession({ user: 'us', role: 'member' }); setMe(member)
+    show()
+    expect(t('sc-how').getAttribute('aria-expanded')).toBe('false'); expect(q('sc-how-list')).toBeNull()
+    fireEvent.click(t('sc-how'))
+    expect(t('sc-how').getAttribute('aria-expanded')).toBe('true')
+    const lines = [...t('sc-how-list').querySelectorAll('li')].map(li => li.textContent)
+    expect(lines).toEqual([
+      'Tap a day to see who has committed, and to add or change yours.',
+      'The coloured pair is how many more are needed to fly: pilots, then WSOs.',
+      'F fly · O OFT · A AMT: the SANS who have committed.',
+      'NF is a no-fly day. Green is a public holiday. Grey is an Off day.',
+      'One commitment a day each. Commit by the end of the Wednesday two weeks before the week.',
+    ])
+    fireEvent.click(t('sc-how'))
+    expect(q('sc-how-list')).toBeNull()
+  })
+  it('states the cut-off as it is SET, and changes when the setting does — no worked date, no "LATE" (D646)', () => {
+    show()
+    fireEvent.click(t('sc-how'))
+    const last = () => t('sc-how-cut').textContent
+    act(() => { saveCut('sans', { mode: 1, wd: 4, weeks: 1, lead: 14 }) })
+    expect(last()).toBe('Commit by the end of the Friday of the week before.')
+    act(() => { saveCut('sans', { mode: 0, lead: 10, wd: 0, weeks: 1 }) })
+    expect(last()).toBe('Commit at least 10 days before the week starts.')
+    act(() => { saveCut('sans', { mode: 0, lead: 1, wd: 0, weeks: 1 }) })
+    expect(last()).toBe('Commit at least 1 day before the week starts.')
+    act(() => { saveCut('sans', { mode: 0, lead: 0, wd: 0, weeks: 1 }) })
+    expect(last()).toBe('Commit by the end of the Monday the week starts.')
+    expect(t('sc-how-list').textContent).not.toMatch(/LATE|For the week of/)
   })
 })

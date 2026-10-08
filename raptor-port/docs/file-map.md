@@ -603,6 +603,7 @@ finger slid sideways (the month turns), a mouse drag or a finger held then dragg
 swallows the click that follows a release, which lands on whatever has just opened under the pointer. The Inputs month
 takes it with step 5. `calpick.test.ts`.
 Highlight (D619) is in `SansCal.tsx` (its picker) with `state/view.ts SANSHL` and `sanscal-model.ts sansMine` / `sansRoster`.
+"How this works" (D646) is in `SansCal.tsx` too - a fold of five lines, the last from `sanscal-model.ts cutSentence`, which states the cut-off as it is set.
 `src/ui/SansSettings.tsx` - THE SANS CALENDAR'S SETTINGS, the window behind its gear (`win-sansset`; D618, D628, D635,
 D639, D675): the door to Days ("Calendar…"), the three day colours, the SANS late cut-off as days or as a weekday of a
 number of weeks before, with a worked date. Admins only; nothing saved until Save; mounted once in `App.tsx`, opened by

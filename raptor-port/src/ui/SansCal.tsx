@@ -45,7 +45,7 @@ import { maySansAdd, openSansAdd } from './sansadd'
 import { PEOPLE } from '../engine/people'
 import { puck } from './html'
 import { HlIcon } from './icons'
-import { dayWord, sansCell, sansMine, sansRoster, type SansCell } from './sanscal-model'
+import { cutSentence, dayWord, sansCell, sansMine, sansRoster, type SansCell } from './sanscal-model'
 import { useMedia } from './usemedia'
 import { useVersion } from './useStore'
 
@@ -119,6 +119,8 @@ export function SansCal() {
   const today = isoToday()
 
   const [dayIso, setDayIso] = useState<string | null>(null)
+  /* "How this works" — folded away each time the calendar is opened: it is read once, not looked at daily */
+  const [how, setHow] = useState(false)
   /* a run being drawn by the pointer, and one stretched by the keyboard — first day first */
   const [drawn, setDrawn] = useState<{ a: string; b: string } | null>(null)
   const [kb, setKb] = useState<{ anchor: string; end: string } | null>(null)
@@ -261,6 +263,9 @@ export function SansCal() {
           )}
         </div>
         <div className="sc-sub">
+          <button type="button" className="sc-how" data-testid="sc-how" aria-expanded={how} aria-controls="scHowList" onClick={() => setHow(h => !h)}>
+            <span className="sc-how-v" aria-hidden="true" />How this works
+          </button>
           <span className="sc-legend" data-testid="sc-legend">
             <span className="sc-legend-w">Pilots · WSOs still needed:</span>
             <span className="sc-key t-yellow">{span(tones.yellowFrom, tones.amberFrom)}</span>
@@ -268,6 +273,17 @@ export function SansCal() {
             <span className="sc-key t-red">{span(tones.redFrom)}</span>
           </span>
         </div>
+        {/* FIVE SHORT LINES (D646). The last states the late cut-off AS IT IS SET — from the setting, so it changes when the
+            setting does (D628); the date a late commitment missed is said by its own LATE tag, in the opened day. */}
+        {how && (
+          <ol className="sc-how-list" id="scHowList" data-testid="sc-how-list">
+            <li>Tap a day to see who has committed, and to add or change yours.</li>
+            <li>The coloured pair is how many more are needed to fly: <b>pilots, then WSOs</b>.</li>
+            <li><b>F</b> fly · <b>O</b> OFT · <b>A</b> AMT: the SANS who have committed.</li>
+            <li><b>NF</b> is a no-fly day. Green is a public holiday. Grey is an Off day.</li>
+            <li>One commitment a day each. <span data-testid="sc-how-cut">{cutSentence('sans')}</span></li>
+          </ol>
+        )}
       </div>
       <div className="sc-dow" data-testid="sc-dow" aria-hidden="true">{WD.map((d, i) => <span key={d} className={i >= 5 ? 'is-we' : ''}>{d}</span>)}</div>
       <div className="sc-grid" data-testid="sc-grid" ref={gridRef}>

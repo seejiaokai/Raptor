@@ -15,7 +15,8 @@
      group's head-count is people, and equals the figure the date shows. A commitment of a man the count leaves out
      (no longer SANS, archived, not aircrew) is listed apart with the reason: the SANS calendar has no List (D620), so
      this window is the only place such a record can be reached and removed. */
-import { INPUTS, inputCoversDate, isSansAvail, isLateInput, inputOwnDueISO } from '../engine/inputs'
+import { INPUTS, inputCoversDate, isSansAvail, isLateInput, inputOwnDueISO, cutRuleText } from '../engine/inputs'
+import { getCut } from '../state/cutoff'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
 import type { DayAnswer, Tone } from '../state/flyplan-model'
@@ -63,6 +64,18 @@ export function sansRoster(people: Record<string, any> = PEOPLE): string[] {
   return Object.keys(people)
     .filter(id => { const p = people[id]; return !!p && p.san && !p.archived && !p.deleted && !p.special && !p.pers && (p.seat === 'FCP' || p.seat === 'RCP') })
     .sort((a, b) => String(people[a].cs).localeCompare(String(people[b].cs)))
+}
+
+/** THE CUT-OFF LINE OF "HOW THIS WORKS" (D628: it "always states the cut-off as it is set"; D646: the rule only — no
+ *  worked date, no "later is marked LATE"; "before the week" kept, so "two weeks before" has something to count
+ *  from). The rule's own words are the engine's (engine/inputs.ts cutRuleText — the Logic page says the same); this
+ *  only makes the sentence. A number of days reads "at least N days before": the last day on time is the Monday less
+ *  N, so N days or more before the week is exactly it. */
+export function cutSentence(set: 'sans' | 'inputs' = 'sans', verb = 'Commit'): string {
+  const c = getCut(set)
+  if (c.mode === 1) return `${verb} by the end of ${cutRuleText(set)}${c.weeks > 1 ? ' the week' : ''}.`
+  if (c.lead > 0) return `${verb} at least ${c.lead} day${c.lead === 1 ? '' : 's'} before the week starts.`
+  return `${verb} by the end of ${cutRuleText(set)}.`
 }
 
 /** a commitment's hours, as the opened day prints them (D572: "show their available hours") */
