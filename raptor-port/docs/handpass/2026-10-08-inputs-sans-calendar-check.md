@@ -734,3 +734,9 @@ code again; before it was stopped its unit gate had failed on the one known unst
 
 `Docs: OUTSTANDING 147 items (+14 −0) · DECISIONS D1–D687 · homes OK`
 `docsize: OVER, deferred (D29)`
+
+**His look, 9 Oct 26 — "Looks good. Draw the note".** Said of the preview carrying D683, D685, D686 and D687, after
+the report that asked him to try each on his iPhone. Taken as his look at those four as built; it did not say in so
+many words that the page behind a window no longer scrolls on his iPhone (D686), so that line stays on the look card
+until he says it. The note that carries its own pucks (D684) was drawn for him the same hour —
+`docs/mock/note-with-pucks.html`; its three questions wait for his answers.
