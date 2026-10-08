@@ -87,8 +87,9 @@ const gather = page => page.evaluate(() => {
   const { ctx, page } = await day(); await gather(page)
   await page.evaluate(() => {
     const box = document.getElementById('mockBox'), g = document.getElementById('mockGrid'), a = document.getElementById('mockAdd')
-    box.style.cssText += ';padding:4px 6px 6px 10px;min-height:0;row-gap:2px;align-items:center'
-    box.querySelectorAll('button[data-ppedit],button[data-ppdel]').forEach(b => { b.style.cssText += ';min-width:36px;min-height:36px;width:36px;height:36px;padding:0' })
+    /* D692: the words line no taller than the box a note is typed in (28px) - the pencil and the cross drawn small */
+    box.style.cssText += ';padding:2px 4px 6px 10px;min-height:0;row-gap:3px;align-items:center'
+    box.querySelectorAll('button[data-ppedit],button[data-ppdel]').forEach(b => { b.style.cssText += ';min-width:28px;min-height:28px;width:28px;height:28px;padding:0' })
     g.style.cssText += ';flex:1 0 100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:100%'
     g.querySelectorAll('.ic-secpk-gap').forEach(x => x.remove())
     a.textContent = '+'
