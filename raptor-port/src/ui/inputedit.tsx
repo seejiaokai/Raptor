@@ -11,6 +11,7 @@
    What is NOT here is the Inputs page's own furniture — the calendar, the
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
+import { FloatWin } from './FloatWindow'
 import { placedLine } from './placedline'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, remarksTailWord, oilAsks, nowStamp } from '../engine/inputs'
@@ -1717,6 +1718,31 @@ export function clearEditHistory(mode: ClearMode, a: string, b?: string, dry?: b
    on, so it stays inside what this dialog already keeps in view — unlike a
    date move, the row you are looking at is still the row you are looking
    at afterwards, just under a different name. */
+/* THE FIELDS OF AN INPUT AS A WINDOW WEIGHS THEM (the plan §3.7): what "a field" is when the record is changed behind
+   an open window. The hours are ONE field — all day, a half, a start and an end are set together by one control, and
+   a clash on two of the four would be nonsense to read. */
+const WIN_FIELDS: { k: string; label: string; keys: string[] }[] = [
+  { k: 'person', label: 'person', keys: ['person'] }, { k: 'type', label: 'kind', keys: ['type'] },
+  { k: 'start', label: 'start date', keys: ['start'] }, { k: 'end', label: 'end date', keys: ['end'] },
+  { k: 'hours', label: 'hours', keys: ['allday', 'half', 'sTime', 'eTime'] },
+  { k: 'remarks', label: 'remarks', keys: ['remarks'] }, { k: 'sans', label: 'Fly / OFT / AMT', keys: ['sans'] },
+  { k: 'docs', label: 'documents', keys: ['docIds'] },
+]
+const fieldSame = (f: { keys: string[] }, a: any, b: any) => f.keys.every(k => JSON.stringify(a?.[k] ?? null) === JSON.stringify(b?.[k] ?? null))
+const fieldPart = (f: { keys: string[] }, d: any) => Object.fromEntries(f.keys.map(k => [k, d?.[k]]))
+/** a field's value in words, for "theirs … yours …" */
+function fieldSay(k: string, d: any): string {
+  if (!d) return 'nothing'
+  if (k === 'person') return PEOPLE[d.person] ? PEOPLE[d.person].cs : String(d.person ?? 'nobody')
+  if (k === 'type') return String(d.type || 'none')
+  if (k === 'start' || k === 'end') return d[k] ? fmtDay(d[k]) : 'none'
+  if (k === 'hours') return d.allday ? 'all day' : d.half ? String(d.half).toUpperCase() : `${d.sTime}–${d.eTime}`
+  if (k === 'remarks') return d.remarks ? `“${d.remarks}”` : 'none'
+  if (k === 'sans') return d.sans ? (['f', 'o', 'a'].filter(x => d.sans[x]).map(x => x.toUpperCase()).join(' ') || 'none ticked') : 'none'
+  const n = (d.docIds || []).length
+  return n ? `${n} document${n > 1 ? 's' : ''}` : 'none'
+}
+
 export function InputEditor() {
   useVersion()
   const r = INPEDIT
@@ -1758,6 +1784,19 @@ export function InputEditor() {
   const [docConf, setDocConf] = useState<any>(null)
   const box = useRef<HTMLDivElement>(null)
   const keepDraft = useRef(false)
+  /* A WINDOW ON THE INPUTS PAGE (owner D641: "an input or a commitment being filed" is one of the windows that drag
+     while the page behind works; the plan §3.7: "the input / commitment editor when it is opened on the Inputs page").
+     Opened from the board or the week it stays the blocking dialog it was — outside this job's mock-ups.
+     A window does not block, so the record it shows CAN be changed behind it. The rule is the plan's: "an editor never
+     saves a field its user did not change". `base` is the record as the window last saw it; on every change behind it
+     a field he has not touched takes the live value silently, and a field changed BOTH ways is put to him (`clash`).
+     `shown` is the record the window holds, for the one-editor-at-a-time question (`swap`). */
+  const win = open && CURPAGE === 'inputs'
+  const base = useRef<any>(null)
+  const shown = useRef<any>(null)
+  const [clash, setClash] = useState<string[]>([])
+  const [swap, setSwap] = useState<any>(null)
+  const swapOk = useRef(false)
   /* re-seed whenever a different row is opened, never on a repaint — a
      re-seed mid-edit would throw away what has been typed. The bell's
      hand-off (pops.OILASK) is consumed HERE: opened on the flagged row, the
@@ -1765,7 +1804,19 @@ export function InputEditor() {
      question itself — one-shot, cleared as it is read. */
   useLayoutEffect(() => {
     /* the same record, found again after a refused save (stay, below): what he typed is kept */
-    if (keepDraft.current) { keepDraft.current = false; return }
+    if (keepDraft.current) { keepDraft.current = false; shown.current = r; return }
+    /* ONE EDITOR AT A TIME (the plan §3.7): the page behind a window works, so another input can be asked for while
+       this one holds changes nobody has saved. It is not replaced under him: the window keeps the first, and asks. */
+    const prev = shown.current
+    const other = !!prev && !!r && r !== prev && !(prev.iid && prev.iid === r.iid)
+    if (win && other && !swapOk.current && draft && base.current && WIN_FIELDS.some(f => !fieldSame(f, draft, base.current))) {
+      setSwap(r); keepDraft.current = true; setInpEdit(prev); notify()
+      return
+    }
+    swapOk.current = false
+    shown.current = r
+    base.current = r ? draftOf(r) : null
+    setClash([]); setSwap(null)
     setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
     if (r && !r._new && OILASK && r.iid === OILASK) {
       setOilAsk(null)
@@ -1773,12 +1824,54 @@ export function InputEditor() {
       if (g.kind === 'ask') setOilConf(g)
     } else if (OILASK && !r) setOilAsk(null)
   }, [r])
+  /* THE RECORD BEHIND THE WINDOW. After every paint of the page the window asks what its record now is:
+       · GONE (deleted on the page behind, or taken away by an Undo) — the window closes and says so;
+       · the same record as a NEW object (a refused command and an Undo both put the list back as new objects) — it
+         holds that one, without throwing away what he typed;
+       · CHANGED — a field he has not touched takes the live value silently; one changed both ways is listed, with what
+         theirs is and what his is, and waits for his choice; Save is refused until he has made it.
+     So a Save writes only his own changes over the record as it stands (the plan §3.7). */
+  useLayoutEffect(() => {
+    if (!win || !r || isNew || !draft) return
+    const now = INPUTS.find((x: any) => x.iid === r.iid)
+    if (!now) { HOOKS.toast('That input was removed while its window was open — the window has closed', 'warn'); close(); return }
+    if (now !== r) { keepDraft.current = true; setInpEdit(now); notify(); return }
+    const cur = draftOf(now), b = base.current
+    if (!b) { base.current = cur; return }
+    if (WIN_FIELDS.every(f => fieldSame(f, cur, b))) return
+    let next = draft
+    const hit = new Set(clash)
+    for (const f of WIN_FIELDS) {
+      if (fieldSame(f, cur, b)) continue                                   // not changed behind him
+      if (fieldSame(f, draft, b)) next = { ...next, ...fieldPart(f, cur) } // he has not touched it: theirs, silently
+      else if (!fieldSame(f, draft, cur)) hit.add(f.k)                     // changed both ways
+      else hit.delete(f.k)                                                 // both made the same change
+    }
+    base.current = cur
+    if (next !== draft) setDraft(next)
+    if (hit.size !== clash.length || [...hit].some(k => !clash.includes(k))) setClash([...hit])
+  })
+  /* asked before every write, and again after any blocking question (an upchit, OIL or clash sheet) — the record may
+     have been changed behind the window while the question stood */
+  const undecided = () => {
+    if (!win || !clash.length) return false
+    setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
+    HOOKS.toast('Choose which to keep first — your change, or the one made while this window was open', 'warn')
+    return true
+  }
   useEffect(() => {
     if (!open) return
     /* Escape peels one layer: whichever sheet is up first, then the dialog —
        all are deps so the handler never closes the dialog under a sheet */
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
+      /* as a window it does not own the page: Escape typed in a box on the page BEHIND it is that box's own (a cell
+         being edited puts its text back on Escape) — the shell's own rule, ui/FloatWindow.tsx */
+      if (win) {
+        const a = document.activeElement as HTMLElement | null
+        const mine = !!a && !!box.current && !!box.current.closest('.floatwin')?.contains(a)
+        if (!mine && a && a !== document.body && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable)) return
+      }
       e.stopPropagation()
       if (docConf) setDocConf(null)
       else if (upConf) setUpConf(null)
@@ -1788,7 +1881,7 @@ export function InputEditor() {
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [open, upConf, medConf, oilConf, docConf])
+  }, [open, win, upConf, medConf, oilConf, docConf])
 
   const close = () => { setInpEdit(null); notify() }
   /* A REFUSED SAVE KEEPS THE WINDOW, ON THE RECORD, WITH WHAT HE TYPED ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED]; the plan
@@ -1806,6 +1899,7 @@ export function InputEditor() {
      refusal there is no way back from: the row went (an undo under the modal),
      and there is nothing left to hold the typing for */
   const doSave = (removals: any[], oilDec?: Record<string, number>) => {
+    if (undecided()) return
     if (medPlanProtected(removals.map(row => ({ row })))) return medicalLocked()
     if (isNew) {
       let savedRow:any=null
@@ -1838,6 +1932,7 @@ export function InputEditor() {
   /* the clash sheet's Save — resolve the choices into kept segments, file
      the draft as the first and mint the rest, all one undo step */
   const doMedSave = (choices: string[], keepTail: any[]) => {
+    if (undecided()) return
     const segs = medKeptSegments(medConf.a, medConf.b, medConf.clashes, choices)
     if (!segs.length) return          // toasted; the form stays open, unwritten
     if (medSegmentsProtected({ ...draft, yr: isNew ? baseYear() : r.yr }, segs, keepTail, medConf.b, isNew ? null : r)) return medicalLocked()
@@ -1867,6 +1962,7 @@ export function InputEditor() {
      [SYNC-INTEG]); a plain click/Enter must pass FALSE, never React's event
      object — see the bindings below (SYNC-002). */
   const save = (skipDoc = false) => {
+    if (undecided()) return
     /* THE DOCUMENT ASK runs FIRST (owner, [SYNC-INTEG]): saving a NEW medical
        with no certificate opens [Upload] / [No document] before anything else,
        so "No document" then flows on through the upchit-summary / downchit-clash
@@ -1942,14 +2038,8 @@ export function InputEditor() {
      anyone else at commit (sansRefusal), so the list should not offer them */
   const peopleFor = () => ctx === 's' ? rosterOptions().filter(id => PEOPLE[id].san) : rosterOptions()
 
-  return (
-    <div className="airpop" id="inpEditPop" hidden={!open}
-      onClick={e => { if (clickedOutside(e, 'inpEditPop')) close() }}>
-      <div className="airpop-box inpedbox" ref={box}>
-        <div className="airpop-head">
-          <b id="inpEditTitle">{isNew ? 'New input' : who}{when ? ' · ' + when : ''}</b>
-          <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
-        </div>
+  /* the form itself — the same fields, checks and buttons whichever chrome it stands in */
+  const inner = (<>
         {draft && <div className="airpop-body inped-body" inert={readOnly || undefined}>
           {/* SCHEDULER ONLY (owner, 14 Aug 26 — "allow Unavailable to be
               editable too... even down to changing the puck"). A member
@@ -2115,7 +2205,10 @@ export function InputEditor() {
           <button className="abtn ghost" id="inpEditCancel" onClick={close}>{readOnly ? 'Close' : 'Cancel'}</button>
           {!readOnly && <button className="abtn primary" id="inpEditSave" onClick={() => save(false)}>{isNew ? 'Add' : 'Save'}</button>}
         </div>
-      </div>
+  </>)
+  /* the questions that must be answered before going on stay BLOCKING, over the form (the plan §3.7: "It does not
+     carry: a question that must be answered before going on") */
+  const sheets = (<>
       {/* the upchit save-time summary rides OVER this dialog (its z sits one
           layer up) — Save commits with the ticked removals, Cancel returns
           to the still-open form with nothing written */}
@@ -2140,6 +2233,53 @@ export function InputEditor() {
       {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel}
         onUpload={() => setDocConf(null)}
         onNoDoc={() => { setDocConf(null); save(true) }} />}
+  </>)
+  if (win) return (<>
+    <FloatWin id="inputedit" title={(isNew ? 'New input' : who) + (when ? ' · ' + when : '')} testid="win-inputedit" className="inpedwin" onClose={close}>
+      <div id="inpEditPop" className="inpedbox inped-win" ref={box}>
+        {/* ONE EDITOR AT A TIME: another input was asked for while this one holds unsaved changes */}
+        {swap && (
+          <div className="inped-ask" data-testid="inped-swap" role="alertdialog" aria-label="Unsaved changes">
+            <span className="inped-ask-q">This input has unsaved changes. Open {swap._new ? 'a new input' : `${PEOPLE[swap.person] ? PEOPLE[swap.person].cs : 'the other'}’s input`} and lose them?</span>
+            <button type="button" className="abtn danger" data-testid="inped-swap-go"
+              onClick={() => { const to = swap._new ? swap : (INPUTS.find((x: any) => x.iid === swap.iid) || null); swapOk.current = true; setSwap(null); setInpEdit(to); notify() }}>Discard and open</button>
+            <button type="button" className="abtn ghost" data-testid="inped-swap-stay" onClick={() => setSwap(null)}>Keep editing</button>
+          </div>
+        )}
+        {/* A FIELD CHANGED BOTH WAYS — his, in the window, and someone's on the page behind it: listed, each with its
+            two values and a choice. Nothing of his is thrown away, and nothing is saved over theirs unasked. */}
+        {clash.length > 0 && draft && (
+          <div className="inped-ask" data-testid="inped-clash" role="alert">
+            <b className="inped-ask-h">Changed while this window was open</b>
+            {clash.map(k => {
+              const f = WIN_FIELDS.find(x => x.k === k)!
+              return (
+                <div key={k} className="inped-clash-row">
+                  <span className="inped-ask-q">{f.label} — theirs {fieldSay(k, base.current)}, yours {fieldSay(k, draft)}</span>
+                  <button type="button" className="abtn" data-testid={'inped-clash-mine-' + k} onClick={() => setClash(c => c.filter(x => x !== k))}>Keep mine</button>
+                  <button type="button" className="abtn" data-testid={'inped-clash-theirs-' + k}
+                    onClick={() => { setDraft({ ...draft, ...fieldPart(f, base.current) }); setClash(c => c.filter(x => x !== k)) }}>Take theirs</button>
+                </div>
+              )
+            })}
+          </div>
+        )}
+        {inner}
+      </div>
+    </FloatWin>
+    {sheets}
+  </>)
+  return (
+    <div className="airpop" id="inpEditPop" hidden={!open}
+      onClick={e => { if (clickedOutside(e, 'inpEditPop')) close() }}>
+      <div className="airpop-box inpedbox" ref={box}>
+        <div className="airpop-head">
+          <b id="inpEditTitle">{isNew ? 'New input' : who}{when ? ' · ' + when : ''}</b>
+          <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
+        </div>
+        {inner}
+      </div>
+      {sheets}
     </div>
   )
 }

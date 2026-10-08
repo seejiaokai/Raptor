@@ -264,7 +264,7 @@ test('a finger held on a date, then dragged, picks the run — the page standing
     await expect(page.locator('#inpEditPop .rc-read')).toHaveText('Oct 20 → Oct 22')
     expect(await page.evaluate(()=>scrollY),'the page scrolled under the finger').toBe(y0)
     await expect(tid(page,'sc-month')).toHaveText('Oct 2026')            // and the month was not turned
-    await page.locator('#inpEditClose').tap();await expect(page.locator('#inpEditPop')).toBeHidden()
+    await page.locator('[data-testid="win-inputedit-x"]').tap();await expect(page.locator('#inpEditPop')).toBeHidden()
     /* held and let go without moving: that one day — and the next deliberate tap in the form still lands */
     await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{...a,id:1}]})
     await expect(cell(page,'2026-10-20')).toHaveClass(/is-picked/)
@@ -273,7 +273,7 @@ test('a finger held on a date, then dragged, picks the run — the page standing
     await expect(page.locator('#inpEditRmk')).toHaveValue('')
     await page.locator('#inpEdCal [data-cal="2026-10-22"]').tap()
     await expect(page.locator('#inpEditPop .rc-read')).toHaveText('Oct 20 → Oct 22')
-    await page.locator('#inpEditClose').tap();await expect(page.locator('#inpEditPop')).toBeHidden()
+    await page.locator('[data-testid="win-inputedit-x"]').tap();await expect(page.locator('#inpEditPop')).toBeHidden()
   }finally{await context.close()}
 })
 

@@ -211,7 +211,7 @@ test('a real mouse drag across dates picks the run for "+ Input"; a click on a d
   await page.mouse.up(); await page.click('#inpEditCancel')
   /* a click on a bar opens that input, and nothing is being picked */
   await page.locator(`[data-testid="ib-bar-${iid}"]`).click()
-  await expect(page.locator('#inpEditTitle')).toContainText('14 Oct')
+  await expect(page.locator('[data-testid="win-inputedit"] .win-ttl')).toContainText('14 Oct')
   await page.click('#inpEditCancel')
   await expect(page.locator('.ib-day.is-picked')).toHaveCount(0)
 })
@@ -224,7 +224,7 @@ test('a finger: a tap on a bar opens that input and it STAYS open; a tap on a da
     await expect(page.locator('#inpEditPop')).toBeVisible()
     await page.waitForTimeout(450)                                   // past the click a phone sends after the tap
     expect(await editorOpen(page), 'the tap’s own click shut the window it had just opened').toBe(true)
-    await page.locator('#inpEditClose').tap(); await expect(page.locator('#inpEditPop')).toBeHidden()
+    await page.locator('[data-testid="win-inputedit-x"]').tap(); await expect(page.locator('#inpEditPop')).toBeHidden()
     /* a date, on its own corner (its middle is under the bar) */
     await cell(page, '2026-10-20').tap({ position: { x: 10, y: 10 } })
     await expect(cell(page, '2026-10-20')).toHaveClass(/is-open/)
@@ -258,12 +258,12 @@ test('a finger held on a date, then dragged, picks the run with the page standin
     await expect(page.locator('#inpEditPop .rc-read')).toHaveText('Oct 20 → Oct 22')
     expect(await page.evaluate(() => scrollY), 'the page scrolled under the finger').toBe(y0)
     await expect(page.locator('#inpCal .ic-mon')).toHaveText('Oct 2026')
-    await page.locator('#inpEditClose').tap(); await expect(page.locator('#inpEditPop')).toBeHidden()
+    await page.locator('[data-testid="win-inputedit-x"]').tap(); await expect(page.locator('#inpEditPop')).toBeHidden()
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ ...a, id: 1 }] })
     await expect(cell(page, '2026-10-20')).toHaveClass(/is-picked/)
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await cdp.detach()
     await expect(page.locator('#inpEditPop .rc-read')).toHaveText('Oct 20')
-    await page.locator('#inpEditClose').tap()
+    await page.locator('[data-testid="win-inputedit-x"]').tap()
   } finally { await context.close() }
 })
 
@@ -535,4 +535,52 @@ test('"How this works" opens above the month, which re-fits under it; the legend
   await page.locator('[data-testid="ib-how"]').click()
   await expect.poll(async () => Math.round((await grid())!.y)).toBe(Math.round(before.y))
   await expect.poll(async () => Math.round((await grid())!.height), { message: 'and takes its height back' }).toBe(Math.round(before.height))
+})
+
+/* THE INPUT EDITOR IS A WINDOW ON THE INPUTS PAGE (D641; the plan §3.7): it drags, the month behind it works, and it
+   never saves a field its user did not change — pinned here with a real drag of the very bar it is editing. */
+const edWin = (p: Page) => p.locator('[data-testid="win-inputedit"]')
+test('the editor is a window: with it open, the bar behind it is dragged to other days — Save keeps the new days AND the remark typed in the window', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  const [iid] = await file(page, [{ who: 3, type: 'Meeting', from: 'Oct 5', to: 'Oct 7', timed: [600, 660] }])
+  await page.locator(`[data-testid="ib-bar-${iid}"]`).click()
+  await expect(edWin(page)).toBeVisible()
+  await expect(page.locator('.airpop#inpEditPop'), 'no blocking dialog, no veil').toHaveCount(0)
+  await page.fill('#inpEditRmk', 'typed in the window')
+  /* drag the window clear of the first weeks, by its bar */
+  const bar = (await edWin(page).locator('.win-bar').boundingBox())!
+  await page.mouse.move(bar.x + 80, bar.y + 12); await page.mouse.down(); await page.mouse.move(bar.x + 60, 640, { steps: 6 }); await page.mouse.up()
+  /* the page behind works: the same input's bar, dragged two days later */
+  const b = (await page.locator(`[data-testid="ib-bar-${iid}"]`).boundingBox())!, y = b.y + b.height / 2
+  const xOf = async (iso: string) => { const r = (await cell(page, iso).boundingBox())!; return r.x + r.width / 2 }
+  await page.mouse.move(await xOf('2026-10-06'), y); await page.mouse.down()
+  await page.mouse.move(await xOf('2026-10-07'), y + 4, { steps: 4 }); await page.mouse.move(await xOf('2026-10-08'), y + 6, { steps: 4 }); await page.mouse.up()
+  await expect.poll(() => recDates(page, iid)).toEqual(['Oct 7', 'Oct 9'])
+  await expect(edWin(page), 'the window is still up').toBeVisible()
+  await expect(page.locator('#inpEditRmk'), 'and still holds what was typed').toHaveValue('typed in the window')
+  await expect(edWin(page).locator('.win-ttl'), 'its title follows the record').toContainText('7 Oct')
+  await page.click('#inpEditSave'); await expect(edWin(page)).toHaveCount(0)
+  expect(await recDates(page, iid), 'the window did not put the old days back').toEqual(['Oct 7', 'Oct 9'])
+  expect(await page.evaluate(iid => (window as any).INPUTS.find((x: any) => x.iid === iid).remarks, iid)).toBe('typed in the window')
+})
+
+/* at 568 high the form is taller than the screen — the case the rule is for; on a tall phone it simply fits */
+for (const height of [568, 844]) test(`phone ${height}: the editor window is whole on the screen, its form scrolls inside it where it must, and Save is reached`, async ({ browser, baseURL }) => {
+  const { context, page } = await phone(browser, baseURL, height)
+  try {
+    await cell(page, '2026-10-20').tap({ position: { x: 10, y: 10 } })
+    await page.locator('#icPopAdd').tap()
+    await expect(edWin(page)).toBeVisible()
+    const w = (await edWin(page).boundingBox())!
+    if (height === 568) expect(w.y, 'a form taller than the screen runs up to a thin strip at its top (D537)').toBeLessThanOrEqual(24)
+    expect(w.y).toBeGreaterThanOrEqual(0); expect(w.y + w.height).toBeLessThanOrEqual(height); expect(w.x).toBeGreaterThanOrEqual(0); expect(w.x + w.width).toBeLessThanOrEqual(390)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
+    await page.locator('#inpEditSave').scrollIntoViewIfNeeded()
+    const save = (await page.locator('#inpEditSave').boundingBox())!
+    expect(save.y + save.height, 'Save is inside the window, on the screen').toBeLessThanOrEqual(w.y + w.height + 1)
+    const x = (await page.locator('[data-testid="win-inputedit-x"]').boundingBox())!
+    expect(Math.min(x.width, x.height)).toBeGreaterThanOrEqual(44)
+    await page.locator('[data-testid="win-inputedit-x"]').tap(); await expect(edWin(page)).toHaveCount(0)
+  } finally { await context.close() }
 })

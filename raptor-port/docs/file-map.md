@@ -658,6 +658,11 @@ the Logic page. `inputssettings.test.tsx`, `logicdoors.test.tsx`.
 WHO PLACED IT is shown, by the one line of `placedline.ts`, on the List, at the editor's foot, on a Medical card and in
 the document viewer too (D629; `placedshown.test.tsx`); `state/demoseed.ts seedDemoStamps` gives every demo input a
 filer and a moment - the person himself, or the admin for him, never another member (`state/demostamps.test.ts`).
+THE INPUT EDITOR IS A WINDOW ON THE INPUTS PAGE (D641; plan 3.7) - `inputedit.tsx InputEditor` stands in the shell
+(`win-inputedit`) when it is opened there and stays the blocking dialog elsewhere; behind a window the record can
+change, so the editor follows it and never saves a field its user did not change (untouched fields take the live value,
+a field changed both ways is put to him, a record that has gone closes the window, another input asked for over unsaved
+changes is asked about). `editorwindow.test.tsx`.
 `scripts/handpass/inputs-look.mjs` - pictures of the Inputs page in the RUNNING build at two phone heights, a 1440px
 laptop and 1536px across (the month, a day opened, the filters, the List, the SANS and Medical tabs); a look, not a gate.
 `inputstabs.test.tsx`; `sansform.test.tsx` - the six rules of the Fly / AMT / OFT ticks, moved off the List's form onto

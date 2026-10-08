@@ -234,3 +234,23 @@ body.in-cal{padding-bottom:0}
    around the puck doesn't look compact enough"; e2e/medical.spec.ts measures it), so the small print asks for no width
    of its own and wraps inside whatever the card already is */
 .medcard-placed{width:0;min-width:100%;font-size:9.5px;line-height:1.35;color:var(--ink-3);white-space:normal;overflow-wrap:anywhere;text-align:left}
+
+/* ============================================================================================================
+   THE INPUT EDITOR AS A WINDOW (ui/inputedit.tsx — on the Inputs page only; owner D641). The form inside is the
+   dialog's own (14-input-editors.css `.inped-…`); the shell gives the bar, the ✕ and the drag. On a phone a tall form
+   runs up to a thin strip at the top of the screen (owner D537 — no large gap above a tall window) and scrolls inside.
+   The two questions it can put — unsaved changes, and a field changed both ways — sit at the head of the form.
+   ============================================================================================================ */
+.floatwin.inpedwin{width:min(430px,calc(100vw - 32px))}
+.floatwin.inpedwin .win-body{padding:0}
+.inped-win{display:flex;flex-direction:column;min-height:0}
+.inped-ask{display:flex;flex-direction:column;gap:8px;margin:10px 12px 0;padding:10px 12px;border:1px solid var(--adv);border-radius:9px;
+  background:color-mix(in srgb,var(--adv) 10%,var(--panel));font-size:12.5px;line-height:1.4;color:var(--ink)}
+.inped-ask-h{font-size:12px;font-weight:800}
+.inped-ask-q{flex:1 1 100%}
+.inped-clash-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.inped-ask .abtn{min-height:36px;padding:6px 12px;font-size:12px}
+@media (max-width:620px){
+  .floatwin.inpedwin{max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px)}
+  .inped-ask .abtn{min-height:44px}
+}
