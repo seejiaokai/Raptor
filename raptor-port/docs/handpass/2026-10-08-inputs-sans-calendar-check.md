@@ -877,3 +877,5 @@ and under 390 wide the row's buttons are 30 wide — needed for the row he asked
 **Not checked here:** his iPhone's own letters; the name's box has 4 to spare over the widest month on this PC and his
 phone draws the name narrower than this PC does.
 
+**The gates after §23 (9 Oct 26, `a0cca890`, the whole set under the PC lock, nothing else running): WHOLLY GREEN — unit 9371 / 9371 (564 files) · build clean · tfin 728 / 0 · e2e 724 passed, 0 failed, 56 skipped · smoke 445 / 0 · rulecheck OK · docsize OK.**
+`Walk:` §23 — SHORT, the host’s own, by script: the row at 390, 375 and 360 wide on the Inputs calendar, its List and the SANS calendar, through twelve months; every floating window of the job opened at 660 and 844 tall; the SANS day by a real finger. Pictures `docs/img/handpass/2026-10-09-cal-nav/`, opened. His look on his iPhone is the last check.
