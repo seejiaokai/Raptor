@@ -7,6 +7,7 @@ import { lgT, hm24, hhmm } from '../engine/time'
 import { WAVE_BUILTIN, kindNote } from '../engine/wavetpl'
 import { esc } from '../state/view'
 import { lgCanEdit } from '../state/auth'
+import { membersFileOn } from '../state/perms'
 /* the worked example's date for a cut-off set — "Mon 3 Aug" — for the week of Mon 17 Aug 26 */
 const CUT_DAY = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 function cutDueWords(set: 'inputs' | 'sans'): string {
@@ -211,10 +212,17 @@ export function lgRules(){
     /* THE CUT-OFF HAS TWO SHAPES AND EACH CALENDAR ITS OWN (D628, D639, 7 Oct 26): this row and the next state the
        rule as it is SET — engine/inputs.ts cutRuleText, the one wording the calendars' "How this works" reads too —
        and work the example from the live values, so neither can describe a rule the squadron no longer runs. */
-    {sev:'note',set:['inputLead'],src:()=>`VCONF.inputLead ${VCONF.inputLead} · VCONF.inputCutMode ${VCONF.inputCutMode} · VCONF.inputCutWd ${VCONF.inputCutWd} · VCONF.inputCutWeeks ${VCONF.inputCutWeeks}`,
+    /* ONE SETTING, TWO WAYS IN (D639): each cut-off is set in its own calendar's settings window, and `open` puts a
+       button on its row here that opens that SAME window — the four values are not typed on this page (the Inputs
+       row's day box went with it, step 5, 8 Oct 26). */
+    {sev:'note',open:'inputs',src:()=>`VCONF.inputLead ${VCONF.inputLead} · VCONF.inputCutMode ${VCONF.inputCutMode} · VCONF.inputCutWd ${VCONF.inputCutWd} · VCONF.inputCutWeeks ${VCONF.inputCutWeeks}`,
      t:()=>`A member's input is due <b>${lgV(esc(cutRuleText('inputs')))}</b> — the week being <b>its own week</b>. One last changed after that deadline is marked <b>LATE</b> wherever it appears — the week, the board, the Inputs page, and the view-only programme.<span class="why">The deadline runs with the input: it is counted back from the Monday of the week the input's own first day falls in, whatever week is on screen — so a leave for December filed in August is judged against December's deadline, not the week being viewed. The deadline day itself is still on time: an input for the week of Mon 17 Aug is due by ${esc(cutDueWords('inputs'))}, and one touched the day after is late. What is measured is the <b>last change</b>, not the first submission, so an input raised early and then amended after the deadline still reads late — the deadline exists so the week can be planned against something that has stopped moving. This is a <b>mark only</b>: it raises no warning, closes no slot and changes nothing the validator sees. <b>Downchits are exempt</b> — going DNIF is not a decision a man makes in advance, and marking the one input type that is always last-minute would only teach everyone to ignore the mark. Leave and detachments are <b>not</b> exempt: those are applied for, and applying late is the thing this is about.</span>`},
-    {sev:'note',src:()=>`VCONF.sansLead ${VCONF.sansLead} · VCONF.sansCutMode ${VCONF.sansCutMode} · VCONF.sansCutWd ${VCONF.sansCutWd} · VCONF.sansCutWeeks ${VCONF.sansCutWeeks}`,
+    {sev:'note',open:'sans',src:()=>`VCONF.sansLead ${VCONF.sansLead} · VCONF.sansCutMode ${VCONF.sansCutMode} · VCONF.sansCutWd ${VCONF.sansCutWd} · VCONF.sansCutWeeks ${VCONF.sansCutWeeks}`,
      t:()=>`A <b>SANS availability</b> entry has a deadline of its own: <b>${lgV(esc(cutRuleText('sans')))}</b>, counted from its own week in the same way. One last changed after it is marked <b>LATE</b>.<span class="why">The SANS calendar and the Inputs calendar each keep their own cut-off, so SANS people can be asked to commit on a different day from everyone's inputs. For the week of Mon 17 Aug this one is ${esc(cutDueWords('sans'))}. Everything else is the rule above: the deadline day itself is on time, what is measured is the last change, and it is a mark only.</span>`},
+    /* THE MEMBERS' SWITCH (owner D654, D655 reading 6 — "for now"; the plan §3.13): a squadron setting, flipped in the
+       Inputs calendar's settings window, listed here with the door to it (the same two-doors-one-setting shape) */
+    {sev:'set',open:'inputs',src:()=>`settings.memberfile · state/perms.ts membersFileOn`,
+     t:()=>`Members may file duties and commitments for other people: <b>${lgV(membersFileOn()?'on':'off')}</b>.<span class="why">On, a member may file a duty or another commitment (a meeting, a course, an appointment) for someone else, or for several people at once; he, the person it is for and an admin may then change or delete it. Off, a member files for himself only, and what he had filed for others is the person's own and an admin's to change. On or off, <b>leave, medical and SANS availability</b> are never a member's to file for another person.</span>`},
     /* wire 4 — a mark on Leave War, not a validator code (no `code` for the
        same reason inputLead above carries none) */
     {sev:'note',set:['oilFullMin'],src:()=>`VCONF.oilFullMin ${VCONF.oilFullMin} · engine/oil.ts`,

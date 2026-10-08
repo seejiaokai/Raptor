@@ -20,7 +20,7 @@ import { storeBackend } from '../engine/hooks'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './FloatWindow'
-import { INPEDIT, setInpEdit } from './pops'
+import { INPEDIT, INPSET, setInpEdit, setInpSet } from './pops'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -126,6 +126,27 @@ describe('a calendar tab takes the screen, no more (D664)', () => {
     await click('#inMemberMode'); await click('#inCalBtn'); expect(on()).toBe(true)
     await act(async () => { root.render(<></>) })
     expect(on(), 'gone with the page').toBe(false)
+  })
+})
+
+describe('the gear (D635, D639)', () => {
+  it('an admin has it on the Inputs tab — the app’s own cog, never a drawing — and it opens the Inputs calendar’s settings', async () => {
+    const gear = $('[data-testid="in-gear"]')!
+    expect(gear.textContent).toBe('⚙'); expect(gear.querySelector('svg')).toBeNull()
+    expect(gear.getAttribute('aria-label')).toBe('Inputs calendar settings')
+    expect(INPSET).toBe(false)
+    await click('[data-testid="in-gear"]')
+    expect(INPSET).toBe(true)
+    await act(async () => { setInpSet(false) })
+  })
+  it('it is on the List too, and not on the SANS or Medical tabs (the SANS calendar has its own)', async () => {
+    await click('#inListBtn'); expect(shown('[data-testid="in-gear"]')).toBe(true)
+    await click('#inSansMode'); expect(shown('[data-testid="in-gear"]')).toBe(false)
+    await click('#inMedBtn'); expect(shown('[data-testid="in-gear"]')).toBe(false)
+  })
+  it('a member has no gear', async () => {
+    await act(async () => { setSession({ user: 'b', role: 'member' }); notify() })
+    expect($('[data-testid="in-gear"]')).toBeNull()
   })
 })
 

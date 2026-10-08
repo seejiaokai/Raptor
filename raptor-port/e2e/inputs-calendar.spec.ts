@@ -106,16 +106,16 @@ for (const height of [844, 568]) test(`phone ${height}: three slim tabs, then ON
   /* LESS TALL (owner D626 — "I like the 3 tabs across the top but make it less tall"): slimmer than the app's 44px
      buttons, and still wide — each a third of the screen */
   for (const t of tabs) { expect(t.h, 'a tab is less tall than a button').toBeLessThan(44); expect(t.h).toBeGreaterThanOrEqual(36); expect(t.w).toBeGreaterThan(100) }
-  const tools = await Promise.all(['#icPrev', '#inpCal .ic-mon', '#icNext', '#icToday', '#inCalBtn', '#inListBtn', '#inFiltersBtn'].map(box))
+  const tools = await Promise.all(['#icPrev', '#inpCal .ic-mon', '#icNext', '#icToday', '#inCalBtn', '#inListBtn', '#inFiltersBtn', '[data-testid="in-gear"]'].map(box))
   expect(Math.max(...tools.map(t => t.mid)) - Math.min(...tools.map(t => t.mid)), 'the tools wrapped onto a second line').toBeLessThanOrEqual(2)
   expect(Math.min(...tools.map(t => t.top)), 'the tools row is under the tabs').toBeGreaterThan(Math.max(...tabs.map(t => t.top)))
   expect(Math.max(...[...tabs, ...tools].map(t => t.right))).toBeLessThanOrEqual(390)
   expect(Math.min(...[...tabs, ...tools].map(t => t.left)), 'the page stands in from the edge of the screen').toBeGreaterThanOrEqual(6)
   /* the tools keep their height (D487, D653 reading 5): narrower on a phone, never shorter */
-  for (const id of ['#icPrev', '#icNext', '#icToday', '#inCalBtn', '#inListBtn', '#inFiltersBtn']) expect((await box(id)).h, id + ' phone target').toBeGreaterThanOrEqual(44)
+  for (const id of ['#icPrev', '#icNext', '#icToday', '#inCalBtn', '#inListBtn', '#inFiltersBtn', '[data-testid="in-gear"]']) expect((await box(id)).h, id + ' phone target').toBeGreaterThanOrEqual(44)
   /* the month's name reads whole in every month of a year, and the row holds its one line through them all */
   for (let i = 0; i < 12; i++) {
-    const cut = await page.evaluate(() => { const m = document.querySelector('#inpCal .ic-mon') as HTMLElement, f = document.querySelector('#inFiltersBtn')!.getBoundingClientRect(), n = document.querySelector('#icPrev')!.getBoundingClientRect(); return { cut: m.scrollWidth > m.clientWidth, name: m.textContent, wrapped: Math.abs(f.top - n.top) > 2, right: f.right } })
+    const cut = await page.evaluate(() => { const m = document.querySelector('#inpCal .ic-mon') as HTMLElement, f = document.querySelector('[data-testid="in-gear"]')!.getBoundingClientRect(), n = document.querySelector('#icPrev')!.getBoundingClientRect(); return { cut: m.scrollWidth > m.clientWidth, name: m.textContent, wrapped: Math.abs(f.top - n.top) > 2, right: f.right } })
     expect(cut.cut, 'the month is cut: ' + cut.name).toBe(false); expect(cut.wrapped, 'the tools wrapped in ' + cut.name).toBe(false); expect(cut.right).toBeLessThanOrEqual(390)
     await page.click('#icNext')
   }
@@ -469,4 +469,44 @@ test('the keyboard: arrows move the date, Shift + arrows pick a run, Enter files
   await page.keyboard.press('Delete'); await expect.poll(on).toBe('idy-del-yes'); await page.keyboard.press('Enter')
   await expect.poll(() => recDates(page, iid)).toBeNull()
   await page.click('#undoBtn'); await expect.poll(() => recDates(page, iid)).toEqual(['Oct 20', ''])
+})
+
+/* THE GEAR (D635, D639): the app's own cog, admins only; its window drags and the month behind it answers (D641); what
+   it saves survives a reload; and the Logic page's row opens the SAME window. */
+test('the gear: the Inputs cut-off and the members’ switch are saved from its window and survive a reload; the Logic page opens the same window; a member has no gear', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
+  const gear = page.locator('[data-testid="in-gear"]'), win = page.locator('[data-testid="win-inputsset"]')
+  await expect(gear).toHaveText('⚙'); await expect(gear.locator('svg')).toHaveCount(0)
+  await gear.click(); await expect(win).toBeVisible()
+  /* a window, not a wall: dragged aside by its bar, and a date behind it still opens */
+  const bar = (await win.locator('.win-bar').boundingBox())!
+  await page.mouse.move(bar.x + 90, bar.y + 12); await page.mouse.down(); await page.mouse.move(bar.x - 200, bar.y + 140, { steps: 6 }); await page.mouse.up()
+  const moved = (await win.boundingBox())!
+  const clear = await page.evaluate(m => { for (const d of document.querySelectorAll('#inpCal [data-icday]')) { const r = d.getBoundingClientRect(), x = r.left + 8, y = r.top + 8; if (x < m.x - 4 || x > m.x + m.width + 4 || y < m.y - 4 || y > m.y + m.height + 4) return (d as HTMLElement).dataset.icday || '' } return '' }, moved)
+  expect(clear, 'some date is clear of the window').not.toBe('')
+  await cell(page, clear).click({ position: { x: 8, y: 8 } }); await expect(dayWin(page)).toBeVisible(); await expect(win).toBeVisible()
+  await page.locator('[data-testid="win-inputsday-x"]').click()
+  /* a weekday of a number of weeks before, and the switch off */
+  await page.locator('[data-testid="iset-mode-wd"]').click()
+  await page.locator('[data-testid="iset-wd"]').selectOption('3'); await page.locator('[data-testid="iset-weeks"]').selectOption('2')
+  await expect(page.locator('[data-testid="iset-example"]')).toContainText('inputs are due by the end of Thu')
+  await page.locator('[data-testid="iset-memberfile"]').uncheck()
+  await page.locator('[data-testid="iset-save"]').click(); await expect(win).toHaveCount(0)
+  await page.reload(); await login(page); await go(page, 'logic')
+  const row = page.locator('#lgBody .lgrule', { hasText: 'input is due' })
+  await expect(row).toContainText('Thursday'); await expect(page.locator('#lgBody .lgrule', { hasText: 'Members may file duties and commitments for other people' })).toContainText('other people: off.')
+  /* one setting, two ways in: the row's button opens the same window, showing what was saved */
+  await row.locator('[data-lgopen="inputs"]').click(); await expect(win).toBeVisible()
+  await expect(page.locator('[data-testid="iset-mode-wd"]')).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('[data-testid="iset-memberfile"]')).not.toBeChecked()
+  await page.locator('[data-testid="iset-cancel"]').click()
+  /* (Undo of each, alone, is pinned in ui/inputssettings.test.tsx — a reload starts a new sitting with no steps, D148) */
+})
+
+test('a member has no gear on the Inputs calendar and no door on the Logic page; on a phone the gear sits on the tools row beside the filter', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await login(page, 'user'); await go(page, 'inputs')
+  await expect(page.locator('#inpCal')).toBeVisible(); await expect(page.locator('[data-testid="in-gear"]')).toHaveCount(0)
+  await go(page, 'logic'); await expect(page.locator('#lgBody [data-lgopen]')).toHaveCount(0)
 })

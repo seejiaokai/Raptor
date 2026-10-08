@@ -20,7 +20,7 @@ import { me, isAdmin, mayEditInput } from '../state/perms'
 import { writeInputsBatch, notify, inputProtected } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal, revealInput } from '../state/view'
 import { inputsInMode } from './sans-calendar-model'
-import { setDocView } from './pops'
+import { setDocView, setInpSet } from './pops'
 import { CalIcon, ClipIcon, FilterIcon, ListIcon, MedIcon, UsersIcon } from './icons'
 import { MedicalView } from './MedicalView'
 import { medDownAsOf, pendingUpchits } from '../engine/medical'
@@ -857,6 +857,13 @@ export function InputsPage() {
       </select></label>
       <label className="inputs-search"><span>Search</span><input id="inFSearch" type="search" aria-label="Search inputs" placeholder="Search inputs" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></label>
     </div>
+    {/* THE GEAR (D635, D639): the app's own cog — the Leave War's settings button — never a drawing with rays. Admins
+        only. It opens the Inputs calendar's settings window: the late cut-off for inputs, the members' switch, and the
+        door to "Calendar…" (ui/InputsSettings.tsx); the Logic page's rows open the same window. */}
+    {isAdmin() && (
+      <button type="button" className="abtn inputs-gear" id="inGear" data-testid="in-gear" title="Inputs calendar settings — the late cut-off, who may file for other people, the Calendar"
+        aria-label="Inputs calendar settings" onClick={() => { setInpSet(true); notify() }}>&#9881;</button>
+    )}
   </>)
   const filterSummary = appliedFilters.length>0&&<div className="inputs-filter-summary" id="inFilterSummary"><span>{appliedFilters.join(' · ')}</span><button className="abtn ghost" id="inFiltersClear" onClick={()=>{unpin();setFPerson('all');setFType('all');setFSearch('');notify()}}>Clear filters</button></div>
 

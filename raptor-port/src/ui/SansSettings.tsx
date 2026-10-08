@@ -24,12 +24,11 @@ import { isAdmin } from '../state/perms'
 import { notify } from '../state/store'
 import { getTones, saveTones, type FlySave } from '../state/flyplan'
 import { validTones } from '../state/flyplan-model'
-import { cutExample, cutProblem, getCut, saveCut, type CutRule } from '../state/cutoff'
+import { cutProblem, getCut, saveCut, type CutRule } from '../state/cutoff'
 import { CALMONTH } from '../state/view'
 import { FloatWin } from './FloatWindow'
-import { WD_LONG, isoToday } from './daysfmt'
 import { SANSSET, setDaysWin, setSansSet } from './pops'
-import { dayWord } from './sanscal-model'
+import { CutFields, cutDraftOf, cutRuleOf } from './CutFields'
 import { useVersion } from './useStore'
 
 export function SansSettings() {
@@ -49,15 +48,12 @@ function Body() {
   const [yellow, setYellow] = useState(String(tones.yellowFrom))
   const [amber, setAmber] = useState(String(tones.amberFrom))
   const [red, setRed] = useState(String(tones.redFrom))
-  const [mode, setMode] = useState<0 | 1>(cut.mode)
-  const [lead, setLead] = useState(String(cut.lead))
-  const [wd, setWd] = useState(cut.wd)
-  const [weeks, setWeeks] = useState(cut.weeks)
+  /* the cut-off's draft and its fields are one body with the Inputs calendar's window (ui/CutFields.tsx) */
+  const [cutDraft, setCutDraft] = useState(() => cutDraftOf(cut))
   const [err, setErr] = useState('')
 
   const close = () => { setSansSet(false); notify() }
-  const rule: CutRule = { mode, lead: num(lead), wd, weeks }
-  const shown = cutProblem('sans', rule) ? null : cutExample(rule, isoToday())
+  const rule: CutRule = cutRuleOf(cutDraft)
 
   const save = () => {
     const t = { yellowFrom: num(yellow), amberFrom: num(amber), redFrom: num(red) }
@@ -103,27 +99,7 @@ function Body() {
         <p className="sset-hint">Pilots and WSOs still needed, added together. A day that needs nobody has no colour.</p>
 
         <div className="sset-sec">Late cut-off for SANS commitments</div>
-        <div className="sset-seg" role="group" aria-label="The cut-off is set as">
-          <button type="button" className={'sset-opt' + (mode === 0 ? ' lit' : '')} data-testid="sset-mode-days" aria-pressed={mode === 0} onClick={() => { setMode(0); setErr('') }}>Days before</button>
-          <button type="button" className={'sset-opt' + (mode === 1 ? ' lit' : '')} data-testid="sset-mode-wd" aria-pressed={mode === 1} onClick={() => { setMode(1); setErr('') }}>A weekday</button>
-        </div>
-        {mode === 0 ? (
-          <label className="sset-row">
-            <span className="sset-lbl">Days before the week starts</span>
-            <input className="sset-num" data-testid="sset-lead" inputMode="numeric" autoComplete="off" value={lead} aria-label="Days before the week starts"
-              onChange={e => { setLead(e.target.value); setErr('') }} />
-          </label>
-        ) : (
-          <div className="sset-pair">
-            <select data-testid="sset-wd" aria-label="Weekday" value={wd} onChange={e => { setWd(+e.target.value); setErr('') }}>
-              {WD_LONG.map((w, i) => <option key={w} value={i}>{w}</option>)}
-            </select>
-            <select data-testid="sset-weeks" aria-label="Weeks before" value={weeks} onChange={e => { setWeeks(+e.target.value); setErr('') }}>
-              {[1, 2, 3, 4, 5, 6, 7, 8].map(n => <option key={n} value={n}>{n === 1 ? 'the week before' : `${n} weeks before`}</option>)}
-            </select>
-          </div>
-        )}
-        {shown && <p className="sset-example" data-testid="sset-example">For the week of {dayWord(shown.week)}, commitments are due by the end of {dayWord(shown.due)}.</p>}
+        <CutFields set="sans" prefix="sset" draft={cutDraft} onChange={d => { setCutDraft(d); setErr('') }} noun="commitments" />
 
         {err && <p className="sset-err" data-testid="sset-err" role="alert">{err}</p>}
         <div className="sset-foot">

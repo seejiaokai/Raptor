@@ -192,3 +192,14 @@ body.in-cal{padding-bottom:0}
 .idy-ask-q{flex:1 1 auto;font-size:12.5px;font-weight:700;color:var(--ink)}
 .idy-ask .abtn{min-height:36px;padding:6px 12px;font-size:12px}
 @media (max-width:820px){.idy-ask .abtn{min-height:44px}}
+
+/* ---- THE GEAR and the settings window's switch (ui/InputsSettings.tsx; the window's own look is the SANS settings
+   window's — `.floatwin.sanswin`, `.sset-…`, 24-sans-calendar.css). The gear is the Leave War's own glyph in a fixed
+   box, as on the SANS calendar (D635). ---- */
+.inputs-top .inputs-gear{width:44px;min-width:44px;padding:0;font-size:17px;line-height:1}
+.sset-check{display:flex;align-items:flex-start;gap:10px;min-height:40px;padding:4px 0;font-size:13px;line-height:1.35;color:var(--ink);cursor:pointer}
+.sset-check input{flex:0 0 auto;width:18px;height:18px;margin:1px 0 0;accent-color:var(--accent)}
+/* the Logic page's door to a calendar's settings window (D639) */
+.lgopen{display:inline-flex;margin:8px 0 0;min-height:36px;padding:6px 12px;font-size:12px}
+@media(max-width:820px){.inputs-top .inputs-gear{width:38px;min-width:38px}.sset-check{min-height:44px}.lgopen{min-height:44px}}
+@media(max-width:360px){.inputs-top .inputs-gear{width:34px;min-width:34px}}

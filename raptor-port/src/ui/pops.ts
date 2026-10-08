@@ -131,6 +131,10 @@ export function setDaysWin(iso: string | null) { DAYSWIN = iso }
    (D641), so it is not in windowOverSchedule below. */
 export let SANSSET = false
 export function setSansSet(v: boolean) { SANSSET = v }
+/* The Inputs calendar's settings window (ui/InputsSettings.tsx) — its gear, and the Logic page's rows for the Inputs
+   cut-off and the members' switch, open this one window (D639: one setting, two ways in). */
+export let INPSET = false
+export function setInpSet(v: boolean) { INPSET = v }
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },
@@ -148,6 +152,7 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'WEEKCAL', reset: () => setWeekCal(false) },
   { name: 'DAYSWIN', reset: () => setDaysWin(null) },
   { name: 'SANSSET', reset: () => setSansSet(false) },
+  { name: 'INPSET', reset: () => setInpSet(false) },
 ]
 export function resetPopsForSession(): void { for (const p of POPS_RESET) p.reset() }
 /* IS A WINDOW OVER THE SCHEDULE UP — OR ASKED FOR AND ABOUT TO BE DRAWN? (W12, the Codex stack check, 5 Oct 26.) The

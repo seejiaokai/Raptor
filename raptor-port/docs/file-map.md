@@ -649,6 +649,12 @@ when, the LATE tag (D646), who placed it (D629); a saved or brought-back input i
 flashes; only one with no bar opens its day). `inputsday.test.tsx`.
 THE KEYBOARD on the Inputs month (D621) is `InputsCal.tsx onKey`: one tab stop, arrows, Shift + arrows for a run, Enter,
 Escape (the open day, then the run), and Delete on a line of the opened day, which asks first. `inputskeys.test.tsx`.
+`src/ui/InputsSettings.tsx` - THE INPUTS CALENDAR'S SETTINGS, the window behind its gear (`win-inputsset`, `pops.ts
+INPSET`; D639, D628, D654 / D655): "Calendar…", the late cut-off for inputs, and the members' switch - a draft until
+Save, each change one Undo step. `src/ui/CutFields.tsx` - the cut-off's fields and worked date, ONE body for this window
+and the SANS calendar's (`SansSettings.tsx`). The Logic page's rows for the two cut-offs and the switch carry a button
+that opens the same window (`logic-html.ts` `open`, `LogicPage.tsx` `[data-lgopen]`); nothing of a cut-off is typed on
+the Logic page. `inputssettings.test.tsx`, `logicdoors.test.tsx`.
 `scripts/handpass/inputs-look.mjs` - pictures of the Inputs page in the RUNNING build at two phone heights, a 1440px
 laptop and 1536px across (the month, a day opened, the filters, the List, the SANS and Medical tabs); a look, not a gate.
 `inputstabs.test.tsx`; `sansform.test.tsx` - the six rules of the Fly / AMT / OFT ticks, moved off the List's form onto
