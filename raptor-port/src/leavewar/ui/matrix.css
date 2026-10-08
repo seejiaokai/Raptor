@@ -463,18 +463,23 @@
 }
 /* THE DELETE CROSS (owner, D669, 8 Oct 26 — "instead of hide (eye) we should replace it with a delete cross"). Wider
    than the eye it replaced: it deletes without asking (Undo is the way back), so it must be a target a thumb can find
-   and not one it brushes — 26px of the balance box's 44, the row's own height. "Delete" wears a dashed grey edge on
-   every Leave War sheet, never red (D332); the cross keeps that. */
+   and not one it brushes — 26px of the balance box's 44, the row's own height.
+     IT IS RED (owner, D676, 8 Oct 26 — "Yeah cross should be red"): the counter window's own red, the very values of
+   `.creset.cf-del` in bidpicker.css (D673) — a red OUTLINE and a pale red cross on the row's dark ground, brighter
+   under a mouse; never a solid block, which on a block of counters would shout. Until that afternoon it wore the
+   dashed grey edge D332 gives "Delete" on every Leave War sheet; D332's reason was a red Delete reading as "Refuse"
+   beside the bid buttons, and Rearrange has no Refuse — it stands on the bid sheets. */
 .mx .counts .mrow-btn.del {
   width: 26px;
   height: 16px;
   font-size: 10px;
   font-weight: 700;
-  color: var(--ink-2);
-  border: 1px dashed var(--ink-3);
+  background: transparent;
+  color: #FBB4B9;
+  border: 1px solid rgba(240, 85, 95, .6);
 }
 @media (hover: hover) {
-  .mx .counts .mrow-btn.del:hover { color: var(--ink); border-color: var(--ink-2); }
+  .mx .counts .mrow-btn.del:hover { color: #FFD9DC; border-color: #F0555F; }
 }
 /* (THE ARCHIVE BAR under the manning rows — 5 Sep 26, a merged bar that held the rows hidden with the eye — and the
    dimmed `.mrow-hidden` look of a row inside it are gone with the eye: D669. Nothing can be hidden now.) */

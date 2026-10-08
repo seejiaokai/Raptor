@@ -6390,8 +6390,12 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   counter is made, and `CountRows` draws its `tbody` for them even with no count row. It replaced the same evening's
   first answer, D666 (five rows to start). What follows from it, each told to him:
   - **In Rearrange a count row's eye is a DELETE CROSS** (`manning-delete-<id>`, in the balance box where the eye
-    sat; 26×16px, the dashed grey edge every Leave War "Delete" wears — D332). It deletes the counter outright and
-    ASKS NOTHING, because the app's Undo brings it back whole — what it counts, its amber and red, its place (the
+    sat; 26×16px). **IT IS RED — D676 (8 Oct 26: "Yeah cross should be red")**: the counter window's own red (D673) — a
+    red outline and a pale red cross, brighter under a mouse, never a solid red block; until that afternoon it wore
+    the dashed grey edge every Leave War "Delete" wears (D332, which stands on the bid sheets). It deletes the counter
+    outright and ASKS NOTHING — **left so on his word, D677 ("Yeah leave them"): the cross asks nothing, and "Delete
+    counter" in the counter's own window still asks "Really delete?"; do not make the two alike** — because the app's
+    Undo brings it back whole — what it counts, its amber and red, its place (the
     war's command stream carries the counters; `ui/nocounters.test.tsx`, and in a real browser `e2e/leavewar.spec.ts`
     "the open-bidding outline moves with the rows when a counter is deleted in Rearrange"). A member, and an admin
     outside Rearrange, see no cross. The four rows carry no cross and no grip.
@@ -6713,9 +6717,11 @@ Pinned by `leavewar/ui/isodates.test.tsx` — one roll-call over every sheet, re
 another colour like green or blue, similar to the rest of the app").** "Save counter" ("Add counter"; "Save" on an
 Available row's window) is the app's FILLED save button — the accent, as the Event sheet's Save; "Cancel" is the plain
 grey outline; "Delete counter" is red — outlined, and solid red on "Really delete?". This narrows D332 (Leave War
-"Delete" in a dashed grey edge, not red) for this window only; the bid sheets' Delete and the delete cross in Rearrange
-(D669) stay dashed grey. Gate: `e2e/leavewar.spec.ts` "deleting a counter takes its row off the grid" reads the three
-buttons' colours.
+"Delete" in a dashed grey edge, not red) for this window — and, since D676 the same afternoon, for the delete cross on
+a counter's row in Rearrange, which is red too (§The four rows at the foot of the Manning block, "The block's own
+rows"); the bid sheets' Delete stays dashed grey. Gates: `e2e/leavewar.spec.ts` "deleting a counter takes its row off
+the grid" reads the three buttons' colours, and "in Rearrange the counter grip is left of the name and nothing clips"
+reads the cross's.
 
 Four asks from the same sitting, all on the Leave War grid:
 

@@ -2713,6 +2713,22 @@ test('in Rearrange the counter grip is left of the name and nothing clips', asyn
   expect(cross.x).toBeGreaterThanOrEqual(bal.x - 0.5); expect(cross.x + cross.width).toBeLessThanOrEqual(bal.x + bal.width + 0.5)
   expect(cross.y).toBeGreaterThanOrEqual(bal.y - 0.5); expect(cross.y + cross.height).toBeLessThanOrEqual(bal.y + bal.height + 0.5)
   expect(cross.width).toBeGreaterThanOrEqual(18)
+  /* THE CROSS IS RED (owner, D676, 8 Oct 26 — "Yeah cross should be red"): the counter window's own red (D673) — a red
+     OUTLINE and a pale red cross, never the dashed grey it wore until then, and never a solid red block. Read as
+     PAINTED, on the first counter and the last. */
+  for (const id of ['sets', 'scn']) {
+    const paint = await page.locator(`[data-testid="manning-delete-${id}"]`).evaluate(el => {
+      const c = getComputedStyle(el)
+      return { border: c.borderTopColor, style: c.borderTopStyle, ink: c.color, bg: c.backgroundColor }
+    })
+    const nums = (c: string) => (c.match(/[\d.]+/g) || []).map(Number)
+    const [br, bg, bb] = nums(paint.border), [ir, ig, ib] = nums(paint.ink)
+    expect(paint.style, `${id}: the cross's edge is still dashed`).toBe('solid')
+    expect(br > 200 && bg < 130 && bb < 130, `${id}: the cross's edge is not red (${paint.border})`).toBe(true)
+    expect(ir > 220 && ir - ig > 40 && ir - ib > 40, `${id}: the cross itself is not red (${paint.ink})`).toBe(true)
+    const [, , , alpha] = nums(paint.bg)
+    expect(paint.bg === 'rgba(0, 0, 0, 0)' || alpha === 0 || nums(paint.bg)[0]! < 80, `${id}: the cross is a solid red block (${paint.bg})`).toBe(true)
+  }
   await page.locator('[data-testid="roster-arrange"]').click()  // leave arrange mode
 })
 
