@@ -291,3 +291,12 @@ body.in-cal{padding-bottom:0}
   .pp-sw,.pp-why .abtn{min-height:44px}
   .pp-puck{min-height:36px;align-items:center}
 }
+
+/* A SHARED INPUT'S PEOPLE on an opened day (D655): the schedule's own pucks, compact, wrapping under the line; LATE
+   beside the man whose own record is late */
+.idy-people{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:3px}
+.idy-man{display:inline-flex;align-items:center;gap:3px}
+.idy-manlate{cursor:default}
+/* a man's own two things in a shared input he did not file, under the read-only form */
+.inped-own{display:flex;flex-direction:column;gap:8px;margin:8px 12px 0}
+.inped-own .inped-ask{margin:0}

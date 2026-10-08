@@ -41,11 +41,11 @@ import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips'
 import { canEditSched } from '../state/auth'
-import { mayDeleteInput, me } from '../state/perms'
+import { isMe, mayDeleteInput, me } from '../state/perms'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
-import { fmt, fmtDay, inputTone, firstPersonalType, removeInput } from './inputedit'
+import { fmt, fmtDay, inputTone, firstPersonalType, removeInput, removeEntry } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
@@ -679,11 +679,27 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
       if (e.key !== 'Delete' && e.key !== 'Backspace') return
       e.preventDefault()
       const r = it.rows[0]
+      /* A SHARED INPUT (the plan §3.13): its filer or an admin is asked about everyone; a man in it who is neither is
+         asked about himself; anyone else is told who can */
+      if (it.rows.length > 1) {
+        if (!it.rows.every(x => mayDeleteInput(x)) && !it.rows.some(x => isMe(x.person))) {
+          const by = it.rows.find(x => x.grpBy)?.grpBy ?? it.rows.find(x => x.by)?.by
+          HOOKS.toast(`Only ${PEOPLE[by] ? PEOPLE[by].cs : 'whoever filed it'} — who filed it — or an admin can delete this for everyone`, 'warn'); return
+        }
+        setDelAsk(it.key); return
+      }
       if (!mayDeleteInput(r)) { HOOKS.toast(`Only ${PEOPLE[r.person] ? PEOPLE[r.person].cs : 'its owner'} or an admin can delete this input`, 'warn'); return }
       setDelAsk(it.key)
     }
     const doDelete = (it: BarItem) => {
       setDelAsk(null)
+      if (it.rows.length > 1) {
+        const rows = it.rows.map(x => INPUTS.find((y: any) => y.iid === x.iid)).filter(Boolean) as any[]
+        if (rows.every(x => mayDeleteInput(x))) { if (removeEntry(rows)) HOOKS.toast(`Input deleted for ${rows.length} people`, 'ok'); return }
+        const mine = rows.find(x => isMe(x.person))
+        if (mine && removeInput(mine)) HOOKS.toast('You are out of this input', 'ok')
+        return
+      }
       const live = INPUTS.find((x: any) => x.iid === it.rows[0].iid)
       if (live && removeInput(live)) HOOKS.toast('Input deleted', 'ok')
     }
@@ -834,7 +850,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                   const r = it.rows[0]
                   const who = it.more > 0 ? `${it.who} +${it.more}` : it.who
                   const when = whenOf(it)
-                  const late = lateWord(r)
+                  /* a shared input's late tags are each man's own, beside his puck — a man added later can be late alone */
+                  const team = it.rows.length > 1
+                  const late = team ? '' : lateWord(r)
+                  const forAll = team && it.rows.every(x => mayDeleteInput(x))
                   const placed = placedLineOf(it.rows)
                   /* an Other is NAMED by its remark (inpLabel) — it is not said a second time under the line */
                   const rmk = r.remarks && r.remarks !== it.word ? r.remarks : ''
@@ -853,13 +872,24 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
                       <span className="sd-hours" data-testid="idy-when">{when}</span>
                       {late && lateOpen === it.key && <span className="sd-latenote" data-testid="idy-latenote" role="status">{late}</span>}
                       {rmk && <span className="sd-rmk">{rmk}</span>}
+                      {/* ITS PEOPLE, as the schedule's own pucks (ui/html.ts puck() — D649), compact, A to Z */}
+                      {team && (
+                        <span className="idy-people" data-testid="idy-people">
+                          {it.rows.map(x => (
+                            <span key={x.iid} className="idy-man">
+                              <span className="sd-puck" aria-hidden="true" dangerouslySetInnerHTML={{ __html: puck(x.person, false, true, false).replace(' tabindex="0"', '') }} />
+                              {lateWord(x) && <span className="sd-late idy-manlate" data-testid={'idy-late-' + x.person} title={lateWord(x)}>LATE</span>}
+                            </span>
+                          ))}
+                        </span>
+                      )}
                       {placed && <span className="sd-placed" data-testid="idy-placed">{placed}</span>}
                       {delAsk === it.key && (
                         <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
                           onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) } }}>
-                          <span className="idy-ask-q">Delete this input?</span>
-                          <button type="button" className="abtn danger" data-testid="idy-del-yes" autoFocus onClick={() => doDelete(it)}>Delete</button>
-                          <button type="button" className="abtn ghost" data-testid="idy-del-no" onClick={() => setDelAsk(null)}>Keep</button>
+                          <span className="idy-ask-q">{!team ? 'Delete this input?' : forAll ? `Delete this input for all ${it.rows.length} people?` : 'Take yourself out of this input?'}</span>
+                          <button type="button" className="abtn danger" data-testid="idy-del-yes" autoFocus onClick={() => doDelete(it)}>{team && !forAll ? 'Take me out' : 'Delete'}</button>
+                          <button type="button" className="abtn ghost" data-testid="idy-del-no" onClick={() => setDelAsk(null)}>{team && !forAll ? 'Stay in' : 'Keep'}</button>
                         </span>
                       )}
                     </div>

@@ -20,13 +20,15 @@
    so it is unit-testable on its own and reusable by anything that ever wants
    to redate a chip without a drag (a keyboard move, say).
    --------------------------------------------------------------------------- */
-import { draftOf, commitInputEdit, fmtDay, askOilIfPending, medAskFor } from './inputedit'
+import { draftOf, commitInputEdit, commitGroup, fmtDay, askOilIfPending, medAskFor } from './inputedit'
+import { entryRowsOf } from '../state/inputgroup'
 import { movePlanPuck, PLANPUCKS } from '../state/plan'
 import { writeInputs, notify } from '../state/store'
 import { setMedMove } from './pops'
 import { canEditSched } from '../state/auth'
 import { mayEditInput } from '../state/perms'
 import { INPUTS } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { landOn, liftOn, markLand } from './lift'
 import { dayAtPoint, dayEl } from './caldays'
@@ -90,8 +92,15 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
      times), a scheduler may move anyone's — and, since the group input (D655),
      a member a duty or commitment he FILED for another man: the one rule,
      perms.ts mayEditInput, which takes the record. */
-  if (!mayEditInput(r)) {
-    HOOKS.toast("Only a scheduler can move someone else's input", 'warn')
+  /* A SHARED INPUT MOVES AS ONE THING (D655; the plan §3.13): its bar is the entry's, so the move is every record's —
+     one command, for whoever may change EVERY record of it (its filer, an admin). A man in it who did not file it does
+     not move it, his own record included: taken alone it would leave the entry. */
+  const rows = entryRowsOf(INPUTS, r)
+  const whole = rows.length > 1
+  if (whole ? !rows.every(x => mayEditInput(x)) : !mayEditInput(r)) {
+    const by = whole ? rows.find(x => x.grpBy)?.grpBy ?? rows.find(x => x.by)?.by : null
+    HOOKS.toast(whole ? `Only ${PEOPLE[by] ? PEOPLE[by].cs : 'whoever filed it'} — who filed it — or an admin can move this for everyone`
+      : "Only a scheduler can move someone else's input", 'warn')
     return false
   }
 
@@ -123,7 +132,7 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
   if (ask === 'refused') return false
   if (ask) { setMedMove({ iid: r.iid, draft: d, ask, via: 'drag', said: 'Moved to ' + fmtDay(d.start) }); notify(); return false }
 
-  const ok = commitInputEdit(r, d)
+  const ok = whole ? commitGroup({ rows }, d, rows.map(x => x.person)) : commitInputEdit(r, d)
   /* commitInputEdit already toasts every refusal it can produce (a SANS
      clash, a backwards range, a row deleted underneath the edit) — adding a
      second toast on failure here would double up on the same news. Only the
@@ -268,7 +277,7 @@ export function initCalDrag(root: HTMLElement, opts: {
        makes (commitChipMove: a scheduler moves anyone's, a member his own; a planning section is a scheduler's), asked
        at the press, so the gesture is never offered. A tap still opens it. */
     const row = entry.kind === 'input' ? INPUTS.find((x: any) => x.iid === entry.iid) : null
-    const fixed = entry.kind === 'puck' ? !canEditSched() : (!!row && !mayEditInput(row))
+    const fixed = entry.kind === 'puck' ? !canEditSched() : (!!row && !entryRowsOf(INPUTS, row).every(x => mayEditInput(x)))
     st = {
       entry, pointerId: e.pointerId, mouse: e.pointerType === 'mouse',
       x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, timer: 0, fixed,

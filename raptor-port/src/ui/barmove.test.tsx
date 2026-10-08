@@ -183,3 +183,52 @@ describe('who may move a bar', () => {
     expect(taps.map(t => t.iid)).toEqual([row.iid])
   })
 })
+
+/* A SHARED INPUT'S BAR (owner D655: "one shared group input, shown and edited as one thing"; the plan §3.13: "Dragging
+   the bar moves the whole entry in one command — for the filer and an admin; for anyone else it does not lift"). The
+   bar is addressed by the entry's FIRST record; the move is every record's. */
+describe('a shared input’s bar moves the whole entry', () => {
+  const team = (people: string[], over: any = {}) => people.map(p =>
+    input({ person: p, type: 'Meeting', date: 'Jul 8', endDate: undefined, allday: false, s: 600, e: 660, remarks: 'brief', grp: 'gB', grpBy: 'stiff', by: 'stiff', ...over }))
+  const dates = (rows: any[]) => rows.map(r => INPUTS.find((x: any) => x.iid === r.iid)!.date)
+  /* pressed, lifted and carried over another date — and still held */
+  const carry = (bar: HTMLElement, from: HTMLElement, to: HTMLElement) => {
+    under(bar, from); bar.dispatchEvent(ptr('pointerdown', 10, 10)); bar.dispatchEvent(ptr('pointermove', 20, 10))
+    under(to); bar.dispatchEvent(ptr('pointermove', 200, 10))
+  }
+  it('an admin drags it two days on: every man’s record moves, and one Undo puts them all back', () => {
+    const rows = team(['stiff', 'bane', 'casper'])
+    histInit()
+    const m = month(rows[2].iid)
+    drag(m.bars[0], m.day(8), m.day(10))
+    expect(dates(rows)).toEqual(['Jul 10', 'Jul 10', 'Jul 10'])
+    expect(said.join(' | ')).toContain('Moved to')
+    undo()
+    expect(dates(rows), 'one step').toEqual(['Jul 8', 'Jul 8', 'Jul 8'])
+  })
+  it('the member who filed it drags it: it moves for everyone', () => {
+    setSession({ user: 'user', role: 'main' } as any)
+    const rows = team(['bane', 'stiff', 'casper'], { grpBy: 'bane', by: 'bane' })
+    const m = month(rows[1].iid)
+    drag(m.bars[0], m.day(8), m.day(9))
+    expect(dates(rows)).toEqual(['Jul 9', 'Jul 9', 'Jul 9'])
+  })
+  it('a man in it who did not file it: the bar does not lift, and nothing moves — his own record included', () => {
+    setSession({ user: 'user', role: 'main' } as any)
+    const rows = team(['bane', 'stiff', 'casper'])
+    const m = month(rows[0].iid)
+    carry(m.bars[0], m.day(8), m.day(10))
+    expect(ghost(), 'while it is held').toBeNull()
+    m.bars[0].dispatchEvent(ptr('pointerup', 200, 10))
+    expect(dates(rows)).toEqual(['Jul 8', 'Jul 8', 'Jul 8'])
+  })
+  it('anyone else: it does not lift', () => {
+    setSession({ user: 'user', role: 'main' } as any)
+    const rows = team(['stiff', 'casper'])
+    const m = month(rows[0].iid)
+    carry(m.bars[0], m.day(8), m.day(10))
+    expect(ghost(), 'while it is held').toBeNull()
+    m.bars[0].dispatchEvent(ptr('pointerup', 200, 10))
+    expect(dates(rows)).toEqual(['Jul 8', 'Jul 8'])
+  })
+})

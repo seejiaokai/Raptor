@@ -20,7 +20,7 @@ import { me, isAdmin, mayEditInput } from '../state/perms'
 import { writeInputsBatch, notify, inputProtected } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal, revealInput } from '../state/view'
 import { inputsInMode } from './sans-calendar-model'
-import { setDocView, setInpSet } from './pops'
+import { setDocView, setInpSet, setInpEdit } from './pops'
 import { CalIcon, ClipIcon, FilterIcon, ListIcon, MedIcon, UsersIcon } from './icons'
 import { MedicalView } from './MedicalView'
 import { medDownAsOf, pendingUpchits } from '../engine/medical'
@@ -40,7 +40,8 @@ import {
 import { DocConfirm } from './DocConfirm'
 import { docFields, docHas, rowDocIds } from '../state/docs'
 import { stampPlaced, stampChanged } from '../state/inputstamp'
-import { placedLine } from './placedline'
+import { placedLine, placedLineOf } from './placedline'
+import { entriesOf } from '../state/inputgroup'
 import { useVersion } from './useStore'
 import { exportCSV, inputRows } from './export'
 import { RangeCal } from './RangeCal'
@@ -737,10 +738,24 @@ export function InputsPage() {
   }
 
   let rows = inputsInMode(INPUTS, INPMODE)
+  /* A SHARED INPUT IS ONE LINE (owner D655 — "shown and edited as one thing"; the plan §3.13): the records of one entry
+     (state/inputgroup.ts — worked out on read) are drawn as its FIRST record's row, the Name reading "Saber +3". The
+     filters show an entry when ANY of its people passes; it sorts by its first callsign. */
+  const entryOf = new Map<any, any[]>()
+  for (const e of entriesOf(rows)) if (e.rows.length > 1) for (const r of e.rows) entryOf.set(r, e.rows)
   if (fPerson !== 'all') rows = rows.filter((r: any) => r.person === fPerson)
   if (fType !== 'all') rows = rows.filter((r: any) => r.type === fType)
   if (fSearch) { const s = fSearch.toLowerCase(); rows = rows.filter((r: any) => (r.remarks || '').toLowerCase().includes(s) || (PEOPLE[r.person] ? PEOPLE[r.person].cs.toLowerCase() : '').includes(s)) }
   rows = rows.filter((r: any) => inWindow(r, range.from, range.to))
+  if (entryOf.size) {
+    const seen = new Set<any[]>(), one: any[] = []
+    for (const r of rows) {
+      const e = entryOf.get(r)
+      if (!e) { one.push(r); continue }
+      if (!seen.has(e)) { seen.add(e); one.push(e[0]) }
+    }
+    rows = one
+  }
   /* the row being edited stays put whatever the sort and the window say —
      retyping a date must not make the open editor jump or vanish mid-edit */
   if (editRow && INPUTS.indexOf(editRow) >= 0 && rows.indexOf(editRow) < 0) rows.push(editRow)
@@ -1026,6 +1041,9 @@ export function InputsPage() {
           <tbody id="inBody">
             {rows.map((r: any) => {
               const cs = PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person
+              /* the entry this row stands for — a shared input's people, A to Z — or undefined for an ordinary input */
+              const team = entryOf.get(r)
+              const placed = team ? placedLineOf(team) : placedLine(r)
               /* DAY-FIRST and de-duplicated (owner, 21 Aug 26 — standardise +
                  compress). Start carries the day-first date + its time; End
                  drops the date when the span stays on one day, so a same-day
@@ -1131,7 +1149,7 @@ export function InputsPage() {
                       same-day input keeps a non-empty End (the bare end time),
                       so it shows "13 Jul 10:00 → 11:00" (scheduler.css, the
                       inputs card block); the desktop table renders both cells. */}
-                  <td data-label="Name">{cs}</td><td data-label="Start">{st}</td><td data-label="End" data-same={en === '' ? '' : undefined}>{en}</td>
+                  <td data-label="Name">{team ? <span title={team.map((x: any) => (PEOPLE[x.person] ? PEOPLE[x.person].cs : x.person)).join(', ')}>{cs} +{team.length - 1}</span> : cs}</td><td data-label="Start">{st}</td><td data-label="End" data-same={en === '' ? '' : undefined}>{en}</td>
                   {/* The two chips too wide for the phone card's aligned type
                       column wear the board day name's split-span idiom (owner,
                       22 Aug 26 — "if there's no space like sans availability u
@@ -1162,8 +1180,11 @@ export function InputsPage() {
                   {/* …and under the remark, in small print, who placed the input and when (owner D629 — "wherever an
                       entry is listed or opened"; ui/placedline.ts writes the one line; a record that never recorded a
                       filer shows none, D56). In the Remarks cell because that is the column with room for it. */}
-                  <td data-label="Remarks">{isLateInput(r) && <span className="latetag" title={lateNote(r)}>LATE</span>}{r.remarks || ''}
-                    {placedLine(r) && <span className="in-placed" data-testid="in-placed">{placedLine(r)}</span>}</td>
+                  {/* a shared input is LATE on its line where any of its people is — a man added later can be late alone,
+                      and the note says who */}
+                  <td data-label="Remarks">{(team || [r]).some((x: any) => isLateInput(x)) && <span className="latetag"
+                    title={team ? team.filter((x: any) => isLateInput(x)).map((x: any) => `${PEOPLE[x.person] ? PEOPLE[x.person].cs : x.person}: ${lateNote(x)}`).join(' · ') : lateNote(r)}>LATE</span>}{r.remarks || ''}
+                    {placed && <span className="in-placed" data-testid="in-placed">{placed}</span>}</td>
                   <td className="mono" data-label="Modified" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
                   <td className="inact">
                     {/* the paperwork behind a medical row — EVERY account may
@@ -1179,7 +1200,11 @@ export function InputsPage() {
                         Since the group input (D655): also a duty or commitment
                         he FILED for another man — the one rule, perms.ts
                         mayEditInput, which takes the record. */}
-                    {mayEditInput(r) && <>
+                    {/* A SHARED INPUT'S ONE BUTTON opens its window — for everyone, to change it or to read it. Deleting
+                        it and its OIL answer are there, asked for everyone (the plan §3.13); an edit in place, a ✕ or an
+                        OIL chip here would act on the first man's record alone. */}
+                    {team && <span className="red" data-edit={inx} title="Open this input" onClick={() => { setInpEdit(r); notify() }}>✎</span>}
+                    {!team && mayEditInput(r) && <>
                       {/* revise a recorded OIL answer in place (owner, 29 Aug
                           26) — shown exactly where a decision exists to
                           change (oilAnswered), same right as editing the row */}
