@@ -348,4 +348,16 @@ required figures; the members' switch, the filer checks, forged-stamp checks and
 the late rule's arithmetic and settings. Its test-coverage table names seven combined cases no test holds — among them
 that W12's desktop margin has no geometry assertion.
 
-**Sol 6.1 — `…-read-sol.md`:** still reading when this was written.
+**Sol 6.1 — `docs/superpowers/briefs/2026-10-08-inputs-sans-check-read-sol.md` — CHANGES REQUIRED.** Read blind to Astra's. Four findings and one confirmation; **none yet reproduced by the host unless its row says so.**
+
+| # | Sol's finding | Its rating | The host's disposition |
+|---|---|---|---|
+| S1 | A holiday form left open while the SAME event is changed on the Leave War into a working event (same name, same date): Delete — or Save — from the stale form still goes through, because the match compares the row, the dates and the name but not the kind; for a repeated run one surviving day is enough (`leavewar/engine/holidays.ts` about lines 80 and 94; `state/store.ts` 3512, 3558) | Medium | OWED — reproduce by a failing test, then fix |
+| S2 | The same fault as R2 on another door: a shared bar DRAGGED onto a weekend asks the OIL question of one record only (`ui/caldrag.ts` about line 149 → `askOilIfPending(r)`), so one man's standing No can leave another unanswered | Medium | OWED — reproduce by a failing test, then fix as R2 was (ask of every moved record) |
+| S3 | A person whose callsign sorts BEFORE the others is added to a shared input from the List: the filing is drawn TWICE — the old first man's row is pinned after the entries are de-duplicated (`ui/InputsPage.tsx` about lines 364, 788, 825). Drawing only; nothing extra is saved | Medium-low | OWED — walker C saw exactly this ("Anvil +2" and "Ace +2" for one filing) and the host had set it aside as two filings: it was real. Reproduce, then fix |
+| S4 | = Astra's R4: Undo of a "Calendar" change switches the Inputs page to the SANS tab though the date is in view | Medium-low | OWED — found by BOTH readers |
+| — | The medical-group rule missing at the command gate (the sheet's H8) | confirmed | covered by W15: a medical entry or an upchit is never read as part of a group, whatever a command writes |
+
+**Reconciled.** The two reads share one finding (R4 = S4). Astra alone: R1, R2, R3, R5. Sol alone: S1, S2, S3. Neither
+reported a fault in what a published day issues, in what OIL a man is credited, or in who may change whose input at
+the command gate. Both name `[CAL-TOGO-ONE-ITEM]` as still open.
