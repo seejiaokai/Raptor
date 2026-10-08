@@ -265,6 +265,18 @@ describe('a saved or brought-back input is shown where it is (D672)', () => {
     expect(bars(r.iid)[0].classList.contains('lift-land')).toBe(true)
     expect($('.ib-day.is-open')).toBeNull()
   })
+  /* THE CALENDAR JOB'S BUG CHECK, 8 Oct 26 (walker E, P5-11): an input running 29 Oct to 3 Nov, the month on NOVEMBER with
+     its last three days in view - an Undo of its move turned the month back to October, where it STARTS. D672: the
+     screen moves only when what changed is out of view. */
+  it('part of it is on the month shown: the month stays, and the part in view flashes', async () => {
+    const r = await file({ date: 'Oct 29', endDate: 'Nov 3' })
+    await act(async () => { setCalMonth({ y: 2026, m: 11 }); notify() })
+    expect(bars(r.iid).length, 'its November days are drawn').toBeGreaterThan(0)
+    await reveal(r)
+    expect(CALMONTH, 'the month he was looking at').toEqual({ y: 2026, m: 11 })
+    expect(bars(r.iid)[0].classList.contains('lift-land')).toBe(true)
+    expect($('.ib-day.is-open')).toBeNull()
+  })
   it('it has no bar — behind "+N more": its day opens and lists it', async () => {
     const rows: any[] = []
     for (const p of crew().slice(0, 9)) rows.push(await file({ person: p, date: 'Oct 21' }))

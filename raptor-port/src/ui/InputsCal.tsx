@@ -191,7 +191,12 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lead, tools, under
   useLayoutEffect(()=>{
     const saved=reveal&&INPUTS.find((r:any)=>r.iid===reveal.iid&&inputsInMode([r],mode).length)
     if(!saved||!reveal||(mode&&reveal.mode!==mode)){setSavedId(null);return}
-    setCalMonth({y:+reveal.iso.slice(0,4),m:+reveal.iso.slice(5,7)})
+    /* THE MONTH TURNS ONLY WHEN NONE OF IT IS ON THE MONTH SHOWN (D672). It used to turn to the month the input STARTS
+       in, whatever was on screen: an input running 29 Jul to 3 Aug, looked at in August, was thrown back to July by an
+       Undo of its move (the calendar job's bug check, 8 Oct 26 — walker E). Its span is the model's own (monthItems). */
+    const span=monthItems([saved],{fPerson:'all',fType:'all',fSearch:''})[0]
+    const at=CALMONTH,lo=at?`${at.y}-${String(at.m).padStart(2,'0')}-01`:'',hi=at?`${at.y}-${String(at.m).padStart(2,'0')}-31`:''
+    if(!(span&&at&&span.a<=hi&&span.b>=lo))setCalMonth({y:+reveal.iso.slice(0,4),m:+reveal.iso.slice(5,7)})
     setPending(reveal)
   },[reveal,mode])
   useLayoutEffect(()=>{

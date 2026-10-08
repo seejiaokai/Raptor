@@ -102,7 +102,15 @@ export function requestInpReveal(row:any){
   const day=String(ordinal).padStart(8,'0')
   const iso=`${day.slice(0,4)}-${day.slice(4,6)}-${day.slice(6,8)}`
   const mode=isSansAvail(row.type)?'sans':'member'
-  setInpMode(mode);setCalMonth({y:+iso.slice(0,4),m:+iso.slice(5,7)})
+  /* THE MONTH TURNS ONLY WHEN NONE OF THE INPUT IS ON THE MONTH SHOWN (owner D672 — "if it's already in view, undo/redo
+     don't need to snap to view"). It used to turn to the month the input STARTS in, always: an input running 29 Jul to
+     3 Aug, looked at in August, was thrown back to July by an Undo of its move (the calendar job's bug check,
+     8 Oct 26). An end written before its start is the next year's (a run over New Year). */
+  let end=row.endDate?dateOrd(row.endDate,row.yr):null
+  if(end!=null&&end<ordinal)end=dateOrd(row.endDate,(+row.yr||+day.slice(0,4))+1)
+  const at=CALMONTH,lo=at?at.y*10000+at.m*100+1:0,hi=at?at.y*10000+at.m*100+31:0
+  const inView=!!at&&INPMODE===mode&&ordinal<=hi&&(end??ordinal)>=lo
+  setInpMode(mode);if(!inView)setCalMonth({y:+iso.slice(0,4),m:+iso.slice(5,7)})
   INPREVEAL={iid:row.iid,iso,mode}
 }
 export function revealInput(row:any){
