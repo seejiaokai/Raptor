@@ -578,6 +578,8 @@ a look, not a gate.
 tests named for it, puts the line back, and says which breaks no test caught. Its lists are `scripts/handpass/breaks/` -
 `2026-10-08-morning-rulings.json` (D670-D673, D675: fifteen), `2026-10-08-counters-among.json` (D674: twenty-five) and
 `2026-10-08-inputs-undo-landing.json` (the Inputs list's landing after an Undo: seven).
+`scripts/handpass/lw-phone-head-mock.mjs` - MOCK-UPS, nothing built: three ways to use less height above the Leave War's
+grid on a phone, each drawn into the running build (`[LW-PHONE-HEADER-SPACE]`, 8 Oct 26).
 `scripts/handpass/lw-counters-among-look.mjs` - pictures of the Manning block with counters dragged among and below the
 four fixed rows (D674), phone and desktop, by the real drag.
 `scripts/handpass/lw-flyrows-look.mjs` - pictures of the four rows in the RUNNING build, phone and desktop (at rest, a
