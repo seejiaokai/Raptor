@@ -210,3 +210,22 @@ proved.
    boundary cases (`state/flyplan-model.test.ts` — calls the calculation; proves the arithmetic, no screen) and the
    late rule's dates (`engine/lateinput.test.ts` — the same); each is walked ONCE through its real controls.
 5. **Its row in the ledger:** added at the close (§9).
+
+## 5. What the check has found — each with its proof and its disposition
+
+"Found by" says which part of the check found it; "Seen" is the host's own reproduction in the running build before
+anything was changed. A finding with no "Seen" is not in this table.
+
+| # | The fault, as a person meets it | Found by | Seen (the host, on the build as walked) | Disposition |
+|---|---|---|---|---|
+| W1 | A holiday with a short form of its own — "National Day", "ND" — reads "ND" on the SANS month, the Inputs month and the Leave War's Event row, and "PH" on the "Calendar" window's own month | the roll-call (row A5), before any walker started | `scripts/handpass/cal-host-leads.mjs` A5: Calendar month "PH", the other three "ND" — picture `host-leads/a5-2-calendar-month.png` (opened) | FIXED, a test red first (`ui/dayswindow.test.tsx` "a holiday with a short form of its own prints THAT"); two older tests that pinned the fixed word re-pointed |
+| W2 | With the Inputs settings window opened over an input's editor window, Escape closes the EDITOR — the one behind — and what he had typed is lost; the settings window stays | Astra's scenario design (M1), from reading the promise against the code | the same script, M1: after Escape the editor was gone and the settings window still up — picture `host-leads/m1-2-after-escape.png` (opened) | FIXED, a test red first (`ui/editorwindow.test.tsx` "Escape belongs to the window in FRONT") |
+| W3 | After the front window is closed, no window is "in front": the one left does not wear the front mark, and Escape does nothing until it is pressed | the host, fixing W2 (the editor now asks which window is in front, and the answer was stale) | `ui/floatwindow.test.tsx` "when the front one closes…" — red on the build as walked (it named the closed window as still in front) | FIXED, that test red first |
+| W4 | In a shared input, one more person picked (or one taken out) and nothing else touched: pressing another input's bar throws the change away with no question | Astra's scenario design (M2) | the same script, M2: four picked, one added, another bar pressed — no question, the window showed the other input — picture `host-leads/m2-2-after-other-bar.png` | FIXED, two tests red first (`ui/editorwindow.test.tsx` "a change of the PEOPLE alone is unsaved work too") |
+| W5 | While the editor asks "you have unsaved changes", it announces "Changed while this window was open: people — X added, Y taken off", then the reverse, and puts the saved people back over the ones he picked | the host, writing W4's test | that test's own output on the build as walked: the two messages, and three people picked where he had left two | FIXED, a test red first ("while it asks, it says nothing was changed behind it…") |
+
+**Not a fault of the app — a check that had gone stale:** the adapted probe `audit-async` read 52 of 54. Its two failures
+counted one row of the Inputs List for every RECORD (44) where the List draws one row an ENTRY (the demo's four-man
+meeting is one row: 41), and added in a List on the SANS tab, which has none. Both follow from his rulings (D654, D620);
+the host confirmed every single-person input has its row and the shared one has one, then re-pointed the two checks:
+55 of 55.
