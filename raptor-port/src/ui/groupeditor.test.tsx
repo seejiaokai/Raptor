@@ -286,6 +286,38 @@ describe('the OIL question is asked once, of whoever files (D660)', () => {
   })
 })
 
+/* ASTRA'S READ of the calendar job's bug check (8 Oct 26), R2. D660: "whoever files an input for other people answers the
+   OIL question for all of them, once, at the save - nobody is left to be asked by his own bell". The save asked the
+   OIL gate about the FIRST man of the entry only. Once he had said No for himself, a change of hours by the filer
+   opened no question (his No still stood) while every other man's answer was voided by the new hours and left
+   unanswered. */
+describe('hours changed on a shared duty: the question comes back while ANY man in it needs an answer (D660)', () => {
+  const twoHours = async () => {
+    const [b, c] = others()
+    await openNew({ type: 'Duty', date: 'Oct 17', allday: false, s: 600, e: 720 })
+    await click(tid('pp-several'))
+    await click(puckBtn(b)); await click(puckBtn(c))
+    await type('#inpEditRmk', 'two hours')
+    await click($('#inpEditSave'))
+    await click(tid('oil-yes')); await click(tid('oilconf-save'))
+  }
+  const made = () => INPUTS.filter((r: any) => r.remarks === 'two hours') as any[]
+  for (const who of [0, 2]) {
+    it(`the ${who === 0 ? 'FIRST' : 'LAST'} man has said No for himself; the filer makes it all day: asked once, and no record is left without an answer`, async () => {
+      await twoHours()
+      expect(made().map(r => r.oil && r.oil['2026-10-17'])).toEqual([0.5, 0.5, 0.5])
+      await act(async () => { writeInputs(() => { made()[who].oil = { '2026-10-17': 0 } }); notify() })
+      await openOn(made()[0])
+      await click($('#inpEditAllday'))
+      await click($('#inpEditSave'))
+      expect($$('[data-testid="oilconf"]'), 'the new hours price a full day: the filer is asked again').toHaveLength(1)
+      await click(tid('oil-yes')); await click(tid('oilconf-save'))
+      expect(made()).toHaveLength(3)
+      for (const r of made()) expect(r.oil && r.oil['2026-10-17'], cs(r.person) + ' has an answer').toBeDefined()
+    })
+  }
+})
+
 describe('the entry changed behind its window', () => {
   it('a man added on the page behind: the window shows him, and a Save of the remarks keeps him', async () => {
     const [a, b, c] = others()

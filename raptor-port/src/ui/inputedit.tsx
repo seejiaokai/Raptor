@@ -2062,7 +2062,14 @@ export function InputEditor() {
          standing answers ticked */
       const first = rows.find(x => ppl.includes(String(x.person))) || null
       const adds = !!first && ppl.some(p => !rows.some(x => String(x.person) === p))
-      const g = oilGate({ ...draft, person: first ? first.person : ppl[0] }, first, adds)
+      /* ASKED OF EVERY MAN KEPT, NOT OF THE FIRST ALONE (Astra's read of the calendar job's bug check, 8 Oct 26 — seen
+         failing in `groupeditor.test.tsx` before this): each man's record carries his OWN answer, and the first man's
+         standing No said nothing about the others — their answers were voided by the new hours and nobody was asked,
+         which is the bell D660 rules out. The question opens while ANY of them needs one. */
+      const kept = rows.filter(x => ppl.includes(String(x.person)))
+      const gates = (kept.length ? kept : [first]).map(x => oilGate({ ...draft, person: x ? x.person : ppl[0] }, x, adds))
+      if (gates.some(x => x.kind === 'refused')) return
+      const g = gates.find(x => x.kind === 'ask') || gates[0]!
       if (g.kind === 'refused') return
       if (g.kind === 'ask') { setOilConf(ppl.length > 1 ? { ...g, who: `${csOf(ppl[0])} +${ppl.length - 1}` } : g); return }
       doSave([])
