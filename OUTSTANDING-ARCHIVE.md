@@ -3946,3 +3946,11 @@ the drawing counted them. **Owed:
 his look on his own iPhone** — whether "Legend" holds the second line in Apple's font cannot be measured on this PC —
 and the branch's one FULL check (D485) reads this code with the rest. Found on the way and filed: `[LW-HEAD-BIG-PHONE]`.
 
+
+*Moved here 2026-10-09 by backlog-archive.mjs ([CAL-SHARED-DATES]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md`.*
+
+### [CAL-SHARED-DATES] No door changes the dates of a shared input once it is saved (Astra's read, R3 — 8 Oct 26)
+**Found, not built — a missing door, not a wrong line.** One input filed for several people, saved for 12–14 Oct, cannot be made 12–15 Oct: the List's row opens the window (never the row's edit in place — by design, `docs/ui-contracts.md` "One input filed for several people"); the window draws its date picker only for a NEW input (`ui/inputedit.tsx` — the picker is shown for `r._calendar` and the Unavailable add); a bar's drag moves the whole span and keeps its length. Today's ways round: drag it, or delete it and file it again. D655 has a shared input "shown and edited as one thing" — its dates are part of it. **To build:** show the range picker in the window for a saved shared entry its reader may change; save through `commitGroup` (one command, the OIL question asked of every man kept — `35b819e0` — and no medical kind); correct the hint that sends him "to the Inputs page" for the dates, where he already is. **RULED 9 Oct 26 — "2 agree" (D681): built before the calendar job's "merge live", in the input's own window, by whoever may change the input, for everyone in it at once.** As filed: medium. The sheet: `raptor-port/docs/handpass/2026-10-08-inputs-sans-calendar-check.md` §10 (R3).
+
+**BUILT 9 Oct 26** (`cfcd40b7`, and the fixes after the two reads): the two-tap calendar in the window of a saved shared input, for its filer or an admin; walked 19 of 19, read by Astra and Sol 6.1, six findings fixed. What it does: `raptor-port/docs/ui-contracts.md` "One input filed for several people" (Its DATES are changed in its window); the evidence: the sheet's §12.
+

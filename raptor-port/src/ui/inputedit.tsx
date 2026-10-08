@@ -1532,11 +1532,26 @@ export function commitGroup(entry: { rows: any[] } | null, draft: any, people: a
 
   /* which of the records kept actually change: only those are saved (G6) */
   const sansKey = (x: any) => Object.keys(sansFlags(x)).sort().join(',')
+  /* THE DATES ARE COMPARED AS DATES, NOT AS THEIR LABELS (Astra's read of the date door, 9 Oct 26 - A1). A label
+     carries no year inside the loaded one, so a shared input moved by exactly a year - 13 Oct 2027 to 13 Oct 2026 -
+     read 'Oct 13' on both sides: nothing was written, and the window closed saying "Input updated". */
+  const wantEnd = draft.end && draft.end !== draft.start ? draft.end : ''
+  const moved = (r: any): boolean => unfmt(r.date, r.yr) !== draft.start || (r.endDate ? unfmt(r.endDate, r.yr) : '') !== wantEnd
+  /* ONE REMARK FOR EVERY MAN OF THE ENTRY (both reads of the date door - Astra A2, Sol 2). When the dates change, the
+     save rewrites the remark's "till <last day>" word on each record it CHANGES (commitInputEdit) - and a man ADDED in
+     the same save took the remark as typed, old last day and all. Remarks are part of what makes the records one
+     entry, so one shared input came out as two. The effective remark is worked out HERE, once, and is what every
+     man - kept or added - is saved with; the picker itself still never touches the remark. */
+  const redated = kept.some(r => r.date !== first.date || (r.endDate || '') !== (first.endDate || '') || moved(r))
+  let rem = String(draft.remarks || '').trim()
+  const tail = redated ? remarksTailWord(rem) : null
+  if (tail) rem = withRemarksTail(rem, ordISO(dateOrd(first.date, baseYear())), ordISO(dateOrd(first.endDate || first.date, baseYear())), tail)
+  const d = rem === String(draft.remarks || '') ? draft : { ...draft, remarks: rem }
   const changes = (r: any): boolean => {
     const n = norm.get(String(r.person))!
     return r.type !== draft.type || !!r.allday !== !!draft.allday || r.s !== n.s || r.e !== n.e
-      || r.date !== n.date || (r.endDate || '') !== (n.endDate || '') || (r.half || '') !== (n.half || '')
-      || String(r.remarks || '') !== String(draft.remarks || '').trim()
+      || r.date !== n.date || (r.endDate || '') !== (n.endDate || '') || moved(r) || (r.half || '') !== (n.half || '')
+      || String(r.remarks || '') !== rem
       || (isSansAvail(draft.type) && sansKey(r.sans) !== sansKey(draft.sans))
   }
   const changed = kept.filter(changes)
@@ -1547,6 +1562,10 @@ export function commitGroup(entry: { rows: any[] } | null, draft: any, people: a
   const regroup = many && kept.some(r => !r.grp)
   const oilOnly = !!oilDec && !added.length && !gone.length && !changed.length
   if (oilOnly) for (const r of kept) if (!mayEditInput(r)) { say(whole, 'warn'); return false }
+  /* a fresh OIL answer is EVERY man's (D682, below) - when it is given by someone who may change the input for
+     everyone: its filer, an admin. A man who may only ADD somebody (this door lets a member add a man to an entry he
+     did not file) answers for the man he adds and for nobody else - the others' answers are not his to replace. */
+  const forAll = !!oilDec && kept.every(r => mayEditInput(r))
   if (!added.length && !gone.length && !changed.length && !regroup && !oilOnly) return true
 
   /* THE ONE COMMAND. What the doors and the absence rules say inside it is gathered, and said once afterwards. */
@@ -1565,13 +1584,19 @@ export function commitGroup(entry: { rows: any[] } | null, draft: any, people: a
       for (const r of kept) {
         if (grp && !r.grp) { r.grp = grp; r.grpBy = grpBy }
         if (changed.includes(r)) {
-          if (!commitInputEdit(r, { ...draft, person: r.person, docIds: rowDocIds(r) })) stop()
+          if (!commitInputEdit(r, { ...d, person: r.person, docIds: rowDocIds(r) })) stop()
           if (oilDec) r.oil = { ...oilDec }
         } else if (oilOnly) { r.oil = { ...oilDec }; stampChanged(r) }
+        /* THE ANSWER IS EVERY MAN'S (owner D682, 9 Oct 26: "the answer is written for everyone in it - a man's own
+           earlier answer, a No included, is replaced"; Sol's read of the date door - 1). A man added or taken off
+           brings the question back for "X +2", and the filer's answer went on the ADDED man's record alone: the sheet
+           had asked about all of them, and a man's own earlier No stood against the filer's fresh Yes. A record
+           whose answer is already this one is not touched (no "changed" stamp for nothing). */
+        else if (forAll && JSON.stringify(r.oil || {}) !== JSON.stringify(oilDec)) { r.oil = { ...oilDec }; stampChanged(r) }
       }
       for (const p of added) {
         let row: any = null
-        if (!commitNewInput({ ...draft, person: p }, false, undefined, undefined, x => { row = x }) || !row) stop()
+        if (!commitNewInput({ ...d, person: p }, false, undefined, undefined, x => { row = x }) || !row) stop()
         if (grp) { row.grp = grp; row.grpBy = grpBy }
         if (oilDec) row.oil = { ...oilDec }
       }
@@ -1837,6 +1862,15 @@ export function InputEditor() {
   /* a saved shared input's dates, being re-picked in the window (D681): true between the tap for the new start and the
      tap for the new end — see `datesHere`, below */
   const [midPick, setMidPick] = useState(false)
+  /* ...and two more, from the two reads of that door (9 Oct 26). `calKey`: the calendar's month is seeded ONCE, when it
+     is put on screen - and it was put on screen with the dates of the input the window held BEFORE (the new record
+     arrives a render ahead of its draft), so a December input opened over an October one showed October (Astra A3).
+     It is counted up where the draft is re-seeded, so the calendar is made again WITH that draft - and never on a
+     tap, which would throw away a month he had turned to. `datesPicked`: he has tapped the calendar since the window
+     took its dates. A first tap ON the saved day leaves the dates as they were, and "not different from what was
+     saved" read as "not touched": a move made behind the window then replaced his start without a word (Sol 3). */
+  const [calKey, setCalKey] = useState(0)
+  const [datesPicked, setDatesPicked] = useState(false)
   const rows: any[] = r && !isNew ? entryRowsOf(INPUTS, r).filter((x: any) => INPUTS.indexOf(x) >= 0) : []
   const picker = win && ctx !== 'up'
   const grouped = picker && (ppl.length > 1 || rows.length > 1)
@@ -1869,7 +1903,7 @@ export function InputEditor() {
     const rs = r && !r._new ? entryRowsOf(INPUTS, r) : []
     const p0 = rs.length ? rs.map((x: any) => String(x.person)) : r ? [String(r.person ?? '')] : []
     setPpl(p0); setSeveral(rs.length > 1); basePpl.current = p0; entryIds.current = rs.map((x: any) => x.iid)
-    setDelAll(false); setTakeOut(false); setMidPick(false)
+    setDelAll(false); setTakeOut(false); setMidPick(false); setDatesPicked(false); setCalKey(k => k + 1)
     if (r && !r._new && OILASK && r.iid === OILASK) {
       setOilAsk(null)
       const g = oilGate(draftOf(r), r)
@@ -1920,7 +1954,9 @@ export function InputEditor() {
     const hit = new Set(clash)
     for (const f of WIN_FIELDS) {
       if (fieldSame(f, cur, b)) continue                                   // not changed behind him
-      if (fieldSame(f, draft, b)) next = { ...next, ...fieldPart(f, cur) } // he has not touched it: theirs, silently
+      /* a date he has TAPPED is his, even where the tap was on the day already saved (`datesPicked`, above) */
+      const tapped = datesPicked && (f.k === 'start' || f.k === 'end')
+      if (!tapped && fieldSame(f, draft, b)) next = { ...next, ...fieldPart(f, cur) } // he has not touched it: theirs, silently
       else if (!fieldSame(f, draft, cur)) hit.add(f.k)                     // changed both ways
       else hit.delete(f.k)                                                 // both made the same change
     }
@@ -2288,10 +2324,10 @@ export function InputEditor() {
           {(ctx === 'u' || (isNew && r._calendar) || datesHere) && <div className="inped-f">
             <span className="inped-k">Dates</span>
             <div className="inped-dates">
-              <RangeCal key={datesHere ? 'saved-' + r.iid : 'new'} idPrefix="inpEd" start={draft.start}
+              <RangeCal key={'cal-' + calKey} idPrefix="inpEd" start={draft.start}
                 end={datesHere && !midPick ? (draft.end || draft.start) : draft.end}
                 onPick={(s2, e2) => {
-                  if (datesHere) { setMidPick(!e2); setDraft({ ...draft, start: s2, end: e2 }); return }
+                  if (datesHere) { setMidPick(!e2); setDatesPicked(true); setDraft({ ...draft, start: s2, end: e2 }); return }
                   setDraft({ ...draft, start: s2, end: e2, remarks: withRemarksTail(draft.remarks, s2, e2, 'till') })
                 }} />
               <div className="rc-read">{draft.start ? (fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' → ' + fmt(draft.end) : '')) : 'pick a start date'}</div>
@@ -2381,7 +2417,7 @@ export function InputEditor() {
             /* a SANS commitment is on no list of the Inputs tab (D620), so "the Inputs page" is no place to change its
                dates — and this editor changes none: it is deleted and added again (the calendar job's bug check, 8 Oct 26) */
             : datesHere
-              ? 'To change its dates for everyone in it, tap the new start on the calendar above, then the new end. The line under the calendar shows what Save will write.'
+              ? 'To change its dates for everyone in it, tap the new start on the calendar above, then the new end — for one day, tap that day and Save. The line under the calendar shows what Save will write.'
             : isSansAvail(draft.type)
               ? 'To change its dates, delete it and add it again on the SANS calendar.'
             : canEditSched()
@@ -2477,7 +2513,12 @@ export function InputEditor() {
                   <span className="inped-ask-q">{f.label} — theirs {fieldSay(k, base.current)}, yours {fieldSay(k, draft)}</span>
                   <button type="button" className="abtn" data-testid={'inped-clash-mine-' + k} onClick={() => setClash(c => c.filter(x => x !== k))}>Keep mine</button>
                   <button type="button" className="abtn" data-testid={'inped-clash-theirs-' + k}
-                    onClick={() => { setDraft({ ...draft, ...fieldPart(f, base.current) }); setClash(c => c.filter(x => x !== k)) }}>Take theirs</button>
+                    onClick={() => {
+                      setDraft({ ...draft, ...fieldPart(f, base.current) }); setClash(c => c.filter(x => x !== k))
+                      /* dates taken back from the record are a FINISHED range again: the next tap is a new start, not
+                         the end of a pick he has just given up (Astra's read of the date door, 9 Oct 26 - A4) */
+                      if (k === 'start' || k === 'end') { setMidPick(false); if (!clash.some(x => x !== k && (x === 'start' || x === 'end'))) setDatesPicked(false) }
+                    }}>Take theirs</button>
                 </div>
               )
             })}

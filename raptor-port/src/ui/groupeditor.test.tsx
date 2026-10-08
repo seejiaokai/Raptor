@@ -13,12 +13,13 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
-import { InputEditor, askOilIfPending, commitGroup, draftOf, removeInput } from './inputedit'
+import { InputEditor, askOilIfPending, commitGroup, draftOf, oilAnswered, removeInput } from './inputedit'
 import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
 import { setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
 import { me } from '../state/perms'
 import { INPUTS } from '../engine/inputs'
+import { entriesOf } from '../state/inputgroup'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { ELOG } from '../engine/editlog'
@@ -490,6 +491,158 @@ describe('the dates of a saved shared input are changed in its window (D681)', (
     await click(day('2026-10-14')); await click(day('2026-10-15'))
     await click($('#inpEditSave'))
     expect(of(g.grp).map(r => [r.date, r.endDate])).toEqual([['Oct 14', 'Oct 15'], ['Oct 14', 'Oct 15']])
+  })
+})
+
+/* THE TWO BLIND READS OF THE DATE DOOR (Astra and Sol 6.1, 9 Oct 26 — docs/superpowers/briefs/2026-10-09-shared-dates-read-*.md;
+   the evidence sheet §12). Each case below was SEEN failing here before its fix. */
+describe('the date door, after the two reads (9 Oct 26)', () => {
+  const day = (iso: string) => $(`#inpEditPop #inpEdCal [data-cal="${iso}"]`)
+  const entries = (grp: string) => entriesOf(INPUTS).filter(e => e.rows.some((r: any) => r.grp === grp))
+  /* Astra A1: the same day and month in ANOTHER YEAR read as "no change" — the comparison was of the printed labels,
+     which carry no year inside the loaded one — and Save said "Input updated" with nothing moved */
+  it('moved by exactly a year: the records move to the year picked — never "updated" with nothing changed', async () => {
+    const g = await shared(others().slice(0, 2), { yr: 2027 })
+    await openOn(g.rows[0])
+    for (let i = 0; i < 12; i++) await click($('#inpEditPop #inpEdCal [aria-label="Previous month"]'))
+    await click(day('2026-10-13'))
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => [r.date, r.yr])).toEqual([['Oct 13', 2026], ['Oct 13', 2026]])
+    await act(async () => { undo(); notify() })
+    expect(of(g.grp).map(r => [r.date, r.yr]), 'one Undo').toEqual([['Oct 13', 2027], ['Oct 13', 2027]])
+  })
+  /* Astra A2 = Sol 2: the men kept had their "till <last day>" word rewritten by the save, the man ADDED in the same
+     save took the remark as typed — so one shared input came out as two entries, one of them with a stale last day */
+  for (const order of ['a man added, then new days', 'new days, then a man added'] as const) {
+    it(`a remark that says "till 14 Oct"; ${order}: ONE input for all three, its remark saying the new last day`, async () => {
+      const [a, b, c] = others()
+      const g = await shared([a, b], { endDate: 'Oct 14', remarks: 'brief till 14 Oct' })
+      await openOn(g.rows[0])
+      if (order.startsWith('a man')) await click(puckBtn(c))
+      await click(day('2026-10-20')); await click(day('2026-10-21'))
+      expect(($('#inpEditRmk') as HTMLInputElement).value, 'the picker never rewrites the remark').toBe('brief till 14 Oct')
+      if (!order.startsWith('a man')) await click(puckBtn(c))
+      await click($('#inpEditSave'))
+      expect(of(g.grp).map(r => r.remarks)).toEqual(['brief till 21 Oct', 'brief till 21 Oct', 'brief till 21 Oct'])
+      expect(of(g.grp).map(r => [r.date, r.endDate])).toEqual([['Oct 20', 'Oct 21'], ['Oct 20', 'Oct 21'], ['Oct 20', 'Oct 21']])
+      expect(entries(g.grp), 'one entry, not two').toHaveLength(1)
+      expect(entries(g.grp)[0].rows).toHaveLength(3)
+      await act(async () => { undo(); notify() })
+      expect(of(g.grp).map(r => [r.date, r.endDate, r.remarks]), 'one Undo').toEqual([['Oct 13', 'Oct 14', 'brief till 14 Oct'], ['Oct 13', 'Oct 14', 'brief till 14 Oct']])
+    })
+  }
+  /* Astra A3: the calendar's month is seeded once, and it was seeded from the input the window held BEFORE */
+  it('another shared input opened without closing the first: the calendar shows ITS month, and its first tap is a new start', async () => {
+    const [a, b] = others()
+    const g = await shared([a, b])
+    const h = await shared([a, b], { date: 'Dec 10', remarks: 'december' })
+    await openOn(g.rows[0])
+    await openOn(h.rows[0])
+    expect(day('2026-12-10'), 'December is on the calendar').toBeTruthy()
+    expect(day('2026-12-10')!.className).toContain(' s')
+    /* ...and after a half-made pick is thrown away for it */
+    await act(async () => { setInpEdit(null); notify() })
+    await openOn(g.rows[0])
+    await click(day('2026-10-20'))
+    await openOn(h.rows[0])
+    await click(tid('inped-swap-go'))
+    expect(day('2026-12-10'), 'December again').toBeTruthy()
+    await click(day('2026-12-15'))
+    await click($('#inpEditSave'))
+    expect(of(h.grp).map(r => [r.date, r.endDate || '']), 'the first tap on the newly opened input began a NEW range').toEqual([['Dec 15', ''], ['Dec 15', '']])
+    expect(of(g.grp).map(r => r.date), 'and the first input is as it was').toEqual(['Oct 13', 'Oct 13'])
+  })
+  /* Astra A4: "Take theirs" put the saved start back but left the window waiting for an END */
+  it('a new start tapped, the input moved behind the window, "Take theirs": the next tap is a NEW start again', async () => {
+    const [a, b] = others()
+    const g = await shared([a, b])
+    await openOn(g.rows[0])
+    await click(day('2026-10-20'))
+    await act(async () => { commitGroup({ rows: of(g.grp) }, { ...draftOf(live(g.rows[0].iid)), start: '2026-10-14', end: '' }, [a, b]); notify() })
+    expect(tid('inped-clash'), 'changed both ways: it asks').toBeTruthy()
+    await click(tid('inped-clash-theirs-start'))
+    await click(day('2026-10-15'))
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => [r.date, r.endDate || ''])).toEqual([['Oct 15', ''], ['Oct 15', '']])
+  })
+  it('...and "Keep mine" keeps the start he tapped: the next tap is its end', async () => {
+    const [a, b] = others()
+    const g = await shared([a, b])
+    await openOn(g.rows[0])
+    await click(day('2026-10-20'))
+    await act(async () => { commitGroup({ rows: of(g.grp) }, { ...draftOf(live(g.rows[0].iid)), start: '2026-10-14', end: '' }, [a, b]); notify() })
+    await click(tid('inped-clash-mine-start'))
+    await click(day('2026-10-21'))
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => [r.date, r.endDate])).toEqual([['Oct 20', 'Oct 21'], ['Oct 20', 'Oct 21']])
+  })
+  /* Sol 3: a first tap ON the saved day leaves the dates as they were, so a move made behind the window read as "he
+     has not touched the dates" and replaced his start without a word — and the next tap finished THEIR range */
+  it('the first tap is on the day it is already saved for, then the input is moved behind the window: it ASKS — his start is not replaced silently', async () => {
+    const [a, b] = others()
+    const g = await shared([a, b])
+    await openOn(g.rows[0])
+    await click(day('2026-10-13'))
+    await act(async () => { commitGroup({ rows: of(g.grp) }, { ...draftOf(live(g.rows[0].iid)), start: '2026-10-22', end: '' }, [a, b]); notify() })
+    expect(tid('inped-clash'), 'a start he picked against a start changed behind him').toBeTruthy()
+    await click(tid('inped-clash-mine-start'))
+    await click(day('2026-10-16'))
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => [r.date, r.endDate])).toEqual([['Oct 13', 'Oct 16'], ['Oct 13', 'Oct 16']])
+  })
+  /* Sol 1 (his ruling D682, 9 Oct 26: "the answer is written for everyone in it — a man's own earlier answer, a No
+     included, is replaced"). A man is added, the sheet comes back for "X +2" and the filer answers — and the answer
+     went on the ADDED man's record alone, while the sheet had asked about all of them. */
+  for (const fresh of ['Yes', 'No'] as const) {
+    it(`a man added to a Saturday duty already answered; the filer answers ${fresh}: the answer is on EVERY record, a man's own earlier answer replaced (D682)`, async () => {
+      const [b, c] = others()
+      await openNew({ type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439 })
+      await click(tid('pp-several')); await click(puckBtn(b))
+      await type('#inpEditRmk', 'sat duty')
+      await click($('#inpEditSave'))
+      await click(tid('oil-yes')); await click(tid('oilconf-save'))
+      const made = () => INPUTS.filter((r: any) => r.remarks === 'sat duty') as any[]
+      expect(made().map(r => r.oil['2026-10-17'])).toEqual([1, 1])
+      /* one man has since said the opposite for himself */
+      const own = fresh === 'Yes' ? 0 : 1
+      if (fresh === 'Yes') await act(async () => { writeInputs(() => { made()[0].oil = { '2026-10-17': 0 } }); notify() })
+      await openOn(made()[0])
+      await click(puckBtn(c))
+      await click($('#inpEditSave'))
+      expect($$('[data-testid="oilconf"]'), 'a man added: asked again, once').toHaveLength(1)
+      await click(tid(fresh === 'Yes' ? 'oil-yes' : 'oil-no')); await click(tid('oilconf-save'))
+      expect(made()).toHaveLength(3)
+      for (const r of made()) expect(r.oil['2026-10-17'], cs(r.person)).toBe(fresh === 'Yes' ? 1 : 0)
+      await act(async () => { undo(); notify() })
+      expect(made().map(r => r.oil['2026-10-17']).sort(), 'one Undo: the man gone, each earlier answer back').toEqual([own, 1].sort())
+    })
+  }
+  /* two cases both readers asked the host to RUN and expected to hold — they do */
+  it('a range across the year’s end: both men on the days picked, the new year kept', async () => {
+    const g = await shared(others().slice(0, 2), { date: 'Dec 29' })
+    await openOn(g.rows[0])
+    await click(day('2026-12-30'))
+    await click($('#inpEditPop #inpEdCal [aria-label="Next month"]'))
+    await click(day('2027-01-01'))
+    await click($('#inpEditSave'))
+    expect(of(g.grp).map(r => [r.date, r.endDate])).toEqual([['Dec 30', 'Jan 1 2027'], ['Dec 30', 'Jan 1 2027']])
+    await openOn(of(g.grp)[0])
+    expect($('#inpEditPop .rc-read')!.textContent, 'reopened: the same days').toMatch(/Dec 30.*Jan 1/)
+  })
+  it('a Saturday duty answered Yes, moved to a Tuesday: nothing is asked and no answer for the Saturday is left to earn', async () => {
+    const g = await shared(others().slice(0, 2), { type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439, oil: { '2026-10-17': 1 } })
+    await openOn(g.rows[0])
+    await click(day('2026-10-20'))
+    await click($('#inpEditSave'))
+    expect($$('[data-testid="oilconf"]')).toHaveLength(0)
+    expect(of(g.grp).map(r => r.date)).toEqual(['Oct 20', 'Oct 20'])
+    /* the old answer stays written against its own date, and a Tuesday has no day to earn on: nothing is credited */
+    for (const r of of(g.grp)) expect(oilAnswered(r), cs(r.person) + ' has nothing that earns').toBe(false)
+  })
+  it('the words under the form say the one-day way too', async () => {
+    const g = await shared(others().slice(0, 2))
+    await openOn(g.rows[0])
+    expect($('#inpEditPop .inped-hint')!.textContent).toMatch(/one day/i)
   })
 })
 

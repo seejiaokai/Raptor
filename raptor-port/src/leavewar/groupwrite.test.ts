@@ -378,11 +378,34 @@ describe('the OIL question, answered once for all by whoever files (D660)', () =
     for (const p of ['bane', 'casper']) expect(one(p).oil, p).toEqual({ [SAT]: 0.5 })
     expect(who(entryOf('bane')), 'his answer is his own: still one entry').toHaveLength(3)
   })
-  it('a man added later is answered for at that save, by whoever adds him — nobody else\'s answer moves', () => {
+  /* by a man who may ADD somebody but did not file the entry: he answers for the man he adds, and nobody else's
+     answer is his to replace (unchanged by D682, which is about whoever FILED it) */
+  it('a man added later by someone who did not file it is answered for at that save — nobody else\'s answer moves', () => {
     expect(commitGroup(null, sat(), ['bane', 'rocky'], { [SAT]: 0.5 })).toBe(true)
     outlaw()
     expect(commitGroup(entryOf('bane'), sat(), ['bane', 'rocky', 'harpoon'], { [SAT]: 0 })).toBe(true)
     expect(one('harpoon').oil).toEqual({ [SAT]: 0 })
+    for (const p of ['bane', 'rocky']) expect(one(p).oil, p).toEqual({ [SAT]: 0.5 })
+  })
+  /* HIS RULING D682 (9 Oct 26: "whoever filed a shared duty and answers its OIL question again answers for everyone in
+     it, replacing a person's own earlier No" — "yes that's what I want"). Adding a man brings the question back for
+     "X +2"; the FILER's answer went on the added man alone, while a man's own earlier No stood (Sol's read of the
+     date door, 9 Oct 26 — seen failing here first). */
+  it('the FILER adds a man and answers again: the answer is on every record — a man\'s own earlier No replaced (D682)', () => {
+    expect(commitGroup(null, sat(), ['bane', 'rocky'], { [SAT]: 0.5 })).toBe(true)
+    expect(raw(() => { one('rocky').oil = { [SAT]: 0 } })).toBe(true)
+    const n = cmds()
+    expect(commitGroup(entryOf('bane'), sat(), ['bane', 'rocky', 'harpoon'], { [SAT]: 0.5 })).toBe(true)
+    expect(cmds() - n, 'one command').toBe(1)
+    for (const p of ['bane', 'rocky', 'harpoon']) expect(one(p).oil, p).toEqual({ [SAT]: 0.5 })
+    expect(globalUndo().ok).toBe(true)
+    expect(one('rocky').oil, 'one Undo: his own No is back').toEqual({ [SAT]: 0 })
+    expect(of('harpoon')).toHaveLength(0)
+  })
+  it('...and with NO answer given (the question cancelled) nobody\'s answer moves', () => {
+    expect(commitGroup(null, sat(), ['bane', 'rocky'], { [SAT]: 0.5 })).toBe(true)
+    expect(commitGroup(entryOf('bane'), sat(), ['bane', 'rocky', 'harpoon'])).toBe(true)
+    expect(one('harpoon').oil).toBeUndefined()
     for (const p of ['bane', 'rocky']) expect(one(p).oil, p).toEqual({ [SAT]: 0.5 })
   })
   it('the filer revises the answer for all: nothing else changed, the new answer is on every record — an OIL answer alone (§3.8 row 4)', () => {

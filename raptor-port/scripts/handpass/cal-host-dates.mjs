@@ -185,6 +185,50 @@ const toasts = p => p.evaluate(() => { const t = document.getElementById('toastE
     await shot(page, 'd11-sans-after-save')
     return { ok: d === 'Oct 21>Oct 22' && !/delete it and add it again/i.test(hint), detail: `saved ${d}; the words under the form: "${hint}"` }
   })
+  /* ---- what the two code reads found (9 Oct 26), each fixed and driven here: a PASS is the fixed behaviour */
+  await page.click('#inMemberMode')
+  if (await page.locator('[data-testid="win-sansday"]').count()) await page.keyboard.press('Escape')
+  await step('D12 another shared input, in December, opened WITHOUT closing the October one: the calendar in the window shows December', async () => {
+    await fileShared(page, 'hw-g5', crew.slice(14, 16), { type: 'Meeting', date: 'Dec 10', allday: false, s: 600, e: 660, remarks: 'december brief' })
+    await month(page, 2026, 10)
+    await bar(page, /\+2 · Meeting/).click(); await win(page).waitFor()
+    await page.click('#icNext'); await page.click('#icNext')
+    await bar(page, /\+1 · Meeting/).click(); await page.waitForTimeout(300)
+    const mon = (await cal(page).locator('.rc-mon').innerText()).trim()
+    const lit = await dayBtn(page, '2026-12-10').count() ? /\bs\b/.test(await dayBtn(page, '2026-12-10').getAttribute('class')) : false
+    await shot(page, 'd12-december-opened-over-october'); await closeWin(page)
+    return { ok: /dec/i.test(mon) && lit, detail: `the calendar reads "${mon}"; the 10th lit: ${lit}` }
+  })
+  await step('D13 a remark that says "till 4 Nov": a man added AND new days in one Save — still ONE bar, every remark saying the new last day', async () => {
+    await fileShared(page, 'hw-g6', crew.slice(16, 18), { type: 'Meeting', date: 'Nov 3', endDate: 'Nov 4', allday: false, s: 600, e: 660, remarks: 'brief till 4 Nov' })
+    await month(page, 2026, 11)
+    await bar(page, /\+1 · Meeting/).click(); await win(page).waitFor()
+    await page.locator('#inpEditPop .pp-pucks button[aria-pressed="false"]').first().click()
+    await dayBtn(page, '2026-11-10').click(); await dayBtn(page, '2026-11-11').click()
+    const typed = await page.locator('#inpEditRmk').inputValue()
+    await page.click('#inpEditSave'); await win(page).waitFor({ state: 'detached' })
+    const r = await recs(page, 'hw-g6'), bars = await bar(page, /\+2 · Meeting/).count()
+    await shot(page, 'd13-one-bar-one-remark')
+    return { ok: r.length === 3 && r.every(x => x.remarks === 'brief till 11 Nov' && x.date === 'Nov 10' && x.end === 'Nov 11') && bars === 1 && typed === 'brief till 4 Nov', detail: `${r.length} records; remarks ${[...new Set(r.map(x => x.remarks))].join(' / ')}; ${bars} bar; the remark box was left as typed while picking: ${typed === 'brief till 4 Nov'}` }
+  })
+  await step('D14 OIL (D682): a Saturday duty for two, one man holding his own No; the filer adds a third and answers Yes — the Yes is on ALL three', async () => {
+    const [a, b] = crew.slice(18, 20)
+    await page.evaluate(([a, b]) => {
+      const row = { type: 'Duty', date: 'Nov 14', yr: 2026, allday: true, s: 0, e: 1439, remarks: 'sat duty', grp: 'hw-g7', grpBy: 'stiff', by: 'stiff', at: '2026-09-01T08:00:00.000Z' }
+      window.fileInput({ ...row, iid: 'hw-g7-0', person: a, oil: { '2026-11-14': 1 } })
+      window.fileInput({ ...row, iid: 'hw-g7-1', person: b, oil: { '2026-11-14': 0 } })
+    }, [a, b])
+    await bar(page, /\+1 · Duty/).click(); await win(page).waitFor()
+    await page.locator('#inpEditPop .pp-pucks button[aria-pressed="false"]').first().click()
+    await page.click('#inpEditSave')
+    const sheets = await page.locator('[data-testid="oilconf"]').count()
+    const title = sheets ? await page.locator('[data-testid="oilconf"] .airpop-head b').innerText() : ''
+    await shot(page, 'd14-oil-asked-for-all')
+    await page.locator('[data-testid="oil-yes"]').click(); await page.locator('[data-testid="oilconf-save"]').click()
+    await page.waitForTimeout(200)
+    const r = await recs(page, 'hw-g7')
+    return { ok: sheets === 1 && r.length === 3 && r.every(x => x.oil && x.oil['2026-11-14'] === 1), detail: `${sheets} sheet, headed "${title}"; the three records: ${JSON.stringify(r.map(x => x.oil))}` }
+  })
   await ctx.close()
 }
 

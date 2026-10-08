@@ -280,7 +280,7 @@ Every one is in `OUTSTANDING.md` with its evidence. None loses data, earns or wi
 
 ## 8. Told to him, not changed — differences from an approved picture, or a reading the walk made visible (the look card)
 
-0. **A shared input's DATES cannot be changed once it is saved** — it can be dragged (its length kept) or deleted and filed again. Found by Astra's read; filed as `[CAL-SHARED-DATES]`; the builder would build it before "merge live". **ANSWERED 9 Oct 26 — "2 agree" (D681): it is built before "merge live", in the input’s own window, for everyone in it at once.**
+0. **A shared input's DATES cannot be changed once it is saved** — it can be dragged (its length kept) or deleted and filed again. Found by Astra's read; filed as `[CAL-SHARED-DATES]`; the builder would build it before "merge live". **ANSWERED 9 Oct 26 — "2 agree" (D681): it is built before "merge live", in the input’s own window, for everyone in it at once.** **BUILT 9 Oct 26 — §12.**
 1. **Picking several days opens the new-input window at once.** The drawing left the days picked with a bar at the foot ("4 days · Cancel · + Input"); the plan says "release opens + Input for the range, as today".
 2. **The List is today's list.** The drawing showed a re-made one (a range box in the tools row, one-line rows under day headings); the plan kept the List as it was.
 3. **No strip of keys along the foot of the desktop month.** The keys work; the drawing listed them on the page.
@@ -508,3 +508,59 @@ run; it goes on the look card.
 
 **Break tests:** a refusal for one man (D10); a half-finished pick abandoned (D7); the record moved behind the open
 window (D8); the three small screens (P).
+
+### The gates after the walk — under the PC lock, watched, on `cfcd40b7`: wholly green
+
+unit 9335 of 9335 (564 files) · build clean · the reference 728 / 0 · the browser tests 708 passed, 0 failed, 56
+skipped · the Tracker smoke 445 / 0 · the rule check OK · the document check OK.
+
+### The two code reads of the door (each blind to the other; this section in their hands)
+
+Astra and Sol 6.1, `codex exec`, read-only, the brief `docs/superpowers/briefs/2026-10-09-shared-dates-read-brief.md`;
+their reports whole: `…-read-astra.md`, `…-read-sol.md`. Both: **CHANGES REQUIRED.** Seven findings, six distinct.
+**Every one was reproduced by the host as a failing test before anything was changed** (`ui/groupeditor.test.tsx`, "the
+date door, after the two reads": nine red of ten), and none had been met by the walk — each needs an order of action
+the sixteen steps did not take.
+
+| # | Who | What goes wrong | Disposition | The test that was red first |
+|---|---|---|---|---|
+| W20 | Astra A1 | A shared input moved by EXACTLY a year (13 Oct 2027 to 13 Oct 2026): nothing is written, and the window closes saying "Input updated" — the dates were compared as their printed labels, which carry no year inside the loaded one | FIXED — `commitGroup` compares the dates themselves | "moved by exactly a year…" |
+| W21 | Astra A2 = Sol 2 | A remark that says "till 14 Oct"; a man ADDED and new dates in one Save: the men kept get "till 21 Oct", the added man keeps "till 14 Oct" — and since the remark is part of what makes the records one entry, the one input comes out as TWO | FIXED — one effective remark, worked out once, for every man kept or added; the picker still never rewrites the remark | "a remark that says till 14 Oct…" (both orders) |
+| W22 | Astra A3 | A December input opened without closing an October one: the title and the line say December, the calendar shows October (its month is seeded once, and was seeded from the input held before) | FIXED — the calendar is made again when the window takes another record’s dates, never on a tap | "another shared input opened without closing the first…" |
+| W23 | Astra A4 | A new start tapped; the input moved behind the window; "Take theirs": the window still waits for an END, so the next tap stretches the range instead of starting a new one | FIXED — dates taken back are a finished range again | "…Take theirs: the next tap is a NEW start again" |
+| W24 | Sol 3 | The first tap is ON the day already saved, then the input is moved behind the window: his start is replaced without a word (a tap that changes nothing read as "not touched") and the next tap finishes THEIR range | FIXED — a date he has tapped is his; a move behind him then asks | "the first tap is on the day it is already saved for…" |
+| W25 | Sol 1 | **OIL (D682).** The filer adds a man to a Saturday duty already answered; the sheet comes back for "X +2"; he answers — and the answer goes on the ADDED man’s record alone, a man’s own earlier No still standing. Older than this door, but against the ruling of the same day, and this door’s sheet rests on it | FIXED — the filer’s (or an admin’s) fresh answer goes on every record kept; a man who may only ADD somebody still answers for that man alone; a cancelled question moves nobody’s answer. D660’s full row says what D682 changed in it | "a man added to a Saturday duty already answered…" (Yes and No); `leavewar/groupwrite.test.ts` "the FILER adds a man and answers again…" |
+| — | both | The words under the form did not say the one-day way | FIXED — "…for one day, tap that day and Save" | "the words under the form say the one-day way too" |
+
+**Run and found sound, as both readers expected:** a range across the year’s end (30 Dec to 1 Jan 2027, both men, reopened);
+a Saturday duty answered Yes and moved to a Tuesday (nothing asked, nothing left to earn — the host first wrote this
+test expecting the old answer to be wiped; it stays written against its own Saturday and earns nothing on a Tuesday:
+the host’s wrong expectation, corrected). **Their cases NOT run, said plainly:** a reader’s right to change taken away
+while the OIL sheet is open (Astra 6, Sol 5 — the write is refused at the command gate by the rule `perms.test.ts`
+holds; not driven); a move onto a published day (Astra 8, Sol 8 — the same command the bar’s drag runs, walked in §6;
+not walked again through this control).
+
+**One existing test changed, by a ruling:** `leavewar/groupwrite.test.ts` "a man added later … nobody else’s answer
+moves" was about a man who did NOT file the entry adding somebody; it stands, retitled to say so. The filer’s case is
+a new test beside it (D682).
+
+### The re-walk of what the fixes touched — the same script on the fixed build, pictures `host-dates-2/`
+
+**19 of 19:** the sixteen steps again, and three added for the fixes — D12 a December input opened over an October one
+(the calendar reads "DEC 2026", its day lit); D13 a man added and new days in one Save with a "till" remark (three
+records, one bar, every remark "brief till 11 Nov"; the remark box untouched while picking); D14 the filer adds a third
+man to a Saturday duty where one man holds his own No, and answers Yes (one sheet, headed "OIL — Gambit +2, Duty"; Yes
+on all three). The three new pictures were opened by the host.
+
+## 13. D624’s pairs — each approved mock-up beside the built screen (in the repo since 9 Oct 26, on his word: D680)
+
+**36 pictures, `docs/img/handpass/2026-10-08-inputs-sans-calendar-check/pairs/`** — one for each approved mock-up of
+`docs/mock/inputs-sans-calendar.html`, numbered in that page’s order (`01-sans` … `36-chg-one-phone`). In each, the
+mock-up is on the LEFT and the built screen on the RIGHT, at the same scale, a magenta line between them. The seven
+SANS mock-ups are the ones redrawn with made-up figures; the built halves show the demo squadron.
+
+**When they were made, said plainly:** on the night of 8 Oct, BEFORE this check’s fixes — they are the evidence the
+fixes came from, not pictures of the final build. What they showed is §5 (W1, W6, W7 and W12 were found in them) and
+§8 (the differences told to him and not changed: the picker’s spacing, "Calendar" for "Days", the gear’s lines,
+several days picked opening the window at once). The built side after the fixes is in the host’s re-walk pictures
+(`host-rewalk/`, `host-final/`) and the walkers’ own.

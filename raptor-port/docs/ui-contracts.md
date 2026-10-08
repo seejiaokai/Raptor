@@ -9498,7 +9498,10 @@ without it shows a group as separate lines.
   sheet back, the standing answers ticked. **When the filer (or an admin) answers the question again, the answer is
   written for EVERY man of the entry — a man's own earlier answer, a No included, is replaced; the latest answer is the
   one that counts, a man may change his own again afterwards, and the scheduler's refusal on the day still wins (his
-  ruling, D682, 9 Oct 26 — confirming what the walk showed).** Its filer and an admin change it; **a man in it who did not file it** reads it
+  ruling, D682, 9 Oct 26 — confirming what the walk showed).** That holds on EVERY route the question comes back by —
+  the hours or the dates changed, "Change…", and a man ADDED or taken off (`commitGroup`: `forAll` — the answer goes
+  on every record kept, changed or not, when whoever gives it may change the input for everyone; a man who may only
+  add somebody answers for the man he adds and nobody else). Its filer and an admin change it; **a man in it who did not file it** reads it
   and has two things of his own, drawn outside the read-only form — "Take me out" (asked first: `inped-takeout-ask`) and
   his own OIL answer; **anyone else** reads "Only its people, Saber — who filed it — or an admin can change this."
   Delete asks "Delete this input for all N people?" (`inped-delall`; `removeEntry` — one command). A man added or taken
@@ -9516,7 +9519,15 @@ without it shows a group as separate lines.
   ONE command (`commitGroup`, one Undo): the OIL question is asked of every man kept where the new days need it
   (D660, D682), a refusal for one man refuses it for everyone in words that name him, and the remark's "till" word
   follows the new last day in the save (`commitInputEdit`) — the picker itself never rewrites the remark, or the
-  window would read it as his own change. Dates moved behind the open window (a bar dragged) are followed in it.
+  window would read it as his own change. **The effective remark is worked out once, in `commitGroup`, and is what
+  every man is saved with, kept or ADDED** — a man added in the same save as new dates otherwise kept the old last
+  day, and remarks being part of what makes the records one entry, one input came out as two. **Dates are compared
+  as dates, not as their printed labels** (a label carries no year inside the loaded one: a move of exactly a year
+  read as no change). Dates moved behind the open window (a bar dragged) are followed in it — **unless he has
+  TAPPED the calendar (`datesPicked`): a tapped date is his even where the tap was on the day already saved, so a
+  move behind him then ASKS ("Keep mine" / "Take theirs")**; "Take theirs" makes the dates a finished range again,
+  so the next tap is a new start. The calendar is made again whenever the window takes another record's dates
+  (`calKey`), never on a tap — its month is seeded once, and it had been seeded from the input held before.
   A bar's drag still moves the input as it is, its length kept. Tests: `ui/groupeditor.test.tsx` ("the dates of a
   saved shared input…"), `e2e/inputs-calendar.spec.ts` (two, D681); the walk `scripts/handpass/cal-host-dates.mjs`.
 - **The month:** one bar, "Drifter +3 · Meeting". A drag moves every record in one command for whoever may change all of
